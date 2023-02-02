@@ -47,7 +47,7 @@ public class EvaluatedResourcesTest extends FhirExecutionTestBase {
 
         Object result = context.resolveExpressionRef("Union").evaluate(context);
         assertThat(result, instanceOf(List.class));
-        assertThat(context.getEvaluatedResources().size(), is(2));
+        assertThat(context.getEvaluatedResources().size(), is(1));
         context.clearEvaluatedResources();
 
         result = context.resolveExpressionRef("Encounter").evaluate(context);
@@ -62,7 +62,7 @@ public class EvaluatedResourcesTest extends FhirExecutionTestBase {
 
         result = context.resolveExpressionRef("Union").evaluate(context);
         assertThat(result, instanceOf(List.class));
-        assertThat(context.getEvaluatedResources().size(), is(2));
+        assertThat(context.getEvaluatedResources().size(), is(1));
         context.clearEvaluatedResources();
     }
 
@@ -74,7 +74,7 @@ public class EvaluatedResourcesTest extends FhirExecutionTestBase {
 
         Object result = context.resolveExpressionRef("Union").evaluate(context);
         assertThat(result, instanceOf(List.class));
-        assertThat(context.getEvaluatedResources().size(), is(2));
+        assertThat(context.getEvaluatedResources().size(), is(1));
         context.clearEvaluatedResources();
 
         result = context.resolveExpressionRef("Encounter").evaluate(context);
@@ -89,7 +89,7 @@ public class EvaluatedResourcesTest extends FhirExecutionTestBase {
 
         result = context.resolveExpressionRef("Union").evaluate(context);
         assertThat(result, instanceOf(List.class));
-        assertThat(context.getEvaluatedResources().size(), is(2));
+        assertThat(context.getEvaluatedResources().size(), is(1));
         context.clearEvaluatedResources();
     }
 }
