@@ -2,7 +2,7 @@ name: Publish Snapshot
 on:
   push:
     branches:
-      - ${{ github.event.repository.default_branch }}
+      - master
 
 jobs:
   gradle:
