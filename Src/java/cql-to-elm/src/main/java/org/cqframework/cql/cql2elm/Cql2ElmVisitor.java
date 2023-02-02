@@ -80,7 +80,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         this.libraryBuilder = libraryBuilder;
         this.systemMethodResolver = new SystemMethodResolver(this, libraryBuilder);
     }
-    
+
     public void enableAnnotations() {
         annotate = true;
     }
@@ -3507,6 +3507,7 @@ DATETIME
                 .withCodeProperty(codePath);
 
         if (ctx.contextIdentifier() != null) {
+            @SuppressWarnings("unchecked")
             List<String> identifiers = (List<String>)visit(ctx.contextIdentifier());
             Expression contextExpression = resolveQualifiedIdentifier(identifiers);
             retrieve.setContext(contextExpression);
