@@ -6,10 +6,13 @@ import static org.opencds.cqf.cql.engine.execution.NamespaceHelper.getUriPart;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 import javax.xml.namespace.QName;
@@ -80,7 +83,7 @@ public class Context {
         };
     }
 
-    public List<Object> getEvaluatedResources() {
+    public Set<Object> getEvaluatedResources() {
         if (evaluatedResourceStack.empty()) {
             throw new IllegalStateException("Attempted to get the evaluatedResource stack when it's empty");
         }
@@ -93,10 +96,10 @@ public class Context {
         this.pushEvaluatedResourceStack();
     }
 
-    private Stack<List<Object>> evaluatedResourceStack = new Stack<>();
+    private Stack<Set<Object>> evaluatedResourceStack = new Stack<>();
 
     public void pushEvaluatedResourceStack() {
-        evaluatedResourceStack.push(new ArrayList<>());
+        evaluatedResourceStack.push(new HashSet<>());
     }
 
     //serves pop and merge to the down
@@ -109,8 +112,8 @@ public class Context {
             throw new IllegalStateException("Attempted to pop the evaluatedResource stack when only the root remains");
         }
 
-        List<Object> objects = evaluatedResourceStack.pop();
-        this.evaluatedResourceStack.peek().addAll(objects);
+        Set<Object> objects = evaluatedResourceStack.pop();
+        Collections.addAll(this.evaluatedResourceStack.peek(),objects);
     }
 
     private Map<String, Object> parameters = new HashMap<>();

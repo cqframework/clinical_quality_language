@@ -1,12 +1,12 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import java.util.List;
+import java.util.Set;
 
 public class ExpressionResult {
     protected Object value;
-    protected List<Object> evaluatedResources;
+    protected Set<Object> evaluatedResources;
 
-    public ExpressionResult(Object value, List<Object> evaluatedResources) {
+    public ExpressionResult(Object value, Set<Object> evaluatedResources) {
         this.value = value;
         this.evaluatedResources = evaluatedResources;
     }
@@ -15,7 +15,7 @@ public class ExpressionResult {
         return value;
     }
 
-    public List<Object> evaluatedResources() {
+    public Set<Object> evaluatedResources() {
         return  this.evaluatedResources;
     }
 }

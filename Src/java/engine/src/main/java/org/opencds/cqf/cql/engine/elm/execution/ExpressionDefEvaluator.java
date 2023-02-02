@@ -4,6 +4,8 @@ import org.cqframework.cql.elm.execution.VersionedIdentifier;
 import org.opencds.cqf.cql.engine.execution.Context;
 import org.opencds.cqf.cql.engine.execution.ExpressionResult;
 
+import java.util.Collections;
+
 public class ExpressionDefEvaluator extends org.cqframework.cql.elm.execution.ExpressionDef {
 
     @Override
@@ -16,7 +18,7 @@ public class ExpressionDefEvaluator extends org.cqframework.cql.elm.execution.Ex
             VersionedIdentifier libraryId = context.getCurrentLibrary().getIdentifier();
             if (context.isExpressionCachingEnabled() && context.isExpressionCached(libraryId, name)) {
                 var er = context.getCachedExpression(libraryId, name);
-                context.getEvaluatedResources().addAll(er.evaluatedResources());
+                Collections.addAll(context.getEvaluatedResources(), er.evaluatedResources());
                 return er.value();
             }
 
