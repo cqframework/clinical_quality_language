@@ -179,7 +179,7 @@ configure(subprojects.findAll {it.name in ['model', 'elm', 'quick', 'qdm', 'engi
     }
 
     ext.xjc = [
-            destDir: "${projectDir}/src/generated/java",
+            destDir: "${buildDir}/generated/sources/$name/main/java",
             args: '-disableXmlSecurity -Xfluent-api -Xequals -XhashCode -XtoString'
     ]
 
@@ -205,7 +205,14 @@ configure(subprojects.findAll {it.name in ['model', 'elm', 'quick', 'qdm', 'engi
 
     compileJava.dependsOn generateSources
     sourcesJar.dependsOn generateSources
-    sourceSets.main.java.srcDirs += xjc.destDir
+
+    sourceSets {
+        main {
+            java {
+                srcDir(xjc.destDir)
+            }
+        }
+    }
 
     clean {
         delete xjc.destDir
