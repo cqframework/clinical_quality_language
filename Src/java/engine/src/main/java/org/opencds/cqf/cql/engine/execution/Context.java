@@ -583,19 +583,20 @@ public class Context {
             }
         }
         else {
-            // this logic adds all function defs with the specified name to the cache
             for (ExpressionDef expressionDef : getCurrentLibrary().getStatements().getDef()) {
                 if (expressionDef.getName().equals(name) && expressionDef instanceof FunctionDef) {
+                    // this logic adds all function defs with a matching name to the cache
+                    functionCache.computeIfAbsent(
+                        mangledFunctionName, k -> new ArrayList<>()).add((FunctionDef)expressionDef);
+
                     FunctionDef candidate = resolveFunctionRef((FunctionDef) expressionDef, arguments);
                     if (candidate != null) {
                         ret = candidate;
                     }
-
-                    functionCache.computeIfAbsent(
-                        mangledFunctionName, k -> new ArrayList<>()).add((FunctionDef)expressionDef);
                 }
             }
         }
+
         if (ret != null) {
             return ret;
         }
