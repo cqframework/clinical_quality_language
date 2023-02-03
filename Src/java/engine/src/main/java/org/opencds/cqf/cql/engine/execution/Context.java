@@ -554,9 +554,10 @@ public class Context {
         return argumentType == null || operandType.isAssignableFrom(argumentType);
     }
 
-    private FunctionDef resolveFunctionRef(FunctionDef functionDef, List<Object> arguments) {
-        List<OperandDef> operands = functionDef.getOperand();
+    private FunctionDef resolveFunctionDesc(FunctionDesc functionDesc, List<Object> arguments) {
         boolean isMatch = true;
+
+        var operands = functionDesc.operandTypes();
 
         // if argument length is mismatched, don't compare
         if (arguments.size() != operands.size()) {
@@ -564,22 +565,49 @@ public class Context {
         }
 
         for (var i = 0; i < arguments.size(); i++) {
-            isMatch = isType(resolveType(arguments.get(i)), resolveOperandType(operands.get(i)));
+            isMatch = isType(resolveType(arguments.get(i)), operands.get(i));
             if (!isMatch) {
                 break;
             }
         }
 
-        return isMatch ? functionDef : null;
+        return isMatch ? functionDesc.functionDef() : null;
     }
 
-    private Map<String, List<FunctionDef>> functionCache = new HashMap<>();
+    static class FunctionDesc {
+        public FunctionDesc(FunctionDef functionDef, List<Class<?>> operandTypes) {
+            this.functionDef = functionDef;
+            this.operandTypes = operandTypes;
+        }
+
+        private FunctionDef functionDef;
+        private List<Class<?>> operandTypes;
+
+        public FunctionDef functionDef() {
+            return this.functionDef;
+        }
+
+        public List<Class<?>> operandTypes() {
+            return this.operandTypes;
+        }
+    }
+
+    private FunctionDesc createFunctionDesc(FunctionDef functionDef) {
+        var operandTypes = new ArrayList<Class<?>>(functionDef.getOperand().size());
+        for (var op : functionDef.getOperand()) {
+            operandTypes.add(this.resolveOperandType(op));
+        }
+
+        return new FunctionDesc(functionDef, operandTypes);
+    }
+
+    private Map<String, List<FunctionDesc>> functionCache = new HashMap<>();
     public FunctionDef resolveFunctionRef(String name, List<Object> arguments, String libraryName) {
         FunctionDef ret = null;
         String mangledFunctionName = (libraryName == null ? getCurrentLibrary().getIdentifier().getId() : libraryName) + "." + name;
         if (functionCache.containsKey(mangledFunctionName)) {
-            for (FunctionDef functionDef : functionCache.get(mangledFunctionName)) {
-                if ((ret = resolveFunctionRef(functionDef, arguments)) != null) {
+            for (FunctionDesc functionDesc : functionCache.get(mangledFunctionName)) {
+                if ((ret = resolveFunctionDesc(functionDesc, arguments)) != null) {
                     break;
                 }
             }
@@ -588,10 +616,12 @@ public class Context {
             for (ExpressionDef expressionDef : getCurrentLibrary().getStatements().getDef()) {
                 if (expressionDef.getName().equals(name) && expressionDef instanceof FunctionDef) {
                     // this logic adds all function defs with a matching name to the cache
-                    functionCache.computeIfAbsent(
-                        mangledFunctionName, k -> new ArrayList<>()).add((FunctionDef)expressionDef);
+                    var functionDesc = createFunctionDesc((FunctionDef)expressionDef);
 
-                    FunctionDef candidate = resolveFunctionRef((FunctionDef) expressionDef, arguments);
+                    functionCache.computeIfAbsent(
+                        mangledFunctionName, k -> new ArrayList<>()).add(functionDesc);
+
+                    FunctionDef candidate = resolveFunctionDesc(functionDesc, arguments);
                     if (candidate != null) {
                         ret = candidate;
                     }
