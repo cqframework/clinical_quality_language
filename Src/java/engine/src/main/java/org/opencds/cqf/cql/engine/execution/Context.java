@@ -93,7 +93,7 @@ public class Context {
         this.pushEvaluatedResourceStack();
     }
 
-    private Stack<List<Object>> evaluatedResourceStack = new Stack<>();
+    private Stack<ArrayList<Object>> evaluatedResourceStack = new Stack<>();
 
     public void pushEvaluatedResourceStack() {
         evaluatedResourceStack.push(new ArrayList<>());
@@ -109,8 +109,10 @@ public class Context {
             throw new IllegalStateException("Attempted to pop the evaluatedResource stack when only the root remains");
         }
 
-        List<Object> objects = evaluatedResourceStack.pop();
-        this.evaluatedResourceStack.peek().addAll(objects);
+        ArrayList<Object> objects = evaluatedResourceStack.pop();
+        var list = evaluatedResourceStack.peek();
+        list.ensureCapacity(list.size() + objects.size());
+        list.addAll(objects);
     }
 
     private Map<String, Object> parameters = new HashMap<>();
