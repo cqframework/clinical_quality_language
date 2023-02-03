@@ -7,9 +7,11 @@ import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 import javax.xml.namespace.QName;
@@ -80,7 +82,7 @@ public class Context {
         };
     }
 
-    public List<Object> getEvaluatedResources() {
+    public Set<Object> getEvaluatedResources() {
         if (evaluatedResourceStack.empty()) {
             throw new IllegalStateException("Attempted to get the evaluatedResource stack when it's empty");
         }
@@ -93,10 +95,10 @@ public class Context {
         this.pushEvaluatedResourceStack();
     }
 
-    private Stack<ArrayList<Object>> evaluatedResourceStack = new Stack<>();
+    private Stack<HashSet<Object>> evaluatedResourceStack = new Stack<>();
 
     public void pushEvaluatedResourceStack() {
-        evaluatedResourceStack.push(new ArrayList<>());
+        evaluatedResourceStack.push(new HashSet<>());
     }
 
     //serves pop and merge to the down
@@ -109,10 +111,9 @@ public class Context {
             throw new IllegalStateException("Attempted to pop the evaluatedResource stack when only the root remains");
         }
 
-        ArrayList<Object> objects = evaluatedResourceStack.pop();
-        var list = evaluatedResourceStack.peek();
-        list.ensureCapacity(list.size() + objects.size());
-        list.addAll(objects);
+        Set<Object> objects = evaluatedResourceStack.pop();
+        var set = evaluatedResourceStack.peek();
+        set.addAll(objects);
     }
 
     private Map<String, Object> parameters = new HashMap<>();
