@@ -12,7 +12,7 @@ public class FunctionRefEvaluator extends org.cqframework.cql.elm.execution.Func
 
     @Override
     protected Object internalEvaluate(Context context) {
-        ArrayList<Object> arguments = new ArrayList<>();
+        ArrayList<Object> arguments = new ArrayList<>(this.getOperand().size());
         for (Expression operand : this.getOperand()) {
             arguments.add(operand.evaluate(context));
         }

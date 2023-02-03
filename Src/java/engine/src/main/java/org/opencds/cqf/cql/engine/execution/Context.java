@@ -93,7 +93,7 @@ public class Context {
         this.pushEvaluatedResourceStack();
     }
 
-    private Stack<List<Object>> evaluatedResourceStack = new Stack<>();
+    private Stack<ArrayList<Object>> evaluatedResourceStack = new Stack<>();
 
     public void pushEvaluatedResourceStack() {
         evaluatedResourceStack.push(new ArrayList<>());
@@ -109,8 +109,10 @@ public class Context {
             throw new IllegalStateException("Attempted to pop the evaluatedResource stack when only the root remains");
         }
 
-        List<Object> objects = evaluatedResourceStack.pop();
-        this.evaluatedResourceStack.peek().addAll(objects);
+        ArrayList<Object> objects = evaluatedResourceStack.pop();
+        var list = evaluatedResourceStack.peek();
+        list.ensureCapacity(list.size() + objects.size());
+        list.addAll(objects);
     }
 
     private Map<String, Object> parameters = new HashMap<>();
@@ -552,33 +554,27 @@ public class Context {
         return argumentType == null || operandType.isAssignableFrom(argumentType);
     }
 
-    private FunctionDef resolveFunctionRef(FunctionDef functionDef, Iterable<Object> arguments) {
-        java.util.Iterator<OperandDef> operandIterator = functionDef.getOperand().iterator();
-        java.util.Iterator<Object> argumentIterator = arguments.iterator();
+    private FunctionDef resolveFunctionRef(FunctionDef functionDef, List<Object> arguments) {
+        List<OperandDef> operands = functionDef.getOperand();
         boolean isMatch = true;
-        while (operandIterator.hasNext()) {
-            if (argumentIterator.hasNext()) {
-                OperandDef operandDef = operandIterator.next();
-                Object argument = argumentIterator.next();
-                // TODO: This is actually wrong, but to fix this would require preserving type information in the ELM....
-                isMatch = isType(resolveType(argument), resolveOperandType(operandDef));
-            }
-            else {
-                isMatch = false;
-            }
+
+        // if argument length is mismatched, don't compare
+        if (arguments.size() != operands.size()) {
+            return null;
+        }
+
+        for (var i = 0; i < arguments.size(); i++) {
+            isMatch = isType(resolveType(arguments.get(i)), resolveOperandType(operands.get(i)));
             if (!isMatch) {
                 break;
             }
         }
-        if (isMatch && !argumentIterator.hasNext()) {
-            return functionDef;
-        }
 
-        return null;
+        return isMatch ? functionDef : null;
     }
 
     private Map<String, List<FunctionDef>> functionCache = new HashMap<>();
-    public FunctionDef resolveFunctionRef(String name, Iterable<Object> arguments, String libraryName) {
+    public FunctionDef resolveFunctionRef(String name, List<Object> arguments, String libraryName) {
         FunctionDef ret = null;
         String mangledFunctionName = (libraryName == null ? getCurrentLibrary().getIdentifier().getId() : libraryName) + "." + name;
         if (functionCache.containsKey(mangledFunctionName)) {
@@ -589,26 +585,20 @@ public class Context {
             }
         }
         else {
-            // this logic adds all function defs with the specified name to the cache
             for (ExpressionDef expressionDef : getCurrentLibrary().getStatements().getDef()) {
-                if (expressionDef.getName().equals(name)) {
-                    if (expressionDef instanceof FunctionDef) {
-                        FunctionDef candidate = resolveFunctionRef((FunctionDef) expressionDef, arguments);
-                        if (candidate != null) {
-                            ret = candidate;
-                        }
-                        if (functionCache.containsKey(mangledFunctionName)) {
-                            functionCache.get(mangledFunctionName).add((FunctionDef) expressionDef);
-                        }
-                        else {
-                            List<FunctionDef> functionDefs = new ArrayList<>();
-                            functionDefs.add((FunctionDef) expressionDef);
-                            functionCache.put(mangledFunctionName, functionDefs);
-                        }
+                if (expressionDef.getName().equals(name) && expressionDef instanceof FunctionDef) {
+                    // this logic adds all function defs with a matching name to the cache
+                    functionCache.computeIfAbsent(
+                        mangledFunctionName, k -> new ArrayList<>()).add((FunctionDef)expressionDef);
+
+                    FunctionDef candidate = resolveFunctionRef((FunctionDef) expressionDef, arguments);
+                    if (candidate != null) {
+                        ret = candidate;
                     }
                 }
             }
         }
+
         if (ret != null) {
             return ret;
         }
