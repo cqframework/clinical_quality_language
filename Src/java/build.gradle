@@ -308,7 +308,10 @@ configure(subprojects.findAll {it.name in ['cqf-fhir', 'cqf-fhir-npm', 'cql', 'm
     }
 
     signing {
-        sign publishing.publications.mavenDeployer
+        if (!version.endsWith('SNAPSHOT')){
+            sign publishing.publications.mavenDeployer
+        }
+
     }
 
     javadoc {
