@@ -5,10 +5,15 @@ import java.util.Optional;
 
 import org.cqframework.cql.elm.execution.Expression;
 import org.cqframework.cql.elm.execution.FunctionDef;
+import org.cqframework.cql.elm.execution.FunctionRef;
 import org.opencds.cqf.cql.engine.execution.Context;
 import org.opencds.cqf.cql.engine.execution.Variable;
 
 public class FunctionRefEvaluator extends org.cqframework.cql.elm.execution.FunctionRef {
+
+    // For a given instance of the FunctionDefEvaluator, we'll only resolve to one FunctionDef
+    // Even if it's evaluated multiple times in a given ELM graph.
+    private FunctionDef functionDef;
 
     @Override
     protected Object internalEvaluate(Context context) {
@@ -19,8 +24,12 @@ public class FunctionRefEvaluator extends org.cqframework.cql.elm.execution.Func
 
         boolean enteredLibrary = context.enterLibrary(this.getLibraryName());
         try {
-            // TODO: Use type specifiers from the operands here if they are available
-            FunctionDef functionDef = context.resolveFunctionRef(this.getName(), arguments, this.getLibraryName());
+
+            // TODO: Use type specifiers from the operands here if they are available to resolveFunctionRef
+            if (functionDef == null) {
+                this.functionDef = context.resolveFunctionRef(this.getName(), arguments, this.getLibraryName());
+            }
+
             if (Optional.ofNullable(functionDef.isExternal()).orElse(false)) {
                 return context.getExternalFunctionProvider().evaluate(functionDef.getName(), arguments);
             }
