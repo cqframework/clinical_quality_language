@@ -1,20 +1,12 @@
 package org.opencds.cqf.cql.engine.fhir.retrieve;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-
+import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.FhirVersionEnum;
+import ca.uhn.fhir.rest.client.api.IGenericClient;
+import ca.uhn.fhir.rest.param.DateRangeParam;
 import org.apache.commons.lang3.StringUtils;
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.DataRequirement;
-import org.hl7.fhir.dstu3.model.DateTimeType;
-import org.hl7.fhir.dstu3.model.Duration;
-import org.hl7.fhir.dstu3.model.ValueSet;
+import org.apache.commons.lang3.tuple.Pair;
+import org.hl7.fhir.dstu3.model.*;
 import org.opencds.cqf.cql.engine.fhir.Dstu3FhirTest;
 import org.opencds.cqf.cql.engine.fhir.exception.FhirVersionMisMatchException;
 import org.opencds.cqf.cql.engine.fhir.model.CachedDstu3FhirModelResolver;
@@ -22,13 +14,20 @@ import org.opencds.cqf.cql.engine.fhir.model.Dstu3FhirModelResolver;
 import org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterResolver;
 import org.opencds.cqf.cql.engine.fhir.terminology.Dstu3FhirTerminologyProvider;
 import org.opencds.cqf.cql.engine.runtime.DateTime;
+import org.opencds.cqf.cql.engine.runtime.Interval;
 import org.opencds.cqf.cql.engine.terminology.TerminologyProvider;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.rest.client.api.IGenericClient;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+
+import static org.testng.Assert.*;
 
 public class TestDstu3FhirQueryGenerator extends Dstu3FhirTest {
     static IGenericClient CLIENT;
@@ -293,5 +292,35 @@ public class TestDstu3FhirQueryGenerator extends Dstu3FhirTest {
         assertEquals(actual.get(2), expectedQuery3);
         assertEquals(actual.get(3), expectedQuery4);
         assertEquals(actual.get(4), expectedQuery5);
+    }
+
+    @Test
+    void testGetDateRangeParamWithDateInterval() throws ParseException {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+
+        Date low = formatter.parse("2023-01-01");
+        Date high = formatter.parse("2023-02-06");
+        Interval interval = new Interval(low, true, high, true);
+
+        Pair<String, DateRangeParam> rangeParam = this.generator.getDateRangeParam("Condition", "onset", "valueDate", "valueDate", interval);
+
+        assertNotNull(rangeParam);
+        assertTrue(rangeParam.getValue().getLowerBound().getValue().equals(low));
+        assertTrue(rangeParam.getValue().getUpperBound().getValue().equals(high));
+    }
+
+    @Test
+    void testGetDateRangeParamWithDateTimeInterval() throws ParseException {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.ENGLISH);
+
+        Date low = formatter.parse("2023-01-01T12:01:02-0700");
+        Date high = formatter.parse("2023-02-06T12:01:02-0700");
+        Interval interval = new Interval(low, true, high, true);
+
+        Pair<String, DateRangeParam> rangeParam = this.generator.getDateRangeParam("Condition", "onset", "valueDate", "valueDate", interval);
+
+        assertNotNull(rangeParam);
+        assertTrue(rangeParam.getValue().getLowerBound().getValue().equals(low));
+        assertTrue(rangeParam.getValue().getUpperBound().getValue().equals(high));
     }
 }
