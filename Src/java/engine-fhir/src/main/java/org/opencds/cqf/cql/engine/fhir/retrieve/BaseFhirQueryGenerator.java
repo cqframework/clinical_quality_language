@@ -127,13 +127,23 @@ public abstract class BaseFhirQueryGenerator implements FhirVersionIntegrityChec
         DateParam low = null;
         DateParam high = null;
         if (dateRange.getLow() != null) {
-            low = new DateParam(ParamPrefixEnum.GREATERTHAN_OR_EQUALS,
-                Date.from(((DateTime) dateRange.getLow()).getDateTime().toInstant()));
+            if (dateRange.getLow() instanceof Date) {
+                low = new DateParam(ParamPrefixEnum.GREATERTHAN_OR_EQUALS,
+                        Date.from(((Date) dateRange.getLow()).toInstant()));
+            } else if (dateRange.getLow() instanceof DateTime) {
+                low = new DateParam(ParamPrefixEnum.GREATERTHAN_OR_EQUALS,
+                        Date.from(((DateTime) dateRange.getLow()).getDateTime().toInstant()));
+            }
         }
 
         if (dateRange.getHigh() != null) {
-            high = new DateParam(ParamPrefixEnum.LESSTHAN_OR_EQUALS,
-                Date.from(((DateTime) dateRange.getHigh()).getDateTime().toInstant()));
+            if (dateRange.getLow() instanceof Date) {
+                high = new DateParam(ParamPrefixEnum.LESSTHAN_OR_EQUALS,
+                        Date.from(((Date) dateRange.getHigh()).toInstant()));
+            } else if (dateRange.getLow() instanceof DateTime) {
+                high = new DateParam(ParamPrefixEnum.LESSTHAN_OR_EQUALS,
+                        Date.from(((DateTime) dateRange.getHigh()).getDateTime().toInstant()));
+            }
         }
 
         DateRangeParam rangeParam;

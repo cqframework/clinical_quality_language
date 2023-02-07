@@ -1,20 +1,12 @@
 package org.opencds.cqf.cql.engine.fhir.retrieve;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-
+import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.FhirVersionEnum;
+import ca.uhn.fhir.rest.client.api.IGenericClient;
+import ca.uhn.fhir.rest.param.DateRangeParam;
 import org.apache.commons.lang3.StringUtils;
-import org.hl7.fhir.r4.model.Bundle;
-import org.hl7.fhir.r4.model.DataRequirement;
-import org.hl7.fhir.r4.model.DateTimeType;
-import org.hl7.fhir.r4.model.Duration;
-import org.hl7.fhir.r4.model.ValueSet;
+import org.apache.commons.lang3.tuple.Pair;
+import org.hl7.fhir.r4.model.*;
 import org.opencds.cqf.cql.engine.fhir.R4FhirTest;
 import org.opencds.cqf.cql.engine.fhir.exception.FhirVersionMisMatchException;
 import org.opencds.cqf.cql.engine.fhir.model.CachedR4FhirModelResolver;
@@ -22,13 +14,20 @@ import org.opencds.cqf.cql.engine.fhir.model.R4FhirModelResolver;
 import org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterResolver;
 import org.opencds.cqf.cql.engine.fhir.terminology.R4FhirTerminologyProvider;
 import org.opencds.cqf.cql.engine.runtime.DateTime;
+import org.opencds.cqf.cql.engine.runtime.Interval;
 import org.opencds.cqf.cql.engine.terminology.TerminologyProvider;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.rest.client.api.IGenericClient;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+
+import static org.testng.Assert.*;
 
 public class TestR4FhirQueryGenerator extends R4FhirTest {
     static IGenericClient CLIENT;
@@ -377,5 +376,33 @@ public class TestR4FhirQueryGenerator extends R4FhirTest {
 
         assertNotNull(actual);
         assertEquals(actual.size(), 11);
+    }
+
+    @Test
+    void testGetDateRangeParamWithDateType() throws ParseException {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+
+        Date low = formatter.parse("2023-01-01");
+        Date high = formatter.parse("2023-02-06");
+        Interval interval = new Interval(low, true, high, true);
+
+        Pair<String, DateRangeParam> rangeParam = this.generator.getDateRangeParam("Condition", "onset", "valueDate", "valueDate", interval);
+
+        assertNotNull(rangeParam);
+        assertTrue(rangeParam.getValue().getLowerBound().getValue().equals(low));
+        assertTrue(rangeParam.getValue().getUpperBound().getValue().equals(high));
+    }
+
+    @Test
+    void testGetDateRangeParamWithDateTimeType() throws ParseException {
+        DateTime low = new DateTime(OffsetDateTime.parse("2023-01-01T12:01:56-07:00"));
+        DateTime high = new DateTime(OffsetDateTime.parse("2023-02-06T12:08:56-07:00"));
+        Interval interval = new Interval(low, true, high, true);
+
+        Pair<String, DateRangeParam> rangeParam = this.generator.getDateRangeParam("Condition", "onset", "valueDateTime", "valueDateTime", interval);
+
+        assertNotNull(rangeParam);
+        assertTrue(rangeParam.getValue().getLowerBound().getValue().equals(low.toJavaDate()));
+        assertTrue(rangeParam.getValue().getUpperBound().getValue().equals(high.toJavaDate()));
     }
 }
