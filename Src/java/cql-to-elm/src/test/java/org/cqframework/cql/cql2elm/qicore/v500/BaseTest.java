@@ -1,4 +1,4 @@
-package org.cqframework.cql.cql2elm.qicore.v411;
+package org.cqframework.cql.cql2elm.qicore.v500;
 
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.TestUtils;
@@ -24,15 +24,25 @@ public class BaseTest {
     }
 
     @Test
+    public void testQICoreCommon() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("qicore/v500/QICoreCommon-2.0.000.cql", 0);
+    }
+
+    @Test
+    public void testCQMCommon() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("qicore/v500/CQMCommon-2.0.000.cql", 0);
+    }
+
+    @Test
     public void testAuthoringPatterns() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("qicore/v411/AuthoringPatterns.cql", 0);
+        CqlTranslator translator = TestUtils.runSemanticTest("qicore/v500/AuthoringPatterns.cql", 0);
 
         assertThat(translator.getWarnings().size(), is(0));
     }
 
     @Test
     public void testQICore() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("qicore/v411/TestQICore.cql", 0);
+        CqlTranslator translator = TestUtils.runSemanticTest("qicore/v500/TestQICore.cql", 0);
 
         Library library = translator.toELM();
         Map<String, ExpressionDef> defs = new HashMap<>();
