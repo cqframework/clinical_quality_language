@@ -54,17 +54,22 @@ public class RetrieveEvaluator extends org.cqframework.cql.elm.execution.Retriev
             dateRange = (Interval) this.getDateRange().evaluate(context);
         }
 
-        Object result = dataProvider.retrieve(context.getCurrentContext(),
+        Iterable<Object> result = dataProvider.retrieve(context.getCurrentContext(),
                 (String) dataProvider.getContextPath(context.getCurrentContext(), dataType.getLocalPart()),
                 context.getCurrentContextValue(), dataType.getLocalPart(), getTemplateId(),
                 getCodeProperty(), codes, valueSet, getDateProperty(), getDateLowProperty(), getDateHighProperty(),
                 dateRange);
 
-        // append list results to evaluatedResources list
+
+        // TODO: We probably shouldn't eagerly load this, but we need to track
+        // this throughout the engine and only add it to the list when it's actually used
+        var evaluatedResource = context.getEvaluatedResources();
         if (result instanceof List) {
-            context.getEvaluatedResources().addAll((List<?>)result);
+            evaluatedResource.addAll((List<?>)result);
         } else {
-            context.getEvaluatedResources().add(result);
+            for (var o : result) {
+                evaluatedResource.add(o);
+            }
         }
 
         return result;
