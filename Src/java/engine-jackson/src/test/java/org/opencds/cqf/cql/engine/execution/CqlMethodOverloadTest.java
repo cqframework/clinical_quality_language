@@ -3,6 +3,7 @@ package org.opencds.cqf.cql.engine.execution;
 import org.cqframework.cql.elm.execution.Library;
 import org.testng.annotations.Test;
 import java.io.IOException;
+import java.math.BigDecimal;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -20,6 +21,9 @@ public class CqlMethodOverloadTest {
 
         result = context.resolveExpressionRef("TestAnyFunctionWithString").getExpression().evaluate(context);
         assertThat(result, is("joe"));
+
+        result = context.resolveExpressionRef("TestAnyFunctionWithDecimal").getExpression().evaluate(context);
+        assertThat(result, is(new BigDecimal("12.3")));
     }
 
     @Test
@@ -33,6 +37,9 @@ public class CqlMethodOverloadTest {
 
         result = context.resolveExpressionRef("TestAnyFunctionWithString").getExpression().evaluate(context);
         assertThat(result, is("joe"));
+
+        result = context.resolveExpressionRef("TestAnyFunctionWithDecimal").getExpression().evaluate(context);
+        assertThat(result, is(new BigDecimal("12.3")));
     }
 
 }
