@@ -1,0 +1,136 @@
+{
+  "library" : {
+    "type" : "Library",
+    "identifier" : {
+      "type" : "VersionedIdentifier",
+      "id" : "MethodOverload",
+      "version" : "1.0.000"
+    },
+    "schemaIdentifier" : {
+      "type" : "VersionedIdentifier",
+      "id" : "urn:hl7-org:elm",
+      "version" : "r1"
+    },
+    "usings" : {
+      "type" : "Library$Usings",
+      "def" : [ {
+        "type" : "UsingDef",
+        "localIdentifier" : "System",
+        "uri" : "urn:hl7-org:elm-types:r1"
+      } ]
+    },
+    "statements" : {
+      "type" : "Library$Statements",
+      "def" : [ {
+        "type" : "FunctionDef",
+        "operand" : [ {
+          "type" : "OperandDef",
+          "operandTypeSpecifier" : {
+            "type" : "NamedTypeSpecifier",
+            "name" : "{urn:hl7-org:elm-types:r1}Integer"
+          },
+          "name" : "a"
+        } ],
+        "expression" : {
+          "type" : "OperandRef",
+          "name" : "a"
+        },
+        "name" : "TestAny",
+        "context" : "Patient",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "FunctionDef",
+        "operand" : [ {
+          "type" : "OperandDef",
+          "operandTypeSpecifier" : {
+            "type" : "NamedTypeSpecifier",
+            "name" : "{urn:hl7-org:elm-types:r1}String"
+          },
+          "name" : "b"
+        } ],
+        "expression" : {
+          "type" : "OperandRef",
+          "name" : "b"
+        },
+        "name" : "TestAny",
+        "context" : "Patient",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "FunctionDef",
+        "operand" : [ {
+          "type" : "OperandDef",
+          "operandTypeSpecifier" : {
+            "type" : "NamedTypeSpecifier",
+            "name" : "{urn:hl7-org:elm-types:r1}Decimal"
+          },
+          "name" : "c"
+        } ],
+        "expression" : {
+          "type" : "OperandRef",
+          "name" : "c"
+        },
+        "name" : "TestAny",
+        "context" : "Patient",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ExpressionDef",
+        "expression" : {
+          "type" : "FunctionRef",
+          "signature" : [ {
+            "type" : "NamedTypeSpecifier",
+            "name" : "{urn:hl7-org:elm-types:r1}Integer"
+          } ],
+          "operand" : [ {
+            "type" : "Literal",
+            "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+            "value" : "1"
+          } ],
+          "name" : "TestAny"
+        },
+        "name" : "TestAnyFunctionWithInteger",
+        "context" : "Patient",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ExpressionDef",
+        "expression" : {
+          "type" : "FunctionRef",
+          "signature" : [ {
+            "type" : "NamedTypeSpecifier",
+            "name" : "{urn:hl7-org:elm-types:r1}String"
+          } ],
+          "operand" : [ {
+            "type" : "Literal",
+            "valueType" : "{urn:hl7-org:elm-types:r1}String",
+            "value" : "joe"
+          } ],
+          "name" : "TestAny"
+        },
+        "name" : "TestAnyFunctionWithString",
+        "context" : "Patient",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ExpressionDef",
+        "expression" : {
+          "type" : "FunctionRef",
+          "signature" : [ {
+            "type" : "NamedTypeSpecifier",
+            "name" : "{urn:hl7-org:elm-types:r1}Decimal"
+          } ],
+          "operand" : [ {
+            "type" : "Literal",
+            "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
+            "value" : "12.3"
+          } ],
+          "name" : "TestAny"
+        },
+        "name" : "TestAnyFunctionWithDecimal",
+        "context" : "Patient",
+        "accessLevel" : "Public"
+      } ]
+    },
+    "annotation" : [ {
+      "type" : "CqlToElmInfo",
+      "translatorOptions" : ""
+    } ]
+  }
+}

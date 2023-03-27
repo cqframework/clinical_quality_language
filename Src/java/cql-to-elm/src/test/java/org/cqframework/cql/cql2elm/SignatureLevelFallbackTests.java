@@ -38,7 +38,7 @@ public class SignatureLevelFallbackTests {
             compiler = new CqlCompiler(modelManager, libraryManager);
             Library library = compiler.run(LibraryTests.class.getResourceAsStream("MethodOverload.cql"),
                     CqlCompilerException.ErrorSeverity.Info,
-                    LibraryBuilder.SignatureLevel.Overloads);
+                    LibraryBuilder.SignatureLevel.Differing);
 
             assertThat(compiler.getErrors().size(), is(0));
             System.out.println(CqlTranslator.convertToJson(library));

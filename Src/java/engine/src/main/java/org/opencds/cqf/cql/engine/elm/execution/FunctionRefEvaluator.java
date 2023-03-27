@@ -1,7 +1,9 @@
 package org.opencds.cqf.cql.engine.elm.execution;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.cqframework.cql.elm.execution.Expression;
 import org.cqframework.cql.elm.execution.FunctionDef;
@@ -19,8 +21,15 @@ public class FunctionRefEvaluator extends org.cqframework.cql.elm.execution.Func
 
         boolean enteredLibrary = context.enterLibrary(this.getLibraryName());
         try {
-            // TODO: Use type specifiers from the operands here if they are available
-            FunctionDef functionDef = context.resolveFunctionRef(this.getName(), arguments, this.getLibraryName());
+
+            FunctionDef functionDef;
+            if (!this.getSignature().isEmpty()) {
+                List<Object> types = this.getSignature().stream().map(e -> (Object) e).collect(Collectors.toList());
+                functionDef = context.resolveFunctionRef(this.getName(), types, this.getLibraryName());
+            } else {
+                functionDef = context.resolveFunctionRef(this.getName(), arguments, this.getLibraryName());
+            }
+
             if (Optional.ofNullable(functionDef.isExternal()).orElse(false)) {
                 return context.getExternalFunctionProvider().evaluate(functionDef.getName(), arguments);
             }

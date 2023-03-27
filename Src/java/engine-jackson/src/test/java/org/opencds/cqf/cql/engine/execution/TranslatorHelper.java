@@ -3,7 +3,10 @@ package org.opencds.cqf.cql.engine.execution;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.URLDecoder;
@@ -49,5 +52,22 @@ public class TranslatorHelper {
         String json = translator.toJson();
 
         return new JsonCqlLibraryReader().read(new StringReader(json));
+    }
+
+    public Library readJson(String json) throws IOException {
+        return new JsonCqlLibraryReader().read(new StringReader(json));
+    }
+
+    public String readFromInputStream(InputStream inputStream)
+            throws IOException {
+        StringBuilder resultStringBuilder = new StringBuilder();
+        try (BufferedReader br
+                     = new BufferedReader(new InputStreamReader(inputStream))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                resultStringBuilder.append(line).append("\n");
+            }
+        }
+        return resultStringBuilder.toString();
     }
 }
