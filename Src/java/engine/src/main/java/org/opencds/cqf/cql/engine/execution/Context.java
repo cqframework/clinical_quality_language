@@ -606,6 +606,19 @@ public class Context {
         return new FunctionDesc(functionDef, operandTypes);
     }
 
+    public boolean isFunctionOverloaded(String name) {
+        int count = 0;
+        for (ExpressionDef expressionDef : getCurrentLibrary().getStatements().getDef()) {
+            if (expressionDef.getName().equals(name) && expressionDef instanceof FunctionDef) {
+                count++;
+                if (count > 1) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private Map<String, List<FunctionDesc>> functionCache = new HashMap<>();
     public FunctionDef resolveFunctionRef(String name, List<Object> arguments, String libraryName) {
         FunctionDef ret = null;
