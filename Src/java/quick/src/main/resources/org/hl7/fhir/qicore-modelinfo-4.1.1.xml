@@ -26,7 +26,7 @@
    <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="QICore" name="AddressType" retrievable="false"/>
    <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="QICore" name="AddressUse" retrievable="false"/>
    <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="QICore" name="AdministrativeGender" retrievable="false"/>
-   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="AdverseEvent" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-adverseevent" label="AdverseEvent" retrievable="true" primaryCodePath="type">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="AdverseEvent" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-adverseevent" label="AdverseEvent" retrievable="true" primaryCodePath="event">
       <element name="identifier" elementType="QICore.Identifier" description="Business identifier for the event" definition="Business identifiers assigned to this adverse event by the performer or other systems which remain constant as the resource is updated and propagates from server to server." comment="This is a business identifier, not a resource identifier (see [discussion](http://hl7.org/fhir/R4/resource.html#identifiers)).  It is best practice for the identifier to only appear on a single resource instance, however business practices may occasionally dictate that multiple resource instances with the same identifier can exist - possibly even with different resource types.  For example, multiple Patient and a Person resource instance might share the same social insurance number."/>
       <element name="actuality" elementType="QICore.AdverseEventActuality" target="%value.value" description="actual | potential" definition="Whether the event actually happened, or just had the potential to. Note that this is independent of whether anyone was affected or harmed or how severely." mustSupport="true">
          <binding name="AdverseEventActuality" description="Overall nature of the adverse event, e.g. real or potential." strength="Required"/>
@@ -1513,7 +1513,7 @@
       </element>
    </typeInfo>
    <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="QICore" name="DeviceRequestStatus" retrievable="false"/>
-   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="DeviceUseStatement" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-deviceusestatement" label="DeviceUseStatement" retrievable="true" primaryCodePath="device.code">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="DeviceUseStatement" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-deviceusestatement" label="DeviceUseStatement" retrievable="true" primaryCodePath="device.type">
       <element name="identifier" description="External identifier for this record" definition="An external identifier for this statement such as an IRI.">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
