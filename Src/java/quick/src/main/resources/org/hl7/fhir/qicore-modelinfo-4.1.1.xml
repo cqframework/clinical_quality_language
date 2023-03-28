@@ -3056,12 +3056,13 @@
          <binding name="MedicationRequestPerformerType" description="Identifies the type of individual that is desired to administer the medication." strength="Example"/>
       </element>
       <element name="recorder" elementType="QICore.Reference" description="Person who entered the request" definition="The person who entered the order on behalf of another individual for example in the case of a verbal or a telephone order." mustSupport="false"/>
-      <element name="reasonCode" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)" description="Reason or indication for ordering or not ordering the medication" definition="The reason or the indication for ordering or not ordering the medication." comment="This could be a diagnosis code. If a full condition record exists or additional detail is needed, use reasonReference." mustSupport="true">
-         <binding description="The reason the medication was not requested" strength="Extensible"/>
-      </element>
-      <element name="reasonReference" description="Condition or observation that supports why the prescription is being written" definition="Condition or observation that supports why the medication was ordered." comment="This is a reference to a condition or observation that is the reason for the medication order.  If only a code exists, use reasonCode.">
-         <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
-      </element>
+       <element name="reasonCode" target="FHIRHelpers.ToConcept(%value)" description="Reason or indication for not ordering the medication" definition="The reason or the indication for ordering or not ordering the medication." comment="This could be a diagnosis code. If a full condition record exists or additional detail is needed, use reasonReference.">
+           <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
+           <binding name="MedicationRequestReason" description="A coded concept indicating why the medication was not ordered." strength="Example"/>
+       </element>
+       <element name="reasonReference" description="Condition or observation that supports why the prescription is being written" definition="Condition or observation that supports why the medication was ordered." comment="This is a reference to a condition or observation that is the reason for the medication order.  If only a code exists, use reasonCode.">
+           <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
+       </element>
       <element name="instantiatesCanonical" target="%value.value" description="Instantiates FHIR protocol or definition" definition="The URL pointing to a protocol, guideline, orderset, or other definition that is adhered to in whole or in part by this MedicationRequest.">
          <elementTypeSpecifier elementType="System.String" xsi:type="ListTypeSpecifier"/>
       </element>
