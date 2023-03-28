@@ -50,16 +50,19 @@ public class PropertyResolution {
         this.type = type;
         this.name = name;
 
-        if (targetMaps != null) {
+        if (targetMaps != null && targetMaps.size() > 0) {
             StringBuilder builder = new StringBuilder();
             for (Map.Entry<DataType, String> entry : targetMaps.entrySet()) {
                 if (builder.length() > 0) {
                     builder.append(";");
                 }
-                builder.append(entry.getKey().toString());
-                builder.append(":");
+                if (targetMaps.size() > 1) {
+                    builder.append(entry.getKey().toString());
+                    builder.append(":");
+                }
                 builder.append(entry.getValue());
             }
+            this.targetMap = builder.toString();
         }
     }
 

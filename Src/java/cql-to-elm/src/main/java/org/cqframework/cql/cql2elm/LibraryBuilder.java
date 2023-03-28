@@ -2067,7 +2067,7 @@ public class LibraryBuilder implements ModelResolver {
 
                 if (resultTypes.size() == 1) {
                     for (DataType resultType : resultTypes) {
-                        return new PropertyResolution(resultType, resultTargetMaps.containsKey(resultType) ? resultTargetMaps.get(resultType) : name);
+                        return new PropertyResolution(resultType, name, resultTargetMaps);
                     }
                 }
             }
