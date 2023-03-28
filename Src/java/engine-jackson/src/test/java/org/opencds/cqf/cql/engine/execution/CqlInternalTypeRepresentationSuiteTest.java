@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.TimeZone;
 
+import org.cqframework.cql.cql2elm.LibraryBuilder;
 import org.cqframework.cql.elm.execution.Library;
 import org.fhir.ucum.UcumException;
 import org.opencds.cqf.cql.engine.runtime.Code;
@@ -333,7 +334,7 @@ public class CqlInternalTypeRepresentationSuiteTest {
         Assert.assertTrue(listComp != null && listComp);
     }
 
-    private Library translate(String file)  throws UcumException, IOException {
-        return new TranslatorHelper().translate(file);
+    private Library translate(String file) throws UcumException, IOException {
+        return new TranslatorHelper().translate(file, LibraryBuilder.SignatureLevel.All);
     }
 }

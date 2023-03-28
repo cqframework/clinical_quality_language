@@ -9,6 +9,7 @@ import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.TimeZone;
 
+import org.cqframework.cql.cql2elm.LibraryBuilder;
 import org.cqframework.cql.elm.execution.Library;
 import org.cqframework.cql.elm.execution.VersionedIdentifier;
 import org.fhir.ucum.UcumException;
@@ -60,8 +61,8 @@ public class CqlPerformanceIT  extends TranslatingTestBase {
         runPerformanceTest("CqlInternalTypeRepresentationSuite", "CqlInternalTypeRepresentationSuite", libraryLoader, 3.0);
     }
 
-    private Library translate(String file)  throws UcumException, IOException {
-        return new TranslatorHelper().translate(file);
+    private Library translate(String file) throws UcumException, IOException {
+        return new TranslatorHelper().translate(file, LibraryBuilder.SignatureLevel.All);
     }
 
     private void runPerformanceTest(String testName, String libraryName, LibraryLoader libraryLoader, Double maxPerIterationMs) {

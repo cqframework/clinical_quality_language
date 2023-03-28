@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
 
+import org.cqframework.cql.cql2elm.LibraryBuilder;
 import org.cqframework.cql.elm.execution.ExpressionDef;
 import org.cqframework.cql.elm.execution.Library;
 import org.fhir.ucum.UcumException;
@@ -68,7 +69,7 @@ public class CqlErrorSuiteTest {
         }
     }
 
-    private static Library translate(String file)  throws UcumException, IOException {
-        return new TranslatorHelper().translate(file);
+    private static Library translate(String file) throws UcumException, IOException {
+        return new TranslatorHelper().translate(file, LibraryBuilder.SignatureLevel.All);
     }
 }

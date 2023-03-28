@@ -86,7 +86,8 @@ public abstract class FhirExecutionTestBase {
                 ArrayList<CqlTranslatorOptions.Options> options = new ArrayList<>();
                 options.add(CqlTranslatorOptions.Options.EnableDateRangeOptimization);
 
-                CqlTranslator translator = CqlTranslator.fromFile(cqlFile, modelManager, libraryManager, ucumService, options.toArray(new CqlTranslatorOptions.Options[options.size()]));
+                CqlTranslator translator = CqlTranslator.fromFile(cqlFile, modelManager, libraryManager, ucumService,
+                        CqlCompilerException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.All, options.toArray(new CqlTranslatorOptions.Options[options.size()]));
 
                 if (translator.getErrors().size() > 0) {
                     System.err.println("Translation failed due to errors:");

@@ -14,6 +14,8 @@ import java.util.ArrayList;
 
 import org.cqframework.cql.cql2elm.CqlCompilerException;
 import org.cqframework.cql.cql2elm.CqlTranslator;
+import org.cqframework.cql.cql2elm.CqlTranslatorOptions;
+import org.cqframework.cql.cql2elm.LibraryBuilder;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.ModelManager;
 import org.cqframework.cql.elm.execution.Library;
@@ -25,14 +27,16 @@ import org.opencds.cqf.cql.engine.serializing.jackson.JsonCqlLibraryReader;
 
 public class TranslatorHelper {
 
-    public Library translate(String file) throws UcumException, IOException {
+    public Library translate(String file, LibraryBuilder.SignatureLevel signatureLevel) throws UcumException, IOException {
+        ArrayList<CqlTranslatorOptions.Options> options = new ArrayList<>();
         ModelManager modelManager = new ModelManager();
         LibraryManager libraryManager = new LibraryManager(modelManager);
         UcumService ucumService = new UcumEssenceService(UcumEssenceService.class.getResourceAsStream("/ucum-essence.xml"));
 
         File cqlFile = new File(URLDecoder.decode(CqlErrorSuiteTest.class.getResource(file).getFile(), "UTF-8"));
 
-        CqlTranslator translator = CqlTranslator.fromFile(cqlFile, modelManager, libraryManager, ucumService);
+        CqlTranslator translator = CqlTranslator.fromFile(cqlFile, modelManager, libraryManager, ucumService,
+                CqlCompilerException.ErrorSeverity.Info, signatureLevel, options.toArray(new CqlTranslatorOptions.Options[options.size()]));
 
         if (translator.getErrors().size() > 0) {
             System.err.println("Translation failed due to errors:");

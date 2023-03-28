@@ -22,7 +22,7 @@ public class CqlFunctionOverloadTest {
     }
 
     @Test
-    public void test_method_overload_with_no_signature() throws IOException, UcumException {
+    public void test_function_overload_with_no_signature() throws IOException, UcumException {
         Library library = translatorHelper.translate("FunctionOverloadTest.cql", LibraryBuilder.SignatureLevel.None);
         Context context = new Context(library);
 
@@ -35,7 +35,7 @@ public class CqlFunctionOverloadTest {
     }
 
     @Test
-    public void test_method_overload_with_signature() throws IOException, UcumException {
+    public void test_function_overload_with_signature() throws IOException, UcumException {
         Library library = translatorHelper.translate("FunctionOverloadTest.cql", LibraryBuilder.SignatureLevel.All);
         Context context = new Context(library);
         Object result = context.resolveExpressionRef("TestAnyFunctionWithInteger").getExpression().evaluate(context);

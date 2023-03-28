@@ -1,4 +1,4 @@
-library MethodOverload version '1.0.000'
+library FunctionOverload version '1.0.000'
 
 define function TestAny(a Integer):
   a
