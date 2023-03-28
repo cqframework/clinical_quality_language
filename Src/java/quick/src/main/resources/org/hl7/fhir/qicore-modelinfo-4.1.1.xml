@@ -1908,7 +1908,7 @@
    <typeInfo xsi:type="ClassInfo" baseType="QICore.Extension" namespace="QICore" name="EncounterProcedureExtension" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-encounter-procedure" label="EncounterProcedureExtension" retrievable="false">
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.extension[url='type'].value)" description="type" definition="Whether the procedure was primary or secondary."/>
       <element name="rank" elementType="System.Integer" target="%parent.extension[url='rank'].value.value" description="rank" definition="The ranking of the procedure within the encounter."/>
-      <element name="procedure" elementType="QICore.Reference" target="%parent.extension[url='procedure']" description="procedure" definition="A reference to the procedure that was performed."/>
+      <element name="procedure" elementType="QICore.Reference" target="%parent.extension[url='procedure'].value" description="procedure" definition="A reference to the procedure that was performed."/>
       <element name="url" elementType="System.String" target="%value.value" description="identifies the meaning of the extension" definition="Source of the definition for the extension code - a logical name or a URL." comment="The definition may point directly to a computable or human-readable definition of the extensibility codes, or it may be a logical URI as declared in some other specification. The definition SHALL be a URI for the Structure Definition defining the extension."/>
    </typeInfo>
    <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="QICore" name="EncounterStatus" retrievable="false"/>
