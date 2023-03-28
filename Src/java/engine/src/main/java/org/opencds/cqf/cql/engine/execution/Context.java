@@ -566,7 +566,7 @@ public class Context {
         }
 
         for (var i = 0; i < arguments.size(); i++) {
-            if (arguments.get(i) instanceof NamedTypeSpecifier) {
+            if (arguments.get(i) instanceof TypeSpecifier) {
                 isMatch = isType(resolveType((TypeSpecifier) arguments.get(i)), operands.get(i));
             } else {
                 isMatch = isType(resolveType(arguments.get(i)), operands.get(i));

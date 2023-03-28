@@ -1,8 +1,11 @@
 package org.opencds.cqf.cql.engine.execution;
 
+import org.cqframework.cql.cql2elm.LibraryBuilder;
 import org.cqframework.cql.elm.execution.Library;
+import org.fhir.ucum.UcumException;
 import org.opencds.cqf.cql.engine.exception.CqlException;
 import org.testng.Assert;
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -12,27 +15,28 @@ import static org.hamcrest.Matchers.is;
 
 public class CqlFunctionOverloadTest {
 
+    TranslatorHelper translatorHelper;
+    @BeforeSuite
+    public void init() {
+        translatorHelper = new TranslatorHelper();
+    }
+
     @Test
-    public void test_method_overload_with_no_signature() throws IOException {
-        TranslatorHelper translatorHelper = new TranslatorHelper();
-        Library library = translatorHelper.readLibraryFromInputJson(translatorHelper.readFromInputStream(
-                CqlFunctionOverloadTest.class.getResourceAsStream("functionOverloadSignatureNone.json")));
+    public void test_method_overload_with_no_signature() throws IOException, UcumException {
+        Library library = translatorHelper.translate("FunctionOverloadTest.cql", LibraryBuilder.SignatureLevel.None);
         Context context = new Context(library);
 
         try {
             Object result = context.resolveExpressionRef("TestAnyFunctionWithInteger").getExpression().evaluate(context);
             Assert.fail();
         } catch (CqlException e) {
-            System.out.println(e.getMessage());
             assertThat(e.getMessage().startsWith("Signature not provided for overloaded function 'TestAny'"), is(true));
         }
     }
 
     @Test
-    public void test_method_overload_with_signature() throws IOException {
-        TranslatorHelper translatorHelper = new TranslatorHelper();
-        Library library = translatorHelper.readLibraryFromInputJson(translatorHelper.readFromInputStream(
-                CqlFunctionOverloadTest.class.getResourceAsStream("functionOverloadSignatureOverload.json")));
+    public void test_method_overload_with_signature() throws IOException, UcumException {
+        Library library = translatorHelper.translate("FunctionOverloadTest.cql", LibraryBuilder.SignatureLevel.All);
         Context context = new Context(library);
         Object result = context.resolveExpressionRef("TestAnyFunctionWithInteger").getExpression().evaluate(context);
         assertThat(result, is(1));
