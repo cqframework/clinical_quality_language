@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
@@ -634,10 +635,14 @@ public class Context {
         FunctionDef ret = null;
         validateFunctionOverload(libraryName, name, signature);
 
+        List<Object> types = arguments;
+        if (!signature.isEmpty()) {
+            types = signature.stream().map(e -> (Object) e).collect(Collectors.toList());
+        }
         String mangledFunctionName = getMangledFunctionName(libraryName, name);
         if (functionCache.containsKey(mangledFunctionName)) {
             for (FunctionDesc functionDesc : functionCache.get(mangledFunctionName)) {
-                if ((ret = resolveFunctionDesc(functionDesc, arguments)) != null) {
+                if ((ret = resolveFunctionDesc(functionDesc, types)) != null) {
                     break;
                 }
             }
@@ -651,7 +656,7 @@ public class Context {
                     functionCache.computeIfAbsent(
                         mangledFunctionName, k -> new ArrayList<>()).add(functionDesc);
 
-                    FunctionDef candidate = resolveFunctionDesc(functionDesc, arguments);
+                    FunctionDef candidate = resolveFunctionDesc(functionDesc, types);
                     if (candidate != null) {
                         ret = candidate;
                     }
