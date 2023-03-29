@@ -607,33 +607,13 @@ public class Context {
         return new FunctionDesc(functionDef, operandTypes);
     }
 
-    public boolean isFunctionOverloaded(String libraryName, String name) {
-        String mangledFunctionName = getMangledFunctionName(libraryName, name);
-        if (functionOverloadCache.containsKey(mangledFunctionName)) {
-            return true;
-        }
-        int count = 0;
-        for (ExpressionDef expressionDef : getCurrentLibrary().getStatements().getDef()) {
-            if (expressionDef.getName().equals(name) && expressionDef instanceof FunctionDef) {
-                if (++count > 1) {
-                    functionOverloadCache.put(mangledFunctionName, true);
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     private String getMangledFunctionName(String libraryName, String name) {
         String mangledFunctionName = (libraryName == null ? getCurrentLibrary().getIdentifier().getId() : libraryName) + "." + name;
         return mangledFunctionName;
     }
-
-    private Map<String,Boolean> functionOverloadCache = new HashMap<>();
     private Map<String, List<FunctionDesc>> functionCache = new HashMap<>();
     public FunctionDef resolveFunctionRef(String libraryName, String name, List<Object> arguments, List<TypeSpecifier> signature ) {
         FunctionDef ret = null;
-        validateFunctionOverload(libraryName, name, signature);
 
         List<Object> types = arguments;
         if (!signature.isEmpty()) {
@@ -641,6 +621,7 @@ public class Context {
         }
         String mangledFunctionName = getMangledFunctionName(libraryName, name);
         if (functionCache.containsKey(mangledFunctionName)) {
+            validateFunctionOverload(functionCache.get(mangledFunctionName).size() > 1, name, signature);
             for (FunctionDesc functionDesc : functionCache.get(mangledFunctionName)) {
                 if ((ret = resolveFunctionDesc(functionDesc, types)) != null) {
                     break;
@@ -651,10 +632,12 @@ public class Context {
             for (ExpressionDef expressionDef : getCurrentLibrary().getStatements().getDef()) {
                 if (expressionDef.getName().equals(name) && expressionDef instanceof FunctionDef) {
                     // this logic adds all function defs with a matching name to the cache
-                    var functionDesc = createFunctionDesc((FunctionDef)expressionDef);
+                    var functionDesc = createFunctionDesc((FunctionDef) expressionDef);
 
                     functionCache.computeIfAbsent(
-                        mangledFunctionName, k -> new ArrayList<>()).add(functionDesc);
+                            mangledFunctionName, k -> new ArrayList<>()).add(functionDesc);
+
+                    validateFunctionOverload(functionCache.get(mangledFunctionName).size() > 1, name, signature);
 
                     FunctionDef candidate = resolveFunctionDesc(functionDesc, types);
                     if (candidate != null) {
@@ -677,8 +660,8 @@ public class Context {
                 name, argStr.toString(), getCurrentLibrary().getIdentifier().getId()));
     }
 
-    private void validateFunctionOverload(String libraryName, String name, List<TypeSpecifier> signature) {
-        if (isFunctionOverloaded(libraryName, name) &&
+    private void validateFunctionOverload(Boolean isFunctionOverloaded, String name, List<TypeSpecifier> signature) {
+        if (isFunctionOverloaded &&
                 signature.isEmpty()) {
             throw new CqlException(String.format("Signature not provided for overloaded function '%s' in library '%s'.",
                     name, getCurrentLibrary().getIdentifier().getId()));
