@@ -606,12 +606,16 @@ public class Context {
         return new FunctionDesc(functionDef, operandTypes);
     }
 
-    public boolean isFunctionOverloaded(String name) {
+    public boolean isFunctionOverloaded(String libraryName, String name) {
+        String mangledFunctionName = getMangledFunctionName(libraryName, name);
+        if (functionOverloadCache.containsKey(mangledFunctionName)) {
+            return true;
+        }
         int count = 0;
         for (ExpressionDef expressionDef : getCurrentLibrary().getStatements().getDef()) {
             if (expressionDef.getName().equals(name) && expressionDef instanceof FunctionDef) {
-                count++;
-                if (count > 1) {
+                if (++count > 1) {
+                    functionOverloadCache.put(mangledFunctionName, true);
                     return true;
                 }
             }
@@ -619,10 +623,18 @@ public class Context {
         return false;
     }
 
-    private Map<String, List<FunctionDesc>> functionCache = new HashMap<>();
-    public FunctionDef resolveFunctionRef(String name, List<Object> arguments, String libraryName) {
-        FunctionDef ret = null;
+    private String getMangledFunctionName(String libraryName, String name) {
         String mangledFunctionName = (libraryName == null ? getCurrentLibrary().getIdentifier().getId() : libraryName) + "." + name;
+        return mangledFunctionName;
+    }
+
+    private Map<String,Boolean> functionOverloadCache = new HashMap<>();
+    private Map<String, List<FunctionDesc>> functionCache = new HashMap<>();
+    public FunctionDef resolveFunctionRef(String libraryName, String name, List<Object> arguments, List<TypeSpecifier> signature ) {
+        FunctionDef ret = null;
+        validateFunctionOverload(libraryName, name, signature);
+
+        String mangledFunctionName = getMangledFunctionName(libraryName, name);
         if (functionCache.containsKey(mangledFunctionName)) {
             for (FunctionDesc functionDesc : functionCache.get(mangledFunctionName)) {
                 if ((ret = resolveFunctionDesc(functionDesc, arguments)) != null) {
@@ -658,6 +670,14 @@ public class Context {
 
         throw new CqlException(String.format("Could not resolve call to operator '%s(%s)' in library '%s'.",
                 name, argStr.toString(), getCurrentLibrary().getIdentifier().getId()));
+    }
+
+    private void validateFunctionOverload(String libraryName, String name, List<TypeSpecifier> signature) {
+        if (isFunctionOverloaded(libraryName, name) &&
+                signature.isEmpty()) {
+            throw new CqlException(String.format("Signature not provided for overloaded function '%s' in library '%s'.",
+                    name, getCurrentLibrary().getIdentifier().getId()));
+        }
     }
 
     private ParameterDef resolveParameterRef(String name) {
