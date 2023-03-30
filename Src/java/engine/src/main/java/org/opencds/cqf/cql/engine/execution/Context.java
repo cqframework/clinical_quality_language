@@ -488,6 +488,10 @@ public class Context {
             return null;
         }
 
+        if (value instanceof TypeSpecifier) {
+            return resolveType((TypeSpecifier) value);
+        }
+
         String packageName = value.getClass().getPackage().getName();
 
         // May not be necessary, idea is to sync with the use of List.class for ListTypeSpecifiers in the resolveType above
@@ -567,11 +571,7 @@ public class Context {
         }
 
         for (var i = 0; i < arguments.size(); i++) {
-            if (arguments.get(i) instanceof TypeSpecifier) {
-                isMatch = isType(resolveType((TypeSpecifier) arguments.get(i)), operands.get(i));
-            } else {
-                isMatch = isType(resolveType(arguments.get(i)), operands.get(i));
-            }
+            isMatch = isType(resolveType(arguments.get(i)), operands.get(i));
             if (!isMatch) {
                 break;
             }
@@ -611,7 +611,8 @@ public class Context {
         return (libraryName == null ? getCurrentLibrary().getIdentifier().getId() : libraryName) + "." + name;
     }
     private Map<String, List<FunctionDesc>> functionCache = new HashMap<>();
-    public FunctionDef resolveFunctionRef(String libraryName, String name, List<Object> arguments, List<TypeSpecifier> signature ) {
+
+    public FunctionDef resolveFunctionRef(String libraryName, String name, List<Object> arguments, List<TypeSpecifier> signature) {
         FunctionDef ret;
 
         List<Object> types = arguments;
@@ -620,7 +621,7 @@ public class Context {
         }
         String mangledFunctionName = getMangledFunctionName(libraryName, name);
         if (functionCache.containsKey(mangledFunctionName)) {
-            ret = getResolvedFunctionDesc(mangledFunctionName, name, types, signature);
+            ret = getResolvedFunctionDesc(mangledFunctionName, name, types, signature.isEmpty());
         } else {
             for (ExpressionDef expressionDef : getCurrentLibrary().getStatements().getDef()) {
                 if (expressionDef.getName().equals(name) && expressionDef instanceof FunctionDef) {
@@ -631,7 +632,7 @@ public class Context {
                             mangledFunctionName, k -> new ArrayList<>()).add(functionDesc);
                 }
             }
-            ret = getResolvedFunctionDesc(mangledFunctionName, name, types, signature);
+            ret = getResolvedFunctionDesc(mangledFunctionName, name, types, signature.isEmpty());
         }
 
         if (ret != null) {
@@ -642,9 +643,9 @@ public class Context {
                 name, getUnresolvedMessage(types, name), getCurrentLibrary().getIdentifier().getId()));
     }
 
-    private FunctionDef getResolvedFunctionDesc(String mangledFunctionName, String name, List<Object> types, List<TypeSpecifier> signature) {
+    private FunctionDef getResolvedFunctionDesc(String mangledFunctionName, String name, List<Object> types, boolean emptySignature) {
         FunctionDef ret = null;
-        validateFunctionOverload(functionCache.get(mangledFunctionName).size() > 1, name, signature);
+        validateFunctionOverload(functionCache.get(mangledFunctionName).size() > 1, name, emptySignature);
         for (FunctionDesc functionDesc : functionCache.get(mangledFunctionName)) {
             if ((ret = resolveFunctionDesc(functionDesc, types)) != null) {
                 break;
@@ -653,9 +654,8 @@ public class Context {
         return ret;
     }
 
-    private void validateFunctionOverload(Boolean isFunctionOverloaded, String name, List<TypeSpecifier> signature) {
-        if (isFunctionOverloaded &&
-                signature.isEmpty()) {
+    private void validateFunctionOverload(Boolean isFunctionOverloaded, String name, boolean emptySignature) {
+        if (isFunctionOverloaded && emptySignature) {
             throw new CqlException(String.format("Signature not provided for overloaded function '%s' in library '%s'.",
                     name, getCurrentLibrary().getIdentifier().getId()));
         }
