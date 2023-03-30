@@ -608,12 +608,11 @@ public class Context {
     }
 
     private String getMangledFunctionName(String libraryName, String name) {
-        String mangledFunctionName = (libraryName == null ? getCurrentLibrary().getIdentifier().getId() : libraryName) + "." + name;
-        return mangledFunctionName;
+        return (libraryName == null ? getCurrentLibrary().getIdentifier().getId() : libraryName) + "." + name;
     }
     private Map<String, List<FunctionDesc>> functionCache = new HashMap<>();
     public FunctionDef resolveFunctionRef(String libraryName, String name, List<Object> arguments, List<TypeSpecifier> signature ) {
-        FunctionDef ret = null;
+        FunctionDef ret;
 
         List<Object> types = arguments;
         if (!signature.isEmpty()) {
@@ -621,14 +620,8 @@ public class Context {
         }
         String mangledFunctionName = getMangledFunctionName(libraryName, name);
         if (functionCache.containsKey(mangledFunctionName)) {
-            validateFunctionOverload(functionCache.get(mangledFunctionName).size() > 1, name, signature);
-            for (FunctionDesc functionDesc : functionCache.get(mangledFunctionName)) {
-                if ((ret = resolveFunctionDesc(functionDesc, types)) != null) {
-                    break;
-                }
-            }
-        }
-        else {
+            ret = getResolvedFunctionDesc(mangledFunctionName, name, types, signature);
+        } else {
             for (ExpressionDef expressionDef : getCurrentLibrary().getStatements().getDef()) {
                 if (expressionDef.getName().equals(name) && expressionDef instanceof FunctionDef) {
                     // this logic adds all function defs with a matching name to the cache
@@ -636,15 +629,9 @@ public class Context {
 
                     functionCache.computeIfAbsent(
                             mangledFunctionName, k -> new ArrayList<>()).add(functionDesc);
-
-                    FunctionDef candidate = resolveFunctionDesc(functionDesc, types);
-                    if (candidate != null) {
-                        ret = candidate;
-                    }
                 }
             }
-            //it is safe to have cache complete even though the exception case may be identified before the loop complete
-            validateFunctionOverload(functionCache.get(mangledFunctionName).size() > 1, name, signature);
+            ret = getResolvedFunctionDesc(mangledFunctionName, name, types, signature);
         }
 
         if (ret != null) {
@@ -658,6 +645,17 @@ public class Context {
 
         throw new CqlException(String.format("Could not resolve call to operator '%s(%s)' in library '%s'.",
                 name, argStr.toString(), getCurrentLibrary().getIdentifier().getId()));
+    }
+
+    private FunctionDef getResolvedFunctionDesc(String mangledFunctionName, String name, List<Object> types, List<TypeSpecifier> signature) {
+        FunctionDef ret = null;
+        validateFunctionOverload(functionCache.get(mangledFunctionName).size() > 1, name, signature);
+        for (FunctionDesc functionDesc : functionCache.get(mangledFunctionName)) {
+            if ((ret = resolveFunctionDesc(functionDesc, types)) != null) {
+                break;
+            }
+        }
+        return ret;
     }
 
     private void validateFunctionOverload(Boolean isFunctionOverloaded, String name, List<TypeSpecifier> signature) {
