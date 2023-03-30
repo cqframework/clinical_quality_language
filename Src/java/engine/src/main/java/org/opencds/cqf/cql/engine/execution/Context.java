@@ -638,13 +638,8 @@ public class Context {
             return ret;
         }
 
-        StringBuilder argStr = new StringBuilder();
-        if( arguments != null ) {
-            arguments.forEach( a -> argStr.append( (argStr.length() > 0) ? ", " : "" ).append( resolveType(a).getName() ) );
-        }
-
         throw new CqlException(String.format("Could not resolve call to operator '%s(%s)' in library '%s'.",
-                name, argStr.toString(), getCurrentLibrary().getIdentifier().getId()));
+                name, getUnresolvedMessage(types, name), getCurrentLibrary().getIdentifier().getId()));
     }
 
     private FunctionDef getResolvedFunctionDesc(String mangledFunctionName, String name, List<Object> types, List<TypeSpecifier> signature) {
@@ -664,6 +659,15 @@ public class Context {
             throw new CqlException(String.format("Signature not provided for overloaded function '%s' in library '%s'.",
                     name, getCurrentLibrary().getIdentifier().getId()));
         }
+    }
+
+    private String getUnresolvedMessage(List<Object> arguments, String name) {
+        StringBuilder argStr = new StringBuilder();
+        if (arguments != null) {
+            arguments.forEach(a -> argStr.append((argStr.length() > 0) ? ", " : "").append(resolveType(a).getName()));
+        }
+
+        return argStr.toString();
     }
 
     private ParameterDef resolveParameterRef(String name) {
