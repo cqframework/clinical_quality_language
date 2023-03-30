@@ -278,4 +278,46 @@ public class BaseTest {
         assertThat(p.getPath(), equalTo("value"));
         assertThat(p.getScope(), equalTo("PapTest"));
     }
+
+    @Test
+    public void TestChoiceUnion() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("qicore/v411/TestChoiceUnion.cql", 0);
+        Library library = translator.toELM();
+        Map<String, ExpressionDef> defs = new HashMap<>();
+
+        if (library.getStatements() != null) {
+            for (ExpressionDef def : library.getStatements().getDef()) {
+                defs.put(def.getName(), def);
+            }
+        }
+
+        ExpressionDef def = defs.get("Union of Different Types");
+        assertThat(def, notNullValue());
+        assertThat(def.getExpression(), instanceOf(Query.class));
+        Query q = (Query)def.getExpression();
+        assertThat(q.getReturn(), notNullValue());
+        assertThat(q.getReturn().getExpression(), instanceOf(Tuple.class));
+        Tuple t = (Tuple)q.getReturn().getExpression();
+        assertThat(t.getElement(), notNullValue());
+        assertThat(t.getElement().size(), is(2));
+        TupleElement t0 = t.getElement().get(0);
+        TupleElement t1 = t.getElement().get(1);
+        assertThat(t0.getName(), is("performed"));
+        assertThat(t0.getValue(), instanceOf(FunctionRef.class));
+        FunctionRef fr = (FunctionRef)t0.getValue();
+        assertThat(fr.getName(), is("ToValue"));
+        assertThat(fr.getOperand().size(), is(1));
+        assertThat(fr.getOperand().get(0), instanceOf(Property.class));
+        Property p = (Property)fr.getOperand().get(0);
+        assertThat(p.getPath(), is("performed"));
+        assertThat(p.getScope(), is("R"));
+        assertThat(t1.getName(), is("authoredOn"));
+        assertThat(t1.getValue(), instanceOf(Property.class));
+        p = (Property)t1.getValue();
+        assertThat(p.getPath(), is("value"));
+        assertThat(p.getSource(), instanceOf(Property.class));
+        p = (Property)p.getSource();
+        assertThat(p.getPath(), is("authoredOn"));
+        assertThat(p.getScope(), is("R"));
+    }
 }
