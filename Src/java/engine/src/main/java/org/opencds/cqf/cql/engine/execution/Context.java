@@ -637,14 +637,14 @@ public class Context {
                     functionCache.computeIfAbsent(
                             mangledFunctionName, k -> new ArrayList<>()).add(functionDesc);
 
-                    validateFunctionOverload(functionCache.get(mangledFunctionName).size() > 1, name, signature);
-
                     FunctionDef candidate = resolveFunctionDesc(functionDesc, types);
                     if (candidate != null) {
                         ret = candidate;
                     }
                 }
             }
+            //it is safe to have cache complete even though the exception case may be identified before the loop complete
+            validateFunctionOverload(functionCache.get(mangledFunctionName).size() > 1, name, signature);
         }
 
         if (ret != null) {
