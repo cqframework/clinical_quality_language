@@ -44,7 +44,7 @@ public class TranslatorHelper {
             UcumEssenceService.class.getResourceAsStream("/ucum-essence.xml"));
 
         CqlTranslator translator = CqlTranslator.fromText(cql, modelManager, getLibraryManager(), ucumService,
-            options.toArray(new CqlTranslatorOptions.Options[options.size()]));
+           CqlCompilerException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.All, options.toArray(new CqlTranslatorOptions.Options[options.size()]));
         if (translator.getErrors().size() > 0) {
             ArrayList<String> errors = new ArrayList<>();
             for (CqlCompilerException error : translator.getErrors()) {

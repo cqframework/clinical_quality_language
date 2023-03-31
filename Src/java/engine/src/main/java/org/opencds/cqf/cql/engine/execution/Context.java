@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
@@ -487,6 +488,10 @@ public class Context {
             return null;
         }
 
+        if (value instanceof TypeSpecifier) {
+            return resolveType((TypeSpecifier) value);
+        }
+
         String packageName = value.getClass().getPackage().getName();
 
         // May not be necessary, idea is to sync with the use of List.class for ListTypeSpecifiers in the resolveType above
@@ -602,45 +607,67 @@ public class Context {
         return new FunctionDesc(functionDef, operandTypes);
     }
 
+    private String getMangledFunctionName(String libraryName, String name) {
+        return (libraryName == null ? getCurrentLibrary().getIdentifier().getId() : libraryName) + "." + name;
+    }
     private Map<String, List<FunctionDesc>> functionCache = new HashMap<>();
-    public FunctionDef resolveFunctionRef(String name, List<Object> arguments, String libraryName) {
-        FunctionDef ret = null;
-        String mangledFunctionName = (libraryName == null ? getCurrentLibrary().getIdentifier().getId() : libraryName) + "." + name;
-        if (functionCache.containsKey(mangledFunctionName)) {
-            for (FunctionDesc functionDesc : functionCache.get(mangledFunctionName)) {
-                if ((ret = resolveFunctionDesc(functionDesc, arguments)) != null) {
-                    break;
-                }
-            }
+
+    public FunctionDef resolveFunctionRef(String libraryName, String name, List<Object> arguments, List<TypeSpecifier> signature) {
+        FunctionDef ret;
+
+        List<Object> types = arguments;
+        if (!signature.isEmpty()) {
+            types = signature.stream().map(e -> (Object) e).collect(Collectors.toList());
         }
-        else {
+        String mangledFunctionName = getMangledFunctionName(libraryName, name);
+        if (functionCache.containsKey(mangledFunctionName)) {
+            ret = getResolvedFunctionDesc(mangledFunctionName, name, types, signature.isEmpty());
+        } else {
             for (ExpressionDef expressionDef : getCurrentLibrary().getStatements().getDef()) {
                 if (expressionDef.getName().equals(name) && expressionDef instanceof FunctionDef) {
                     // this logic adds all function defs with a matching name to the cache
-                    var functionDesc = createFunctionDesc((FunctionDef)expressionDef);
+                    var functionDesc = createFunctionDesc((FunctionDef) expressionDef);
 
                     functionCache.computeIfAbsent(
-                        mangledFunctionName, k -> new ArrayList<>()).add(functionDesc);
-
-                    FunctionDef candidate = resolveFunctionDesc(functionDesc, arguments);
-                    if (candidate != null) {
-                        ret = candidate;
-                    }
+                            mangledFunctionName, k -> new ArrayList<>()).add(functionDesc);
                 }
             }
+            ret = getResolvedFunctionDesc(mangledFunctionName, name, types, signature.isEmpty());
         }
 
         if (ret != null) {
             return ret;
         }
 
+        throw new CqlException(String.format("Could not resolve call to operator '%s(%s)' in library '%s'.",
+                name, getUnresolvedMessage(types, name), getCurrentLibrary().getIdentifier().getId()));
+    }
+
+    private FunctionDef getResolvedFunctionDesc(String mangledFunctionName, String name, List<Object> types, boolean emptySignature) {
+        FunctionDef ret = null;
+        validateFunctionOverload(functionCache.get(mangledFunctionName).size() > 1, name, emptySignature);
+        for (FunctionDesc functionDesc : functionCache.get(mangledFunctionName)) {
+            if ((ret = resolveFunctionDesc(functionDesc, types)) != null) {
+                break;
+            }
+        }
+        return ret;
+    }
+
+    private void validateFunctionOverload(Boolean isFunctionOverloaded, String name, boolean emptySignature) {
+        if (isFunctionOverloaded && emptySignature) {
+            throw new CqlException(String.format("Signature not provided for overloaded function '%s' in library '%s'.",
+                    name, getCurrentLibrary().getIdentifier().getId()));
+        }
+    }
+
+    private String getUnresolvedMessage(List<Object> arguments, String name) {
         StringBuilder argStr = new StringBuilder();
-        if( arguments != null ) {
-            arguments.forEach( a -> argStr.append( (argStr.length() > 0) ? ", " : "" ).append( resolveType(a).getName() ) );
+        if (arguments != null) {
+            arguments.forEach(a -> argStr.append((argStr.length() > 0) ? ", " : "").append(resolveType(a).getName()));
         }
 
-        throw new CqlException(String.format("Could not resolve call to operator '%s(%s)' in library '%s'.",
-                name, argStr.toString(), getCurrentLibrary().getIdentifier().getId()));
+        return argStr.toString();
     }
 
     private ParameterDef resolveParameterRef(String name) {

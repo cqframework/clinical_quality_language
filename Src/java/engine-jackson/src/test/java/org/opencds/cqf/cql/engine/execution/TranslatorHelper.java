@@ -3,7 +3,10 @@ package org.opencds.cqf.cql.engine.execution;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.URLDecoder;
@@ -11,6 +14,8 @@ import java.util.ArrayList;
 
 import org.cqframework.cql.cql2elm.CqlCompilerException;
 import org.cqframework.cql.cql2elm.CqlTranslator;
+import org.cqframework.cql.cql2elm.CqlTranslatorOptions;
+import org.cqframework.cql.cql2elm.LibraryBuilder;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.ModelManager;
 import org.cqframework.cql.elm.execution.Library;
@@ -22,14 +27,16 @@ import org.opencds.cqf.cql.engine.serializing.jackson.JsonCqlLibraryReader;
 
 public class TranslatorHelper {
 
-    public Library translate(String file) throws UcumException, IOException {
+    public Library translate(String file, LibraryBuilder.SignatureLevel signatureLevel) throws UcumException, IOException {
+        ArrayList<CqlTranslatorOptions.Options> options = new ArrayList<>();
         ModelManager modelManager = new ModelManager();
         LibraryManager libraryManager = new LibraryManager(modelManager);
         UcumService ucumService = new UcumEssenceService(UcumEssenceService.class.getResourceAsStream("/ucum-essence.xml"));
 
         File cqlFile = new File(URLDecoder.decode(CqlErrorSuiteTest.class.getResource(file).getFile(), "UTF-8"));
 
-        CqlTranslator translator = CqlTranslator.fromFile(cqlFile, modelManager, libraryManager, ucumService);
+        CqlTranslator translator = CqlTranslator.fromFile(cqlFile, modelManager, libraryManager, ucumService,
+                CqlCompilerException.ErrorSeverity.Info, signatureLevel, options.toArray(new CqlTranslatorOptions.Options[options.size()]));
 
         if (translator.getErrors().size() > 0) {
             System.err.println("Translation failed due to errors:");
@@ -49,5 +56,22 @@ public class TranslatorHelper {
         String json = translator.toJson();
 
         return new JsonCqlLibraryReader().read(new StringReader(json));
+    }
+
+    public Library readLibraryFromInputJson(String jsonLibrary) throws IOException {
+        return new JsonCqlLibraryReader().read(new StringReader(jsonLibrary));
+    }
+
+    public String readFromInputStream(InputStream inputStream)
+            throws IOException {
+        StringBuilder stringBuilder = new StringBuilder();
+        try (BufferedReader br
+                     = new BufferedReader(new InputStreamReader(inputStream))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                stringBuilder.append(line).append("\n");
+            }
+        }
+        return stringBuilder.toString();
     }
 }
