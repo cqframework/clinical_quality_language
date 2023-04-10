@@ -133,22 +133,22 @@ FHIR dependencies
 configure(subprojects.findAll {it.name in ['cqf-fhir', 'elm-fhir', 'cqf-fhir-npm', 'engine-fhir']}) {
     dependencies {
         // fhir core dependencies
-        implementation group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.r5', version: '5.6.36'
-        implementation group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.convertors', version: '5.6.36'
-        implementation group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.utilities', version: '5.6.36'
+        implementation group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.r5', version: '5.6.68'
+        implementation group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.convertors', version: '5.6.68'
+        implementation group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.utilities', version: '5.6.68'
 
         // HAPI base
-        implementation group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-base', version: '6.0.1'
-        implementation group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-converter', version: '6.0.1'
+        implementation group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-base', version: '6.2.2'
+        implementation group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-converter', version: '6.2.2'
 
         // FHIR STU3
-        implementation group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-structures-dstu3', version: '6.0.1'
+        implementation group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-structures-dstu3', version: '6.2.2'
 
         // FHIR r4
-        implementation group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-structures-r4', version: '6.0.1'
+        implementation group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-structures-r4', version: '6.2.2'
 
         // FHIR r5
-        implementation group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-structures-r5', version: '6.0.1'
+        implementation group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-structures-r5', version: '6.2.2'
     }
 }
 

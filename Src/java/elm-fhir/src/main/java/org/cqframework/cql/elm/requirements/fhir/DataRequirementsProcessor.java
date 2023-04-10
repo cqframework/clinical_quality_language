@@ -457,7 +457,7 @@ public class DataRequirementsProcessor {
 
     private ParameterDefinition toParameterDefinition(VersionedIdentifier libraryIdentifier, ParameterDef def) {
         AtomicBoolean isList = new AtomicBoolean(false);
-        Enumerations.FHIRAllTypes typeCode = Enumerations.FHIRAllTypes.fromCode(toFHIRParameterTypeCode(def.getResultType(), def.getName(), isList));
+        Enumerations.FHIRTypes typeCode = Enumerations.FHIRTypes.fromCode(toFHIRParameterTypeCode(def.getResultType(), def.getName(), isList));
 
         return new ParameterDefinition()
                 .setName(def.getName())
@@ -469,9 +469,9 @@ public class DataRequirementsProcessor {
 
     private ParameterDefinition toOutputParameterDefinition(VersionedIdentifier libraryIdentifier, ExpressionDef def) {
         AtomicBoolean isList = new AtomicBoolean(false);
-        Enumerations.FHIRAllTypes typeCode = null;
+        Enumerations.FHIRTypes typeCode = null;
         try{
-                typeCode = Enumerations.FHIRAllTypes.fromCode(
+                typeCode = Enumerations.FHIRTypes.fromCode(
                         toFHIRResultTypeCode(def.getResultType(), def.getName(), isList));
         }catch(org.hl7.fhir.exceptions.FHIRException fhirException){
             validationMessages.add(new ValidationMessage(ValidationMessage.Source.Publisher, ValidationMessage.IssueType.NOTSUPPORTED, "CQL Library Packaging",
@@ -506,7 +506,7 @@ public class DataRequirementsProcessor {
         if (!isValid.get()) {
             // Issue a warning that the parameter type is not supported
             validationMessages.add(new ValidationMessage(ValidationMessage.Source.Publisher, ValidationMessage.IssueType.NOTSUPPORTED, "CQL Library Packaging",
-                    String.format("Parameter type %s of parameter %s is not supported; reported as FHIR.Any", dataType.toLabel(), parameterName), ValidationMessage.IssueSeverity.WARNING));
+                    String.format("Parameter type %s of parameter %s is not supported; reported as FHIR.Base", dataType.toLabel(), parameterName), ValidationMessage.IssueSeverity.WARNING));
         }
 
         return resultCode;
@@ -535,7 +535,7 @@ public class DataRequirementsProcessor {
                 case "System.String": return "string";
                 case "System.Quantity": return "Quantity";
                 case "System.Ratio": return "Ratio";
-                case "System.Any": return "Any";
+                case "System.Any": return "Base";
                 case "System.Code": return "Coding";
                 case "System.Concept": return "CodeableConcept";
             }
@@ -556,7 +556,7 @@ public class DataRequirementsProcessor {
         }
 
         isValid.set(false);
-        return "Any";
+        return "Base";
     }
 
     /**
@@ -691,7 +691,7 @@ public class DataRequirementsProcessor {
             ElmPertinenceContext pertinenceContext) {
         org.hl7.fhir.r5.model.DataRequirement dr = new org.hl7.fhir.r5.model.DataRequirement();
         try {
-            dr.setType(org.hl7.fhir.r5.model.Enumerations.FHIRAllTypes.fromCode(retrieve.getDataType().getLocalPart()));
+            dr.setType(org.hl7.fhir.r5.model.Enumerations.FHIRTypes.fromCode(retrieve.getDataType().getLocalPart()));
         }
         catch(org.hl7.fhir.exceptions.FHIRException fhirException) {
             validationMessages.add(new ValidationMessage(ValidationMessage.Source.Publisher, ValidationMessage.IssueType.NOTSUPPORTED, "CQL Library Packaging",
