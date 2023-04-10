@@ -125,7 +125,7 @@
     "use": "out",
     "min": 0,
     "max": "*",
-    "type": "Base"
+    "type": "Any"
   }, {
     "name": "SDE Race",
     "use": "out",
