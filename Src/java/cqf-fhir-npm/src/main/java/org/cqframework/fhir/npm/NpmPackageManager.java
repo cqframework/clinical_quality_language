@@ -21,19 +21,30 @@ public class NpmPackageManager implements IWorkerContext.ILoggingService {
    private final List<NpmPackage> npmList;
 
    public NpmPackageManager(ImplementationGuide sourceIg) {
+      this(sourceIg, null, null);
+   }
+
+   public NpmPackageManager(ImplementationGuide sourceIg, FilesystemPackageCacheManager fspcm) {
+      this(sourceIg, fspcm, null);
+   }
+
+   public NpmPackageManager(ImplementationGuide sourceIg, FilesystemPackageCacheManager fspcm, List<NpmPackage> npmList) {
       this.sourceIg = sourceIg;
 
-      try {
-         // userMode indicates whether the packageCache is within the working directory or in the user home
-         fspcm = new FilesystemPackageCacheManager(true, ToolsVersion.TOOLS_VERSION);
-      }
-      catch (IOException e) {
-         String message = "Error creating the FilesystemPackageCacheManager: " + e.getMessage();
-         logErrorMessage(message);
-         throw new NpmPackageManagerException(message, e);
+      if (fspcm == null) {
+         try {
+            // userMode indicates whether the packageCache is within the working directory or in the user home
+            this.fspcm = new FilesystemPackageCacheManager(true, ToolsVersion.TOOLS_VERSION);
+         } catch (IOException e) {
+            String message = "Error creating the FilesystemPackageCacheManager: " + e.getMessage();
+            logErrorMessage(message);
+            throw new NpmPackageManagerException(message, e);
+         }
+      } else {
+         this.fspcm = fspcm;
       }
 
-      npmList = new ArrayList<>();
+      this.npmList = npmList == null ? new ArrayList<>() : npmList;
 
       try {
          loadDependencies();
