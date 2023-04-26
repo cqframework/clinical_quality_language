@@ -619,21 +619,7 @@ public class Context {
         if (!signature.isEmpty()) {
             types = signature.stream().map(e -> (Object) e).collect(Collectors.toList());
         }
-        String mangledFunctionName = getMangledFunctionName(libraryName, name);
-        if (functionCache.containsKey(mangledFunctionName)) {
-            ret = getResolvedFunctionDesc(mangledFunctionName, name, types, signature.isEmpty());
-        } else {
-            for (ExpressionDef expressionDef : getCurrentLibrary().getStatements().getDef()) {
-                if (expressionDef.getName().equals(name) && expressionDef instanceof FunctionDef) {
-                    // this logic adds all function defs with a matching name to the cache
-                    var functionDesc = createFunctionDesc((FunctionDef) expressionDef);
-
-                    functionCache.computeIfAbsent(
-                            mangledFunctionName, k -> new ArrayList<>()).add(functionDesc);
-                }
-            }
-            ret = getResolvedFunctionDesc(mangledFunctionName, name, types, signature.isEmpty());
-        }
+        ret = getResolvedFunctionDesc(libraryName, name, types, !arguments.isEmpty(), !signature.isEmpty());
 
         if (ret != null) {
             return ret;
@@ -643,10 +629,16 @@ public class Context {
                 name, getUnresolvedMessage(types, name), getCurrentLibrary().getIdentifier().getId()));
     }
 
-    private FunctionDef getResolvedFunctionDesc(String mangledFunctionName, String name, List<Object> types, boolean emptySignature) {
+    private FunctionDef getResolvedFunctionDesc(String libraryName, String name, List<Object> types, boolean hasArguments, boolean hasSignature) {
+        String mangledFunctionName = getMangledFunctionName(libraryName, name);
+        List<FunctionDesc> descriptions = this.functionCache.computeIfAbsent(mangledFunctionName, x -> this.buildDescriptions(name));
+
+        if (descriptions.size() > 1 && (hasArguments && !hasSignature)) {
+            throw new CqlException(String.format("Signature not provided for overloaded function '%s'", mangledFunctionName));
+        }
+
         FunctionDef ret = null;
-        validateFunctionOverload(functionCache.get(mangledFunctionName).size() > 1, name, emptySignature);
-        for (FunctionDesc functionDesc : functionCache.get(mangledFunctionName)) {
+        for (FunctionDesc functionDesc : descriptions) {
             if ((ret = resolveFunctionDesc(functionDesc, types)) != null) {
                 break;
             }
@@ -654,11 +646,15 @@ public class Context {
         return ret;
     }
 
-    private void validateFunctionOverload(Boolean isFunctionOverloaded, String name, boolean emptySignature) {
-        if (isFunctionOverloaded && emptySignature) {
-            throw new CqlException(String.format("Signature not provided for overloaded function '%s' in library '%s'.",
-                    name, getCurrentLibrary().getIdentifier().getId()));
+    private List<FunctionDesc> buildDescriptions(String name) {
+        List<FunctionDesc> descriptions = new ArrayList<>();
+        for (ExpressionDef expressionDef : getCurrentLibrary().getStatements().getDef()) {
+            if (expressionDef.getName().equals(name) && expressionDef instanceof FunctionDef) {
+                descriptions.add(createFunctionDesc((FunctionDef) expressionDef));
+            }
         }
+
+        return descriptions;
     }
 
     private String getUnresolvedMessage(List<Object> arguments, String name) {
