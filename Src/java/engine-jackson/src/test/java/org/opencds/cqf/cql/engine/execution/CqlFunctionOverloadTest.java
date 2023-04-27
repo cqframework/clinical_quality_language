@@ -35,6 +35,9 @@ public class CqlFunctionOverloadTest {
 
         var result = context.resolveExpressionRef("TestAnyFunctionWithNoArgs").getExpression().evaluate(context);
         assertThat(result, is("any"));
+
+        result = context.resolveExpressionRef("TestAnyFunctionWith2Args").getExpression().evaluate(context);
+        assertThat(result, is(3));
     }
 
     @Test

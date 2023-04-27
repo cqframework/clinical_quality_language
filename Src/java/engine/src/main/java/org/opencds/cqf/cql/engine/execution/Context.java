@@ -6,6 +6,7 @@ import static org.opencds.cqf.cql.engine.execution.NamespaceHelper.getUriPart;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -14,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.xml.namespace.QName;
 
@@ -51,6 +53,7 @@ import org.opencds.cqf.cql.engine.runtime.Tuple;
 import org.opencds.cqf.cql.engine.terminology.TerminologyProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.CDATASection;
 
 /**
  * NOTE: This class is thread-affine; it uses thread local storage to allow statics throughout the code base to access
@@ -560,66 +563,38 @@ public class Context {
         return argumentType == null || operandType.isAssignableFrom(argumentType);
     }
 
-    private FunctionDef resolveFunctionDesc(FunctionDesc functionDesc, List<Object> arguments) {
+    private boolean matchesTypes(FunctionDef functionDef, List<? extends Object> arguments) {
         boolean isMatch = true;
 
-        var operands = functionDesc.operandTypes();
+        var operands = functionDef.getOperand();
 
         // if argument length is mismatched, don't compare
         if (arguments.size() != operands.size()) {
-            return null;
+            return false;
         }
 
         for (var i = 0; i < arguments.size(); i++) {
-            isMatch = isType(resolveType(arguments.get(i)), operands.get(i));
+            isMatch = isType(resolveType(arguments.get(i)), this.resolveOperandType(operands.get(i)));
             if (!isMatch) {
                 break;
             }
         }
 
-        return isMatch ? functionDesc.functionDef() : null;
-    }
-
-    static class FunctionDesc {
-        public FunctionDesc(FunctionDef functionDef, List<Class<?>> operandTypes) {
-            this.functionDef = functionDef;
-            this.operandTypes = operandTypes;
-        }
-
-        private FunctionDef functionDef;
-        private List<Class<?>> operandTypes;
-
-        public FunctionDef functionDef() {
-            return this.functionDef;
-        }
-
-        public List<Class<?>> operandTypes() {
-            return this.operandTypes;
-        }
-    }
-
-    private FunctionDesc createFunctionDesc(FunctionDef functionDef) {
-        var operandTypes = new ArrayList<Class<?>>(functionDef.getOperand().size());
-        for (var op : functionDef.getOperand()) {
-            operandTypes.add(this.resolveOperandType(op));
-        }
-
-        return new FunctionDesc(functionDef, operandTypes);
+        return isMatch;
     }
 
     private String getMangledFunctionName(String libraryName, String name) {
         return (libraryName == null ? getCurrentLibrary().getIdentifier().getId() : libraryName) + "." + name;
     }
-    private Map<String, List<FunctionDesc>> functionCache = new HashMap<>();
 
-    public FunctionDef resolveFunctionRef(String libraryName, String name, List<Object> arguments, List<TypeSpecifier> signature) {
+    private Map<String, List<FunctionDef>> functionDefsByMangledName = new HashMap<>();
+
+    public FunctionDef resolveFunctionRef(final String libraryName, final String name, final List<Object> arguments, final List<TypeSpecifier> signature) {
         FunctionDef ret;
 
-        List<Object> types = arguments;
-        if (!signature.isEmpty()) {
-            types = signature.stream().map(e -> (Object) e).collect(Collectors.toList());
-        }
-        ret = getResolvedFunctionDesc(libraryName, name, types, !arguments.isEmpty(), !signature.isEmpty());
+        final List<? extends Object> types = signature.isEmpty() ? arguments : signature;
+
+        ret = getResolvedFunctionDef(libraryName, name, types, !signature.isEmpty());
 
         if (ret != null) {
             return ret;
@@ -629,35 +604,41 @@ public class Context {
                 name, getUnresolvedMessage(types, name), getCurrentLibrary().getIdentifier().getId()));
     }
 
-    private FunctionDef getResolvedFunctionDesc(String libraryName, String name, List<Object> types, boolean hasArguments, boolean hasSignature) {
+    private FunctionDef getResolvedFunctionDef(final String libraryName, final String name, final List<? extends Object> types, final boolean hasSignature) {
         String mangledFunctionName = getMangledFunctionName(libraryName, name);
-        List<FunctionDesc> descriptions = this.functionCache.computeIfAbsent(mangledFunctionName, x -> this.buildDescriptions(name));
+        List<FunctionDef> namedDefs = this.functionDefsByMangledName
+            .computeIfAbsent(mangledFunctionName, x -> this.getFunctionDefs(name));
 
-        if (descriptions.size() > 1 && (hasArguments && !hasSignature)) {
+        var candidateDefs = namedDefs
+            .stream()
+            .filter(x -> x.getOperand().size() == types.size())
+            .collect(Collectors.toList());
+
+        if (candidateDefs.size() == 1) {
+            return candidateDefs.get(0);
+        }
+
+        if (candidateDefs.size() > 1 && !hasSignature) {
             throw new CqlException(String.format("Signature not provided for overloaded function '%s'", mangledFunctionName));
         }
 
-        FunctionDef ret = null;
-        for (FunctionDesc functionDesc : descriptions) {
-            if ((ret = resolveFunctionDesc(functionDesc, types)) != null) {
-                break;
-            }
-        }
-        return ret;
+        return candidateDefs.stream().filter(x -> matchesTypes(x, types)).findFirst().orElse(null);
     }
 
-    private List<FunctionDesc> buildDescriptions(String name) {
-        List<FunctionDesc> descriptions = new ArrayList<>();
-        for (ExpressionDef expressionDef : getCurrentLibrary().getStatements().getDef()) {
-            if (expressionDef.getName().equals(name) && expressionDef instanceof FunctionDef) {
-                descriptions.add(createFunctionDesc((FunctionDef) expressionDef));
-            }
+    private List<FunctionDef> getFunctionDefs(final String name) {
+        final var statements = getCurrentLibrary().getStatements();
+        if (statements == null) {
+            return Collections.emptyList();
         }
 
-        return descriptions;
+        return statements.getDef().stream()
+                .filter(x -> x.getName().equals(name))
+                .filter(FunctionDef.class::isInstance)
+                .map(FunctionDef.class::cast)
+                .collect(Collectors.toList());
     }
 
-    private String getUnresolvedMessage(List<Object> arguments, String name) {
+    private String getUnresolvedMessage(List<? extends Object> arguments, String name) {
         StringBuilder argStr = new StringBuilder();
         if (arguments != null) {
             arguments.forEach(a -> argStr.append((argStr.length() > 0) ? ", " : "").append(resolveType(a).getName()));

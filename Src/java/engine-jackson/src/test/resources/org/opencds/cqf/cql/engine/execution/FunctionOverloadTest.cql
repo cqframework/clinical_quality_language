@@ -12,6 +12,10 @@ define function TestAny(c Decimal):
 define function TestAny():
   'any'
 
+define function TestAny(a Integer, b Integer):
+  a + b
+
+
 define TestAnyFunctionWithInteger:
   TestAny(1)
 
@@ -23,3 +27,6 @@ define TestAnyFunctionWithDecimal:
 
 define TestAnyFunctionWithNoArgs:
   TestAny()
+
+  define TestAnyFunctionWith2Args:
+  TestAny(1, 2)
