@@ -27,11 +27,14 @@ public class CqlFunctionOverloadTest {
         Context context = new Context(library);
 
         try {
-            Object result = context.resolveExpressionRef("TestAnyFunctionWithInteger").getExpression().evaluate(context);
+            context.resolveExpressionRef("TestAnyFunctionWithInteger").getExpression().evaluate(context);
             Assert.fail();
         } catch (CqlException e) {
-            assertThat(e.getMessage().startsWith("Signature not provided for overloaded function 'TestAny'"), is(true));
+            assertThat(e.getMessage().startsWith("Signature not provided for overloaded function 'FunctionOverload.TestAny'"), is(true));
         }
+
+        var result = context.resolveExpressionRef("TestAnyFunctionWithNoArgs").getExpression().evaluate(context);
+        assertThat(result, is("any"));
     }
 
     @Test
@@ -46,6 +49,9 @@ public class CqlFunctionOverloadTest {
 
         result = context.resolveExpressionRef("TestAnyFunctionWithDecimal").getExpression().evaluate(context);
         assertThat(result, is(new BigDecimal("12.3")));
+
+        result = context.resolveExpressionRef("TestAnyFunctionWithNoArgs").getExpression().evaluate(context);
+        assertThat(result, is("any"));
     }
 
 }
