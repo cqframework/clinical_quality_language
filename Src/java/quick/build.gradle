@@ -3,6 +3,8 @@
 dependencies {
     implementation project(':elm')
     implementation project(':model')
+    testImplementation project(':cql-to-elm')
+    testImplementation project(':model-jackson')
 }
 
 generateSources{

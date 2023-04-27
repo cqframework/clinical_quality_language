@@ -21,17 +21,17 @@ public class FhirModelInfoProvider implements ModelInfoProvider, NamespaceAware 
 
     private boolean isFHIRModelIdentifier(ModelIdentifier modelIdentifier) {
         if (namespaceManager != null && namespaceManager.hasNamespaces()) {
-            return modelIdentifier.getId().equals("FHIR") &&
+            return modelIdentifier.getId().equalsIgnoreCase("FHIR") &&
                     (modelIdentifier.getSystem() == null || modelIdentifier.getSystem().equals("http://hl7.org/fhir"));
         }
 
-        return modelIdentifier.getId().equals("FHIR");
+        return modelIdentifier.getId().equalsIgnoreCase("FHIR");
     }
 
     public ModelInfo load(ModelIdentifier modelIdentifier) {
         if (isFHIRModelIdentifier(modelIdentifier)) {
             String localVersion = modelIdentifier.getVersion() == null ? "" : modelIdentifier.getVersion();
-            try { 
+            try {
                 switch (localVersion) {
                     case "1.0.2":
                         return ModelInfoReaderFactory.getReader("application/xml").read(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-1.0.2.xml"));

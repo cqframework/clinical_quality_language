@@ -451,7 +451,30 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     public UsingDef resolveUsingRef(String modelName) {
-        return compiledLibrary.resolveUsingRef(modelName);
+        var def = compiledLibrary.resolveUsingRef(modelName);
+        if (def != null) {
+            return def;
+        }
+
+        if (modelName.equals("FHIR")) {
+            return resolveUsingRefIncluded(modelName);
+        }
+
+        return null;
+    }
+
+    public UsingDef resolveUsingRefIncluded(String modelName) {
+        var include = compiledLibrary.resolveIncludeRef("FHIRHelpers");
+        if (include == null) {
+            return null;
+        }
+
+        var lib = libraryManager.getCompiledLibraries().get(include.getPath());
+        if (lib == null) {
+            return null;
+        }
+
+        return lib.resolveUsingRef(modelName);
     }
 
     public SystemModel getSystemModel() {
@@ -473,6 +496,7 @@ public class LibraryBuilder implements ModelResolver {
             throw new IllegalArgumentException("usingDef required");
         }
 
+        // Hmm... this doesn't look quite right. Needs to go through the "well know model stuff"
         return getModel(new ModelIdentifier()
                 .withSystem(NamespaceManager.getUriPart(usingDef.getUri()))
                 .withId(NamespaceManager.getNamePart(usingDef.getUri()))
@@ -2443,7 +2467,7 @@ public class LibraryBuilder implements ModelResolver {
 
                 ensureLibraryIncluded(libraryName, source);
             }
-            
+
             String functionArgument = targetMap.substring(invocationStart + 1, targetMap.lastIndexOf(')'));
             Expression argumentSource = functionArgument.equals("%value") ? source : applyTargetMap(source, functionArgument);
             if (argumentSource.getResultType() instanceof ListType) {
@@ -2519,14 +2543,21 @@ public class LibraryBuilder implements ModelResolver {
                         left = of.createFirst().withSource(left);
                     }
                     if (path.equals("url")) {
-                        left = of.createFunctionRef().withLibraryName("FHIRHelpers").withName("ToString").withOperand(left);
+                        left = of.createFunctionRef().withLibraryName("FHIRHelpers").withName("ToString")
+                        .withOperand(left)
+                        .withSignature(dataTypeToTypeSpecifier(resolveTypeSpecifier("FHIR.uri")));
                     }
                 }
 
                 // HACK: Workaround the fact that we don't have type information for the mapping expansions...
                 // These hacks will be removed when addressed by the model info
-                if (indexerItems[0].equals("code.coding.system") || indexerItems[0].equals("code.coding.code")) {
-                    left = of.createFunctionRef().withLibraryName("FHIRHelpers").withName("ToString").withOperand(left);
+                if (indexerItems[0].equals("code.coding.system")) {
+                    left = of.createFunctionRef().withLibraryName("FHIRHelpers").withName("ToString").withOperand(left)
+                    .withSignature(dataTypeToTypeSpecifier(resolveTypeSpecifier("FHIR.uri")));
+                }
+                if (indexerItems[0].equals("code.coding.code")) {
+                    left = of.createFunctionRef().withLibraryName("FHIRHelpers").withName("ToString").withOperand(left)
+                    .withSignature(dataTypeToTypeSpecifier(resolveTypeSpecifier("FHIR.code")));
                 }
 
                 String rightValue = indexerItems[1].substring(1, indexerItems[1].length() - 1);
