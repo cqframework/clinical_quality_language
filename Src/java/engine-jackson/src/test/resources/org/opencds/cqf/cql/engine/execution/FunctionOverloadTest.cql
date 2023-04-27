@@ -9,6 +9,9 @@ define function TestAny(b String):
 define function TestAny(c Decimal):
   c
 
+define function TestAny():
+  'any'
+
 define TestAnyFunctionWithInteger:
   TestAny(1)
 
@@ -17,3 +20,6 @@ define TestAnyFunctionWithString:
 
 define TestAnyFunctionWithDecimal:
   TestAny(12.3)
+
+define TestAnyFunctionWithNoArgs:
+  TestAny()

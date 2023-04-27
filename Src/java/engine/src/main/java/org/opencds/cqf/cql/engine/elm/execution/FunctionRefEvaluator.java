@@ -12,6 +12,9 @@ import org.opencds.cqf.cql.engine.execution.Variable;
 
 public class FunctionRefEvaluator extends org.cqframework.cql.elm.execution.FunctionRef {
 
+    // Resolve and cache the functionDef
+    private FunctionDef functionDef;
+
     @Override
     protected Object internalEvaluate(Context context) {
         ArrayList<Object> arguments = new ArrayList<>(this.getOperand().size());
@@ -21,7 +24,9 @@ public class FunctionRefEvaluator extends org.cqframework.cql.elm.execution.Func
 
         boolean enteredLibrary = context.enterLibrary(this.getLibraryName());
         try {
-            FunctionDef functionDef = context.resolveFunctionRef(this.getLibraryName(), this.getName(), arguments, this.getSignature());
+            if (functionDef == null) {
+                this. functionDef = context.resolveFunctionRef(this.getLibraryName(), this.getName(), arguments, this.getSignature());
+            }
 
             if (Optional.ofNullable(functionDef.isExternal()).orElse(false)) {
                 return context.getExternalFunctionProvider().evaluate(functionDef.getName(), arguments);
