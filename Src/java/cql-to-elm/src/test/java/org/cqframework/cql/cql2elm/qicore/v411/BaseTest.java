@@ -15,6 +15,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertNotNull;
 
 public class BaseTest {
     @BeforeClass
@@ -319,5 +320,30 @@ public class BaseTest {
         p = (Property)p.getSource();
         assertThat(p.getPath(), is("authoredOn"));
         assertThat(p.getScope(), is("R"));
+    }
+
+    @Test
+    public void TestSignatureOnInterval() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("qicore/v411/SupplementalDataElements_QICore4-2.0.0.cql", 0);
+
+        Library library = translator.toELM();
+        Map<String, ExpressionDef> defs = new HashMap<>();
+
+        if (library.getStatements() != null) {
+            for (ExpressionDef def : library.getStatements().getDef()) {
+                defs.put(def.getName(), def);
+            }
+        }
+
+        var payer = defs.get("SDE Payer");
+
+        assertNotNull(payer);
+
+        var query = (Query)payer.getExpression();
+        var t = (Tuple)query.getReturn().getExpression();
+        var toInterval = (FunctionRef)t.getElement().get(1).getValue();
+
+        assertNotNull(toInterval.getSignature());
+        assertThat(toInterval.getSignature().size(), is(1));
     }
 }

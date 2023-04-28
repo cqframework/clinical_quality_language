@@ -2467,9 +2467,10 @@ public class LibraryBuilder implements ModelResolver {
                         .withLibraryName(libraryName).withName(functionName)
                         .withOperand(argumentSource);
                 fr.setResultType(source.getResultType());
-                // This doesn't quite work because the US.Core types aren't subtypes of FHIR types.
-                ///resolveCall(libraryName, functionName, new FunctionRefInvocation(fr), false, false);
                 return fr;
+                // This doesn't quite work because the US.Core types aren't subtypes of FHIR types,
+                // or they are defined as System types and not FHIR types
+                // return resolveCall(libraryName, functionName, new FunctionRefInvocation(fr), false, false);
             }
         }
         else if (targetMap.contains("[")) {
