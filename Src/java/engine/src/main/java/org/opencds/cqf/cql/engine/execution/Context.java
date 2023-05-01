@@ -617,7 +617,7 @@ public class Context {
         }
 
         if (candidateDefs.size() > 1 && !hasSignature) {
-            throw new CqlException(String.format("Signature not provided for overloaded function '%s'", mangledFunctionName));
+            logger.debug("Using runtime function resolution for '{}'. It's recommended to always signatures in ELM", mangledFunctionName);
         }
 
         return candidateDefs.stream().filter(x -> matchesTypes(x, types)).findFirst().orElse(null);
