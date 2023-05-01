@@ -91,7 +91,7 @@ public class CqlFormatterVisitorTest {
         runTest("PropertyTest.cql");
         runTest("QuantityLiteralTest.cql");
         runTest("RatioLiteralTest.cql");
-        runTest("SignatureOutputTests.cql");
+        runTest("SignatureTests/SignatureOutputTests.cql");
         runTest("SignatureResolutionTest.cql");
         runTest("TestChoiceAssignment.cql");
         runTest("TestIncludedIn.cql");
