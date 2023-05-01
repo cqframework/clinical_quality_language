@@ -322,7 +322,8 @@ public class BaseTest {
         assertThat(p.getScope(), is("R"));
     }
 
-    @Test(enabled = false, description = "Signature overloads not yet working for derived models")
+    // TODO: Apparently (enabled=false) doesn't work on the CI server?
+    // @Test(enabled = false, description = "Signature overloads not yet working for derived models")
     public void TestSignatureOnInterval() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("qicore/v411/SupplementalDataElements_QICore4-2.0.0.cql", 0);
 
