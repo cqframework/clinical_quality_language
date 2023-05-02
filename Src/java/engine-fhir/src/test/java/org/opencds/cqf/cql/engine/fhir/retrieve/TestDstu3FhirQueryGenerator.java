@@ -197,7 +197,12 @@ public class TestDstu3FhirQueryGenerator extends Dstu3FhirTest {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
 
         String actualQuery = actual.get(0);
-        String expectedQuery = String.format("Observation?date=ge%s&date=le%s&patient=Patient/{{context.patientId}}", simpleDateFormatter.format(expectedRangeStartDateTime), dateTimeFormatter.format(evaluationDateTimeAsLocal));
+        String expectedQuery =
+            String.format(
+                "Observation?date=ge%s&date=le%s&patient=Patient/{{context.patientId}}",
+                simpleDateFormatter.format(expectedRangeStartDateTime),
+                dateTimeFormatter.format(evaluationDateTimeAsLocal)
+            ).replace("Z", "+00:00");;
 
         assertEquals(actualQuery, expectedQuery);
     }

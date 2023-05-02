@@ -54,6 +54,17 @@ public class TestR4FhirQueryGenerator extends R4FhirTest {
         this.parameters = new HashMap<String, Object>();
     }
 
+    @Test
+    public void Test() {
+        DateTime evaluationDateTime = new DateTime(evaluationOffsetDateTime);
+        OffsetDateTime evaluationDateTimeAsLocal =
+                OffsetDateTime.ofInstant(evaluationOffsetDateTime.toInstant(), java.util.TimeZone.getTimeZone("UTC").toZoneId());
+        Date expectedRangeStartDateTime = Date.from(evaluationDateTimeAsLocal.minusDays(90).toInstant());
+
+        SimpleDateFormat simpleDateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        String expectedQuery = String.format("date=%s", simpleDateFormatter.format(expectedRangeStartDateTime));
+    }
+
     private ValueSet getTestValueSet(String id, int numberOfCodesToInclude) {
         String valueSetUrl = String.format("http://myterm.com/fhir/ValueSet/%s", id);
         ValueSet valueSet = new ValueSet();
@@ -226,7 +237,12 @@ public class TestR4FhirQueryGenerator extends R4FhirTest {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
 
         String actualQuery = actual.get(0);
-        String expectedQuery = String.format("Observation?date=ge%s&date=le%s&subject=Patient/{{context.patientId}}", simpleDateFormatter.format(expectedRangeStartDateTime), dateTimeFormatter.format(evaluationDateTimeAsLocal));
+        String expectedQuery =
+            String.format(
+                "Observation?date=ge%s&date=le%s&subject=Patient/{{context.patientId}}",
+                simpleDateFormatter.format(expectedRangeStartDateTime),
+                dateTimeFormatter.format(evaluationDateTimeAsLocal)
+            ).replace("Z", "+00:00");
 
         assertEquals(actualQuery, expectedQuery);
     }
