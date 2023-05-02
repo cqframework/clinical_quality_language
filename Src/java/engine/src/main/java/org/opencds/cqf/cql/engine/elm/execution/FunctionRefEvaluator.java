@@ -1,9 +1,6 @@
 package org.opencds.cqf.cql.engine.elm.execution;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.cqframework.cql.elm.execution.Expression;
 import org.cqframework.cql.elm.execution.FunctionDef;
@@ -12,8 +9,7 @@ import org.opencds.cqf.cql.engine.execution.Variable;
 
 public class FunctionRefEvaluator extends org.cqframework.cql.elm.execution.FunctionRef {
 
-    // Resolve and cache the functionDef
-    private FunctionDef functionDef;
+    private FunctionDef cachedFunctionDef;
 
     @Override
     protected Object internalEvaluate(Context context) {
@@ -24,12 +20,11 @@ public class FunctionRefEvaluator extends org.cqframework.cql.elm.execution.Func
 
         boolean enteredLibrary = context.enterLibrary(this.getLibraryName());
         try {
-            if (functionDef == null) {
-                this. functionDef = context.resolveFunctionRef(this.getLibraryName(), this.getName(), arguments, this.getSignature());
-            }
 
-            if (Optional.ofNullable(functionDef.isExternal()).orElse(false)) {
-                return context.getExternalFunctionProvider().evaluate(functionDef.getName(), arguments);
+            FunctionDef functionDef = this.resolveOrCacheFunctionDef(context, arguments);
+
+            if (Boolean.TRUE.equals(functionDef.isExternal())) {
+                return context.getExternalFunctionProvider().evaluate(cachedFunctionDef.getName(), arguments);
             }
             else {
                 context.pushWindow();
@@ -47,5 +42,22 @@ public class FunctionRefEvaluator extends org.cqframework.cql.elm.execution.Func
         finally {
             context.exitLibrary(enteredLibrary);
         }
+    }
+
+    protected FunctionDef resolveOrCacheFunctionDef(Context context, ArrayList<Object> arguments) {
+        // We can cache a function ref if:
+        // 1. ELM signatures are provided OR
+        // 2. No arguments are provided (only one overload anyway)
+        if (cachedFunctionDef == null && (arguments.isEmpty() || !this.getSignature().isEmpty())) {
+            this.cachedFunctionDef = this.resolveFunctionDef(context, arguments);
+        }
+
+        return this.cachedFunctionDef != null ?
+        cachedFunctionDef :
+        this.resolveFunctionDef(context, arguments);
+    }
+
+    protected FunctionDef resolveFunctionDef(Context context, ArrayList<Object> arguments) {
+        return context.resolveFunctionRef(this.getLibraryName(), this.getName(), arguments, this.getSignature());
     }
 }
