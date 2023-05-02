@@ -199,6 +199,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         else if (elm instanceof Sort) return visitSort((Sort)elm, context);
         else if (elm instanceof Total) return visitTotal((Total)elm, context);
         else if (elm instanceof Tuple) return visitTuple((Tuple)elm, context);
+
         else return defaultResult(elm, context);
     }
 

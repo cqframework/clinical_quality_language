@@ -35,16 +35,16 @@ public class QueryEvaluator {
 //        }
 //    }
 //
-//    private boolean evaluateRelationships(Context context) {
+//    private boolean evaluateRelationships(State state) {
 //        // TODO: This is the most naive possible implementation here, but it should perform okay with 1) caching and 2) small data sets
 //        boolean shouldInclude = true;
 //        for (org.cqframework.cql.elm.execution.RelationshipClause relationship : getRelationship()) {
 //            boolean hasSatisfyingData = false;
-//            Iterable<Object> relatedSourceData = ensureIterable(relationship.getExpression().evaluate(context));
+//            Iterable<Object> relatedSourceData = ensureIterable(relationship.getExpression().evaluate(state));
 //            for (Object relatedElement : relatedSourceData) {
-//                context.push(new Variable().withName(relationship.getAlias()).withValue(relatedElement));
+//                state.push(new Variable().withName(relationship.getAlias()).withValue(relatedElement));
 //                try {
-//                    Object satisfiesRelatedCondition = relationship.getSuchThat().evaluate(context);
+//                    Object satisfiesRelatedCondition = relationship.getSuchThat().evaluate(state);
 //                    if (relationship instanceof org.cqframework.cql.elm.execution.With
 //                            || relationship instanceof org.cqframework.cql.elm.execution.Without)
 //                    {
@@ -55,7 +55,7 @@ public class QueryEvaluator {
 //                    }
 //                }
 //                finally {
-//                    context.pop();
+//                    state.pop();
 //                }
 //            }
 //
@@ -69,9 +69,9 @@ public class QueryEvaluator {
 //        return shouldInclude;
 //    }
 //
-//    private boolean evaluateWhere(Context context) {
+//    private boolean evaluateWhere(State state) {
 //        if (getWhere() != null) {
-//            Object satisfiesCondition = this.getWhere().evaluate(context);
+//            Object satisfiesCondition = this.getWhere().evaluate(state);
 //            if (!(satisfiesCondition instanceof Boolean && (Boolean)satisfiesCondition)) {
 //                return false;
 //            }

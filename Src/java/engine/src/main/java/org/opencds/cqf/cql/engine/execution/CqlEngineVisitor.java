@@ -3,6 +3,7 @@ package org.opencds.cqf.cql.engine.execution;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cqframework.cql.cql2elm.CqlCompilerException;
 import org.cqframework.cql.cql2elm.CqlTranslatorOptions;
+import org.cqframework.cql.elm.visiting.ElmBaseLibraryVisitor;
 import org.hl7.elm.r1.*;
 import org.cqframework.cql.elm.visiting.ElmBaseVisitor;
 import org.hl7.elm.r1.Date;
@@ -42,7 +43,7 @@ import static org.opencds.cqf.cql.engine.execution.NamespaceHelper.getUriPart;
  *  the aggregation of values from child nodes.
  */
 
-public class CqlEngineVisitor extends ElmBaseVisitor<Object, State> {
+public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     public enum Options {
         EnableExpressionCaching,
@@ -378,66 +379,6 @@ public class CqlEngineVisitor extends ElmBaseVisitor<Object, State> {
 
     }
 
-    @Override
-    public Object visitExpression(Expression elm, State state) {
-        if (elm instanceof Code) {
-            return visitCode((Code) elm, state);
-        } else if (elm instanceof CodeRef) {
-            return visitCodeRef((CodeRef) elm, state);
-        } else if (elm instanceof Concept) {
-            return visitConcept((Concept) elm, state);
-        } else if (elm instanceof ConceptRef) {
-            return visitConceptRef((ConceptRef) elm, state);
-        } else if (elm instanceof Quantity) {
-            return visitQuantity((Quantity) elm, state);
-        }else if (elm instanceof Retrieve) {
-            return visitRetrieve((Retrieve) elm, state);
-        } else if (elm instanceof Ratio) {
-            return visitRatio((Ratio) elm, state);
-        }
-
-        else {
-            return super.visitExpression(elm, state);
-        }
-    }
-
-    @Override
-    public Object visitOperatorExpression(OperatorExpression elm, State state) {
-        if (elm instanceof AnyInCodeSystem) {
-            return visitAnyInCodeSystem((AnyInCodeSystem) elm, state);
-        } else if (elm instanceof InCodeSystem) {
-            return visitInCodeSystem((InCodeSystem) elm, state);
-        } else if (elm instanceof AnyInValueSet) {
-            return visitAnyInValueSet((AnyInValueSet) elm, state);
-        } else if (elm instanceof InValueSet) {
-            return visitInValueSet((InValueSet) elm, state);
-        }
-
-        else {
-            return super.visitOperatorExpression(elm, state);
-        }
-    }
-
-    @Override
-    public Object visitBinaryExpression(BinaryExpression elm, State state) {
-        if (elm instanceof CalculateAgeAt) {
-            return visitCalculateAgeAt((CalculateAgeAt) elm, state);
-        } else {
-            return super.visitBinaryExpression(elm, state);
-        }
-    }
-
-    @Override
-    public Object visitUnaryExpression(UnaryExpression elm, State state) {
-        if (elm instanceof CalculateAge) {
-            return visitCalculateAge((CalculateAge) elm, state);
-        } else if(elm instanceof ExpandValueSet) {
-            return visitExpandValueSet((ExpandValueSet) elm, state);
-        }
-        else {
-            return super.visitUnaryExpression(elm, state);
-        }
-    }
     @Override
     public Object visitAdd(Add add, State state) {
         Object left = visitExpression(add.getOperand().get(0), state);
@@ -910,6 +851,7 @@ public class CqlEngineVisitor extends ElmBaseVisitor<Object, State> {
         return BeforeEvaluator.before(left, right, precision, state) ;
     }
 
+    @Override
     public Object visitCalculateAgeAt(CalculateAgeAt elm, State state) {
         Object birthDate = visitExpression(elm.getOperand().get(0), state);
         Object asOf = visitExpression(elm.getOperand().get(1), state);
@@ -917,6 +859,7 @@ public class CqlEngineVisitor extends ElmBaseVisitor<Object, State> {
         return CalculateAgeAtEvaluator.calculateAgeAt(birthDate, asOf, precision);
     }
 
+    @Override
     public Object visitCalculateAge(CalculateAge elm, State state) {
         Object operand = visitExpression(elm.getOperand(), state);
         String precision = elm.getPrecision().value();
@@ -980,17 +923,19 @@ public class CqlEngineVisitor extends ElmBaseVisitor<Object, State> {
         return CoalesceEvaluator.coalesce(operands);
     }
 
+    @Override
     public Object visitCode(Code elm, State state) {
         return CodeEvaluator.internalEvaluate(elm.getSystem(), elm.getCode(), elm.getDisplay(), state);
     }
 
+    @Override
     public Object visitCodeRef(CodeRef elm, State state) {
         CodeDef cd = state.resolveCodeRef(elm.getName());
         CodeSystem cs = CodeSystemRefEvaluator.toCodeSystem(cd.getCodeSystem(), state);
 
         return CodeRefEvaluator.toCode(elm, cs, state);
     }
-
+    @Override
     public Object visitConcept(Concept elm, State state) {
         ArrayList<org.opencds.cqf.cql.engine.runtime.Code> codes = new ArrayList<>();
         for (int i = 0; i < elm.getCode().size(); ++i) {
@@ -999,7 +944,7 @@ public class CqlEngineVisitor extends ElmBaseVisitor<Object, State> {
 
         return ConceptEvaluator.internalEvaluate(codes, elm.getDisplay());
     }
-
+    @Override
     public Object visitConceptRef(ConceptRef elm, State state) {
         return ConceptRefEvaluator.toConcept(elm, state) ;
     }
@@ -1662,6 +1607,7 @@ public class CqlEngineVisitor extends ElmBaseVisitor<Object, State> {
     public Object visitProperty(Property elm, State state) {
         return PropertyEvaluator.internalEvaluate(elm, state, this) ;
     }
+    @Override
 
     public Object visitQuantity(Quantity elm, State state) {
         return QuantityEvaluator.internalEvaluate(elm, state) ;
@@ -1673,7 +1619,7 @@ public class CqlEngineVisitor extends ElmBaseVisitor<Object, State> {
         Object precision = elm.getPrecision() == null ? null : visitExpression(elm.getPrecision(), state);
         return RoundEvaluator.round(operand, precision) ;
     }
-
+    @Override
     public Object visitRetrieve(Retrieve elm, State state) {
         return RetrieveEvaluator.internalEvaluate(elm, state, this) ;
     }
@@ -1694,6 +1640,7 @@ public class CqlEngineVisitor extends ElmBaseVisitor<Object, State> {
         return RepeatEvaluator.internalEvaluate(source, element,scope, state) ;
     }
 
+    @Override
     public Object visitRatio(Ratio elm, State state) {
         return RatioEvaluator.internalEvaluate(elm, state, this) ;
     }
@@ -1708,12 +1655,4 @@ public class CqlEngineVisitor extends ElmBaseVisitor<Object, State> {
 //        return QueryEvaluator.internalEvaluate(elm, state) ;
 //    }
 
-
-/*
-    @Override
-    public Object visit( elm, State state) {
-        return Evaluator ;
-    }
-
-    */
 }
