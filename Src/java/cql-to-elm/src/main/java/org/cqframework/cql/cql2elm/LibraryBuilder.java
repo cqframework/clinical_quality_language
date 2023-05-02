@@ -10,7 +10,6 @@ import org.hl7.cql_annotations.r1.CqlToElmInfo;
 import org.hl7.cql_annotations.r1.ErrorSeverity;
 import org.hl7.cql_annotations.r1.ErrorType;
 import org.hl7.elm.r1.*;
-
 import javax.xml.namespace.QName;
 import java.math.BigDecimal;
 import java.util.*;
@@ -461,6 +460,14 @@ public class LibraryBuilder implements ModelResolver {
 
     public Model getModel(String modelName) {
         UsingDef usingDef = resolveUsingRef(modelName);
+        if (usingDef == null && modelName.equals("FHIR"))  {
+            // Special case for FHIR-derived models that include FHIR Helpers
+            var model = this.modelManager.resolveModelByUri("http://hl7.org/fhir");
+            if (model != null) {
+                return model;
+            }
+        }
+
         if (usingDef == null) {
             throw new IllegalArgumentException(String.format("Could not resolve model name %s", modelName));
         }
@@ -2443,12 +2450,14 @@ public class LibraryBuilder implements ModelResolver {
 
                 ensureLibraryIncluded(libraryName, source);
             }
-            
+
             String functionArgument = targetMap.substring(invocationStart + 1, targetMap.lastIndexOf(')'));
             Expression argumentSource = functionArgument.equals("%value") ? source : applyTargetMap(source, functionArgument);
             if (argumentSource.getResultType() instanceof ListType) {
                 Query query = of.createQuery().withSource(of.createAliasedQuerySource().withExpression(argumentSource).withAlias("$this"));
                 FunctionRef fr = of.createFunctionRef().withLibraryName(libraryName).withName(functionName).withOperand(of.createAliasRef().withName("$this"));
+                // This doesn't quite work because the US.Core types aren't subtypes of FHIR types.
+                //resolveCall(libraryName, functionName, new FunctionRefInvocation(fr), false, false);
                 query.setReturn(of.createReturnClause().withDistinct(false).withExpression(fr));
                 query.setResultType(source.getResultType());
                 return query;
@@ -2459,6 +2468,9 @@ public class LibraryBuilder implements ModelResolver {
                         .withOperand(argumentSource);
                 fr.setResultType(source.getResultType());
                 return fr;
+                // This doesn't quite work because the US.Core types aren't subtypes of FHIR types,
+                // or they are defined as System types and not FHIR types
+                // return resolveCall(libraryName, functionName, new FunctionRefInvocation(fr), false, false);
             }
         }
         else if (targetMap.contains("[")) {
@@ -2516,17 +2528,31 @@ public class LibraryBuilder implements ModelResolver {
 
                     // HACK: Workaround the fact that we don't have type information for the mapping expansions...
                     if (path.equals("coding")) {
-                        left = of.createFirst().withSource(left);
+                        left = (Expression)of.createFirst().withSource(left)
+                        .withResultType(this.getModel("FHIR").resolveTypeName("FHIR.coding"));
                     }
                     if (path.equals("url")) {
-                        left = of.createFunctionRef().withLibraryName("FHIRHelpers").withName("ToString").withOperand(left);
+                         // HACK: This special cases FHIR model resolution
+                        left.setResultType(this.getModel("FHIR").resolveTypeName("FHIR.uri"));
+                        var ref = of.createFunctionRef().withLibraryName("FHIRHelpers").withName("ToString").withOperand(left);
+                        left = resolveCall(ref.getLibraryName(), ref.getName(), new FunctionRefInvocation(ref), false, false);
                     }
                 }
 
                 // HACK: Workaround the fact that we don't have type information for the mapping expansions...
                 // These hacks will be removed when addressed by the model info
-                if (indexerItems[0].equals("code.coding.system") || indexerItems[0].equals("code.coding.code")) {
-                    left = of.createFunctionRef().withLibraryName("FHIRHelpers").withName("ToString").withOperand(left);
+                if (indexerItems[0].equals("code.coding.system")) {
+                    // HACK: This special cases FHIR model resolution
+                    left.setResultType(this.getModel("FHIR").resolveTypeName("FHIR.uri"));
+                    var ref = (FunctionRef)of.createFunctionRef().withLibraryName("FHIRHelpers").withName("ToString").withOperand(left);
+
+                    left = resolveCall(ref.getLibraryName(), ref.getName(), new FunctionRefInvocation(ref), false, false);
+                }
+                if (indexerItems[0].equals("code.coding.code")) {
+                    // HACK: This special cases FHIR model resolution
+                    left.setResultType(this.getModel("FHIR").resolveTypeName("FHIR.code"));
+                    var ref = of.createFunctionRef().withLibraryName("FHIRHelpers").withName("ToString").withOperand(left);
+                    left = resolveCall(ref.getLibraryName(), ref.getName(), new FunctionRefInvocation(ref), false, false);
                 }
 
                 String rightValue = indexerItems[1].substring(1, indexerItems[1].length() - 1);
