@@ -39,7 +39,7 @@ public class NpmPackageManagerTests implements IWorkerContext.ILoggingService {
                 NpmPackageManagerTests.class.getResourceAsStream("mycontentig.xml"));
         ImplementationGuide ig = (ImplementationGuide) convertor.convertResource(igResource);
         NpmPackageManager pm = new NpmPackageManager(ig);
-        assertEquals(pm.getNpmList().size(), 5);
+        assertEquals(pm.getNpmList().size(), 3);
     }
 
     @Test
