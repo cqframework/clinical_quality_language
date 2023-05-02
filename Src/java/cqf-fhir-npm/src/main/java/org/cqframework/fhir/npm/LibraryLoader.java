@@ -11,7 +11,6 @@ import org.hl7.fhir.convertors.conv30_50.VersionConvertor_30_50;
 import org.hl7.fhir.convertors.conv40_50.VersionConvertor_40_50;
 import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.exceptions.FHIRFormatError;
-import org.hl7.fhir.r5.formats.JsonParser;
 import org.hl7.fhir.r5.model.Library;
 import org.hl7.fhir.utilities.VersionUtilities;
 
@@ -40,7 +39,7 @@ public class LibraryLoader implements ILibraryReader {
             VersionConvertor_40_50 versionConvertor_40_50 = new VersionConvertor_40_50(new BaseAdvisor_40_50());
             return (Library) versionConvertor_40_50.convertResource(res);
         } else if (VersionUtilities.isR5Ver(version)) {
-            return (Library) new JsonParser().parse(stream);
+            return (Library) new org.hl7.fhir.r5.formats.JsonParser().parse(stream);
         } else {
             throw new FHIRException("Unknown Version '"+version+"'");
         }
