@@ -1,8 +1,7 @@
 package org.opencds.cqf.cql.engine.debug;
 
-import org.cqframework.cql.elm.execution.Element;
-import org.cqframework.cql.elm.execution.Library;
-import org.opencds.cqf.cql.engine.elm.execution.Executable;
+import org.hl7.elm.r1.Element;
+import org.hl7.elm.r1.Library;
 
 public class SourceLocator {
 
@@ -15,7 +14,7 @@ public class SourceLocator {
         this.sourceLocation = sourceLocation;
     }
 
-    public static SourceLocator fromNode(Executable node, Library currentLibrary) {
+    public static SourceLocator fromNode(Element node, Library currentLibrary) {
         if (node instanceof Element) {
             Element element = (Element)node;
             return new SourceLocator(

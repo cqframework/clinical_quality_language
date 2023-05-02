@@ -1,0 +1,26 @@
+package org.opencds.cqf.cql.engine.elm.visiting;
+
+import org.hl7.elm.r1.Interval;
+import org.opencds.cqf.cql.engine.execution.CqlEngineVisitor;
+import org.opencds.cqf.cql.engine.execution.State;
+
+public class IntervalEvaluator {
+    public static Object internalEvaluate(Interval interval, State state, CqlEngineVisitor visitor) {
+        Object low = interval.getLow() != null ? visitor.visitExpression(interval.getLow(), state) : null;
+        Boolean lowClosed = interval.getLowClosedExpression() != null ?
+                (Boolean) visitor.visitExpression(interval.getLowClosedExpression(), state) :
+                interval.isLowClosed();
+        Object high = interval.getHigh() != null ? visitor.visitExpression(interval.getHigh(), state) : null;
+        Boolean highClosed = interval.getHighClosedExpression() != null ?
+                (Boolean) visitor.visitExpression(interval.getHighClosedExpression(), state) : interval.isHighClosed();
+
+        // An interval with no boundaries is not an interval
+        // TODO: the spec states that it is possible to have an interval with null boundaries, but the ELM is not providing a way to get the Interval type
+        if (low == null && high == null) {
+            return null;
+        }
+
+        return new org.opencds.cqf.cql.engine.runtime.Interval(low, lowClosed == null ? true : lowClosed, high, highClosed == null ?
+                true : highClosed);
+    }
+}

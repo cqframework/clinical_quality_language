@@ -3,8 +3,8 @@ package org.opencds.cqf.cql.engine.debug;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.cqframework.cql.elm.execution.Library;
-import org.opencds.cqf.cql.engine.elm.execution.Executable;
+import org.hl7.elm.r1.Library;
+import org.hl7.elm.r1.Element;
 
 public class DebugMap {
 
@@ -32,7 +32,7 @@ public class DebugMap {
         return DebugAction.LOG;
     }
 
-    public DebugAction shouldDebug(Executable node, Library currentLibrary) {
+    public DebugAction shouldDebug(Element node, Library currentLibrary) {
         DebugLibraryMapEntry libraryMap = libraryMaps.get(currentLibrary.getIdentifier().getId());
         if (libraryMap != null) {
             DebugAction action = libraryMap.shouldDebug(node);

@@ -12,6 +12,6 @@ public class TupleEvaluator extends org.cqframework.cql.elm.execution.Tuple {
     for (org.cqframework.cql.elm.execution.TupleElement element : this.getElement()) {
       ret.put(element.getName(), element.getValue().evaluate(context));
     }
-    return new org.opencds.cqf.cql.engine.runtime.Tuple(context).withElements(ret);
+    return  null;
   }
 }

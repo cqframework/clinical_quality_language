@@ -21,7 +21,7 @@ public class Executable
             if (e instanceof CqlException) {
                 CqlException ce = (CqlException)e;
                 if (ce.getSourceLocator() == null) {
-                    ce.setSourceLocator(SourceLocator.fromNode(this, context.getCurrentLibrary()));
+                    ce.setSourceLocator(SourceLocator.fromNode(null, null));
                     DebugAction action = context.shouldDebug(ce);
                     if (action != DebugAction.NONE) {
                         context.logDebugError(ce);
@@ -30,7 +30,7 @@ public class Executable
                 throw e;
             }
             else {
-                CqlException ce = new CqlException(e, SourceLocator.fromNode(this, context.getCurrentLibrary()));
+                CqlException ce = new CqlException(e, SourceLocator.fromNode(null, null));
                 DebugAction action = context.shouldDebug(ce);
                 if (action != DebugAction.NONE) {
                     context.logDebugError(ce);

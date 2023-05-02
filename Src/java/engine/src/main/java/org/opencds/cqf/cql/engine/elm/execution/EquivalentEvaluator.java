@@ -82,7 +82,8 @@ public class EquivalentEvaluator extends org.cqframework.cql.elm.execution.Equiv
         }
 
         if (left instanceof Iterable) {
-            return CqlList.equivalent((Iterable<?>) left, (Iterable<?>) right, context);
+            //return CqlList.equivalent((Iterable<?>) left, (Iterable<?>) right, context);
+            return null;
         }
 
         else if (left instanceof CqlType) {

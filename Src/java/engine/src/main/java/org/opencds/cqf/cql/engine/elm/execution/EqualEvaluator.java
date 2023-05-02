@@ -61,7 +61,8 @@ public class EqualEvaluator extends org.cqframework.cql.elm.execution.Equal {
         }
 
         else if (left instanceof Iterable && right instanceof Iterable) {
-            return CqlList.equal((Iterable<?>) left, (Iterable<?>) right, context);
+            //return CqlList.equal((Iterable<?>) left, (Iterable<?>) right, context);
+            return null;
         }
 
         else if (left instanceof CqlType && right instanceof CqlType) {

@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.cqframework.cql.elm.execution.Library;
-import org.opencds.cqf.cql.engine.elm.execution.Executable;
+import org.hl7.elm.r1.Library;
+import org.hl7.elm.r1.Element;
 import org.opencds.cqf.cql.engine.exception.CqlException;
 
 public class DebugResult {
@@ -18,7 +18,7 @@ public class DebugResult {
         messages = new ArrayList<CqlException>();
     }
 
-    public void logDebugResult(Executable node, Library currentLibrary, Object result, DebugAction action) {
+    public void logDebugResult(Element node, Library currentLibrary, Object result, DebugAction action) {
         try {
             DebugLibraryResultEntry libraryResultEntry = libraryResults.get(currentLibrary.getIdentifier().getId());
             if (libraryResultEntry == null) {

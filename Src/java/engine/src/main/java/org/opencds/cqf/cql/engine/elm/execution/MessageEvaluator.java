@@ -71,8 +71,9 @@ public class MessageEvaluator extends org.cqframework.cql.elm.execution.Message 
         String severity = (String) getSeverity().evaluate(context);
         String message = (String) getMessage().evaluate(context);
 
-        return message(context, SourceLocator.fromNode(this, context.getCurrentLibrary()),
-                source, condition, code, severity, message
-        );
+//        return message(context, SourceLocator.fromNode(this, context.getCurrentLibrary()),
+//                source, condition, code, severity, message
+//        );
+        return null;
     }
 }

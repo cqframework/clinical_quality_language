@@ -4,23 +4,23 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.opencds.cqf.cql.engine.elm.execution.EqualEvaluator;
-import org.opencds.cqf.cql.engine.elm.execution.EquivalentEvaluator;
-import org.opencds.cqf.cql.engine.elm.execution.ToStringEvaluator;
-import org.opencds.cqf.cql.engine.execution.Context;
+import org.opencds.cqf.cql.engine.elm.visiting.EqualEvaluator;
+import org.opencds.cqf.cql.engine.elm.visiting.EquivalentEvaluator;
+import org.opencds.cqf.cql.engine.elm.visiting.ToStringEvaluator;
+import org.opencds.cqf.cql.engine.execution.State;
 
 public class Tuple implements CqlType {
 
     protected LinkedHashMap<String, Object> elements;
 
-    private Context context;
+    private State state;
 
     public Tuple() {
         this(null);
     }
 
-    public Tuple(Context context) {
-        this.context = context;
+    public Tuple(State state) {
+        this.state = state;
         this.elements = new LinkedHashMap<>();
     }
 
@@ -42,8 +42,8 @@ public class Tuple implements CqlType {
         return this;
     }
 
-    public Context getContext() {
-        return this.context;
+    public State getState() {
+        return this.state;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class Tuple implements CqlType {
 
         for (String key : ((Tuple) other).getElements().keySet()) {
             if (this.getElements().containsKey(key)) {
-                Object areKeyValsSame = EquivalentEvaluator.equivalent(((Tuple) other).getElements().get(key), this.getElements().get(key), context);
+                Object areKeyValsSame = EquivalentEvaluator.equivalent(((Tuple) other).getElements().get(key), this.getElements().get(key), state);
                 if (!(Boolean) areKeyValsSame) {
                     return false;
                 }
@@ -79,7 +79,7 @@ public class Tuple implements CqlType {
                 {
                     continue;
                 }
-                Boolean equal = EqualEvaluator.equal(((Tuple) other).getElements().get(key), this.getElements().get(key), context);
+                Boolean equal = EqualEvaluator.equal(((Tuple) other).getElements().get(key), this.getElements().get(key), state);
                 if (equal == null) { return null; }
                 else if (!equal) { return false; }
             }
