@@ -5,7 +5,6 @@ import org.cqframework.cql.cql2elm.CqlCompilerException;
 import org.cqframework.cql.cql2elm.CqlTranslatorOptions;
 import org.cqframework.cql.elm.visiting.ElmBaseLibraryVisitor;
 import org.hl7.elm.r1.*;
-import org.cqframework.cql.elm.visiting.ElmBaseVisitor;
 import org.hl7.elm.r1.Date;
 import org.opencds.cqf.cql.engine.data.DataProvider;
 import org.opencds.cqf.cql.engine.data.SystemDataProvider;
@@ -377,6 +376,15 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
             }
         }
 
+    }
+
+    @Override
+    public Object visitUnaryExpression(UnaryExpression elm, State state) {
+        if (elm instanceof ExpandValueSet) {
+            return visitExpandValueSet((ExpandValueSet) elm, state);
+        } else {
+            return super.visitUnaryExpression(elm, state);
+        }
     }
 
     @Override
