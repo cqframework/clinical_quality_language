@@ -52,7 +52,7 @@ public class MedianEvaluator {
             } else {
                 if (values.get(0) instanceof Integer) { // size of list is even
                     return TruncatedDivideEvaluator.div(
-                            org.opencds.cqf.cql.engine.elm.execution.AddEvaluator.add(values.get(values.size() / 2), values.get((values.size() / 2) - 1)), 2, state
+                            AddEvaluator.add(values.get(values.size() / 2), values.get((values.size() / 2) - 1)), 2, state
                     );
                 } else if (values.get(0) instanceof BigDecimal || values.get(0) instanceof Quantity) {
                     return DivideEvaluator.divide(

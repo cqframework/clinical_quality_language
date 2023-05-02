@@ -3,7 +3,6 @@ package org.opencds.cqf.cql.engine.execution;
 import java.util.Arrays;
 import java.util.List;
 
-import org.opencds.cqf.cql.engine.elm.execution.EquivalentEvaluator;
 import org.opencds.cqf.cql.engine.runtime.Tuple;
 import org.testng.Assert;
 import org.testng.annotations.Test;

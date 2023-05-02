@@ -7,7 +7,6 @@ import static org.hamcrest.Matchers.nullValue;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.opencds.cqf.cql.engine.elm.execution.EquivalentEvaluator;
 import org.opencds.cqf.cql.engine.runtime.Date;
 import org.opencds.cqf.cql.engine.runtime.DateTime;
 import org.opencds.cqf.cql.engine.runtime.Interval;

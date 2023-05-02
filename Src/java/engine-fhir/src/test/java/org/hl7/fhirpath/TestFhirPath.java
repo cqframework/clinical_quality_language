@@ -19,7 +19,6 @@ import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhirpath.tests.InvalidType;
 import org.hl7.fhirpath.tests.Tests;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
-import org.opencds.cqf.cql.engine.elm.execution.ExistsEvaluator;
 import org.opencds.cqf.cql.engine.execution.Context;
 import org.opencds.cqf.cql.engine.fhir.model.FhirModelResolver;
 import org.opencds.cqf.cql.engine.runtime.Date;

@@ -48,7 +48,7 @@ public class CollapseEvaluator
             return new Interval(
                     interval.getStart(),
                     true,
-                    org.opencds.cqf.cql.engine.elm.execution.AddEvaluator.add(interval.getEnd(), per.getValue().intValue()),
+                    AddEvaluator.add(interval.getEnd(), per.getValue().intValue()),
                     true
             );
         }
@@ -57,7 +57,7 @@ public class CollapseEvaluator
             return new Interval(
                     interval.getStart(),
                     true,
-                    org.opencds.cqf.cql.engine.elm.execution.AddEvaluator.add(interval.getEnd(), per.getValue()),
+                    AddEvaluator.add(interval.getEnd(), per.getValue()),
                     true
             );
         }

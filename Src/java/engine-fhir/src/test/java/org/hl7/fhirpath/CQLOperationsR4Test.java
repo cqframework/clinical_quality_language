@@ -7,7 +7,6 @@ import org.fhir.ucum.UcumException;
 import org.hl7.fhir.r4.model.*;
 import org.hl7.fhirpath.tests.Group;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
-import org.opencds.cqf.cql.engine.elm.execution.EqualEvaluator;
 import org.opencds.cqf.cql.engine.execution.Context;
 import org.opencds.cqf.cql.engine.fhir.model.CachedR4FhirModelResolver;
 import org.opencds.cqf.cql.engine.fhir.model.FhirModelResolver;

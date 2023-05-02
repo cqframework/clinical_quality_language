@@ -6,7 +6,6 @@ import static org.hamcrest.Matchers.nullValue;
 
 import java.util.Collections;
 
-import org.opencds.cqf.cql.engine.elm.execution.EquivalentEvaluator;
 import org.opencds.cqf.cql.engine.runtime.DateTime;
 import org.opencds.cqf.cql.engine.runtime.Time;
 import org.testng.Assert;

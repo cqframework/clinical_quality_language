@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import org.opencds.cqf.cql.engine.elm.execution.EquivalentEvaluator;
 import org.opencds.cqf.cql.engine.exception.InvalidDateTime;
 import org.opencds.cqf.cql.engine.runtime.Code;
 import org.opencds.cqf.cql.engine.runtime.Concept;

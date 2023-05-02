@@ -1,7 +1,5 @@
 package org.opencds.cqf.cql.engine.serializing.jackson.mixins;
 
-import org.opencds.cqf.cql.engine.elm.execution.CodeSystemRefEvaluator;
-
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;

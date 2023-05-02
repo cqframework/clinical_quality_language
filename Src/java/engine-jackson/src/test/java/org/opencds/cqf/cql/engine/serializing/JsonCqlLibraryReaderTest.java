@@ -21,8 +21,6 @@ import org.cqframework.cql.elm.tracking.TrackBack;
 import org.fhir.ucum.UcumEssenceService;
 import org.fhir.ucum.UcumException;
 import org.fhir.ucum.UcumService;
-import org.opencds.cqf.cql.engine.elm.execution.CodeSystemRefEvaluator;
-import org.opencds.cqf.cql.engine.elm.execution.ExpressionDefEvaluator;
 import org.opencds.cqf.cql.engine.execution.CqlMainSuiteTest;
 import org.opencds.cqf.cql.engine.serializing.jackson.JsonCqlLibraryReader;
 import org.testng.annotations.Test;

@@ -39,15 +39,15 @@ public class ExpandEvaluator
     {
         if (addTo instanceof Integer)
         {
-            return org.opencds.cqf.cql.engine.elm.execution.AddEvaluator.add(addTo, per.getValue().intValue());
+            return AddEvaluator.add(addTo, per.getValue().intValue());
         }
         else if (addTo instanceof BigDecimal)
         {
-            return org.opencds.cqf.cql.engine.elm.execution.AddEvaluator.add(addTo, per.getValue());
+            return AddEvaluator.add(addTo, per.getValue());
         }
         else if (addTo instanceof Quantity)
         {
-            return org.opencds.cqf.cql.engine.elm.execution.AddEvaluator.add(addTo, per);
+            return AddEvaluator.add(addTo, per);
         }
 
         throw new InvalidOperatorArgument(
@@ -110,7 +110,7 @@ public class ExpandEvaluator
             List<Interval> expansion = new ArrayList<>();
             Interval unit = null;
             Object start = interval.getStart();
-            Object end = org.opencds.cqf.cql.engine.elm.execution.AddEvaluator.add(start, per);
+            Object end = AddEvaluator.add(start, per);
             for (int j = 0; j < (Integer) i; ++j)
             {
                 unit = new Interval(start, true, end, false);

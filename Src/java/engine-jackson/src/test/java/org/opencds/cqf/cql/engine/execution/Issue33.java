@@ -1,6 +1,5 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import org.opencds.cqf.cql.engine.elm.execution.EquivalentEvaluator;
 import org.opencds.cqf.cql.engine.runtime.DateTime;
 import org.opencds.cqf.cql.engine.runtime.Interval;
 import org.testng.Assert;

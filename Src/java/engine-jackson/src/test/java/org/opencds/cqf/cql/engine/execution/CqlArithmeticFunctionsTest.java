@@ -7,9 +7,6 @@ import static org.hamcrest.Matchers.nullValue;
 
 import java.math.BigDecimal;
 
-import org.opencds.cqf.cql.engine.elm.execution.AbsEvaluator;
-import org.opencds.cqf.cql.engine.elm.execution.AddEvaluator;
-import org.opencds.cqf.cql.engine.elm.execution.EquivalentEvaluator;
 import org.opencds.cqf.cql.engine.exception.CqlException;
 import org.opencds.cqf.cql.engine.exception.UndefinedResult;
 import org.opencds.cqf.cql.engine.runtime.Date;

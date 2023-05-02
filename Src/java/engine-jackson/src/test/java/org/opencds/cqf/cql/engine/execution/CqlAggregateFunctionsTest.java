@@ -6,9 +6,6 @@ import static org.hamcrest.Matchers.is;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
-import org.opencds.cqf.cql.engine.elm.execution.AnyTrueEvaluator;
-import org.opencds.cqf.cql.engine.elm.execution.AvgEvaluator;
-import org.opencds.cqf.cql.engine.elm.execution.EquivalentEvaluator;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.runtime.DateTime;
 import org.opencds.cqf.cql.engine.runtime.Quantity;

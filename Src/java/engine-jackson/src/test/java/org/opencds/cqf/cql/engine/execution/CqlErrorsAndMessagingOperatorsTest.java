@@ -8,8 +8,8 @@ import java.util.Arrays;
 import java.util.function.Supplier;
 
 import org.opencds.cqf.cql.engine.data.SystemDataProvider;
-import org.opencds.cqf.cql.engine.elm.execution.obfuscate.PHIObfuscator;
-import org.opencds.cqf.cql.engine.elm.execution.obfuscate.RedactingPHIObfuscator;
+import org.opencds.cqf.cql.engine.elm.visiting.obfuscate.PHIObfuscator;
+import org.opencds.cqf.cql.engine.elm.visiting.obfuscate.RedactingPHIObfuscator;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
