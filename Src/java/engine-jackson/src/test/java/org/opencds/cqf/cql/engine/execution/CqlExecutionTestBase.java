@@ -16,6 +16,7 @@ import org.cqframework.cql.cql2elm.CqlTranslatorOptions;
 import org.cqframework.cql.cql2elm.LibraryBuilder;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.ModelManager;
+import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
 import org.cqframework.cql.elm.execution.Library;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.fhir.ucum.UcumEssenceService;
@@ -49,6 +50,19 @@ public abstract class CqlExecutionTestBase {
         return libraryManager;
     }
 
+    protected SignatureLevel getSignatureLevel() {
+        return SignatureLevel.All;
+    }
+
+    protected CqlTranslatorOptions translatorOptions() {
+        ArrayList<CqlTranslatorOptions.Options> options = new ArrayList<>();
+        options.add(CqlTranslatorOptions.Options.EnableDateRangeOptimization);
+        options.add(CqlTranslatorOptions.Options.EnableAnnotations);
+        options.add(CqlTranslatorOptions.Options.EnableLocators);
+
+        return new CqlTranslatorOptions(CqlCompilerException.ErrorSeverity.Info, getSignatureLevel(), options.toArray(new CqlTranslatorOptions.Options[options.size()]));
+    }
+
     @BeforeMethod
     public void beforeEachTestMethod() throws IOException, UcumException {
         String fileName = this.getClass().getSimpleName();
@@ -58,13 +72,10 @@ public abstract class CqlExecutionTestBase {
             try {
                 File cqlFile = new File(URLDecoder.decode(this.getClass().getResource(fileName + ".cql").getFile(), "UTF-8"));
 
-                ArrayList<CqlTranslatorOptions.Options> options = new ArrayList<>();
-                options.add(CqlTranslatorOptions.Options.EnableDateRangeOptimization);
-                options.add(CqlTranslatorOptions.Options.EnableAnnotations);
-                options.add(CqlTranslatorOptions.Options.EnableLocators);
+                var options = this.translatorOptions();
 
                 CqlTranslator translator = CqlTranslator.fromFile(cqlFile, getModelManager(), getLibraryManager(), ucumService,
-                        CqlCompilerException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.All, options.toArray(new CqlTranslatorOptions.Options[options.size()]));
+                        CqlCompilerException.ErrorSeverity.Info, options.getSignatureLevel(), options.getOptions().toArray(new CqlTranslatorOptions.Options[options.getOptions().size()]));
 
                 if (translator.getErrors().size() > 0) {
                     System.err.println("Translation failed due to errors:");

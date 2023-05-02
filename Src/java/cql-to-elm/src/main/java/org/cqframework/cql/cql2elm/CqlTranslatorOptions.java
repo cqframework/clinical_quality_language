@@ -9,7 +9,7 @@ import java.util.List;
  * translation options for Cql source files
  */
 public class CqlTranslatorOptions {
-    public static enum Options {
+    public enum Options {
         EnableDateRangeOptimization,
         EnableAnnotations,
         EnableLocators,
@@ -32,7 +32,7 @@ public class CqlTranslatorOptions {
     private boolean enableCqlOnly = false;
     private String compatibilityLevel = "1.5";
     private CqlCompilerException.ErrorSeverity errorLevel = CqlCompilerException.ErrorSeverity.Info;
-    private LibraryBuilder.SignatureLevel signatureLevel = LibraryBuilder.SignatureLevel.None;
+    private LibraryBuilder.SignatureLevel signatureLevel = LibraryBuilder.SignatureLevel.Overloads;
     private boolean analyzeDataRequirements = false;
     private boolean collapseDataRequirements = false;
 
@@ -69,11 +69,11 @@ public class CqlTranslatorOptions {
      * @param options
      */
     public CqlTranslatorOptions(Options... options) {
-        this(CqlCompilerException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.None, options);
+        this(CqlCompilerException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.Overloads, options);
     }
 
     public CqlTranslatorOptions(CqlCompilerException.ErrorSeverity errorLevel, Options... options) {
-        this(errorLevel, LibraryBuilder.SignatureLevel.None, options);
+        this(errorLevel, LibraryBuilder.SignatureLevel.Overloads, options);
     }
 
     /**
@@ -406,7 +406,7 @@ public class CqlTranslatorOptions {
         this.analyzeDataRequirements = analyzeDataRequirements;
     }
 
-    /**git 
+    /**git
      * Return this instance of CqlTranslatorOptions with addition of newly assigned analyzedDataRequirements boolean
      * @param analyzeDataRequirements
      * @return

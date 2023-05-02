@@ -5,6 +5,9 @@ Clinical Quality Language ([CQL](http://www.hl7.org/implement/standards/product_
 
 This repository contains documentation, examples, and tooling in support of the CQL specification, including a CQL verifier/translator.
 
+* [Getting Started](https://github.com/cqframework/CQL-Formatting-and-Usage-Wiki/wiki/Getting-Started) - A collection of resources to help new users get started
+* [Cooking with CQL Examples](https://github.com/cqframework/CQL-Formatting-and-Usage-Wiki/wiki/Cooking-with-CQL-Examples) - Examples from Cooking with CQL sessions
+
 # Background
 CQL was developed as part of the Clinical Quality Framework ([CQF](https://oncprojectracking.healthit.gov/wiki/display/TechLabSC/CQF+Home)) initiative, a public-private partnership sponsored by the Centers for Medicare & Medicaid Services (CMS) and the U.S. Office of the National Coordinator for Health Information Technology (ONC) to identify, develop, and harmonize standards for clinical decision support and electronic clinical quality measurement.
 
