@@ -1,9 +1,9 @@
 package org.opencds.cqf.cql.engine.runtime;
 
-import org.opencds.cqf.cql.engine.elm.execution.AndEvaluator;
-import org.opencds.cqf.cql.engine.elm.execution.EqualEvaluator;
-import org.opencds.cqf.cql.engine.elm.execution.EquivalentEvaluator;
-import org.opencds.cqf.cql.engine.elm.execution.OrEvaluator;
+import org.opencds.cqf.cql.engine.elm.visiting.AndEvaluator;
+import org.opencds.cqf.cql.engine.elm.visiting.EqualEvaluator;
+import org.opencds.cqf.cql.engine.elm.visiting.EquivalentEvaluator;
+import org.opencds.cqf.cql.engine.elm.visiting.OrEvaluator;
 
 public abstract class Vocabulary implements CqlType {
 
