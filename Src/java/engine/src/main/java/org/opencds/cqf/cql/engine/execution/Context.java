@@ -617,7 +617,7 @@ public class Context {
         }
 
         if (candidateDefs.size() > 1 && !hasSignature) {
-            logger.debug("Using runtime function resolution for '{}'. It's recommended to always signatures in ELM", mangledFunctionName);
+            logger.debug("Using runtime function resolution for '{}'. It's recommended to always include signatures in ELM", mangledFunctionName);
         }
 
         return candidateDefs.stream().filter(x -> matchesTypes(x, types)).findFirst().orElse(null);
