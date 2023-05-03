@@ -1,74 +1,60 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import org.cqframework.cql.cql2elm.CqlCompilerException;
 import org.cqframework.cql.cql2elm.CqlTranslatorOptions;
-import org.cqframework.cql.cql2elm.LibraryManager;
-import org.cqframework.cql.cql2elm.ModelManager;
-import org.cqframework.cql.cql2elm.model.CompiledLibrary;
-import org.cqframework.cql.elm.execution.Library;
-import org.hl7.elm.r1.VersionedIdentifier;
+
+import org.opencds.cqf.cql.engine.runtime.DateTime;
+import org.opencds.cqf.cql.engine.runtime.Quantity;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.*;
 
-public class EngineTests {
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+
+public class EngineTests extends CqlTestBase {
     @Test
-    public void test_twoLibraries_expressionsForEach() throws IOException {
+    public void test_all_evaluator() throws IOException {
 
-        Map<VersionedIdentifier, String> textLibraries = new HashMap<>();
-        textLibraries.put(this.toElmIdentifier("Common", "1.0.0"),
-                "library Common version '1.0.0'\ndefine Z:\n5+5\n");
-        textLibraries.put(toElmIdentifier("Test", "1.0.0"),
-                "library Test version '1.0.0'\ninclude Common version '1.0.0' named \"Common\"\ndefine X:\n5+1\ndefine Y: 2 + 8\ndefine W: \"Common\".Z + 5");
-
-        LibraryManager libraryManager = this.toLibraryManager(textLibraries);
-        List<CqlCompilerException> errors = new ArrayList<>();
-        List<Library> executableLibrariesJson = new ArrayList<>();
-
-        Map<VersionedIdentifier, org.hl7.elm.r1.Library> libraries = new HashMap<>();
-
-//        for (org.hl7.elm.r1.VersionedIdentifier id : textLibraries.keySet()) {
-//            CompiledLibrary compiled = libraryManager.resolveLibrary(id, CqlTranslatorOptions.defaultOptions(), errors);
-//            libraries.put(id, compiled.getLibrary());
-//        }
-
-        Environment environment = new Environment(libraryManager);
-        environment.setLibraryManager(libraryManager);
+        Environment environment = new Environment(getLibraryManager());
         CqlEngineVisitor engineVisitor = new CqlEngineVisitor(environment, null, null,null, CqlTranslatorOptions.defaultOptions());
 
         Set<String> set = new HashSet<>();
-        set.add("Y");
-        set.add("X");
-        set.add("W");
-        EvaluationResult result  = engineVisitor.evaluate( toElmIdentifier("Test", "1.0.0"),set);
-        System.out.println(result.expressionResults.get("Y").value());
-        System.out.println(result.expressionResults.get("X").value());
-        System.out.println(result.expressionResults.get("W").value());
-        int x = 1;
-        x =x+1;
+//        set.add("AbsNull");
+//        set.add("Add11");
+//        set.add("TestAfterNull");
+//        set.add("AllTrueAllTrue");
+//        set.add("TrueAndTrue");
+//        set.add("AnyTrueAllTrue");
+//        set.add("AnyTrueAllFalse");
+        set.add("AsQuantity");
+//        set.add("CastAsQuantity");
+//        set.add("AsDateTime");
 
 
+        EvaluationResult result = engineVisitor.evaluate(toElmIdentifier("CqlAllInOne", "1"), set);
+//        assertThat(result.expressionResults.get("AllTrueAllTrue").value(), is(true));
+//        assertThat(result.expressionResults.get("AbsNull").value(), is(nullValue()));
+//        assertThat(result.expressionResults.get("Add11").value(), is(2));
+//        assertThat(result.expressionResults.get("TestAfterNull").value(), is(nullValue()));
+//        assertThat(result.expressionResults.get("TrueAndTrue").value(), is(true));
+//        assertThat(result.expressionResults.get("AnyTrueAllTrue").value(), is(true));
+//        assertThat(result.expressionResults.get("AnyTrueAllFalse").value(), is(false));
 
-//        for (org.hl7.elm.r1.VersionedIdentifier id : libraries.keySet()) {
-//            CompiledLibrary compiled = libraryManager.resolveLibrary(id, CqlTranslatorOptions.defaultOptions(), errors);
-//        }
+        Object obj = result.expressionResults.get("AsQuantity").value();
+        Assert.assertTrue(((Quantity)obj).equal(new Quantity().withValue(new BigDecimal("45.5")).withUnit("g")));
+
+//        result = context.resolveExpressionRef("CastAsQuantity").getExpression().evaluate(context);
+//        Assert.assertTrue(((Quantity) result).equal(new Quantity().withValue(new BigDecimal("45.5")).withUnit("g")));
+//
+//        result = context.resolveExpressionRef("AsDateTime").getExpression().evaluate(context);
+//        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2014, 1, 1)));
+
     }
 
-    public LibraryManager toLibraryManager(Map<org.hl7.elm.r1.VersionedIdentifier, String> libraryText) {
-        ModelManager modelManager = new ModelManager();
-        LibraryManager libraryManager = new LibraryManager(modelManager);
-        libraryManager.getLibrarySourceLoader().registerProvider(new InnMemoryLibrarySourceProvider(libraryText));
-        return libraryManager;
-    }
-
-    public org.hl7.elm.r1.VersionedIdentifier toElmIdentifier(String name) {
-        return new org.hl7.elm.r1.VersionedIdentifier().withId(name);
-    }
-
-    public org.hl7.elm.r1.VersionedIdentifier toElmIdentifier(String name, String version) {
-        return new org.hl7.elm.r1.VersionedIdentifier().withId(name).withVersion(version);
-    }
 
 }
 
