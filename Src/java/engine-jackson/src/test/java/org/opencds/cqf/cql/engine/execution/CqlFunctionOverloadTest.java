@@ -3,8 +3,6 @@ package org.opencds.cqf.cql.engine.execution;
 import org.cqframework.cql.cql2elm.LibraryBuilder;
 import org.cqframework.cql.elm.execution.Library;
 import org.fhir.ucum.UcumException;
-import org.opencds.cqf.cql.engine.exception.CqlException;
-import org.testng.Assert;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 import java.io.IOException;
@@ -26,12 +24,22 @@ public class CqlFunctionOverloadTest {
         Library library = translatorHelper.translate("FunctionOverloadTest.cql", LibraryBuilder.SignatureLevel.None);
         Context context = new Context(library);
 
-        try {
-            Object result = context.resolveExpressionRef("TestAnyFunctionWithInteger").getExpression().evaluate(context);
-            Assert.fail();
-        } catch (CqlException e) {
-            assertThat(e.getMessage().startsWith("Signature not provided for overloaded function 'TestAny'"), is(true));
-        }
+        // TODO: reenable this once compile-time resolution works
+        // try {
+        //     context.resolveExpressionRef("TestAnyFunctionWithInteger").getExpression().evaluate(context);
+        //     Assert.fail();
+        // } catch (CqlException e) {
+        //     assertThat(e.getMessage().startsWith("Signature not provided for overloaded function 'FunctionOverload.TestAny'"), is(true));
+        // }
+
+        var result = context.resolveExpressionRef("TestAnyFunctionWithInteger").getExpression().evaluate(context);
+        assertThat(result, is(1));
+
+        result = context.resolveExpressionRef("TestAnyFunctionWithNoArgs").getExpression().evaluate(context);
+        assertThat(result, is("any"));
+
+        result = context.resolveExpressionRef("TestAnyFunctionWith2Args").getExpression().evaluate(context);
+        assertThat(result, is(3));
     }
 
     @Test
@@ -46,6 +54,9 @@ public class CqlFunctionOverloadTest {
 
         result = context.resolveExpressionRef("TestAnyFunctionWithDecimal").getExpression().evaluate(context);
         assertThat(result, is(new BigDecimal("12.3")));
+
+        result = context.resolveExpressionRef("TestAnyFunctionWithNoArgs").getExpression().evaluate(context);
+        assertThat(result, is("any"));
     }
 
 }

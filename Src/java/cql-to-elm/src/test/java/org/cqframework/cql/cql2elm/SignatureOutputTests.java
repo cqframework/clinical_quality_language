@@ -20,7 +20,7 @@ public class SignatureOutputTests {
     private Map<String, ExpressionDef> defs;
 
     private Library getLibrary(LibraryBuilder.SignatureLevel signatureLevel) throws IOException {
-        File testFile = new File(URLDecoder.decode(Cql2ElmVisitorTest.class.getResource("SignatureOutputTests.cql").getFile(), "UTF-8"));
+        File testFile = new File(URLDecoder.decode(Cql2ElmVisitorTest.class.getResource("SignatureTests/SignatureOutputTests.cql").getFile(), "UTF-8"));
         ModelManager modelManager = new ModelManager();
         CqlTranslator translator = CqlTranslator.fromFile(testFile, modelManager, new LibraryManager(modelManager), CqlCompilerException.ErrorSeverity.Info, signatureLevel);
         for (CqlCompilerException error : translator.getErrors()) {
@@ -63,10 +63,16 @@ public class SignatureOutputTests {
         def = defs.get("TestDecimalOverload");
         assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
 
+        def = defs.get("TestMultipleOverload");
+        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
+
         def = defs.get("TestIntegerMultipleOverload");
         assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
 
         def = defs.get("TestDecimalMultipleOverload");
+        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
+
+        def = defs.get("TestIntegerAndDecimalMultipleOverload");
         assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
     }
 
@@ -97,10 +103,16 @@ public class SignatureOutputTests {
         def = defs.get("TestDecimalOverload");
         assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
 
+        def = defs.get("TestMultipleOverload");
+        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
+
         def = defs.get("TestIntegerMultipleOverload");
         assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
 
         def = defs.get("TestDecimalMultipleOverload");
+        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
+
+        def = defs.get("TestIntegerAndDecimalMultipleOverload");
         assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
     }
 
@@ -134,11 +146,17 @@ public class SignatureOutputTests {
         def = defs.get("TestDecimalOverload");
         assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
 
+        def = defs.get("TestMultipleOverload");
+        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
+
         def = defs.get("TestIntegerMultipleOverload");
         assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(1));
 
         def = defs.get("TestDecimalMultipleOverload");
         assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(2));
+
+        def = defs.get("TestIntegerAndDecimalMultipleOverload");
+        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
     }
 
     @Test
@@ -174,11 +192,17 @@ public class SignatureOutputTests {
         def = defs.get("TestDecimalOverload");
         assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(1));
 
+        def = defs.get("TestMultipleOverload");
+        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
+
         def = defs.get("TestIntegerMultipleOverload");
         assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(1));
 
         def = defs.get("TestDecimalMultipleOverload");
         assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(2));
+
+        def = defs.get("TestIntegerAndDecimalMultipleOverload");
+        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(3));
     }
 
 }

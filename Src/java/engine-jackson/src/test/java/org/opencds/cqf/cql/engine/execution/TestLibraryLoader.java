@@ -18,6 +18,13 @@ import org.opencds.cqf.cql.engine.serializing.jackson.JsonCqlLibraryReader;
 
 public class TestLibraryLoader implements LibraryLoader {
 
+    private CqlTranslatorOptions options = CqlTranslatorOptions.defaultOptions();
+
+    public TestLibraryLoader(LibraryManager libraryManager, CqlTranslatorOptions options) {
+        this(libraryManager);
+        this.options = options;
+    }
+
     public TestLibraryLoader(LibraryManager libraryManager) {
         if (libraryManager == null) {
             throw new IllegalArgumentException("libraryManager is null");
@@ -59,7 +66,7 @@ public class TestLibraryLoader implements LibraryLoader {
                 .withSystem(libraryIdentifier.getSystem())
                 .withVersion(libraryIdentifier.getVersion());
 
-        CompiledLibrary compiledLibrary = libraryManager.resolveLibrary(identifier, CqlTranslatorOptions.defaultOptions(), errors);
+        CompiledLibrary compiledLibrary = libraryManager.resolveLibrary(identifier, this.options, errors);
 
         String json;
         try {

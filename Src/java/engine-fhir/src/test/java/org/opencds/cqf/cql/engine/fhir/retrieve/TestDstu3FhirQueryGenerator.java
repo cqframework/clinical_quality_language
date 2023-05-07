@@ -4,7 +4,6 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.FhirVersionEnum;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 import ca.uhn.fhir.rest.param.DateRangeParam;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.hl7.fhir.dstu3.model.*;
 import org.opencds.cqf.cql.engine.fhir.Dstu3FhirTest;
@@ -49,7 +48,7 @@ public class TestDstu3FhirQueryGenerator extends Dstu3FhirTest {
         TerminologyProvider terminologyProvider = new Dstu3FhirTerminologyProvider(CLIENT);
         Dstu3FhirModelResolver modelResolver = new CachedDstu3FhirModelResolver();
         this.generator = new Dstu3FhirQueryGenerator(searchParameterResolver, terminologyProvider, modelResolver);
-        this.evaluationOffsetDateTime = OffsetDateTime.of(2018, 11, 19, 9, 0, 0, 000, ZoneOffset.ofHours(-10));
+        this.evaluationOffsetDateTime = OffsetDateTime.of(2018, 11, 19, 9, 0, 0, 000, ZoneOffset.ofHours(-7));
         this.evaluationDateTime = new DateTime(evaluationOffsetDateTime);
         this.contextValues = new HashMap<String, Object>();
         this.parameters = new HashMap<String, Object>();
@@ -158,11 +157,12 @@ public class TestDstu3FhirQueryGenerator extends Dstu3FhirTest {
         DataRequirement.DataRequirementDateFilterComponent dateFilterComponent = new DataRequirement.DataRequirementDateFilterComponent();
         dateFilterComponent.setPath("start");
 
-        int offsetHours = java.util.TimeZone.getDefault().getRawOffset() / 3600000;
-        String offsetSign = offsetHours < 0 ? "-" : "+";
-        int offsetAbs = Math.abs(offsetHours);
-        String offsetStringPadded = StringUtils.leftPad(String.valueOf(offsetAbs), 2, "0");
-        String dateTimeString = String.format("2021-12-01T00:00:00.000%s%s:00", offsetSign, offsetStringPadded);
+        OffsetDateTime evaluationDateTimeAsLocal = OffsetDateTime.ofInstant(evaluationOffsetDateTime.toInstant(),
+                java.util.TimeZone.getDefault().toZoneId());
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
+        String dateTimeString = dateTimeFormatter.format(evaluationDateTimeAsLocal);
+
         dateFilterComponent.setValue(new DateTimeType(dateTimeString));
         dataRequirement.setDateFilter(Collections.singletonList(dateFilterComponent));
 
@@ -182,21 +182,27 @@ public class TestDstu3FhirQueryGenerator extends Dstu3FhirTest {
         DataRequirement.DataRequirementDateFilterComponent dateFilterComponent = new DataRequirement.DataRequirementDateFilterComponent();
         dateFilterComponent.setPath("effective");
         Duration duration = new Duration();
-        duration.setValue(2).setCode("d").setUnit("days");
+        duration.setValue(90).setCode("d").setUnit("days");
         dateFilterComponent.setValue(duration);
         dataRequirement.setDateFilter(Collections.singletonList(dateFilterComponent));
 
         this.contextValues.put("Patient", "{{context.patientId}}");
         java.util.List<String> actual = this.generator.generateFhirQueries(dataRequirement, this.evaluationDateTime, this.contextValues, this.parameters, null);
 
-        int offsetHours = java.util.TimeZone.getDefault().getRawOffset() / 3600000;
-        OffsetDateTime evaluationDateTimeAsLocal = OffsetDateTime.ofInstant(this.evaluationOffsetDateTime.toInstant(),
-            java.util.TimeZone.getDefault().toZoneId());
-        OffsetDateTime expectedRangeStartDateTime = evaluationDateTimeAsLocal.minusDays(2);
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
+        OffsetDateTime evaluationDateTimeAsLocal = OffsetDateTime.ofInstant(evaluationOffsetDateTime.toInstant(),
+                java.util.TimeZone.getDefault().toZoneId());
+        Date expectedRangeStartDateTime = Date.from(evaluationDateTimeAsLocal.minusDays(90).toInstant());
+
+        SimpleDateFormat simpleDateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
 
         String actualQuery = actual.get(0);
-        String expectedQuery = String.format("Observation?date=ge%s&date=le%s&patient=Patient/{{context.patientId}}", fmt.format(expectedRangeStartDateTime), fmt.format(evaluationDateTimeAsLocal));
+        String expectedQuery =
+            String.format(
+                "Observation?date=ge%s&date=le%s&patient=Patient/{{context.patientId}}",
+                simpleDateFormatter.format(expectedRangeStartDateTime),
+                dateTimeFormatter.format(evaluationDateTimeAsLocal)
+            ).replace("Z", "+00:00");;
 
         assertEquals(actualQuery, expectedQuery);
     }
