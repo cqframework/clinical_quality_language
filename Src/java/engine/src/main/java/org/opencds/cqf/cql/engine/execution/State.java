@@ -601,19 +601,19 @@ public class State {
         return dataProvider.resolveType(typeName.getLocalPart());
     }
 
-    public Class<?> resolveType(org.cqframework.cql.elm.execution.TypeSpecifier typeSpecifier) {
-        if (typeSpecifier instanceof org.cqframework.cql.elm.execution.NamedTypeSpecifier) {
-            return resolveType(((org.cqframework.cql.elm.execution.NamedTypeSpecifier)typeSpecifier).getName());
+    public Class<?> resolveType(TypeSpecifier typeSpecifier) {
+        if (typeSpecifier instanceof NamedTypeSpecifier) {
+            return resolveType(((NamedTypeSpecifier)typeSpecifier).getName());
         }
-        else if (typeSpecifier instanceof org.cqframework.cql.elm.execution.ListTypeSpecifier) {
+        else if (typeSpecifier instanceof ListTypeSpecifier) {
             // TODO: This doesn't allow for list-distinguished overloads...
             return List.class;
             //return resolveType(((ListTypeSpecifier)typeSpecifier).getElementType());
         }
-        else if (typeSpecifier instanceof org.cqframework.cql.elm.execution.IntervalTypeSpecifier) {
+        else if (typeSpecifier instanceof IntervalTypeSpecifier) {
             return org.opencds.cqf.cql.engine.runtime.Interval.class;
         }
-        else if (typeSpecifier instanceof org.cqframework.cql.elm.execution.ChoiceTypeSpecifier) {
+        else if (typeSpecifier instanceof ChoiceTypeSpecifier) {
             // TODO: This doesn't allow for choice-distinguished overloads...
             return Object.class;
         }
