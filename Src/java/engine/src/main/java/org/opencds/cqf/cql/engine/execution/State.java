@@ -13,7 +13,6 @@ import org.opencds.cqf.cql.engine.debug.DebugAction;
 import org.opencds.cqf.cql.engine.debug.DebugMap;
 import org.opencds.cqf.cql.engine.debug.DebugResult;
 import org.opencds.cqf.cql.engine.debug.SourceLocator;
-import org.opencds.cqf.cql.engine.elm.execution.Executable;
 import org.opencds.cqf.cql.engine.exception.CqlException;
 import org.opencds.cqf.cql.engine.exception.Severity;
 import org.opencds.cqf.cql.engine.runtime.DateTime;
@@ -49,17 +48,17 @@ public class State {
     private OffsetDateTime evaluationOffsetDateTime;
     private DateTime evaluationDateTime;
 
-    private boolean enableExpressionCache = false;
-
     private LibraryManager libraryManager;
     private Environment environment;
+
+    private Cache cache;
 
     private CqlTranslatorOptions translatorOptions;
 
     private UcumService ucumService;
 
     private static UcumService sharedUcumService;
-    private Cache cache;
+
 
     private Map<String, DataProvider> dataProviders = new HashMap<>();
     private Map<String, DataProvider> packageMap = new HashMap<>();
@@ -154,7 +153,6 @@ public class State {
         if (library == null) {
             ArrayList<CqlCompilerException> errors = new ArrayList<CqlCompilerException>();
             library = libraryManager.resolveLibrary(libraryIdentifier, translatorOptions, errors).getLibrary();
-            //library = this.environment.getLibraryMap().get(libraryIdentifier);
             libraries.put(libraryIdentifier.getId(), library);
         }
 
@@ -191,30 +189,7 @@ public class State {
     }
 
 
-    public void setExpressionCaching(boolean yayOrNay) {
-        this.enableExpressionCache = yayOrNay;
-    }
 
-    protected Map<String, ExpressionResult> getCacheForLibrary(VersionedIdentifier libraryId) {
-        return this.cache.getExpressions()
-                .computeIfAbsent(libraryId, k-> this.cache.constructLibraryExpressionHashMap());
-    }
-
-    public boolean isExpressionCached(VersionedIdentifier libraryId, String name) {
-        return getCacheForLibrary(libraryId).containsKey(name);
-    }
-
-    public boolean isExpressionCachingEnabled() {
-        return this.enableExpressionCache;
-    }
-
-    public void cacheExpression(VersionedIdentifier libraryId, String name, ExpressionResult er) {
-        getCacheForLibrary(libraryId).put(name, er);
-    }
-
-    public ExpressionResult getCachedExpression(VersionedIdentifier libraryId, String name) {
-        return getCacheForLibrary(libraryId).get(name);
-    }
 
     public LibraryManager getLibraryManager() {
         return libraryManager;
@@ -309,6 +284,27 @@ public class State {
 
     public void push(Variable variable) {
         getStack().push(variable);
+    }
+
+    public Variable resolveVariable(String name) {
+        for (int i = windows.size() - 1; i >= 0; i--) {
+            for (int j = 0; j < windows.get(i).size(); j++) {
+                if (windows.get(i).get(j).getName().equals(name)) {
+                    return windows.get(i).get(j);
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public Variable resolveVariable(String name, boolean mustResolve) {
+        Variable result = resolveVariable(name);
+        if (mustResolve && result == null) {
+            throw new CqlException(String.format("Could not resolve variable reference %s", name));
+        }
+
+        return result;
     }
 
     public void pushWindow() {
@@ -419,6 +415,7 @@ public class State {
         var set = evaluatedResourceStack.peek();
         set.addAll(objects);
     }
+
 
     public CqlTranslatorOptions getTranslatorOptions() {
         return translatorOptions;
@@ -598,19 +595,25 @@ public class State {
         return dataProvider;
     }
 
-    public Class<?> resolveType(TypeSpecifier typeSpecifier) {
-        if (typeSpecifier instanceof NamedTypeSpecifier) {
-            return resolveType(((NamedTypeSpecifier)typeSpecifier).getName());
+    public Class<?> resolveType(QName typeName) {
+        typeName = fixupQName(typeName);
+        DataProvider dataProvider = resolveDataProvider(typeName);
+        return dataProvider.resolveType(typeName.getLocalPart());
+    }
+
+    public Class<?> resolveType(org.cqframework.cql.elm.execution.TypeSpecifier typeSpecifier) {
+        if (typeSpecifier instanceof org.cqframework.cql.elm.execution.NamedTypeSpecifier) {
+            return resolveType(((org.cqframework.cql.elm.execution.NamedTypeSpecifier)typeSpecifier).getName());
         }
-        else if (typeSpecifier instanceof ListTypeSpecifier) {
+        else if (typeSpecifier instanceof org.cqframework.cql.elm.execution.ListTypeSpecifier) {
             // TODO: This doesn't allow for list-distinguished overloads...
             return List.class;
             //return resolveType(((ListTypeSpecifier)typeSpecifier).getElementType());
         }
-        else if (typeSpecifier instanceof IntervalTypeSpecifier) {
+        else if (typeSpecifier instanceof org.cqframework.cql.elm.execution.IntervalTypeSpecifier) {
             return org.opencds.cqf.cql.engine.runtime.Interval.class;
         }
-        else if (typeSpecifier instanceof ChoiceTypeSpecifier) {
+        else if (typeSpecifier instanceof org.cqframework.cql.elm.execution.ChoiceTypeSpecifier) {
             // TODO: This doesn't allow for choice-distinguished overloads...
             return Object.class;
         }
@@ -694,28 +697,14 @@ public class State {
         return (libraryName == null ? getCurrentLibrary().getIdentifier().getId() : libraryName) + "." + name;
     }
 
-    public FunctionDef resolveFunctionRef(String libraryName, String name, List<Object> arguments, List<TypeSpecifier> signature) {
+    private Map<String, List<FunctionDef>> functionDefsByMangledName = new HashMap<>();
+
+    public FunctionDef resolveFunctionRef(final String libraryName, final String name, final List<Object> arguments, final List<TypeSpecifier> signature) {
         FunctionDef ret;
 
-        List<Object> types = arguments;
-        if (!signature.isEmpty()) {
-            types = signature.stream().map(e -> (Object) e).collect(Collectors.toList());
-        }
-        String mangledFunctionName = getMangledFunctionName(libraryName, name);
-        if (cache.getFunctionCache().containsKey(mangledFunctionName)) {
-            ret = getResolvedFunctionDesc(mangledFunctionName, name, types, signature.isEmpty());
-        } else {
-            for (ExpressionDef expressionDef : getCurrentLibrary().getStatements().getDef()) {
-                if (expressionDef.getName().equals(name) && expressionDef instanceof FunctionDef) {
-                    // this logic adds all function defs with a matching name to the cache
-                    var functionDesc = createFunctionDesc((FunctionDef) expressionDef);
+        final List<? extends Object> types = signature.isEmpty() ? arguments : signature;
 
-                    cache.getFunctionCache().computeIfAbsent(
-                            mangledFunctionName, k -> new ArrayList<>()).add(functionDesc);
-                }
-            }
-            ret = getResolvedFunctionDesc(mangledFunctionName, name, types, signature.isEmpty());
-        }
+        ret = getResolvedFunctionDef(libraryName, name, types, !signature.isEmpty());
 
         if (ret != null) {
             return ret;
@@ -725,25 +714,41 @@ public class State {
                 name, getUnresolvedMessage(types, name), getCurrentLibrary().getIdentifier().getId()));
     }
 
-    private FunctionDef getResolvedFunctionDesc(String mangledFunctionName, String name, List<Object> types, boolean emptySignature) {
-        FunctionDef ret = null;
-        validateFunctionOverload(cache.getFunctionCache().get(mangledFunctionName).size() > 1, name, emptySignature);
-        for (FunctionDesc functionDesc : cache.getFunctionCache().get(mangledFunctionName)) {
-            if ((ret = resolveFunctionDesc(functionDesc, types)) != null) {
-                break;
-            }
+    private FunctionDef getResolvedFunctionDef(final String libraryName, final String name, final List<? extends Object> types, final boolean hasSignature) {
+        String mangledFunctionName = getMangledFunctionName(libraryName, name);
+        List<FunctionDef> namedDefs = this.functionDefsByMangledName
+                .computeIfAbsent(mangledFunctionName, x -> this.getFunctionDefs(name));
+
+        var candidateDefs = namedDefs
+                .stream()
+                .filter(x -> x.getOperand().size() == types.size())
+                .collect(Collectors.toList());
+
+        if (candidateDefs.size() == 1) {
+            return candidateDefs.get(0);
         }
-        return ret;
+
+        if (candidateDefs.size() > 1 && !hasSignature) {
+            logger.debug("Using runtime function resolution for '{}'. It's recommended to always include signatures in ELM", mangledFunctionName);
+        }
+
+        return candidateDefs.stream().filter(x -> matchesTypes(x, types)).findFirst().orElse(null);
     }
 
-    private void validateFunctionOverload(Boolean isFunctionOverloaded, String name, boolean emptySignature) {
-        if (isFunctionOverloaded && emptySignature) {
-            throw new CqlException(String.format("Signature not provided for overloaded function '%s' in library '%s'.",
-                    name, getCurrentLibrary().getIdentifier().getId()));
+    private List<FunctionDef> getFunctionDefs(final String name) {
+        final var statements = getCurrentLibrary().getStatements();
+        if (statements == null) {
+            return Collections.emptyList();
         }
+
+        return statements.getDef().stream()
+                .filter(x -> x.getName().equals(name))
+                .filter(FunctionDef.class::isInstance)
+                .map(FunctionDef.class::cast)
+                .collect(Collectors.toList());
     }
 
-    private String getUnresolvedMessage(List<Object> arguments, String name) {
+    private String getUnresolvedMessage(List<? extends Object> arguments, String name) {
         StringBuilder argStr = new StringBuilder();
         if (arguments != null) {
             arguments.forEach(a -> argStr.append((argStr.length() > 0) ? ", " : "").append(resolveType(a).getName()));
@@ -752,28 +757,28 @@ public class State {
         return argStr.toString();
     }
 
-    private FunctionDef resolveFunctionDesc(FunctionDesc functionDesc, List<Object> arguments) {
+    private boolean isType(Class<?> argumentType, Class<?> operandType) {
+        return argumentType == null || operandType.isAssignableFrom(argumentType);
+    }
+
+    private boolean matchesTypes(FunctionDef functionDef, List<? extends Object> arguments) {
         boolean isMatch = true;
 
-        var operands = functionDesc.operandTypes();
+        var operands = functionDef.getOperand();
 
         // if argument length is mismatched, don't compare
         if (arguments.size() != operands.size()) {
-            return null;
+            return false;
         }
 
         for (var i = 0; i < arguments.size(); i++) {
-            isMatch = isType(resolveType(arguments.get(i)), operands.get(i));
+            isMatch = isType(resolveType(arguments.get(i)), this.resolveOperandType(operands.get(i)));
             if (!isMatch) {
                 break;
             }
         }
 
-        return isMatch ? functionDesc.functionDef() : null;
-    }
-
-    private boolean isType(Class<?> argumentType, Class<?> operandType) {
-        return argumentType == null || operandType.isAssignableFrom(argumentType);
+        return isMatch;
     }
 
     static class FunctionDesc {
@@ -908,27 +913,6 @@ public class State {
     public void logDebugError(CqlException e) {
         ensureDebugResult();
         debugResult.logDebugError(e);
-    }
-
-    public Variable resolveVariable(String name) {
-        for (int i = windows.size() - 1; i >= 0; i--) {
-            for (int j = 0; j < windows.get(i).size(); j++) {
-                if (windows.get(i).get(j).getName().equals(name)) {
-                    return windows.get(i).get(j);
-                }
-            }
-        }
-
-        return null;
-    }
-
-    public Variable resolveVariable(String name, boolean mustResolve) {
-        Variable result = resolveVariable(name);
-        if (mustResolve && result == null) {
-            throw new CqlException(String.format("Could not resolve variable reference %s", name));
-        }
-
-        return result;
     }
 
     public ParameterDef resolveParameterRef(String name) {

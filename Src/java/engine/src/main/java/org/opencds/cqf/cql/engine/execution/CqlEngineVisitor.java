@@ -203,7 +203,7 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
         this.state.setTranslatorOptions(this.translatorOptions);
 
         if (this.engineOptions.contains(Options.EnableExpressionCaching)) {
-            this.state.setExpressionCaching(true);
+            this.state.getCache().setExpressionCaching(true);
         }
 
 
@@ -354,17 +354,17 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
         try {
             state.pushEvaluatedResourceStack();
             VersionedIdentifier libraryId = state.getCurrentLibrary().getIdentifier();
-            if (state.isExpressionCachingEnabled() && state.isExpressionCached(libraryId, expressionDef.getName())) {
-                var er = state.getCachedExpression(libraryId, expressionDef.getName());
+            if (state.getCache().isExpressionCachingEnabled() && state.getCache().isExpressionCached(libraryId, expressionDef.getName())) {
+                var er = state.getCache().getCachedExpression(libraryId, expressionDef.getName());
                 state.getEvaluatedResources().addAll(er.evaluatedResources());
                 return er.value();
             }
 
             Object value = visitExpression(expressionDef.getExpression(), state);
 
-            if (state.isExpressionCachingEnabled()) {
+            if (state.getCache().isExpressionCachingEnabled()) {
                 var er = new ExpressionResult(value, state.getEvaluatedResources());
-                state.cacheExpression(libraryId, expressionDef.getName(), er);
+                state.getCache().cacheExpression(libraryId, expressionDef.getName(), er);
             }
 
             return value;
@@ -1224,7 +1224,7 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitFunctionRef(FunctionRef elm, State state) {
-        return FunctionRefEvaluator.internalEvaluate(elm, state, this);
+        return new FunctionRefEvaluator().internalEvaluate(elm, state, this);
     }
 
 

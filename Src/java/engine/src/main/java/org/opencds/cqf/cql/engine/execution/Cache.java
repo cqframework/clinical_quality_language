@@ -14,6 +14,8 @@ public class Cache {
 
     private Map<String, List<State.FunctionDesc>> functionCache = new HashMap<>();
 
+    private boolean enableExpressionCache = false;
+
     @SuppressWarnings("serial")
     private LinkedHashMap<VersionedIdentifier, LinkedHashMap<String, ExpressionResult>> expressions = new LinkedHashMap<VersionedIdentifier, LinkedHashMap<String, ExpressionResult>>(10, 0.9f, true) {
         @Override
@@ -46,5 +48,30 @@ public class Cache {
 
     public void setExpressions(LinkedHashMap<VersionedIdentifier, LinkedHashMap<String, ExpressionResult>> expressions) {
         this.expressions = expressions;
+    }
+
+    public void setExpressionCaching(boolean yayOrNay) {
+        this.enableExpressionCache = yayOrNay;
+    }
+
+    protected Map<String, ExpressionResult> getCacheForLibrary(VersionedIdentifier libraryId) {
+        return getExpressions()
+                .computeIfAbsent(libraryId, k-> constructLibraryExpressionHashMap());
+    }
+
+    public boolean isExpressionCached(VersionedIdentifier libraryId, String name) {
+        return getCacheForLibrary(libraryId).containsKey(name);
+    }
+
+    public boolean isExpressionCachingEnabled() {
+        return this.enableExpressionCache;
+    }
+
+    public void cacheExpression(VersionedIdentifier libraryId, String name, ExpressionResult er) {
+        getCacheForLibrary(libraryId).put(name, er);
+    }
+
+    public ExpressionResult getCachedExpression(VersionedIdentifier libraryId, String name) {
+        return getCacheForLibrary(libraryId).get(name);
     }
 }
