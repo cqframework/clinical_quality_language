@@ -12,7 +12,9 @@ public class InstanceEvaluator {
     private static Logger logger = LoggerFactory.getLogger(InstanceEvaluator.class);
 
     public Object internalEvaluate(Instance instance, State state, CqlEngineVisitor visitor) {
+
         System.out.println("evaluating instance");
+
         Object object = state.createInstance(instance.getClassType());
         for (org.hl7.elm.r1.InstanceElement element : instance.getElement()) {
             Object value = visitor.visitExpression(element.getValue(), state);
