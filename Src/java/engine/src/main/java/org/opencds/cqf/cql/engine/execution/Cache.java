@@ -60,7 +60,9 @@ public class Cache {
     }
 
     public boolean isExpressionCached(VersionedIdentifier libraryId, String name) {
-        return getCacheForLibrary(libraryId).containsKey(name);
+        boolean b = getCacheForLibrary(libraryId).containsKey(name);
+        System.out.println("Expression cache lookup:"+ name+ "| found:"+ b);
+        return b;
     }
 
     public boolean isExpressionCachingEnabled() {

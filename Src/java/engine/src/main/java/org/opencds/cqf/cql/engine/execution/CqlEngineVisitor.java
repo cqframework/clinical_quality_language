@@ -75,7 +75,7 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
         }
 
         if (translatorOptions == null) {
-            this.translatorOptions = CqlTranslatorOptions.defaultOptions();
+            this.translatorOptions = createOptionsMin();
         } else {
             this.translatorOptions = translatorOptions;
         }
@@ -102,6 +102,17 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
         if(engineOptions != null) {
         this.engineOptions = engineOptions;
         }
+    }
+    public CqlTranslatorOptions createOptionsMin() {
+        CqlTranslatorOptions result = new CqlTranslatorOptions();
+        result.setOptions(CqlTranslatorOptions.Options.EnableDateRangeOptimization,
+                CqlTranslatorOptions.Options.EnableLocators,
+                CqlTranslatorOptions.Options.EnableResultTypes,
+                CqlTranslatorOptions.Options.DisableListDemotion,
+                CqlTranslatorOptions.Options.DisableListPromotion,
+                CqlTranslatorOptions.Options.DisableMethodInvocation);
+
+        return result;
     }
 
     // TODO: Add debugging info as a parameter.
@@ -202,9 +213,9 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
         this.state.setLibraryManager(this.environment.getLibraryManager());
         this.state.setTranslatorOptions(this.translatorOptions);
 
-        if (this.engineOptions.contains(Options.EnableExpressionCaching)) {
+        //if (this.engineOptions.contains(Options.EnableExpressionCaching)) {
             this.state.getCache().setExpressionCaching(true);
-        }
+        //}
 
 
         if (this.environment.getDataProviders() != null) {
@@ -235,6 +246,15 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
             //Object object = def.evaluate(context);
             result.expressionResults.put(expression,
                 new ExpressionResult(object, this.state.getEvaluatedResources()));
+        }
+
+        System.out.println("printing keys:");
+        for(Map.Entry superEntry : this.state.getCache().getExpressions().entrySet()) {
+            System.out.println(superEntry.getKey());
+            LinkedHashMap map = ((LinkedHashMap)superEntry.getValue());
+            for( Object entry : map.entrySet()) {
+                System.out.println("key:"+ ((Map.Entry)entry).getKey() + "| value:"+ ((ExpressionResult)((Map.Entry)entry).getValue()).value);
+            }
         }
 
         //result.setDebugResult(context.getDebugResult());
@@ -347,6 +367,7 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitExpressionDef(ExpressionDef expressionDef, State state) {
+        System.out.println("visit expression def:"+ expressionDef.getName());
 
         if (expressionDef.getContext() != null) {
             state.enterContext(expressionDef.getContext());
@@ -357,10 +378,15 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
             if (state.getCache().isExpressionCachingEnabled() && state.getCache().isExpressionCached(libraryId, expressionDef.getName())) {
                 var er = state.getCache().getCachedExpression(libraryId, expressionDef.getName());
                 state.getEvaluatedResources().addAll(er.evaluatedResources());
+                System.out.println("value in cache:"+ er.value());
                 return er.value();
             }
 
             Object value = visitExpression(expressionDef.getExpression(), state);
+
+            if(value instanceof ExpressionDef) {
+                value = visitExpressionDef((ExpressionDef) value, state);
+            }
 
             if (state.getCache().isExpressionCachingEnabled()) {
                 var er = new ExpressionResult(value, state.getEvaluatedResources());
@@ -528,8 +554,15 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitGreater(Greater elm, State state) {
+        System.out.println("visit greater:");
         Object left = visitExpression(elm.getOperand().get(0), state);
         Object right = visitExpression(elm.getOperand().get(1), state);
+        if(left instanceof ExpressionDef) {
+            left = visitExpressionDef((ExpressionDef)left, state);
+        }
+        if(right instanceof ExpressionDef) {
+            right = visitExpressionDef((ExpressionDef)right, state);
+        }
         return GreaterEvaluator.greater(left, right, state);
     }
 
@@ -683,6 +716,13 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
     public Object visitSubtract(Subtract elm, State state) {
         Object left = visitExpression(elm.getOperand().get(0), state);
         Object right = visitExpression(elm.getOperand().get(1), state);
+        if (left instanceof ExpressionDef) {
+            left = visitExpressionDef((ExpressionDef) left, state);
+        }
+
+        if (right instanceof ExpressionDef) {
+            right = visitExpressionDef((ExpressionDef) right, state);
+        }
         return SubtractEvaluator.subtract(left, right);
     }
 
@@ -744,6 +784,9 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
     @Override
     public Object visitToConcept(ToConcept elm, State state) {
         Object operand = visitExpression(elm.getOperand(), state);
+        if(operand instanceof ExpressionDef) {
+            operand  = visitExpressionDef((ExpressionDef) operand, state);
+        }
         return ToConceptEvaluator.toConcept(operand) ;
     }
 
@@ -879,25 +922,29 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitCase(Case elm, State state) {
+        System.out.println("visiting Case");
         if (elm.getComparand() == null) {
             for (CaseItem caseItem : elm.getCaseItem()) {
-                Boolean when = (Boolean) visitElement(caseItem.getWhen(), state);
+                Boolean when = (Boolean) visitExpression(caseItem.getWhen(), state);
 
                 if (when == null) {
                     continue;
                 }
 
                 if (when) {
-                    return visitElement(caseItem.getThen(), state);
+                    return visitExpression(caseItem.getThen(), state);
                 }
             }
             return visitElement(elm.getElse(), state);
 
         } else {
-            Object comparand = visitElement(elm.getComparand(), state);
+            Object comparand = visitExpression(elm.getComparand(), state);
+            if (comparand instanceof ExpressionDef) {
+                comparand = visitExpressionDef((ExpressionDef) comparand, state);
+            }
 
             for (CaseItem caseItem : elm.getCaseItem()) {
-                Object when = visitElement(caseItem.getWhen(), state);
+                Object when = visitExpression(caseItem.getWhen(), state);
                 Boolean check = EquivalentEvaluator.equivalent(comparand, when, state);
                 if (check == null) {
                     continue;
@@ -936,11 +983,13 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitCode(Code elm, State state) {
+        System.out.println("visiting code");
         return CodeEvaluator.internalEvaluate(elm.getSystem(), elm.getCode(), elm.getDisplay(), state);
     }
 
     @Override
     public Object visitCodeRef(CodeRef elm, State state) {
+        System.out.println("visiting codeRef");
         CodeDef cd = state.resolveCodeRef(elm.getName());
         CodeSystem cs = CodeSystemRefEvaluator.toCodeSystem(cd.getCodeSystem(), state);
 
@@ -948,6 +997,7 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
     }
     @Override
     public Object visitConcept(Concept elm, State state) {
+        System.out.println("visiting Concept");
         ArrayList<org.opencds.cqf.cql.engine.runtime.Code> codes = new ArrayList<>();
         for (int i = 0; i < elm.getCode().size(); ++i) {
             codes.add((org.opencds.cqf.cql.engine.runtime.Code) visitExpression(elm.getCode().get(i), state));
@@ -1076,6 +1126,9 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
     @Override
     public Object visitDateFrom(DateFrom elm, State state) {
         Object operand = visitExpression(elm.getOperand(), state);
+        if (operand instanceof ExpressionDef) {
+            operand = visitExpressionDef((ExpressionDef) operand, state);
+        }
         return DateFromEvaluator.dateFrom(operand);
     }
     @Override
@@ -1108,6 +1161,13 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
     public Object visitDifferenceBetween(DifferenceBetween elm, State state) {
         Object left = visitExpression(elm.getOperand().get(0), state);
         Object right = visitExpression(elm.getOperand().get(1), state);
+        if (left instanceof ExpressionDef) {
+            left = visitExpressionDef((ExpressionDef) left, state);
+        }
+
+        if (right instanceof ExpressionDef) {
+            right = visitExpressionDef((ExpressionDef) right, state);
+        }
         String precision = elm.getPrecision().value();
         return DifferenceBetweenEvaluator.difference(left, right,
                 org.opencds.cqf.cql.engine.runtime.Precision.fromString(precision)) ;
@@ -1116,6 +1176,14 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
     public Object visitDurationBetween(DurationBetween elm, State state) {
         Object left = visitExpression(elm.getOperand().get(0), state);
         Object right = visitExpression(elm.getOperand().get(1), state);
+
+        if (left instanceof ExpressionDef) {
+            left = visitExpressionDef((ExpressionDef) left, state);
+        }
+
+        if (right instanceof ExpressionDef) {
+            right = visitExpressionDef((ExpressionDef) right, state);
+        }
         String precision = elm.getPrecision().value();
         return DurationBetweenEvaluator.duration(left, right,
                 org.opencds.cqf.cql.engine.runtime.Precision.fromString(precision)) ;
@@ -1146,6 +1214,14 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
         Object left = visitExpression(elm.getOperand().get(0), state);
         Object right = visitExpression(elm.getOperand().get(1), state);
 
+        if (left instanceof ExpressionDef) {
+            left = visitExpressionDef((ExpressionDef) left, state);
+        }
+
+        if (right instanceof ExpressionDef) {
+            right = visitExpressionDef((ExpressionDef) right, state);
+        }
+
         return EqualEvaluator.equal(left, right, state);
     }
 
@@ -1153,6 +1229,13 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
     public Object visitEquivalent(Equivalent elm, State state) {
         Object left = visitExpression(elm.getOperand().get(0), state);
         Object right = visitExpression(elm.getOperand().get(1), state);
+        if (left instanceof ExpressionDef) {
+            left = visitExpressionDef((ExpressionDef) left, state);
+        }
+
+        if (right instanceof ExpressionDef) {
+            right = visitExpressionDef((ExpressionDef) right, state);
+        }
         return EquivalentEvaluator.equivalent(left, right, state) ;
     }
 
@@ -1299,7 +1382,8 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitInstance(Instance elm, State state) {
-        return InstanceEvaluator.internalEvaluate(elm, state, this);
+        System.out.println("visiting Instance");
+        return new InstanceEvaluator().internalEvaluate(elm, state, this);
     }
 
 
@@ -1375,11 +1459,13 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitLiteral(Literal literal, State state) {
+        System.out.println("visit literal:"+ literal.getValueType());
         return LiteralEvaluator.internalEvaluate(literal.getValueType(), literal.getValue(), state);
     }
 
     @Override
     public Object visitList(org.hl7.elm.r1.List elm, State state) {
+        System.out.println("visiting list");
         return ListEvaluator.internalEvaluate(elm, state, this);
     }
 
@@ -1460,6 +1546,14 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
     public Object visitMultiply(Multiply elm, State state) {
         Object left = visitExpression(elm.getOperand().get(0), state);
         Object right = visitExpression(elm.getOperand().get(1), state);
+
+        if (left instanceof ExpressionDef) {
+            left = visitExpressionDef((ExpressionDef) left, state);
+        }
+
+        if (right instanceof ExpressionDef) {
+            right = visitExpressionDef((ExpressionDef) right, state);
+        }
         return MultiplyEvaluator.multiply(left, right);
     }
 
@@ -1493,6 +1587,7 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitOperandRef(OperandRef elm, State state) {
+        System.out.println("Operand:"+ elm);
         return OperandRefEvaluator.internalEvaluate(elm, state) ;
     }
 

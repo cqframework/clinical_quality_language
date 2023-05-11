@@ -5,6 +5,8 @@ import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal;
 import org.opencds.cqf.cql.engine.runtime.Interval;
 import org.opencds.cqf.cql.engine.runtime.Quantity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 
@@ -42,7 +44,9 @@ If either argument is null, the result is null.
 
 public class GreaterEvaluator {
 
+    private static Logger logger = LoggerFactory.getLogger(GreaterEvaluator.class);
     public static Boolean greater(Object left, Object right, State state) {
+        logger.info("evaluating GreaterEvaluator");
 
         if (left == null || right == null) {
             return null;
