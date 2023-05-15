@@ -18,7 +18,7 @@ import static org.hamcrest.Matchers.comparesEqualTo;
 
 public class EngineTests extends CqlTestBase {
     @Test
-    public void test_all_evaluator() throws IOException {
+    public void test_all_evaluator() throws Exception {
 
         Environment environment = new Environment(getLibraryManager());
         CqlEngineVisitor engineVisitor = new CqlEngineVisitor(environment, null, null, null, createOptionsMin());
