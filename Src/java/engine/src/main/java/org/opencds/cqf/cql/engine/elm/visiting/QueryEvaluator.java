@@ -16,7 +16,7 @@ import java.util.List;
 public class QueryEvaluator {
 
     @SuppressWarnings("unchecked")
-    public static Iterable<Object> ensureIterable(Object source) {
+    public Iterable<Object> ensureIterable(Object source) {
         if (source instanceof Iterable) {
             return (Iterable<Object>) source;
         }
@@ -34,7 +34,7 @@ public class QueryEvaluator {
         }
     }
 
-    private static boolean evaluateRelationships(Query elm, State state, CqlEngineVisitor visitor) {
+    private boolean evaluateRelationships(Query elm, State state, CqlEngineVisitor visitor) {
         // TODO: This is the most naive possible implementation here, but it should perform okay with 1) caching and 2) small data sets
         boolean shouldInclude = true;
         for (org.hl7.elm.r1.RelationshipClause relationship : elm.getRelationship()) {
@@ -68,7 +68,7 @@ public class QueryEvaluator {
         return shouldInclude;
     }
 
-    private static boolean evaluateWhere(Query elm, State state, CqlEngineVisitor visitor) {
+    private boolean evaluateWhere(Query elm, State state, CqlEngineVisitor visitor) {
         if (elm.getWhere() != null) {
             Object satisfiesCondition =visitor.visitExpression(elm.getWhere(),state);
             if (!(satisfiesCondition instanceof Boolean && (Boolean)satisfiesCondition)) {
@@ -79,11 +79,12 @@ public class QueryEvaluator {
         return true;
     }
 
-    private static Object evaluateReturn(Query elm, State state, List<Variable> variables, List<Object> elements, CqlEngineVisitor visitor) {
+    private Object evaluateReturn(Query elm, State state, List<Variable> variables, List<Object> elements, CqlEngineVisitor visitor) {
         return elm.getReturn() != null ? visitor.visitExpression(elm.getReturn().getExpression(),state) : constructResult(state, variables, elements);
     }
 
-    private static Object constructResult(State state, List<Variable> variables, List<Object> elements) {
+    private Object constructResult(State state, List<Variable> variables, List<Object> elements) {
+       // System.out.println("Elements:"+ elements);
         if (variables.size() > 1) {
             LinkedHashMap<String,Object> elementMap = new LinkedHashMap<>();
             for (int i = 0; i < variables.size(); i++) {
@@ -124,7 +125,7 @@ public class QueryEvaluator {
         }
     }
 
-    static class QuerySource {
+     class QuerySource {
         private String alias;
         private boolean isList;
         private Iterable<Object> data;
@@ -149,7 +150,7 @@ public class QueryEvaluator {
     }
 
     @SuppressWarnings("unchecked")
-    public static Object internalEvaluate(Query elm, State state, CqlEngineVisitor visitor) {
+    public Object internalEvaluate(Query elm, State state, CqlEngineVisitor visitor) {
 
         ArrayList<Iterator<Object>> sources = new ArrayList<Iterator<Object>>();
         ArrayList<Variable> variables = new ArrayList<Variable>();
@@ -159,7 +160,11 @@ public class QueryEvaluator {
         int pushCount = 0;
         try {
             for (AliasedQuerySource source : elm.getSource()) {
-                QuerySource querySource = new QuerySource(source.getAlias(), visitor.visitExpression(source.getExpression(),state));
+                Object obj = visitor.visitExpression(source.getExpression(),state);
+                if(obj instanceof ExpressionDef) {
+                    obj = visitor.visitExpression(((ExpressionDef) obj).getExpression(),state);
+                }
+                QuerySource querySource = new QuerySource(source.getAlias(), obj);
                 sources.add(querySource.getData().iterator());
                 if (querySource.getIsList()) {
                     sourceIsList = true;
@@ -196,7 +201,7 @@ public class QueryEvaluator {
                     continue;
                 }
 
-                result.add(evaluateReturn(elm,state, variables, elements, visitor));
+                result.add(evaluateReturn(elm, state, variables, elements, visitor));
             }
         }
         finally {
@@ -210,7 +215,7 @@ public class QueryEvaluator {
             result = DistinctEvaluator.distinct(result, state);
         }
 
-        sortResult(elm,result, state, null, visitor);
+        sortResult(elm, result, state, null, visitor);
 
         if ((result == null || result.isEmpty()) && !sourceIsList) {
             return null;
@@ -219,7 +224,7 @@ public class QueryEvaluator {
         return sourceIsList ? result : result.get(0);
     }
 
-    private static void assignVariables(List<Variable> variables, List<Object> elements) {
+    private void assignVariables(List<Variable> variables, List<Object> elements) {
         for (int i = 0; i < variables.size(); i++) {
             variables.get(i).setValue(elements.get(i));
         }

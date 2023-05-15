@@ -2273,9 +2273,9 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
         return QueryLetRefEvaluator.internalEvaluate(elm, state);
     }
 
-//    @Override
-//    public Object visitQuery(Query elm, State state) {
-//        return QueryEvaluator.internalEvaluate(elm, state) ;
-//    }
+    @Override
+    public Object visitQuery(Query elm, State state) {
+        return new QueryEvaluator().internalEvaluate(elm, state, this) ;
+    }
 
 }
