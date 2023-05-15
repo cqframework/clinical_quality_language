@@ -526,6 +526,11 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
     }
 
     @Override
+    public Object visitValueSetRef(ValueSetRef elm, State state) {
+        return ValueSetRefEvaluator.internalEvaluate(state, elm);
+    }
+
+    @Override
     public Object visitXor(Xor elm, State state) {
         Object left = visitExpression(elm.getOperand().get(0), state);
         if (left instanceof ExpressionDef) {
