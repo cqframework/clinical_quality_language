@@ -13,6 +13,7 @@ public class FunctionRefEvaluator {
 
     private FunctionDef cachedFunctionDef;
     public Object internalEvaluate(FunctionRef functionRef, State state, CqlEngineVisitor visitor) {
+        System.out.println("evaluating Function Ref:"+ functionRef.getName());
         ArrayList<Object> arguments = new ArrayList<>(functionRef.getOperand().size());
         for (Expression operand : functionRef.getOperand()) {
             arguments.add(visitor.visitExpression(operand, state));

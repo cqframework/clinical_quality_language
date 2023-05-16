@@ -238,7 +238,7 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
                 continue;
             }
 
-            this.state.enterContext(def.getContext());
+            //this.state.enterContext(def.getContext());
             Object object = visitExpressionDef(def, this.state);
             //Object object = def.evaluate(context);
             result.expressionResults.put(expression, new ExpressionResult(object, this.state.getEvaluatedResources()));
@@ -421,6 +421,19 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
     }
 
     @Override
+    public Object visitExpressionRef(ExpressionRef expressionRef, State state) {
+        if(expressionRef instanceof FunctionRef) {
+            return visitFunctionRef((FunctionRef) expressionRef, state);
+        }
+        return ExpressionRefEvaluator.internalEvaluate(expressionRef, state);
+    }
+
+    @Override
+    public Object visitFunctionRef(FunctionRef elm, State state) {
+        return new FunctionRefEvaluator().internalEvaluate(elm, state, this);
+    }
+
+    @Override
     public Object visitAdd(Add add, State state) {
         Object left = visitExpression(add.getOperand().get(0), state);
         if (left instanceof ExpressionDef) {
@@ -431,11 +444,6 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
             right = visitExpressionDef((ExpressionDef) right, state);
         }
         return AddEvaluator.add(left, right);
-    }
-
-    @Override
-    public Object visitExpressionRef(ExpressionRef expressionRef, State state) {
-        return ExpressionRefEvaluator.internalEvaluate(expressionRef, state);
     }
 
     @Override
@@ -1644,11 +1652,6 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
         }
         Object element = visitExpression(elm.getElement(), state);
         return ForEachEvaluator.forEach(source, element, state);
-    }
-
-    @Override
-    public Object visitFunctionRef(FunctionRef elm, State state) {
-        return new FunctionRefEvaluator().internalEvaluate(elm, state, this);
     }
 
 
