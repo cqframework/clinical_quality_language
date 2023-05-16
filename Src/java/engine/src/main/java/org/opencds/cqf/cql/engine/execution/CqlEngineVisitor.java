@@ -112,6 +112,18 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
         return result;
     }
 
+    public Environment getEnvironment() {
+        return environment;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public Cache getCache() {
+        return cache;
+    }
+
     // TODO: Add debugging info as a parameter.
     public EvaluationResult evaluate(String libraryName) {
         return this.evaluate(libraryName, null, null, null);
@@ -210,9 +222,9 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
         this.state.setLibraryManager(this.environment.getLibraryManager());
         this.state.setTranslatorOptions(this.translatorOptions);
 
-        //if (this.engineOptions.contains(Options.EnableExpressionCaching)) {
-        this.state.getCache().setExpressionCaching(true);
-        //}
+        if (this.engineOptions.contains(Options.EnableExpressionCaching)) {
+            this.state.getCache().setExpressionCaching(true);
+        }
 
 
         if (this.environment.getDataProviders() != null) {
@@ -394,6 +406,7 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
             }
 
             if (state.getCache().isExpressionCachingEnabled()) {
+                System.out.println("Expression is cached:" + libraryId.getId() + "|" + expressionDef.getName());
                 var er = new ExpressionResult(value, state.getEvaluatedResources());
                 state.getCache().cacheExpression(libraryId, expressionDef.getName(), er);
             }

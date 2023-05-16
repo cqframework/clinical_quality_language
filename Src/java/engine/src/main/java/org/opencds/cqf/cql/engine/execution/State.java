@@ -334,10 +334,12 @@ public class State {
     }
 
     public void enterContext(String context) {
+        System.out.println("Enter context:"+ context);
         currentContext.push(context);
     }
 
     public void exitContext() {
+        System.out.println("Exit context");
         currentContext.pop();
     }
 
