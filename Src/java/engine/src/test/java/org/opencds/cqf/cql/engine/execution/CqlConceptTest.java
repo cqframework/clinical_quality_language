@@ -6,9 +6,9 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 
 import java.util.*;
-public class ToConceptTest extends CqlTestBase {
+public class CqlConceptTest extends CqlTestBase {
     @Test
-    public void test_all_evaluator() throws IOException {
+    public void test_all_cql_concept_tests() throws IOException {
 
         Environment environment = new Environment(getLibraryManager());
         CqlEngineVisitor engineVisitor = new CqlEngineVisitor(environment, null, null, null, createOptionsMin());

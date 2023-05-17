@@ -11,7 +11,7 @@ import org.testng.annotations.Test;
 import java.util.Collections;
 import java.util.List;
 
-import static org.opencds.cqf.cql.engine.execution.ToConceptTest.assertEqual;
+import static org.opencds.cqf.cql.engine.execution.CqlConceptTest.assertEqual;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 

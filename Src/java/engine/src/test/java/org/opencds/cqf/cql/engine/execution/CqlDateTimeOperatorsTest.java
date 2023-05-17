@@ -1,191 +1,30 @@
 package org.opencds.cqf.cql.engine.execution;
 
-
-
 import org.opencds.cqf.cql.engine.elm.visiting.EquivalentEvaluator;
 import org.opencds.cqf.cql.engine.runtime.*;
 import org.opencds.cqf.cql.engine.runtime.Date;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.TimeZone;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
-public class EngineTests extends CqlTestBase {
+public class CqlDateTimeOperatorsTest extends CqlTestBase {
     @Test
-    public void test_all_evaluator() throws Exception {
+    public void test_all_date_time_tests() throws IOException {
 
-        Environment environment = new Environment(getLibraryManager());
-        CqlEngineVisitor engineVisitor = new CqlEngineVisitor(environment, null, null, null, createOptionsMin());
-
-        Set<String> set = new HashSet<>();
-
-
-        EvaluationResult evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlAllInOne", "1"), null, null, null, null,
+        EvaluationResult evaluationResult;
+        evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlDateTimeOperatorsTest"), null, null, null, null,
                 ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, TimeZone.getDefault().toZoneId()));
 
-        Object result;
-
-        assertThat(evaluationResult.expressionResults.get("AllTrueAllTrue").value(), is(true));
-
-        assertThat(evaluationResult.expressionResults.get("TestAfterNull").value(), is(nullValue()));
-        assertThat(evaluationResult.expressionResults.get("TrueAndTrue").value(), is(true));
-        assertThat(evaluationResult.expressionResults.get("AnyTrueAllTrue").value(), is(true));
-        assertThat(evaluationResult.expressionResults.get("AnyTrueAllFalse").value(), is(false));
-
-        result = evaluationResult.expressionResults.get("AsQuantity").value();
-        Assert.assertTrue(((Quantity)result).equal(new Quantity().withValue(new BigDecimal("45.5")).withUnit("g")));
-
-        result = evaluationResult.expressionResults.get("CastAsQuantity").value();
-        Assert.assertTrue(((Quantity)result).equal(new Quantity().withValue(new BigDecimal("45.5")).withUnit("g")));
-
-        result = evaluationResult.expressionResults.get("AsDateTime").value();
-        Assert.assertTrue(((DateTime)result).equal(new DateTime(null, 2014, 1, 1)));
-
-
-
-        result = evaluationResult.expressionResults.get("BetweenIntTrue").value();
-        assertThat(result, is(true));
-
-        result = evaluationResult.expressionResults.get("SimpleEqTrueTrue").value();
-        assertThat(result, is(true));
-
-        result = evaluationResult.expressionResults.get("SimpleEqNullNull").value();
-        assertThat(result, is(nullValue()));
-
-        result = evaluationResult.expressionResults.get("QuantityEqDiffPrecision").value();
-        assertThat(result, is(true));
-
-        result = evaluationResult.expressionResults.get("RatioNotEqual").value();
-        assertThat(result, is(false));
-
-
-        result = evaluationResult.expressionResults.get("TupleEqJohn1John2").value();
-        assertThat(result, is(false));
-
-        result = evaluationResult.expressionResults.get("DateTimeEqJanJan").value();
-        assertThat(result, is(true));
-
-        result = evaluationResult.expressionResults.get("GreaterZNeg1").value();
-        assertThat(result, is(true));
-
-        result = evaluationResult.expressionResults.get("GreaterOrEqualCM0NegCM1").value();
-        assertThat(result, is(true));
-
-        result = evaluationResult.expressionResults.get("EquivFalseFalse").value();
-        assertThat(result, is(true));
-
-        result = evaluationResult.expressionResults.get("RatioEquivalent").value();
-        assertThat(result, is(true));
-
-        result = evaluationResult.expressionResults.get("SimpleNotEqFloat1Float2").value();
-        assertThat(result, is(true));
-
-        result = evaluationResult.expressionResults.get("x").value();
-        System.out.println(result);
-
-        result = evaluationResult.expressionResults.get("IfTrue1").value();
-        assertThat(result, is(5));
-
-        result = evaluationResult.expressionResults.get("IfFalse1").value();
-        assertThat(result, is(5));
-
-        result = evaluationResult.expressionResults.get("IfNull1").value();
-        assertThat(result, is(10));
-
-        result = evaluationResult.expressionResults.get("StandardCase1").value();
-                assertThat(result, is(5));
-
-        result = evaluationResult.expressionResults.get("StandardCase2").value();
-                assertThat(result, is(5));
-
-        result = evaluationResult.expressionResults.get("StandardCase3").value();
-                assertThat(result, is(15));
-
-        result = evaluationResult.expressionResults.get("SelectedCase1").value();
-                assertThat(result, is(12));
-
-        result = evaluationResult.expressionResults.get("SelectedCase2").value();
-                assertThat(result, is(15));
-
-        result = evaluationResult.expressionResults.get("SelectedCase3").value();
-                assertThat(result, is(5));
-
-
-
-        result = evaluationResult.expressionResults.get("Issue70A").value();
-        assertThat(result, is(false));
-
-        result = evaluationResult.expressionResults.get("Issue70B").value();
-        assertThat(result, is(true));
-
-        result = evaluationResult.expressionResults.get("CodeEqualTrue").value();
-        assertThat(result, is(true));
-
-        result = evaluationResult.expressionResults.get("CodeEqualFalse").value();
-        assertThat(result, is(false));
-
-        result = evaluationResult.expressionResults.get("CodeEqualNullVersion").value();
-        assertThat(result, is(nullValue()));
-
-        result = evaluationResult.expressionResults.get("ConceptEqualTrue").value();
-        assertThat(result, is(true));
-
-        result = evaluationResult.expressionResults.get("ConceptEqualFalse").value();
-        assertThat(result, is(false));
-
-        result = evaluationResult.expressionResults.get("ConceptEqualNullDisplay").value();
-        assertThat(result, is(nullValue()));
-
-        result = evaluationResult.expressionResults.get("CodeEqualNull").value();
-        assertThat(result, is(nullValue()));
-
-        result = evaluationResult.expressionResults.get("ConceptEqualNull").value();
-        assertThat(result, is(nullValue()));
-
-        result = evaluationResult.expressionResults.get("CodeEquivalentTrue").value();
-        assertThat(result, is(true));
-
-        result = evaluationResult.expressionResults.get("CodeEquivalentFalse").value();
-        assertThat(result, is(false));
-
-        result = evaluationResult.expressionResults.get("ConceptEquivalentTrue").value();
-        assertThat(result, is(true));
-
-        result = evaluationResult.expressionResults.get("ConceptEquivalentTrueDisplayMismatch").value();
-        assertThat(result, is(true));
-
-        result = evaluationResult.expressionResults.get("ConceptEquivalentTrueIntersection1And4").value();
-        assertThat(result, is(true));
-
-        result = evaluationResult.expressionResults.get("ConceptEquivalentTrueIntersection2And4").value();
-        assertThat(result, is(true));
-
-        result = evaluationResult.expressionResults.get("ConceptEquivalentFalse").value();
-        assertThat(result, is(false));
-
-        result = evaluationResult.expressionResults.get("CodeEquivalentNull").value();
-        assertThat(result, is(false));
-
-        result = evaluationResult.expressionResults.get("ConceptEquivalentNull").value();
-        assertThat(result, is(false));
-
-        result = evaluationResult.expressionResults.get("CodeToConceptEquivalentFalse").value();
-        assertThat(result, is(false));
-
-        result = evaluationResult.expressionResults.get("CodeToConceptEquivalentTrue").value();
-        assertThat(result, is(true));
-
-        result = evaluationResult.expressionResults.get("ConceptToConceptMismatchedDisplayTrue").value();
-        assertThat(result, is(true));
-
-        result = evaluationResult.expressionResults.get("DateTimeAdd5Years").value();
+        Object result = evaluationResult.expressionResults.get("DateTimeAdd5Years").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2010, 10, 10)));
-
 
         result = evaluationResult.expressionResults.get("DateTimeAdd5Months").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2005, 10, 10)));
@@ -224,10 +63,10 @@ public class EngineTests extends CqlTestBase {
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Date(2016)));
 
         result = evaluationResult.expressionResults.get("DateAdd33Days").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Date(2014, 7)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Date(2014,7)));
 
         result = evaluationResult.expressionResults.get("DateAdd1Year").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Date(2015, 6)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Date(2015,6)));
 
         result = evaluationResult.expressionResults.get("DateTimeAddHoursOverflow").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2016, 6, 11, 0)));
@@ -355,6 +194,9 @@ public class EngineTests extends CqlTestBase {
 
         result = evaluationResult.expressionResults.get("TimeAfterMillisecondFalse").value();
         assertThat(result, is(false));
+
+        result = evaluationResult.expressionResults.get("TimeAfterTimeCstor").value();
+        assertThat(result, is(true));
 
         result = evaluationResult.expressionResults.get("DateTimeBeforeYearTrue").value();
         assertThat(result, is(true));
@@ -582,24 +424,25 @@ public class EngineTests extends CqlTestBase {
         assertThat(result, is(-788));
 
         result = evaluationResult.expressionResults.get("DateTimeDurationBetweenUncertainInterval").value();
-        Assert.assertTrue(((Interval) result).getStart().equals(17));
-        Assert.assertTrue(((Interval) result).getEnd().equals(44));
+        Assert.assertTrue(((Interval)result).getStart().equals(17));
+        Assert.assertTrue(((Interval)result).getEnd().equals(44));
 
         result = evaluationResult.expressionResults.get("DateTimeDurationBetweenUncertainInterval2").value();
-        Assert.assertTrue(((Interval) result).getStart().equals(5));
-        Assert.assertTrue(((Interval) result).getEnd().equals(16));
+        Assert.assertTrue(((Interval)result).getStart().equals(5));
+        Assert.assertTrue(((Interval)result).getEnd().equals(16));
+//        assertThat(((Uncertainty)result).getUncertaintyInterval(), is(new Interval(5, true, 17, true)));
 
         result = evaluationResult.expressionResults.get("DateTimeDurationBetweenUncertainAdd").value();
-        Assert.assertTrue(((Interval) result).getStart().equals(34));
-        Assert.assertTrue(((Interval) result).getEnd().equals(88));
+        Assert.assertTrue(((Interval)result).getStart().equals(34));
+        Assert.assertTrue(((Interval)result).getEnd().equals(88));
 
         result = evaluationResult.expressionResults.get("DateTimeDurationBetweenUncertainSubtract").value();
-        Assert.assertTrue(((Interval) result).getStart().equals(12));
-        Assert.assertTrue(((Interval) result).getEnd().equals(28));
+        Assert.assertTrue(((Interval)result).getStart().equals(12));
+        Assert.assertTrue(((Interval)result).getEnd().equals(28));
 
         result = evaluationResult.expressionResults.get("DateTimeDurationBetweenUncertainMultiply").value();
-        Assert.assertTrue(((Interval) result).getStart().equals(289));
-        Assert.assertTrue(((Interval) result).getEnd().equals(1936));
+        Assert.assertTrue(((Interval)result).getStart().equals(289));
+        Assert.assertTrue(((Interval)result).getEnd().equals(1936));
 
         result = evaluationResult.expressionResults.get("DateTimeDurationBetweenMonthUncertain").value();
         assertThat(result, is(true));
@@ -646,6 +489,9 @@ public class EngineTests extends CqlTestBase {
         result = evaluationResult.expressionResults.get("DurationInMinutesA").value();
         assertThat(result, is(45));
 
+//        result = evaluationResult.expressionResults.get("DurationInDaysA").value();
+//        assertThat(result, is(1));
+
         result = evaluationResult.expressionResults.get("DurationInHoursAA").value();
         assertThat(result, is(1));
 
@@ -657,6 +503,12 @@ public class EngineTests extends CqlTestBase {
 
         result = evaluationResult.expressionResults.get("DateTimeNow").value();
         assertThat(result, is(true));
+
+        DateTime evaluationDateTime = new DateTime(null, 2016, 6, 10, 5, 5, 4, 999);
+        //context = new Context(library, evaluationDateTime.getDateTime().toZonedDateTime());
+        result = evaluationResult.expressionResults.get("Issue34A").value();
+        //Assert.assertTrue(EquivalentEvaluator.equivalent(result, evaluationDateTime));
+        //Assert.assertTrue(((DateTime) result).getDateTime().getOffset().equals(evaluationDateTime.getDateTime().getOffset()));
 
         result = evaluationResult.expressionResults.get("DateTimeSameAsYearTrue").value();
         assertThat(result, is(true));
@@ -953,6 +805,7 @@ public class EngineTests extends CqlTestBase {
         assertThat(result, is(true));
 
         result = evaluationResult.expressionResults.get("DateTimeSameOrBeforeYearFalse").value();
+        assertThat(result, is(false));
 
         result = evaluationResult.expressionResults.get("DateTimeSubtract5Years").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2000, 10, 10)));
@@ -1019,10 +872,10 @@ public class EngineTests extends CqlTestBase {
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Date(2012)));
 
         result = evaluationResult.expressionResults.get("DateSubtract33Days").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Date(2014, 5)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Date(2014,5)));
 
         result = evaluationResult.expressionResults.get("DateSubtract1Year").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Date(2013, 6)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Date(2013,6)));
 
         result = evaluationResult.expressionResults.get("TimeSubtract5Hours").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(10, 59, 59, 999)));
@@ -1042,6 +895,8 @@ public class EngineTests extends CqlTestBase {
         result = evaluationResult.expressionResults.get("TimeSubtract5hoursByMinute").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(10, 59, 59, 999)));
 
+        result = evaluationResult.expressionResults.get("TimeTest2").value();
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(23, 59, 59, 999)));
 
         result = evaluationResult.expressionResults.get("DateTimeSameOrBeforeTodayTrue1").value();
         assertThat(result, is(true));
@@ -1055,92 +910,11 @@ public class EngineTests extends CqlTestBase {
         result = evaluationResult.expressionResults.get("DateTimeAddTodayTrue").value();
         assertThat(result, is(true));
 
-
-        result = evaluationResult.expressionResults.get("TestMessageInfo").value();
-        assertThat(result, is(1));
-        //Assert.assertEquals(result.toString(), "100: Test Message");
-
-        result = evaluationResult.expressionResults.get("TestMessageWarn").value();
-        assertThat(result, is(2));
-        //Assert.assertEquals(result.toString(), "200: You have been warned!");
-
-
-        result = evaluationResult.expressionResults.get("TestMessageWithNullSeverity").value();
-        assertThat(result, is(1));
-
-        result = evaluationResult.expressionResults.get("TestMessageWithNullSource").value();
-        assertThat(result == null, is(true));
-
-        result = evaluationResult.expressionResults.get("TestMessageWithNullCondition").value();
-        assertThat(result, is(1));
-
-        result = evaluationResult.expressionResults.get("TestMessageWithNullCode").value();
-        assertThat(result, is(1));
-
-        result = evaluationResult.expressionResults.get("TestMessageWithNullMessage").value();
-        assertThat(result, is(1));
-
-        result = evaluationResult.expressionResults.get("TestWarningWithNullSource").value();
-        assertThat(result == null, is(true));
-
-        result = evaluationResult.expressionResults.get("TestWarningWithNullCondition").value();
-        assertThat(result, is(1));
-
-        result = evaluationResult.expressionResults.get("TestWarningWithNullCode").value();
-        assertThat(result, is(1));
-
-        result = evaluationResult.expressionResults.get("TestWarningWithNullMessage").value();
-        assertThat(result, is(1));
-
-        result = evaluationResult.expressionResults.get("TestTraceWithNullSource").value();
-        assertThat(result == null, is(true));
-
-        result = evaluationResult.expressionResults.get("TestTraceWithNullCondition").value();
-        assertThat(result, is(1));
-
-        result = evaluationResult.expressionResults.get("TestTraceWithNullCode").value();
-        assertThat(result, is(1));
-
-        result = evaluationResult.expressionResults.get("TestTraceWithNullMessage").value();
-        assertThat(result, is(1));
-
-//        result = evaluationResult.expressionResults.get("FunctionTestStringArg").value();
-//        assertThat(result, is("hello"));
-//
-//        result = evaluationResult.expressionResults.get("FunctionTestNullStringArg").value();
-//        assertThat(result, is(nullValue()));
-//
-//        result = evaluationResult.expressionResults.get("FunctionTestMultipleArgs").value();
-//        assertThat(result, is("hell0"));
-//
-//        result = evaluationResult.expressionResults.get("FunctionTestNullMultipleArgs").value();
-//        assertThat(result, is(nullValue()));
-//
-//        result = evaluationResult.expressionResults.get("FunctionTestOverload").value();
-//        assertThat(result, is("hell00.000"));
-//
-//        result = evaluationResult.expressionResults.get("FunctionTestNullOverload").value();
-//        assertThat(result, is(nullValue()));
-//
-//        result = evaluationResult.expressionResults.get("FunctionTestTupleArg").value();
-//        assertThat(result, is(3));
-//
-//        result = evaluationResult.expressionResults.get("FunctionTestNullTupleArg").value();
-//        assertThat(result, is(nullValue()));
-//
-//        result = evaluationResult.expressionResults.get("FunctionTestQuantityArg").value();
-//        assertThat(result, is("cm"));
-//
-//        result = evaluationResult.expressionResults.get("FunctionTestNullQuantityArg").value();
-//        assertThat(result, is(nullValue()));
-
-
-//        result = evaluationResult.expressionResults.get("").value();
-//        assertThat(obj, is(nullValue()));
+//        context = new Context(library, new DateTime(TemporalHelper.getDefaultOffset(), 2016, 6, 10, 5, 5, 4, 999));
+//        result = evaluationResult.expressionResults.get("Issue34B").value();
+//        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2016, 6, 10)));
+//        Assert.assertTrue(((DateTime) result).getDateTime().getOffset().equals(TemporalHelper.getDefaultZoneOffset()));
 
 
     }
-
-
 }
-

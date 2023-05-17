@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 import java.util.Collections;
 
-import static org.opencds.cqf.cql.engine.execution.ToConceptTest.assertEqual;
+import static org.opencds.cqf.cql.engine.execution.CqlConceptTest.assertEqual;
 
 public class IncludedConceptRefTest extends CqlTestBase {
 
