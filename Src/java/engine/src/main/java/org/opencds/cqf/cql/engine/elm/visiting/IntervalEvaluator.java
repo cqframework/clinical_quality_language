@@ -1,5 +1,6 @@
 package org.opencds.cqf.cql.engine.elm.visiting;
 
+import org.hl7.elm.r1.ExpressionDef;
 import org.hl7.elm.r1.Interval;
 import org.opencds.cqf.cql.engine.execution.CqlEngineVisitor;
 import org.opencds.cqf.cql.engine.execution.State;
@@ -7,10 +8,19 @@ import org.opencds.cqf.cql.engine.execution.State;
 public class IntervalEvaluator {
     public static Object internalEvaluate(Interval interval, State state, CqlEngineVisitor visitor) {
         Object low = interval.getLow() != null ? visitor.visitExpression(interval.getLow(), state) : null;
+        if(low instanceof ExpressionDef) {
+            low = visitor.visitExpressionDef((ExpressionDef) low, state);
+        }
+
         Boolean lowClosed = interval.getLowClosedExpression() != null ?
                 (Boolean) visitor.visitExpression(interval.getLowClosedExpression(), state) :
                 interval.isLowClosed();
+
         Object high = interval.getHigh() != null ? visitor.visitExpression(interval.getHigh(), state) : null;
+        if(high instanceof ExpressionDef) {
+            high = visitor.visitExpressionDef((ExpressionDef) high, state);
+        }
+
         Boolean highClosed = interval.getHighClosedExpression() != null ?
                 (Boolean) visitor.visitExpression(interval.getHighClosedExpression(), state) : interval.isHighClosed();
 

@@ -1,0 +1,61 @@
+package org.opencds.cqf.cql.engine.execution;
+
+import org.cqframework.cql.cql2elm.LibraryManager;
+import org.cqframework.cql.cql2elm.ModelManager;
+import org.opencds.cqf.cql.engine.runtime.Code;
+import org.opencds.cqf.cql.engine.terminology.CodeSystemInfo;
+import org.opencds.cqf.cql.engine.terminology.TerminologyProvider;
+import org.opencds.cqf.cql.engine.terminology.ValueSetInfo;
+import org.testng.annotations.Test;
+
+import java.util.Collections;
+import java.util.List;
+
+import static org.opencds.cqf.cql.engine.execution.ToConceptTest.assertEqual;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+
+public class IncludedValueSetRefTest {
+
+    @Test
+    public void test_all_included_valueset() {
+        LibraryManager libraryManager =  new LibraryManager(new ModelManager());
+        libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
+
+        Code expected = new Code().withCode("M").withSystem("http://test.com/system");
+        TerminologyProvider terminologyProvider = new TerminologyProvider() {
+            public boolean in(Code code, ValueSetInfo valueSet) {
+                return true;
+            }
+
+            public Iterable<Code> expand(ValueSetInfo valueSet) {
+                return Collections.singletonList(expected);
+            }
+
+            public Code lookup(Code code, CodeSystemInfo codeSystem) {
+                return null;
+            }
+
+        };
+
+
+        Environment environment = new Environment(libraryManager, null, terminologyProvider);
+
+        CqlEngineVisitor engineVisitor = new CqlEngineVisitor(environment, null, null, null, CqlTestBase.createOptionsMin());
+
+
+
+        EvaluationResult evaluationResult;
+
+        evaluationResult = engineVisitor.evaluate(CqlTestBase.toElmIdentifier("IncludedValueSetRefTest"), null, null, null, null, null);
+
+        @SuppressWarnings("unchecked")
+        List<Code> actual = (List<Code>) evaluationResult.expressionResults.get("IncludedValueSet").value();
+        assertNotNull(actual);
+        assertEquals(actual.size(), 1);
+
+        assertEqual(expected, actual.get(0));
+
+
+    }
+}
