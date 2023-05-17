@@ -1223,10 +1223,16 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitCodeRef(CodeRef elm, State state) {
-        System.out.println("visiting codeRef");
+        boolean enteredLibrary = false;
+        if (elm.getLibraryName() != null ) {
+            state.enterLibrary(elm.getLibraryName());
+            enteredLibrary = true;
+        }
         CodeDef cd = state.resolveCodeRef(elm.getName());
         CodeSystem cs = CodeSystemRefEvaluator.toCodeSystem(cd.getCodeSystem(), state);
-
+        if (enteredLibrary) {
+            state.exitLibrary(true);
+        }
         return CodeRefEvaluator.toCode(elm, cs, state);
     }
 
