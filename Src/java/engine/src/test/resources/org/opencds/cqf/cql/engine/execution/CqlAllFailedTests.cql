@@ -18,3 +18,12 @@ define DateTimeDurationBetweenUncertainInterval2: months between DateTime(2005) 
 define DateTimeAddInvalidYears: DateTime(2005, 10, 10) + 8000 years
 define DateTimeDurationBetweenUncertainDiv: DateTimeDurationBetweenUncertainInterval div DateTimeDurationBetweenUncertainInterval2
 define DateTimeSubtractInvalidYears: DateTime(2005, 10, 10) - 2005 years
+
+define TestMessageError: Message(3 + 1, true, '400', 'Error', 'This is an error!')
+define TestErrorWithNullSource: Message(null, true, '1', 'Error', 'This is a message')
+
+define TestErrorWithNullCondition: Message(1, null, '1', 'Error', 'This is a message')
+
+define TestErrorWithNullCode: Message(1, true, null, 'Error', 'This is a message')
+
+define TestErrorWithNullMessage: Message(1, true, '1', 'Error', null)

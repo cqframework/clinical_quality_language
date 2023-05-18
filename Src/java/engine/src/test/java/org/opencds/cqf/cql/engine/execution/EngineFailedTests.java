@@ -7,7 +7,6 @@ import org.opencds.cqf.cql.engine.exception.UndefinedResult;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-
 import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -100,7 +99,43 @@ public class EngineFailedTests extends CqlTestBase {
             // pass
         }
 
+        try {
+            evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlAllFailedTests"), Set.of("TestMessageError"), null, null, null, null);
+
+        } catch (RuntimeException re) {
+            Assert.assertEquals(re.getMessage(), String.format("400: This is an error!%n"));
+        }
+
+        try {
+            evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlAllFailedTests"), Set.of("TestErrorWithNullSource"), null, null, null, null);
+        }
+        catch (RuntimeException re) {
+            Assert.assertEquals(re.getMessage(), String.format("1: This is a message%nnull"));
+        }
+
+        try {
+            evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlAllFailedTests"), Set.of("TestErrorWithNullCondition"), null, null, null, null);
+        }
+        catch (RuntimeException re) {
+            Assert.assertEquals(re.getMessage(), String.format("1: This is a message%n"));
+        }
+
+        try {
+            evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlAllFailedTests"), Set.of("TestErrorWithNullCode"), null, null, null, null);
+        }
+        catch (RuntimeException re) {
+            Assert.assertEquals(re.getMessage(), String.format("This is a message%n"));
+        }
+
+        try {
+            evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlAllFailedTests"), Set.of("TestErrorWithNullMessage"), null, null, null, null);
+        }
+        catch (RuntimeException re) {
+            Assert.assertEquals(re.getMessage(), String.format("1: null%n"));
+        }
+
     }
+
 
 
 }
