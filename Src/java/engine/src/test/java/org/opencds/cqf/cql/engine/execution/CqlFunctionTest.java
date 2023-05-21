@@ -9,7 +9,7 @@ import static org.hamcrest.Matchers.nullValue;
 public class CqlFunctionTest extends CqlTestBase {
 
     @Test
-    public void test_all_empty_string() {
+    public void test_all_function_tests() {
         EvaluationResult evaluationResult;
 
         evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlFunctionTests"), null, null, null, null, null);

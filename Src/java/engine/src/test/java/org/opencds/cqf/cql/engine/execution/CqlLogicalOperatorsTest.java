@@ -11,7 +11,7 @@ import static org.hamcrest.Matchers.nullValue;
 public class CqlLogicalOperatorsTest extends CqlTestBase {
 
     @Test
-    public void test_all_interval_operators() {
+    public void test_all_logical_operators() {
 
         Set<String> set = new HashSet<>();
         EvaluationResult evaluationResult;

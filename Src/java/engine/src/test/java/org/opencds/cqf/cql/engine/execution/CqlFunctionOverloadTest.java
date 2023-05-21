@@ -7,10 +7,10 @@ import java.math.BigDecimal;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class FunctionOverloadTest extends CqlTestBase {
+public class CqlFunctionOverloadTest extends CqlTestBase {
 
     @Test
-    public void test_all_empty_string() {
+    public void test_function_overloads() {
         EvaluationResult evaluationResult;
 
         evaluationResult = engineVisitor.evaluate(toElmIdentifier("FunctionOverloadTest"), null, null, null, null, null);

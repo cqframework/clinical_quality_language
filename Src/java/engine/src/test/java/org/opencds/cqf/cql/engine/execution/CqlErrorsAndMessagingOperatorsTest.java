@@ -17,7 +17,7 @@ import static org.hamcrest.Matchers.is;
 
 public class CqlErrorsAndMessagingOperatorsTest extends CqlTestBase {
     @Test
-    public void test_all_date_time_tests() throws IOException {
+    public void test_all_errors_and_messaging_operators() throws IOException {
 
         EvaluationResult evaluationResult;
         Set<String> set = Set.of("TestMessageInfo","TestMessageWarn","TestMessageTrace","TestMessageWithNullSeverity","TestMessageWithNullSource",
