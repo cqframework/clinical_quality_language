@@ -462,6 +462,9 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
     @Override
     public Object visitAbs(Abs abs, State state) {
         Object operand = visitExpression(abs.getOperand(), state);
+        if (operand instanceof ExpressionDef) {
+            operand = visitExpressionDef((ExpressionDef) operand, state);
+        }
         return AbsEvaluator.abs(operand);
     }
 
@@ -1255,8 +1258,17 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
     @Override
     @SuppressWarnings("unchecked")
     public Object visitCollapse(Collapse elm, State state) {
-        Iterable<org.opencds.cqf.cql.engine.runtime.Interval> list = (Iterable<org.opencds.cqf.cql.engine.runtime.Interval>) visitExpression(elm.getOperand().get(0), state);
-        org.opencds.cqf.cql.engine.runtime.Quantity per = (org.opencds.cqf.cql.engine.runtime.Quantity) visitExpression(elm.getOperand().get(1), state);
+        Object left = visitExpression(elm.getOperand().get(0), state);
+        if (left instanceof ExpressionDef) {
+            left = visitExpressionDef((ExpressionDef) left, state);
+        }
+        Object right = visitExpression(elm.getOperand().get(1), state);
+        if (right instanceof ExpressionDef) {
+            right = visitExpressionDef((ExpressionDef) right, state);
+        }
+
+        Iterable<org.opencds.cqf.cql.engine.runtime.Interval> list = (Iterable<org.opencds.cqf.cql.engine.runtime.Interval>) left;
+        org.opencds.cqf.cql.engine.runtime.Quantity per = (org.opencds.cqf.cql.engine.runtime.Quantity) right;
 
         return CollapseEvaluator.collapse(list, per, state);
     }
@@ -2057,7 +2069,6 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitOperandRef(OperandRef elm, State state) {
-        System.out.println("Operand:" + elm);
         return OperandRefEvaluator.internalEvaluate(elm, state);
     }
 

@@ -1,6 +1,7 @@
 package org.opencds.cqf.cql.engine.elm.visiting;
 
 import org.hl7.elm.r1.Expression;
+import org.hl7.elm.r1.ExpressionDef;
 import org.hl7.elm.r1.Literal;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.execution.CqlEngineVisitor;
@@ -65,6 +66,10 @@ public class NegateEvaluator {
         }
 
         Object source = visitor.visitExpression(operand, state);
+
+        if (source instanceof ExpressionDef) {
+            source = visitor.visitExpressionDef((ExpressionDef) source, state);
+        }
 
         return negate(source);
     }
