@@ -12,7 +12,6 @@ import java.math.BigDecimal;
 public class LiteralEvaluator {
     private static Logger logger = LoggerFactory.getLogger(LiteralEvaluator.class);
     public static Object internalEvaluate(QName valueT, String value, State state) {
-        logger.info("evaluating LiteralEvaluator");
         QName valueType = state.fixupQName(valueT);
         switch (valueType.getLocalPart()) {
             case "Boolean": return Boolean.parseBoolean(value);

@@ -1,39 +1,26 @@
 package org.opencds.cqf.cql.engine.elm.visiting;
 
-import org.hl7.elm.r1.ExpressionDef;
 import org.hl7.elm.r1.Interval;
 import org.opencds.cqf.cql.engine.execution.CqlEngineVisitor;
 import org.opencds.cqf.cql.engine.execution.State;
 
 public class IntervalEvaluator {
     public static Object internalEvaluate(Interval interval, State state, CqlEngineVisitor visitor) {
-        Object low = interval.getLow() != null ? visitor.visitExpression(interval.getLow(), state) : null;
-        if (low instanceof ExpressionDef) {
-            low = visitor.visitExpressionDef((ExpressionDef) low, state);
-        }
+        Object low = interval.getLow() != null ? visitor.validateOperand(visitor.visitExpression(interval.getLow(), state)) : null;
 
         Object lowClosedObj = false;
         if (interval.getLowClosedExpression() != null) {
-            lowClosedObj = visitor.visitExpression(interval.getLowClosedExpression(), state);
-            if (lowClosedObj instanceof ExpressionDef) {
-                lowClosedObj = visitor.visitExpressionDef((ExpressionDef) lowClosedObj, state);
-            }
+            lowClosedObj = visitor.validateOperand(visitor.visitExpression(interval.getLowClosedExpression(), state));
         }
 
         Boolean lowClosed = (interval.getLowClosedExpression() != null && lowClosedObj != null) ?
                 (Boolean) lowClosedObj : interval.isLowClosed();
 
-        Object high = interval.getHigh() != null ? visitor.visitExpression(interval.getHigh(), state) : null;
-        if (high instanceof ExpressionDef) {
-            high = visitor.visitExpressionDef((ExpressionDef) high, state);
-        }
+        Object high = interval.getHigh() != null ? visitor.validateOperand(visitor.visitExpression(interval.getHigh(), state)) : null;
 
         Object highClosedObj = false;
         if (interval.getHighClosedExpression() != null) {
-            highClosedObj = visitor.visitExpression(interval.getHighClosedExpression(), state);
-            if (highClosedObj instanceof ExpressionDef) {
-                highClosedObj = visitor.visitExpressionDef((ExpressionDef) highClosedObj, state);
-            }
+            highClosedObj = visitor.validateOperand(visitor.visitExpression(interval.getHighClosedExpression(), state));
         }
 
         Boolean highClosed = (interval.getHighClosedExpression() != null && highClosedObj != null) ?

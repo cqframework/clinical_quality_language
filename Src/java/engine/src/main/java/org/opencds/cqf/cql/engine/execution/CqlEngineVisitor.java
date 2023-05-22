@@ -424,6 +424,13 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
         return null;
     }
 
+    public Object validateOperand(Object operand) {
+        if (operand instanceof ExpressionDef) {
+            operand = visitExpressionDef((ExpressionDef) operand, state);
+        }
+        return operand;
+    }
+
     @Override
     public Object visitUnaryExpression(UnaryExpression elm, State state) {
         if (elm instanceof ExpandValueSet) {
@@ -448,38 +455,24 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitAdd(Add add, State state) {
-        Object left = visitExpression(add.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(add.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(add.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(add.getOperand().get(1), state));
+
         return AddEvaluator.add(left, right);
     }
 
     @Override
     public Object visitAbs(Abs abs, State state) {
-        Object operand = visitExpression(abs.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(abs.getOperand(), state));
         return AbsEvaluator.abs(operand);
     }
 
     @Override
     public Object visitAfter(After after, State state) {
-        Object left = visitExpression(after.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(after.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(after.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(after.getOperand().get(1), state));
         String precision = after.getPrecision() == null ? null : after.getPrecision().value();
-
+        
         return AfterEvaluator.after(left, right, precision, state);
     }
 
@@ -497,14 +490,8 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitAnd(And and, State state) {
-        Object left = visitExpression(and.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(and.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(and.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(and.getOperand().get(1), state));
         
         return AndEvaluator.and(left, right);
     }
@@ -556,24 +543,15 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitXor(Xor elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
         return XorEvaluator.xor(left, right);
     }
 
 
     @Override
     public Object visitWidth(Width elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return WidthEvaluator.width(operand);
     }
 
@@ -591,52 +569,31 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitDivide(Divide elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
         return DivideEvaluator.divide(left, right, state);
     }
 
 
     @Override
     public Object visitUpper(Upper elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return UpperEvaluator.upper(operand);
     }
 
     @Override
     public Object visitUnion(Union elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
         return UnionEvaluator.union(left, right, state);
     }
 
     @Override
     public Object visitGreater(Greater elm, State state) {
         try {
-            System.out.println("visit greater:");
-            Object left = visitExpression(elm.getOperand().get(0), state);
-            if (left instanceof ExpressionDef) {
-                left = visitExpressionDef((ExpressionDef) left, state);
-            }
-            Object right = visitExpression(elm.getOperand().get(1), state);
-            if (right instanceof ExpressionDef) {
-                right = visitExpressionDef((ExpressionDef) right, state);
-            }
+            System.out.println("visiting greater");
+            Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+            Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
 
             return GreaterEvaluator.greater(left, right, state);
         } catch (Exception e) {
@@ -647,14 +604,8 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitMeets(Meets elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
         String precision = elm.getPrecision() == null ? null : elm.getPrecision().value();
 
         return MeetsEvaluator.meets(left, right, precision, state);
@@ -668,14 +619,8 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitMeetsAfter(MeetsAfter elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
         String precision = elm.getPrecision() == null ? null : elm.getPrecision().value();
 
         return MeetsAfterEvaluator.meetsAfter(left, right, precision, state);
@@ -685,14 +630,8 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitMeetsBefore(MeetsBefore elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
         String precision = elm.getPrecision() == null ? null : elm.getPrecision().value();
 
         return MeetsBeforeEvaluator.meetsBefore(left, right, precision, state);
@@ -700,14 +639,8 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitSameAs(SameAs elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
         String precision = elm.getPrecision() == null ? null : elm.getPrecision().value();
 
         return SameAsEvaluator.sameAs(left, right, precision, state);
@@ -716,14 +649,8 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitSameOrAfter(SameOrAfter elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
         String precision = elm.getPrecision() == null ? null : elm.getPrecision().value();
 
         return SameOrAfterEvaluator.sameOrAfter(left, right, precision, state);
@@ -731,14 +658,8 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitSameOrBefore(SameOrBefore elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
         String precision = elm.getPrecision() == null ? null : elm.getPrecision().value();
 
         return SameOrBeforeEvaluator.sameOrBefore(left, right, precision, state);
@@ -746,24 +667,15 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitGreaterOrEqual(GreaterOrEqual elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
 
         return GreaterOrEqualEvaluator.greaterOrEqual(left, right, state);
     }
 
     @Override
     public Object visitSingletonFrom(SingletonFrom elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return SingletonFromEvaluator.singletonFrom(operand);
     }
 
@@ -775,10 +687,7 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitSlice(Slice elm, State state) {
-        Object source = visitExpression(elm.getSource(), state);
-        if (source instanceof ExpressionDef) {
-            source = visitExpressionDef((ExpressionDef) source, state);
-        }
+        Object source = validateOperand(visitExpression(elm.getSource(), state));
         Integer start = (Integer) visitExpression(elm.getStartIndex(), state);
         Integer end = elm.getEndIndex() == null ? null : (Integer) visitExpression(elm.getEndIndex(), state);
 
@@ -803,26 +712,14 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitStart(Start elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return StartEvaluator.start(operand);
     }
 
     @Override
     public Object visitStarts(Starts elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
         String precision = elm.getPrecision() == null ? null : elm.getPrecision().value();
 
         return StartsEvaluator.starts(left, right, precision, state);
@@ -838,10 +735,7 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitStdDev(StdDev elm, State state) {
-        Object source = visitExpression(elm.getSource(), state);
-        if (source instanceof ExpressionDef) {
-            source = visitExpressionDef((ExpressionDef) source, state);
-        }
+        Object source = validateOperand(visitExpression(elm.getSource(), state));
         return StdDevEvaluator.stdDev(source, state);
     }
 
@@ -857,18 +751,8 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
     @Override
     public Object visitSubtract(Subtract elm, State state) {
         try {
-            Object left = visitExpression(elm.getOperand().get(0), state);
-            if (left instanceof ExpressionDef) {
-                left = visitExpressionDef((ExpressionDef) left, state);
-            }
-            if (left instanceof ExpressionDef) {
-                left = visitExpressionDef((ExpressionDef) left, state);
-            }
-            Object right = visitExpression(elm.getOperand().get(1), state);
-            if (right instanceof ExpressionDef) {
-                right = visitExpressionDef((ExpressionDef) right, state);
-            }
-
+            Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+            Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
             return SubtractEvaluator.subtract(left, right);
         } catch (Exception e) {
             processException(e, elm);
@@ -884,10 +768,7 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitSum(Sum elm, State state) {
-        Object source = visitExpression(elm.getSource(), state);
-        if (source instanceof ExpressionDef) {
-            source = visitExpressionDef((ExpressionDef) source, state);
-        }
+        Object source = validateOperand(visitExpression(elm.getSource(), state));
         return SumEvaluator.sum(source);
     }
 
@@ -907,10 +788,7 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitTimeFrom(TimeFrom elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return TimeFromEvaluator.timeFrom(operand);
     }
 
@@ -921,38 +799,26 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitTimezoneFrom(TimezoneFrom elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return TimezoneFromEvaluator.internalEvaluate(operand);
     }
 
     @Override
     public Object visitTimezoneOffsetFrom(TimezoneOffsetFrom elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return TimezoneOffsetFromEvaluator.timezoneOffsetFrom(operand);
     }
 
     @Override
     public Object visitToBoolean(ToBoolean elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return ToBooleanEvaluator.toBoolean(operand);
     }
 
     @Override
     public Object visitToConcept(ToConcept elm, State state) {
         try {
-            Object operand = visitExpression(elm.getOperand(), state);
-            if (operand instanceof ExpressionDef) {
-                operand = visitExpressionDef((ExpressionDef) operand, state);
-            }
+            Object operand = validateOperand(visitExpression(elm.getOperand(), state));
             return ToConceptEvaluator.toConcept(operand);
         } catch (Exception e) {
             processException(e, elm);
@@ -962,19 +828,13 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitToDate(ToDate elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return ToDateEvaluator.toDate(operand);
     }
 
     @Override
     public Object visitToDateTime(ToDateTime elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return ToDateTimeEvaluator.ToDateTime(operand, state);
     }
 
@@ -985,104 +845,68 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitToDecimal(ToDecimal elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return ToDecimalEvaluator.toDecimal(operand);
     }
 
     @Override
     public Object visitToInteger(ToInteger elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return ToIntegerEvaluator.toInteger(operand);
     }
 
     @Override
     public Object visitToList(ToList elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return ToListEvaluator.toList(operand);
     }
 
     @Override
     public Object visitToLong(ToLong elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return ToLongEvaluator.toLong(operand);
     }
 
     @Override
     public Object visitToQuantity(ToQuantity elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return ToQuantityEvaluator.toQuantity(operand, state);
     }
 
     @Override
     public Object visitToRatio(ToRatio elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return ToRatioEvaluator.toRatio(operand);
     }
 
     @Override
     public Object visitToString(ToString elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return ToStringEvaluator.toString(operand);
     }
 
     @Override
     public Object visitToTime(ToTime elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return ToTimeEvaluator.toTime(operand);
     }
 
     @Override
     public Object visitTruncatedDivide(TruncatedDivide elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
         return TruncatedDivideEvaluator.div(left, right, state);
     }
 
     @Override
     public Object visitMedian(Median elm, State state) {
-        Object source = visitExpression(elm.getSource(), state);
-        if (source instanceof ExpressionDef) {
-            source = visitExpressionDef((ExpressionDef) source, state);
-        }
+        Object source = validateOperand(visitExpression(elm.getSource(), state));
         return MedianEvaluator.median(source, state);
     }
 
     @Override
     public Object visitTruncate(Truncate elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return TruncateEvaluator.truncate(operand);
     }
 
@@ -1098,32 +922,20 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitAnyTrue(AnyTrue elm, State state) {
-        Object source = visitExpression(elm.getSource(), state);
-        if (source instanceof ExpressionDef) {
-            source = visitExpressionDef((ExpressionDef) source, state);
-        }
+        Object source = validateOperand(visitExpression(elm.getSource(), state));
         return AnyTrueEvaluator.anyTrue(source);
     }
 
     @Override
     public Object visitAs(As elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return AsEvaluator.internalEvaluate(operand, elm, elm.isStrict(), state);
     }
 
     @Override
     public Object visitBefore(Before elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
         String precision = elm.getPrecision() == null ? null : elm.getPrecision().value();
 
         return BeforeEvaluator.before(left, right, precision, state);
@@ -1139,10 +951,7 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitCalculateAge(CalculateAge elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         String precision = elm.getPrecision().value();
         return CalculateAgeEvaluator.internalEvaluate(operand, precision, state);
     }
@@ -1166,10 +975,7 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
                 return visitElement(elm.getElse(), state);
 
             } else {
-                Object comparand = visitExpression(elm.getComparand(), state);
-                if (comparand instanceof ExpressionDef) {
-                    comparand = visitExpressionDef((ExpressionDef) comparand, state);
-                }
+                Object comparand = validateOperand(visitExpression(elm.getComparand(), state));
 
                 for (CaseItem caseItem : elm.getCaseItem()) {
                     Object when = visitExpression(caseItem.getWhen(), state);
@@ -1193,19 +999,13 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitCeiling(Ceiling elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return CeilingEvaluator.ceiling(operand);
     }
 
     @Override
     public Object visitChildren(Children elm, State state) {
-        Object source = visitExpression(elm.getSource(), state);
-        if (source instanceof ExpressionDef) {
-            source = visitExpressionDef((ExpressionDef) source, state);
-        }
+        Object source = validateOperand(visitExpression(elm.getSource(), state));
         return ChildrenEvaluator.children(source);
     }
 
@@ -1258,14 +1058,8 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
     @Override
     @SuppressWarnings("unchecked")
     public Object visitCollapse(Collapse elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
 
         Iterable<org.opencds.cqf.cql.engine.runtime.Interval> list = (Iterable<org.opencds.cqf.cql.engine.runtime.Interval>) left;
         org.opencds.cqf.cql.engine.runtime.Quantity per = (org.opencds.cqf.cql.engine.runtime.Quantity) right;
@@ -1275,10 +1069,7 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitCombine(Combine elm, State state) {
-        Object source = visitExpression(elm.getSource(), state);
-        if (source instanceof ExpressionDef) {
-            source = visitExpressionDef((ExpressionDef) source, state);
-        }
+        Object source = validateOperand(visitExpression(elm.getSource(), state));
         String separator = elm.getSeparator() == null ? "" : (String) visitExpression(elm.getSeparator(), state);
 
         return CombineEvaluator.combine(source, separator);
@@ -1286,38 +1077,23 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitConcatenate(Concatenate elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
 
         return ConcatenateEvaluator.concatenate(left, right);
     }
 
     @Override
     public Object visitContains(Contains elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
         String precision = elm.getPrecision() == null ? null : elm.getPrecision().value();
         return ContainsEvaluator.internalEvaluate(left, right, elm.getOperand().get(0), precision, state);
     }
 
     @Override
     public Object visitConvert(Convert elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return ConvertEvaluator.internalEvaluate(operand, elm.getToType(), elm.getToTypeSpecifier(), state);
     }
 
@@ -1330,91 +1106,61 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitConvertsToBoolean(ConvertsToBoolean elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return ConvertsToBooleanEvaluator.convertsToBoolean(operand);
     }
 
     @Override
     public Object visitConvertsToDate(ConvertsToDate elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return ConvertsToDateEvaluator.convertsToDate(operand);
     }
 
     @Override
     public Object visitConvertsToDateTime(ConvertsToDateTime elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return ConvertsToDateTimeEvaluator.convertsToDateTime(operand, null);
     }
 
     @Override
     public Object visitConvertsToDecimal(ConvertsToDecimal elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return ConvertsToDecimalEvaluator.convertsToDecimal(operand);
     }
 
     @Override
     public Object visitConvertsToInteger(ConvertsToInteger elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return ConvertsToIntegerEvaluator.convertsToInteger(operand);
     }
 
     @Override
     public Object visitConvertsToLong(ConvertsToLong elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return ConvertsToLongEvaluator.convertsToLong(operand);
     }
 
     @Override
     public Object visitConvertsToQuantity(ConvertsToQuantity elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return ConvertsToQuantityEvaluator.convertsToQuantity(operand, state);
     }
 
     @Override
     public Object visitConvertsToString(ConvertsToString elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return ConvertsToStringEvaluator.convertsToString(operand);
     }
 
     @Override
     public Object visitConvertsToTime(ConvertsToTime elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return ConvertsToTimeEvaluator.convertsToTime(operand);
     }
 
     @Override
     public Object visitCount(Count elm, State state) {
-        Object source = visitExpression(elm.getSource(), state);
-        if (source instanceof ExpressionDef) {
-            source = visitExpressionDef((ExpressionDef) source, state);
-        }
+        Object source = validateOperand(visitExpression(elm.getSource(), state));
         return CountEvaluator.count(source);
     }
 
@@ -1429,13 +1175,7 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
     @Override
     public Object visitDateFrom(DateFrom elm, State state) {
         try {
-            Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
-            if (operand instanceof ExpressionDef) {
-                operand = visitExpressionDef((ExpressionDef) operand, state);
-            }
+            Object operand = validateOperand(visitExpression(elm.getOperand(), state));
             return DateFromEvaluator.dateFrom(operand);
         } catch (Exception e) {
             processException(e, elm);
@@ -1445,10 +1185,7 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitDateTimeComponentFrom(DateTimeComponentFrom elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         String precision = elm.getPrecision().value();
         return DateTimeComponentFromEvaluator.dateTimeComponentFrom(operand, precision);
     }
@@ -1468,24 +1205,15 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitDescendents(Descendents elm, State state) {
-        Object source = visitExpression(elm.getSource(), state);
-        if (source instanceof ExpressionDef) {
-            source = visitExpressionDef((ExpressionDef) source, state);
-        }
+        Object source = validateOperand(visitExpression(elm.getSource(), state));
         return DescendentsEvaluator.descendents(source);
     }
 
     @Override
     public Object visitDifferenceBetween(DifferenceBetween elm, State state) {
         try {
-            Object left = visitExpression(elm.getOperand().get(0), state);
-            if (left instanceof ExpressionDef) {
-                left = visitExpressionDef((ExpressionDef) left, state);
-            }
-            Object right = visitExpression(elm.getOperand().get(1), state);
-            if (right instanceof ExpressionDef) {
-                right = visitExpressionDef((ExpressionDef) right, state);
-            }
+            Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+            Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
 
             String precision = elm.getPrecision().value();
             return DifferenceBetweenEvaluator.difference(left, right, org.opencds.cqf.cql.engine.runtime.Precision.fromString(precision));
@@ -1498,15 +1226,8 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
     @Override
     public Object visitDurationBetween(DurationBetween elm, State state) {
         try {
-            Object left = visitExpression(elm.getOperand().get(0), state);
-            if (left instanceof ExpressionDef) {
-                left = visitExpressionDef((ExpressionDef) left, state);
-            }
-            Object right = visitExpression(elm.getOperand().get(1), state);
-            if (right instanceof ExpressionDef) {
-                right = visitExpressionDef((ExpressionDef) right, state);
-            }
-
+            Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+            Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
 
             String precision = elm.getPrecision().value();
             return DurationBetweenEvaluator.duration(left, right, org.opencds.cqf.cql.engine.runtime.Precision.fromString(precision));
@@ -1518,10 +1239,7 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitEnd(End elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return EndEvaluator.end(operand);
     }
 
@@ -1529,14 +1247,9 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
     public Object visitEnds(Ends elm, State state) {
         try {
             System.out.println("visiting Ends");
-            Object left = visitExpression(elm.getOperand().get(0), state);
-            if (left instanceof ExpressionDef) {
-                left = visitExpressionDef((ExpressionDef) left, state);
-            }
-            Object right = visitExpression(elm.getOperand().get(1), state);
-            if (right instanceof ExpressionDef) {
-                right = visitExpressionDef((ExpressionDef) right, state);
-            }
+            Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+            Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
+
             String precision = elm.getPrecision() == null ? null : elm.getPrecision().value();
             return EndsEvaluator.ends(left, right, precision, state);
         } catch (Exception e) {
@@ -1555,15 +1268,8 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
     @Override
     public Object visitEqual(Equal elm, State state) {
         try {
-            Object left = visitExpression(elm.getOperand().get(0), state);
-            if (left instanceof ExpressionDef) {
-                left = visitExpressionDef((ExpressionDef) left, state);
-            }
-            Object right = visitExpression(elm.getOperand().get(1), state);
-            if (right instanceof ExpressionDef) {
-                right = visitExpressionDef((ExpressionDef) right, state);
-            }
-
+            Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+            Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
 
             return EqualEvaluator.equal(left, right, state);
         } catch (Exception e) {
@@ -1575,14 +1281,8 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
     @Override
     public Object visitEquivalent(Equivalent elm, State state) {
         try {
-            Object left = visitExpression(elm.getOperand().get(0), state);
-            if (left instanceof ExpressionDef) {
-                left = visitExpressionDef((ExpressionDef) left, state);
-            }
-            Object right = visitExpression(elm.getOperand().get(1), state);
-            if (right instanceof ExpressionDef) {
-                right = visitExpressionDef((ExpressionDef) right, state);
-            }
+            Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+            Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
 
             return EquivalentEvaluator.equivalent(left, right, state);
         } catch (Exception e) {
@@ -1593,23 +1293,14 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitExcept(Except elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
         return ExceptEvaluator.except(left, right, state);
     }
 
     @Override
     public Object visitExists(Exists elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return ExistsEvaluator.exists(operand);
     }
 
@@ -1622,65 +1313,44 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
     }
 
     public Object visitExpandValueSet(ExpandValueSet elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return ExpandValueSetEvaluator.expand(operand, state);
     }
 
     @Override
     public Object visitExp(Exp elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return ExpEvaluator.exp(operand);
     }
 
     @Override
     public Object visitFilter(Filter elm, State state) {
-        Object source = visitExpression(elm.getSource(), state);
-        if (source instanceof ExpressionDef) {
-            source = visitExpressionDef((ExpressionDef) source, state);
-        }
+        Object source = validateOperand(visitExpression(elm.getSource(), state));
         Object condition = visitExpression(elm.getCondition(), state);
         return FilterEvaluator.filter(elm, source, condition, state);
     }
 
     @Override
     public Object visitFirst(First elm, State state) {
-        Object source = visitExpression(elm.getSource(), state);
-        if (source instanceof ExpressionDef) {
-            source = visitExpressionDef((ExpressionDef) source, state);
-        }
+        Object source = validateOperand(visitExpression(elm.getSource(), state));
         return FirstEvaluator.first(source);
     }
 
     @Override
     public Object visitFlatten(Flatten elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return FlattenEvaluator.flatten(operand);
     }
 
     @Override
     public Object visitFloor(Floor elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return FloorEvaluator.floor(operand);
     }
 
     @Override
     public Object visitForEach(ForEach elm, State state) {
-        Object source = visitExpression(elm.getSource(), state);
-        if (source instanceof ExpressionDef) {
-            source = visitExpressionDef((ExpressionDef) source, state);
-        }
+        Object source = validateOperand(visitExpression(elm.getSource(), state));
         Object element = visitExpression(elm.getElement(), state);
         return ForEachEvaluator.forEach(source, element, state);
     }
@@ -1719,65 +1389,38 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitIncludedIn(IncludedIn elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
         String precision = elm.getPrecision() != null ? elm.getPrecision().value() : null;
         return IncludedInEvaluator.internalEvaluate(left, right, precision, state);
     }
 
     @Override
     public Object visitIncludes(Includes elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
         String precision = elm.getPrecision() != null ? elm.getPrecision().value() : null;
         return IncludesEvaluator.internalEvaluate(left, right, precision, state);
     }
 
     @Override
     public Object visitIndexOf(IndexOf elm, State state) {
-        Object source = visitExpression(elm.getSource(), state);
-        if (source instanceof ExpressionDef) {
-            source = visitExpressionDef((ExpressionDef) source, state);
-        }
+        Object source = validateOperand(visitExpression(elm.getSource(), state));
         Object element = visitExpression(elm.getElement(), state);
         return IndexOfEvaluator.indexOf(source, element, state);
     }
 
     @Override
     public Object visitIndexer(Indexer elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
         return IndexerEvaluator.indexer(left, right);
     }
 
     @Override
     public Object visitIn(In elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
         String precision = elm.getPrecision() != null ? elm.getPrecision().value() : null;
         return InEvaluator.internalEvaluate(left, right, precision, state);
     }
@@ -1785,7 +1428,6 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
     @Override
     public Object visitInstance(Instance elm, State state) {
         try {
-            System.out.println("visiting Instance");
             return new InstanceEvaluator().internalEvaluate(elm, state, this);
         } catch (Exception e) {
             processException(e, elm);
@@ -1796,14 +1438,8 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitIntersect(Intersect elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
         return IntersectEvaluator.intersect(left, right, state);
     }
 
@@ -1814,10 +1450,7 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitIs(Is elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return IsEvaluator.internalEvaluate(elm, operand, state);
     }
 
@@ -1829,10 +1462,7 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitIsNull(IsNull elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return IsNullEvaluator.isNull(operand);
     }
 
@@ -1844,10 +1474,7 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitLast(Last elm, State state) {
-        Object source = visitExpression(elm.getSource(), state);
-        if (source instanceof ExpressionDef) {
-            source = visitExpressionDef((ExpressionDef) source, state);
-        }
+        Object source = validateOperand(visitExpression(elm.getSource(), state));
         return LastEvaluator.last(source);
     }
 
@@ -1860,50 +1487,33 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitLength(Length elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return LengthEvaluator.internalEvaluate(operand, elm, state);
     }
 
     @Override
     public Object visitLess(Less elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
         return LessEvaluator.less(left, right, state);
     }
 
     @Override
     public Object visitLessOrEqual(LessOrEqual elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
 
         return LessOrEqualEvaluator.lessOrEqual(left, right, state);
     }
 
     @Override
     public Object visitLiteral(Literal literal, State state) {
-        System.out.println("visit literal:" + literal.getValueType());
         return LiteralEvaluator.internalEvaluate(literal.getValueType(), literal.getValue(), state);
     }
 
     @Override
     public Object visitList(org.hl7.elm.r1.List elm, State state) {
         try {
-            System.out.println("visiting list");
             return ListEvaluator.internalEvaluate(elm, state, this);
         } catch (Exception e) {
             processException(e, elm);
@@ -1913,23 +1523,14 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitLn(Ln elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return LnEvaluator.ln(operand);
     }
 
     @Override
     public Object visitLog(Log elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
         return LogEvaluator.log(left, right);
     }
 
@@ -1942,10 +1543,7 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitLower(Lower elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return LowerEvaluator.lower(operand);
     }
 
@@ -1958,10 +1556,7 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitMax(Max elm, State state) {
-        Object source = visitExpression(elm.getSource(), state);
-        if (source instanceof ExpressionDef) {
-            source = visitExpressionDef((ExpressionDef) source, state);
-        }
+        Object source = validateOperand(visitExpression(elm.getSource(), state));
         return MaxEvaluator.max(source, state);
     }
 
@@ -1977,10 +1572,7 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitMin(Min elm, State state) {
-        Object source = visitExpression(elm.getSource(), state);
-        if (source instanceof ExpressionDef) {
-            source = visitExpressionDef((ExpressionDef) source, state);
-        }
+        Object source = validateOperand(visitExpression(elm.getSource(), state));
         return MinEvaluator.min(source, state);
     }
 
@@ -1991,37 +1583,22 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitMode(Mode elm, State state) {
-        Object source = visitExpression(elm.getSource(), state);
-        if (source instanceof ExpressionDef) {
-            source = visitExpressionDef((ExpressionDef) source, state);
-        }
+        Object source = validateOperand(visitExpression(elm.getSource(), state));
         return ModeEvaluator.mode(source, state);
     }
 
     @Override
     public Object visitModulo(Modulo elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
         return ModuloEvaluator.modulo(left, right);
     }
 
     @Override
     public Object visitMultiply(Multiply elm, State state) {
         try {
-            Object left = visitExpression(elm.getOperand().get(0), state);
-            if (left instanceof ExpressionDef) {
-                left = visitExpressionDef((ExpressionDef) left, state);
-            }
-            Object right = visitExpression(elm.getOperand().get(1), state);
-            if (right instanceof ExpressionDef) {
-                right = visitExpressionDef((ExpressionDef) right, state);
-            }
+            Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+            Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
 
             return MultiplyEvaluator.multiply(left, right);
         } catch (Exception e) {
@@ -2037,23 +1614,14 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitNotEqual(NotEqual elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
         return NotEqualEvaluator.notEqual(left, right, state);
     }
 
     @Override
     public Object visitNot(Not elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return NotEvaluator.not(operand);
     }
 
@@ -2074,55 +1642,31 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitOr(Or elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
         return OrEvaluator.or(left, right);
     }
 
     @Override
     public Object visitOverlapsAfter(OverlapsAfter elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
         String precision = elm.getPrecision() == null ? null : elm.getPrecision().value();
         return OverlapsAfterEvaluator.overlapsAfter(left, right, precision, state);
     }
 
     @Override
     public Object visitOverlapsBefore(OverlapsBefore elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
         String precision = elm.getPrecision() == null ? null : elm.getPrecision().value();
         return OverlapsBeforeEvaluator.overlapsBefore(left, right, precision, state);
     }
 
     @Override
     public Object visitOverlaps(Overlaps elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
         String precision = elm.getPrecision() == null ? null : elm.getPrecision().value();
         return OverlapsEvaluator.overlaps(left, right, precision, state);
     }
@@ -2134,28 +1678,19 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitPointFrom(PointFrom elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         return PointFromEvaluator.pointFrom(operand, state);
     }
 
     @Override
     public Object visitPopulationStdDev(PopulationStdDev elm, State state) {
-        Object source = visitExpression(elm.getSource(), state);
-        if (source instanceof ExpressionDef) {
-            source = visitExpressionDef((ExpressionDef) source, state);
-        }
+        Object source = validateOperand(visitExpression(elm.getSource(), state));
         return PopulationStdDevEvaluator.popStdDev(source, state);
     }
 
     @Override
     public Object visitPopulationVariance(PopulationVariance elm, State state) {
-        Object source = visitExpression(elm.getSource(), state);
-        if (source instanceof ExpressionDef) {
-            source = visitExpressionDef((ExpressionDef) source, state);
-        }
+        Object source = validateOperand(visitExpression(elm.getSource(), state));
         return PopulationVarianceEvaluator.popVariance(source, state);
     }
 
@@ -2168,14 +1703,8 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitPower(Power elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
         return PowerEvaluator.power(left, right);
     }
 
@@ -2193,65 +1722,38 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitProduct(Product elm, State state) {
-        Object source = visitExpression(elm.getSource(), state);
-        if (source instanceof ExpressionDef) {
-            source = visitExpressionDef((ExpressionDef) source, state);
-        }
+        Object source = validateOperand(visitExpression(elm.getSource(), state));
         return ProductEvaluator.product(source);
     }
 
     @Override
     public Object visitProperContains(ProperContains elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
         String precision = elm.getPrecision() != null ? elm.getPrecision().value() : null;
         return ProperContainsEvaluator.properContains(left, right, precision, state);
     }
 
     @Override
     public Object visitProperIncludedIn(ProperIncludedIn elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
         String precision = elm.getPrecision() != null ? elm.getPrecision().value() : null;
         return ProperIncludedInEvaluator.properlyIncludedIn(left, right, precision, state);
     }
 
     @Override
     public Object visitProperIncludes(ProperIncludes elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
         String precision = elm.getPrecision() != null ? elm.getPrecision().value() : null;
         return ProperIncludesEvaluator.properlyIncludes(left, right, precision, state);
     }
 
     @Override
     public Object visitProperIn(ProperIn elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        if (left instanceof ExpressionDef) {
-            left = visitExpressionDef((ExpressionDef) left, state);
-        }
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        if (right instanceof ExpressionDef) {
-            right = visitExpressionDef((ExpressionDef) right, state);
-        }
+        Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
+        Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
         String precision = elm.getPrecision() != null ? elm.getPrecision().value() : null;
         return ProperInEvaluator.internalEvaluate(left, right, precision, state);
     }
@@ -2269,10 +1771,7 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitRound(Round elm, State state) {
-        Object operand = visitExpression(elm.getOperand(), state);
-        if (operand instanceof ExpressionDef) {
-            operand = visitExpressionDef((ExpressionDef) operand, state);
-        }
+        Object operand = validateOperand(visitExpression(elm.getOperand(), state));
         Object precision = elm.getPrecision() == null ? null : visitExpression(elm.getPrecision(), state);
         return RoundEvaluator.round(operand, precision);
     }
@@ -2292,10 +1791,7 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitRepeat(Repeat elm, State state) {
-        Object source = visitExpression(elm.getSource(), state);
-        if (source instanceof ExpressionDef) {
-            source = visitExpressionDef((ExpressionDef) source, state);
-        }
+        Object source = validateOperand(visitExpression(elm.getSource(), state));
         Object element = visitExpression(elm.getElement(), state);
         String scope = elm.getScope();
         return RepeatEvaluator.internalEvaluate(source, element, scope, state);

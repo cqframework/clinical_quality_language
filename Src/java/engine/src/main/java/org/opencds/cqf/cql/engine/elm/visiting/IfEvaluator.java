@@ -1,6 +1,5 @@
 package org.opencds.cqf.cql.engine.elm.visiting;
 
-import org.hl7.elm.r1.ExpressionDef;
 import org.hl7.elm.r1.If;
 import org.opencds.cqf.cql.engine.execution.CqlEngineVisitor;
 import org.opencds.cqf.cql.engine.execution.State;
@@ -13,10 +12,7 @@ public class IfEvaluator {
     public static Object internalEvaluate(If elm, State state, CqlEngineVisitor visitor) {
         logger.info("Evaluate IfEvaluator");
 
-        Object condition = visitor.visitExpression(elm.getCondition(), state);
-        if(condition instanceof ExpressionDef) {
-            condition = visitor.visitExpressionDef((ExpressionDef) condition, state);
-        }
+        Object condition = visitor.validateOperand(visitor.visitExpression(elm.getCondition(), state));
 
         if (condition == null) {
             condition = false;
