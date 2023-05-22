@@ -364,7 +364,7 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
         return expressionNames;
     }
 
-    private void processException(Exception e, Element element) {
+    public void processException(Exception e, Element element) {
         if (e instanceof CqlException) {
             CqlException ce = (CqlException) e;
             if (ce.getSourceLocator() == null) {
