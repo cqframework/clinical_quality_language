@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import org.opencds.cqf.cql.engine.exception.InvalidDateTime;
-import org.opencds.cqf.cql.engine.execution.Context;
+import org.opencds.cqf.cql.engine.execution.State;
 
 public class DateTime extends BaseTemporal {
 
@@ -204,7 +204,7 @@ public class DateTime extends BaseTemporal {
         }
     }
 
-    public OffsetDateTime getNormalized(Precision precision, Context c) {
+    public OffsetDateTime getNormalized(Precision precision, State c) {
         if (precision.toDateTimeIndex() > Precision.DAY.toDateTimeIndex()) {
             if (c != null) {
                 return dateTime.atZoneSameInstant(c.getEvaluationZonedDateTime().getZone()).toOffsetDateTime();

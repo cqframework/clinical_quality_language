@@ -33,7 +33,7 @@ public class TranslatorHelper {
         LibraryManager libraryManager = new LibraryManager(modelManager);
         UcumService ucumService = new UcumEssenceService(UcumEssenceService.class.getResourceAsStream("/ucum-essence.xml"));
 
-        File cqlFile = new File(URLDecoder.decode(CqlErrorSuiteTest.class.getResource(file).getFile(), "UTF-8"));
+        File cqlFile = new File(URLDecoder.decode(TestLibrarySourceProvider.class.getResource(file).getFile(), "UTF-8"));
 
         CqlTranslator translator = CqlTranslator.fromFile(cqlFile, modelManager, libraryManager, ucumService,
                 CqlCompilerException.ErrorSeverity.Info, signatureLevel, options.toArray(new CqlTranslatorOptions.Options[options.size()]));

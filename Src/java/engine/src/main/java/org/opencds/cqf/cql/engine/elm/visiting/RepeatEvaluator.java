@@ -1,7 +1,6 @@
 package org.opencds.cqf.cql.engine.elm.visiting;
 
 import org.apache.commons.lang3.NotImplementedException;
-import org.opencds.cqf.cql.engine.execution.Context;
 import org.opencds.cqf.cql.engine.execution.State;
 
 public class RepeatEvaluator {

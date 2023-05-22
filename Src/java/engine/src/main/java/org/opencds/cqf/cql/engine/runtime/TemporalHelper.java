@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.TimeZone;
 
 import org.apache.commons.lang3.StringUtils;
-import org.opencds.cqf.cql.engine.execution.Context;
+import org.opencds.cqf.cql.engine.execution.State;
 
 public class TemporalHelper {
 
@@ -86,7 +86,7 @@ public class TemporalHelper {
         return new BigDecimal(Double.toString(seconds/60f/60f));
     }
 
-    public static ZonedDateTime toZonedDateTime(LocalDateTime localDateTime, Context c) {
+    public static ZonedDateTime toZonedDateTime(LocalDateTime localDateTime, State c) {
         if (c != null) {
             return localDateTime.atZone(c.getEvaluationZonedDateTime().getZone());
         }

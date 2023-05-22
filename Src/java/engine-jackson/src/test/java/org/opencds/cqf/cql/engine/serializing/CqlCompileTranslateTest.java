@@ -18,7 +18,7 @@ import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.LibrarySourceProvider;
 import org.cqframework.cql.cql2elm.ModelManager;
-import org.cqframework.cql.elm.execution.Library;
+import org.hl7.elm.r1.Library;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.fhir.ucum.UcumEssenceService;
 import org.fhir.ucum.UcumException;
@@ -51,7 +51,7 @@ public class CqlCompileTranslateTest implements ITest {
 
     public static List<String[]> collectTestFiles() throws URISyntaxException {
         List<String[]> filesToTest = new ArrayList<>();
-        URL dirURL = org.opencds.cqf.cql.engine.execution.CqlMainSuiteTest.class.getResource(".");
+        URL dirURL = org.opencds.cqf.cql.engine.execution.TestLibrarySourceProvider.class.getResource(".");
         File file = new File(dirURL.toURI());
         for (String fileName : file.list()) {
             if (fileName.endsWith(".cql")) {
@@ -74,7 +74,7 @@ public class CqlCompileTranslateTest implements ITest {
             public InputStream getLibrarySource(VersionedIdentifier versionedIdentifier) {
                 String libraryFileName = String.format("%s%s.cql",
                     versionedIdentifier.getId(), versionedIdentifier.getVersion() != null ? ("-" + versionedIdentifier.getVersion()) : "");
-                return org.opencds.cqf.cql.engine.execution.CqlMainSuiteTest.class.getResourceAsStream(libraryFileName);
+                return org.opencds.cqf.cql.engine.execution.TestLibrarySourceProvider.class.getResourceAsStream(libraryFileName);
             }
         });
 

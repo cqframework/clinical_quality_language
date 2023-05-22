@@ -8,7 +8,7 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 import org.opencds.cqf.cql.engine.exception.InvalidDate;
-import org.opencds.cqf.cql.engine.execution.Context;
+import org.opencds.cqf.cql.engine.execution.State;
 
 public class Date extends BaseTemporal {
 
@@ -178,7 +178,7 @@ public class Date extends BaseTemporal {
         }
     }
 
-    public java.util.Date toJavaDate(Context c) {
+    public java.util.Date toJavaDate(State c) {
         ZonedDateTime zonedDateTime = null;
         if (c != null) {
             zonedDateTime = date.atStartOfDay(c.getEvaluationZonedDateTime().getZone());

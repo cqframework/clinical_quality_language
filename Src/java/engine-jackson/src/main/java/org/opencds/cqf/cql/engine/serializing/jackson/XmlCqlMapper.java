@@ -11,13 +11,12 @@ import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
-import org.cqframework.cql.elm.execution.CodeSystemRef;
-import org.cqframework.cql.elm.execution.CqlToElmBase;
-import org.cqframework.cql.elm.execution.Element;
-import org.cqframework.cql.elm.execution.Expression;
-import org.cqframework.cql.elm.execution.ExpressionDef;
-import org.cqframework.cql.elm.execution.TypeSpecifier;
-import org.opencds.cqf.cql.engine.elm.execution.Executable;
+import org.hl7.elm.r1.CodeSystemRef;
+import org.hl7.cql_annotations.r1.CqlToElmBase;
+import org.hl7.elm.r1.Element;
+import org.hl7.elm.r1.Expression;
+import org.hl7.elm.r1.ExpressionDef;
+import org.hl7.elm.r1.TypeSpecifier;
 import org.opencds.cqf.cql.engine.serializing.jackson.mixins.*;
 import org.opencds.cqf.cql.engine.serializing.jackson.modules.QNameFixerXMLMapperModifier;
 
@@ -48,7 +47,6 @@ public class XmlCqlMapper {
             .addMixIn(TypeSpecifier.class, TypeSpecifierMixin.class)
             .addMixIn(CqlToElmBase.class, CqlToElmBaseMixIn.class)
             .addMixIn(Element.class, ElementMixin.class)
-            .addMixIn(Executable.class, ExecutableMixin.class)
             .build();
 
     public static XmlMapper getMapper() {

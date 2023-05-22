@@ -15,7 +15,6 @@ package org.opencds.cqf.cql.engine.elm.visiting;
             at the specified precision.
 */
 
-import org.opencds.cqf.cql.engine.execution.Context;
 import org.opencds.cqf.cql.engine.execution.State;
 
 public class ProperInEvaluator {

@@ -4,8 +4,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.cqframework.cql.elm.execution.Library;
-import org.cqframework.cql.elm.execution.VersionedIdentifier;
+import org.hl7.elm.r1.Library;
+import org.hl7.elm.r1.VersionedIdentifier;
 
 public class InMemoryLibraryLoader implements LibraryLoader {
 

@@ -1,7 +1,7 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import org.cqframework.cql.elm.execution.Library;
-import org.cqframework.cql.elm.execution.VersionedIdentifier;
+import org.hl7.elm.r1.Library;
+import org.hl7.elm.r1.VersionedIdentifier;
 import org.opencds.cqf.cql.engine.exception.CqlException;
 
 public class DefaultLibraryLoader implements LibraryLoader {

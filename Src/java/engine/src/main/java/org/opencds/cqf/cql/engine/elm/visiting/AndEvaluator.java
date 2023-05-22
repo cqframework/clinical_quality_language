@@ -1,7 +1,6 @@
 package org.opencds.cqf.cql.engine.elm.visiting;
 
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
-import org.opencds.cqf.cql.engine.execution.Context;
 
 /*
 and (left Boolean, right Boolean) Boolean

@@ -1,6 +1,6 @@
 package org.opencds.cqf.cql.engine.serializing.jackson.mixins;
 
-import org.cqframework.cql.elm.execution.Library;
+import org.hl7.elm.r1.Library;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;

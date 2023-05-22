@@ -1,6 +1,5 @@
 package org.opencds.cqf.cql.engine.elm.visiting;
 
-import org.opencds.cqf.cql.engine.execution.Context;
 import org.opencds.cqf.cql.engine.execution.State;
 
 /*

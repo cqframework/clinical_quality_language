@@ -2,9 +2,9 @@ package org.opencds.cqf.cql.engine.serializing.jackson.mixins;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.cqframework.cql.elm.execution.Annotation;
-import org.cqframework.cql.elm.execution.CqlToElmError;
-import org.cqframework.cql.elm.execution.CqlToElmInfo;
+import org.hl7.cql_annotations.r1.Annotation;
+import org.hl7.cql_annotations.r1.CqlToElmError;
+import org.hl7.cql_annotations.r1.CqlToElmInfo;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,

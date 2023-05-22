@@ -389,41 +389,7 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
     public Object visitExpressionDef(ExpressionDef expressionDef, State state) {
 
         logger.info(String.format("expression def visit: %s", expressionDef.getName()));
-
-        if (expressionDef.getContext() != null) {
-            state.enterContext(expressionDef.getContext());
-        }
-        try {
-            state.pushEvaluatedResourceStack();
-            VersionedIdentifier libraryId = state.getCurrentLibrary().getIdentifier();
-            if (state.getCache().isExpressionCachingEnabled() && state.getCache().isExpressionCached(libraryId, expressionDef.getName())) {
-                var er = state.getCache().getCachedExpression(libraryId, expressionDef.getName());
-                state.getEvaluatedResources().addAll(er.evaluatedResources());
-                return er.value();
-            }
-
-            Object value = visitExpression(expressionDef.getExpression(), state);
-
-            if (value instanceof ExpressionDef) {
-                value = visitExpressionDef((ExpressionDef) value, state);
-            }
-
-            if (state.getCache().isExpressionCachingEnabled()) {
-                var er = new ExpressionResult(value, state.getEvaluatedResources());
-                state.getCache().cacheExpression(libraryId, expressionDef.getName(), er);
-            }
-
-            return value;
-
-        } catch (Exception e) {
-            processException(e, expressionDef);
-        } finally {
-            state.popEvaluatedResourceStack();
-            if (expressionDef.getContext() != null) {
-                state.exitContext();
-            }
-        }
-        return null;
+        return ExpressionDefEvaluator.internalEvaluate(expressionDef, state, this);
     }
 
     public Object validateOperand(Object operand) {

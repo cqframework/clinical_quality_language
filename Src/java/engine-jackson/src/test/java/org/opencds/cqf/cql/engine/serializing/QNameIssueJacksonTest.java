@@ -5,8 +5,8 @@ import static org.testng.AssertJUnit.assertEquals;
 import java.io.IOException;
 
 import org.cqframework.cql.cql2elm.LibraryContentType;
-import org.cqframework.cql.elm.execution.IntervalTypeSpecifier;
-import org.cqframework.cql.elm.execution.NamedTypeSpecifier;
+import org.hl7.elm.r1.IntervalTypeSpecifier;
+import org.hl7.elm.r1.NamedTypeSpecifier;
 import org.testng.annotations.Test;
 
 public class QNameIssueJacksonTest {

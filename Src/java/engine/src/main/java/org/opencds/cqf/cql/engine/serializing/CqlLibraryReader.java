@@ -7,7 +7,7 @@ import java.io.Reader;
 import java.net.URI;
 import java.net.URL;
 
-import org.cqframework.cql.elm.execution.Library;
+import org.hl7.elm.r1.Library;
 
 public interface CqlLibraryReader {
 
