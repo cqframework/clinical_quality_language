@@ -12,7 +12,7 @@ import java.io.Reader;
 import java.net.URI;
 import java.net.URL;
 
-import org.cqframework.cql.elm.execution.Library;
+import org.hl7.elm.r1.Library;
 import org.opencds.cqf.cql.engine.serializing.CqlLibraryReader;
 
 public class JsonCqlLibraryReader implements CqlLibraryReader {

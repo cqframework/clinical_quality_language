@@ -1,9 +1,10 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import org.cqframework.cql.cql2elm.CqlTranslatorOptions;
-import org.cqframework.cql.cql2elm.LibraryManager;
-import org.cqframework.cql.cql2elm.ModelManager;
+import org.cqframework.cql.cql2elm.*;
+import org.hl7.elm.r1.Library;
 import org.testng.annotations.BeforeMethod;
+
+import java.util.ArrayList;
 
 public class CqlTestBase {
 
@@ -24,6 +25,20 @@ public class CqlTestBase {
         }
 
         return libraryManager;
+    }
+
+    public Library getLibrary(org.hl7.elm.r1.VersionedIdentifier libraryId) {
+        ArrayList<CqlCompilerException> errors = new ArrayList<CqlCompilerException>();
+        return environment.getLibraryManager().resolveLibrary(libraryId, createOptionsMin(), errors).getLibrary();
+    }
+
+    public Library toLibrary(String text) {
+        return toLibrary(text,getModelManager(), getLibraryManager());
+    }
+
+    public Library toLibrary(String text, ModelManager modelManager, LibraryManager libraryManager) {
+        CqlTranslator translator = CqlTranslator.fromText(text, modelManager, libraryManager);
+        return translator.toELM();
     }
 
     public static  org.hl7.elm.r1.VersionedIdentifier toElmIdentifier(String name) {

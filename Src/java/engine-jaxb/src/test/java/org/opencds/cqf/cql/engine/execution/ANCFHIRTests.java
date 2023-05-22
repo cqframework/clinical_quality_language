@@ -1,6 +1,9 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import org.cqframework.cql.elm.execution.Library;
+import org.hl7.elm.r1.ExpressionDef;
+import org.hl7.elm.r1.Library;
+import org.hl7.elm.r1.Retrieve;
+import org.hl7.elm.r1.SingletonFrom;
 import org.opencds.cqf.cql.engine.serializing.jaxb.JsonCqlLibraryReader;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -17,11 +20,11 @@ public class ANCFHIRTests {
             Assert.assertTrue(library.getStatements() != null);
             Assert.assertTrue(library.getStatements().getDef() != null);
             Assert.assertTrue(library.getStatements().getDef().size() >= 2);
-            Assert.assertTrue(library.getStatements().getDef().get(0) instanceof ExpressionDefEvaluator);
-            Assert.assertTrue(library.getStatements().getDef().get(0).getExpression() instanceof SingletonFromEvaluator);
-            Assert.assertTrue(((SingletonFromEvaluator)library.getStatements().getDef().get(0).getExpression()).getOperand() instanceof RetrieveEvaluator);
-            Assert.assertTrue(library.getStatements().getDef().get(1) instanceof ExpressionDefEvaluator);
-            Assert.assertTrue(library.getStatements().getDef().get(1).getExpression() instanceof RetrieveEvaluator);
+            Assert.assertTrue(library.getStatements().getDef().get(0) instanceof ExpressionDef);
+            Assert.assertTrue(library.getStatements().getDef().get(0).getExpression() instanceof SingletonFrom);
+            Assert.assertTrue(((SingletonFrom)library.getStatements().getDef().get(0).getExpression()).getOperand() instanceof Retrieve);
+            Assert.assertTrue(library.getStatements().getDef().get(1) instanceof ExpressionDef);
+            Assert.assertTrue(library.getStatements().getDef().get(1).getExpression() instanceof Retrieve);
         }
         catch (IOException e) {
             throw new IllegalArgumentException("Error reading ELM: " + e.getMessage());

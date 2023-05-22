@@ -10,7 +10,6 @@ public class TestLibrarySourceProvider implements LibrarySourceProvider {
     public InputStream getLibrarySource(VersionedIdentifier libraryIdentifier) {
         String libraryFileName = String.format("%s%s.cql",
                 libraryIdentifier.getId(), libraryIdentifier.getVersion() != null ? ("-" + libraryIdentifier.getVersion()) : "");
-        System.out.println("name:"+ libraryFileName);
         return TestLibrarySourceProvider.class.getResourceAsStream(libraryFileName);
     }
 }

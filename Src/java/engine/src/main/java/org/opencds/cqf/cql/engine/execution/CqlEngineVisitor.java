@@ -208,13 +208,33 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
         }
 
         // TODO: Some testing to see if it's more performant to reset a context rather than create a new one.
-        this.initializeState(libraryCache, library, debugMap, evaluationDateTime);
+        this.initializeState(library, debugMap, evaluationDateTime);
         this.setParametersForContext(library, contextParameter, parameters);
 
         return this.evaluateExpressions(expressions);
     }
 
-    private void initializeState(Map<VersionedIdentifier, Library> libraryCache, Library library, DebugMap debugMap, ZonedDateTime evaluationDateTime) {
+    public EvaluationResult evaluate(VersionedIdentifier libraryIdentifier, Map<VersionedIdentifier, Library> libraryCache, Set<String> expressions, Pair<String, Object> contextParameter, Map<String, Object> parameters, DebugMap debugMap, ZonedDateTime evaluationDateTime) {
+        // TODO: Figure out way to validate / invalidate library cache
+
+        if (libraryIdentifier == null) {
+            throw new IllegalArgumentException("libraryIdentifier can not be null.");
+        }
+
+        Library library = this.loadAndValidate(libraryCache, libraryIdentifier);
+
+        if (expressions == null) {
+            expressions = this.getExpressionSet(library);
+        }
+
+        // TODO: Some testing to see if it's more performant to reset a context rather than create a new one.
+        this.initializeState(library, debugMap, evaluationDateTime);
+        this.setParametersForContext(library, contextParameter, parameters);
+
+        return this.evaluateExpressions(expressions);
+    }
+
+    private void initializeState(Library library, DebugMap debugMap, ZonedDateTime evaluationDateTime) {
         if (evaluationDateTime != null) {
             this.state.setEvaluationDateTime(evaluationDateTime);
         } else {
@@ -388,7 +408,7 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
     @Override
     public Object visitExpressionDef(ExpressionDef expressionDef, State state) {
 
-        logger.info(String.format("expression def visit: %s", expressionDef.getName()));
+        //logger.info(String.format("expression def visit: %s", expressionDef.getName()));
         return ExpressionDefEvaluator.internalEvaluate(expressionDef, state, this);
     }
 

@@ -1,5 +1,6 @@
 dependencies {
     api project(':engine')
+    implementation project(path: ':elm')
     testImplementation 'org.eclipse.persistence:org.eclipse.persistence.moxy:2.7.7'
     testImplementation 'org.glassfish:javax.json:1.0.4'
     testImplementation project(':cql-to-elm')
