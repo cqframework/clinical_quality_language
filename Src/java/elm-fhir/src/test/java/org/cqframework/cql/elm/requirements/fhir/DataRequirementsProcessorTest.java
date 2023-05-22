@@ -147,7 +147,7 @@ public class DataRequirementsProcessorTest {
             assertTrue(moduleDefinitionLibrary.getParameter().size() == 1);
             ParameterDefinition pd = moduleDefinitionLibrary.getParameter().get(0);
             assertEquals(pd.getName(), "Negative PCP Screenings Count Since Last POS");
-            assertEquals(pd.getType(), Enumerations.FHIRAllTypes.INTEGER);
+            assertEquals(pd.getType(), Enumerations.FHIRTypes.INTEGER);
 
             // dataRequirement Observation {
             //   ms: { code, category, value, status, status.value, effective },
@@ -158,7 +158,7 @@ public class DataRequirementsProcessorTest {
             // }
             assertTrue(moduleDefinitionLibrary.getDataRequirement().size() == 1);
             DataRequirement dr= moduleDefinitionLibrary.getDataRequirement().get(0);
-            assertEquals(dr.getType(), Enumerations.FHIRAllTypes.OBSERVATION);
+            assertEquals(dr.getType(), Enumerations.FHIRTypes.OBSERVATION);
             assertTrue(dr.getMustSupport().size() == 6);
             assertTrue(dr.getMustSupport().stream().filter(x -> x.getValue().equals("code")).count() == 1);
             assertTrue(dr.getMustSupport().stream().filter(x -> x.getValue().equals("category")).count() == 1);
@@ -245,61 +245,61 @@ public class DataRequirementsProcessorTest {
 
             pd = getParameter(moduleDefinitionLibrary, "ContextPrescriptions");
             assertNotNull(pd, "Expected parameter ContextPrescriptions");
-            assertEquals(pd.getType(), Enumerations.FHIRAllTypes.MEDICATIONREQUEST);
+            assertEquals(pd.getType(), Enumerations.FHIRTypes.MEDICATIONREQUEST);
             assertEquals(pd.getUse(), Enumerations.OperationParameterUse.IN);
             assertEquals(pd.getMax(), "*");
 
             pd = getParameter(moduleDefinitionLibrary, "Patient");
             assertNotNull(pd, "Expected parameter Patient");
-            assertEquals(pd.getType(), Enumerations.FHIRAllTypes.PATIENT);
+            assertEquals(pd.getType(), Enumerations.FHIRTypes.PATIENT);
             assertEquals(pd.getUse(), Enumerations.OperationParameterUse.OUT);
             assertEquals(pd.getMax(), "1");
 
             pd = getParameter(moduleDefinitionLibrary, "Lookback Year");
             assertNotNull(pd, "Expected parameter Lookback Year");
-            assertEquals(pd.getType(), Enumerations.FHIRAllTypes.PERIOD);
+            assertEquals(pd.getType(), Enumerations.FHIRTypes.PERIOD);
             assertEquals(pd.getUse(), Enumerations.OperationParameterUse.OUT);
             assertEquals(pd.getMax(), "1");
 
             pd = getParameter(moduleDefinitionLibrary, "PCP Screenings");
             assertNotNull(pd, "Expected parameter PCP Screenings");
-            assertEquals(pd.getType(), Enumerations.FHIRAllTypes.OBSERVATION);
+            assertEquals(pd.getType(), Enumerations.FHIRTypes.OBSERVATION);
             assertEquals(pd.getUse(), Enumerations.OperationParameterUse.OUT);
             assertEquals(pd.getMax(), "*");
 
             pd = getParameter(moduleDefinitionLibrary, "Positive PCP Screenings");
             assertNotNull(pd, "Expected parameter Positive PCP Screenings");
-            assertEquals(pd.getType(), Enumerations.FHIRAllTypes.OBSERVATION);
+            assertEquals(pd.getType(), Enumerations.FHIRTypes.OBSERVATION);
             assertEquals(pd.getUse(), Enumerations.OperationParameterUse.OUT);
             assertEquals(pd.getMax(), "*");
 
             pd = getParameter(moduleDefinitionLibrary, "Negative PCP Screenings");
             assertNotNull(pd, "Expected parameter Negative PCP Screenings");
-            assertEquals(pd.getType(), Enumerations.FHIRAllTypes.OBSERVATION);
+            assertEquals(pd.getType(), Enumerations.FHIRTypes.OBSERVATION);
             assertEquals(pd.getUse(), Enumerations.OperationParameterUse.OUT);
             assertEquals(pd.getMax(), "*");
 
             pd = getParameter(moduleDefinitionLibrary, "Negative PCP Screenings Count Since Last POS");
             assertNotNull(pd, "Expected parameter Negative PCP Screenings Count Since Last POS");
-            assertEquals(pd.getType(), Enumerations.FHIRAllTypes.INTEGER);
+            assertEquals(pd.getType(), Enumerations.FHIRTypes.INTEGER);
             assertEquals(pd.getUse(), Enumerations.OperationParameterUse.OUT);
             assertEquals(pd.getMax(), "1");
 
             pd = getParameter(moduleDefinitionLibrary, "Positive PCP Dates in Lookback Period");
             assertNotNull(pd, "Expected parameter Positive PCP Dates in Lookback Period");
-            assertEquals(pd.getType(), Enumerations.FHIRAllTypes.STRING);
+            assertEquals(pd.getType(), Enumerations.FHIRTypes.STRING);
             assertEquals(pd.getUse(), Enumerations.OperationParameterUse.OUT);
             assertEquals(pd.getMax(), "*");
 
             pd = getParameter(moduleDefinitionLibrary, "Has Positive Screening for PCP in Last 12 Months");
             assertNotNull(pd, "Expected parameter Has Positive Screening for PCP in Last 12 Months");
-            assertEquals(pd.getType(), Enumerations.FHIRAllTypes.BOOLEAN);
+            assertEquals(pd.getType(), Enumerations.FHIRTypes.BOOLEAN);
             assertEquals(pd.getUse(), Enumerations.OperationParameterUse.OUT);
             assertEquals(pd.getMax(), "1");
 
             pd = getParameter(moduleDefinitionLibrary, "PCP Summary");
             assertNotNull(pd, "Expected parameter PCPSummary");
-            assertEquals(pd.getType(), Enumerations.FHIRAllTypes.STRING);
+            assertEquals(pd.getType(), Enumerations.FHIRTypes.STRING);
             assertEquals(pd.getUse(), Enumerations.OperationParameterUse.OUT);
             assertEquals(pd.getMax(), "1");
 
@@ -313,13 +313,13 @@ public class DataRequirementsProcessorTest {
             assertTrue(moduleDefinitionLibrary.getDataRequirement().size() == 2);
             DataRequirement dr = null;
             for (DataRequirement r : moduleDefinitionLibrary.getDataRequirement()) {
-                if (r.getType() == Enumerations.FHIRAllTypes.OBSERVATION) {
+                if (r.getType() == Enumerations.FHIRTypes.OBSERVATION) {
                     dr = r;
                     break;
                 }
             }
             assertNotNull(dr);
-            assertEquals(dr.getType(), Enumerations.FHIRAllTypes.OBSERVATION);
+            assertEquals(dr.getType(), Enumerations.FHIRTypes.OBSERVATION);
             assertTrue(dr.getMustSupport().size() == 6);
             assertTrue(dr.getMustSupport().stream().filter(x -> x.getValue().equals("code")).count() == 1);
             assertTrue(dr.getMustSupport().stream().filter(x -> x.getValue().equals("category")).count() == 1);
@@ -399,7 +399,7 @@ public class DataRequirementsProcessorTest {
             assertTrue(moduleDefinitionLibrary.getDataRequirement().size() == 3);
             DataRequirement diagnosisRequirement = null;
             for (DataRequirement requirement : moduleDefinitionLibrary.getDataRequirement()) {
-                if (requirement.getType() == Enumerations.FHIRAllTypes.CONDITION && requirement.getCodeFilter().size() == 1) {
+                if (requirement.getType() == Enumerations.FHIRTypes.CONDITION && requirement.getCodeFilter().size() == 1) {
                     DataRequirement.DataRequirementCodeFilterComponent cfc = requirement.getCodeFilterFirstRep();
                     if (cfc.hasPath() && cfc.getPath().equals("category")
                             && cfc.getCode().size() == 1
@@ -467,7 +467,7 @@ public class DataRequirementsProcessorTest {
             assertTrue(moduleDefinitionLibrary.getDataRequirement().size() >= 15);
             DataRequirement diagnosisRequirement = null;
             for (DataRequirement requirement : moduleDefinitionLibrary.getDataRequirement()) {
-                if (requirement.getType() == Enumerations.FHIRAllTypes.CONDITION && requirement.getCodeFilter().size() == 1) {
+                if (requirement.getType() == Enumerations.FHIRTypes.CONDITION && requirement.getCodeFilter().size() == 1) {
                     DataRequirement.DataRequirementCodeFilterComponent cfc = requirement.getCodeFilterFirstRep();
                     if (cfc.hasPath() && cfc.getPath().equals("code")
                             && cfc.hasValueSet()
@@ -504,7 +504,7 @@ public class DataRequirementsProcessorTest {
             assertTrue(moduleDefinitionLibrary.getType().getCode("http://terminology.hl7.org/CodeSystem/library-type").equalsIgnoreCase("module-definition"));
             DataRequirement encounterRequirement = null;
             for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
-                if (dr.getType() == Enumerations.FHIRAllTypes.ENCOUNTER) {
+                if (dr.getType() == Enumerations.FHIRTypes.ENCOUNTER) {
                     encounterRequirement = dr;
                     break;
                 }
@@ -603,7 +603,7 @@ public class DataRequirementsProcessorTest {
         System.out.println(moduleDefString);
     }
 
-    private Iterable<DataRequirement> getDataRequirementsForType(Iterable<DataRequirement> dataRequirements, Enumerations.FHIRAllTypes type) {
+    private Iterable<DataRequirement> getDataRequirementsForType(Iterable<DataRequirement> dataRequirements, Enumerations.FHIRTypes type) {
         List<DataRequirement> results = new ArrayList<DataRequirement>();
         for (DataRequirement dr : dataRequirements) {
             if (dr.getType() == type) {
@@ -621,7 +621,7 @@ public class DataRequirementsProcessorTest {
 
         // DataRequirements of the PrinicipalDiagnosis function:
             // [Condition]
-        Iterable<DataRequirement> expectedDataRequirements = getDataRequirementsForType(moduleDefinitionLibrary.getDataRequirement(), Enumerations.FHIRAllTypes.CONDITION);
+        Iterable<DataRequirement> expectedDataRequirements = getDataRequirementsForType(moduleDefinitionLibrary.getDataRequirement(), Enumerations.FHIRTypes.CONDITION);
         assertTrue(expectedDataRequirements.iterator().hasNext());
         //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
@@ -634,7 +634,7 @@ public class DataRequirementsProcessorTest {
 
         // DataRequirements of the Non Elective Inpatient Encounter expression:
             // [Encounter: "Non-Elective Inpatient Encounter"]
-        Iterable<DataRequirement> actualDataRequirements = getDataRequirementsForType(moduleDefinitionLibrary.getDataRequirement(), Enumerations.FHIRAllTypes.ENCOUNTER);
+        Iterable<DataRequirement> actualDataRequirements = getDataRequirementsForType(moduleDefinitionLibrary.getDataRequirement(), Enumerations.FHIRTypes.ENCOUNTER);
         assertTrue(actualDataRequirements.iterator().hasNext());
         DataRequirement dr = actualDataRequirements.iterator().next();
         DataRequirement.DataRequirementCodeFilterComponent actualDrcf = null;
@@ -657,7 +657,7 @@ public class DataRequirementsProcessorTest {
         // DataRequirements of the All Stroke Encounter expression:
             // [Encounter: "Non-Elective Inpatient Encounter"]          (from Non Elective Inpatient Encounter)
             // [Condition]                                              (from PrincipalDiagnosis)
-        Iterable<DataRequirement> encounterDataRequirements = getDataRequirementsForType(moduleDefinitionLibrary.getDataRequirement(), Enumerations.FHIRAllTypes.ENCOUNTER);
+        Iterable<DataRequirement> encounterDataRequirements = getDataRequirementsForType(moduleDefinitionLibrary.getDataRequirement(), Enumerations.FHIRTypes.ENCOUNTER);
         assertTrue(encounterDataRequirements.iterator().hasNext());
         DataRequirement dr = encounterDataRequirements.iterator().next();
         DataRequirement.DataRequirementCodeFilterComponent actualDrcf = null;
@@ -669,7 +669,7 @@ public class DataRequirementsProcessorTest {
         }
         assertTrue(actualDrcf != null);
 
-        Iterable<DataRequirement> conditionDataRequirements = getDataRequirementsForType(moduleDefinitionLibrary.getDataRequirement(), Enumerations.FHIRAllTypes.CONDITION);
+        Iterable<DataRequirement> conditionDataRequirements = getDataRequirementsForType(moduleDefinitionLibrary.getDataRequirement(), Enumerations.FHIRTypes.CONDITION);
         assertTrue(conditionDataRequirements.iterator().hasNext());
 
         //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
@@ -684,7 +684,7 @@ public class DataRequirementsProcessorTest {
         // DataRequirements of the All Stroke Encounter expression:
         // [Encounter: "Non-Elective Inpatient Encounter"]          (from Non Elective Inpatient Encounter)
         // [Condition]                                              (from PrincipalDiagnosis)
-        Iterable<DataRequirement> encounterDataRequirements = getDataRequirementsForType(moduleDefinitionLibrary.getDataRequirement(), Enumerations.FHIRAllTypes.ENCOUNTER);
+        Iterable<DataRequirement> encounterDataRequirements = getDataRequirementsForType(moduleDefinitionLibrary.getDataRequirement(), Enumerations.FHIRTypes.ENCOUNTER);
         DataRequirement.DataRequirementCodeFilterComponent actualDrcf = null;
         for (DataRequirement dr : encounterDataRequirements) {
             for (DataRequirement.DataRequirementCodeFilterComponent drcf : dr.getCodeFilter()) {
@@ -699,7 +699,7 @@ public class DataRequirementsProcessorTest {
         }
         assertTrue(actualDrcf != null);
 
-        Iterable<DataRequirement> conditionDataRequirements = getDataRequirementsForType(moduleDefinitionLibrary.getDataRequirement(), Enumerations.FHIRAllTypes.CONDITION);
+        Iterable<DataRequirement> conditionDataRequirements = getDataRequirementsForType(moduleDefinitionLibrary.getDataRequirement(), Enumerations.FHIRTypes.CONDITION);
         assertTrue(conditionDataRequirements.iterator().hasNext());
 
         //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
@@ -729,7 +729,7 @@ public class DataRequirementsProcessorTest {
         // Validate the data requirement is reported in the module definition library
         DataRequirement expectedDataRequirement = null;
         for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
-            if (dr.getType() == Enumerations.FHIRAllTypes.OBSERVATION) {
+            if (dr.getType() == Enumerations.FHIRTypes.OBSERVATION) {
                 if (dr.getCodeFilter().size() == 1) {
                     DataRequirement.DataRequirementCodeFilterComponent cfc = dr.getCodeFilterFirstRep();
                     if ("code".equals(cfc.getPath())) {
@@ -779,7 +779,7 @@ public class DataRequirementsProcessorTest {
         // Validate the data requirement is reported in the module definition library
         DataRequirement expectedDataRequirement = null;
         for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
-            if (dr.getType() == Enumerations.FHIRAllTypes.OBSERVATION) {
+            if (dr.getType() == Enumerations.FHIRTypes.OBSERVATION) {
                 if (dr.getCodeFilter().size() == 1) {
                     DataRequirement.DataRequirementCodeFilterComponent cfc = dr.getCodeFilterFirstRep();
                     if ("status".equals(cfc.getPath())) {
@@ -826,7 +826,7 @@ public class DataRequirementsProcessorTest {
         assertEquals(moduleDefinitionLibrary.getParameter().size(), 1);
         for (ParameterDefinition pd : moduleDefinitionLibrary.getParameter()) {
             if ("TestReferencedDataRequirement".equals(pd.getName()) && pd.getUse() == Enumerations.OperationParameterUse.OUT
-            && pd.hasMin() && pd.getMin() == 0 && "*".equals(pd.getMax()) && pd.getType() == Enumerations.FHIRAllTypes.MEDICATION) {
+            && pd.hasMin() && pd.getMin() == 0 && "*".equals(pd.getMax()) && pd.getType() == Enumerations.FHIRTypes.MEDICATION) {
                 expectedParameterDefinition = pd;
             }
         }
@@ -838,7 +838,7 @@ public class DataRequirementsProcessorTest {
         // TODO: This really should be 1, but we're using the recursive gather, so it reports the [Medication] retrieve in the referenced expression as well
         assertEquals(moduleDefinitionLibrary.getDataRequirement().size(), 2);
         for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
-            if (dr.getType() == Enumerations.FHIRAllTypes.MEDICATION) {
+            if (dr.getType() == Enumerations.FHIRTypes.MEDICATION) {
                 if (dr.getCodeFilter().size() == 1) {
                     DataRequirement.DataRequirementCodeFilterComponent cfc = dr.getCodeFilterFirstRep();
                     if ("code".equals(cfc.getPath())) {
@@ -894,7 +894,7 @@ public class DataRequirementsProcessorTest {
         // Validate the data requirement is reported in the module definition library
         DataRequirement expectedDataRequirement = null;
         for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
-            if (dr.getType() == Enumerations.FHIRAllTypes.CLAIM) {
+            if (dr.getType() == Enumerations.FHIRTypes.CLAIM) {
                 if (dr.getCodeFilter().size() == 1) {
                     DataRequirement.DataRequirementCodeFilterComponent cfc = dr.getCodeFilterFirstRep();
                     if ("item.revenue".equals(cfc.getPath())) {
@@ -949,7 +949,7 @@ public class DataRequirementsProcessorTest {
         // Validate the data requirement is reported in the module definition library
         DataRequirement expectedDataRequirement = null;
         for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
-            if (dr.getType() == Enumerations.FHIRAllTypes.CLAIM) {
+            if (dr.getType() == Enumerations.FHIRTypes.CLAIM) {
                 if (dr.getDateFilter().size() == 1) {
                     DataRequirement.DataRequirementDateFilterComponent dfc = dr.getDateFilterFirstRep();
                     if ("item.serviced.start".equals(dfc.getPath())) {
@@ -1004,7 +1004,7 @@ public class DataRequirementsProcessorTest {
         DataRequirement expectedDataRequirement = null;
         boolean hasFilter = false;
         for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
-            if (dr.getType() == Enumerations.FHIRAllTypes.CONDITION) {
+            if (dr.getType() == Enumerations.FHIRTypes.CONDITION) {
                 if (dr.getDateFilter().size() == 1) {
                     for (DataRequirement.DataRequirementDateFilterComponent dfc : dr.getDateFilter()) {
                         if ("onset".equals(dfc.getPath())) {
@@ -1059,7 +1059,7 @@ public class DataRequirementsProcessorTest {
 
         DataRequirement expectedDataRequirement = null;
         for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
-            if (dr.getType() == Enumerations.FHIRAllTypes.CONDITION) {
+            if (dr.getType() == Enumerations.FHIRTypes.CONDITION) {
                 if (dr.getDateFilter().size() == 1) {
                     DataRequirement.DataRequirementDateFilterComponent dfc = dr.getDateFilterFirstRep();
                     if ("onset".equals(dfc.getPath())) {
@@ -1108,7 +1108,7 @@ public class DataRequirementsProcessorTest {
 
         DataRequirement expectedDataRequirement = null;
         for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
-            if (dr.getType() == Enumerations.FHIRAllTypes.CONDITION) {
+            if (dr.getType() == Enumerations.FHIRTypes.CONDITION) {
                 if (dr.getDateFilter().size() == 1) {
                     DataRequirement.DataRequirementDateFilterComponent dfc = dr.getDateFilterFirstRep();
                     if ("onset".equals(dfc.getPath())) {
@@ -1167,7 +1167,7 @@ public class DataRequirementsProcessorTest {
         boolean hasFilter1 = false;
         boolean hasFilter2 = false;
         for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
-            if (dr.getType() == Enumerations.FHIRAllTypes.CONDITION) {
+            if (dr.getType() == Enumerations.FHIRTypes.CONDITION) {
                 if (dr.getDateFilter().size() == 2) {
                     for (DataRequirement.DataRequirementDateFilterComponent dfc : dr.getDateFilter()) {
                         if ("onset".equals(dfc.getPath())) {
@@ -1246,7 +1246,7 @@ public class DataRequirementsProcessorTest {
         // Validate the data requirement is reported in the module definition library
         DataRequirement expectedDataRequirement = null;
         for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
-            if (dr.getType() == Enumerations.FHIRAllTypes.MEDICATIONREQUEST) {
+            if (dr.getType() == Enumerations.FHIRTypes.MEDICATIONREQUEST) {
                 expectedDataRequirement = dr;
             }
         }
@@ -1254,7 +1254,7 @@ public class DataRequirementsProcessorTest {
 
         DataRequirement includedDataRequirement = null;
         for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
-            if (dr.getType() == Enumerations.FHIRAllTypes.ENCOUNTER) {
+            if (dr.getType() == Enumerations.FHIRTypes.ENCOUNTER) {
                 Extension e = dr.getExtensionByUrl("http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-relatedRequirement");
                 if (e != null) {
                     Extension targetId = e.getExtensionByUrl("targetId");
@@ -1331,7 +1331,7 @@ public class DataRequirementsProcessorTest {
         // Validate the data requirement is reported in the module definition library
         DataRequirement expectedDataRequirement = null;
         for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
-            if (dr.getType() == Enumerations.FHIRAllTypes.MEDICATIONREQUEST) {
+            if (dr.getType() == Enumerations.FHIRTypes.MEDICATIONREQUEST) {
                 expectedDataRequirement = dr;
             }
         }
@@ -1339,7 +1339,7 @@ public class DataRequirementsProcessorTest {
 
         DataRequirement includedDataRequirement = null;
         for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
-            if (dr.getType() == Enumerations.FHIRAllTypes.MEDICATION) {
+            if (dr.getType() == Enumerations.FHIRTypes.MEDICATION) {
                 Extension e = dr.getExtensionByUrl("http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-relatedRequirement");
                 if (e != null) {
                     Extension targetId = e.getExtensionByUrl("targetId");
@@ -1411,7 +1411,7 @@ public class DataRequirementsProcessorTest {
         // Validate the data requirement is reported in the module definition library
         DataRequirement expectedDataRequirement = null;
         for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
-            if (dr.getType() == Enumerations.FHIRAllTypes.MEDICATIONREQUEST) {
+            if (dr.getType() == Enumerations.FHIRTypes.MEDICATIONREQUEST) {
                 expectedDataRequirement = dr;
             }
         }
@@ -1419,7 +1419,7 @@ public class DataRequirementsProcessorTest {
 
         DataRequirement includedDataRequirement = null;
         for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
-            if (dr.getType() == Enumerations.FHIRAllTypes.MEDICATION) {
+            if (dr.getType() == Enumerations.FHIRTypes.MEDICATION) {
                 Extension e = dr.getExtensionByUrl("http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-relatedRequirement");
                 if (e != null) {
                     Extension targetId = e.getExtensionByUrl("targetId");
@@ -1484,7 +1484,7 @@ public class DataRequirementsProcessorTest {
         // Validate the data requirement is reported in the module definition library
         DataRequirement expectedDataRequirement = null;
         for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
-            if (dr.getType() == Enumerations.FHIRAllTypes.MEDICATIONREQUEST) {
+            if (dr.getType() == Enumerations.FHIRTypes.MEDICATIONREQUEST) {
                 expectedDataRequirement = dr;
             }
         }
@@ -1492,7 +1492,7 @@ public class DataRequirementsProcessorTest {
 
         DataRequirement includedDataRequirement = null;
         for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
-            if (dr.getType() == Enumerations.FHIRAllTypes.MEDICATION) {
+            if (dr.getType() == Enumerations.FHIRTypes.MEDICATION) {
                 Extension e = dr.getExtensionByUrl("http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-relatedRequirement");
                 if (e != null) {
                     Extension targetId = e.getExtensionByUrl("targetId");
@@ -1550,7 +1550,7 @@ public class DataRequirementsProcessorTest {
         // Validate the data requirement is reported in the module definition library
         DataRequirement expectedDataRequirement = null;
         for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
-            if (dr.getType() == Enumerations.FHIRAllTypes.OBSERVATION) {
+            if (dr.getType() == Enumerations.FHIRTypes.OBSERVATION) {
                 expectedDataRequirement = dr;
             }
         }
@@ -1601,7 +1601,7 @@ public class DataRequirementsProcessorTest {
         // Validate the data requirement is reported in the module definition library
         DataRequirement expectedDataRequirement = null;
         for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
-            if (dr.getType() == Enumerations.FHIRAllTypes.OBSERVATION) {
+            if (dr.getType() == Enumerations.FHIRTypes.OBSERVATION) {
                 expectedDataRequirement = dr;
             }
         }
@@ -1638,7 +1638,7 @@ public class DataRequirementsProcessorTest {
         // Validate the data requirement is reported in the module definition library
         DataRequirement expectedDataRequirement = null;
         for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
-            if (dr.getType() == Enumerations.FHIRAllTypes.OBSERVATION) {
+            if (dr.getType() == Enumerations.FHIRTypes.OBSERVATION) {
                 expectedDataRequirement = dr;
             }
         }
@@ -1706,7 +1706,7 @@ public class DataRequirementsProcessorTest {
 
             assertTrue(moduleDefinitionLibrary.getDataRequirement().size() == 3);
             DataRequirement dr = moduleDefinitionLibrary.getDataRequirement().get(1);
-            assertEquals(dr.getType(), Enumerations.FHIRAllTypes.CONDITION);
+            assertEquals(dr.getType(), Enumerations.FHIRTypes.CONDITION);
             assertEquals(dr.getExtension().get(0).getUrl(), "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinence");
             assertEquals(((Coding) dr.getExtension().get(0).getValue()).getCode(), "pathognomonic");
 
@@ -1736,17 +1736,17 @@ public class DataRequirementsProcessorTest {
             org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(libraryManager, translator.getTranslatedLibrary(), cqlTranslatorOptions, null, false);
 
             DataRequirement dr = moduleDefinitionLibrary.getDataRequirement().get(1);
-            assertEquals(dr.getType(), Enumerations.FHIRAllTypes.CONDITION);
+            assertEquals(dr.getType(), Enumerations.FHIRTypes.CONDITION);
             assertEquals(dr.getExtension().get(0).getUrl(), "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinence");
             assertEquals(((Coding) dr.getExtension().get(0).getValue()).getCode(), "weakly-negative");
 
             DataRequirement dr2 = moduleDefinitionLibrary.getDataRequirement().get(2);
-            assertEquals(dr2.getType(), Enumerations.FHIRAllTypes.ENCOUNTER);
+            assertEquals(dr2.getType(), Enumerations.FHIRTypes.ENCOUNTER);
             assertEquals(dr2.getExtension().get(0).getUrl(), "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinence");
             assertEquals(((Coding) dr2.getExtension().get(0).getValue()).getCode(), "pathognomonic");
 
             DataRequirement dr5 = moduleDefinitionLibrary.getDataRequirement().get(5);
-            assertEquals(dr5.getType(), Enumerations.FHIRAllTypes.DEVICEREQUEST);
+            assertEquals(dr5.getType(), Enumerations.FHIRTypes.DEVICEREQUEST);
             assertEquals(dr5.getExtension().get(0).getUrl(), "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinence");
             assertEquals(((Coding) dr5.getExtension().get(0).getValue()).getCode(), "strongly-positive");
 

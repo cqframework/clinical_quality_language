@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -537,7 +538,7 @@ public class SearchParameterMap implements Serializable {
 			retVal = -1;
 		} else if (theO2.getMissing() == null) {
 			retVal = 1;
-		} else if (ObjectUtil.equals(theO1.getMissing(), theO2.getMissing())) {
+		} else if (Objects.equals(theO1.getMissing(), theO2.getMissing())) {
 			retVal = 0;
 		} else {
 			if (theO1.getMissing()) {
