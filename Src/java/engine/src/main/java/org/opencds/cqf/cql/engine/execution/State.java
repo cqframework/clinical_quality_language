@@ -283,7 +283,6 @@ public class State {
     }
 
     public void push(Variable variable) {
-        System.out.println("pushed variable:"+ variable.getName());
         getStack().push(variable);
     }
 
@@ -300,7 +299,6 @@ public class State {
     }
 
     public Variable resolveVariable(String name, boolean mustResolve) {
-        System.out.println("resolve variable:"+ name);
         Variable result = resolveVariable(name);
         if (mustResolve && result == null) {
             throw new CqlException(String.format("Could not resolve variable reference %s", name));
@@ -334,12 +332,10 @@ public class State {
     }
 
     public void enterContext(String context) {
-        System.out.println("Enter context:"+ context);
         currentContext.push(context);
     }
 
     public void exitContext() {
-        System.out.println("Exit context");
         currentContext.pop();
     }
 
@@ -455,7 +451,6 @@ public class State {
 
         for (ExpressionDef expressionDef : getCurrentLibrary().getStatements().getDef()) {
             if (expressionDef.getName().equals(name)) {
-                System.out.println("matches expression ref:"+ name);
                 return expressionDef;
             }
         }

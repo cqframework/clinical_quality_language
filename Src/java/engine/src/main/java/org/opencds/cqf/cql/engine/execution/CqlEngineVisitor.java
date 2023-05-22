@@ -14,6 +14,8 @@ import org.opencds.cqf.cql.engine.debug.SourceLocator;
 import org.opencds.cqf.cql.engine.elm.visiting.*;
 import org.opencds.cqf.cql.engine.exception.CqlException;
 import org.opencds.cqf.cql.engine.runtime.CodeSystem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
@@ -45,6 +47,8 @@ import static org.opencds.cqf.cql.engine.execution.NamespaceHelper.getUriPart;
  */
 
 public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
+
+    private static Logger logger = LoggerFactory.getLogger(CqlEngineVisitor.class);
 
     public enum Options {
         EnableExpressionCaching, EnableValidation
@@ -250,22 +254,22 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
                 continue;
             }
 
-            //this.state.enterContext(def.getContext());
             Object object = visitExpressionDef(def, this.state);
-            //Object object = def.evaluate(context);
             result.expressionResults.put(expression, new ExpressionResult(object, this.state.getEvaluatedResources()));
         }
 
-        System.out.println("printing keys:");
+        /*
+        logger.info("printing keys:");
         for (Map.Entry superEntry : this.state.getCache().getExpressions().entrySet()) {
-            System.out.println(superEntry.getKey());
+            logger.info(superEntry.getKey());
             LinkedHashMap map = ((LinkedHashMap) superEntry.getValue());
             for (Object entry : map.entrySet()) {
-                System.out.println("key:" + ((Map.Entry) entry).getKey() + "| value:" + ((ExpressionResult) ((Map.Entry) entry).getValue()).value);
+                logger.info("key:" + ((Map.Entry) entry).getKey() + "| value:" + ((ExpressionResult) ((Map.Entry) entry).getValue()).value);
             }
         }
+        */
 
-        //result.setDebugResult(context.getDebugResult());
+        result.setDebugResult(this.state.getDebugResult());
         this.state.clearExpressions();
 
         return result;
@@ -384,7 +388,7 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
     @Override
     public Object visitExpressionDef(ExpressionDef expressionDef, State state) {
 
-        System.out.println("visit expression def:" + expressionDef.getName());
+        logger.info(String.format("expression def visit: %s", expressionDef.getName()));
 
         if (expressionDef.getContext() != null) {
             state.enterContext(expressionDef.getContext());
@@ -395,7 +399,6 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
             if (state.getCache().isExpressionCachingEnabled() && state.getCache().isExpressionCached(libraryId, expressionDef.getName())) {
                 var er = state.getCache().getCachedExpression(libraryId, expressionDef.getName());
                 state.getEvaluatedResources().addAll(er.evaluatedResources());
-                System.out.println("value in cache:" + er.value());
                 return er.value();
             }
 
@@ -406,7 +409,6 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
             }
 
             if (state.getCache().isExpressionCachingEnabled()) {
-                System.out.println("Expression is cached:" + libraryId.getId() + "|" + expressionDef.getName());
                 var er = new ExpressionResult(value, state.getEvaluatedResources());
                 state.getCache().cacheExpression(libraryId, expressionDef.getName(), er);
             }
@@ -591,7 +593,6 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
     @Override
     public Object visitGreater(Greater elm, State state) {
         try {
-            System.out.println("visiting greater");
             Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
             Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
 
@@ -959,7 +960,6 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
     @Override
     public Object visitCase(Case elm, State state) {
         try {
-            System.out.println("visiting Case");
             if (elm.getComparand() == null) {
                 for (CaseItem caseItem : elm.getCaseItem()) {
                     Boolean when = (Boolean) visitExpression(caseItem.getWhen(), state);
@@ -1020,7 +1020,6 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitCode(Code elm, State state) {
-        System.out.println("visiting code");
         return CodeEvaluator.internalEvaluate(elm.getSystem(), elm.getCode(), elm.getDisplay(), state);
     }
 
@@ -1041,7 +1040,6 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitConcept(Concept elm, State state) {
-        System.out.println("visiting Concept");
         ArrayList<org.opencds.cqf.cql.engine.runtime.Code> codes = new ArrayList<>();
         for (int i = 0; i < elm.getCode().size(); ++i) {
             codes.add((org.opencds.cqf.cql.engine.runtime.Code) visitExpression(elm.getCode().get(i), state));
@@ -1246,7 +1244,6 @@ public class CqlEngineVisitor extends ElmBaseLibraryVisitor<Object, State> {
     @Override
     public Object visitEnds(Ends elm, State state) {
         try {
-            System.out.println("visiting Ends");
             Object left = validateOperand(visitExpression(elm.getOperand().get(0), state));
             Object right = validateOperand(visitExpression(elm.getOperand().get(1), state));
 

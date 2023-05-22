@@ -22,7 +22,6 @@ public class CodeEvaluator {
     private static Logger logger = LoggerFactory.getLogger(CodeEvaluator.class);
 
     public static Object internalEvaluate(CodeSystemRef codeSystemRef, String c, String display, State state) {
-        System.out.println("evaluating code");
         org.opencds.cqf.cql.engine.runtime.Code code = new org.opencds.cqf.cql.engine.runtime.Code().withCode(c).withDisplay(display);
         if (codeSystemRef != null) {
             boolean enteredLibrary = state.enterLibrary(codeSystemRef.getLibraryName());

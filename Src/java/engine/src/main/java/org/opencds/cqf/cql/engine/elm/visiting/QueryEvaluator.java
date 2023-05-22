@@ -84,7 +84,6 @@ public class QueryEvaluator {
     }
 
     private Object constructResult(State state, List<Variable> variables, List<Object> elements) {
-       // System.out.println("Elements:"+ elements);
         if (variables.size() > 1) {
             LinkedHashMap<String,Object> elementMap = new LinkedHashMap<>();
             for (int i = 0; i < variables.size(); i++) {

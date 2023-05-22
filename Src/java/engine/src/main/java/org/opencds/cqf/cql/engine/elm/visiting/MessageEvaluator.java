@@ -72,8 +72,6 @@ public class MessageEvaluator {
         String severity = (String) visitor.visitExpression(elm.getSeverity(), state);
         String msg = (String)visitor.visitExpression(elm.getMessage(), state);
 
-        System.out.println("Source:"+ source);
-
         return message(state, SourceLocator.fromNode(elm, state.getCurrentLibrary()),
                 source, condition, code, severity, msg
         );

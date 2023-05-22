@@ -46,7 +46,6 @@ public class GreaterEvaluator {
 
     private static Logger logger = LoggerFactory.getLogger(GreaterEvaluator.class);
     public static Boolean greater(Object left, Object right, State state) {
-        logger.info("evaluating GreaterEvaluator");
 
         if (left == null || right == null) {
             return null;

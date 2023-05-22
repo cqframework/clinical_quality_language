@@ -5,7 +5,6 @@ import org.opencds.cqf.cql.engine.execution.State;
 
 public class ExpressionRefEvaluator{
     public  static Object internalEvaluate(ExpressionRef expressionRef, State state) {
-        System.out.println("evaluating expression ref:" + expressionRef.getName());
         boolean enteredLibrary = state.enterLibrary(expressionRef.getLibraryName());
         try {
             return state.resolveExpressionRef(expressionRef.getName());

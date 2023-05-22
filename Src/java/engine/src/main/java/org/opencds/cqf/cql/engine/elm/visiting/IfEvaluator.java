@@ -10,7 +10,6 @@ public class IfEvaluator {
     private static Logger logger = LoggerFactory.getLogger(IfEvaluator.class);
 
     public static Object internalEvaluate(If elm, State state, CqlEngineVisitor visitor) {
-        logger.info("Evaluate IfEvaluator");
 
         Object condition = visitor.validateOperand(visitor.visitExpression(elm.getCondition(), state));
 
