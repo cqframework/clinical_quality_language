@@ -237,7 +237,7 @@ configure(subprojects.findAll {it.name in ['model', 'elm', 'quick', 'qdm', 'engi
    - Repo for snapshots and releases for the engine modules: https://oss.sonatype.org/content/groups/public/org/opencds/cqf/cql/
    - Repo for snapshots, releases, and staged releases for the engine modules: https://oss.sonatype.org/content/groups/staging/org/opencds/cqf/cql/
  */
-configure(subprojects.findAll {it.name in ['cqf-fhir', 'cqf-fhir-npm', 'cql', 'model', 'model-jackson', 'model-jaxb', 'elm', 'elm-jackson', 'elm-jaxb', 'elm-fhir', 'quick', 'cql-to-elm', 'cql-to-elm-cli', 'qdm', 'cql-formatter', 'engine', 'engine-fhir', 'engine-jaxb', 'engine-jackson']}) {
+configure(subprojects.findAll {it.name in ['cqf-fhir', 'cqf-fhir-npm', 'cql', 'model', 'model-jackson', 'model-jaxb', 'elm', 'elm-jackson', 'elm-jaxb', 'elm-fhir', 'quick', 'cql-to-elm', 'cql-to-elm-cli', 'qdm', 'cql-formatter', 'engine', 'engine-fhir', 'engine-jackson']}) {
     java {
         withJavadocJar()
         withSourcesJar()
