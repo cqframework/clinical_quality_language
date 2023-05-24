@@ -122,7 +122,7 @@ public class R4FhirTerminologyProvider implements TerminologyProvider {
                     .andParameter("system", new UriType(codeSystem.getId()))
                     .execute();
 
-            StringType display = (StringType) respParam.getParameter("display");
+            StringType display = (StringType) respParam.getParameter("display").getValue();
             if (display != null) {
                 code.withDisplay(display.getValue());
             }
