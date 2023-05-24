@@ -1,7 +1,11 @@
+plugins {
+    id 'cql.library-conventions'
+    id 'cql.xjc-conventions'
+}
 
 dependencies {
-    implementation group: 'org.apache.commons', name: 'commons-text', version: '1.9'
-    testRuntimeOnly group: 'org.eclipse.persistence', name: 'org.eclipse.persistence.moxy', version: '2.7.7'
+    implementation 'org.apache.commons:commons-text:1.9'
+    testRuntimeOnly 'org.eclipse.persistence:org.eclipse.persistence.moxy:2.7.7'
 }
 
 generateSources {

@@ -1,37 +1,30 @@
-apply plugin: 'application'
-apply plugin: 'antlr'
+plugins {
+    id 'cql.java-conventions'
+    id 'application'
+    id 'antlr'
+}
 
-mainClassName = 'org.cqframework.cql.Main'
-run.args = ["${projectDir}/../../../Examples/ChlamydiaScreening_CQM.cql"]
+dependencies {
+    antlr  "org.antlr:antlr4:${project['antlr.version']}"
+    api "org.antlr:antlr4-runtime:${project['antlr.version']}"
+}
 
-configurations {
-    api {
-        // Undo extendsFrom relationship between the 'antlr' configuration and the 'api' configuration
-        // See https://github.com/gradle/gradle/blob/master/subprojects/antlr/src/main/java/org/gradle/api/plugins/antlr/AntlrPlugin.java#L60
-        extendsFrom = extendsFrom.findAll { it != configurations.antlr }
+application {
+    mainClass = 'org.cqframework.cql.Main'
+}
+
+sourceSets {
+    main {
+        antlr {
+            srcDirs = ["../../grammar"]
+        }
+        java {
+            srcDir 'build/generated/sources/antlr/main/java'
+        }
     }
 }
-dependencies {
-    antlr  group: "org.antlr", name: "antlr4", version: "4.10.1"
-    // Exports Antlr runtime packages to cql-to-elm
-    api group: "org.antlr", name: "antlr4-runtime", version: "4.10.1"
-}
-
-ext.antlr = [
-        package: 'org.cqframework.cql.gen',
-        destination: 'src/generated/java'
-]
-
-sourceSets.main.antlr.srcDirs = ['../../grammar']
-sourceSets.main.java.srcDirs += antlr.destination
 
 generateGrammarSource {
-    arguments = ['-visitor', '-package', antlr.package]
-    outputDirectory = file("${antlr.destination}/${antlr.package.replaceAll("\\.", "/")}")
-}
-
-sourcesJar.dependsOn generateGrammarSource
-
-clean {
-    delete antlr.destination
+    outputDirectory = file("${project.buildDir}/generated/sources/antlr/main/java/org/cqframework/cql/gen")
+    arguments = ['-visitor', '-package', 'org.cqframework.cql.gen']
 }

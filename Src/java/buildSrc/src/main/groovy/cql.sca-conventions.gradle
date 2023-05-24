@@ -1,0 +1,39 @@
+plugins {
+    id 'java'
+}
+
+/*
+    Turn on static code analysis by passing 'sca' as a system property:
+    e.g., gradle -Dsca build
+
+    Or add it to your user gradle.properties file (${HOME}/.gradle/gradle.properties):
+    systemProp.sca=true
+    */
+if (System.getProperty('sca') != null) {
+
+    dependencies {
+        pmd(
+                'net.sourceforge.pmd:pmd-core:5.3.1',
+                'net.sourceforge.pmd:pmd-java:5.3.1'
+        )
+    }
+
+    pmd {
+        consoleOutput = true
+        toolVersion = "5.3.1"
+        ruleSetFiles = files("${rootProject.projectDir}/custom-pmd-ruleset.xml")
+        ruleSets = []
+    }
+
+    findbugs {
+        toolVersion = "3.0.1"
+        excludeFilter = file("${rootProject.projectDir}/findbugs-exclude-filter.xml")
+    }
+
+    tasks.withType(FindBugs) {
+        reports {
+            xml.enabled = false
+            html.enabled = true
+        }
+    }
+}

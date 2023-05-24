@@ -1,4 +1,7 @@
-// Most build configuration comes from the cql-all parent build!
+plugins {
+    id "cql.library-conventions"
+    id "cql.fhir-conventions"
+}
 
 ext {
     mapstructVersion = "1.4.2.Final"
@@ -13,7 +16,7 @@ dependencies {
     testImplementation project(':quick')
     testImplementation "org.reflections:reflections:0.10.2"
     testRuntimeOnly project(':model-jackson')
-    testRuntimeOnly group: 'xpp3', name: 'xpp3', version: '1.1.4c'
+    testRuntimeOnly 'xpp3:xpp3:1.1.4c'
 
     annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 }

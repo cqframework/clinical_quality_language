@@ -1,3 +1,8 @@
+plugins {
+    id 'cql.library-conventions'
+    id 'cql.xjc-conventions'
+}
+
 dependencies {
     api 'org.slf4j:slf4j-api:1.7.29'
     api 'org.apache.commons:commons-text:1.10.0'

@@ -1,6 +1,11 @@
-apply plugin: 'application'
+plugins {
+    id 'cql.java-conventions'
+    id 'application'
+}
 
-mainClassName = 'org.cqframework.cql.tools.parsetree.Main'
+application {
+    mainClass = 'org.cqframework.cql.tools.parsetree.Main'
+}
 
 dependencies {
     implementation project(':cql')

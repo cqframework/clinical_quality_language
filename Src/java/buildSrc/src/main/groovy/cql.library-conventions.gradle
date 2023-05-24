@@ -1,0 +1,17 @@
+plugins {
+    id 'cql.java-conventions'
+    id 'java-library'
+}
+
+ext {
+    androidApiLevel = project['android.api.level']
+}
+
+configurations {
+    signature
+}
+
+dependencies {
+    implementation 'ru.vyarus:gradle-animalsniffer-plugin:1.7.0'
+    signature "net.sf.androidscents.signature:android-api-level-${androidApiLevel}:8.0.0_r2@signature"
+}

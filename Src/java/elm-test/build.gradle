@@ -1,10 +1,12 @@
-// Most build configuration comes from the cql-all parent build!
+plugins {
+    id 'cql.library-conventions'
+}
 
 dependencies {
     implementation project(':cql-to-elm')
     implementation project(':model-jaxb')
     implementation project(':elm-jackson')
     implementation project(':elm-jaxb')
-    testRuntimeOnly group: 'org.eclipse.persistence', name: 'org.eclipse.persistence.moxy', version: '2.7.7'
-    testRuntimeOnly group: 'xpp3', name: 'xpp3', version: '1.1.4c'
+    testRuntimeOnly 'org.eclipse.persistence:org.eclipse.persistence.moxy:2.7.7'
+    testRuntimeOnly 'xpp3:xpp3:1.1.4c'
 }

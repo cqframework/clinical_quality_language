@@ -1,11 +1,16 @@
-apply plugin: 'application'
+plugins {
+    id 'cql.java-conventions'
+    id 'application'
+}
 
-mainClassName = 'org.cqframework.cql.tools.xsd2modelinfo.Main'
+application {
+    mainClass = 'org.cqframework.cql.tools.xsd2modelinfo.Main'
+}
 
 dependencies {
     implementation project(':model')
-    implementation group: 'net.sf.jopt-simple', name: 'jopt-simple', version: '4.7'
-    implementation group: 'org.apache.ws.xmlschema', name: 'xmlschema-core', version: '2.2.5'
-    implementation group: 'org.apache.ws.xmlschema', name: 'xmlschema-walker', version: '2.2.5'
-    testRuntimeOnly group: 'org.eclipse.persistence', name: 'org.eclipse.persistence.moxy', version: '2.7.7'
+    implementation 'net.sf.jopt-simple:jopt-simple:4.7'
+    implementation 'org.apache.ws.xmlschema:xmlschema-core:2.2.5'
+    implementation 'org.apache.ws.xmlschema:xmlschema-walker:2.2.5'
+    testRuntimeOnly 'org.eclipse.persistence:org.eclipse.persistence.moxy:2.7.7'
 }
