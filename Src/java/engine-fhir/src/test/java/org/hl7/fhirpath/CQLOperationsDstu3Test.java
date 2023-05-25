@@ -7,7 +7,8 @@ import org.fhir.ucum.UcumException;
 import org.hl7.fhir.dstu3.model.*;
 import org.hl7.fhirpath.tests.Group;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
-import org.opencds.cqf.cql.engine.execution.Context;
+import org.opencds.cqf.cql.engine.elm.visiting.EqualEvaluator;
+import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.fhir.model.CachedDstu3FhirModelResolver;
 import org.opencds.cqf.cql.engine.fhir.model.Dstu3FhirModelResolver;
 import org.opencds.cqf.cql.engine.fhir.model.FhirModelResolver;
@@ -186,7 +187,7 @@ public class CQLOperationsDstu3Test extends TestFhirPath implements ITest {
         runTest(test, "stu3/input/", fhirContext, provider, fhirModelResolver);
     }
 
-    public Boolean compareResults(Object expectedResult, Object actualResult, Context context, FhirModelResolver<?, ?, ?, ?, ?, ?, ?, ?> resolver) {
+    public Boolean compareResults(Object expectedResult, Object actualResult, State state, FhirModelResolver<?, ?, ?, ?, ?, ?, ?, ?> resolver) {
         // Perform FHIR system-defined type conversions
         if (actualResult instanceof Enumeration) {
             actualResult = ((Enumeration<?>) actualResult).getValueAsString();
@@ -209,6 +210,6 @@ public class CQLOperationsDstu3Test extends TestFhirPath implements ITest {
             actualResult = new Code().withCode(coding.getCode()).withDisplay(coding.getDisplay())
                 .withSystem(coding.getSystem()).withVersion(coding.getVersion());
         }
-        return EqualEvaluator.equal(expectedResult, actualResult, context);
+        return EqualEvaluator.equal(expectedResult, actualResult, state);
     }
 }

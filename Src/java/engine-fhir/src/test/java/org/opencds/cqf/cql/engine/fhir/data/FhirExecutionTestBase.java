@@ -4,24 +4,24 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.FhirVersionEnum;
 import org.cqframework.cql.cql2elm.*;
 import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider;
-import org.cqframework.cql.cql2elm.model.CompiledLibrary;
-import org.cqframework.cql.elm.execution.Library;
+import org.hl7.elm.r1.Library;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.fhir.ucum.UcumEssenceService;
 import org.fhir.ucum.UcumException;
 import org.fhir.ucum.UcumService;
+import org.hl7.elm.r1.VersionedIdentifier;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
+import org.opencds.cqf.cql.engine.execution.CqlEngineVisitor;
+import org.opencds.cqf.cql.engine.execution.Environment;
 import org.opencds.cqf.cql.engine.fhir.model.*;
 import org.opencds.cqf.cql.engine.fhir.retrieve.RestFhirRetrieveProvider;
 import org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterResolver;
-import org.opencds.cqf.cql.engine.serializing.jackson.JsonCqlLibraryReader;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
-import java.io.StringReader;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,7 +31,29 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public abstract class FhirExecutionTestBase {
-    static Map<String, Library> libraries = new HashMap<>();
+    static Map<VersionedIdentifier, Library> libraries = new HashMap<>();
+
+    private LibraryManager getLibraryManager() {
+        ModelManager modelManager = new ModelManager();
+
+        LibraryManager libraryManager = new LibraryManager(modelManager);
+        libraryManager.getLibrarySourceLoader().clearProviders();
+        libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
+
+        return libraryManager;
+    }
+
+    public Environment getEnvironment() {
+        return new Environment(getLibraryManager());
+    }
+
+    public CqlEngineVisitor getEngineVisitor() {
+        return new CqlEngineVisitor(getEnvironment());
+    }
+
+    public Map<VersionedIdentifier, Library> getLibraryMap() {
+        return libraries;
+    }
 
 
     protected Dstu2FhirModelResolver dstu2ModelResolver;
@@ -76,15 +98,17 @@ public abstract class FhirExecutionTestBase {
         String fileName = this.getClass().getSimpleName();
         library = libraries.get(fileName);
         if (library == null) {
-            ModelManager modelManager = new ModelManager();
-            LibraryManager libraryManager = new LibraryManager(modelManager);
-            libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
             UcumService ucumService = new UcumEssenceService(UcumEssenceService.class.getResourceAsStream("/ucum-essence.xml"));
             try {
                 File cqlFile = new File(URLDecoder.decode(this.getClass().getResource("fhir/" + fileName + ".cql").getFile(), "UTF-8"));
 
                 ArrayList<CqlTranslatorOptions.Options> options = new ArrayList<>();
                 options.add(CqlTranslatorOptions.Options.EnableDateRangeOptimization);
+                ModelManager modelManager = new ModelManager();
+
+                LibraryManager libraryManager = new LibraryManager(modelManager);
+                libraryManager.getLibrarySourceLoader().clearProviders();
+                libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
 
                 CqlTranslator translator = CqlTranslator.fromFile(cqlFile, modelManager, libraryManager, ucumService,
                         CqlCompilerException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.All, options.toArray(new CqlTranslatorOptions.Options[options.size()]));
@@ -103,23 +127,25 @@ public abstract class FhirExecutionTestBase {
                 }
 
                 assertThat(translator.getErrors().size(), is(0));
+                library = translator.toELM();
+                libraries.put(library.getIdentifier(), library);
 
-                for (Map.Entry<String, CompiledLibrary> entry : libraryManager.getCompiledLibraries().entrySet()) {
-                    String jsonContent = CqlTranslator.convertToJson(entry.getValue().getLibrary());
-                    StringReader sr = new StringReader(jsonContent);
-                    libraries.put(entry.getKey(), new JsonCqlLibraryReader().read(sr));
-                    if (entry.getKey().equals(fileName)) {
-                        library = libraries.get(entry.getKey());
-                    }
-                }
-
-                if (library == null) {
-                    library = new JsonCqlLibraryReader().read(new StringReader(translator.toJson()));
-                    libraries.put(fileName, library);
-                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    public Library toLibrary(String text, ModelManager modelManager, LibraryManager libraryManager) {
+        CqlTranslator translator = CqlTranslator.fromText(text, modelManager, libraryManager);
+        return translator.toELM();
+    }
+
+    public static  org.hl7.elm.r1.VersionedIdentifier toElmIdentifier(String name) {
+        return new org.hl7.elm.r1.VersionedIdentifier().withId(name);
+    }
+
+    public static org.hl7.elm.r1.VersionedIdentifier toElmIdentifier(String name, String version) {
+        return new org.hl7.elm.r1.VersionedIdentifier().withId(name).withVersion(version);
     }
 }

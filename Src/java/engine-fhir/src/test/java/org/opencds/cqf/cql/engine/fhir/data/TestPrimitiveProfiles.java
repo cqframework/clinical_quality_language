@@ -1,6 +1,9 @@
 package org.opencds.cqf.cql.engine.fhir.data;
 
-import org.opencds.cqf.cql.engine.execution.Context;
+
+import org.hl7.fhirpath.TranslatorHelper;
+import org.opencds.cqf.cql.engine.execution.CqlEngineVisitor;
+import org.opencds.cqf.cql.engine.execution.EvaluationResult;
 import org.testng.annotations.Test;
 import org.hl7.fhir.r4.model.*;
 
@@ -14,16 +17,19 @@ public class TestPrimitiveProfiles extends FhirExecutionTestBase {
 
     @Test
     public void testProfileCast() {
-        Context context = new Context(library);
-        context.registerDataProvider("http://hl7.org/fhir", r4Provider);
-        Object result;
 
+        CqlEngineVisitor engineVisitor = TranslatorHelper.getEngineVisitor();
+        engineVisitor.getState().registerDataProvider("http://hl7.org/fhir", r4Provider);
+        EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
+                null, null, null, null, null);
+        
+        Object result;
 
         /*
         define UrlUri: FHIR.uri { value: 'http://example.org' }
         define CastToUrl: UrlUri as FHIR.url
         */
-        result = context.resolveExpressionRef("CastToUrl").getExpression().evaluate(context);
+        result = evaluationResult.expressionResults.get("CastToUrl").value();
         assertThat(result, instanceOf(UrlType.class));
         assertThat(((UriType)result).getValue(), is("http://example.org"));
 
@@ -31,7 +37,7 @@ public class TestPrimitiveProfiles extends FhirExecutionTestBase {
         define CanonicalUri: FHIR.uri { value: 'http://example.org/StructureDefinition/profile' }
         define CastToCanonical: CanonicalUri as FHIR.canonical
         */
-        result = context.resolveExpressionRef("CastToCanonical").getExpression().evaluate(context);
+        result = evaluationResult.expressionResults.get("CastToCanonical").value();
         assertThat(result, instanceOf(CanonicalType.class));
         assertThat(((CanonicalType)result).getValue(), is("http://example.org/StructureDefinition/profile"));
 
@@ -39,7 +45,7 @@ public class TestPrimitiveProfiles extends FhirExecutionTestBase {
         define UuidUri: FHIR.uri { value: 'urn:uuid:d27ceea4-e506-42a4-8111-f01c003a11c4' }
         define CastToUuid: UuidUri as FHIR.uuid
         */
-        result = context.resolveExpressionRef("CastToUuid").getExpression().evaluate(context);
+        result = evaluationResult.expressionResults.get("CastToUuid").value();
         assertThat(result, instanceOf(UuidType.class));
         assertThat(((UuidType)result).getValue(), is("urn:uuid:d27ceea4-e506-42a4-8111-f01c003a11c4"));
 
@@ -47,7 +53,7 @@ public class TestPrimitiveProfiles extends FhirExecutionTestBase {
         define OidUri: FHIR.uri { value: 'urn:oid:2.16.840.1.113883.3.464.1004.1116' }
         define CastToOid: OidUri as FHIR.oid
         */
-        result = context.resolveExpressionRef("CastToOid").getExpression().evaluate(context);
+        result = evaluationResult.expressionResults.get("CastToOid").value();
         assertThat(result, instanceOf(OidType.class));
         assertThat(((OidType)result).getValue(), is("urn:oid:2.16.840.1.113883.3.464.1004.1116"));
 
@@ -55,7 +61,7 @@ public class TestPrimitiveProfiles extends FhirExecutionTestBase {
         define PositiveInt: FHIR.integer { value: 12 }
         define CastToPositiveInt: PositiveInt as FHIR.positiveInt
         */
-        result = context.resolveExpressionRef("CastToPositiveInt").getExpression().evaluate(context);
+        result = evaluationResult.expressionResults.get("CastToPositiveInt").value();
         assertThat(result, instanceOf(PositiveIntType.class));
         assertThat(((PositiveIntType)result).getValue(), is(12));
 
@@ -63,7 +69,7 @@ public class TestPrimitiveProfiles extends FhirExecutionTestBase {
         define UnsignedInt: FHIR.integer { value: 12 }
         define CastToUnsignedInt: UnsignedInt as FHIR.unsignedInt
         */
-        result = context.resolveExpressionRef("CastToUnsignedInt").getExpression().evaluate(context);
+        result = evaluationResult.expressionResults.get("CastToUnsignedInt").value();
         assertThat(result, instanceOf(UnsignedIntType.class));
         assertThat(((UnsignedIntType)result).getValue(), is(12));
 
@@ -71,7 +77,7 @@ public class TestPrimitiveProfiles extends FhirExecutionTestBase {
         define CodeString: FHIR.string { value: '12345' }
         define CastToCode: CodeString as FHIR.code
         */
-        result = context.resolveExpressionRef("CastToCode").getExpression().evaluate(context);
+        result = evaluationResult.expressionResults.get("CastToCode").value();
         assertThat(result, instanceOf(CodeType.class));
         assertThat(((CodeType)result).getValue(), is("12345"));
 
@@ -79,7 +85,7 @@ public class TestPrimitiveProfiles extends FhirExecutionTestBase {
         define MarkdownString: FHIR.string { value: '# Markdown is [good](http://example.org)' }
         define CastToMarkdown: MarkdownString as FHIR.markdown
         */
-        result = context.resolveExpressionRef("CastToMarkdown").getExpression().evaluate(context);
+        result = evaluationResult.expressionResults.get("CastToMarkdown").value();
         assertThat(result, instanceOf(MarkdownType.class));
         assertThat(((MarkdownType)result).getValue(), is("# Markdown is [good](http://example.org)"));
 
@@ -87,7 +93,7 @@ public class TestPrimitiveProfiles extends FhirExecutionTestBase {
         define IdString: FHIR.string { value: 'fhir-string' }
         define CastToId: IdString as FHIR.id
         */
-        result = context.resolveExpressionRef("CastToId").getExpression().evaluate(context);
+        result = evaluationResult.expressionResults.get("CastToId").value();
         assertThat(result, instanceOf(IdType.class));
         assertThat(((IdType)result).getValue(), is("fhir-string"));
 
@@ -95,7 +101,7 @@ public class TestPrimitiveProfiles extends FhirExecutionTestBase {
         define SimpleQuantity: FHIR.Quantity { value: FHIR.decimal { value: 1.0 }, code: FHIR.code { value: 'mg' } }
         define CastToSimpleQuantity: FHIRQuantity as FHIR.SimpleQuantity
         */
-        result = context.resolveExpressionRef("CastToSimpleQuantity").getExpression().evaluate(context);
+        result = evaluationResult.expressionResults.get("CastToSimpleQuantity").value();
         assertThat(result, instanceOf(SimpleQuantity.class));
         assertThat(((SimpleQuantity)result).getValue().compareTo(new BigDecimal("1.0")), is(0));
         assertThat(((SimpleQuantity)result).getCode(), is("mg"));
@@ -104,7 +110,7 @@ public class TestPrimitiveProfiles extends FhirExecutionTestBase {
         define AgeQuantity: FHIR.Quantity { value: FHIR.decimal { value: 10.0 }, code: FHIR.code { value: 'a' } }
         define CastToAge: AgeQuantity as FHIR.Age
         */
-        result = context.resolveExpressionRef("CastToAge").getExpression().evaluate(context);
+        result = evaluationResult.expressionResults.get("CastToAge").value();
         assertThat(result, instanceOf(Age.class));
         assertThat(((Age)result).getValue().compareTo(new BigDecimal("10.0")), is(0));
         assertThat(((Age)result).getCode(), is("a"));
@@ -113,7 +119,7 @@ public class TestPrimitiveProfiles extends FhirExecutionTestBase {
         define DistanceQuantity: FHIR.Quantity { value: FHIR.decimal { value: 1200.0 }, code: FHIR.code { value: 'km' } }
         define CastToDistance: DistanceQuantity as FHIR.Distance
         */
-        result = context.resolveExpressionRef("CastToDistance").getExpression().evaluate(context);
+        result = evaluationResult.expressionResults.get("CastToDistance").value();
         assertThat(result, instanceOf(Distance.class));
         assertThat(((Distance)result).getValue().compareTo(new BigDecimal("1200.0")), is(0));
         assertThat(((Distance)result).getCode(), is("km"));
@@ -122,7 +128,7 @@ public class TestPrimitiveProfiles extends FhirExecutionTestBase {
         define DurationQuantity: FHIR.Quantity { value: FHIR.decimal { value: 12.0 }, code: FHIR.code { value: 'a' } }
         define CastToDuration: DurationQuantity as FHIR.Duration
         */
-        result = context.resolveExpressionRef("CastToDuration").getExpression().evaluate(context);
+        result = evaluationResult.expressionResults.get("CastToDuration").value();
         assertThat(result, instanceOf(Duration.class));
         assertThat(((Duration)result).getValue().compareTo(new BigDecimal("12.0")), is(0));
         assertThat(((Duration)result).getCode(), is("a"));
@@ -131,7 +137,7 @@ public class TestPrimitiveProfiles extends FhirExecutionTestBase {
         define CountQuantity: FHIR.Quantity { value: FHIR.decimal { value: 100 }, code: FHIR.code { value: '1' } }
         define CastToCount: CountQuantity as FHIR.Count
         */
-        result = context.resolveExpressionRef("CastToCount").getExpression().evaluate(context);
+        result = evaluationResult.expressionResults.get("CastToCount").value();
         assertThat(result, instanceOf(Count.class));
         assertThat(((Count)result).getValue().compareTo(new BigDecimal("100")), is(0));
         assertThat(((Count)result).getCode(), is("1"));
@@ -140,7 +146,7 @@ public class TestPrimitiveProfiles extends FhirExecutionTestBase {
         define MoneyQuantity: FHIR.Quantity { value: FHIR.decimal { value: 12000.00 }, code: FHIR.code { value: '$' } }
         define CastToMoney: MoneyQuantity as FHIR.MoneyQuantity
         */
-        result = context.resolveExpressionRef("CastToMoney").getExpression().evaluate(context);
+        result = evaluationResult.expressionResults.get("CastToMoney").value();
         assertThat(result, instanceOf(MoneyQuantity.class));
         assertThat(((MoneyQuantity)result).getValue().compareTo(new BigDecimal("12000.00")), is(0));
         assertThat(((MoneyQuantity)result).getCode(), is("$"));

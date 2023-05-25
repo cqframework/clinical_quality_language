@@ -2,12 +2,16 @@ package org.opencds.cqf.cql.engine.fhir.data;
 
 import static org.testng.AssertJUnit.assertTrue;
 
-import org.opencds.cqf.cql.engine.execution.Context;
+import org.hl7.fhirpath.TranslatorHelper;
+import org.opencds.cqf.cql.engine.execution.CqlEngineVisitor;
+import org.opencds.cqf.cql.engine.execution.EvaluationResult;
 import org.opencds.cqf.cql.engine.fhir.terminology.Dstu3FhirTerminologyProvider;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.FhirVersionEnum;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
+
+import java.util.Set;
 
 public class TestCodeRef extends FhirExecutionTestBase {
 
@@ -17,19 +21,23 @@ public class TestCodeRef extends FhirExecutionTestBase {
 
     // @Test
     public void CodeRefTest1() {
-        Context context = new Context(library);
-        context.registerTerminologyProvider(terminologyProvider);
+        CqlEngineVisitor engineVisitor = TranslatorHelper.getEngineVisitor();
+        engineVisitor.getEnvironment().setTerminologyProvider(terminologyProvider);
 
-        Object result = context.resolveExpressionRef("CodeRef1").getExpression().evaluate(context);
-        assertTrue(result != null);
+        EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
+                Set.of("CodeRef1"), null, null, null, null);
+
+        assertTrue(evaluationResult.expressionResults.get("CodeRef1").value() != null);
     }
 
     // @Test
     public void CodeRefTest2() {
-        Context context = new Context(library);
-        context.registerTerminologyProvider(terminologyProvider);
+        CqlEngineVisitor engineVisitor = TranslatorHelper.getEngineVisitor();
+        engineVisitor.getEnvironment().setTerminologyProvider(terminologyProvider);
 
-        Object result = context.resolveExpressionRef("CodeRef2").getExpression().evaluate(context);
-        assertTrue(result != null);
+        EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
+                Set.of("CodeRef2"), null, null, null, null);
+
+        assertTrue(evaluationResult.expressionResults.get("CodeRef2").value() != null);
     }
 }

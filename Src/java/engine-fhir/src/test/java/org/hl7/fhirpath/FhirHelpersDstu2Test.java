@@ -2,15 +2,19 @@ package org.hl7.fhirpath;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.FhirVersionEnum;
-import org.cqframework.cql.elm.execution.Library;
+import org.hl7.elm.r1.Library;
 import org.fhir.ucum.UcumException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.hl7.elm.r1.VersionedIdentifier;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
-import org.opencds.cqf.cql.engine.execution.Context;
+import org.opencds.cqf.cql.engine.execution.CqlEngineVisitor;
+import org.opencds.cqf.cql.engine.execution.EvaluationResult;
 import org.opencds.cqf.cql.engine.fhir.model.Dstu2FhirModelResolver;
 import org.opencds.cqf.cql.engine.fhir.retrieve.RestFhirRetrieveProvider;
 
@@ -38,31 +42,38 @@ public class FhirHelpersDstu2Test {
     public void testFhirHelpersDstu2() throws UcumException {
         String cql = getStringFromResourceStream("Dstu2/TestFHIRHelpersDstu2.cql");
         Library library = translator.translate(cql);
-        Context context = new Context(library);
-        context.registerLibraryLoader(translator.getLibraryLoader());
+        CqlEngineVisitor engineVisitor = TranslatorHelper.getEngineVisitor();
+
+        VersionedIdentifier libraryId = TranslatorHelper.toElmIdentifier("TestFHIRHelpersDstu2",  "0.1.0");
+        Map<VersionedIdentifier, Library> map = new HashMap<>();
+        map.put(libraryId, library);
+
         Dstu2FhirModelResolver modelResolver = new Dstu2FhirModelResolver();
         RestFhirRetrieveProvider retrieveProvider = new RestFhirRetrieveProvider(
             new org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterResolver(modelResolver.getFhirContext()),
             modelResolver, FhirContext.forCached(FhirVersionEnum.DSTU2).newRestfulGenericClient(""));
         CompositeDataProvider provider = new CompositeDataProvider(modelResolver, retrieveProvider);
         //BaseFhirDataProvider provider = new FhirDataProviderDstu2();
-        context.registerDataProvider("http://hl7.org/fhir", provider);
+        engineVisitor.getState().registerDataProvider("http://hl7.org/fhir", provider);
+        EvaluationResult evaluationResult = engineVisitor.evaluate(libraryId, map,
+                null, null, null, null, null);
 
         // TODO - millis shouldn't be populated - issue with DateTime.fromJavaDate(Date date)
-        context.resolveExpressionRef("TestPeriodToInterval").getExpression().evaluate(context);
+        Object result = evaluationResult.expressionResults.get("TestPeriodToInterval").value();
 //        Assert.assertEquals(((DateTime)((Interval) result).getStart()).getPartial(), new Partial(DateTime.getFields(7), new int[] {2017, 5, 6, 18, 8, 0, 0}));
 //        Assert.assertEquals(((DateTime)((Interval) result).getEnd()).getPartial(), new Partial(DateTime.getFields(7), new int[] {2017, 5, 6, 19, 8, 0, 0}));
-        context.resolveExpressionRef("TestToQuantity").getExpression().evaluate(context);
-        context.resolveExpressionRef("TestRangeToInterval").getExpression().evaluate(context);
-        context.resolveExpressionRef("TestToCode").getExpression().evaluate(context);
-        context.resolveExpressionRef("TestToConcept").getExpression().evaluate(context);
-        context.resolveExpressionRef("TestToString").getExpression().evaluate(context);
-        context.resolveExpressionRef("TestRequestStatusToString").getExpression().evaluate(context);
-        context.resolveExpressionRef("TestToDateTime").getExpression().evaluate(context);
-        context.resolveExpressionRef("TestToTime").getExpression().evaluate(context);
-        context.resolveExpressionRef("TestToInteger").getExpression().evaluate(context);
-        context.resolveExpressionRef("TestToDecimal").getExpression().evaluate(context);
-        context.resolveExpressionRef("TestToBoolean").getExpression().evaluate(context);
+        result = evaluationResult.expressionResults.get("TestToQuantity").value();
+        result = evaluationResult.expressionResults.get("TestRangeToInterval").value();
+        result = evaluationResult.expressionResults.get("TestToCode").value();
+        result = evaluationResult.expressionResults.get("TestToConcept").value();
+        result = evaluationResult.expressionResults.get("TestToString").value();
+        result = evaluationResult.expressionResults.get("TestRequestStatusToString").value();
+        result = evaluationResult.expressionResults.get("TestToDateTime").value();
+        result = evaluationResult.expressionResults.get("TestToTime").value();
+        result = evaluationResult.expressionResults.get("TestToInteger").value();
+        result = evaluationResult.expressionResults.get("TestToDecimal").value();
+        result = evaluationResult.expressionResults.get("TestToBoolean").value();
+       
     }
 
 }

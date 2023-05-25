@@ -19,6 +19,7 @@ import org.hl7.fhir.dstu3.model.Reference;
 import org.hl7.fhir.dstu3.model.Type;
 import org.hl7.fhir.instance.model.api.IBaseConformance;
 import org.hl7.fhir.instance.model.api.ICompositeType;
+import org.opencds.cqf.cql.engine.elm.visiting.SubtractEvaluator;
 import org.opencds.cqf.cql.engine.fhir.exception.FhirVersionMisMatchException;
 import org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterMap;
 import org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterResolver;

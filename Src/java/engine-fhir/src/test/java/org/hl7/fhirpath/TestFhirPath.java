@@ -1,31 +1,34 @@
 package org.hl7.fhirpath;
 
-import static org.opencds.cqf.cql.engine.elm.execution.ToQuantityEvaluator.toQuantity;
+import static org.opencds.cqf.cql.engine.elm.visiting.ToQuantityEvaluator.toQuantity;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import javax.xml.bind.JAXB;
 
-import org.cqframework.cql.elm.execution.Library;
+import org.hl7.elm.r1.Library;
 import org.fhir.ucum.UcumException;
+import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhirpath.tests.InvalidType;
 import org.hl7.fhirpath.tests.Tests;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
-import org.opencds.cqf.cql.engine.execution.Context;
+import org.opencds.cqf.cql.engine.elm.visiting.ExistsEvaluator;
+import org.opencds.cqf.cql.engine.execution.CqlEngineVisitor;
+import org.opencds.cqf.cql.engine.execution.EvaluationResult;
+import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.fhir.model.FhirModelResolver;
 import org.opencds.cqf.cql.engine.runtime.Date;
 import org.opencds.cqf.cql.engine.runtime.DateTime;
 import org.opencds.cqf.cql.engine.runtime.Time;
 
 import ca.uhn.fhir.context.FhirContext;
+import org.w3._1999.xhtml.Tr;
 
 public abstract class TestFhirPath {
 
@@ -96,7 +99,7 @@ public abstract class TestFhirPath {
         return results;
     }
 
-    abstract Boolean compareResults(Object expectedResult, Object actualResult, Context context, FhirModelResolver<?,?,?,?,?,?,?,?> resolver);
+    abstract Boolean compareResults(Object expectedResult, Object actualResult, State state, FhirModelResolver<?,?,?,?,?,?,?,?> resolver);
 
     @SuppressWarnings("unchecked")
     private Iterable<Object> ensureIterable(Object result) {
@@ -173,18 +176,23 @@ public abstract class TestFhirPath {
                 }
             }
 
-            Context context = new Context(library);
-            context.registerLibraryLoader(translator.getLibraryLoader());
-            context.registerDataProvider("http://hl7.org/fhir", provider);
+            CqlEngineVisitor engineVisitor = TranslatorHelper.getEngineVisitor();
+            engineVisitor.getState().registerDataProvider("http://hl7.org/fhir", provider);
             if (resource != null) {
-                context.setParameter(null, resource.fhirType(), resource);
+                engineVisitor.getState().setParameter(null, resource.fhirType(), resource);
             }
 
             Object result = null;
             boolean testPassed = false;
             String message = null;
             try {
-                result = context.resolveExpressionRef("Test").evaluate(context);
+                VersionedIdentifier libraryId = TranslatorHelper.toElmIdentifier("TestFHIRPath");
+                Map<VersionedIdentifier, Library> map = new HashMap<>();
+                map.put(libraryId, library);
+                EvaluationResult evaluationResult = engineVisitor.evaluate(libraryId, map,
+                        Set.of("Test"), null, null, null, null);
+
+                result = evaluationResult.expressionResults.get("Test").value();
                 testPassed = invalidType.equals(InvalidType.FALSE);
             } catch (Exception e) {
                 testPassed = invalidType.equals(InvalidType.TRUE);
@@ -209,7 +217,7 @@ public abstract class TestFhirPath {
             for (Object expectedResult : expectedResults) {
                 if (actualResultsIterator.hasNext()) {
                     Object actualResult = actualResultsIterator.next();
-                    Boolean comparison = compareResults(expectedResult, actualResult, context, resolver);
+                    Boolean comparison = compareResults(expectedResult, actualResult, engineVisitor.getState(), resolver);
                     if (comparison == null || !comparison) {
                         System.out.println("Failing Test: " + test.getName());
                         System.out.println("- Expected Result: " + expectedResult + " (" + expectedResult.getClass() +")");

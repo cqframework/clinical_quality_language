@@ -2,16 +2,14 @@ package org.hl7.fhirpath;
 
 import org.cqframework.cql.cql2elm.*;
 import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider;
-import org.cqframework.cql.elm.execution.Library;
+import org.hl7.elm.r1.Library;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.fhir.ucum.UcumEssenceService;
 import org.fhir.ucum.UcumException;
 import org.fhir.ucum.UcumService;
-import org.opencds.cqf.cql.engine.serializing.jackson.JsonCqlLibraryReader;
+import org.opencds.cqf.cql.engine.execution.CqlEngineVisitor;
+import org.opencds.cqf.cql.engine.execution.Environment;
 import org.opencds.cqf.cql.engine.execution.LibraryLoader;
-
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 
 public class TranslatorHelper {
@@ -28,6 +26,14 @@ public class TranslatorHelper {
         return libraryManager;
     }
 
+    public static Environment getEnvironment() {
+        return new Environment(getLibraryManager());
+    }
+
+    public static CqlEngineVisitor getEngineVisitor() {
+        return new CqlEngineVisitor(getEnvironment());
+    }
+
     private LibraryLoader libraryLoader;
 
     public LibraryLoader getLibraryLoader() {
@@ -35,6 +41,14 @@ public class TranslatorHelper {
             libraryLoader = new TestLibraryLoader(getLibraryManager());
         }
         return libraryLoader;
+    }
+
+    public static  org.hl7.elm.r1.VersionedIdentifier toElmIdentifier(String name) {
+        return new org.hl7.elm.r1.VersionedIdentifier().withId(name);
+    }
+
+    public static org.hl7.elm.r1.VersionedIdentifier toElmIdentifier(String name, String version) {
+        return new org.hl7.elm.r1.VersionedIdentifier().withId(name).withVersion(version);
     }
 
     public Library translate(String cql) throws UcumException {
@@ -57,14 +71,6 @@ public class TranslatorHelper {
             throw new IllegalArgumentException(errors.toString());
         }
 
-        String json = translator.toJson();
-
-        try {
-            return new JsonCqlLibraryReader().read(new StringReader(json));
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return null;
+        return translator.toELM();
     }
 }

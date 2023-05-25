@@ -3,19 +3,23 @@ package org.opencds.cqf.cql.engine.fhir.data;
 import static org.testng.Assert.assertTrue;
 
 import org.hl7.fhir.dstu2.model.Encounter;
-import org.opencds.cqf.cql.engine.execution.Context;
+import org.hl7.fhirpath.TranslatorHelper;
+import org.opencds.cqf.cql.engine.execution.CqlEngineVisitor;
+import org.opencds.cqf.cql.engine.execution.EvaluationResult;
 import org.opencds.cqf.cql.engine.fhir.retrieve.FhirBundleCursor;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 
 public class TestFhirDataProviderDstu2 extends FhirExecutionTestBase {
 
-    private Context context;
+    private EvaluationResult evaluationResult;
 
     @BeforeMethod
     public void before() {
-        context = new Context(library);
-        context.registerDataProvider("http://hl7.org/fhir", dstu2Provider);
+        CqlEngineVisitor engineVisitor = TranslatorHelper.getEngineVisitor();
+        engineVisitor.getState().registerDataProvider("http://hl7.org/fhir", dstu2Provider);
+        evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
+                null, null, null, null, null);
         //BaseFhirDataProvider provider = new FhirDataProviderDstu2().setEndpoint("http://fhirtest.uhn.ca/baseDstu2");
 //        FhirDataProviderDstu2 primitiveProvider = new FhirDataProviderDstu2().withEndpoint("http://fhirtest.uhn.ca/baseDstu2").withPackageName("ca.uhn.fhir.model.primitive");
 //        context.registerDataProvider("http://hl7.org/fhir", primitiveProvider);
@@ -40,31 +44,31 @@ public class TestFhirDataProviderDstu2 extends FhirExecutionTestBase {
 
     // @Test
     public void testDstu2ProviderString() {
-        Object result = context.resolveExpressionRef("testString").getExpression().evaluate(context);
+        Object result = evaluationResult.expressionResults.get("testString").value();
         assertTrue(result != null);
     }
 
     // @Test
     public void testDstu2ProviderCode() {
-        Object result = context.resolveExpressionRef("testCode").getExpression().evaluate(context);
+        Object result = evaluationResult.expressionResults.get("testCode").value();
         assertTrue(result != null);
     }
 
     // @Test
     public void testDstu2ProviderDate() {
-        Object result = context.resolveExpressionRef("testDate").getExpression().evaluate(context);
+        Object result = evaluationResult.expressionResults.get("testDate").value();
         assertTrue(result != null);
     }
 
     // @Test
     public void testDstu2ProviderDecimal() {
-        Object result = context.resolveExpressionRef("testDecimal").getExpression().evaluate(context);
+        Object result = evaluationResult.expressionResults.get("testDecimal").value();
         assertTrue(result != null);
     }
 
     // @Test
     public void testDstu2ProviderID() {
-        Object result = context.resolveExpressionRef("testID").getExpression().evaluate(context);
+        Object result = evaluationResult.expressionResults.get("testID").value();
         assertTrue(result != null);
     }
 }
