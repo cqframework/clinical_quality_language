@@ -34,7 +34,7 @@ public class NpmPackageManager implements IWorkerContext.ILoggingService {
       if (fspcm == null) {
          try {
             // userMode indicates whether the packageCache is within the working directory or in the user home
-            this.fspcm = new FilesystemPackageCacheManager(true, ToolsVersion.TOOLS_VERSION);
+            this.fspcm = new FilesystemPackageCacheManager(true);
          } catch (IOException e) {
             String message = "Error creating the FilesystemPackageCacheManager: " + e.getMessage();
             logErrorMessage(message);
@@ -100,11 +100,11 @@ public class NpmPackageManager implements IWorkerContext.ILoggingService {
       for (NpmPackage npmPackage : npmList) {
          if (!isUrl) {
             return npmPackage.getNpm().has("name")
-                    && packageId.startsWith(npmPackage.getNpm().get("name").getAsString());
+                    && packageId.startsWith(npmPackage.getNpm().get("name").asString());
          }
          else {
             return npmPackage.getNpm().has("canonical")
-                    && packageId.equals(npmPackage.getNpm().get("canonical").getAsString());
+                    && packageId.equals(npmPackage.getNpm().get("canonical").asString());
          }
       }
       return false;
@@ -134,5 +134,10 @@ public class NpmPackageManager implements IWorkerContext.ILoggingService {
 
    public void logErrorMessage(String message) {
       logger.error(message);
+   }
+
+   @Override
+   public boolean isDebugLogging() {
+      return logger.isDebugEnabled();
    }
 }
