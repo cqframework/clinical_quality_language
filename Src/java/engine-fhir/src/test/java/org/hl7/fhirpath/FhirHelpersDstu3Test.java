@@ -5,7 +5,7 @@ import org.hl7.elm.r1.Library;
 import org.fhir.ucum.UcumException;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
-import org.opencds.cqf.cql.engine.execution.CqlEngineVisitor;
+import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.EvaluationResult;
 import org.opencds.cqf.cql.engine.fhir.model.Dstu3FhirModelResolver;
 import org.opencds.cqf.cql.engine.fhir.retrieve.RestFhirRetrieveProvider;
@@ -45,7 +45,7 @@ public class FhirHelpersDstu3Test {
         String cql = getStringFromResourceStream("stu3/TestFHIRHelpers.cql");
         Library library = translator.translate(cql);
 
-        CqlEngineVisitor engineVisitor = TranslatorHelper.getEngineVisitor();
+        CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
 
         VersionedIdentifier libraryId = TranslatorHelper.toElmIdentifier("TestFHIRHelpers",  "0.1.0");
         Map<VersionedIdentifier, Library> map = new HashMap<>();

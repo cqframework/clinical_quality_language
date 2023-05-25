@@ -4,7 +4,7 @@ import static org.testng.Assert.assertTrue;
 
 import org.hl7.fhir.dstu2.model.Encounter;
 import org.hl7.fhirpath.TranslatorHelper;
-import org.opencds.cqf.cql.engine.execution.CqlEngineVisitor;
+import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.EvaluationResult;
 import org.opencds.cqf.cql.engine.fhir.retrieve.FhirBundleCursor;
 import org.testng.Assert;
@@ -16,7 +16,7 @@ public class TestFhirDataProviderDstu2 extends FhirExecutionTestBase {
 
     @BeforeMethod
     public void before() {
-        CqlEngineVisitor engineVisitor = TranslatorHelper.getEngineVisitor();
+        CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
         engineVisitor.getState().registerDataProvider("http://hl7.org/fhir", dstu2Provider);
         evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
                 null, null, null, null, null);

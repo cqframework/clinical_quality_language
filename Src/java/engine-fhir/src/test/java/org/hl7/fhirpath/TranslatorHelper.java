@@ -7,7 +7,7 @@ import org.cqframework.cql.elm.tracking.TrackBack;
 import org.fhir.ucum.UcumEssenceService;
 import org.fhir.ucum.UcumException;
 import org.fhir.ucum.UcumService;
-import org.opencds.cqf.cql.engine.execution.CqlEngineVisitor;
+import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.Environment;
 import org.opencds.cqf.cql.engine.execution.LibraryLoader;
 import java.util.ArrayList;
@@ -30,8 +30,8 @@ public class TranslatorHelper {
         return new Environment(getLibraryManager());
     }
 
-    public static CqlEngineVisitor getEngineVisitor() {
-        return new CqlEngineVisitor(getEnvironment());
+    public static CqlEngine getEngineVisitor() {
+        return new CqlEngine(getEnvironment());
     }
 
     private LibraryLoader libraryLoader;

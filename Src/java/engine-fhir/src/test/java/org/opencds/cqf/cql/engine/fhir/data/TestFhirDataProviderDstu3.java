@@ -11,7 +11,7 @@ import org.hl7.fhir.dstu3.model.ListResource;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhirpath.TranslatorHelper;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
-import org.opencds.cqf.cql.engine.execution.CqlEngineVisitor;
+import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.EvaluationResult;
 import org.opencds.cqf.cql.engine.fhir.model.CachedDstu3FhirModelResolver;
 import org.opencds.cqf.cql.engine.fhir.model.Dstu3FhirModelResolver;
@@ -79,7 +79,7 @@ public class TestFhirDataProviderDstu3 extends FhirExecutionTestBase {
 
     // @Test
     public void testChoiceTypes() {
-        CqlEngineVisitor engineVisitor = TranslatorHelper.getEngineVisitor();
+        CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
         engineVisitor.getState().registerDataProvider("http://hl7.org/fhir", r4Provider);
         EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
                 Set.of("testChoiceTypes"), null, null, null, null);
@@ -90,7 +90,7 @@ public class TestFhirDataProviderDstu3 extends FhirExecutionTestBase {
 
     // @Test
     public void testDateType() {
-        CqlEngineVisitor engineVisitor = TranslatorHelper.getEngineVisitor();
+        CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
         engineVisitor.getState().registerDataProvider("http://hl7.org/fhir", r4Provider);
         engineVisitor.getState().setContextValue("Patient", "Patient-12214");
         EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
@@ -103,7 +103,7 @@ public class TestFhirDataProviderDstu3 extends FhirExecutionTestBase {
     @Test
     public void testFhirObjectEqual()
     {
-        CqlEngineVisitor engineVisitor = TranslatorHelper.getEngineVisitor();
+        CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
         engineVisitor.getState().registerDataProvider("http://hl7.org/fhir", r4Provider);
         EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
                 Set.of("testFhirObjectEqual"), null, null, null, null);
@@ -114,7 +114,7 @@ public class TestFhirDataProviderDstu3 extends FhirExecutionTestBase {
     @Test
     public void testFhirObjectEquivalent()
     {
-        CqlEngineVisitor engineVisitor = TranslatorHelper.getEngineVisitor();
+        CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
         engineVisitor.getState().registerDataProvider("http://hl7.org/fhir", r4Provider);
         EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
                 Set.of("testFhirObjectEquivalent"), null, null, null, null);
@@ -240,7 +240,7 @@ public class TestFhirDataProviderDstu3 extends FhirExecutionTestBase {
 
 		dstu3RetrieveProvider.setTerminologyProvider(new Dstu3FhirTerminologyProvider(fhirClient));
         //dstu3Provider.setTerminologyProvider(new FhirTerminologyProvider().setEndpoint("http://measure.eval.kanvix.com/cqf-ruler/baseDstu3", false));
-        CqlEngineVisitor engineVisitor = TranslatorHelper.getEngineVisitor();
+        CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
         engineVisitor.getState().registerDataProvider("http://hl7.org/fhir", dstu3Provider);
         engineVisitor.getState().enterContext("Patient");
         engineVisitor.getState().setContextValue("Patient", "81ee6581-02b9-44de-b026-7401bf36643a");

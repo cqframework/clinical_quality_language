@@ -41,7 +41,7 @@ public class IncludedValueSetRefTest {
 
         Environment environment = new Environment(libraryManager, null, terminologyProvider);
 
-        CqlEngineVisitor engineVisitor = new CqlEngineVisitor(environment, null, null, null, CqlTestBase.createOptionsMin());
+        CqlEngine engineVisitor = new CqlEngine(environment, null, null, null, CqlTestBase.createOptionsMin());
 
 
 

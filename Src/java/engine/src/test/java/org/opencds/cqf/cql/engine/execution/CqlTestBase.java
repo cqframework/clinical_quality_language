@@ -50,11 +50,11 @@ public class CqlTestBase {
     }
 
     Environment environment;
-    CqlEngineVisitor engineVisitor;
+    CqlEngine engineVisitor;
     @BeforeMethod
     protected void beforeEachMethod(){
         environment = new Environment(getLibraryManager());
-        engineVisitor = new CqlEngineVisitor(environment, null, null, null, createOptionsMin());
+        engineVisitor = new CqlEngine(environment, null, null, null, createOptionsMin());
     }
 
     public static CqlTranslatorOptions createOptionsMin() {

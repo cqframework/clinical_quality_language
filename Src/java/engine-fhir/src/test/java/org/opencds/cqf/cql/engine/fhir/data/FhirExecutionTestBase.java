@@ -11,7 +11,7 @@ import org.fhir.ucum.UcumException;
 import org.fhir.ucum.UcumService;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
-import org.opencds.cqf.cql.engine.execution.CqlEngineVisitor;
+import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.Environment;
 import org.opencds.cqf.cql.engine.fhir.model.*;
 import org.opencds.cqf.cql.engine.fhir.retrieve.RestFhirRetrieveProvider;
@@ -47,8 +47,8 @@ public abstract class FhirExecutionTestBase {
         return new Environment(getLibraryManager());
     }
 
-    public CqlEngineVisitor getEngineVisitor() {
-        return new CqlEngineVisitor(getEnvironment());
+    public CqlEngine getEngineVisitor() {
+        return new CqlEngine(getEnvironment());
     }
 
     public Map<VersionedIdentifier, Library> getLibraryMap() {

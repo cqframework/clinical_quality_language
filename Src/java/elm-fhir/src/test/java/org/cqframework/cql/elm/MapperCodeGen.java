@@ -1,20 +1,7 @@
 package org.cqframework.cql.elm;
 
-import java.lang.reflect.Modifier;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.hl7.elm.r1.Element;
-import org.reflections.Reflections;
 import org.slf4j.Logger;
-// import org.testng.annotations.Test;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.Lists;
 
 // This is just some code that helps bootstrap the library mapper code-gen
 // It's a one-off for now, but we could integrate it into the build at some point.
@@ -25,6 +12,7 @@ public class MapperCodeGen {
     // TODO: Write to a file rather than stdout.
     // Part of the file is manually generated, so whats the java equivalent of partial classes? Hmm.
     public static void main(String[] args) {
+        /*
 
         Reflections reflections = new Reflections("org.hl7.elm.r1");
         Set<Class<? extends Element>> subTypes = reflections.getSubTypesOf(Element.class);
@@ -60,8 +48,11 @@ public class MapperCodeGen {
         }
 
         generateFunctionForAbstractType(Element.class, translatorTypeList);
+
+         */
     }
 
+    /*
     static Map<Class<? extends Element>, Class<? extends org.cqframework.cql.elm.execution.Element>> createConcreteTypeMap(List<Class<? extends Element>> translatorTypeList, List<Class<? extends org.cqframework.cql.elm.execution.Element>> engineTypeList, List<Class<? extends org.cqframework.cql.elm.execution.Element>> engineImplementationTypeList) {
         Map<Class<? extends Element>, Class<? extends org.cqframework.cql.elm.execution.Element>> typeMap = new HashMap<>();
 
@@ -163,5 +154,7 @@ public class MapperCodeGen {
         System.out.println("\tthrow new IllegalArgumentException(\"unknown class of " + abstractType.getName() + ": \" + element.getClass().getName());");
         System.out.println("}");
     }
+
+    */
 
 }

@@ -34,7 +34,7 @@ import static org.opencds.cqf.cql.engine.execution.NamespaceHelper.getUriPart;
 public class State {
     private static Logger logger = LoggerFactory.getLogger(State.class);
 
-    private CqlEngineVisitor visitor;
+    private CqlEngine visitor;
     private Map<String, Object> parameters = new HashMap<>();
     private Stack<String> currentContext = new Stack<>();
     private Map<String, Object> contextValues = new HashMap<>();
@@ -65,11 +65,11 @@ public class State {
 
     private DebugMap debugMap;
 
-    public CqlEngineVisitor getVisitor() {
+    public CqlEngine getVisitor() {
         return visitor;
     }
 
-    public void setVisitor(CqlEngineVisitor visitor) {
+    public void setVisitor(CqlEngine visitor) {
         this.visitor = visitor;
     }
 
@@ -926,7 +926,7 @@ public class State {
                 name, getCurrentLibrary().getIdentifier().getId()));
     }
 
-    public Object resolveParameterRef(String libraryName, String name, CqlEngineVisitor visitor) {
+    public Object resolveParameterRef(String libraryName, String name, CqlEngine visitor) {
         boolean enteredLibrary = enterLibrary(libraryName);
         try {
             String fullName = libraryName != null ? String.format("%s.%s", getCurrentLibrary().getIdentifier().getId(), name) : name;

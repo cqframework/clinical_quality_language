@@ -3,7 +3,7 @@ package org.opencds.cqf.cql.engine.elm.visiting;
 import org.hl7.elm.r1.Expression;
 import org.hl7.elm.r1.FunctionDef;
 import org.hl7.elm.r1.FunctionRef;
-import org.opencds.cqf.cql.engine.execution.CqlEngineVisitor;
+import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.execution.Variable;
 
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class FunctionRefEvaluator {
 
     private FunctionDef cachedFunctionDef;
-    public Object internalEvaluate(FunctionRef functionRef, State state, CqlEngineVisitor visitor) {
+    public Object internalEvaluate(FunctionRef functionRef, State state, CqlEngine visitor) {
         ArrayList<Object> arguments = new ArrayList<>(functionRef.getOperand().size());
         for (Expression operand : functionRef.getOperand()) {
             arguments.add(visitor.visitExpression(operand, state));

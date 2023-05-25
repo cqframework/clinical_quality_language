@@ -2,12 +2,12 @@ package org.opencds.cqf.cql.engine.elm.visiting;
 
 import org.hl7.elm.r1.ExpressionDef;
 import org.hl7.elm.r1.VersionedIdentifier;
-import org.opencds.cqf.cql.engine.execution.CqlEngineVisitor;
+import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.ExpressionResult;
 import org.opencds.cqf.cql.engine.execution.State;
 
 public class ExpressionDefEvaluator {
-    public  static Object internalEvaluate(ExpressionDef expressionDef, State state, CqlEngineVisitor visitor) {
+    public  static Object internalEvaluate(ExpressionDef expressionDef, State state, CqlEngine visitor) {
         if (expressionDef.getContext() != null) {
             state.enterContext(expressionDef.getContext());
         }

@@ -5,7 +5,7 @@ import java.util.Set;
 
 
 import org.hl7.fhirpath.TranslatorHelper;
-import org.opencds.cqf.cql.engine.execution.CqlEngineVisitor;
+import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.EvaluationResult;
 import org.testng.Assert;
 
@@ -14,7 +14,7 @@ public class TestFhirExecution extends FhirExecutionTestBase {
     // TODO: fix this... I think it requires a resource to be loaded - put in init bundle
     //@Test
     public void testCoalesce() {
-        CqlEngineVisitor engineVisitor = TranslatorHelper.getEngineVisitor();
+        CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
         engineVisitor.getState().registerDataProvider("http://hl7.org/fhir", dstu3Provider);
         EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
                 Set.of("testCoalesce"), null, null, null, null);
@@ -25,7 +25,7 @@ public class TestFhirExecution extends FhirExecutionTestBase {
 
     // @Test
     public void testMonthFrom() {
-        CqlEngineVisitor engineVisitor = TranslatorHelper.getEngineVisitor();
+        CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
         engineVisitor.getState().registerDataProvider("http://hl7.org/fhir", dstu3Provider);
         engineVisitor.getState().setParameter(null, "MAXYEAR", 2014);
         EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
@@ -36,7 +36,7 @@ public class TestFhirExecution extends FhirExecutionTestBase {
 
     // @Test
     public void testMultisourceQueryCreatingDatePeriod() {
-        CqlEngineVisitor engineVisitor = TranslatorHelper.getEngineVisitor();
+        CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
         engineVisitor.getState().registerDataProvider("http://hl7.org/fhir", dstu3Provider);
         EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
                 Set.of("Immunizations in range"), null, null, null, null);
@@ -46,7 +46,7 @@ public class TestFhirExecution extends FhirExecutionTestBase {
 
     // @Test
     public void testIdResolution() {
-        CqlEngineVisitor engineVisitor = TranslatorHelper.getEngineVisitor();
+        CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
         engineVisitor.getState().registerDataProvider("http://hl7.org/fhir", dstu3Provider);
         EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
                 Set.of("Resource Id"), null, null, null, null);

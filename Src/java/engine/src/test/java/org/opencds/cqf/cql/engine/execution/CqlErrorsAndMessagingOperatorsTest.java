@@ -87,7 +87,7 @@ public class CqlErrorsAndMessagingOperatorsTest extends CqlTestBase {
         Environment environment = new Environment(getLibraryManager());
         environment.setDataProviders(dataProviders);
 
-        CqlEngineVisitor visitor = new CqlEngineVisitor(environment, null, null, null, createOptionsMin());
+        CqlEngine visitor = new CqlEngine(environment, null, null, null, createOptionsMin());
 
 
         try {

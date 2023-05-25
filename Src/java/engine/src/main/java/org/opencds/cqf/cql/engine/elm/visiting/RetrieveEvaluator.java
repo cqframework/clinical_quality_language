@@ -3,7 +3,7 @@ package org.opencds.cqf.cql.engine.elm.visiting;
 import org.hl7.elm.r1.ValueSetRef;
 import org.hl7.elm.r1.Retrieve;
 import org.opencds.cqf.cql.engine.data.DataProvider;
-import org.opencds.cqf.cql.engine.execution.CqlEngineVisitor;
+import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.Code;
 import org.opencds.cqf.cql.engine.runtime.Concept;
@@ -17,7 +17,7 @@ import java.util.List;
 public class RetrieveEvaluator {
 
     @SuppressWarnings("unchecked")
-    public static Object internalEvaluate(Retrieve elm, State state, CqlEngineVisitor visitor) {
+    public static Object internalEvaluate(Retrieve elm, State state, CqlEngine visitor) {
         QName dataType = state.fixupQName(elm.getDataType());
         DataProvider dataProvider = state.resolveDataProvider(dataType);
         Iterable<Code> codes = null;

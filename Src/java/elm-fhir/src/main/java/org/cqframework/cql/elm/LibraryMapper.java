@@ -28,7 +28,7 @@ public interface LibraryMapper {
     }
 
     @ExcludeFromMapping
-    org.opencds.cqf.cql.engine.elm.execution.ExpressionDefEvaluator mapToEvaluator(
+    org.cqframework.cql.elm.execution.ExpressionDef mapToEvaluator(
             org.hl7.elm.r1.ExpressionDef element);
 
     @Named("ExpressionToCodeSystemRef")
@@ -98,31 +98,31 @@ public interface LibraryMapper {
     org.cqframework.cql.elm.execution.Annotation map(org.hl7.cql_annotations.r1.Annotation element);
 
     @Mapping(target = "valueset", qualifiedByName = { "ExpressionToValueSetRef" })
-    org.opencds.cqf.cql.engine.elm.execution.InValueSetEvaluator map(org.hl7.elm.r1.InValueSet element);
+    org.cqframework.cql.elm.execution.InValueSet map(org.hl7.elm.r1.InValueSet element);
 
     @Mapping(target = "valueset", qualifiedByName = { "ExpressionToValueSetRef" })
-    org.opencds.cqf.cql.engine.elm.execution.AnyInValueSetEvaluator map(org.hl7.elm.r1.AnyInValueSet element);
+    org.cqframework.cql.elm.execution.AnyInValueSet map(org.hl7.elm.r1.AnyInValueSet element);
 
     @Mapping(target = "codesystem", qualifiedByName = { "ExpressionToCodeSystemRef" })
-    org.opencds.cqf.cql.engine.elm.execution.InCodeSystemEvaluator map(org.hl7.elm.r1.InCodeSystem element);
+    org.cqframework.cql.elm.execution.InCodeSystem map(org.hl7.elm.r1.InCodeSystem element);
 
     @Mapping(target = "codesystem", qualifiedByName = { "ExpressionToCodeSystemRef" })
-    org.opencds.cqf.cql.engine.elm.execution.AnyInCodeSystemEvaluator map(org.hl7.elm.r1.AnyInCodeSystem element);
+    org.cqframework.cql.elm.execution.AnyInCodeSystem map(org.hl7.elm.r1.AnyInCodeSystem element);
 
-    org.opencds.cqf.cql.engine.elm.execution.NullEvaluator map(org.hl7.elm.r1.Null element);
+    org.cqframework.cql.elm.execution.Null map(org.hl7.elm.r1.Null element);
 
     // Start of pre-code gen (See the MapperCodeGen class)
-    org.opencds.cqf.cql.engine.elm.execution.ToDateEvaluator map(org.hl7.elm.r1.ToDate element);
+    org.cqframework.cql.elm.execution.ToDate map(org.hl7.elm.r1.ToDate element);
 
-    org.opencds.cqf.cql.engine.elm.execution.QueryEvaluator map(org.hl7.elm.r1.Query element);
+    org.cqframework.cql.elm.execution.Query map(org.hl7.elm.r1.Query element);
 
-    org.opencds.cqf.cql.engine.elm.execution.SubstringEvaluator map(org.hl7.elm.r1.Substring element);
+    org.cqframework.cql.elm.execution.Substring map(org.hl7.elm.r1.Substring element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ValueSetRefEvaluator map(org.hl7.elm.r1.ValueSetRef element);
+    org.cqframework.cql.elm.execution.ValueSetRef map(org.hl7.elm.r1.ValueSetRef element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ProperContainsEvaluator map(org.hl7.elm.r1.ProperContains element);
+    org.cqframework.cql.elm.execution.ProperContains map(org.hl7.elm.r1.ProperContains element);
 
-    org.opencds.cqf.cql.engine.elm.execution.XorEvaluator map(org.hl7.elm.r1.Xor element);
+    org.cqframework.cql.elm.execution.Xor map(org.hl7.elm.r1.Xor element);
 
     org.cqframework.cql.elm.execution.OperandDef map(org.hl7.elm.r1.OperandDef element);
 
@@ -130,212 +130,212 @@ public interface LibraryMapper {
 
     org.cqframework.cql.elm.execution.ByExpression map(org.hl7.elm.r1.ByExpression element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ConvertsToStringEvaluator map(org.hl7.elm.r1.ConvertsToString element);
+    org.cqframework.cql.elm.execution.ConvertsToString map(org.hl7.elm.r1.ConvertsToString element);
 
     org.cqframework.cql.elm.execution.CanConvert map(org.hl7.elm.r1.CanConvert element);
 
     org.cqframework.cql.elm.execution.IncludeDef map(org.hl7.elm.r1.IncludeDef element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ToDecimalEvaluator map(org.hl7.elm.r1.ToDecimal element);
+    org.cqframework.cql.elm.execution.ToDecimal map(org.hl7.elm.r1.ToDecimal element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ToQuantityEvaluator map(org.hl7.elm.r1.ToQuantity element);
+    org.cqframework.cql.elm.execution.ToQuantity map(org.hl7.elm.r1.ToQuantity element);
 
-    org.opencds.cqf.cql.engine.elm.execution.TimeEvaluator map(org.hl7.elm.r1.Time element);
+    org.cqframework.cql.elm.execution.Time map(org.hl7.elm.r1.Time element);
 
-    org.opencds.cqf.cql.engine.elm.execution.BeforeEvaluator map(org.hl7.elm.r1.Before element);
+    org.cqframework.cql.elm.execution.Before map(org.hl7.elm.r1.Before element);
 
-    org.opencds.cqf.cql.engine.elm.execution.LessOrEqualEvaluator map(org.hl7.elm.r1.LessOrEqual element);
+    org.cqframework.cql.elm.execution.LessOrEqual map(org.hl7.elm.r1.LessOrEqual element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ProductEvaluator map(org.hl7.elm.r1.Product element);
+    org.cqframework.cql.elm.execution.Product map(org.hl7.elm.r1.Product element);
 
-    org.opencds.cqf.cql.engine.elm.execution.PropertyEvaluator map(org.hl7.elm.r1.Property element);
+    org.cqframework.cql.elm.execution.Property map(org.hl7.elm.r1.Property element);
 
-    org.opencds.cqf.cql.engine.elm.execution.IndexOfEvaluator map(org.hl7.elm.r1.IndexOf element);
+    org.cqframework.cql.elm.execution.IndexOf map(org.hl7.elm.r1.IndexOf element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ContainsEvaluator map(org.hl7.elm.r1.Contains element);
+    org.cqframework.cql.elm.execution.Contains map(org.hl7.elm.r1.Contains element);
 
-    org.opencds.cqf.cql.engine.elm.execution.IndexerEvaluator map(org.hl7.elm.r1.Indexer element);
+    org.cqframework.cql.elm.execution.Indexer map(org.hl7.elm.r1.Indexer element);
 
-    org.opencds.cqf.cql.engine.elm.execution.QuantityEvaluator map(org.hl7.elm.r1.Quantity element);
+    org.cqframework.cql.elm.execution.Quantity map(org.hl7.elm.r1.Quantity element);
 
-    org.opencds.cqf.cql.engine.elm.execution.CeilingEvaluator map(org.hl7.elm.r1.Ceiling element);
+    org.cqframework.cql.elm.execution.Ceiling map(org.hl7.elm.r1.Ceiling element);
 
-    org.opencds.cqf.cql.engine.elm.execution.EqualEvaluator map(org.hl7.elm.r1.Equal element);
+    org.cqframework.cql.elm.execution.Equal map(org.hl7.elm.r1.Equal element);
 
-    org.opencds.cqf.cql.engine.elm.execution.RetrieveEvaluator map(org.hl7.elm.r1.Retrieve element);
+    org.cqframework.cql.elm.execution.Retrieve map(org.hl7.elm.r1.Retrieve element);
 
-    org.opencds.cqf.cql.engine.elm.execution.TupleEvaluator map(org.hl7.elm.r1.Tuple element);
+    org.cqframework.cql.elm.execution.Tuple map(org.hl7.elm.r1.Tuple element);
 
-    org.opencds.cqf.cql.engine.elm.execution.CollapseEvaluator map(org.hl7.elm.r1.Collapse element);
+    org.cqframework.cql.elm.execution.Collapse map(org.hl7.elm.r1.Collapse element);
 
-    org.opencds.cqf.cql.engine.elm.execution.MeetsEvaluator map(org.hl7.elm.r1.Meets element);
+    org.cqframework.cql.elm.execution.Meets map(org.hl7.elm.r1.Meets element);
 
-    org.opencds.cqf.cql.engine.elm.execution.AddEvaluator map(org.hl7.elm.r1.Add element);
+    org.cqframework.cql.elm.execution.Add map(org.hl7.elm.r1.Add element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ToStringEvaluator map(org.hl7.elm.r1.ToString element);
+    org.cqframework.cql.elm.execution.ToString map(org.hl7.elm.r1.ToString element);
 
     org.cqframework.cql.elm.execution.TupleElementDefinition map(org.hl7.elm.r1.TupleElementDefinition element);
 
-    org.opencds.cqf.cql.engine.elm.execution.PowerEvaluator map(org.hl7.elm.r1.Power element);
+    org.cqframework.cql.elm.execution.Power map(org.hl7.elm.r1.Power element);
 
-    org.opencds.cqf.cql.engine.elm.execution.LastEvaluator map(org.hl7.elm.r1.Last element);
+    org.cqframework.cql.elm.execution.Last map(org.hl7.elm.r1.Last element);
 
-    org.opencds.cqf.cql.engine.elm.execution.PointFromEvaluator map(org.hl7.elm.r1.PointFrom element);
+    org.cqframework.cql.elm.execution.PointFrom map(org.hl7.elm.r1.PointFrom element);
 
     org.cqframework.cql.elm.execution.Subsumes map(org.hl7.elm.r1.Subsumes element);
 
-    org.opencds.cqf.cql.engine.elm.execution.VarianceEvaluator map(org.hl7.elm.r1.Variance element);
+    org.cqframework.cql.elm.execution.Variance map(org.hl7.elm.r1.Variance element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ConvertsToDecimalEvaluator map(org.hl7.elm.r1.ConvertsToDecimal element);
+    org.cqframework.cql.elm.execution.ConvertsToDecimal map(org.hl7.elm.r1.ConvertsToDecimal element);
 
-    org.opencds.cqf.cql.engine.elm.execution.FunctionRefEvaluator map(org.hl7.elm.r1.FunctionRef element);
+    org.cqframework.cql.elm.execution.FunctionRef map(org.hl7.elm.r1.FunctionRef element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ProperIncludesEvaluator map(org.hl7.elm.r1.ProperIncludes element);
+    org.cqframework.cql.elm.execution.ProperIncludes map(org.hl7.elm.r1.ProperIncludes element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ConvertsToDateEvaluator map(org.hl7.elm.r1.ConvertsToDate element);
+    org.cqframework.cql.elm.execution.ConvertsToDate map(org.hl7.elm.r1.ConvertsToDate element);
 
-    org.opencds.cqf.cql.engine.elm.execution.CombineEvaluator map(org.hl7.elm.r1.Combine element);
+    org.cqframework.cql.elm.execution.Combine map(org.hl7.elm.r1.Combine element);
 
-    org.opencds.cqf.cql.engine.elm.execution.EquivalentEvaluator map(org.hl7.elm.r1.Equivalent element);
+    org.cqframework.cql.elm.execution.Equivalent map(org.hl7.elm.r1.Equivalent element);
 
-    org.opencds.cqf.cql.engine.elm.execution.DivideEvaluator map(org.hl7.elm.r1.Divide element);
+    org.cqframework.cql.elm.execution.Divide map(org.hl7.elm.r1.Divide element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ReplaceMatchesEvaluator map(org.hl7.elm.r1.ReplaceMatches element);
+    org.cqframework.cql.elm.execution.ReplaceMatches map(org.hl7.elm.r1.ReplaceMatches element);
 
-    org.opencds.cqf.cql.engine.elm.execution.TodayEvaluator map(org.hl7.elm.r1.Today element);
+    org.cqframework.cql.elm.execution.Today map(org.hl7.elm.r1.Today element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ExistsEvaluator map(org.hl7.elm.r1.Exists element);
+    org.cqframework.cql.elm.execution.Exists map(org.hl7.elm.r1.Exists element);
 
     org.cqframework.cql.elm.execution.SubsumedBy map(org.hl7.elm.r1.SubsumedBy element);
 
-    org.opencds.cqf.cql.engine.elm.execution.RatioEvaluator map(org.hl7.elm.r1.Ratio element);
+    org.cqframework.cql.elm.execution.Ratio map(org.hl7.elm.r1.Ratio element);
 
-    org.opencds.cqf.cql.engine.elm.execution.EndEvaluator map(org.hl7.elm.r1.End element);
+    org.cqframework.cql.elm.execution.End map(org.hl7.elm.r1.End element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ToLongEvaluator map(org.hl7.elm.r1.ToLong element);
+    org.cqframework.cql.elm.execution.ToLong map(org.hl7.elm.r1.ToLong element);
 
-    org.opencds.cqf.cql.engine.elm.execution.CountEvaluator map(org.hl7.elm.r1.Count element);
+    org.cqframework.cql.elm.execution.Count map(org.hl7.elm.r1.Count element);
 
-    org.opencds.cqf.cql.engine.elm.execution.CodeRefEvaluator map(org.hl7.elm.r1.CodeRef element);
+    org.cqframework.cql.elm.execution.CodeRef map(org.hl7.elm.r1.CodeRef element);
 
-    org.opencds.cqf.cql.engine.elm.execution.SumEvaluator map(org.hl7.elm.r1.Sum element);
+    org.cqframework.cql.elm.execution.Sum map(org.hl7.elm.r1.Sum element);
 
-    org.opencds.cqf.cql.engine.elm.execution.MinEvaluator map(org.hl7.elm.r1.Min element);
+    org.cqframework.cql.elm.execution.Min map(org.hl7.elm.r1.Min element);
 
     org.cqframework.cql.elm.execution.Total map(org.hl7.elm.r1.Total element);
 
     org.cqframework.cql.elm.execution.IncludeElement map(org.hl7.elm.r1.IncludeElement element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ConceptEvaluator map(org.hl7.elm.r1.Concept element);
+    org.cqframework.cql.elm.execution.Concept map(org.hl7.elm.r1.Concept element);
 
-    org.opencds.cqf.cql.engine.elm.execution.DateTimeComponentFromEvaluator map(
+    org.cqframework.cql.elm.execution.DateTimeComponentFrom map(
             org.hl7.elm.r1.DateTimeComponentFrom element);
 
-    org.opencds.cqf.cql.engine.elm.execution.MedianEvaluator map(org.hl7.elm.r1.Median element);
+    org.cqframework.cql.elm.execution.Median map(org.hl7.elm.r1.Median element);
 
-    org.opencds.cqf.cql.engine.elm.execution.FlattenEvaluator map(org.hl7.elm.r1.Flatten element);
+    org.cqframework.cql.elm.execution.Flatten map(org.hl7.elm.r1.Flatten element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ExpEvaluator map(org.hl7.elm.r1.Exp element);
+    org.cqframework.cql.elm.execution.Exp map(org.hl7.elm.r1.Exp element);
 
     org.cqframework.cql.elm.execution.NamedTypeSpecifier map(org.hl7.elm.r1.NamedTypeSpecifier element);
 
-    org.opencds.cqf.cql.engine.elm.execution.LessEvaluator map(org.hl7.elm.r1.Less element);
+    org.cqframework.cql.elm.execution.Less map(org.hl7.elm.r1.Less element);
 
-    org.opencds.cqf.cql.engine.elm.execution.IdentifierRefEvaluator map(org.hl7.elm.r1.IdentifierRef element);
+    org.cqframework.cql.elm.execution.IdentifierRef map(org.hl7.elm.r1.IdentifierRef element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ToConceptEvaluator map(org.hl7.elm.r1.ToConcept element);
+    org.cqframework.cql.elm.execution.ToConcept map(org.hl7.elm.r1.ToConcept element);
 
-    org.opencds.cqf.cql.engine.elm.execution.PositionOfEvaluator map(org.hl7.elm.r1.PositionOf element);
+    org.cqframework.cql.elm.execution.PositionOf map(org.hl7.elm.r1.PositionOf element);
 
-    org.opencds.cqf.cql.engine.elm.execution.TimezoneFromEvaluator map(org.hl7.elm.r1.TimezoneFrom element);
+    org.cqframework.cql.elm.execution.TimezoneFrom map(org.hl7.elm.r1.TimezoneFrom element);
 
-    org.opencds.cqf.cql.engine.elm.execution.LnEvaluator map(org.hl7.elm.r1.Ln element);
+    org.cqframework.cql.elm.execution.Ln map(org.hl7.elm.r1.Ln element);
 
-    org.opencds.cqf.cql.engine.elm.execution.CalculateAgeAtEvaluator map(org.hl7.elm.r1.CalculateAgeAt element);
+    org.cqframework.cql.elm.execution.CalculateAgeAt map(org.hl7.elm.r1.CalculateAgeAt element);
 
-    org.opencds.cqf.cql.engine.elm.execution.LogEvaluator map(org.hl7.elm.r1.Log element);
+    org.cqframework.cql.elm.execution.Log map(org.hl7.elm.r1.Log element);
 
-    org.opencds.cqf.cql.engine.elm.execution.NowEvaluator map(org.hl7.elm.r1.Now element);
+    org.cqframework.cql.elm.execution.Now map(org.hl7.elm.r1.Now element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ToDateTimeEvaluator map(org.hl7.elm.r1.ToDateTime element);
+    org.cqframework.cql.elm.execution.ToDateTime map(org.hl7.elm.r1.ToDateTime element);
 
-    org.opencds.cqf.cql.engine.elm.execution.QueryLetRefEvaluator map(org.hl7.elm.r1.QueryLetRef element);
+    org.cqframework.cql.elm.execution.QueryLetRef map(org.hl7.elm.r1.QueryLetRef element);
 
-    org.opencds.cqf.cql.engine.elm.execution.FirstEvaluator map(org.hl7.elm.r1.First element);
+    org.cqframework.cql.elm.execution.First map(org.hl7.elm.r1.First element);
 
     org.cqframework.cql.elm.execution.Without map(org.hl7.elm.r1.Without element);
 
-    org.opencds.cqf.cql.engine.elm.execution.LowBoundaryEvaluator map(org.hl7.elm.r1.LowBoundary element);
+    org.cqframework.cql.elm.execution.LowBoundary map(org.hl7.elm.r1.LowBoundary element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ConvertQuantityEvaluator map(org.hl7.elm.r1.ConvertQuantity element);
+    org.cqframework.cql.elm.execution.ConvertQuantity map(org.hl7.elm.r1.ConvertQuantity element);
 
     org.cqframework.cql.elm.execution.CanConvertQuantity map(org.hl7.elm.r1.CanConvertQuantity element);
 
-    org.opencds.cqf.cql.engine.elm.execution.MaxValueEvaluator map(org.hl7.elm.r1.MaxValue element);
+    org.cqframework.cql.elm.execution.MaxValue map(org.hl7.elm.r1.MaxValue element);
 
-    org.opencds.cqf.cql.engine.elm.execution.CoalesceEvaluator map(org.hl7.elm.r1.Coalesce element);
+    org.cqframework.cql.elm.execution.Coalesce map(org.hl7.elm.r1.Coalesce element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ConceptRefEvaluator map(org.hl7.elm.r1.ConceptRef element);
+    org.cqframework.cql.elm.execution.ConceptRef map(org.hl7.elm.r1.ConceptRef element);
 
     org.cqframework.cql.elm.execution.LetClause map(org.hl7.elm.r1.LetClause element);
 
-    org.opencds.cqf.cql.engine.elm.execution.LiteralEvaluator map(org.hl7.elm.r1.Literal element);
+    org.cqframework.cql.elm.execution.Literal map(org.hl7.elm.r1.Literal element);
 
-    org.opencds.cqf.cql.engine.elm.execution.OperandRefEvaluator map(org.hl7.elm.r1.OperandRef element);
+    org.cqframework.cql.elm.execution.OperandRef map(org.hl7.elm.r1.OperandRef element);
 
-    org.opencds.cqf.cql.engine.elm.execution.SizeEvaluator map(org.hl7.elm.r1.Size element);
+    org.cqframework.cql.elm.execution.Size map(org.hl7.elm.r1.Size element);
 
-    org.opencds.cqf.cql.engine.elm.execution.UpperEvaluator map(org.hl7.elm.r1.Upper element);
+    org.cqframework.cql.elm.execution.Upper map(org.hl7.elm.r1.Upper element);
 
     org.cqframework.cql.elm.execution.ValueSetDef map(org.hl7.elm.r1.ValueSetDef element);
 
-    org.opencds.cqf.cql.engine.elm.execution.StartEvaluator map(org.hl7.elm.r1.Start element);
+    org.cqframework.cql.elm.execution.Start map(org.hl7.elm.r1.Start element);
 
-    org.opencds.cqf.cql.engine.elm.execution.CalculateAgeEvaluator map(org.hl7.elm.r1.CalculateAge element);
+    org.cqframework.cql.elm.execution.CalculateAge map(org.hl7.elm.r1.CalculateAge element);
 
     org.cqframework.cql.elm.execution.ListTypeSpecifier map(org.hl7.elm.r1.ListTypeSpecifier element);
 
-    org.opencds.cqf.cql.engine.elm.execution.PredecessorEvaluator map(org.hl7.elm.r1.Predecessor element);
+    org.cqframework.cql.elm.execution.Predecessor map(org.hl7.elm.r1.Predecessor element);
 
-    org.opencds.cqf.cql.engine.elm.execution.DescendentsEvaluator map(org.hl7.elm.r1.Descendents element);
+    org.cqframework.cql.elm.execution.Descendents map(org.hl7.elm.r1.Descendents element);
 
-    org.opencds.cqf.cql.engine.elm.execution.FilterEvaluator map(org.hl7.elm.r1.Filter element);
+    org.cqframework.cql.elm.execution.Filter map(org.hl7.elm.r1.Filter element);
 
-    org.opencds.cqf.cql.engine.elm.execution.FloorEvaluator map(org.hl7.elm.r1.Floor element);
+    org.cqframework.cql.elm.execution.Floor map(org.hl7.elm.r1.Floor element);
 
-    org.opencds.cqf.cql.engine.elm.execution.SameAsEvaluator map(org.hl7.elm.r1.SameAs element);
+    org.cqframework.cql.elm.execution.SameAs map(org.hl7.elm.r1.SameAs element);
 
     org.cqframework.cql.elm.execution.Times map(org.hl7.elm.r1.Times element);
 
-    org.opencds.cqf.cql.engine.elm.execution.UnionEvaluator map(org.hl7.elm.r1.Union element);
+    org.cqframework.cql.elm.execution.Union map(org.hl7.elm.r1.Union element);
 
-    org.opencds.cqf.cql.engine.elm.execution.AbsEvaluator map(org.hl7.elm.r1.Abs element);
+    org.cqframework.cql.elm.execution.Abs map(org.hl7.elm.r1.Abs element);
 
-    org.opencds.cqf.cql.engine.elm.execution.MeetsAfterEvaluator map(org.hl7.elm.r1.MeetsAfter element);
+    org.cqframework.cql.elm.execution.MeetsAfter map(org.hl7.elm.r1.MeetsAfter element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ForEachEvaluator map(org.hl7.elm.r1.ForEach element);
+    org.cqframework.cql.elm.execution.ForEach map(org.hl7.elm.r1.ForEach element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ListEvaluator map(org.hl7.elm.r1.List element);
+    org.cqframework.cql.elm.execution.List map(org.hl7.elm.r1.List element);
 
     org.cqframework.cql.elm.execution.ByDirection map(org.hl7.elm.r1.ByDirection element);
 
-    org.opencds.cqf.cql.engine.elm.execution.AfterEvaluator map(org.hl7.elm.r1.After element);
+    org.cqframework.cql.elm.execution.After map(org.hl7.elm.r1.After element);
 
-    org.opencds.cqf.cql.engine.elm.execution.SingletonFromEvaluator map(org.hl7.elm.r1.SingletonFrom element);
+    org.cqframework.cql.elm.execution.SingletonFrom map(org.hl7.elm.r1.SingletonFrom element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ModuloEvaluator map(org.hl7.elm.r1.Modulo element);
+    org.cqframework.cql.elm.execution.Modulo map(org.hl7.elm.r1.Modulo element);
 
     org.cqframework.cql.elm.execution.UsingDef map(org.hl7.elm.r1.UsingDef element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ToBooleanEvaluator map(org.hl7.elm.r1.ToBoolean element);
+    org.cqframework.cql.elm.execution.ToBoolean map(org.hl7.elm.r1.ToBoolean element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ExpandEvaluator map(org.hl7.elm.r1.Expand element);
+    org.cqframework.cql.elm.execution.Expand map(org.hl7.elm.r1.Expand element);
 
-    org.opencds.cqf.cql.engine.elm.execution.PrecisionEvaluator map(org.hl7.elm.r1.Precision element);
+    org.cqframework.cql.elm.execution.Precision map(org.hl7.elm.r1.Precision element);
 
     org.cqframework.cql.elm.execution.ConvertsToRatio map(org.hl7.elm.r1.ConvertsToRatio element);
 
-    org.opencds.cqf.cql.engine.elm.execution.RoundEvaluator map(org.hl7.elm.r1.Round element);
+    org.cqframework.cql.elm.execution.Round map(org.hl7.elm.r1.Round element);
 
     org.cqframework.cql.elm.execution.DateFilterElement map(org.hl7.elm.r1.DateFilterElement element);
 
@@ -343,219 +343,219 @@ public interface LibraryMapper {
 
     org.cqframework.cql.elm.execution.ToChars map(org.hl7.elm.r1.ToChars element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ProperIncludedInEvaluator map(org.hl7.elm.r1.ProperIncludedIn element);
+    org.cqframework.cql.elm.execution.ProperIncludedIn map(org.hl7.elm.r1.ProperIncludedIn element);
 
-    org.opencds.cqf.cql.engine.elm.execution.DateEvaluator map(org.hl7.elm.r1.Date element);
+    org.cqframework.cql.elm.execution.Date map(org.hl7.elm.r1.Date element);
 
-    org.opencds.cqf.cql.engine.elm.execution.WidthEvaluator map(org.hl7.elm.r1.Width element);
+    org.cqframework.cql.elm.execution.Width map(org.hl7.elm.r1.Width element);
 
-    org.opencds.cqf.cql.engine.elm.execution.TimezoneOffsetFromEvaluator map(org.hl7.elm.r1.TimezoneOffsetFrom element);
+    org.cqframework.cql.elm.execution.TimezoneOffsetFrom map(org.hl7.elm.r1.TimezoneOffsetFrom element);
 
-    org.opencds.cqf.cql.engine.elm.execution.SuccessorEvaluator map(org.hl7.elm.r1.Successor element);
+    org.cqframework.cql.elm.execution.Successor map(org.hl7.elm.r1.Successor element);
 
-    org.opencds.cqf.cql.engine.elm.execution.HighBoundaryEvaluator map(org.hl7.elm.r1.HighBoundary element);
+    org.cqframework.cql.elm.execution.HighBoundary map(org.hl7.elm.r1.HighBoundary element);
 
-    org.opencds.cqf.cql.engine.elm.execution.SubtractEvaluator map(org.hl7.elm.r1.Subtract element);
+    org.cqframework.cql.elm.execution.Subtract map(org.hl7.elm.r1.Subtract element);
 
     org.cqframework.cql.elm.execution.CaseItem map(org.hl7.elm.r1.CaseItem element);
 
-    org.opencds.cqf.cql.engine.elm.execution.EndsEvaluator map(org.hl7.elm.r1.Ends element);
+    org.cqframework.cql.elm.execution.Ends map(org.hl7.elm.r1.Ends element);
 
     org.cqframework.cql.elm.execution.CodeDef map(org.hl7.elm.r1.CodeDef element);
 
-    org.opencds.cqf.cql.engine.elm.execution.OverlapsAfterEvaluator map(org.hl7.elm.r1.OverlapsAfter element);
+    org.cqframework.cql.elm.execution.OverlapsAfter map(org.hl7.elm.r1.OverlapsAfter element);
 
-    org.opencds.cqf.cql.engine.elm.execution.OverlapsBeforeEvaluator map(org.hl7.elm.r1.OverlapsBefore element);
+    org.cqframework.cql.elm.execution.OverlapsBefore map(org.hl7.elm.r1.OverlapsBefore element);
 
-    org.opencds.cqf.cql.engine.elm.execution.GeometricMeanEvaluator map(org.hl7.elm.r1.GeometricMean element);
+    org.cqframework.cql.elm.execution.GeometricMean map(org.hl7.elm.r1.GeometricMean element);
 
-    org.opencds.cqf.cql.engine.elm.execution.LowerEvaluator map(org.hl7.elm.r1.Lower element);
+    org.cqframework.cql.elm.execution.Lower map(org.hl7.elm.r1.Lower element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ExpressionRefEvaluator map(org.hl7.elm.r1.ExpressionRef element);
+    org.cqframework.cql.elm.execution.ExpressionRef map(org.hl7.elm.r1.ExpressionRef element);
 
-    org.opencds.cqf.cql.engine.elm.execution.TimeFromEvaluator map(org.hl7.elm.r1.TimeFrom element);
+    org.cqframework.cql.elm.execution.TimeFrom map(org.hl7.elm.r1.TimeFrom element);
 
     org.cqframework.cql.elm.execution.Current map(org.hl7.elm.r1.Current element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ModeEvaluator map(org.hl7.elm.r1.Mode element);
+    org.cqframework.cql.elm.execution.Mode map(org.hl7.elm.r1.Mode element);
 
-    org.opencds.cqf.cql.engine.elm.execution.StartsWithEvaluator map(org.hl7.elm.r1.StartsWith element);
+    org.cqframework.cql.elm.execution.StartsWith map(org.hl7.elm.r1.StartsWith element);
 
-    org.opencds.cqf.cql.engine.elm.execution.AllTrueEvaluator map(org.hl7.elm.r1.AllTrue element);
+    org.cqframework.cql.elm.execution.AllTrue map(org.hl7.elm.r1.AllTrue element);
 
-    org.opencds.cqf.cql.engine.elm.execution.AnyTrueEvaluator map(org.hl7.elm.r1.AnyTrue element);
+    org.cqframework.cql.elm.execution.AnyTrue map(org.hl7.elm.r1.AnyTrue element);
 
     org.cqframework.cql.elm.execution.Search map(org.hl7.elm.r1.Search element);
 
-    org.opencds.cqf.cql.engine.elm.execution.SliceEvaluator map(org.hl7.elm.r1.Slice element);
+    org.cqframework.cql.elm.execution.Slice map(org.hl7.elm.r1.Slice element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ToRatioEvaluator map(org.hl7.elm.r1.ToRatio element);
+    org.cqframework.cql.elm.execution.ToRatio map(org.hl7.elm.r1.ToRatio element);
 
-    org.opencds.cqf.cql.engine.elm.execution.TimeOfDayEvaluator map(org.hl7.elm.r1.TimeOfDay element);
+    org.cqframework.cql.elm.execution.TimeOfDay map(org.hl7.elm.r1.TimeOfDay element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ProperInEvaluator map(org.hl7.elm.r1.ProperIn element);
+    org.cqframework.cql.elm.execution.ProperIn map(org.hl7.elm.r1.ProperIn element);
 
-    org.opencds.cqf.cql.engine.elm.execution.AndEvaluator map(org.hl7.elm.r1.And element);
+    org.cqframework.cql.elm.execution.And map(org.hl7.elm.r1.And element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ConvertsToIntegerEvaluator map(org.hl7.elm.r1.ConvertsToInteger element);
+    org.cqframework.cql.elm.execution.ConvertsToInteger map(org.hl7.elm.r1.ConvertsToInteger element);
 
-    org.opencds.cqf.cql.engine.elm.execution.AliasRefEvaluator map(org.hl7.elm.r1.AliasRef element);
+    org.cqframework.cql.elm.execution.AliasRef map(org.hl7.elm.r1.AliasRef element);
 
     org.cqframework.cql.elm.execution.CodeSystemDef map(org.hl7.elm.r1.CodeSystemDef element);
 
-    org.opencds.cqf.cql.engine.elm.execution.IntervalEvaluator map(org.hl7.elm.r1.Interval element);
+    org.cqframework.cql.elm.execution.Interval map(org.hl7.elm.r1.Interval element);
 
     org.cqframework.cql.elm.execution.OtherFilterElement map(org.hl7.elm.r1.OtherFilterElement element);
 
-    org.opencds.cqf.cql.engine.elm.execution.LastPositionOfEvaluator map(org.hl7.elm.r1.LastPositionOf element);
+    org.cqframework.cql.elm.execution.LastPositionOf map(org.hl7.elm.r1.LastPositionOf element);
 
-    org.opencds.cqf.cql.engine.elm.execution.IsTrueEvaluator map(org.hl7.elm.r1.IsTrue element);
+    org.cqframework.cql.elm.execution.IsTrue map(org.hl7.elm.r1.IsTrue element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ExpandValueSetEvaluator map(org.hl7.elm.r1.ExpandValueSet element);
+    org.cqframework.cql.elm.execution.ExpandValueSet map(org.hl7.elm.r1.ExpandValueSet element);
 
-    org.opencds.cqf.cql.engine.elm.execution.NegateEvaluator map(org.hl7.elm.r1.Negate element);
+    org.cqframework.cql.elm.execution.Negate map(org.hl7.elm.r1.Negate element);
 
     org.cqframework.cql.elm.execution.IntervalTypeSpecifier map(org.hl7.elm.r1.IntervalTypeSpecifier element);
 
-    org.opencds.cqf.cql.engine.elm.execution.OverlapsEvaluator map(org.hl7.elm.r1.Overlaps element);
+    org.cqframework.cql.elm.execution.Overlaps map(org.hl7.elm.r1.Overlaps element);
 
-    org.opencds.cqf.cql.engine.elm.execution.DistinctEvaluator map(org.hl7.elm.r1.Distinct element);
+    org.cqframework.cql.elm.execution.Distinct map(org.hl7.elm.r1.Distinct element);
 
-    org.opencds.cqf.cql.engine.elm.execution.CodeSystemRefEvaluator map(org.hl7.elm.r1.CodeSystemRef element);
+    org.cqframework.cql.elm.execution.CodeSystemRef map(org.hl7.elm.r1.CodeSystemRef element);
 
-    org.opencds.cqf.cql.engine.elm.execution.InEvaluator map(org.hl7.elm.r1.In element);
+    org.cqframework.cql.elm.execution.In map(org.hl7.elm.r1.In element);
 
     org.cqframework.cql.elm.execution.ChoiceTypeSpecifier map(org.hl7.elm.r1.ChoiceTypeSpecifier element);
 
-    org.opencds.cqf.cql.engine.elm.execution.EndsWithEvaluator map(org.hl7.elm.r1.EndsWith element);
+    org.cqframework.cql.elm.execution.EndsWith map(org.hl7.elm.r1.EndsWith element);
 
     org.cqframework.cql.elm.execution.ParameterDef map(org.hl7.elm.r1.ParameterDef element);
 
-    org.opencds.cqf.cql.engine.elm.execution.IncludesEvaluator map(org.hl7.elm.r1.Includes element);
+    org.cqframework.cql.elm.execution.Includes map(org.hl7.elm.r1.Includes element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ToTimeEvaluator map(org.hl7.elm.r1.ToTime element);
+    org.cqframework.cql.elm.execution.ToTime map(org.hl7.elm.r1.ToTime element);
 
-    org.opencds.cqf.cql.engine.elm.execution.IntersectEvaluator map(org.hl7.elm.r1.Intersect element);
+    org.cqframework.cql.elm.execution.Intersect map(org.hl7.elm.r1.Intersect element);
 
-    org.opencds.cqf.cql.engine.elm.execution.SameOrBeforeEvaluator map(org.hl7.elm.r1.SameOrBefore element);
+    org.cqframework.cql.elm.execution.SameOrBefore map(org.hl7.elm.r1.SameOrBefore element);
 
-    org.opencds.cqf.cql.engine.elm.execution.PopulationStdDevEvaluator map(org.hl7.elm.r1.PopulationStdDev element);
+    org.cqframework.cql.elm.execution.PopulationStdDev map(org.hl7.elm.r1.PopulationStdDev element);
 
-    org.opencds.cqf.cql.engine.elm.execution.CodeEvaluator map(org.hl7.elm.r1.Code element);
+    org.cqframework.cql.elm.execution.Code map(org.hl7.elm.r1.Code element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ConcatenateEvaluator map(org.hl7.elm.r1.Concatenate element);
+    org.cqframework.cql.elm.execution.Concatenate map(org.hl7.elm.r1.Concatenate element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ConvertEvaluator map(org.hl7.elm.r1.Convert element);
+    org.cqframework.cql.elm.execution.Convert map(org.hl7.elm.r1.Convert element);
 
-    org.opencds.cqf.cql.engine.elm.execution.MinValueEvaluator map(org.hl7.elm.r1.MinValue element);
+    org.cqframework.cql.elm.execution.MinValue map(org.hl7.elm.r1.MinValue element);
 
-    org.opencds.cqf.cql.engine.elm.execution.SameOrAfterEvaluator map(org.hl7.elm.r1.SameOrAfter element);
+    org.cqframework.cql.elm.execution.SameOrAfter map(org.hl7.elm.r1.SameOrAfter element);
 
-    org.opencds.cqf.cql.engine.elm.execution.SplitEvaluator map(org.hl7.elm.r1.Split element);
+    org.cqframework.cql.elm.execution.Split map(org.hl7.elm.r1.Split element);
 
-    org.opencds.cqf.cql.engine.elm.execution.GreaterEvaluator map(org.hl7.elm.r1.Greater element);
+    org.cqframework.cql.elm.execution.Greater map(org.hl7.elm.r1.Greater element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ConvertsToLongEvaluator map(org.hl7.elm.r1.ConvertsToLong element);
+    org.cqframework.cql.elm.execution.ConvertsToLong map(org.hl7.elm.r1.ConvertsToLong element);
 
     org.cqframework.cql.elm.execution.Aggregate map(org.hl7.elm.r1.Aggregate element);
 
-    org.opencds.cqf.cql.engine.elm.execution.IfEvaluator map(org.hl7.elm.r1.If element);
+    org.cqframework.cql.elm.execution.If map(org.hl7.elm.r1.If element);
 
-    org.opencds.cqf.cql.engine.elm.execution.MaxEvaluator map(org.hl7.elm.r1.Max element);
+    org.cqframework.cql.elm.execution.Max map(org.hl7.elm.r1.Max element);
 
-    org.opencds.cqf.cql.engine.elm.execution.IsFalseEvaluator map(org.hl7.elm.r1.IsFalse element);
+    org.cqframework.cql.elm.execution.IsFalse map(org.hl7.elm.r1.IsFalse element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ConvertsToTimeEvaluator map(org.hl7.elm.r1.ConvertsToTime element);
+    org.cqframework.cql.elm.execution.ConvertsToTime map(org.hl7.elm.r1.ConvertsToTime element);
 
-    org.opencds.cqf.cql.engine.elm.execution.NotEqualEvaluator map(org.hl7.elm.r1.NotEqual element);
+    org.cqframework.cql.elm.execution.NotEqual map(org.hl7.elm.r1.NotEqual element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ExceptEvaluator map(org.hl7.elm.r1.Except element);
+    org.cqframework.cql.elm.execution.Except map(org.hl7.elm.r1.Except element);
 
     org.cqframework.cql.elm.execution.ReturnClause map(org.hl7.elm.r1.ReturnClause element);
 
-    org.opencds.cqf.cql.engine.elm.execution.MatchesEvaluator map(org.hl7.elm.r1.Matches element);
+    org.cqframework.cql.elm.execution.Matches map(org.hl7.elm.r1.Matches element);
 
-    org.opencds.cqf.cql.engine.elm.execution.MultiplyEvaluator map(org.hl7.elm.r1.Multiply element);
+    org.cqframework.cql.elm.execution.Multiply map(org.hl7.elm.r1.Multiply element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ToListEvaluator map(org.hl7.elm.r1.ToList element);
+    org.cqframework.cql.elm.execution.ToList map(org.hl7.elm.r1.ToList element);
 
-    org.opencds.cqf.cql.engine.elm.execution.IsNullEvaluator map(org.hl7.elm.r1.IsNull element);
+    org.cqframework.cql.elm.execution.IsNull map(org.hl7.elm.r1.IsNull element);
 
-    org.opencds.cqf.cql.engine.elm.execution.InstanceEvaluator map(org.hl7.elm.r1.Instance element);
+    org.cqframework.cql.elm.execution.Instance map(org.hl7.elm.r1.Instance element);
 
     org.cqframework.cql.elm.execution.TupleTypeSpecifier map(org.hl7.elm.r1.TupleTypeSpecifier element);
 
-    org.opencds.cqf.cql.engine.elm.execution.PopulationVarianceEvaluator map(org.hl7.elm.r1.PopulationVariance element);
+    org.cqframework.cql.elm.execution.PopulationVariance map(org.hl7.elm.r1.PopulationVariance element);
 
-    org.opencds.cqf.cql.engine.elm.execution.RepeatEvaluator map(org.hl7.elm.r1.Repeat element);
+    org.cqframework.cql.elm.execution.Repeat map(org.hl7.elm.r1.Repeat element);
 
     org.cqframework.cql.elm.execution.Library map(org.hl7.elm.r1.Library element);
 
-    org.opencds.cqf.cql.engine.elm.execution.IsEvaluator map(org.hl7.elm.r1.Is element);
+    org.cqframework.cql.elm.execution.Is map(org.hl7.elm.r1.Is element);
 
-    org.opencds.cqf.cql.engine.elm.execution.TruncateEvaluator map(org.hl7.elm.r1.Truncate element);
+    org.cqframework.cql.elm.execution.Truncate map(org.hl7.elm.r1.Truncate element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ImpliesEvaluator map(org.hl7.elm.r1.Implies element);
+    org.cqframework.cql.elm.execution.Implies map(org.hl7.elm.r1.Implies element);
 
     org.cqframework.cql.elm.execution.CodeFilterElement map(org.hl7.elm.r1.CodeFilterElement element);
 
     org.cqframework.cql.elm.execution.ByColumn map(org.hl7.elm.r1.ByColumn element);
 
-    org.opencds.cqf.cql.engine.elm.execution.AsEvaluator map(org.hl7.elm.r1.As element);
+    org.cqframework.cql.elm.execution.As map(org.hl7.elm.r1.As element);
 
-    org.opencds.cqf.cql.engine.elm.execution.GreaterOrEqualEvaluator map(org.hl7.elm.r1.GreaterOrEqual element);
+    org.cqframework.cql.elm.execution.GreaterOrEqual map(org.hl7.elm.r1.GreaterOrEqual element);
 
-    org.opencds.cqf.cql.engine.elm.execution.StartsEvaluator map(org.hl7.elm.r1.Starts element);
+    org.cqframework.cql.elm.execution.Starts map(org.hl7.elm.r1.Starts element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ChildrenEvaluator map(org.hl7.elm.r1.Children element);
+    org.cqframework.cql.elm.execution.Children map(org.hl7.elm.r1.Children element);
 
-    org.opencds.cqf.cql.engine.elm.execution.NotEvaluator map(org.hl7.elm.r1.Not element);
+    org.cqframework.cql.elm.execution.Not map(org.hl7.elm.r1.Not element);
 
-    org.opencds.cqf.cql.engine.elm.execution.DateFromEvaluator map(org.hl7.elm.r1.DateFrom element);
+    org.cqframework.cql.elm.execution.DateFrom map(org.hl7.elm.r1.DateFrom element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ConvertsToBooleanEvaluator map(org.hl7.elm.r1.ConvertsToBoolean element);
+    org.cqframework.cql.elm.execution.ConvertsToBoolean map(org.hl7.elm.r1.ConvertsToBoolean element);
 
-    org.opencds.cqf.cql.engine.elm.execution.MeetsBeforeEvaluator map(org.hl7.elm.r1.MeetsBefore element);
+    org.cqframework.cql.elm.execution.MeetsBefore map(org.hl7.elm.r1.MeetsBefore element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ConvertsToDateTimeEvaluator map(org.hl7.elm.r1.ConvertsToDateTime element);
+    org.cqframework.cql.elm.execution.ConvertsToDateTime map(org.hl7.elm.r1.ConvertsToDateTime element);
 
     org.cqframework.cql.elm.execution.Iteration map(org.hl7.elm.r1.Iteration element);
 
-    org.opencds.cqf.cql.engine.elm.execution.AvgEvaluator map(org.hl7.elm.r1.Avg element);
+    org.cqframework.cql.elm.execution.Avg map(org.hl7.elm.r1.Avg element);
 
-    org.opencds.cqf.cql.engine.elm.execution.DurationBetweenEvaluator map(org.hl7.elm.r1.DurationBetween element);
+    org.cqframework.cql.elm.execution.DurationBetween map(org.hl7.elm.r1.DurationBetween element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ConvertsToQuantityEvaluator map(org.hl7.elm.r1.ConvertsToQuantity element);
+    org.cqframework.cql.elm.execution.ConvertsToQuantity map(org.hl7.elm.r1.ConvertsToQuantity element);
 
-    org.opencds.cqf.cql.engine.elm.execution.StdDevEvaluator map(org.hl7.elm.r1.StdDev element);
+    org.cqframework.cql.elm.execution.StdDev map(org.hl7.elm.r1.StdDev element);
 
-    org.opencds.cqf.cql.engine.elm.execution.MessageEvaluator map(org.hl7.elm.r1.Message element);
+    org.cqframework.cql.elm.execution.Message map(org.hl7.elm.r1.Message element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ToIntegerEvaluator map(org.hl7.elm.r1.ToInteger element);
+    org.cqframework.cql.elm.execution.ToInteger map(org.hl7.elm.r1.ToInteger element);
 
-    org.opencds.cqf.cql.engine.elm.execution.IncludedInEvaluator map(org.hl7.elm.r1.IncludedIn element);
+    org.cqframework.cql.elm.execution.IncludedIn map(org.hl7.elm.r1.IncludedIn element);
 
     org.cqframework.cql.elm.execution.FunctionDef map(org.hl7.elm.r1.FunctionDef element);
 
     org.cqframework.cql.elm.execution.Sort map(org.hl7.elm.r1.Sort element);
 
-    org.opencds.cqf.cql.engine.elm.execution.SplitOnMatchesEvaluator map(org.hl7.elm.r1.SplitOnMatches element);
+    org.cqframework.cql.elm.execution.SplitOnMatches map(org.hl7.elm.r1.SplitOnMatches element);
 
-    org.opencds.cqf.cql.engine.elm.execution.CaseEvaluator map(org.hl7.elm.r1.Case element);
+    org.cqframework.cql.elm.execution.Case map(org.hl7.elm.r1.Case element);
 
     org.cqframework.cql.elm.execution.ConceptDef map(org.hl7.elm.r1.ConceptDef element);
 
-    org.opencds.cqf.cql.engine.elm.execution.LengthEvaluator map(org.hl7.elm.r1.Length element);
+    org.cqframework.cql.elm.execution.Length map(org.hl7.elm.r1.Length element);
 
-    org.opencds.cqf.cql.engine.elm.execution.DateTimeEvaluator map(org.hl7.elm.r1.DateTime element);
+    org.cqframework.cql.elm.execution.DateTime map(org.hl7.elm.r1.DateTime element);
 
-    org.opencds.cqf.cql.engine.elm.execution.ParameterRefEvaluator map(org.hl7.elm.r1.ParameterRef element);
+    org.cqframework.cql.elm.execution.ParameterRef map(org.hl7.elm.r1.ParameterRef element);
 
-    org.opencds.cqf.cql.engine.elm.execution.OrEvaluator map(org.hl7.elm.r1.Or element);
+    org.cqframework.cql.elm.execution.Or map(org.hl7.elm.r1.Or element);
 
-    org.opencds.cqf.cql.engine.elm.execution.TruncatedDivideEvaluator map(org.hl7.elm.r1.TruncatedDivide element);
+    org.cqframework.cql.elm.execution.TruncatedDivide map(org.hl7.elm.r1.TruncatedDivide element);
 
-    org.opencds.cqf.cql.engine.elm.execution.DifferenceBetweenEvaluator map(org.hl7.elm.r1.DifferenceBetween element);
+    org.cqframework.cql.elm.execution.DifferenceBetween map(org.hl7.elm.r1.DifferenceBetween element);
 
     default org.cqframework.cql.elm.execution.SortByItem map(org.hl7.elm.r1.SortByItem element) {
         if (element == null) {

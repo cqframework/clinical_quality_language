@@ -9,7 +9,7 @@ import org.hl7.elm.r1.Expression;
 import org.opencds.cqf.cql.engine.elm.visiting.EqualEvaluator;
 import org.opencds.cqf.cql.engine.elm.visiting.EquivalentEvaluator;
 import org.opencds.cqf.cql.engine.exception.InvalidComparison;
-import org.opencds.cqf.cql.engine.execution.CqlEngineVisitor;
+import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.execution.Variable;
 
@@ -17,12 +17,12 @@ public class CqlList {
     private State state;
     private String alias;
     private Expression expression;
-    private CqlEngineVisitor visitor;
+    private CqlEngine visitor;
     private String path;
 
     public CqlList() { }
 
-    public CqlList(State state, CqlEngineVisitor visitor, String alias, Expression expression) {
+    public CqlList(State state, CqlEngine visitor, String alias, Expression expression) {
         this.state = state;
         this.visitor = visitor;
         this.alias = alias;

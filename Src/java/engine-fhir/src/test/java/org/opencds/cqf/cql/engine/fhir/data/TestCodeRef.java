@@ -3,7 +3,7 @@ package org.opencds.cqf.cql.engine.fhir.data;
 import static org.testng.AssertJUnit.assertTrue;
 
 import org.hl7.fhirpath.TranslatorHelper;
-import org.opencds.cqf.cql.engine.execution.CqlEngineVisitor;
+import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.EvaluationResult;
 import org.opencds.cqf.cql.engine.fhir.terminology.Dstu3FhirTerminologyProvider;
 
@@ -21,7 +21,7 @@ public class TestCodeRef extends FhirExecutionTestBase {
 
     // @Test
     public void CodeRefTest1() {
-        CqlEngineVisitor engineVisitor = TranslatorHelper.getEngineVisitor();
+        CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
         engineVisitor.getEnvironment().setTerminologyProvider(terminologyProvider);
 
         EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
@@ -32,7 +32,7 @@ public class TestCodeRef extends FhirExecutionTestBase {
 
     // @Test
     public void CodeRefTest2() {
-        CqlEngineVisitor engineVisitor = TranslatorHelper.getEngineVisitor();
+        CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
         engineVisitor.getEnvironment().setTerminologyProvider(terminologyProvider);
 
         EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),

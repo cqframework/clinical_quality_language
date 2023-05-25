@@ -19,7 +19,7 @@ import org.hl7.fhirpath.tests.InvalidType;
 import org.hl7.fhirpath.tests.Tests;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
 import org.opencds.cqf.cql.engine.elm.visiting.ExistsEvaluator;
-import org.opencds.cqf.cql.engine.execution.CqlEngineVisitor;
+import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.EvaluationResult;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.fhir.model.FhirModelResolver;
@@ -28,7 +28,6 @@ import org.opencds.cqf.cql.engine.runtime.DateTime;
 import org.opencds.cqf.cql.engine.runtime.Time;
 
 import ca.uhn.fhir.context.FhirContext;
-import org.w3._1999.xhtml.Tr;
 
 public abstract class TestFhirPath {
 
@@ -176,7 +175,7 @@ public abstract class TestFhirPath {
                 }
             }
 
-            CqlEngineVisitor engineVisitor = TranslatorHelper.getEngineVisitor();
+            CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
             engineVisitor.getState().registerDataProvider("http://hl7.org/fhir", provider);
             if (resource != null) {
                 engineVisitor.getState().setParameter(null, resource.fhirType(), resource);

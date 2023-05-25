@@ -15,7 +15,6 @@ dependencies {
     testRuntimeOnly project(':model-jackson')
     testRuntimeOnly group: 'xpp3', name: 'xpp3', version: '1.1.4c'
 
-    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 }
 
 tasks.withType(JavaCompile) {
