@@ -25,7 +25,7 @@ public class ElmEvaluationHelper {
         Map<VersionedIdentifier, Library> map = new HashMap<>();
         map.put(library.getIdentifier(), library);
         CqlEngine engine = getEngine(library, parameters, evaluationDateTime);
-        engine.init(library.getIdentifier(), map,null, null, null, null);
+        engine.init(library.getIdentifier(), map,null, null, null, evaluationDateTime);
         return engine.visitExpression(value, engine.getState());
     }
 
