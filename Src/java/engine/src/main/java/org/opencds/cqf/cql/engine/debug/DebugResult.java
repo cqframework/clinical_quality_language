@@ -32,8 +32,6 @@ public class DebugResult {
             if (action == DebugAction.LOG) {
                 DebugUtilities.logDebugResult(node, currentLibrary, result);
             }
-
-            var test = List.of(1,2,3);
         }
         catch (Exception e) {
             // do nothing, an exception logging debug helps no one
