@@ -13,9 +13,9 @@ import java.util.regex.Pattern;
  * where major, minor, and patch are all required to be unsigned integers, and build is any string
  *
  * Examples:
- *     1.0.0 -> major: 1, minor: 0, patch: 0
- *     v1-0-0 -> major: 1, minor: 0, patch: 0
- *     v1-0-0-SNAPSHOT -> major: 1, minor: 0, patch: 0, build: snapshot
+ *     1.0.0 -&gt; major: 1, minor: 0, patch: 0
+ *     v1-0-0 -&gt; major: 1, minor: 0, patch: 0
+ *     v1-0-0-SNAPSHOT -&gt; major: 1, minor: 0, patch: 0, build: snapshot
  *
  * NOTE: Deliberately not using Apache ComparableVersion to a) avoid dependencies on Maven and b) allow for more
  * flexible version strings used by MAT file naming conventions.

@@ -27,5 +27,4 @@ dependencies {
     testImplementation project(':quick')
     testImplementation project(':qdm')
     testImplementation 'com.github.reinert:jjschema:1.16'
-    testRuntimeOnly 'xpp3:xpp3:1.1.4c'
 }

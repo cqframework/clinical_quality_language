@@ -21,5 +21,5 @@ dependencies {
     implementation "ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2"
     implementation "ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3"
     implementation "ca.uhn.hapi.fhir:hapi-fhir-structures-r4"
-    implementation"ca.uhn.hapi.fhir:hapi-fhir-structures-r5"
+    implementation "ca.uhn.hapi.fhir:hapi-fhir-structures-r5"
 }

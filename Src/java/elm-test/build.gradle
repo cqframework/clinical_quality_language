@@ -7,4 +7,6 @@ dependencies {
     implementation project(':model-jaxb')
     implementation project(':elm-jackson')
     implementation project(':elm-jaxb')
+    testRuntimeOnly 'org.eclipse.persistence:org.eclipse.persistence.moxy:2.7.7'
+    testRuntimeOnly 'xpp3:xpp3:1.1.4c'
 }
