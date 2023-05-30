@@ -3,6 +3,7 @@ plugins {
     id 'maven-publish'
     id 'jacoco'
     id 'signing'
+    id 'cql.sca-conventions'
 }
 
 java {

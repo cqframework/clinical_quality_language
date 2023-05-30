@@ -6,3 +6,7 @@ repositories {
     mavenCentral()
     gradlePluginPortal()
 }
+
+dependencies {
+    implementation 'ru.vyarus:gradle-animalsniffer-plugin:1.7.0'
+}

@@ -24,6 +24,10 @@ sourceSets {
     }
 }
 
+sourcesJar {
+    from generateGrammarSource
+}
+
 generateGrammarSource {
     outputDirectory = file("${project.buildDir}/generated/sources/antlr/main/java/org/cqframework/cql/gen")
     arguments = ['-visitor', '-package', 'org.cqframework.cql.gen']

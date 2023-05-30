@@ -13,8 +13,8 @@ if (System.getProperty('sca') != null) {
 
     dependencies {
         pmd(
-                'net.sourceforge.pmd:pmd-core:5.3.1',
-                'net.sourceforge.pmd:pmd-java:5.3.1'
+            'net.sourceforge.pmd:pmd-core:5.3.1',
+            'net.sourceforge.pmd:pmd-java:5.3.1'
         )
     }
 

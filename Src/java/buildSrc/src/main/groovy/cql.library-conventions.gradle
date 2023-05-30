@@ -1,17 +1,15 @@
 plugins {
-    id 'cql.java-conventions'
     id 'java-library'
+    id 'ru.vyarus.animalsniffer'
+    id 'cql.java-conventions'
 }
 
 ext {
     androidApiLevel = project['android.api.level']
 }
 
-configurations {
-    signature
-}
 
 dependencies {
-    implementation 'ru.vyarus:gradle-animalsniffer-plugin:1.7.0'
-    signature "net.sf.androidscents.signature:android-api-level-${androidApiLevel}:8.0.0_r2@signature"
+    // Various libraries for Android signatures are available, Jackson uses this one
+    signature "com.toasttab.android:gummy-bears-api-${androidApiLevel}:0.5.0@signature"
 }
