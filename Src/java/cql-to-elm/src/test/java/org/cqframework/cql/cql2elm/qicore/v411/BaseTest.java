@@ -163,6 +163,18 @@ public class BaseTest {
         fr = (FunctionRef)eq.getOperand().get(0);
         assertThat(fr.getLibraryName(), is("FHIRHelpers"));
         assertThat(fr.getName(), is("ToValueSet"));
+
+        def = defs.get("TestEncounterDiagnosisPresentOnAdmission");
+        assertThat(def.getExpression(), instanceOf(Exists.class));
+        Exists e = (Exists)def.getExpression();
+        assertThat(e.getOperand(), instanceOf(Query.class));
+        query = (Query)e.getOperand();
+        assertThat(query.getWhere(), instanceOf(Equivalent.class));
+        eq = (Equivalent)query.getWhere();
+        assertThat(eq.getOperand().get(0), instanceOf(FunctionRef.class));
+        fr = (FunctionRef)eq.getOperand().get(0);
+        assertThat(fr.getLibraryName(), is("FHIRHelpers"));
+        assertThat(fr.getName(), is("ToConcept"));
     }
 
     @Test
