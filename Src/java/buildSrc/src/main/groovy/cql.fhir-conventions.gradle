@@ -21,6 +21,5 @@ dependencies {
     implementation "ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2"
     implementation "ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3"
     implementation "ca.uhn.hapi.fhir:hapi-fhir-structures-r4"
-     // Added to 6.4.4 BOM, can remove version when that's updated
-    implementation"ca.uhn.hapi.fhir:hapi-fhir-structures-r5:6.0.1"
+    implementation"ca.uhn.hapi.fhir:hapi-fhir-structures-r5"
 }

@@ -33,4 +33,9 @@ public class TestIGContext implements IWorkerContext.ILoggingService {
     public void logDebugMessage(LogCategory logCategory, String s) {
         System.out.println(String.format("%s: %s", logCategory.toString(), s));
     }
+
+    @Override
+    public boolean isDebugLogging() {
+        return true;
+    }
 }

@@ -19,6 +19,7 @@ import org.hl7.elm.r1.Property;
 import org.hl7.fhir.instance.model.api.IBase;
 import org.hl7.fhir.r5.model.*;
 import org.hl7.fhir.r5.model.Library;
+import org.hl7.fhir.r5.model.Enumerations.FHIRTypes;
 import org.hl7.fhir.utilities.validation.ValidationMessage;
 import org.cqframework.cql.elm.requirements.ElmDataRequirement;
 import org.cqframework.cql.elm.requirements.ElmPertinenceContext;
@@ -457,7 +458,7 @@ public class DataRequirementsProcessor {
 
     private ParameterDefinition toParameterDefinition(VersionedIdentifier libraryIdentifier, ParameterDef def) {
         AtomicBoolean isList = new AtomicBoolean(false);
-        Enumerations.FHIRAllTypes typeCode = Enumerations.FHIRAllTypes.fromCode(toFHIRParameterTypeCode(def.getResultType(), def.getName(), isList));
+        FHIRTypes typeCode = Enumerations.FHIRTypes.fromCode(toFHIRParameterTypeCode(def.getResultType(), def.getName(), isList));
 
         return new ParameterDefinition()
                 .setName(def.getName())
@@ -469,9 +470,9 @@ public class DataRequirementsProcessor {
 
     private ParameterDefinition toOutputParameterDefinition(VersionedIdentifier libraryIdentifier, ExpressionDef def) {
         AtomicBoolean isList = new AtomicBoolean(false);
-        Enumerations.FHIRAllTypes typeCode = null;
+        Enumerations.FHIRTypes typeCode = null;
         try{
-                typeCode = Enumerations.FHIRAllTypes.fromCode(
+                typeCode = Enumerations.FHIRTypes.fromCode(
                         toFHIRResultTypeCode(def.getResultType(), def.getName(), isList));
         }catch(org.hl7.fhir.exceptions.FHIRException fhirException){
             validationMessages.add(new ValidationMessage(ValidationMessage.Source.Publisher, ValidationMessage.IssueType.NOTSUPPORTED, "CQL Library Packaging",
@@ -691,7 +692,7 @@ public class DataRequirementsProcessor {
             ElmPertinenceContext pertinenceContext) {
         org.hl7.fhir.r5.model.DataRequirement dr = new org.hl7.fhir.r5.model.DataRequirement();
         try {
-            dr.setType(org.hl7.fhir.r5.model.Enumerations.FHIRAllTypes.fromCode(retrieve.getDataType().getLocalPart()));
+            dr.setType(org.hl7.fhir.r5.model.Enumerations.FHIRTypes.fromCode(retrieve.getDataType().getLocalPart()));
         }
         catch(org.hl7.fhir.exceptions.FHIRException fhirException) {
             validationMessages.add(new ValidationMessage(ValidationMessage.Source.Publisher, ValidationMessage.IssueType.NOTSUPPORTED, "CQL Library Packaging",
