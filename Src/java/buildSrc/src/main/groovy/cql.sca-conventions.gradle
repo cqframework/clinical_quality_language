@@ -1,5 +1,12 @@
 plugins {
     id 'java'
+    id 'pmd'
+    id 'com.github.spotbugs'
+}
+
+ext {
+    pmdVersion = '6.55.0'
+    spotBugsVersion = '4.7.3'
 }
 
 /*
@@ -13,27 +20,31 @@ if (System.getProperty('sca') != null) {
 
     dependencies {
         pmd(
-            'net.sourceforge.pmd:pmd-core:5.3.1',
-            'net.sourceforge.pmd:pmd-java:5.3.1'
+            "net.sourceforge.pmd:pmd-core:${pmdVersion}",
+            "net.sourceforge.pmd:pmd-java:${pmdVersion}"
         )
     }
 
     pmd {
         consoleOutput = true
-        toolVersion = "5.3.1"
-        ruleSetFiles = files("${rootProject.projectDir}/custom-pmd-ruleset.xml")
+        toolVersion = pmdVersion
+        ruleSetFiles = files("${rootProject.projectDir}/config/custom-pmd-ruleset.xml")
         ruleSets = []
     }
 
-    findbugs {
-        toolVersion = "3.0.1"
-        excludeFilter = file("${rootProject.projectDir}/findbugs-exclude-filter.xml")
+    spotbugs {
+        toolVersion = spotBugsVersion
+        excludeFilter = file("${rootProject.projectDir}/config/findbugs-exclude-filter.xml")
     }
 
-    tasks.withType(FindBugs) {
+    spotbugsMain {
         reports {
-            xml.enabled = false
-            html.enabled = true
+            html {
+                enabled = true
+            }
+            xml {
+                enabled = true
+            }
         }
     }
 }
