@@ -1,7 +1,7 @@
 plugins {
     id 'java'
-    id 'pmd'
-    id 'com.github.spotbugs'
+    id 'pmd' apply false
+    id 'com.github.spotbugs' apply false
 }
 
 ext {
@@ -10,41 +10,55 @@ ext {
 }
 
 /*
-    Turn on static code analysis by passing 'sca' as a system property:
-    e.g., gradle -Dsca build
+Turn on static code analysis by passing 'sca' as a system property:
+e.g., gradle -Dsca build
 
-    Or add it to your user gradle.properties file (${HOME}/.gradle/gradle.properties):
-    systemProp.sca=true
-    */
-if (System.getProperty('sca') != null) {
+Or add it to your user gradle.properties file (${HOME}/.gradle/gradle.properties):
+systemProp.sca=true
+*/
+dependencies {
+    pmd(
+        "net.sourceforge.pmd:pmd-core:${pmdVersion}",
+        "net.sourceforge.pmd:pmd-java:${pmdVersion}"
+    )
+}
 
-    dependencies {
-        pmd(
-            "net.sourceforge.pmd:pmd-core:${pmdVersion}",
-            "net.sourceforge.pmd:pmd-java:${pmdVersion}"
-        )
-    }
+// PMD Configuration
+pmd {
+    consoleOutput = true
+    toolVersion = pmdVersion
+    ruleSetFiles = files("${rootProject.projectDir}/config/custom-pmd-ruleset.xml")
+    ruleSets = []
+}
 
-    pmd {
-        consoleOutput = true
-        toolVersion = pmdVersion
-        ruleSetFiles = files("${rootProject.projectDir}/config/custom-pmd-ruleset.xml")
-        ruleSets = []
-    }
+// PMD Tasks
+pmdMain {
+    enabled = System.getProperty('sca') != null
+}
 
-    spotbugs {
-        toolVersion = spotBugsVersion
-        excludeFilter = file("${rootProject.projectDir}/config/findbugs-exclude-filter.xml")
-    }
+pmdTest {
+    enabled = false
+}
 
-    spotbugsMain {
-        reports {
-            html {
-                enabled = true
-            }
-            xml {
-                enabled = true
-            }
+// Spotbugs configuration
+spotbugs {
+    toolVersion = spotBugsVersion
+    excludeFilter = file("${rootProject.projectDir}/config/findbugs-exclude-filter.xml")
+}
+
+// Spotbugs Tasks
+spotbugsMain {
+    enabled = System.getProperty('sca') != null
+    reports {
+        html {
+            enabled = true
+        }
+        xml {
+            enabled = true
         }
     }
+}
+
+spotbugsTest {
+    enabled = false
 }

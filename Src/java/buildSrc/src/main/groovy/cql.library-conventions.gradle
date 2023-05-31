@@ -13,3 +13,7 @@ dependencies {
     // Various libraries for Android signatures are available, Jackson uses this one
     signature "com.toasttab.android:gummy-bears-api-${androidApiLevel}:0.5.0@signature"
 }
+
+animalsniffer {
+    sourceSets = [sourceSets.main]
+}
