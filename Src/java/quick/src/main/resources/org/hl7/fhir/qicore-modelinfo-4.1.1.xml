@@ -1840,7 +1840,7 @@
          <binding name="DiagnosisRole" description="The type of diagnosis this condition represents." strength="Preferred"/>
       </element>
       <element name="rank" elementType="System.Integer" target="%value.value" description="Ranking of the diagnosis (for each role type)" definition="Ranking of the diagnosis (for each role type)." mustSupport="true"/>
-      <element name="diagnosisPresentOnAdmission" elementType="QICore.DiagnosisPresentOnAdmissionExtension" target="FHIRHelpers.ToConcept(%parent.diagnosis.extension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-encounter-diagnosisPresentOnAdmission'].value)" description="onAdmission" definition="Indicator of whether the Encounter diagnosis was present at the time of admission." mustSupport="true"/>
+      <element name="diagnosisPresentOnAdmission" elementType="QICore.DiagnosisPresentOnAdmissionExtension" target="FHIRHelpers.ToConcept(%parent.extension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-encounter-diagnosisPresentOnAdmission'].value)" description="onAdmission" definition="Indicator of whether the Encounter diagnosis was present at the time of admission." mustSupport="true"/>
    </typeInfo>
    <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Encounter.Hospitalization" retrievable="false">
       <element name="preAdmissionIdentifier" elementType="QICore.Identifier" description="Pre-admission identifier" definition="Pre-admission identifier."/>
