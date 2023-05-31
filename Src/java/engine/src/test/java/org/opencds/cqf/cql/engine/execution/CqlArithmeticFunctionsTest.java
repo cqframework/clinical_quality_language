@@ -17,7 +17,7 @@ public class CqlArithmeticFunctionsTest extends CqlTestBase {
     public void test_all_arithmetic_tests() {
         EvaluationResult evaluationResult;
 
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlArithmeticFunctionsTest"), null, null, null, null, null);
+        evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlArithmeticFunctionsTest"));
 
         assertThat(evaluationResult.expressionResults.get("AbsNull").value(), is(nullValue()));
         assertThat(evaluationResult.expressionResults.get("Abs0").value(), is(0));

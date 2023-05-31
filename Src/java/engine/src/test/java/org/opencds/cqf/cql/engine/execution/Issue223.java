@@ -17,7 +17,7 @@ public class Issue223 extends CqlTestBase {
 
         EvaluationResult evaluationResult;
 
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("Issue223"), null, null, null, null, null);
+        evaluationResult = engineVisitor.evaluate(toElmIdentifier("Issue223"));
         Object result = evaluationResult.expressionResults.get("Access Flattened List of List Items").value();
         List<?> list = (List<?>)result;
         assertThat(list.size(), is(1));

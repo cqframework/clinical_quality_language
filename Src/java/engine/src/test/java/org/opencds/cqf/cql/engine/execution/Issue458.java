@@ -17,7 +17,7 @@ public class Issue458 extends CqlTestBase {
 
         EvaluationResult evaluationResult;
 
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("Issue458"), null, null, null, null, null);
+        evaluationResult = engineVisitor.evaluate(toElmIdentifier("Issue458"));
         Object result = evaluationResult.expressionResults.get("Closed-Open Interval").value();
         Interval interval = (Interval)result;
         assertEquals(interval.toString(), "Interval[3, 5)");

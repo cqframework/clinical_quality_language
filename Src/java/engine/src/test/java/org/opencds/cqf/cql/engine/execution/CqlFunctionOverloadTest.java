@@ -13,7 +13,7 @@ public class CqlFunctionOverloadTest extends CqlTestBase {
     public void test_function_overloads() {
         EvaluationResult evaluationResult;
 
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("FunctionOverloadTest"), null, null, null, null, null);
+        evaluationResult = engineVisitor.evaluate(toElmIdentifier("FunctionOverloadTest"));
 
         Object result;
 

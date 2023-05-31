@@ -16,7 +16,7 @@ public class CqlConceptTest extends CqlTestBase {
         Set<String> set = new HashSet<>();
 
 
-        EvaluationResult evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlConceptTest"), null, null, null, null, null);
+        EvaluationResult evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlConceptTest"));
 
 
         List<Code> codes = Arrays.asList(

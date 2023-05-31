@@ -25,7 +25,7 @@ public class CqlValueLiteralsAndSelectorsTest extends CqlTestBase {
         Set<String> set = new HashSet<>();
         EvaluationResult evaluationResult;
 
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlValueLiteralsAndSelectorsTest"), null, null, null, null, null);
+        evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlValueLiteralsAndSelectorsTest"));
         Object result;
 
         result = evaluationResult.expressionResults.get("Null").value();

@@ -22,7 +22,7 @@ public class CqlExternalFunctionsTest2 extends CqlTestBase {
         );
 
         EvaluationResult evaluationResult;
-        evaluationResult = engineVisitor.evaluate(identifier, null, null, null, null, null);
+        evaluationResult = engineVisitor.evaluate(identifier);
 
         Object result;
 

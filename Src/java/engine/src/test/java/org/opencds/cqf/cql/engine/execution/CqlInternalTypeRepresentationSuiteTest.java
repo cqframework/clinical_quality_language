@@ -18,7 +18,7 @@ public class CqlInternalTypeRepresentationSuiteTest extends CqlTestBase {
     public void test_all_internal_type_representation() {
         EvaluationResult evaluationResult;
 
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlInternalTypeRepresentationSuite"), null, null, null, null, ZonedDateTime.of(2018, 1, 1, 7, 0, 0, 0, TimeZone.getDefault().toZoneId()));
+        evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlInternalTypeRepresentationSuite"), ZonedDateTime.of(2018, 1, 1, 7, 0, 0, 0, TimeZone.getDefault().toZoneId()));
 
         Object result;
 

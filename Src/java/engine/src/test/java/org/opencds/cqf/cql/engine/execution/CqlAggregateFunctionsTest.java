@@ -22,7 +22,7 @@ public class CqlAggregateFunctionsTest extends CqlTestBase {
     public void test_all_aggregate_function_tests() {
         EvaluationResult evaluationResult;
 
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlAggregateFunctionsTest"), null, null, null, null, null);
+        evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlAggregateFunctionsTest"));
         Object result = evaluationResult.expressionResults.get("AllTrueAllTrue").value();
         assertThat(result, is(true));
 

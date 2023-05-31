@@ -20,8 +20,7 @@ public class CqlDateTimeOperatorsTest extends CqlTestBase {
     public void test_all_date_time_tests() throws IOException {
 
         EvaluationResult evaluationResult;
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlDateTimeOperatorsTest"), null, null, null, null,
-                ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, TimeZone.getDefault().toZoneId()));
+        evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlDateTimeOperatorsTest"), ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, TimeZone.getDefault().toZoneId()));
 
         Object result = evaluationResult.expressionResults.get("DateTimeAdd5Years").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2010, 10, 10)));

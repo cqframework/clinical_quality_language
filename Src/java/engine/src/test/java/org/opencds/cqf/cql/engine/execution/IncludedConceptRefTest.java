@@ -25,7 +25,7 @@ public class IncludedConceptRefTest extends CqlTestBase {
 
         EvaluationResult evaluationResult;
 
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("IncludedConceptRefTest"), null, null, null, null, null);
+        evaluationResult = engineVisitor.evaluate(toElmIdentifier("IncludedConceptRefTest"));
         CqlType actual = (CqlType)evaluationResult.expressionResults.get("testIncludedConceptRef").value();
 
         assertEqual(expected, actual);

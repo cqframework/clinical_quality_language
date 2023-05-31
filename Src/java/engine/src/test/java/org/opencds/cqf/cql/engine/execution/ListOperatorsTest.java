@@ -18,7 +18,7 @@ public class ListOperatorsTest extends CqlTestBase {
         Set<String> set = new HashSet<>();
         EvaluationResult evaluationResult;
 
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlListOperatorsTest"), null, null, null, null, null);
+        evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlListOperatorsTest"));
         Object result;
 
         result = evaluationResult.expressionResults.get("simpleList").value();

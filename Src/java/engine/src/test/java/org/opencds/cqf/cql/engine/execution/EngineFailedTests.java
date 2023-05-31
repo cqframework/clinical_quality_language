@@ -22,13 +22,13 @@ public class EngineFailedTests extends CqlTestBase {
         EvaluationResult evaluationResult;
 
         try{
-            evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlAllFailedTests"), Set.of("Exp1000"), null, null, null, null);
+            evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlAllFailedTests"), Set.of("Exp1000"));
         }catch(UndefinedResult ae){
             assertThat(ae.getMessage(),is("Results in positive infinity"));
         }
 
         try{
-            evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlAllFailedTests"), Set.of("Exp1000D"), null, null, null, null);
+            evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlAllFailedTests"), Set.of("Exp1000D"));
         }catch(UndefinedResult ae){
             assertThat(ae.getMessage(),is("Results in positive infinity"));
         }

@@ -12,7 +12,7 @@ public class CqlConditionalOperatorsTest extends CqlTestBase {
     public void test_all_conditional_operators_tests() throws IOException {
 
         EvaluationResult evaluationResult;
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlConditionalOperatorsTest"), null, null, null, null, null);
+        evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlConditionalOperatorsTest"));
 
         Object result = result = evaluationResult.expressionResults.get("IfTrue1").value();
         assertThat(result, is(5));

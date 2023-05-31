@@ -20,7 +20,7 @@ public class CqlTypesOperatorsTest extends CqlTestBase {
         Set<String> set = new HashSet<>();
         EvaluationResult evaluationResult;
 
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlTypeOperatorsTest"), null, null, null, null, null);
+        evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlTypeOperatorsTest"));
         Object result;
 
         result = evaluationResult.expressionResults.get("AsQuantity").value();

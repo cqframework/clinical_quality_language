@@ -12,7 +12,7 @@ public class EmptyStringsTest extends CqlTestBase {
     public void test_all_empty_string() {
         EvaluationResult evaluationResult;
 
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("EmptyStringsTest"), null, null, null, null, null);
+        evaluationResult = engineVisitor.evaluate(toElmIdentifier("EmptyStringsTest"));
 
         Object result = evaluationResult.expressionResults.get("Null").value();
         assertThat(result, is(nullValue()));

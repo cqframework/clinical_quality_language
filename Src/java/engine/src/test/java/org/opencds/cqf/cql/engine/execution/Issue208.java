@@ -14,7 +14,7 @@ public class Issue208 extends CqlTestBase {
 
         EvaluationResult evaluationResult;
 
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("Issue208"), null, null, null, null, null);
+        evaluationResult = engineVisitor.evaluate(toElmIdentifier("Issue208"));
         Object result = evaluationResult.expressionResults.get("Let Test 1").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)(((List<?>) result).get(0))).get(0), 1));
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)(((List<?>) result).get(0))).get(1), 2));

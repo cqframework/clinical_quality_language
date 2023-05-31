@@ -24,7 +24,7 @@ public class CqlErrorsAndMessagingOperatorsTest extends CqlTestBase {
                "TestMessageWithNullCondition","TestMessageWithNullCode","TestMessageWithNullMessage", "TestWarningWithNullSource",
                 "TestWarningWithNullCondition","TestWarningWithNullCode","TestWarningWithNullMessage","TestTraceWithNullSource",
                 "TestTraceWithNullCondition","TestTraceWithNullCode","TestTraceWithNullMessage");
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlErrorsAndMessagingOperatorsTest"), set, null, null, null, null);
+        evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlErrorsAndMessagingOperatorsTest"), set);
 
         Object result = result = evaluationResult.expressionResults.get("TestMessageInfo").value();
         assertThat(result, is(1));
@@ -91,7 +91,7 @@ public class CqlErrorsAndMessagingOperatorsTest extends CqlTestBase {
 
 
         try {
-           Object evaluationResult = visitor.evaluate(toElmIdentifier("CqlErrorsAndMessagingOperatorsTest"), Set.of("TestMessageObfuscation"), null, null, null, null);
+           Object evaluationResult = visitor.evaluate(toElmIdentifier("CqlErrorsAndMessagingOperatorsTest"), Set.of("TestMessageObfuscation"));
         } catch (RuntimeException result) {
             Assert.assertEquals(result.getMessage(),
                     String.format("400: This source should be redacted%n%s",

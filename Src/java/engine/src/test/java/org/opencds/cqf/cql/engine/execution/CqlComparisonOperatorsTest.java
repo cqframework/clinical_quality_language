@@ -15,7 +15,7 @@ public class CqlComparisonOperatorsTest extends CqlTestBase {
     public void test_all_comparison_operators_tests() {
         EvaluationResult evaluationResult;
 
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlComparisonOperatorsTest"), null, null, null, null, null);
+        evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlComparisonOperatorsTest"));
 
 
         Object result = evaluationResult.expressionResults.get("BetweenIntTrue").value();

@@ -21,7 +21,7 @@ public class CqlExternalFunctionsTest extends CqlTestBase {
                 new SystemExternalFunctionProvider(Arrays.asList(MyMath.class.getDeclaredMethods()))
         );
 
-        EvaluationResult evaluationResult = engineVisitor.evaluate(identifier, null, null, null, null, null);
+        EvaluationResult evaluationResult = engineVisitor.evaluate(identifier);
 
         Object result;
 

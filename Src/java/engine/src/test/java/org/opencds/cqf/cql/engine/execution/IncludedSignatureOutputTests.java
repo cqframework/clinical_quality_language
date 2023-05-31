@@ -14,7 +14,7 @@ public class IncludedSignatureOutputTests extends CqlTestBase {
 
         EvaluationResult evaluationResult;
 
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("IncludedSignatureOutputTests"), null, null, null, null, null);
+        evaluationResult = engineVisitor.evaluate(toElmIdentifier("IncludedSignatureOutputTests"));
         
         Object result = evaluationResult.expressionResults.get("TestOverload").value();
         assertThat(result, is(5));

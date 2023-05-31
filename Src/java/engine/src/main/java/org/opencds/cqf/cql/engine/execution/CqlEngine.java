@@ -80,7 +80,7 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
         }
 
         if (translatorOptions == null) {
-            this.translatorOptions = createOptionsMin();
+            this.translatorOptions = CqlTranslatorOptions.defaultOptions();
         } else {
             this.translatorOptions = translatorOptions;
         }
@@ -107,13 +107,6 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
         if (engineOptions != null) {
             this.engineOptions = engineOptions;
         }
-    }
-
-    public CqlTranslatorOptions createOptionsMin() {
-        CqlTranslatorOptions result = new CqlTranslatorOptions();
-        result.setOptions(CqlTranslatorOptions.Options.EnableDateRangeOptimization, CqlTranslatorOptions.Options.EnableLocators, CqlTranslatorOptions.Options.EnableResultTypes, CqlTranslatorOptions.Options.DisableListDemotion, CqlTranslatorOptions.Options.DisableListPromotion, CqlTranslatorOptions.Options.DisableMethodInvocation);
-
-        return result;
     }
 
     public Environment getEnvironment() {
@@ -163,6 +156,10 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
 
     public EvaluationResult evaluate(VersionedIdentifier libraryIdentifier) {
         return this.evaluate(libraryIdentifier, null, null, null, null);
+    }
+
+    public EvaluationResult evaluate(VersionedIdentifier libraryIdentifier, ZonedDateTime evaluationDateTime) {
+        return this.evaluate(libraryIdentifier, null, null, null, null, evaluationDateTime);
     }
 
     public EvaluationResult evaluate(VersionedIdentifier libraryIdentifier, Map<VersionedIdentifier, Library> libraryCache, Set<String> expressions) {
@@ -334,8 +331,11 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
             return libraryCache.get(libraryIdentifier);
         }
 
-        ArrayList<CqlCompilerException> errors = new ArrayList<CqlCompilerException>();
-        library = this.environment.getLibraryManager().resolveLibrary(libraryIdentifier, translatorOptions, errors).getLibrary();
+        library = this.environment.getLibraryManager().getCachedLibrary(libraryIdentifier);
+        if(library == null) {
+            ArrayList<CqlCompilerException> errors = new ArrayList<CqlCompilerException>();
+            library = this.environment.getLibraryManager().resolveLibrary(libraryIdentifier, translatorOptions, errors).getLibrary();
+        }
 
         if (library == null) {
             throw new IllegalArgumentException(String.format("Unable to load library %s", libraryIdentifier.getId() + (libraryIdentifier.getVersion() != null ? "-" + libraryIdentifier.getVersion() : "")));
