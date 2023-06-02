@@ -9,9 +9,10 @@ plugins {
 java {
     withJavadocJar()
     withSourcesJar()
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(11)
-    }
+}
+
+compileJava {
+    options.release = 11
 }
 
 repositories {
