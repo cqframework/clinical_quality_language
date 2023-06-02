@@ -1,0 +1,833 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://hl7.org/fhirpath/tests" xsi:schemaLocation="http://hl7.org/fhirpath/tests ../../testSchema/testSchema.xsd"
+	name="CqlArithmeticFunctionsTest" reference="https://cql.hl7.org/09-b-cqlreference.html#arithmetic-operators-4">
+	<group name="Abs">
+		<test name="AbsNull">
+			<expression>Abs(null as Integer)</expression>
+			<output>null</output>
+		</test>
+		<test name="Abs0">
+			<expression>Abs(0)</expression>
+			<output>0</output>
+		</test>
+		<test name="AbsNeg1">
+			<expression>Abs(-1)</expression>
+			<output>1</output>
+		</test>
+		<test name="AbsNeg1Dec">
+			<expression>Abs(-1.0)</expression>
+			<output>1.0</output>
+		</test>
+		<test name="Abs0Dec">
+			<expression>Abs(0.0)</expression>
+			<output>0.0</output>
+		</test>
+		<test name="Abs1cm">
+			<expression>Abs(-1.0'cm')</expression>
+			<output>1.0'cm'</output>
+		</test>
+		<test name="AbsLong">
+			<expression>Abs(-1L)</expression>
+			<output>1L</output>
+		</test>
+	</group>
+	<group name="Add">
+		<test name="AddNull">
+			<expression>1 + null</expression>
+			<output>null</output>
+		</test>
+		<test name="Add11">
+			<expression>1 + 1</expression>
+			<output>2</output>
+		</test>
+		<test name="Add1D1D">
+			<expression>1.0 + 1.0</expression>
+			<output>2.0</output>
+		</test>
+		<test name="Add1Q1Q">
+			<expression>1'g/cm3' + 1'g/cm3'</expression>
+			<output>2.0'g/cm3'</output>
+		</test>
+		<test name="AddIAndD">
+			<expression>1 + 2.0</expression>
+			<output>3.0</output>
+		</test>
+		<test name="Add1L1L">
+			<expression>1L + 1L</expression>
+			<output>2L</output>
+		</test>
+	</group>
+	<group name="Ceiling">
+		<test name="CeilingNull">
+			<expression>Ceiling(null as Decimal)</expression>
+			<output>null</output>
+		</test>
+		<test name="Ceiling1D">
+			<expression>Ceiling(1.0)</expression>
+			<output>1</output>
+		</test>
+		<test name="Ceiling1D1">
+			<expression>Ceiling(1.1)</expression>
+			<output>2</output>
+		</test>
+		<test name="CeilingNegD1">
+			<expression>Ceiling(-0.1)</expression>
+			<output>0</output>
+		</test>
+		<test name="CeilingNeg1">
+			<expression>Ceiling(-1.0)</expression>
+			<output>-1</output>
+		</test>
+		<test name="CeilingNeg1D1">
+			<expression>Ceiling(-1.1)</expression>
+			<output>-1</output>
+		</test>
+		<test name="Ceiling1I">
+			<expression>Ceiling(1)</expression>
+			<output>1</output>
+		</test>
+	</group>
+	<group name="Divide">
+		<test name="DivideNull">
+			<expression>1 / null</expression>
+			<output>null</output>
+		</test>
+		<test name="Divide10">
+			<expression>1 / 0</expression>
+			<output>null</output>
+		</test>
+		<test name="Divide01">
+			<expression>0 / 1</expression>
+			<output>0.0</output>
+		</test>
+		<test name="Divide11">
+			<expression>1 / 1</expression>
+			<output>1.0</output>
+		</test>
+		<test name="Divide1d1d">
+			<expression>1.0 / 1.0</expression>
+			<output>1.0</output>
+		</test>
+		<test name="Divide103">
+			<expression>Round(10 / 3, 8)</expression>
+			<output>3.33333333</output>
+		</test>
+		<test name="Divide1Q1">
+			<expression>1'g/cm3' / 1.0</expression>
+			<output>1.0'g/cm3'</output>
+			<!-- See HL7 STU comment #1443. -->
+			<!-- CQL should support implicit conversion of an Integer or
+			Decimal value to a Quantity, with the default UCUM unit of (`1`). -->
+		</test>
+		<test name="Divide1Q1Q">
+			<expression>1'g/cm3' / 1'g/cm3'</expression>
+			<output>1.0'1'</output>
+			<!-- See http://unitsofmeasure.org/ucum.html#section-Semantics
+			particularly "the neutral element 1 (so called the unity)". -->
+			<!-- See HL7 STU comment #1442. -->
+			<!-- When dividing quantities with like units, the specification
+			should state clearly that the expected UCUM unit would be the
+			default unit (`1`). -->
+			<!-- See https://github.com/cqframework/clinical_quality_language/issues/193 -->
+			<!-- TODO: make Translator recognize unit changes on Divide() -->
+		</test>
+		<test name="Divide10I5D">
+			<expression>10 / 5.0</expression>
+			<output>2.0</output>
+		</test>
+		<test name="Divide10I5I">
+			<expression>10 / 5</expression>
+			<output>2.0</output>
+		</test>
+		<test name="Divide10Q5I">
+			<expression>10.0 'g' / 5</expression>
+			<output>2.0'g'</output>
+		</test>
+	</group>
+	<group name="Floor">
+		<test name="FloorNull">
+			<expression>Floor(null as Decimal)</expression>
+			<output>null</output>
+		</test>
+		<test name="Floor1">
+			<expression>Floor(1)</expression>
+			<output>1</output>
+		</test>
+		<test name="Floor1D">
+			<expression>Floor(1.0)</expression>
+			<output>1</output>
+		</test>
+		<test name="Floor1D1">
+			<expression>Floor(1.1)</expression>
+			<output>1</output>
+		</test>
+		<test name="FloorNegD1">
+			<expression>Floor(-0.1)</expression>
+			<output>-1</output>
+		</test>
+		<test name="FloorNeg1">
+			<expression>Floor(-1.0)</expression>
+			<output>-1</output>
+		</test>
+		<test name="FloorNeg1D1">
+			<expression>Floor(-1.1)</expression>
+			<output>-2</output>
+		</test>
+		<test name="Floor2I">
+			<expression>Floor(2)</expression>
+			<output>2</output>
+		</test>
+	</group>
+	<group name="Exp">
+		<test name="ExpNull">
+			<expression>Exp(null as Decimal)</expression>
+			<output>null</output>
+		</test>
+		<test name="Exp0">
+			<expression>Exp(0)</expression>
+			<output>1.0</output>
+		</test>
+		<test name="ExpNeg0">
+			<expression>Exp(-0)</expression>
+			<output>1.0</output>
+		</test>
+		<test name="Exp1">
+			<expression>Round(Exp(1), 8)</expression>
+			<output>2.71828183</output>
+		</test>
+		<test name="ExpNeg1">
+			<expression>Round(Exp(-1), 8)</expression>
+			<output>0.36787944</output>
+		</test>
+		<test name="Exp1000">
+			<expression invalid="true">Exp(1000)</expression>
+			<!-- EXPECT: Results in positive infinity -->
+		</test>
+		<test name="Exp1000D">
+			<expression invalid="true">Exp(1000.0)</expression>
+			<!-- EXPECT: Results in positive infinity -->
+		</test>
+	</group>
+	<group name="HighBoundary">
+		<test name="HighBoundaryDecimal">
+			<expression>HighBoundary(1.587, 8)</expression>
+			<output>1.58799999</output>
+		</test>
+		<test name="HighBoundaryDateMonth">
+			<expression>HighBoundary(@2014, 6)</expression>
+			<output>@2014-12</output>
+		</test>
+		<test name="HighBoundaryDateTimeMillisecond">
+			<expression>HighBoundary(@2014-01-01T08, 17)</expression>
+			<output>@2014-01-01T08:59:59.999</output>
+		</test>
+		<test name="HighBoundaryTimeMillisecond">
+			<expression>HighBoundary(@T10:30, 9)</expression>
+			<output>@T10:30:59.999</output>
+		</test>
+	</group>
+	<group name="Log">
+		<test name="LogNullNull">
+			<expression>Log(null, null)</expression>
+			<output>null</output>
+		</test>
+		<test name="Log1BaseNull">
+			<expression>Log(1, null)</expression>
+			<output>null</output>
+		</test>
+		<test name="Log1Base1">
+			<expression>Log(1, 1)</expression>
+			<output>null</output>
+		</test>
+		<test name="Log1Base2">
+			<expression>Log(1, 2)</expression>
+			<output>0.0</output>
+		</test>
+		<test name="Log1Base100">
+			<expression>Log(1, 100)</expression>
+			<output>0.0</output>
+		</test>
+		<test name="Log16Base2">
+			<expression>Log(16, 2)</expression>
+			<output>4.0</output>
+		</test>
+		<test name="LogD125Base2">
+			<expression>Log(0.125, 2)</expression>
+			<output>-3.0</output>
+		</test>
+	</group>
+	<group name="LowBoundary">
+		<test name="LowBoundaryDecimal">
+			<expression>LowBoundary(1.587, 8)</expression>
+			<output>1.58700000</output>
+		</test>
+		<test name="LowBoundaryDateMonth">
+			<expression>LowBoundary(@2014, 6)</expression>
+			<output>@2014-01</output>
+		</test>
+		<test name="LowBoundaryDateTimeMillisecond">
+			<expression>LowBoundary(@2014-01-01T08, 17)</expression>
+			<output>@2014-01-01T08:00:00.000</output>
+		</test>
+		<test name="LowBoundaryTimeMillisecond">
+			<expression>LowBoundary(@T10:30, 9)</expression>
+			<output>@T10:30:00.000</output>
+		</test>
+	</group>
+	<group name="Ln">
+		<test name="LnNull">
+			<expression>Ln(null)</expression>
+			<output>null</output>
+		</test>
+		<test name="Ln0">
+			<expression invalid="true">Ln(0)</expression>
+			<!-- EXPECT: Results in negative infinity -->
+		</test>
+		<test name="LnNeg0">
+			<expression invalid="true">Ln(-0)</expression>
+			<!-- EXPECT: Results in negative infinity -->
+		</test>
+		<test name="Ln1">
+			<expression>Ln(1)</expression>
+			<output>0.0</output>
+		</test>
+		<test name="LnNeg1">
+			<expression>Ln(-1)</expression>
+			<output>null</output>
+		</test>
+		<test name="Ln1000">
+			<expression>Round(Ln(1000), 8)</expression>
+			<output>6.90775528</output>
+		</test>
+		<test name="Ln1000D">
+			<expression>Round(Ln(1000.0), 8)</expression>
+			<output>6.90775528</output>
+		</test>
+	</group>
+	<group name="MinValue">
+		<test name="IntegerMinValue">
+			<expression>minimum Integer</expression>
+			<output>-2147483648</output>
+			<!-- TODO: make Engine parse -2147483648 holistically not as a negated positive -->
+		</test>
+		<test name="LongMinValue">
+			<expression>minimum Long</expression>
+			<output>-9223372036854775808L</output>
+		</test>
+		<test name="DecimalMinValue">
+			<expression>minimum Decimal</expression>
+			<output>-99999999999999999999.99999999</output>
+		</test>
+		<!-- OBSOLETE: define QuantityMinValue: minimum Quantity -->
+		<test name="DateTimeMinValue">
+			<expression>minimum DateTime</expression>
+			<output>@0001-01-01T00:00:00.000Z</output>
+		</test>
+		<test name="DateMinValue">
+			<expression>minimum Date</expression>
+			<output>@0001-01-01</output>
+		</test>
+		<test name="TimeMinValue">
+			<expression>minimum Time</expression>
+			<output>@T00:00:00.000</output>
+		</test>
+	</group>
+	<group name="MaxValue">
+		<test name="IntegerMaxValue">
+			<expression>maximum Integer</expression>
+			<output>2147483647</output>
+		</test>
+		<test name="LongMaxValue">
+			<expression>maximum Long</expression>
+			<output>9223372036854775807L</output>
+		</test>
+		<test name="DecimalMaxValue">
+			<expression>maximum Decimal</expression>
+			<output>99999999999999999999.99999999</output>
+		</test>
+		<!-- OBSOLETE: define QuantityMaxValue: maximum Quantity -->
+		<test name="DateTimeMaxValue">
+			<expression>maximum DateTime</expression>
+			<output>@9999-12-31T23:59:59.999Z</output>
+		</test>
+		<test name="DateMaxValue">
+			<expression>maximum Date</expression>
+			<output>@9999-12-31</output>
+		</test>
+		<test name="TimeMaxValue">
+			<expression>maximum Time</expression>
+			<output>@T23:59:59.999</output>
+		</test>
+	</group>
+	<group name="Modulo">
+		<test name="ModuloNull">
+			<expression>1 mod null</expression>
+			<output>null</output>
+		</test>
+		<test name="Modulo0By0">
+			<expression>0 mod 0</expression>
+			<output>null</output>
+		</test>
+		<test name="Modulo4By2">
+			<expression>4 mod 2</expression>
+			<output>0</output>
+		</test>
+		<test name="Modulo4LBy2L">
+			<expression>4L mod 2L</expression>
+			<output>0L</output>
+		</test>
+		<test name="Modulo4DBy2D">
+			<expression>4.0 mod 2.0</expression>
+			<output>0.0</output>
+		</test>
+		<test name="Modulo10By3">
+			<expression>10 mod 3</expression>
+			<output>1</output>
+		</test>
+		<test name="Modulo10DBy3D">
+			<expression>10.0 mod 3.0</expression>
+			<output>1.0</output>
+		</test>
+		<test name="Modulo10IBy3D">
+			<expression>10 mod 3.0</expression>
+			<output>1.0</output>
+		</test>
+		<test name="ModuloDResult">
+			<expression>3.5 mod 3</expression>
+			<output>0.5</output>
+		</test>
+		<test name="ModuloQuantity">
+			<expression>3.5 'cm' mod 3 'cm'</expression>
+			<output>0.5 'cm'</output>
+		</test>
+	</group>
+	<group name="Multiply">
+		<test name="MultiplyNull">
+			<expression>1 * null</expression>
+			<output>null</output>
+		</test>
+		<test name="Multiply1By1">
+			<expression>1 * 1</expression>
+			<output>1</output>
+		</test>
+		<test name="Multiply1DBy2D">
+			<expression>1.0 * 2.0</expression>
+			<output>2.0</output>
+		</test>
+		<test name="Multiply1By1L">
+			<expression>1 * 1L</expression>
+			<output>1L</output>
+		</test>
+		<test name="Multiply1IBy2D">
+			<expression>1 * 2.0</expression>
+			<output>2.0</output>
+		</test>
+		<test name="Multiply1CMBy2CM">
+			<expression>1.0 'cm' * 2.0 'cm'</expression>
+			<output>2.0'cm2'</output>
+			<!-- TODO: make the units multiply -->
+		</test>
+	</group>
+	<group name="Negate">
+		<test name="NegateNull">
+			<expression>-(null as Integer)</expression>
+			<output>null</output>
+		</test>
+		<test name="Negate0">
+			<expression>-0</expression>
+			<output>0</output>
+		</test>
+		<test name="NegateNeg0">
+			<expression>-(-0)</expression>
+			<output>0</output>
+		</test>
+		<test name="Negate1">
+			<expression>-1</expression>
+			<output>-1</output>
+		</test>
+		<test name="NegateNeg1">
+			<expression>-(-1)</expression>
+			<output>1</output>
+		</test>
+		<test name="NegateNeg1L">
+			<expression>-(-1L)</expression>
+			<output>1L</output>
+		</test>
+		<test name="Negate0D">
+			<expression>-(0.0)</expression>
+			<output>0.0</output>
+		</test>
+		<test name="NegateNeg0D">
+			<expression>-(-0.0)</expression>
+			<output>0.0</output>
+		</test>
+		<test name="Negate1D">
+			<expression>-(1.0)</expression>
+			<output>-1.0</output>
+		</test>
+		<test name="NegateNeg1D">
+			<expression>-(-1.0)</expression>
+			<output>1.0</output>
+		</test>
+		<test name="Negate1CM">
+			<expression>-(1'cm')</expression>
+			<output>-1.0'cm'</output>
+		</test>
+	</group>
+	<group name="Precision">
+		<test name="PrecisionDecimal">
+			<expression>Precision(1.58700)</expression>
+			<output>5</output>
+		</test>
+		<test name="PrecisionYear">
+			<expression>Precision(@2014)</expression>
+			<output>4</output>
+		</test>
+		<test name="PrecisionDateTimeMilliseconds">
+			<expression>Precision(@2014-01-05T10:30:00.000)</expression>
+			<output>17</output>
+		</test>
+		<test name="PrecisionTimeMinutes">
+			<expression>Precision(@T10:30)</expression>
+			<output>4</output>
+		</test>
+		<test name="PrecisionTimeMilliseconds">
+			<expression>Precision(@T10:30:00.000)</expression>
+			<output>9</output>
+		</test>
+	</group>
+	<group name="Predecessor">
+		<test name="PredecessorNull">
+			<expression>predecessor of (null as Integer)</expression>
+			<output>null</output>
+		</test>
+		<test name="PredecessorOf0">
+			<expression>predecessor of 0</expression>
+			<output>-1</output>
+		</test>
+		<test name="PredecessorOf1">
+			<expression>predecessor of 1</expression>
+			<output>0</output>
+		</test>
+		<test name="PredecessorOf1L">
+			<expression>predecessor of 1L</expression>
+			<output>0L</output>
+		</test>
+		<test name="PredecessorOf1D">
+			<expression>predecessor of 1.0</expression>
+			<output>0.99999999</output>
+		</test>
+		<test name="PredecessorOf101D">
+			<expression>predecessor of 1.01</expression>
+			<output>1.00999999</output>
+		</test>
+		<test name="PredecessorOf1QCM">
+			<expression>predecessor of 1.0 'cm'</expression>
+			<output>0.99999999'cm'</output>
+		</test>
+		<test name="PredecessorOfJan12000">
+			<expression>predecessor of DateTime(2000,1,1)</expression>
+			<output>@1999-12-31T</output>
+		</test>
+		<test name="PredecessorOfNoon">
+			<expression>predecessor of @T12:00:00.000</expression>
+			<output>@T11:59:59.999</output>
+		</test>
+		<test name="PredecessorUnderflowDt">
+			<expression invalid="true">predecessor of DateTime(0001, 1, 1, 0, 0, 0, 0)</expression>
+			<!-- EXPECT: The result of the predecessor operation precedes the minimum value allowed for the type -->
+		</test>
+		<test name="PredecessorUnderflowT">
+			<expression invalid="true">predecessor of @T00:00:00.000</expression>
+			<!-- EXPECT: The result of the predecessor operation precedes the minimum value allowed for the type -->
+		</test>
+	</group>
+	<group name="Power">
+		<test name="PowerNullToNull">
+			<expression>Power(null as Integer, null as Integer)</expression>
+			<output>null</output>
+		</test>
+		<test name="Power0To0">
+			<expression>Power(0, 0)</expression>
+			<output>1</output>
+		</test>
+		<test name="Power2To2">
+			<expression>Power(2, 2)</expression>
+			<output>4</output>
+		</test>
+		<test name="PowerNeg2To2">
+			<expression>Power(-2, 2)</expression>
+			<output>4</output>
+		</test>
+		<test name="Power2ToNeg2">
+			<expression>Power(2, -2)</expression>
+			<output>0.25</output>
+		</test>
+		<test name="Power2LTo2L">
+			<expression>Power(2L, 2L)</expression>
+			<output>4L</output>
+		</test>
+		<test name="Power2DTo2D">
+			<expression>Power(2.0, 2.0)</expression>
+			<output>4.0</output>
+		</test>
+		<test name="PowerNeg2DTo2D">
+			<expression>Power(-2.0, 2.0)</expression>
+			<output>4.0</output>
+		</test>
+		<test name="Power2DToNeg2D">
+			<expression>Power(2.0, -2.0)</expression>
+			<output>0.25</output>
+		</test>
+		<test name="Power2DTo2">
+			<expression>Power(2.0, 2)</expression>
+			<output>4.0</output>
+		</test>
+		<test name="Power2To2D">
+			<expression>Power(2, 2.0)</expression>
+			<output>4.0</output>
+		</test>
+		<test name="Power2To4">
+			<expression>2^4</expression>
+			<output>16</output>
+		</test>
+		<test name="Power2DTo4D">
+			<expression>2.0^4.0</expression>
+			<output>16.0</output>
+		</test>
+		<test name="Power2DToNeg2DEquivalence">
+			<expression>Power(2, -2) ~ 0.25</expression>
+			<output>true</output>
+		</test>
+	</group>
+	<group name="Round">
+		<test name="RoundNull">
+			<expression>Round(null as Decimal)</expression>
+			<output>null</output>
+		</test>
+		<test name="Round1">
+			<expression>Round(1)</expression>
+			<output>1.0</output>
+		</test>
+		<test name="Round0D5">
+			<expression>Round(0.5)</expression>
+			<output>1.0</output>
+		</test>
+		<test name="Round0D4">
+			<expression>Round(0.4)</expression>
+			<output>0.0</output>
+		</test>
+		<test name="Round3D14159">
+			<expression>Round(3.14159, 2)</expression>
+			<output>3.14</output>
+		</test>
+		<test name="RoundNeg0D5">
+			<expression>Round(-0.5)</expression>
+			<output>0.0</output>
+		</test>
+		<test name="RoundNeg0D4">
+			<expression>Round(-0.4)</expression>
+			<output>0.0</output>
+		</test>
+		<test name="RoundNeg0D6">
+			<expression>Round(-0.6)</expression>
+			<output>-1.0</output>
+		</test>
+		<test name="RoundNeg1D1">
+			<expression>Round(-1.1)</expression>
+			<output>-1.0</output>
+		</test>
+		<test name="RoundNeg1D5">
+			<expression>Round(-1.5)</expression>
+			<output>-1.0</output>
+		</test>
+		<test name="RoundNeg1D6">
+			<expression>Round(-1.6)</expression>
+			<output>-2.0</output>
+		</test>
+	</group>
+	<group name="Subtract">
+		<test name="SubtractNull">
+			<expression>1 - null</expression>
+			<output>null</output>
+		</test>
+		<test name="Subtract1And1">
+			<expression>1 - 1</expression>
+			<output>0</output>
+		</test>
+		<test name="Subtract1LAnd1L">
+			<expression>1L - 1L</expression>
+			<output>0L</output>
+		</test>
+		<test name="Subtract1DAnd2D">
+			<expression>1.0 - 2.0</expression>
+			<output>-1.0</output>
+		</test>
+		<test name="Subtract1CMAnd2CM">
+			<expression>1.0 'cm' - 2.0 'cm'</expression>
+			<output>-1.0'cm'</output>
+		</test>
+		<test name="Subtract2And11D">
+			<expression>2 - 1.1</expression>
+			<output>0.9</output>
+		</test>
+	</group>
+	<group name="Successor">
+		<test name="SuccessorNull">
+			<expression>successor of (null as Integer)</expression>
+			<output>null</output>
+		</test>
+		<test name="SuccessorOf0">
+			<expression>successor of 0</expression>
+			<output>1</output>
+		</test>
+		<test name="SuccessorOf1">
+			<expression>successor of 1</expression>
+			<output>2</output>
+		</test>
+		<test name="SuccessorOf1L">
+			<expression>successor of 1L</expression>
+			<output>2L</output>
+		</test>
+		<test name="SuccessorOf1D">
+			<expression>successor of 1.0</expression>
+			<output>1.00000001</output>
+		</test>
+		<test name="SuccessorOf101D">
+			<expression>successor of 1.01</expression>
+			<output>1.01000001</output>
+		</test>
+		<test name="SuccessorOfJan12000">
+			<expression>successor of DateTime(2000,1,1)</expression>
+			<output>@2000-01-02T</output>
+		</test>
+		<test name="SuccessorOfNoon">
+			<expression>successor of @T12:00:00.000</expression>
+			<output>@T12:00:00.001</output>
+		</test>
+		<test name="SuccessorOverflowDt">
+			<expression invalid="true">successor of DateTime(9999, 12, 31, 23, 59, 59, 999)</expression>
+			<!-- EXPECT: The result of the successor operation exceeds the maximum value allowed for the type -->
+		</test>
+		<test name="SuccessorOverflowT">
+			<expression invalid="true">successor of @T23:59:59.999</expression>
+			<!-- EXPECT: The result of the successor operation exceeds the maximum value allowed for the type -->
+		</test>
+	</group>
+	<group name="Truncate">
+		<test name="TruncateNull">
+			<expression>Truncate(null as Decimal)</expression>
+			<output>null</output>
+		</test>
+		<test name="Truncate0">
+			<expression>Truncate(0)</expression>
+			<output>0</output>
+		</test>
+		<test name="Truncate0D0">
+			<expression>Truncate(0.0)</expression>
+			<output>0</output>
+		</test>
+		<test name="Truncate0D1">
+			<expression>Truncate(0.1)</expression>
+			<output>0</output>
+		</test>
+		<test name="Truncate1">
+			<expression>Truncate(1)</expression>
+			<output>1</output>
+		</test>
+		<test name="Truncate1D0">
+			<expression>Truncate(1.0)</expression>
+			<output>1</output>
+		</test>
+		<test name="Truncate1D1">
+			<expression>Truncate(1.1)</expression>
+			<output>1</output>
+		</test>
+		<test name="Truncate1D9">
+			<expression>Truncate(1.9)</expression>
+			<output>1</output>
+		</test>
+		<test name="TruncateNeg1">
+			<expression>Truncate(-1)</expression>
+			<output>-1</output>
+		</test>
+		<test name="TruncateNeg1D0">
+			<expression>Truncate(-1.0)</expression>
+			<output>-1</output>
+		</test>
+		<test name="TruncateNeg1D1">
+			<expression>Truncate(-1.1)</expression>
+			<output>-1</output>
+		</test>
+		<test name="TruncateNeg1D9">
+			<expression>Truncate(-1.9)</expression>
+			<output>-1</output>
+		</test>
+	</group>
+	<group name="Truncated Divide">
+		<test name="TruncatedDivideNull">
+			<expression>(null as Integer) div (null as Integer)</expression>
+			<output>null</output>
+		</test>
+		<test name="TruncatedDivide2By1">
+			<expression>2 div 1</expression>
+			<output>2</output>
+		</test>
+		<test name="TruncatedDivide10By3">
+			<expression>10 div 3</expression>
+			<output>3</output>
+		</test>
+		<test name="TruncatedDivide10LBy3L">
+			<expression>10L div 3L</expression>
+			<output>3L</output>
+		</test>
+		<test name="TruncatedDivide10d1By3D1">
+			<expression>10.1 div 3.1</expression>
+			<output>3.0</output>
+		</test>
+		<test name="TruncatedDivideNeg2ByNeg1">
+			<expression>-2 div -1</expression>
+			<output>2</output>
+		</test>
+		<test name="TruncatedDivideNeg10ByNeg3">
+			<expression>-10 div -3</expression>
+			<output>3</output>
+		</test>
+		<test name="TruncatedDivideNeg10d1ByNeg3D1">
+			<expression>-10.1 div -3.1</expression>
+			<output>3.0</output>
+		</test>
+		<test name="TruncatedDivideNeg2By1">
+			<expression>-2 div 1</expression>
+			<output>-2</output>
+		</test>
+		<test name="TruncatedDivideNeg10By3">
+			<expression>-10 div 3</expression>
+			<output>-3</output>
+		</test>
+		<test name="TruncatedDivideNeg10d1By3D1">
+			<expression>-10.1 div 3.1</expression>
+			<output>-3.0</output>
+		</test>
+		<test name="TruncatedDivide2ByNeg1">
+			<expression>2 div -1</expression>
+			<output>-2</output>
+		</test>
+		<test name="TruncatedDivide10ByNeg3">
+			<expression>10 div -3</expression>
+			<output>-3</output>
+		</test>
+		<test name="TruncatedDivide10d1ByNeg3D1">
+			<expression>10.1 div -3.1</expression>
+			<output>-3.0</output>
+		</test>
+		<test name="TruncatedDivide10By5D">
+			<expression>10 div 5.0</expression>
+			<output>2.0</output>
+		</test>
+		<test name="TruncatedDivide10d1ByNeg3D1Quantity">
+			<expression>10.1 'cm' div -3.1 'cm'</expression>
+			<output>-3.0 'cm'</output>
+		</test>
+	</group>
+</tests>

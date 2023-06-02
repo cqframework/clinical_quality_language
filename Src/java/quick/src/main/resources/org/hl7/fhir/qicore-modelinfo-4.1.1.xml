@@ -26,7 +26,7 @@
    <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="QICore" name="AddressType" retrievable="false"/>
    <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="QICore" name="AddressUse" retrievable="false"/>
    <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="QICore" name="AdministrativeGender" retrievable="false"/>
-   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="AdverseEvent" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-adverseevent" label="AdverseEvent" retrievable="true" primaryCodePath="type">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="AdverseEvent" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-adverseevent" label="AdverseEvent" retrievable="true" primaryCodePath="event">
       <element name="identifier" elementType="QICore.Identifier" description="Business identifier for the event" definition="Business identifiers assigned to this adverse event by the performer or other systems which remain constant as the resource is updated and propagates from server to server." comment="This is a business identifier, not a resource identifier (see [discussion](http://hl7.org/fhir/R4/resource.html#identifiers)).  It is best practice for the identifier to only appear on a single resource instance, however business practices may occasionally dictate that multiple resource instances with the same identifier can exist - possibly even with different resource types.  For example, multiple Patient and a Person resource instance might share the same social insurance number."/>
       <element name="actuality" elementType="QICore.AdverseEventActuality" target="%value.value" description="actual | potential" definition="Whether the event actually happened, or just had the potential to. Note that this is independent of whether anyone was affected or harmed or how severely." mustSupport="true">
          <binding name="AdverseEventActuality" description="Overall nature of the adverse event, e.g. real or potential." strength="Required"/>
@@ -789,8 +789,7 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="sender" elementType="QICore.Reference" description="Message sender" definition="The entity (e.g. person, organization, clinical information system, or device) which was the source of the communication." mustSupport="true"/>
-      <element name="reasonCode" target="FHIRHelpers.ToConcept(%value)" description="Indication for message" definition="The reason or justification for the communication." comment="Textual reasons can be captured using reasonCode.text." mustSupport="true">
-         <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
+      <element name="reasonCode" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)" description="Indication for message" definition="The reason or justification for the communication." comment="Textual reasons can be captured using reasonCode.text." mustSupport="true">
          <binding name="CommunicationReason" description="Codes for describing reasons for the occurrence of a communication." strength="Example"/>
       </element>
       <element name="reasonReference" description="Why was communication done?" definition="Indicates another resource whose existence justifies this communication.">
@@ -1514,7 +1513,7 @@
       </element>
    </typeInfo>
    <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="QICore" name="DeviceRequestStatus" retrievable="false"/>
-   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="DeviceUseStatement" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-deviceusestatement" label="DeviceUseStatement" retrievable="true" primaryCodePath="device.code">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="DeviceUseStatement" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-deviceusestatement" label="DeviceUseStatement" retrievable="true" primaryCodePath="device.type">
       <element name="identifier" description="External identifier for this record" definition="An external identifier for this statement such as an IRI.">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1841,7 +1840,7 @@
          <binding name="DiagnosisRole" description="The type of diagnosis this condition represents." strength="Preferred"/>
       </element>
       <element name="rank" elementType="System.Integer" target="%value.value" description="Ranking of the diagnosis (for each role type)" definition="Ranking of the diagnosis (for each role type)." mustSupport="true"/>
-      <element name="diagnosisPresentOnAdmission" elementType="QICore.DiagnosisPresentOnAdmissionExtension" target="FHIRHelpers.ToConcept(%parent.diagnosis.extension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-encounter-diagnosisPresentOnAdmission'].value)" description="onAdmission" definition="Indicator of whether the Encounter diagnosis was present at the time of admission." mustSupport="true"/>
+      <element name="diagnosisPresentOnAdmission" elementType="QICore.DiagnosisPresentOnAdmissionExtension" target="FHIRHelpers.ToConcept(%parent.extension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-encounter-diagnosisPresentOnAdmission'].value)" description="onAdmission" definition="Indicator of whether the Encounter diagnosis was present at the time of admission." mustSupport="true"/>
    </typeInfo>
    <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Encounter.Hospitalization" retrievable="false">
       <element name="preAdmissionIdentifier" elementType="QICore.Identifier" description="Pre-admission identifier" definition="Pre-admission identifier."/>
@@ -1909,7 +1908,7 @@
    <typeInfo xsi:type="ClassInfo" baseType="QICore.Extension" namespace="QICore" name="EncounterProcedureExtension" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-encounter-procedure" label="EncounterProcedureExtension" retrievable="false">
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.extension[url='type'].value)" description="type" definition="Whether the procedure was primary or secondary."/>
       <element name="rank" elementType="System.Integer" target="%parent.extension[url='rank'].value.value" description="rank" definition="The ranking of the procedure within the encounter."/>
-      <element name="procedure" elementType="QICore.Reference" target="%parent.extension[url='procedure']" description="procedure" definition="A reference to the procedure that was performed."/>
+      <element name="procedure" elementType="QICore.Reference" target="%parent.extension[url='procedure'].value" description="procedure" definition="A reference to the procedure that was performed."/>
       <element name="url" elementType="System.String" target="%value.value" description="identifies the meaning of the extension" definition="Source of the definition for the extension code - a logical name or a URL." comment="The definition may point directly to a computable or human-readable definition of the extensibility codes, or it may be a logical URI as declared in some other specification. The definition SHALL be a URI for the Structure Definition defining the extension."/>
    </typeInfo>
    <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="QICore" name="EncounterStatus" retrievable="false"/>
@@ -3057,12 +3056,13 @@
          <binding name="MedicationRequestPerformerType" description="Identifies the type of individual that is desired to administer the medication." strength="Example"/>
       </element>
       <element name="recorder" elementType="QICore.Reference" description="Person who entered the request" definition="The person who entered the order on behalf of another individual for example in the case of a verbal or a telephone order." mustSupport="false"/>
-      <element name="reasonCode" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)" description="Reason or indication for ordering or not ordering the medication" definition="The reason or the indication for ordering or not ordering the medication." comment="This could be a diagnosis code. If a full condition record exists or additional detail is needed, use reasonReference." mustSupport="true">
-         <binding description="The reason the medication was not requested" strength="Extensible"/>
-      </element>
-      <element name="reasonReference" description="Condition or observation that supports why the prescription is being written" definition="Condition or observation that supports why the medication was ordered." comment="This is a reference to a condition or observation that is the reason for the medication order.  If only a code exists, use reasonCode.">
-         <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
-      </element>
+       <element name="reasonCode" target="FHIRHelpers.ToConcept(%value)" description="Reason or indication for not ordering the medication" definition="The reason or the indication for ordering or not ordering the medication." comment="This could be a diagnosis code. If a full condition record exists or additional detail is needed, use reasonReference.">
+           <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
+           <binding name="MedicationRequestReason" description="A coded concept indicating why the medication was not ordered." strength="Example"/>
+       </element>
+       <element name="reasonReference" description="Condition or observation that supports why the prescription is being written" definition="Condition or observation that supports why the medication was ordered." comment="This is a reference to a condition or observation that is the reason for the medication order.  If only a code exists, use reasonCode.">
+           <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
+       </element>
       <element name="instantiatesCanonical" target="%value.value" description="Instantiates FHIR protocol or definition" definition="The URL pointing to a protocol, guideline, orderset, or other definition that is adhered to in whole or in part by this MedicationRequest.">
          <elementTypeSpecifier elementType="System.String" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4373,7 +4373,7 @@
       <element name="dimensions" elementType="System.Integer" target="%value.value" description="Number of sample points at each time point" definition="The number of sample points at each time point. If this value is greater than one, then the dimensions will be interlaced - all the sample points for a point in time will be recorded at once." comment="If there is more than one dimension, the code for the type of data will define the meaning of the dimensions (typically ECG data)."/>
       <element name="data" elementType="System.String" target="%value.value" description="Decimal values with spaces, or &quot;E&quot; | &quot;U&quot; | &quot;L&quot;" definition="A series of data points which are decimal values separated by a single space (character u20). The special values &quot;E&quot; (error), &quot;L&quot; (below detection limit) and &quot;U&quot; (above detection limit) can also be used in place of a decimal value." comment="Data may be missing if it is omitted for summarization purposes. In general, data is required for any actual use of a SampledData."/>
    </typeInfo>
-   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="ServiceNotRequested" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-servicenotrequested" label="ServiceNotRequested" target="ServiceRequest" retrievable="true" primaryCodePath="type">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="ServiceNotRequested" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-servicenotrequested" label="ServiceNotRequested" target="ServiceRequest" retrievable="true" primaryCodePath="code">
       <element name="approachBodyStructure" target="%parent.extension[url='http://hl7.org/fhir/StructureDefinition/procedure-approachBodyStructure']" description="The access point or points used for this procedure" definition="The approach body site used for this procedure.  Multiple locations are allowed." mustSupport="false">
          <elementTypeSpecifier elementType="QICore.approachBodyStructure" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4491,7 +4491,7 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="ServiceRequest" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-servicerequest" label="ServiceRequest" retrievable="true" primaryCodePath="type">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="ServiceRequest" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-servicerequest" label="ServiceRequest" retrievable="true" primaryCodePath="code">
       <element name="statusReason" elementType="QICore.statusReason" target="FHIRHelpers.ToConcept(%parent.extension[url='http://hl7.org/fhir/StructureDefinition/request-statusReason'].value)" description="Reason for current status" definition="Captures the reason for the current state of the resource." comment="This is generally only used for &quot;exception&quot; statuses such as &quot;suspended&quot; or &quot;cancelled&quot;.  The reason for performing the request at all is captured in reasonCode, not here.  (Distinct reason codes for different statuses can be enforced using invariants if they are universal bindings)." mustSupport="false"/>
       <element name="approachBodyStructure" target="%parent.extension[url='http://hl7.org/fhir/StructureDefinition/procedure-approachBodyStructure']" description="The access point or points used for this procedure" definition="The approach body site used for this procedure.  Multiple locations are allowed." mustSupport="false">
          <elementTypeSpecifier elementType="QICore.approachBodyStructure" xsi:type="ListTypeSpecifier"/>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://hl7.org/fhirpath/tests" xsi:schemaLocation="http://hl7.org/fhirpath/tests ../../testSchema/testSchema.xsd"
+	name="CqlErrorsAndMessagingOperatorsTest" reference="https://cql.hl7.org/09-b-cqlreference.html#errors-and-messaging">
+	<group>
+		<test name="TestMessageInfo">
+			<expression>Message(1, true, '100', 'Message', 'Test Message')</expression>
+			<output>1</output>
+		</test>
+		<test name="TestMessageWarn">
+			<expression>Message(2, true, '200', 'Warning', 'You have been warned!')</expression>
+			<output>2</output>
+		</test>
+		<test name="TestMessageTrace">
+			<expression>Message({3, 4, 5}, true, '300', 'Trace', 'This is a trace')</expression>
+			<output>{3, 4, 5}</output>
+		</test>
+		<test name="TestMessageError">
+			<expression invalid="true">Message(3 + 1, true, '400', 'Error', 'This is an error!')</expression>
+			<!-- EXPECT: 400: This is an error! -->
+		</test>
+	</group>
+</tests>

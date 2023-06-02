@@ -1,253 +1,143 @@
 package org.cqframework.fhir.npm;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
-import org.hl7.fhir.convertors.advisors.impl.BaseAdvisor_40_50;
-import org.hl7.fhir.convertors.conv40_50.VersionConvertor_40_50;
-import org.hl7.fhir.exceptions.FHIRException;
-import org.hl7.fhir.r4.formats.FormatUtilities;
+import ca.uhn.fhir.model.primitive.IdDt;
 import org.hl7.fhir.r5.context.IWorkerContext;
-import org.hl7.fhir.r5.model.Constants;
 import org.hl7.fhir.r5.model.ImplementationGuide;
-import org.hl7.fhir.utilities.Utilities;
 import org.hl7.fhir.utilities.VersionUtilities;
-import org.hl7.fhir.utilities.json.JsonTrackingParser;
 import org.hl7.fhir.utilities.npm.FilesystemPackageCacheManager;
 import org.hl7.fhir.utilities.npm.NpmPackage;
 import org.hl7.fhir.utilities.npm.ToolsVersion;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class NpmPackageManager implements IWorkerContext.ILoggingService {
-    private FilesystemPackageCacheManager pcm;
-    private List<NpmPackage> npmList = new ArrayList<>();
-    public List<NpmPackage> getNpmList() {
-        return npmList;
-    }
+   private static final Logger logger = LoggerFactory.getLogger(NpmPackageManager.class);
+   private final ImplementationGuide sourceIg;
+   private final FilesystemPackageCacheManager fspcm;
+   private final List<NpmPackage> npmList;
 
-    private String version; // FHIR version as a string, e.g. 4.0.1
-    public String getVersion() {
-        return version;
-    }
+   public NpmPackageManager(ImplementationGuide sourceIg) {
+      this(sourceIg, null, null);
+   }
 
-    private ImplementationGuide sourceIg;
-    public ImplementationGuide getSourceIg() {
-        return sourceIg;
-    }
+   public NpmPackageManager(ImplementationGuide sourceIg, FilesystemPackageCacheManager fspcm) {
+      this(sourceIg, fspcm, null);
+   }
 
-    /*
-    @param igPath Fully qualified path to the IG resource
-     */
-    public static NpmPackageManager fromPath(String igPath, String version) throws IOException {
-        if (igPath == null || igPath.equals("")) {
-            throw new IllegalArgumentException("igPath is required");
-        }
-        VersionConvertor_40_50 versionConvertor_40_50 = new VersionConvertor_40_50(new BaseAdvisor_40_50());
-        return new NpmPackageManager((ImplementationGuide) versionConvertor_40_50.convertResource(FormatUtilities.loadFile(igPath)), version);
-    }
+   public NpmPackageManager(ImplementationGuide sourceIg, FilesystemPackageCacheManager fspcm, List<NpmPackage> npmList) {
+      this.sourceIg = sourceIg;
 
-    public static NpmPackageManager fromStream(InputStream is, String version) throws IOException {
-        VersionConvertor_40_50 versionConvertor_40_50 = new VersionConvertor_40_50(new BaseAdvisor_40_50());
-        return new NpmPackageManager((ImplementationGuide) versionConvertor_40_50.convertResource(FormatUtilities.loadFile(is)), version);
-    }
-
-    public NpmPackageManager(ImplementationGuide sourceIg, String version) throws IOException {
-        if (version == null || version.equals("")) {
-            throw new IllegalArgumentException("version is required");
-        }
-
-        this.version = version;
-
-        if (sourceIg == null) {
-            throw new IllegalArgumentException("sourceIg is required");
-        }
-
-        this.sourceIg = sourceIg;
-
-        try {
+      if (fspcm == null) {
+         try {
             // userMode indicates whether the packageCache is within the working directory or in the user home
-            pcm = new FilesystemPackageCacheManager(true, ToolsVersion.TOOLS_VERSION);
-        }
-        catch(IOException e) {
-            String message = "error creating the FilesystemPackageCacheManager";
-            logMessage(message);
+            this.fspcm = new FilesystemPackageCacheManager(true);
+         } catch (IOException e) {
+            String message = "Error creating the FilesystemPackageCacheManager: " + e.getMessage();
+            logErrorMessage(message);
             throw new NpmPackageManagerException(message, e);
-        }
+         }
+      } else {
+         this.fspcm = fspcm;
+      }
 
-        loadCorePackage();
+      this.npmList = npmList == null ? new ArrayList<>() : npmList;
 
-        int i = 0;
-        for (ImplementationGuide.ImplementationGuideDependsOnComponent dep : sourceIg.getDependsOn()) {
-            loadIg(dep, i);
-            i++;
-        }
-    }
+      try {
+         loadDependencies();
+      } catch (Exception e) {
+         logErrorMessage(e.getMessage());
+         throw new NpmPackageManagerException(e.getMessage());
+      }
+   }
 
-    private void loadCorePackage() {
-        NpmPackage pi = null;
+   public void loadDependencies() throws IOException {
+      for (var fhirVersion : sourceIg.getFhirVersion()) {
+         String coreFhirVersion = VersionUtilities.packageForVersion(fhirVersion.getCode());
+         logMessage("Loading core FHIR version " + coreFhirVersion);
+         npmList.add(fspcm.loadPackage(coreFhirVersion, fhirVersion.getCode()));
+      }
+      for (var dependency : sourceIg.getDependsOn()) {
+         NpmPackage dependencyPackage = null;
+         if (dependency.hasPackageId() && !hasPackage(dependency.getPackageId(), false)) {
+            logMessage("Loading package: " + dependency.getPackageId());
+            dependencyPackage = fspcm.loadPackage(dependency.getPackageId(), dependency.hasVersion() ? dependency.getVersion() : "current");
+            npmList.add(dependencyPackage);
+         }
+         else if (dependency.hasUri() && !hasPackage(dependency.getUri(), true)) {
+            IdDt id = new IdDt(dependency.getUri());
+            logMessage("Loading package: " + id.getIdPart());
+            dependencyPackage = fspcm.loadPackage(id.getIdPart(), dependency.hasVersion() ? dependency.getVersion() : "current");
+            npmList.add(dependencyPackage);
+         }
+         else {
+            String dependencyIdentifier = dependency.hasId() ? dependency.getId() : "";
+            logWarningMessage("Dependency " +dependencyIdentifier+ "missing packageId and uri, so can't be referred to in markdown in the IG");
+         }
 
-        String v = version.equals(Constants.VERSION) ? "current" : version;
+         if (dependencyPackage != null) {
+            loadDependencies(dependencyPackage);
+         }
+      }
+   }
 
-        logMessage("Core Package "+ VersionUtilities.packageForVersion(v)+"#"+v);
-        try {
-            pi = pcm.loadPackage(VersionUtilities.packageForVersion(v), v);       
-        }
-        catch(Exception e) {
-            try {
-                // Appears to be race condition in FHIR core where they are
-                // loading a custom cert provider.
-                pi = pcm.loadPackage(VersionUtilities.packageForVersion(v), v);   
-            }
-            catch (Exception ex) {
-                throw new NpmPackageManagerException("Error loading core package", e);
-            }
-        }
+   public void loadDependencies(NpmPackage parentPackage) throws IOException {
+      for (String dependency : parentPackage.dependencies()) {
+         if (hasPackage(dependency, false)) continue;
+         logMessage("Loading package: " + dependency);
+         NpmPackage childPackage = fspcm.loadPackage(dependency);
+         npmList.add(childPackage);
+         if (!childPackage.dependencies().isEmpty()) {
+            loadDependencies(childPackage);
+         }
+      }
+   }
 
-        if (pi == null) {
-            throw new NpmPackageManagerException("Could not load core package");
-        }
-        if (v.equals("current")) {
-            throw new IllegalArgumentException("Current core package not supported");
-        }
-        npmList.add(pi);
-    }
+   public boolean hasPackage(String packageId, boolean isUrl) {
+      for (NpmPackage npmPackage : npmList) {
+         if (!isUrl) {
+            return npmPackage.getNpm().has("name")
+                    && packageId.startsWith(npmPackage.getNpm().get("name").asString());
+         }
+         else {
+            return npmPackage.getNpm().has("canonical")
+                    && packageId.equals(npmPackage.getNpm().get("canonical").asString());
+         }
+      }
+      return false;
+   }
 
-    private void loadIg(ImplementationGuide.ImplementationGuideDependsOnComponent dep, int index) throws IOException {
-        String name = dep.getId();
-        if (!dep.hasId()) {
-            logMessage("Dependency '"+idForDep(dep)+"' has no id, so can't be referred to in markdown in the IG");
-            name = "u"+Utilities.makeUuidLC().replace("-", "");
-        }
-        if (!isValidIGToken(name))
-            throw new IllegalArgumentException("IG Name must be a valid token ("+name+")");
-        String canonical = determineCanonical(dep.getUri(), "ImplementationGuide.dependency["+index+"].url");
-        String packageId = dep.getPackageId();
-        if (Utilities.noString(packageId))
-            packageId = pcm.getPackageId(canonical);
-        if (Utilities.noString(canonical) && !Utilities.noString(packageId))
-            canonical = pcm.getPackageUrl(packageId);
-        if (Utilities.noString(canonical))
-            throw new IllegalArgumentException("You must specify a canonical URL for the IG "+name);
-        String igver = dep.getVersion();
-        if (Utilities.noString(igver))
-            throw new IllegalArgumentException("You must specify a version for the IG "+packageId+" ("+canonical+")");
+   public List<NpmPackage> getNpmList() {
+      return npmList;
+   }
 
-        NpmPackage pi = packageId == null ? null : pcm.loadPackageFromCacheOnly(packageId, igver);
-        if (pi != null)
-            npmList.add(pi);
-        if (pi == null) {
-            pi = resolveDependency(canonical, packageId, igver);
-            if (pi == null) {
-                if (Utilities.noString(packageId))
-                    throw new IllegalArgumentException("Package Id for guide at "+canonical+" is unknown (contact FHIR Product Director");
-                else
-                    throw new IllegalArgumentException("Unknown Package "+packageId+"#"+igver);
-            }
-            npmList.add(pi);
-        }
-        logDebugMessage(IWorkerContext.ILoggingService.LogCategory.INIT, "Load "+name+" ("+canonical+") from "+packageId+"#"+igver);
+   public ImplementationGuide getSourceIg() {
+      return sourceIg;
+   }
 
-        if (dep.hasUri() && !dep.getUri().contains("/ImplementationGuide/")) {
-            String cu = getIgUri(pi);
-            if (cu != null) {
-                logMessage("The correct canonical URL for this dependency is "+cu);
-            }
-        }
-    }
+   @Override
+   public void logMessage(String message) {
+      logger.info(message);
+   }
 
-    private String determineCanonical(String url, String path) throws FHIRException {
-        if (url == null)
-            return url;
-        if (url.contains("/ImplementationGuide/"))
-            return url.substring(0, url.indexOf("/ImplementationGuide/"));
-        if (path != null) {
-            logMessage("The canonical URL for an Implementation Guide must point directly to the implementation guide resource, not to the Implementation Guide as a whole");
-        }
-        return url;
-    }
+   @Override
+   public void logDebugMessage(LogCategory category, String message) {
+      logger.debug(message);
+   }
 
-    private boolean isValidIGToken(String tail) {
-        if (tail == null || tail.length() == 0)
-            return false;
-        boolean result = Utilities.isAlphabetic(tail.charAt(0));
-        for (int i = 1; i < tail.length(); i++) {
-            result = result && (Utilities.isAlphabetic(tail.charAt(i)) || Utilities.isDigit(tail.charAt(i)) || (tail.charAt(i) == '_'));
-        }
-        return result;
+   public void logWarningMessage(String message) {
+      logger.warn(message);
+   }
 
-    }
+   public void logErrorMessage(String message) {
+      logger.error(message);
+   }
 
-    private String idForDep(ImplementationGuide.ImplementationGuideDependsOnComponent dep) {
-        if (dep.hasPackageId()) {
-            return dep.getPackageId();
-        }
-        if (dep.hasUri()) {
-            return dep.getUri();
-        }
-        return "{no id}";
-    }
-
-    private String getIgUri(NpmPackage pi) throws IOException {
-        for (String rs : pi.listResources("ImplementationGuide")) {
-            JsonObject json = JsonTrackingParser.parseJson(pi.loadResource(rs));
-            if (json.has("packageId") && json.get("packageId").getAsString().equals(pi.name()) && json.has("url")) {
-                return json.get("url").getAsString();
-            }
-        }
-        return null;
-    }
-
-    private NpmPackage resolveDependency(String canonical, String packageId, String igver) throws IOException {
-        if (packageId != null)
-            return pcm.loadPackage(packageId, igver);
-
-        JsonObject pl;
-        logDebugMessage(IWorkerContext.ILoggingService.LogCategory.INIT, "Fetch Package history from "+Utilities.pathURL(canonical, "package-list.json"));
-        try {
-            pl = fetchJson(Utilities.pathURL(canonical, "package-list.json"));
-        } catch (Exception e) {
-            return null;
-        }
-        if (!canonical.equals(pl.get("canonical").getAsString()))
-            throw new IllegalArgumentException("Canonical mismatch fetching package list for "+canonical+"#"+igver+", package-list.json says "+pl.get("canonical"));
-        for (JsonElement e : pl.getAsJsonArray("list")) {
-            JsonObject o = (JsonObject) e;
-            if (igver.equals(o.get("version").getAsString())) {
-                InputStream src = fetchFromSource(pl.get("package-id").getAsString()+"-"+igver, Utilities.pathURL(o.get("path").getAsString(), "package.tgz"));
-                return pcm.addPackageToCache(pl.get("package-id").getAsString(), igver, src, Utilities.pathURL(o.get("path").getAsString(), "package.tgz"));
-            }
-        }
-        return null;
-    }
-
-    private JsonObject fetchJson(String source) throws IOException {
-        URL url = new URL(source+"?nocache=" + System.currentTimeMillis());
-        HttpURLConnection c = (HttpURLConnection) url.openConnection();
-        c.setInstanceFollowRedirects(true);
-        return JsonTrackingParser.parseJson(c.getInputStream());
-    }
-
-    private InputStream fetchFromSource(String id, String source) throws IOException {
-        logDebugMessage(IWorkerContext.ILoggingService.LogCategory.INIT, "Fetch "+id+" package from "+source);
-        URL url = new URL(source+"?nocache=" + System.currentTimeMillis());
-        URLConnection c = url.openConnection();
-        return c.getInputStream();
-    }
-
-    @Override
-    public void logMessage(String msg) {
-        System.out.println(msg);
-    }
-
-    @Override
-    public void logDebugMessage(IWorkerContext.ILoggingService.LogCategory category, String msg) {
-        logMessage(msg);
-    }
+   @Override
+   public boolean isDebugLogging() {
+      return logger.isDebugEnabled();
+   }
 }

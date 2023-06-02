@@ -1,0 +1,927 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:qdm43="urn:healthit-gov:qdm:v4_3" xmlns:qdm53="urn:healthit-gov:qdm:v5_3" xmlns:a="urn:hl7-org:cql-annotations:r1">
+   <annotation translatorOptions="EnableAnnotations,EnableLocators,DisableListDemotion,DisableListPromotion,DisableMethodInvocation" xsi:type="a:CqlToElmInfo"/>
+   <annotation xsi:type="a:Annotation">
+      <a:s r="71">
+         <a:s>library OncologyPainIntensityQuantified version '9.2.000'</a:s>
+      </a:s>
+   </annotation>
+   <identifier id="OncologyPainIntensityQuantified" version="9.2.000"/>
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
+      <def localId="1" locator="3:1-3:23" localIdentifier="QDM" uri="urn:healthit-gov:qdm:v5_5" version="5.5">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="1">
+               <a:s>using </a:s>
+               <a:s>
+                  <a:s>QDM</a:s>
+               </a:s>
+               <a:s> version '5.5'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+   </usings>
+   <parameters>
+      <def localId="13" locator="15:1-15:49" name="Measurement Period" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="13">
+               <a:s>parameter &quot;Measurement Period&quot; </a:s>
+               <a:s r="12">
+                  <a:s>Interval&lt;</a:s>
+                  <a:s r="11">
+                     <a:s>DateTime</a:s>
+                  </a:s>
+                  <a:s>></a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <parameterTypeSpecifier localId="12" locator="15:32-15:49" xsi:type="IntervalTypeSpecifier">
+            <pointType localId="11" locator="15:41-15:48" name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </parameterTypeSpecifier>
+      </def>
+   </parameters>
+   <valueSets>
+      <def localId="2" locator="5:1-5:59" name="Cancer" id="urn:oid:2.16.840.1.113883.3.526.3.1010" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="2">
+               <a:s>valueset &quot;Cancer&quot;: 'urn:oid:2.16.840.1.113883.3.526.3.1010'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="3" locator="6:1-6:80" name="Chemotherapy Administration" id="urn:oid:2.16.840.1.113883.3.526.3.1027" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="3">
+               <a:s>valueset &quot;Chemotherapy Administration&quot;: 'urn:oid:2.16.840.1.113883.3.526.3.1027'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="4" locator="7:1-7:58" name="Ethnicity" id="urn:oid:2.16.840.1.114222.4.11.837" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="4">
+               <a:s>valueset &quot;Ethnicity&quot;: 'urn:oid:2.16.840.1.114222.4.11.837'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="5" locator="8:1-8:75" name="Office Visit" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1001" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="5">
+               <a:s>valueset &quot;Office Visit&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1001'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="6" locator="9:1-9:68" name="ONC Administrative Sex" id="urn:oid:2.16.840.1.113762.1.4.1" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="6">
+               <a:s>valueset &quot;ONC Administrative Sex&quot;: 'urn:oid:2.16.840.1.113762.1.4.1'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="7" locator="10:1-10:55" name="Payer" id="urn:oid:2.16.840.1.114222.4.11.3591" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="7">
+               <a:s>valueset &quot;Payer&quot;: 'urn:oid:2.16.840.1.114222.4.11.3591'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="8" locator="11:1-11:53" name="Race" id="urn:oid:2.16.840.1.114222.4.11.836" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="8">
+               <a:s>valueset &quot;Race&quot;: 'urn:oid:2.16.840.1.114222.4.11.836'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="9" locator="12:1-12:83" name="Radiation Treatment Management" id="urn:oid:2.16.840.1.113883.3.526.3.1026" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="9">
+               <a:s>valueset &quot;Radiation Treatment Management&quot;: 'urn:oid:2.16.840.1.113883.3.526.3.1026'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="10" locator="13:1-13:86" name="Standardized Pain Assessment Tool" id="urn:oid:2.16.840.1.113883.3.526.3.1028" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="10">
+               <a:s>valueset &quot;Standardized Pain Assessment Tool&quot;: 'urn:oid:2.16.840.1.113883.3.526.3.1028'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+   </valueSets>
+   <contexts>
+      <def locator="17:1-17:15" name="Patient"/>
+   </contexts>
+   <statements>
+      <def locator="17:1-17:15" name="Patient" context="Patient">
+         <expression xsi:type="SingletonFrom">
+            <operand locator="17:1-17:15" xmlns:ns0="urn:healthit-gov:qdm:v5_5" dataType="ns0:Patient" templateId="Patient" xsi:type="Retrieve"/>
+         </expression>
+      </def>
+      <def localId="31" locator="61:1-64:43" name="Chemotherapy Within 31 Days Prior and After Measurement Period" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="31">
+               <a:s>define &quot;Chemotherapy Within 31 Days Prior and After Measurement Period&quot;:
+  </a:s>
+               <a:s r="30">
+                  <a:s>
+                     <a:s r="17">
+                        <a:s r="16">
+                           <a:s r="16">
+                              <a:s>[&quot;Procedure, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Chemotherapy Administration&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> ChemoAdministration</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="29">
+                     <a:s>where </a:s>
+                     <a:s r="29">
+                        <a:s r="19">
+                           <a:s r="18">
+                              <a:s>ChemoAdministration</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="19">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="29"> during </a:s>
+                        <a:s r="28">
+                           <a:s>Interval[</a:s>
+                           <a:s r="23">
+                              <a:s r="21">
+                                 <a:s>start of </a:s>
+                                 <a:s r="20">
+                                    <a:s>&quot;Measurement Period&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> - </a:s>
+                              <a:s r="22">
+                                 <a:s>31 days</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>, 
+    </a:s>
+                           <a:s r="27">
+                              <a:s r="25">
+                                 <a:s>end of </a:s>
+                                 <a:s r="24">
+                                    <a:s>&quot;Measurement Period&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> + </a:s>
+                              <a:s r="26">
+                                 <a:s>31 days</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> )</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="30" locator="62:3-64:43" xsi:type="Query">
+            <source localId="17" locator="62:3-62:77" alias="ChemoAdministration">
+               <expression localId="16" locator="62:3-62:57" xmlns:ns1="urn:healthit-gov:qdm:v5_5" dataType="ns1:PositiveProcedurePerformed" templateId="PositiveProcedurePerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                  <codes locator="62:28-62:56" name="Chemotherapy Administration" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where localId="29" locator="63:5-64:43" xsi:type="IncludedIn">
+               <operand localId="19" locator="63:11-63:44" path="relevantPeriod" scope="ChemoAdministration" xsi:type="Property"/>
+               <operand localId="28" locator="63:53-64:43" lowClosed="true" highClosed="false" xsi:type="Interval">
+                  <low localId="23" locator="63:62-63:100" xsi:type="Subtract">
+                     <operand localId="21" locator="63:62-63:90" xsi:type="Start">
+                        <operand localId="20" locator="63:71-63:90" name="Measurement Period" xsi:type="ParameterRef"/>
+                     </operand>
+                     <operand localId="22" locator="63:94-63:100" value="31" unit="days" xsi:type="Quantity"/>
+                  </low>
+                  <high localId="27" locator="64:5-64:41" xsi:type="Add">
+                     <operand localId="25" locator="64:5-64:31" xsi:type="End">
+                        <operand localId="24" locator="64:12-64:31" name="Measurement Period" xsi:type="ParameterRef"/>
+                     </operand>
+                     <operand localId="26" locator="64:35-64:41" value="31" unit="days" xsi:type="Quantity"/>
+                  </high>
+               </operand>
+            </where>
+         </expression>
+      </def>
+      <def localId="71" locator="66:1-79:30" name="Face to Face Encounter with Ongoing Chemotherapy" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="71">
+               <a:s>define &quot;Face to Face Encounter with Ongoing Chemotherapy&quot;:
+  </a:s>
+               <a:s r="70">
+                  <a:s>
+                     <a:s>from
+    </a:s>
+                     <a:s r="15">
+                        <a:s r="14">
+                           <a:s r="14">
+                              <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Office Visit&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> FaceToFaceEncounter</a:s>
+                     </a:s>
+                     <a:s>,
+    </a:s>
+                     <a:s r="33">
+                        <a:s r="32">
+                           <a:s>
+                              <a:s>&quot;Chemotherapy Within 31 Days Prior and After Measurement Period&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> ChemoBeforeEncounter</a:s>
+                     </a:s>
+                     <a:s>,
+    </a:s>
+                     <a:s r="35">
+                        <a:s r="34">
+                           <a:s>
+                              <a:s>&quot;Chemotherapy Within 31 Days Prior and After Measurement Period&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> ChemoAfterEncounter</a:s>
+                     </a:s>
+                     <a:s>,
+    </a:s>
+                     <a:s r="37">
+                        <a:s r="36">
+                           <a:s r="36">
+                              <a:s>[&quot;Diagnosis&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Cancer&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> Cancer</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="67">
+                     <a:s>where </a:s>
+                     <a:s r="67">
+                        <a:s r="62">
+                           <a:s r="56">
+                              <a:s r="52">
+                                 <a:s r="44">
+                                    <a:s r="39">
+                                       <a:s r="38">
+                                          <a:s>ChemoBeforeEncounter</a:s>
+                                       </a:s>
+                                       <a:s>.</a:s>
+                                       <a:s r="39">
+                                          <a:s>relevantPeriod</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> </a:s>
+                                    <a:s r="44">
+                                       <a:s>starts </a:s>
+                                       <a:s r="43">
+                                          <a:s>30 days</a:s>
+                                       </a:s>
+                                       <a:s> or less on or before day of</a:s>
+                                    </a:s>
+                                    <a:s> 
+    </a:s>
+                                    <a:s r="42">
+                                       <a:s>end of </a:s>
+                                       <a:s r="41">
+                                          <a:s r="40">
+                                             <a:s>FaceToFaceEncounter</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="41">
+                                             <a:s>relevantPeriod</a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>
+      and </a:s>
+                                 <a:s r="51">
+                                    <a:s r="46">
+                                       <a:s r="45">
+                                          <a:s>ChemoAfterEncounter</a:s>
+                                       </a:s>
+                                       <a:s>.</a:s>
+                                       <a:s r="46">
+                                          <a:s>relevantPeriod</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> </a:s>
+                                    <a:s r="51">
+                                       <a:s>starts </a:s>
+                                       <a:s r="50">
+                                          <a:s>30 days</a:s>
+                                       </a:s>
+                                       <a:s> or less on or after day of</a:s>
+                                    </a:s>
+                                    <a:s> 
+      </a:s>
+                                    <a:s r="49">
+                                       <a:s>end of </a:s>
+                                       <a:s r="48">
+                                          <a:s r="47">
+                                             <a:s>FaceToFaceEncounter</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="48">
+                                             <a:s>relevantPeriod</a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>
+      and </a:s>
+                              <a:s r="55">
+                                 <a:s r="53">
+                                    <a:s>ChemoBeforeEncounter</a:s>
+                                 </a:s>
+                                 <a:s> !~ </a:s>
+                                 <a:s r="54">
+                                    <a:s>ChemoAfterEncounter</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>
+      and </a:s>
+                           <a:s r="61">
+                              <a:s r="58">
+                                 <a:s r="57">
+                                    <a:s>Cancer</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="58">
+                                    <a:s>prevalencePeriod</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s r="61"> overlaps </a:s>
+                              <a:s r="60">
+                                 <a:s r="59">
+                                    <a:s>FaceToFaceEncounter</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="60">
+                                    <a:s>relevantPeriod</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+      and </a:s>
+                        <a:s r="66">
+                           <a:s r="64">
+                              <a:s r="63">
+                                 <a:s>FaceToFaceEncounter</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="64">
+                                 <a:s>relevantPeriod</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s r="66"> during </a:s>
+                           <a:s r="65">
+                              <a:s>&quot;Measurement Period&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="69">
+                     <a:s>return </a:s>
+                     <a:s r="68">
+                        <a:s>FaceToFaceEncounter</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="70" locator="67:3-79:30" xsi:type="Query">
+            <source localId="15" locator="68:5-68:64" alias="FaceToFaceEncounter">
+               <expression localId="14" locator="68:5-68:44" xmlns:ns2="urn:healthit-gov:qdm:v5_5" dataType="ns2:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                  <codes locator="68:30-68:43" name="Office Visit" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <source localId="33" locator="69:5-69:89" alias="ChemoBeforeEncounter">
+               <expression localId="32" locator="69:5-69:68" name="Chemotherapy Within 31 Days Prior and After Measurement Period" xsi:type="ExpressionRef"/>
+            </source>
+            <source localId="35" locator="70:5-70:88" alias="ChemoAfterEncounter">
+               <expression localId="34" locator="70:5-70:68" name="Chemotherapy Within 31 Days Prior and After Measurement Period" xsi:type="ExpressionRef"/>
+            </source>
+            <source localId="37" locator="71:5-71:34" alias="Cancer">
+               <expression localId="36" locator="71:5-71:27" xmlns:ns3="urn:healthit-gov:qdm:v5_5" dataType="ns3:Diagnosis" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                  <codes locator="71:19-71:26" name="Cancer" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where localId="67" locator="72:5-78:72" xsi:type="And">
+               <operand localId="62" locator="72:11-77:77" xsi:type="And">
+                  <operand localId="56" locator="72:11-76:53" xsi:type="And">
+                     <operand localId="52" locator="72:11-75:47" xsi:type="And">
+                        <operand localId="44" locator="72:11-73:45" xsi:type="And">
+                           <operand locator="72:54-72:68" precision="Day" xsi:type="In">
+                              <operand locator="72:47-72:52" xsi:type="Start">
+                                 <operand localId="39" locator="72:11-72:45" path="relevantPeriod" scope="ChemoBeforeEncounter" xsi:type="Property"/>
+                              </operand>
+                              <operand locator="72:54-72:68" lowClosed="true" highClosed="true" xsi:type="Interval">
+                                 <low locator="73:5-73:45" xsi:type="Subtract">
+                                    <operand localId="42" locator="73:5-73:45" xsi:type="End">
+                                       <operand localId="41" locator="73:12-73:45" path="relevantPeriod" scope="FaceToFaceEncounter" xsi:type="Property"/>
+                                    </operand>
+                                    <operand localId="43" locator="72:54-72:60" value="30" unit="days" xsi:type="Quantity"/>
+                                 </low>
+                                 <high localId="42" locator="73:5-73:45" xsi:type="End">
+                                    <operand localId="41" locator="73:12-73:45" path="relevantPeriod" scope="FaceToFaceEncounter" xsi:type="Property"/>
+                                 </high>
+                              </operand>
+                           </operand>
+                           <operand locator="72:54-72:68" xsi:type="Not">
+                              <operand locator="72:54-72:68" xsi:type="IsNull">
+                                 <operand localId="42" locator="73:5-73:45" xsi:type="End">
+                                    <operand localId="41" locator="73:12-73:45" path="relevantPeriod" scope="FaceToFaceEncounter" xsi:type="Property"/>
+                                 </operand>
+                              </operand>
+                           </operand>
+                        </operand>
+                        <operand localId="51" locator="74:11-75:47" xsi:type="And">
+                           <operand locator="74:53-74:67" precision="Day" xsi:type="In">
+                              <operand locator="74:46-74:51" xsi:type="Start">
+                                 <operand localId="46" locator="74:11-74:44" path="relevantPeriod" scope="ChemoAfterEncounter" xsi:type="Property"/>
+                              </operand>
+                              <operand locator="74:53-74:67" lowClosed="true" highClosed="true" xsi:type="Interval">
+                                 <low localId="49" locator="75:7-75:47" xsi:type="End">
+                                    <operand localId="48" locator="75:14-75:47" path="relevantPeriod" scope="FaceToFaceEncounter" xsi:type="Property"/>
+                                 </low>
+                                 <high locator="75:7-75:47" xsi:type="Add">
+                                    <operand localId="49" locator="75:7-75:47" xsi:type="End">
+                                       <operand localId="48" locator="75:14-75:47" path="relevantPeriod" scope="FaceToFaceEncounter" xsi:type="Property"/>
+                                    </operand>
+                                    <operand localId="50" locator="74:53-74:59" value="30" unit="days" xsi:type="Quantity"/>
+                                 </high>
+                              </operand>
+                           </operand>
+                           <operand locator="74:53-74:67" xsi:type="Not">
+                              <operand locator="74:53-74:67" xsi:type="IsNull">
+                                 <operand localId="49" locator="75:7-75:47" xsi:type="End">
+                                    <operand localId="48" locator="75:14-75:47" path="relevantPeriod" scope="FaceToFaceEncounter" xsi:type="Property"/>
+                                 </operand>
+                              </operand>
+                           </operand>
+                        </operand>
+                     </operand>
+                     <operand localId="55" locator="76:11-76:53" xsi:type="Not">
+                        <operand locator="76:11-76:53" xsi:type="Equivalent">
+                           <operand localId="53" locator="76:11-76:30" name="ChemoBeforeEncounter" xsi:type="AliasRef"/>
+                           <operand localId="54" locator="76:35-76:53" name="ChemoAfterEncounter" xsi:type="AliasRef"/>
+                        </operand>
+                     </operand>
+                  </operand>
+                  <operand localId="61" locator="77:11-77:77" xsi:type="Overlaps">
+                     <operand localId="58" locator="77:11-77:33" path="prevalencePeriod" scope="Cancer" xsi:type="Property"/>
+                     <operand localId="60" locator="77:44-77:77" path="relevantPeriod" scope="FaceToFaceEncounter" xsi:type="Property"/>
+                  </operand>
+               </operand>
+               <operand localId="66" locator="78:11-78:72" xsi:type="IncludedIn">
+                  <operand localId="64" locator="78:11-78:44" path="relevantPeriod" scope="FaceToFaceEncounter" xsi:type="Property"/>
+                  <operand localId="65" locator="78:53-78:72" name="Measurement Period" xsi:type="ParameterRef"/>
+               </operand>
+            </where>
+            <return localId="69" locator="79:5-79:30">
+               <expression localId="68" locator="79:12-79:30" name="FaceToFaceEncounter" xsi:type="AliasRef"/>
+            </return>
+         </expression>
+      </def>
+      <def localId="73" locator="25:1-26:52" name="Initial Population 1" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="73">
+               <a:s>define &quot;Initial Population 1&quot;:
+  </a:s>
+               <a:s r="72">
+                  <a:s>&quot;Face to Face Encounter with Ongoing Chemotherapy&quot;</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="72" locator="26:3-26:52" name="Face to Face Encounter with Ongoing Chemotherapy" xsi:type="ExpressionRef"/>
+      </def>
+      <def localId="75" locator="19:1-20:24" name="Denominator 1" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="75">
+               <a:s>define &quot;Denominator 1&quot;:
+  </a:s>
+               <a:s r="74">
+                  <a:s>&quot;Initial Population 1&quot;</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="74" locator="20:3-20:24" name="Initial Population 1" xsi:type="ExpressionRef"/>
+      </def>
+      <def localId="91" locator="43:1-47:81" name="Radiation Treatment Management During Measurement Period with Cancer Diagnosis" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="91">
+               <a:s>define &quot;Radiation Treatment Management During Measurement Period with Cancer Diagnosis&quot;:
+  </a:s>
+               <a:s r="90">
+                  <a:s>
+                     <a:s r="77">
+                        <a:s r="76">
+                           <a:s r="76">
+                              <a:s>[&quot;Procedure, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Radiation Treatment Management&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> RadiationTreatmentManagement</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="85">
+                     <a:s>with </a:s>
+                     <a:s r="79">
+                        <a:s r="78">
+                           <a:s r="78">
+                              <a:s>[&quot;Diagnosis&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Cancer&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> Cancer</a:s>
+                     </a:s>
+                     <a:s>
+      such that </a:s>
+                     <a:s r="84">
+                        <a:s r="81">
+                           <a:s r="80">
+                              <a:s>Cancer</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="81">
+                              <a:s>prevalencePeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="84"> overlaps </a:s>
+                        <a:s r="83">
+                           <a:s r="82">
+                              <a:s>RadiationTreatmentManagement</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="83">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="89">
+                     <a:s>where </a:s>
+                     <a:s r="89">
+                        <a:s r="87">
+                           <a:s r="86">
+                              <a:s>RadiationTreatmentManagement</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="87">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="89"> during </a:s>
+                        <a:s r="88">
+                           <a:s>&quot;Measurement Period&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="90" locator="44:3-47:81" xsi:type="Query">
+            <source localId="77" locator="44:3-44:89" alias="RadiationTreatmentManagement">
+               <expression localId="76" locator="44:3-44:60" xmlns:ns4="urn:healthit-gov:qdm:v5_5" dataType="ns4:PositiveProcedurePerformed" templateId="PositiveProcedurePerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                  <codes locator="44:28-44:59" name="Radiation Treatment Management" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <relationship localId="85" locator="45:5-46:92" alias="Cancer" xsi:type="With">
+               <expression localId="78" locator="45:10-45:32" xmlns:ns5="urn:healthit-gov:qdm:v5_5" dataType="ns5:Diagnosis" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                  <codes locator="45:24-45:31" name="Cancer" xsi:type="ValueSetRef"/>
+               </expression>
+               <suchThat localId="84" locator="46:17-46:92" xsi:type="Overlaps">
+                  <operand localId="81" locator="46:17-46:39" path="prevalencePeriod" scope="Cancer" xsi:type="Property"/>
+                  <operand localId="83" locator="46:50-46:92" path="relevantPeriod" scope="RadiationTreatmentManagement" xsi:type="Property"/>
+               </suchThat>
+            </relationship>
+            <where localId="89" locator="47:5-47:81" xsi:type="IncludedIn">
+               <operand localId="87" locator="47:11-47:53" path="relevantPeriod" scope="RadiationTreatmentManagement" xsi:type="Property"/>
+               <operand localId="88" locator="47:62-47:81" name="Measurement Period" xsi:type="ParameterRef"/>
+            </where>
+         </expression>
+      </def>
+      <def localId="93" locator="28:1-29:82" name="Initial Population 2" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="93">
+               <a:s>define &quot;Initial Population 2&quot;:
+  </a:s>
+               <a:s r="92">
+                  <a:s>&quot;Radiation Treatment Management During Measurement Period with Cancer Diagnosis&quot;</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="92" locator="29:3-29:82" name="Radiation Treatment Management During Measurement Period with Cancer Diagnosis" xsi:type="ExpressionRef"/>
+      </def>
+      <def localId="95" locator="22:1-23:24" name="Denominator 2" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="95">
+               <a:s>define &quot;Denominator 2&quot;:
+  </a:s>
+               <a:s r="94">
+                  <a:s>&quot;Initial Population 2&quot;</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="94" locator="23:3-23:24" name="Initial Population 2" xsi:type="ExpressionRef"/>
+      </def>
+      <def localId="111" locator="31:1-35:43" name="Numerator 1" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="111">
+               <a:s>define &quot;Numerator 1&quot;:
+  </a:s>
+               <a:s r="110">
+                  <a:s>
+                     <a:s r="97">
+                        <a:s r="96">
+                           <a:s>
+                              <a:s>&quot;Face to Face Encounter with Ongoing Chemotherapy&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> FaceToFaceEncounterWithChemo</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="109">
+                     <a:s>with </a:s>
+                     <a:s r="99">
+                        <a:s r="98">
+                           <a:s r="98">
+                              <a:s>[&quot;Assessment, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Standardized Pain Assessment Tool&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> PainAssessed</a:s>
+                     </a:s>
+                     <a:s>
+      such that </a:s>
+                     <a:s r="108">
+                        <a:s r="104">
+                           <a:s r="101">
+                              <a:s r="100">
+                                 <a:s>PainAssessed</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="101">
+                                 <a:s>relevantDatetime</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s r="104"> during </a:s>
+                           <a:s r="103">
+                              <a:s r="102">
+                                 <a:s>FaceToFaceEncounterWithChemo</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="103">
+                                 <a:s>relevantPeriod</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+        and </a:s>
+                        <a:s r="107">
+                           <a:s r="106">
+                              <a:s r="105">
+                                 <a:s>PainAssessed</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="106">
+                                 <a:s>result</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> is not null</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="110" locator="32:3-35:43" xsi:type="Query">
+            <source localId="97" locator="32:3-32:81" alias="FaceToFaceEncounterWithChemo">
+               <expression localId="96" locator="32:3-32:52" name="Face to Face Encounter with Ongoing Chemotherapy" xsi:type="ExpressionRef"/>
+            </source>
+            <relationship localId="109" locator="33:5-35:43" alias="PainAssessed" xsi:type="With">
+               <expression localId="98" locator="33:10-33:71" xmlns:ns6="urn:healthit-gov:qdm:v5_5" dataType="ns6:PositiveAssessmentPerformed" templateId="PositiveAssessmentPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                  <codes locator="33:36-33:70" name="Standardized Pain Assessment Tool" xsi:type="ValueSetRef"/>
+               </expression>
+               <suchThat localId="108" locator="34:17-35:43" xsi:type="And">
+                  <operand localId="104" locator="34:17-34:96" xsi:type="In">
+                     <operand localId="101" locator="34:17-34:45" path="relevantDatetime" scope="PainAssessed" xsi:type="Property"/>
+                     <operand localId="103" locator="34:54-34:96" path="relevantPeriod" scope="FaceToFaceEncounterWithChemo" xsi:type="Property"/>
+                  </operand>
+                  <operand localId="107" locator="35:13-35:43" xsi:type="Not">
+                     <operand locator="35:13-35:43" xsi:type="IsNull">
+                        <operand localId="106" locator="35:13-35:31" path="result" scope="PainAssessed" xsi:type="Property"/>
+                     </operand>
+                  </operand>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def localId="127" locator="37:1-41:43" name="Numerator 2" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="127">
+               <a:s>define &quot;Numerator 2&quot;:
+  </a:s>
+               <a:s r="126">
+                  <a:s>
+                     <a:s r="113">
+                        <a:s r="112">
+                           <a:s>
+                              <a:s>&quot;Radiation Treatment Management During Measurement Period with Cancer Diagnosis&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> RadiationTherapy</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="125">
+                     <a:s>with </a:s>
+                     <a:s r="115">
+                        <a:s r="114">
+                           <a:s r="114">
+                              <a:s>[&quot;Assessment, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Standardized Pain Assessment Tool&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> PainAssessed</a:s>
+                     </a:s>
+                     <a:s>
+      such that </a:s>
+                     <a:s r="124">
+                        <a:s r="120">
+                           <a:s r="117">
+                              <a:s r="116">
+                                 <a:s>PainAssessed</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="117">
+                                 <a:s>relevantDatetime</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s r="120"> during </a:s>
+                           <a:s r="119">
+                              <a:s r="118">
+                                 <a:s>RadiationTherapy</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="119">
+                                 <a:s>relevantPeriod</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+        and </a:s>
+                        <a:s r="123">
+                           <a:s r="122">
+                              <a:s r="121">
+                                 <a:s>PainAssessed</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="122">
+                                 <a:s>result</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> is not null</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="126" locator="38:3-41:43" xsi:type="Query">
+            <source localId="113" locator="38:3-38:99" alias="RadiationTherapy">
+               <expression localId="112" locator="38:3-38:82" name="Radiation Treatment Management During Measurement Period with Cancer Diagnosis" xsi:type="ExpressionRef"/>
+            </source>
+            <relationship localId="125" locator="39:5-41:43" alias="PainAssessed" xsi:type="With">
+               <expression localId="114" locator="39:10-39:71" xmlns:ns7="urn:healthit-gov:qdm:v5_5" dataType="ns7:PositiveAssessmentPerformed" templateId="PositiveAssessmentPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                  <codes locator="39:36-39:70" name="Standardized Pain Assessment Tool" xsi:type="ValueSetRef"/>
+               </expression>
+               <suchThat localId="124" locator="40:17-41:43" xsi:type="And">
+                  <operand localId="120" locator="40:17-40:84" xsi:type="In">
+                     <operand localId="117" locator="40:17-40:45" path="relevantDatetime" scope="PainAssessed" xsi:type="Property"/>
+                     <operand localId="119" locator="40:54-40:84" path="relevantPeriod" scope="RadiationTherapy" xsi:type="Property"/>
+                  </operand>
+                  <operand localId="123" locator="41:13-41:43" xsi:type="Not">
+                     <operand locator="41:13-41:43" xsi:type="IsNull">
+                        <operand localId="122" locator="41:13-41:31" path="result" scope="PainAssessed" xsi:type="Property"/>
+                     </operand>
+                  </operand>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def localId="129" locator="49:1-50:51" name="SDE Ethnicity" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="129">
+               <a:s>define &quot;SDE Ethnicity&quot;:
+  </a:s>
+               <a:s r="128">
+                  <a:s>[&quot;Patient Characteristic Ethnicity&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Ethnicity&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="128" locator="50:3-50:51" xmlns:ns8="urn:healthit-gov:qdm:v5_5" dataType="ns8:PatientCharacteristicEthnicity" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+            <codes locator="50:40-50:50" name="Ethnicity" xsi:type="ValueSetRef"/>
+         </expression>
+      </def>
+      <def localId="131" locator="52:1-53:43" name="SDE Payer" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="131">
+               <a:s>define &quot;SDE Payer&quot;:
+  </a:s>
+               <a:s r="130">
+                  <a:s>[&quot;Patient Characteristic Payer&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Payer&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="130" locator="53:3-53:43" xmlns:ns9="urn:healthit-gov:qdm:v5_5" dataType="ns9:PatientCharacteristicPayer" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+            <codes locator="53:36-53:42" name="Payer" xsi:type="ValueSetRef"/>
+         </expression>
+      </def>
+      <def localId="133" locator="55:1-56:41" name="SDE Race" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="133">
+               <a:s>define &quot;SDE Race&quot;:
+  </a:s>
+               <a:s r="132">
+                  <a:s>[&quot;Patient Characteristic Race&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Race&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="132" locator="56:3-56:41" xmlns:ns10="urn:healthit-gov:qdm:v5_5" dataType="ns10:PatientCharacteristicRace" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+            <codes locator="56:35-56:40" name="Race" xsi:type="ValueSetRef"/>
+         </expression>
+      </def>
+      <def localId="135" locator="58:1-59:58" name="SDE Sex" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="135">
+               <a:s>define &quot;SDE Sex&quot;:
+  </a:s>
+               <a:s r="134">
+                  <a:s>[&quot;Patient Characteristic Sex&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;ONC Administrative Sex&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="134" locator="59:3-59:58" xmlns:ns11="urn:healthit-gov:qdm:v5_5" dataType="ns11:PatientCharacteristicSex" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+            <codes locator="59:34-59:57" name="ONC Administrative Sex" xsi:type="ValueSetRef"/>
+         </expression>
+      </def>
+   </statements>
+</library>
+
+

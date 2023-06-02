@@ -17,22 +17,22 @@ The `cql`, `model`, `elm`, and `cql-to-elm` packages are required to use the tra
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>cql</artifactId>
-      <version>1.5.7</version>
+      <version>2.8.0</version>
     </dependency>
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>model</artifactId>
-      <version>1.5.7</version>
+      <version>2.8.0</version>
     </dependency>
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>elm</artifactId>
-      <version>1.5.7</version>
+      <version>2.8.0</version>
     </dependency>
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>cql-to-elm</artifactId>
-      <version>1.5.7</version>
+      <version>2.8.0</version>
     </dependency>
 
 In addition, to use the translator with QDM, FHIR, and QUICK, the model info packages must be included:
@@ -40,12 +40,12 @@ In addition, to use the translator with QDM, FHIR, and QUICK, the model info pac
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>quick</artifactId>
-      <version>1.5.7</version>
+      <version>2.8.0</version>
     </dependency>
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>qdm</artifactId>
-      <version>1.5.7</version>
+      <version>2.8.0</version>
     </dependency>
 
 To use the DataRequirementsProcessor, a component that performs data requirements analysis on ELM, as well as converts those data requirements to FHIR [DataRequirement](https://hl7.org/fhir/metadatatypes.html#DataRequirement) instances and renders the metadata for a CQL Library as a [FHIR ModuleDefinition Library](https://build.fhir.org/ig/HL7/cqf-measures/StructureDefinition-module-definition-library-cqfm.html), the elm-fhir package must be included:
@@ -53,7 +53,7 @@ To use the DataRequirementsProcessor, a component that performs data requirement
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>elm-fhir</artifact>
-      <version>1.5.7</version>
+      <version>2.8.0</version>
     </dependency>
 
 Note that this elm-fhir package includes a dependency on the HAPI FHIR Structures libraries (client-side dependencies) in order to provide FHIR object representation support. This is the only package from the translator that includes a specific dependency on FHIR.
@@ -64,9 +64,9 @@ CQL is defined using an [ANTLR4](http://www.antlr.org/) grammar. ANTLR4 is a sim
 
 ## Current Status
 
-The CQL-to-ELM Translator supports all normative language constructs of the latest version of CQL (Release 1 (1.5)), the trial-use functionality of the 1.5 specification, as well as a broad range of functionality to support use of the translator in an Integrated Development Environment. Implementations making use of the translator can submit issues and track resolution progress through the Issues tracker in the Github repository.
+The CQL-to-ELM Translator supports all normative language constructs of the latest version of CQL (Release 1 (1.5.2)), the trial-use functionality of the 1.5 specification, as well as a broad range of functionality to support use of the translator in an Integrated Development Environment. Implementations making use of the translator can submit issues and track resolution progress through the Issues tracker in the Github repository.
 
-The current release of the translator is version [1.5.7](https://github.com/cqframework/clinical_quality_language/releases/tag/v1.5.7), which includes support for QDM 5.6, enhanced model info to support more advanced authoring capabilities, including profile-informed authoring, as well as a new DataRequirementsProcessor to support data requirements inference and analysis and the 4.1.1 model info for QICore (also included in the QICore-ModelInfo library published as part of QICore).
+The current release of the translator is version [2.8.0](https://github.com/cqframework/clinical_quality_language/releases/tag/v2.8.0), which includes support for QDM 5.6, enhanced model info to support more advanced authoring capabilities, including profile-informed authoring, as well as a new DataRequirementsProcessor to support data requirements inference and analysis and the 5.0.0 model info for QICore (also included in the QICore-ModelInfo library published as part of QICore).
 
 ## Roadmap
 
@@ -112,26 +112,37 @@ The CQL-to-ELM Translator is designed as a component that can be incorporated in
 ## CqlTranslatorOptions
 
 The class CqlTranslatorOptions provides use of cql-options files in directories with the translator.  A JSON schema file that documents the class' structure can be found
-at clinical_quality_language\Src\java\cql-to-elm\src\test\resources\org\cqframework\cql\cql2elm\json. 
+at clinical_quality_language\Src\java\cql-to-elm\src\test\resources\org\cqframework\cql\cql2elm\json.
 
 An instance of the class with default options can be accessed through defaultOptions(), and returns the following translator options:
-     - EnableAnnotations
-     - EnableLocators
-     - DisableListDemotion
-     - DisableListPromotion
-     - ErrorSeverity.Info
-     - SignatureLevel.None
-     - Format.XML
-     
-Several constructors exist allowing user control of specified options, such as:
-     - CqlTranslatorOptions(CqlTranslator.Options... options) 
-     - CqlTranslatorOptions(CqlTranslatorException.ErrorSeverity errorLevel, LibraryBuilder.SignatureLevel signatureLevel, CqlTranslator.Options... options)
-     - CqlTranslatorOptions(CqlTranslator.Format format, boolean dateRangeOptimizations,
-                                boolean annotations, boolean locators, boolean resultTypes, boolean verifyOnly,
-                                boolean detailedErrors, CqlTranslatorException.ErrorSeverity errorLevel,
-                                boolean disableListTraversal, boolean disableListDemotion, boolean disableListPromotion,
-                                boolean enableIntervalDemotion, boolean enableIntervalPromotion,
-                                boolean disableMethodInvocation, boolean requireFromKeyword, boolean validateUnits,
-                                LibraryBuilder.SignatureLevel signatureLevel, String compatibilityLevel)
+- EnableAnnotations
+- EnableLocators
+- DisableListDemotion
+- DisableListPromotion
+- ErrorSeverity.Info
+- SignatureLevel.None
+- Format.XML
 
-toString() has been overridden to provide an easy-to-read breakdown of existing options within an instance of this class.
+Several constructors exist allowing user control of specified options, such as:
+
+```java
+CqlTranslatorOptions(CqlTranslator.Options... options)
+```
+
+```java
+CqlTranslatorOptions(CqlTranslatorException.ErrorSeverity errorLevel,
+                     LibraryBuilder.SignatureLevel signatureLevel,
+                     CqlTranslator.Options... options)
+```
+
+```java
+CqlTranslatorOptions(CqlTranslator.Format format, boolean dateRangeOptimizations,
+                     boolean annotations, boolean locators, boolean resultTypes, boolean verifyOnly,
+                     boolean detailedErrors, CqlTranslatorException.ErrorSeverity errorLevel,
+                     boolean disableListTraversal, boolean disableListDemotion, boolean disableListPromotion,
+                     boolean enableIntervalDemotion, boolean enableIntervalPromotion,
+                     boolean disableMethodInvocation, boolean requireFromKeyword, boolean validateUnits,
+                     LibraryBuilder.SignatureLevel signatureLevel, String compatibilityLevel)
+```
+
+`toString()` has been overridden to provide an easy-to-read breakdown of existing options within an instance of this class.

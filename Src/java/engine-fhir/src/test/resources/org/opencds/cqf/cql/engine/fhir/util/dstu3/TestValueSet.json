@@ -1,0 +1,58 @@
+{
+  "resourceType": "ValueSet",
+  "id": "TestValueSet",
+  "url": "http://cql.alphora.com/fhir/ValueSet/TestValueSet",
+  "name": "TestValueSet",
+  "title": "TestValueSet",
+  "status": "active",
+  "compose": {
+    "include": [
+      {
+        "system": "http://cql.alphora.com/unit-test",
+        "version": "2018-03",
+        "concept": [
+          {
+            "code": "000",
+            "display": "000 Code"
+          },
+          {
+            "code": "111",
+            "display": "111 Code"
+          }
+        ]
+      },
+      {
+        "system": "http://cql.alphora.com/unit-test-2",
+        "version": "2018-03",
+        "concept": [
+          {
+            "code": "333",
+            "display": "333 Code"
+          }
+        ]
+      }
+    ]
+  },
+  "expansion" : {
+    "contains" : [
+      {
+        "system": "http://cql.alphora.com/unit-test",
+        "version": "2018-03",
+        "code": "000",
+        "display" : "000 Code"
+      },
+      {
+        "system": "http://cql.alphora.com/unit-test",
+        "version": "2018-03",
+        "code": "111",
+        "display" : "111 Code"
+      },
+      {
+        "system": "http://cql.alphora.com/unit-test-2",
+        "version": "2018-03",
+        "code": "333",
+        "display" : "333 Code"
+      }
+    ]
+  }
+}

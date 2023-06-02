@@ -1,9 +1,25 @@
 // Most build configuration comes from the cql-all parent build!
 
+ext {
+    mapstructVersion = "1.4.2.Final"
+}
+
 dependencies {
     implementation project(':cql-to-elm')
+    implementation project(':engine')
+    implementation project(":engine-fhir")
+    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
 
     testImplementation project(':quick')
+    testImplementation "org.reflections:reflections:0.10.2"
     testRuntimeOnly project(':model-jackson')
     testRuntimeOnly group: 'xpp3', name: 'xpp3', version: '1.1.4c'
+
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs = [
+            "-Amapstruct.suppressGeneratorTimestamp=true"
+    ]
 }

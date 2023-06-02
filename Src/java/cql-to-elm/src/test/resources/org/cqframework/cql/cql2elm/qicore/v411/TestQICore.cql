@@ -11,6 +11,7 @@ codesystem "SNOMED-CT": 'http://snomed.info/sct'
 codesystem "CVX": 'http://hl7.org/fhir/sid/cvx'
 codesystem "LOINC": 'http://loinc.org'
 codesystem "TaskCodeSystem": 'http://hl7.org/fhir/CodeSystem/task-code'
+codesystem "Hospital Acquired Condition Codes": 'https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/HospitalAcqCond/Coding'
 
 valueset "Marital Status": 'http://hl7.org/fhir/ValueSet/marital-status'
 valueset "CommunicationCodes": 'http://hl7.org/fhir/ValueSet/communication-category'
@@ -32,6 +33,7 @@ code "MedicationCode": '26100' from "SNOMED-CT" display 'Codeine phosphate'
 code "ObservationCode": '1-8' from "LOINC" display 'Acyclovir [Susceptibility]'
 code "ProcedureCode": '7138802' from "SNOMED-CT" display 'Procedure'
 code "TaskCode": 'approve' from "TaskCodeSystem" display 'Activate/approve the focal resource'
+code "Y": 'Y' from "Hospital Acquired Condition Codes" display 'Yes'
 
 context Patient
 
@@ -102,6 +104,12 @@ define TestUSCorePulseOximetry: ["USCorePulseOximetryProfile"]
 define TestUSCorePediatricBMIForAge: ["USCorePediatricBMIforAgeObservationProfile"]
 define TestUSCorePediatricWeightForHeight: ["USCorePediatricWeightForHeightObservationProfile"]
 
+define TestAge:
+  AgeInYears()
+
+define TestAgeAt:
+  AgeInYearsAt(@2022-10-14)
+
 define TestPrimitives:
   Patient P
     where P.gender = 'male'
@@ -132,6 +140,12 @@ define TestComplexExtensions:
 // Validate Encounter.diagnosis cardinality
 define TestEncounterDiagnosisCardinality:
     exists (First([Encounter]).diagnosis)
+
+// Validate diagnosisPresentOnAdmission
+define TestEncounterDiagnosisPresentOnAdmission:
+    exists ((First([Encounter]).diagnosis) D
+      where D.diagnosisPresentOnAdmission ~ "Y"
+    )
 
 // Validate ProcedureNotDone elements
 define TestProcedureNotDoneElements:

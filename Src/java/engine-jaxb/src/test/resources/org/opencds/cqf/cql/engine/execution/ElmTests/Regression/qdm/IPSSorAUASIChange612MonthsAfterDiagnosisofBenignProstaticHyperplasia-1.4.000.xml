@@ -1,0 +1,2423 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:qdm43="urn:healthit-gov:qdm:v4_3" xmlns:qdm53="urn:healthit-gov:qdm:v5_3" xmlns:a="urn:hl7-org:cql-annotations:r1">
+   <annotation translatorOptions="EnableDateRangeOptimization,EnableAnnotations,EnableLocators,EnableResultTypes,DisableListDemotion,DisableListPromotion,DisableMethodInvocation" xsi:type="a:CqlToElmInfo"/>
+   <identifier id="InternationalProstateSymptomScoreIPSSorAmericanUrologicalAssociationSymptomIndexAUASIChange612MonthsAfterDiagnosisofBenignProstaticHyperplasia" version="1.4.000"/>
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
+      <def localId="1" locator="3:1-3:23" localIdentifier="QDM" uri="urn:healthit-gov:qdm:v5_4" version="5.4"/>
+   </usings>
+   <parameters>
+      <def localId="27" locator="25:1-25:49" name="Measurement Period" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+            <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <parameterTypeSpecifier localId="26" locator="25:32-25:49" xsi:type="IntervalTypeSpecifier">
+            <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+               <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <pointType localId="25" locator="25:41-25:48" resultTypeName="t:DateTime" name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </parameterTypeSpecifier>
+      </def>
+   </parameters>
+   <codeSystems>
+      <def localId="2" locator="5:1-5:51" name="LOINC" id="urn:oid:2.16.840.1.113883.6.1" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="3" locator="6:1-6:54" name="ICD10CM" id="urn:oid:2.16.840.1.113883.6.90" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="4" locator="7:1-7:66" name="AdministrativeGender" id="urn:oid:2.16.840.1.113883.5.1" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+   </codeSystems>
+   <valueSets>
+      <def localId="5" locator="9:1-9:58" name="Ethnicity" id="urn:oid:2.16.840.1.114222.4.11.837" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="6" locator="10:1-10:86" name="Hospital Services for urology care" id="urn:oid:2.16.840.1.113762.1.4.1164.64" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="7" locator="11:1-11:66" name="Morbid Obesity" id="urn:oid:2.16.840.1.113762.1.4.1164.65" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="8" locator="12:1-12:75" name="Office Visit" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1001" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="9" locator="13:1-13:68" name="ONC Administrative Sex" id="urn:oid:2.16.840.1.113762.1.4.1" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="10" locator="14:1-14:55" name="Payer" id="urn:oid:2.16.840.1.114222.4.11.3591" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="11" locator="15:1-15:53" name="Race" id="urn:oid:2.16.840.1.114222.4.11.836" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="12" locator="16:1-16:69" name="Urinary retention" id="urn:oid:2.16.840.1.113762.1.4.1164.52" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+   </valueSets>
+   <codes>
+      <def localId="14" locator="18:1-18:148" resultTypeName="t:Code" name="American Urological Association Symptom Index [AUASI]" id="80883-2" display="American Urological Association Symptom Index [AUASI]" accessLevel="Public">
+         <codeSystem localId="13" locator="18:78-18:84" name="LOINC">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+         </codeSystem>
+      </def>
+      <def localId="16" locator="19:1-19:166" resultTypeName="t:Code" name="Benign prostatic hyperplasia with lower urinary tract symptoms" id="N40.1" display="Benign prostatic hyperplasia with lower urinary tract symptoms" accessLevel="Public">
+         <codeSystem localId="15" locator="19:85-19:93" name="ICD10CM">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+         </codeSystem>
+      </def>
+      <def localId="18" locator="20:1-20:100" resultTypeName="t:Code" name="Estimated BMI greater than 40" id="88087-2" display="Estimated BMI greater than 40" accessLevel="Public">
+         <codeSystem localId="17" locator="20:54-20:60" name="LOINC">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+         </codeSystem>
+      </def>
+      <def localId="20" locator="21:1-21:304" resultTypeName="t:Code" name="If you were to spend the rest of your life with your urinary condition just the way it is now, how would you feel about that [IPSS]" id="81090-3" display="If you were to spend the rest of your life with your urinary condition just the way it is now, how would you feel about that [IPSS]" accessLevel="Public">
+         <codeSystem localId="19" locator="21:156-21:162" name="LOINC">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+         </codeSystem>
+      </def>
+      <def localId="22" locator="22:1-22:128" resultTypeName="t:Code" name="International Prostate Symptom Score [IPSS]" id="80976-4" display="International Prostate Symptom Score [IPSS]" accessLevel="Public">
+         <codeSystem localId="21" locator="22:68-22:74" name="LOINC">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+         </codeSystem>
+      </def>
+      <def localId="24" locator="23:1-23:59" resultTypeName="t:Code" name="Male" id="M" display="Male" accessLevel="Public">
+         <codeSystem localId="23" locator="23:23-23:44" name="AdministrativeGender">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+         </codeSystem>
+      </def>
+   </codes>
+   <statements>
+      <def locator="27:1-27:15" name="Patient" context="Patient">
+         <expression xsi:type="SingletonFrom">
+            <operand locator="27:1-27:15" xmlns:ns0="urn:healthit-gov:qdm:v5_4" dataType="ns0:Patient" templateId="Patient" xsi:type="Retrieve"/>
+         </expression>
+      </def>
+      <def localId="29" locator="29:1-30:50" name="SDE Ethnicity" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="29">
+               <a:s>define &quot;SDE Ethnicity&quot;:&#xd;
+	</a:s>
+               <a:s r="28">
+                  <a:s>[&quot;Patient Characteristic Ethnicity&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Ethnicity&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns1="urn:healthit-gov:qdm:v5_4" name="ns1:PatientCharacteristicEthnicity" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="28" locator="30:2-30:50" xmlns:ns2="urn:healthit-gov:qdm:v5_4" dataType="ns2:PatientCharacteristicEthnicity" codeProperty="code" xsi:type="Retrieve">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns3="urn:healthit-gov:qdm:v5_4" name="ns3:PatientCharacteristicEthnicity" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <codes locator="30:39-30:49" name="Ethnicity" xsi:type="ValueSetRef">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+            </codes>
+         </expression>
+      </def>
+      <def localId="31" locator="32:1-33:42" name="SDE Payer" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="31">
+               <a:s>define &quot;SDE Payer&quot;:&#xd;
+	</a:s>
+               <a:s r="30">
+                  <a:s>[&quot;Patient Characteristic Payer&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Payer&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns4="urn:healthit-gov:qdm:v5_4" name="ns4:PatientCharacteristicPayer" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="30" locator="33:2-33:42" xmlns:ns5="urn:healthit-gov:qdm:v5_4" dataType="ns5:PatientCharacteristicPayer" codeProperty="code" xsi:type="Retrieve">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns6="urn:healthit-gov:qdm:v5_4" name="ns6:PatientCharacteristicPayer" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <codes locator="33:35-33:41" name="Payer" xsi:type="ValueSetRef">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+            </codes>
+         </expression>
+      </def>
+      <def localId="33" locator="35:1-36:40" name="SDE Race" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="33">
+               <a:s>define &quot;SDE Race&quot;:&#xd;
+	</a:s>
+               <a:s r="32">
+                  <a:s>[&quot;Patient Characteristic Race&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Race&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns7="urn:healthit-gov:qdm:v5_4" name="ns7:PatientCharacteristicRace" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="32" locator="36:2-36:40" xmlns:ns8="urn:healthit-gov:qdm:v5_4" dataType="ns8:PatientCharacteristicRace" codeProperty="code" xsi:type="Retrieve">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns9="urn:healthit-gov:qdm:v5_4" name="ns9:PatientCharacteristicRace" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <codes locator="36:34-36:39" name="Race" xsi:type="ValueSetRef">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+            </codes>
+         </expression>
+      </def>
+      <def localId="35" locator="38:1-39:57" name="SDE Sex" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="35">
+               <a:s>define &quot;SDE Sex&quot;:&#xd;
+	</a:s>
+               <a:s r="34">
+                  <a:s>[&quot;Patient Characteristic Sex&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;ONC Administrative Sex&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns10="urn:healthit-gov:qdm:v5_4" name="ns10:PatientCharacteristicSex" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="34" locator="39:2-39:57" xmlns:ns11="urn:healthit-gov:qdm:v5_4" dataType="ns11:PatientCharacteristicSex" codeProperty="code" xsi:type="Retrieve">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns12="urn:healthit-gov:qdm:v5_4" name="ns12:PatientCharacteristicSex" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <codes locator="39:33-39:56" name="ONC Administrative Sex" xsi:type="ValueSetRef">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+            </codes>
+         </expression>
+      </def>
+      <def localId="69" locator="41:1-52:3" name="AUA Symptom Index and Quality of Life Assessment Result" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="69">
+               <a:s>define &quot;AUA Symptom Index and Quality of Life Assessment Result&quot;:&#xd;
+	</a:s>
+               <a:s r="68">
+                  <a:s>
+                     <a:s>from&#xd;
+		</a:s>
+                     <a:s r="37">
+                        <a:s r="36">
+                           <a:s r="36">
+                              <a:s>[&quot;Assessment, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;American Urological Association Symptom Index [AUASI]&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> AUASIAssessment</a:s>
+                     </a:s>
+                     <a:s>,&#xd;
+		</a:s>
+                     <a:s r="39">
+                        <a:s r="38">
+                           <a:s r="38">
+                              <a:s>[&quot;Assessment, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;If you were to spend the rest of your life with your urinary condition just the way it is now, how would you feel about that [IPSS]&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> QOLAssessment</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s>
+                     <a:s>let </a:s>
+                     <a:s r="49">
+                        <a:s>AUASIAssessmentresult: </a:s>
+                        <a:s r="48">
+                           <a:s r="43">
+                              <a:s>( </a:s>
+                              <a:s r="43">
+                                 <a:s r="41">
+                                    <a:s r="40">
+                                       <a:s>AUASIAssessment</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="41">
+                                       <a:s>result</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s> as </a:s>
+                                 <a:s r="42">
+                                    <a:s>Integer</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> )</a:s>
+                           </a:s>
+                           <a:s> + </a:s>
+                           <a:s r="47">
+                              <a:s>( </a:s>
+                              <a:s r="47">
+                                 <a:s r="45">
+                                    <a:s r="44">
+                                       <a:s>QOLAssessment</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="45">
+                                       <a:s>result</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s> as </a:s>
+                                 <a:s r="46">
+                                    <a:s>Integer</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> )</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="62">
+                     <a:s>where </a:s>
+                     <a:s r="62">
+                        <a:s r="58">
+                           <a:s r="54">
+                              <a:s r="51">
+                                 <a:s r="50">
+                                    <a:s>AUASIAssessment</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="51">
+                                    <a:s>authorDatetime</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s r="54"> same day as </a:s>
+                              <a:s r="53">
+                                 <a:s r="52">
+                                    <a:s>QOLAssessment</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="53">
+                                    <a:s>authorDatetime</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>&#xd;
+			and </a:s>
+                           <a:s r="57">
+                              <a:s r="56">
+                                 <a:s r="55">
+                                    <a:s>AUASIAssessment</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="56">
+                                    <a:s>result</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> is not null</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>&#xd;
+			and </a:s>
+                        <a:s r="61">
+                           <a:s r="60">
+                              <a:s r="59">
+                                 <a:s>QOLAssessment</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="60">
+                                 <a:s>result</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> is not null</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="67">
+                     <a:s>return </a:s>
+                     <a:s r="66">
+                        <a:s>{&#xd;
+			</a:s>
+                        <a:s>
+                           <a:s>authorDatetime: </a:s>
+                           <a:s r="64">
+                              <a:s r="63">
+                                 <a:s>AUASIAssessment</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="64">
+                                 <a:s>authorDatetime</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>,&#xd;
+			</a:s>
+                        <a:s>
+                           <a:s>result: </a:s>
+                           <a:s r="65">
+                              <a:s>AUASIAssessmentresult</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>&#xd;
+		}</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xsi:type="TupleTypeSpecifier">
+               <element name="authorDatetime">
+                  <type name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+               </element>
+               <element name="result">
+                  <type name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+               </element>
+            </elementType>
+         </resultTypeSpecifier>
+         <expression localId="68" locator="42:2-52:3" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xsi:type="TupleTypeSpecifier">
+                  <element name="authorDatetime">
+                     <type name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                  </element>
+                  <element name="result">
+                     <type name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                  </element>
+               </elementType>
+            </resultTypeSpecifier>
+            <source localId="37" locator="43:3-43:100" alias="AUASIAssessment">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns13="urn:healthit-gov:qdm:v5_4" name="ns13:PositiveAssessmentPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="36" locator="43:3-43:84" xmlns:ns14="urn:healthit-gov:qdm:v5_4" dataType="ns14:PositiveAssessmentPerformed" templateId="PositiveAssessmentPerformed" codeProperty="code" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns15="urn:healthit-gov:qdm:v5_4" name="ns15:PositiveAssessmentPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <codes xsi:type="ToList">
+                     <operand locator="43:29-43:83" resultTypeName="t:Code" name="American Urological Association Symptom Index [AUASI]" xsi:type="CodeRef"/>
+                  </codes>
+               </expression>
+            </source>
+            <source localId="39" locator="44:3-44:176" alias="QOLAssessment">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns16="urn:healthit-gov:qdm:v5_4" name="ns16:PositiveAssessmentPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="38" locator="44:3-44:162" xmlns:ns17="urn:healthit-gov:qdm:v5_4" dataType="ns17:PositiveAssessmentPerformed" templateId="PositiveAssessmentPerformed" codeProperty="code" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns18="urn:healthit-gov:qdm:v5_4" name="ns18:PositiveAssessmentPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <codes xsi:type="ToList">
+                     <operand locator="44:29-44:161" resultTypeName="t:Code" name="If you were to spend the rest of your life with your urinary condition just the way it is now, how would you feel about that [IPSS]" xsi:type="CodeRef"/>
+                  </codes>
+               </expression>
+            </source>
+            <let localId="49" locator="45:7-45:104" resultTypeName="t:Integer" identifier="AUASIAssessmentresult">
+               <expression localId="48" locator="45:30-45:104" resultTypeName="t:Integer" xsi:type="Add">
+                  <operand localId="43" locator="45:30-45:66" resultTypeName="t:Integer" strict="false" xsi:type="As">
+                     <operand localId="41" locator="45:32-45:53" path="result" scope="AUASIAssessment" xsi:type="Property">
+                        <resultTypeSpecifier xsi:type="ChoiceTypeSpecifier">
+                           <choice name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                           <choice name="t:Decimal" xsi:type="NamedTypeSpecifier"/>
+                           <choice name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                           <choice name="t:Quantity" xsi:type="NamedTypeSpecifier"/>
+                           <choice name="t:Ratio" xsi:type="NamedTypeSpecifier"/>
+                           <choice name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           <choice name="t:Time" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </operand>
+                     <asTypeSpecifier localId="42" locator="45:58-45:64" resultTypeName="t:Integer" name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                  </operand>
+                  <operand localId="47" locator="45:70-45:104" resultTypeName="t:Integer" strict="false" xsi:type="As">
+                     <operand localId="45" locator="45:72-45:91" path="result" scope="QOLAssessment" xsi:type="Property">
+                        <resultTypeSpecifier xsi:type="ChoiceTypeSpecifier">
+                           <choice name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                           <choice name="t:Decimal" xsi:type="NamedTypeSpecifier"/>
+                           <choice name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                           <choice name="t:Quantity" xsi:type="NamedTypeSpecifier"/>
+                           <choice name="t:Ratio" xsi:type="NamedTypeSpecifier"/>
+                           <choice name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           <choice name="t:Time" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </operand>
+                     <asTypeSpecifier localId="46" locator="45:96-45:102" resultTypeName="t:Integer" name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                  </operand>
+               </expression>
+            </let>
+            <where localId="62" locator="46:3-48:39" resultTypeName="t:Boolean" xsi:type="And">
+               <operand localId="58" locator="46:9-47:41" resultTypeName="t:Boolean" xsi:type="And">
+                  <operand localId="54" locator="46:9-46:79" resultTypeName="t:Boolean" precision="Day" xsi:type="SameAs">
+                     <operand localId="51" locator="46:9-46:38" resultTypeName="t:DateTime" path="authorDatetime" scope="AUASIAssessment" xsi:type="Property"/>
+                     <operand localId="53" locator="46:52-46:79" resultTypeName="t:DateTime" path="authorDatetime" scope="QOLAssessment" xsi:type="Property"/>
+                  </operand>
+                  <operand localId="57" locator="47:8-47:41" resultTypeName="t:Boolean" xsi:type="Not">
+                     <operand locator="47:8-47:41" resultTypeName="t:Boolean" xsi:type="IsNull">
+                        <operand localId="56" locator="47:8-47:29" path="result" scope="AUASIAssessment" xsi:type="Property">
+                           <resultTypeSpecifier xsi:type="ChoiceTypeSpecifier">
+                              <choice name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                              <choice name="t:Decimal" xsi:type="NamedTypeSpecifier"/>
+                              <choice name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                              <choice name="t:Quantity" xsi:type="NamedTypeSpecifier"/>
+                              <choice name="t:Ratio" xsi:type="NamedTypeSpecifier"/>
+                              <choice name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                              <choice name="t:Time" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </operand>
+                     </operand>
+                  </operand>
+               </operand>
+               <operand localId="61" locator="48:8-48:39" resultTypeName="t:Boolean" xsi:type="Not">
+                  <operand locator="48:8-48:39" resultTypeName="t:Boolean" xsi:type="IsNull">
+                     <operand localId="60" locator="48:8-48:27" path="result" scope="QOLAssessment" xsi:type="Property">
+                        <resultTypeSpecifier xsi:type="ChoiceTypeSpecifier">
+                           <choice name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                           <choice name="t:Decimal" xsi:type="NamedTypeSpecifier"/>
+                           <choice name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                           <choice name="t:Quantity" xsi:type="NamedTypeSpecifier"/>
+                           <choice name="t:Ratio" xsi:type="NamedTypeSpecifier"/>
+                           <choice name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           <choice name="t:Time" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </operand>
+                  </operand>
+               </operand>
+            </where>
+            <return localId="67" locator="49:3-52:3">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xsi:type="TupleTypeSpecifier">
+                     <element name="authorDatetime">
+                        <type name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </element>
+                     <element name="result">
+                        <type name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                     </element>
+                  </elementType>
+               </resultTypeSpecifier>
+               <expression localId="66" locator="49:10-52:3" xsi:type="Tuple">
+                  <resultTypeSpecifier xsi:type="TupleTypeSpecifier">
+                     <element name="authorDatetime">
+                        <type name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </element>
+                     <element name="result">
+                        <type name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                     </element>
+                  </resultTypeSpecifier>
+                  <element name="authorDatetime">
+                     <value localId="64" locator="50:20-50:49" resultTypeName="t:DateTime" path="authorDatetime" scope="AUASIAssessment" xsi:type="Property"/>
+                  </element>
+                  <element name="result">
+                     <value localId="65" locator="51:12-51:32" resultTypeName="t:Integer" name="AUASIAssessmentresult" xsi:type="QueryLetRef"/>
+                  </element>
+               </expression>
+            </return>
+         </expression>
+      </def>
+      <def localId="84" locator="54:1-60:3" name="Documented IPSS Assessment Result" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="84">
+               <a:s>define &quot;Documented IPSS Assessment Result&quot;:&#xd;
+	</a:s>
+               <a:s r="83">
+                  <a:s>
+                     <a:s r="71">
+                        <a:s r="70">
+                           <a:s r="70">
+                              <a:s>[&quot;Assessment, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;International Prostate Symptom Score [IPSS]&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> IPSSAssessment</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="74">
+                     <a:s>where </a:s>
+                     <a:s r="74">
+                        <a:s r="73">
+                           <a:s r="72">
+                              <a:s>IPSSAssessment</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="73">
+                              <a:s>result</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> is not null</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="82">
+                     <a:s>return </a:s>
+                     <a:s r="81">
+                        <a:s>{&#xd;
+			</a:s>
+                        <a:s>
+                           <a:s>authorDatetime: </a:s>
+                           <a:s r="76">
+                              <a:s>( </a:s>
+                              <a:s r="76">
+                                 <a:s r="75">
+                                    <a:s>IPSSAssessment</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="76">
+                                    <a:s>authorDatetime</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> )</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>,&#xd;
+			</a:s>
+                        <a:s>
+                           <a:s>result: </a:s>
+                           <a:s r="80">
+                              <a:s>( </a:s>
+                              <a:s r="80">
+                                 <a:s r="78">
+                                    <a:s r="77">
+                                       <a:s>IPSSAssessment</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="78">
+                                       <a:s>result</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s> as </a:s>
+                                 <a:s r="79">
+                                    <a:s>Integer</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> )</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>&#xd;
+		}</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xsi:type="TupleTypeSpecifier">
+               <element name="authorDatetime">
+                  <type name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+               </element>
+               <element name="result">
+                  <type name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+               </element>
+            </elementType>
+         </resultTypeSpecifier>
+         <expression localId="83" locator="55:2-60:3" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xsi:type="TupleTypeSpecifier">
+                  <element name="authorDatetime">
+                     <type name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                  </element>
+                  <element name="result">
+                     <type name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                  </element>
+               </elementType>
+            </resultTypeSpecifier>
+            <source localId="71" locator="55:2-55:88" alias="IPSSAssessment">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns19="urn:healthit-gov:qdm:v5_4" name="ns19:PositiveAssessmentPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="70" locator="55:2-55:73" xmlns:ns20="urn:healthit-gov:qdm:v5_4" dataType="ns20:PositiveAssessmentPerformed" templateId="PositiveAssessmentPerformed" codeProperty="code" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns21="urn:healthit-gov:qdm:v5_4" name="ns21:PositiveAssessmentPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <codes xsi:type="ToList">
+                     <operand locator="55:28-55:72" resultTypeName="t:Code" name="International Prostate Symptom Score [IPSS]" xsi:type="CodeRef"/>
+                  </codes>
+               </expression>
+            </source>
+            <where localId="74" locator="56:3-56:41" resultTypeName="t:Boolean" xsi:type="Not">
+               <operand locator="56:9-56:41" resultTypeName="t:Boolean" xsi:type="IsNull">
+                  <operand localId="73" locator="56:9-56:29" path="result" scope="IPSSAssessment" xsi:type="Property">
+                     <resultTypeSpecifier xsi:type="ChoiceTypeSpecifier">
+                        <choice name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                        <choice name="t:Decimal" xsi:type="NamedTypeSpecifier"/>
+                        <choice name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                        <choice name="t:Quantity" xsi:type="NamedTypeSpecifier"/>
+                        <choice name="t:Ratio" xsi:type="NamedTypeSpecifier"/>
+                        <choice name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        <choice name="t:Time" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </operand>
+               </operand>
+            </where>
+            <return localId="82" locator="57:3-60:3">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xsi:type="TupleTypeSpecifier">
+                     <element name="authorDatetime">
+                        <type name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </element>
+                     <element name="result">
+                        <type name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                     </element>
+                  </elementType>
+               </resultTypeSpecifier>
+               <expression localId="81" locator="57:10-60:3" xsi:type="Tuple">
+                  <resultTypeSpecifier xsi:type="TupleTypeSpecifier">
+                     <element name="authorDatetime">
+                        <type name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </element>
+                     <element name="result">
+                        <type name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                     </element>
+                  </resultTypeSpecifier>
+                  <element name="authorDatetime">
+                     <value localId="76" locator="58:20-58:52" resultTypeName="t:DateTime" path="authorDatetime" scope="IPSSAssessment" xsi:type="Property"/>
+                  </element>
+                  <element name="result">
+                     <value localId="80" locator="59:12-59:47" resultTypeName="t:Integer" strict="false" xsi:type="As">
+                        <operand localId="78" locator="59:14-59:34" path="result" scope="IPSSAssessment" xsi:type="Property">
+                           <resultTypeSpecifier xsi:type="ChoiceTypeSpecifier">
+                              <choice name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                              <choice name="t:Decimal" xsi:type="NamedTypeSpecifier"/>
+                              <choice name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                              <choice name="t:Quantity" xsi:type="NamedTypeSpecifier"/>
+                              <choice name="t:Ratio" xsi:type="NamedTypeSpecifier"/>
+                              <choice name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                              <choice name="t:Time" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </operand>
+                        <asTypeSpecifier localId="79" locator="59:39-59:45" resultTypeName="t:Integer" name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                     </value>
+                  </element>
+               </expression>
+            </return>
+         </expression>
+      </def>
+      <def localId="98" locator="134:1-137:30" name="Initial BPH Diagnosis Within 6 Months Before or After Start of Measurement Period" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="98">
+               <a:s>define &quot;Initial BPH Diagnosis Within 6 Months Before or After Start of Measurement Period&quot;:&#xd;
+	</a:s>
+               <a:s r="97">
+                  <a:s>
+                     <a:s r="86">
+                        <a:s r="85">
+                           <a:s r="85">
+                              <a:s>[&quot;Diagnosis&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Benign prostatic hyperplasia with lower urinary tract symptoms&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> NewBPHDiagnosis</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="96">
+                     <a:s>where </a:s>
+                     <a:s r="96">
+                        <a:s r="88">
+                           <a:s r="87">
+                              <a:s>NewBPHDiagnosis</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="88">
+                              <a:s>prevalencePeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="96"> starts during </a:s>
+                        <a:s r="95">
+                           <a:s>Interval[</a:s>
+                           <a:s r="92">
+                              <a:s r="90">
+                                 <a:s>start of </a:s>
+                                 <a:s r="89">
+                                    <a:s>&quot;Measurement Period&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> - </a:s>
+                              <a:s r="91">
+                                 <a:s>6 months</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>, &#xd;
+		</a:s>
+                           <a:s r="94">
+                              <a:s>end of </a:s>
+                              <a:s r="93">
+                                 <a:s>&quot;Measurement Period&quot;</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>]</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns22="urn:healthit-gov:qdm:v5_4" name="ns22:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="97" locator="135:2-137:30" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns23="urn:healthit-gov:qdm:v5_4" name="ns23:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="86" locator="135:2-135:96" alias="NewBPHDiagnosis">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns24="urn:healthit-gov:qdm:v5_4" name="ns24:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="85" locator="135:2-135:80" xmlns:ns25="urn:healthit-gov:qdm:v5_4" dataType="ns25:Diagnosis" codeProperty="code" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns26="urn:healthit-gov:qdm:v5_4" name="ns26:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <codes xsi:type="ToList">
+                     <operand locator="135:16-135:79" resultTypeName="t:Code" name="Benign prostatic hyperplasia with lower urinary tract symptoms" xsi:type="CodeRef"/>
+                  </codes>
+               </expression>
+            </source>
+            <where localId="96" locator="136:3-137:30" resultTypeName="t:Boolean" xsi:type="In">
+               <operand locator="136:42-136:47" xsi:type="Start">
+                  <operand localId="88" locator="136:9-136:40" path="prevalencePeriod" scope="NewBPHDiagnosis" xsi:type="Property">
+                     <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </operand>
+               </operand>
+               <operand localId="95" locator="136:56-137:30" lowClosed="true" highClosed="true" xsi:type="Interval">
+                  <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                     <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <low localId="92" locator="136:65-136:104" resultTypeName="t:DateTime" xsi:type="Subtract">
+                     <operand localId="90" locator="136:65-136:93" resultTypeName="t:DateTime" xsi:type="Start">
+                        <operand localId="89" locator="136:74-136:93" name="Measurement Period" xsi:type="ParameterRef">
+                           <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                              <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </operand>
+                     </operand>
+                     <operand localId="91" locator="136:97-136:104" resultTypeName="t:Quantity" value="6" unit="months" xsi:type="Quantity"/>
+                  </low>
+                  <high localId="94" locator="137:3-137:29" resultTypeName="t:DateTime" xsi:type="End">
+                     <operand localId="93" locator="137:10-137:29" name="Measurement Period" xsi:type="ParameterRef">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </operand>
+                  </high>
+               </operand>
+            </where>
+         </expression>
+      </def>
+      <def localId="117" locator="62:1-67:16" name="Initial BPH Diagnosis Starts During or Within 30 Days After End of Hospitalization" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="117">
+               <a:s>define &quot;Initial BPH Diagnosis Starts During or Within 30 Days After End of Hospitalization&quot;:&#xd;
+	</a:s>
+               <a:s r="116">
+                  <a:s>
+                     <a:s r="100">
+                        <a:s r="99">
+                           <a:s>
+                              <a:s>&quot;Initial BPH Diagnosis Within 6 Months Before or After Start of Measurement Period&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> InitialBPHDiagnosis</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="115">
+                     <a:s>with </a:s>
+                     <a:s r="102">
+                        <a:s r="101">
+                           <a:s r="101">
+                              <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Hospital Services for urology care&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> InHospitalServices</a:s>
+                     </a:s>
+                     <a:s>&#xd;
+			such that </a:s>
+                     <a:s r="114">
+                        <a:s r="104">
+                           <a:s r="103">
+                              <a:s>InitialBPHDiagnosis</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="104">
+                              <a:s>prevalencePeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="114"> starts during </a:s>
+                        <a:s r="113">
+                           <a:s>Interval[</a:s>
+                           <a:s r="107">
+                              <a:s>start of </a:s>
+                              <a:s r="106">
+                                 <a:s r="105">
+                                    <a:s>InHospitalServices</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="106">
+                                    <a:s>relevantPeriod</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>, </a:s>
+                           <a:s r="112">
+                              <a:s r="110">
+                                 <a:s>( &#xd;
+				</a:s>
+                                 <a:s r="110">
+                                    <a:s>end of </a:s>
+                                    <a:s r="109">
+                                       <a:s r="108">
+                                          <a:s>InHospitalServices</a:s>
+                                       </a:s>
+                                       <a:s>.</a:s>
+                                       <a:s r="109">
+                                          <a:s>relevantPeriod</a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>&#xd;
+			)</a:s>
+                              </a:s>
+                              <a:s> + </a:s>
+                              <a:s r="111">
+                                 <a:s>31 days</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> )</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns27="urn:healthit-gov:qdm:v5_4" name="ns27:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="116" locator="63:2-67:16" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns28="urn:healthit-gov:qdm:v5_4" name="ns28:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="100" locator="63:2-63:104" alias="InitialBPHDiagnosis">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns29="urn:healthit-gov:qdm:v5_4" name="ns29:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="99" locator="63:2-63:84" name="Initial BPH Diagnosis Within 6 Months Before or After Start of Measurement Period" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns30="urn:healthit-gov:qdm:v5_4" name="ns30:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </expression>
+            </source>
+            <relationship localId="115" locator="64:3-67:16" alias="InHospitalServices" xsi:type="With">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns31="urn:healthit-gov:qdm:v5_4" name="ns31:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="101" locator="64:8-64:69" xmlns:ns32="urn:healthit-gov:qdm:v5_4" dataType="ns32:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns33="urn:healthit-gov:qdm:v5_4" name="ns33:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <codes locator="64:33-64:68" name="Hospital Services for urology care" xsi:type="ValueSetRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </codes>
+               </expression>
+               <suchThat localId="114" locator="65:14-67:16" resultTypeName="t:Boolean" xsi:type="In">
+                  <operand locator="65:51-65:56" xsi:type="Start">
+                     <operand localId="104" locator="65:14-65:49" path="prevalencePeriod" scope="InitialBPHDiagnosis" xsi:type="Property">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </operand>
+                  </operand>
+                  <operand localId="113" locator="65:65-67:16" lowClosed="true" highClosed="false" xsi:type="Interval">
+                     <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <low localId="107" locator="65:74-65:115" resultTypeName="t:DateTime" xsi:type="Start">
+                        <operand localId="106" locator="65:83-65:115" path="relevantPeriod" scope="InHospitalServices" xsi:type="Property">
+                           <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                              <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </operand>
+                     </low>
+                     <high localId="112" locator="65:118-67:14" resultTypeName="t:DateTime" xsi:type="Add">
+                        <operand localId="110" locator="65:118-67:4" resultTypeName="t:DateTime" xsi:type="End">
+                           <operand localId="109" locator="66:12-66:44" path="relevantPeriod" scope="InHospitalServices" xsi:type="Property">
+                              <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                 <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                           </operand>
+                        </operand>
+                        <operand localId="111" locator="67:8-67:14" resultTypeName="t:Quantity" value="31" unit="days" xsi:type="Quantity"/>
+                     </high>
+                  </operand>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def localId="120" locator="69:1-70:46" resultTypeName="t:Boolean" name="Patient is Male" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="120">
+               <a:s>define &quot;Patient is Male&quot;:&#xd;
+	</a:s>
+               <a:s r="119">
+                  <a:s>exists </a:s>
+                  <a:s r="118">
+                     <a:s>[&quot;Patient Characteristic Sex&quot;: </a:s>
+                     <a:s>
+                        <a:s>&quot;Male&quot;</a:s>
+                     </a:s>
+                     <a:s>]</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="119" locator="70:2-70:46" resultTypeName="t:Boolean" xsi:type="Exists">
+            <operand localId="118" locator="70:9-70:46" xmlns:ns34="urn:healthit-gov:qdm:v5_4" dataType="ns34:PatientCharacteristicSex" codeProperty="code" xsi:type="Retrieve">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns35="urn:healthit-gov:qdm:v5_4" name="ns35:PatientCharacteristicSex" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <codes xsi:type="ToList">
+                  <operand locator="70:40-70:45" resultTypeName="t:Code" name="Male" xsi:type="CodeRef"/>
+               </codes>
+            </operand>
+         </expression>
+      </def>
+      <def localId="128" locator="72:1-74:65" name="Qualifying Encounter" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="128">
+               <a:s>define &quot;Qualifying Encounter&quot;:&#xd;
+	</a:s>
+               <a:s r="127">
+                  <a:s>
+                     <a:s r="122">
+                        <a:s r="121">
+                           <a:s r="121">
+                              <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Office Visit&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> ValidEncounter</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="126">
+                     <a:s>where </a:s>
+                     <a:s r="126">
+                        <a:s r="124">
+                           <a:s r="123">
+                              <a:s>ValidEncounter</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="124">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="126"> during </a:s>
+                        <a:s r="125">
+                           <a:s>&quot;Measurement Period&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns36="urn:healthit-gov:qdm:v5_4" name="ns36:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="127" locator="73:2-74:65" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns37="urn:healthit-gov:qdm:v5_4" name="ns37:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="122" locator="73:2-73:56" alias="ValidEncounter">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns38="urn:healthit-gov:qdm:v5_4" name="ns38:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="121" locator="73:2-73:41" xmlns:ns39="urn:healthit-gov:qdm:v5_4" dataType="ns39:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" dateProperty="relevantPeriod" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns40="urn:healthit-gov:qdm:v5_4" name="ns40:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <codes locator="73:27-73:40" name="Office Visit" xsi:type="ValueSetRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </codes>
+                  <dateRange localId="125" locator="74:46-74:65" name="Measurement Period" xsi:type="ParameterRef">
+                     <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </dateRange>
+               </expression>
+            </source>
+         </expression>
+      </def>
+      <def localId="132" locator="76:1-78:65" name="Urinary Symptom Score" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="132">
+               <a:s>define &quot;Urinary Symptom Score&quot;:&#xd;
+	</a:s>
+               <a:s r="131">
+                  <a:s r="129">
+                     <a:s>&quot;Documented IPSS Assessment Result&quot;</a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		union </a:s>
+                  <a:s r="130">
+                     <a:s>&quot;AUA Symptom Index and Quality of Life Assessment Result&quot;</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xsi:type="TupleTypeSpecifier">
+               <element name="authorDatetime">
+                  <type name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+               </element>
+               <element name="result">
+                  <type name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+               </element>
+            </elementType>
+         </resultTypeSpecifier>
+         <expression localId="131" locator="77:2-78:65" xsi:type="Union">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xsi:type="TupleTypeSpecifier">
+                  <element name="authorDatetime">
+                     <type name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                  </element>
+                  <element name="result">
+                     <type name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                  </element>
+               </elementType>
+            </resultTypeSpecifier>
+            <operand localId="129" locator="77:2-77:36" name="Documented IPSS Assessment Result" xsi:type="ExpressionRef">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xsi:type="TupleTypeSpecifier">
+                     <element name="authorDatetime">
+                        <type name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </element>
+                     <element name="result">
+                        <type name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                     </element>
+                  </elementType>
+               </resultTypeSpecifier>
+            </operand>
+            <operand localId="130" locator="78:9-78:65" name="AUA Symptom Index and Quality of Life Assessment Result" xsi:type="ExpressionRef">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xsi:type="TupleTypeSpecifier">
+                     <element name="authorDatetime">
+                        <type name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </element>
+                     <element name="result">
+                        <type name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                     </element>
+                  </elementType>
+               </resultTypeSpecifier>
+            </operand>
+         </expression>
+      </def>
+      <def localId="157" locator="105:1-110:2" name="Urinary Symptom Score Within 1 Month after Initial BPH Diagnosis" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="157">
+               <a:s>define &quot;Urinary Symptom Score Within 1 Month after Initial BPH Diagnosis&quot;:&#xd;
+	</a:s>
+               <a:s r="156">
+                  <a:s>First(</a:s>
+                  <a:s r="155">
+                     <a:s>
+                        <a:s r="141">
+                           <a:s r="140">
+                              <a:s>
+                                 <a:s>&quot;Urinary Symptom Score&quot;</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> InitialUSSAssessment</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>&#xd;
+			</a:s>
+                     <a:s r="151">
+                        <a:s>with </a:s>
+                        <a:s r="143">
+                           <a:s r="142">
+                              <a:s>
+                                 <a:s>&quot;Initial BPH Diagnosis Within 6 Months Before or After Start of Measurement Period&quot;</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> InitialBPHDiagnosis</a:s>
+                        </a:s>
+                        <a:s>&#xd;
+				such that </a:s>
+                        <a:s r="150">
+                           <a:s r="145">
+                              <a:s r="144">
+                                 <a:s>InitialUSSAssessment</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="145">
+                                 <a:s>authorDatetime</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> </a:s>
+                           <a:s r="150">
+                              <a:s r="149">
+                                 <a:s>1 month</a:s>
+                              </a:s>
+                              <a:s> or less on or after day of</a:s>
+                           </a:s>
+                           <a:s> </a:s>
+                           <a:s r="148">
+                              <a:s>start of </a:s>
+                              <a:s r="147">
+                                 <a:s r="146">
+                                    <a:s>InitialBPHDiagnosis</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="147">
+                                    <a:s>prevalencePeriod</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>&#xd;
+			</a:s>
+                     <a:s r="154">
+                        <a:s>sort by </a:s>
+                        <a:s r="153">
+                           <a:s r="152">
+                              <a:s>authorDatetime</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+	)</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="TupleTypeSpecifier">
+            <element name="authorDatetime">
+               <type name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+            </element>
+            <element name="result">
+               <type name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+            </element>
+         </resultTypeSpecifier>
+         <expression localId="156" locator="106:2-110:2" xsi:type="First">
+            <resultTypeSpecifier xsi:type="TupleTypeSpecifier">
+               <element name="authorDatetime">
+                  <type name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+               </element>
+               <element name="result">
+                  <type name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+               </element>
+            </resultTypeSpecifier>
+            <source localId="155" locator="106:8-109:25" xsi:type="Query">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xsi:type="TupleTypeSpecifier">
+                     <element name="authorDatetime">
+                        <type name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </element>
+                     <element name="result">
+                        <type name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                     </element>
+                  </elementType>
+               </resultTypeSpecifier>
+               <source localId="141" locator="106:8-106:51" alias="InitialUSSAssessment">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xsi:type="TupleTypeSpecifier">
+                        <element name="authorDatetime">
+                           <type name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </element>
+                        <element name="result">
+                           <type name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                        </element>
+                     </elementType>
+                  </resultTypeSpecifier>
+                  <expression localId="140" locator="106:8-106:30" name="Urinary Symptom Score" xsi:type="ExpressionRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xsi:type="TupleTypeSpecifier">
+                           <element name="authorDatetime">
+                              <type name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </element>
+                           <element name="result">
+                              <type name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                           </element>
+                        </elementType>
+                     </resultTypeSpecifier>
+                  </expression>
+               </source>
+               <relationship localId="151" locator="107:4-108:130" alias="InitialBPHDiagnosis" xsi:type="With">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns41="urn:healthit-gov:qdm:v5_4" name="ns41:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <expression localId="142" locator="107:9-107:91" name="Initial BPH Diagnosis Within 6 Months Before or After Start of Measurement Period" xsi:type="ExpressionRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xmlns:ns42="urn:healthit-gov:qdm:v5_4" name="ns42:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </expression>
+                  <suchThat localId="150" locator="108:15-108:130" resultTypeName="t:Boolean" xsi:type="And">
+                     <operand locator="108:51-108:65" precision="Day" xsi:type="In">
+                        <operand localId="145" locator="108:15-108:49" resultTypeName="t:DateTime" path="authorDatetime" scope="InitialUSSAssessment" xsi:type="Property"/>
+                        <operand locator="108:51-108:65" lowClosed="true" highClosed="true" xsi:type="Interval">
+                           <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                              <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <low localId="148" locator="108:86-108:130" resultTypeName="t:DateTime" xsi:type="Start">
+                              <operand localId="147" locator="108:95-108:130" path="prevalencePeriod" scope="InitialBPHDiagnosis" xsi:type="Property">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </low>
+                           <high locator="108:86-108:130" xsi:type="Add">
+                              <operand localId="148" locator="108:86-108:130" resultTypeName="t:DateTime" xsi:type="Start">
+                                 <operand localId="147" locator="108:95-108:130" path="prevalencePeriod" scope="InitialBPHDiagnosis" xsi:type="Property">
+                                    <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                       <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                    </resultTypeSpecifier>
+                                 </operand>
+                              </operand>
+                              <operand localId="149" locator="108:51-108:57" resultTypeName="t:Quantity" value="1" unit="month" xsi:type="Quantity"/>
+                           </high>
+                        </operand>
+                     </operand>
+                     <operand locator="108:51-108:65" xsi:type="Not">
+                        <operand locator="108:51-108:65" xsi:type="IsNull">
+                           <operand localId="148" locator="108:86-108:130" resultTypeName="t:DateTime" xsi:type="Start">
+                              <operand localId="147" locator="108:95-108:130" path="prevalencePeriod" scope="InitialBPHDiagnosis" xsi:type="Property">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </operand>
+                        </operand>
+                     </operand>
+                  </suchThat>
+               </relationship>
+               <sort localId="154" locator="109:4-109:25">
+                  <by localId="153" locator="109:12-109:25" resultTypeName="t:DateTime" direction="asc" path="authorDatetime" xsi:type="ByColumn"/>
+               </sort>
+            </source>
+         </expression>
+      </def>
+      <def localId="181" locator="146:1-151:2" name="Urinary Symptom Score 6 to 12 Months After Initial BPH Diagnosis" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="181">
+               <a:s>define &quot;Urinary Symptom Score 6 to 12 Months After Initial BPH Diagnosis&quot;:&#xd;
+	</a:s>
+               <a:s r="180">
+                  <a:s>Last(</a:s>
+                  <a:s r="179">
+                     <a:s>
+                        <a:s r="162">
+                           <a:s r="161">
+                              <a:s>
+                                 <a:s>&quot;Urinary Symptom Score&quot;</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> LastUSSAssessment</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>&#xd;
+			</a:s>
+                     <a:s r="175">
+                        <a:s>with </a:s>
+                        <a:s r="164">
+                           <a:s r="163">
+                              <a:s>
+                                 <a:s>&quot;Initial BPH Diagnosis Within 6 Months Before or After Start of Measurement Period&quot;</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> InitialBPHDiagnosis</a:s>
+                        </a:s>
+                        <a:s>&#xd;
+				such that </a:s>
+                        <a:s r="174">
+                           <a:s r="170">
+                              <a:s>months between </a:s>
+                              <a:s r="167">
+                                 <a:s>start of </a:s>
+                                 <a:s r="166">
+                                    <a:s r="165">
+                                       <a:s>InitialBPHDiagnosis</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="166">
+                                       <a:s>prevalencePeriod</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> and </a:s>
+                              <a:s r="169">
+                                 <a:s r="168">
+                                    <a:s>LastUSSAssessment</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="169">
+                                    <a:s>authorDatetime</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> in </a:s>
+                           <a:s r="173">
+                              <a:s r="171">Interval[6, 12]</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>&#xd;
+			</a:s>
+                     <a:s r="178">
+                        <a:s>sort by </a:s>
+                        <a:s r="177">
+                           <a:s r="176">
+                              <a:s>authorDatetime</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+	)</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="TupleTypeSpecifier">
+            <element name="authorDatetime">
+               <type name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+            </element>
+            <element name="result">
+               <type name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+            </element>
+         </resultTypeSpecifier>
+         <expression localId="180" locator="147:2-151:2" xsi:type="Last">
+            <resultTypeSpecifier xsi:type="TupleTypeSpecifier">
+               <element name="authorDatetime">
+                  <type name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+               </element>
+               <element name="result">
+                  <type name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+               </element>
+            </resultTypeSpecifier>
+            <source localId="179" locator="147:7-150:25" xsi:type="Query">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xsi:type="TupleTypeSpecifier">
+                     <element name="authorDatetime">
+                        <type name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </element>
+                     <element name="result">
+                        <type name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                     </element>
+                  </elementType>
+               </resultTypeSpecifier>
+               <source localId="162" locator="147:7-147:47" alias="LastUSSAssessment">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xsi:type="TupleTypeSpecifier">
+                        <element name="authorDatetime">
+                           <type name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </element>
+                        <element name="result">
+                           <type name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                        </element>
+                     </elementType>
+                  </resultTypeSpecifier>
+                  <expression localId="161" locator="147:7-147:29" name="Urinary Symptom Score" xsi:type="ExpressionRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xsi:type="TupleTypeSpecifier">
+                           <element name="authorDatetime">
+                              <type name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </element>
+                           <element name="result">
+                              <type name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                           </element>
+                        </elementType>
+                     </resultTypeSpecifier>
+                  </expression>
+               </source>
+               <relationship localId="175" locator="148:4-149:130" alias="InitialBPHDiagnosis" xsi:type="With">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns43="urn:healthit-gov:qdm:v5_4" name="ns43:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <expression localId="163" locator="148:9-148:91" name="Initial BPH Diagnosis Within 6 Months Before or After Start of Measurement Period" xsi:type="ExpressionRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xmlns:ns44="urn:healthit-gov:qdm:v5_4" name="ns44:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </expression>
+                  <suchThat localId="174" locator="149:15-149:130" resultTypeName="t:Boolean" xsi:type="In">
+                     <operand localId="170" locator="149:15-149:111" resultTypeName="t:Integer" precision="Month" xsi:type="DurationBetween">
+                        <operand localId="167" locator="149:30-149:74" resultTypeName="t:DateTime" xsi:type="Start">
+                           <operand localId="166" locator="149:39-149:74" path="prevalencePeriod" scope="InitialBPHDiagnosis" xsi:type="Property">
+                              <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                 <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                           </operand>
+                        </operand>
+                        <operand localId="169" locator="149:80-149:111" resultTypeName="t:DateTime" path="authorDatetime" scope="LastUSSAssessment" xsi:type="Property"/>
+                     </operand>
+                     <operand localId="173" locator="149:116-149:130" lowClosed="true" highClosed="true" xsi:type="Interval">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <low localId="171" locator="149:125" resultTypeName="t:Integer" valueType="t:Integer" value="6" xsi:type="Literal"/>
+                        <high localId="172" locator="149:128-149:129" resultTypeName="t:Integer" valueType="t:Integer" value="12" xsi:type="Literal"/>
+                     </operand>
+                  </suchThat>
+               </relationship>
+               <sort localId="178" locator="150:4-150:25">
+                  <by localId="177" locator="150:12-150:25" resultTypeName="t:DateTime" direction="asc" path="authorDatetime" xsi:type="ByColumn"/>
+               </sort>
+            </source>
+         </expression>
+      </def>
+      <def localId="185" locator="80:1-85:84" resultTypeName="t:Boolean" name="Initial Population" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="185">
+               <a:s>define &quot;Initial Population&quot;:&#xd;
+	</a:s>
+               <a:s r="184">
+                  <a:s r="160">
+                     <a:s r="139">
+                        <a:s r="136">
+                           <a:s r="133">
+                              <a:s>( </a:s>
+                              <a:s r="133">
+                                 <a:s>&quot;Patient is Male&quot;</a:s>
+                              </a:s>
+                              <a:s> )</a:s>
+                           </a:s>
+                           <a:s>&#xd;
+		and </a:s>
+                           <a:s r="135">
+                              <a:s>exists </a:s>
+                              <a:s r="134">
+                                 <a:s>( </a:s>
+                                 <a:s r="134">
+                                    <a:s>&quot;Qualifying Encounter&quot;</a:s>
+                                 </a:s>
+                                 <a:s> )</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>&#xd;
+		and </a:s>
+                        <a:s r="138">
+                           <a:s>exists </a:s>
+                           <a:s r="137">
+                              <a:s>( </a:s>
+                              <a:s r="137">
+                                 <a:s>&quot;Initial BPH Diagnosis Within 6 Months Before or After Start of Measurement Period&quot;</a:s>
+                              </a:s>
+                              <a:s> )</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>&#xd;
+		and </a:s>
+                     <a:s r="159">
+                        <a:s r="158">
+                           <a:s>&quot;Urinary Symptom Score Within 1 Month after Initial BPH Diagnosis&quot;</a:s>
+                        </a:s>
+                        <a:s> is not null</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		and </a:s>
+                  <a:s r="183">
+                     <a:s r="182">
+                        <a:s>&quot;Urinary Symptom Score 6 to 12 Months After Initial BPH Diagnosis&quot;</a:s>
+                     </a:s>
+                     <a:s> is not null</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="184" locator="81:2-85:84" resultTypeName="t:Boolean" xsi:type="And">
+            <operand localId="160" locator="81:2-84:84" resultTypeName="t:Boolean" xsi:type="And">
+               <operand localId="139" locator="81:2-83:100" resultTypeName="t:Boolean" xsi:type="And">
+                  <operand localId="136" locator="81:2-82:39" resultTypeName="t:Boolean" xsi:type="And">
+                     <operand localId="133" locator="81:2-81:22" resultTypeName="t:Boolean" name="Patient is Male" xsi:type="ExpressionRef"/>
+                     <operand localId="135" locator="82:7-82:39" resultTypeName="t:Boolean" xsi:type="Exists">
+                        <operand localId="134" locator="82:14-82:39" name="Qualifying Encounter" xsi:type="ExpressionRef">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType xmlns:ns45="urn:healthit-gov:qdm:v5_4" name="ns45:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </operand>
+                     </operand>
+                  </operand>
+                  <operand localId="138" locator="83:7-83:100" resultTypeName="t:Boolean" xsi:type="Exists">
+                     <operand localId="137" locator="83:14-83:100" name="Initial BPH Diagnosis Within 6 Months Before or After Start of Measurement Period" xsi:type="ExpressionRef">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType xmlns:ns46="urn:healthit-gov:qdm:v5_4" name="ns46:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </operand>
+                  </operand>
+               </operand>
+               <operand localId="159" locator="84:7-84:84" resultTypeName="t:Boolean" xsi:type="Not">
+                  <operand locator="84:7-84:84" resultTypeName="t:Boolean" xsi:type="IsNull">
+                     <operand localId="158" locator="84:7-84:72" name="Urinary Symptom Score Within 1 Month after Initial BPH Diagnosis" xsi:type="ExpressionRef">
+                        <resultTypeSpecifier xsi:type="TupleTypeSpecifier">
+                           <element name="authorDatetime">
+                              <type name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </element>
+                           <element name="result">
+                              <type name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                           </element>
+                        </resultTypeSpecifier>
+                     </operand>
+                  </operand>
+               </operand>
+            </operand>
+            <operand localId="183" locator="85:7-85:84" resultTypeName="t:Boolean" xsi:type="Not">
+               <operand locator="85:7-85:84" resultTypeName="t:Boolean" xsi:type="IsNull">
+                  <operand localId="182" locator="85:7-85:72" name="Urinary Symptom Score 6 to 12 Months After Initial BPH Diagnosis" xsi:type="ExpressionRef">
+                     <resultTypeSpecifier xsi:type="TupleTypeSpecifier">
+                        <element name="authorDatetime">
+                           <type name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </element>
+                        <element name="result">
+                           <type name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                        </element>
+                     </resultTypeSpecifier>
+                  </operand>
+               </operand>
+            </operand>
+         </expression>
+      </def>
+      <def localId="187" locator="87:1-88:21" resultTypeName="t:Boolean" name="Denominator" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="187">
+               <a:s>define &quot;Denominator&quot;:&#xd;
+	</a:s>
+               <a:s r="186">
+                  <a:s>&quot;Initial Population&quot;</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="186" locator="88:2-88:21" resultTypeName="t:Boolean" name="Initial Population" xsi:type="ExpressionRef"/>
+      </def>
+      <def localId="201" locator="98:1-103:18" resultTypeName="t:Integer" name="Urinary Symptom Score Improvement" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="201">
+               <a:s>define &quot;Urinary Symptom Score Improvement&quot;:&#xd;
+	</a:s>
+               <a:s r="200">
+                  <a:s>
+                     <a:s>from&#xd;
+		</a:s>
+                     <a:s r="189">
+                        <a:s r="188">
+                           <a:s>
+                              <a:s>&quot;Urinary Symptom Score Within 1 Month after Initial BPH Diagnosis&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> FirstUSSAssessment</a:s>
+                     </a:s>
+                     <a:s>,&#xd;
+		</a:s>
+                     <a:s r="191">
+                        <a:s r="190">
+                           <a:s>
+                              <a:s>&quot;Urinary Symptom Score 6 to 12 Months After Initial BPH Diagnosis&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> FollowUpUSSAssessment</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s>
+                     <a:s>let </a:s>
+                     <a:s r="197">
+                        <a:s>USSChange: </a:s>
+                        <a:s r="196">
+                           <a:s r="193">
+                              <a:s r="192">
+                                 <a:s>FirstUSSAssessment</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="193">
+                                 <a:s>result</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> - </a:s>
+                           <a:s r="195">
+                              <a:s r="194">
+                                 <a:s>FollowUpUSSAssessment</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="195">
+                                 <a:s>result</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="199">
+                     <a:s>return </a:s>
+                     <a:s r="198">
+                        <a:s>USSChange</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="200" locator="99:2-103:18" resultTypeName="t:Integer" xsi:type="Query">
+            <source localId="189" locator="100:3-100:87" alias="FirstUSSAssessment">
+               <resultTypeSpecifier xsi:type="TupleTypeSpecifier">
+                  <element name="authorDatetime">
+                     <type name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                  </element>
+                  <element name="result">
+                     <type name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                  </element>
+               </resultTypeSpecifier>
+               <expression localId="188" locator="100:3-100:68" name="Urinary Symptom Score Within 1 Month after Initial BPH Diagnosis" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="TupleTypeSpecifier">
+                     <element name="authorDatetime">
+                        <type name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </element>
+                     <element name="result">
+                        <type name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                     </element>
+                  </resultTypeSpecifier>
+               </expression>
+            </source>
+            <source localId="191" locator="101:3-101:90" alias="FollowUpUSSAssessment">
+               <resultTypeSpecifier xsi:type="TupleTypeSpecifier">
+                  <element name="authorDatetime">
+                     <type name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                  </element>
+                  <element name="result">
+                     <type name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                  </element>
+               </resultTypeSpecifier>
+               <expression localId="190" locator="101:3-101:68" name="Urinary Symptom Score 6 to 12 Months After Initial BPH Diagnosis" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="TupleTypeSpecifier">
+                     <element name="authorDatetime">
+                        <type name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </element>
+                     <element name="result">
+                        <type name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                     </element>
+                  </resultTypeSpecifier>
+               </expression>
+            </source>
+            <let localId="197" locator="102:7-102:73" resultTypeName="t:Integer" identifier="USSChange">
+               <expression localId="196" locator="102:18-102:73" resultTypeName="t:Integer" xsi:type="Subtract">
+                  <operand localId="193" locator="102:18-102:42" resultTypeName="t:Integer" path="result" scope="FirstUSSAssessment" xsi:type="Property"/>
+                  <operand localId="195" locator="102:46-102:73" resultTypeName="t:Integer" path="result" scope="FollowUpUSSAssessment" xsi:type="Property"/>
+               </expression>
+            </let>
+            <return localId="199" locator="103:3-103:18" resultTypeName="t:Integer">
+               <expression localId="198" locator="103:10-103:18" resultTypeName="t:Integer" name="USSChange" xsi:type="QueryLetRef"/>
+            </return>
+         </expression>
+      </def>
+      <def localId="209" locator="93:1-96:14" resultTypeName="t:Boolean" name="Urinary Symptom Score Improvement Greater Than or Equal To 3" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="209">
+               <a:s>define &quot;Urinary Symptom Score Improvement Greater Than or Equal To 3&quot;:&#xd;
+	</a:s>
+               <a:s r="208">
+                  <a:s r="207">
+                     <a:s>( </a:s>
+                     <a:s r="207">
+                        <a:s>
+                           <a:s r="203">
+                              <a:s r="202">
+                                 <a:s>
+                                    <a:s>&quot;Urinary Symptom Score Improvement&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> USSImprovement</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>&#xd;
+			</a:s>
+                        <a:s r="206">
+                           <a:s>where </a:s>
+                           <a:s r="206">
+                              <a:s r="204">
+                                 <a:s>USSImprovement</a:s>
+                              </a:s>
+                              <a:s r="205"> >= 3</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>&#xd;
+	)</a:s>
+                  </a:s>
+                  <a:s> is not null</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="208" locator="94:2-96:14" resultTypeName="t:Boolean" xsi:type="Not">
+            <operand locator="94:2-96:14" resultTypeName="t:Boolean" xsi:type="IsNull">
+               <operand localId="207" locator="94:2-96:2" resultTypeName="t:Integer" xsi:type="Query">
+                  <source localId="203" locator="94:4-94:53" resultTypeName="t:Integer" alias="USSImprovement">
+                     <expression localId="202" locator="94:4-94:38" resultTypeName="t:Integer" name="Urinary Symptom Score Improvement" xsi:type="ExpressionRef"/>
+                  </source>
+                  <where localId="206" locator="95:4-95:28" resultTypeName="t:Boolean" xsi:type="GreaterOrEqual">
+                     <operand localId="204" locator="95:10-95:23" resultTypeName="t:Integer" name="USSImprovement" xsi:type="AliasRef"/>
+                     <operand localId="205" locator="95:28" resultTypeName="t:Integer" valueType="t:Integer" value="3" xsi:type="Literal"/>
+                  </where>
+               </operand>
+            </operand>
+         </expression>
+      </def>
+      <def localId="211" locator="90:1-91:63" resultTypeName="t:Boolean" name="Numerator" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="211">
+               <a:s>define &quot;Numerator&quot;:&#xd;
+	</a:s>
+               <a:s r="210">
+                  <a:s>&quot;Urinary Symptom Score Improvement Greater Than or Equal To 3&quot;</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="210" locator="91:2-91:63" resultTypeName="t:Boolean" name="Urinary Symptom Score Improvement Greater Than or Equal To 3" xsi:type="ExpressionRef"/>
+      </def>
+      <def localId="225" locator="117:1-120:133" name="Urinary Retention Diagnosis Starts Within 1 Year After Initial BPH Diagnosis" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="225">
+               <a:s>define &quot;Urinary Retention Diagnosis Starts Within 1 Year After Initial BPH Diagnosis&quot;:&#xd;
+	</a:s>
+               <a:s r="224">
+                  <a:s>
+                     <a:s r="213">
+                        <a:s r="212">
+                           <a:s r="212">
+                              <a:s>[&quot;Diagnosis&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Urinary retention&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> UrinaryRetention</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="223">
+                     <a:s>with </a:s>
+                     <a:s r="215">
+                        <a:s r="214">
+                           <a:s>
+                              <a:s>&quot;Initial BPH Diagnosis Within 6 Months Before or After Start of Measurement Period&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> InitialBPHDiagnosis</a:s>
+                     </a:s>
+                     <a:s>&#xd;
+			such that </a:s>
+                     <a:s r="222">
+                        <a:s r="217">
+                           <a:s r="216">
+                              <a:s>UrinaryRetention</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="217">
+                              <a:s>prevalencePeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> </a:s>
+                        <a:s r="222">
+                           <a:s>starts </a:s>
+                           <a:s r="221">
+                              <a:s>1 year</a:s>
+                           </a:s>
+                           <a:s> or less on or after day of</a:s>
+                        </a:s>
+                        <a:s> </a:s>
+                        <a:s r="220">
+                           <a:s>start of </a:s>
+                           <a:s r="219">
+                              <a:s r="218">
+                                 <a:s>InitialBPHDiagnosis</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="219">
+                                 <a:s>prevalencePeriod</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns47="urn:healthit-gov:qdm:v5_4" name="ns47:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="224" locator="118:2-120:133" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns48="urn:healthit-gov:qdm:v5_4" name="ns48:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="213" locator="118:2-118:52" alias="UrinaryRetention">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns49="urn:healthit-gov:qdm:v5_4" name="ns49:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="212" locator="118:2-118:35" xmlns:ns50="urn:healthit-gov:qdm:v5_4" dataType="ns50:Diagnosis" codeProperty="code" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns51="urn:healthit-gov:qdm:v5_4" name="ns51:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <codes locator="118:16-118:34" name="Urinary retention" xsi:type="ValueSetRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </codes>
+               </expression>
+            </source>
+            <relationship localId="223" locator="119:3-120:133" alias="InitialBPHDiagnosis" xsi:type="With">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns52="urn:healthit-gov:qdm:v5_4" name="ns52:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="214" locator="119:8-119:90" name="Initial BPH Diagnosis Within 6 Months Before or After Start of Measurement Period" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns53="urn:healthit-gov:qdm:v5_4" name="ns53:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </expression>
+               <suchThat localId="222" locator="120:14-120:133" resultTypeName="t:Boolean" xsi:type="And">
+                  <operand locator="120:55-120:68" precision="Day" xsi:type="In">
+                     <operand locator="120:48-120:53" xsi:type="Start">
+                        <operand localId="217" locator="120:14-120:46" path="prevalencePeriod" scope="UrinaryRetention" xsi:type="Property">
+                           <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                              <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </operand>
+                     </operand>
+                     <operand locator="120:55-120:68" lowClosed="true" highClosed="true" xsi:type="Interval">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <low localId="220" locator="120:89-120:133" resultTypeName="t:DateTime" xsi:type="Start">
+                           <operand localId="219" locator="120:98-120:133" path="prevalencePeriod" scope="InitialBPHDiagnosis" xsi:type="Property">
+                              <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                 <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                           </operand>
+                        </low>
+                        <high locator="120:89-120:133" xsi:type="Add">
+                           <operand localId="220" locator="120:89-120:133" resultTypeName="t:DateTime" xsi:type="Start">
+                              <operand localId="219" locator="120:98-120:133" path="prevalencePeriod" scope="InitialBPHDiagnosis" xsi:type="Property">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </operand>
+                           <operand localId="221" locator="120:55-120:60" resultTypeName="t:Quantity" value="1" unit="year" xsi:type="Quantity"/>
+                        </high>
+                     </operand>
+                  </operand>
+                  <operand locator="120:55-120:68" xsi:type="Not">
+                     <operand locator="120:55-120:68" xsi:type="IsNull">
+                        <operand localId="220" locator="120:89-120:133" resultTypeName="t:DateTime" xsi:type="Start">
+                           <operand localId="219" locator="120:98-120:133" path="prevalencePeriod" scope="InitialBPHDiagnosis" xsi:type="Property">
+                              <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                 <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                           </operand>
+                        </operand>
+                     </operand>
+                  </operand>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def localId="247" locator="139:1-144:4" name="Morbid Obesity Diagnosis On or Before Follow Up USS Assessment" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="247">
+               <a:s>define &quot;Morbid Obesity Diagnosis On or Before Follow Up USS Assessment&quot;:&#xd;
+	</a:s>
+               <a:s r="246">
+                  <a:s>
+                     <a:s r="232">
+                        <a:s r="231">
+                           <a:s r="231">
+                              <a:s>[&quot;Diagnosis&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Morbid Obesity&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> MorbidObesity</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="245">
+                     <a:s>with </a:s>
+                     <a:s r="234">
+                        <a:s r="233">
+                           <a:s>
+                              <a:s>&quot;Urinary Symptom Score 6 to 12 Months After Initial BPH Diagnosis&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> FollowUpUSSAssessment</a:s>
+                     </a:s>
+                     <a:s>&#xd;
+			such that </a:s>
+                     <a:s r="244">
+                        <a:s>( </a:s>
+                        <a:s r="244">
+                           <a:s r="238">
+                              <a:s r="236">
+                                 <a:s r="235">
+                                    <a:s>MorbidObesity</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="236">
+                                    <a:s>prevalencePeriod</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s r="238"> overlaps </a:s>
+                              <a:s r="237">
+                                 <a:s>&quot;Measurement Period&quot;</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>&#xd;
+					and </a:s>
+                           <a:s r="243">
+                              <a:s r="240">
+                                 <a:s r="239">
+                                    <a:s>MorbidObesity</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="240">
+                                    <a:s>authorDatetime</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s r="243"> on or before </a:s>
+                              <a:s r="242">
+                                 <a:s r="241">
+                                    <a:s>FollowUpUSSAssessment</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="242">
+                                    <a:s>authorDatetime</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>&#xd;
+			)</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns54="urn:healthit-gov:qdm:v5_4" name="ns54:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="246" locator="140:2-144:4" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns55="urn:healthit-gov:qdm:v5_4" name="ns55:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="232" locator="140:2-140:46" alias="MorbidObesity">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns56="urn:healthit-gov:qdm:v5_4" name="ns56:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="231" locator="140:2-140:32" xmlns:ns57="urn:healthit-gov:qdm:v5_4" dataType="ns57:Diagnosis" codeProperty="code" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns58="urn:healthit-gov:qdm:v5_4" name="ns58:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <codes locator="140:16-140:31" name="Morbid Obesity" xsi:type="ValueSetRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </codes>
+               </expression>
+            </source>
+            <relationship localId="245" locator="141:3-144:4" alias="FollowUpUSSAssessment" xsi:type="With">
+               <resultTypeSpecifier xsi:type="TupleTypeSpecifier">
+                  <element name="authorDatetime">
+                     <type name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                  </element>
+                  <element name="result">
+                     <type name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                  </element>
+               </resultTypeSpecifier>
+               <expression localId="233" locator="141:8-141:73" name="Urinary Symptom Score 6 to 12 Months After Initial BPH Diagnosis" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="TupleTypeSpecifier">
+                     <element name="authorDatetime">
+                        <type name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </element>
+                     <element name="result">
+                        <type name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                     </element>
+                  </resultTypeSpecifier>
+               </expression>
+               <suchThat localId="244" locator="142:14-144:4" resultTypeName="t:Boolean" xsi:type="And">
+                  <operand localId="238" locator="142:16-142:75" resultTypeName="t:Boolean" xsi:type="Overlaps">
+                     <operand localId="236" locator="142:16-142:45" path="prevalencePeriod" scope="MorbidObesity" xsi:type="Property">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </operand>
+                     <operand localId="237" locator="142:56-142:75" name="Measurement Period" xsi:type="ParameterRef">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </operand>
+                  </operand>
+                  <operand localId="243" locator="143:10-143:87" resultTypeName="t:Boolean" xsi:type="SameOrBefore">
+                     <operand localId="240" locator="143:10-143:37" resultTypeName="t:DateTime" path="authorDatetime" scope="MorbidObesity" xsi:type="Property"/>
+                     <operand localId="242" locator="143:52-143:87" resultTypeName="t:DateTime" path="authorDatetime" scope="FollowUpUSSAssessment" xsi:type="Property"/>
+                  </operand>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def localId="271" locator="126:1-132:35" name="BMI Exam Result Greater Than 40 During Measurement Period and On or Before Follow Up USS Assessment" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="271">
+               <a:s>define &quot;BMI Exam Result Greater Than 40 During Measurement Period and On or Before Follow Up USS Assessment&quot;:&#xd;
+	</a:s>
+               <a:s r="270">
+                  <a:s>
+                     <a:s r="251">
+                        <a:s r="250">
+                           <a:s r="250">
+                              <a:s>[&quot;Physical Exam, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Estimated BMI greater than 40&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> BMIExam</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="269">
+                     <a:s>with </a:s>
+                     <a:s r="253">
+                        <a:s r="252">
+                           <a:s>
+                              <a:s>&quot;Urinary Symptom Score 6 to 12 Months After Initial BPH Diagnosis&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> FollowUpUSSAssessment</a:s>
+                     </a:s>
+                     <a:s>&#xd;
+			such that </a:s>
+                     <a:s r="268">
+                        <a:s r="263">
+                           <a:s>( </a:s>
+                           <a:s r="263">
+                              <a:s r="257">
+                                 <a:s r="255">
+                                    <a:s r="254">
+                                       <a:s>BMIExam</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="255">
+                                       <a:s>authorDatetime</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s r="257"> during </a:s>
+                                 <a:s r="256">
+                                    <a:s>&quot;Measurement Period&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>&#xd;
+					and </a:s>
+                              <a:s r="262">
+                                 <a:s r="259">
+                                    <a:s r="258">
+                                       <a:s>BMIExam</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="259">
+                                       <a:s>authorDatetime</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s r="262"> on or before </a:s>
+                                 <a:s r="261">
+                                    <a:s r="260">
+                                       <a:s>FollowUpUSSAssessment</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="261">
+                                       <a:s>authorDatetime</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>&#xd;
+			)</a:s>
+                        </a:s>
+                        <a:s>&#xd;
+				and </a:s>
+                        <a:s r="267">
+                           <a:s r="265">
+                              <a:s r="264">
+                                 <a:s>BMIExam</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="265">
+                                 <a:s>result</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> > </a:s>
+                           <a:s r="266">
+                              <a:s>40 'kg/m2'</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns59="urn:healthit-gov:qdm:v5_4" name="ns59:PositivePhysicalExamPerformed" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="270" locator="127:2-132:35" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns60="urn:healthit-gov:qdm:v5_4" name="ns60:PositivePhysicalExamPerformed" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="251" locator="127:2-127:70" alias="BMIExam">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns61="urn:healthit-gov:qdm:v5_4" name="ns61:PositivePhysicalExamPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="250" locator="127:2-127:62" xmlns:ns62="urn:healthit-gov:qdm:v5_4" dataType="ns62:PositivePhysicalExamPerformed" templateId="PositivePhysicalExamPerformed" codeProperty="code" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns63="urn:healthit-gov:qdm:v5_4" name="ns63:PositivePhysicalExamPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <codes xsi:type="ToList">
+                     <operand locator="127:31-127:61" resultTypeName="t:Code" name="Estimated BMI greater than 40" xsi:type="CodeRef"/>
+                  </codes>
+               </expression>
+            </source>
+            <relationship localId="269" locator="128:3-132:35" alias="FollowUpUSSAssessment" xsi:type="With">
+               <resultTypeSpecifier xsi:type="TupleTypeSpecifier">
+                  <element name="authorDatetime">
+                     <type name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                  </element>
+                  <element name="result">
+                     <type name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                  </element>
+               </resultTypeSpecifier>
+               <expression localId="252" locator="128:8-128:73" name="Urinary Symptom Score 6 to 12 Months After Initial BPH Diagnosis" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="TupleTypeSpecifier">
+                     <element name="authorDatetime">
+                        <type name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </element>
+                     <element name="result">
+                        <type name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                     </element>
+                  </resultTypeSpecifier>
+               </expression>
+               <suchThat localId="268" locator="129:14-132:35" resultTypeName="t:Boolean" xsi:type="And">
+                  <operand localId="263" locator="129:14-131:4" resultTypeName="t:Boolean" xsi:type="And">
+                     <operand localId="257" locator="129:16-129:65" resultTypeName="t:Boolean" xsi:type="In">
+                        <operand localId="255" locator="129:16-129:37" resultTypeName="t:DateTime" path="authorDatetime" scope="BMIExam" xsi:type="Property"/>
+                        <operand localId="256" locator="129:46-129:65" name="Measurement Period" xsi:type="ParameterRef">
+                           <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                              <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </operand>
+                     </operand>
+                     <operand localId="262" locator="130:10-130:81" resultTypeName="t:Boolean" xsi:type="SameOrBefore">
+                        <operand localId="259" locator="130:10-130:31" resultTypeName="t:DateTime" path="authorDatetime" scope="BMIExam" xsi:type="Property"/>
+                        <operand localId="261" locator="130:46-130:81" resultTypeName="t:DateTime" path="authorDatetime" scope="FollowUpUSSAssessment" xsi:type="Property"/>
+                     </operand>
+                  </operand>
+                  <operand localId="267" locator="132:9-132:35" resultTypeName="t:Boolean" xsi:type="Greater">
+                     <operand asType="t:Quantity" xsi:type="As">
+                        <operand localId="265" locator="132:9-132:22" path="result" scope="BMIExam" xsi:type="Property">
+                           <resultTypeSpecifier xsi:type="ChoiceTypeSpecifier">
+                              <choice name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                              <choice name="t:Decimal" xsi:type="NamedTypeSpecifier"/>
+                              <choice name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                              <choice name="t:Quantity" xsi:type="NamedTypeSpecifier"/>
+                              <choice name="t:Ratio" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </operand>
+                     </operand>
+                     <operand localId="266" locator="132:26-132:35" resultTypeName="t:Quantity" value="40" unit="kg/m2" xsi:type="Quantity"/>
+                  </operand>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def localId="275" locator="122:1-124:113" resultTypeName="t:Boolean" name="Morbid Obesity Diagnosis or BMI Exam Result Greater Than 40 Starts On or Before Follow Up USS Assessment" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="275">
+               <a:s>define &quot;Morbid Obesity Diagnosis or BMI Exam Result Greater Than 40 Starts On or Before Follow Up USS Assessment&quot;:&#xd;
+	</a:s>
+               <a:s r="274">
+                  <a:s r="249">
+                     <a:s>exists </a:s>
+                     <a:s r="248">
+                        <a:s>&quot;Morbid Obesity Diagnosis On or Before Follow Up USS Assessment&quot;</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		or </a:s>
+                  <a:s r="273">
+                     <a:s>exists </a:s>
+                     <a:s r="272">
+                        <a:s>&quot;BMI Exam Result Greater Than 40 During Measurement Period and On or Before Follow Up USS Assessment&quot;</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="274" locator="123:2-124:113" resultTypeName="t:Boolean" xsi:type="Or">
+            <operand localId="249" locator="123:2-123:72" resultTypeName="t:Boolean" xsi:type="Exists">
+               <operand localId="248" locator="123:9-123:72" name="Morbid Obesity Diagnosis On or Before Follow Up USS Assessment" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns64="urn:healthit-gov:qdm:v5_4" name="ns64:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </operand>
+            </operand>
+            <operand localId="273" locator="124:6-124:113" resultTypeName="t:Boolean" xsi:type="Exists">
+               <operand localId="272" locator="124:13-124:113" name="BMI Exam Result Greater Than 40 During Measurement Period and On or Before Follow Up USS Assessment" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns65="urn:healthit-gov:qdm:v5_4" name="ns65:PositivePhysicalExamPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </operand>
+            </operand>
+         </expression>
+      </def>
+      <def localId="278" locator="112:1-115:115" resultTypeName="t:Boolean" name="Denominator Exclusions" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="278">
+               <a:s>define &quot;Denominator Exclusions&quot;:&#xd;
+	</a:s>
+               <a:s r="277">
+                  <a:s r="230">
+                     <a:s r="227">
+                        <a:s>exists </a:s>
+                        <a:s r="226">
+                           <a:s>( </a:s>
+                           <a:s r="226">
+                              <a:s>&quot;Urinary Retention Diagnosis Starts Within 1 Year After Initial BPH Diagnosis&quot;</a:s>
+                           </a:s>
+                           <a:s> )</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>&#xd;
+		or </a:s>
+                     <a:s r="229">
+                        <a:s>exists </a:s>
+                        <a:s r="228">
+                           <a:s>( </a:s>
+                           <a:s r="228">
+                              <a:s>&quot;Initial BPH Diagnosis Starts During or Within 30 Days After End of Hospitalization&quot;</a:s>
+                           </a:s>
+                           <a:s> )</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		or </a:s>
+                  <a:s r="276">
+                     <a:s>( </a:s>
+                     <a:s r="276">
+                        <a:s>&quot;Morbid Obesity Diagnosis or BMI Exam Result Greater Than 40 Starts On or Before Follow Up USS Assessment&quot;</a:s>
+                     </a:s>
+                     <a:s> )</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="277" locator="113:2-115:115" resultTypeName="t:Boolean" xsi:type="Or">
+            <operand localId="230" locator="113:2-114:100" resultTypeName="t:Boolean" xsi:type="Or">
+               <operand localId="227" locator="113:2-113:90" resultTypeName="t:Boolean" xsi:type="Exists">
+                  <operand localId="226" locator="113:9-113:90" name="Urinary Retention Diagnosis Starts Within 1 Year After Initial BPH Diagnosis" xsi:type="ExpressionRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xmlns:ns66="urn:healthit-gov:qdm:v5_4" name="ns66:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </operand>
+               </operand>
+               <operand localId="229" locator="114:6-114:100" resultTypeName="t:Boolean" xsi:type="Exists">
+                  <operand localId="228" locator="114:13-114:100" name="Initial BPH Diagnosis Starts During or Within 30 Days After End of Hospitalization" xsi:type="ExpressionRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xmlns:ns67="urn:healthit-gov:qdm:v5_4" name="ns67:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </operand>
+               </operand>
+            </operand>
+            <operand localId="276" locator="115:6-115:115" resultTypeName="t:Boolean" name="Morbid Obesity Diagnosis or BMI Exam Result Greater Than 40 Starts On or Before Follow Up USS Assessment" xsi:type="ExpressionRef"/>
+         </expression>
+      </def>
+   </statements>
+</library>
+
+

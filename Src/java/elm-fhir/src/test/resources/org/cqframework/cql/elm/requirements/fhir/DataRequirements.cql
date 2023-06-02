@@ -131,18 +131,20 @@ define "HospiceEncounterClaimsBUnboundDate":
       where exists CEncounter.item IEncounter
         where date from IEncounter.serviced."start" in day of "Measurement Period"
 
-  /*
-  2b - Bound Measurement Period
-  Interval[@2019-01-01, @2020-01-01 )
-  DataRequirement
-  type: Claim
-  dateFilter: { path:  item.serviced.start, valuePeriod: "@2019-01-01-@2020-01-01" },
-  */
+/*
+2b - Bound Measurement Period
+Interval[@2019-01-01, @2020-01-01 )
+DataRequirement
+type: Claim
+dateFilter: { path:  item.serviced.start, valuePeriod: "@2019-01-01-@2020-01-01" },
+*/
 
-/* define "HospiceEncounterClaimsBBoundDate":
+/*
+define "HospiceEncounterClaimsBBoundDate":
     [Claim] CEncounter
       where exists CEncounter.item IEncounter
-        where IEncounter.serviced."start" in "Measurement Period" */
+        where IEncounter.serviced."start" in "Measurement Period"
+*/
 
 /*
 2c - Bound Measurement Period
@@ -152,10 +154,12 @@ type: Claim
 dateFilter: { path:  item.serviced.start, valuePeriod: "@2019-01-01T00:00:00.0-@2020-01-01T00:00:00.0" },
 */
 
-/* define "HospiceEncounterClaimsBBoundDateFrom":
+/*
+define "HospiceEncounterClaimsBBoundDateFrom":
     [Claim] CEncounter
       where exists CEncounter.item IEncounter
-        where date from IEncounter.serviced."start" in "Measurement Period" */
+        where date from IEncounter.serviced."start" in "Measurement Period"
+*/
 
 
 /*
@@ -165,12 +169,97 @@ DataRequirement
 type: Claim
 */
 
-/* define "HospiceEncounterClaimsBBoundDateFromPlus1Day":
-    [Claim] CEncounter
-      where exists CEncounter.item IEncounter
-        where (date from IEncounter.serviced."start") + 1 day in "Measurement Period" */
+/*
+define "HospiceEncounterClaimsBBoundDateFromPlus1Day":
+  [Claim] CEncounter
+    where exists CEncounter.item IEncounter
+      where (date from IEncounter.serviced."start") + 1 day in "Measurement Period"
+*/
 
+/*
+define “cxInjury”:
+  (CommonEl.“Get Active Confirmed Conditions”([Condition])) C
+    where C.code in CommonCx.“rc_cervicalSpineInjury”
+      and FHIRCommon.ToInterval(C.onset) starts 30 days or less before Today()
+*/
 
+/*
+2e - Timing phrase 90 days or less before
+DataRequirement
+type: Condition
+dateFilter: { path: onset, value: Interval[@2022-12-31T - 90 days, @2022-12-31T] }
+*/
+
+/*
+define "Date Filter Expression":
+  [Condition] C
+    where C.onset as Period starts 90 days or less before Today()
+
+Emits as:
+define "Date Filter Expression":
+  [Condition] C
+    where start of (C.onset as Period) in Interval[Today() - 90 days, Today()]
+*/
+
+/*
+2f -
+*/
+
+/*
+define DateTimeEqualToFunction:
+  [Condition] C
+    where FHIRCommon.ToInterval(C.onset) starts 90 days or less before Today()
+*/
+
+/*
+2g - Equal to a compile-time literal function
+DataRequirement
+type: Condition
+dateFilter: { path: onset, value: Today() }
+*/
+
+/*
+define "Date Filter Expression":
+  [Condition] C
+    where C.onset as dateTime = Today()
+*/
+
+/*
+2h
+*/
+
+/*
+define "Date Filter Expression":
+  [Condition] C
+    where C.onset as dateTime = Now()
+*/
+
+/*
+2i - In a compile-time literal interval
+DataRequirement
+type: Condition
+dateFilter: { path: onset, value: Interval[@2022-12-31 - 90 days, @2022-12-31] }
+*/
+
+/*
+define "Date Filter Expression":
+  [Condition] C
+    where C.onset as dateTime in Interval[@2022-12-31T - 90 days, @2022-12-31T]
+*/
+
+/*
+2j - Before and after
+DataRequirement
+type: Condition
+dateFilter: { path: onset, value: Interval[@2022-12-31T - 90 days, @2022-12-31T] }
+*/
+
+/*
+define "Date Filter Expression":
+  [Condition] C
+    where C.onset as dateTime >= @2022-12-31T - 90 days
+      and C.onset as dateTime <= @2022-12-31T
+*/
 
 /*
 2.

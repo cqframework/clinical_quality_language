@@ -31,30 +31,6 @@
     "type": "depends-on",
     "display": "Library Ind2E31A37EB104A7D1",
     "resource": "Library/Ind2E31A37EB104A7D1|1.0.000"
-  }, {
-    "type": "depends-on",
-    "display": "Value set rp_biliopancreaticDiversionWithDuodenalSwitch_cambia",
-    "resource": "http://example.com/fhir/ValueSet/rp_biliopancreaticDiversionWithDuodenalSwitch_cambia"
-  }, {
-    "type": "depends-on",
-    "display": "Value set ro_bodyMassIndex_kg_per_m2",
-    "resource": "http://example.com/fhir/ValueSet/ro_bodyMassIndex_kg_per_m2"
-  }, {
-    "type": "depends-on",
-    "display": "Value set ro_weight_kg",
-    "resource": "http://example.com/fhir/ValueSet/ro_weight_kg"
-  }, {
-    "type": "depends-on",
-    "display": "Value set ro_height_cm",
-    "resource": "http://example.com/fhir/ValueSet/ro_height_cm"
-  }, {
-    "type": "depends-on",
-    "display": "Value set ro_weight_lb",
-    "resource": "http://example.com/fhir/ValueSet/ro_weight_lb"
-  }, {
-    "type": "depends-on",
-    "display": "Value set ro_height_in",
-    "resource": "http://example.com/fhir/ValueSet/ro_height_in"
   } ],
   "parameter": [ {
     "name": "Patient",
@@ -73,24 +49,6 @@
     "type": "Patient",
     "profile": [ "http://hl7.org/fhir/StructureDefinition/Patient" ]
   }, {
-    "type": "ServiceRequest",
-    "profile": [ "http://hl7.org/fhir/StructureDefinition/ServiceRequest" ],
-    "mustSupport": [ "code", "authoredOn" ],
-    "codeFilter": [ {
-      "path": "code",
-      "valueSet": "http://example.com/fhir/ValueSet/rp_biliopancreaticDiversionWithDuodenalSwitch_cambia"
-    } ]
-  }, {
-    "type": "Observation",
-    "profile": [ "http://hl7.org/fhir/StructureDefinition/Observation" ],
-    "mustSupport": [ "category" ],
-    "codeFilter": [ {
-      "path": "category",
-      "code": [ {
-        "code": "vital-sign"
-      } ]
-    } ]
-  }, {
     "type": "Observation",
     "profile": [ "http://hl7.org/fhir/StructureDefinition/Observation" ],
     "mustSupport": [ "category", "code", "effective", "value" ],
@@ -102,6 +60,13 @@
     }, {
       "path": "code",
       "valueSet": "http://example.com/fhir/ValueSet/ro_bodyMassIndex_kg_per_m2"
+    } ],
+    "dateFilter": [ {
+      "path": "effective",
+      "valuePeriod": {
+        "start": "2022-07-20T00:00:00Z",
+        "end": "2023-01-15T23:59:59.999Z"
+      }
     } ]
   }, {
     "type": "Observation",
@@ -115,6 +80,13 @@
     }, {
       "path": "code",
       "valueSet": "http://example.com/fhir/ValueSet/ro_weight_kg"
+    } ],
+    "dateFilter": [ {
+      "path": "effective",
+      "valuePeriod": {
+        "start": "2022-07-20T00:00:00Z",
+        "end": "2023-01-15T23:59:59.999Z"
+      }
     } ]
   }, {
     "type": "Observation",
@@ -128,6 +100,13 @@
     }, {
       "path": "code",
       "valueSet": "http://example.com/fhir/ValueSet/ro_height_cm"
+    } ],
+    "dateFilter": [ {
+      "path": "effective",
+      "valuePeriod": {
+        "start": "2022-01-16T00:00:00Z",
+        "end": "2023-01-15T23:59:59.999Z"
+      }
     } ]
   }, {
     "type": "Observation",
@@ -141,6 +120,13 @@
     }, {
       "path": "code",
       "valueSet": "http://example.com/fhir/ValueSet/ro_weight_lb"
+    } ],
+    "dateFilter": [ {
+      "path": "effective",
+      "valuePeriod": {
+        "start": "2022-07-20T00:00:00Z",
+        "end": "2023-01-15T23:59:59.999Z"
+      }
     } ]
   }, {
     "type": "Observation",
@@ -154,6 +140,13 @@
     }, {
       "path": "code",
       "valueSet": "http://example.com/fhir/ValueSet/ro_height_in"
+    } ],
+    "dateFilter": [ {
+      "path": "effective",
+      "valuePeriod": {
+        "start": "2022-01-16T00:00:00Z",
+        "end": "2023-01-15T23:59:59.999Z"
+      }
     } ]
   } ]
 }

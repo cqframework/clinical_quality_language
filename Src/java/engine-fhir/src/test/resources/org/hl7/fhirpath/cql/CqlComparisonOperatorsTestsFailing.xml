@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://hl7.org/fhirpath/tests"
+       xsi:schemaLocation="http://hl7.org/fhirpath/tests ../../testSchema/testSchema.xsd"
+       name="failingCqlComparisonOperatorsTests"
+       reference="https://cql.hl7.org/09-b-cqlreference.html#comparison-operators-4">
+    <!-- This file contains copies of the tests in CqlComparisonOperatorsTest.xml that are failing. When these are
+            fixed that file needs to be corrected. The testCqlComparisonOperators() method needs the call
+            to runTests() in TestFhirPath.java needs to have the parameter expectedPassCount updated as well. -->
+
+    <group name="Failing">
+        <test name="QuantityEqCM1M01">
+            <expression>(1'cm' = 0.01'm')</expression>
+            <output>true</output>
+            <!-- TODO: make Engine convert units properly -->
+        </test>
+        <test name="GreaterM1CM1">
+            <expression>(1'm' &gt; 1'cm')</expression>
+            <output>true</output>
+            <!-- TODO: make Engine convert units properly -->
+        </test>
+        <test name="GreaterM1CM10">
+            <expression>(1'm' &gt; 10'cm')</expression>
+            <output>true</output>
+            <!-- TODO: make Engine convert units properly -->
+        </test>
+        <test name="GreaterOrEqualM1CM1">
+            <expression>1'm' &gt;= 1'cm'</expression>
+            <output>true</output>
+            <!-- TODO: make Engine convert units properly; note, only passes by coincidence -->
+        </test>
+        <test name="GreaterOrEqualM1CM10">
+            <expression>(1'm' &gt;= 10'cm')</expression>
+            <output>true</output>
+            <!-- TODO: make Engine convert units properly -->
+        </test>
+        <test name="LessM1CM1">
+            <expression>(1'm' &lt; 1'cm')</expression>
+            <output>false</output>
+            <!-- TODO: make Engine convert units properly; note, only works by coincidence -->
+        </test>
+        <test name="LessM1CM10">
+            <expression>(1'm' &lt; 10'cm')</expression>
+            <output>false</output>
+            <!-- TODO: make Engine convert units properly -->
+        </test>
+        <test name="LessOrEqualM1CM1">
+            <expression>1'm' &lt;= 1'cm'</expression>
+            <output>false</output>
+            <!-- TODO: make Engine convert units properly -->
+        </test>
+        <test name="LessOrEqualM1CM10">
+            <expression>(1'm' &lt;= 10'cm')</expression>
+            <output>false</output>
+            <!-- TODO: make Engine convert units properly -->
+        </test>
+        <test name="EquivEqCM1M01">
+            <expression>1'cm' ~ 0.01'm'</expression>
+            <output>true</output>
+            <!-- TODO: make Engine convert units properly -->
+        </test>
+        <test name="QuantityNotEqCM1M01">
+            <expression>(1'cm' != 0.01'm')</expression>
+            <output>false</output>
+            <!-- TODO: make Engine convert units properly -->
+        </test>
+    </group>
+</tests>

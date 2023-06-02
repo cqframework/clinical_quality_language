@@ -1,0 +1,698 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:elm:r1" xmlns:sch="http://purl.oclc.org/dsdl/schematron" targetNamespace="urn:hl7-org:elm:r1" elementFormDefault="qualified">
+	<xs:annotation>
+		<xs:documentation>
+			This file defines the expression extensions that introduce clinically relevant dependencies such as clinical data access, terminology, and value set considerations.
+		</xs:documentation>
+	</xs:annotation>
+	<xs:include schemaLocation="expression.xsd"/>
+	<xs:complexType name="CodeFilterElement">
+		<xs:annotation>
+			<xs:documentation>The CodeFilterElement type specifies a terminology filter criteria for use within a retrieve, specified as either [property] [comparator] [value] or [search] [comparator] [value].</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Element">
+				<xs:sequence>
+					<xs:element name="value" type="Expression" minOccurs="1" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>An expression that provides the comparison value for the filter. The expression is expected to result in a List&lt;Code&gt; to match against. Only the clinical statements that match at least one of the specified codes will be returned.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="property" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The property attribute specifies which property the filter applies to.
+
+This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="valueSetProperty" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The valueSetProperty attribute optionally specifies which property of the model contains a value set identifier that can be used as an alternative mechanism for matching the value set of the retrieve, in the case when no code is specified in the source data.
+
+This attribute is intended to address the case where systems representing negation rationale for an activity not performed do so by indicating a valueset identifier rather than a code. For example, when indicating that a medication was not administered, the value set identifier for the expected medication is used, rather than indicating a specific medication that was not administered. In this case, the valueSetProperty attribute allows the retrieve to specify where to look for the value set identifier without needing to change the conceptual data model or the CQL logic describing the negated activity.
+
+Note that implementers could also specify this information elsewhere as part of an implementation catalog, rather than on each Retrieve expression, but allowing it to be specified in the retrieve expression gives the most flexibility. From the perspective of ELM, the specification ensures that ELM can be processed without reference to the model information.
+
+This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="search" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The search attribute specifies the name of a search path for the filter.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="comparator" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation>The codeComparator attribute specifies how elements of the code property should be matched to the terminology. One of 'in', '=', or '~'. Note that 'in' will resolve to the appropriate terminology matching operator, resulting in equivalence semantics for value set and code system membership testing.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DateFilterElement">
+		<xs:annotation>
+			<xs:documentation>The DateFilterElement type specifies a date-valued filter criteria for use within a retrieve, specified as either a date-valued [property], a date-value [lowProperty] and [highProperty] or a [search], and an expression that evaluates to a date or time type, an interval of a date or time type, or a time-valued Quantity.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Element">
+				<xs:sequence>
+					<xs:element name="value" type="Expression" minOccurs="1" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>An expression that provides the comparison value for the filter. The expression is expected to result in a date or time type, an interval of a date or time type, or a time-valued quantity. Only the clinical statements that match at least one of the specified codes will be returned.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="property" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The dateProperty attribute optionally specifies which property of the model contains the clinically relevant date for the clinical statement.
+
+This property is expected to reference a property that is either a Date or DateTime, or an interval of Date or DateTime. In either case, the result set will only include instances where the value of the dateProperty is during the date range. For Date or DateTime values, this means the date is both the same or after the beginning of the range, and the same or before the end of the range. For Date- or DateTime-based interval values, this means that the entire interval is included in the date range.
+
+Instances with no value for the dateProperty will not be included in the result set if a date range is specified.
+
+Note that if the property is specified, the lowProperty and highProperty attributes must not be present. And conversely, if the lowProperty and highProperty attributes are specified, the dateProperty must not be present. If specified, the lowProperty and highProperty values will be used to construct an interval with inclusive boundaries for the date range.
+
+This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="lowProperty" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The lowProperty attribute optionally specifies which property of the model contains the low component of the clinically relevant date for the clinical statement.
+
+Note that if the property is specified, the lowProperty and highProperty attributes must not be present. And conversely, if the lowProperty and highProperty attributes are specified, the property must not be present.
+
+This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="highProperty" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The highProperty attribute optionally specifies which property of the model contains the high component of the clinically relevant date for the clinical statement.
+
+Note that if the property is specified, the lowProperty and highProperty attributes must not be present. And conversely, if the lowProperty and highProperty attributes are specified, the property must not be present.
+
+This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="search" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The search attribute specifies the name of the search path to use for searching for values in the date range specified by the dateRange element.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="OtherFilterElement">
+		<xs:annotation>
+			<xs:documentation>The OtherFilterElement type specifies an arbitrarily-typed filter criteria for use within a retrieve, specified as either [property] [comparator] [value] or [search] [comparator] [value].</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Element">
+				<xs:sequence>
+					<xs:element name="value" type="Expression" minOccurs="1" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>An expression that provides the comparison value for the filter.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="property" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The property attribute specifies which property the filter applies to.
+
+This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="search" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The search attribute specifies the name of a search path for the filter.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="comparator" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation>The comparator attribute specifies the comparison operation for the filter.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="IncludeElement">
+		<xs:annotation>
+			<xs:documentation>The IncludeElement type specifies include information for an include within a retrieve.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Element">
+				<xs:attribute name="includeFrom" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The localId of another Retrieve that specifies the data to be included in this retrieve. The target Retrieve will have an includedIn attribute referencing this includeElement.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="relatedDataType" type="xs:QName" use="required">
+					<xs:annotation>
+						<xs:documentation>The relatedDataType attribute specifies the type of the related data being requested.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="relatedProperty" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The relatedProperty attribute specifies which property of the relatedDataType contains the relatedId for the clinical statement.
+
+This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="relatedSearch" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The relatedSearch attribute specifies the name of the search path to use for searching for data of the relatedDataType.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="isReverse" type="xs:boolean" use="optional">
+					<xs:annotation>
+						<xs:documentation>The isReverse attribute indicates that the include is reverse, i.e. that the relatedDataType is referencing the data being retrieved, rather than the retrieved data referencing the relatedDataType.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Retrieve">
+		<xs:annotation>
+			<xs:documentation>The retrieve expression defines clinical data that will be used by the artifact. This expression allows clinically relevant filtering criteria to be provided in a well-defined and computable way. This operation defines the integration boundary for artifacts. The result of a retrieve is defined to return the same data for subsequent invocations within the same evaluation request. This means in particular that patient data updates made during the evaluation request are not visible to the artifact. In effect, the patient data is a snapshot of the data as of the start of the evaluation. This ensures strict deterministic and functional behavior of the artifact, and allows the implementation engine freedom to cache intermediate results in order to improve performance.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:sequence>
+					<xs:element name="id" type="Expression" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>The id element optionally specifies an expression that results in a value that can be used to filter the retrieve to a specific id.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="codes" type="Expression" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>The codes element optionally specifies an expression that results in a List&lt;Code&gt; to match against. Only the clinical statements that match at least one of the specified codes will be returned.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="dateRange" type="Expression" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>The dateRange element optionally specifies an expression that results in an Interval&lt;DateTime&gt; to match against. Only those clinical statements whose date falls within the specified date range will be returned.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="context" type="Expression" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>If specified, the context element references an expression that, when evaluated, provides the context for the retrieve. The expression evaluates to the instance id that will be used as the context for the retrieve.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="include" type="IncludeElement" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Specifies a related data type to be included in the result as part of the retrieve.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="codeFilter" type="CodeFilterElement" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Specifies a terminology filter to be applied as part of the retrieve. Each codeFilter is specified as [property] [comparator] [value] or [search] [comparator] [value]. When multiple codeFilters are present, they are all applied (i.e. ANDed). For simplicity, if this element is specified at all, it will include the code filter established by the attributes of the retrieve, as well as any additional filtering criteria as determined by optimization strategies.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="dateFilter" type="DateFilterElement" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Specifies a date filter to be applied as part of the retrieve. Each dateFilter is specifies as a [property], or a [lowProperty]-[highProperty], or a [search], and a [value] that is an expression that evaluates to an interval of a date or time value. When multiple dateFilters are present, they are all applied (i.e. ANDed). For simplicity, if this element is specified at all, it will include the date filter established by the attributes of the retrieve, as well as any additional filtering criteria as determined by optimization strategies.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="otherFilter" type="OtherFilterElement" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Specifies other, non-id, -context, -terminology, or -date valued filter criteria to be applied as part of the retrieve. Each other Filter is specified as [property] [comparator] [value] or [search] [comparator] [value]. When multiple otherFilters are present, they are all applied (i.e. ANDed). This element is included to allow for additional filtering criteria as determined by optimization strategies.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="dataType" type="xs:QName" use="required">
+					<xs:annotation>
+						<xs:documentation>The dataType attribute specifies the type of data being requested.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="templateId" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The templateId attribute specifies an optional template to be used. If specified, the retrieve is defined to return only objects that conform to the template.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="idProperty" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The idProperty attribute specifies which property of the model contains the Id for the clinical statement.
+
+This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="idSearch" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The idSearch attribute specifies the name of the search path to use for searching for the values in the id element.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="contextProperty" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The contextProperty attribute optionally specifies which property of the model contains the context value.
+
+Note that implementers could also specify this information elsewhere as part of an implementation catalog, rather than on each Retrieve expression, but allowing it to be specified in the retrieve expression gives the most flexibility. Note also that even in the case of an implementation catalog, implementations would still ned to respect contextProperty values in the ELM due to the possibility of the retrieve specifying alternate context paths. From the persepctive of ELM, the specification ensures that ELM can be processed without reference to the model information.
+
+This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
+				</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="contextSearch" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The contextSearch attribute specifies the name of the search path to use for searching for the context values.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="codeProperty" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The codeProperty attribute optionally specifies which property of the model contains the Code or Codes for the clinical statement.
+
+Note that implementers could also specify this information elsewhere as part of an implementation catalog, rather than on each Retrieve expression, but allowing it to be specified in the retrieve expression gives the most flexibility. Note also that even in the case of an implementation catalog, implementations would still need to respect codeProperty values in the ELM due to the possibility of the retrieve specifying alternate code filters. From the perspective of ELM, the specification ensures that ELM can be processed without reference to the model information.
+
+This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="codeSearch" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The codeSearch attribute specifies the name of the search path to use for searching for the values in the code element.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="codeComparator" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The codeComparator attribute specifies how elements of the code property should be matched to the terminology. One of 'in', '=', or '~'. Note that 'in' will resolve to the appropriate terminology matching operator, resulting in equivalence semantics for value set and code system membership testing.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="valueSetProperty" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The valueSetProperty attribute optionally specifies which property of the model contains a value set identifier that can be used as an alternative mechanism for matching the value set of the retrieve, in the case when no code is specified in the source data.
+
+This attribute is intended to address the case where systems representing negation rationale for an activity not performed do so by indicating a valueset identifier rather than a code. For example, when indicating that a medication was not administered, the value set identifier for the expected medication is used, rather than indicating a specific medication that was not administered. In this case, the valueSetProperty attribute allows the retrieve to specify where to look for the value set identifier without needing to change the conceptual data model or the CQL logic describing the negated activity.
+
+Note that implementers could also specify this information elsewhere as part of an implementation catalog, rather than on each Retrieve expression, but allowing it to be specified in the retrieve expression gives the most flexibility. From the perspective of ELM, the specification ensures that ELM can be processed without reference to the model information.
+
+This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="dateProperty" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The dateProperty attribute optionally specifies which property of the model contains the clinically relevant date for the clinical statement.
+
+This property is expected to reference a property that is either a Date or DateTime, or an interval of Date or DateTime. In either case, the result set will only include instances where the value of the dateProperty is during the date range. For Date or DateTime values, this means the date is both the same or after the beginning of the range, and the same or before the end of the range. For Date- or DateTime-based interval values, this means that the entire interval is included in the date range.
+
+Instances with no value for the dateProperty will not be included in the result set if a date range is specified.
+
+Note that if the dateProperty is specified, the dateLowProperty and dateHighProperty attributes must not be present. And conversely, if the dateLowProperty and dateHighProperty attributes are specified, the dateProperty must not be present. If specified, the dateLowProperty and dateHighProperty values will be used to construct an interval with inclusive boundaries for the date range.
+
+This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="dateLowProperty" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The dateLowProperty attribute optionally specifies which property of the model contains the low component of the clinically relevant date for the clinical statement.
+
+Note that if the dateProperty is specified, the dateLowProperty and dateHighProperty attributes must not be present. And conversely, if the dateLowProperty and dateHighProperty attributes are specified, the dateProperty must not be present.
+
+This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="dateHighProperty" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The dateHighProperty attribute optionally specifies which property of the model contains the high component of the clinically relevant date for the clinical statement.
+
+Note that if the dateProperty is specified, the dateLowProperty and dateHighProperty attributes must not be present. And conversely, if the dateLowProperty and dateHighProperty attributes are specified, the dateProperty must not be present.
+
+This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="dateSearch" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The dateSearch attribute specifies the name of the search path to use for searching for values in the date range specified by the dateRange element.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="includedIn" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The localId of another Retrieve that includes the data for this retrieve. The target Retrieve will have an includeElement referencing this retrieve.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Search">
+		<xs:annotation>
+			<xs:documentation>The Search operation provides an operator that returns the result of an indexing expression on an instance. It is effectively the same as a property access, but uses the name of a defined search on the type, rather than the name of a property on the class.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Property">
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CodeSystemDef">
+		<xs:annotation>
+			<xs:documentation>The CodeSystemDef type defines a code system identifier that can then be used to identify code systems involved in value set definitions.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Element">
+				<xs:attribute name="name" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation>The name of the code system used for reference.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="id" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation>The unique identifier of the code system.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="version" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The version of the code system to be used. If no version is specified, the most current published version of the code system is assumed.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="accessLevel" type="AccessModifier" use="optional" default="Public"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ValueSetDef">
+		<xs:annotation>
+			<xs:documentation>The ValueSetDef type defines a value set identifier that can be referenced by name anywhere within an expression.
+
+The id specifies the globally unique identifier for the value set. This may be an HL7 OID, a FHIR URL, or a CTS2 value set URL.
+
+If version is specified, it will be used to resolve the version of the value set definition to be used. Otherwise, the most current published version of the value set is assumed.
+
+If codeSystems are specified, they will be used to resolve the code systems used within the value set definition to construct the expansion set.
+Note that the recommended approach to statically binding to an expansion set is to use a value set definition that specifies the version of each code system used. The codeSystemVersions attribute is provided only to ensure static binding can be achieved when the value set definition does not specify code system versions as part of the definition header.			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Element">
+				<xs:sequence>
+					<xs:element name="codeSystem" type="CodeSystemRef" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>The code system that should be used to construct the expansion set. Note that the recommended approach to statically binding to an expansion set is to use a value set definition that specifies the version of each code system used. The codeSystem elements are provided only to ensure static binding can be achieved when the value set definition does not specify code system versions as part of the definition header.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="name" type="xs:string"/>
+				<xs:attribute name="id" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation>The unique identifier of the value set to be retrieved.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="version" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The version of the value set to be retrieved. If no version is provided, the most current published version of the value set is assumed.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="accessLevel" type="AccessModifier" use="optional" default="Public"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CodeDef">
+		<xs:annotation>
+			<xs:documentation>The CodeDef type defines a code identifier that can then be used to reference single codes anywhere within an expression.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Element">
+				<xs:sequence>
+					<xs:element name="codeSystem" type="CodeSystemRef" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>The code system that contains the code being referenced.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="name" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation>The name of the code used for reference.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="id" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation>The unique identifier of the code.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="display" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>An optional display string used to describe the code.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="accessLevel" type="AccessModifier" use="optional" default="Public"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ConceptDef">
+		<xs:annotation>
+			<xs:documentation>The ConceptDef type defines a concept identifier that can then be used to reference single concepts anywhere within an expression.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Element">
+				<xs:sequence>
+					<xs:element name="code" type="CodeRef" minOccurs="1" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>A code that makes up the concept. All codes within a given concept must be synonyms.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="name" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation>The name of the concept used for reference.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="display" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>An optional display string used to describe the concept.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="accessLevel" type="AccessModifier" use="optional" default="Public"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CodeSystemRef">
+		<xs:annotation>
+			<xs:documentation>The CodeSystemRef expression allows a previously defined named code system to be referenced within an expression. Conceptually, referencing a code system returns the set of codes in the code system. Note that this operation should almost never be performed in practice. Code system references are allowed in order to allow for testing of code membership in a particular code system.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:attribute name="name" type="xs:string"/>
+				<xs:attribute name="libraryName" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ValueSetRef">
+		<xs:annotation>
+			<xs:documentation>The ValueSetRef expression allows a previously defined named value set to be referenced within an expression. Conceptually, referencing a value set returns the expansion set for the value set as a list of codes.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:attribute name="name" type="xs:string"/>
+				<xs:attribute name="libraryName" type="xs:string" use="optional"/>
+				<xs:attribute name="preserve" type="xs:boolean" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CodeRef">
+		<xs:annotation>
+			<xs:documentation>The CodeRef expression allows a previously defined code to be referenced within an expression.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:attribute name="name" type="xs:string"/>
+				<xs:attribute name="libraryName" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ConceptRef">
+		<xs:annotation>
+			<xs:documentation>The ConceptRef expression allows a previously defined concept to be referenced within an expression.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:attribute name="name" type="xs:string"/>
+				<xs:attribute name="libraryName" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Code">
+		<xs:annotation>
+			<xs:documentation>The Code type represents a literal code selector.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:sequence>
+					<xs:element name="system" type="CodeSystemRef"/>
+				</xs:sequence>
+				<xs:attribute name="code" type="xs:string" use="required"/>
+				<xs:attribute name="display" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Concept">
+		<xs:annotation>
+			<xs:documentation>The Concept type represents a literal concept selector.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:sequence>
+					<xs:element name="code" type="Code" minOccurs="1" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="display" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="InCodeSystem">
+		<xs:annotation>
+			<xs:documentation>The InCodeSystem operator returns true if the given code is in the given code system.
+
+The first argument is expected to be a String, Code, or Concept.
+
+The second argument is expected to be of type CodeSystem. When this argument is statically a CodeSystemRef, this allows for both static analysis of the code system references within an artifact, as well as the implementation of code system membership by the target environment as a service call to a terminology server, if desired.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="OperatorExpression">
+				<xs:sequence>
+					<xs:element name="code" type="Expression"/>
+					<xs:element name="codesystem" type="CodeSystemRef" minOccurs="0"/>
+					<xs:element name="codesystemExpression" type="Expression" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AnyInCodeSystem">
+		<xs:annotation>
+			<xs:documentation>The AnyInCodeSystem operator returns true if any of the given codes are in the given code system.
+
+The first argument is expected to be a list of String, Code, or Concept.
+
+The second argument is expected to be of type CodeSystem. When this argument is statically a CodeSystemRef, this allows for both static analysis of the code system references within an artifact, as well as the implementation of code system membership by the target environment as a service call to a terminology server, if desired.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="OperatorExpression">
+				<xs:sequence>
+					<xs:element name="codes" type="Expression"/>
+					<xs:element name="codesystem" type="CodeSystemRef" minOccurs="0"/>
+					<xs:element name="codesystemExpression" type="Expression" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="InValueSet">
+		<xs:annotation>
+			<xs:documentation>The InValueSet operator returns true if the given code is in the given value set.
+
+The first argument is expected to be a String, Code, or Concept.
+
+The second argument is expected to be of type ValueSet. When this argument is statically a ValueSetRef, this allows for both static analysis of the value set references within an artifact, as well as the implementation of valueset membership by the target environment as a service call to a terminology server, if desired.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="OperatorExpression">
+				<xs:sequence>
+					<xs:element name="code" type="Expression"/>
+					<xs:element name="valueset" type="ValueSetRef" minOccurs="0"/>
+					<xs:element name="valuesetExpression" type="Expression" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AnyInValueSet">
+		<xs:annotation>
+			<xs:documentation>The AnyInValueSet operator returns true if any of the given codes are in the given value set.
+
+The first argument is expected to be a list of String, Code, or Concept.
+
+The second argument is expected to be of type ValueSet. When this argument is statically a ValueSetRef, this allows for both static analysis of the value set references within an artifact, as well as the implementation of valueset membership by the target environment as a service call to a terminology server, if desired.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="OperatorExpression">
+				<xs:sequence>
+					<xs:element name="codes" type="Expression"/>
+					<xs:element name="valueset" type="ValueSetRef" minOccurs="0"/>
+					<xs:element name="valuesetExpression" type="Expression" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ExpandValueSet">
+		<xs:annotation>
+			<xs:documentation>The ExpandValueSet operator returns the current expansion for the given value set.
+
+The operation exoects a single argument of type ValueSet. This may be a static reference to a value set (i.e. a ValueSetRef), or a ValueSet value to support dynamic value set usage. The operation is used as the implicit conversion from a ValueSet reference to a list of codes.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Subsumes">
+		<xs:annotation>
+			<xs:documentation>The Subsumes operator returns true if the given codes are equivalent, or if the first code subsumes the second (i.e. the first code is an ancestor of the second in a subsumption hierarchy), and false otherwise.
+
+For the Concept overload, this operator returns true if any code in the first concept subsumes any code in the second.
+
+If either or both arguments are null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SubsumedBy">
+		<xs:annotation>
+			<xs:documentation>The SubsumedBy operator returns true if the given codes are equivalent, or if the first code is subsumed by the second code (i.e. the first code is a descendent of the second code in a subsumption hierarchy), and false otherwise.
+
+For the Concept overload, this operator returns true if any code in the first concept is subsumed by any code in the second.
+
+If either or both arguments are null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Quantity">
+		<xs:annotation>
+			<xs:documentation>The Quantity type defines a clinical quantity. For example, the quantity 10 days or 30 mmHg. The value is a decimal, while the unit is expected to be a valid UCUM unit or calendar duration keyword, singular or plural.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:attribute name="value" type="xs:decimal"/>
+				<xs:attribute name="unit" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Ratio">
+		<xs:annotation>
+			<xs:documentation>The Ratio type defines a ratio between two quantities. For example, the titre 1:128, or the concentration ratio 5 mg/10 mL. The numerator and denominator are both quantities.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:sequence>
+					<xs:element name="numerator" type="Quantity"/>
+					<xs:element name="denominator" type="Quantity"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CalculateAge">
+		<xs:annotation>
+			<xs:documentation>Calculates the age in the specified precision of a person born on the given date.
+
+The CalculateAge operator is defined for Date and DateTime.
+
+For the Date overload, the calculation is performed using Today(), the precision must be one of year, month, week, or day, and the result is the number of whole calendar periods that have elapsed between the given date and today.
+
+For the DateTime overload, the calculation is performed using Now(), and the result is the number of whole calendar periods that have elapsed between the given datetime and now.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression">
+				<xs:attribute name="precision" type="DateTimePrecision"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CalculateAgeAt">
+		<xs:annotation>
+			<xs:documentation>Calculates the age in the specified precision of a person born on a given date, as of another given date.
+
+The CalculateAgeAt operator has two signatures:
+  (Date, Date)
+  (DateTime, DateTime)
+
+For the Date overload, precision must be one of year, month, week, or day, and the result is the number of whole calendar periods that have elapsed between the first date and the second date.
+
+For the DateTime overload, the result is the number of whole calendar periods that have elapsed between the first datetime and the second datetime.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression">
+				<xs:attribute name="precision" type="DateTimePrecision"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

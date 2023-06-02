@@ -9,7 +9,7 @@ allprojects {
     apply plugin: 'signing'
 
     group = 'info.cqframework'
-    version = '2.3.0-SNAPSHOT'
+    version = '2.10.0-SNAPSHOT'
 }
 
 subprojects {
@@ -130,25 +130,23 @@ configure(subprojects.findAll {it.name in ['model', 'model-jackson', 'elm', 'cql
 /*
 FHIR dependencies
 */
-configure(subprojects.findAll {it.name in ['cqf-fhir', 'elm-fhir', 'cqf-fhir-npm']}) {
+configure(subprojects.findAll {it.name in ['cqf-fhir', 'elm-fhir', 'cqf-fhir-npm', 'engine-fhir']}) {
     dependencies {
-        // fhir core dependencies
-        implementation group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.r5', version: '5.6.36'
-        implementation group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.convertors', version: '5.6.36'
-        implementation group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.utilities', version: '5.6.36'
 
-        // HAPI base
-        implementation group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-base', version: '6.0.1'
-        implementation group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-converter', version: '6.0.1'
+        implementation(platform("ca.uhn.hapi.fhir:hapi-fhir-bom:6.4.4")) {
+            exclude group: 'org.eclipse.jetty'
+        }
 
-        // FHIR STU3
-        implementation group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-structures-dstu3', version: '6.0.1'
+        implementation("ca.uhn.hapi.fhir:org.hl7.fhir.r5")
+        implementation("ca.uhn.hapi.fhir:org.hl7.fhir.convertors")
+        implementation("ca.uhn.hapi.fhir:org.hl7.fhir.utilities")
 
-        // FHIR r4
-        implementation group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-structures-r4', version: '6.0.1'
-
-        // FHIR r5
-        implementation group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-structures-r5', version: '6.0.1'
+        implementation("ca.uhn.hapi.fhir:hapi-fhir-base")
+        implementation("ca.uhn.hapi.fhir:hapi-fhir-converter")
+        implementation("ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2")
+        implementation("ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3")
+        implementation("ca.uhn.hapi.fhir:hapi-fhir-structures-r4")
+        implementation("ca.uhn.hapi.fhir:hapi-fhir-structures-r5")
     }
 }
 
@@ -157,7 +155,7 @@ JAXB dependencies:
 https://mkyong.com/java/jaxbexception-implementation-of-jaxb-api-has-not-been-found-on-module-path-or-classpath/
  */
 
-configure(subprojects.findAll {it.name in ['model', 'elm', 'quick', 'qdm' ]}) {
+configure(subprojects.findAll {it.name in ['model', 'elm', 'quick', 'qdm', 'engine', 'engine-fhir' ]}) {
     configurations {
         xjc
     }
@@ -179,7 +177,7 @@ configure(subprojects.findAll {it.name in ['model', 'elm', 'quick', 'qdm' ]}) {
     }
 
     ext.xjc = [
-            destDir: "${projectDir}/src/generated/java",
+            destDir: "${buildDir}/generated/sources/$name/main/java",
             args: '-disableXmlSecurity -Xfluent-api -Xequals -XhashCode -XtoString'
     ]
 
@@ -205,7 +203,14 @@ configure(subprojects.findAll {it.name in ['model', 'elm', 'quick', 'qdm' ]}) {
 
     compileJava.dependsOn generateSources
     sourcesJar.dependsOn generateSources
-    sourceSets.main.java.srcDirs += xjc.destDir
+
+    sourceSets {
+        main {
+            java {
+                srcDir(xjc.destDir)
+            }
+        }
+    }
 
     clean {
         delete xjc.destDir
@@ -225,10 +230,12 @@ configure(subprojects.findAll {it.name in ['model', 'elm', 'quick', 'qdm' ]}) {
        signing.secretKeyRingFile=/Users/me/.gnupg/secring.gpg
    - If the library version ends with '-SNAPSHOT', it will be deployed to the snapshot repository, else it will be
      deployed to the staging repository (which you then must manually release http://central.sonatype.org/pages/releasing-the-deployment.html).
-   - Repo for snapshots and releases: https://oss.sonatype.org/content/groups/public/info/cqframework/
-   - Repo for snpashots, releases, and staged releases: https://oss.sonatype.org/content/groups/staging/info/cqframework/
+   - Repo for snapshots and releases for the translator modules: https://oss.sonatype.org/content/groups/public/info/cqframework/
+   - Repo for snpashots, releases, and staged releases for the translator modules: https://oss.sonatype.org/content/groups/staging/info/cqframework/
+   - Repo for snapshots and releases for the engine modules: https://oss.sonatype.org/content/groups/public/org/opencds/cqf/cql/
+   - Repo for snapshots, releases, and staged releases for the engine modules: https://oss.sonatype.org/content/groups/staging/org/opencds/cqf/cql/
  */
-configure(subprojects.findAll {it.name in ['cqf-fhir', 'cqf-fhir-npm', 'cql', 'model', 'model-jackson', 'model-jaxb', 'elm', 'elm-jackson', 'elm-jaxb', 'elm-fhir', 'quick', 'cql-to-elm', 'cql-to-elm-cli', 'qdm', 'cql-formatter']}) {
+configure(subprojects.findAll {it.name in ['cqf-fhir', 'cqf-fhir-npm', 'cql', 'model', 'model-jackson', 'model-jaxb', 'elm', 'elm-jackson', 'elm-jaxb', 'elm-fhir', 'quick', 'cql-to-elm', 'cql-to-elm-cli', 'qdm', 'cql-formatter', 'engine', 'engine-fhir', 'engine-jaxb', 'engine-jackson']}) {
     java {
         withJavadocJar()
         withSourcesJar()
@@ -281,8 +288,8 @@ configure(subprojects.findAll {it.name in ['cqf-fhir', 'cqf-fhir-npm', 'cql', 'm
         repositories {
             maven {
                 credentials {
-                    username project.hasProperty("ossrhUsername") ? ossrhUsername : ""
-                    password project.hasProperty("ossrhPassword") ? ossrhPassword : ""
+                    username project.hasProperty("ossrhUsername") ? ossrhUsername : System.getenv("OSSRH_USERNAME") != null ? System.getenv("OSSRH_USERNAME") : ""
+                    password project.hasProperty("ossrhPassword") ? ossrhPassword : System.getenv("OSSRH_TOKEN") != null ? System.getenv("OSSRH_TOKEN") : ""
                 }
 
                 /* Use these to test locally (but don't forget to comment out others!)
@@ -299,7 +306,10 @@ configure(subprojects.findAll {it.name in ['cqf-fhir', 'cqf-fhir-npm', 'cql', 'm
     }
 
     signing {
-        sign publishing.publications.mavenDeployer
+        if (!version.endsWith('SNAPSHOT')){
+            sign publishing.publications.mavenDeployer
+        }
+
     }
 
     javadoc {
