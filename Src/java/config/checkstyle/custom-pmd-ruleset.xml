@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<ruleset name="CQL Custom PMD Ruleset"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+
+  <description>
+      This ruleset checks stuff we care about
+  </description>
+
+  <exclude-pattern>.*/org/cqframework/cql/gen/.*</exclude-pattern>
+  <exclude-pattern>.*/org/hl7/.*</exclude-pattern>
+  <exclude-pattern>.*/gov/healthit/qdm/v4_1_2/.*</exclude-pattern>
+  <exclude-pattern>.*/org/w3/_1999/xhtml/.*</exclude-pattern>
+
+  <rule ref="rulesets/java/basic.xml"/>
+
+  <rule ref="rulesets/java/braces.xml"/>
+
+  <rule ref="rulesets/java/controversial.xml/DontImportSun"/>
+
+  <rule ref="rulesets/java/empty.xml"/>
+
+  <rule ref="rulesets/java/imports.xml/UnusedImports"/>
+
+  <rule ref="rulesets/java/naming.xml">
+    <exclude name="ShortVariable"/>
+    <exclude name="LongVariable"/>
+    <exclude name="ShortMethodName"/>
+    <exclude name="ShortClassName"/>
+    <exclude name="AbstractNaming"/>
+    <exclude name="AvoidFieldNameMatchingTypeName"/>
+  </rule>
+
+  <rule ref="rulesets/java/unnecessary.xml">
+    <exclude name="UselessParentheses"/>
+  </rule>
+
+  <rule ref="rulesets/java/unusedcode.xml">
+      <exclude name="UnusedPrivateMethod"/> <!-- Excluded because the rule is incorrectly identifying a method with variable number of arguments in the signature as unused. -->
+  </rule>
+
+</ruleset>

@@ -1,4 +1,6 @@
-apply plugin: 'application'
+plugins {
+    id 'cql.library-conventions'
+}
 
 dependencies {
     api project(':cql')
@@ -14,16 +16,15 @@ dependencies {
     // tests. Users of the CQL translator will need to supply their own implementation or add xpp3
     // at runtime.
     api ('org.fhir:ucum:1.0.3') {
-        exclude group: 'xpp3', module: 'xpp3'
+        exclude group: 'xpp3'
     }
 
-    implementation group: 'org.apache.commons', name: 'commons-text', version: '1.9'
-    implementation group: 'com.fasterxml.jackson.module', name: 'jackson-module-jaxb-annotations', version: '2.13.2'
+    implementation 'org.apache.commons:commons-text:1.9'
+    implementation 'com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.13.2'
 
     testImplementation project(':elm-jackson')
     testImplementation project(':model-jackson')
     testImplementation project(':quick')
     testImplementation project(':qdm')
-    testImplementation group: 'com.github.reinert', name: 'jjschema', version: '1.16'
-    testRuntimeOnly group: 'xpp3', name: 'xpp3', version: '1.1.4c'
+    testImplementation 'com.github.reinert:jjschema:1.16'
 }

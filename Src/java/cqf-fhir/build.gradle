@@ -1,6 +1,3 @@
-// Most build configuration comes from the cql-all parent build!
-
-dependencies {
-    testRuntimeOnly group: 'org.eclipse.persistence', name: 'org.eclipse.persistence.moxy', version: '2.7.7'
-    testRuntimeOnly group: 'xpp3', name: 'xpp3', version: '1.1.4c'
+plugins {
+    id 'cql.fhir-conventions'
 }

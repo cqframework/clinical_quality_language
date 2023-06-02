@@ -1,4 +1,7 @@
-// Most build configuration comes from the cql-all parent build!
+plugins {
+    id 'cql.library-conventions'
+    id 'cql.xjc-conventions'
+}
 
 dependencies {
     implementation project(':model')

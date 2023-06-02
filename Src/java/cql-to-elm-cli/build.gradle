@@ -1,7 +1,11 @@
-apply plugin: 'application'
+plugins {
+    id 'cql.java-conventions'
+    id "application"
+}
 
-mainClassName = 'org.cqframework.cql.cql2elm.cli.CqlTranslator'
-run.args = ["--input", "${projectDir}/../../../Examples/CMS146v2_CQM.cql"]
+application {
+    mainClass = 'org.cqframework.cql.cql2elm.cli.CqlTranslator'
+}
 
 dependencies {
     implementation project(':cql-to-elm')
@@ -9,8 +13,8 @@ dependencies {
     implementation project(':qdm')
     implementation project(':model-jaxb')
     implementation project(':elm-jaxb')
-    implementation group: 'net.sf.jopt-simple', name: 'jopt-simple', version: '4.7'
-    runtimeOnly group: 'org.eclipse.persistence', name: 'org.eclipse.persistence.moxy', version: '2.7.7'
+    implementation 'net.sf.jopt-simple:jopt-simple:4.7'
+    runtimeOnly 'org.eclipse.persistence:org.eclipse.persistence.moxy:2.7.7'
 
     testImplementation project(':model-jaxb')
     testImplementation project(':model-jackson')
