@@ -1,29 +1,25 @@
 // Most build configuration comes from the cql-all parent build!
 
+ext {
+    mapstructVersion = "1.4.2.Final"
+}
+
 dependencies {
-    implementation project(':model')
-    implementation project(':elm')
     implementation project(':cql-to-elm')
+    implementation project(':engine')
+    implementation project(":engine-fhir")
+    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
 
-    // fhir core dependencies
-    implementation group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.r5', version: '5.6.36'
-    implementation group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.convertors', version: '5.6.36'
-    implementation group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.validation', version: '5.6.36'
-    implementation group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.utilities', version: '5.6.36'
-
-    // HAPI base
-    implementation group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-base', version: '6.0.1'
-    implementation group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-converter', version: '6.0.1'
-
-    // FHIR STU3
-    implementation group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-structures-dstu3', version: '6.0.1'
-
-    // FHIR r4
-    implementation group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-structures-r4', version: '6.0.1'
-
-    // FHIR r5
-    implementation group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-structures-r5', version: '6.0.1'
-
-    testImplementation project(':model-jackson')
     testImplementation project(':quick')
+    testImplementation "org.reflections:reflections:0.10.2"
+    testRuntimeOnly project(':model-jackson')
+    testRuntimeOnly group: 'xpp3', name: 'xpp3', version: '1.1.4c'
+
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs = [
+            "-Amapstruct.suppressGeneratorTimestamp=true"
+    ]
 }

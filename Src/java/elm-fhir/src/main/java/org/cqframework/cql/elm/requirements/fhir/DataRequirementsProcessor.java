@@ -1,7 +1,10 @@
 package org.cqframework.cql.elm.requirements.fhir;
 
+import ca.uhn.fhir.context.FhirVersionEnum;
 import org.cqframework.cql.cql2elm.CqlTranslatorOptions;
 import org.cqframework.cql.cql2elm.LibraryManager;
+import org.cqframework.cql.elm.evaluation.ElmAnalysisHelper;
+import org.cqframework.cql.elm.evaluation.ElmEvaluationHelper;
 import org.hl7.cql.model.NamespaceManager;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.cqframework.cql.elm.tracking.TrackBack;
@@ -13,9 +16,10 @@ import org.hl7.elm.r1.*;
 import org.hl7.elm.r1.Element;
 import org.hl7.elm.r1.Expression;
 import org.hl7.elm.r1.Property;
+import org.hl7.fhir.instance.model.api.IBase;
 import org.hl7.fhir.r5.model.*;
 import org.hl7.fhir.r5.model.Library;
-import org.hl7.fhir.r5.model.Quantity;
+import org.hl7.fhir.r5.model.Enumerations.FHIRTypes;
 import org.hl7.fhir.utilities.validation.ValidationMessage;
 import org.cqframework.cql.elm.requirements.ElmDataRequirement;
 import org.cqframework.cql.elm.requirements.ElmPertinenceContext;
@@ -23,10 +27,13 @@ import org.cqframework.cql.elm.requirements.ElmRequirement;
 import org.cqframework.cql.elm.requirements.ElmRequirements;
 import org.cqframework.cql.elm.requirements.ElmRequirementsContext;
 import org.cqframework.cql.elm.requirements.ElmRequirementsVisitor;
+import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter;
+import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverterFactory;
 
 import javax.xml.bind.JAXBElement;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -47,6 +54,37 @@ public class DataRequirementsProcessor {
     public Library gatherDataRequirements(LibraryManager libraryManager, CompiledLibrary translatedLibrary,
                                           CqlTranslatorOptions options, Set<String> expressions,
                                           boolean includeLogicDefinitions, boolean recursive) {
+        return gatherDataRequirements(libraryManager, translatedLibrary, options, expressions, null, null, includeLogicDefinitions, recursive);
+    }
+
+    public Library gatherDataRequirements(LibraryManager libraryManager, CompiledLibrary translatedLibrary,
+                                          CqlTranslatorOptions options, Set<String> expressions,
+                                          Map<String, Object> parameters,
+                                          boolean includeLogicDefinitions, boolean recursive) {
+        return gatherDataRequirements(libraryManager, translatedLibrary, options, expressions, parameters, null, includeLogicDefinitions, recursive);
+    }
+
+    /**
+     * Gathers the data requirements for the given translated library, returning a Library resource with the
+     * effective data requirements for the given expression or set of expressions in the given compiled library.
+     * @param libraryManager The library manager used to support compilation of the library
+     * @param translatedLibrary The compiled library to gather data requirements from
+     * @param options The translator options used to compile the library
+     * @param expressions The expressions to gather data requirements for, null for all expressions in the library
+     * @param parameters Any parameters to the expressions to be analyzed. If null, analysis will only be performed on ELM,
+     *                   whereas if provided, analysis will be performed by attempting to evaluate compile-time evaluable
+     *                   data requirements comparands
+     * @param evaluationDateTime The date time of the evaluation (used to provide the request date time to the engine in the
+     *                           case that compile-time evaluable expressions are evaluated
+     * @param includeLogicDefinitions True to include logic definition extensions in the output containing the source for
+     *                                each expression from which data requirements are gathered
+     * @param recursive True to indicate the data requirements gather should be recursive
+     * @return
+     */
+    public Library gatherDataRequirements(LibraryManager libraryManager, CompiledLibrary translatedLibrary,
+                                          CqlTranslatorOptions options, Set<String> expressions,
+                                          Map<String, Object> parameters, ZonedDateTime evaluationDateTime,
+                                          boolean includeLogicDefinitions, boolean recursive) {
         if (libraryManager == null) {
             throw new IllegalArgumentException("libraryManager required");
         }
@@ -56,7 +94,7 @@ public class DataRequirementsProcessor {
         }
 
         ElmRequirementsVisitor visitor = new ElmRequirementsVisitor();
-        ElmRequirementsContext context = new ElmRequirementsContext(libraryManager, options, visitor);
+        ElmRequirementsContext context = new ElmRequirementsContext(libraryManager, options, visitor, parameters, evaluationDateTime);
 
         List<ExpressionDef> expressionDefs = null;
         if (expressions == null) {
@@ -140,11 +178,12 @@ public class DataRequirementsProcessor {
             requirements = requirements.collapse();
         }
 
-        return createLibrary(context, requirements, translatedLibrary.getIdentifier(), expressionDefs, includeLogicDefinitions);
+        return createLibrary(context, requirements, translatedLibrary.getIdentifier(), expressionDefs, parameters, evaluationDateTime, includeLogicDefinitions);
     }
 
     private Library createLibrary(ElmRequirementsContext context, ElmRequirements requirements,
-            VersionedIdentifier libraryIdentifier, Iterable<ExpressionDef> expressionDefs, boolean includeLogicDefinitions) {
+            VersionedIdentifier libraryIdentifier, Iterable<ExpressionDef> expressionDefs,
+            Map<String, Object> parameters, ZonedDateTime evaluationDateTime, boolean includeLogicDefinitions) {
         Library returnLibrary = new Library();
         returnLibrary.setStatus(Enumerations.PublicationStatus.ACTIVE);
         CodeableConcept libraryType = new CodeableConcept();
@@ -419,7 +458,7 @@ public class DataRequirementsProcessor {
 
     private ParameterDefinition toParameterDefinition(VersionedIdentifier libraryIdentifier, ParameterDef def) {
         AtomicBoolean isList = new AtomicBoolean(false);
-        Enumerations.FHIRAllTypes typeCode = Enumerations.FHIRAllTypes.fromCode(toFHIRParameterTypeCode(def.getResultType(), def.getName(), isList));
+        FHIRTypes typeCode = Enumerations.FHIRTypes.fromCode(toFHIRParameterTypeCode(def.getResultType(), def.getName(), isList));
 
         return new ParameterDefinition()
                 .setName(def.getName())
@@ -431,9 +470,9 @@ public class DataRequirementsProcessor {
 
     private ParameterDefinition toOutputParameterDefinition(VersionedIdentifier libraryIdentifier, ExpressionDef def) {
         AtomicBoolean isList = new AtomicBoolean(false);
-        Enumerations.FHIRAllTypes typeCode = null;
+        Enumerations.FHIRTypes typeCode = null;
         try{
-                typeCode = Enumerations.FHIRAllTypes.fromCode(
+                typeCode = Enumerations.FHIRTypes.fromCode(
                         toFHIRResultTypeCode(def.getResultType(), def.getName(), isList));
         }catch(org.hl7.fhir.exceptions.FHIRException fhirException){
             validationMessages.add(new ValidationMessage(ValidationMessage.Source.Publisher, ValidationMessage.IssueType.NOTSUPPORTED, "CQL Library Packaging",
@@ -585,280 +624,33 @@ public class DataRequirementsProcessor {
         return cfc;
     }
 
-    // Can't believe I have to write this, there seriously isn't a String.format option for this!!!!
-    private String padLeft(String input, int width, String padWith) {
-        if (input == null || padWith == null || padWith.length() == 0) {
-            return null;
-        }
-
-        // Can't believe I have to do this, why is repeat not available until Java 11!!!!!
-        while (input.length() < width) {
-            input = padWith + input;
-        }
-
-        return input;
-    }
-
-    private String padZero(String input, int width) {
-        return padLeft(input, width, "0");
-    }
-
-    // Ugly to have to do this here, but cannot reuse engine evaluation logic without a major refactor
-    // TODO: Consider refactoring to reuse engine evaluation logic here
-    private String toDateTimeString(DataType year, DataType month, DataType day, DataType hour, DataType minute, DataType second, DataType millisecond, DataType timezoneOffset) {
-        if (year == null) {
-            return null;
-        }
-
-        StringBuilder result = new StringBuilder();
-        if (year instanceof IntegerType) {
-            result.append(padZero(((IntegerType)year).getValue().toString(), 4));
-        }
-        if (month instanceof IntegerType) {
-            result.append("-");
-            result.append(padZero(((IntegerType)month).getValue().toString(), 2));
-        }
-        if (day instanceof IntegerType) {
-            result.append("-");
-            result.append(padZero(((IntegerType)day).getValue().toString(), 2));
-        }
-        if (hour instanceof IntegerType) {
-            result.append("T");
-            result.append(padZero(((IntegerType)hour).getValue().toString(), 2));
-        }
-        if (minute instanceof IntegerType) {
-            result.append(":");
-            result.append(padZero(((IntegerType)minute).getValue().toString(), 2));
-        }
-        if (second instanceof IntegerType) {
-            result.append(":");
-            result.append(padZero(((IntegerType)second).getValue().toString(), 2));
-        }
-        if (millisecond instanceof IntegerType) {
-            result.append(".");
-            result.append(padZero(((IntegerType)millisecond).getValue().toString(), 3));
-        }
-        if (timezoneOffset instanceof DecimalType) {
-            BigDecimal offset = ((DecimalType)timezoneOffset).getValue();
-            if (offset.intValue() >= 0) {
-                result.append("+");
-                result.append(padZero(Integer.toString(offset.intValue()), 2));
-            }
-            else {
-                result.append("-");
-                result.append(padZero(Integer.toString(Math.abs(offset.intValue())), 2));
-            }
-            int minutes = new BigDecimal("60").multiply(offset.remainder(BigDecimal.ONE)).intValue();
-            result.append(":");
-            result.append(padZero(Integer.toString(minutes), 2));
-        }
-
-        return result.toString();
-    }
-
-    private String toDateString(DataType year, DataType month, DataType day) {
-        if (year == null) {
-            return null;
-        }
-
-        StringBuilder result = new StringBuilder();
-        if (year instanceof IntegerType) {
-            result.append(padZero(((IntegerType)year).getValue().toString(), 4));
-        }
-        if (month instanceof IntegerType) {
-            result.append("-");
-            result.append(padZero(((IntegerType)month).getValue().toString(), 2));
-        }
-        if (day instanceof IntegerType) {
-            result.append("-");
-            result.append(padZero(((IntegerType)day).getValue().toString(), 2));
-        }
-
-        return result.toString();
-    }
-
-    private String toTimeString(DataType hour, DataType minute, DataType second, DataType millisecond) {
-        if (hour == null) {
-            return null;
-        }
-
-        StringBuilder result = new StringBuilder();
-        if (hour instanceof IntegerType) {
-            result.append(padZero(((IntegerType)hour).getValue().toString(), 2));
-        }
-        if (minute instanceof IntegerType) {
-            result.append(":");
-            result.append(padZero(((IntegerType)minute).getValue().toString(), 2));
-        }
-        if (second instanceof IntegerType) {
-            result.append(":");
-            result.append(padZero(((IntegerType)second).getValue().toString(), 2));
-        }
-        if (millisecond instanceof IntegerType) {
-            result.append(".");
-            result.append(padZero(((IntegerType)millisecond).getValue().toString(), 3));
-        }
-
-        return result.toString();
-    }
-
-    // TODO: Either handle conversions on a case-by-case, or implement conversion evaluation logic...
-    private DateTimeType toFhirDateTimeValue(ElmRequirementsContext context, Expression value) {
-        if (value == null) {
-            return null;
-        }
-
-        DataType result = toFhirValue(context, value);
-        if (result instanceof DateTimeType) {
-            return (DateTimeType)result;
-        }
-        if (result instanceof DateType) {
-            return new DateTimeType(((DateType)result).getValueAsString());
-        }
-
-        throw new IllegalArgumentException("Could not convert expression to a DateTime value");
-    }
-
     private DataType toFhirValue(ElmRequirementsContext context, Expression value) {
         if (value == null) {
             return null;
         }
 
-        if (value instanceof Interval) {
-            // TODO: Handle lowclosed/highclosed
-            return new Period().setStartElement(toFhirDateTimeValue(context, ((Interval)value).getLow()))
-                    .setEndElement(toFhirDateTimeValue(context, ((Interval)value).getHigh()));
+        if (context.getParameters() == null) {
+            return ElmAnalysisHelper.toFhirValue(context, value);
         }
-        else if (value instanceof Literal) {
-            if (context.getTypeResolver().isDateTimeType(value.getResultType())) {
-                return new DateTimeType(((Literal)value).getValue());
-            }
-            else if (context.getTypeResolver().isDateType(value.getResultType())) {
-                return new DateType(((Literal)value).getValue());
-            }
-            else if (context.getTypeResolver().isIntegerType(value.getResultType())) {
-                return new IntegerType(((Literal)value).getValue());
-            }
-            else if (context.getTypeResolver().isDecimalType(value.getResultType())) {
-                return new DecimalType(((Literal)value).getValue());
-            }
-            else if (context.getTypeResolver().isStringType(value.getResultType())) {
-                return new StringType(((Literal)value).getValue());
-            }
-        }
-        else if (value instanceof DateTime) {
-            DateTime dateTime = (DateTime)value;
-            return new DateTimeType(toDateTimeString(
-                    toFhirValue(context, dateTime.getYear()),
-                    toFhirValue(context, dateTime.getMonth()),
-                    toFhirValue(context, dateTime.getDay()),
-                    toFhirValue(context, dateTime.getHour()),
-                    toFhirValue(context, dateTime.getMinute()),
-                    toFhirValue(context, dateTime.getSecond()),
-                    toFhirValue(context, dateTime.getMillisecond()),
-                    toFhirValue(context, dateTime.getTimezoneOffset())));
-        }
-        else if (value instanceof org.hl7.elm.r1.Date) {
-            org.hl7.elm.r1.Date date = (org.hl7.elm.r1.Date)value;
-            return new DateType(toDateString(
-                    toFhirValue(context, date.getYear()),
-                    toFhirValue(context, date.getMonth()),
-                    toFhirValue(context, date.getDay())
-            ));
-        }
-        else if (value instanceof Start) {
-            DataType operand = toFhirValue(context, ((Start)value).getOperand());
-            if (operand != null) {
-                Period period = (Period)operand;
-                return period.getStartElement();
-            }
-        }
-        else if (value instanceof End) {
-            DataType operand = toFhirValue(context, ((End)value).getOperand());
-            if (operand != null) {
-                Period period = (Period)operand;
-                return period.getEndElement();
+        else {
+            // Attempt to use an evaluation visitor to evaluate the value (must be compile-time literal or this will produce a runtime error)
+            Object result = ElmEvaluationHelper.evaluate(context.resolveLibrary(context.getCurrentLibraryIdentifier()).getLibrary(), value, context.getParameters(), context.getEvaluationDateTime());
+
+            if (result instanceof DataType) {
+                return (DataType)result;
             }
 
-        }
-        else if (value instanceof ParameterRef) {
-            if (context.getTypeResolver().isIntervalType(value.getResultType())) {
-                Extension e = toExpression(context, (ParameterRef)value);
-                org.hl7.cql.model.DataType pointType = ((IntervalType)value.getResultType()).getPointType();
-                if (context.getTypeResolver().isDateTimeType(pointType) || context.getTypeResolver().isDateType(pointType)) {
-                    Period period = new Period();
-                    period.addExtension(e);
-                    return period;
-                }
-                else if (context.getTypeResolver().isQuantityType(pointType) || context.getTypeResolver().isIntegerType(pointType) || context.getTypeResolver().isDecimalType(pointType)) {
-                    Range range = new Range();
-                    range.addExtension(e);
-                    return range;
-                }
-                else {
-                    throw new IllegalArgumentException(String.format("toFhirValue not implemented for interval of %s", pointType.toString()));
-                }
+            if (result == null) {
+                return null;
             }
-            // Boolean, Integer, Decimal, String, Quantity, Date, DateTime, Time, Coding, CodeableConcept
-            else if (context.getTypeResolver().isBooleanType(value.getResultType())) {
-                BooleanType result = new BooleanType();
-                result.addExtension(toExpression(context, (ParameterRef)value));
-                return result;
-            }
-            else if (context.getTypeResolver().isIntegerType(value.getResultType())) {
-                IntegerType result = new IntegerType();
-                result.addExtension(toExpression(context, (ParameterRef)value));
-                return result;
-            }
-            else if (context.getTypeResolver().isDecimalType(value.getResultType())) {
-                DecimalType result = new DecimalType();
-                result.addExtension(toExpression(context, (ParameterRef)value));
-                return result;
-            }
-            else if (context.getTypeResolver().isQuantityType(value.getResultType())) {
-                Quantity result = new Quantity();
-                result.addExtension(toExpression(context, (ParameterRef)value));
-                return result;
-            }
-            else if (context.getTypeResolver().isCodeType(value.getResultType())) {
-                Coding result = new Coding();
-                result.addExtension(toExpression(context, (ParameterRef)value));
-                return result;
 
+            FhirTypeConverter converter = new FhirTypeConverterFactory().create(FhirVersionEnum.R5);
+            IBase fhirResult = converter.toFhirType(result);
+            if (fhirResult instanceof DataType) {
+                return (DataType)fhirResult;
             }
-            else if (context.getTypeResolver().isConceptType(value.getResultType())) {
-                CodeableConcept result = new CodeableConcept();
-                result.addExtension(toExpression(context, (ParameterRef)value));
-                return result;
-            }
-            else if (context.getTypeResolver().isDateType(value.getResultType())) {
-                DateType result = new DateType();
-                result.addExtension(toExpression(context, (ParameterRef)value));
-                return result;
-            }
-            else if (context.getTypeResolver().isDateTimeType(value.getResultType())) {
-                DateTimeType result = new DateTimeType();
-                result.addExtension(toExpression(context, (ParameterRef)value));
-                return result;
-            }
-            else if (context.getTypeResolver().isTimeType(value.getResultType())) {
-                TimeType result = new TimeType();
-                result.addExtension(toExpression(context, (ParameterRef)value));
-                return result;
-            }
-            else {
-                throw new IllegalArgumentException(String.format("toFhirValue not implemented for parameter of type %s", value.getResultType().toString()));
-            }
+            throw new IllegalArgumentException(String.format("toFhirValue not implemented for result of type %s", result.getClass().getSimpleName()));
         }
-        throw new IllegalArgumentException(String.format("toFhirValue not implemented for %s", value.getClass().getSimpleName()));
-    }
-
-    private org.hl7.fhir.r5.model.Extension toExpression(ElmRequirementsContext context, ParameterRef parameterRef) {
-        String expression = parameterRef.getName();
-        if (parameterRef.getLibraryName() != null && !parameterRef.getLibraryName().equals(context.getCurrentLibraryIdentifier().getId())) {
-            expression = String.format("\"%s\".\"%s\"", parameterRef.getLibraryName(), parameterRef.getName());
-        }
-        return new Extension().setUrl("http://hl7.org/fhir/StructureDefinition/cqf-expression").setValue(new org.hl7.fhir.r5.model.Expression().setLanguage("text/cql-identifier").setExpression(expression));
     }
 
     private org.hl7.fhir.r5.model.DataRequirement.DataRequirementDateFilterComponent toDateFilterComponent(ElmRequirementsContext context, VersionedIdentifier libraryIdentifier, String property, Expression value) {
@@ -870,6 +662,11 @@ public class DataRequirementsProcessor {
         context.enterLibrary(libraryIdentifier);
         try {
             dfc.setValue(toFhirValue(context, value));
+        }
+        catch (Exception e) {
+            Period p = new Period();
+            p.addExtension("http://hl7.org/fhir/uv/crmi-analysisException", new StringType(String.format("Error attempting to determine filter value: %s", e.getMessage())));
+            dfc.setValue(p);
         }
         finally {
             context.exitLibrary();
@@ -895,7 +692,7 @@ public class DataRequirementsProcessor {
             ElmPertinenceContext pertinenceContext) {
         org.hl7.fhir.r5.model.DataRequirement dr = new org.hl7.fhir.r5.model.DataRequirement();
         try {
-            dr.setType(org.hl7.fhir.r5.model.Enumerations.FHIRAllTypes.fromCode(retrieve.getDataType().getLocalPart()));
+            dr.setType(org.hl7.fhir.r5.model.Enumerations.FHIRTypes.fromCode(retrieve.getDataType().getLocalPart()));
         }
         catch(org.hl7.fhir.exceptions.FHIRException fhirException) {
             validationMessages.add(new ValidationMessage(ValidationMessage.Source.Publisher, ValidationMessage.IssueType.NOTSUPPORTED, "CQL Library Packaging",

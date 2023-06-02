@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://hl7.org/fhirpath/tests" xsi:schemaLocation="http://hl7.org/fhirpath/tests ../../testSchema/testSchema.xsd"
+	name="CqlAggregateFunctionsTest" reference="https://cql.hl7.org/09-b-cqlreference.html#aggregate-functions">
+	<group name="AllTrue">
+		<test name="AllTrueAllTrue">
+			<expression>AllTrue({true,true})</expression>
+			<output>true</output>
+		</test>
+		<test name="AllTrueTrueFirst">
+			<expression>AllTrue({true,false})</expression>
+			<output>false</output>
+		</test>
+		<test name="AllTrueFalseFirst">
+			<expression>AllTrue({false,true})</expression>
+			<output>false</output>
+		</test>
+		<test name="AllTrueAllTrueFalseTrue">
+			<expression>AllTrue({true,false,true})</expression>
+			<output>false</output>
+		</test>
+		<test name="AllTrueAllFalseTrueFalse">
+			<expression>AllTrue({false,true,false})</expression>
+			<output>false</output>
+		</test>
+		<test name="AllTrueNullFirst">
+			<expression>AllTrue({null,true,true})</expression>
+			<output>true</output>
+		</test>
+		<test name="AllTrueEmptyList">
+			<expression>AllTrue({})</expression>
+			<output>true</output>
+		</test>
+	</group>
+	<group name="AnyTrue">
+		<test name="AnyTrueAllTrue">
+			<expression>AnyTrue({true,true})</expression>
+			<output>true</output>
+		</test>
+		<test name="AnyTrueAllFalse">
+			<expression>AnyTrue({false,false})</expression>
+			<output>false</output>
+		</test>
+		<test name="AnyTrueAllTrueFalseTrue">
+			<expression>AnyTrue({true,false,true})</expression>
+			<output>true</output>
+		</test>
+		<test name="AnyTrueAllFalseTrueFalse">
+			<expression>AnyTrue({false,true,false})</expression>
+			<output>true</output>
+		</test>
+		<test name="AnyTrueTrueFirst">
+			<expression>AnyTrue({true,false})</expression>
+			<output>true</output>
+		</test>
+		<test name="AnyTrueFalseFirst">
+			<expression>AnyTrue({false,true})</expression>
+			<output>true</output>
+		</test>
+		<test name="AnyTrueNullFirstThenTrue">
+			<expression>AnyTrue({null,true})</expression>
+			<output>true</output>
+		</test>
+		<test name="AnyTrueNullFirstThenFalse">
+			<expression>AnyTrue({null,false})</expression>
+			<output>false</output>
+		</test>
+		<test name="AnyTrueEmptyList">
+			<expression>AnyTrue({})</expression>
+			<output>false</output>
+		</test>
+	</group>
+	<group name="Avg">
+		<test name="AvgTest1">
+			<expression>Avg({ 1.0, 2.0, 3.0, 6.0 })</expression>
+			<output>3.0</output>
+		</test>
+	</group>
+	<group name="Count">
+		<test name="CountTest1">
+			<expression>Count({ 15, 5, 99, null, 1 })</expression>
+			<output>4</output>
+		</test>
+		<test name="CountTestDateTime">
+			<expression>Count({ DateTime(2014), DateTime(2001), DateTime(2010) })</expression>
+			<output>3</output>
+		</test>
+		<test name="CountTestTime">
+			<expression>Count({ @T15:59:59.999, @T05:59:59.999, @T20:59:59.999 })</expression>
+			<output>3</output>
+		</test>
+		<test name="CountTestNull">
+			<expression>Count({})</expression>
+			<output>0</output>
+		</test>
+	</group>
+	<group name="Max">
+		<test name="MaxTestInteger">
+			<expression>Max({ 5, 12, 1, 15, 0, 4, 90, 44 })</expression>
+			<output>90</output>
+		</test>
+		<test name="MaxTestString">
+			<expression>Max({ 'hi', 'bye', 'zebra' })</expression>
+			<output>'zebra'</output>
+		</test>
+		<test name="MaxTestDateTime">
+			<expression>Max({ DateTime(2012, 10, 5), DateTime(2012, 9, 5), DateTime(2012, 10, 6) })</expression>
+			<output>DateTime(2012, 10, 6)</output>
+		</test>
+		<test name="MaxTestTime">
+			<expression>Max({ @T15:59:59.999, @T05:59:59.999, @T20:59:59.999 })</expression>
+			<output>@T20:59:59.999</output>
+		</test>
+	</group>
+	<group name="Median">
+		<test name="MedianTestDecimal">
+			<expression>Median({6.0, 5.0, 4.0, 3.0, 2.0, 1.0})</expression>
+			<output>3.5</output>
+		</test>
+	</group>
+	<group name="Min">
+		<test name="MinTestInteger">
+			<expression>Min({5, 12, 1, 15, 0, 4, 90, 44})</expression>
+			<output>0</output>
+		</test>
+		<test name="MinTestString">
+			<expression>Min({'hi', 'bye', 'zebra'})</expression>
+			<output>'bye'</output>
+		</test>
+		<test name="MinTestDateTime">
+			<expression>Min({ DateTime(2012, 10, 5), DateTime(2012, 9, 5), DateTime(2012, 10, 6) })</expression>
+			<output>DateTime(2012, 9, 5)</output>
+		</test>
+		<test name="MinTestTime">
+			<expression>Min({ @T15:59:59.999, @T05:59:59.999, @T20:59:59.999 })</expression>
+			<output>@T05:59:59.999</output>
+		</test>
+	</group>
+	<group name="Mode">
+		<test name="ModeTestInteger">
+			<expression>Mode({ 2, 1, 8, 2, 9, 1, 9, 9 })</expression>
+			<output>9</output>
+		</test>
+		<test name="ModeTestDateTime">
+			<expression>Mode({ DateTime(2012, 10, 5), DateTime(2012, 9, 5), DateTime(2012, 10, 6), DateTime(2012, 9, 5) })</expression>
+			<output>DateTime(2012, 9, 5)</output>
+		</test>
+		<test name="ModeTestTime">
+			<expression>Mode({ @T15:59:59.999, @T05:59:59.999, @T20:59:59.999, @T05:59:59.999 })</expression>
+			<output>@T05:59:59.999</output>
+		</test>
+	</group>
+	<group name="PopulationStdDev">
+		<test name="PopStdDevTest1">
+			<expression>PopulationStdDev({ 1.0, 2.0, 3.0, 4.0, 5.0 })</expression>
+			<output>1.41421356</output>
+			<!-- 23730951454746218587388284504413604736328125 -->
+		</test>
+	</group>
+	<group name="PopulationVariance">
+		<test name="PopVarianceTest1">
+			<expression>PopulationVariance({ 1.0, 2.0, 3.0, 4.0, 5.0 })</expression>
+			<output>2.0</output>
+		</test>
+	</group>
+	<group name="StdDev">
+		<test name="StdDevTest1">
+			<expression>StdDev({ 1.0, 2.0, 3.0, 4.0, 5.0 })</expression>
+			<output>1.58113883</output>
+			<!-- 00841897613935316257993690669536590576171875 -->
+		</test>
+	</group>
+	<group name="Sum">
+		<test name="SumTest1">
+			<expression>Sum({ 6.0, 2.0, 3.0, 4.0, 5.0 })</expression>
+			<output>20.0</output>
+		</test>
+		<test name="SumTestNull">
+			<expression>Sum({ null, 1, null })</expression>
+			<output>1</output>
+		</test>
+	</group>
+	<group name="Variance">
+		<test name="VarianceTest1">
+			<expression>Variance({ 1.0, 2.0, 3.0, 4.0, 5.0 })</expression>
+			<output>2.5</output>
+		</test>
+	</group>
+</tests>

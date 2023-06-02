@@ -10,6 +10,9 @@
     "compatibilityLevel" : {
       "type" : "string"
     },
+    "enableCqlOnly" : {
+      "type" : "boolean"
+    },
     "errorLevel" : {
       "enum" : [ "Info", "Warning", "Error" ],
       "type" : "string"

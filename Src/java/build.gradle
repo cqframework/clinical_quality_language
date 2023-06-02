@@ -1,3 +1,7 @@
+plugins {
+    id 'ru.vyarus.animalsniffer' version '1.6.0'
+}
+
 allprojects {
     apply plugin: 'idea'
     apply plugin: 'eclipse'
@@ -5,11 +9,11 @@ allprojects {
     apply plugin: 'signing'
 
     group = 'info.cqframework'
-    version = '2.1.0-SNAPSHOT'
+    version = '2.10.0-SNAPSHOT'
 }
 
 subprojects {
-    apply plugin: 'java'
+    apply plugin: 'java-library'
     apply plugin: 'jacoco'
 
     sourceCompatibility = JavaVersion.VERSION_11
@@ -28,7 +32,7 @@ subprojects {
         testImplementation group: 'org.hamcrest', name: 'hamcrest-all', version: '1.3'
         testImplementation group: 'uk.co.datumedge', name: 'hamcrest-json', version: '0.2'
         testImplementation group: 'junit', name: 'junit', version: '4.12'
-        testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
+        testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.36'
     }
 
     jar {
@@ -113,12 +117,45 @@ subprojects {
     }
 }
 
+// Modules that can be used on Android
+configure(subprojects.findAll {it.name in ['model', 'model-jackson', 'elm', 'cql', 'elm-jackson', 'elm-fhir', 'quick', 'qdm', 'cql-to-elm', 'fhir-all', 'fhir-r4']}) {
+    apply plugin: 'ru.vyarus.animalsniffer'
+
+    dependencies {
+        // Checks compliance with Android API 26
+        signature 'net.sf.androidscents.signature:android-api-level-26:8.0.0_r2@signature'
+    }
+}
+
+/*
+FHIR dependencies
+*/
+configure(subprojects.findAll {it.name in ['cqf-fhir', 'elm-fhir', 'cqf-fhir-npm', 'engine-fhir']}) {
+    dependencies {
+
+        implementation(platform("ca.uhn.hapi.fhir:hapi-fhir-bom:6.4.4")) {
+            exclude group: 'org.eclipse.jetty'
+        }
+
+        implementation("ca.uhn.hapi.fhir:org.hl7.fhir.r5")
+        implementation("ca.uhn.hapi.fhir:org.hl7.fhir.convertors")
+        implementation("ca.uhn.hapi.fhir:org.hl7.fhir.utilities")
+
+        implementation("ca.uhn.hapi.fhir:hapi-fhir-base")
+        implementation("ca.uhn.hapi.fhir:hapi-fhir-converter")
+        implementation("ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2")
+        implementation("ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3")
+        implementation("ca.uhn.hapi.fhir:hapi-fhir-structures-r4")
+        implementation("ca.uhn.hapi.fhir:hapi-fhir-structures-r5")
+    }
+}
+
 /*
 JAXB dependencies:
 https://mkyong.com/java/jaxbexception-implementation-of-jaxb-api-has-not-been-found-on-module-path-or-classpath/
  */
 
-configure(subprojects.findAll {it.name in ['model', 'model-jackson', 'model-jaxb', 'elm', 'elm-jackson', 'elm-jaxb', 'quick', 'fhir-r4', 'qdm', 'cql-to-elm', 'cql-to-elm-cli']}) {
+configure(subprojects.findAll {it.name in ['model', 'elm', 'quick', 'qdm', 'engine', 'engine-fhir' ]}) {
     configurations {
         xjc
     }
@@ -133,13 +170,14 @@ configure(subprojects.findAll {it.name in ['model', 'model-jackson', 'model-jaxb
         xjc group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '2.3.3'
         xjc group: 'org.glassfish.jaxb', name: 'jaxb-xjc', version: '2.4.0-b180830.0438'
         xjc group: 'org.eclipse.persistence', name: 'org.eclipse.persistence.moxy', version: '2.7.7'
-        xjc group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
-        implementation group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics-runtime', version: '0.13.1'
-        implementation group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '2.3.3'
+        xjc group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.36'
+
+        api group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics-runtime', version: '0.13.1'
+        api group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '2.3.3'
     }
 
     ext.xjc = [
-            destDir: "${projectDir}/src/generated/java",
+            destDir: "${buildDir}/generated/sources/$name/main/java",
             args: '-disableXmlSecurity -Xfluent-api -Xequals -XhashCode -XtoString'
     ]
 
@@ -165,7 +203,14 @@ configure(subprojects.findAll {it.name in ['model', 'model-jackson', 'model-jaxb
 
     compileJava.dependsOn generateSources
     sourcesJar.dependsOn generateSources
-    sourceSets.main.java.srcDirs += xjc.destDir
+
+    sourceSets {
+        main {
+            java {
+                srcDir(xjc.destDir)
+            }
+        }
+    }
 
     clean {
         delete xjc.destDir
@@ -185,10 +230,12 @@ configure(subprojects.findAll {it.name in ['model', 'model-jackson', 'model-jaxb
        signing.secretKeyRingFile=/Users/me/.gnupg/secring.gpg
    - If the library version ends with '-SNAPSHOT', it will be deployed to the snapshot repository, else it will be
      deployed to the staging repository (which you then must manually release http://central.sonatype.org/pages/releasing-the-deployment.html).
-   - Repo for snapshots and releases: https://oss.sonatype.org/content/groups/public/info/cqframework/
-   - Repo for snpashots, releases, and staged releases: https://oss.sonatype.org/content/groups/staging/info/cqframework/
+   - Repo for snapshots and releases for the translator modules: https://oss.sonatype.org/content/groups/public/info/cqframework/
+   - Repo for snpashots, releases, and staged releases for the translator modules: https://oss.sonatype.org/content/groups/staging/info/cqframework/
+   - Repo for snapshots and releases for the engine modules: https://oss.sonatype.org/content/groups/public/org/opencds/cqf/cql/
+   - Repo for snapshots, releases, and staged releases for the engine modules: https://oss.sonatype.org/content/groups/staging/org/opencds/cqf/cql/
  */
-configure(subprojects.findAll {it.name in ['cqf-fhir', 'cqf-fhir-npm', 'cql', 'model', 'model-jackson', 'model-jaxb', 'elm', 'elm-jackson', 'elm-jaxb', 'elm-fhir', 'fhir-r4', 'quick', 'cql-to-elm', 'cql-to-elm-cli', 'qdm', 'cql-formatter']}) {
+configure(subprojects.findAll {it.name in ['cqf-fhir', 'cqf-fhir-npm', 'cql', 'model', 'model-jackson', 'model-jaxb', 'elm', 'elm-jackson', 'elm-jaxb', 'elm-fhir', 'quick', 'cql-to-elm', 'cql-to-elm-cli', 'qdm', 'cql-formatter', 'engine', 'engine-fhir', 'engine-jaxb', 'engine-jackson']}) {
     java {
         withJavadocJar()
         withSourcesJar()
@@ -241,8 +288,8 @@ configure(subprojects.findAll {it.name in ['cqf-fhir', 'cqf-fhir-npm', 'cql', 'm
         repositories {
             maven {
                 credentials {
-                    username project.hasProperty("ossrhUsername") ? ossrhUsername : ""
-                    password project.hasProperty("ossrhPassword") ? ossrhPassword : ""
+                    username project.hasProperty("ossrhUsername") ? ossrhUsername : System.getenv("OSSRH_USERNAME") != null ? System.getenv("OSSRH_USERNAME") : ""
+                    password project.hasProperty("ossrhPassword") ? ossrhPassword : System.getenv("OSSRH_TOKEN") != null ? System.getenv("OSSRH_TOKEN") : ""
                 }
 
                 /* Use these to test locally (but don't forget to comment out others!)
@@ -259,7 +306,10 @@ configure(subprojects.findAll {it.name in ['cqf-fhir', 'cqf-fhir-npm', 'cql', 'm
     }
 
     signing {
-        sign publishing.publications.mavenDeployer
+        if (!version.endsWith('SNAPSHOT')){
+            sign publishing.publications.mavenDeployer
+        }
+
     }
 
     javadoc {

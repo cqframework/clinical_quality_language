@@ -29,17 +29,17 @@ import static java.nio.file.FileVisitResult.CONTINUE;
 import static org.cqframework.cql.cql2elm.CqlTranslator.fromFile;
 
 public class CqlTranslator {
-    public static void loadModelInfo(File modelInfoXML)  {
+    public static ModelInfoProvider getModelInfoProvider(File modelInfoXML)  {
         try {
             final ModelInfo modelInfo = ModelInfoReaderFactory.getReader("application/xml").read(modelInfoXML);
             final ModelIdentifier modelId = new ModelIdentifier().withId(modelInfo.getName()).withVersion(modelInfo.getVersion());
-            final ModelInfoProvider modelProvider = (ModelIdentifier modelIdentifier) -> modelInfo;
-            final ModelInfoLoader modelInfoLoader = new ModelInfoLoader();
-            modelInfoLoader.registerModelInfoProvider(modelProvider);
+            return (ModelIdentifier modelIdentifier) -> modelInfo;
         } catch (IOException e) {
+            System.err.printf("Could not load model-info XML: %s%n", modelInfoXML);
             e.printStackTrace();
-            return;
+            System.exit(-1);
         }
+        return null;
     }
 
     private static void outputExceptions(Iterable<CqlCompilerException> exceptions) {
@@ -51,7 +51,7 @@ public class CqlTranslator {
         }
     }
 
-    private static void writeELM(Path inPath, Path outPath, org.cqframework.cql.cql2elm.CqlTranslator.Format format, CqlTranslatorOptions options) throws IOException {
+    private static void writeELM(Path inPath, Path outPath, org.cqframework.cql.cql2elm.CqlTranslator.Format format, ModelInfoProvider modelProvider, CqlTranslatorOptions options) throws IOException {
 
         System.err.println("================================================================================");
         System.err.printf("TRANSLATE %s%n", inPath);
@@ -61,6 +61,10 @@ public class CqlTranslator {
             modelManager = new ModelManager(false);
         } else {
             modelManager = new ModelManager();
+        }
+
+        if (modelProvider != null) {
+            modelManager.getModelInfoLoader().registerModelInfoProvider(modelProvider);
         }
 
         LibraryManager libraryManager = new LibraryManager(modelManager);
@@ -201,15 +205,16 @@ public class CqlTranslator {
                 throw new IllegalArgumentException("input and output file must be different!");
             }
 
+            ModelInfoProvider modelProvider = null;
             if (options.has(model)) {
                 final File modelFile = options.valueOf(model);
                 if (! modelFile.exists() || modelFile.isDirectory()) {
                     throw new IllegalArgumentException("model must be a valid file!");
                 }
-                loadModelInfo(modelFile);
+                modelProvider = getModelInfoProvider(modelFile);
             }
 
-            writeELM(in, out, outputFormat, new CqlTranslatorOptions(outputFormat, options.has(optimization),
+            writeELM(in, out, outputFormat, modelProvider, new CqlTranslatorOptions(outputFormat, options.has(optimization),
                     options.has(debug) || options.has(annotations),
                     options.has(debug) || options.has(locators),
                     options.has(debug) || options.has(resultTypes),

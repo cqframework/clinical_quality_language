@@ -1,0 +1,2808 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:qdm43="urn:healthit-gov:qdm:v4_3" xmlns:qdm53="urn:healthit-gov:qdm:v5_3" xmlns:a="urn:hl7-org:cql-annotations:r1">
+   <annotation translatorOptions="EnableDateRangeOptimization,EnableAnnotations,EnableLocators,EnableResultTypes,DisableListDemotion,DisableListPromotion,DisableMethodInvocation" xsi:type="a:CqlToElmInfo"/>
+   <identifier id="MATGlobalCommonFunctions" version="4.0.000"/>
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
+      <def localId="1" locator="5:1-5:23" localIdentifier="QDM" uri="urn:healthit-gov:qdm:v5_4" version="5.4"/>
+   </usings>
+   <parameters>
+      <def localId="9" locator="13:1-13:49" name="Measurement Period" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+            <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <parameterTypeSpecifier localId="8" locator="13:32-13:49" xsi:type="IntervalTypeSpecifier">
+            <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+               <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <pointType localId="7" locator="13:41-13:48" resultTypeName="t:DateTime" name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </parameterTypeSpecifier>
+      </def>
+   </parameters>
+   <valueSets>
+      <def localId="2" locator="7:1-7:82" name="Emergency Department Visit" id="urn:oid:2.16.840.1.113883.3.117.1.7.1.292" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="3" locator="8:1-8:71" name="Encounter Inpatient" id="urn:oid:2.16.840.1.113883.3.666.5.307" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="4" locator="9:1-9:71" name="Intensive Care Unit" id="urn:oid:2.16.840.1.113762.1.4.1110.23" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="5" locator="10:1-10:73" name="Observation Services" id="urn:oid:2.16.840.1.113762.1.4.1111.143" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="6" locator="11:1-11:78" name="Outpatient Surgery Service" id="urn:oid:2.16.840.1.113762.1.4.1110.38" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+   </valueSets>
+   <statements>
+      <def locator="15:1-15:15" name="Patient" context="Patient">
+         <expression xsi:type="SingletonFrom">
+            <operand locator="15:1-15:15" xmlns:ns0="urn:healthit-gov:qdm:v5_4" dataType="ns0:Patient" templateId="Patient" xsi:type="Retrieve"/>
+         </expression>
+      </def>
+      <def localId="21" locator="54:1-55:59" resultTypeName="t:Integer" name="LengthInDays" context="Patient" accessLevel="Public" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="21">
+               <a:s>define function &quot;LengthInDays&quot;(Value </a:s>
+               <a:s r="15">
+                  <a:s>Interval&lt;</a:s>
+                  <a:s r="14">
+                     <a:s>DateTime</a:s>
+                  </a:s>
+                  <a:s>></a:s>
+               </a:s>
+               <a:s> ):
+	</a:s>
+               <a:s r="20">
+                  <a:s r="20">
+                     <a:s>difference in days between </a:s>
+                     <a:s r="17">
+                        <a:s>start of </a:s>
+                        <a:s r="16">
+                           <a:s>Value</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s> and </a:s>
+                     <a:s r="19">
+                        <a:s>end of </a:s>
+                        <a:s r="18">
+                           <a:s>Value</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="20" locator="55:2-55:59" resultTypeName="t:Integer" precision="Day" xsi:type="DifferenceBetween">
+            <operand localId="17" locator="55:29-55:42" resultTypeName="t:DateTime" xsi:type="Start">
+               <operand localId="16" locator="55:38-55:42" name="Value" xsi:type="OperandRef">
+                  <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                     <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </operand>
+            </operand>
+            <operand localId="19" locator="55:48-55:59" resultTypeName="t:DateTime" xsi:type="End">
+               <operand localId="18" locator="55:55-55:59" name="Value" xsi:type="OperandRef">
+                  <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                     <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </operand>
+            </operand>
+         </expression>
+         <operand name="Value">
+            <operandTypeSpecifier localId="15" locator="54:38-54:55" xsi:type="IntervalTypeSpecifier">
+               <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                  <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <pointType localId="14" locator="54:47-54:54" resultTypeName="t:DateTime" name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+            </operandTypeSpecifier>
+         </operand>
+      </def>
+      <def localId="31" locator="17:1-20:73" name="Inpatient Encounter" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="31">
+               <a:s>define &quot;Inpatient Encounter&quot;:
+	</a:s>
+               <a:s r="30">
+                  <a:s>
+                     <a:s r="11">
+                        <a:s r="10">
+                           <a:s r="10">
+                              <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Encounter Inpatient&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> EncounterInpatient</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+		</a:s>
+                  <a:s r="29">
+                     <a:s>where </a:s>
+                     <a:s r="29">
+                        <a:s r="24">
+                           <a:s r="22">
+                              <a:s>&quot;LengthInDays&quot;(</a:s>
+                              <a:s r="13">
+                                 <a:s r="12">
+                                    <a:s>EncounterInpatient</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="13">
+                                    <a:s>relevantPeriod</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>)</a:s>
+                           </a:s>
+                           <a:s r="23">&lt;= 120</a:s>
+                        </a:s>
+                        <a:s>
+			and </a:s>
+                        <a:s r="28">
+                           <a:s r="26">
+                              <a:s r="25">
+                                 <a:s>EncounterInpatient</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="26">
+                                 <a:s>relevantPeriod</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s r="28"> ends during </a:s>
+                           <a:s r="27">
+                              <a:s>&quot;Measurement Period&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns1="urn:healthit-gov:qdm:v5_4" name="ns1:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="30" locator="18:2-20:73" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns2="urn:healthit-gov:qdm:v5_4" name="ns2:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="11" locator="18:2-18:67" alias="EncounterInpatient">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns3="urn:healthit-gov:qdm:v5_4" name="ns3:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="10" locator="18:2-18:48" xmlns:ns4="urn:healthit-gov:qdm:v5_4" dataType="ns4:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns5="urn:healthit-gov:qdm:v5_4" name="ns5:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <codes locator="18:27-18:47" name="Encounter Inpatient" xsi:type="ValueSetRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </codes>
+               </expression>
+            </source>
+            <where localId="29" locator="19:3-20:73" resultTypeName="t:Boolean" xsi:type="And">
+               <operand localId="24" locator="19:9-19:63" resultTypeName="t:Boolean" xsi:type="LessOrEqual">
+                  <operand localId="22" locator="19:9-19:57" resultTypeName="t:Integer" name="LengthInDays" xsi:type="FunctionRef">
+                     <operand localId="13" locator="19:24-19:56" path="relevantPeriod" scope="EncounterInpatient" xsi:type="Property">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </operand>
+                  </operand>
+                  <operand localId="23" locator="19:61-19:63" resultTypeName="t:Integer" valueType="t:Integer" value="120" xsi:type="Literal"/>
+               </operand>
+               <operand localId="28" locator="20:8-20:73" resultTypeName="t:Boolean" xsi:type="In">
+                  <operand locator="20:42-20:45" xsi:type="End">
+                     <operand localId="26" locator="20:8-20:40" path="relevantPeriod" scope="EncounterInpatient" xsi:type="Property">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </operand>
+                  </operand>
+                  <operand localId="27" locator="20:54-20:73" name="Measurement Period" xsi:type="ParameterRef">
+                     <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </operand>
+               </operand>
+            </where>
+         </expression>
+      </def>
+      <def localId="33" locator="22:1-23:55" name="ED Encounter" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="33">
+               <a:s>define &quot;ED Encounter&quot;:
+	</a:s>
+               <a:s r="32">
+                  <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Emergency Department Visit&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns6="urn:healthit-gov:qdm:v5_4" name="ns6:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="32" locator="23:2-23:55" xmlns:ns7="urn:healthit-gov:qdm:v5_4" dataType="ns7:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns8="urn:healthit-gov:qdm:v5_4" name="ns8:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <codes locator="23:27-23:54" name="Emergency Department Visit" xsi:type="ValueSetRef">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+            </codes>
+         </expression>
+      </def>
+      <def localId="48" locator="26:1-27:99" resultTypeName="t:DateTime" name="ToDate" context="Patient" accessLevel="Public" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="48">
+               <a:s>define function &quot;ToDate&quot;(Value </a:s>
+               <a:s r="34">
+                  <a:s>DateTime</a:s>
+               </a:s>
+               <a:s> ):
+	</a:s>
+               <a:s r="47">
+                  <a:s r="47">
+                     <a:s>DateTime(</a:s>
+                     <a:s r="36">
+                        <a:s>year from </a:s>
+                        <a:s r="35">
+                           <a:s>Value</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>, </a:s>
+                     <a:s r="38">
+                        <a:s>month from </a:s>
+                        <a:s r="37">
+                           <a:s>Value</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>, </a:s>
+                     <a:s r="40">
+                        <a:s>day from </a:s>
+                        <a:s r="39">
+                           <a:s>Value</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s r="41">, 0, 0, 0, 0, </a:s>
+                     <a:s r="46">
+                        <a:s>timezone from </a:s>
+                        <a:s r="45">
+                           <a:s>Value</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>)</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="47" locator="27:2-27:99" resultTypeName="t:DateTime" xsi:type="DateTime">
+            <year localId="36" locator="27:11-27:25" resultTypeName="t:Integer" precision="Year" xsi:type="DateTimeComponentFrom">
+               <operand localId="35" locator="27:21-27:25" resultTypeName="t:DateTime" name="Value" xsi:type="OperandRef"/>
+            </year>
+            <month localId="38" locator="27:28-27:43" resultTypeName="t:Integer" precision="Month" xsi:type="DateTimeComponentFrom">
+               <operand localId="37" locator="27:39-27:43" resultTypeName="t:DateTime" name="Value" xsi:type="OperandRef"/>
+            </month>
+            <day localId="40" locator="27:46-27:59" resultTypeName="t:Integer" precision="Day" xsi:type="DateTimeComponentFrom">
+               <operand localId="39" locator="27:55-27:59" resultTypeName="t:DateTime" name="Value" xsi:type="OperandRef"/>
+            </day>
+            <hour localId="41" locator="27:62" resultTypeName="t:Integer" valueType="t:Integer" value="0" xsi:type="Literal"/>
+            <minute localId="42" locator="27:65" resultTypeName="t:Integer" valueType="t:Integer" value="0" xsi:type="Literal"/>
+            <second localId="43" locator="27:68" resultTypeName="t:Integer" valueType="t:Integer" value="0" xsi:type="Literal"/>
+            <millisecond localId="44" locator="27:71" resultTypeName="t:Integer" valueType="t:Integer" value="0" xsi:type="Literal"/>
+            <timezoneOffset localId="46" locator="27:74-27:98" resultTypeName="t:Decimal" xsi:type="TimezoneFrom">
+               <operand localId="45" locator="27:94-27:98" resultTypeName="t:DateTime" name="Value" xsi:type="OperandRef"/>
+            </timezoneOffset>
+         </expression>
+         <operand name="Value">
+            <operandTypeSpecifier localId="34" locator="26:32-26:39" resultTypeName="t:DateTime" name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+      </def>
+      <def localId="56" locator="30:1-31:51" resultTypeName="t:Integer" name="CalendarAgeInDaysAt" context="Patient" accessLevel="Public" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="56">
+               <a:s>define function &quot;CalendarAgeInDaysAt&quot;(BirthDateTime </a:s>
+               <a:s r="49">
+                  <a:s>DateTime</a:s>
+               </a:s>
+               <a:s>, AsOf </a:s>
+               <a:s r="50">
+                  <a:s>DateTime</a:s>
+               </a:s>
+               <a:s> ):
+	</a:s>
+               <a:s r="55">
+                  <a:s r="55">
+                     <a:s>days between </a:s>
+                     <a:s r="52">
+                        <a:s>ToDate(</a:s>
+                        <a:s r="51">
+                           <a:s>BirthDateTime</a:s>
+                        </a:s>
+                        <a:s>)</a:s>
+                     </a:s>
+                     <a:s>and </a:s>
+                     <a:s r="54">
+                        <a:s>ToDate(</a:s>
+                        <a:s r="53">
+                           <a:s>AsOf</a:s>
+                        </a:s>
+                        <a:s>)</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="55" locator="31:2-31:51" resultTypeName="t:Integer" precision="Day" xsi:type="DurationBetween">
+            <operand localId="52" locator="31:15-31:35" resultTypeName="t:DateTime" name="ToDate" xsi:type="FunctionRef">
+               <operand localId="51" locator="31:22-31:34" resultTypeName="t:DateTime" name="BirthDateTime" xsi:type="OperandRef"/>
+            </operand>
+            <operand localId="54" locator="31:40-31:51" resultTypeName="t:DateTime" name="ToDate" xsi:type="FunctionRef">
+               <operand localId="53" locator="31:47-31:50" resultTypeName="t:DateTime" name="AsOf" xsi:type="OperandRef"/>
+            </operand>
+         </expression>
+         <operand name="BirthDateTime">
+            <operandTypeSpecifier localId="49" locator="30:53-30:60" resultTypeName="t:DateTime" name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+         <operand name="AsOf">
+            <operandTypeSpecifier localId="50" locator="30:68-30:75" resultTypeName="t:DateTime" name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+      </def>
+      <def localId="61" locator="34:1-35:44" resultTypeName="t:Integer" name="CalendarAgeInDays" context="Patient" accessLevel="Public" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="61">
+               <a:s>define function &quot;CalendarAgeInDays&quot;(BirthDateTime </a:s>
+               <a:s r="57">
+                  <a:s>DateTime</a:s>
+               </a:s>
+               <a:s> ):
+	</a:s>
+               <a:s r="60">
+                  <a:s r="60">
+                     <a:s>CalendarAgeInDaysAt(</a:s>
+                     <a:s r="58">
+                        <a:s>BirthDateTime</a:s>
+                     </a:s>
+                     <a:s>, </a:s>
+                     <a:s r="59">
+                        <a:s>Today()</a:s>
+                     </a:s>
+                     <a:s>)</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="60" locator="35:2-35:44" resultTypeName="t:Integer" name="CalendarAgeInDaysAt" xsi:type="FunctionRef">
+            <operand localId="58" locator="35:22-35:34" resultTypeName="t:DateTime" name="BirthDateTime" xsi:type="OperandRef"/>
+            <operand xsi:type="ToDateTime">
+               <operand localId="59" locator="35:37-35:43" resultTypeName="t:Date" xsi:type="Today"/>
+            </operand>
+         </expression>
+         <operand name="BirthDateTime">
+            <operandTypeSpecifier localId="57" locator="34:51-34:58" resultTypeName="t:DateTime" name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+      </def>
+      <def localId="69" locator="38:1-39:53" resultTypeName="t:Integer" name="CalendarAgeInMonthsAt" context="Patient" accessLevel="Public" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="69">
+               <a:s>define function &quot;CalendarAgeInMonthsAt&quot;(BirthDateTime </a:s>
+               <a:s r="62">
+                  <a:s>DateTime</a:s>
+               </a:s>
+               <a:s>, AsOf </a:s>
+               <a:s r="63">
+                  <a:s>DateTime</a:s>
+               </a:s>
+               <a:s> ):
+	</a:s>
+               <a:s r="68">
+                  <a:s r="68">
+                     <a:s>months between </a:s>
+                     <a:s r="65">
+                        <a:s>ToDate(</a:s>
+                        <a:s r="64">
+                           <a:s>BirthDateTime</a:s>
+                        </a:s>
+                        <a:s>)</a:s>
+                     </a:s>
+                     <a:s>and </a:s>
+                     <a:s r="67">
+                        <a:s>ToDate(</a:s>
+                        <a:s r="66">
+                           <a:s>AsOf</a:s>
+                        </a:s>
+                        <a:s>)</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="68" locator="39:2-39:53" resultTypeName="t:Integer" precision="Month" xsi:type="DurationBetween">
+            <operand localId="65" locator="39:17-39:37" resultTypeName="t:DateTime" name="ToDate" xsi:type="FunctionRef">
+               <operand localId="64" locator="39:24-39:36" resultTypeName="t:DateTime" name="BirthDateTime" xsi:type="OperandRef"/>
+            </operand>
+            <operand localId="67" locator="39:42-39:53" resultTypeName="t:DateTime" name="ToDate" xsi:type="FunctionRef">
+               <operand localId="66" locator="39:49-39:52" resultTypeName="t:DateTime" name="AsOf" xsi:type="OperandRef"/>
+            </operand>
+         </expression>
+         <operand name="BirthDateTime">
+            <operandTypeSpecifier localId="62" locator="38:55-38:62" resultTypeName="t:DateTime" name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+         <operand name="AsOf">
+            <operandTypeSpecifier localId="63" locator="38:70-38:77" resultTypeName="t:DateTime" name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+      </def>
+      <def localId="74" locator="42:1-43:46" resultTypeName="t:Integer" name="CalendarAgeInMonths" context="Patient" accessLevel="Public" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="74">
+               <a:s>define function &quot;CalendarAgeInMonths&quot;(BirthDateTime </a:s>
+               <a:s r="70">
+                  <a:s>DateTime</a:s>
+               </a:s>
+               <a:s> ):
+	</a:s>
+               <a:s r="73">
+                  <a:s r="73">
+                     <a:s>CalendarAgeInMonthsAt(</a:s>
+                     <a:s r="71">
+                        <a:s>BirthDateTime</a:s>
+                     </a:s>
+                     <a:s>, </a:s>
+                     <a:s r="72">
+                        <a:s>Today()</a:s>
+                     </a:s>
+                     <a:s>)</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="73" locator="43:2-43:46" resultTypeName="t:Integer" name="CalendarAgeInMonthsAt" xsi:type="FunctionRef">
+            <operand localId="71" locator="43:24-43:36" resultTypeName="t:DateTime" name="BirthDateTime" xsi:type="OperandRef"/>
+            <operand xsi:type="ToDateTime">
+               <operand localId="72" locator="43:39-43:45" resultTypeName="t:Date" xsi:type="Today"/>
+            </operand>
+         </expression>
+         <operand name="BirthDateTime">
+            <operandTypeSpecifier localId="70" locator="42:53-42:60" resultTypeName="t:DateTime" name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+      </def>
+      <def localId="82" locator="46:1-47:52" resultTypeName="t:Integer" name="CalendarAgeInYearsAt" context="Patient" accessLevel="Public" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="82">
+               <a:s>define function &quot;CalendarAgeInYearsAt&quot;(BirthDateTime </a:s>
+               <a:s r="75">
+                  <a:s>DateTime</a:s>
+               </a:s>
+               <a:s>, AsOf </a:s>
+               <a:s r="76">
+                  <a:s>DateTime</a:s>
+               </a:s>
+               <a:s> ):
+	</a:s>
+               <a:s r="81">
+                  <a:s r="81">
+                     <a:s>years between </a:s>
+                     <a:s r="78">
+                        <a:s>ToDate(</a:s>
+                        <a:s r="77">
+                           <a:s>BirthDateTime</a:s>
+                        </a:s>
+                        <a:s>)</a:s>
+                     </a:s>
+                     <a:s>and </a:s>
+                     <a:s r="80">
+                        <a:s>ToDate(</a:s>
+                        <a:s r="79">
+                           <a:s>AsOf</a:s>
+                        </a:s>
+                        <a:s>)</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="81" locator="47:2-47:52" resultTypeName="t:Integer" precision="Year" xsi:type="DurationBetween">
+            <operand localId="78" locator="47:16-47:36" resultTypeName="t:DateTime" name="ToDate" xsi:type="FunctionRef">
+               <operand localId="77" locator="47:23-47:35" resultTypeName="t:DateTime" name="BirthDateTime" xsi:type="OperandRef"/>
+            </operand>
+            <operand localId="80" locator="47:41-47:52" resultTypeName="t:DateTime" name="ToDate" xsi:type="FunctionRef">
+               <operand localId="79" locator="47:48-47:51" resultTypeName="t:DateTime" name="AsOf" xsi:type="OperandRef"/>
+            </operand>
+         </expression>
+         <operand name="BirthDateTime">
+            <operandTypeSpecifier localId="75" locator="46:54-46:61" resultTypeName="t:DateTime" name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+         <operand name="AsOf">
+            <operandTypeSpecifier localId="76" locator="46:69-46:76" resultTypeName="t:DateTime" name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+      </def>
+      <def localId="87" locator="50:1-51:45" resultTypeName="t:Integer" name="CalendarAgeInYears" context="Patient" accessLevel="Public" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="87">
+               <a:s>define function &quot;CalendarAgeInYears&quot;(BirthDateTime </a:s>
+               <a:s r="83">
+                  <a:s>DateTime</a:s>
+               </a:s>
+               <a:s> ):
+	</a:s>
+               <a:s r="86">
+                  <a:s r="86">
+                     <a:s>CalendarAgeInYearsAt(</a:s>
+                     <a:s r="84">
+                        <a:s>BirthDateTime</a:s>
+                     </a:s>
+                     <a:s>, </a:s>
+                     <a:s r="85">
+                        <a:s>Today()</a:s>
+                     </a:s>
+                     <a:s>)</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="86" locator="51:2-51:45" resultTypeName="t:Integer" name="CalendarAgeInYearsAt" xsi:type="FunctionRef">
+            <operand localId="84" locator="51:23-51:35" resultTypeName="t:DateTime" name="BirthDateTime" xsi:type="OperandRef"/>
+            <operand xsi:type="ToDateTime">
+               <operand localId="85" locator="51:38-51:44" resultTypeName="t:Date" xsi:type="Today"/>
+            </operand>
+         </expression>
+         <operand name="BirthDateTime">
+            <operandTypeSpecifier localId="83" locator="50:52-50:59" resultTypeName="t:DateTime" name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+      </def>
+      <def localId="123" locator="58:1-66:70" name="HospitalizationLocations" context="Patient" accessLevel="Public" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="123">
+               <a:s>define function &quot;HospitalizationLocations&quot;(Encounter </a:s>
+               <a:s r="91">
+                  <a:s>&quot;Encounter, Performed&quot;</a:s>
+               </a:s>
+               <a:s> ):
+	</a:s>
+               <a:s r="122">
+                  <a:s r="122">
+                     <a:s>
+                        <a:s r="93">
+                           <a:s r="92">
+                              <a:s>
+                                 <a:s>Encounter</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> Visit</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+		</a:s>
+                     <a:s>
+                        <a:s>let </a:s>
+                        <a:s r="109">
+                           <a:s>EDVisit: </a:s>
+                           <a:s r="108">
+                              <a:s>Last(</a:s>
+                              <a:s r="107">
+                                 <a:s>
+                                    <a:s r="95">
+                                       <a:s r="94">
+                                          <a:s r="94">
+                                             <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                             <a:s>
+                                                <a:s>&quot;Emergency Department Visit&quot;</a:s>
+                                             </a:s>
+                                             <a:s>]</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s> LastED</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>
+				</a:s>
+                                 <a:s r="102">
+                                    <a:s>where </a:s>
+                                    <a:s r="102">
+                                       <a:s r="97">
+                                          <a:s r="96">
+                                             <a:s>LastED</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="97">
+                                             <a:s>relevantPeriod</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s> </a:s>
+                                       <a:s r="102">
+                                          <a:s>ends </a:s>
+                                          <a:s r="101">
+                                             <a:s>1 hour</a:s>
+                                          </a:s>
+                                          <a:s> or less on or before</a:s>
+                                       </a:s>
+                                       <a:s> </a:s>
+                                       <a:s r="100">
+                                          <a:s>start of </a:s>
+                                          <a:s r="99">
+                                             <a:s r="98">
+                                                <a:s>Visit</a:s>
+                                             </a:s>
+                                             <a:s>.</a:s>
+                                             <a:s r="99">
+                                                <a:s>relevantPeriod</a:s>
+                                             </a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>
+				</a:s>
+                                 <a:s r="106">
+                                    <a:s>sort by
+				</a:s>
+                                    <a:s r="105">
+                                       <a:s r="104">
+                                          <a:s>end of </a:s>
+                                          <a:s r="103">
+                                             <a:s>relevantPeriod</a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>
+		)</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+		</a:s>
+                     <a:s r="121">
+                        <a:s>return </a:s>
+                        <a:s r="120">
+                           <a:s>if </a:s>
+                           <a:s r="111">
+                              <a:s r="110">
+                                 <a:s>EDVisit</a:s>
+                              </a:s>
+                              <a:s> is null</a:s>
+                           </a:s>
+                           <a:s> then </a:s>
+                           <a:s r="113">
+                              <a:s r="112">
+                                 <a:s>Visit</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="113">
+                                 <a:s>facilityLocations</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>
+			else </a:s>
+                           <a:s r="119">
+                              <a:s>flatten </a:s>
+                              <a:s r="118">
+                                 <a:s>{ </a:s>
+                                 <a:s r="115">
+                                    <a:s r="114">
+                                       <a:s>EDVisit</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="115">
+                                       <a:s>facilityLocations</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>, </a:s>
+                                 <a:s r="117">
+                                    <a:s r="116">
+                                       <a:s>Visit</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="117">
+                                       <a:s>facilityLocations</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s> }</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns9="urn:healthit-gov:qdm:v5_4" name="ns9:FacilityLocation" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="122" locator="59:2-66:70" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns10="urn:healthit-gov:qdm:v5_4" name="ns10:FacilityLocation" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="93" locator="59:2-59:16" xmlns:ns11="urn:healthit-gov:qdm:v5_4" resultTypeName="ns11:PositiveEncounterPerformed" alias="Visit">
+               <expression localId="92" locator="59:2-59:10" xmlns:ns12="urn:healthit-gov:qdm:v5_4" resultTypeName="ns12:PositiveEncounterPerformed" name="Encounter" xsi:type="OperandRef"/>
+            </source>
+            <let localId="109" locator="60:7-64:3" xmlns:ns13="urn:healthit-gov:qdm:v5_4" resultTypeName="ns13:PositiveEncounterPerformed" identifier="EDVisit">
+               <expression localId="108" locator="60:16-64:3" xmlns:ns14="urn:healthit-gov:qdm:v5_4" resultTypeName="ns14:PositiveEncounterPerformed" xsi:type="Last">
+                  <source localId="107" locator="60:21-63:25" xsi:type="Query">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xmlns:ns15="urn:healthit-gov:qdm:v5_4" name="ns15:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <source localId="95" locator="60:21-60:81" alias="LastED">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType xmlns:ns16="urn:healthit-gov:qdm:v5_4" name="ns16:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <expression localId="94" locator="60:21-60:74" xmlns:ns17="urn:healthit-gov:qdm:v5_4" dataType="ns17:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType xmlns:ns18="urn:healthit-gov:qdm:v5_4" name="ns18:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <codes locator="60:46-60:73" name="Emergency Department Visit" xsi:type="ValueSetRef">
+                              <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                 <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                           </codes>
+                        </expression>
+                     </source>
+                     <where localId="102" locator="61:5-61:94" resultTypeName="t:Boolean" xsi:type="And">
+                        <operand locator="61:38-61:51" xsi:type="In">
+                           <operand locator="61:33-61:36" xsi:type="End">
+                              <operand localId="97" locator="61:11-61:31" path="relevantPeriod" scope="LastED" xsi:type="Property">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </operand>
+                           <operand locator="61:38-61:51" lowClosed="true" highClosed="true" xsi:type="Interval">
+                              <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                 <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                              <low locator="61:66-61:94" xsi:type="Subtract">
+                                 <operand localId="100" locator="61:66-61:94" resultTypeName="t:DateTime" xsi:type="Start">
+                                    <operand localId="99" locator="61:75-61:94" path="relevantPeriod" scope="Visit" xsi:type="Property">
+                                       <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                          <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                       </resultTypeSpecifier>
+                                    </operand>
+                                 </operand>
+                                 <operand localId="101" locator="61:38-61:43" resultTypeName="t:Quantity" value="1" unit="hour" xsi:type="Quantity"/>
+                              </low>
+                              <high localId="100" locator="61:66-61:94" resultTypeName="t:DateTime" xsi:type="Start">
+                                 <operand localId="99" locator="61:75-61:94" path="relevantPeriod" scope="Visit" xsi:type="Property">
+                                    <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                       <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                    </resultTypeSpecifier>
+                                 </operand>
+                              </high>
+                           </operand>
+                        </operand>
+                        <operand locator="61:38-61:51" xsi:type="Not">
+                           <operand locator="61:38-61:51" xsi:type="IsNull">
+                              <operand localId="100" locator="61:66-61:94" resultTypeName="t:DateTime" xsi:type="Start">
+                                 <operand localId="99" locator="61:75-61:94" path="relevantPeriod" scope="Visit" xsi:type="Property">
+                                    <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                       <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                    </resultTypeSpecifier>
+                                 </operand>
+                              </operand>
+                           </operand>
+                        </operand>
+                     </where>
+                     <sort localId="106" locator="62:5-63:25">
+                        <by localId="105" locator="63:5-63:25" resultTypeName="t:DateTime" direction="asc" xsi:type="ByExpression">
+                           <expression localId="104" locator="63:5-63:25" resultTypeName="t:DateTime" xsi:type="End">
+                              <operand localId="103" locator="63:12-63:25" name="relevantPeriod" xsi:type="IdentifierRef">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </expression>
+                        </by>
+                     </sort>
+                  </source>
+               </expression>
+            </let>
+            <return localId="121" locator="65:3-66:70">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns19="urn:healthit-gov:qdm:v5_4" name="ns19:FacilityLocation" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="120" locator="65:10-66:70" xsi:type="If">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns20="urn:healthit-gov:qdm:v5_4" name="ns20:FacilityLocation" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <condition asType="t:Boolean" xsi:type="As">
+                     <operand localId="111" locator="65:13-65:27" resultTypeName="t:Boolean" xsi:type="IsNull">
+                        <operand localId="110" locator="65:13-65:19" xmlns:ns21="urn:healthit-gov:qdm:v5_4" resultTypeName="ns21:PositiveEncounterPerformed" name="EDVisit" xsi:type="QueryLetRef"/>
+                     </operand>
+                  </condition>
+                  <then localId="113" locator="65:34-65:56" path="facilityLocations" scope="Visit" xsi:type="Property">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xmlns:ns22="urn:healthit-gov:qdm:v5_4" name="ns22:FacilityLocation" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </then>
+                  <else localId="119" locator="66:9-66:70" xsi:type="Flatten">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xmlns:ns23="urn:healthit-gov:qdm:v5_4" name="ns23:FacilityLocation" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <operand localId="118" locator="66:17-66:70" xsi:type="List">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType xsi:type="ListTypeSpecifier">
+                              <elementType xmlns:ns24="urn:healthit-gov:qdm:v5_4" name="ns24:FacilityLocation" xsi:type="NamedTypeSpecifier"/>
+                           </elementType>
+                        </resultTypeSpecifier>
+                        <element localId="115" locator="66:19-66:43" path="facilityLocations" xsi:type="Property">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType xmlns:ns25="urn:healthit-gov:qdm:v5_4" name="ns25:FacilityLocation" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <source localId="114" locator="66:19-66:25" xmlns:ns26="urn:healthit-gov:qdm:v5_4" resultTypeName="ns26:PositiveEncounterPerformed" name="EDVisit" xsi:type="QueryLetRef"/>
+                        </element>
+                        <element localId="117" locator="66:46-66:68" path="facilityLocations" scope="Visit" xsi:type="Property">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType xmlns:ns27="urn:healthit-gov:qdm:v5_4" name="ns27:FacilityLocation" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </element>
+                     </operand>
+                  </else>
+               </expression>
+            </return>
+         </expression>
+         <operand name="Encounter">
+            <operandTypeSpecifier localId="91" locator="58:54-58:75" xmlns:ns28="urn:healthit-gov:qdm:v5_4" resultTypeName="ns28:PositiveEncounterPerformed" xmlns:ns29="urn:healthit-gov:qdm:v5_4" name="ns29:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+      </def>
+      <def localId="140" locator="70:1-74:17" resultTypeName="t:DateTime" name="EmergencyDepartmentArrivalTime" context="Patient" accessLevel="Public" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="140">
+               <a:s>define function &quot;EmergencyDepartmentArrivalTime&quot;(Encounter </a:s>
+               <a:s r="124">
+                  <a:s>&quot;Encounter, Performed&quot;</a:s>
+               </a:s>
+               <a:s> ):
+	</a:s>
+               <a:s r="139">
+                  <a:s r="139">
+                     <a:s>start of </a:s>
+                     <a:s r="138">
+                        <a:s r="137">
+                           <a:s>First(</a:s>
+                           <a:s r="136">
+                              <a:s>
+                                 <a:s r="127">
+                                    <a:s r="126">
+                                       <a:s>(</a:s>
+                                       <a:s r="126">
+                                          <a:s>&quot;HospitalizationLocations&quot;(</a:s>
+                                          <a:s r="125">
+                                             <a:s>Encounter</a:s>
+                                          </a:s>
+                                          <a:s>)</a:s>
+                                       </a:s>
+                                       <a:s>)</a:s>
+                                    </a:s>
+                                    <a:s>HospitalLocation</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>
+			</a:s>
+                              <a:s r="131">
+                                 <a:s>where </a:s>
+                                 <a:s r="131">
+                                    <a:s r="129">
+                                       <a:s r="128">
+                                          <a:s>HospitalLocation</a:s>
+                                       </a:s>
+                                       <a:s>.</a:s>
+                                       <a:s r="129">
+                                          <a:s>code</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> in </a:s>
+                                    <a:s r="130">
+                                       <a:s>&quot;Emergency Department Visit&quot;</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>
+			</a:s>
+                              <a:s r="135">
+                                 <a:s>sort by </a:s>
+                                 <a:s r="134">
+                                    <a:s r="133">
+                                       <a:s>start of </a:s>
+                                       <a:s r="132">
+                                          <a:s>locationPeriod</a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>
+	)</a:s>
+                        </a:s>
+                        <a:s>.</a:s>
+                        <a:s r="138">
+                           <a:s>locationPeriod</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="139" locator="71:2-74:17" resultTypeName="t:DateTime" xsi:type="Start">
+            <operand localId="138" locator="71:11-74:17" path="locationPeriod" xsi:type="Property">
+               <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                  <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <source localId="137" locator="71:11-74:2" xmlns:ns30="urn:healthit-gov:qdm:v5_4" resultTypeName="ns30:FacilityLocation" xsi:type="First">
+                  <source localId="136" locator="71:17-73:34" xsi:type="Query">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xmlns:ns31="urn:healthit-gov:qdm:v5_4" name="ns31:FacilityLocation" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <source localId="127" locator="71:17-71:71" alias="HospitalLocation">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType xmlns:ns32="urn:healthit-gov:qdm:v5_4" name="ns32:FacilityLocation" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <expression localId="126" locator="71:17-71:55" name="HospitalizationLocations" xsi:type="FunctionRef">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType xmlns:ns33="urn:healthit-gov:qdm:v5_4" name="ns33:FacilityLocation" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <operand localId="125" locator="71:45-71:53" xmlns:ns34="urn:healthit-gov:qdm:v5_4" resultTypeName="ns34:PositiveEncounterPerformed" name="Encounter" xsi:type="OperandRef"/>
+                        </expression>
+                     </source>
+                     <where localId="131" locator="72:4-72:62" resultTypeName="t:Boolean" xsi:type="InValueSet">
+                        <code localId="129" locator="72:10-72:30" resultTypeName="t:Code" path="code" scope="HospitalLocation" xsi:type="Property"/>
+                        <valueset localId="130" locator="72:35-72:62" name="Emergency Department Visit">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </valueset>
+                     </where>
+                     <sort localId="135" locator="73:4-73:34">
+                        <by localId="134" locator="73:12-73:34" resultTypeName="t:DateTime" direction="asc" xsi:type="ByExpression">
+                           <expression localId="133" locator="73:12-73:34" resultTypeName="t:DateTime" xsi:type="Start">
+                              <operand localId="132" locator="73:21-73:34" name="locationPeriod" xsi:type="IdentifierRef">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </expression>
+                        </by>
+                     </sort>
+                  </source>
+               </source>
+            </operand>
+         </expression>
+         <operand name="Encounter">
+            <operandTypeSpecifier localId="124" locator="70:60-70:81" xmlns:ns35="urn:healthit-gov:qdm:v5_4" resultTypeName="ns35:PositiveEncounterPerformed" xmlns:ns36="urn:healthit-gov:qdm:v5_4" name="ns36:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+      </def>
+      <def localId="161" locator="79:1-84:2" xmlns:ns37="urn:healthit-gov:qdm:v5_4" resultTypeName="ns37:FacilityLocation" name="FirstInpatientIntensiveCareUnit" context="Patient" accessLevel="Public" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="161">
+               <a:s>define function &quot;FirstInpatientIntensiveCareUnit&quot;(Encounter </a:s>
+               <a:s r="141">
+                  <a:s>&quot;Encounter, Performed&quot;</a:s>
+               </a:s>
+               <a:s> ):
+	</a:s>
+               <a:s r="160">
+                  <a:s r="160">
+                     <a:s>First(</a:s>
+                     <a:s r="159">
+                        <a:s>
+                           <a:s r="144">
+                              <a:s r="143">
+                                 <a:s>(</a:s>
+                                 <a:s r="143">
+                                    <a:s r="142">
+                                       <a:s>Encounter</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="143">
+                                       <a:s>facilityLocations</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>)</a:s>
+                              </a:s>
+                              <a:s>HospitalLocation</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+			</a:s>
+                        <a:s r="154">
+                           <a:s>where </a:s>
+                           <a:s r="154">
+                              <a:s r="148">
+                                 <a:s r="146">
+                                    <a:s r="145">
+                                       <a:s>HospitalLocation</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="146">
+                                       <a:s>code</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s> in </a:s>
+                                 <a:s r="147">
+                                    <a:s>&quot;Intensive Care Unit&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>
+				and </a:s>
+                              <a:s r="153">
+                                 <a:s r="150">
+                                    <a:s r="149">
+                                       <a:s>HospitalLocation</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="150">
+                                       <a:s>locationPeriod</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s r="153"> during </a:s>
+                                 <a:s r="152">
+                                    <a:s r="151">
+                                       <a:s>Encounter</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="152">
+                                       <a:s>relevantPeriod</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+			</a:s>
+                        <a:s r="158">
+                           <a:s>sort by </a:s>
+                           <a:s r="157">
+                              <a:s r="156">
+                                 <a:s>start of </a:s>
+                                 <a:s r="155">
+                                    <a:s>locationPeriod</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+	)</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="160" locator="80:2-84:2" xmlns:ns38="urn:healthit-gov:qdm:v5_4" resultTypeName="ns38:FacilityLocation" xsi:type="First">
+            <source localId="159" locator="80:8-83:34" xsi:type="Query">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns39="urn:healthit-gov:qdm:v5_4" name="ns39:FacilityLocation" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <source localId="144" locator="80:8-80:52" alias="HospitalLocation">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns40="urn:healthit-gov:qdm:v5_4" name="ns40:FacilityLocation" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <expression localId="143" locator="80:8-80:36" path="facilityLocations" xsi:type="Property">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xmlns:ns41="urn:healthit-gov:qdm:v5_4" name="ns41:FacilityLocation" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <source localId="142" locator="80:9-80:17" xmlns:ns42="urn:healthit-gov:qdm:v5_4" resultTypeName="ns42:PositiveEncounterPerformed" name="Encounter" xsi:type="OperandRef"/>
+                  </expression>
+               </source>
+               <where localId="154" locator="81:4-82:71" resultTypeName="t:Boolean" xsi:type="And">
+                  <operand localId="148" locator="81:10-81:55" resultTypeName="t:Boolean" xsi:type="InValueSet">
+                     <code localId="146" locator="81:10-81:30" resultTypeName="t:Code" path="code" scope="HospitalLocation" xsi:type="Property"/>
+                     <valueset localId="147" locator="81:35-81:55" name="Intensive Care Unit">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </valueset>
+                  </operand>
+                  <operand localId="153" locator="82:9-82:71" resultTypeName="t:Boolean" xsi:type="IncludedIn">
+                     <operand localId="150" locator="82:9-82:39" path="locationPeriod" scope="HospitalLocation" xsi:type="Property">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </operand>
+                     <operand localId="152" locator="82:48-82:71" path="relevantPeriod" xsi:type="Property">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <source localId="151" locator="82:48-82:56" xmlns:ns43="urn:healthit-gov:qdm:v5_4" resultTypeName="ns43:PositiveEncounterPerformed" name="Encounter" xsi:type="OperandRef"/>
+                     </operand>
+                  </operand>
+               </where>
+               <sort localId="158" locator="83:4-83:34">
+                  <by localId="157" locator="83:12-83:34" resultTypeName="t:DateTime" direction="asc" xsi:type="ByExpression">
+                     <expression localId="156" locator="83:12-83:34" resultTypeName="t:DateTime" xsi:type="Start">
+                        <operand localId="155" locator="83:21-83:34" name="locationPeriod" xsi:type="IdentifierRef">
+                           <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                              <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </operand>
+                     </expression>
+                  </by>
+               </sort>
+            </source>
+         </expression>
+         <operand name="Encounter">
+            <operandTypeSpecifier localId="141" locator="79:61-79:82" xmlns:ns44="urn:healthit-gov:qdm:v5_4" resultTypeName="ns44:PositiveEncounterPerformed" xmlns:ns45="urn:healthit-gov:qdm:v5_4" name="ns45:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+      </def>
+      <def localId="196" locator="97:1-105:30" name="Hospitalization" context="Patient" accessLevel="Public" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="196">
+               <a:s>define function &quot;Hospitalization&quot;(Encounter </a:s>
+               <a:s r="164">
+                  <a:s>&quot;Encounter, Performed&quot;</a:s>
+               </a:s>
+               <a:s> ):
+	</a:s>
+               <a:s r="195">
+                  <a:s r="195">
+                     <a:s>
+                        <a:s r="166">
+                           <a:s r="165">
+                              <a:s>
+                                 <a:s>Encounter</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> Visit</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+		</a:s>
+                     <a:s>
+                        <a:s>let </a:s>
+                        <a:s r="182">
+                           <a:s>EDVisit: </a:s>
+                           <a:s r="181">
+                              <a:s>Last(</a:s>
+                              <a:s r="180">
+                                 <a:s>
+                                    <a:s r="168">
+                                       <a:s r="167">
+                                          <a:s r="167">
+                                             <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                             <a:s>
+                                                <a:s>&quot;Emergency Department Visit&quot;</a:s>
+                                             </a:s>
+                                             <a:s>]</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s> LastED</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>
+				</a:s>
+                                 <a:s r="175">
+                                    <a:s>where </a:s>
+                                    <a:s r="175">
+                                       <a:s r="170">
+                                          <a:s r="169">
+                                             <a:s>LastED</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="170">
+                                             <a:s>relevantPeriod</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s> </a:s>
+                                       <a:s r="175">
+                                          <a:s>ends </a:s>
+                                          <a:s r="174">
+                                             <a:s>1 hour</a:s>
+                                          </a:s>
+                                          <a:s> or less on or before</a:s>
+                                       </a:s>
+                                       <a:s> </a:s>
+                                       <a:s r="173">
+                                          <a:s>start of </a:s>
+                                          <a:s r="172">
+                                             <a:s r="171">
+                                                <a:s>Visit</a:s>
+                                             </a:s>
+                                             <a:s>.</a:s>
+                                             <a:s r="172">
+                                                <a:s>relevantPeriod</a:s>
+                                             </a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>
+				</a:s>
+                                 <a:s r="179">
+                                    <a:s>sort by
+				</a:s>
+                                    <a:s r="178">
+                                       <a:s r="177">
+                                          <a:s>end of </a:s>
+                                          <a:s r="176">
+                                             <a:s>relevantPeriod</a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>
+		)</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+		</a:s>
+                     <a:s r="194">
+                        <a:s>return </a:s>
+                        <a:s r="193">
+                           <a:s>Interval[</a:s>
+                           <a:s r="189">
+                              <a:s>Coalesce(</a:s>
+                              <a:s r="185">
+                                 <a:s>start of </a:s>
+                                 <a:s r="184">
+                                    <a:s r="183">
+                                       <a:s>EDVisit</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="184">
+                                       <a:s>relevantPeriod</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>, </a:s>
+                              <a:s r="188">
+                                 <a:s>start of </a:s>
+                                 <a:s r="187">
+                                    <a:s r="186">
+                                       <a:s>Visit</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="187">
+                                       <a:s>relevantPeriod</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>)</a:s>
+                           </a:s>
+                           <a:s>,
+		</a:s>
+                           <a:s r="192">
+                              <a:s>end of </a:s>
+                              <a:s r="191">
+                                 <a:s r="190">
+                                    <a:s>Visit</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="191">
+                                    <a:s>relevantPeriod</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>]</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+            <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="195" locator="98:2-105:30" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+               <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="166" locator="98:2-98:16" xmlns:ns46="urn:healthit-gov:qdm:v5_4" resultTypeName="ns46:PositiveEncounterPerformed" alias="Visit">
+               <expression localId="165" locator="98:2-98:10" xmlns:ns47="urn:healthit-gov:qdm:v5_4" resultTypeName="ns47:PositiveEncounterPerformed" name="Encounter" xsi:type="OperandRef"/>
+            </source>
+            <let localId="182" locator="99:7-103:3" xmlns:ns48="urn:healthit-gov:qdm:v5_4" resultTypeName="ns48:PositiveEncounterPerformed" identifier="EDVisit">
+               <expression localId="181" locator="99:16-103:3" xmlns:ns49="urn:healthit-gov:qdm:v5_4" resultTypeName="ns49:PositiveEncounterPerformed" xsi:type="Last">
+                  <source localId="180" locator="99:21-102:25" xsi:type="Query">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xmlns:ns50="urn:healthit-gov:qdm:v5_4" name="ns50:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <source localId="168" locator="99:21-99:81" alias="LastED">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType xmlns:ns51="urn:healthit-gov:qdm:v5_4" name="ns51:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <expression localId="167" locator="99:21-99:74" xmlns:ns52="urn:healthit-gov:qdm:v5_4" dataType="ns52:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType xmlns:ns53="urn:healthit-gov:qdm:v5_4" name="ns53:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <codes locator="99:46-99:73" name="Emergency Department Visit" xsi:type="ValueSetRef">
+                              <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                 <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                           </codes>
+                        </expression>
+                     </source>
+                     <where localId="175" locator="100:5-100:94" resultTypeName="t:Boolean" xsi:type="And">
+                        <operand locator="100:38-100:51" xsi:type="In">
+                           <operand locator="100:33-100:36" xsi:type="End">
+                              <operand localId="170" locator="100:11-100:31" path="relevantPeriod" scope="LastED" xsi:type="Property">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </operand>
+                           <operand locator="100:38-100:51" lowClosed="true" highClosed="true" xsi:type="Interval">
+                              <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                 <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                              <low locator="100:66-100:94" xsi:type="Subtract">
+                                 <operand localId="173" locator="100:66-100:94" resultTypeName="t:DateTime" xsi:type="Start">
+                                    <operand localId="172" locator="100:75-100:94" path="relevantPeriod" scope="Visit" xsi:type="Property">
+                                       <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                          <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                       </resultTypeSpecifier>
+                                    </operand>
+                                 </operand>
+                                 <operand localId="174" locator="100:38-100:43" resultTypeName="t:Quantity" value="1" unit="hour" xsi:type="Quantity"/>
+                              </low>
+                              <high localId="173" locator="100:66-100:94" resultTypeName="t:DateTime" xsi:type="Start">
+                                 <operand localId="172" locator="100:75-100:94" path="relevantPeriod" scope="Visit" xsi:type="Property">
+                                    <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                       <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                    </resultTypeSpecifier>
+                                 </operand>
+                              </high>
+                           </operand>
+                        </operand>
+                        <operand locator="100:38-100:51" xsi:type="Not">
+                           <operand locator="100:38-100:51" xsi:type="IsNull">
+                              <operand localId="173" locator="100:66-100:94" resultTypeName="t:DateTime" xsi:type="Start">
+                                 <operand localId="172" locator="100:75-100:94" path="relevantPeriod" scope="Visit" xsi:type="Property">
+                                    <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                       <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                    </resultTypeSpecifier>
+                                 </operand>
+                              </operand>
+                           </operand>
+                        </operand>
+                     </where>
+                     <sort localId="179" locator="101:5-102:25">
+                        <by localId="178" locator="102:5-102:25" resultTypeName="t:DateTime" direction="asc" xsi:type="ByExpression">
+                           <expression localId="177" locator="102:5-102:25" resultTypeName="t:DateTime" xsi:type="End">
+                              <operand localId="176" locator="102:12-102:25" name="relevantPeriod" xsi:type="IdentifierRef">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </expression>
+                        </by>
+                     </sort>
+                  </source>
+               </expression>
+            </let>
+            <return localId="194" locator="104:3-105:30">
+               <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                  <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="193" locator="104:10-105:30" lowClosed="true" highClosed="true" xsi:type="Interval">
+                  <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                     <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <low localId="189" locator="104:19-104:90" resultTypeName="t:DateTime" xsi:type="Coalesce">
+                     <operand localId="185" locator="104:28-104:58" resultTypeName="t:DateTime" xsi:type="Start">
+                        <operand localId="184" locator="104:37-104:58" path="relevantPeriod" xsi:type="Property">
+                           <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                              <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <source localId="183" locator="104:37-104:43" xmlns:ns54="urn:healthit-gov:qdm:v5_4" resultTypeName="ns54:PositiveEncounterPerformed" name="EDVisit" xsi:type="QueryLetRef"/>
+                        </operand>
+                     </operand>
+                     <operand localId="188" locator="104:61-104:89" resultTypeName="t:DateTime" xsi:type="Start">
+                        <operand localId="187" locator="104:70-104:89" path="relevantPeriod" scope="Visit" xsi:type="Property">
+                           <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                              <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </operand>
+                     </operand>
+                  </low>
+                  <high localId="192" locator="105:3-105:29" resultTypeName="t:DateTime" xsi:type="End">
+                     <operand localId="191" locator="105:10-105:29" path="relevantPeriod" scope="Visit" xsi:type="Property">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </operand>
+                  </high>
+               </expression>
+            </return>
+         </expression>
+         <operand name="Encounter">
+            <operandTypeSpecifier localId="164" locator="97:45-97:66" xmlns:ns55="urn:healthit-gov:qdm:v5_4" resultTypeName="ns55:PositiveEncounterPerformed" xmlns:ns56="urn:healthit-gov:qdm:v5_4" name="ns56:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+      </def>
+      <def localId="199" locator="87:1-88:38" resultTypeName="t:DateTime" name="HospitalAdmissionTime" context="Patient" accessLevel="Public" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="199">
+               <a:s>define function &quot;HospitalAdmissionTime&quot;(Encounter </a:s>
+               <a:s r="162">
+                  <a:s>&quot;Encounter, Performed&quot;</a:s>
+               </a:s>
+               <a:s> ):
+	</a:s>
+               <a:s r="198">
+                  <a:s r="198">
+                     <a:s>start of </a:s>
+                     <a:s r="197">
+                        <a:s>&quot;Hospitalization&quot;(</a:s>
+                        <a:s r="163">
+                           <a:s>Encounter</a:s>
+                        </a:s>
+                        <a:s>)</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="198" locator="88:2-88:38" resultTypeName="t:DateTime" xsi:type="Start">
+            <operand localId="197" locator="88:11-88:38" name="Hospitalization" xsi:type="FunctionRef">
+               <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                  <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <operand localId="163" locator="88:29-88:37" xmlns:ns57="urn:healthit-gov:qdm:v5_4" resultTypeName="ns57:PositiveEncounterPerformed" name="Encounter" xsi:type="OperandRef"/>
+            </operand>
+         </expression>
+         <operand name="Encounter">
+            <operandTypeSpecifier localId="162" locator="87:51-87:72" xmlns:ns58="urn:healthit-gov:qdm:v5_4" resultTypeName="ns58:PositiveEncounterPerformed" xmlns:ns59="urn:healthit-gov:qdm:v5_4" name="ns59:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+      </def>
+      <def localId="212" locator="91:1-94:17" resultTypeName="t:DateTime" name="HospitalArrivalTime" context="Patient" accessLevel="Public" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="212">
+               <a:s>define function &quot;HospitalArrivalTime&quot;(Encounter </a:s>
+               <a:s r="200">
+                  <a:s>&quot;Encounter, Performed&quot;</a:s>
+               </a:s>
+               <a:s> ):
+	</a:s>
+               <a:s r="211">
+                  <a:s r="211">
+                     <a:s>start of </a:s>
+                     <a:s r="210">
+                        <a:s r="209">
+                           <a:s>First(</a:s>
+                           <a:s r="208">
+                              <a:s>
+                                 <a:s r="203">
+                                    <a:s r="202">
+                                       <a:s>(</a:s>
+                                       <a:s r="202">
+                                          <a:s>&quot;HospitalizationLocations&quot;(</a:s>
+                                          <a:s r="201">
+                                             <a:s>Encounter</a:s>
+                                          </a:s>
+                                          <a:s>)</a:s>
+                                       </a:s>
+                                       <a:s>)</a:s>
+                                    </a:s>
+                                    <a:s>HospitalLocation</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>
+			</a:s>
+                              <a:s r="207">
+                                 <a:s>sort by </a:s>
+                                 <a:s r="206">
+                                    <a:s r="205">
+                                       <a:s>start of </a:s>
+                                       <a:s r="204">
+                                          <a:s>locationPeriod</a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>
+	)</a:s>
+                        </a:s>
+                        <a:s>.</a:s>
+                        <a:s r="210">
+                           <a:s>locationPeriod</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="211" locator="92:2-94:17" resultTypeName="t:DateTime" xsi:type="Start">
+            <operand localId="210" locator="92:11-94:17" path="locationPeriod" xsi:type="Property">
+               <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                  <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <source localId="209" locator="92:11-94:2" xmlns:ns60="urn:healthit-gov:qdm:v5_4" resultTypeName="ns60:FacilityLocation" xsi:type="First">
+                  <source localId="208" locator="92:17-93:34" xsi:type="Query">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xmlns:ns61="urn:healthit-gov:qdm:v5_4" name="ns61:FacilityLocation" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <source localId="203" locator="92:17-92:71" alias="HospitalLocation">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType xmlns:ns62="urn:healthit-gov:qdm:v5_4" name="ns62:FacilityLocation" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <expression localId="202" locator="92:17-92:55" name="HospitalizationLocations" xsi:type="FunctionRef">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType xmlns:ns63="urn:healthit-gov:qdm:v5_4" name="ns63:FacilityLocation" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <operand localId="201" locator="92:45-92:53" xmlns:ns64="urn:healthit-gov:qdm:v5_4" resultTypeName="ns64:PositiveEncounterPerformed" name="Encounter" xsi:type="OperandRef"/>
+                        </expression>
+                     </source>
+                     <sort localId="207" locator="93:4-93:34">
+                        <by localId="206" locator="93:12-93:34" resultTypeName="t:DateTime" direction="asc" xsi:type="ByExpression">
+                           <expression localId="205" locator="93:12-93:34" resultTypeName="t:DateTime" xsi:type="Start">
+                              <operand localId="204" locator="93:21-93:34" name="locationPeriod" xsi:type="IdentifierRef">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </expression>
+                        </by>
+                     </sort>
+                  </source>
+               </source>
+            </operand>
+         </expression>
+         <operand name="Encounter">
+            <operandTypeSpecifier localId="200" locator="91:49-91:70" xmlns:ns65="urn:healthit-gov:qdm:v5_4" resultTypeName="ns65:PositiveEncounterPerformed" xmlns:ns66="urn:healthit-gov:qdm:v5_4" name="ns66:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+      </def>
+      <def localId="219" locator="108:1-109:43" resultTypeName="t:Integer" name="HospitalizationLengthofStay" context="Patient" accessLevel="Public" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="219">
+               <a:s>define function &quot;HospitalizationLengthofStay&quot;(Encounter </a:s>
+               <a:s r="215">
+                  <a:s>&quot;Encounter, Performed&quot;</a:s>
+               </a:s>
+               <a:s> ):
+	</a:s>
+               <a:s r="218">
+                  <a:s r="218">
+                     <a:s>LengthInDays(</a:s>
+                     <a:s r="217">
+                        <a:s>&quot;Hospitalization&quot;(</a:s>
+                        <a:s r="216">
+                           <a:s>Encounter</a:s>
+                        </a:s>
+                        <a:s>)</a:s>
+                     </a:s>
+                     <a:s>)</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="218" locator="109:2-109:43" resultTypeName="t:Integer" name="LengthInDays" xsi:type="FunctionRef">
+            <operand localId="217" locator="109:15-109:42" name="Hospitalization" xsi:type="FunctionRef">
+               <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                  <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <operand localId="216" locator="109:33-109:41" xmlns:ns67="urn:healthit-gov:qdm:v5_4" resultTypeName="ns67:PositiveEncounterPerformed" name="Encounter" xsi:type="OperandRef"/>
+            </operand>
+         </expression>
+         <operand name="Encounter">
+            <operandTypeSpecifier localId="215" locator="108:57-108:78" xmlns:ns68="urn:healthit-gov:qdm:v5_4" resultTypeName="ns68:PositiveEncounterPerformed" xmlns:ns69="urn:healthit-gov:qdm:v5_4" name="ns69:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+      </def>
+      <def localId="232" locator="112:1-115:17" resultTypeName="t:DateTime" name="HospitalDepartureTime" context="Patient" accessLevel="Public" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="232">
+               <a:s>define function &quot;HospitalDepartureTime&quot;(Encounter </a:s>
+               <a:s r="220">
+                  <a:s>&quot;Encounter, Performed&quot;</a:s>
+               </a:s>
+               <a:s> ):
+	</a:s>
+               <a:s r="231">
+                  <a:s r="231">
+                     <a:s>end of </a:s>
+                     <a:s r="230">
+                        <a:s r="229">
+                           <a:s>Last(</a:s>
+                           <a:s r="228">
+                              <a:s>
+                                 <a:s r="223">
+                                    <a:s r="222">
+                                       <a:s>(</a:s>
+                                       <a:s r="222">
+                                          <a:s>&quot;HospitalizationLocations&quot;(</a:s>
+                                          <a:s r="221">
+                                             <a:s>Encounter</a:s>
+                                          </a:s>
+                                          <a:s>)</a:s>
+                                       </a:s>
+                                       <a:s>)</a:s>
+                                    </a:s>
+                                    <a:s>HospitalLocation</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>
+			</a:s>
+                              <a:s r="227">
+                                 <a:s>sort by </a:s>
+                                 <a:s r="226">
+                                    <a:s r="225">
+                                       <a:s>start of </a:s>
+                                       <a:s r="224">
+                                          <a:s>locationPeriod</a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>
+	)</a:s>
+                        </a:s>
+                        <a:s>.</a:s>
+                        <a:s r="230">
+                           <a:s>locationPeriod</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="231" locator="113:2-115:17" resultTypeName="t:DateTime" xsi:type="End">
+            <operand localId="230" locator="113:9-115:17" path="locationPeriod" xsi:type="Property">
+               <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                  <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <source localId="229" locator="113:9-115:2" xmlns:ns70="urn:healthit-gov:qdm:v5_4" resultTypeName="ns70:FacilityLocation" xsi:type="Last">
+                  <source localId="228" locator="113:14-114:34" xsi:type="Query">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xmlns:ns71="urn:healthit-gov:qdm:v5_4" name="ns71:FacilityLocation" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <source localId="223" locator="113:14-113:68" alias="HospitalLocation">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType xmlns:ns72="urn:healthit-gov:qdm:v5_4" name="ns72:FacilityLocation" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <expression localId="222" locator="113:14-113:52" name="HospitalizationLocations" xsi:type="FunctionRef">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType xmlns:ns73="urn:healthit-gov:qdm:v5_4" name="ns73:FacilityLocation" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <operand localId="221" locator="113:42-113:50" xmlns:ns74="urn:healthit-gov:qdm:v5_4" resultTypeName="ns74:PositiveEncounterPerformed" name="Encounter" xsi:type="OperandRef"/>
+                        </expression>
+                     </source>
+                     <sort localId="227" locator="114:4-114:34">
+                        <by localId="226" locator="114:12-114:34" resultTypeName="t:DateTime" direction="asc" xsi:type="ByExpression">
+                           <expression localId="225" locator="114:12-114:34" resultTypeName="t:DateTime" xsi:type="Start">
+                              <operand localId="224" locator="114:21-114:34" name="locationPeriod" xsi:type="IdentifierRef">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </expression>
+                        </by>
+                     </sort>
+                  </source>
+               </source>
+            </operand>
+         </expression>
+         <operand name="Encounter">
+            <operandTypeSpecifier localId="220" locator="112:51-112:72" xmlns:ns75="urn:healthit-gov:qdm:v5_4" resultTypeName="ns75:PositiveEncounterPerformed" xmlns:ns76="urn:healthit-gov:qdm:v5_4" name="ns76:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+      </def>
+      <def localId="237" locator="118:1-119:32" resultTypeName="t:DateTime" name="HospitalDischargeTime" context="Patient" accessLevel="Public" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="237">
+               <a:s>define function &quot;HospitalDischargeTime&quot;(Encounter </a:s>
+               <a:s r="233">
+                  <a:s>&quot;Encounter, Performed&quot;</a:s>
+               </a:s>
+               <a:s> ):
+	</a:s>
+               <a:s r="236">
+                  <a:s r="236">
+                     <a:s>end of </a:s>
+                     <a:s r="235">
+                        <a:s r="234">
+                           <a:s>Encounter</a:s>
+                        </a:s>
+                        <a:s>.</a:s>
+                        <a:s r="235">
+                           <a:s>relevantPeriod</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="236" locator="119:2-119:32" resultTypeName="t:DateTime" xsi:type="End">
+            <operand localId="235" locator="119:9-119:32" path="relevantPeriod" xsi:type="Property">
+               <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                  <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <source localId="234" locator="119:9-119:17" xmlns:ns77="urn:healthit-gov:qdm:v5_4" resultTypeName="ns77:PositiveEncounterPerformed" name="Encounter" xsi:type="OperandRef"/>
+            </operand>
+         </expression>
+         <operand name="Encounter">
+            <operandTypeSpecifier localId="233" locator="118:51-118:72" xmlns:ns78="urn:healthit-gov:qdm:v5_4" resultTypeName="ns78:PositiveEncounterPerformed" xmlns:ns79="urn:healthit-gov:qdm:v5_4" name="ns79:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+      </def>
+      <def localId="310" locator="122:1-142:30" name="HospitalizationWithObservationAndOutpatientSurgeryService" context="Patient" accessLevel="Public" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="310">
+               <a:s>define function &quot;HospitalizationWithObservationAndOutpatientSurgeryService&quot;(Encounter </a:s>
+               <a:s r="238">
+                  <a:s>&quot;Encounter, Performed&quot;</a:s>
+               </a:s>
+               <a:s> ):
+	</a:s>
+               <a:s r="309">
+                  <a:s r="309">
+                     <a:s>
+                        <a:s r="240">
+                           <a:s r="239">
+                              <a:s>
+                                 <a:s>Encounter</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> Visit</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+		</a:s>
+                     <a:s>
+                        <a:s>let </a:s>
+                        <a:s r="256">
+                           <a:s>ObsVisit: </a:s>
+                           <a:s r="255">
+                              <a:s>Last(</a:s>
+                              <a:s r="254">
+                                 <a:s>
+                                    <a:s r="242">
+                                       <a:s r="241">
+                                          <a:s r="241">
+                                             <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                             <a:s>
+                                                <a:s>&quot;Observation Services&quot;</a:s>
+                                             </a:s>
+                                             <a:s>]</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s> LastObs</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>
+				</a:s>
+                                 <a:s r="249">
+                                    <a:s>where </a:s>
+                                    <a:s r="249">
+                                       <a:s r="244">
+                                          <a:s r="243">
+                                             <a:s>LastObs</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="244">
+                                             <a:s>relevantPeriod</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s> </a:s>
+                                       <a:s r="249">
+                                          <a:s>ends </a:s>
+                                          <a:s r="248">
+                                             <a:s>1 hour</a:s>
+                                          </a:s>
+                                          <a:s> or less on or before</a:s>
+                                       </a:s>
+                                       <a:s> </a:s>
+                                       <a:s r="247">
+                                          <a:s>start of </a:s>
+                                          <a:s r="246">
+                                             <a:s r="245">
+                                                <a:s>Visit</a:s>
+                                             </a:s>
+                                             <a:s>.</a:s>
+                                             <a:s r="246">
+                                                <a:s>relevantPeriod</a:s>
+                                             </a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>
+				</a:s>
+                                 <a:s r="253">
+                                    <a:s>sort by
+				</a:s>
+                                    <a:s r="252">
+                                       <a:s r="251">
+                                          <a:s>end of </a:s>
+                                          <a:s r="250">
+                                             <a:s>relevantPeriod</a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>
+		)</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>,
+		</a:s>
+                        <a:s r="264">
+                           <a:s>VisitStart: </a:s>
+                           <a:s r="263">
+                              <a:s>Coalesce(</a:s>
+                              <a:s r="259">
+                                 <a:s>start of </a:s>
+                                 <a:s r="258">
+                                    <a:s r="257">
+                                       <a:s>ObsVisit</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="258">
+                                       <a:s>relevantPeriod</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>, </a:s>
+                              <a:s r="262">
+                                 <a:s>start of </a:s>
+                                 <a:s r="261">
+                                    <a:s r="260">
+                                       <a:s>Visit</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="261">
+                                       <a:s>relevantPeriod</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>)</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>,
+		</a:s>
+                        <a:s r="278">
+                           <a:s>EDVisit: </a:s>
+                           <a:s r="277">
+                              <a:s>Last(</a:s>
+                              <a:s r="276">
+                                 <a:s>
+                                    <a:s r="266">
+                                       <a:s r="265">
+                                          <a:s r="265">
+                                             <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                             <a:s>
+                                                <a:s>&quot;Emergency Department Visit&quot;</a:s>
+                                             </a:s>
+                                             <a:s>]</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s> LastED</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>
+				</a:s>
+                                 <a:s r="271">
+                                    <a:s>where </a:s>
+                                    <a:s r="271">
+                                       <a:s r="268">
+                                          <a:s r="267">
+                                             <a:s>LastED</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="268">
+                                             <a:s>relevantPeriod</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s> </a:s>
+                                       <a:s r="271">
+                                          <a:s>ends </a:s>
+                                          <a:s r="270">
+                                             <a:s>1 hour</a:s>
+                                          </a:s>
+                                          <a:s> or less on or before</a:s>
+                                       </a:s>
+                                       <a:s> </a:s>
+                                       <a:s r="269">
+                                          <a:s>VisitStart</a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>
+				</a:s>
+                                 <a:s r="275">
+                                    <a:s>sort by
+				</a:s>
+                                    <a:s r="274">
+                                       <a:s r="273">
+                                          <a:s>end of </a:s>
+                                          <a:s r="272">
+                                             <a:s>relevantPeriod</a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>
+		)</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>,
+		</a:s>
+                        <a:s r="284">
+                           <a:s>VisitStartWithED: </a:s>
+                           <a:s r="283">
+                              <a:s>Coalesce(</a:s>
+                              <a:s r="281">
+                                 <a:s>start of </a:s>
+                                 <a:s r="280">
+                                    <a:s r="279">
+                                       <a:s>EDVisit</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="280">
+                                       <a:s>relevantPeriod</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>, </a:s>
+                              <a:s r="282">
+                                 <a:s>VisitStart</a:s>
+                              </a:s>
+                              <a:s>)</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>,
+		</a:s>
+                        <a:s r="298">
+                           <a:s>OutpatientSurgeryVisit: </a:s>
+                           <a:s r="297">
+                              <a:s>Last(</a:s>
+                              <a:s r="296">
+                                 <a:s>
+                                    <a:s r="286">
+                                       <a:s r="285">
+                                          <a:s r="285">
+                                             <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                             <a:s>
+                                                <a:s>&quot;Outpatient Surgery Service&quot;</a:s>
+                                             </a:s>
+                                             <a:s>]</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s> LastSurgeryOP</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>
+				</a:s>
+                                 <a:s r="291">
+                                    <a:s>where </a:s>
+                                    <a:s r="291">
+                                       <a:s r="288">
+                                          <a:s r="287">
+                                             <a:s>LastSurgeryOP</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="288">
+                                             <a:s>relevantPeriod</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s> </a:s>
+                                       <a:s r="291">
+                                          <a:s>ends </a:s>
+                                          <a:s r="290">
+                                             <a:s>1 hour</a:s>
+                                          </a:s>
+                                          <a:s> or less on or before</a:s>
+                                       </a:s>
+                                       <a:s> </a:s>
+                                       <a:s r="289">
+                                          <a:s>VisitStartWithED</a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>
+				</a:s>
+                                 <a:s r="295">
+                                    <a:s>sort by
+				</a:s>
+                                    <a:s r="294">
+                                       <a:s r="293">
+                                          <a:s>end of </a:s>
+                                          <a:s r="292">
+                                             <a:s>relevantPeriod</a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>
+		)</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+		</a:s>
+                     <a:s r="308">
+                        <a:s>return </a:s>
+                        <a:s r="307">
+                           <a:s>Interval[</a:s>
+                           <a:s r="303">
+                              <a:s>Coalesce(</a:s>
+                              <a:s r="301">
+                                 <a:s>start of </a:s>
+                                 <a:s r="300">
+                                    <a:s r="299">
+                                       <a:s>OutpatientSurgeryVisit</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="300">
+                                       <a:s>relevantPeriod</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>, </a:s>
+                              <a:s r="302">
+                                 <a:s>VisitStartWithED</a:s>
+                              </a:s>
+                              <a:s>)</a:s>
+                           </a:s>
+                           <a:s>,
+		</a:s>
+                           <a:s r="306">
+                              <a:s>end of </a:s>
+                              <a:s r="305">
+                                 <a:s r="304">
+                                    <a:s>Visit</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="305">
+                                    <a:s>relevantPeriod</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>]</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+            <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="309" locator="123:2-142:30" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+               <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="240" locator="123:2-123:16" xmlns:ns80="urn:healthit-gov:qdm:v5_4" resultTypeName="ns80:PositiveEncounterPerformed" alias="Visit">
+               <expression localId="239" locator="123:2-123:10" xmlns:ns81="urn:healthit-gov:qdm:v5_4" resultTypeName="ns81:PositiveEncounterPerformed" name="Encounter" xsi:type="OperandRef"/>
+            </source>
+            <let localId="256" locator="124:7-128:3" xmlns:ns82="urn:healthit-gov:qdm:v5_4" resultTypeName="ns82:PositiveEncounterPerformed" identifier="ObsVisit">
+               <expression localId="255" locator="124:17-128:3" xmlns:ns83="urn:healthit-gov:qdm:v5_4" resultTypeName="ns83:PositiveEncounterPerformed" xsi:type="Last">
+                  <source localId="254" locator="124:22-127:25" xsi:type="Query">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xmlns:ns84="urn:healthit-gov:qdm:v5_4" name="ns84:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <source localId="242" locator="124:22-124:77" alias="LastObs">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType xmlns:ns85="urn:healthit-gov:qdm:v5_4" name="ns85:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <expression localId="241" locator="124:22-124:69" xmlns:ns86="urn:healthit-gov:qdm:v5_4" dataType="ns86:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType xmlns:ns87="urn:healthit-gov:qdm:v5_4" name="ns87:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <codes locator="124:47-124:68" name="Observation Services" xsi:type="ValueSetRef">
+                              <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                 <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                           </codes>
+                        </expression>
+                     </source>
+                     <where localId="249" locator="125:5-125:95" resultTypeName="t:Boolean" xsi:type="And">
+                        <operand locator="125:39-125:52" xsi:type="In">
+                           <operand locator="125:34-125:37" xsi:type="End">
+                              <operand localId="244" locator="125:11-125:32" path="relevantPeriod" scope="LastObs" xsi:type="Property">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </operand>
+                           <operand locator="125:39-125:52" lowClosed="true" highClosed="true" xsi:type="Interval">
+                              <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                 <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                              <low locator="125:67-125:95" xsi:type="Subtract">
+                                 <operand localId="247" locator="125:67-125:95" resultTypeName="t:DateTime" xsi:type="Start">
+                                    <operand localId="246" locator="125:76-125:95" path="relevantPeriod" scope="Visit" xsi:type="Property">
+                                       <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                          <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                       </resultTypeSpecifier>
+                                    </operand>
+                                 </operand>
+                                 <operand localId="248" locator="125:39-125:44" resultTypeName="t:Quantity" value="1" unit="hour" xsi:type="Quantity"/>
+                              </low>
+                              <high localId="247" locator="125:67-125:95" resultTypeName="t:DateTime" xsi:type="Start">
+                                 <operand localId="246" locator="125:76-125:95" path="relevantPeriod" scope="Visit" xsi:type="Property">
+                                    <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                       <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                    </resultTypeSpecifier>
+                                 </operand>
+                              </high>
+                           </operand>
+                        </operand>
+                        <operand locator="125:39-125:52" xsi:type="Not">
+                           <operand locator="125:39-125:52" xsi:type="IsNull">
+                              <operand localId="247" locator="125:67-125:95" resultTypeName="t:DateTime" xsi:type="Start">
+                                 <operand localId="246" locator="125:76-125:95" path="relevantPeriod" scope="Visit" xsi:type="Property">
+                                    <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                       <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                    </resultTypeSpecifier>
+                                 </operand>
+                              </operand>
+                           </operand>
+                        </operand>
+                     </where>
+                     <sort localId="253" locator="126:5-127:25">
+                        <by localId="252" locator="127:5-127:25" resultTypeName="t:DateTime" direction="asc" xsi:type="ByExpression">
+                           <expression localId="251" locator="127:5-127:25" resultTypeName="t:DateTime" xsi:type="End">
+                              <operand localId="250" locator="127:12-127:25" name="relevantPeriod" xsi:type="IdentifierRef">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </expression>
+                        </by>
+                     </sort>
+                  </source>
+               </expression>
+            </let>
+            <let localId="264" locator="129:3-129:87" resultTypeName="t:DateTime" identifier="VisitStart">
+               <expression localId="263" locator="129:15-129:87" resultTypeName="t:DateTime" xsi:type="Coalesce">
+                  <operand localId="259" locator="129:24-129:55" resultTypeName="t:DateTime" xsi:type="Start">
+                     <operand localId="258" locator="129:33-129:55" path="relevantPeriod" xsi:type="Property">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <source localId="257" locator="129:33-129:40" xmlns:ns88="urn:healthit-gov:qdm:v5_4" resultTypeName="ns88:PositiveEncounterPerformed" name="ObsVisit" xsi:type="QueryLetRef"/>
+                     </operand>
+                  </operand>
+                  <operand localId="262" locator="129:58-129:86" resultTypeName="t:DateTime" xsi:type="Start">
+                     <operand localId="261" locator="129:67-129:86" path="relevantPeriod" scope="Visit" xsi:type="Property">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </operand>
+                  </operand>
+               </expression>
+            </let>
+            <let localId="278" locator="130:3-134:3" xmlns:ns89="urn:healthit-gov:qdm:v5_4" resultTypeName="ns89:PositiveEncounterPerformed" identifier="EDVisit">
+               <expression localId="277" locator="130:12-134:3" xmlns:ns90="urn:healthit-gov:qdm:v5_4" resultTypeName="ns90:PositiveEncounterPerformed" xsi:type="Last">
+                  <source localId="276" locator="130:17-133:25" xsi:type="Query">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xmlns:ns91="urn:healthit-gov:qdm:v5_4" name="ns91:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <source localId="266" locator="130:17-130:77" alias="LastED">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType xmlns:ns92="urn:healthit-gov:qdm:v5_4" name="ns92:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <expression localId="265" locator="130:17-130:70" xmlns:ns93="urn:healthit-gov:qdm:v5_4" dataType="ns93:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType xmlns:ns94="urn:healthit-gov:qdm:v5_4" name="ns94:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <codes locator="130:42-130:69" name="Emergency Department Visit" xsi:type="ValueSetRef">
+                              <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                 <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                           </codes>
+                        </expression>
+                     </source>
+                     <where localId="271" locator="131:5-131:75" resultTypeName="t:Boolean" xsi:type="And">
+                        <operand locator="131:38-131:51" xsi:type="In">
+                           <operand locator="131:33-131:36" xsi:type="End">
+                              <operand localId="268" locator="131:11-131:31" path="relevantPeriod" scope="LastED" xsi:type="Property">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </operand>
+                           <operand locator="131:38-131:51" lowClosed="true" highClosed="true" xsi:type="Interval">
+                              <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                 <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                              <low locator="131:66-131:75" xsi:type="Subtract">
+                                 <operand localId="269" locator="131:66-131:75" resultTypeName="t:DateTime" name="VisitStart" xsi:type="QueryLetRef"/>
+                                 <operand localId="270" locator="131:38-131:43" resultTypeName="t:Quantity" value="1" unit="hour" xsi:type="Quantity"/>
+                              </low>
+                              <high localId="269" locator="131:66-131:75" resultTypeName="t:DateTime" name="VisitStart" xsi:type="QueryLetRef"/>
+                           </operand>
+                        </operand>
+                        <operand locator="131:38-131:51" xsi:type="Not">
+                           <operand locator="131:38-131:51" xsi:type="IsNull">
+                              <operand localId="269" locator="131:66-131:75" resultTypeName="t:DateTime" name="VisitStart" xsi:type="QueryLetRef"/>
+                           </operand>
+                        </operand>
+                     </where>
+                     <sort localId="275" locator="132:5-133:25">
+                        <by localId="274" locator="133:5-133:25" resultTypeName="t:DateTime" direction="asc" xsi:type="ByExpression">
+                           <expression localId="273" locator="133:5-133:25" resultTypeName="t:DateTime" xsi:type="End">
+                              <operand localId="272" locator="133:12-133:25" name="relevantPeriod" xsi:type="IdentifierRef">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </expression>
+                        </by>
+                     </sort>
+                  </source>
+               </expression>
+            </let>
+            <let localId="284" locator="135:3-135:73" resultTypeName="t:DateTime" identifier="VisitStartWithED">
+               <expression localId="283" locator="135:21-135:73" resultTypeName="t:DateTime" xsi:type="Coalesce">
+                  <operand localId="281" locator="135:30-135:60" resultTypeName="t:DateTime" xsi:type="Start">
+                     <operand localId="280" locator="135:39-135:60" path="relevantPeriod" xsi:type="Property">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <source localId="279" locator="135:39-135:45" xmlns:ns95="urn:healthit-gov:qdm:v5_4" resultTypeName="ns95:PositiveEncounterPerformed" name="EDVisit" xsi:type="QueryLetRef"/>
+                     </operand>
+                  </operand>
+                  <operand localId="282" locator="135:63-135:72" resultTypeName="t:DateTime" name="VisitStart" xsi:type="QueryLetRef"/>
+               </expression>
+            </let>
+            <let localId="298" locator="136:3-140:3" xmlns:ns96="urn:healthit-gov:qdm:v5_4" resultTypeName="ns96:PositiveEncounterPerformed" identifier="OutpatientSurgeryVisit">
+               <expression localId="297" locator="136:27-140:3" xmlns:ns97="urn:healthit-gov:qdm:v5_4" resultTypeName="ns97:PositiveEncounterPerformed" xsi:type="Last">
+                  <source localId="296" locator="136:32-139:25" xsi:type="Query">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xmlns:ns98="urn:healthit-gov:qdm:v5_4" name="ns98:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <source localId="286" locator="136:32-136:99" alias="LastSurgeryOP">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType xmlns:ns99="urn:healthit-gov:qdm:v5_4" name="ns99:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <expression localId="285" locator="136:32-136:85" xmlns:ns100="urn:healthit-gov:qdm:v5_4" dataType="ns100:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType xmlns:ns101="urn:healthit-gov:qdm:v5_4" name="ns101:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <codes locator="136:57-136:84" name="Outpatient Surgery Service" xsi:type="ValueSetRef">
+                              <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                 <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                           </codes>
+                        </expression>
+                     </source>
+                     <where localId="291" locator="137:5-137:88" resultTypeName="t:Boolean" xsi:type="And">
+                        <operand locator="137:45-137:58" xsi:type="In">
+                           <operand locator="137:40-137:43" xsi:type="End">
+                              <operand localId="288" locator="137:11-137:38" path="relevantPeriod" scope="LastSurgeryOP" xsi:type="Property">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </operand>
+                           <operand locator="137:45-137:58" lowClosed="true" highClosed="true" xsi:type="Interval">
+                              <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                 <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                              <low locator="137:73-137:88" xsi:type="Subtract">
+                                 <operand localId="289" locator="137:73-137:88" resultTypeName="t:DateTime" name="VisitStartWithED" xsi:type="QueryLetRef"/>
+                                 <operand localId="290" locator="137:45-137:50" resultTypeName="t:Quantity" value="1" unit="hour" xsi:type="Quantity"/>
+                              </low>
+                              <high localId="289" locator="137:73-137:88" resultTypeName="t:DateTime" name="VisitStartWithED" xsi:type="QueryLetRef"/>
+                           </operand>
+                        </operand>
+                        <operand locator="137:45-137:58" xsi:type="Not">
+                           <operand locator="137:45-137:58" xsi:type="IsNull">
+                              <operand localId="289" locator="137:73-137:88" resultTypeName="t:DateTime" name="VisitStartWithED" xsi:type="QueryLetRef"/>
+                           </operand>
+                        </operand>
+                     </where>
+                     <sort localId="295" locator="138:5-139:25">
+                        <by localId="294" locator="139:5-139:25" resultTypeName="t:DateTime" direction="asc" xsi:type="ByExpression">
+                           <expression localId="293" locator="139:5-139:25" resultTypeName="t:DateTime" xsi:type="End">
+                              <operand localId="292" locator="139:12-139:25" name="relevantPeriod" xsi:type="IdentifierRef">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </expression>
+                        </by>
+                     </sort>
+                  </source>
+               </expression>
+            </let>
+            <return localId="308" locator="141:3-142:30">
+               <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                  <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="307" locator="141:10-142:30" lowClosed="true" highClosed="true" xsi:type="Interval">
+                  <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                     <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <low localId="303" locator="141:19-141:92" resultTypeName="t:DateTime" xsi:type="Coalesce">
+                     <operand localId="301" locator="141:28-141:73" resultTypeName="t:DateTime" xsi:type="Start">
+                        <operand localId="300" locator="141:37-141:73" path="relevantPeriod" xsi:type="Property">
+                           <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                              <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <source localId="299" locator="141:37-141:58" xmlns:ns102="urn:healthit-gov:qdm:v5_4" resultTypeName="ns102:PositiveEncounterPerformed" name="OutpatientSurgeryVisit" xsi:type="QueryLetRef"/>
+                        </operand>
+                     </operand>
+                     <operand localId="302" locator="141:76-141:91" resultTypeName="t:DateTime" name="VisitStartWithED" xsi:type="QueryLetRef"/>
+                  </low>
+                  <high localId="306" locator="142:3-142:29" resultTypeName="t:DateTime" xsi:type="End">
+                     <operand localId="305" locator="142:10-142:29" path="relevantPeriod" scope="Visit" xsi:type="Property">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </operand>
+                  </high>
+               </expression>
+            </return>
+         </expression>
+         <operand name="Encounter">
+            <operandTypeSpecifier localId="238" locator="122:87-122:108" xmlns:ns103="urn:healthit-gov:qdm:v5_4" resultTypeName="ns103:PositiveEncounterPerformed" xmlns:ns104="urn:healthit-gov:qdm:v5_4" name="ns104:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+      </def>
+      <def localId="363" locator="145:1-159:30" name="HospitalizationWithObservation" context="Patient" accessLevel="Public" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="363">
+               <a:s>define function &quot;HospitalizationWithObservation&quot;(Encounter </a:s>
+               <a:s r="311">
+                  <a:s>&quot;Encounter, Performed&quot;</a:s>
+               </a:s>
+               <a:s> ):
+	</a:s>
+               <a:s r="362">
+                  <a:s r="362">
+                     <a:s>
+                        <a:s r="313">
+                           <a:s r="312">
+                              <a:s>
+                                 <a:s>Encounter</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> Visit</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+		</a:s>
+                     <a:s>
+                        <a:s>let </a:s>
+                        <a:s r="329">
+                           <a:s>ObsVisit: </a:s>
+                           <a:s r="328">
+                              <a:s>Last(</a:s>
+                              <a:s r="327">
+                                 <a:s>
+                                    <a:s r="315">
+                                       <a:s r="314">
+                                          <a:s r="314">
+                                             <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                             <a:s>
+                                                <a:s>&quot;Observation Services&quot;</a:s>
+                                             </a:s>
+                                             <a:s>]</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s> LastObs</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>
+				</a:s>
+                                 <a:s r="322">
+                                    <a:s>where </a:s>
+                                    <a:s r="322">
+                                       <a:s r="317">
+                                          <a:s r="316">
+                                             <a:s>LastObs</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="317">
+                                             <a:s>relevantPeriod</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s> </a:s>
+                                       <a:s r="322">
+                                          <a:s>ends </a:s>
+                                          <a:s r="321">
+                                             <a:s>1 hour</a:s>
+                                          </a:s>
+                                          <a:s> or less on or before</a:s>
+                                       </a:s>
+                                       <a:s> </a:s>
+                                       <a:s r="320">
+                                          <a:s>start of </a:s>
+                                          <a:s r="319">
+                                             <a:s r="318">
+                                                <a:s>Visit</a:s>
+                                             </a:s>
+                                             <a:s>.</a:s>
+                                             <a:s r="319">
+                                                <a:s>relevantPeriod</a:s>
+                                             </a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>
+				</a:s>
+                                 <a:s r="326">
+                                    <a:s>sort by
+				</a:s>
+                                    <a:s r="325">
+                                       <a:s r="324">
+                                          <a:s>end of </a:s>
+                                          <a:s r="323">
+                                             <a:s>relevantPeriod</a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>
+		)</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>,
+		</a:s>
+                        <a:s r="337">
+                           <a:s>VisitStart: </a:s>
+                           <a:s r="336">
+                              <a:s>Coalesce(</a:s>
+                              <a:s r="332">
+                                 <a:s>start of </a:s>
+                                 <a:s r="331">
+                                    <a:s r="330">
+                                       <a:s>ObsVisit</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="331">
+                                       <a:s>relevantPeriod</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>, </a:s>
+                              <a:s r="335">
+                                 <a:s>start of </a:s>
+                                 <a:s r="334">
+                                    <a:s r="333">
+                                       <a:s>Visit</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="334">
+                                       <a:s>relevantPeriod</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>)</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>,
+		</a:s>
+                        <a:s r="351">
+                           <a:s>EDVisit: </a:s>
+                           <a:s r="350">
+                              <a:s>Last(</a:s>
+                              <a:s r="349">
+                                 <a:s>
+                                    <a:s r="339">
+                                       <a:s r="338">
+                                          <a:s r="338">
+                                             <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                             <a:s>
+                                                <a:s>&quot;Emergency Department Visit&quot;</a:s>
+                                             </a:s>
+                                             <a:s>]</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s> LastED</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>
+				</a:s>
+                                 <a:s r="344">
+                                    <a:s>where </a:s>
+                                    <a:s r="344">
+                                       <a:s r="341">
+                                          <a:s r="340">
+                                             <a:s>LastED</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="341">
+                                             <a:s>relevantPeriod</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s> </a:s>
+                                       <a:s r="344">
+                                          <a:s>ends </a:s>
+                                          <a:s r="343">
+                                             <a:s>1 hour</a:s>
+                                          </a:s>
+                                          <a:s> or less on or before</a:s>
+                                       </a:s>
+                                       <a:s> </a:s>
+                                       <a:s r="342">
+                                          <a:s>VisitStart</a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>
+				</a:s>
+                                 <a:s r="348">
+                                    <a:s>sort by
+				</a:s>
+                                    <a:s r="347">
+                                       <a:s r="346">
+                                          <a:s>end of </a:s>
+                                          <a:s r="345">
+                                             <a:s>relevantPeriod</a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>
+		)</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+		</a:s>
+                     <a:s r="361">
+                        <a:s>return </a:s>
+                        <a:s r="360">
+                           <a:s>Interval[</a:s>
+                           <a:s r="356">
+                              <a:s>Coalesce(</a:s>
+                              <a:s r="354">
+                                 <a:s>start of </a:s>
+                                 <a:s r="353">
+                                    <a:s r="352">
+                                       <a:s>EDVisit</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="353">
+                                       <a:s>relevantPeriod</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>, </a:s>
+                              <a:s r="355">
+                                 <a:s>VisitStart</a:s>
+                              </a:s>
+                              <a:s>)</a:s>
+                           </a:s>
+                           <a:s>,
+		</a:s>
+                           <a:s r="359">
+                              <a:s>end of </a:s>
+                              <a:s r="358">
+                                 <a:s r="357">
+                                    <a:s>Visit</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="358">
+                                    <a:s>relevantPeriod</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>]</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+            <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="362" locator="146:2-159:30" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+               <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="313" locator="146:2-146:16" xmlns:ns105="urn:healthit-gov:qdm:v5_4" resultTypeName="ns105:PositiveEncounterPerformed" alias="Visit">
+               <expression localId="312" locator="146:2-146:10" xmlns:ns106="urn:healthit-gov:qdm:v5_4" resultTypeName="ns106:PositiveEncounterPerformed" name="Encounter" xsi:type="OperandRef"/>
+            </source>
+            <let localId="329" locator="147:7-151:3" xmlns:ns107="urn:healthit-gov:qdm:v5_4" resultTypeName="ns107:PositiveEncounterPerformed" identifier="ObsVisit">
+               <expression localId="328" locator="147:17-151:3" xmlns:ns108="urn:healthit-gov:qdm:v5_4" resultTypeName="ns108:PositiveEncounterPerformed" xsi:type="Last">
+                  <source localId="327" locator="147:22-150:25" xsi:type="Query">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xmlns:ns109="urn:healthit-gov:qdm:v5_4" name="ns109:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <source localId="315" locator="147:22-147:77" alias="LastObs">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType xmlns:ns110="urn:healthit-gov:qdm:v5_4" name="ns110:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <expression localId="314" locator="147:22-147:69" xmlns:ns111="urn:healthit-gov:qdm:v5_4" dataType="ns111:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType xmlns:ns112="urn:healthit-gov:qdm:v5_4" name="ns112:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <codes locator="147:47-147:68" name="Observation Services" xsi:type="ValueSetRef">
+                              <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                 <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                           </codes>
+                        </expression>
+                     </source>
+                     <where localId="322" locator="148:5-148:95" resultTypeName="t:Boolean" xsi:type="And">
+                        <operand locator="148:39-148:52" xsi:type="In">
+                           <operand locator="148:34-148:37" xsi:type="End">
+                              <operand localId="317" locator="148:11-148:32" path="relevantPeriod" scope="LastObs" xsi:type="Property">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </operand>
+                           <operand locator="148:39-148:52" lowClosed="true" highClosed="true" xsi:type="Interval">
+                              <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                 <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                              <low locator="148:67-148:95" xsi:type="Subtract">
+                                 <operand localId="320" locator="148:67-148:95" resultTypeName="t:DateTime" xsi:type="Start">
+                                    <operand localId="319" locator="148:76-148:95" path="relevantPeriod" scope="Visit" xsi:type="Property">
+                                       <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                          <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                       </resultTypeSpecifier>
+                                    </operand>
+                                 </operand>
+                                 <operand localId="321" locator="148:39-148:44" resultTypeName="t:Quantity" value="1" unit="hour" xsi:type="Quantity"/>
+                              </low>
+                              <high localId="320" locator="148:67-148:95" resultTypeName="t:DateTime" xsi:type="Start">
+                                 <operand localId="319" locator="148:76-148:95" path="relevantPeriod" scope="Visit" xsi:type="Property">
+                                    <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                       <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                    </resultTypeSpecifier>
+                                 </operand>
+                              </high>
+                           </operand>
+                        </operand>
+                        <operand locator="148:39-148:52" xsi:type="Not">
+                           <operand locator="148:39-148:52" xsi:type="IsNull">
+                              <operand localId="320" locator="148:67-148:95" resultTypeName="t:DateTime" xsi:type="Start">
+                                 <operand localId="319" locator="148:76-148:95" path="relevantPeriod" scope="Visit" xsi:type="Property">
+                                    <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                       <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                    </resultTypeSpecifier>
+                                 </operand>
+                              </operand>
+                           </operand>
+                        </operand>
+                     </where>
+                     <sort localId="326" locator="149:5-150:25">
+                        <by localId="325" locator="150:5-150:25" resultTypeName="t:DateTime" direction="asc" xsi:type="ByExpression">
+                           <expression localId="324" locator="150:5-150:25" resultTypeName="t:DateTime" xsi:type="End">
+                              <operand localId="323" locator="150:12-150:25" name="relevantPeriod" xsi:type="IdentifierRef">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </expression>
+                        </by>
+                     </sort>
+                  </source>
+               </expression>
+            </let>
+            <let localId="337" locator="152:3-152:87" resultTypeName="t:DateTime" identifier="VisitStart">
+               <expression localId="336" locator="152:15-152:87" resultTypeName="t:DateTime" xsi:type="Coalesce">
+                  <operand localId="332" locator="152:24-152:55" resultTypeName="t:DateTime" xsi:type="Start">
+                     <operand localId="331" locator="152:33-152:55" path="relevantPeriod" xsi:type="Property">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <source localId="330" locator="152:33-152:40" xmlns:ns113="urn:healthit-gov:qdm:v5_4" resultTypeName="ns113:PositiveEncounterPerformed" name="ObsVisit" xsi:type="QueryLetRef"/>
+                     </operand>
+                  </operand>
+                  <operand localId="335" locator="152:58-152:86" resultTypeName="t:DateTime" xsi:type="Start">
+                     <operand localId="334" locator="152:67-152:86" path="relevantPeriod" scope="Visit" xsi:type="Property">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </operand>
+                  </operand>
+               </expression>
+            </let>
+            <let localId="351" locator="153:3-157:3" xmlns:ns114="urn:healthit-gov:qdm:v5_4" resultTypeName="ns114:PositiveEncounterPerformed" identifier="EDVisit">
+               <expression localId="350" locator="153:12-157:3" xmlns:ns115="urn:healthit-gov:qdm:v5_4" resultTypeName="ns115:PositiveEncounterPerformed" xsi:type="Last">
+                  <source localId="349" locator="153:17-156:25" xsi:type="Query">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xmlns:ns116="urn:healthit-gov:qdm:v5_4" name="ns116:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <source localId="339" locator="153:17-153:77" alias="LastED">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType xmlns:ns117="urn:healthit-gov:qdm:v5_4" name="ns117:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <expression localId="338" locator="153:17-153:70" xmlns:ns118="urn:healthit-gov:qdm:v5_4" dataType="ns118:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType xmlns:ns119="urn:healthit-gov:qdm:v5_4" name="ns119:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <codes locator="153:42-153:69" name="Emergency Department Visit" xsi:type="ValueSetRef">
+                              <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                 <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                           </codes>
+                        </expression>
+                     </source>
+                     <where localId="344" locator="154:5-154:75" resultTypeName="t:Boolean" xsi:type="And">
+                        <operand locator="154:38-154:51" xsi:type="In">
+                           <operand locator="154:33-154:36" xsi:type="End">
+                              <operand localId="341" locator="154:11-154:31" path="relevantPeriod" scope="LastED" xsi:type="Property">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </operand>
+                           <operand locator="154:38-154:51" lowClosed="true" highClosed="true" xsi:type="Interval">
+                              <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                 <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                              <low locator="154:66-154:75" xsi:type="Subtract">
+                                 <operand localId="342" locator="154:66-154:75" resultTypeName="t:DateTime" name="VisitStart" xsi:type="QueryLetRef"/>
+                                 <operand localId="343" locator="154:38-154:43" resultTypeName="t:Quantity" value="1" unit="hour" xsi:type="Quantity"/>
+                              </low>
+                              <high localId="342" locator="154:66-154:75" resultTypeName="t:DateTime" name="VisitStart" xsi:type="QueryLetRef"/>
+                           </operand>
+                        </operand>
+                        <operand locator="154:38-154:51" xsi:type="Not">
+                           <operand locator="154:38-154:51" xsi:type="IsNull">
+                              <operand localId="342" locator="154:66-154:75" resultTypeName="t:DateTime" name="VisitStart" xsi:type="QueryLetRef"/>
+                           </operand>
+                        </operand>
+                     </where>
+                     <sort localId="348" locator="155:5-156:25">
+                        <by localId="347" locator="156:5-156:25" resultTypeName="t:DateTime" direction="asc" xsi:type="ByExpression">
+                           <expression localId="346" locator="156:5-156:25" resultTypeName="t:DateTime" xsi:type="End">
+                              <operand localId="345" locator="156:12-156:25" name="relevantPeriod" xsi:type="IdentifierRef">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </expression>
+                        </by>
+                     </sort>
+                  </source>
+               </expression>
+            </let>
+            <return localId="361" locator="158:3-159:30">
+               <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                  <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="360" locator="158:10-159:30" lowClosed="true" highClosed="true" xsi:type="Interval">
+                  <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                     <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <low localId="356" locator="158:19-158:71" resultTypeName="t:DateTime" xsi:type="Coalesce">
+                     <operand localId="354" locator="158:28-158:58" resultTypeName="t:DateTime" xsi:type="Start">
+                        <operand localId="353" locator="158:37-158:58" path="relevantPeriod" xsi:type="Property">
+                           <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                              <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <source localId="352" locator="158:37-158:43" xmlns:ns120="urn:healthit-gov:qdm:v5_4" resultTypeName="ns120:PositiveEncounterPerformed" name="EDVisit" xsi:type="QueryLetRef"/>
+                        </operand>
+                     </operand>
+                     <operand localId="355" locator="158:61-158:70" resultTypeName="t:DateTime" name="VisitStart" xsi:type="QueryLetRef"/>
+                  </low>
+                  <high localId="359" locator="159:3-159:29" resultTypeName="t:DateTime" xsi:type="End">
+                     <operand localId="358" locator="159:10-159:29" path="relevantPeriod" scope="Visit" xsi:type="Property">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </operand>
+                  </high>
+               </expression>
+            </return>
+         </expression>
+         <operand name="Encounter">
+            <operandTypeSpecifier localId="311" locator="145:60-145:81" xmlns:ns121="urn:healthit-gov:qdm:v5_4" resultTypeName="ns121:PositiveEncounterPerformed" xmlns:ns122="urn:healthit-gov:qdm:v5_4" name="ns122:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+      </def>
+   </statements>
+</library>
+
+

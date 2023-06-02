@@ -6,14 +6,14 @@ import java.util.Iterator;
 import java.util.ServiceLoader;
 
 public class ModelInfoProviderFactory {
-
-    static ServiceLoader<ModelInfoProvider> loader = ServiceLoader
-            .load(ModelInfoProvider.class);
+    private ModelInfoProviderFactory() {}
 
     public static Iterator<ModelInfoProvider> providers(boolean refresh) {
+        var loader = ServiceLoader.load(ModelInfoProvider.class);
         if (refresh) {
             loader.reload();
         }
+
         return loader.iterator();
     }
 }

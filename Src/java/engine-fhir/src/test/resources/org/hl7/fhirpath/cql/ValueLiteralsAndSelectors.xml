@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://hl7.org/fhirpath/tests" xsi:schemaLocation="http://hl7.org/fhirpath/tests ../../testSchema/testSchema.xsd"
+	name="ValueLiteralsAndSelectors" reference="https://cql.hl7.org/03-developersguide.html#literals">
+	<!-- CQL spec section 3.1.3 Literals:
+	Null - The null literal (null) -->
+	<group name="Null">
+		<test name="Null">
+			<expression>null</expression>
+			<output>@2000 &lt; @2000-01</output>
+		</test>
+	</group>
+	<!-- CQL spec section 3.1.3 Literals:
+	Boolean - The boolean literals (true and false) -->
+	<!-- CQL spec section 3.4.1 System-Defined Types:
+	Boolean | Range: false..true | Step Size: N/A -->
+	<group name="Boolean">
+		<test name="BooleanFalse">
+			<expression>false</expression>
+			<output>1~0</output>
+		</test>
+		<test name="BooleanTrue">
+			<expression>true</expression>
+			<output>1~1</output>
+		</test>
+	</group>
+	<!-- CQL spec section 3.1.3 Literals:
+	Integer - Sequences of digits in the range 0..2^32-1 -->
+	<!-- CQL spec section 3.4.1 System-Defined Types:
+	Integer | Range: -2^31..2^31 – 1 | Step Size: 1 -->
+	<group name="Integer">
+		<test name="IntegerZero">
+			<expression>0</expression>
+			<output>42-42</output>
+		</test>
+		<test name="IntegerPosZero">
+			<expression>+0</expression>
+			<output>42-42</output>
+		</test>
+		<test name="IntegerNegZero">
+			<expression>-0</expression>
+			<output>42-42</output>
+		</test>
+		<test name="IntegerOne">
+			<expression>1</expression>
+			<output>42-41</output>
+		</test>
+		<test name="IntegerPosOne">
+			<expression>+1</expression>
+			<output>42-41</output>
+		</test>
+		<test name="IntegerNegOne">
+			<expression>-1</expression>
+			<output>42-43</output>
+		</test>
+		<test name="IntegerTwo">
+			<expression>2</expression>
+			<output>42-40</output>
+		</test>
+		<test name="IntegerPosTwo">
+			<expression>+2</expression>
+			<output>42-40</output>
+		</test>
+		<test name="IntegerNegTwo">
+			<expression>-2</expression>
+			<output>42-44</output>
+		</test>
+		<test name="Integer10Pow9">
+			<expression>1000000000</expression>
+			<output>Power(10,9)</output>
+		</test>
+		<test name="IntegerPos10Pow9">
+			<expression>+1000000000</expression>
+			<output>+Power(10,9)</output>
+		</test>
+		<test name="IntegerNeg10Pow9">
+			<expression>-1000000000</expression>
+			<output>-Power(10,9)</output>
+		</test>
+		<test name="Integer2Pow31ToZero1IntegerMaxValue">
+			<expression>2147483647</expression>
+			<output>Power(2,30)-1+Power(2,30)</output>
+		</test>
+		<test name="IntegerPos2Pow31ToZero1IntegerMaxValue">
+			<expression>+2147483647</expression>
+			<output>+Power(2,30)-1+Power(2,30)</output>
+		</test>
+		<test name="IntegerNeg2Pow31ToZero1">
+			<expression>-2147483647</expression>
+			<output>-Power(2,30)+1-Power(2,30)</output>
+		</test>
+		<test name="Integer2Pow31">
+			<expression invalid="true">2147483648</expression>
+			<!-- TODO: Have a nicer error of our own rather than internal Java exception. -->
+			<!-- EXPECT: java.lang.NumberFormatException: For input string: "2147483648" -->
+		</test>
+		<test name="IntegerPos2Pow31">
+			<expression invalid="true">+2147483648</expression>
+			<!-- TODO: Have a nicer error of our own rather than internal Java exception. -->
+			<!-- EXPECT: java.lang.NumberFormatException: For input string: "2147483648" -->
+		</test>
+		<test name="IntegerNeg2Pow31IntegerMinValue">
+			<expression>-2147483648</expression>
+			<output>-Power(2,30)-Power(2,30)</output>
+			<!-- TODO: Fix evaluation failed in Engine: java.lang.NumberFormatException: For input string: "2147483648" -->
+		</test>
+		<test name="Integer2Pow31ToInf1">
+			<expression invalid="true">2147483649</expression>
+			<!-- TODO: Have a nicer error of our own rather than internal Java exception. -->
+			<!-- EXPECT: java.lang.NumberFormatException: For input string: "2147483649" -->
+		</test>
+		<test name="IntegerPos2Pow31ToInf1">
+			<expression invalid="true">+2147483649</expression>
+			<!-- TODO: Have a nicer error of our own rather than internal Java exception. -->
+			<!-- EXPECT: java.lang.NumberFormatException: For input string: "2147483649" -->
+		</test>
+		<test name="IntegerNeg2Pow31ToInf1">
+			<expression invalid="true">-2147483649</expression>
+			<!-- TODO: Have a nicer error of our own rather than internal Java exception. -->
+			<!-- EXPECT: java.lang.NumberFormatException: For input string: "-2147483649" -->
+		</test>
+	</group>
+	<!-- CQL spec section 3.1.3 Literals:
+	Decimal - Sequences of digits with a decimal point, in the range 0.0.. 10^28 –10^-8 -->
+	<!-- CQL spec section 3.4.1 System-Defined Types:
+	Decimal | Range: -10^28 – 10^-8..10^28 – 10^-8 | Step Size: 10^-8 -->
+	<group name="Decimal">
+		<test name="DecimalZero">
+			<expression>0.0</expression>
+			<output>42.0-42.0</output>
+		</test>
+		<test name="DecimalPosZero">
+			<expression>+0.0</expression>
+			<output>42.0-42.0</output>
+		</test>
+		<test name="DecimalNegZero">
+			<expression>-0.0</expression>
+			<output>42.0-42.0</output>
+		</test>
+		<test name="DecimalOne">
+			<expression>1.0</expression>
+			<output>42.0-41.0</output>
+		</test>
+		<test name="DecimalPosOne">
+			<expression>+1.0</expression>
+			<output>42.0-41.0</output>
+		</test>
+		<test name="DecimalNegOne">
+			<expression>-1.0</expression>
+			<output>42.0-43.0</output>
+		</test>
+		<test name="DecimalTwo">
+			<expression>2.0</expression>
+			<output>42.0-40.0</output>
+		</test>
+		<test name="DecimalPosTwo">
+			<expression>+2.0</expression>
+			<output>42.0-40.0</output>
+		</test>
+		<test name="DecimalNegTwo">
+			<expression>-2.0</expression>
+			<output>42.0-44.0</output>
+		</test>
+		<test name="Decimal10Pow9">
+			<expression>1000000000.0</expression>
+			<output>Power(10.0,9.0)</output>
+		</test>
+		<test name="DecimalPos10Pow9">
+			<expression>+1000000000.0</expression>
+			<output>+Power(10.0,9.0)</output>
+		</test>
+		<test name="DecimalNeg10Pow9">
+			<expression>-1000000000.0</expression>
+			<output>-Power(10.0,9.0)</output>
+		</test>
+		<test name="Decimal2Pow31ToZero1">
+			<expression>2147483647.0</expression>
+			<output>Power(2.0,30.0)-1+Power(2.0,30.0)</output>
+		</test>
+		<test name="DecimalPos2Pow31ToZero1">
+			<expression>+2147483647.0</expression>
+			<output>+Power(2.0,30.0)-1+Power(2.0,30.0)</output>
+		</test>
+		<test name="DecimalNeg2Pow31ToZero1">
+			<expression>-2147483647.0</expression>
+			<output>-Power(2.0,30.0)+1.0-Power(2.0,30.0)</output>
+		</test>
+		<test name="Decimal2Pow31">
+			<expression>2147483648.0</expression>
+			<output>Power(2.0,30.0)+Power(2.0,30.0)</output>
+		</test>
+		<test name="DecimalPos2Pow31">
+			<expression>+2147483648.0</expression>
+			<output>+Power(2.0,30.0)+Power(2.0,30.0)</output>
+		</test>
+		<test name="DecimalNeg2Pow31">
+			<expression>-2147483648.0</expression>
+			<output>-Power(2.0,30.0)-Power(2.0,30.0)</output>
+		</test>
+		<test name="Decimal2Pow31ToInf1">
+			<expression>2147483649.0</expression>
+			<output>Power(2.0,30.0)+1.0+Power(2.0,30.0)</output>
+		</test>
+		<test name="DecimalPos2Pow31ToInf1">
+			<expression>+2147483649.0</expression>
+			<output>+Power(2.0,30.0)+1.0+Power(2.0,30.0)</output>
+		</test>
+		<test name="DecimalNeg2Pow31ToInf1">
+			<expression>-2147483649.0</expression>
+			<output>-Power(2.0,30.0)-1.0-Power(2.0,30.0)</output>
+		</test>
+		<test name="DecimalZeroStep">
+			<expression>0.00000000</expression>
+			<output>42.0-42.0</output>
+		</test>
+		<test name="DecimalPosZeroStep">
+			<expression>+0.00000000</expression>
+			<output>42.0-42.0</output>
+		</test>
+		<test name="DecimalNegZeroStep">
+			<expression>-0.00000000</expression>
+			<output>42.0-42.0</output>
+		</test>
+		<test name="DecimalOneStep">
+			<expression>0.00000001</expression>
+			<output>Power(10,-8)</output>
+		</test>
+		<test name="DecimalPosOneStep">
+			<expression>+0.00000001</expression>
+			<output>+Power(10,-8)</output>
+		</test>
+		<test name="DecimalNegOneStep">
+			<expression>-0.00000001</expression>
+			<output>-Power(10,-8)</output>
+		</test>
+		<test name="DecimalTwoStep">
+			<expression>0.00000002</expression>
+			<output>2.0*Power(10,-8)</output>
+		</test>
+		<test name="DecimalPosTwoStep">
+			<expression>+0.00000002</expression>
+			<output>+2.0*Power(10,-8)</output>
+		</test>
+		<test name="DecimalNegTwoStep">
+			<expression>-0.00000002</expression>
+			<output>-2.0*Power(10,-8)</output>
+		</test>
+		<test name="DecimalTenStep">
+			<expression>0.0000001</expression>
+			<output>Power(10,-7)</output>
+		</test>
+		<test name="DecimalPosTenStep">
+			<expression>+0.0000001</expression>
+			<output>+Power(10,-7)</output>
+		</test>
+		<test name="DecimalNegTenStep">
+			<expression>-0.0000001</expression>
+			<output>-Power(10,-7)</output>
+		</test>
+		<test name="DecimalTenthStep">
+			<expression invalid="true">0.000000001</expression>
+			<!-- TODO: Fix Engine to either raise an error on this input or to round this input. -->
+			<!-- EXPECT: Either some error saying the literal uses more
+			precision than the Decimal step size, or round to a whole step. -->
+		</test>
+		<test name="DecimalPosTenthStep">
+			<expression invalid="true">+0.000000001</expression>
+			<!-- TODO: Fix Engine to either raise an error on this input or to round this input. -->
+			<!-- EXPECT: Either some error saying the literal uses more
+			precision than the Decimal step size, or round to a whole step. -->
+		</test>
+		<test name="DecimalNegTenthStep">
+			<expression invalid="true">-0.000000001</expression>
+			<!-- TODO: Fix Engine to either raise an error on this input or to round this input. -->
+			<!-- EXPECT: Either some error saying the literal uses more
+			precision than the Decimal step size, or round to a whole step. -->
+		</test>
+		<test name="Decimal10Pow28ToZeroOneStepDecimalMaxValue">
+			<expression>9999999999999999999999999999.99999999</expression>
+			<output>10*1000000000000000000000000000.00000000-0.00000001</output>
+		</test>
+		<test name="DecimalPos10Pow28ToZeroOneStepDecimalMaxValue">
+			<expression>+9999999999999999999999999999.99999999</expression>
+			<output>+10*1000000000000000000000000000.00000000-0.00000001</output>
+		</test>
+		<test name="DecimalNeg10Pow28ToZeroOneStepDecimalMinValue">
+			<expression>-9999999999999999999999999999.99999999</expression>
+			<output>-10*1000000000000000000000000000.00000000+0.00000001</output>
+		</test>
+		<test name="Decimal10Pow28">
+			<expression invalid="true">10000000000000000000000000000.00000000</expression>
+			<!-- TODO: Fix Engine to raise an error on this input. -->
+			<!-- EXPECT: Some error saying the literal is a greater magnitude than a Decimal supports. -->
+		</test>
+		<test name="DecimalPos10Pow28">
+			<expression invalid="true">+10000000000000000000000000000.00000000</expression>
+			<!-- TODO: Fix Engine to raise an error on this input. -->
+			<!-- EXPECT: Some error saying the literal is a greater magnitude than a Decimal supports. -->
+		</test>
+		<test name="DecimalNeg10Pow28">
+			<expression invalid="true">-10000000000000000000000000000.00000000</expression>
+			<!-- TODO: Fix Engine to raise an error on this input. -->
+			<!-- EXPECT: Some error saying the literal is a greater magnitude than a Decimal supports. -->
+		</test>
+	</group>
+	<!-- CQL spec section 3.1.3 Literals:
+	String - Strings of any character enclosed within single-ticks (') -->
+	<!-- CQL spec section 3.4.1 System-Defined Types:
+	String | Range: All strings of length 2^31-1 or less. | Step Size: N/A -->
+	<group name="String">
+		<!-- Note: See also Translator test files such as EscapeSequenceTests.cql -->
+		<!-- TODO: Add tests here. -->
+	</group>
+	<!-- CQL spec section 3.1.3 Literals:
+	DateTime - The at-symbol (@) followed by an ISO-8601 compliant representation of a date/time -->
+	<!-- CQL spec section 3.4.1 System-Defined Types:
+	DateTime | Range: @0001-01-01T00:00:00.0..@9999-12-31T23:59:59.999 | Step Size: 1 millisecond -->
+	<group name="DateTime">
+		<!-- Note: See also Translator test files such as DateTimeLiteralTest.cql -->
+		<!-- TODO: Add tests here. -->
+	</group>
+	<!-- CQL spec section 3.1.3 Literals:
+	Time - The at-symbol (@) followed by an ISO-8601 compliant representation of a time -->
+	<!-- CQL spec section 3.4.1 System-Defined Types:
+	Time | Range: @T00:00:00.0..@T23:59:59.999 | Step Size: 1 millisecond -->
+	<group name="Time">
+		<!-- Note: See also Translator test files such as DateTimeLiteralTest.cql -->
+		<!-- TODO: Add tests here. -->
+	</group>
+	<group name="List">
+		<!-- TODO: Add tests here. -->
+	</group>
+	<group name="Interval">
+		<!-- TODO: Add tests here. -->
+	</group>
+	<group name="Tuple">
+		<!-- TODO: Add tests here. -->
+	</group>
+	<!-- CQL spec section 3.1.3 Literals:
+	Quantity - An integer or decimal literal followed by a datetime precision specifier, or a UCUM unit specifier -->
+	<group name="Quantity">
+		<!-- TODO: Add tests here. -->
+	</group>
+	<group name="Code">
+		<!-- TODO: Add tests here, maybe. -->
+	</group>
+	<group name="Concept">
+		<!-- TODO: Add tests here, maybe. -->
+	</group>
+	<group name="Instance">
+		<!-- TODO: Add tests here, maybe. -->
+	</group>
+</tests>

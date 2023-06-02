@@ -8,8 +8,10 @@ import org.testng.annotations.Test;
 import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.CompletableFuture;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -140,5 +142,29 @@ public class TranslationTests {
 
         As as = (As)operand;
         assertThat(as.getAsTypeSpecifier(), is(instanceOf(ChoiceTypeSpecifier.class)));
+    }
+
+    // This test creates a bunch of translators on the common pool to suss out any race conditions.
+    // It's not fool-proof, but is reasonably consistent on my local machine.
+    @Test
+    public void multiThreadedTranslation() throws IOException {
+        List<CompletableFuture<Void>> futures = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            futures.add(CompletableFuture.runAsync(this::createTranslator));
+        }
+
+        @SuppressWarnings("rawtypes")
+        CompletableFuture[] cfs = futures.toArray(new CompletableFuture[futures.size()]);
+
+        CompletableFuture.allOf(cfs).join();
+    }
+
+    private CqlTranslator createTranslator() {
+        try {
+            return TestUtils.createTranslator("CMS146v2_Test_CQM.cql");
+        }
+        catch(IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://hl7.org/fhirpath/tests" xsi:schemaLocation="http://hl7.org/fhirpath/tests ../../testSchema/testSchema.xsd"
+	name="CqlStringOperatorsTest" reference="https://cql.hl7.org/09-b-cqlreference.html#string-operators-3">
+	<group name="Combine">
+		<test name="CombineNull">
+			<expression>Combine(null)</expression>
+			<output>null</output>
+		</test>
+		<test name="CombineEmptyList">
+			<expression>Combine({})</expression>
+			<output>''</output>
+		</test>
+		<test name="CombineABC">
+			<expression>Combine({'a', 'b', 'c'})</expression>
+			<output>'abc'</output>
+		</test>
+		<test name="CombineABCSepDash">
+			<expression>Combine({'a', 'b', 'c'}, '-')</expression>
+			<output>'a-b-c'</output>
+		</test>
+	</group>
+	<group name="Concatenate">
+		<test name="ConcatenateNullNull">
+			<expression>Concatenate(null, null)</expression>
+			<output>null</output>
+		</test>
+		<test name="ConcatenateANull">
+			<expression>Concatenate('a', null)</expression>
+			<output>null</output>
+		</test>
+		<test name="ConcatenateNullB">
+			<expression>Concatenate(null, 'b')</expression>
+			<output>null</output>
+		</test>
+		<test name="ConcatenateAB">
+			<expression>Concatenate('a', 'b')</expression>
+			<output>'ab'</output>
+		</test>
+		<test name="ConcatenateABWithAdd">
+			<expression>'a' + 'b'</expression>
+			<output>'ab'</output>
+		</test>
+	</group>
+	<group name="EndsWith">
+		<test name="EndsWithNull">
+			<expression>EndsWith(null, null)</expression>
+			<output>null</output>
+		</test>
+		<test name="EndsWithTrue">
+			<expression>EndsWith('Chris Schuler is the man!!', 'n!!')</expression>
+			<output>true</output>
+		</test>
+		<test name="EndsWithFalse">
+			<expression>EndsWith('Chris Schuler is the man!!', 'n!')</expression>
+			<output>false</output>
+		</test>
+	</group>
+	<group name="Indexer">
+		<test name="IndexerNullNull">
+			<expression>Indexer(null as String, null)</expression>
+			<output>null</output>
+			<!-- cast is required due to ambiguity with Indexer(String) and Indexer(List&lt;Any&gt;) -->
+		</test>
+		<test name="IndexerANull">
+			<expression>Indexer('a', null)</expression>
+			<output>null</output>
+		</test>
+		<test name="IndexerNull1String">
+			<expression>Indexer(null as String, 1)</expression>
+			<output>null</output>
+			<!-- cast is required due to ambiguity with Indexer(String) and Indexer(List&lt;Any&gt;) -->
+		</test>
+		<test name="IndexerAB0">
+			<expression>Indexer('ab', 0)</expression>
+			<output>'a'</output>
+		</test>
+		<test name="IndexerAB1">
+			<expression>Indexer('ab', 1)</expression>
+			<output>'b'</output>
+		</test>
+		<test name="IndexerAB2">
+			<expression>Indexer('ab', 2)</expression>
+			<output>null</output>
+		</test>
+		<test name="IndexerABNeg1">
+			<expression>Indexer('ab', -1)</expression>
+			<output>null</output>
+		</test>
+	</group>
+	<group name="LastPositionOf">
+		<test name="LastPositionOfNull">
+			<expression>LastPositionOf(null, null)</expression>
+			<output>null</output>
+		</test>
+		<test name="LastPositionOfNull1">
+			<expression>LastPositionOf(null, 'hi')</expression>
+			<output>null</output>
+		</test>
+		<test name="LastPositionOfNull2">
+			<expression>LastPositionOf('hi', null)</expression>
+			<output>null</output>
+		</test>
+		<test name="LastPositionOf1">
+			<expression>LastPositionOf('hi', 'Ohio is the place to be!')</expression>
+			<output>1</output>
+		</test>
+		<test name="LastPositionOf2">
+			<expression>LastPositionOf('hi', 'Say hi to Ohio!')</expression>
+			<output>11</output>
+		</test>
+	</group>
+	<group name="Length">
+		<test name="LengthNullString">
+			<expression>Length(null as String)</expression>
+			<output>null</output>
+			<!-- cast is required due to ambiguity with Length(String) and Length(List&lt;Any&gt;) -->
+		</test>
+		<test name="LengthEmptyString">
+			<expression>Length('')</expression>
+			<output>0</output>
+		</test>
+		<test name="LengthA">
+			<expression>Length('a')</expression>
+			<output>1</output>
+		</test>
+		<test name="LengthAB">
+			<expression>Length('ab')</expression>
+			<output>2</output>
+		</test>
+	</group>
+	<group name="Lower">
+		<test name="LowerNull">
+			<expression>Lower(null)</expression>
+			<output>null</output>
+		</test>
+		<test name="LowerEmpty">
+			<expression>Lower('')</expression>
+			<output>''</output>
+		</test>
+		<test name="LowerA">
+			<expression>Lower('A')</expression>
+			<output>'a'</output>
+		</test>
+		<test name="LowerB">
+			<expression>Lower('b')</expression>
+			<output>'b'</output>
+		</test>
+		<test name="LowerAB">
+			<expression>Lower('Ab')</expression>
+			<output>'ab'</output>
+		</test>
+	</group>
+	<group name="Matches">
+		<test name="MatchesNull">
+			<expression>Matches('Not all who wander are lost', null)</expression>
+			<output>null</output>
+		</test>
+		<test name="MatchesNumberFalse">
+			<expression>Matches('Not all who wander are lost', '.*\\d+')</expression>
+			<output>false</output>
+		</test>
+		<test name="MatchesNumberTrue">
+			<expression>Matches('Not all who wander are lost - circa 2017', '.*\\d+')</expression>
+			<output>true</output>
+		</test>
+		<test name="MatchesAllTrue">
+			<expression>Matches('Not all who wander are lost', '.*')</expression>
+			<output>true</output>
+		</test>
+		<test name="MatchesWordsAndSpacesTrue">
+			<expression>Matches('Not all who wander are lost', '[\\w|\\s]+')</expression>
+			<output>true</output>
+		</test>
+		<test name="MatchesWordsAndSpacesFalse">
+			<expression>Matches('Not all who wander are lost - circa 2017', '[\\w]+')</expression>
+			<output>false</output>
+		</test>
+		<test name="MatchesNotWords">
+			<expression>Matches('   ', '\\W+')</expression>
+			<output>true</output>
+		</test>
+		<test name="MatchesWhiteSpace">
+			<expression>Matches(' \n\t', '\\s+')</expression>
+			<output>true</output>
+		</test>
+	</group>
+	<group name="PositionOf">
+		<test name="PositionOfNullNull">
+			<expression>PositionOf(null, null)</expression>
+			<output>null</output>
+		</test>
+		<test name="PositionOfANull">
+			<expression>PositionOf('a', null)</expression>
+			<output>null</output>
+		</test>
+		<test name="PositionOfNullA">
+			<expression>PositionOf(null, 'a')</expression>
+			<output>null</output>
+		</test>
+		<test name="PositionOfAInAB">
+			<expression>PositionOf('a', 'ab')</expression>
+			<output>0</output>
+		</test>
+		<test name="PositionOfBInAB">
+			<expression>PositionOf('b', 'ab')</expression>
+			<output>1</output>
+		</test>
+		<test name="PositionOfCInAB">
+			<expression>PositionOf('c', 'ab')</expression>
+			<output>-1</output>
+		</test>
+	</group>
+	<group name="ReplaceMatches">
+		<test name="ReplaceMatchesNull">
+			<expression>ReplaceMatches('Not all who wander are lost', null, 'But I am...')</expression>
+			<output>null</output>
+		</test>
+		<test name="ReplaceMatchesAll">
+			<expression>ReplaceMatches('Not all who wander are lost', 'Not all who wander are lost', 'But still waters run deep')</expression>
+			<output>'But still waters run deep'</output>
+		</test>
+		<test name="ReplaceMatchesMany">
+			<expression>ReplaceMatches('Who put the bop in the bop she bop she bop?', 'bop', 'bang')</expression>
+			<output>'Who put the bang in the bang she bang she bang?'</output>
+		</test>
+		<test name="ReplaceMatchesSpaces">
+			<expression>ReplaceMatches('All that glitters is not gold', '\\s', '\\$')</expression>
+			<output>'All$that$glitters$is$not$gold'</output>
+		</test>
+	</group>
+	<group name="Split">
+		<test name="SplitNullNull">
+			<expression>Split(null, null)</expression>
+			<output>null</output>
+		</test>
+		<test name="SplitNullComma">
+			<expression>Split(null, ',')</expression>
+			<output>null</output>
+		</test>
+		<test name="SplitABNull">
+			<expression>Split('a,b', null)</expression>
+			<output>{'a,b'}</output>
+		</test>
+		<test name="SplitABDash">
+			<expression>Split('a,b', '-')</expression>
+			<output>{'a,b'}</output>
+		</test>
+		<test name="SplitABComma">
+			<expression>Split('a,b', ',')</expression>
+			<output>{'a','b'}</output>
+		</test>
+	</group>
+	<group name="StartsWith">
+		<test name="StartsWithNull">
+			<expression>StartsWith(null, null)</expression>
+			<output>null</output>
+		</test>
+		<test name="StartsWithNull1">
+			<expression>StartsWith('hi', null)</expression>
+			<output>null</output>
+		</test>
+		<test name="StartsWithNull2">
+			<expression>StartsWith(null, 'hi')</expression>
+			<output>null</output>
+		</test>
+		<test name="StartsWithTrue1">
+			<expression>StartsWith('Breathe deep the gathering gloom', 'Bre')</expression>
+			<output>true</output>
+		</test>
+		<test name="StartsWithFalse1">
+			<expression>StartsWith('Breathe deep the gathering gloom', 'bre')</expression>
+			<output>false</output>
+		</test>
+	</group>
+	<group name="Substring">
+		<test name="SubstringNullNull">
+			<expression>Substring(null, null)</expression>
+			<output>null</output>
+		</test>
+		<test name="SubstringANull">
+			<expression>Substring('a', null)</expression>
+			<output>null</output>
+		</test>
+		<test name="SubstringNull1">
+			<expression>Substring(null, 1)</expression>
+			<output>null</output>
+		</test>
+		<test name="SubstringAB0">
+			<expression>Substring('ab', 0)</expression>
+			<output>'ab'</output>
+		</test>
+		<test name="SubstringAB1">
+			<expression>Substring('ab', 1)</expression>
+			<output>'b'</output>
+		</test>
+		<test name="SubstringAB2">
+			<expression>Substring('ab', 2)</expression>
+			<output>null</output>
+		</test>
+		<test name="SubstringABNeg1">
+			<expression>Substring('ab', -1)</expression>
+			<output>null</output>
+		</test>
+		<test name="SubstringAB0To1">
+			<expression>Substring('ab', 0, 1)</expression>
+			<output>'a'</output>
+		</test>
+		<test name="SubstringABC1To1">
+			<expression>Substring('abc', 1, 1)</expression>
+			<output>'b'</output>
+		</test>
+		<test name="SubstringAB0To3">
+			<expression>Substring('ab', 0, 3)</expression>
+			<output>'ab'</output>
+		</test>
+	</group>
+	<group name="Upper">
+		<test name="UpperNull">
+			<expression>Upper(null)</expression>
+			<output>null</output>
+		</test>
+		<test name="UpperEmpty">
+			<expression>Upper('')</expression>
+			<output>''</output>
+		</test>
+		<test name="UpperA">
+			<expression>Upper('a')</expression>
+			<output>'A'</output>
+		</test>
+		<test name="UpperB">
+			<expression>Upper('B')</expression>
+			<output>'B'</output>
+		</test>
+		<test name="UpperAB">
+			<expression>Upper('aB')</expression>
+			<output>'AB'</output>
+		</test>
+	</group>
+	<group name="toString tests">
+		<test name="QuantityToString">
+			<expression>ToString(125 'cm')</expression>
+			<output>'125 \'cm\''</output>
+		</test>
+		<test name="DateTimeToString1">
+			<expression>ToString(DateTime(2000, 1, 1))</expression>
+			<output>'2000-01-01'</output>
+		</test>
+		<test name="DateTimeToString2">
+			<expression>ToString(DateTime(2000, 1, 1, 15, 25, 25, 300))</expression>
+			<output>'2000-01-01T15:25:25.300'</output>
+		</test>
+		<test name="DateTimeToString3">
+			<expression>ToString(DateTime(2000, 1, 1, 8, 25, 25, 300, -7))</expression>
+			<output>'2000-01-01T08:25:25.300-07:00'</output>
+		</test>
+		<test name="TimeToString1">
+			<expression>ToString(@T09:30:01.003)</expression>
+			<output>'09:30:01.003'</output>
+		</test>
+		<!-- OBSOLETE: define TupleToString: Tuple { this: 'is', a: 123, test: 25 'g' } -->
+		<!-- OBSOLETE: define IntervalToString: Interval [ DateTime(1999, 12, 31), DateTime(2000, 1, 1) ] -->
+		<!-- OBSOLETE: define UncertaintyToString: difference in months between DateTime(2005) and DateTime(2006, 7) -->
+		<!-- OBSOLETE: define CodeToString: Code { code: '4225-6', system: 'http://loinc.org', version: '2.1', display: 'loinc' } -->
+		<!-- OBSOLETE: define ConceptToString: Concept { Code '66071002' from "LOINC", Code 'B18.1' from "LOINC"} display 'Type B viral hepatitis' -->
+	</group>
+</tests>

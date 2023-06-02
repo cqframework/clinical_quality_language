@@ -1,0 +1,1515 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://hl7.org/fhirpath/tests" xsi:schemaLocation="http://hl7.org/fhirpath/tests ../../testSchema/testSchema.xsd"
+	name="CqlIntervalOperatorsTest" reference="https://cql.hl7.org/09-b-cqlreference.html#interval-operators-3">
+	<group name="After">
+		<test name="TestAfterNull">
+			<expression>(null as Integer) after Interval[1, 10]</expression>
+			<output>null</output>
+		</test>
+		<test name="IntegerIntervalAfterTrue">
+			<expression>Interval[11, 20] after Interval[1, 10]</expression>
+			<output>true</output>
+		</test>
+		<test name="IntegerIntervalAfterFalse">
+			<expression>Interval[1, 10] after Interval[11, 20]</expression>
+			<output>false</output>
+		</test>
+		<test name="IntegerIntervalPointAfterTrue">
+			<expression>12 after Interval[1, 10]</expression>
+			<output>true</output>
+		</test>
+		<test name="IntegerIntervalPointAfterFalse">
+			<expression>9 after Interval[1, 10]</expression>
+			<output>false</output>
+		</test>
+		<test name="IntegerIntervalAfterPointTrue">
+			<expression>Interval[11, 20] after 5</expression>
+			<output>true</output>
+		</test>
+		<test name="IntegerIntervalAfterPointFalse">
+			<expression>Interval[11, 20] after 12</expression>
+			<output>false</output>
+		</test>
+		<test name="DecimalIntervalAfterTrue">
+			<expression>Interval[11.0, 20.0] after Interval[1.0, 10.0]</expression>
+			<output>true</output>
+		</test>
+		<test name="DecimalIntervalAfterFalse">
+			<expression>Interval[1.0, 10.0] after Interval[11.0, 20.0]</expression>
+			<output>false</output>
+		</test>
+		<test name="DecimalIntervalPointAfterTrue">
+			<expression>12.0 after Interval[1.0, 10.0]</expression>
+			<output>true</output>
+		</test>
+		<test name="DecimalIntervalPointAfterFalse">
+			<expression>9.0 after Interval[1.0, 10.0]</expression>
+			<output>false</output>
+		</test>
+		<test name="DecimalIntervalAfterPointTrue">
+			<expression>Interval[11.0, 20.0] after 5.0</expression>
+			<output>true</output>
+		</test>
+		<test name="DecimalIntervalAfterPointFalse">
+			<expression>Interval[11.0, 20.0] after 12.0</expression>
+			<output>false</output>
+		</test>
+		<test name="QuantityIntervalAfterTrue">
+			<expression>Interval[11.0 'g', 20.0 'g'] after Interval[1.0 'g', 10.0 'g']</expression>
+			<output>true</output>
+		</test>
+		<test name="QuantityIntervalAfterFalse">
+			<expression>Interval[1.0 'g', 10.0 'g'] after Interval[11.0 'g', 20.0 'g']</expression>
+			<output>false</output>
+		</test>
+		<test name="QuantityIntervalPointAfterTrue">
+			<expression>12.0'g' after Interval[1.0 'g', 10.0 'g']</expression>
+			<output>true</output>
+		</test>
+		<test name="QuantityIntervalPointAfterFalse">
+			<expression>9.0'g' after Interval[1.0 'g', 10.0 'g']</expression>
+			<output>false</output>
+		</test>
+		<test name="QuantityIntervalAfterPointTrue">
+			<expression>Interval[11.0 'g', 20.0 'g'] after 5.0'g'</expression>
+			<output>true</output>
+		</test>
+		<test name="QuantityIntervalAfterPointFalse">
+			<expression>Interval[11.0 'g', 20.0 'g'] after 12.0'g'</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeAfterTrue">
+			<expression>Interval[DateTime(2012, 1, 1), DateTime(2012, 1, 15)] after DateTime(2011, 12, 31)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeAfterFalse">
+			<expression>Interval[DateTime(2012, 1, 1), DateTime(2012, 1, 15)] after DateTime(2012, 12, 31)</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeAfterTrue">
+			<expression>Interval[@T15:59:59.999, @T20:59:59.999] after @T12:59:59.999</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeAfterFalse">
+			<expression>Interval[@T15:59:59.999, @T20:59:59.999] after @T17:59:59.999</expression>
+			<output>false</output>
+		</test>
+	</group>
+	<group name="Before">
+		<test name="TestBeforeNull">
+			<expression>(null as Integer) before Interval[1, 10]</expression>
+			<output>null</output>
+		</test>
+		<test name="IntegerIntervalBeforeFalse">
+			<expression>Interval[11, 20] before Interval[1, 10]</expression>
+			<output>false</output>
+		</test>
+		<test name="IntegerIntervalBeforeTrue">
+			<expression>Interval[1, 10] before Interval[11, 20]</expression>
+			<output>true</output>
+		</test>
+		<test name="IntegerIntervalPointBeforeTrue">
+			<expression>9 before Interval[11, 20]</expression>
+			<output>true</output>
+		</test>
+		<test name="IntegerIntervalPointBeforeFalse">
+			<expression>9 before Interval[1, 10]</expression>
+			<output>false</output>
+		</test>
+		<test name="IntegerIntervalBeforePointTrue">
+			<expression>Interval[1, 10] before 11</expression>
+			<output>true</output>
+		</test>
+		<test name="IntegerIntervalBeforePointFalse">
+			<expression>Interval[1, 10] before 8</expression>
+			<output>false</output>
+		</test>
+		<test name="DecimalIntervalBeforeFalse">
+			<expression>Interval[11.0, 20.0] before Interval[1.0, 10.0]</expression>
+			<output>false</output>
+		</test>
+		<test name="DecimalIntervalBeforeTrue">
+			<expression>Interval[1.0, 10.0] before Interval[11.0, 20.0]</expression>
+			<output>true</output>
+		</test>
+		<test name="DecimalIntervalPointBeforeTrue">
+			<expression>9.0 before Interval[11.0, 20.0]</expression>
+			<output>true</output>
+		</test>
+		<test name="DecimalIntervalPointBeforeFalse">
+			<expression>9.0 before Interval[1.0, 10.0]</expression>
+			<output>false</output>
+		</test>
+		<test name="DecimalIntervalBeforePointTrue">
+			<expression>Interval[1.0, 10.0] before 11.0</expression>
+			<output>true</output>
+		</test>
+		<test name="DecimalIntervalBeforePointFalse">
+			<expression>Interval[1.0, 10.0] before 8.0</expression>
+			<output>false</output>
+		</test>
+		<test name="QuantityIntervalBeforeTrue">
+			<expression>Interval[1.0 'g', 10.0 'g'] before Interval[11.0 'g', 20.0 'g']</expression>
+			<output>true</output>
+		</test>
+		<test name="QuantityIntervalBeforeFalse">
+			<expression>Interval[11.0 'g', 20.0 'g'] before Interval[1.0 'g', 10.0 'g']</expression>
+			<output>false</output>
+		</test>
+		<test name="QuantityIntervalPointBeforeTrue">
+			<expression>Interval[1.0 'g', 10.0 'g'] before 12.0'g'</expression>
+			<output>true</output>
+		</test>
+		<test name="QuantityIntervalPointBeforeFalse">
+			<expression>Interval[1.0 'g', 10.0 'g'] before 9.0'g'</expression>
+			<output>false</output>
+		</test>
+		<test name="QuantityIntervalBeforePointTrue">
+			<expression>5.0'g' before Interval[11.0 'g', 20.0 'g']</expression>
+			<output>true</output>
+		</test>
+		<test name="QuantityIntervalBeforePointFalse">
+			<expression>12.0'g' before Interval[11.0 'g', 20.0 'g']</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeBeforeTrue">
+			<expression>Interval[DateTime(2012, 1, 1), DateTime(2012, 1, 15)] before DateTime(2012, 2, 27)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeBeforeFalse">
+			<expression>Interval[DateTime(2012, 1, 1), DateTime(2012, 1, 15)] before DateTime(2011, 12, 31)</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeBeforeTrue">
+			<expression>Interval[@T15:59:59.999, @T20:59:59.999] before @T22:59:59.999</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeBeforeFalse">
+			<expression>Interval[@T15:59:59.999, @T20:59:59.999] before @T10:59:59.999</expression>
+			<output>false</output>
+		</test>
+	</group>
+	<group name="Collapse">
+		<test name="TestCollapseNull">
+			<expression>collapse {Interval(null, null)}</expression>
+			<output>{ }</output>
+		</test>
+		<test name="IntegerIntervalCollapse">
+			<expression>collapse { Interval[1,5], Interval[3,7], Interval[12,19], Interval[7,10] }</expression>
+			<output>{Interval [ 1, 10 ], Interval [ 12, 19 ]}</output>
+		</test>
+		<test name="IntegerIntervalCollapse2">
+			<expression>collapse { Interval[1,2], Interval[3,7], Interval[10,19], Interval[7,10] }</expression>
+			<output>{Interval [ 1, 19 ]}</output>
+		</test>
+		<test name="IntegerIntervalCollapse3">
+			<expression>collapse { Interval[4,6], Interval[7,8] }</expression>
+			<output>{Interval [ 4, 8 ]}</output>
+		</test>
+		<test name="DecimalIntervalCollapse">
+			<expression>collapse { Interval[1.0,5.0], Interval[3.0,7.0], Interval[12.0,19.0], Interval[7.0,10.0] }</expression>
+			<output>{Interval [ 1.0, 10.0 ], Interval [ 12.0, 19.0 ]}</output>
+		</test>
+		<test name="DecimalIntervalCollapse2">
+			<expression>collapse { Interval[4.0,6.0], Interval[6.00000001,8.0] }</expression>
+			<output>{Interval [ 4.0, 8.0 ]}</output>
+		</test>
+		<test name="QuantityIntervalCollapse">
+			<expression>collapse { Interval[1.0 'g',5.0 'g'], Interval[3.0 'g',7.0 'g'], Interval[12.0 'g',19.0 'g'], Interval[7.0 'g',10.0 'g'] }</expression>
+			<output>{Interval [ 1.0 'g', 10.0 'g' ], Interval [ 12.0 'g', 19.0 'g' ]}</output>
+		</test>
+		<test name="DateTimeCollapse">
+			<expression>collapse { Interval[DateTime(2012, 1, 1), DateTime(2012, 1, 15)], Interval[DateTime(2012, 1, 10), DateTime(2012, 1, 25)], Interval[DateTime(2012, 5, 10), DateTime(2012, 5, 25)], Interval[DateTime(2012, 5, 20), DateTime(2012, 5, 30)] }</expression>
+			<output>{Interval [ @2012-01-01T, @2012-01-25T ], Interval [ @2012-05-10T, @2012-05-30T ]}</output>
+		</test>
+		<test name="DateTimeCollapse2">
+			<expression>collapse { Interval[DateTime(2012, 1, 1), DateTime(2012, 1, 15)], Interval[DateTime(2012, 1, 16), DateTime(2012, 5, 25)] }</expression>
+			<output>{Interval [ @2012-01-01T, @2012-05-25T ]}</output>
+		</test>
+		<test name="TimeCollapse">
+			<expression>collapse { Interval[@T01:59:59.999, @T10:59:59.999], Interval[@T08:59:59.999, @T15:59:59.999], Interval[@T17:59:59.999, @T20:59:59.999], Interval[@T18:59:59.999, @T22:59:59.999] }</expression>
+			<output>{Interval [ @T01:59:59.999, @T15:59:59.999 ], Interval [ @T17:59:59.999, @T22:59:59.999 ]}</output>
+		</test>
+		<test name="TimeCollapse2">
+			<expression>collapse { Interval[@T01:59:59.999, @T10:59:59.999], Interval[@T11:00:00.000, @T15:59:59.999] }</expression>
+			<output>{Interval [ @T01:59:59.999, @T15:59:59.999 ]}</output>
+		</test>
+	</group>
+	<group name="Expand">
+		<test name="ExpandPerDay">
+			<expression>expand { Interval[@2018-01-01, @2018-01-04] } per day</expression>
+			<output>{ Interval[@2018-01-01, @2018-01-01], Interval[@2018-01-02, @2018-01-02], Interval[@2018-01-03, @2018-01-03], Interval[@2018-01-04, @2018-01-04] }</output>
+		</test>
+		<test name="ExpandPer2Days">
+			<expression>expand { Interval[@2018-01-01, @2018-01-04] } per 2 days</expression>
+			<output>{ Interval[@2018-01-01, @2018-01-02], Interval[@2018-01-03, @2018-01-04] }</output>
+		</test>
+		<test name="ExpandPerHour">
+			<expression>expand { Interval[@T10:00, @T12:30] } per hour</expression>
+			<output>{ Interval[@T10:00, @T11:00), Interval[@T11:00, @T12:00) }</output>
+		</test>
+		<test name="ExpandPer1">
+			<expression>expand { Interval[10.0, 12.5] } per 1</expression>
+			<output>{ Interval[10, 10], Interval[11, 11], Interval[12, 12] }</output>
+			<!-- Translation Error: Could not resolve call to operator Expand with signature (list<interval<System.Decimal>>,System.Integer). -->
+		</test>
+		<test name="ExpandPerMinute">
+			<expression>expand { Interval[@T10, @T10] } per minute</expression>
+			<output>{ }</output>
+		</test>
+		<test name="ExpandPer0D1">
+			<expression>expand { Interval[10, 10] } per 0.1</expression>
+			<output>{ Interval[10.0, 10.0], Interval[10.1, 10.1], Interval[10.2, 10.2], Interval[10.3, 10.3], Interval[10.4, 10.4], Interval[10.5, 10.5], Interval[10.6, 10.6], Interval[10.7, 10.7], Interval[10.8, 10.8], Interval[10.9, 10.9] }</output>
+			<!-- Translation Error: Could not resolve call to operator Expand with signature (list<interval<System.Integer>>,System.Decimal). -->
+		</test>
+		<test name="ExpandInterval">
+			<expression>expand { Interval[1, 10] }</expression>
+			<output>{ Interval[1, 1], Interval[2, 2], Interval[3, 3], Interval[4, 4], Interval[5, 5], Interval[6, 6], Interval[7, 7], Interval[8, 8], Interval[9, 9], Interval[10, 10] }</output>
+		</test>
+		<test name="ExpandIntervalPer2">
+			<expression>expand { Interval[1, 10] } per 2</expression>
+			<output>{ Interval[1, 2], Interval[3, 4], Interval[5, 6], Interval[7, 8], Interval[9, 10] }</output>
+		</test>
+	</group>
+	<group name="Contains">
+		<test name="TestContainsNull">
+			<expression>Interval[1, 10] contains null</expression>
+			<output>null</output>
+		</test>
+		<test name="TestNullElement1">
+			<expression>null contains 5</expression>
+			<output>false</output>
+		</test>
+		<test name="TestNullElement2">
+			<expression>Interval[null, 5] contains 10</expression>
+			<output>false</output>
+		</test>
+		<test name="IntegerIntervalContainsTrue">
+			<expression>Interval[1, 10] contains 5</expression>
+			<output>true</output>
+		</test>
+		<test name="IntegerIntervalContainsFalse">
+			<expression>Interval[1, 10] contains 25</expression>
+			<output>false</output>
+		</test>
+		<test name="DecimalIntervalContainsTrue">
+			<expression>Interval[1.0, 10.0] contains 8.0</expression>
+			<output>true</output>
+		</test>
+		<test name="DecimalIntervalContainsFalse">
+			<expression>Interval[1.0, 10.0] contains 255.0</expression>
+			<output>false</output>
+		</test>
+		<test name="QuantityIntervalContainsTrue">
+			<expression>Interval[1.0 'g', 10.0 'g'] contains 2.0 'g'</expression>
+			<output>true</output>
+		</test>
+		<test name="QuantityIntervalContainsFalse">
+			<expression>Interval[1.0 'g', 10.0 'g'] contains 100.0 'g'</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeContainsTrue">
+			<expression>Interval[DateTime(2012, 1, 1), DateTime(2012, 1, 15)] contains DateTime(2012, 1, 10)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeContainsFalse">
+			<expression>Interval[DateTime(2012, 1, 1), DateTime(2012, 1, 15)] contains DateTime(2012, 1, 16)</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeContainsTrue">
+			<expression>Interval[@T01:59:59.999, @T10:59:59.999] contains @T05:59:59.999</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeContainsFalse">
+			<expression>Interval[@T01:59:59.999, @T10:59:59.999] contains @T15:59:59.999</expression>
+			<output>false</output>
+		</test>
+	</group>
+	<group name="End">
+		<test name="IntegerIntervalEnd">
+			<expression>end of Interval[1, 10]</expression>
+			<output>10</output>
+		</test>
+		<test name="DecimalIntervalEnd">
+			<expression>end of Interval[1.0, 10.0]</expression>
+			<output>10.0</output>
+		</test>
+		<test name="QuantityIntervalEnd">
+			<expression>end of Interval[1.0 'g', 10.0 'g']</expression>
+			<output>10.0'g'</output>
+		</test>
+		<test name="DateTimeIntervalEnd">
+			<expression>end of Interval[@2016-05-01T00:00:00.000, @2016-05-02T00:00:00.000]</expression>
+			<output>@2016-05-02T00:00:00.000</output>
+		</test>
+		<test name="TimeIntervalEnd">
+			<expression>end of Interval[@T00:00:00.000, @T23:59:59.599]</expression>
+			<output>@T23:59:59.599</output>
+		</test>
+	</group>
+	<group name="Ends">
+		<test name="TestEndsNull">
+			<expression>Interval[1, 10] ends Interval(null, null)</expression>
+			<output>null</output>
+		</test>
+		<test name="IntegerIntervalEndsTrue">
+			<expression>Interval[4, 10] ends Interval[1, 10]</expression>
+			<output>true</output>
+		</test>
+		<test name="IntegerIntervalEndsFalse">
+			<expression>Interval[44, 50] ends Interval[1, 10]</expression>
+			<output>false</output>
+		</test>
+		<test name="DecimalIntervalEndsTrue">
+			<expression>Interval[4.0, 10.0] ends Interval[1.0, 10.0]</expression>
+			<output>true</output>
+		</test>
+		<test name="DecimalIntervalEndsFalse">
+			<expression>Interval[11.0, 20.0] ends Interval[1.0, 10.0]</expression>
+			<output>false</output>
+		</test>
+		<test name="QuantityIntervalEndsTrue">
+			<expression>Interval[5.0 'g', 10.0 'g'] ends Interval[1.0 'g', 10.0 'g']</expression>
+			<output>true</output>
+		</test>
+		<test name="QuantityIntervalEndsFalse">
+			<expression>Interval[11.0 'g', 20.0 'g'] ends Interval[1.0 'g', 10.0 'g']</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeEndsTrue">
+			<expression>Interval[DateTime(2012, 1, 5), DateTime(2012, 1, 15)] ends Interval[DateTime(2012, 1, 1), DateTime(2012, 1, 15)]</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeEndsFalse">
+			<expression>Interval[DateTime(2012, 1, 5), DateTime(2012, 1, 15)] ends Interval[DateTime(2012, 1, 1), DateTime(2012, 1, 16)]</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeEndsTrue">
+			<expression>Interval[@T05:59:59.999, @T10:59:59.999] ends Interval[@T01:59:59.999, @T10:59:59.999]</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeEndsFalse">
+			<expression>Interval[@T05:59:59.999, @T10:59:59.999] ends Interval[@T01:59:59.999, @T11:59:59.999]</expression>
+			<output>false</output>
+		</test>
+	</group>
+	<group name="Equal">
+		<test name="TestEqualNull">
+			<expression>Interval[1, 10] = Interval(null, null)</expression>
+			<output>null</output>
+		</test>
+		<test name="IntegerIntervalEqualTrue">
+			<expression>Interval[1, 10] = Interval[1, 10]</expression>
+			<output>true</output>
+		</test>
+		<test name="IntegerIntervalEqualFalse">
+			<expression>Interval[1, 10] = Interval[11, 20]</expression>
+			<output>false</output>
+		</test>
+		<test name="DecimalIntervalEqualTrue">
+			<expression>Interval[1.0, 10.0] = Interval[1.0, 10.0]</expression>
+			<output>true</output>
+		</test>
+		<test name="DecimalIntervalEqualFalse">
+			<expression>Interval[1.0, 10.0] = Interval[11.0, 20.0]</expression>
+			<output>false</output>
+		</test>
+		<test name="QuantityIntervalEqualTrue">
+			<expression>Interval[1.0 'g', 10.0 'g'] = Interval[1.0 'g', 10.0 'g']</expression>
+			<output>true</output>
+		</test>
+		<test name="QuantityIntervalEqualFalse">
+			<expression>Interval[1.0 'g', 10.0 'g'] = Interval[11.0 'g', 20.0 'g']</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeEqualTrue">
+			<expression>Interval[DateTime(2012, 1, 5, 0, 0, 0, 0), DateTime(2012, 1, 15, 0, 0, 0, 0)] = Interval[DateTime(2012, 1, 5, 0, 0, 0, 0), DateTime(2012, 1, 15, 0, 0, 0, 0)]</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeEqualFalse">
+			<expression>Interval[DateTime(2012, 1, 5, 0, 0, 0, 0), DateTime(2012, 1, 15, 0, 0, 0, 0)] = Interval[DateTime(2012, 1, 5, 0, 0, 0, 0), DateTime(2012, 1, 16, 0, 0, 0, 0)]</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeEqualTrue">
+			<expression>Interval[@T05:59:59.999, @T10:59:59.999] = Interval[@T05:59:59.999, @T10:59:59.999]</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeEqualFalse">
+			<expression>Interval[@T05:59:59.999, @T10:59:59.999] = Interval[@T05:59:59.999, @T10:58:59.999]</expression>
+			<output>false</output>
+		</test>
+	</group>
+	<group name="Except">
+		<test name="NullInterval">
+			<expression>Interval[null, null]</expression>
+			<output>null</output>
+		</test>
+		<test name="TestExceptNull">
+			<expression>Interval[null, null] except Interval[null, null]</expression>
+			<output>null</output>
+		</test>
+		<test name="IntegerIntervalExcept1to3">
+			<expression>Interval[1, 10] except Interval[4, 10]</expression>
+			<output>Interval [ 1, 3 ]</output>
+		</test>
+		<test name="IntegerIntervalExceptNull">
+			<expression>Interval[1, 10] except Interval[3, 7]</expression>
+			<output>null</output>
+		</test>
+		<test name="DecimalIntervalExcept1to3">
+			<expression>Interval[1.0, 10.0] except Interval[4.0, 10.0]</expression>
+			<output>Interval [ 1.0, 3.99999999 ]</output>
+		</test>
+		<test name="DecimalIntervalExceptNull">
+			<expression>Interval[1.0, 10.0] except Interval[3.0, 7.0]</expression>
+			<output>null</output>
+		</test>
+		<test name="QuantityIntervalExcept1to4">
+			<expression>Interval[1.0 'g', 10.0 'g'] except Interval[5.0 'g', 10.0 'g']</expression>
+			<output>Interval [ 1.0 'g', 4.99999999 'g' ]</output>
+		</test>
+		<test name="Except12">
+			<expression>Interval[1, 4] except Interval[3, 6]</expression>
+			<output>Interval [ 1, 2 ]</output>
+		</test>
+		<test name="ExceptDateTimeInterval">
+			<expression>Interval[DateTime(2012, 1, 5), DateTime(2012, 1, 15)] except Interval[DateTime(2012, 1, 7), DateTime(2012, 1, 15)]</expression>
+			<output>Interval [ @2012-01-05T, @2012-01-06T ]</output>
+		</test>
+		<test name="ExceptDateTime2">
+			<expression>Interval[DateTime(2012, 1, 7), DateTime(2012, 1, 16)] except Interval[DateTime(2012, 1, 5), DateTime(2012, 1, 12)]</expression>
+			<output>Interval [ @2012-01-13T, @2012-01-16T ]</output>
+		</test>
+		<test name="ExceptTimeInterval">
+			<expression>Interval[@T05:59:59.999, @T10:59:59.999] except Interval[@T08:59:59.999, @T10:59:59.999]</expression>
+			<output>Interval [ @T05:59:59.999, @T08:59:59.998 ]</output>
+		</test>
+		<test name="ExceptTime2">
+			<expression>Interval[@T08:59:59.999, @T11:59:59.999] except Interval[@T05:59:59.999, @T10:59:59.999]</expression>
+			<output>Interval [ @T11:00:00.000, @T11:59:59.999 ]</output>
+		</test>
+	</group>
+	<group name="In">
+		<test name="TestInNullBoundaries">
+			<expression>5 in Interval[null, null]</expression>
+			<output>false</output>
+		</test>
+		<test name="IntegerIntervalInTrue">
+			<expression>5 in Interval[1, 10]</expression>
+			<output>true</output>
+		</test>
+		<test name="IntegerIntervalInFalse">
+			<expression>500 in Interval[1, 10]</expression>
+			<output>false</output>
+		</test>
+		<test name="DecimalIntervalInTrue">
+			<expression>9.0 in Interval[1.0, 10.0]</expression>
+			<output>true</output>
+		</test>
+		<test name="DecimalIntervalInFalse">
+			<expression>-2.0 in Interval[1.0, 10.0]</expression>
+			<output>false</output>
+		</test>
+		<test name="QuantityIntervalInTrue">
+			<expression>1.0 'g' in Interval[1.0 'g', 10.0 'g']</expression>
+			<output>true</output>
+		</test>
+		<test name="QuantityIntervalInFalse">
+			<expression>55.0 'g' in Interval[1.0 'g', 10.0 'g']</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeInTrue">
+			<expression>DateTime(2012, 1, 7) in Interval[DateTime(2012, 1, 5), DateTime(2012, 1, 15)]</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeInFalse">
+			<expression>DateTime(2012, 1, 17) in Interval[DateTime(2012, 1, 5), DateTime(2012, 1, 15)]</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeInNullTrue">
+			<expression>DateTime(2012, 1, 7) in Interval[DateTime(2012, 1, 5), null]</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeInTrue">
+			<expression>@T07:59:59.999 in Interval[@T05:59:59.999, @T10:59:59.999]</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeInFalse">
+			<expression>@T17:59:59.999 in Interval[@T05:59:59.999, @T10:59:59.999]</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeInNull">
+			<expression>null in Interval[@T05:59:59.999, @T10:59:59.999]</expression>
+			<output>null</output>
+		</test>
+		<test name="TestPeriod1">
+			<expression>Interval[@2017-12-20T11:00:00, @2017-12-21T21:00:00]</expression>
+			<output>Interval [ @2017-12-20T11:00:00, @2017-12-21T21:00:00 ]</output>
+		</test>
+		<test name="TestPeriod2">
+			<expression>Interval[@2017-12-20T10:30:00, @2017-12-20T12:00:00]</expression>
+			<output>Interval [ @2017-12-20T10:30:00, @2017-12-20T12:00:00 ]</output>
+		</test>
+		<test name="Issue32Interval">
+			<expression>
+				Interval[@2017-12-20T10:30:00, @2017-12-20T12:00:00]
+				starts 1 day or less on or after day of start of
+				Interval[@2017-12-20T11:00:00, @2017-12-21T21:00:00]
+			</expression>
+			<output>true</output>
+		</test>
+	</group>
+	<group name="Includes">
+		<test name="TestIncludesNull">
+			<expression>Interval[1, 10] includes null</expression>
+			<output>null</output>
+		</test>
+		<test name="IntegerIntervalIncludesTrue">
+			<expression>Interval[1, 10] includes Interval[4, 10]</expression>
+			<output>true</output>
+		</test>
+		<test name="IntegerIntervalIncludesFalse">
+			<expression>Interval[1, 10] includes Interval[44, 50]</expression>
+			<output>false</output>
+		</test>
+		<test name="DecimalIntervalIncludesTrue">
+			<expression>Interval[1.0, 10.0] includes Interval[4.0, 10.0]</expression>
+			<output>true</output>
+		</test>
+		<test name="DecimalIntervalIncludesFalse">
+			<expression>Interval[1.0, 10.0] includes Interval[11.0, 20.0]</expression>
+			<output>false</output>
+		</test>
+		<test name="QuantityIntervalIncludesTrue">
+			<expression>Interval[1.0 'g', 10.0 'g'] includes Interval[5.0 'g', 10.0 'g']</expression>
+			<output>true</output>
+		</test>
+		<test name="QuantityIntervalIncludesFalse">
+			<expression>Interval[1.0 'g', 10.0 'g'] includes Interval[11.0 'g', 20.0 'g']</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeIncludesTrue">
+			<expression>Interval[DateTime(2012, 1, 5), DateTime(2012, 1, 15)] includes Interval[DateTime(2012, 1, 7), DateTime(2012, 1, 14)]</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeIncludesFalse">
+			<expression>Interval[DateTime(2012, 1, 5), DateTime(2012, 1, 15)] includes Interval[DateTime(2012, 1, 4), DateTime(2012, 1, 14)]</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeIncludesTrue">
+			<expression>Interval[@T05:59:59.999, @T10:59:59.999] includes Interval[@T06:59:59.999, @T09:59:59.999]</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeIncludesFalse">
+			<expression>Interval[@T05:59:59.999, @T10:59:59.999] includes Interval[@T04:59:59.999, @T09:59:59.999]</expression>
+			<output>false</output>
+		</test>
+	</group>
+	<group name="Included In">
+		<test name="TestIncludedInNull">
+			<expression>null included in Interval[1, 10]</expression>
+			<output>null</output>
+		</test>
+		<test name="IntegerIntervalIncludedInTrue">
+			<expression>Interval[4, 10] included in Interval[1, 10]</expression>
+			<output>true</output>
+		</test>
+		<test name="IntegerIntervalIncludedInFalse">
+			<expression>Interval[44, 50] included in Interval[1, 10]</expression>
+			<output>false</output>
+		</test>
+		<test name="DecimalIntervalIncludedInTrue">
+			<expression>Interval[4.0, 10.0] included in Interval[1.0, 10.0]</expression>
+			<output>true</output>
+		</test>
+		<test name="DecimalIntervalIncludedInFalse">
+			<expression>Interval[11.0, 20.0] included in Interval[1.0, 10.0]</expression>
+			<output>false</output>
+		</test>
+		<test name="QuantityIntervalIncludedInTrue">
+			<expression>Interval[5.0 'g', 10.0 'g'] included in Interval[1.0 'g', 10.0 'g']</expression>
+			<output>true</output>
+		</test>
+		<test name="QuantityIntervalIncludedInFalse">
+			<expression>Interval[11.0 'g', 20.0 'g'] included in Interval[1.0 'g', 10.0 'g']</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeIncludedInTrue">
+			<expression>Interval[DateTime(2012, 1, 7), DateTime(2012, 1, 14)] included in Interval[DateTime(2012, 1, 5), DateTime(2012, 1, 15)]</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeIncludedInFalse">
+			<expression>Interval[DateTime(2012, 1, 4), DateTime(2012, 1, 14)] included in Interval[DateTime(2012, 1, 5), DateTime(2012, 1, 15)]</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeIncludedInTrue">
+			<expression>Interval[@T06:59:59.999, @T09:59:59.999] included in Interval[@T05:59:59.999, @T10:59:59.999]</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeIncludedInFalse">
+			<expression>Interval[@T04:59:59.999, @T09:59:59.999] included in Interval[@T05:59:59.999, @T10:59:59.999]</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeIncludedInNull">
+			<expression>Interval [@2017-09-01T00:00:00, @2017-09-01T00:00:00] included in Interval [@2017-09-01T00:00:00.000, @2017-12-30T23:59:59.999]</expression>
+			<output>null</output>
+		</test>
+		<test name="DateTimeIncludedInPrecisionTrue">
+			<expression>Interval [@2017-09-01T00:00:00, @2017-09-01T00:00:00] included in day of Interval [@2017-09-01T00:00:00.000, @2017-12-30T23:59:59.999]</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeIncludedInPrecisionNull">
+			<expression>Interval [@2017-09-01T00:00:00, @2017-09-01T00:00:00] included in millisecond of Interval [@2017-09-01T00:00:00.000, @2017-12-30T23:59:59.999]</expression>
+			<output>null</output>
+		</test>
+	</group>
+	<group name="Intersect">
+		<test name="TestIntersectNull">
+			<expression>Interval[1, 10] intersect Interval[5, null)</expression>
+			<output>null</output>
+			<!-- TODO: Fix CQL Engine to not throw a java.lang.NullPointerException -->
+		</test>
+		<test name="IntegerIntervalIntersectTest4to10">
+			<expression>Interval[1, 10] intersect Interval[4, 10]</expression>
+			<output>Interval [ 4, 10 ]</output>
+		</test>
+		<test name="IntegerIntervalIntersectTestNull">
+			<expression>Interval[1, 10] intersect Interval[11, 20]</expression>
+			<output>null</output>
+		</test>
+		<test name="DecimalIntervalIntersectTest4to10">
+			<expression>Interval[1.0, 10.0] intersect Interval[4.0, 10.0]</expression>
+			<output>Interval [ 4.0, 10.0 ]</output>
+		</test>
+		<test name="DecimalIntervalIntersectTestNull">
+			<expression>Interval[1.0, 10.0] intersect Interval[11.0, 20.0]</expression>
+			<output>null</output>
+		</test>
+		<test name="QuantityIntervalIntersectTest5to10">
+			<expression>Interval[1.0 'g', 10.0 'g'] intersect Interval[5.0 'g', 10.0 'g']</expression>
+			<output>Interval [ 5.0 'g', 10.0 'g' ]</output>
+		</test>
+		<test name="QuantityIntervalIntersectTestNull">
+			<expression>Interval[1.0 'g', 10.0 'g'] intersect Interval[11.0 'g', 20.0 'g']</expression>
+			<output>null</output>
+		</test>
+		<test name="DateTimeIntersect">
+			<expression>Interval[DateTime(2012, 1, 7), DateTime(2012, 1, 14)] intersect Interval[DateTime(2012, 1, 7), DateTime(2012, 1, 10)]</expression>
+			<output>Interval [ @2012-01-07T, @2012-01-10T ]</output>
+		</test>
+		<test name="TimeIntersect">
+			<expression>Interval[@T04:59:59.999, @T09:59:59.999] intersect Interval[@T04:59:59.999, @T06:59:59.999]</expression>
+			<output>Interval [ @T04:59:59.999, @T06:59:59.999 ]</output>
+		</test>
+	</group>
+	<group name="Equivalent">
+		<test name="IntegerIntervalEquivalentTrue">
+			<expression>Interval[1, 10] ~ Interval[1, 10]</expression>
+			<output>true</output>
+		</test>
+		<test name="IntegerIntervalEquivalentFalse">
+			<expression>Interval[44, 50] ~ Interval[1, 10]</expression>
+			<output>false</output>
+		</test>
+		<test name="DecimalIntervalEquivalentTrue">
+			<expression>Interval[1.0, 10.0] ~ Interval[1.0, 10.0]</expression>
+			<output>true</output>
+		</test>
+		<test name="DecimalIntervalEquivalentFalse">
+			<expression>Interval[11.0, 20.0] ~ Interval[1.0, 10.0]</expression>
+			<output>false</output>
+		</test>
+		<test name="QuantityIntervalEquivalentTrue">
+			<expression>Interval[1.0 'g', 10.0 'g'] ~ Interval[1.0 'g', 10.0 'g']</expression>
+			<output>true</output>
+		</test>
+		<test name="QuantityIntervalEquivalentFalse">
+			<expression>Interval[11.0 'g', 20.0 'g'] ~ Interval[1.0 'g', 10.0 'g']</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeEquivalentTrue">
+			<expression>Interval[DateTime(2012, 1, 7), DateTime(2012, 1, 14)] ~ Interval[DateTime(2012, 1, 7), DateTime(2012, 1, 14)]</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeEquivalentFalse">
+			<expression>Interval[DateTime(2012, 1, 7), DateTime(2012, 1, 14)] ~ Interval[DateTime(2012, 1, 7), DateTime(2012, 1, 15)]</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeEquivalentTrue">
+			<expression>Interval[@T04:59:59.999, @T09:59:59.999] ~ Interval[@T04:59:59.999, @T09:59:59.999]</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeEquivalentFalse">
+			<expression>Interval[@T04:59:59.999, @T09:59:59.999] ~ Interval[@T04:58:59.999, @T09:59:59.999]</expression>
+			<output>false</output>
+		</test>
+	</group>
+	<group name="Meets">
+		<test name="TestMeetsNull">
+			<expression>Interval(null, 5] meets Interval(null, 15)</expression>
+			<output>null</output>
+		</test>
+		<test name="IntegerIntervalMeetsTrue">
+			<expression>Interval[1, 10] meets Interval[11, 20]</expression>
+			<output>true</output>
+		</test>
+		<test name="IntegerIntervalMeetsFalse">
+			<expression>Interval[1, 10] meets Interval[44, 50]</expression>
+			<output>false</output>
+		</test>
+		<test name="DecimalIntervalMeetsTrue">
+			<expression>Interval[3.01, 5.00000001] meets Interval[5.00000002, 8.50]</expression>
+			<output>true</output>
+		</test>
+		<test name="DecimalIntervalMeetsFalse">
+			<expression>Interval[3.01, 5.00000001] meets Interval[5.5, 8.50]</expression>
+			<output>false</output>
+		</test>
+		<test name="QuantityIntervalMeetsTrue">
+			<expression>Interval[3.01 'g', 5.00000001 'g'] meets Interval[5.00000002 'g', 8.50 'g']</expression>
+			<output>true</output>
+		</test>
+		<test name="QuantityIntervalMeetsFalse">
+			<expression>Interval[3.01 'g', 5.00000001 'g'] meets Interval[5.5 'g', 8.50 'g']</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeMeetsTrue">
+			<expression>Interval[DateTime(2012, 1, 7), DateTime(2012, 1, 14)] meets Interval[DateTime(2012, 1, 15), DateTime(2012, 1, 25)]</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeMeetsFalse">
+			<expression>Interval[DateTime(2012, 1, 7), DateTime(2012, 1, 14)] meets Interval[DateTime(2012, 1, 20), DateTime(2012, 1, 25)]</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeMeetsTrue">
+			<expression>Interval[@T04:59:59.999, @T09:59:59.999] meets Interval[@T10:00:00.000, @T19:59:59.999]</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeMeetsFalse">
+			<expression>Interval[@T04:59:59.999, @T09:59:59.999] meets Interval[@T10:12:00.000, @T19:59:59.999]</expression>
+			<output>false</output>
+		</test>
+	</group>
+	<group name="MeetsBefore">
+		<test name="TestMeetsBeforeNull">
+			<expression>Interval(null, 5] meets before Interval(null, 25]</expression>
+			<output>null</output>
+		</test>
+		<test name="IntegerIntervalMeetsBeforeTrue">
+			<expression>Interval[1, 10] meets before Interval[11, 20]</expression>
+			<output>true</output>
+		</test>
+		<test name="IntegerIntervalMeetsBeforeFalse">
+			<expression>Interval[1, 10] meets before Interval[44, 50]</expression>
+			<output>false</output>
+		</test>
+		<test name="DecimalIntervalMeetsBeforeTrue">
+			<expression>Interval[3.50000001, 5.00000011] meets before Interval[5.00000012, 8.50]</expression>
+			<output>true</output>
+		</test>
+		<test name="DecimalIntervalMeetsBeforeFalse">
+			<expression>Interval[8.01, 15.00000001] meets before Interval[15.00000000, 18.50]</expression>
+			<output>false</output>
+		</test>
+		<test name="QuantityIntervalMeetsBeforeTrue">
+			<expression>Interval[3.50000001 'g', 5.00000011 'g'] meets before Interval[5.00000012 'g', 8.50 'g']</expression>
+			<output>true</output>
+		</test>
+		<test name="QuantityIntervalMeetsBeforeFalse">
+			<expression>Interval[8.01 'g', 15.00000001 'g'] meets before Interval[15.00000000 'g', 18.50 'g']</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeMeetsBeforeTrue">
+			<expression>Interval[DateTime(2012, 1, 7), DateTime(2012, 1, 14)] meets Interval[DateTime(2012, 1, 15), DateTime(2012, 1, 25)]</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeMeetsBeforeFalse">
+			<expression>Interval[DateTime(2012, 1, 7), DateTime(2012, 1, 14)] meets Interval[DateTime(2012, 1, 20), DateTime(2012, 1, 25)]</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeMeetsBeforeTrue">
+			<expression>Interval[@T04:59:59.999, @T09:59:59.999] meets Interval[@T10:00:00.000, @T19:59:59.999]</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeMeetsBeforeFalse">
+			<expression>Interval[@T04:59:59.999, @T09:59:59.999] meets Interval[@T10:12:00.000, @T19:59:59.999]</expression>
+			<output>false</output>
+		</test>
+	</group>
+	<group name="MeetsAfter">
+		<test name="TestMeetsAfterNull">
+			<expression>Interval(null, 5] meets after Interval[11, null)</expression>
+			<output>false</output>
+		</test>
+		<test name="IntegerIntervalMeetsAfterTrue">
+			<expression>Interval[11, 20] meets after Interval[1, 10]</expression>
+			<output>true</output>
+		</test>
+		<test name="IntegerIntervalMeetsAfterFalse">
+			<expression>Interval[44, 50] meets after Interval[1, 10]</expression>
+			<output>false</output>
+		</test>
+		<test name="DecimalIntervalMeetsAfterTrue">
+			<expression>Interval[55.00000123, 128.032156] meets after Interval[12.00258, 55.00000122]</expression>
+			<output>true</output>
+		</test>
+		<test name="DecimalIntervalMeetsAfterFalse">
+			<expression>Interval[55.00000124, 150.222222] meets after Interval[12.00258, 55.00000122]</expression>
+			<output>false</output>
+		</test>
+		<test name="QuantityIntervalMeetsAfterTrue">
+			<expression>Interval[55.00000123 'g', 128.032156 'g'] meets after Interval[12.00258 'g', 55.00000122 'g']</expression>
+			<output>true</output>
+		</test>
+		<test name="QuantityIntervalMeetsAfterFalse">
+			<expression>Interval[55.00000124 'g', 150.222222 'g'] meets after Interval[12.00258 'g', 55.00000122 'g']</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeMeetsAfterTrue">
+			<expression>Interval[DateTime(2012, 1, 15), DateTime(2012, 1, 25)] meets Interval[DateTime(2012, 1, 7), DateTime(2012, 1, 14)]</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeMeetsAfterFalse">
+			<expression>Interval[DateTime(2012, 1, 20), DateTime(2012, 1, 25)] meets Interval[DateTime(2012, 1, 7), DateTime(2012, 1, 14)]</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeMeetsAfterTrue">
+			<expression>Interval[@T10:00:00.000, @T19:59:59.999] meets Interval[@T04:59:59.999, @T09:59:59.999]</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeMeetsAfterFalse">
+			<expression>Interval[@T10:12:00.000, @T19:59:59.999] meets Interval[@T04:59:59.999, @T09:59:59.999]</expression>
+			<output>false</output>
+		</test>
+	</group>
+	<group name="NotEqual">
+		<test name="IntegerIntervalNotEqualTrue">
+			<expression>Interval[1, 10] != Interval[11, 20]</expression>
+			<output>true</output>
+		</test>
+		<test name="IntegerIntervalNotEqualFalse">
+			<expression>Interval[1, 10] != Interval[1, 10]</expression>
+			<output>false</output>
+		</test>
+		<test name="DecimalIntervalNotEqualTrue">
+			<expression>Interval[1.0, 10.0] != Interval[11.0, 20.0]</expression>
+			<output>true</output>
+		</test>
+		<test name="DecimalIntervalNotEqualFalse">
+			<expression>Interval[1.0, 10.0] != Interval[1.0, 10.0]</expression>
+			<output>false</output>
+		</test>
+		<test name="QuantityIntervalNotEqualTrue">
+			<expression>Interval[1.0 'g', 10.0 'g'] != Interval[11.0 'g', 20.0 'g']</expression>
+			<output>true</output>
+		</test>
+		<test name="QuantityIntervalNotEqualFalse">
+			<expression>Interval[1.0 'g', 10.0 'g'] != Interval[1.0 'g', 10.0 'g']</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeNotEqualTrue">
+			<expression>Interval[DateTime(2012, 1, 15, 0, 0, 0, 0), DateTime(2012, 1, 25, 0, 0, 0, 0)] != Interval[DateTime(2012, 1, 15, 0, 0, 0, 0), DateTime(2012, 1, 25, 0, 0, 0, 22)]</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeNotEqualFalse">
+			<expression>Interval[DateTime(2012, 1, 15, 0, 0, 0, 0), DateTime(2012, 1, 25, 0, 0, 0, 0)] != Interval[DateTime(2012, 1, 15, 0, 0, 0, 0), DateTime(2012, 1, 25, 0, 0, 0, 0)]</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeNotEqualTrue">
+			<expression>Interval[@T10:00:00.000, @T19:59:59.999] != Interval[@T10:10:00.000, @T19:59:59.999]</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeNotEqualFalse">
+			<expression>Interval[@T10:00:00.000, @T19:59:59.999] != Interval[@T10:00:00.000, @T19:59:59.999]</expression>
+			<output>false</output>
+		</test>
+	</group>
+	<group name="OnOrAfter">
+		<test name="TestOnOrAfterNull">
+			<expression>Interval[@2012-12-01, @2013-12-01] on or after (null as Interval&lt;Date&gt;)</expression>
+			<output>null</output>
+		</test>
+		<test name="TestOnOrAfterDateTrue">
+			<expression>Interval[@2012-12-01, @2013-12-01] on or after month of @2012-11-15</expression>
+			<output>true</output>
+		</test>
+		<test name="TestOnOrAfterDateFalse">
+			<expression>@2012-11-15 on or after month of Interval[@2012-12-01, @2013-12-01]</expression>
+			<output>false</output>
+		</test>
+		<test name="TestOnOrAfterTimeTrue">
+			<expression>Interval[@T10:00:00.000, @T19:59:59.999] on or after hour of Interval[@T08:00:00.000, @T09:59:59.999]</expression>
+			<output>true</output>
+		</test>
+		<test name="TestOnOrAfterTimeFalse">
+			<expression>Interval[@T10:00:00.000, @T19:59:59.999] on or after hour of Interval[@T08:00:00.000, @T11:59:59.999]</expression>
+			<output>false</output>
+		</test>
+		<test name="TestOnOrAfterIntegerTrue">
+			<expression>Interval[6, 10] on or after 6</expression>
+			<output>true</output>
+		</test>
+		<test name="TestOnOrAfterDecimalFalse">
+			<expression>2.5 on or after Interval[1.666, 2.50000001]</expression>
+			<output>false</output>
+		</test>
+		<test name="TestOnOrAfterQuantityTrue">
+			<expression>2.5 'mg' on or after Interval[1.666 'mg', 2.50000000 'mg']</expression>
+			<output>true</output>
+		</test>
+	</group>
+	<group name="OnOrBefore">
+		<test name="TestOnOrBeforeNull">
+			<expression>Interval[@2012-12-01, @2013-12-01] on or before (null as Interval&lt;Date&gt;)</expression>
+			<output>null</output>
+		</test>
+		<test name="TestOnOrBeforeDateTrue">
+			<expression>Interval[@2012-10-01, @2012-11-01] on or before month of @2012-11-15</expression>
+			<output>true</output>
+		</test>
+		<test name="TestOnOrBeforeDateFalse">
+			<expression>@2012-11-15 on or before month of Interval[@2012-10-01, @2013-12-01]</expression>
+			<output>false</output>
+		</test>
+		<test name="TestOnOrBeforeTimeTrue">
+			<expression>Interval[@T05:00:00.000, @T07:59:59.999] on or before hour of Interval[@T08:00:00.000, @T09:59:59.999]</expression>
+			<output>true</output>
+		</test>
+		<test name="TestOnOrBeforeTimeFalse">
+			<expression>Interval[@T10:00:00.000, @T19:59:59.999] on or before hour of Interval[@T08:00:00.000, @T11:59:59.999]</expression>
+			<output>false</output>
+		</test>
+		<test name="TestOnOrBeforeIntegerTrue">
+			<expression>Interval[4, 6] on or before 6</expression>
+			<output>true</output>
+		</test>
+		<test name="TestOnOrBeforeDecimalFalse">
+			<expression>1.6667 on or before Interval[1.666, 2.50000001]</expression>
+			<output>false</output>
+		</test>
+		<test name="TestOnOrBeforeQuantityTrue">
+			<expression>1.666 'mg' on or before Interval[1.666 'mg', 2.50000000 'mg']</expression>
+			<output>true</output>
+		</test>
+	</group>
+	<group name="Overlaps">
+		<test name="TestOverlapsNull">
+			<expression>Interval[null, null] overlaps Interval[1, 10]</expression>
+			<output>null</output>
+		</test>
+		<test name="IntegerIntervalOverlapsTrue">
+			<expression>Interval[1, 10] overlaps Interval[4, 10]</expression>
+			<output>true</output>
+		</test>
+		<test name="IntegerIntervalOverlapsFalse">
+			<expression>Interval[1, 10] overlaps Interval[11, 20]</expression>
+			<output>false</output>
+		</test>
+		<test name="DecimalIntervalOverlapsTrue">
+			<expression>Interval[1.0, 10.0] overlaps Interval[4.0, 10.0]</expression>
+			<output>true</output>
+		</test>
+		<test name="DecimalIntervalOverlapsFalse">
+			<expression>Interval[1.0, 10.0] overlaps Interval[11.0, 20.0]</expression>
+			<output>false</output>
+		</test>
+		<test name="QuantityIntervalOverlapsTrue">
+			<expression>Interval[1.0 'g', 10.0 'g'] overlaps Interval[5.0 'g', 10.0 'g']</expression>
+			<output>true</output>
+		</test>
+		<test name="QuantityIntervalOverlapsFalse">
+			<expression>Interval[1.0 'g', 10.0 'g'] overlaps Interval[11.0 'g', 20.0 'g']</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeOverlapsTrue">
+			<expression>Interval[DateTime(2012, 1, 5), DateTime(2012, 1, 25)] overlaps Interval[DateTime(2012, 1, 15), DateTime(2012, 1, 28)]</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeOverlapsFalse">
+			<expression>Interval[DateTime(2012, 1, 5), DateTime(2012, 1, 25)] overlaps Interval[DateTime(2012, 1, 26), DateTime(2012, 1, 28)]</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeOverlapsTrue">
+			<expression>Interval[@T10:00:00.000, @T19:59:59.999] overlaps Interval[@T12:00:00.000, @T21:59:59.999]</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeOverlapsFalse">
+			<expression>Interval[@T10:00:00.000, @T19:59:59.999] overlaps Interval[@T20:00:00.000, @T21:59:59.999]</expression>
+			<output>false</output>
+		</test>
+	</group>
+	<group name="OverlapsBefore">
+		<test name="TestOverlapsBeforeNull">
+			<expression>Interval[null, null] overlaps before Interval[1, 10]</expression>
+			<output>null</output>
+		</test>
+		<test name="IntegerIntervalOverlapsBeforeTrue">
+			<expression>Interval[1, 10] overlaps before Interval[4, 10]</expression>
+			<output>true</output>
+		</test>
+		<test name="IntegerIntervalOverlapsBeforeFalse">
+			<expression>Interval[4, 10] overlaps before Interval[1, 10]</expression>
+			<output>false</output>
+		</test>
+		<test name="DecimalIntervalOverlapsBeforeTrue">
+			<expression>Interval[1.0, 10.0] overlaps before Interval[4.0, 10.0]</expression>
+			<output>true</output>
+		</test>
+		<test name="DecimalIntervalOverlapsBeforeFalse">
+			<expression>Interval[4.0, 10.0] overlaps before Interval[1.0, 10.0]</expression>
+			<output>false</output>
+		</test>
+		<test name="QuantityIntervalOverlapsBeforeTrue">
+			<expression>Interval[1.0 'g', 10.0 'g'] overlaps before Interval[5.0 'g', 10.0 'g']</expression>
+			<output>true</output>
+		</test>
+		<test name="QuantityIntervalOverlapsBeforeFalse">
+			<expression>Interval[5.0 'g', 10.0 'g'] overlaps before Interval[1.0 'g', 10.0 'g']</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeOverlapsBeforeTrue">
+			<expression>Interval[DateTime(2012, 1, 5), DateTime(2012, 1, 25)] overlaps Interval[DateTime(2012, 1, 15), DateTime(2012, 1, 28)]</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeOverlapsBeforeFalse">
+			<expression>Interval[DateTime(2012, 1, 5), DateTime(2012, 1, 25)] overlaps Interval[DateTime(2012, 1, 26), DateTime(2012, 1, 28)]</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeOverlapsBeforeTrue">
+			<expression>Interval[@T10:00:00.000, @T19:59:59.999] overlaps Interval[@T12:00:00.000, @T21:59:59.999]</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeOverlapsBeforeFalse">
+			<expression>Interval[@T10:00:00.000, @T19:59:59.999] overlaps Interval[@T20:00:00.000, @T21:59:59.999]</expression>
+			<output>false</output>
+		</test>
+	</group>
+	<group name="OverlapsAfter">
+		<test name="TestOverlapsAfterNull">
+			<expression>Interval[null, null] overlaps after Interval[1, 10]</expression>
+			<output>null</output>
+		</test>
+		<test name="IntegerIntervalOverlapsAfterTrue">
+			<expression>Interval[4, 15] overlaps after Interval[1, 10]</expression>
+			<output>true</output>
+		</test>
+		<test name="IntegerIntervalOverlapsAfterFalse">
+			<expression>Interval[4, 10] overlaps after Interval[1, 10]</expression>
+			<output>false</output>
+		</test>
+		<test name="DecimalIntervalOverlapsAfterTrue">
+			<expression>Interval[4.0, 15.0] overlaps after Interval[1.0, 10.0]</expression>
+			<output>true</output>
+		</test>
+		<test name="DecimalIntervalOverlapsAfterFalse">
+			<expression>Interval[4.0, 10.0] overlaps after Interval[1.0, 10.0]</expression>
+			<output>false</output>
+		</test>
+		<test name="QuantityIntervalOverlapsAfterTrue">
+			<expression>Interval[5.0 'g', 15.0 'g'] overlaps after Interval[1.0 'g', 10.0 'g']</expression>
+			<output>true</output>
+		</test>
+		<test name="QuantityIntervalOverlapsAfterFalse">
+			<expression>Interval[5.0 'g', 10.0 'g'] overlaps after Interval[1.0 'g', 10.0 'g']</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeOverlapsAfterTrue">
+			<expression>Interval[DateTime(2012, 1, 15), DateTime(2012, 1, 28)] overlaps Interval[DateTime(2012, 1, 5), DateTime(2012, 1, 25)]</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeOverlapsAfterFalse">
+			<expression>Interval[DateTime(2012, 1, 26), DateTime(2012, 1, 28)] overlaps Interval[DateTime(2012, 1, 5), DateTime(2012, 1, 25)]</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeOverlapsAfterTrue">
+			<expression>Interval[@T12:00:00.000, @T21:59:59.999] overlaps Interval[@T10:00:00.000, @T19:59:59.999]</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeOverlapsAfterFalse">
+			<expression>Interval[@T20:00:00.000, @T21:59:59.999] overlaps Interval[@T10:00:00.000, @T19:59:59.999]</expression>
+			<output>false</output>
+		</test>
+	</group>
+	<group name="PointFrom">
+		<test name="TestPointFromNull">
+			<expression>point from Interval[null, null]</expression>
+			<output>null</output>
+		</test>
+		<test name="TestPointFromInteger">
+			<expression>point from Interval[1, 1]</expression>
+			<output>1</output>
+		</test>
+		<test name="TestPointFromDecimal">
+			<expression>point from Interval[1.0, 1.0]</expression>
+			<output>1.0</output>
+		</test>
+		<test name="TestPointFromQuantity">
+			<expression>point from Interval[1.0 'cm', 1.0 'cm']</expression>
+			<output>1.0'cm'</output>
+		</test>
+	</group>
+	<group name="ProperContains">
+		<test name="TimeProperContainsTrue">
+			<expression>Interval[@T12:00:00.000, @T21:59:59.999] properly includes @T12:00:00.001</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeProperContainsFalse">
+			<expression>Interval[@T12:00:00.000, @T21:59:59.999] properly includes @T12:00:00.000</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeProperContainsNull">
+			<expression>Interval[@T12:00:00.001, @T21:59:59.999] properly includes @T12:00:00</expression>
+			<output>null</output>
+		</test>
+		<test name="TimeProperContainsPrecisionTrue">
+			<expression>Interval[@T12:00:00.000, @T21:59:59.999] properly includes second of @T12:00:01</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeProperContainsPrecisionFalse">
+			<expression>Interval[@T12:00:00.001, @T21:59:59.999] properly includes second of @T12:00:00</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeProperContainsPrecisionNull">
+			<expression>Interval[@T12:00:00.001, @T21:59:59.999] properly includes millisecond of @T12:00:00</expression>
+			<output>null</output>
+		</test>
+	</group>
+	<group name="ProperIn">
+		<test name="TimeProperInTrue">
+			<expression>@T12:00:00.001 properly included in Interval[@T12:00:00.000, @T21:59:59.999]</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeProperInFalse">
+			<expression>@T12:00:00.000 properly included in  Interval[@T12:00:00.000, @T21:59:59.999]</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeProperInNull">
+			<expression>@T12:00:00 properly included in Interval[@T12:00:00.001, @T21:59:59.999]</expression>
+			<output>null</output>
+		</test>
+		<test name="TimeProperInPrecisionTrue">
+			<expression>@T12:00:01 properly included in second of Interval[@T12:00:00.000, @T21:59:59.999]</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeProperInPrecisionFalse">
+			<expression>@T12:00:00 properly included in second of Interval[@T12:00:00.001, @T21:59:59.999]</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeProperInPrecisionNull">
+			<expression>@T12:00:00 properly included in millisecond of Interval[@T12:00:00.001, @T21:59:59.999]</expression>
+			<output>null</output>
+		</test>
+	</group>
+	<group name="ProperlyIncludes">
+		<test name="NullBoundariesProperlyIncludesIntegerInterval">
+			<expression>Interval[null as Integer, null as Integer] properly includes Interval[1, 10]</expression>
+			<output>null</output>
+		</test>
+		<test name="IntegerIntervalProperlyIncludesTrue">
+			<expression>Interval[1, 10] properly includes Interval[4, 10]</expression>
+			<output>true</output>
+		</test>
+		<test name="IntegerIntervalProperlyIncludesFalse">
+			<expression>Interval[1, 10] properly includes Interval[4, 15]</expression>
+			<output>false</output>
+		</test>
+		<test name="DecimalIntervalProperlyIncludesTrue">
+			<expression>Interval[1.0, 10.0] properly includes Interval[4.0, 10.0]</expression>
+			<output>true</output>
+		</test>
+		<test name="DecimalIntervalProperlyIncludesFalse">
+			<expression>Interval[1.0, 10.0] properly includes Interval[4.0, 15.0]</expression>
+			<output>false</output>
+		</test>
+		<test name="QuantityIntervalProperlyIncludesTrue">
+			<expression>Interval[1.0 'g', 10.0 'g'] properly includes Interval[5.0 'g', 10.0 'g']</expression>
+			<output>true</output>
+		</test>
+		<test name="QuantityIntervalProperlyIncludesFalse">
+			<expression>Interval[1.0 'g', 10.0 'g'] properly includes Interval[5.0 'g', 15.0 'g']</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeProperlyIncludesTrue">
+			<expression>Interval[DateTime(2012, 1, 15), DateTime(2012, 1, 28)] properly includes Interval[DateTime(2012, 1, 16), DateTime(2012, 1, 27)]</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeProperlyIncludesFalse">
+			<expression>Interval[DateTime(2012, 1, 15), DateTime(2012, 1, 28)] properly includes Interval[DateTime(2012, 1, 16), DateTime(2012, 1, 29)]</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeProperlyIncludesTrue">
+			<expression>Interval[@T12:00:00.000, @T21:59:59.999] properly includes Interval[@T12:01:01.000, @T21:59:59.998]</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeProperlyIncludesFalse">
+			<expression>Interval[@T12:00:00.000, @T21:59:59.999] properly includes Interval[@T12:01:01.000, @T22:00:00.000]</expression>
+			<output>false</output>
+		</test>
+	</group>
+	<group name="ProperlyIncludedIn">
+		<test name="IntegerIntervalProperlyIncludedInNullBoundaries">
+			<expression>Interval[1, 10] properly included in Interval[null, null]</expression>
+			<output>null</output>
+		</test>
+		<test name="IntegerIntervalProperlyIncludedInTrue">
+			<expression>Interval[4, 10] properly included in Interval[1, 10]</expression>
+			<output>true</output>
+		</test>
+		<test name="IntegerIntervalProperlyIncludedInFalse">
+			<expression>Interval[4, 15] properly included in Interval[1, 10]</expression>
+			<output>false</output>
+		</test>
+		<test name="DecimalIntervalProperlyIncludedInTrue">
+			<expression>Interval[4.0, 10.0] properly included in Interval[1.0, 10.0]</expression>
+			<output>true</output>
+		</test>
+		<test name="DecimalIntervalProperlyIncludedInFalse">
+			<expression>Interval[4.0, 15.0] properly included in Interval[1.0, 10.0]</expression>
+			<output>false</output>
+		</test>
+		<test name="QuantityIntervalProperlyIncludedInTrue">
+			<expression>Interval[5.0 'g', 10.0 'g'] properly included in Interval[1.0 'g', 10.0 'g']</expression>
+			<output>true</output>
+		</test>
+		<test name="QuantityIntervalProperlyIncludedInFalse">
+			<expression>Interval[1.0 'g', 10.0 'g'] properly included in Interval[5.0 'g', 15.0 'g']</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeProperlyIncludedInTrue">
+			<expression>Interval[DateTime(2012, 1, 16), DateTime(2012, 1, 27)] properly included in Interval[DateTime(2012, 1, 15), DateTime(2012, 1, 28)]</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeProperlyIncludedInFalse">
+			<expression>Interval[DateTime(2012, 1, 16), DateTime(2012, 1, 29)] properly included in Interval[DateTime(2012, 1, 15), DateTime(2012, 1, 28)]</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeProperlyIncludedInTrue">
+			<expression>Interval[@T12:01:01.000, @T21:59:59.998] properly included in Interval[@T12:00:00.000, @T21:59:59.999]</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeProperlyIncludedInFalse">
+			<expression>Interval[@T12:01:01.000, @T22:00:00.000] properly included in Interval[@T12:00:00.000, @T21:59:59.999]</expression>
+			<output>false</output>
+		</test>
+	</group>
+	<group name="Start">
+		<test name="IntegerIntervalStart">
+			<expression>start of Interval[1, 10]</expression>
+			<output>1</output>
+		</test>
+		<test name="DecimalIntervalStart">
+			<expression>start of Interval[1.0, 10.0]</expression>
+			<output>1.0</output>
+		</test>
+		<test name="QuantityIntervalStart">
+			<expression>start of Interval[1.0 'g', 10.0 'g']</expression>
+			<output>1.0'g'</output>
+		</test>
+		<test name="DateTimeIntervalStart">
+			<expression>start of Interval[@2016-05-01T00:00:00.000, @2016-05-02T00:00:00.000]</expression>
+			<output>@2016-05-01T00:00:00.000</output>
+		</test>
+		<test name="TimeIntervalStart">
+			<expression>start of Interval[@T00:00:00.000, @T23:59:59.599]</expression>
+			<output>@T00:00:00.000</output>
+		</test>
+	</group>
+	<group name="Starts">
+		<test name="TestStartsNull">
+			<expression>Interval[null, null] starts Interval[1, 10]</expression>
+			<output>null</output>
+		</test>
+		<test name="IntegerIntervalStartsTrue">
+			<expression>Interval[4, 10] starts Interval[4, 15]</expression>
+			<output>true</output>
+		</test>
+		<test name="IntegerIntervalStartsFalse">
+			<expression>Interval[1, 10] starts Interval[4, 10]</expression>
+			<output>false</output>
+		</test>
+		<test name="DecimalIntervalStartsTrue">
+			<expression>Interval[4.0, 10.0] starts Interval[4.0, 15.0]</expression>
+			<output>true</output>
+		</test>
+		<test name="DecimalIntervalStartsFalse">
+			<expression>Interval[1.0, 10.0] starts Interval[4.0, 10.0]</expression>
+			<output>false</output>
+		</test>
+		<test name="QuantityIntervalStartsTrue">
+			<expression>Interval[5.0 'g', 10.0 'g'] starts Interval[5.0 'g', 15.0 'g']</expression>
+			<output>true</output>
+		</test>
+		<test name="QuantityIntervalStartsFalse">
+			<expression>Interval[1.0 'g', 10.0 'g'] starts Interval[5.0 'g', 10.0 'g']</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeStartsTrue">
+			<expression>Interval[DateTime(2012, 1, 5), DateTime(2012, 1, 25)] starts Interval[DateTime(2012, 1, 5), DateTime(2012, 1, 27)]</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeStartsFalse">
+			<expression>Interval[DateTime(2012, 1, 5), DateTime(2012, 1, 25)] starts Interval[DateTime(2012, 1, 6), DateTime(2012, 1, 27)]</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeStartsTrue">
+			<expression>Interval[@T05:59:59.999, @T15:59:59.999] starts Interval[@T05:59:59.999, @T17:59:59.999]</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeStartsFalse">
+			<expression>Interval[@T05:59:59.999, @T15:59:59.999] starts Interval[@T04:59:59.999, @T17:59:59.999]</expression>
+			<output>false</output>
+		</test>
+	</group>
+	<group name="Union">
+		<test name="TestUnionNull">
+			<expression>Interval[null, null] union Interval[1, 10]</expression>
+			<output>null</output>
+		</test>
+		<test name="IntegerIntervalUnion1To15">
+			<expression>Interval[1, 10] union Interval[4, 15]</expression>
+			<output>Interval [ 1, 15 ]</output>
+		</test>
+		<test name="IntegerIntervalUnionNull">
+			<expression>Interval[1, 10] union Interval[44, 50]</expression>
+			<output>null</output>
+		</test>
+		<test name="DecimalIntervalUnion1To15">
+			<expression>Interval[1.0, 10.0] union Interval[4.0, 15.0]</expression>
+			<output>Interval [ 1.0, 15.0 ]</output>
+		</test>
+		<test name="DecimalIntervalUnionNull">
+			<expression>Interval[1.0, 10.0] union Interval[14.0, 15.0]</expression>
+			<output>null</output>
+		</test>
+		<test name="QuantityIntervalUnion1To15">
+			<expression>Interval[1.0 'g', 10.0 'g'] union Interval[5.0 'g', 15.0 'g']</expression>
+			<output>Interval [ 1.0 'g', 15.0 'g' ]</output>
+		</test>
+		<test name="QuantityIntervalUnionNull">
+			<expression>Interval[1.0 'g', 10.0 'g'] union Interval[14.0 'g', 15.0 'g']</expression>
+			<output>null</output>
+		</test>
+		<test name="DateTimeUnion">
+			<expression>Interval[DateTime(2012, 1, 5), DateTime(2012, 1, 25)] union Interval[DateTime(2012, 1, 25), DateTime(2012, 1, 28)]</expression>
+			<output>Interval [ @2012-01-05T, @2012-01-28T ]</output>
+		</test>
+		<test name="DateTimeUnionNull">
+			<expression>Interval[DateTime(2012, 1, 5), DateTime(2012, 1, 25)] union Interval[DateTime(2012, 1, 27), DateTime(2012, 1, 28)]</expression>
+			<output>null</output>
+		</test>
+		<test name="TimeUnion">
+			<expression>Interval[@T05:59:59.999, @T15:59:59.999] union Interval[@T10:59:59.999, @T20:59:59.999]</expression>
+			<output>Interval [ @T05:59:59.999, @T20:59:59.999 ]</output>
+		</test>
+		<test name="TimeUnionNull">
+			<expression>Interval[@T05:59:59.999, @T15:59:59.999] union Interval[@T16:59:59.999, @T20:59:59.999]</expression>
+			<output>null</output>
+		</test>
+	</group>
+	<group name="Width">
+		<test name="IntegerIntervalTestWidth9">
+			<expression>width of Interval[1, 10]</expression>
+			<output>9</output>
+		</test>
+		<test name="IntervalTestWidthNull">
+			<expression>width of (null as Interval&lt;Any&gt;)</expression>
+			<output>null</output>
+		</test>
+		<test name="DecimalIntervalTestWidth11">
+			<expression>width of Interval[4.0, 15.0]</expression>
+			<output>11.0</output>
+		</test>
+		<test name="QuantityIntervalTestWidth5">
+			<expression>width of Interval[5.0 'g', 10.0 'g']</expression>
+			<output>5.0'g'</output>
+		</test>
+		<test name="DateTimeWidth">
+			<expression invalid="true">width of Interval[DateTime(2012, 1, 5), DateTime(2012, 1, 25)]</expression>
+		</test>
+		<test name="TimeWidth">
+			<expression invalid="true">width of Interval[@T05:59:59.999, @T15:59:59.999]</expression>
+		</test>
+	</group>
+	<group name="Interval">
+		<test name="IntegerIntervalTest">
+			<expression>Interval[1, 10]</expression>
+			<output>Interval[1, 10]</output>
+		</test>
+		<test name="IntegerIntervalTest2">
+			<expression>Interval[11, 20]</expression>
+			<output>Interval[11, 20]</output>
+		</test>
+		<test name="IntegerIntervalTest3">
+			<expression>Interval[44, 50]</expression>
+			<output>Interval[44, 50]</output>
+		</test>
+		<test name="IntegerIntervalTest4">
+			<expression>Interval[4, 10]</expression>
+			<output>Interval[4, 10]</output>
+		</test>
+		<test name="IntegerIntervalTest5">
+			<expression>Interval[4, 15]</expression>
+			<output>Interval[4, 15]</output>
+		</test>
+		<test name="DecimalIntervalTest">
+			<expression>Interval[1.0, 10.0]</expression>
+			<output>Interval[1.0, 10.0]</output>
+		</test>
+		<test name="DecimalIntervalTest2">
+			<expression>Interval[11.0, 20.0]</expression>
+			<output>Interval[11.0, 20.0]</output>
+		</test>
+		<test name="DecimalIntervalTest3">
+			<expression>Interval[4.0, 10.0]</expression>
+			<output>Interval[4.0, 10.0]</output>
+		</test>
+		<test name="DecimalIntervalTest4">
+			<expression>Interval[4.0, 15.0]</expression>
+			<output>Interval[4.0, 15.0]</output>
+		</test>
+		<test name="DecimalIntervalTest5">
+			<expression>Interval[14.0, 15.0]</expression>
+			<output>Interval[14.0, 15.0]</output>
+		</test>
+		<test name="QuantityIntervalTest">
+			<expression>Interval[1.0 'g', 10.0 'g']</expression>
+			<output>Interval[1.0 'g', 10.0 'g']</output>
+		</test>
+		<test name="QuantityIntervalTest2">
+			<expression>Interval[11.0 'g', 20.0 'g']</expression>
+			<output>Interval[11.0 'g', 20.0 'g']</output>
+		</test>
+		<test name="QuantityIntervalTest3">
+			<expression>Interval[5.0 'g', 10.0 'g']</expression>
+			<output>Interval[5.0 'g', 10.0 'g']</output>
+		</test>
+		<test name="QuantityIntervalTest4">
+			<expression>Interval[5.0 'g', 15.0 'g']</expression>
+			<output>Interval[5.0 'g', 15.0 'g']</output>
+		</test>
+		<test name="QuantityIntervalTest5">
+			<expression>Interval[14.0 'g', 15.0 'g']</expression>
+			<output>Interval[14.0 'g', 15.0 'g']</output>
+		</test>
+		<test name="DateTimeIntervalTest">
+			<expression>Interval[@2016-05-01T00:00:00.000, @2016-05-02T00:00:00.000]</expression>
+			<output>Interval[@2016-05-01T00:00:00.000, @2016-05-02T00:00:00.000]</output>
+		</test>
+		<test name="TimeIntervalTest">
+			<expression>Interval[@T00:00:00.000, @T23:59:59.599]</expression>
+			<output>Interval[@T00:00:00.000, @T23:59:59.599]</output>
+		</test>
+		<test name="CollapseIntervalTestInteger">
+			<expression>{Interval[1, 10], Interval[11, 20], Interval[44, 50]}</expression>
+			<output>{Interval[1, 10], Interval[11, 20], Interval[44, 50]}</output>
+		</test>
+		<test name="InvalidIntegerInterval">
+			<expression invalid="true">Interval[5, 3]</expression>
+			<!-- EXPECT: Invalid Interval - the ending boundary must be greater than or equal to the starting boundary. -->
+		</test>
+		<test name="InvalidIntegerIntervalA">
+			<expression invalid="true">Interval[5, 5)</expression>
+			<!-- EXPECT: Invalid Interval - the ending boundary must be greater than or equal to the starting boundary. -->
+		</test>
+	</group>
+</tests>

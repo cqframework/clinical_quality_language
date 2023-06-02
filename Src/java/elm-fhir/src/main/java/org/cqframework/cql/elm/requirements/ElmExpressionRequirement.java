@@ -15,7 +15,7 @@ public class ElmExpressionRequirement extends ElmRequirement {
         return getExpression();
     }
 
-    public ElmExpressionRequirement combine(ElmExpressionRequirement requirement) {
+    public ElmExpressionRequirement combine(ElmRequirement requirement) {
         return this;
     }
 

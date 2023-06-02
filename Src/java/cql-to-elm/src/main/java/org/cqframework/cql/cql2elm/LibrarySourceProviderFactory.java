@@ -4,14 +4,14 @@ import java.util.Iterator;
 import java.util.ServiceLoader;
 
 public class LibrarySourceProviderFactory {
-
-    static ServiceLoader<LibrarySourceProvider> loader = ServiceLoader
-            .load(LibrarySourceProvider.class);
+    private LibrarySourceProviderFactory() {}
 
     public static Iterator<LibrarySourceProvider> providers(boolean refresh) {
+        var loader = ServiceLoader.load(LibrarySourceProvider.class);
         if (refresh) {
             loader.reload();
         }
+
         return loader.iterator();
     }
 }

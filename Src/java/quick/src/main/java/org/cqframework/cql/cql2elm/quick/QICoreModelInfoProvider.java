@@ -34,8 +34,10 @@ public class QICoreModelInfoProvider implements ModelInfoProvider {
                     case "4.1.0":
                         return ModelInfoReaderFactory.getReader("application/xml").read(QICoreModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/qicore-modelinfo-4.1.0.xml"));
                     case "4.1.1":
-                    default:
                         return ModelInfoReaderFactory.getReader("application/xml").read(QICoreModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/qicore-modelinfo-4.1.1.xml"));
+                    case "5.0.0":
+                    default:
+                        return ModelInfoReaderFactory.getReader("application/xml").read(QICoreModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/qicore-modelinfo-5.0.0.xml"));
                 }
             } catch (IOException e) {
                 e.printStackTrace();

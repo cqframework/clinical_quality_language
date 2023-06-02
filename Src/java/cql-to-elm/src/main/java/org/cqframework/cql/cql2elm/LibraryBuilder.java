@@ -10,7 +10,6 @@ import org.hl7.cql_annotations.r1.CqlToElmInfo;
 import org.hl7.cql_annotations.r1.ErrorSeverity;
 import org.hl7.cql_annotations.r1.ErrorType;
 import org.hl7.elm.r1.*;
-
 import javax.xml.namespace.QName;
 import java.math.BigDecimal;
 import java.util.*;
@@ -413,7 +412,10 @@ public class LibraryBuilder implements ModelResolver {
                 case "System.Vocabulary":
                 case "System.CodeSystem":
                 case "System.ValueSet":
-                    if (!isCompatibleWith("1.5")) {
+                    // NOTE: This is a hack to allow the new ToValueSet operator in FHIRHelpers for backwards-compatibility
+                    // The operator still cannot be used in 1.4, but the definition will compile. This really should be being done with preprocessor directives,
+                    // but that's a whole other project in and of itself.
+                    if (!isCompatibleWith("1.5") && !isFHIRHelpers(compiledLibrary)) {
                         throw new IllegalArgumentException(String.format("The type %s was introduced in CQL 1.5 and cannot be referenced at compatibility level %s",
                                 ((NamedType)result).getName(), getCompatibilityLevel()));
                     }
@@ -421,6 +423,14 @@ public class LibraryBuilder implements ModelResolver {
         }
 
         return result;
+    }
+
+    private boolean isFHIRHelpers(CompiledLibrary library) {
+        if (library != null && library.getIdentifier() != null && library.getIdentifier().getId() != null && library.getIdentifier().getId().equals("FHIRHelpers")) {
+            return true;
+        }
+
+        return false;
     }
 
     public DataType resolveTypeSpecifier(String typeSpecifier) {
@@ -461,6 +471,14 @@ public class LibraryBuilder implements ModelResolver {
 
     public Model getModel(String modelName) {
         UsingDef usingDef = resolveUsingRef(modelName);
+        if (usingDef == null && modelName.equals("FHIR"))  {
+            // Special case for FHIR-derived models that include FHIR Helpers
+            var model = this.modelManager.resolveModelByUri("http://hl7.org/fhir");
+            if (model != null) {
+                return model;
+            }
+        }
+
         if (usingDef == null) {
             throw new IllegalArgumentException(String.format("Could not resolve model name %s", modelName));
         }
@@ -943,7 +961,7 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     public Expression resolveIn(Expression left, Expression right) {
-        if (right instanceof ValueSetRef || (isCompatibleWith("1.5") && right.getResultType().isSubTypeOf(resolveTypeName("System", "ValueSet")))) {
+        if (right instanceof ValueSetRef || (isCompatibleWith("1.5") && right.getResultType().isCompatibleWith(resolveTypeName("System", "ValueSet")) && !right.getResultType().equals(resolveTypeName("System", "Any")))) {
             if (left.getResultType() instanceof ListType) {
                 AnyInValueSet anyIn = of.createAnyInValueSet()
                         .withCodes(left)
@@ -962,7 +980,7 @@ public class LibraryBuilder implements ModelResolver {
             return in;
         }
 
-        if (right instanceof CodeSystemRef || (isCompatibleWith("1.5") && right.getResultType().isSubTypeOf(resolveTypeName("System", "CodeSystem")))) {
+        if (right instanceof CodeSystemRef || (isCompatibleWith("1.5") && right.getResultType().isCompatibleWith(resolveTypeName("System", "CodeSystem")) && !right.getResultType().equals(resolveTypeName("System", "Any")))) {
             if (left.getResultType() instanceof ListType) {
                 AnyInCodeSystem anyIn = of.createAnyInCodeSystem()
                         .withCodes(left)
@@ -983,6 +1001,13 @@ public class LibraryBuilder implements ModelResolver {
         In in = of.createIn().withOperand(left, right);
         resolveBinaryCall("System", "In", in);
         return in;
+    }
+
+    public Expression resolveContains(Expression left, Expression right) {
+        // TODO: Add terminology overloads
+        Contains contains = of.createContains().withOperand(left, right);
+        resolveBinaryCall("System", "Contains", contains);
+        return contains;
     }
 
     public Expression resolveIn(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
@@ -1543,7 +1568,7 @@ public class LibraryBuilder implements ModelResolver {
                 // Otherwise, the choice is narrowing and a run-time As is required (to use only the expected target types)
             }
             As castedOperand = buildAs(expression, conversion.getToType());
-            return castedOperand;
+            return collapseTypeCase(castedOperand);
         }
         else if (conversion.isCast() && conversion.getConversion() != null
                 && (conversion.getFromType().isSuperTypeOf(conversion.getConversion().getFromType())
@@ -1657,6 +1682,50 @@ public class LibraryBuilder implements ModelResolver {
                 return convertedOperand;
             }
         }
+    }
+
+    /**
+     * If the operand to an As is a "type case", meaning a case expression whose only cases have the form:
+     *  when X is T then X as T
+     * If one of the type cases is the same type as the As, the operand of the As can be set to the operand
+     * of the type case with the same type, optimizing the case as effectively a no-op
+     * @param as
+     * @return
+     */
+    private Expression collapseTypeCase(As as) {
+        if (as.getOperand() instanceof Case) {
+            Case c = (Case)as.getOperand();
+            if (isTypeCase(c)) {
+                for (CaseItem ci : c.getCaseItem()) {
+                    if (DataTypes.equal(as.getResultType(), ci.getThen().getResultType())) {
+                        return ci.getThen();
+                    }
+                }
+            }
+        }
+
+        return as;
+    }
+
+    private boolean isTypeCase(Case c) {
+        if (c.getComparand() != null) {
+            return false;
+        }
+        for (CaseItem ci : c.getCaseItem()) {
+            if (!(ci.getWhen() instanceof Is)) {
+                return false;
+            }
+            if (ci.getThen().getResultType() == null) {
+                return false;
+            }
+        }
+        if (!(c.getElse() instanceof Null)) {
+            return false;
+        }
+        if (!(c.getResultType() instanceof ChoiceType)) {
+            return false;
+        }
+        return true;
     }
 
     public void verifyType(DataType actualType, DataType expectedType) {
@@ -2020,7 +2089,7 @@ public class LibraryBuilder implements ModelResolver {
 
                 if (resultTypes.size() == 1) {
                     for (DataType resultType : resultTypes) {
-                        return new PropertyResolution(resultType, resultTargetMaps.containsKey(resultType) ? resultTargetMaps.get(resultType) : name);
+                        return new PropertyResolution(resultType, name, resultTargetMaps);
                     }
                 }
             }
@@ -2469,6 +2538,10 @@ public class LibraryBuilder implements ModelResolver {
             return source;
         }
 
+        // TODO: Consider whether the mapping should remove this in the ModelInfo...this is really a FHIR-specific hack...
+        // Remove any "choice" paths...
+        targetMap = targetMap.replace("[x]", "");
+
         // TODO: This only works for simple mappings, nested mappings will require the targetMap.g4 parser
         // Supported target mapping syntax:
         // %value.<property name>
@@ -2489,12 +2562,16 @@ public class LibraryBuilder implements ModelResolver {
             Case c = of.createCase();
             for (String typeCase : typeCases) {
                 if (!typeCase.isEmpty()) {
-                    String[] caseElements = typeCase.split(":");
-                    if (caseElements.length != 2) {
+                    int splitIndex = typeCase.indexOf(':');
+                    if (splitIndex <= 0) {
                         throw new IllegalArgumentException(String.format("Malformed type case in targetMap %s", targetMap));
                     }
-                    CaseItem ci = of.createCaseItem().withWhen(of.createIs().withOperand(applyTargetMap(source, caseElements[1])).withIsType(dataTypeToQName(resolveTypeName(caseElements[0]))))
-                            .withThen(applyTargetMap(source, caseElements[1]));
+                    String typeCaseElement = typeCase.substring(0, splitIndex);
+                    DataType typeCaseType = resolveTypeName(typeCaseElement);
+                    String typeCaseMap = typeCase.substring(splitIndex + 1);
+                    CaseItem ci = of.createCaseItem().withWhen(of.createIs().withOperand(applyTargetMap(source, typeCaseMap)).withIsType(dataTypeToQName(typeCaseType)))
+                            .withThen(applyTargetMap(source, typeCaseMap));
+                    ci.getThen().setResultType(typeCaseType);
                     c.getCaseItem().add(ci);
                 }
             }
@@ -2528,6 +2605,8 @@ public class LibraryBuilder implements ModelResolver {
             if (argumentSource.getResultType() instanceof ListType) {
                 Query query = of.createQuery().withSource(of.createAliasedQuerySource().withExpression(argumentSource).withAlias("$this"));
                 FunctionRef fr = of.createFunctionRef().withLibraryName(libraryName).withName(functionName).withOperand(of.createAliasRef().withName("$this"));
+                // This doesn't quite work because the US.Core types aren't subtypes of FHIR types.
+                //resolveCall(libraryName, functionName, new FunctionRefInvocation(fr), false, false);
                 query.setReturn(of.createReturnClause().withDistinct(false).withExpression(fr));
                 query.setResultType(source.getResultType());
                 return query;
@@ -2538,6 +2617,9 @@ public class LibraryBuilder implements ModelResolver {
                         .withOperand(argumentSource);
                 fr.setResultType(source.getResultType());
                 return fr;
+                // This doesn't quite work because the US.Core types aren't subtypes of FHIR types,
+                // or they are defined as System types and not FHIR types
+                // return resolveCall(libraryName, functionName, new FunctionRefInvocation(fr), false, false);
             }
         }
         else if (targetMap.contains("[")) {
@@ -2595,17 +2677,31 @@ public class LibraryBuilder implements ModelResolver {
 
                     // HACK: Workaround the fact that we don't have type information for the mapping expansions...
                     if (path.equals("coding")) {
-                        left = of.createFirst().withSource(left);
+                        left = (Expression)of.createFirst().withSource(left)
+                        .withResultType(this.getModel("FHIR").resolveTypeName("FHIR.coding"));
                     }
                     if (path.equals("url")) {
-                        left = of.createFunctionRef().withLibraryName("FHIRHelpers").withName("ToString").withOperand(left);
+                         // HACK: This special cases FHIR model resolution
+                        left.setResultType(this.getModel("FHIR").resolveTypeName("FHIR.uri"));
+                        var ref = of.createFunctionRef().withLibraryName("FHIRHelpers").withName("ToString").withOperand(left);
+                        left = resolveCall(ref.getLibraryName(), ref.getName(), new FunctionRefInvocation(ref), false, false);
                     }
                 }
 
                 // HACK: Workaround the fact that we don't have type information for the mapping expansions...
                 // These hacks will be removed when addressed by the model info
-                if (indexerItems[0].equals("code.coding.system") || indexerItems[0].equals("code.coding.code")) {
-                    left = of.createFunctionRef().withLibraryName("FHIRHelpers").withName("ToString").withOperand(left);
+                if (indexerItems[0].equals("code.coding.system")) {
+                    // HACK: This special cases FHIR model resolution
+                    left.setResultType(this.getModel("FHIR").resolveTypeName("FHIR.uri"));
+                    var ref = (FunctionRef)of.createFunctionRef().withLibraryName("FHIRHelpers").withName("ToString").withOperand(left);
+
+                    left = resolveCall(ref.getLibraryName(), ref.getName(), new FunctionRefInvocation(ref), false, false);
+                }
+                if (indexerItems[0].equals("code.coding.code")) {
+                    // HACK: This special cases FHIR model resolution
+                    left.setResultType(this.getModel("FHIR").resolveTypeName("FHIR.code"));
+                    var ref = of.createFunctionRef().withLibraryName("FHIRHelpers").withName("ToString").withOperand(left);
+                    left = resolveCall(ref.getLibraryName(), ref.getName(), new FunctionRefInvocation(ref), false, false);
                 }
 
                 String rightValue = indexerItems[1].substring(1, indexerItems[1].length() - 1);

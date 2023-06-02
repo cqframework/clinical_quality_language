@@ -1,0 +1,1342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:qdm43="urn:healthit-gov:qdm:v4_3" xmlns:qdm53="urn:healthit-gov:qdm:v5_3" xmlns:a="urn:hl7-org:cql-annotations:r1">
+   <annotation translatorOptions="EnableDateRangeOptimization,EnableAnnotations,EnableLocators,EnableResultTypes,DisableListDemotion,DisableListPromotion,DisableMethodInvocation" xsi:type="a:CqlToElmInfo"/>
+   <identifier id="DayMonthTimings" version="1.2.000"/>
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
+      <def localId="1" locator="3:1-3:23" localIdentifier="QDM" uri="urn:healthit-gov:qdm:v5_4" version="5.4"/>
+   </usings>
+   <parameters>
+      <def localId="4" locator="5:1-5:49" name="Measurement Period" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+            <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <parameterTypeSpecifier localId="3" locator="5:32-5:49" xsi:type="IntervalTypeSpecifier">
+            <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+               <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <pointType localId="2" locator="5:41-5:48" resultTypeName="t:DateTime" name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </parameterTypeSpecifier>
+      </def>
+   </parameters>
+   <statements>
+      <def locator="7:1-7:15" name="Patient" context="Patient">
+         <expression xsi:type="SingletonFrom">
+            <operand locator="7:1-7:15" xmlns:ns0="urn:healthit-gov:qdm:v5_4" dataType="ns0:Patient" templateId="Patient" xsi:type="Retrieve"/>
+         </expression>
+      </def>
+      <def localId="34" locator="9:1-11:106" name="Months Containing 28 Days" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="34">
+               <a:s>define &quot;Months Containing 28 Days&quot;:
+	/*Identifies the months in the year containing 28 days for determining number of days the medication is prescribed*/
+	</a:s>
+               <a:s r="33">
+                  <a:s r="5">{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28 }</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="33" locator="11:2-11:106" xsi:type="List">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <element localId="5" locator="11:4" resultTypeName="t:Integer" valueType="t:Integer" value="1" xsi:type="Literal"/>
+            <element localId="6" locator="11:7" resultTypeName="t:Integer" valueType="t:Integer" value="2" xsi:type="Literal"/>
+            <element localId="7" locator="11:10" resultTypeName="t:Integer" valueType="t:Integer" value="3" xsi:type="Literal"/>
+            <element localId="8" locator="11:13" resultTypeName="t:Integer" valueType="t:Integer" value="4" xsi:type="Literal"/>
+            <element localId="9" locator="11:16" resultTypeName="t:Integer" valueType="t:Integer" value="5" xsi:type="Literal"/>
+            <element localId="10" locator="11:19" resultTypeName="t:Integer" valueType="t:Integer" value="6" xsi:type="Literal"/>
+            <element localId="11" locator="11:22" resultTypeName="t:Integer" valueType="t:Integer" value="7" xsi:type="Literal"/>
+            <element localId="12" locator="11:25" resultTypeName="t:Integer" valueType="t:Integer" value="8" xsi:type="Literal"/>
+            <element localId="13" locator="11:28" resultTypeName="t:Integer" valueType="t:Integer" value="9" xsi:type="Literal"/>
+            <element localId="14" locator="11:31-11:32" resultTypeName="t:Integer" valueType="t:Integer" value="10" xsi:type="Literal"/>
+            <element localId="15" locator="11:35-11:36" resultTypeName="t:Integer" valueType="t:Integer" value="11" xsi:type="Literal"/>
+            <element localId="16" locator="11:39-11:40" resultTypeName="t:Integer" valueType="t:Integer" value="12" xsi:type="Literal"/>
+            <element localId="17" locator="11:43-11:44" resultTypeName="t:Integer" valueType="t:Integer" value="13" xsi:type="Literal"/>
+            <element localId="18" locator="11:47-11:48" resultTypeName="t:Integer" valueType="t:Integer" value="14" xsi:type="Literal"/>
+            <element localId="19" locator="11:51-11:52" resultTypeName="t:Integer" valueType="t:Integer" value="15" xsi:type="Literal"/>
+            <element localId="20" locator="11:55-11:56" resultTypeName="t:Integer" valueType="t:Integer" value="16" xsi:type="Literal"/>
+            <element localId="21" locator="11:59-11:60" resultTypeName="t:Integer" valueType="t:Integer" value="17" xsi:type="Literal"/>
+            <element localId="22" locator="11:63-11:64" resultTypeName="t:Integer" valueType="t:Integer" value="18" xsi:type="Literal"/>
+            <element localId="23" locator="11:67-11:68" resultTypeName="t:Integer" valueType="t:Integer" value="19" xsi:type="Literal"/>
+            <element localId="24" locator="11:71-11:72" resultTypeName="t:Integer" valueType="t:Integer" value="20" xsi:type="Literal"/>
+            <element localId="25" locator="11:75-11:76" resultTypeName="t:Integer" valueType="t:Integer" value="21" xsi:type="Literal"/>
+            <element localId="26" locator="11:79-11:80" resultTypeName="t:Integer" valueType="t:Integer" value="22" xsi:type="Literal"/>
+            <element localId="27" locator="11:83-11:84" resultTypeName="t:Integer" valueType="t:Integer" value="23" xsi:type="Literal"/>
+            <element localId="28" locator="11:87-11:88" resultTypeName="t:Integer" valueType="t:Integer" value="24" xsi:type="Literal"/>
+            <element localId="29" locator="11:91-11:92" resultTypeName="t:Integer" valueType="t:Integer" value="25" xsi:type="Literal"/>
+            <element localId="30" locator="11:95-11:96" resultTypeName="t:Integer" valueType="t:Integer" value="26" xsi:type="Literal"/>
+            <element localId="31" locator="11:99-11:100" resultTypeName="t:Integer" valueType="t:Integer" value="27" xsi:type="Literal"/>
+            <element localId="32" locator="11:103-11:104" resultTypeName="t:Integer" valueType="t:Integer" value="28" xsi:type="Literal"/>
+         </expression>
+      </def>
+      <def localId="65" locator="13:1-15:110" name="Months Containing 29 Days" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="65">
+               <a:s>define &quot;Months Containing 29 Days&quot;:
+	/*Identifies the months in the year containing 29 days for determining the number of days a medication prescribed*/
+	</a:s>
+               <a:s r="64">
+                  <a:s r="35">{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29 }</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="64" locator="15:2-15:110" xsi:type="List">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <element localId="35" locator="15:4" resultTypeName="t:Integer" valueType="t:Integer" value="1" xsi:type="Literal"/>
+            <element localId="36" locator="15:7" resultTypeName="t:Integer" valueType="t:Integer" value="2" xsi:type="Literal"/>
+            <element localId="37" locator="15:10" resultTypeName="t:Integer" valueType="t:Integer" value="3" xsi:type="Literal"/>
+            <element localId="38" locator="15:13" resultTypeName="t:Integer" valueType="t:Integer" value="4" xsi:type="Literal"/>
+            <element localId="39" locator="15:16" resultTypeName="t:Integer" valueType="t:Integer" value="5" xsi:type="Literal"/>
+            <element localId="40" locator="15:19" resultTypeName="t:Integer" valueType="t:Integer" value="6" xsi:type="Literal"/>
+            <element localId="41" locator="15:22" resultTypeName="t:Integer" valueType="t:Integer" value="7" xsi:type="Literal"/>
+            <element localId="42" locator="15:25" resultTypeName="t:Integer" valueType="t:Integer" value="8" xsi:type="Literal"/>
+            <element localId="43" locator="15:28" resultTypeName="t:Integer" valueType="t:Integer" value="9" xsi:type="Literal"/>
+            <element localId="44" locator="15:31-15:32" resultTypeName="t:Integer" valueType="t:Integer" value="10" xsi:type="Literal"/>
+            <element localId="45" locator="15:35-15:36" resultTypeName="t:Integer" valueType="t:Integer" value="11" xsi:type="Literal"/>
+            <element localId="46" locator="15:39-15:40" resultTypeName="t:Integer" valueType="t:Integer" value="12" xsi:type="Literal"/>
+            <element localId="47" locator="15:43-15:44" resultTypeName="t:Integer" valueType="t:Integer" value="13" xsi:type="Literal"/>
+            <element localId="48" locator="15:47-15:48" resultTypeName="t:Integer" valueType="t:Integer" value="14" xsi:type="Literal"/>
+            <element localId="49" locator="15:51-15:52" resultTypeName="t:Integer" valueType="t:Integer" value="15" xsi:type="Literal"/>
+            <element localId="50" locator="15:55-15:56" resultTypeName="t:Integer" valueType="t:Integer" value="16" xsi:type="Literal"/>
+            <element localId="51" locator="15:59-15:60" resultTypeName="t:Integer" valueType="t:Integer" value="17" xsi:type="Literal"/>
+            <element localId="52" locator="15:63-15:64" resultTypeName="t:Integer" valueType="t:Integer" value="18" xsi:type="Literal"/>
+            <element localId="53" locator="15:67-15:68" resultTypeName="t:Integer" valueType="t:Integer" value="19" xsi:type="Literal"/>
+            <element localId="54" locator="15:71-15:72" resultTypeName="t:Integer" valueType="t:Integer" value="20" xsi:type="Literal"/>
+            <element localId="55" locator="15:75-15:76" resultTypeName="t:Integer" valueType="t:Integer" value="21" xsi:type="Literal"/>
+            <element localId="56" locator="15:79-15:80" resultTypeName="t:Integer" valueType="t:Integer" value="22" xsi:type="Literal"/>
+            <element localId="57" locator="15:83-15:84" resultTypeName="t:Integer" valueType="t:Integer" value="23" xsi:type="Literal"/>
+            <element localId="58" locator="15:87-15:88" resultTypeName="t:Integer" valueType="t:Integer" value="24" xsi:type="Literal"/>
+            <element localId="59" locator="15:91-15:92" resultTypeName="t:Integer" valueType="t:Integer" value="25" xsi:type="Literal"/>
+            <element localId="60" locator="15:95-15:96" resultTypeName="t:Integer" valueType="t:Integer" value="26" xsi:type="Literal"/>
+            <element localId="61" locator="15:99-15:100" resultTypeName="t:Integer" valueType="t:Integer" value="27" xsi:type="Literal"/>
+            <element localId="62" locator="15:103-15:104" resultTypeName="t:Integer" valueType="t:Integer" value="28" xsi:type="Literal"/>
+            <element localId="63" locator="15:107-15:108" resultTypeName="t:Integer" valueType="t:Integer" value="29" xsi:type="Literal"/>
+         </expression>
+      </def>
+      <def localId="97" locator="17:1-19:114" name="Months Containing 30 Days" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="97">
+               <a:s>define &quot;Months Containing 30 Days&quot;:
+	/*Identifies the months in the year containing 30 days for determining the number of days a medication is prescribed*/
+	</a:s>
+               <a:s r="96">
+                  <a:s r="66">{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 }</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="96" locator="19:2-19:114" xsi:type="List">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <element localId="66" locator="19:4" resultTypeName="t:Integer" valueType="t:Integer" value="1" xsi:type="Literal"/>
+            <element localId="67" locator="19:7" resultTypeName="t:Integer" valueType="t:Integer" value="2" xsi:type="Literal"/>
+            <element localId="68" locator="19:10" resultTypeName="t:Integer" valueType="t:Integer" value="3" xsi:type="Literal"/>
+            <element localId="69" locator="19:13" resultTypeName="t:Integer" valueType="t:Integer" value="4" xsi:type="Literal"/>
+            <element localId="70" locator="19:16" resultTypeName="t:Integer" valueType="t:Integer" value="5" xsi:type="Literal"/>
+            <element localId="71" locator="19:19" resultTypeName="t:Integer" valueType="t:Integer" value="6" xsi:type="Literal"/>
+            <element localId="72" locator="19:22" resultTypeName="t:Integer" valueType="t:Integer" value="7" xsi:type="Literal"/>
+            <element localId="73" locator="19:25" resultTypeName="t:Integer" valueType="t:Integer" value="8" xsi:type="Literal"/>
+            <element localId="74" locator="19:28" resultTypeName="t:Integer" valueType="t:Integer" value="9" xsi:type="Literal"/>
+            <element localId="75" locator="19:31-19:32" resultTypeName="t:Integer" valueType="t:Integer" value="10" xsi:type="Literal"/>
+            <element localId="76" locator="19:35-19:36" resultTypeName="t:Integer" valueType="t:Integer" value="11" xsi:type="Literal"/>
+            <element localId="77" locator="19:39-19:40" resultTypeName="t:Integer" valueType="t:Integer" value="12" xsi:type="Literal"/>
+            <element localId="78" locator="19:43-19:44" resultTypeName="t:Integer" valueType="t:Integer" value="13" xsi:type="Literal"/>
+            <element localId="79" locator="19:47-19:48" resultTypeName="t:Integer" valueType="t:Integer" value="14" xsi:type="Literal"/>
+            <element localId="80" locator="19:51-19:52" resultTypeName="t:Integer" valueType="t:Integer" value="15" xsi:type="Literal"/>
+            <element localId="81" locator="19:55-19:56" resultTypeName="t:Integer" valueType="t:Integer" value="16" xsi:type="Literal"/>
+            <element localId="82" locator="19:59-19:60" resultTypeName="t:Integer" valueType="t:Integer" value="17" xsi:type="Literal"/>
+            <element localId="83" locator="19:63-19:64" resultTypeName="t:Integer" valueType="t:Integer" value="18" xsi:type="Literal"/>
+            <element localId="84" locator="19:67-19:68" resultTypeName="t:Integer" valueType="t:Integer" value="19" xsi:type="Literal"/>
+            <element localId="85" locator="19:71-19:72" resultTypeName="t:Integer" valueType="t:Integer" value="20" xsi:type="Literal"/>
+            <element localId="86" locator="19:75-19:76" resultTypeName="t:Integer" valueType="t:Integer" value="21" xsi:type="Literal"/>
+            <element localId="87" locator="19:79-19:80" resultTypeName="t:Integer" valueType="t:Integer" value="22" xsi:type="Literal"/>
+            <element localId="88" locator="19:83-19:84" resultTypeName="t:Integer" valueType="t:Integer" value="23" xsi:type="Literal"/>
+            <element localId="89" locator="19:87-19:88" resultTypeName="t:Integer" valueType="t:Integer" value="24" xsi:type="Literal"/>
+            <element localId="90" locator="19:91-19:92" resultTypeName="t:Integer" valueType="t:Integer" value="25" xsi:type="Literal"/>
+            <element localId="91" locator="19:95-19:96" resultTypeName="t:Integer" valueType="t:Integer" value="26" xsi:type="Literal"/>
+            <element localId="92" locator="19:99-19:100" resultTypeName="t:Integer" valueType="t:Integer" value="27" xsi:type="Literal"/>
+            <element localId="93" locator="19:103-19:104" resultTypeName="t:Integer" valueType="t:Integer" value="28" xsi:type="Literal"/>
+            <element localId="94" locator="19:107-19:108" resultTypeName="t:Integer" valueType="t:Integer" value="29" xsi:type="Literal"/>
+            <element localId="95" locator="19:111-19:112" resultTypeName="t:Integer" valueType="t:Integer" value="30" xsi:type="Literal"/>
+         </expression>
+      </def>
+      <def localId="130" locator="21:1-23:118" name="Months Containing 31 Days" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="130">
+               <a:s>define &quot;Months Containing 31 Days&quot;:
+	/*Identifies the months in the year containing 31 days for determining the number of days a medication is prescribed*/
+	</a:s>
+               <a:s r="129">
+                  <a:s r="98">{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 }</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="129" locator="23:2-23:118" xsi:type="List">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <element localId="98" locator="23:4" resultTypeName="t:Integer" valueType="t:Integer" value="1" xsi:type="Literal"/>
+            <element localId="99" locator="23:7" resultTypeName="t:Integer" valueType="t:Integer" value="2" xsi:type="Literal"/>
+            <element localId="100" locator="23:10" resultTypeName="t:Integer" valueType="t:Integer" value="3" xsi:type="Literal"/>
+            <element localId="101" locator="23:13" resultTypeName="t:Integer" valueType="t:Integer" value="4" xsi:type="Literal"/>
+            <element localId="102" locator="23:16" resultTypeName="t:Integer" valueType="t:Integer" value="5" xsi:type="Literal"/>
+            <element localId="103" locator="23:19" resultTypeName="t:Integer" valueType="t:Integer" value="6" xsi:type="Literal"/>
+            <element localId="104" locator="23:22" resultTypeName="t:Integer" valueType="t:Integer" value="7" xsi:type="Literal"/>
+            <element localId="105" locator="23:25" resultTypeName="t:Integer" valueType="t:Integer" value="8" xsi:type="Literal"/>
+            <element localId="106" locator="23:28" resultTypeName="t:Integer" valueType="t:Integer" value="9" xsi:type="Literal"/>
+            <element localId="107" locator="23:31-23:32" resultTypeName="t:Integer" valueType="t:Integer" value="10" xsi:type="Literal"/>
+            <element localId="108" locator="23:35-23:36" resultTypeName="t:Integer" valueType="t:Integer" value="11" xsi:type="Literal"/>
+            <element localId="109" locator="23:39-23:40" resultTypeName="t:Integer" valueType="t:Integer" value="12" xsi:type="Literal"/>
+            <element localId="110" locator="23:43-23:44" resultTypeName="t:Integer" valueType="t:Integer" value="13" xsi:type="Literal"/>
+            <element localId="111" locator="23:47-23:48" resultTypeName="t:Integer" valueType="t:Integer" value="14" xsi:type="Literal"/>
+            <element localId="112" locator="23:51-23:52" resultTypeName="t:Integer" valueType="t:Integer" value="15" xsi:type="Literal"/>
+            <element localId="113" locator="23:55-23:56" resultTypeName="t:Integer" valueType="t:Integer" value="16" xsi:type="Literal"/>
+            <element localId="114" locator="23:59-23:60" resultTypeName="t:Integer" valueType="t:Integer" value="17" xsi:type="Literal"/>
+            <element localId="115" locator="23:63-23:64" resultTypeName="t:Integer" valueType="t:Integer" value="18" xsi:type="Literal"/>
+            <element localId="116" locator="23:67-23:68" resultTypeName="t:Integer" valueType="t:Integer" value="19" xsi:type="Literal"/>
+            <element localId="117" locator="23:71-23:72" resultTypeName="t:Integer" valueType="t:Integer" value="20" xsi:type="Literal"/>
+            <element localId="118" locator="23:75-23:76" resultTypeName="t:Integer" valueType="t:Integer" value="21" xsi:type="Literal"/>
+            <element localId="119" locator="23:79-23:80" resultTypeName="t:Integer" valueType="t:Integer" value="22" xsi:type="Literal"/>
+            <element localId="120" locator="23:83-23:84" resultTypeName="t:Integer" valueType="t:Integer" value="23" xsi:type="Literal"/>
+            <element localId="121" locator="23:87-23:88" resultTypeName="t:Integer" valueType="t:Integer" value="24" xsi:type="Literal"/>
+            <element localId="122" locator="23:91-23:92" resultTypeName="t:Integer" valueType="t:Integer" value="25" xsi:type="Literal"/>
+            <element localId="123" locator="23:95-23:96" resultTypeName="t:Integer" valueType="t:Integer" value="26" xsi:type="Literal"/>
+            <element localId="124" locator="23:99-23:100" resultTypeName="t:Integer" valueType="t:Integer" value="27" xsi:type="Literal"/>
+            <element localId="125" locator="23:103-23:104" resultTypeName="t:Integer" valueType="t:Integer" value="28" xsi:type="Literal"/>
+            <element localId="126" locator="23:107-23:108" resultTypeName="t:Integer" valueType="t:Integer" value="29" xsi:type="Literal"/>
+            <element localId="127" locator="23:111-23:112" resultTypeName="t:Integer" valueType="t:Integer" value="30" xsi:type="Literal"/>
+            <element localId="128" locator="23:115-23:116" resultTypeName="t:Integer" valueType="t:Integer" value="31" xsi:type="Literal"/>
+         </expression>
+      </def>
+      <def localId="144" locator="25:1-27:42" name="MonthsInYear" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="144">
+               <a:s>define &quot;MonthsInYear&quot;:
+	/*Identifies the number of months in a calendar year to determine the number of days a medication is prescribed*/
+	</a:s>
+               <a:s r="143">
+                  <a:s r="131">{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="143" locator="27:2-27:42" xsi:type="List">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <element localId="131" locator="27:4" resultTypeName="t:Integer" valueType="t:Integer" value="1" xsi:type="Literal"/>
+            <element localId="132" locator="27:7" resultTypeName="t:Integer" valueType="t:Integer" value="2" xsi:type="Literal"/>
+            <element localId="133" locator="27:10" resultTypeName="t:Integer" valueType="t:Integer" value="3" xsi:type="Literal"/>
+            <element localId="134" locator="27:13" resultTypeName="t:Integer" valueType="t:Integer" value="4" xsi:type="Literal"/>
+            <element localId="135" locator="27:16" resultTypeName="t:Integer" valueType="t:Integer" value="5" xsi:type="Literal"/>
+            <element localId="136" locator="27:19" resultTypeName="t:Integer" valueType="t:Integer" value="6" xsi:type="Literal"/>
+            <element localId="137" locator="27:22" resultTypeName="t:Integer" valueType="t:Integer" value="7" xsi:type="Literal"/>
+            <element localId="138" locator="27:25" resultTypeName="t:Integer" valueType="t:Integer" value="8" xsi:type="Literal"/>
+            <element localId="139" locator="27:28" resultTypeName="t:Integer" valueType="t:Integer" value="9" xsi:type="Literal"/>
+            <element localId="140" locator="27:31-27:32" resultTypeName="t:Integer" valueType="t:Integer" value="10" xsi:type="Literal"/>
+            <element localId="141" locator="27:35-27:36" resultTypeName="t:Integer" valueType="t:Integer" value="11" xsi:type="Literal"/>
+            <element localId="142" locator="27:39-27:40" resultTypeName="t:Integer" valueType="t:Integer" value="12" xsi:type="Literal"/>
+         </expression>
+      </def>
+      <def localId="181" locator="39:1-44:19" resultTypeName="t:Boolean" name="IsLeapYear" context="Patient" accessLevel="Public" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="181">
+               <a:s>define function &quot;IsLeapYear&quot;(yr </a:s>
+               <a:s r="163">
+                  <a:s>Integer</a:s>
+               </a:s>
+               <a:s> ):
+	/*Determines if year is a leap year*/
+	</a:s>
+               <a:s r="180">
+                  <a:s r="180">
+                     <a:s r="174">
+                        <a:s>( </a:s>
+                        <a:s r="174">
+                           <a:s r="168">
+                              <a:s r="166">
+                                 <a:s r="164">
+                                    <a:s>yr</a:s>
+                                 </a:s>
+                                 <a:s r="165"> mod 4</a:s>
+                              </a:s>
+                              <a:s r="167"> = 0</a:s>
+                           </a:s>
+                           <a:s>
+			and </a:s>
+                           <a:s r="173">
+                              <a:s r="171">
+                                 <a:s r="169">
+                                    <a:s>yr</a:s>
+                                 </a:s>
+                                 <a:s r="170"> mod 100</a:s>
+                              </a:s>
+                              <a:s r="172"> != 0</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+	)</a:s>
+                     </a:s>
+                     <a:s>
+		or </a:s>
+                     <a:s r="179">
+                        <a:s r="177">
+                           <a:s r="175">
+                              <a:s>yr</a:s>
+                           </a:s>
+                           <a:s r="176"> mod 400</a:s>
+                        </a:s>
+                        <a:s r="178"> = 0</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="180" locator="41:2-44:19" resultTypeName="t:Boolean" xsi:type="Or">
+            <operand localId="174" locator="41:2-43:2" resultTypeName="t:Boolean" xsi:type="And">
+               <operand localId="168" locator="41:4-41:15" resultTypeName="t:Boolean" xsi:type="Equal">
+                  <operand localId="166" locator="41:4-41:11" resultTypeName="t:Integer" xsi:type="Modulo">
+                     <operand localId="164" locator="41:4-41:5" resultTypeName="t:Integer" name="yr" xsi:type="OperandRef"/>
+                     <operand localId="165" locator="41:11" resultTypeName="t:Integer" valueType="t:Integer" value="4" xsi:type="Literal"/>
+                  </operand>
+                  <operand localId="167" locator="41:15" resultTypeName="t:Integer" valueType="t:Integer" value="0" xsi:type="Literal"/>
+               </operand>
+               <operand localId="173" locator="42:8-42:22" resultTypeName="t:Boolean" xsi:type="Not">
+                  <operand locator="42:8-42:22" resultTypeName="t:Boolean" xsi:type="Equal">
+                     <operand localId="171" locator="42:8-42:17" resultTypeName="t:Integer" xsi:type="Modulo">
+                        <operand localId="169" locator="42:8-42:9" resultTypeName="t:Integer" name="yr" xsi:type="OperandRef"/>
+                        <operand localId="170" locator="42:15-42:17" resultTypeName="t:Integer" valueType="t:Integer" value="100" xsi:type="Literal"/>
+                     </operand>
+                     <operand localId="172" locator="42:22" resultTypeName="t:Integer" valueType="t:Integer" value="0" xsi:type="Literal"/>
+                  </operand>
+               </operand>
+            </operand>
+            <operand localId="179" locator="44:6-44:19" resultTypeName="t:Boolean" xsi:type="Equal">
+               <operand localId="177" locator="44:6-44:15" resultTypeName="t:Integer" xsi:type="Modulo">
+                  <operand localId="175" locator="44:6-44:7" resultTypeName="t:Integer" name="yr" xsi:type="OperandRef"/>
+                  <operand localId="176" locator="44:13-44:15" resultTypeName="t:Integer" valueType="t:Integer" value="400" xsi:type="Literal"/>
+               </operand>
+               <operand localId="178" locator="44:19" resultTypeName="t:Integer" valueType="t:Integer" value="0" xsi:type="Literal"/>
+            </operand>
+         </expression>
+         <operand name="yr">
+            <operandTypeSpecifier localId="163" locator="39:33-39:39" resultTypeName="t:Integer" name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+      </def>
+      <def localId="196" locator="29:1-37:28" name="DaysInMonth" context="Patient" accessLevel="Public" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="196">
+               <a:s>define function &quot;DaysInMonth&quot;(yr </a:s>
+               <a:s r="145">
+                  <a:s>Integer</a:s>
+               </a:s>
+               <a:s>, mo </a:s>
+               <a:s r="146">
+                  <a:s>Integer</a:s>
+               </a:s>
+               <a:s> ):
+	/*Calculates the number of days of a prescription relevant period*/
+	</a:s>
+               <a:s r="195">
+                  <a:s r="195">
+                     <a:s>
+                        <a:s r="189">
+                           <a:s r="188">
+                              <a:s>( </a:s>
+                              <a:s r="188">
+                                 <a:s>case
+		</a:s>
+                                 <a:s r="158">
+                                    <a:s>when </a:s>
+                                    <a:s r="156">
+                                       <a:s r="147">
+                                          <a:s>mo</a:s>
+                                       </a:s>
+                                       <a:s> in </a:s>
+                                       <a:s r="155">
+                                          <a:s r="148">{ 1, 3, 5, 7, 8, 10, 12 }</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> then </a:s>
+                                    <a:s r="157">
+                                       <a:s>&quot;Months Containing 31 Days&quot;</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>
+		</a:s>
+                                 <a:s r="186">
+                                    <a:s>when </a:s>
+                                    <a:s r="161">
+                                       <a:s r="159">
+                                          <a:s>mo</a:s>
+                                       </a:s>
+                                       <a:s r="160"> = 2</a:s>
+                                    </a:s>
+                                    <a:s> then </a:s>
+                                    <a:s r="185">
+                                       <a:s>if </a:s>
+                                       <a:s r="182">
+                                          <a:s>&quot;IsLeapYear&quot;(</a:s>
+                                          <a:s r="162">
+                                             <a:s>yr</a:s>
+                                          </a:s>
+                                          <a:s>)</a:s>
+                                       </a:s>
+                                       <a:s>then </a:s>
+                                       <a:s r="183">
+                                          <a:s>&quot;Months Containing 29 Days&quot;</a:s>
+                                       </a:s>
+                                       <a:s> 
+			else </a:s>
+                                       <a:s r="184">
+                                          <a:s>&quot;Months Containing 28 Days&quot;</a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s> 
+		else </a:s>
+                                 <a:s r="187">
+                                    <a:s>&quot;Months Containing 30 Days&quot;</a:s>
+                                 </a:s>
+                                 <a:s> 
+	end</a:s>
+                              </a:s>
+                              <a:s> )</a:s>
+                           </a:s>
+                           <a:s> D</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+		</a:s>
+                     <a:s r="194">
+                        <a:s>return </a:s>
+                        <a:s r="193">
+                           <a:s>DateTime(</a:s>
+                           <a:s r="190">
+                              <a:s>yr</a:s>
+                           </a:s>
+                           <a:s>, </a:s>
+                           <a:s r="191">
+                              <a:s>mo</a:s>
+                           </a:s>
+                           <a:s>, </a:s>
+                           <a:s r="192">
+                              <a:s>D</a:s>
+                           </a:s>
+                           <a:s>)</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="195" locator="31:2-37:28" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="189" locator="31:2-36:8" alias="D">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="188" locator="31:2-36:6" xsi:type="Case">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <caseItem localId="158" locator="32:3-32:71">
+                     <when localId="156" locator="32:8-32:38" resultTypeName="t:Boolean" xsi:type="In">
+                        <operand localId="147" locator="32:8-32:9" resultTypeName="t:Integer" name="mo" xsi:type="OperandRef"/>
+                        <operand localId="155" locator="32:14-32:38" xsi:type="List">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <element localId="148" locator="32:16" resultTypeName="t:Integer" valueType="t:Integer" value="1" xsi:type="Literal"/>
+                           <element localId="149" locator="32:19" resultTypeName="t:Integer" valueType="t:Integer" value="3" xsi:type="Literal"/>
+                           <element localId="150" locator="32:22" resultTypeName="t:Integer" valueType="t:Integer" value="5" xsi:type="Literal"/>
+                           <element localId="151" locator="32:25" resultTypeName="t:Integer" valueType="t:Integer" value="7" xsi:type="Literal"/>
+                           <element localId="152" locator="32:28" resultTypeName="t:Integer" valueType="t:Integer" value="8" xsi:type="Literal"/>
+                           <element localId="153" locator="32:31-32:32" resultTypeName="t:Integer" valueType="t:Integer" value="10" xsi:type="Literal"/>
+                           <element localId="154" locator="32:35-32:36" resultTypeName="t:Integer" valueType="t:Integer" value="12" xsi:type="Literal"/>
+                        </operand>
+                     </when>
+                     <then localId="157" locator="32:45-32:71" name="Months Containing 31 Days" xsi:type="ExpressionRef">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </then>
+                  </caseItem>
+                  <caseItem localId="186" locator="33:3-34:35">
+                     <when localId="161" locator="33:8-33:13" resultTypeName="t:Boolean" xsi:type="Equal">
+                        <operand localId="159" locator="33:8-33:9" resultTypeName="t:Integer" name="mo" xsi:type="OperandRef"/>
+                        <operand localId="160" locator="33:13" resultTypeName="t:Integer" valueType="t:Integer" value="2" xsi:type="Literal"/>
+                     </when>
+                     <then localId="185" locator="33:20-34:35" xsi:type="If">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <condition asType="t:Boolean" xsi:type="As">
+                           <operand localId="182" locator="33:23-33:38" resultTypeName="t:Boolean" name="IsLeapYear" xsi:type="FunctionRef">
+                              <operand localId="162" locator="33:36-33:37" resultTypeName="t:Integer" name="yr" xsi:type="OperandRef"/>
+                           </operand>
+                        </condition>
+                        <then localId="183" locator="33:44-33:70" name="Months Containing 29 Days" xsi:type="ExpressionRef">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </then>
+                        <else localId="184" locator="34:9-34:35" name="Months Containing 28 Days" xsi:type="ExpressionRef">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </else>
+                     </then>
+                  </caseItem>
+                  <else localId="187" locator="35:8-35:34" name="Months Containing 30 Days" xsi:type="ExpressionRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </else>
+               </expression>
+            </source>
+            <return localId="194" locator="37:3-37:28">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="193" locator="37:10-37:28" resultTypeName="t:DateTime" xsi:type="DateTime">
+                  <year localId="190" locator="37:19-37:20" resultTypeName="t:Integer" name="yr" xsi:type="OperandRef"/>
+                  <month localId="191" locator="37:23-37:24" resultTypeName="t:Integer" name="mo" xsi:type="OperandRef"/>
+                  <day localId="192" locator="37:27" resultTypeName="t:Integer" name="D" xsi:type="AliasRef"/>
+               </expression>
+            </return>
+         </expression>
+         <operand name="yr">
+            <operandTypeSpecifier localId="145" locator="29:34-29:40" resultTypeName="t:Integer" name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+         <operand name="mo">
+            <operandTypeSpecifier localId="146" locator="29:46-29:52" resultTypeName="t:Integer" name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+      </def>
+      <def localId="208" locator="46:1-50:2" name="DaysInYear" context="Patient" accessLevel="Public" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="208">
+               <a:s>define function &quot;DaysInYear&quot;(yr </a:s>
+               <a:s r="199">
+                  <a:s>Integer</a:s>
+               </a:s>
+               <a:s> ):
+	/*Lists are flattened to a single list*/
+	</a:s>
+               <a:s r="207">
+                  <a:s r="207">
+                     <a:s>flatten </a:s>
+                     <a:s r="206">
+                        <a:s>( </a:s>
+                        <a:s r="206">
+                           <a:s>
+                              <a:s r="201">
+                                 <a:s r="200">
+                                    <a:s>
+                                       <a:s>MonthsInYear</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s> Mo</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>
+			</a:s>
+                           <a:s r="205">
+                              <a:s>return </a:s>
+                              <a:s r="204">
+                                 <a:s>&quot;DaysInMonth&quot;(</a:s>
+                                 <a:s r="202">
+                                    <a:s>yr</a:s>
+                                 </a:s>
+                                 <a:s>, </a:s>
+                                 <a:s r="203">
+                                    <a:s>Mo</a:s>
+                                 </a:s>
+                                 <a:s>)</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+	)</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="207" locator="48:2-50:2" xsi:type="Flatten">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <operand localId="206" locator="48:10-50:2" xsi:type="Query">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xsi:type="ListTypeSpecifier">
+                     <elementType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                  </elementType>
+               </resultTypeSpecifier>
+               <source localId="201" locator="48:12-48:26" alias="Mo">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <expression localId="200" locator="48:12-48:23" name="MonthsInYear" xsi:type="ExpressionRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </expression>
+               </source>
+               <return localId="205" locator="49:4-49:31">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xsi:type="ListTypeSpecifier">
+                        <elementType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </elementType>
+                  </resultTypeSpecifier>
+                  <expression localId="204" locator="49:11-49:31" name="DaysInMonth" xsi:type="FunctionRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <operand localId="202" locator="49:25-49:26" resultTypeName="t:Integer" name="yr" xsi:type="OperandRef"/>
+                     <operand localId="203" locator="49:29-49:30" resultTypeName="t:Integer" name="Mo" xsi:type="AliasRef"/>
+                  </expression>
+               </return>
+            </operand>
+         </expression>
+         <operand name="yr">
+            <operandTypeSpecifier localId="199" locator="46:33-46:39" resultTypeName="t:Integer" name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+      </def>
+      <def localId="309" locator="52:1-84:4" name="DaysInPeriod" context="Patient" accessLevel="Public" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="309">
+               <a:s>define function &quot;DaysInPeriod&quot;(period </a:s>
+               <a:s r="210">
+                  <a:s>Interval&lt;</a:s>
+                  <a:s r="209">
+                     <a:s>DateTime</a:s>
+                  </a:s>
+                  <a:s>></a:s>
+               </a:s>
+               <a:s> ):
+	/*Calculates the number of days of a prescription and if the prescription is within the measurement period*/
+	</a:s>
+               <a:s r="308">
+                  <a:s r="308">
+                     <a:s>case
+		</a:s>
+                     <a:s r="219">
+                        <a:s>when </a:s>
+                        <a:s r="217">
+                           <a:s r="213">
+                              <a:s r="212">
+                                 <a:s>start of </a:s>
+                                 <a:s r="211">
+                                    <a:s>period</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> is null</a:s>
+                           </a:s>
+                           <a:s>
+			or 
+			</a:s>
+                           <a:s r="216">
+                              <a:s r="215">
+                                 <a:s>end of </a:s>
+                                 <a:s r="214">
+                                    <a:s>period</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> is null</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="218"> then null</a:s>
+                     </a:s>
+                     <a:s>
+		</a:s>
+                     <a:s r="267">
+                        <a:s>when </a:s>
+                        <a:s r="224">
+                           <a:s r="221">
+                              <a:s>start of </a:s>
+                              <a:s r="220">
+                                 <a:s>period</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s r="224"> same year as 
+		</a:s>
+                           <a:s r="223">
+                              <a:s>end of </a:s>
+                              <a:s r="222">
+                                 <a:s>period</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> then </a:s>
+                        <a:s r="266">
+                           <a:s>case
+			</a:s>
+                           <a:s r="250">
+                              <a:s>when </a:s>
+                              <a:s r="231">
+                                 <a:s r="227">
+                                    <a:s>month from </a:s>
+                                    <a:s r="226">
+                                       <a:s>start of </a:s>
+                                       <a:s r="225">
+                                          <a:s>period</a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s> = </a:s>
+                                 <a:s r="230">
+                                    <a:s>month from 
+			</a:s>
+                                    <a:s r="229">
+                                       <a:s>end of </a:s>
+                                       <a:s r="228">
+                                          <a:s>period</a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> then </a:s>
+                              <a:s r="249">
+                                 <a:s>
+                                    <a:s r="239">
+                                       <a:s r="238">
+                                          <a:s>( </a:s>
+                                          <a:s r="238">
+                                             <a:s>&quot;DaysInMonth&quot;(</a:s>
+                                             <a:s r="234">
+                                                <a:s>year from </a:s>
+                                                <a:s r="233">
+                                                   <a:s>start of </a:s>
+                                                   <a:s r="232">
+                                                      <a:s>period</a:s>
+                                                   </a:s>
+                                                </a:s>
+                                             </a:s>
+                                             <a:s>, </a:s>
+                                             <a:s r="237">
+                                                <a:s>month from </a:s>
+                                                <a:s r="236">
+                                                   <a:s>start of </a:s>
+                                                   <a:s r="235">
+                                                      <a:s>period</a:s>
+                                                   </a:s>
+                                                </a:s>
+                                             </a:s>
+                                             <a:s>)</a:s>
+                                          </a:s>
+                                          <a:s>)</a:s>
+                                       </a:s>
+                                       <a:s> DaysMonth</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>
+				</a:s>
+                                 <a:s r="248">
+                                    <a:s>where </a:s>
+                                    <a:s r="248">
+                                       <a:s r="243">
+                                          <a:s r="240">
+                                             <a:s>DaysMonth</a:s>
+                                          </a:s>
+                                          <a:s r="243"> same day or after </a:s>
+                                          <a:s r="242">
+                                             <a:s>start of </a:s>
+                                             <a:s r="241">
+                                                <a:s>period</a:s>
+                                             </a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s>
+					and </a:s>
+                                       <a:s r="247">
+                                          <a:s r="244">
+                                             <a:s>DaysMonth</a:s>
+                                          </a:s>
+                                          <a:s r="247"> same day or before 
+					</a:s>
+                                          <a:s r="246">
+                                             <a:s>end of </a:s>
+                                             <a:s r="245">
+                                                <a:s>period</a:s>
+                                             </a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> 
+			else </a:s>
+                           <a:s r="265">
+                              <a:s>
+                                 <a:s r="255">
+                                    <a:s r="254">
+                                       <a:s>( </a:s>
+                                       <a:s r="254">
+                                          <a:s>&quot;DaysInYear&quot;(</a:s>
+                                          <a:s r="253">
+                                             <a:s>year from </a:s>
+                                             <a:s r="252">
+                                                <a:s>start of </a:s>
+                                                <a:s r="251">
+                                                   <a:s>period</a:s>
+                                                </a:s>
+                                             </a:s>
+                                          </a:s>
+                                          <a:s>)</a:s>
+                                       </a:s>
+                                       <a:s>)</a:s>
+                                    </a:s>
+                                    <a:s> DaysYear</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>
+			</a:s>
+                              <a:s r="264">
+                                 <a:s>where </a:s>
+                                 <a:s r="264">
+                                    <a:s r="259">
+                                       <a:s r="256">
+                                          <a:s>DaysYear</a:s>
+                                       </a:s>
+                                       <a:s r="259"> same day or after </a:s>
+                                       <a:s r="258">
+                                          <a:s>start of </a:s>
+                                          <a:s r="257">
+                                             <a:s>period</a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s>
+				and </a:s>
+                                    <a:s r="263">
+                                       <a:s r="260">
+                                          <a:s>DaysYear</a:s>
+                                       </a:s>
+                                       <a:s r="263"> same day or before 
+				</a:s>
+                                       <a:s r="262">
+                                          <a:s>end of </a:s>
+                                          <a:s r="261">
+                                             <a:s>period</a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> 
+		end</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+		</a:s>
+                     <a:s r="306">
+                        <a:s>when </a:s>
+                        <a:s r="274">
+                           <a:s r="272">
+                              <a:s>difference in years between </a:s>
+                              <a:s r="269">
+                                 <a:s>start of </a:s>
+                                 <a:s r="268">
+                                    <a:s>period</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> and 
+		</a:s>
+                              <a:s r="271">
+                                 <a:s>end of </a:s>
+                                 <a:s r="270">
+                                    <a:s>period</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s r="273"> = 1</a:s>
+                        </a:s>
+                        <a:s> then </a:s>
+                        <a:s r="305">
+                           <a:s r="289">
+                              <a:s>( </a:s>
+                              <a:s r="289">
+                                 <a:s>
+                                    <a:s r="279">
+                                       <a:s r="278">
+                                          <a:s>( </a:s>
+                                          <a:s r="278">
+                                             <a:s>&quot;DaysInYear&quot;(</a:s>
+                                             <a:s r="277">
+                                                <a:s>year from </a:s>
+                                                <a:s r="276">
+                                                   <a:s>start of </a:s>
+                                                   <a:s r="275">
+                                                      <a:s>period</a:s>
+                                                   </a:s>
+                                                </a:s>
+                                             </a:s>
+                                             <a:s>)</a:s>
+                                          </a:s>
+                                          <a:s>)</a:s>
+                                       </a:s>
+                                       <a:s> DaysYear</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>
+				</a:s>
+                                 <a:s r="288">
+                                    <a:s>where </a:s>
+                                    <a:s r="288">
+                                       <a:s r="283">
+                                          <a:s r="280">
+                                             <a:s>DaysYear</a:s>
+                                          </a:s>
+                                          <a:s r="283"> same day or after </a:s>
+                                          <a:s r="282">
+                                             <a:s>start of </a:s>
+                                             <a:s r="281">
+                                                <a:s>period</a:s>
+                                             </a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s>
+					and </a:s>
+                                       <a:s r="287">
+                                          <a:s r="284">
+                                             <a:s>DaysYear</a:s>
+                                          </a:s>
+                                          <a:s r="287"> same day or before 
+					</a:s>
+                                          <a:s r="286">
+                                             <a:s>end of </a:s>
+                                             <a:s r="285">
+                                                <a:s>period</a:s>
+                                             </a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>
+		)</a:s>
+                           </a:s>
+                           <a:s>
+			union </a:s>
+                           <a:s r="304">
+                              <a:s>( </a:s>
+                              <a:s r="304">
+                                 <a:s>
+                                    <a:s r="294">
+                                       <a:s r="293">
+                                          <a:s>( </a:s>
+                                          <a:s r="293">
+                                             <a:s>&quot;DaysInYear&quot;(</a:s>
+                                             <a:s r="292">
+                                                <a:s>year from 
+					</a:s>
+                                                <a:s r="291">
+                                                   <a:s>end of </a:s>
+                                                   <a:s r="290">
+                                                      <a:s>period</a:s>
+                                                   </a:s>
+                                                </a:s>
+                                             </a:s>
+                                             <a:s>
+				)</a:s>
+                                          </a:s>
+                                          <a:s>)</a:s>
+                                       </a:s>
+                                       <a:s> DaysYear</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>
+					</a:s>
+                                 <a:s r="303">
+                                    <a:s>where </a:s>
+                                    <a:s r="303">
+                                       <a:s r="298">
+                                          <a:s r="295">
+                                             <a:s>DaysYear</a:s>
+                                          </a:s>
+                                          <a:s r="298"> same day or after </a:s>
+                                          <a:s r="297">
+                                             <a:s>start of </a:s>
+                                             <a:s r="296">
+                                                <a:s>period</a:s>
+                                             </a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s>
+						and </a:s>
+                                       <a:s r="302">
+                                          <a:s r="299">
+                                             <a:s>DaysYear</a:s>
+                                          </a:s>
+                                          <a:s r="302"> same day or before 
+						</a:s>
+                                          <a:s r="301">
+                                             <a:s>end of </a:s>
+                                             <a:s r="300">
+                                                <a:s>period</a:s>
+                                             </a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>
+			)</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s r="307"> 
+		else null 
+	end</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="308" locator="54:2-84:4" xsi:type="Case">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <caseItem localId="219" locator="55:3-57:34">
+               <when localId="217" locator="55:8-57:24" resultTypeName="t:Boolean" xsi:type="Or">
+                  <operand localId="213" locator="55:8-55:30" resultTypeName="t:Boolean" xsi:type="IsNull">
+                     <operand localId="212" locator="55:8-55:22" resultTypeName="t:DateTime" xsi:type="Start">
+                        <operand localId="211" locator="55:17-55:22" name="period" xsi:type="OperandRef">
+                           <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                              <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </operand>
+                     </operand>
+                  </operand>
+                  <operand localId="216" locator="57:4-57:24" resultTypeName="t:Boolean" xsi:type="IsNull">
+                     <operand localId="215" locator="57:4-57:16" resultTypeName="t:DateTime" xsi:type="End">
+                        <operand localId="214" locator="57:11-57:16" name="period" xsi:type="OperandRef">
+                           <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                              <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </operand>
+                     </operand>
+                  </operand>
+               </when>
+               <then xsi:type="As">
+                  <operand localId="218" locator="57:31-57:34" resultTypeName="t:Any" xsi:type="Null"/>
+                  <asTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                  </asTypeSpecifier>
+               </then>
+            </caseItem>
+            <caseItem localId="267" locator="58:3-69:5">
+               <when localId="224" locator="58:8-59:15" resultTypeName="t:Boolean" precision="Year" xsi:type="SameAs">
+                  <operand localId="221" locator="58:8-58:22" resultTypeName="t:DateTime" xsi:type="Start">
+                     <operand localId="220" locator="58:17-58:22" name="period" xsi:type="OperandRef">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </operand>
+                  </operand>
+                  <operand localId="223" locator="59:3-59:15" resultTypeName="t:DateTime" xsi:type="End">
+                     <operand localId="222" locator="59:10-59:15" name="period" xsi:type="OperandRef">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </operand>
+                  </operand>
+               </when>
+               <then localId="266" locator="59:22-69:5" xsi:type="Case">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <caseItem localId="250" locator="60:4-64:18">
+                     <when localId="231" locator="60:9-61:16" resultTypeName="t:Boolean" xsi:type="Equal">
+                        <operand localId="227" locator="60:9-60:34" resultTypeName="t:Integer" precision="Month" xsi:type="DateTimeComponentFrom">
+                           <operand localId="226" locator="60:20-60:34" resultTypeName="t:DateTime" xsi:type="Start">
+                              <operand localId="225" locator="60:29-60:34" name="period" xsi:type="OperandRef">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </operand>
+                        </operand>
+                        <operand localId="230" locator="60:38-61:16" resultTypeName="t:Integer" precision="Month" xsi:type="DateTimeComponentFrom">
+                           <operand localId="229" locator="61:4-61:16" resultTypeName="t:DateTime" xsi:type="End">
+                              <operand localId="228" locator="61:11-61:16" name="period" xsi:type="OperandRef">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </operand>
+                        </operand>
+                     </when>
+                     <then localId="249" locator="61:23-64:18" xsi:type="Query">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <source localId="239" locator="61:23-61:103" alias="DaysMonth">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <expression localId="238" locator="61:23-61:93" name="DaysInMonth" xsi:type="FunctionRef">
+                              <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                 <elementType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                              <operand localId="234" locator="61:39-61:63" resultTypeName="t:Integer" precision="Year" xsi:type="DateTimeComponentFrom">
+                                 <operand localId="233" locator="61:49-61:63" resultTypeName="t:DateTime" xsi:type="Start">
+                                    <operand localId="232" locator="61:58-61:63" name="period" xsi:type="OperandRef">
+                                       <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                          <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                       </resultTypeSpecifier>
+                                    </operand>
+                                 </operand>
+                              </operand>
+                              <operand localId="237" locator="61:66-61:91" resultTypeName="t:Integer" precision="Month" xsi:type="DateTimeComponentFrom">
+                                 <operand localId="236" locator="61:77-61:91" resultTypeName="t:DateTime" xsi:type="Start">
+                                    <operand localId="235" locator="61:86-61:91" name="period" xsi:type="OperandRef">
+                                       <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                          <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                       </resultTypeSpecifier>
+                                    </operand>
+                                 </operand>
+                              </operand>
+                           </expression>
+                        </source>
+                        <where localId="248" locator="62:5-64:18" resultTypeName="t:Boolean" xsi:type="And">
+                           <operand localId="243" locator="62:11-62:53" resultTypeName="t:Boolean" precision="Day" xsi:type="SameOrAfter">
+                              <operand localId="240" locator="62:11-62:19" resultTypeName="t:DateTime" name="DaysMonth" xsi:type="AliasRef"/>
+                              <operand localId="242" locator="62:39-62:53" resultTypeName="t:DateTime" xsi:type="Start">
+                                 <operand localId="241" locator="62:48-62:53" name="period" xsi:type="OperandRef">
+                                    <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                       <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                    </resultTypeSpecifier>
+                                 </operand>
+                              </operand>
+                           </operand>
+                           <operand localId="247" locator="63:10-64:18" resultTypeName="t:Boolean" precision="Day" xsi:type="SameOrBefore">
+                              <operand localId="244" locator="63:10-63:18" resultTypeName="t:DateTime" name="DaysMonth" xsi:type="AliasRef"/>
+                              <operand localId="246" locator="64:6-64:18" resultTypeName="t:DateTime" xsi:type="End">
+                                 <operand localId="245" locator="64:13-64:18" name="period" xsi:type="OperandRef">
+                                    <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                       <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                    </resultTypeSpecifier>
+                                 </operand>
+                              </operand>
+                           </operand>
+                        </where>
+                     </then>
+                  </caseItem>
+                  <else localId="265" locator="65:9-68:17" xsi:type="Query">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <source localId="255" locator="65:9-65:59" alias="DaysYear">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <expression localId="254" locator="65:9-65:50" name="DaysInYear" xsi:type="FunctionRef">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <operand localId="253" locator="65:24-65:48" resultTypeName="t:Integer" precision="Year" xsi:type="DateTimeComponentFrom">
+                              <operand localId="252" locator="65:34-65:48" resultTypeName="t:DateTime" xsi:type="Start">
+                                 <operand localId="251" locator="65:43-65:48" name="period" xsi:type="OperandRef">
+                                    <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                       <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                    </resultTypeSpecifier>
+                                 </operand>
+                              </operand>
+                           </operand>
+                        </expression>
+                     </source>
+                     <where localId="264" locator="66:4-68:17" resultTypeName="t:Boolean" xsi:type="And">
+                        <operand localId="259" locator="66:10-66:51" resultTypeName="t:Boolean" precision="Day" xsi:type="SameOrAfter">
+                           <operand localId="256" locator="66:10-66:17" resultTypeName="t:DateTime" name="DaysYear" xsi:type="AliasRef"/>
+                           <operand localId="258" locator="66:37-66:51" resultTypeName="t:DateTime" xsi:type="Start">
+                              <operand localId="257" locator="66:46-66:51" name="period" xsi:type="OperandRef">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </operand>
+                        </operand>
+                        <operand localId="263" locator="67:9-68:17" resultTypeName="t:Boolean" precision="Day" xsi:type="SameOrBefore">
+                           <operand localId="260" locator="67:9-67:16" resultTypeName="t:DateTime" name="DaysYear" xsi:type="AliasRef"/>
+                           <operand localId="262" locator="68:5-68:17" resultTypeName="t:DateTime" xsi:type="End">
+                              <operand localId="261" locator="68:12-68:17" name="period" xsi:type="OperandRef">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </operand>
+                        </operand>
+                     </where>
+                  </else>
+               </then>
+            </caseItem>
+            <caseItem localId="306" locator="70:3-82:4">
+               <when localId="274" locator="70:8-71:19" resultTypeName="t:Boolean" xsi:type="Equal">
+                  <operand localId="272" locator="70:8-71:15" resultTypeName="t:Integer" precision="Year" xsi:type="DifferenceBetween">
+                     <operand localId="269" locator="70:36-70:50" resultTypeName="t:DateTime" xsi:type="Start">
+                        <operand localId="268" locator="70:45-70:50" name="period" xsi:type="OperandRef">
+                           <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                              <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </operand>
+                     </operand>
+                     <operand localId="271" locator="71:3-71:15" resultTypeName="t:DateTime" xsi:type="End">
+                        <operand localId="270" locator="71:10-71:15" name="period" xsi:type="OperandRef">
+                           <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                              <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </operand>
+                     </operand>
+                  </operand>
+                  <operand localId="273" locator="71:19" resultTypeName="t:Integer" valueType="t:Integer" value="1" xsi:type="Literal"/>
+               </when>
+               <then localId="305" locator="71:26-82:4" xsi:type="Union">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <operand localId="289" locator="71:26-75:3" xsi:type="Query">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <source localId="279" locator="71:28-71:78" alias="DaysYear">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <expression localId="278" locator="71:28-71:69" name="DaysInYear" xsi:type="FunctionRef">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <operand localId="277" locator="71:43-71:67" resultTypeName="t:Integer" precision="Year" xsi:type="DateTimeComponentFrom">
+                              <operand localId="276" locator="71:53-71:67" resultTypeName="t:DateTime" xsi:type="Start">
+                                 <operand localId="275" locator="71:62-71:67" name="period" xsi:type="OperandRef">
+                                    <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                       <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                    </resultTypeSpecifier>
+                                 </operand>
+                              </operand>
+                           </operand>
+                        </expression>
+                     </source>
+                     <where localId="288" locator="72:5-74:18" resultTypeName="t:Boolean" xsi:type="And">
+                        <operand localId="283" locator="72:11-72:52" resultTypeName="t:Boolean" precision="Day" xsi:type="SameOrAfter">
+                           <operand localId="280" locator="72:11-72:18" resultTypeName="t:DateTime" name="DaysYear" xsi:type="AliasRef"/>
+                           <operand localId="282" locator="72:38-72:52" resultTypeName="t:DateTime" xsi:type="Start">
+                              <operand localId="281" locator="72:47-72:52" name="period" xsi:type="OperandRef">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </operand>
+                        </operand>
+                        <operand localId="287" locator="73:10-74:18" resultTypeName="t:Boolean" precision="Day" xsi:type="SameOrBefore">
+                           <operand localId="284" locator="73:10-73:17" resultTypeName="t:DateTime" name="DaysYear" xsi:type="AliasRef"/>
+                           <operand localId="286" locator="74:6-74:18" resultTypeName="t:DateTime" xsi:type="End">
+                              <operand localId="285" locator="74:13-74:18" name="period" xsi:type="OperandRef">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </operand>
+                        </operand>
+                     </where>
+                  </operand>
+                  <operand localId="304" locator="76:10-82:4" xsi:type="Query">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <source localId="294" locator="76:12-78:15" alias="DaysYear">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <expression localId="293" locator="76:12-78:6" name="DaysInYear" xsi:type="FunctionRef">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <operand localId="292" locator="76:27-77:18" resultTypeName="t:Integer" precision="Year" xsi:type="DateTimeComponentFrom">
+                              <operand localId="291" locator="77:6-77:18" resultTypeName="t:DateTime" xsi:type="End">
+                                 <operand localId="290" locator="77:13-77:18" name="period" xsi:type="OperandRef">
+                                    <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                       <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                    </resultTypeSpecifier>
+                                 </operand>
+                              </operand>
+                           </operand>
+                        </expression>
+                     </source>
+                     <where localId="303" locator="79:6-81:19" resultTypeName="t:Boolean" xsi:type="And">
+                        <operand localId="298" locator="79:12-79:53" resultTypeName="t:Boolean" precision="Day" xsi:type="SameOrAfter">
+                           <operand localId="295" locator="79:12-79:19" resultTypeName="t:DateTime" name="DaysYear" xsi:type="AliasRef"/>
+                           <operand localId="297" locator="79:39-79:53" resultTypeName="t:DateTime" xsi:type="Start">
+                              <operand localId="296" locator="79:48-79:53" name="period" xsi:type="OperandRef">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </operand>
+                        </operand>
+                        <operand localId="302" locator="80:11-81:19" resultTypeName="t:Boolean" precision="Day" xsi:type="SameOrBefore">
+                           <operand localId="299" locator="80:11-80:18" resultTypeName="t:DateTime" name="DaysYear" xsi:type="AliasRef"/>
+                           <operand localId="301" locator="81:7-81:19" resultTypeName="t:DateTime" xsi:type="End">
+                              <operand localId="300" locator="81:14-81:19" name="period" xsi:type="OperandRef">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </operand>
+                        </operand>
+                     </where>
+                  </operand>
+               </then>
+            </caseItem>
+            <else xsi:type="As">
+               <operand localId="307" locator="83:8-83:11" resultTypeName="t:Any" xsi:type="Null"/>
+               <asTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+               </asTypeSpecifier>
+            </else>
+         </expression>
+         <operand name="period">
+            <operandTypeSpecifier localId="210" locator="52:39-52:56" xsi:type="IntervalTypeSpecifier">
+               <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                  <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <pointType localId="209" locator="52:48-52:55" resultTypeName="t:DateTime" name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+            </operandTypeSpecifier>
+         </operand>
+      </def>
+   </statements>
+</library>
+
+

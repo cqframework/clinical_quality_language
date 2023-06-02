@@ -1,0 +1,2534 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:qdm43="urn:healthit-gov:qdm:v4_3" xmlns:qdm53="urn:healthit-gov:qdm:v5_3" xmlns:a="urn:hl7-org:cql-annotations:r1">
+   <annotation translatorOptions="EnableAnnotations,EnableLocators,DisableListDemotion,DisableListPromotion,DisableMethodInvocation" xsi:type="a:CqlToElmInfo"/>
+   <annotation xsi:type="a:Annotation">
+      <a:s r="361">
+         <a:s>library FollowUpCareforChildrenPrescribedADHDMedicationADD version '10.2.000'</a:s>
+      </a:s>
+   </annotation>
+   <identifier id="FollowUpCareforChildrenPrescribedADHDMedicationADD" version="10.2.000"/>
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
+      <def localId="1" locator="3:1-3:23" localIdentifier="QDM" uri="urn:healthit-gov:qdm:v5_5" version="5.5">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="1">
+               <a:s>using </a:s>
+               <a:s>
+                  <a:s>QDM</a:s>
+               </a:s>
+               <a:s> version '5.5'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+   </usings>
+   <includes>
+      <def localId="2" locator="5:1-5:64" localIdentifier="Global" path="MATGlobalCommonFunctions" version="5.0.000">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="2">
+               <a:s>include </a:s>
+               <a:s>
+                  <a:s>MATGlobalCommonFunctions</a:s>
+               </a:s>
+               <a:s> version '5.0.000' called Global</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="3" locator="6:1-6:48" localIdentifier="Hospice" path="Hospice" version="2.2.000">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="3">
+               <a:s>include </a:s>
+               <a:s>
+                  <a:s>Hospice</a:s>
+               </a:s>
+               <a:s> version '2.2.000' called Hospice</a:s>
+            </a:s>
+         </annotation>
+      </def>
+   </includes>
+   <parameters>
+      <def localId="36" locator="39:1-39:49" name="Measurement Period" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="36">
+               <a:s>parameter &quot;Measurement Period&quot; </a:s>
+               <a:s r="35">
+                  <a:s>Interval&lt;</a:s>
+                  <a:s r="34">
+                     <a:s>DateTime</a:s>
+                  </a:s>
+                  <a:s>></a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <parameterTypeSpecifier localId="35" locator="39:32-39:49" xsi:type="IntervalTypeSpecifier">
+            <pointType localId="34" locator="39:41-39:48" name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </parameterTypeSpecifier>
+      </def>
+   </parameters>
+   <codeSystems>
+      <def localId="4" locator="8:1-8:51" name="LOINC" id="urn:oid:2.16.840.1.113883.6.1" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="4">
+               <a:s>codesystem &quot;LOINC&quot;: 'urn:oid:2.16.840.1.113883.6.1'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="5" locator="9:1-9:50" name="CPT" id="urn:oid:2.16.840.1.113883.6.12" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="5">
+               <a:s>codesystem &quot;CPT&quot;: 'urn:oid:2.16.840.1.113883.6.12'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+   </codeSystems>
+   <valueSets>
+      <def localId="6" locator="11:1-11:79" name="ADHD Medications" id="urn:oid:2.16.840.1.113883.3.464.1003.196.12.1171" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="6">
+               <a:s>valueset &quot;ADHD Medications&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.196.12.1171'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="7" locator="12:1-12:73" name="Ambulatory" id="urn:oid:2.16.840.1.113883.3.464.1003.122.12.1003" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="7">
+               <a:s>valueset &quot;Ambulatory&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.122.12.1003'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="8" locator="13:1-13:96" name="Behavioral Health Follow-up Visit" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1054" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="8">
+               <a:s>valueset &quot;Behavioral Health Follow-up Visit&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1054'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="9" locator="14:1-14:71" name="Encounter Inpatient" id="urn:oid:2.16.840.1.113883.3.666.5.307" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="9">
+               <a:s>valueset &quot;Encounter Inpatient&quot;: 'urn:oid:2.16.840.1.113883.3.666.5.307'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="10" locator="15:1-15:58" name="Ethnicity" id="urn:oid:2.16.840.1.114222.4.11.837" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="10">
+               <a:s>valueset &quot;Ethnicity&quot;: 'urn:oid:2.16.840.1.114222.4.11.837'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="11" locator="16:1-16:87" name="Home Healthcare Services" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1016" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="11">
+               <a:s>valueset &quot;Home Healthcare Services&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1016'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="12" locator="17:1-17:98" name="Hospital Observation Care - Initial" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1002" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="12">
+               <a:s>valueset &quot;Hospital Observation Care - Initial&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1002'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="13" locator="18:1-18:86" name="Mental Health Diagnoses" id="urn:oid:2.16.840.1.113883.3.464.1003.105.12.1004" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="13">
+               <a:s>valueset &quot;Mental Health Diagnoses&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.105.12.1004'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="14" locator="19:1-19:73" name="Narcolepsy" id="urn:oid:2.16.840.1.113883.3.464.1003.114.12.1011" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="14">
+               <a:s>valueset &quot;Narcolepsy&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.114.12.1011'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="15" locator="20:1-20:75" name="Office Visit" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1001" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="15">
+               <a:s>valueset &quot;Office Visit&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1001'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="16" locator="21:1-21:68" name="ONC Administrative Sex" id="urn:oid:2.16.840.1.113762.1.4.1" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="16">
+               <a:s>valueset &quot;ONC Administrative Sex&quot;: 'urn:oid:2.16.840.1.113762.1.4.1'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="17" locator="22:1-22:86" name="Outpatient Consultation" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1008" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="17">
+               <a:s>valueset &quot;Outpatient Consultation&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1008'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="18" locator="23:1-23:55" name="Payer" id="urn:oid:2.16.840.1.114222.4.11.3591" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="18">
+               <a:s>valueset &quot;Payer&quot;: 'urn:oid:2.16.840.1.114222.4.11.3591'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="19" locator="24:1-24:106" name="Preventive Care Services - Group Counseling" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1027" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="19">
+               <a:s>valueset &quot;Preventive Care Services - Group Counseling&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1027'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="20" locator="25:1-25:118" name="Preventive Care Services, Initial Office Visit, 0 to 17" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1022" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="20">
+               <a:s>valueset &quot;Preventive Care Services, Initial Office Visit, 0 to 17&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1022'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="21" locator="26:1-26:109" name="Preventive Care Services-Individual Counseling" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1026" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="21">
+               <a:s>valueset &quot;Preventive Care Services-Individual Counseling&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1026'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="22" locator="27:1-27:113" name="Preventive Care, Established Office Visit, 0 to 17" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1024" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="22">
+               <a:s>valueset &quot;Preventive Care, Established Office Visit, 0 to 17&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1024'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="23" locator="28:1-28:88" name="Psych Visit - Diagnostic Evaluation" id="urn:oid:2.16.840.1.113883.3.526.3.1492" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="23">
+               <a:s>valueset &quot;Psych Visit - Diagnostic Evaluation&quot;: 'urn:oid:2.16.840.1.113883.3.526.3.1492'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="24" locator="29:1-29:80" name="Psych Visit - Psychotherapy" id="urn:oid:2.16.840.1.113883.3.526.3.1496" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="24">
+               <a:s>valueset &quot;Psych Visit - Psychotherapy&quot;: 'urn:oid:2.16.840.1.113883.3.526.3.1496'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="25" locator="30:1-30:105" name="Psychotherapy and Pharmacologic Management" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1055" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="25">
+               <a:s>valueset &quot;Psychotherapy and Pharmacologic Management&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1055'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="26" locator="31:1-31:53" name="Race" id="urn:oid:2.16.840.1.114222.4.11.836" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="26">
+               <a:s>valueset &quot;Race&quot;: 'urn:oid:2.16.840.1.114222.4.11.836'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="27" locator="32:1-32:78" name="Substance Abuse" id="urn:oid:2.16.840.1.113883.3.464.1003.106.12.1004" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="27">
+               <a:s>valueset &quot;Substance Abuse&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.106.12.1004'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="28" locator="33:1-33:82" name="Telehealth Services" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1031" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="28">
+               <a:s>valueset &quot;Telehealth Services&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1031'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="29" locator="34:1-34:83" name="Telephone Management" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1053" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="29">
+               <a:s>valueset &quot;Telephone Management&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1053'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+   </valueSets>
+   <codes>
+      <def localId="31" locator="36:1-36:62" name="Birth date" id="21112-8" display="Birth date" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="31">
+               <a:s>code &quot;Birth date&quot;: '21112-8' from </a:s>
+               <a:s r="30">
+                  <a:s>&quot;LOINC&quot;</a:s>
+               </a:s>
+               <a:s> display 'Birth date'</a:s>
+            </a:s>
+         </annotation>
+         <codeSystem localId="30" locator="36:35-36:41" name="LOINC"/>
+      </def>
+      <def localId="33" locator="37:1-37:1038" name="Observation care discharge day management (This code is to be utilized to report all services provided to a patient on discharge from outpatient hospital observation status if the discharge is on other than the initial date of observation status. To report services to a patient designated as observation status or inpatient status and discharged on the same date, use the codes for Observation or Inpatient Care Services [including Admission and Discharge Services, 99234-99236 as appropriate.])" id="99217" display="Observation care discharge day management (This code is to be utilized to report all services provided to a patient on discharge from outpatient hospital &quot;observation status&quot; if the discharge is on other than the initial date of &quot;observation status.&quot; To report services to a patient designated as &quot;observation status&quot; or &quot;inpatient status&quot; and discharged on the same date, use the codes for Observation or Inpatient Care Services [including Admission and Discharge Services, 99234-99236 as appropriate.])" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="33">
+               <a:s>code &quot;Observation care discharge day management (This code is to be utilized to report all services provided to a patient on discharge from outpatient hospital observation status if the discharge is on other than the initial date of observation status. To report services to a patient designated as observation status or inpatient status and discharged on the same date, use the codes for Observation or Inpatient Care Services [including Admission and Discharge Services, 99234-99236 as appropriate.])&quot;: '99217' from </a:s>
+               <a:s r="32">
+                  <a:s>&quot;CPT&quot;</a:s>
+               </a:s>
+               <a:s> display 'Observation care discharge day management (This code is to be utilized to report all services provided to a patient on discharge from outpatient hospital &quot;observation status&quot; if the discharge is on other than the initial date of &quot;observation status.&quot; To report services to a patient designated as &quot;observation status&quot; or &quot;inpatient status&quot; and discharged on the same date, use the codes for Observation or Inpatient Care Services [including Admission and Discharge Services, 99234-99236 as appropriate.])'</a:s>
+            </a:s>
+         </annotation>
+         <codeSystem localId="32" locator="37:519-37:523" name="CPT"/>
+      </def>
+   </codes>
+   <contexts>
+      <def locator="41:1-41:15" name="Patient"/>
+   </contexts>
+   <statements>
+      <def locator="41:1-41:15" name="Patient" context="Patient">
+         <expression xsi:type="SingletonFrom">
+            <operand locator="41:1-41:15" xmlns:ns0="urn:healthit-gov:qdm:v5_5" dataType="ns0:Patient" templateId="Patient" xsi:type="Retrieve"/>
+         </expression>
+      </def>
+      <def localId="38" locator="43:1-44:51" name="SDE Ethnicity" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="38">
+               <a:s>define &quot;SDE Ethnicity&quot;:
+  </a:s>
+               <a:s r="37">
+                  <a:s>[&quot;Patient Characteristic Ethnicity&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Ethnicity&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="37" locator="44:3-44:51" xmlns:ns1="urn:healthit-gov:qdm:v5_5" dataType="ns1:PatientCharacteristicEthnicity" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+            <codes locator="44:40-44:50" name="Ethnicity" xsi:type="ValueSetRef"/>
+         </expression>
+      </def>
+      <def localId="40" locator="46:1-47:43" name="SDE Payer" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="40">
+               <a:s>define &quot;SDE Payer&quot;:
+  </a:s>
+               <a:s r="39">
+                  <a:s>[&quot;Patient Characteristic Payer&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Payer&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="39" locator="47:3-47:43" xmlns:ns2="urn:healthit-gov:qdm:v5_5" dataType="ns2:PatientCharacteristicPayer" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+            <codes locator="47:36-47:42" name="Payer" xsi:type="ValueSetRef"/>
+         </expression>
+      </def>
+      <def localId="42" locator="49:1-50:41" name="SDE Race" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="42">
+               <a:s>define &quot;SDE Race&quot;:
+  </a:s>
+               <a:s r="41">
+                  <a:s>[&quot;Patient Characteristic Race&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Race&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="41" locator="50:3-50:41" xmlns:ns3="urn:healthit-gov:qdm:v5_5" dataType="ns3:PatientCharacteristicRace" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+            <codes locator="50:35-50:40" name="Race" xsi:type="ValueSetRef"/>
+         </expression>
+      </def>
+      <def localId="44" locator="52:1-53:58" name="SDE Sex" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="44">
+               <a:s>define &quot;SDE Sex&quot;:
+  </a:s>
+               <a:s r="43">
+                  <a:s>[&quot;Patient Characteristic Sex&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;ONC Administrative Sex&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="43" locator="53:3-53:58" xmlns:ns4="urn:healthit-gov:qdm:v5_5" dataType="ns4:PatientCharacteristicSex" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+            <codes locator="53:34-53:57" name="ONC Administrative Sex" xsi:type="ValueSetRef"/>
+         </expression>
+      </def>
+      <def localId="70" locator="61:1-66:67" name="Qualifying Encounter" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="70">
+               <a:s>define &quot;Qualifying Encounter&quot;:
+  </a:s>
+               <a:s r="69">
+                  <a:s>
+                     <a:s r="64">
+                        <a:s r="63">
+                           <a:s>( </a:s>
+                           <a:s r="63">
+                              <a:s r="61">
+                                 <a:s r="59">
+                                    <a:s r="57">
+                                       <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                       <a:s>
+                                          <a:s>&quot;Office Visit&quot;</a:s>
+                                       </a:s>
+                                       <a:s>]</a:s>
+                                    </a:s>
+                                    <a:s>
+    union </a:s>
+                                    <a:s r="58">
+                                       <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                       <a:s>
+                                          <a:s>&quot;Home Healthcare Services&quot;</a:s>
+                                       </a:s>
+                                       <a:s>]</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>
+    union </a:s>
+                                 <a:s r="60">
+                                    <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                    <a:s>
+                                       <a:s>&quot;Preventive Care, Established Office Visit, 0 to 17&quot;</a:s>
+                                    </a:s>
+                                    <a:s>]</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>
+    union </a:s>
+                              <a:s r="62">
+                                 <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                 <a:s>
+                                    <a:s>&quot;Preventive Care Services, Initial Office Visit, 0 to 17&quot;</a:s>
+                                 </a:s>
+                                 <a:s>]</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> )</a:s>
+                        </a:s>
+                        <a:s> ValidEncounter</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="68">
+                     <a:s>where </a:s>
+                     <a:s r="68">
+                        <a:s r="66">
+                           <a:s r="65">
+                              <a:s>ValidEncounter</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="66">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="68"> during </a:s>
+                        <a:s r="67">
+                           <a:s>&quot;Measurement Period&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="69" locator="62:3-66:67" xsi:type="Query">
+            <source localId="64" locator="62:3-65:110" alias="ValidEncounter">
+               <expression localId="63" locator="62:3-65:95" xsi:type="Union">
+                  <operand localId="59" locator="62:5-63:62" xsi:type="Union">
+                     <operand localId="57" locator="62:5-62:44" xmlns:ns5="urn:healthit-gov:qdm:v5_5" dataType="ns5:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                        <codes locator="62:30-62:43" name="Office Visit" xsi:type="ValueSetRef"/>
+                     </operand>
+                     <operand localId="58" locator="63:11-63:62" xmlns:ns6="urn:healthit-gov:qdm:v5_5" dataType="ns6:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                        <codes locator="63:36-63:61" name="Home Healthcare Services" xsi:type="ValueSetRef"/>
+                     </operand>
+                  </operand>
+                  <operand xsi:type="Union">
+                     <operand localId="60" locator="64:11-64:88" xmlns:ns7="urn:healthit-gov:qdm:v5_5" dataType="ns7:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                        <codes locator="64:36-64:87" name="Preventive Care, Established Office Visit, 0 to 17" xsi:type="ValueSetRef"/>
+                     </operand>
+                     <operand localId="62" locator="65:11-65:93" xmlns:ns8="urn:healthit-gov:qdm:v5_5" dataType="ns8:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                        <codes locator="65:36-65:92" name="Preventive Care Services, Initial Office Visit, 0 to 17" xsi:type="ValueSetRef"/>
+                     </operand>
+                  </operand>
+               </expression>
+            </source>
+            <where localId="68" locator="66:5-66:67" xsi:type="IncludedIn">
+               <operand localId="66" locator="66:11-66:39" path="relevantPeriod" scope="ValidEncounter" xsi:type="Property"/>
+               <operand localId="67" locator="66:48-66:67" name="Measurement Period" xsi:type="ParameterRef"/>
+            </where>
+         </expression>
+      </def>
+      <def localId="92" locator="134:1-139:3" name="First ADHD Medication Dispensed" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="92">
+               <a:s>define &quot;First ADHD Medication Dispensed&quot;:
+  </a:s>
+               <a:s r="91">
+                  <a:s>First(</a:s>
+                  <a:s r="90">
+                     <a:s>
+                        <a:s r="75">
+                           <a:s r="74">
+                              <a:s r="74">
+                                 <a:s>[&quot;Medication, Dispensed&quot;: </a:s>
+                                 <a:s>
+                                    <a:s>&quot;ADHD Medications&quot;</a:s>
+                                 </a:s>
+                                 <a:s>]</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> FirstADHDMedication</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+      </a:s>
+                     <a:s r="86">
+                        <a:s>where </a:s>
+                        <a:s r="86">
+                           <a:s r="80">
+                              <a:s r="77">
+                                 <a:s r="76">
+                                    <a:s>FirstADHDMedication</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="77">
+                                    <a:s>relevantDatetime</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> </a:s>
+                              <a:s r="80">
+                                 <a:s r="79">
+                                    <a:s>60 days</a:s>
+                                 </a:s>
+                                 <a:s> or less after start</a:s>
+                              </a:s>
+                              <a:s> </a:s>
+                              <a:s r="78">
+                                 <a:s>&quot;Measurement Period&quot;</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>
+        or </a:s>
+                           <a:s r="85">
+                              <a:s r="82">
+                                 <a:s r="81">
+                                    <a:s>FirstADHDMedication</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="82">
+                                    <a:s>relevantDatetime</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> </a:s>
+                              <a:s r="85">
+                                 <a:s r="84">
+                                    <a:s>90 days</a:s>
+                                 </a:s>
+                                 <a:s> or less on or before start</a:s>
+                              </a:s>
+                              <a:s> </a:s>
+                              <a:s r="83">
+                                 <a:s>&quot;Measurement Period&quot;</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+      </a:s>
+                     <a:s r="89">
+                        <a:s>sort by </a:s>
+                        <a:s r="88">
+                           <a:s r="87">
+                              <a:s>relevantDatetime</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+  )</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="91" locator="135:3-139:3" xsi:type="First">
+            <source localId="90" locator="135:9-138:30" xsi:type="Query">
+               <source localId="75" locator="135:9-135:73" alias="FirstADHDMedication">
+                  <expression localId="74" locator="135:9-135:53" xmlns:ns9="urn:healthit-gov:qdm:v5_5" dataType="ns9:PositiveMedicationDispensed" templateId="PositiveMedicationDispensed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                     <codes locator="135:35-135:52" name="ADHD Medications" xsi:type="ValueSetRef"/>
+                  </expression>
+               </source>
+               <where localId="86" locator="136:7-137:103" xsi:type="Or">
+                  <operand localId="80" locator="136:13-136:97" xsi:type="And">
+                     <operand locator="136:50-136:64" xsi:type="In">
+                        <operand localId="77" locator="136:13-136:48" path="relevantDatetime" scope="FirstADHDMedication" xsi:type="Property"/>
+                        <operand locator="136:50-136:64" lowClosed="false" highClosed="true" xsi:type="Interval">
+                           <low locator="136:72-136:76" xsi:type="Start">
+                              <operand localId="78" locator="136:78-136:97" name="Measurement Period" xsi:type="ParameterRef"/>
+                           </low>
+                           <high locator="136:72-136:76" xsi:type="Add">
+                              <operand locator="136:72-136:76" xsi:type="Start">
+                                 <operand localId="78" locator="136:78-136:97" name="Measurement Period" xsi:type="ParameterRef"/>
+                              </operand>
+                              <operand localId="79" locator="136:50-136:56" value="60" unit="days" xsi:type="Quantity"/>
+                           </high>
+                        </operand>
+                     </operand>
+                     <operand locator="136:50-136:64" xsi:type="Not">
+                        <operand locator="136:50-136:64" xsi:type="IsNull">
+                           <operand locator="136:72-136:76" xsi:type="Start">
+                              <operand localId="78" locator="136:78-136:97" name="Measurement Period" xsi:type="ParameterRef"/>
+                           </operand>
+                        </operand>
+                     </operand>
+                  </operand>
+                  <operand localId="85" locator="137:12-137:103" xsi:type="And">
+                     <operand locator="137:49-137:63" xsi:type="In">
+                        <operand localId="82" locator="137:12-137:47" path="relevantDatetime" scope="FirstADHDMedication" xsi:type="Property"/>
+                        <operand locator="137:49-137:63" lowClosed="true" highClosed="true" xsi:type="Interval">
+                           <low locator="137:78-137:82" xsi:type="Subtract">
+                              <operand locator="137:78-137:82" xsi:type="Start">
+                                 <operand localId="83" locator="137:84-137:103" name="Measurement Period" xsi:type="ParameterRef"/>
+                              </operand>
+                              <operand localId="84" locator="137:49-137:55" value="90" unit="days" xsi:type="Quantity"/>
+                           </low>
+                           <high locator="137:78-137:82" xsi:type="Start">
+                              <operand localId="83" locator="137:84-137:103" name="Measurement Period" xsi:type="ParameterRef"/>
+                           </high>
+                        </operand>
+                     </operand>
+                     <operand locator="137:49-137:63" xsi:type="Not">
+                        <operand locator="137:49-137:63" xsi:type="IsNull">
+                           <operand locator="137:78-137:82" xsi:type="Start">
+                              <operand localId="83" locator="137:84-137:103" name="Measurement Period" xsi:type="ParameterRef"/>
+                           </operand>
+                        </operand>
+                     </operand>
+                  </operand>
+               </where>
+               <sort localId="89" locator="138:7-138:30">
+                  <by localId="88" locator="138:15-138:30" direction="asc" path="relevantDatetime" xsi:type="ByColumn"/>
+               </sort>
+            </source>
+         </expression>
+      </def>
+      <def localId="98" locator="102:1-106:55" name="Initial Population 1" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="98">
+               <a:s>define &quot;Initial Population 1&quot;:
+  </a:s>
+               <a:s r="97">
+                  <a:s>exists </a:s>
+                  <a:s r="96">
+                     <a:s>
+                        <a:s r="46">
+                           <a:s r="45">
+                              <a:s r="45">
+                                 <a:s>[&quot;Patient Characteristic Birthdate&quot;: </a:s>
+                                 <a:s>
+                                    <a:s>&quot;Birth date&quot;</a:s>
+                                 </a:s>
+                                 <a:s>]</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> BirthDate</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+    </a:s>
+                     <a:s r="95">
+                        <a:s>where </a:s>
+                        <a:s r="95">
+                           <a:s r="73">
+                              <a:s r="56">
+                                 <a:s r="52">
+                                    <a:s r="47">
+                                       <a:s>Global</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="52">
+                                       <a:s>&quot;CalendarAgeInYearsAt&quot; ( </a:s>
+                                       <a:s r="49">
+                                          <a:s r="48">
+                                             <a:s>BirthDate</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="49">
+                                             <a:s>birthDatetime</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s>, </a:s>
+                                       <a:s r="51">
+                                          <a:s>start of </a:s>
+                                          <a:s r="50">
+                                             <a:s>&quot;Measurement Period&quot;</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s> )</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s> in </a:s>
+                                 <a:s r="55">
+                                    <a:s r="53">Interval[6, 12 )</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>
+      and </a:s>
+                              <a:s r="72">
+                                 <a:s>exists </a:s>
+                                 <a:s r="71">
+                                    <a:s>( </a:s>
+                                    <a:s r="71">
+                                       <a:s>&quot;Qualifying Encounter&quot;</a:s>
+                                    </a:s>
+                                    <a:s> )</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>
+      and </a:s>
+                           <a:s r="94">
+                              <a:s r="93">
+                                 <a:s>&quot;First ADHD Medication Dispensed&quot;</a:s>
+                              </a:s>
+                              <a:s> is not null</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="97" locator="103:3-106:55" xsi:type="Exists">
+            <operand localId="96" locator="103:10-106:55" xsi:type="Query">
+               <source localId="46" locator="103:10-103:69" alias="BirthDate">
+                  <expression localId="45" locator="103:10-103:59" xmlns:ns10="urn:healthit-gov:qdm:v5_5" dataType="ns10:PatientCharacteristicBirthdate" codeProperty="code" codeComparator="~" xsi:type="Retrieve">
+                     <codes xsi:type="ToList">
+                        <operand locator="103:47-103:58" name="Birth date" xsi:type="CodeRef"/>
+                     </codes>
+                  </expression>
+               </source>
+               <where localId="95" locator="104:5-106:55" xsi:type="And">
+                  <operand localId="73" locator="104:11-105:43" xsi:type="And">
+                     <operand localId="56" locator="104:11-104:118" xsi:type="In">
+                        <operand localId="52" locator="104:11-104:98" name="CalendarAgeInYearsAt" libraryName="Global" xsi:type="FunctionRef">
+                           <operand localId="49" locator="104:43-104:65" path="birthDatetime" scope="BirthDate" xsi:type="Property"/>
+                           <operand localId="51" locator="104:68-104:96" xsi:type="Start">
+                              <operand localId="50" locator="104:77-104:96" name="Measurement Period" xsi:type="ParameterRef"/>
+                           </operand>
+                        </operand>
+                        <operand localId="55" locator="104:103-104:118" lowClosed="true" highClosed="false" xsi:type="Interval">
+                           <low localId="53" locator="104:112" valueType="t:Integer" value="6" xsi:type="Literal"/>
+                           <high localId="54" locator="104:115-104:116" valueType="t:Integer" value="12" xsi:type="Literal"/>
+                        </operand>
+                     </operand>
+                     <operand localId="72" locator="105:11-105:43" xsi:type="Exists">
+                        <operand localId="71" locator="105:18-105:43" name="Qualifying Encounter" xsi:type="ExpressionRef"/>
+                     </operand>
+                  </operand>
+                  <operand localId="94" locator="106:11-106:55" xsi:type="Not">
+                     <operand locator="106:11-106:55" xsi:type="IsNull">
+                        <operand localId="93" locator="106:11-106:43" name="First ADHD Medication Dispensed" xsi:type="ExpressionRef"/>
+                     </operand>
+                  </operand>
+               </where>
+            </operand>
+         </expression>
+      </def>
+      <def localId="100" locator="55:1-56:24" name="Denominator 1" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="100">
+               <a:s>define &quot;Denominator 1&quot;:
+  </a:s>
+               <a:s r="99">
+                  <a:s>&quot;Initial Population 1&quot;</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="99" locator="56:3-56:24" name="Initial Population 1" xsi:type="ExpressionRef"/>
+      </def>
+      <def localId="131" locator="123:1-126:134" name="ADHD Medications Taken within 300 Days after First ADHD Medication Dispensed" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="131">
+               <a:s>define &quot;ADHD Medications Taken within 300 Days after First ADHD Medication Dispensed&quot;:
+  </a:s>
+               <a:s r="130">
+                  <a:s>
+                     <a:s r="120">
+                        <a:s r="119">
+                           <a:s r="119">
+                              <a:s>[&quot;Medication, Active&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;ADHD Medications&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> ActiveADHDMedications</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="129">
+                     <a:s>with </a:s>
+                     <a:s r="122">
+                        <a:s r="121">
+                           <a:s>
+                              <a:s>&quot;First ADHD Medication Dispensed&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> InitialADHDMedication</a:s>
+                     </a:s>
+                     <a:s>
+      such that </a:s>
+                     <a:s r="128">
+                        <a:s r="124">
+                           <a:s r="123">
+                              <a:s>ActiveADHDMedications</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="124">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> </a:s>
+                        <a:s r="128">
+                           <a:s>starts </a:s>
+                           <a:s r="127">
+                              <a:s>300 days</a:s>
+                           </a:s>
+                           <a:s> or less on or after day of</a:s>
+                        </a:s>
+                        <a:s> </a:s>
+                        <a:s r="126">
+                           <a:s r="125">
+                              <a:s>InitialADHDMedication</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="126">
+                              <a:s>relevantDatetime</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="130" locator="124:3-126:134" xsi:type="Query">
+            <source localId="120" locator="124:3-124:66" alias="ActiveADHDMedications">
+               <expression localId="119" locator="124:3-124:44" xmlns:ns11="urn:healthit-gov:qdm:v5_5" dataType="ns11:MedicationActive" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                  <codes locator="124:26-124:43" name="ADHD Medications" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <relationship localId="129" locator="125:5-126:134" alias="InitialADHDMedication" xsi:type="With">
+               <expression localId="121" locator="125:10-125:42" name="First ADHD Medication Dispensed" xsi:type="ExpressionRef"/>
+               <suchThat localId="128" locator="126:17-126:134" xsi:type="And">
+                  <operand locator="126:61-126:76" precision="Day" xsi:type="In">
+                     <operand locator="126:54-126:59" xsi:type="Start">
+                        <operand localId="124" locator="126:17-126:52" path="relevantPeriod" scope="ActiveADHDMedications" xsi:type="Property"/>
+                     </operand>
+                     <operand locator="126:61-126:76" lowClosed="true" highClosed="true" xsi:type="Interval">
+                        <low localId="126" locator="126:97-126:134" path="relevantDatetime" scope="InitialADHDMedication" xsi:type="Property"/>
+                        <high locator="126:119-126:134" xsi:type="Add">
+                           <operand localId="126" locator="126:97-126:134" path="relevantDatetime" scope="InitialADHDMedication" xsi:type="Property"/>
+                           <operand localId="127" locator="126:61-126:68" value="300" unit="days" xsi:type="Quantity"/>
+                        </high>
+                     </operand>
+                  </operand>
+                  <operand locator="126:61-126:76" xsi:type="Not">
+                     <operand locator="126:61-126:76" xsi:type="IsNull">
+                        <operand localId="126" locator="126:97-126:134" path="relevantDatetime" scope="InitialADHDMedication" xsi:type="Property"/>
+                     </operand>
+                  </operand>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def localId="144" locator="189:1-192:3" name="Cumulative Medication Duration" context="Patient" accessLevel="Public" fluent="false" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="144">
+               <a:s>define function &quot;Cumulative Medication Duration&quot;(Medication </a:s>
+               <a:s r="134">
+                  <a:s>List&lt;</a:s>
+                  <a:s r="133">
+                     <a:s>&quot;Medication, Active&quot;</a:s>
+                  </a:s>
+                  <a:s>></a:s>
+               </a:s>
+               <a:s>):
+  </a:s>
+               <a:s r="143">
+                  <a:s r="143">
+                     <a:s>Sum(</a:s>
+                     <a:s r="142">
+                        <a:s>
+                           <a:s r="138">
+                              <a:s r="137">
+                                 <a:s>(</a:s>
+                                 <a:s r="137">
+                                    <a:s>collapse</a:s>
+                                    <a:s r="136">
+                                       <a:s>(</a:s>
+                                       <a:s r="136">
+                                          <a:s r="135">
+                                             <a:s>Medication</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="136">
+                                             <a:s>relevantPeriod</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s>)</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>)</a:s>
+                              </a:s>
+                              <a:s>MedicationPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+      </a:s>
+                        <a:s r="141">
+                           <a:s>return all </a:s>
+                           <a:s r="140">
+                              <a:s>duration in days of </a:s>
+                              <a:s r="139">
+                                 <a:s>MedicationPeriod</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+  )</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="143" locator="190:3-192:3" xsi:type="Sum">
+            <source localId="142" locator="190:7-191:53" xsi:type="Query">
+               <source localId="138" locator="190:7-190:59" alias="MedicationPeriod">
+                  <expression localId="137" locator="190:7-190:43" xsi:type="Collapse">
+                     <operand localId="136" locator="190:16-190:42" xsi:type="Query">
+                        <source alias="$this">
+                           <expression localId="135" locator="190:17-190:26" name="Medication" xsi:type="OperandRef"/>
+                        </source>
+                        <where xsi:type="Not">
+                           <operand xsi:type="IsNull">
+                              <operand path="relevantPeriod" xsi:type="Property">
+                                 <source name="$this" xsi:type="AliasRef"/>
+                              </operand>
+                           </operand>
+                        </where>
+                        <return distinct="false">
+                           <expression path="relevantPeriod" xsi:type="Property">
+                              <source name="$this" xsi:type="AliasRef"/>
+                           </expression>
+                        </return>
+                     </operand>
+                     <operand resultTypeName="t:Quantity" xsi:type="Null"/>
+                  </expression>
+               </source>
+               <return localId="141" locator="191:7-191:53" distinct="false">
+                  <expression localId="140" locator="191:18-191:53" precision="Day" xsi:type="DurationBetween">
+                     <operand xsi:type="Start">
+                        <operand localId="139" locator="191:38-191:53" name="MedicationPeriod" xsi:type="AliasRef"/>
+                     </operand>
+                     <operand xsi:type="End">
+                        <operand localId="139" locator="191:38-191:53" name="MedicationPeriod" xsi:type="AliasRef"/>
+                     </operand>
+                  </expression>
+               </return>
+            </source>
+         </expression>
+         <operand name="Medication">
+            <operandTypeSpecifier localId="134" locator="189:61-189:86" xsi:type="ListTypeSpecifier">
+               <elementType localId="133" locator="189:66-189:85" xmlns:ns12="urn:healthit-gov:qdm:v5_5" name="ns12:MedicationActive" xsi:type="NamedTypeSpecifier"/>
+            </operandTypeSpecifier>
+         </operand>
+      </def>
+      <def localId="148" locator="88:1-89:120" name="Has ADHD Cumulative Medication Duration Greater Than or Equal to 210 Days" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="148">
+               <a:s>define &quot;Has ADHD Cumulative Medication Duration Greater Than or Equal to 210 Days&quot;:
+  </a:s>
+               <a:s r="147">
+                  <a:s r="145">
+                     <a:s>&quot;Cumulative Medication Duration&quot;(</a:s>
+                     <a:s r="132">
+                        <a:s>&quot;ADHD Medications Taken within 300 Days after First ADHD Medication Dispensed&quot;</a:s>
+                     </a:s>
+                     <a:s>)</a:s>
+                  </a:s>
+                  <a:s r="146">>= 210</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="147" locator="89:3-89:120" xsi:type="GreaterOrEqual">
+            <operand localId="145" locator="89:3-89:114" name="Cumulative Medication Duration" xsi:type="FunctionRef">
+               <operand localId="132" locator="89:36-89:113" name="ADHD Medications Taken within 300 Days after First ADHD Medication Dispensed" xsi:type="ExpressionRef"/>
+            </operand>
+            <operand localId="146" locator="89:118-89:120" valueType="t:Integer" value="210" xsi:type="Literal"/>
+         </expression>
+      </def>
+      <def localId="153" locator="177:1-182:85" name="Initial Population 2" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="153">
+               <a:s>define &quot;Initial Population 2&quot;:
+  </a:s>
+               <a:s r="152">
+                  <a:s>exists </a:s>
+                  <a:s r="151">
+                     <a:s>
+                        <a:s r="102">
+                           <a:s r="101">
+                              <a:s r="101">
+                                 <a:s>[&quot;Patient Characteristic Birthdate&quot;: </a:s>
+                                 <a:s>
+                                    <a:s>&quot;Birth date&quot;</a:s>
+                                 </a:s>
+                                 <a:s>]</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> BirthDate</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+    </a:s>
+                     <a:s r="150">
+                        <a:s>where </a:s>
+                        <a:s r="150">
+                           <a:s r="118">
+                              <a:s r="115">
+                                 <a:s r="112">
+                                    <a:s r="108">
+                                       <a:s r="103">
+                                          <a:s>Global</a:s>
+                                       </a:s>
+                                       <a:s>.</a:s>
+                                       <a:s r="108">
+                                          <a:s>&quot;CalendarAgeInYearsAt&quot; ( </a:s>
+                                          <a:s r="105">
+                                             <a:s r="104">
+                                                <a:s>BirthDate</a:s>
+                                             </a:s>
+                                             <a:s>.</a:s>
+                                             <a:s r="105">
+                                                <a:s>birthDatetime</a:s>
+                                             </a:s>
+                                          </a:s>
+                                          <a:s>, </a:s>
+                                          <a:s r="107">
+                                             <a:s>start of </a:s>
+                                             <a:s r="106">
+                                                <a:s>&quot;Measurement Period&quot;</a:s>
+                                             </a:s>
+                                          </a:s>
+                                          <a:s> )</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> in </a:s>
+                                    <a:s r="111">
+                                       <a:s r="109">Interval[6, 12 )</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>
+      and </a:s>
+                                 <a:s r="114">
+                                    <a:s>exists </a:s>
+                                    <a:s r="113">
+                                       <a:s>( </a:s>
+                                       <a:s r="113">
+                                          <a:s>&quot;Qualifying Encounter&quot;</a:s>
+                                       </a:s>
+                                       <a:s> )</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>
+      and </a:s>
+                              <a:s r="117">
+                                 <a:s r="116">
+                                    <a:s>&quot;First ADHD Medication Dispensed&quot;</a:s>
+                                 </a:s>
+                                 <a:s> is not null</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>
+      and </a:s>
+                           <a:s r="149">
+                              <a:s>&quot;Has ADHD Cumulative Medication Duration Greater Than or Equal to 210 Days&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="152" locator="178:3-182:85" xsi:type="Exists">
+            <operand localId="151" locator="178:10-182:85" xsi:type="Query">
+               <source localId="102" locator="178:10-178:69" alias="BirthDate">
+                  <expression localId="101" locator="178:10-178:59" xmlns:ns13="urn:healthit-gov:qdm:v5_5" dataType="ns13:PatientCharacteristicBirthdate" codeProperty="code" codeComparator="~" xsi:type="Retrieve">
+                     <codes xsi:type="ToList">
+                        <operand locator="178:47-178:58" name="Birth date" xsi:type="CodeRef"/>
+                     </codes>
+                  </expression>
+               </source>
+               <where localId="150" locator="179:5-182:85" xsi:type="And">
+                  <operand localId="118" locator="179:11-181:55" xsi:type="And">
+                     <operand localId="115" locator="179:11-180:43" xsi:type="And">
+                        <operand localId="112" locator="179:11-179:118" xsi:type="In">
+                           <operand localId="108" locator="179:11-179:98" name="CalendarAgeInYearsAt" libraryName="Global" xsi:type="FunctionRef">
+                              <operand localId="105" locator="179:43-179:65" path="birthDatetime" scope="BirthDate" xsi:type="Property"/>
+                              <operand localId="107" locator="179:68-179:96" xsi:type="Start">
+                                 <operand localId="106" locator="179:77-179:96" name="Measurement Period" xsi:type="ParameterRef"/>
+                              </operand>
+                           </operand>
+                           <operand localId="111" locator="179:103-179:118" lowClosed="true" highClosed="false" xsi:type="Interval">
+                              <low localId="109" locator="179:112" valueType="t:Integer" value="6" xsi:type="Literal"/>
+                              <high localId="110" locator="179:115-179:116" valueType="t:Integer" value="12" xsi:type="Literal"/>
+                           </operand>
+                        </operand>
+                        <operand localId="114" locator="180:11-180:43" xsi:type="Exists">
+                           <operand localId="113" locator="180:18-180:43" name="Qualifying Encounter" xsi:type="ExpressionRef"/>
+                        </operand>
+                     </operand>
+                     <operand localId="117" locator="181:11-181:55" xsi:type="Not">
+                        <operand locator="181:11-181:55" xsi:type="IsNull">
+                           <operand localId="116" locator="181:11-181:43" name="First ADHD Medication Dispensed" xsi:type="ExpressionRef"/>
+                        </operand>
+                     </operand>
+                  </operand>
+                  <operand localId="149" locator="182:11-182:85" name="Has ADHD Cumulative Medication Duration Greater Than or Equal to 210 Days" xsi:type="ExpressionRef"/>
+               </where>
+            </operand>
+         </expression>
+      </def>
+      <def localId="155" locator="58:1-59:24" name="Denominator 2" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="155">
+               <a:s>define &quot;Denominator 2&quot;:
+  </a:s>
+               <a:s r="154">
+                  <a:s>&quot;Initial Population 2&quot;</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="154" locator="59:3-59:24" name="Initial Population 2" xsi:type="ExpressionRef"/>
+      </def>
+      <def localId="163" locator="68:1-71:28" name="Narcolepsy Exclusion" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="163">
+               <a:s>define &quot;Narcolepsy Exclusion&quot;:
+  </a:s>
+               <a:s r="162">
+                  <a:s>
+                     <a:s r="157">
+                        <a:s r="156">
+                           <a:s r="156">
+                              <a:s>[&quot;Diagnosis&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Narcolepsy&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> Narcolepsy</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="161">
+                     <a:s>where </a:s>
+                     <a:s r="161">
+                        <a:s r="159">
+                           <a:s r="158">
+                              <a:s>Narcolepsy</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="159">
+                              <a:s>prevalencePeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="161"> starts before 
+    end </a:s>
+                        <a:s r="160">
+                           <a:s>&quot;Measurement Period&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="162" locator="69:3-71:28" xsi:type="Query">
+            <source localId="157" locator="69:3-69:40" alias="Narcolepsy">
+               <expression localId="156" locator="69:3-69:29" xmlns:ns14="urn:healthit-gov:qdm:v5_5" dataType="ns14:Diagnosis" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                  <codes locator="69:17-69:28" name="Narcolepsy" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where localId="161" locator="70:5-71:28" xsi:type="Before">
+               <operand locator="70:39-70:44" xsi:type="Start">
+                  <operand localId="159" locator="70:11-70:37" path="prevalencePeriod" scope="Narcolepsy" xsi:type="Property"/>
+               </operand>
+               <operand locator="71:5-71:7" xsi:type="End">
+                  <operand localId="160" locator="71:9-71:28" name="Measurement Period" xsi:type="ParameterRef"/>
+               </operand>
+            </where>
+         </expression>
+      </def>
+      <def localId="199" locator="157:1-175:3" name="Qualifying Numerator Encounter" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="199">
+               <a:s>define &quot;Qualifying Numerator Encounter&quot;:
+  </a:s>
+               <a:s r="198">
+                  <a:s>( </a:s>
+                  <a:s r="198">
+                     <a:s r="196">
+                        <a:s r="194">
+                           <a:s r="192">
+                              <a:s r="190">
+                                 <a:s r="188">
+                                    <a:s r="186">
+                                       <a:s r="184">
+                                          <a:s r="172">
+                                             <a:s r="170">
+                                                <a:s r="168">
+                                                   <a:s r="166">
+                                                      <a:s r="164">
+                                                         <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                                         <a:s>
+                                                            <a:s>&quot;Office Visit&quot;</a:s>
+                                                         </a:s>
+                                                         <a:s>]</a:s>
+                                                      </a:s>
+                                                      <a:s>
+      union </a:s>
+                                                      <a:s r="165">
+                                                         <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                                         <a:s>
+                                                            <a:s>&quot;Hospital Observation Care - Initial&quot;</a:s>
+                                                         </a:s>
+                                                         <a:s>]</a:s>
+                                                      </a:s>
+                                                   </a:s>
+                                                   <a:s>
+      union </a:s>
+                                                   <a:s r="167">
+                                                      <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                                      <a:s>
+                                                         <a:s>&quot;Preventive Care Services - Group Counseling&quot;</a:s>
+                                                      </a:s>
+                                                      <a:s>]</a:s>
+                                                   </a:s>
+                                                </a:s>
+                                                <a:s>
+      union </a:s>
+                                                <a:s r="169">
+                                                   <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                                   <a:s>
+                                                      <a:s>&quot;Behavioral Health Follow-up Visit&quot;</a:s>
+                                                   </a:s>
+                                                   <a:s>]</a:s>
+                                                </a:s>
+                                             </a:s>
+                                             <a:s>
+      union </a:s>
+                                             <a:s r="171">
+                                                <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                                <a:s>
+                                                   <a:s>&quot;Preventive Care Services-Individual Counseling&quot;</a:s>
+                                                </a:s>
+                                                <a:s>]</a:s>
+                                             </a:s>
+                                          </a:s>
+                                          <a:s>
+      union </a:s>
+                                          <a:s r="183">
+                                             <a:s>( </a:s>
+                                             <a:s r="183">
+                                                <a:s>
+                                                   <a:s r="174">
+                                                      <a:s r="173">
+                                                         <a:s r="173">
+                                                            <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                                            <a:s>
+                                                               <a:s>&quot;Psychotherapy and Pharmacologic Management&quot;</a:s>
+                                                            </a:s>
+                                                            <a:s>]</a:s>
+                                                         </a:s>
+                                                      </a:s>
+                                                      <a:s> PsychPharmMgmt</a:s>
+                                                   </a:s>
+                                                </a:s>
+                                                <a:s>
+          </a:s>
+                                                <a:s r="182">
+                                                   <a:s>where </a:s>
+                                                   <a:s r="182">
+                                                      <a:s>exists </a:s>
+                                                      <a:s r="181">
+                                                         <a:s>( </a:s>
+                                                         <a:s r="181">
+                                                            <a:s>
+                                                               <a:s r="176">
+                                                                  <a:s r="175">
+                                                                     <a:s>
+                                                                        <a:s>PsychPharmMgmt.facilityLocations</a:s>
+                                                                     </a:s>
+                                                                  </a:s>
+                                                                  <a:s> Location</a:s>
+                                                               </a:s>
+                                                            </a:s>
+                                                            <a:s>
+              </a:s>
+                                                            <a:s r="180">
+                                                               <a:s>where </a:s>
+                                                               <a:s r="180">
+                                                                  <a:s r="178">
+                                                                     <a:s r="177">
+                                                                        <a:s>Location</a:s>
+                                                                     </a:s>
+                                                                     <a:s>.</a:s>
+                                                                     <a:s r="178">
+                                                                        <a:s>code</a:s>
+                                                                     </a:s>
+                                                                  </a:s>
+                                                                  <a:s> in </a:s>
+                                                                  <a:s r="179">
+                                                                     <a:s>&quot;Ambulatory&quot;</a:s>
+                                                                  </a:s>
+                                                               </a:s>
+                                                            </a:s>
+                                                         </a:s>
+                                                         <a:s>
+          )</a:s>
+                                                      </a:s>
+                                                   </a:s>
+                                                </a:s>
+                                             </a:s>
+                                             <a:s>
+      )</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s>
+      union </a:s>
+                                       <a:s r="185">
+                                          <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                          <a:s>
+                                             <a:s>&quot;Observation care discharge day management (This code is to be utilized to report all services provided to a patient on discharge from outpatient hospital observation status if the discharge is on other than the initial date of observation status. To report services to a patient designated as observation status or inpatient status and discharged on the same date, use the codes for Observation or Inpatient Care Services [including Admission and Discharge Services, 99234-99236 as appropriate.])&quot;</a:s>
+                                          </a:s>
+                                          <a:s>]</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s>
+      union </a:s>
+                                    <a:s r="187">
+                                       <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                       <a:s>
+                                          <a:s>&quot;Outpatient Consultation&quot;</a:s>
+                                       </a:s>
+                                       <a:s>]</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>
+      union </a:s>
+                                 <a:s r="189">
+                                    <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                    <a:s>
+                                       <a:s>&quot;Home Healthcare Services&quot;</a:s>
+                                    </a:s>
+                                    <a:s>]</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>
+      union </a:s>
+                              <a:s r="191">
+                                 <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                 <a:s>
+                                    <a:s>&quot;Preventive Care Services, Initial Office Visit, 0 to 17&quot;</a:s>
+                                 </a:s>
+                                 <a:s>]</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>
+      union </a:s>
+                           <a:s r="193">
+                              <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Preventive Care, Established Office Visit, 0 to 17&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+      union </a:s>
+                        <a:s r="195">
+                           <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                           <a:s>
+                              <a:s>&quot;Psych Visit - Diagnostic Evaluation&quot;</a:s>
+                           </a:s>
+                           <a:s>]</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+      union </a:s>
+                     <a:s r="197">
+                        <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                        <a:s>
+                           <a:s>&quot;Psych Visit - Psychotherapy&quot;</a:s>
+                        </a:s>
+                        <a:s>]</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+  )</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="198" locator="158:3-175:3" xsi:type="Union">
+            <operand localId="196" locator="158:5-173:75" xsi:type="Union">
+               <operand localId="192" locator="158:5-171:95" xsi:type="Union">
+                  <operand localId="188" locator="158:5-169:63" xsi:type="Union">
+                     <operand localId="184" locator="158:5-167:7" xsi:type="Union">
+                        <operand localId="170" locator="158:5-161:73" xsi:type="Union">
+                           <operand localId="166" locator="158:5-159:75" xsi:type="Union">
+                              <operand localId="164" locator="158:5-158:44" xmlns:ns15="urn:healthit-gov:qdm:v5_5" dataType="ns15:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                                 <codes locator="158:30-158:43" name="Office Visit" xsi:type="ValueSetRef"/>
+                              </operand>
+                              <operand localId="165" locator="159:13-159:75" xmlns:ns16="urn:healthit-gov:qdm:v5_5" dataType="ns16:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                                 <codes locator="159:38-159:74" name="Hospital Observation Care - Initial" xsi:type="ValueSetRef"/>
+                              </operand>
+                           </operand>
+                           <operand xsi:type="Union">
+                              <operand localId="167" locator="160:13-160:83" xmlns:ns17="urn:healthit-gov:qdm:v5_5" dataType="ns17:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                                 <codes locator="160:38-160:82" name="Preventive Care Services - Group Counseling" xsi:type="ValueSetRef"/>
+                              </operand>
+                              <operand localId="169" locator="161:13-161:73" xmlns:ns18="urn:healthit-gov:qdm:v5_5" dataType="ns18:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                                 <codes locator="161:38-161:72" name="Behavioral Health Follow-up Visit" xsi:type="ValueSetRef"/>
+                              </operand>
+                           </operand>
+                        </operand>
+                        <operand xsi:type="Union">
+                           <operand localId="171" locator="162:13-162:86" xmlns:ns19="urn:healthit-gov:qdm:v5_5" dataType="ns19:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                              <codes locator="162:38-162:85" name="Preventive Care Services-Individual Counseling" xsi:type="ValueSetRef"/>
+                           </operand>
+                           <operand localId="183" locator="163:13-167:7" xsi:type="Query">
+                              <source localId="174" locator="163:15-163:99" alias="PsychPharmMgmt">
+                                 <expression localId="173" locator="163:15-163:84" xmlns:ns20="urn:healthit-gov:qdm:v5_5" dataType="ns20:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                                    <codes locator="163:40-163:83" name="Psychotherapy and Pharmacologic Management" xsi:type="ValueSetRef"/>
+                                 </expression>
+                              </source>
+                              <where localId="182" locator="164:11-166:11" xsi:type="Exists">
+                                 <operand localId="181" locator="164:24-166:11" xsi:type="Query">
+                                    <source localId="176" locator="164:26-164:66" alias="Location">
+                                       <expression localId="175" locator="164:26-164:57" path="facilityLocations" scope="PsychPharmMgmt" xsi:type="Property"/>
+                                    </source>
+                                    <where localId="180" locator="165:15-165:49" xsi:type="InValueSet">
+                                       <code localId="178" locator="165:21-165:33" path="code" scope="Location" xsi:type="Property"/>
+                                       <valueset localId="179" locator="165:38-165:49" name="Ambulatory" xsi:type="ValueSetRef"/>
+                                    </where>
+                                 </operand>
+                              </where>
+                           </operand>
+                        </operand>
+                     </operand>
+                     <operand xsi:type="Union">
+                        <operand localId="185" locator="168:13-168:536" xmlns:ns21="urn:healthit-gov:qdm:v5_5" dataType="ns21:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="~" xsi:type="Retrieve">
+                           <codes xsi:type="ToList">
+                              <operand locator="168:38-168:535" name="Observation care discharge day management (This code is to be utilized to report all services provided to a patient on discharge from outpatient hospital observation status if the discharge is on other than the initial date of observation status. To report services to a patient designated as observation status or inpatient status and discharged on the same date, use the codes for Observation or Inpatient Care Services [including Admission and Discharge Services, 99234-99236 as appropriate.])" xsi:type="CodeRef"/>
+                           </codes>
+                        </operand>
+                        <operand localId="187" locator="169:13-169:63" xmlns:ns22="urn:healthit-gov:qdm:v5_5" dataType="ns22:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                           <codes locator="169:38-169:62" name="Outpatient Consultation" xsi:type="ValueSetRef"/>
+                        </operand>
+                     </operand>
+                  </operand>
+                  <operand xsi:type="Union">
+                     <operand localId="189" locator="170:13-170:64" xmlns:ns23="urn:healthit-gov:qdm:v5_5" dataType="ns23:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                        <codes locator="170:38-170:63" name="Home Healthcare Services" xsi:type="ValueSetRef"/>
+                     </operand>
+                     <operand localId="191" locator="171:13-171:95" xmlns:ns24="urn:healthit-gov:qdm:v5_5" dataType="ns24:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                        <codes locator="171:38-171:94" name="Preventive Care Services, Initial Office Visit, 0 to 17" xsi:type="ValueSetRef"/>
+                     </operand>
+                  </operand>
+               </operand>
+               <operand xsi:type="Union">
+                  <operand localId="193" locator="172:13-172:90" xmlns:ns25="urn:healthit-gov:qdm:v5_5" dataType="ns25:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                     <codes locator="172:38-172:89" name="Preventive Care, Established Office Visit, 0 to 17" xsi:type="ValueSetRef"/>
+                  </operand>
+                  <operand localId="195" locator="173:13-173:75" xmlns:ns26="urn:healthit-gov:qdm:v5_5" dataType="ns26:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                     <codes locator="173:38-173:74" name="Psych Visit - Diagnostic Evaluation" xsi:type="ValueSetRef"/>
+                  </operand>
+               </operand>
+            </operand>
+            <operand localId="197" locator="174:13-174:67" xmlns:ns27="urn:healthit-gov:qdm:v5_5" dataType="ns27:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+               <codes locator="174:38-174:66" name="Psych Visit - Psychotherapy" xsi:type="ValueSetRef"/>
+            </operand>
+         </expression>
+      </def>
+      <def localId="219" locator="184:1-187:183" name="Encounters 300 Days after Initial ADHD Medication" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="219">
+               <a:s>define &quot;Encounters 300 Days after Initial ADHD Medication&quot;:
+  </a:s>
+               <a:s r="218">
+                  <a:s>
+                     <a:s r="201">
+                        <a:s r="200">
+                           <a:s>
+                              <a:s>&quot;Qualifying Numerator Encounter&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> ValidNumeratorEncounter</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="217">
+                     <a:s>with </a:s>
+                     <a:s r="203">
+                        <a:s r="202">
+                           <a:s>
+                              <a:s>&quot;First ADHD Medication Dispensed&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> InitialADHDMedication</a:s>
+                     </a:s>
+                     <a:s>
+      such that </a:s>
+                     <a:s r="216">
+                        <a:s r="206">
+                           <a:s>start of </a:s>
+                           <a:s r="205">
+                              <a:s r="204">
+                                 <a:s>ValidNumeratorEncounter</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="205">
+                                 <a:s>relevantPeriod</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> in day of </a:s>
+                        <a:s r="215">
+                           <a:s>Interval[</a:s>
+                           <a:s r="210">
+                              <a:s r="208">
+                                 <a:s r="207">
+                                    <a:s>InitialADHDMedication</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="208">
+                                    <a:s>relevantDatetime</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> + </a:s>
+                              <a:s r="209">
+                                 <a:s>31 days</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>, </a:s>
+                           <a:s r="214">
+                              <a:s r="212">
+                                 <a:s r="211">
+                                    <a:s>InitialADHDMedication</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="212">
+                                    <a:s>relevantDatetime</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> + </a:s>
+                              <a:s r="213">
+                                 <a:s>300 days</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>]</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="218" locator="185:3-187:183" xsi:type="Query">
+            <source localId="201" locator="185:3-185:58" alias="ValidNumeratorEncounter">
+               <expression localId="200" locator="185:3-185:34" name="Qualifying Numerator Encounter" xsi:type="ExpressionRef"/>
+            </source>
+            <relationship localId="217" locator="186:5-187:183" alias="InitialADHDMedication" xsi:type="With">
+               <expression localId="202" locator="186:10-186:42" name="First ADHD Medication Dispensed" xsi:type="ExpressionRef"/>
+               <suchThat localId="216" locator="187:17-187:183" precision="Day" xsi:type="In">
+                  <operand localId="206" locator="187:17-187:63" xsi:type="Start">
+                     <operand localId="205" locator="187:26-187:63" path="relevantPeriod" scope="ValidNumeratorEncounter" xsi:type="Property"/>
+                  </operand>
+                  <operand localId="215" locator="187:75-187:183" lowClosed="true" highClosed="true" xsi:type="Interval">
+                     <low localId="210" locator="187:84-187:131" xsi:type="Add">
+                        <operand localId="208" locator="187:84-187:121" path="relevantDatetime" scope="InitialADHDMedication" xsi:type="Property"/>
+                        <operand localId="209" locator="187:125-187:131" value="31" unit="days" xsi:type="Quantity"/>
+                     </low>
+                     <high localId="214" locator="187:134-187:182" xsi:type="Add">
+                        <operand localId="212" locator="187:134-187:171" path="relevantDatetime" scope="InitialADHDMedication" xsi:type="Property"/>
+                        <operand localId="213" locator="187:175-187:182" value="300" unit="days" xsi:type="Quantity"/>
+                     </high>
+                  </operand>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def localId="224" locator="73:1-74:64" name="Two or More Followup Encounters" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="224">
+               <a:s>define &quot;Two or More Followup Encounters&quot;:
+  </a:s>
+               <a:s r="223">
+                  <a:s r="221">
+                     <a:s>Count(</a:s>
+                     <a:s r="220">
+                        <a:s>&quot;Encounters 300 Days after Initial ADHD Medication&quot;</a:s>
+                     </a:s>
+                     <a:s>)</a:s>
+                  </a:s>
+                  <a:s r="222">>= 2</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="223" locator="74:3-74:64" xsi:type="GreaterOrEqual">
+            <operand localId="221" locator="74:3-74:60" xsi:type="Count">
+               <source localId="220" locator="74:9-74:59" name="Encounters 300 Days after Initial ADHD Medication" xsi:type="ExpressionRef"/>
+            </operand>
+            <operand localId="222" locator="74:64" valueType="t:Integer" value="2" xsi:type="Literal"/>
+         </expression>
+      </def>
+      <def localId="251" locator="148:1-155:5" name="Inpatient Stay with Qualifying Diagnosis" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="251">
+               <a:s>define &quot;Inpatient Stay with Qualifying Diagnosis&quot;:
+  </a:s>
+               <a:s r="250">
+                  <a:s>
+                     <a:s r="231">
+                        <a:s r="230">
+                           <a:s r="230">
+                              <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Encounter Inpatient&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> InpatientStay</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="249">
+                     <a:s>where </a:s>
+                     <a:s r="249">
+                        <a:s>exists </a:s>
+                        <a:s r="248">
+                           <a:s>( </a:s>
+                           <a:s r="248">
+                              <a:s>
+                                 <a:s r="233">
+                                    <a:s r="232">
+                                       <a:s>
+                                          <a:s>InpatientStay.diagnoses</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> EncounterDiagnoses</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>
+        </a:s>
+                              <a:s r="247">
+                                 <a:s>where </a:s>
+                                 <a:s r="247">
+                                    <a:s r="237">
+                                       <a:s r="235">
+                                          <a:s r="234">
+                                             <a:s>EncounterDiagnoses</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="235">
+                                             <a:s>rank</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s r="236"> = 1</a:s>
+                                    </a:s>
+                                    <a:s>
+          and </a:s>
+                                    <a:s r="246">
+                                       <a:s>( </a:s>
+                                       <a:s r="246">
+                                          <a:s r="241">
+                                             <a:s r="239">
+                                                <a:s r="238">
+                                                   <a:s>EncounterDiagnoses</a:s>
+                                                </a:s>
+                                                <a:s>.</a:s>
+                                                <a:s r="239">
+                                                   <a:s>code</a:s>
+                                                </a:s>
+                                             </a:s>
+                                             <a:s> in </a:s>
+                                             <a:s r="240">
+                                                <a:s>&quot;Mental Health Diagnoses&quot;</a:s>
+                                             </a:s>
+                                          </a:s>
+                                          <a:s>
+              or </a:s>
+                                          <a:s r="245">
+                                             <a:s r="243">
+                                                <a:s r="242">
+                                                   <a:s>EncounterDiagnoses</a:s>
+                                                </a:s>
+                                                <a:s>.</a:s>
+                                                <a:s r="243">
+                                                   <a:s>code</a:s>
+                                                </a:s>
+                                             </a:s>
+                                             <a:s> in </a:s>
+                                             <a:s r="244">
+                                                <a:s>&quot;Substance Abuse&quot;</a:s>
+                                             </a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s>
+          )</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>
+    )</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="250" locator="149:3-155:5" xsi:type="Query">
+            <source localId="231" locator="149:3-149:63" alias="InpatientStay">
+               <expression localId="230" locator="149:3-149:49" xmlns:ns28="urn:healthit-gov:qdm:v5_5" dataType="ns28:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                  <codes locator="149:28-149:48" name="Encounter Inpatient" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where localId="249" locator="150:5-155:5" xsi:type="Exists">
+               <operand localId="248" locator="150:18-155:5" xsi:type="Query">
+                  <source localId="233" locator="150:20-150:61" alias="EncounterDiagnoses">
+                     <expression localId="232" locator="150:20-150:42" path="diagnoses" scope="InpatientStay" xsi:type="Property"/>
+                  </source>
+                  <where localId="247" locator="151:9-154:11" xsi:type="And">
+                     <operand localId="237" locator="151:15-151:41" xsi:type="Equal">
+                        <operand localId="235" locator="151:15-151:37" path="rank" scope="EncounterDiagnoses" xsi:type="Property"/>
+                        <operand localId="236" locator="151:41" valueType="t:Integer" value="1" xsi:type="Literal"/>
+                     </operand>
+                     <operand localId="246" locator="152:15-154:11" xsi:type="Or">
+                        <operand localId="241" locator="152:17-152:68" xsi:type="InValueSet">
+                           <code localId="239" locator="152:17-152:39" path="code" scope="EncounterDiagnoses" xsi:type="Property"/>
+                           <valueset localId="240" locator="152:44-152:68" name="Mental Health Diagnoses" xsi:type="ValueSetRef"/>
+                        </operand>
+                        <operand localId="245" locator="153:18-153:61" xsi:type="InValueSet">
+                           <code localId="243" locator="153:18-153:40" path="code" scope="EncounterDiagnoses" xsi:type="Property"/>
+                           <valueset localId="244" locator="153:45-153:61" name="Substance Abuse" xsi:type="ValueSetRef"/>
+                        </operand>
+                     </operand>
+                  </where>
+               </operand>
+            </where>
+         </expression>
+      </def>
+      <def localId="264" locator="113:1-116:118" name="Inpatient Stay with Qualifying Diagnosis within 30 Days of Initial ADHD Dispense" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="264">
+               <a:s>define &quot;Inpatient Stay with Qualifying Diagnosis within 30 Days of Initial ADHD Dispense&quot;:
+  </a:s>
+               <a:s r="263">
+                  <a:s>
+                     <a:s r="253">
+                        <a:s r="252">
+                           <a:s>
+                              <a:s>&quot;Inpatient Stay with Qualifying Diagnosis&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> InpatientStay</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="262">
+                     <a:s>with </a:s>
+                     <a:s r="255">
+                        <a:s r="254">
+                           <a:s>
+                              <a:s>&quot;First ADHD Medication Dispensed&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> InitialADHDMedication</a:s>
+                     </a:s>
+                     <a:s>
+      such that </a:s>
+                     <a:s r="261">
+                        <a:s r="257">
+                           <a:s r="256">
+                              <a:s>InpatientStay</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="257">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> </a:s>
+                        <a:s r="261">
+                           <a:s>starts </a:s>
+                           <a:s r="260">
+                              <a:s>30 days</a:s>
+                           </a:s>
+                           <a:s> or less on or after</a:s>
+                        </a:s>
+                        <a:s> </a:s>
+                        <a:s r="259">
+                           <a:s r="258">
+                              <a:s>InitialADHDMedication</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="259">
+                              <a:s>relevantDatetime</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="263" locator="114:3-116:118" xsi:type="Query">
+            <source localId="253" locator="114:3-114:58" alias="InpatientStay">
+               <expression localId="252" locator="114:3-114:44" name="Inpatient Stay with Qualifying Diagnosis" xsi:type="ExpressionRef"/>
+            </source>
+            <relationship localId="262" locator="115:5-116:118" alias="InitialADHDMedication" xsi:type="With">
+               <expression localId="254" locator="115:10-115:42" name="First ADHD Medication Dispensed" xsi:type="ExpressionRef"/>
+               <suchThat localId="261" locator="116:17-116:118" xsi:type="And">
+                  <operand locator="116:53-116:67" xsi:type="In">
+                     <operand locator="116:46-116:51" xsi:type="Start">
+                        <operand localId="257" locator="116:17-116:44" path="relevantPeriod" scope="InpatientStay" xsi:type="Property"/>
+                     </operand>
+                     <operand locator="116:53-116:67" lowClosed="true" highClosed="true" xsi:type="Interval">
+                        <low localId="259" locator="116:81-116:118" path="relevantDatetime" scope="InitialADHDMedication" xsi:type="Property"/>
+                        <high locator="116:103-116:118" xsi:type="Add">
+                           <operand localId="259" locator="116:81-116:118" path="relevantDatetime" scope="InitialADHDMedication" xsi:type="Property"/>
+                           <operand localId="260" locator="116:53-116:59" value="30" unit="days" xsi:type="Quantity"/>
+                        </high>
+                     </operand>
+                  </operand>
+                  <operand locator="116:53-116:67" xsi:type="Not">
+                     <operand locator="116:53-116:67" xsi:type="IsNull">
+                        <operand localId="259" locator="116:81-116:118" path="relevantDatetime" scope="InitialADHDMedication" xsi:type="Property"/>
+                     </operand>
+                  </operand>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def localId="280" locator="118:1-121:121" name="Previously on ADHD Medication Exclusion" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="280">
+               <a:s>define &quot;Previously on ADHD Medication Exclusion&quot;:
+  </a:s>
+               <a:s r="279">
+                  <a:s>
+                     <a:s r="269">
+                        <a:s r="268">
+                           <a:s r="268">
+                              <a:s>[&quot;Medication, Active&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;ADHD Medications&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> ActiveADHDMedication</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="278">
+                     <a:s>with </a:s>
+                     <a:s r="271">
+                        <a:s r="270">
+                           <a:s>
+                              <a:s>&quot;First ADHD Medication Dispensed&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> InitialADHDMedication</a:s>
+                     </a:s>
+                     <a:s>
+      such that </a:s>
+                     <a:s r="277">
+                        <a:s r="273">
+                           <a:s r="272">
+                              <a:s>ActiveADHDMedication</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="273">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> </a:s>
+                        <a:s r="277">
+                           <a:s>starts </a:s>
+                           <a:s r="276">
+                              <a:s>120 days</a:s>
+                           </a:s>
+                           <a:s> or less before</a:s>
+                        </a:s>
+                        <a:s> </a:s>
+                        <a:s r="275">
+                           <a:s r="274">
+                              <a:s>InitialADHDMedication</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="275">
+                              <a:s>relevantDatetime</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="279" locator="119:3-121:121" xsi:type="Query">
+            <source localId="269" locator="119:3-119:65" alias="ActiveADHDMedication">
+               <expression localId="268" locator="119:3-119:44" xmlns:ns29="urn:healthit-gov:qdm:v5_5" dataType="ns29:MedicationActive" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                  <codes locator="119:26-119:43" name="ADHD Medications" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <relationship localId="278" locator="120:5-121:121" alias="InitialADHDMedication" xsi:type="With">
+               <expression localId="270" locator="120:10-120:42" name="First ADHD Medication Dispensed" xsi:type="ExpressionRef"/>
+               <suchThat localId="277" locator="121:17-121:121" xsi:type="And">
+                  <operand locator="121:60-121:75" xsi:type="In">
+                     <operand locator="121:53-121:58" xsi:type="Start">
+                        <operand localId="273" locator="121:17-121:51" path="relevantPeriod" scope="ActiveADHDMedication" xsi:type="Property"/>
+                     </operand>
+                     <operand locator="121:60-121:75" lowClosed="true" highClosed="false" xsi:type="Interval">
+                        <low locator="121:106-121:121" xsi:type="Subtract">
+                           <operand localId="275" locator="121:84-121:121" path="relevantDatetime" scope="InitialADHDMedication" xsi:type="Property"/>
+                           <operand localId="276" locator="121:60-121:67" value="120" unit="days" xsi:type="Quantity"/>
+                        </low>
+                        <high localId="275" locator="121:84-121:121" path="relevantDatetime" scope="InitialADHDMedication" xsi:type="Property"/>
+                     </operand>
+                  </operand>
+                  <operand locator="121:60-121:75" xsi:type="Not">
+                     <operand locator="121:60-121:75" xsi:type="IsNull">
+                        <operand localId="275" locator="121:84-121:121" path="relevantDatetime" scope="InitialADHDMedication" xsi:type="Property"/>
+                     </operand>
+                  </operand>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def localId="284" locator="76:1-80:59" name="Denominator Exclusions 1" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="284">
+               <a:s>define &quot;Denominator Exclusions 1&quot;:
+  </a:s>
+               <a:s r="283">
+                  <a:s r="267">
+                     <a:s r="229">
+                        <a:s r="226">
+                           <a:s r="225">
+                              <a:s>Hospice</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="226">
+                              <a:s>&quot;Has Hospice&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+    or </a:s>
+                        <a:s r="228">
+                           <a:s>exists </a:s>
+                           <a:s r="227">
+                              <a:s>( </a:s>
+                              <a:s r="227">
+                                 <a:s>&quot;Narcolepsy Exclusion&quot;</a:s>
+                              </a:s>
+                              <a:s> )</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+    or </a:s>
+                     <a:s r="266">
+                        <a:s>exists </a:s>
+                        <a:s r="265">
+                           <a:s>( </a:s>
+                           <a:s r="265">
+                              <a:s>&quot;Inpatient Stay with Qualifying Diagnosis within 30 Days of Initial ADHD Dispense&quot;</a:s>
+                           </a:s>
+                           <a:s> )</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    or </a:s>
+                  <a:s r="282">
+                     <a:s>exists </a:s>
+                     <a:s r="281">
+                        <a:s>( </a:s>
+                        <a:s r="281">
+                           <a:s>&quot;Previously on ADHD Medication Exclusion&quot;</a:s>
+                        </a:s>
+                        <a:s> )</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="283" locator="77:3-80:59" xsi:type="Or">
+            <operand localId="267" locator="77:3-79:100" xsi:type="Or">
+               <operand localId="229" locator="77:3-78:40" xsi:type="Or">
+                  <operand localId="226" locator="77:3-77:23" name="Has Hospice" libraryName="Hospice" xsi:type="ExpressionRef"/>
+                  <operand localId="228" locator="78:8-78:40" xsi:type="Exists">
+                     <operand localId="227" locator="78:15-78:40" name="Narcolepsy Exclusion" xsi:type="ExpressionRef"/>
+                  </operand>
+               </operand>
+               <operand localId="266" locator="79:8-79:100" xsi:type="Exists">
+                  <operand localId="265" locator="79:15-79:100" name="Inpatient Stay with Qualifying Diagnosis within 30 Days of Initial ADHD Dispense" xsi:type="ExpressionRef"/>
+               </operand>
+            </operand>
+            <operand localId="282" locator="80:8-80:59" xsi:type="Exists">
+               <operand localId="281" locator="80:15-80:59" name="Previously on ADHD Medication Exclusion" xsi:type="ExpressionRef"/>
+            </operand>
+         </expression>
+      </def>
+      <def localId="302" locator="108:1-111:126" name="Inpatient Stay with Qualifying Diagnosis within 300 Days of Initial ADHD Dispense" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="302">
+               <a:s>define &quot;Inpatient Stay with Qualifying Diagnosis within 300 Days of Initial ADHD Dispense&quot;:
+  </a:s>
+               <a:s r="301">
+                  <a:s>
+                     <a:s r="291">
+                        <a:s r="290">
+                           <a:s>
+                              <a:s>&quot;Inpatient Stay with Qualifying Diagnosis&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> InpatientStay</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="300">
+                     <a:s>with </a:s>
+                     <a:s r="293">
+                        <a:s r="292">
+                           <a:s>
+                              <a:s>&quot;First ADHD Medication Dispensed&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> InitialADHDMedication</a:s>
+                     </a:s>
+                     <a:s>
+      such that </a:s>
+                     <a:s r="299">
+                        <a:s r="295">
+                           <a:s r="294">
+                              <a:s>InpatientStay</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="295">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> </a:s>
+                        <a:s r="299">
+                           <a:s>starts </a:s>
+                           <a:s r="298">
+                              <a:s>300 days</a:s>
+                           </a:s>
+                           <a:s> or less on or after day of</a:s>
+                        </a:s>
+                        <a:s> </a:s>
+                        <a:s r="297">
+                           <a:s r="296">
+                              <a:s>InitialADHDMedication</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="297">
+                              <a:s>relevantDatetime</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="301" locator="109:3-111:126" xsi:type="Query">
+            <source localId="291" locator="109:3-109:58" alias="InpatientStay">
+               <expression localId="290" locator="109:3-109:44" name="Inpatient Stay with Qualifying Diagnosis" xsi:type="ExpressionRef"/>
+            </source>
+            <relationship localId="300" locator="110:5-111:126" alias="InitialADHDMedication" xsi:type="With">
+               <expression localId="292" locator="110:10-110:42" name="First ADHD Medication Dispensed" xsi:type="ExpressionRef"/>
+               <suchThat localId="299" locator="111:17-111:126" xsi:type="And">
+                  <operand locator="111:53-111:68" precision="Day" xsi:type="In">
+                     <operand locator="111:46-111:51" xsi:type="Start">
+                        <operand localId="295" locator="111:17-111:44" path="relevantPeriod" scope="InpatientStay" xsi:type="Property"/>
+                     </operand>
+                     <operand locator="111:53-111:68" lowClosed="true" highClosed="true" xsi:type="Interval">
+                        <low localId="297" locator="111:89-111:126" path="relevantDatetime" scope="InitialADHDMedication" xsi:type="Property"/>
+                        <high locator="111:111-111:126" xsi:type="Add">
+                           <operand localId="297" locator="111:89-111:126" path="relevantDatetime" scope="InitialADHDMedication" xsi:type="Property"/>
+                           <operand localId="298" locator="111:53-111:60" value="300" unit="days" xsi:type="Quantity"/>
+                        </high>
+                     </operand>
+                  </operand>
+                  <operand locator="111:53-111:68" xsi:type="Not">
+                     <operand locator="111:53-111:68" xsi:type="IsNull">
+                        <operand localId="297" locator="111:89-111:126" path="relevantDatetime" scope="InitialADHDMedication" xsi:type="Property"/>
+                     </operand>
+                  </operand>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def localId="309" locator="82:1-86:59" name="Denominator Exclusions 2" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="309">
+               <a:s>define &quot;Denominator Exclusions 2&quot;:
+  </a:s>
+               <a:s r="308">
+                  <a:s r="305">
+                     <a:s r="289">
+                        <a:s r="286">
+                           <a:s r="285">
+                              <a:s>Hospice</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="286">
+                              <a:s>&quot;Has Hospice&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+    or </a:s>
+                        <a:s r="288">
+                           <a:s>exists </a:s>
+                           <a:s r="287">
+                              <a:s>( </a:s>
+                              <a:s r="287">
+                                 <a:s>&quot;Narcolepsy Exclusion&quot;</a:s>
+                              </a:s>
+                              <a:s> )</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+    or </a:s>
+                     <a:s r="304">
+                        <a:s>exists </a:s>
+                        <a:s r="303">
+                           <a:s>( </a:s>
+                           <a:s r="303">
+                              <a:s>&quot;Inpatient Stay with Qualifying Diagnosis within 300 Days of Initial ADHD Dispense&quot;</a:s>
+                           </a:s>
+                           <a:s> )</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    or </a:s>
+                  <a:s r="307">
+                     <a:s>exists </a:s>
+                     <a:s r="306">
+                        <a:s>( </a:s>
+                        <a:s r="306">
+                           <a:s>&quot;Previously on ADHD Medication Exclusion&quot;</a:s>
+                        </a:s>
+                        <a:s> )</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="308" locator="83:3-86:59" xsi:type="Or">
+            <operand localId="305" locator="83:3-85:101" xsi:type="Or">
+               <operand localId="289" locator="83:3-84:40" xsi:type="Or">
+                  <operand localId="286" locator="83:3-83:23" name="Has Hospice" libraryName="Hospice" xsi:type="ExpressionRef"/>
+                  <operand localId="288" locator="84:8-84:40" xsi:type="Exists">
+                     <operand localId="287" locator="84:15-84:40" name="Narcolepsy Exclusion" xsi:type="ExpressionRef"/>
+                  </operand>
+               </operand>
+               <operand localId="304" locator="85:8-85:101" xsi:type="Exists">
+                  <operand localId="303" locator="85:15-85:101" name="Inpatient Stay with Qualifying Diagnosis within 300 Days of Initial ADHD Dispense" xsi:type="ExpressionRef"/>
+               </operand>
+            </operand>
+            <operand localId="307" locator="86:8-86:59" xsi:type="Exists">
+               <operand localId="306" locator="86:15-86:59" name="Previously on ADHD Medication Exclusion" xsi:type="ExpressionRef"/>
+            </operand>
+         </expression>
+      </def>
+      <def localId="322" locator="128:1-132:3" name="Encounter 30 Days after Initial ADHD Medication" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="322">
+               <a:s>define &quot;Encounter 30 Days after Initial ADHD Medication&quot;:
+  </a:s>
+               <a:s r="321">
+                  <a:s>( </a:s>
+                  <a:s r="321">
+                     <a:s>
+                        <a:s r="311">
+                           <a:s r="310">
+                              <a:s>
+                                 <a:s>&quot;Qualifying Numerator Encounter&quot;</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> ValidNumeratorEncounter</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+      </a:s>
+                     <a:s r="320">
+                        <a:s>with </a:s>
+                        <a:s r="313">
+                           <a:s r="312">
+                              <a:s>
+                                 <a:s>&quot;First ADHD Medication Dispensed&quot;</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> InitialADHDMedication</a:s>
+                        </a:s>
+                        <a:s>
+        such that </a:s>
+                        <a:s r="319">
+                           <a:s r="315">
+                              <a:s r="314">
+                                 <a:s>ValidNumeratorEncounter</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="315">
+                                 <a:s>relevantPeriod</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> </a:s>
+                           <a:s r="319">
+                              <a:s>starts </a:s>
+                              <a:s r="318">
+                                 <a:s>30 days</a:s>
+                              </a:s>
+                              <a:s> or less on or after</a:s>
+                           </a:s>
+                           <a:s> </a:s>
+                           <a:s r="317">
+                              <a:s r="316">
+                                 <a:s>InitialADHDMedication</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="317">
+                                 <a:s>relevantDatetime</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+  )</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="321" locator="129:3-132:3" xsi:type="Query">
+            <source localId="311" locator="129:5-129:60" alias="ValidNumeratorEncounter">
+               <expression localId="310" locator="129:5-129:36" name="Qualifying Numerator Encounter" xsi:type="ExpressionRef"/>
+            </source>
+            <relationship localId="320" locator="130:7-131:130" alias="InitialADHDMedication" xsi:type="With">
+               <expression localId="312" locator="130:12-130:44" name="First ADHD Medication Dispensed" xsi:type="ExpressionRef"/>
+               <suchThat localId="319" locator="131:19-131:130" xsi:type="And">
+                  <operand locator="131:65-131:79" xsi:type="In">
+                     <operand locator="131:58-131:63" xsi:type="Start">
+                        <operand localId="315" locator="131:19-131:56" path="relevantPeriod" scope="ValidNumeratorEncounter" xsi:type="Property"/>
+                     </operand>
+                     <operand locator="131:65-131:79" lowClosed="true" highClosed="true" xsi:type="Interval">
+                        <low localId="317" locator="131:93-131:130" path="relevantDatetime" scope="InitialADHDMedication" xsi:type="Property"/>
+                        <high locator="131:115-131:130" xsi:type="Add">
+                           <operand localId="317" locator="131:93-131:130" path="relevantDatetime" scope="InitialADHDMedication" xsi:type="Property"/>
+                           <operand localId="318" locator="131:65-131:71" value="30" unit="days" xsi:type="Quantity"/>
+                        </high>
+                     </operand>
+                  </operand>
+                  <operand locator="131:65-131:79" xsi:type="Not">
+                     <operand locator="131:65-131:79" xsi:type="IsNull">
+                        <operand localId="317" locator="131:93-131:130" path="relevantDatetime" scope="InitialADHDMedication" xsi:type="Property"/>
+                     </operand>
+                  </operand>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def localId="349" locator="141:1-146:122" name="Telehealth Services or Telephone Management Encounter" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="349">
+               <a:s>define &quot;Telehealth Services or Telephone Management Encounter&quot;:
+  </a:s>
+               <a:s r="348">
+                  <a:s>
+                     <a:s r="331">
+                        <a:s r="330">
+                           <a:s>( </a:s>
+                           <a:s r="330">
+                              <a:s r="328">
+                                 <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                 <a:s>
+                                    <a:s>&quot;Telehealth Services&quot;</a:s>
+                                 </a:s>
+                                 <a:s>]</a:s>
+                              </a:s>
+                              <a:s>
+    union </a:s>
+                              <a:s r="329">
+                                 <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                 <a:s>
+                                    <a:s>&quot;Telephone Management&quot;</a:s>
+                                 </a:s>
+                                 <a:s>]</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> )</a:s>
+                        </a:s>
+                        <a:s> TelehealthEncounter</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="347">
+                     <a:s>with </a:s>
+                     <a:s r="333">
+                        <a:s r="332">
+                           <a:s>
+                              <a:s>&quot;First ADHD Medication Dispensed&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> InitialADHDMedication</a:s>
+                     </a:s>
+                     <a:s>
+      such that </a:s>
+                     <a:s r="346">
+                        <a:s r="339">
+                           <a:s r="335">
+                              <a:s r="334">
+                                 <a:s>TelehealthEncounter</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="335">
+                                 <a:s>relevantPeriod</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> </a:s>
+                           <a:s r="339">
+                              <a:s>starts </a:s>
+                              <a:s r="338">
+                                 <a:s>31 days</a:s>
+                              </a:s>
+                              <a:s> or more after day of</a:s>
+                           </a:s>
+                           <a:s> </a:s>
+                           <a:s r="337">
+                              <a:s r="336">
+                                 <a:s>InitialADHDMedication</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="337">
+                                 <a:s>relevantDatetime</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+        and </a:s>
+                        <a:s r="345">
+                           <a:s r="341">
+                              <a:s r="340">
+                                 <a:s>TelehealthEncounter</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="341">
+                                 <a:s>relevantPeriod</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> </a:s>
+                           <a:s r="345">
+                              <a:s>starts </a:s>
+                              <a:s r="344">
+                                 <a:s>300 days</a:s>
+                              </a:s>
+                              <a:s> or less after day of</a:s>
+                           </a:s>
+                           <a:s> </a:s>
+                           <a:s r="343">
+                              <a:s r="342">
+                                 <a:s>InitialADHDMedication</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="343">
+                                 <a:s>relevantDatetime</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="348" locator="142:3-146:122" xsi:type="Query">
+            <source localId="331" locator="142:3-143:80" alias="TelehealthEncounter">
+               <expression localId="330" locator="142:3-143:60" xsi:type="Union">
+                  <operand localId="328" locator="142:5-142:51" xmlns:ns30="urn:healthit-gov:qdm:v5_5" dataType="ns30:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                     <codes locator="142:30-142:50" name="Telehealth Services" xsi:type="ValueSetRef"/>
+                  </operand>
+                  <operand localId="329" locator="143:11-143:58" xmlns:ns31="urn:healthit-gov:qdm:v5_5" dataType="ns31:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                     <codes locator="143:36-143:57" name="Telephone Management" xsi:type="ValueSetRef"/>
+                  </operand>
+               </expression>
+            </source>
+            <relationship localId="347" locator="144:5-146:122" alias="InitialADHDMedication" xsi:type="With">
+               <expression localId="332" locator="144:10-144:42" name="First ADHD Medication Dispensed" xsi:type="ExpressionRef"/>
+               <suchThat localId="346" locator="145:17-146:122" xsi:type="And">
+                  <operand localId="339" locator="145:17-145:125" precision="Day" xsi:type="SameOrAfter">
+                     <operand locator="145:52-145:57" xsi:type="Start">
+                        <operand localId="335" locator="145:17-145:50" path="relevantPeriod" scope="TelehealthEncounter" xsi:type="Property"/>
+                     </operand>
+                     <operand locator="145:110-145:125" xsi:type="Add">
+                        <operand localId="337" locator="145:88-145:125" path="relevantDatetime" scope="InitialADHDMedication" xsi:type="Property"/>
+                        <operand localId="338" locator="145:59-145:65" value="31" unit="days" xsi:type="Quantity"/>
+                     </operand>
+                  </operand>
+                  <operand localId="345" locator="146:13-146:122" xsi:type="And">
+                     <operand locator="146:55-146:70" precision="Day" xsi:type="In">
+                        <operand locator="146:48-146:53" xsi:type="Start">
+                           <operand localId="341" locator="146:13-146:46" path="relevantPeriod" scope="TelehealthEncounter" xsi:type="Property"/>
+                        </operand>
+                        <operand locator="146:55-146:70" lowClosed="false" highClosed="true" xsi:type="Interval">
+                           <low localId="343" locator="146:85-146:122" path="relevantDatetime" scope="InitialADHDMedication" xsi:type="Property"/>
+                           <high locator="146:107-146:122" xsi:type="Add">
+                              <operand localId="343" locator="146:85-146:122" path="relevantDatetime" scope="InitialADHDMedication" xsi:type="Property"/>
+                              <operand localId="344" locator="146:55-146:62" value="300" unit="days" xsi:type="Quantity"/>
+                           </high>
+                        </operand>
+                     </operand>
+                     <operand locator="146:55-146:70" xsi:type="Not">
+                        <operand locator="146:55-146:70" xsi:type="IsNull">
+                           <operand localId="343" locator="146:85-146:122" path="relevantDatetime" scope="InitialADHDMedication" xsi:type="Property"/>
+                        </operand>
+                     </operand>
+                  </operand>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def localId="355" locator="91:1-97:5" name="Numerator 2" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="355">
+               <a:s>define &quot;Numerator 2&quot;:
+  </a:s>
+               <a:s r="354">
+                  <a:s r="324">
+                     <a:s>exists </a:s>
+                     <a:s r="323">
+                        <a:s>( </a:s>
+                        <a:s r="323">
+                           <a:s>&quot;Encounter 30 Days after Initial ADHD Medication&quot;</a:s>
+                        </a:s>
+                        <a:s> )</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    and </a:s>
+                  <a:s r="353">
+                     <a:s>( </a:s>
+                     <a:s r="353">
+                        <a:s r="325">
+                           <a:s>( </a:s>
+                           <a:s r="325">
+                              <a:s>&quot;Two or More Followup Encounters&quot;</a:s>
+                           </a:s>
+                           <a:s> )</a:s>
+                        </a:s>
+                        <a:s>
+        or </a:s>
+                        <a:s r="352">
+                           <a:s>( </a:s>
+                           <a:s r="352">
+                              <a:s r="327">
+                                 <a:s>exists </a:s>
+                                 <a:s r="326">
+                                    <a:s>( </a:s>
+                                    <a:s r="326">
+                                       <a:s>&quot;Encounters 300 Days after Initial ADHD Medication&quot;</a:s>
+                                    </a:s>
+                                    <a:s> )</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>
+            and </a:s>
+                              <a:s r="351">
+                                 <a:s>exists </a:s>
+                                 <a:s r="350">
+                                    <a:s>( </a:s>
+                                    <a:s r="350">
+                                       <a:s>&quot;Telehealth Services or Telephone Management Encounter&quot;</a:s>
+                                    </a:s>
+                                    <a:s> )</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>
+        )</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+    )</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="354" locator="92:3-97:5" xsi:type="And">
+            <operand localId="324" locator="92:3-92:62" xsi:type="Exists">
+               <operand localId="323" locator="92:10-92:62" name="Encounter 30 Days after Initial ADHD Medication" xsi:type="ExpressionRef"/>
+            </operand>
+            <operand localId="353" locator="93:9-97:5" xsi:type="Or">
+               <operand localId="325" locator="93:11-93:47" name="Two or More Followup Encounters" xsi:type="ExpressionRef"/>
+               <operand localId="352" locator="94:12-96:9" xsi:type="And">
+                  <operand localId="327" locator="94:14-94:75" xsi:type="Exists">
+                     <operand localId="326" locator="94:21-94:75" name="Encounters 300 Days after Initial ADHD Medication" xsi:type="ExpressionRef"/>
+                  </operand>
+                  <operand localId="351" locator="95:17-95:82" xsi:type="Exists">
+                     <operand localId="350" locator="95:24-95:82" name="Telehealth Services or Telephone Management Encounter" xsi:type="ExpressionRef"/>
+                  </operand>
+               </operand>
+            </operand>
+         </expression>
+      </def>
+      <def localId="358" locator="99:1-100:62" name="Numerator 1" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="358">
+               <a:s>define &quot;Numerator 1&quot;:
+  </a:s>
+               <a:s r="357">
+                  <a:s>exists </a:s>
+                  <a:s r="356">
+                     <a:s>( </a:s>
+                     <a:s r="356">
+                        <a:s>&quot;Encounter 30 Days after Initial ADHD Medication&quot;</a:s>
+                     </a:s>
+                     <a:s> )</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="357" locator="100:3-100:62" xsi:type="Exists">
+            <operand localId="356" locator="100:10-100:62" name="Encounter 30 Days after Initial ADHD Medication" xsi:type="ExpressionRef"/>
+         </expression>
+      </def>
+   </statements>
+</library>
+
+

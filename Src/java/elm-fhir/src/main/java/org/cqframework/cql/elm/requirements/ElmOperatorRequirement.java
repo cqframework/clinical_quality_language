@@ -17,9 +17,14 @@ public class ElmOperatorRequirement extends ElmExpressionRequirement {
     }
 
     @Override
-    public ElmExpressionRequirement combine(ElmExpressionRequirement requirement) {
-        if (requirement != null) {
+    public ElmExpressionRequirement combine(ElmRequirement requirement) {
+        if (requirement instanceof ElmExpressionRequirement) {
             requirements.add(requirement);
+        }
+        else if (requirement instanceof ElmRequirements) {
+            for (ElmRequirement r : ((ElmRequirements)requirement).getRequirements()) {
+                requirements.add(r);
+            }
         }
         return this;
     }

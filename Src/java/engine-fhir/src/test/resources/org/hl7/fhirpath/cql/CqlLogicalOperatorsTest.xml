@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://hl7.org/fhirpath/tests" xsi:schemaLocation="http://hl7.org/fhirpath/tests ../../testSchema/testSchema.xsd"
+	name="CqlLogicalOperatorsTest" reference="https://cql.hl7.org/09-b-cqlreference.html#logical-operators-3">
+	<group name="And">
+		<test name="TrueAndTrue">
+			<expression>true and true</expression>
+			<output>true</output>
+		</test>
+		<test name="TrueAndFalse">
+			<expression>true and false</expression>
+			<output>false</output>
+		</test>
+		<test name="TrueAndNull">
+			<expression>true and null</expression>
+			<output>null</output>
+		</test>
+		<test name="FalseAndTrue">
+			<expression>false and true</expression>
+			<output>false</output>
+		</test>
+		<test name="FalseAndFalse">
+			<expression>false and false</expression>
+			<output>false</output>
+		</test>
+		<test name="FalseAndNull">
+			<expression>false and null</expression>
+			<output>false</output>
+		</test>
+		<test name="NullAndTrue">
+			<expression>null and true</expression>
+			<output>null</output>
+		</test>
+		<test name="NullAndFalse">
+			<expression>null and false</expression>
+			<output>false</output>
+		</test>
+		<test name="NullAndNull">
+			<expression>null and null</expression>
+			<output>null</output>
+		</test>
+	</group>
+	<group name="Implies">
+		<!-- TODO: make Translator resolve Implies operator signatures -->
+		<test name="TrueImpliesTrue">
+			<expression>true implies true</expression>
+			<output>true</output>
+		</test>
+		<test name="TrueImpliesFalse">
+			<expression>true implies false</expression>
+			<output>false</output>
+		</test>
+		<test name="TrueImpliesNull">
+			<expression>true implies null</expression>
+			<output>null</output>
+		</test>
+		<test name="FalseImpliesTrue">
+			<expression>false implies true</expression>
+			<output>true</output>
+		</test>
+		<test name="FalseImpliesFalse">
+			<expression>false implies false</expression>
+			<output>true</output>
+		</test>
+		<test name="FalseImpliesNull">
+			<expression>false implies null</expression>
+			<output>true</output>
+		</test>
+		<test name="NullImpliesTrue">
+			<expression>null implies true</expression>
+			<output>true</output>
+		</test>
+		<test name="NullImpliesFalse">
+			<expression>null implies false</expression>
+			<output>null</output>
+		</test>
+		<test name="NullImpliesNull">
+			<expression>null implies null</expression>
+			<output>null</output>
+		</test>
+	</group>
+	<group name="Not">
+		<test name="NotTrue">
+			<expression>not true</expression>
+			<output>false</output>
+		</test>
+		<test name="NotFalse">
+			<expression>not false</expression>
+			<output>true</output>
+		</test>
+		<test name="NotNull">
+			<expression>not null</expression>
+			<output>null</output>
+		</test>
+	</group>
+	<group name="Or">
+		<test name="TrueOrTrue">
+			<expression>true or true</expression>
+			<output>true</output>
+		</test>
+		<test name="TrueOrFalse">
+			<expression>true or false</expression>
+			<output>true</output>
+		</test>
+		<test name="TrueOrNull">
+			<expression>true or null</expression>
+			<output>true</output>
+		</test>
+		<test name="FalseOrTrue">
+			<expression>false or true</expression>
+			<output>true</output>
+		</test>
+		<test name="FalseOrFalse">
+			<expression>false or false</expression>
+			<output>false</output>
+		</test>
+		<test name="FalseOrNull">
+			<expression>false or null</expression>
+			<output>null</output>
+		</test>
+		<test name="NullOrTrue">
+			<expression>null or true</expression>
+			<output>true</output>
+		</test>
+		<test name="NullOrFalse">
+			<expression>null or false</expression>
+			<output>null</output>
+		</test>
+		<test name="NullOrNull">
+			<expression>null or null</expression>
+			<output>null</output>
+		</test>
+	</group>
+	<group name="Xor">
+		<test name="TrueXorTrue">
+			<expression>true xor true</expression>
+			<output>false</output>
+		</test>
+		<test name="TrueXorFalse">
+			<expression>true xor false</expression>
+			<output>true</output>
+		</test>
+		<test name="TrueXorNull">
+			<expression>true xor null</expression>
+			<output>null</output>
+		</test>
+		<test name="FalseXorTrue">
+			<expression>false xor true</expression>
+			<output>true</output>
+		</test>
+		<test name="FalseXorFalse">
+			<expression>false xor false</expression>
+			<output>false</output>
+		</test>
+		<test name="FalseXorNull">
+			<expression>false xor null</expression>
+			<output>null</output>
+		</test>
+		<test name="NullXorTrue">
+			<expression>null xor true</expression>
+			<output>null</output>
+		</test>
+		<test name="NullXorFalse">
+			<expression>null xor false</expression>
+			<output>null</output>
+		</test>
+		<test name="NullXorNull">
+			<expression>null xor null</expression>
+			<output>null</output>
+		</test>
+	</group>
+</tests>
