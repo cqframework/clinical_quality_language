@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<FindBugsFilter>
+    <Match>
+        <Package name="~org\.cqframework\.cql\.gen.*" />
+    </Match>
+    <Match>
+        <Package name="~org\.hl7.*" />
+    </Match>
+    <Match>
+        <Package name="~gov\.healthit\.qdm\.v4_1_2.*" />
+    </Match>
+    <Match>
+        <Package name="~org\.w3\._1999\.xhtml.*" />
+    </Match>
+</FindBugsFilter>

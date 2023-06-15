@@ -1,0 +1,25 @@
+plugins {
+    id 'cql.library-conventions'
+}
+
+ext {
+    hapiVersion = project['hapi.version'];
+}
+
+dependencies {
+    api platform("ca.uhn.hapi.fhir:hapi-fhir-bom:${hapiVersion}") {
+        exclude group: 'org.eclipse.jetty'
+    }
+
+    implementation "ca.uhn.hapi.fhir:org.hl7.fhir.r5"
+    implementation "ca.uhn.hapi.fhir:org.hl7.fhir.convertors"
+    implementation "ca.uhn.hapi.fhir:org.hl7.fhir.utilities"
+
+    implementation "ca.uhn.hapi.fhir:hapi-fhir-base"
+    implementation "ca.uhn.hapi.fhir:hapi-fhir-converter"
+    implementation "ca.uhn.hapi.fhir:hapi-fhir-structures-hl7org-dstu2"
+    implementation "ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2"
+    implementation "ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3"
+    implementation "ca.uhn.hapi.fhir:hapi-fhir-structures-r4"
+    implementation "ca.uhn.hapi.fhir:hapi-fhir-structures-r5"
+}

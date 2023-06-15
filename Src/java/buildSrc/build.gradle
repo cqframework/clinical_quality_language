@@ -1,0 +1,13 @@
+plugins {
+    id 'groovy-gradle-plugin'
+}
+
+repositories {
+    mavenCentral()
+    gradlePluginPortal()
+}
+
+dependencies {
+    implementation 'ru.vyarus:gradle-animalsniffer-plugin:1.7.0'
+    implementation 'com.github.spotbugs.snom:spotbugs-gradle-plugin:5.0.14'
+}
