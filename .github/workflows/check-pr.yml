@@ -13,7 +13,7 @@ jobs:
     - name: Setup and execute Gradle 'check' task
       uses: gradle/gradle-build-action@v2
       with:
-        arguments: check
+        arguments: check -i
         build-root-directory: Src/java
 
     - name: Publish Test Report
