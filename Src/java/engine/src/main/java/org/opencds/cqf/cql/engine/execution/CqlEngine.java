@@ -26,7 +26,7 @@ import static org.opencds.cqf.cql.engine.execution.NamespaceHelper.getNamePart;
 import static org.opencds.cqf.cql.engine.execution.NamespaceHelper.getUriPart;
 
 /**
- * NOTE: We have updated CqlEngine adopt a visitor pattern approach to traversing the ELM tree for execution:
+ * NOTE: We have updated CqlEngine to adopt a visitor pattern approach to traversing the ELM tree for execution:
  *
  * Visitor pattern reduces the process to convert EML Tree to Executable ELM tree and thus reduces a potential maintenance issue.
  *
@@ -274,17 +274,6 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
             Object object = visitExpressionDef(def, this.state);
             result.expressionResults.put(expression, new ExpressionResult(object, this.state.getEvaluatedResources()));
         }
-
-        /*
-        logger.info("printing keys:");
-        for (Map.Entry superEntry : this.state.getCache().getExpressions().entrySet()) {
-            logger.info(superEntry.getKey());
-            LinkedHashMap map = ((LinkedHashMap) superEntry.getValue());
-            for (Object entry : map.entrySet()) {
-                logger.info("key:" + ((Map.Entry) entry).getKey() + "| value:" + ((ExpressionResult) ((Map.Entry) entry).getValue()).value);
-            }
-        }
-        */
 
         result.setDebugResult(this.state.getDebugResult());
         this.state.clearExpressions();
