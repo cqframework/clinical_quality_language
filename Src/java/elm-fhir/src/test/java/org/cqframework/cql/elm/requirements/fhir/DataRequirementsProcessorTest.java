@@ -1678,14 +1678,13 @@ public class DataRequirementsProcessorTest {
         //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
-   // @Test
+    @Test
     public void TestWithDependencies() throws IOException {
         CqlTranslatorOptions translatorOptions = getTranslatorOptions();
         translatorOptions.setAnalyzeDataRequirements(false);
         CqlTranslator translator = setupDataRequirementsAnalysis("WithDependencies/BSElements.cql", translatorOptions);
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(translator, translatorOptions, new HashMap<String, Object>(), ZonedDateTime.of(2023, 1, 16, 0, 0, 0, 0, ZoneId.of("UTC")));
         assertNotNull(moduleDefinitionLibrary);
-        System.out.println(moduleDefinitionLibrary);
         assertEqualToExpectedModuleDefinitionLibrary(moduleDefinitionLibrary, "WithDependencies/Library-BSElements-data-requirements.json");
 
         //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
