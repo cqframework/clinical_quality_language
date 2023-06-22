@@ -13,7 +13,7 @@ public class InstanceEvaluator {
     public Object internalEvaluate(Instance instance, State state, CqlEngine visitor) {
         Object object = state.createInstance(instance.getClassType());
         for (org.hl7.elm.r1.InstanceElement element : instance.getElement()) {
-            Object value = visitor.validateOperand(visitor.visitExpression(element.getValue(), state));
+            Object value = visitor.visitExpression(element.getValue(), state);
             state.setValue(object, element.getName(), value);
         }
 

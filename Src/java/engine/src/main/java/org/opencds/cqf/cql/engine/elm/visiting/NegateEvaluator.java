@@ -64,7 +64,7 @@ public class NegateEvaluator {
             return Long.MIN_VALUE;
         }
 
-        Object source = visitor.validateOperand(visitor.visitExpression(operand, state));
+        Object source = visitor.visitExpression(operand, state);
 
         return negate(source);
     }

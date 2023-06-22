@@ -11,7 +11,7 @@ public class PropertyEvaluator {
         Object target = null;
 
         if (elm.getSource() != null) {
-            target = visitor.validateOperand(visitor.visitExpression(elm.getSource(), state));
+            target = visitor.visitExpression(elm.getSource(), state);
             // Tuple element access
             if (target instanceof Tuple) {
               // NOTE: translator will throw error if Tuple does not contain the specified element -- no need for x.containsKey() check

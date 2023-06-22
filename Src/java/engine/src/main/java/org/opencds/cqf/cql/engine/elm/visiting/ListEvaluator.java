@@ -12,7 +12,7 @@ public class ListEvaluator {
     public static Object internalEvaluate(List list, State state, CqlEngine visitor) {
         ArrayList<Object> result = new ArrayList<Object>();
         for (Expression element : list.getElement()) {
-            Object obj = visitor.validateOperand(visitor.visitExpression(element, state));
+            Object obj = visitor.visitExpression(element, state);
             result.add(obj);
         }
         return result;

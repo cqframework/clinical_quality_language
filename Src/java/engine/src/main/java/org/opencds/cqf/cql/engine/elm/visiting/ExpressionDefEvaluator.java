@@ -20,7 +20,7 @@ public class ExpressionDefEvaluator {
                 return er.value();
             }
 
-            Object value = visitor.validateOperand(visitor.visitExpression(expressionDef.getExpression(), state));
+            Object value = visitor.visitExpression(expressionDef.getExpression(), state);
 
             if (state.getCache().isExpressionCachingEnabled()) {
                 var er = new ExpressionResult(value, state.getEvaluatedResources());
@@ -28,15 +28,12 @@ public class ExpressionDefEvaluator {
             }
 
             return value;
-
-        } catch (Exception e) {
-            visitor.processException(e, expressionDef);
-        } finally {
+        }
+        finally {
             state.popEvaluatedResourceStack();
             if (expressionDef.getContext() != null) {
                 state.exitContext();
             }
         }
-        return null;
     }
 }

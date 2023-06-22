@@ -159,7 +159,7 @@ public class QueryEvaluator {
         int pushCount = 0;
         try {
             for (AliasedQuerySource source : elm.getSource()) {
-                Object obj = visitor.validateOperand(visitor.visitExpression(source.getExpression(),state));
+                Object obj = visitor.visitExpression(source.getExpression(),state);
                 QuerySource querySource = new QuerySource(source.getAlias(), obj);
                 sources.add(querySource.getData().iterator());
                 if (querySource.getIsList()) {

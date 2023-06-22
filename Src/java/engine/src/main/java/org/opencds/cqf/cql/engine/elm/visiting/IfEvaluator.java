@@ -11,7 +11,7 @@ public class IfEvaluator {
 
     public static Object internalEvaluate(If elm, State state, CqlEngine visitor) {
 
-        Object condition = visitor.validateOperand(visitor.visitExpression(elm.getCondition(), state));
+        Object condition = visitor.visitExpression(elm.getCondition(), state);
 
         if (condition == null) {
             condition = false;
