@@ -120,6 +120,7 @@ public class State {
         if (libraryName != null) {
             IncludeDef includeDef = resolveLibraryRef(libraryName);
             Library library = resolveIncludeDef(includeDef);
+
             currentLibrary.push(library);
             return true;
         }

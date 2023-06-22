@@ -43,7 +43,7 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
     private Environment environment;
     private State state;
     private Cache cache;
-    private EnumSet<Options> engineOptions;
+    private Set<Options> engineOptions;
     private CqlTranslatorOptions translatorOptions;
 
 
@@ -51,11 +51,11 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
         this(environment, null, null, null, null);
     }
 
-    public CqlEngine(Environment environment, EnumSet<Options> engineOptions, CqlTranslatorOptions translatorOptions) {
+    public CqlEngine(Environment environment, Set<Options> engineOptions, CqlTranslatorOptions translatorOptions) {
         this(environment, null, null, engineOptions, translatorOptions);
     }
 
-    public CqlEngine(Environment environment, State state, Cache cache, EnumSet<Options> engineOptions, CqlTranslatorOptions translatorOptions) {
+    public CqlEngine(Environment environment, State state, Cache cache, Set<Options> engineOptions, CqlTranslatorOptions translatorOptions) {
 
         if (environment.getLibraryManager() == null) {
             throw new IllegalArgumentException("libraryLoader can not be null.");
@@ -261,7 +261,7 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
         EvaluationResult result = new EvaluationResult();
 
         for (String expression : expressions) {
-            ExpressionDef def = resolveExpressionRef(expression);
+            ExpressionDef def = state.resolveExpressionRef(expression);
 
             if (def == null) {
                 throw new CqlException(String.format("Unable to resolve expression \"%s.\"", expression));
@@ -279,17 +279,6 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
         this.state.clearExpressions();
 
         return result;
-    }
-
-    public ExpressionDef resolveExpressionRef(String name) {
-
-        for (ExpressionDef expressionDef : state.getCurrentLibrary().getStatements().getDef()) {
-            if (expressionDef.getName().equals(name)) {
-                return expressionDef;
-            }
-        }
-
-        throw new CqlException(String.format("Could not resolve expression reference '%s' in library '%s'.", name, state.getCurrentLibrary().getIdentifier().getId()));
     }
 
     private void setParametersForContext(Library library, Pair<String, Object> contextParameter, Map<String, Object> parameters) {
