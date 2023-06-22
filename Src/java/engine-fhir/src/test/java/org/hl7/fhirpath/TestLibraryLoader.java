@@ -15,8 +15,8 @@ import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.cqframework.cql.elm.serializing.ElmLibraryWriterFactory;
+import org.cqframework.cql.elm.serializing.jackson.ElmJsonLibraryReader;
 import org.opencds.cqf.cql.engine.execution.LibraryLoader;
-import org.opencds.cqf.cql.engine.serializing.jackson.JsonCqlLibraryReader;
 
 public class TestLibraryLoader implements LibraryLoader {
 
@@ -73,7 +73,7 @@ public class TestLibraryLoader implements LibraryLoader {
 
         Library library = null;
         try {
-            library = new JsonCqlLibraryReader().read(new StringReader(json));
+            library = new ElmJsonLibraryReader().read(new StringReader(json));
         } catch (IOException e) {
             throw new RuntimeException(String.format("Errors encountered while loading library %s: %s", libraryIdentifier.getId(), e.getMessage()));
         }

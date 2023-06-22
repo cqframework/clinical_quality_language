@@ -13,7 +13,6 @@ include (
     'elm-test',
     'engine',
     'engine-fhir',
-    'engine-jackson',
     'qdm',
     'quick',
     'cql-to-elm',
