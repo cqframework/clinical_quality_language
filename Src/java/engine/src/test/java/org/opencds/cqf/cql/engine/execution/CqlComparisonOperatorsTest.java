@@ -1,6 +1,6 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import org.opencds.cqf.cql.engine.elm.visiting.GreaterEvaluator;
+import org.opencds.cqf.cql.engine.elm.executing.GreaterEvaluator;
 import org.opencds.cqf.cql.engine.exception.CqlException;
 import org.testng.Assert;
 import org.testng.annotations.Test;

@@ -1,6 +1,6 @@
 package org.hl7.fhirpath;
 
-import static org.opencds.cqf.cql.engine.elm.visiting.ToQuantityEvaluator.toQuantity;
+import static org.opencds.cqf.cql.engine.elm.executing.ToQuantityEvaluator.toQuantity;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -18,7 +18,7 @@ import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhirpath.tests.InvalidType;
 import org.hl7.fhirpath.tests.Tests;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
-import org.opencds.cqf.cql.engine.elm.visiting.ExistsEvaluator;
+import org.opencds.cqf.cql.engine.elm.executing.ExistsEvaluator;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.EvaluationResult;
 import org.opencds.cqf.cql.engine.execution.State;

@@ -5,7 +5,7 @@ import org.opencds.cqf.cql.engine.runtime.Time;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import org.opencds.cqf.cql.engine.elm.visiting.EquivalentEvaluator;
+import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator;
 
 import java.util.Collections;
 import java.util.HashSet;

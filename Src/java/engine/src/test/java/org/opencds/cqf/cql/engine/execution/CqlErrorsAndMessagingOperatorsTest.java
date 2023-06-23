@@ -3,8 +3,8 @@ package org.opencds.cqf.cql.engine.execution;
 import org.opencds.cqf.cql.engine.data.DataProvider;
 import org.opencds.cqf.cql.engine.data.SystemDataProvider;
 
-import org.opencds.cqf.cql.engine.elm.visiting.obfuscate.PHIObfuscator;
-import org.opencds.cqf.cql.engine.elm.visiting.obfuscate.RedactingPHIObfuscator;
+import org.opencds.cqf.cql.engine.elm.executing.obfuscate.PHIObfuscator;
+import org.opencds.cqf.cql.engine.elm.executing.obfuscate.RedactingPHIObfuscator;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

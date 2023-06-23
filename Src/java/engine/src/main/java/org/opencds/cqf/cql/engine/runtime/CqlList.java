@@ -6,8 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.hl7.elm.r1.Expression;
-import org.opencds.cqf.cql.engine.elm.visiting.EqualEvaluator;
-import org.opencds.cqf.cql.engine.elm.visiting.EquivalentEvaluator;
+import org.opencds.cqf.cql.engine.elm.executing.EqualEvaluator;
+import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator;
 import org.opencds.cqf.cql.engine.exception.InvalidComparison;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.State;

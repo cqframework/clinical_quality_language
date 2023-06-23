@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.opencds.cqf.cql.engine.elm.visiting.EqualEvaluator;
-import org.opencds.cqf.cql.engine.elm.visiting.EquivalentEvaluator;
-import org.opencds.cqf.cql.engine.elm.visiting.ToStringEvaluator;
+import org.opencds.cqf.cql.engine.elm.executing.EqualEvaluator;
+import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator;
+import org.opencds.cqf.cql.engine.elm.executing.ToStringEvaluator;
 import org.opencds.cqf.cql.engine.execution.State;
 
 public class Tuple implements CqlType {

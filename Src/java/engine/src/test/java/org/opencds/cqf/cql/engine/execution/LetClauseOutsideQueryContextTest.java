@@ -1,6 +1,6 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import org.opencds.cqf.cql.engine.elm.visiting.EquivalentEvaluator;
+import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

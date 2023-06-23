@@ -1,7 +1,7 @@
 package org.opencds.cqf.cql.engine.runtime;
 
-import org.opencds.cqf.cql.engine.elm.visiting.MaxValueEvaluator;
-import org.opencds.cqf.cql.engine.elm.visiting.MinValueEvaluator;
+import org.opencds.cqf.cql.engine.elm.executing.MaxValueEvaluator;
+import org.opencds.cqf.cql.engine.elm.executing.MinValueEvaluator;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

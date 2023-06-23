@@ -1,8 +1,8 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import org.opencds.cqf.cql.engine.elm.visiting.AnyTrueEvaluator;
-import org.opencds.cqf.cql.engine.elm.visiting.AvgEvaluator;
-import org.opencds.cqf.cql.engine.elm.visiting.EquivalentEvaluator;
+import org.opencds.cqf.cql.engine.elm.executing.AnyTrueEvaluator;
+import org.opencds.cqf.cql.engine.elm.executing.AvgEvaluator;
+import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.runtime.DateTime;
 import org.opencds.cqf.cql.engine.runtime.Quantity;
