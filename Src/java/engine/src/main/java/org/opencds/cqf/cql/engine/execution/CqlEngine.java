@@ -397,7 +397,7 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitFunctionRef(FunctionRef elm, State state) {
-        return new FunctionRefEvaluator().internalEvaluate(elm, state, this);
+        return FunctionRefEvaluator.internalEvaluate(elm, state, this);
     }
 
     @Override
@@ -1688,7 +1688,7 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitQuery(Query elm, State state) {
-        return new QueryEvaluator().internalEvaluate(elm, state, this) ;
+        return QueryEvaluator.internalEvaluate(elm, state, this) ;
     }
 
 }

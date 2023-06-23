@@ -16,11 +16,10 @@ import java.util.List;
 public class QueryEvaluator {
 
     @SuppressWarnings("unchecked")
-    public Iterable<Object> ensureIterable(Object source) {
+    public static Iterable<Object> ensureIterable(Object source) {
         if (source instanceof Iterable) {
             return (Iterable<Object>) source;
-        }
-        else {
+        } else {
             ArrayList<Object> sourceList = new ArrayList<>();
             if (source != null)
                 sourceList.add(source);
@@ -30,11 +29,11 @@ public class QueryEvaluator {
 
     private static void evaluateLets(Query elm, State state, List<Variable> letVariables, CqlEngine visitor) {
         for (int i = 0; i < elm.getLet().size(); i++) {
-            letVariables.get(i).setValue( visitor.visitExpression(elm.getLet().get(i).getExpression(),state));
+            letVariables.get(i).setValue(visitor.visitExpression(elm.getLet().get(i).getExpression(), state));
         }
     }
 
-    private boolean evaluateRelationships(Query elm, State state, CqlEngine visitor) {
+    private static boolean evaluateRelationships(Query elm, State state, CqlEngine visitor) {
         // TODO: This is the most naive possible implementation here, but it should perform okay with 1) caching and 2) small data sets
         boolean shouldInclude = true;
         for (org.hl7.elm.r1.RelationshipClause relationship : elm.getRelationship()) {
@@ -43,17 +42,15 @@ public class QueryEvaluator {
             for (Object relatedElement : relatedSourceData) {
                 state.push(new Variable().withName(relationship.getAlias()).withValue(relatedElement));
                 try {
-                    Object satisfiesRelatedCondition = visitor.visitExpression(relationship.getSuchThat(),state);
+                    Object satisfiesRelatedCondition = visitor.visitExpression(relationship.getSuchThat(), state);
                     if (relationship instanceof org.hl7.elm.r1.With
-                            || relationship instanceof org.hl7.elm.r1.Without)
-                    {
+                            || relationship instanceof org.hl7.elm.r1.Without) {
                         if (satisfiesRelatedCondition instanceof Boolean && (Boolean) satisfiesRelatedCondition) {
                             hasSatisfyingData = true;
                             break; // Once we have detected satisfying data, no need to continue testing
                         }
                     }
-                }
-                finally {
+                } finally {
                     state.pop();
                 }
             }
@@ -68,10 +65,10 @@ public class QueryEvaluator {
         return shouldInclude;
     }
 
-    private boolean evaluateWhere(Query elm, State state, CqlEngine visitor) {
+    private static boolean evaluateWhere(Query elm, State state, CqlEngine visitor) {
         if (elm.getWhere() != null) {
-            Object satisfiesCondition =visitor.visitExpression(elm.getWhere(),state);
-            if (!(satisfiesCondition instanceof Boolean && (Boolean)satisfiesCondition)) {
+            Object satisfiesCondition = visitor.visitExpression(elm.getWhere(), state);
+            if (!(satisfiesCondition instanceof Boolean && (Boolean) satisfiesCondition)) {
                 return false;
             }
         }
@@ -79,13 +76,13 @@ public class QueryEvaluator {
         return true;
     }
 
-    private Object evaluateReturn(Query elm, State state, List<Variable> variables, List<Object> elements, CqlEngine visitor) {
-        return elm.getReturn() != null ? visitor.visitExpression(elm.getReturn().getExpression(),state) : constructResult(state, variables, elements);
+    private static Object evaluateReturn(Query elm, State state, List<Variable> variables, List<Object> elements, CqlEngine visitor) {
+        return elm.getReturn() != null ? visitor.visitExpression(elm.getReturn().getExpression(), state) : constructResult(state, variables, elements);
     }
 
-    private Object constructResult(State state, List<Variable> variables, List<Object> elements) {
+    private static Object constructResult(State state, List<Variable> variables, List<Object> elements) {
         if (variables.size() > 1) {
-            LinkedHashMap<String,Object> elementMap = new LinkedHashMap<>();
+            LinkedHashMap<String, Object> elementMap = new LinkedHashMap<>();
             for (int i = 0; i < variables.size(); i++) {
                 elementMap.put(variables.get(i).getName(), variables.get(i).getValue());
             }
@@ -96,7 +93,7 @@ public class QueryEvaluator {
         return elements.get(0);
     }
 
-    public static void sortResult(Query elm,List<Object> result, State state, String alias, CqlEngine visitor) {
+    public static void sortResult(Query elm, List<Object> result, State state, String alias, CqlEngine visitor) {
 
         SortClause sortClause = elm.getSort();
 
@@ -105,14 +102,10 @@ public class QueryEvaluator {
             for (SortByItem byItem : sortClause.getBy()) {
 
                 if (byItem instanceof ByExpression) {
-                    result.sort(new CqlList(state, visitor, alias, ((ByExpression)byItem).getExpression()).expressionSort);
-                }
-
-                else if (byItem instanceof ByColumn) {
-                    result.sort(new CqlList(state, ((ByColumn)byItem).getPath()).columnSort);
-                }
-
-                else {
+                    result.sort(new CqlList(state, visitor, alias, ((ByExpression) byItem).getExpression()).expressionSort);
+                } else if (byItem instanceof ByColumn) {
+                    result.sort(new CqlList(state, ((ByColumn) byItem).getPath()).columnSort);
+                } else {
                     result.sort(new CqlList().valueSort);
                 }
 
@@ -124,7 +117,7 @@ public class QueryEvaluator {
         }
     }
 
-     class QuerySource {
+    static class QuerySource {
         private String alias;
         private boolean isList;
         private Iterable<Object> data;
@@ -149,7 +142,7 @@ public class QueryEvaluator {
     }
 
     @SuppressWarnings("unchecked")
-    public Object internalEvaluate(Query elm, State state, CqlEngine visitor) {
+    public static Object internalEvaluate(Query elm, State state, CqlEngine visitor) {
 
         ArrayList<Iterator<Object>> sources = new ArrayList<Iterator<Object>>();
         ArrayList<Variable> variables = new ArrayList<Variable>();
@@ -159,7 +152,7 @@ public class QueryEvaluator {
         int pushCount = 0;
         try {
             for (AliasedQuerySource source : elm.getSource()) {
-                Object obj = visitor.visitExpression(source.getExpression(),state);
+                Object obj = visitor.visitExpression(source.getExpression(), state);
                 QuerySource querySource = new QuerySource(source.getAlias(), obj);
                 sources.add(querySource.getData().iterator());
                 if (querySource.getIsList()) {
@@ -181,26 +174,25 @@ public class QueryEvaluator {
             QueryIterator iterator = new QueryIterator(state, sources);
 
             while (iterator.hasNext()) {
-                List<Object> elements = (List<Object>)iterator.next();
+                List<Object> elements = (List<Object>) iterator.next();
 
                 // Assign range variables
                 assignVariables(variables, elements);
 
-                evaluateLets(elm,state, letVariables, visitor);
+                evaluateLets(elm, state, letVariables, visitor);
 
                 // Evaluate relationships
-                if (!evaluateRelationships(elm,state, visitor)) {
+                if (!evaluateRelationships(elm, state, visitor)) {
                     continue;
                 }
 
-                if (!evaluateWhere(elm,state, visitor)) {
+                if (!evaluateWhere(elm, state, visitor)) {
                     continue;
                 }
 
                 result.add(evaluateReturn(elm, state, variables, elements, visitor));
             }
-        }
-        finally {
+        } finally {
             while (pushCount > 0) {
                 state.pop();
                 pushCount--;
@@ -220,7 +212,7 @@ public class QueryEvaluator {
         return sourceIsList ? result : result.get(0);
     }
 
-    private void assignVariables(List<Variable> variables, List<Object> elements) {
+    private static void assignVariables(List<Variable> variables, List<Object> elements) {
         for (int i = 0; i < variables.size(); i++) {
             variables.get(i).setValue(elements.get(i));
         }

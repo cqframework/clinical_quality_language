@@ -11,8 +11,7 @@ import java.util.ArrayList;
 
 public class FunctionRefEvaluator {
 
-    private FunctionDef cachedFunctionDef;
-    public Object internalEvaluate(FunctionRef functionRef, State state, CqlEngine visitor) {
+    public static Object internalEvaluate(FunctionRef functionRef, State state, CqlEngine visitor) {
         ArrayList<Object> arguments = new ArrayList<>(functionRef.getOperand().size());
         for (Expression operand : functionRef.getOperand()) {
             arguments.add(visitor.visitExpression(operand, state));
@@ -40,20 +39,27 @@ public class FunctionRefEvaluator {
         }
     }
 
-    protected FunctionDef resolveOrCacheFunctionDef(State state, FunctionRef functionRef, ArrayList<Object> arguments) {
+    protected static FunctionDef resolveOrCacheFunctionDef(State state, FunctionRef functionRef, ArrayList<Object> arguments) {
         // We can cache a function ref if:
         // 1. ELM signatures are provided OR
         // 2. No arguments are provided (only one overload anyway)
-        if (this.cachedFunctionDef == null && (arguments.isEmpty() || !functionRef.getSignature().isEmpty())) {
-            this.cachedFunctionDef = resolveFunctionDef(state, functionRef, arguments);
+        boolean eligibleForCaching = false;
+        if (!functionRef.getSignature().isEmpty() || arguments.isEmpty()) {
+            eligibleForCaching = true;
+            if (state.getCache().getFunctionCache().containsKey(functionRef)) {
+                return state.getCache().getFunctionCache().get(functionRef);
+            }
         }
 
-        return this.cachedFunctionDef != null ?
-                this.cachedFunctionDef :
-                resolveFunctionDef(state, functionRef, arguments);
+        FunctionDef functionDef = resolveFunctionDef(state, functionRef, arguments);
+
+        if (eligibleForCaching && functionDef != null) {
+            state.getCache().getFunctionCache().put(functionRef, functionDef);
+        }
+        return functionDef;
     }
 
-    protected FunctionDef resolveFunctionDef(State context, FunctionRef functionRef, ArrayList<Object> arguments) {
-        return context.resolveFunctionRef(functionRef.getLibraryName(), functionRef.getName(), arguments, functionRef.getSignature());
+    protected static FunctionDef resolveFunctionDef(State state, FunctionRef functionRef, ArrayList<Object> arguments) {
+        return state.resolveFunctionRef(functionRef.getLibraryName(), functionRef.getName(), arguments, functionRef.getSignature());
     }
 }

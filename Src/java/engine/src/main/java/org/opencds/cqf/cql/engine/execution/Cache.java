@@ -1,18 +1,19 @@
 package org.opencds.cqf.cql.engine.execution;
 
+import org.hl7.elm.r1.FunctionDef;
+import org.hl7.elm.r1.FunctionRef;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Cache {
     private static Logger logger = LoggerFactory.getLogger(Cache.class);
 
-    private Map<String, List<State.FunctionDesc>> functionCache = new HashMap<>();
+    private Map<FunctionRef, FunctionDef> functionCache = new HashMap<>();
 
     private boolean enableExpressionCache = false;
 
@@ -34,11 +35,11 @@ public class Cache {
         };
     }
 
-    public Map<String, List<State.FunctionDesc>> getFunctionCache() {
+    public Map<FunctionRef, FunctionDef> getFunctionCache() {
         return functionCache;
     }
 
-    public void setFunctionCache(Map<String, List<State.FunctionDesc>> functionCache) {
+    public void setFunctionCache(Map<FunctionRef, FunctionDef> functionCache) {
         this.functionCache = functionCache;
     }
 
