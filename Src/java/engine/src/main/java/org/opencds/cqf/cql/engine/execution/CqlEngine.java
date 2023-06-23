@@ -1319,7 +1319,7 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitInstance(Instance elm, State state) {
-        return new InstanceEvaluator().internalEvaluate(elm, state, this);
+        return InstanceEvaluator.internalEvaluate(elm, state, this);
     }
 
 
