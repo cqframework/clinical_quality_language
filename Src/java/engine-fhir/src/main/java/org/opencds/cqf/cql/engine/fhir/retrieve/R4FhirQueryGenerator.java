@@ -16,7 +16,7 @@ import org.hl7.fhir.r4.model.DateTimeType;
 import org.hl7.fhir.r4.model.Duration;
 import org.hl7.fhir.r4.model.Period;
 import org.hl7.fhir.r4.model.Type;
-import org.opencds.cqf.cql.engine.elm.execution.SubtractEvaluator;
+import org.opencds.cqf.cql.engine.elm.executing.SubtractEvaluator;
 import org.opencds.cqf.cql.engine.fhir.exception.FhirVersionMisMatchException;
 import org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterMap;
 import org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterResolver;
@@ -120,7 +120,7 @@ public class R4FhirQueryGenerator extends BaseFhirQueryGenerator {
                         org.opencds.cqf.cql.engine.runtime.Quantity dateFilterDurationAsCQLQuantity =
                             new org.opencds.cqf.cql.engine.runtime.Quantity().withValue(dateFilterAsDuration.getValue()).withUnit(dateFilterAsDuration.getUnit());
 
-                        DateTime diff = ((DateTime)SubtractEvaluator.subtract(evaluationDateTime, dateFilterDurationAsCQLQuantity));
+                        DateTime diff = ((DateTime) SubtractEvaluator.subtract(evaluationDateTime, dateFilterDurationAsCQLQuantity));
 
                         dateRange = new Interval(diff, true, evaluationDateTime, true);
                     } else if (dateFilterValue instanceof Period && ((Period)dateFilterValue).hasStart() && ((Period)dateFilterValue).hasEnd()) {

@@ -5,8 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.cqframework.cql.elm.execution.Element;
-import org.opencds.cqf.cql.engine.elm.execution.Executable;
+import org.hl7.elm.r1.Element;
 
 public class DebugLibraryResultEntry {
     private String libraryName;
@@ -32,7 +31,7 @@ public class DebugLibraryResultEntry {
         debugResults.add(new DebugResultEntry(result));
     }
 
-    public void logDebugResultEntry(Executable node, Object result) {
+    public void logDebugResultEntry(Element node, Object result) {
         if (node instanceof Element) {
             Element element = (Element)node;
             if (element.getLocalId() != null) {

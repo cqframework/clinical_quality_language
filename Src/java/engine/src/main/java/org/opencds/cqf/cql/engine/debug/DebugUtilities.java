@@ -1,8 +1,7 @@
 package org.opencds.cqf.cql.engine.debug;
 
-import org.cqframework.cql.elm.execution.Element;
-import org.cqframework.cql.elm.execution.Library;
-import org.opencds.cqf.cql.engine.elm.execution.Executable;
+import org.hl7.elm.r1.Element;
+import org.hl7.elm.r1.Library;
 import org.opencds.cqf.cql.engine.runtime.CqlType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,13 +13,13 @@ public class DebugUtilities {
     private DebugUtilities() {
     }
 
-    public static void logDebugResult(Executable node, Library currentLibrary, Object result) {
+    public static void logDebugResult(Element node, Library currentLibrary, Object result) {
         logger.debug("{}.{}: {}", currentLibrary != null ? currentLibrary.getIdentifier().getId() : "unknown",
                 toDebugLocation(node),
                 toDebugString(result));
     }
 
-    public static String toDebugLocation(Executable node) {
+    public static String toDebugLocation(Element node) {
         String result = "";
         if (node instanceof Element) {
             Element element = (Element)node;

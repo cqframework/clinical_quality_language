@@ -2,8 +2,8 @@ package org.opencds.cqf.cql.engine.fhir.data;
 
 import java.util.Map;
 
-import org.cqframework.cql.elm.execution.Library;
-import org.cqframework.cql.elm.execution.VersionedIdentifier;
+import org.hl7.elm.r1.Library;
+import org.hl7.elm.r1.VersionedIdentifier;
 import org.opencds.cqf.cql.engine.execution.LibraryLoader;
 
 public class TestLibraryLoader implements LibraryLoader {

@@ -1508,7 +1508,7 @@ public class DataRequirementsProcessorTest {
         //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
-    //@Test
+    @Test
     public void TestDataRequirementsAnalysisCase10a() throws IOException {
         CqlTranslatorOptions translatorOptions = getTranslatorOptions();
         CqlTranslator translator = setupDataRequirementsAnalysis("TestCases/TestCase10a.cql", translatorOptions);

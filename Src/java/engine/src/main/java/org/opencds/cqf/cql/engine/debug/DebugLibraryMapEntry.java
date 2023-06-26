@@ -3,8 +3,7 @@ package org.opencds.cqf.cql.engine.debug;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.cqframework.cql.elm.execution.Element;
-import org.opencds.cqf.cql.engine.elm.execution.Executable;
+import org.hl7.elm.r1.Element;
 
 public class DebugLibraryMapEntry {
     private String libraryName;
@@ -21,21 +20,19 @@ public class DebugLibraryMapEntry {
         locationEntries = new HashMap<String, DebugMapEntry>();
     }
 
-    public DebugAction shouldDebug(Executable node) {
-        if (node instanceof Element) {
-            Element element = (Element)node;
-            if (element != null) {
-                DebugMapEntry nodeEntry = nodeEntries.get(element.getLocalId());
-                if (nodeEntry != null && nodeEntry.getAction() != DebugAction.NONE) {
-                    return nodeEntry.getAction();
-                }
 
-                for (DebugMapEntry entry : locationEntries.values()) {
-                    if (element.getLocator() != null) {
-                        Location nodeLocation = Location.fromLocator(element.getLocator());
-                        if (entry.getLocator().getLocation().includes(nodeLocation) && entry.getAction() != DebugAction.NONE) {
-                            return entry.getAction();
-                        }
+    public DebugAction shouldDebug(Element node) {
+        if (node != null) {
+            DebugMapEntry nodeEntry = nodeEntries.get(node.getLocalId());
+            if (nodeEntry != null && nodeEntry.getAction() != DebugAction.NONE) {
+                return nodeEntry.getAction();
+            }
+
+            for (DebugMapEntry entry : locationEntries.values()) {
+                if (node.getLocator() != null) {
+                    Location nodeLocation = Location.fromLocator(node.getLocator());
+                    if (entry.getLocator().getLocation().includes(nodeLocation) && entry.getAction() != DebugAction.NONE) {
+                        return entry.getAction();
                     }
                 }
             }

@@ -3,19 +3,10 @@ package org.opencds.cqf.cql.engine.runtime;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import org.opencds.cqf.cql.engine.elm.execution.AndEvaluator;
-import org.opencds.cqf.cql.engine.elm.execution.EqualEvaluator;
-import org.opencds.cqf.cql.engine.elm.execution.EquivalentEvaluator;
-import org.opencds.cqf.cql.engine.elm.execution.GreaterEvaluator;
-import org.opencds.cqf.cql.engine.elm.execution.IntersectEvaluator;
-import org.opencds.cqf.cql.engine.elm.execution.MaxValueEvaluator;
-import org.opencds.cqf.cql.engine.elm.execution.MinValueEvaluator;
-import org.opencds.cqf.cql.engine.elm.execution.PredecessorEvaluator;
-import org.opencds.cqf.cql.engine.elm.execution.SubtractEvaluator;
-import org.opencds.cqf.cql.engine.elm.execution.SuccessorEvaluator;
+import org.opencds.cqf.cql.engine.elm.executing.*;
 import org.opencds.cqf.cql.engine.exception.InvalidInterval;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
-import org.opencds.cqf.cql.engine.execution.Context;
+import org.opencds.cqf.cql.engine.execution.State;
 
 public class Interval implements CqlType, Comparable<Interval> {
 
@@ -23,12 +14,12 @@ public class Interval implements CqlType, Comparable<Interval> {
         this(low, lowClosed, high, highClosed, null);
     }
 
-    public Interval(Object low, boolean lowClosed, Object high, boolean highClosed, Context context) {
+    public Interval(Object low, boolean lowClosed, Object high, boolean highClosed, State state) {
         this.low = low;
         this.lowClosed = lowClosed;
         this.high = high;
         this.highClosed = highClosed;
-        this.context = context;
+        this.state = state;
 
         if (this.low != null) {
             pointType = this.low.getClass();
@@ -41,7 +32,7 @@ public class Interval implements CqlType, Comparable<Interval> {
             throw new InvalidInterval("Low or high boundary of an interval must be present.");
         }
 
-        if (!(CqlType.class.isAssignableFrom(pointType) || pointType.getName().startsWith("java"))  && this.getContext() == null) {
+        if (!(CqlType.class.isAssignableFrom(pointType) || pointType.getName().startsWith("java"))  && this.getState() == null) {
             throw new InvalidInterval("Boundary values that are not CQL Types require Context to evaluate.");
         }
 
@@ -57,7 +48,7 @@ public class Interval implements CqlType, Comparable<Interval> {
         }
 
         else if (low != null && high != null ) {
-            Boolean isStartGreater = GreaterEvaluator.greater(getStart(), getEnd(), this.getContext());
+            Boolean isStartGreater = GreaterEvaluator.greater(getStart(), getEnd(), this.getState());
             if( isStartGreater == null || isStartGreater.equals(Boolean.TRUE) ) {
                 throw new InvalidInterval("Invalid Interval - the ending boundary must be greater than or equal to the starting boundary.");
             }
@@ -76,9 +67,9 @@ public class Interval implements CqlType, Comparable<Interval> {
         throw new InvalidOperatorArgument(String.format("Cannot perform width operator with argument of type '%s'.", start.getClass().getName()));
     }
 
-    private Context context;
-    public Context getContext() {
-        return context;
+    private State state;
+    public State getState() {
+        return state;
     }
 
     private Object low;
@@ -164,29 +155,29 @@ public class Interval implements CqlType, Comparable<Interval> {
 
     @Override
     public Boolean equivalent(Object other) {
-        return EquivalentEvaluator.equivalent(this.getStart(), ((Interval) other).getStart(), this.getContext())
-                && EquivalentEvaluator.equivalent(this.getEnd(), ((Interval) other).getEnd(), this.getContext());
+        return EquivalentEvaluator.equivalent(this.getStart(), ((Interval) other).getStart(), this.getState())
+                && EquivalentEvaluator.equivalent(this.getEnd(), ((Interval) other).getEnd(), this.getState());
     }
 
     @Override
     public Boolean equal(Object other) {
         if (other instanceof Interval) {
             if (isUncertain()) {
-                if (IntersectEvaluator.intersect(this, other, this.getContext()) != null) {
+                if (IntersectEvaluator.intersect(this, other, this.getState()) != null) {
                     return null;
                 }
             }
 
             Interval otherInterval = (Interval) other;
             return AndEvaluator.and(
-                    EqualEvaluator.equal(this.getStart(), otherInterval.getStart(), this.getContext()),
-                    EqualEvaluator.equal(this.getEnd(), otherInterval.getEnd(), this.getContext())
+                    EqualEvaluator.equal(this.getStart(), otherInterval.getStart(), this.getState()),
+                    EqualEvaluator.equal(this.getEnd(), otherInterval.getEnd(), this.getState())
             );
 
         }
 
         if (other instanceof Integer) {
-            return equal(new Interval(other, true, other, true, this.getContext()));
+            return equal(new Interval(other, true, other, true, this.getState()));
         }
 
         throw new InvalidOperatorArgument(String.format("Cannot perform equal operation on types: '%s' and '%s'", this.getClass().getName(), other.getClass().getName()));

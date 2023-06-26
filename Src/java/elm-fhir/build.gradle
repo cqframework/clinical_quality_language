@@ -17,7 +17,6 @@ dependencies {
     testImplementation "org.reflections:reflections:0.10.2"
     testRuntimeOnly project(':model-jackson')
 
-    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 }
 
 tasks.withType(JavaCompile) {

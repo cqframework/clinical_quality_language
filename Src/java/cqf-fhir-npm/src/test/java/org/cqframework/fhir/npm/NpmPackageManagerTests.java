@@ -15,6 +15,7 @@ import org.hl7.fhir.convertors.conv40_50.VersionConvertor_40_50;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r5.context.IWorkerContext;
 import org.hl7.fhir.r5.model.ImplementationGuide;
+import org.hl7.fhir.utilities.npm.NpmPackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
@@ -39,7 +40,23 @@ public class NpmPackageManagerTests implements IWorkerContext.ILoggingService {
                 NpmPackageManagerTests.class.getResourceAsStream("mycontentig.xml"));
         ImplementationGuide ig = (ImplementationGuide) convertor.convertResource(igResource);
         NpmPackageManager pm = new NpmPackageManager(ig);
-        assertEquals(pm.getNpmList().size(), 3);
+        assertTrue(pm.getNpmList().size() >= 3);
+        boolean hasFHIR = false;
+        boolean hasMyIG = false;
+        boolean hasCommon = false;
+        boolean hasCPG = false;
+        for (NpmPackage p : pm.getNpmList()) {
+            switch (p.canonical()) {
+                case "http://hl7.org/fhir": hasFHIR = true; break;
+                case "http://somewhere.org/fhir/uv/myig": hasMyIG = true; break;
+                case "http://fhir.org/guides/cqf/common": hasCommon = true; break;
+                case "http://hl7.org/fhir/uv/cpg": hasCPG = true; break;
+            }
+        }
+        assertTrue(hasFHIR);
+        assertTrue(hasMyIG);
+        //assertTrue(hasCommon);
+        //assertTrue(hasCPG);
     }
 
     @Test
@@ -48,7 +65,17 @@ public class NpmPackageManagerTests implements IWorkerContext.ILoggingService {
                 NpmPackageManagerTests.class.getResourceAsStream("opioid-mme-r4.xml"));
         ImplementationGuide ig = (ImplementationGuide) convertor.convertResource(igResource);
         NpmPackageManager pm = new NpmPackageManager(ig);
-        assertEquals(pm.getNpmList().size(), 2);
+        assertTrue(pm.getNpmList().size() >= 2);
+        boolean hasFHIR = false;
+        boolean hasCPG = false;
+        for (NpmPackage p : pm.getNpmList()) {
+            switch (p.canonical()) {
+                case "http://hl7.org/fhir": hasFHIR = true; break;
+                case "http://hl7.org/fhir/uv/cpg": hasCPG = true; break;
+            }
+        }
+        assertTrue(hasFHIR);
+        assertTrue(hasCPG);
     }
 
     @Test

@@ -35,7 +35,9 @@ public class LibraryManager {
     private ModelManager modelManager;
     private NamespaceManager namespaceManager;
     private UcumService ucumService;
-    private final Map<String, CompiledLibrary> libraries;
+    private final Map<String, CompiledLibrary> compiledLibraries;
+
+    private Map<VersionedIdentifier, Library> libraries;
     private final Stack<String> compilationStack;
     private LibrarySourceLoader librarySourceLoader;
     private boolean enableCache;
@@ -52,6 +54,7 @@ public class LibraryManager {
         } else {
             this.namespaceManager = new NamespaceManager();
         }
+        compiledLibraries = new HashMap<>();
         libraries = new HashMap<>();
         compilationStack = new Stack<>();
         this.enableCache = true;
@@ -105,7 +108,7 @@ public class LibraryManager {
     }
 
     public Map<String, CompiledLibrary> getCompiledLibraries() {
-        return libraries;
+        return compiledLibraries;
     }
 
     /*
@@ -126,7 +129,26 @@ public class LibraryManager {
 
     public void cacheLibrary(CompiledLibrary library) {
         String libraryPath = NamespaceManager.getPath(library.getIdentifier().getSystem(), library.getIdentifier().getId());
-        libraries.put(libraryPath, library);
+        compiledLibraries.put(libraryPath, library);
+        libraries.put(library.getIdentifier(), library.getLibrary());
+    }
+
+    public void cacheLibrary(Library library) {
+        libraries.put(library.getIdentifier(), library);
+    }
+
+    public Library getCachedLibrary(VersionedIdentifier libraryIdentifier) {
+        if (enableCache) {
+            if (libraries.containsKey(libraryIdentifier)) {
+                return libraries.get(libraryIdentifier);
+            } else if (true) {
+                String libraryPath = NamespaceManager.getPath(libraryIdentifier.getSystem(), libraryIdentifier.getId());
+                if(compiledLibraries.containsKey(libraryPath)) {
+                    return compiledLibraries.get(libraryPath).getLibrary();
+                }
+            }
+        }
+        return null;
     }
 
     public boolean canResolveLibrary(VersionedIdentifier libraryIdentifier) {
@@ -140,8 +162,11 @@ public class LibraryManager {
 
         String libraryPath = NamespaceManager.getPath(libraryIdentifier.getSystem(), libraryIdentifier.getId());
         if (enableCache) {
-            CompiledLibrary library = libraries.get(libraryPath);
+            CompiledLibrary library = compiledLibraries.get(libraryPath);
             if (library != null) {
+                return true;
+            }
+            else if(libraries.containsKey(libraryIdentifier)) {
                 return true;
             }
         }
@@ -167,7 +192,10 @@ public class LibraryManager {
         String libraryPath = NamespaceManager.getPath(libraryIdentifier.getSystem(), libraryIdentifier.getId());
         CompiledLibrary library = null;
         if (enableCache) {
-            library = libraries.get(libraryPath);
+            library = compiledLibraries.get(libraryPath);
+            if(library == null && libraries.containsKey(libraryIdentifier)) {
+                library = generateCompiledLibrary(libraries.get(libraryIdentifier));
+            }
         }
 
         if (library != null
@@ -183,7 +211,8 @@ public class LibraryManager {
         } else {
             library = compileLibrary(libraryIdentifier, options, errors);
             if (!HasErrors(errors)) {
-                libraries.put(libraryPath, library);
+                compiledLibraries.put(libraryPath, library);
+                libraries.put(libraryIdentifier, library.getLibrary());
             }
         }
 

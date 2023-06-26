@@ -5,29 +5,32 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import org.cqframework.cql.elm.execution.Expression;
-import org.opencds.cqf.cql.engine.elm.execution.EqualEvaluator;
-import org.opencds.cqf.cql.engine.elm.execution.EquivalentEvaluator;
+import org.hl7.elm.r1.Expression;
+import org.opencds.cqf.cql.engine.elm.executing.EqualEvaluator;
+import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator;
 import org.opencds.cqf.cql.engine.exception.InvalidComparison;
-import org.opencds.cqf.cql.engine.execution.Context;
+import org.opencds.cqf.cql.engine.execution.CqlEngine;
+import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.execution.Variable;
 
 public class CqlList {
-    private Context context;
+    private State state;
     private String alias;
     private Expression expression;
+    private CqlEngine visitor;
     private String path;
 
     public CqlList() { }
 
-    public CqlList(Context context, String alias, Expression expression) {
-        this.context = context;
+    public CqlList(State state, CqlEngine visitor, String alias, Expression expression) {
+        this.state = state;
+        this.visitor = visitor;
         this.alias = alias;
         this.expression = expression;
     }
 
-    public CqlList(Context context, String path) {
-        this.context = context;
+    public CqlList(State state, String path) {
+        this.state = state;
         this.path = path;
     }
 
@@ -37,19 +40,19 @@ public class CqlList {
         public int compare(Object left, Object right) {
 
             try {
-                context.push(new Variable().withName(alias).withValue(left));
-                left = expression.evaluate(context);
+                state.push(new Variable().withName(alias).withValue(left));
+                left = visitor.visitExpression(expression, state);
             }
             finally {
-                context.pop();
+                state.pop();
             }
 
             try {
-                context.push(new Variable().withName(alias).withValue(right));
-                right = expression.evaluate(context);
+                state.push(new Variable().withName(alias).withValue(right));
+                right = visitor.visitExpression(expression, state);
             }
             finally {
-                context.pop();
+                state.pop();
             }
 
             return compareTo(left, right);
@@ -58,8 +61,8 @@ public class CqlList {
 
     public Comparator<Object> columnSort = new Comparator<Object>() {
         public int compare(Object left, Object right) {
-            Object leftCol = context.resolvePath(left, path);
-            Object rightCol = context.resolvePath(right, path);
+            Object leftCol = state.resolvePath(left, path);
+            Object rightCol = state.resolvePath(right, path);
 
             return compareTo(leftCol, rightCol);
         }
@@ -78,7 +81,7 @@ public class CqlList {
         }
     }
 
-    public static Boolean equivalent(Iterable<?> left, Iterable<?> right, Context context) {
+    public static Boolean equivalent(Iterable<?> left, Iterable<?> right, State state) {
         Iterator<?> leftIterator = left.iterator();
         Iterator<?> rightIterator = right.iterator();
 
@@ -86,7 +89,7 @@ public class CqlList {
             Object leftObject = leftIterator.next();
             if (rightIterator.hasNext()) {
                 Object rightObject = rightIterator.next();
-                Boolean elementEquivalent = EquivalentEvaluator.equivalent(leftObject, rightObject, context);
+                Boolean elementEquivalent = EquivalentEvaluator.equivalent(leftObject, rightObject, state);
                 if (!elementEquivalent) {
                     return false;
                 }
@@ -97,7 +100,7 @@ public class CqlList {
         return !rightIterator.hasNext();
     }
 
-    public static Boolean equal(Iterable<?> left, Iterable<?> right, Context context) {
+    public static Boolean equal(Iterable<?> left, Iterable<?> right, State state) {
         Iterator<?> leftIterator = left.iterator();
         Iterator<?> rightIterator = right.iterator();
 
@@ -106,9 +109,9 @@ public class CqlList {
             if (rightIterator.hasNext()) {
                 Object rightObject = rightIterator.next();
                 if (leftObject instanceof Iterable && rightObject instanceof Iterable) {
-                    return equal((Iterable<?>) leftObject, (Iterable<?>) rightObject, context);
+                    return equal((Iterable<?>) leftObject, (Iterable<?>) rightObject, state);
                 }
-                Boolean elementEquals = EqualEvaluator.equal(leftObject, rightObject, context);
+                Boolean elementEquals = EqualEvaluator.equal(leftObject, rightObject, state);
                 if (elementEquals == null || !elementEquals) {
                     return elementEquals;
                 }

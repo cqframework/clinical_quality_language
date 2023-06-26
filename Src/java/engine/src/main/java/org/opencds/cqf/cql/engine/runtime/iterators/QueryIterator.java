@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.opencds.cqf.cql.engine.execution.Context;
+import org.opencds.cqf.cql.engine.execution.State;
 
 /**
  * Created by Bryn on 8/11/2019.
@@ -16,7 +16,7 @@ public class QueryIterator implements Iterator<Object> {
     private Iterator<Object> sourceIterator;
     private ArrayList<Object> result;
 
-    public QueryIterator(Context context, List<Iterator<Object>> sources) {
+    public QueryIterator(State state, List<Iterator<Object>> sources) {
         this.result = new ArrayList<>(sources.size());
 
         for (int i = sources.size() - 1; i >= 0; i--) {

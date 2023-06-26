@@ -54,7 +54,6 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         else if (elm instanceof SortClause) return visitSortClause((SortClause)elm, context);
         else if (elm instanceof TupleElementDefinition) return visitTupleElementDefinition((TupleElementDefinition)elm, context);
         else if (elm instanceof TypeSpecifier) return visitTypeSpecifier((TypeSpecifier)elm, context);
-        else if (elm instanceof ExpressionDef) return visitExpressionDef((ExpressionDef)elm, context);
         else return defaultResult(elm, context);
     }
 
