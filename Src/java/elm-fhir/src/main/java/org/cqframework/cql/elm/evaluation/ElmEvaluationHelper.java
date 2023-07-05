@@ -2,7 +2,6 @@ package org.cqframework.cql.elm.evaluation;
 
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.ModelManager;
-import org.cqframework.cql.elm.execution.IncludeDef;
 import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.Expression;
 import org.hl7.elm.r1.VersionedIdentifier;

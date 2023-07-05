@@ -58,7 +58,7 @@ public class MessageEvaluator {
             return null;
         }
 
-        Optional<DataProvider> dataProvider = Optional.ofNullable(state.resolveDataProvider(source.getClass().getPackage().getName(), false));
+        Optional<DataProvider> dataProvider = Optional.ofNullable(state.getEnvironment().resolveDataProvider(source.getClass().getPackage().getName(), false));
 
         return dataProvider.map(DataProvider::phiObfuscationSupplier).map(Supplier::get)
                 .map(obfuscator -> obfuscator.obfuscate(source))

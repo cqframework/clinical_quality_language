@@ -176,7 +176,7 @@ public abstract class TestFhirPath {
             }
 
             CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
-            engineVisitor.getState().registerDataProvider("http://hl7.org/fhir", provider);
+            engineVisitor.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", provider);
             if (resource != null) {
                 engineVisitor.getState().setParameter(null, resource.fhirType(), resource);
             }

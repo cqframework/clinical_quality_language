@@ -68,19 +68,10 @@ public class CqlTranslator {
         }
 
         LibraryManager libraryManager = new LibraryManager(modelManager);
-        UcumService ucumService = null;
-        if (options.getValidateUnits()) {
-            try {
-                ucumService = new UcumEssenceService(UcumEssenceService.class.getResourceAsStream("/ucum-essence.xml"));
-            } catch (UcumException e) {
-                System.err.println("Could not create UCUM validation service:");
-                e.printStackTrace();
-            }
-        }
         modelManager.getModelInfoLoader().registerModelInfoProvider(new DefaultModelInfoProvider(inPath.getParent()), true);
         libraryManager.getLibrarySourceLoader().registerProvider(new DefaultLibrarySourceProvider(inPath.getParent()));
         libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
-        org.cqframework.cql.cql2elm.CqlTranslator translator = fromFile(inPath.toFile(), modelManager, libraryManager, ucumService, options);
+        org.cqframework.cql.cql2elm.CqlTranslator translator = fromFile(inPath.toFile(), modelManager, libraryManager, options);
         libraryManager.getLibrarySourceLoader().clearProviders();
 
         if (translator.getErrors().size() > 0) {

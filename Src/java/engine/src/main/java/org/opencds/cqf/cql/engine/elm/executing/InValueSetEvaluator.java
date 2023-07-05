@@ -29,7 +29,7 @@ public class InValueSetEvaluator {
 
         if (valueset instanceof ValueSet) {
             ValueSetInfo vsi = ValueSetInfo.fromValueSet((ValueSet)valueset);
-            TerminologyProvider provider = state.resolveTerminologyProvider();
+            TerminologyProvider provider = state.getEnvironment().getTerminologyProvider();
 
             // perform operation
             if (code instanceof String) {

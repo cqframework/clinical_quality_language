@@ -1,19 +1,14 @@
 package org.opencds.cqf.cql.engine.execution;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.cqframework.cql.cql2elm.CqlCompilerException;
 import org.cqframework.cql.cql2elm.CqlTranslatorOptions;
 import org.cqframework.cql.elm.visiting.ElmBaseLibraryVisitor;
 import org.hl7.elm.r1.*;
 import org.hl7.elm.r1.Date;
-import org.opencds.cqf.cql.engine.data.DataProvider;
-import org.opencds.cqf.cql.engine.data.SystemDataProvider;
 import org.opencds.cqf.cql.engine.debug.DebugMap;
 import org.opencds.cqf.cql.engine.elm.executing.*;
 import org.opencds.cqf.cql.engine.exception.CqlException;
 import org.opencds.cqf.cql.engine.runtime.CodeSystem;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
@@ -31,9 +26,6 @@ import static org.opencds.cqf.cql.engine.execution.NamespaceHelper.getUriPart;
  */
 
 public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
-
-    private static Logger logger = LoggerFactory.getLogger(CqlEngine.class);
-
     public enum Options {
         EnableExpressionCaching, EnableValidation
     }
@@ -42,18 +34,17 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
     private State state;
     private Cache cache;
     private Set<Options> engineOptions;
-    private CqlTranslatorOptions translatorOptions;
 
 
     public CqlEngine(Environment environment) {
-        this(environment, null, null, null, null);
+        this(environment, null, null);
     }
 
-    public CqlEngine(Environment environment, Set<Options> engineOptions, CqlTranslatorOptions translatorOptions) {
-        this(environment, null, null, engineOptions, translatorOptions);
+    public CqlEngine(Environment environment, Set<Options> engineOptions) {
+        this(environment, null,  engineOptions);
     }
 
-    public CqlEngine(Environment environment, State state, Cache cache, Set<Options> engineOptions, CqlTranslatorOptions translatorOptions) {
+    public CqlEngine(Environment environment, Cache cache, Set<Options> engineOptions) {
 
         if (environment.getLibraryManager() == null) {
             throw new IllegalArgumentException("libraryLoader can not be null.");
@@ -63,20 +54,8 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
             engineOptions = EnumSet.of(CqlEngine.Options.EnableExpressionCaching);
         }
 
-        if (translatorOptions == null) {
-            this.translatorOptions = CqlTranslatorOptions.defaultOptions();
-        } else {
-            this.translatorOptions = translatorOptions;
-        }
-
         this.environment = environment;
-        if (state != null) {
-            this.state = state;
-        } else {
-            this.state = new State();
-        }
-
-        this.state.setEnvironment(this.environment);
+        this.state = new State(environment);
 
         if (cache != null) {
             this.cache = cache;
@@ -85,8 +64,6 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
         }
 
         this.state.setCache(this.cache);
-
-        this.state.setVisitor(this);
 
         if (engineOptions != null) {
             this.engineOptions = engineOptions;
@@ -236,20 +213,10 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
             this.state.setEvaluationDateTime(ZonedDateTime.now());
         }
 
-        this.state.init(library, new SystemDataProvider(), this.environment.getUcumService());
-
-        this.state.setLibraryManager(this.environment.getLibraryManager());
-        this.state.setTranslatorOptions(this.translatorOptions);
+        this.state.init(library);
 
         if (this.engineOptions.contains(Options.EnableExpressionCaching)) {
             this.state.getCache().setExpressionCaching(true);
-        }
-
-
-        if (this.environment.getDataProviders() != null) {
-            for (Map.Entry<String, DataProvider> pair : this.environment.getDataProviders().entrySet()) {
-                this.state.registerDataProvider(pair.getKey(), pair.getValue());
-            }
         }
 
         this.state.setDebugMap(debugMap);
@@ -295,8 +262,7 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
 
         library = this.environment.getLibraryManager().getCachedLibrary(libraryIdentifier);
         if(library == null) {
-            ArrayList<CqlCompilerException> errors = new ArrayList<CqlCompilerException>();
-            library = this.environment.getLibraryManager().resolveLibrary(libraryIdentifier, translatorOptions, errors).getLibrary();
+            library = this.environment.getLibraryManager().resolveLibrary(libraryIdentifier).getLibrary();
         }
 
         if (library == null) {
@@ -1023,7 +989,7 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
     public Object visitConvertQuantity(ConvertQuantity elm, State state) {
         Object argument = visitExpression(elm.getOperand().get(0), state);
         Object unit = visitExpression(elm.getOperand().get(1), state);
-        return ConvertQuantityEvaluator.convertQuantity(argument, unit, state.getUcumService());
+        return ConvertQuantityEvaluator.convertQuantity(argument, unit, environment.getLibraryManager().getUcumService());
     }
 
     @Override

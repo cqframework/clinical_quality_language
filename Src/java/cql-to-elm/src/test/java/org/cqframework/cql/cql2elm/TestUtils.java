@@ -9,9 +9,6 @@ import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorVisitor;
-import org.fhir.ucum.UcumEssenceService;
-import org.fhir.ucum.UcumException;
-import org.fhir.ucum.UcumService;
 import org.hl7.cql.model.NamespaceInfo;
 import org.hl7.elm.r1.Library;
 
@@ -30,22 +27,14 @@ public class TestUtils {
 
     private static ModelManager modelManager;
     private static LibraryManager libraryManager;
-    private static UcumService ucumService;
 
     private static void setup() {
         modelManager = new ModelManager();
         libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
-        try {
-            ucumService = new UcumEssenceService(UcumEssenceService.class.getResourceAsStream("/ucum-essence.xml"));
-        }
-        catch (UcumException e) {
-            e.printStackTrace();
-        }
     }
 
     private static void tearDown() {
-        ucumService = null;
         libraryManager = null;
         modelManager = null;
     }
@@ -70,14 +59,6 @@ public class TestUtils {
         return libraryManager;
     }
 
-    private static UcumService getUcumService() {
-        if (ucumService == null) {
-            setup();
-        }
-
-        return ucumService;
-    }
-
     public static Cql2ElmVisitor visitFile(String fileName, boolean inClassPath) throws IOException {
         InputStream is = inClassPath ? TestUtils.class.getResourceAsStream(fileName) : new FileInputStream(fileName);
         TokenStream tokens = parseCharStream(CharStreams.fromStream(is));
@@ -89,26 +70,26 @@ public class TestUtils {
 
     public static Object visitFile(String fileName) throws IOException {
         File file = new File(URLDecoder.decode(TestUtils.class.getResource(fileName).getFile(), "UTF-8"));
-        CqlTranslator translator = CqlTranslator.fromFile(file, getModelManager(), getLibraryManager(), getUcumService());
+        CqlTranslator translator = CqlTranslator.fromFile(file, getModelManager(), getLibraryManager());
         ensureValid(translator);
         return translator.toObject();
     }
 
     public static CompiledLibrary visitFileLibrary(String fileName) throws IOException {
         File file = new File(URLDecoder.decode(TestUtils.class.getResource(fileName).getFile(), "UTF-8"));
-        CqlTranslator translator = CqlTranslator.fromFile(file, getModelManager(), getLibraryManager(), getUcumService());
+        CqlTranslator translator = CqlTranslator.fromFile(file, getModelManager(), getLibraryManager());
         ensureValid(translator);
         return translator.getTranslatedLibrary();
     }
 
     public static Object visitData(String cqlData) {
-        CqlTranslator translator = CqlTranslator.fromText(cqlData, getModelManager(), getLibraryManager(), getUcumService());
+        CqlTranslator translator = CqlTranslator.fromText(cqlData, getModelManager(), getLibraryManager());
         ensureValid(translator);
         return translator.toObject();
     }
 
     public static Library visitLibrary(String cqlLibrary) {
-        CqlTranslator translator = CqlTranslator.fromText(cqlLibrary, getModelManager(), getLibraryManager(), getUcumService());
+        CqlTranslator translator = CqlTranslator.fromText(cqlLibrary, getModelManager(), getLibraryManager());
         ensureValid(translator);
         return translator.toELM();
     }
@@ -121,7 +102,7 @@ public class TestUtils {
         if (enableDateRangeOptimization) {
             options.add(CqlTranslatorOptions.Options.EnableDateRangeOptimization);
         }
-        CqlTranslator translator = CqlTranslator.fromText(cqlData, getModelManager(), getLibraryManager(), getUcumService(),
+        CqlTranslator translator = CqlTranslator.fromText(cqlData, getModelManager(), getLibraryManager(),
                 options.toArray(new CqlTranslatorOptions.Options[options.size()]));
         ensureValid(translator);
         return translator.toObject();
@@ -142,7 +123,7 @@ public class TestUtils {
         preprocessor.visit(tree);
         ModelManager modelManager = new ModelManager();
         LibraryManager libraryManager = new LibraryManager(modelManager);
-        LibraryBuilder libraryBuilder = new LibraryBuilder(modelManager, libraryManager, ucumService);
+        LibraryBuilder libraryBuilder = new LibraryBuilder(modelManager, libraryManager);
         Cql2ElmVisitor visitor = new Cql2ElmVisitor(libraryBuilder);
         visitor.setTokenStream(tokens);
         visitor.setLibraryInfo(preprocessor.getLibraryInfo());
@@ -185,7 +166,7 @@ public class TestUtils {
     public static CqlTranslator createTranslatorFromText(String cqlText, CqlTranslatorOptions.Options... options) {
         ModelManager modelManager = new ModelManager();
         LibraryManager libraryManager = new LibraryManager(modelManager);
-        CqlTranslator translator = CqlTranslator.fromText(cqlText, modelManager, libraryManager, getUcumService(), options);
+        CqlTranslator translator = CqlTranslator.fromText(cqlText, modelManager, libraryManager, options);
         return translator;
     }
 
@@ -206,7 +187,7 @@ public class TestUtils {
         ModelManager modelManager = new ModelManager();
         LibraryManager libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
-        CqlTranslator translator = CqlTranslator.fromStream(namespaceInfo, inputStream, modelManager, libraryManager, getUcumService(), options);
+        CqlTranslator translator = CqlTranslator.fromStream(namespaceInfo, inputStream, modelManager, libraryManager, options);
         return translator;
     }
 
@@ -241,7 +222,7 @@ public class TestUtils {
         ModelManager modelManager = new ModelManager();
         LibraryManager libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().registerProvider(path == null ? new TestLibrarySourceProvider() : new TestLibrarySourceProvider(path));
-        CqlTranslator translator = CqlTranslator.fromFile(namespaceInfo, translationTestFile, modelManager, libraryManager, getUcumService(), options);
+        CqlTranslator translator = CqlTranslator.fromFile(namespaceInfo, translationTestFile, modelManager, libraryManager, options);
         return translator;
     }
 }

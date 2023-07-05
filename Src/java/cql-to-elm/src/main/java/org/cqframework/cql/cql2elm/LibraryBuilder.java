@@ -41,11 +41,11 @@ public class LibraryBuilder implements ModelResolver {
         All
     }
 
-    public LibraryBuilder(ModelManager modelManager, LibraryManager libraryManager, UcumService ucumService) {
-        this(null, modelManager, libraryManager, ucumService);
+    public LibraryBuilder(ModelManager modelManager, LibraryManager libraryManager) {
+        this(null, modelManager, libraryManager);
     }
 
-    public LibraryBuilder(NamespaceInfo namespaceInfo, ModelManager modelManager, LibraryManager libraryManager, UcumService ucumService) {
+    public LibraryBuilder(NamespaceInfo namespaceInfo, ModelManager modelManager, LibraryManager libraryManager) {
         if (modelManager == null) {
             throw new IllegalArgumentException("modelManager is null");
         }
@@ -70,8 +70,6 @@ public class LibraryBuilder implements ModelResolver {
 
         compiledLibrary = new CompiledLibrary();
         compiledLibrary.setLibrary(library);
-
-        this.ucumService = ucumService;
     }
 
     // Only exceptions of severity Error
@@ -125,7 +123,6 @@ public class LibraryBuilder implements ModelResolver {
     private final ObjectFactory of = new ObjectFactory();
     private final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
     private boolean listTraversal = true;
-    private UcumService ucumService = null;
     private CqlTranslatorOptions options;
     private CqlToElmInfo cqlToElmInfo = null;
     private TypeBuilder typeBuilder = null;
@@ -669,7 +666,7 @@ public class LibraryBuilder implements ModelResolver {
                 .withVersion(includeDef.getVersion());
 
         ArrayList<CqlCompilerException> errors = new ArrayList<CqlCompilerException>();
-        CompiledLibrary referencedLibrary = libraryManager.resolveLibrary(libraryIdentifier, this.options, errors);
+        CompiledLibrary referencedLibrary = libraryManager.resolveLibrary(libraryIdentifier, errors);
         for (CqlCompilerException error : errors) {
             this.recordParsingException(error);
         }
@@ -1906,7 +1903,8 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     private void validateUcumUnit(String unit) {
-        if (ucumService != null) {
+        if (libraryManager.getUcumService() != null) {
+            var ucumService = libraryManager.getUcumService();
             String message = ucumService.validate(unit);
             if (message != null) {
                 // ERROR:

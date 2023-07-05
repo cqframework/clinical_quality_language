@@ -7,7 +7,6 @@ import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorVisitor;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
-import org.fhir.ucum.UcumService;
 import org.hl7.cql.model.NamespaceAware;
 import org.hl7.cql.model.NamespaceInfo;
 import org.hl7.elm.r1.Library;
@@ -34,28 +33,21 @@ public class CqlCompiler {
     private NamespaceInfo namespaceInfo = null;
     private ModelManager modelManager = null;
     private LibraryManager libraryManager = null;
-    private UcumService ucumService = null;
 
     public CqlCompiler(ModelManager modelManager, LibraryManager libraryManager) {
-        this(null, null, modelManager, libraryManager, null);
+        this(null, null, modelManager, libraryManager);
     }
 
     public CqlCompiler(NamespaceInfo namespaceInfo, ModelManager modelManager, LibraryManager libraryManager) {
-        this(namespaceInfo, null, modelManager, libraryManager, null);
-    }
-
-    public CqlCompiler(NamespaceInfo namespaceInfo, ModelManager modelManager,
-                        LibraryManager libraryManager, UcumService ucumService) {
-        this(namespaceInfo, null, modelManager, libraryManager, ucumService);
+        this(namespaceInfo, null, modelManager, libraryManager);
     }
 
     public CqlCompiler(NamespaceInfo namespaceInfo, VersionedIdentifier sourceInfo, ModelManager modelManager,
-                        LibraryManager libraryManager, UcumService ucumService) {
+                        LibraryManager libraryManager) {
         this.sourceInfo = sourceInfo;
         this.namespaceInfo = namespaceInfo;
         this.modelManager = modelManager;
         this.libraryManager = libraryManager;
-        this.ucumService = ucumService;
 
         if (this.sourceInfo == null) {
             this.sourceInfo = new VersionedIdentifier().withId("Anonymous").withSystem("text/cql");
@@ -68,10 +60,6 @@ public class CqlCompiler {
 
         if (libraryManager.getNamespaceManager().hasNamespaces() && libraryManager.getLibrarySourceLoader() instanceof NamespaceAware) {
             ((NamespaceAware)libraryManager.getLibrarySourceLoader()).setNamespaceManager(libraryManager.getNamespaceManager());
-        }
-
-        if (libraryManager.getUcumService() == null) {
-            libraryManager.setUcumService(this.ucumService);
         }
     }
 
@@ -222,7 +210,7 @@ public class CqlCompiler {
         errors = new ArrayList<>();
         warnings = new ArrayList<>();
         messages = new ArrayList<>();
-        LibraryBuilder builder = new LibraryBuilder(namespaceInfo, modelManager, libraryManager, ucumService);
+        LibraryBuilder builder = new LibraryBuilder(namespaceInfo, modelManager, libraryManager);
         builder.setTranslatorOptions(options);
         Cql2ElmVisitor visitor = new Cql2ElmVisitor(builder);
         builder.setVisitor(visitor);

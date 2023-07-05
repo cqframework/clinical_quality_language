@@ -54,7 +54,7 @@ public class FhirHelpersDstu2Test {
             modelResolver, FhirContext.forCached(FhirVersionEnum.DSTU2).newRestfulGenericClient(""));
         CompositeDataProvider provider = new CompositeDataProvider(modelResolver, retrieveProvider);
         //BaseFhirDataProvider provider = new FhirDataProviderDstu2();
-        engineVisitor.getState().registerDataProvider("http://hl7.org/fhir", provider);
+        engineVisitor.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", provider);
         EvaluationResult evaluationResult = engineVisitor.evaluate(libraryId, map,
                 null, null, null, null, null);
 
@@ -73,7 +73,7 @@ public class FhirHelpersDstu2Test {
         result = evaluationResult.expressionResults.get("TestToInteger").value();
         result = evaluationResult.expressionResults.get("TestToDecimal").value();
         result = evaluationResult.expressionResults.get("TestToBoolean").value();
-       
+
     }
 
 }

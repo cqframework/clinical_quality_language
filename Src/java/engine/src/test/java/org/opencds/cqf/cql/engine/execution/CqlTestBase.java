@@ -4,8 +4,6 @@ import org.cqframework.cql.cql2elm.*;
 import org.hl7.elm.r1.Library;
 import org.testng.annotations.BeforeMethod;
 
-import java.util.ArrayList;
-
 public class CqlTestBase {
 
     private static ModelManager modelManager;
@@ -28,8 +26,7 @@ public class CqlTestBase {
     }
 
     public Library getLibrary(org.hl7.elm.r1.VersionedIdentifier libraryId) {
-        ArrayList<CqlCompilerException> errors = new ArrayList<CqlCompilerException>();
-        return environment.getLibraryManager().resolveLibrary(libraryId, createOptionsMin(), errors).getLibrary();
+        return environment.getLibraryManager().resolveLibrary(libraryId).getLibrary();
     }
 
     public Library toLibrary(String text) {
@@ -54,7 +51,7 @@ public class CqlTestBase {
     @BeforeMethod
     protected void beforeEachMethod(){
         environment = new Environment(getLibraryManager());
-        engineVisitor = new CqlEngine(environment, null, null, null, createOptionsMin());
+        engineVisitor = new CqlEngine(environment);
     }
 
     public static CqlTranslatorOptions createOptionsMin() {

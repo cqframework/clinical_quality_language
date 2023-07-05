@@ -61,7 +61,7 @@ public class TestLibraryLoader implements LibraryLoader {
                 .withSystem(libraryIdentifier.getSystem())
                 .withVersion(libraryIdentifier.getVersion());
 
-        CompiledLibrary compiledLibrary = libraryManager.resolveLibrary(identifier, CqlTranslatorOptions.defaultOptions(), errors);
+        CompiledLibrary compiledLibrary = libraryManager.resolveLibrary(identifier);
         String json;
         try {
             StringWriter writer = new StringWriter();

@@ -18,8 +18,8 @@ public class RetrieveEvaluator {
 
     @SuppressWarnings("unchecked")
     public static Object internalEvaluate(Retrieve elm, State state, CqlEngine visitor) {
-        QName dataType = state.fixupQName(elm.getDataType());
-        DataProvider dataProvider = state.resolveDataProvider(dataType);
+        QName dataType = state.getEnvironment().fixupQName(elm.getDataType());
+        DataProvider dataProvider = state.getEnvironment().resolveDataProvider(dataType);
         Iterable<Code> codes = null;
         String valueSet = null;
         if (elm.getCodes() != null) {

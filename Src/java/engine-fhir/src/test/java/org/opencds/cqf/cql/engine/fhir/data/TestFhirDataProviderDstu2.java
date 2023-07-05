@@ -17,7 +17,7 @@ public class TestFhirDataProviderDstu2 extends FhirExecutionTestBase {
     @BeforeMethod
     public void before() {
         CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
-        engineVisitor.getState().registerDataProvider("http://hl7.org/fhir", dstu2Provider);
+        engineVisitor.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", dstu2Provider);
         evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
                 null, null, null, null, null);
         //BaseFhirDataProvider provider = new FhirDataProviderDstu2().setEndpoint("http://fhirtest.uhn.ca/baseDstu2");

@@ -1,7 +1,5 @@
 package org.cqframework.cql.cql2elm.model;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Bryn on 12/22/2016.

@@ -2,6 +2,8 @@ package org.cqframework.cql.cql2elm;
 
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.cqframework.cql.elm.serializing.ElmLibraryReaderFactory;
+import org.fhir.ucum.UcumEssenceService;
+import org.fhir.ucum.UcumException;
 import org.fhir.ucum.UcumService;
 import org.hl7.cql.model.NamespaceManager;
 import org.hl7.elm.r1.CodeDef;
@@ -14,10 +16,13 @@ import org.hl7.elm.r1.ParameterDef;
 import org.hl7.elm.r1.UsingDef;
 import org.hl7.elm.r1.ValueSetDef;
 import org.hl7.elm.r1.VersionedIdentifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
@@ -32,8 +37,10 @@ import static org.cqframework.cql.cql2elm.CqlCompilerException.HasErrors;
  * librarySourceLoader, compiled and cached for later use.
  */
 public class LibraryManager {
-    private ModelManager modelManager;
-    private NamespaceManager namespaceManager;
+    private static final Logger logger = LoggerFactory.getLogger(LibraryManager.class);
+
+    private final ModelManager modelManager;
+    private final NamespaceManager namespaceManager;
     private UcumService ucumService;
     private final Map<String, CompiledLibrary> compiledLibraries;
 
@@ -42,13 +49,20 @@ public class LibraryManager {
     private LibrarySourceLoader librarySourceLoader;
     private boolean enableCache;
 
+    private final CqlTranslatorOptions cqlTranslatorOptions;
+
     private static final LibraryContentType[] supportedContentTypes = {LibraryContentType.JSON, LibraryContentType.XML, LibraryContentType.CQL};
 
     public LibraryManager(ModelManager modelManager) {
+        this(modelManager, CqlTranslatorOptions.defaultOptions());
+    }
+
+    public LibraryManager(ModelManager modelManager, CqlTranslatorOptions cqlTranslatorOptions) {
         if (modelManager == null) {
             throw new IllegalArgumentException("modelManager is null");
         }
         this.modelManager = modelManager;
+        this.cqlTranslatorOptions = cqlTranslatorOptions;
         if (this.modelManager.getNamespaceManager() != null) {
             this.namespaceManager = modelManager.getNamespaceManager();
         } else {
@@ -59,6 +73,7 @@ public class LibraryManager {
         compilationStack = new Stack<>();
         this.enableCache = true;
         this.librarySourceLoader = new PriorityLibrarySourceLoader();
+
     }
 
     public ModelManager getModelManager() {
@@ -70,7 +85,21 @@ public class LibraryManager {
     }
 
     public UcumService getUcumService() {
-        return this.ucumService;
+        if (this.ucumService == null) {
+            this.ucumService = getSharedUcumService();
+        }
+
+        return ucumService;
+    }
+
+    protected synchronized UcumService getSharedUcumService() {
+        try {
+            return new UcumEssenceService(UcumEssenceService.class.getResourceAsStream("/ucum-essence.xml"));
+        } catch (UcumException e) {
+            logger.warn("Error creating shared UcumService", e);
+        }
+
+        return null;
     }
 
     public void setUcumService(UcumService ucumService) {
@@ -180,7 +209,11 @@ public class LibraryManager {
         return false;
     }
 
-    public CompiledLibrary resolveLibrary(VersionedIdentifier libraryIdentifier, CqlTranslatorOptions options, List<CqlCompilerException> errors) {
+    public CompiledLibrary resolveLibrary(VersionedIdentifier libraryIdentifier) {
+        return this.resolveLibrary(libraryIdentifier, new ArrayList<>());
+    }
+
+    public CompiledLibrary resolveLibrary(VersionedIdentifier libraryIdentifier, List<CqlCompilerException> errors) {
         if (libraryIdentifier == null) {
             throw new IllegalArgumentException("libraryIdentifier is null.");
         }
@@ -209,7 +242,7 @@ public class LibraryManager {
             }
             return library;
         } else {
-            library = compileLibrary(libraryIdentifier, options, errors);
+            library = compileLibrary(libraryIdentifier, errors);
             if (!HasErrors(errors)) {
                 compiledLibraries.put(libraryPath, library);
                 libraries.put(libraryIdentifier, library.getLibrary());
@@ -220,11 +253,11 @@ public class LibraryManager {
         return library;
     }
 
-    private CompiledLibrary compileLibrary(VersionedIdentifier libraryIdentifier, CqlTranslatorOptions options, List<CqlCompilerException> errors) {
+    private CompiledLibrary compileLibrary(VersionedIdentifier libraryIdentifier, List<CqlCompilerException> errors) {
 
         CompiledLibrary result = null;
-        if(!options.getEnableCqlOnly()) {
-            result = tryCompiledLibraryElm(libraryIdentifier, options);
+        if(!this.cqlTranslatorOptions.getEnableCqlOnly()) {
+            result = tryCompiledLibraryElm(libraryIdentifier, this.cqlTranslatorOptions);
             if (result != null) {
                 return result;
             }
@@ -241,8 +274,8 @@ public class LibraryManager {
 
             CqlCompiler compiler = new CqlCompiler(
                     namespaceManager.getNamespaceInfoFromUri(libraryIdentifier.getSystem()),
-                    libraryIdentifier, modelManager, this, ucumService);
-            compiler.run(cqlSource, options);
+                    libraryIdentifier, modelManager, this);
+            compiler.run(cqlSource, this.cqlTranslatorOptions);
             if (errors != null) {
                 errors.addAll(compiler.getExceptions());
             }

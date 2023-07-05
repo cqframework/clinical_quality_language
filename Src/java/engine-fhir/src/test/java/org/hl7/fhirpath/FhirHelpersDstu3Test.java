@@ -58,7 +58,7 @@ public class FhirHelpersDstu3Test {
         CompositeDataProvider provider = new CompositeDataProvider(modelResolver, retrieveProvider);
         // BaseFhirDataProvider provider = new
         // FhirDataProviderStu3().setEndpoint("http://fhirtest.uhn.ca/baseDstu3");
-        engineVisitor.getState().registerDataProvider("http://hl7.org/fhir", provider);
+        engineVisitor.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", provider);
         EvaluationResult evaluationResult = engineVisitor.evaluate(libraryId, map,
                 null, null, null, null, null);
 

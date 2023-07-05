@@ -21,8 +21,7 @@ public class TestCodeRef extends FhirExecutionTestBase {
 
     // @Test
     public void CodeRefTest1() {
-        CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
-        engineVisitor.getEnvironment().setTerminologyProvider(terminologyProvider);
+        CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor(terminologyProvider);
 
         EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
                 Set.of("CodeRef1"), null, null, null, null);
@@ -32,8 +31,7 @@ public class TestCodeRef extends FhirExecutionTestBase {
 
     // @Test
     public void CodeRefTest2() {
-        CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
-        engineVisitor.getEnvironment().setTerminologyProvider(terminologyProvider);
+        CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor(terminologyProvider);
 
         EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
                 Set.of("CodeRef2"), null, null, null, null);

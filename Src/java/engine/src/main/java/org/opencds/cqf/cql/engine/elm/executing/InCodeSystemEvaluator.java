@@ -30,7 +30,7 @@ public class InCodeSystemEvaluator {
         if (codeSystem instanceof CodeSystem) {
             CodeSystemInfo csi = CodeSystemInfo.fromCodeSystem((CodeSystem)codeSystem);
 
-            TerminologyProvider provider = state.resolveTerminologyProvider();
+            TerminologyProvider provider = state.getEnvironment().getTerminologyProvider();
 
             if (code instanceof String) {
                 return provider.lookup(new Code().withCode((String) code), csi) != null;

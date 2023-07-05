@@ -14,7 +14,7 @@ public class ForEachEvaluator {
 
         List<Object> retVal = new ArrayList<>();
         for (Object o : (Iterable<?>) source) {
-            retVal.add(state.resolvePath(o, element.toString()));
+            retVal.add(state.getEnvironment().resolvePath(o, element.toString()));
         }
         return retVal;
     }

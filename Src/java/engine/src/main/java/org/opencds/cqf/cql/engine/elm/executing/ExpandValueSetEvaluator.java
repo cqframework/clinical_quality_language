@@ -20,7 +20,7 @@ public class ExpandValueSetEvaluator {
         }
 
         if (valueset instanceof ValueSet) {
-            TerminologyProvider tp = state.resolveTerminologyProvider();
+            TerminologyProvider tp = state.getEnvironment().getTerminologyProvider();
             return tp.expand(ValueSetInfo.fromValueSet((ValueSet)valueset));
         }
 

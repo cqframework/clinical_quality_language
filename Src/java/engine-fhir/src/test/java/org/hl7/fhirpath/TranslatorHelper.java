@@ -10,6 +10,8 @@ import org.fhir.ucum.UcumService;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.Environment;
 import org.opencds.cqf.cql.engine.execution.LibraryLoader;
+import org.opencds.cqf.cql.engine.terminology.TerminologyProvider;
+
 import java.util.ArrayList;
 
 public class TranslatorHelper {
@@ -27,11 +29,20 @@ public class TranslatorHelper {
     }
 
     public static Environment getEnvironment() {
-        return new Environment(getLibraryManager());
+        return getEnvironment(null);
+    }
+
+
+    public static Environment getEnvironment(TerminologyProvider terminologyProvider) {
+        return new Environment(getLibraryManager(), null, terminologyProvider);
     }
 
     public static CqlEngine getEngineVisitor() {
-        return new CqlEngine(getEnvironment());
+        return getEngineVisitor(null);
+    }
+
+        public static CqlEngine getEngineVisitor(TerminologyProvider terminologyProvider) {
+        return new CqlEngine(getEnvironment(terminologyProvider));
     }
 
     private LibraryLoader libraryLoader;
@@ -54,10 +65,7 @@ public class TranslatorHelper {
     public Library translate(String cql) throws UcumException {
         ArrayList<CqlTranslatorOptions.Options> options = new ArrayList<>();
         options.add(CqlTranslatorOptions.Options.EnableDateRangeOptimization);
-        UcumService ucumService = new UcumEssenceService(
-            UcumEssenceService.class.getResourceAsStream("/ucum-essence.xml"));
-
-        CqlTranslator translator = CqlTranslator.fromText(cql, modelManager, getLibraryManager(), ucumService,
+        CqlTranslator translator = CqlTranslator.fromText(cql, modelManager, getLibraryManager(),
            CqlCompilerException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.All, options.toArray(new CqlTranslatorOptions.Options[options.size()]));
         if (translator.getErrors().size() > 0) {
             ArrayList<String> errors = new ArrayList<>();

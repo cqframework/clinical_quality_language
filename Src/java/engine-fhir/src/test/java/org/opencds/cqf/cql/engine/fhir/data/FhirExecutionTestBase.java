@@ -98,7 +98,6 @@ public abstract class FhirExecutionTestBase {
         String fileName = this.getClass().getSimpleName();
         library = libraries.get(fileName);
         if (library == null) {
-            UcumService ucumService = new UcumEssenceService(UcumEssenceService.class.getResourceAsStream("/ucum-essence.xml"));
             try {
                 File cqlFile = new File(URLDecoder.decode(this.getClass().getResource("fhir/" + fileName + ".cql").getFile(), "UTF-8"));
 
@@ -110,7 +109,7 @@ public abstract class FhirExecutionTestBase {
                 libraryManager.getLibrarySourceLoader().clearProviders();
                 libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
 
-                CqlTranslator translator = CqlTranslator.fromFile(cqlFile, modelManager, libraryManager, ucumService,
+                CqlTranslator translator = CqlTranslator.fromFile(cqlFile, modelManager, libraryManager,
                         CqlCompilerException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.All, options.toArray(new CqlTranslatorOptions.Options[options.size()]));
 
                 if (translator.getErrors().size() > 0) {

@@ -10,15 +10,15 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class TestFHIRHelpers extends FhirExecutionTestBase {
-    
+
     @Test
     public void test() {
 
         CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
-        engineVisitor.getState().registerDataProvider("http://hl7.org/fhir", r4Provider);
+        engineVisitor.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);
         EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
                 null, null, null, null, null);
-        
+
         Object result;
 
         // Primitives

@@ -14,7 +14,7 @@ public class TestFHIR2Helpers extends FhirExecutionTestBase {
     // Backing out of the updates to FHIR Model Info for DSTU2, would require another week I don't have right now
     public void test() {
         CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
-        engineVisitor.getState().registerDataProvider("http://hl7.org/fhir", dstu2Provider);
+        engineVisitor.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", dstu2Provider);
         EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
                 null, null, null, null, null);
         Object result;

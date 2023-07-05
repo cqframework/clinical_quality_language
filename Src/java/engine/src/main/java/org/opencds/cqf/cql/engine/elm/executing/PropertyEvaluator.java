@@ -30,6 +30,6 @@ public class PropertyEvaluator {
 
         }
 
-        return state.resolvePath(target, elm.getPath());
+        return state.getEnvironment().resolvePath(target, elm.getPath());
     }
 }

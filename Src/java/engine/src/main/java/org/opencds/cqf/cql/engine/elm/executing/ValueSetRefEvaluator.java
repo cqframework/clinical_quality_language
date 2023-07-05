@@ -34,7 +34,7 @@ public class ValueSetRefEvaluator {
             return vs;
         }
         else {
-            TerminologyProvider tp = state.resolveTerminologyProvider();
+            TerminologyProvider tp = state.getEnvironment().getTerminologyProvider();
             return tp.expand(ValueSetInfo.fromValueSet(vs));
         }
     }

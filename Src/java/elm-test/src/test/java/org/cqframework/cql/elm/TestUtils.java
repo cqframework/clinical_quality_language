@@ -7,20 +7,9 @@ import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.CqlTranslatorOptions;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.ModelManager;
-import org.fhir.ucum.UcumEssenceService;
 import org.hl7.cql.model.NamespaceInfo;
 
 public class TestUtils {
-
-    private static UcumEssenceService getUcumEssenceService() {
-        try {
-            return new UcumEssenceService(UcumEssenceService.class.getResourceAsStream("/ucum-essence.xml"));
-        }
-        catch(Exception e) {
-            return null;
-        }
-    }
-
     public static CqlTranslator createTranslatorFromStream(String testFileName, CqlTranslatorOptions.Options... options) throws IOException {
         return createTranslatorFromStream(null, testFileName, options);
     }
@@ -38,7 +27,7 @@ public class TestUtils {
         ModelManager modelManager = new ModelManager();
         LibraryManager libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
-        CqlTranslator translator = CqlTranslator.fromStream(namespaceInfo, inputStream, modelManager, libraryManager, getUcumEssenceService(), options);
+        CqlTranslator translator = CqlTranslator.fromStream(namespaceInfo, inputStream, modelManager, libraryManager, options);
         return translator;
     }
 }

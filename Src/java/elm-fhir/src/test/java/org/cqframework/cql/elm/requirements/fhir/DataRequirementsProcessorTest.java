@@ -3,9 +3,6 @@ package org.cqframework.cql.elm.requirements.fhir;
 import ca.uhn.fhir.context.FhirContext;
 import org.cqframework.cql.cql2elm.*;
 import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider;
-import org.fhir.ucum.UcumEssenceService;
-import org.fhir.ucum.UcumException;
-import org.fhir.ucum.UcumService;
 import org.hl7.cql.model.NamespaceInfo;
 import org.hl7.elm.r1.*;
 import ca.uhn.fhir.parser.IParser;
@@ -35,7 +32,6 @@ public class DataRequirementsProcessorTest {
 
     private static ModelManager modelManager;
     private static LibraryManager libraryManager;
-    private static UcumService ucumService;
     private static FhirContext fhirContext;
     private static FhirContext getFhirContext() {
         return FhirContext.forR5Cached();
@@ -1764,16 +1760,9 @@ public class DataRequirementsProcessorTest {
         libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().registerProvider(new DefaultLibrarySourceProvider(Paths.get(relativePath)));
         libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
-        try {
-            ucumService = new UcumEssenceService(UcumEssenceService.class.getResourceAsStream("/ucum-essence.xml"));
-        }
-        catch (UcumException e) {
-            e.printStackTrace();
-        }
     }
 
     private static void tearDown() {
-        ucumService = null;
         libraryManager = null;
         modelManager = null;
     }
@@ -1798,14 +1787,6 @@ public class DataRequirementsProcessorTest {
         return libraryManager;
     }
 
-    private static UcumService getUcumService() {
-        if (ucumService == null) {
-            setup(null);
-        }
-
-        return ucumService;
-    }
-
     public static CqlTranslator createTranslator(String testFileName, CqlTranslatorOptions.Options... options) throws IOException {
         return createTranslator(null, testFileName, new CqlTranslatorOptions(options));
     }
@@ -1822,7 +1803,7 @@ public class DataRequirementsProcessorTest {
         File translationTestFile = new File(DataRequirementsProcessorTest.class.getResource(testFileName).getFile());
         reset();
         setup(translationTestFile.getParent());
-        CqlTranslator translator = CqlTranslator.fromFile(namespaceInfo, translationTestFile, getModelManager(), getLibraryManager(), getUcumService(), options);
+        CqlTranslator translator = CqlTranslator.fromFile(namespaceInfo, translationTestFile, getModelManager(), getLibraryManager(), options);
         return translator;
     }
 }

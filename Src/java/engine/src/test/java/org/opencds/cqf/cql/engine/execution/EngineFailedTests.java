@@ -17,7 +17,7 @@ public class EngineFailedTests extends CqlTestBase {
     public void test_all_failed_tests() throws Exception {
 
         Environment environment = new Environment(getLibraryManager());
-        CqlEngine engineVisitor = new CqlEngine(environment, null, null, null, createOptionsMin());
+        CqlEngine engineVisitor = new CqlEngine(environment);
 
         EvaluationResult evaluationResult;
 

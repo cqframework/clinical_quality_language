@@ -15,10 +15,10 @@ public class TestFhirExecution extends FhirExecutionTestBase {
     //@Test
     public void testCoalesce() {
         CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
-        engineVisitor.getState().registerDataProvider("http://hl7.org/fhir", dstu3Provider);
+        engineVisitor.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", dstu3Provider);
         EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
                 Set.of("testCoalesce"), null, null, null, null);
-        
+
         Object result = evaluationResult.expressionResults.get("testCoalesce").value();
         Assert.assertTrue((Integer)((List<?>) result).get(0) == 72);
     }
@@ -26,7 +26,7 @@ public class TestFhirExecution extends FhirExecutionTestBase {
     // @Test
     public void testMonthFrom() {
         CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
-        engineVisitor.getState().registerDataProvider("http://hl7.org/fhir", dstu3Provider);
+        engineVisitor.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", dstu3Provider);
         engineVisitor.getState().setParameter(null, "MAXYEAR", 2014);
         EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
                 Set.of("testMonthFrom"), null, null, null, null);
@@ -37,7 +37,7 @@ public class TestFhirExecution extends FhirExecutionTestBase {
     // @Test
     public void testMultisourceQueryCreatingDatePeriod() {
         CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
-        engineVisitor.getState().registerDataProvider("http://hl7.org/fhir", dstu3Provider);
+        engineVisitor.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", dstu3Provider);
         EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
                 Set.of("Immunizations in range"), null, null, null, null);
         Object result = evaluationResult.expressionResults.get("Immunizations in range").value();
@@ -47,7 +47,7 @@ public class TestFhirExecution extends FhirExecutionTestBase {
     // @Test
     public void testIdResolution() {
         CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
-        engineVisitor.getState().registerDataProvider("http://hl7.org/fhir", dstu3Provider);
+        engineVisitor.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", dstu3Provider);
         EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
                 Set.of("Resource Id"), null, null, null, null);
         Object result = evaluationResult.expressionResults.get("Resource Id").value();

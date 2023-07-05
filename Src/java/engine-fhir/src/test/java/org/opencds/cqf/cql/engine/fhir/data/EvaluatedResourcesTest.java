@@ -44,7 +44,7 @@ public class EvaluatedResourcesTest extends FhirExecutionTestBase {
     @Test
     public void testWithCache() {
         CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
-        engineVisitor.getState().registerDataProvider("http://hl7.org/fhir", new CompositeDataProvider(r4ModelResolver, rp));
+        engineVisitor.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", new CompositeDataProvider(r4ModelResolver, rp));
         engineVisitor.getCache().setExpressionCaching(true);
         EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
                 Set.of("Union"), null, null, null, null);
@@ -75,7 +75,7 @@ public class EvaluatedResourcesTest extends FhirExecutionTestBase {
     @Test
     public void testWithoutCache() {
         CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
-        engineVisitor.getState().registerDataProvider("http://hl7.org/fhir", new CompositeDataProvider(r4ModelResolver, rp));
+        engineVisitor.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", new CompositeDataProvider(r4ModelResolver, rp));
         EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
                 Set.of("Union"), null, null, null, null);
 

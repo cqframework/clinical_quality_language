@@ -22,7 +22,7 @@ public class FunctionRefEvaluator {
             FunctionDef functionDef = resolveOrCacheFunctionDef(state, functionRef, arguments);
 
             if (Boolean.TRUE.equals(functionDef.isExternal())) {
-                return state.getExternalFunctionProvider().evaluate(functionDef.getName(), arguments);
+                return state.getEnvironment().getExternalFunctionProvider(state.getCurrentLibrary().getIdentifier()).evaluate(functionDef.getName(), arguments);
             } else {
                 state.pushWindow();
                 try {
