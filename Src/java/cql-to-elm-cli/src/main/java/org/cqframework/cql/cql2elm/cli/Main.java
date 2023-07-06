@@ -29,7 +29,6 @@ public class Main {
     public static ModelInfoProvider getModelInfoProvider(File modelInfoXML)  {
         try {
             final ModelInfo modelInfo = ModelInfoReaderFactory.getReader("application/xml").read(modelInfoXML);
-            final ModelIdentifier modelId = new ModelIdentifier().withId(modelInfo.getName()).withVersion(modelInfo.getVersion());
             return (ModelIdentifier modelIdentifier) -> modelInfo;
         } catch (IOException e) {
             System.err.printf("Could not load model-info XML: %s%n", modelInfoXML);
@@ -71,11 +70,11 @@ public class Main {
         org.cqframework.cql.cql2elm.CqlTranslator translator = fromFile(inPath.toFile(), modelManager, libraryManager);
         libraryManager.getLibrarySourceLoader().clearProviders();
 
-        if (translator.getErrors().size() > 0) {
+        if (!translator.getErrors().isEmpty()) {
             System.err.println("Translation failed due to errors:");
             outputExceptions(translator.getExceptions());
         } else if (!options.getVerifyOnly()) {
-            if (translator.getExceptions().size() == 0) {
+            if (translator.getExceptions().isEmpty()) {
                 System.err.println("Translation completed successfully.");
             }
             else {
@@ -202,7 +201,7 @@ public class Main {
                 modelProvider = getModelInfoProvider(modelFile);
             }
 
-            writeELM(in, out, outputFormat, modelProvider, new CqlCompilerOptions(outputFormat, options.has(optimization),
+            writeELM(in, out, outputFormat, modelProvider, new CqlCompilerOptions(options.has(optimization),
                     options.has(debug) || options.has(annotations),
                     options.has(debug) || options.has(locators),
                     options.has(debug) || options.has(resultTypes),

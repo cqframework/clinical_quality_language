@@ -18,7 +18,7 @@ public class CqlTestBase {
     private static LibraryManager libraryManager;
     protected static LibraryManager getLibraryManager() {
         if (libraryManager == null) {
-            libraryManager =  new LibraryManager(getModelManager());
+            libraryManager =  new LibraryManager(getModelManager(), createOptionsMin());
             libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
         }
 

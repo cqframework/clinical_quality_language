@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm.operators;
 
+import org.cqframework.cql.cql2elm.CqlCompilerOptions;
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.ModelManager;
 import org.hl7.elm.r1.*;
@@ -25,7 +26,7 @@ public class ListOperatorsTest {
     @BeforeTest
     public void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
-        CqlTranslator translator = CqlTranslator.fromStream(ListOperatorsTest.class.getResourceAsStream("../OperatorTests/ListOperators.cql"), modelManager, new LibraryManager(modelManager));
+        CqlTranslator translator = CqlTranslator.fromStream(ListOperatorsTest.class.getResourceAsStream("../OperatorTests/ListOperators.cql"), modelManager, new LibraryManager(modelManager, new CqlCompilerOptions()));
         assertThat(translator.getErrors().size(), is(0));
         Library library = translator.toELM();
         defs = new HashMap<>();

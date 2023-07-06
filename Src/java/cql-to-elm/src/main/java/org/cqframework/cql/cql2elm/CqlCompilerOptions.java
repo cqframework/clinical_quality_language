@@ -2,6 +2,7 @@ package org.cqframework.cql.cql2elm;
 
 
 import java.util.EnumSet;
+import java.util.Set;
 
 /**
  * translation options for Cql source files
@@ -41,7 +42,6 @@ public class CqlCompilerOptions {
      * DisableListPromotion
      * ErrorSeverity.Info
      * SignatureLevel.None
-     * Format.XML
      * @return
      */
     public static CqlCompilerOptions defaultOptions() {
@@ -52,10 +52,6 @@ public class CqlCompilerOptions {
         result.options.add(Options.DisableListDemotion);
         result.options.add(Options.DisableListPromotion);
         return result;
-//    private CqlTranslator.Options[] getDefaultOptions() {
-//      ArrayList<CqlTranslator.Options> options = new ArrayList<>();
-//      return options.toArray(new CqlTranslator.Options[options.size()]);
-//    }
     }
 
     public CqlCompilerOptions() {
@@ -87,10 +83,8 @@ public class CqlCompilerOptions {
     }
 
     /**
-     * Constructor using defined Format, SignatureLevel, and Compatibility Level, boolean set to true denotes addition of predefined option
+     * Constructor using defined SignatureLevel, and Compatibility Level, boolean set to true denotes addition of predefined option
      *
-     *
-     * @param format CqlTranslator.Format
      * @param dateRangeOptimizations boolean
      * @param annotations boolean
      * @param locators boolean
@@ -109,7 +103,7 @@ public class CqlCompilerOptions {
      * @param signatureLevel LibraryBuilder.SignatureLevel
      * @param compatibilityLevel String
      */
-    public CqlCompilerOptions(CqlTranslator.Format format, boolean dateRangeOptimizations,
+    public CqlCompilerOptions(boolean dateRangeOptimizations,
                                 boolean annotations, boolean locators, boolean resultTypes, boolean verifyOnly,
                                 boolean detailedErrors, CqlCompilerException.ErrorSeverity errorLevel,
                                 boolean disableListTraversal, boolean disableListDemotion, boolean disableListPromotion,
@@ -169,7 +163,7 @@ public class CqlCompilerOptions {
      * @return
      */
 
-    public EnumSet<Options> getOptions() {
+    public Set<Options> getOptions() {
         return this.options;
     }
 
@@ -342,7 +336,7 @@ public class CqlCompilerOptions {
     }
 
     /**
-     * Return instance of CqlTranslatorOptions cllapseDataRequirements boolean
+     * Return instance of CqlTranslatorOptions collapseDataRequirements boolean
      * @return
      */
     public boolean getCollapseDataRequirements() {
@@ -368,7 +362,7 @@ public class CqlCompilerOptions {
     }
 
     /**
-     * Return instance of CqlTranslatorOptions analayzedDataRequirements boolean
+     * Return instance of CqlTranslatorOptions analyzeDataRequirements boolean
      * @return
      */
     public boolean getAnalyzeDataRequirements() {

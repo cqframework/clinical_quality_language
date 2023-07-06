@@ -5,6 +5,8 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.cqframework.cql.cql2elm.CqlCompilerException.ErrorSeverity;
+import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
@@ -30,7 +32,7 @@ public class TestUtils {
     }
 
     private static LibraryManager getLibraryManager() {
-        return getLibraryManager(CqlCompilerOptions.defaultOptions());
+        return getLibraryManager(new CqlCompilerOptions(ErrorSeverity.Warning, SignatureLevel.None));
 
     }
 

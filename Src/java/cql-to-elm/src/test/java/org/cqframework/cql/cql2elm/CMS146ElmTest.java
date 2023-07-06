@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm;
 
+import org.cqframework.cql.cql2elm.CqlCompilerException.ErrorSeverity;
+import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.hl7.elm.r1.*;
 import org.testng.annotations.BeforeTest;
@@ -25,7 +27,7 @@ public class CMS146ElmTest {
     @BeforeTest
     public void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
-        translator = CqlTranslator.fromStream(CMS146ElmTest.class.getResourceAsStream("CMS146v2_Test_CQM.cql"), modelManager, new LibraryManager(modelManager));
+        translator = CqlTranslator.fromStream(CMS146ElmTest.class.getResourceAsStream("CMS146v2_Test_CQM.cql"), modelManager, new LibraryManager(modelManager, new CqlCompilerOptions(ErrorSeverity.Warning, SignatureLevel.None)));
         assertThat(translator.getErrors().size(), is(0));
         library = translator.toELM();
         of = new ObjectFactory();
