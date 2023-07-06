@@ -147,74 +147,26 @@ public class CqlCompiler {
         }
     }
 
-    public Library run(String cqlText,
-                       CqlTranslatorOptions.Options... options) throws IOException {
-        return run(CharStreams.fromString(cqlText), new CqlTranslatorOptions(options));
+    public Library run(String cqlText) {
+        return run(CharStreams.fromString(cqlText));
     }
 
-    public Library run(String cqlText,
-                       CqlCompilerException.ErrorSeverity errorLevel,
-                       CqlTranslatorOptions.Options... options) throws IOException {
-        return run(CharStreams.fromString(cqlText), new CqlTranslatorOptions(errorLevel, options));
+
+    public Library run(InputStream is) throws IOException {
+        return run(CharStreams.fromStream(is));
     }
 
-    public Library run(String cqlText,
-                       CqlCompilerException.ErrorSeverity errorLevel,
-                       LibraryBuilder.SignatureLevel signatureLevel,
-                       CqlTranslatorOptions.Options... options) throws IOException {
-        return run(CharStreams.fromString(cqlText), new CqlTranslatorOptions(errorLevel, signatureLevel, options));
-    }
-
-    public Library run(InputStream is,
-                       CqlTranslatorOptions.Options... options) throws IOException {
-        return run(CharStreams.fromStream(is), new CqlTranslatorOptions(options));
-    }
-
-    public Library run(InputStream is,
-                       CqlCompilerException.ErrorSeverity errorLevel,
-                       CqlTranslatorOptions.Options... options) throws IOException {
-        return run(CharStreams.fromStream(is), new CqlTranslatorOptions(errorLevel, options));
-    }
-
-    public Library run(InputStream is,
-                       CqlCompilerException.ErrorSeverity errorLevel,
-                       LibraryBuilder.SignatureLevel signatureLevel,
-                       CqlTranslatorOptions.Options... options) throws IOException {
-        return run(CharStreams.fromStream(is), new CqlTranslatorOptions(errorLevel, signatureLevel, options));
-    }
-
-    public Library run(CharStream is,
-                       CqlTranslatorOptions.Options... options) {
-        return run(is, new CqlTranslatorOptions(options));
-    }
-
-    public Library run(CharStream is,
-                       CqlCompilerException.ErrorSeverity errorLevel,
-                       CqlTranslatorOptions.Options... options) {
-        return run(is, new CqlTranslatorOptions(errorLevel, LibraryBuilder.SignatureLevel.None, options));
-    }
-
-    public Library run(CharStream is,
-                       CqlCompilerException.ErrorSeverity errorLevel,
-                       LibraryBuilder.SignatureLevel signatureLevel,
-                       CqlTranslatorOptions.Options... options) {
-        return run(is, new CqlTranslatorOptions(errorLevel, signatureLevel, options));
-    }
-
-    public Library run(InputStream is, CqlTranslatorOptions options) throws IOException {
-        return run(CharStreams.fromStream(is), options);
-    }
-
-    public Library run(CharStream is, CqlTranslatorOptions options) {
+    public Library run(CharStream is) {
         exceptions = new ArrayList<>();
         errors = new ArrayList<>();
         warnings = new ArrayList<>();
         messages = new ArrayList<>();
+
         LibraryBuilder builder = new LibraryBuilder(namespaceInfo, modelManager, libraryManager);
-        builder.setTranslatorOptions(options);
+        builder.setTranslatorOptions(libraryManager.getCqlTranslatorOptions());
         Cql2ElmVisitor visitor = new Cql2ElmVisitor(builder);
         builder.setVisitor(visitor);
-        visitor.setTranslatorOptions(options);
+        visitor.setTranslatorOptions(libraryManager.getCqlTranslatorOptions());
 
         CqlCompiler.CqlErrorListener errorListener = new CqlCompiler.CqlErrorListener(builder, visitor.isDetailedErrorsEnabled());
 

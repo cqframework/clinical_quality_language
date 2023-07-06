@@ -12,7 +12,7 @@ import java.io.*;
 import java.util.*;
 
 public class CqlTranslator {
-    public static enum Format { XML, JSON, COFFEE }
+    public enum Format { XML, JSON, COFFEE }
 
     private CqlCompiler compiler;
 
@@ -276,7 +276,7 @@ public class CqlTranslator {
     }
 
     public Map<String, String> getLibrariesAsJSON() {
-        Map<String, String> result = new HashMap<String, String>();
+        var result = new HashMap<String, String>();
         for (Map.Entry<String, CompiledLibrary> entry : getTranslatedLibraries().entrySet()) {
             result.put(entry.getKey(), toJson(entry.getValue().getLibrary()));
         }

@@ -76,6 +76,10 @@ public class LibraryManager {
 
     }
 
+    public CqlTranslatorOptions getCqlTranslatorOptions() {
+        return this.cqlTranslatorOptions;
+    }
+
     public ModelManager getModelManager() {
         return this.modelManager;
     }
@@ -86,13 +90,13 @@ public class LibraryManager {
 
     public UcumService getUcumService() {
         if (this.ucumService == null) {
-            this.ucumService = getSharedUcumService();
+            this.ucumService = getDefaultUcumService();
         }
 
         return ucumService;
     }
 
-    protected synchronized UcumService getSharedUcumService() {
+    protected synchronized UcumService getDefaultUcumService() {
         try {
             return new UcumEssenceService(UcumEssenceService.class.getResourceAsStream("/ucum-essence.xml"));
         } catch (UcumException e) {
@@ -275,7 +279,7 @@ public class LibraryManager {
             CqlCompiler compiler = new CqlCompiler(
                     namespaceManager.getNamespaceInfoFromUri(libraryIdentifier.getSystem()),
                     libraryIdentifier, modelManager, this);
-            compiler.run(cqlSource, this.cqlTranslatorOptions);
+            compiler.run(cqlSource);
             if (errors != null) {
                 errors.addAll(compiler.getExceptions());
             }
