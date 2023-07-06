@@ -10,12 +10,8 @@ import org.opencds.cqf.cql.engine.execution.*;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class ElmEvaluationHelper {
-
-    // TODO: Improved library loader support...
-    private static LibraryLoader libraryLoader = new DefaultLibraryLoader();
 
     public static Object evaluate(Library library, Expression value, Map<String, Object> parameters, ZonedDateTime evaluationDateTime) {
         // TODO: Cache for libraries?

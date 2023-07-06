@@ -54,14 +54,14 @@ public class CqlTestBase {
         engineVisitor = new CqlEngine(environment);
     }
 
-    public static CqlTranslatorOptions createOptionsMin() {
-        CqlTranslatorOptions result = new CqlTranslatorOptions();
-        result.setOptions(CqlTranslatorOptions.Options.EnableDateRangeOptimization,
-                CqlTranslatorOptions.Options.EnableLocators,
-                CqlTranslatorOptions.Options.EnableResultTypes,
-                CqlTranslatorOptions.Options.DisableListDemotion,
-                CqlTranslatorOptions.Options.DisableListPromotion,
-                CqlTranslatorOptions.Options.DisableMethodInvocation);
+    public static CqlCompilerOptions createOptionsMin() {
+        CqlCompilerOptions result = new CqlCompilerOptions();
+        result.setOptions(CqlCompilerOptions.Options.EnableDateRangeOptimization,
+                CqlCompilerOptions.Options.EnableLocators,
+                CqlCompilerOptions.Options.EnableResultTypes,
+                CqlCompilerOptions.Options.DisableListDemotion,
+                CqlCompilerOptions.Options.DisableListPromotion,
+                CqlCompilerOptions.Options.DisableMethodInvocation);
 
         return result;
     }

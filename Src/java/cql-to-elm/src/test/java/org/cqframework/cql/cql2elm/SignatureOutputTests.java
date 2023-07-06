@@ -22,7 +22,8 @@ public class SignatureOutputTests {
     private Library getLibrary(LibraryBuilder.SignatureLevel signatureLevel) throws IOException {
         File testFile = new File(URLDecoder.decode(Cql2ElmVisitorTest.class.getResource("SignatureTests/SignatureOutputTests.cql").getFile(), "UTF-8"));
         ModelManager modelManager = new ModelManager();
-        CqlTranslator translator = CqlTranslator.fromFile(testFile, modelManager, new LibraryManager(modelManager), CqlCompilerException.ErrorSeverity.Info, signatureLevel);
+        var compilerOptions = new CqlCompilerOptions(CqlCompilerException.ErrorSeverity.Info, signatureLevel);
+        CqlTranslator translator = CqlTranslator.fromFile(testFile, modelManager, new LibraryManager(modelManager, compilerOptions));
         for (CqlCompilerException error : translator.getErrors()) {
             System.err.println(String.format("(%d,%d): %s",
                     error.getLocator().getStartLine(), error.getLocator().getStartChar(), error.getMessage()));

@@ -163,10 +163,10 @@ public class CqlCompiler {
         messages = new ArrayList<>();
 
         LibraryBuilder builder = new LibraryBuilder(namespaceInfo, modelManager, libraryManager);
-        builder.setTranslatorOptions(libraryManager.getCqlTranslatorOptions());
+        builder.setCompilerOptions(libraryManager.getCqlCompilerOptions());
         Cql2ElmVisitor visitor = new Cql2ElmVisitor(builder);
         builder.setVisitor(visitor);
-        visitor.setTranslatorOptions(libraryManager.getCqlTranslatorOptions());
+        visitor.setTranslatorOptions(libraryManager.getCqlCompilerOptions());
 
         CqlCompiler.CqlErrorListener errorListener = new CqlCompiler.CqlErrorListener(builder, visitor.isDetailedErrorsEnabled());
 

@@ -3,7 +3,6 @@ package org.cqframework.cql.cql2elm.qicore.v500;
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.TestUtils;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -17,12 +16,6 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
 public class BaseTest {
-    @BeforeClass
-    public void Setup() {
-        // Reset test utils to clear any models loaded by other tests
-        TestUtils.reset();
-    }
-
     @Test
     public void testQICoreCommon() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("qicore/v500/QICoreCommon-2.0.000.cql", 0);

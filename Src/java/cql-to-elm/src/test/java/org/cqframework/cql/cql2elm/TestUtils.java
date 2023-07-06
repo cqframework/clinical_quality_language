@@ -25,36 +25,18 @@ import static org.hamcrest.Matchers.is;
 
 public class TestUtils {
 
-    private static ModelManager modelManager;
-    private static LibraryManager libraryManager;
-
-    private static void setup() {
-        modelManager = new ModelManager();
-        libraryManager = new LibraryManager(modelManager);
-        libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
-    }
-
-    private static void tearDown() {
-        libraryManager = null;
-        modelManager = null;
-    }
-
-    public static void reset() {
-        tearDown();
-    }
-
     private static ModelManager getModelManager() {
-        if (modelManager == null) {
-            setup();
-        }
-
-        return modelManager;
+        return new ModelManager();
     }
 
     private static LibraryManager getLibraryManager() {
-        if (libraryManager == null) {
-            setup();
-        }
+        return getLibraryManager(CqlCompilerOptions.defaultOptions());
+
+    }
+
+    private static LibraryManager getLibraryManager(CqlCompilerOptions options) {
+        var libraryManager = new LibraryManager(getModelManager(), options);
+        libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
 
         return libraryManager;
     }
@@ -95,15 +77,17 @@ public class TestUtils {
     }
 
     public static Object visitData(String cqlData, boolean enableAnnotations, boolean enableDateRangeOptimization) {
-        List<CqlTranslatorOptions.Options> options = new ArrayList<>();
+        List<CqlCompilerOptions.Options> options = new ArrayList<>();
+
+        var compilerOptions = new CqlCompilerOptions();
         if (enableAnnotations) {
-            options.add(CqlTranslatorOptions.Options.EnableAnnotations);
+           compilerOptions.getOptions().add(CqlCompilerOptions.Options.EnableAnnotations);
         }
         if (enableDateRangeOptimization) {
-            options.add(CqlTranslatorOptions.Options.EnableDateRangeOptimization);
+            compilerOptions.getOptions().add(CqlCompilerOptions.Options.EnableDateRangeOptimization);
         }
-        CqlTranslator translator = CqlTranslator.fromText(cqlData, getModelManager(), getLibraryManager(),
-                options.toArray(new CqlTranslatorOptions.Options[options.size()]));
+
+        CqlTranslator translator = CqlTranslator.fromText(cqlData, getModelManager(), getLibraryManager(compilerOptions));
         ensureValid(translator);
         return translator.toObject();
     }
@@ -141,19 +125,19 @@ public class TestUtils {
         return new CommonTokenStream(lexer);
     }
 
-    public static CqlTranslator runSemanticTest(String testFileName, int expectedErrors, CqlTranslatorOptions.Options... options) throws IOException {
+    public static CqlTranslator runSemanticTest(String testFileName, int expectedErrors, CqlCompilerOptions.Options... options) throws IOException {
         return runSemanticTest(null, testFileName, expectedErrors, options);
     }
 
-    public static CqlTranslator runSemanticTest(String testFileName, int expectedErrors, CqlTranslatorOptions options) throws IOException {
+    public static CqlTranslator runSemanticTest(String testFileName, int expectedErrors, CqlCompilerOptions options) throws IOException {
         return runSemanticTest(null, testFileName, expectedErrors, options);
     }
 
-    public static CqlTranslator runSemanticTest(NamespaceInfo namespaceInfo, String testFileName, int expectedErrors, CqlTranslatorOptions.Options... options) throws IOException {
-        return runSemanticTest(namespaceInfo, testFileName, expectedErrors, new CqlTranslatorOptions(options));
+    public static CqlTranslator runSemanticTest(NamespaceInfo namespaceInfo, String testFileName, int expectedErrors, CqlCompilerOptions.Options... options) throws IOException {
+        return runSemanticTest(namespaceInfo, testFileName, expectedErrors, new CqlCompilerOptions(options));
     }
 
-    public static CqlTranslator runSemanticTest(NamespaceInfo namespaceInfo, String testFileName, int expectedErrors, CqlTranslatorOptions options) throws IOException {
+    public static CqlTranslator runSemanticTest(NamespaceInfo namespaceInfo, String testFileName, int expectedErrors, CqlCompilerOptions options) throws IOException {
         CqlTranslator translator = TestUtils.createTranslator(namespaceInfo, testFileName, options);
         for (CqlCompilerException error : translator.getErrors()) {
             System.err.println(String.format("(%d,%d): %s",
@@ -163,47 +147,49 @@ public class TestUtils {
         return translator;
     }
 
-    public static CqlTranslator createTranslatorFromText(String cqlText, CqlTranslatorOptions.Options... options) {
+    public static CqlTranslator createTranslatorFromText(String cqlText, CqlCompilerOptions.Options... options) {
         ModelManager modelManager = new ModelManager();
-        LibraryManager libraryManager = new LibraryManager(modelManager);
-        CqlTranslator translator = CqlTranslator.fromText(cqlText, modelManager, libraryManager, options);
+        var compilerOptions = new CqlCompilerOptions(options);
+        LibraryManager libraryManager = new LibraryManager(modelManager, compilerOptions);
+        CqlTranslator translator = CqlTranslator.fromText(cqlText, modelManager, libraryManager);
         return translator;
     }
 
-    public static CqlTranslator createTranslatorFromStream(String testFileName, CqlTranslatorOptions.Options... options) throws IOException {
+    public static CqlTranslator createTranslatorFromStream(String testFileName, CqlCompilerOptions.Options... options) throws IOException {
         return createTranslatorFromStream(null, testFileName, options);
     }
 
-    public static CqlTranslator createTranslatorFromStream(NamespaceInfo namespaceInfo, String testFileName, CqlTranslatorOptions.Options... options) throws IOException {
+    public static CqlTranslator createTranslatorFromStream(NamespaceInfo namespaceInfo, String testFileName, CqlCompilerOptions.Options... options) throws IOException {
         InputStream inputStream = Cql2ElmVisitorTest.class.getResourceAsStream(testFileName);
         return createTranslatorFromStream(null, inputStream, options);
     }
 
-    public static CqlTranslator createTranslatorFromStream(InputStream inputStream, CqlTranslatorOptions.Options... options) throws IOException {
+    public static CqlTranslator createTranslatorFromStream(InputStream inputStream, CqlCompilerOptions.Options... options) throws IOException {
         return createTranslatorFromStream(null, inputStream, options);
     }
 
-    public static CqlTranslator createTranslatorFromStream(NamespaceInfo namespaceInfo, InputStream inputStream, CqlTranslatorOptions.Options... options) throws IOException {
+    public static CqlTranslator createTranslatorFromStream(NamespaceInfo namespaceInfo, InputStream inputStream, CqlCompilerOptions.Options... options) throws IOException {
         ModelManager modelManager = new ModelManager();
-        LibraryManager libraryManager = new LibraryManager(modelManager);
+        var compilerOptions = new CqlCompilerOptions(options);
+        LibraryManager libraryManager = new LibraryManager(modelManager, compilerOptions);
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
-        CqlTranslator translator = CqlTranslator.fromStream(namespaceInfo, inputStream, modelManager, libraryManager, options);
+        CqlTranslator translator = CqlTranslator.fromStream(namespaceInfo, inputStream, modelManager, libraryManager);
         return translator;
     }
 
-    public static CqlTranslator createTranslator(String testFileName, CqlTranslatorOptions.Options... options) throws IOException {
-        return createTranslator(null, testFileName, new CqlTranslatorOptions(options));
+    public static CqlTranslator createTranslator(String testFileName, CqlCompilerOptions.Options... options) throws IOException {
+        return createTranslator(null, testFileName, new CqlCompilerOptions(options));
     }
 
-    public static CqlTranslator createTranslator(String testFileName, CqlTranslatorOptions options) throws IOException {
+    public static CqlTranslator createTranslator(String testFileName, CqlCompilerOptions options) throws IOException {
         return createTranslator(null, testFileName, options);
     }
 
-    public static CqlTranslator createTranslator(NamespaceInfo namespaceInfo, String testFileName, CqlTranslatorOptions.Options... options) throws IOException {
-        return createTranslator(namespaceInfo, testFileName, new CqlTranslatorOptions(options));
+    public static CqlTranslator createTranslator(NamespaceInfo namespaceInfo, String testFileName, CqlCompilerOptions.Options... options) throws IOException {
+        return createTranslator(namespaceInfo, testFileName, new CqlCompilerOptions(options));
     }
 
-    public static CqlTranslator createTranslator(NamespaceInfo namespaceInfo, String testFileName, CqlTranslatorOptions options) throws IOException {
+    public static CqlTranslator createTranslator(NamespaceInfo namespaceInfo, String testFileName, CqlCompilerOptions options) throws IOException {
         String[] segments = testFileName.split("/");
         String path = null;
         if (segments.length > 1) {
@@ -220,9 +206,9 @@ public class TestUtils {
 
         File translationTestFile = new File(URLDecoder.decode(Cql2ElmVisitorTest.class.getResource(testFileName).getFile(), "UTF-8"));
         ModelManager modelManager = new ModelManager();
-        LibraryManager libraryManager = new LibraryManager(modelManager);
+        LibraryManager libraryManager = new LibraryManager(modelManager, options);
         libraryManager.getLibrarySourceLoader().registerProvider(path == null ? new TestLibrarySourceProvider() : new TestLibrarySourceProvider(path));
-        CqlTranslator translator = CqlTranslator.fromFile(namespaceInfo, translationTestFile, modelManager, libraryManager, options);
+        CqlTranslator translator = CqlTranslator.fromFile(namespaceInfo, translationTestFile, modelManager, libraryManager);
         return translator;
     }
 }

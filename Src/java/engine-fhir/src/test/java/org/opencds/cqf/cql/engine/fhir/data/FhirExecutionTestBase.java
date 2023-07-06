@@ -100,17 +100,13 @@ public abstract class FhirExecutionTestBase {
         if (library == null) {
             try {
                 File cqlFile = new File(URLDecoder.decode(this.getClass().getResource("fhir/" + fileName + ".cql").getFile(), "UTF-8"));
-
-                ArrayList<CqlTranslatorOptions.Options> options = new ArrayList<>();
-                options.add(CqlTranslatorOptions.Options.EnableDateRangeOptimization);
                 ModelManager modelManager = new ModelManager();
-
-                LibraryManager libraryManager = new LibraryManager(modelManager);
+                var compilerOptions = new CqlCompilerOptions(CqlCompilerException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.All, CqlCompilerOptions.Options.EnableDateRangeOptimization);
+                LibraryManager libraryManager = new LibraryManager(modelManager, compilerOptions);
                 libraryManager.getLibrarySourceLoader().clearProviders();
                 libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
 
-                CqlTranslator translator = CqlTranslator.fromFile(cqlFile, modelManager, libraryManager,
-                        CqlCompilerException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.All, options.toArray(new CqlTranslatorOptions.Options[options.size()]));
+                CqlTranslator translator = CqlTranslator.fromFile(cqlFile, modelManager, libraryManager);
 
                 if (translator.getErrors().size() > 0) {
                     System.err.println("Translation failed due to errors:");

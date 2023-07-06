@@ -1,6 +1,6 @@
 package org.cqframework.cql.cql2elm.fhir.r401;
 
-import org.cqframework.cql.cql2elm.CqlTranslatorOptions;
+import org.cqframework.cql.cql2elm.CqlCompilerOptions;
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.hl7.cql.model.NamespaceInfo;
 import org.cqframework.cql.cql2elm.TestUtils;
@@ -9,7 +9,6 @@ import org.hl7.cql.model.ChoiceType;
 import org.hl7.cql.model.ClassType;
 import org.hl7.cql.model.DataType;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -23,12 +22,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 public class BaseTest {
-    @BeforeClass
-    public void Setup() {
-        // Reset test utils to clear any models loaded by other tests
-        TestUtils.reset();
-    }
-
     @Test
     public void testChoiceWithAlternativeConversion() throws IOException {
         ExpressionDef def = (ExpressionDef) visitFile("fhir/r401/TestChoiceTypes.cql");
@@ -127,7 +120,7 @@ public class BaseTest {
 
     @Test
     public void testChoiceDateRangeOptimization() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestChoiceDateRangeOptimization.cql", 0, CqlTranslatorOptions.Options.EnableDateRangeOptimization);
+        CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestChoiceDateRangeOptimization.cql", 0, CqlCompilerOptions.Options.EnableDateRangeOptimization);
         Library library = translator.toELM();
         Map<String, ExpressionDef> defs = new HashMap<>();
 

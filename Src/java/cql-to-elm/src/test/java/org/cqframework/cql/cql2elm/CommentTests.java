@@ -14,15 +14,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 public class CommentTests {
-    @BeforeClass
-    public void Setup() {
-        // Reset test utils to clear any models loaded by other tests
-        TestUtils.reset();
-    }
+
 
     @Test
     public void testComments() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("TestComments.cql", 0, CqlTranslatorOptions.Options.EnableAnnotations);
+        CqlTranslator translator = TestUtils.runSemanticTest("TestComments.cql", 0, CqlCompilerOptions.Options.EnableAnnotations);
         CompiledLibrary library = translator.getTranslatedLibrary();
         assertThat(library.getLibrary().getAnnotation(), notNullValue());
     }

@@ -3,7 +3,6 @@ package org.cqframework.cql.cql2elm;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.cqframework.cql.elm.tracking.Trackable;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -21,12 +20,6 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 public class Cql2ElmVisitorTest {
-    @BeforeClass
-    public void Setup() {
-        // Reset test utils to clear any models loaded by other tests
-        reset();
-    }
-
     @Test
     public void testLet(){
         ExpressionDef def = (ExpressionDef) visitData("define b : true");

@@ -6,9 +6,6 @@ import joptsimple.OptionSpec;
 import org.cqframework.cql.cql2elm.*;
 import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider;
 import org.cqframework.cql.elm.tracking.TrackBack;
-import org.fhir.ucum.UcumEssenceService;
-import org.fhir.ucum.UcumException;
-import org.fhir.ucum.UcumService;
 import org.hl7.cql.model.ModelIdentifier;
 import org.hl7.cql.model.ModelInfoProvider;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
@@ -28,7 +25,7 @@ import java.util.Map;
 import static java.nio.file.FileVisitResult.CONTINUE;
 import static org.cqframework.cql.cql2elm.CqlTranslator.fromFile;
 
-public class CqlTranslator {
+public class Main {
     public static ModelInfoProvider getModelInfoProvider(File modelInfoXML)  {
         try {
             final ModelInfo modelInfo = ModelInfoReaderFactory.getReader("application/xml").read(modelInfoXML);
@@ -51,13 +48,13 @@ public class CqlTranslator {
         }
     }
 
-    private static void writeELM(Path inPath, Path outPath, org.cqframework.cql.cql2elm.CqlTranslator.Format format, ModelInfoProvider modelProvider, CqlTranslatorOptions options) throws IOException {
+    private static void writeELM(Path inPath, Path outPath, org.cqframework.cql.cql2elm.CqlTranslator.Format format, ModelInfoProvider modelProvider, CqlCompilerOptions options) throws IOException {
 
         System.err.println("================================================================================");
         System.err.printf("TRANSLATE %s%n", inPath);
 
         ModelManager modelManager;
-        if(options.getOptions().contains(CqlTranslatorOptions.Options.DisableDefaultModelInfoLoad)) {
+        if(options.getOptions().contains(CqlCompilerOptions.Options.DisableDefaultModelInfoLoad)) {
             modelManager = new ModelManager(false);
         } else {
             modelManager = new ModelManager();
@@ -67,11 +64,11 @@ public class CqlTranslator {
             modelManager.getModelInfoLoader().registerModelInfoProvider(modelProvider);
         }
 
-        LibraryManager libraryManager = new LibraryManager(modelManager);
+        LibraryManager libraryManager = new LibraryManager(modelManager, options);
         modelManager.getModelInfoLoader().registerModelInfoProvider(new DefaultModelInfoProvider(inPath.getParent()), true);
         libraryManager.getLibrarySourceLoader().registerProvider(new DefaultLibrarySourceProvider(inPath.getParent()));
         libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
-        org.cqframework.cql.cql2elm.CqlTranslator translator = fromFile(inPath.toFile(), modelManager, libraryManager, options);
+        org.cqframework.cql.cql2elm.CqlTranslator translator = fromFile(inPath.toFile(), modelManager, libraryManager);
         libraryManager.getLibrarySourceLoader().clearProviders();
 
         if (translator.getErrors().size() > 0) {
@@ -205,7 +202,7 @@ public class CqlTranslator {
                 modelProvider = getModelInfoProvider(modelFile);
             }
 
-            writeELM(in, out, outputFormat, modelProvider, new CqlTranslatorOptions(outputFormat, options.has(optimization),
+            writeELM(in, out, outputFormat, modelProvider, new CqlCompilerOptions(outputFormat, options.has(optimization),
                     options.has(debug) || options.has(annotations),
                     options.has(debug) || options.has(locators),
                     options.has(debug) || options.has(resultTypes),

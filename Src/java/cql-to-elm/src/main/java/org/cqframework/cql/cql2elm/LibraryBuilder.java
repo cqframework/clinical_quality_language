@@ -123,7 +123,7 @@ public class LibraryBuilder implements ModelResolver {
     private final ObjectFactory of = new ObjectFactory();
     private final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
     private boolean listTraversal = true;
-    private CqlTranslatorOptions options;
+    private CqlCompilerOptions options;
     private CqlToElmInfo cqlToElmInfo = null;
     private TypeBuilder typeBuilder = null;
     private Cql2ElmVisitor visitor = null;
@@ -132,25 +132,25 @@ public class LibraryBuilder implements ModelResolver {
         listTraversal = true;
     }
 
-    public void setTranslatorOptions(CqlTranslatorOptions options) {
+    public void setCompilerOptions(CqlCompilerOptions options) {
         if (options == null) {
             throw new IllegalArgumentException("Options cannot be null");
         }
 
         this.options = options;
-        if (options.getOptions().contains(CqlTranslatorOptions.Options.DisableListTraversal)) {
+        if (options.getOptions().contains(CqlCompilerOptions.Options.DisableListTraversal)) {
             this.listTraversal = false;
         }
-        if (options.getOptions().contains(CqlTranslatorOptions.Options.DisableListDemotion)) {
+        if (options.getOptions().contains(CqlCompilerOptions.Options.DisableListDemotion)) {
             this.getConversionMap().disableListDemotion();
         }
-        if (options.getOptions().contains(CqlTranslatorOptions.Options.DisableListPromotion)) {
+        if (options.getOptions().contains(CqlCompilerOptions.Options.DisableListPromotion)) {
             this.getConversionMap().disableListPromotion();
         }
-        if (options.getOptions().contains(CqlTranslatorOptions.Options.EnableIntervalDemotion)) {
+        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableIntervalDemotion)) {
             this.getConversionMap().enableIntervalDemotion();
         }
-        if (options.getOptions().contains(CqlTranslatorOptions.Options.EnableIntervalPromotion)) {
+        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableIntervalPromotion)) {
             this.getConversionMap().enableIntervalPromotion();
         }
         setCompatibilityLevel(options.getCompatibilityLevel());
@@ -595,8 +595,8 @@ public class LibraryBuilder implements ModelResolver {
                 err.setEndChar(e.getLocator().getEndChar());
             }
 
-            if (e.getCause() != null && e.getCause() instanceof CqlTranslatorIncludeException) {
-                CqlTranslatorIncludeException incEx = (CqlTranslatorIncludeException) e.getCause();
+            if (e.getCause() != null && e.getCause() instanceof CqlIncludeException) {
+                CqlIncludeException incEx = (CqlIncludeException) e.getCause();
                 err.setTargetIncludeLibrarySystem(incEx.getLibrarySystem());
                 err.setTargetIncludeLibraryId(incEx.getLibraryId());
                 err.setTargetIncludeLibraryVersionId(incEx.getVersionId());

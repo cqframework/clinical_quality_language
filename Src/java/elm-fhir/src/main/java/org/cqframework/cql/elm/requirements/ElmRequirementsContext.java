@@ -14,7 +14,7 @@ import java.util.List;
 
 public class ElmRequirementsContext {
 
-    public ElmRequirementsContext(LibraryManager libraryManager, CqlTranslatorOptions options, ElmRequirementsVisitor visitor, Map<String, Object> parameters, ZonedDateTime evaluationDateTime) {
+    public ElmRequirementsContext(LibraryManager libraryManager, CqlCompilerOptions options, ElmRequirementsVisitor visitor, Map<String, Object> parameters, ZonedDateTime evaluationDateTime) {
         if (libraryManager == null) {
             throw new IllegalArgumentException("Library Manager required");
         }
@@ -32,11 +32,11 @@ public class ElmRequirementsContext {
         this.evaluationDateTime = evaluationDateTime;
     }
 
-    private CqlTranslatorOptions options;
-    public CqlTranslatorOptions getOptions() {
+    private CqlCompilerOptions options;
+    public CqlCompilerOptions getOptions() {
         return options;
     }
-    public void setOptions(CqlTranslatorOptions options) {
+    public void setOptions(CqlCompilerOptions options) {
         this.options = options;
     }
 

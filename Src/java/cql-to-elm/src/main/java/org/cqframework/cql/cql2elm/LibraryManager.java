@@ -49,20 +49,20 @@ public class LibraryManager {
     private LibrarySourceLoader librarySourceLoader;
     private boolean enableCache;
 
-    private final CqlTranslatorOptions cqlTranslatorOptions;
+    private final CqlCompilerOptions cqlCompilerOptions;
 
     private static final LibraryContentType[] supportedContentTypes = {LibraryContentType.JSON, LibraryContentType.XML, LibraryContentType.CQL};
 
     public LibraryManager(ModelManager modelManager) {
-        this(modelManager, CqlTranslatorOptions.defaultOptions());
+        this(modelManager, CqlCompilerOptions.defaultOptions());
     }
 
-    public LibraryManager(ModelManager modelManager, CqlTranslatorOptions cqlTranslatorOptions) {
+    public LibraryManager(ModelManager modelManager, CqlCompilerOptions cqlCompilerOptions) {
         if (modelManager == null) {
             throw new IllegalArgumentException("modelManager is null");
         }
         this.modelManager = modelManager;
-        this.cqlTranslatorOptions = cqlTranslatorOptions;
+        this.cqlCompilerOptions = cqlCompilerOptions;
         if (this.modelManager.getNamespaceManager() != null) {
             this.namespaceManager = modelManager.getNamespaceManager();
         } else {
@@ -76,8 +76,8 @@ public class LibraryManager {
 
     }
 
-    public CqlTranslatorOptions getCqlTranslatorOptions() {
-        return this.cqlTranslatorOptions;
+    public CqlCompilerOptions getCqlCompilerOptions() {
+        return this.cqlCompilerOptions;
     }
 
     public ModelManager getModelManager() {
@@ -238,7 +238,7 @@ public class LibraryManager {
         if (library != null
                 && libraryIdentifier.getVersion() != null
                 && !libraryIdentifier.getVersion().equals(library.getIdentifier().getVersion())) {
-            throw new CqlTranslatorIncludeException(String.format("Could not resolve reference to library %s, version %s because version %s is already loaded.",
+            throw new CqlIncludeException(String.format("Could not resolve reference to library %s, version %s because version %s is already loaded.",
                     libraryPath, libraryIdentifier.getVersion(), library.getIdentifier().getVersion()), libraryIdentifier.getSystem(), libraryIdentifier.getId(), libraryIdentifier.getVersion());
         } else if (library != null) {
             if (libraryIdentifier.getSystem() == null && library.getIdentifier().getSystem() != null) {
@@ -260,8 +260,8 @@ public class LibraryManager {
     private CompiledLibrary compileLibrary(VersionedIdentifier libraryIdentifier, List<CqlCompilerException> errors) {
 
         CompiledLibrary result = null;
-        if(!this.cqlTranslatorOptions.getEnableCqlOnly()) {
-            result = tryCompiledLibraryElm(libraryIdentifier, this.cqlTranslatorOptions);
+        if(!this.cqlCompilerOptions.getEnableCqlOnly()) {
+            result = tryCompiledLibraryElm(libraryIdentifier, this.cqlCompilerOptions);
             if (result != null) {
                 return result;
             }
@@ -272,7 +272,7 @@ public class LibraryManager {
         try {
             InputStream cqlSource = librarySourceLoader.getLibrarySource(libraryIdentifier);
             if (cqlSource == null) {
-                throw new CqlTranslatorIncludeException(String.format("Could not load source for library %s, version %s.",
+                throw new CqlIncludeException(String.format("Could not load source for library %s, version %s.",
                         libraryIdentifier.getId(), libraryIdentifier.getVersion()), libraryIdentifier.getSystem(), libraryIdentifier.getId(), libraryIdentifier.getVersion());
             }
 
@@ -286,25 +286,25 @@ public class LibraryManager {
 
             result = compiler.getCompiledLibrary();
             if (libraryIdentifier.getVersion() != null && !libraryIdentifier.getVersion().equals(result.getIdentifier().getVersion())) {
-                throw new CqlTranslatorIncludeException(String.format("Library %s was included as version %s, but version %s of the library was found.",
+                throw new CqlIncludeException(String.format("Library %s was included as version %s, but version %s of the library was found.",
                         libraryPath, libraryIdentifier.getVersion(), result.getIdentifier().getVersion()),
                         libraryIdentifier.getSystem(), libraryIdentifier.getId(), libraryIdentifier.getVersion());
             }
 
         } catch (IOException e) {
-            throw new CqlTranslatorIncludeException(String.format("Errors occurred translating library %s, version %s.",
+            throw new CqlIncludeException(String.format("Errors occurred translating library %s, version %s.",
                     libraryPath, libraryIdentifier.getVersion()), libraryIdentifier.getSystem(), libraryIdentifier.getId(), libraryIdentifier.getVersion(), e);
         }
 
         if (result == null) {
-            throw new CqlTranslatorIncludeException(String.format("Could not load source for library %s, version %s.",
+            throw new CqlIncludeException(String.format("Could not load source for library %s, version %s.",
                     libraryPath, libraryIdentifier.getVersion()), libraryIdentifier.getSystem(), libraryIdentifier.getId(), libraryIdentifier.getVersion());
         } else {
             return result;
         }
     }
 
-    private CompiledLibrary tryCompiledLibraryElm(VersionedIdentifier libraryIdentifier, CqlTranslatorOptions options) {
+    private CompiledLibrary tryCompiledLibraryElm(VersionedIdentifier libraryIdentifier, CqlCompilerOptions options) {
         InputStream elm = null;
         for (LibraryContentType type : supportedContentTypes) {
             if (LibraryContentType.CQL == type) {
@@ -323,7 +323,7 @@ public class LibraryManager {
     }
 
 
-    private CompiledLibrary generateCompiledLibraryFromElm(VersionedIdentifier libraryIdentifier, InputStream librarySource, LibraryContentType type, CqlTranslatorOptions options) {
+    private CompiledLibrary generateCompiledLibraryFromElm(VersionedIdentifier libraryIdentifier, InputStream librarySource, LibraryContentType type, CqlCompilerOptions options) {
 
         Library library = null;
         CompiledLibrary compiledLibrary = null;
@@ -416,8 +416,8 @@ public class LibraryManager {
         return null;
     }
 
-    protected Boolean translatorOptionsMatch(Library library, CqlTranslatorOptions options) {
-        EnumSet<CqlTranslatorOptions.Options> translatorOptions = TranslatorOptionsUtil.getTranslatorOptions(library);
+    protected Boolean translatorOptionsMatch(Library library, CqlCompilerOptions options) {
+        EnumSet<CqlCompilerOptions.Options> translatorOptions = TranslatorOptionsUtil.getTranslatorOptions(library);
         if (translatorOptions == null) {
             return false;
         }
