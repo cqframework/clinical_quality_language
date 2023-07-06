@@ -1,22 +1,7 @@
 package org.cqframework.cql.cql2elm.model;
 
-import org.cqframework.cql.cql2elm.ModelInfoLoader;
-import org.cqframework.cql.cql2elm.ModelManager;
-import org.hl7.cql.model.*;
-import org.hl7.elm.r1.VersionedIdentifier;
-import org.hl7.elm_modelinfo.r1.ClassInfo;
-import org.hl7.elm_modelinfo.r1.ModelInfo;
 import org.testng.SkipException;
 import org.testng.annotations.Test;
-
-import java.util.Collections;
-import java.util.Map;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.fail;
-import static org.testng.AssertJUnit.assertNotNull;
 
 public class ModelImporterTest {
 

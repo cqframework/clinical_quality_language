@@ -7,7 +7,7 @@ import java.io.*;
 public class CqlTranslatorOptionsMapper {
     private static ObjectMapper om = new ObjectMapper();
 
-    public static CqlCompilerOptions fromFile(String fileName) {
+    public static CqlTranslatorOptions fromFile(String fileName) {
         FileReader fr = null;
         try {
             fr = new FileReader(fileName);
@@ -18,16 +18,16 @@ public class CqlTranslatorOptionsMapper {
         }
     }
 
-    public static CqlCompilerOptions fromReader(Reader reader) {
+    public static CqlTranslatorOptions fromReader(Reader reader) {
         try {
-            return om.readValue(reader, CqlCompilerOptions.class);
+            return om.readValue(reader, CqlTranslatorOptions.class);
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(String.format("Errors occurred reading options: %s", e.getMessage()));
         }
     }
 
-    public static void toFile(String fileName, CqlCompilerOptions options) {
+    public static void toFile(String fileName, CqlTranslatorOptions options) {
         FileWriter fw = null;
         try {
             fw = new FileWriter(fileName);
@@ -38,7 +38,7 @@ public class CqlTranslatorOptionsMapper {
         }
     }
 
-    public static void toWriter(Writer writer, CqlCompilerOptions options) {
+    public static void toWriter(Writer writer, CqlTranslatorOptions options) {
         ObjectMapper om = new ObjectMapper();
         try {
             om.writeValue(writer, options);
