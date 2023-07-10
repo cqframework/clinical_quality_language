@@ -2,7 +2,6 @@ package org.opencds.cqf.cql.engine.fhir.data;
 
 import static org.testng.AssertJUnit.assertTrue;
 
-import org.hl7.fhirpath.TranslatorHelper;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.EvaluationResult;
 import org.opencds.cqf.cql.engine.fhir.terminology.Dstu3FhirTerminologyProvider;
@@ -21,9 +20,9 @@ public class TestCodeRef extends FhirExecutionTestBase {
 
     // @Test
     public void CodeRefTest1() {
-        CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor(terminologyProvider);
+        CqlEngine engineVisitor = getEngine();
 
-        EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
+        EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(),
                 Set.of("CodeRef1"), null, null, null, null);
 
         assertTrue(evaluationResult.expressionResults.get("CodeRef1").value() != null);
@@ -31,9 +30,9 @@ public class TestCodeRef extends FhirExecutionTestBase {
 
     // @Test
     public void CodeRefTest2() {
-        CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor(terminologyProvider);
+        CqlEngine engineVisitor = getEngine();
 
-        EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
+        EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(),
                 Set.of("CodeRef2"), null, null, null, null);
 
         assertTrue(evaluationResult.expressionResults.get("CodeRef2").value() != null);

@@ -36,7 +36,6 @@ public class ElmSupportTest {
         try {
 
             var translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibraryJsonElm.cql"),
-                    modelManager,
                     libraryManager
                    );
 
@@ -57,7 +56,6 @@ public class ElmSupportTest {
 
         try {
             var translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibraryXmlElm.cql"),
-                    modelManager,
                     libraryManager);
 
             assertTrue(translator.getErrors().size() > 0);
@@ -75,7 +73,6 @@ public class ElmSupportTest {
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
         try {
             var translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibraryWithNullTypeSpecifierJsonElm.cql"),
-                    modelManager,
                     libraryManager);
 
             assertTrue(translator.getErrors().size() > 0);

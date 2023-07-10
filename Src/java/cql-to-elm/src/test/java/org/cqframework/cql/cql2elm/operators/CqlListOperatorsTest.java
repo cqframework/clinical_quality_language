@@ -26,7 +26,7 @@ public class CqlListOperatorsTest {
     @BeforeTest
     public void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
-        CqlTranslator translator = CqlTranslator.fromStream(CqlListOperatorsTest.class.getResourceAsStream("../OperatorTests/CqlListOperators.cql"), modelManager, new LibraryManager(modelManager));
+        CqlTranslator translator = CqlTranslator.fromStream(CqlListOperatorsTest.class.getResourceAsStream("../OperatorTests/CqlListOperators.cql"), new LibraryManager(modelManager));
         assertThat(translator.getErrors().size(), is(0));
         Library library = translator.toELM();
         defs = new HashMap<>();

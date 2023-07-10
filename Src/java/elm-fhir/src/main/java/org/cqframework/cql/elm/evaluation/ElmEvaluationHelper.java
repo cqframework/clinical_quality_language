@@ -8,7 +8,6 @@ import org.hl7.elm.r1.VersionedIdentifier;
 import org.opencds.cqf.cql.engine.execution.*;
 
 import java.time.ZonedDateTime;
-import java.util.HashMap;
 import java.util.Map;
 
 public class ElmEvaluationHelper {
@@ -16,10 +15,8 @@ public class ElmEvaluationHelper {
     public static Object evaluate(Library library, Expression value, Map<String, Object> parameters, ZonedDateTime evaluationDateTime) {
         // TODO: Cache for libraries?
 
-        Map<VersionedIdentifier, Library> map = new HashMap<>();
-        map.put(library.getIdentifier(), library);
         CqlEngine engine = getEngine(library, parameters, evaluationDateTime);
-        engine.init(library.getIdentifier(), map,null, null, null, evaluationDateTime);
+        engine.init(library.getIdentifier(), null, null, null, evaluationDateTime);
         return engine.visitExpression(value, engine.getState());
     }
 

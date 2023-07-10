@@ -27,7 +27,7 @@ public class TypeOperatorsTest {
     @BeforeTest
     public void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
-        CqlTranslator translator = CqlTranslator.fromStream(TypeOperatorsTest.class.getResourceAsStream("../OperatorTests/TypeOperators.cql"), modelManager, new LibraryManager(modelManager));
+        CqlTranslator translator = CqlTranslator.fromStream(TypeOperatorsTest.class.getResourceAsStream("../OperatorTests/TypeOperators.cql"), new LibraryManager(modelManager));
         assertThat(translator.getErrors().size(), is(0));
         Library library = translator.toELM();
         defs = new HashMap<>();
@@ -74,7 +74,7 @@ public class TypeOperatorsTest {
         assertThat(spec.getResultType().toString(), is("System.Boolean"));
         //assertThat(is.getIsType(), is(new QName("urn:hl7-org:elm-types:r1", "Boolean")));
     }
-    
+
     private static void validateTyping(Convert convert, QName typeName) {
         assertThat(convert.getToType(), is(typeName));
         assertTrue(convert.getToTypeSpecifier() != null);

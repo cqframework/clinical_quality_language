@@ -29,7 +29,7 @@ public class AggregateOperatorsTest {
     @BeforeTest
     public void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
-        CqlTranslator translator = CqlTranslator.fromStream(AggregateOperatorsTest.class.getResourceAsStream("../OperatorTests/AggregateOperators.cql"), modelManager, new LibraryManager(modelManager, new CqlCompilerOptions(ErrorSeverity.Warning, SignatureLevel.None)));
+        CqlTranslator translator = CqlTranslator.fromStream(AggregateOperatorsTest.class.getResourceAsStream("../OperatorTests/AggregateOperators.cql"), new LibraryManager(modelManager, new CqlCompilerOptions(ErrorSeverity.Warning, SignatureLevel.None)));
         assertThat(translator.getErrors().size(), is(0));
         Library library = translator.toELM();
         defs = new HashMap<>();

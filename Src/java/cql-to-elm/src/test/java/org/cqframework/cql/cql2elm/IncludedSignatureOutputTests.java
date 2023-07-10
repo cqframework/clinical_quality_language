@@ -26,7 +26,7 @@ public class IncludedSignatureOutputTests {
         var compilerOptions = new CqlCompilerOptions(CqlCompilerException.ErrorSeverity.Info, signatureLevel);
         LibraryManager libraryManager = new LibraryManager(modelManager, compilerOptions);
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider("SignatureTests"));
-        CqlTranslator translator = CqlTranslator.fromFile(testFile, modelManager, libraryManager);
+        CqlTranslator translator = CqlTranslator.fromFile(testFile,  libraryManager);
         for (CqlCompilerException error : translator.getErrors()) {
             System.err.println(String.format("(%d,%d): %s",
                     error.getLocator().getStartLine(), error.getLocator().getStartChar(), error.getMessage()));

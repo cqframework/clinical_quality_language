@@ -25,7 +25,7 @@ public class EscapeSequenceTests {
     public void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
         LibraryManager libraryManager = new LibraryManager(modelManager);
-        CqlTranslator translator = CqlTranslator.fromStream(org.cqframework.cql.cql2elm.EscapeSequenceTests.class.getResourceAsStream("EscapeSequenceTests.cql"), modelManager, libraryManager);
+        CqlTranslator translator = CqlTranslator.fromStream(org.cqframework.cql.cql2elm.EscapeSequenceTests.class.getResourceAsStream("EscapeSequenceTests.cql"),  libraryManager);
         assertThat(translator.getErrors().size(), is(0));
         Library library = translator.toELM();
         defs = new HashMap<>();

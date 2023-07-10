@@ -11,7 +11,6 @@ import java.util.Set;
 import org.hl7.fhir.r4.model.Condition;
 import org.hl7.fhir.r4.model.Encounter;
 import org.hl7.fhir.r4.model.Patient;
-import org.hl7.fhirpath.TranslatorHelper;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.EvaluationResult;
@@ -43,10 +42,10 @@ public class EvaluatedResourcesTest extends FhirExecutionTestBase {
 
     @Test
     public void testWithCache() {
-        CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
+        CqlEngine engineVisitor = getEngine();
         engineVisitor.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", new CompositeDataProvider(r4ModelResolver, rp));
         engineVisitor.getCache().setExpressionCaching(true);
-        EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
+        EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(),
                 Set.of("Union"), null, null, null, null);
 
 
@@ -56,7 +55,7 @@ public class EvaluatedResourcesTest extends FhirExecutionTestBase {
         engineVisitor.getState().clearEvaluatedResources();
 
 
-        evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
+        evaluationResult = engineVisitor.evaluate(library.getIdentifier(),
                 Set.of("Encounter"), null, null, null, null);
         result = evaluationResult.expressionResults.get("Encounter").value();
         assertThat(result, instanceOf(List.class));
@@ -64,7 +63,7 @@ public class EvaluatedResourcesTest extends FhirExecutionTestBase {
         engineVisitor.getState().clearEvaluatedResources();
 
 
-        evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
+        evaluationResult = engineVisitor.evaluate(library.getIdentifier(),
                 Set.of("Condition"), null, null, null, null);
         result = evaluationResult.expressionResults.get("Condition").value();
         assertThat(result, instanceOf(List.class));
@@ -74,9 +73,9 @@ public class EvaluatedResourcesTest extends FhirExecutionTestBase {
 
     @Test
     public void testWithoutCache() {
-        CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
+        CqlEngine engineVisitor = getEngine();
         engineVisitor.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", new CompositeDataProvider(r4ModelResolver, rp));
-        EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
+        EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(),
                 Set.of("Union"), null, null, null, null);
 
         Object result = evaluationResult.expressionResults.get("Union").value();
@@ -85,7 +84,7 @@ public class EvaluatedResourcesTest extends FhirExecutionTestBase {
         engineVisitor.getState().clearEvaluatedResources();
 
 
-        evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
+        evaluationResult = engineVisitor.evaluate(library.getIdentifier(),
                 Set.of("Encounter"), null, null, null, null);
         result = evaluationResult.expressionResults.get("Encounter").value();
         assertThat(result, instanceOf(List.class));
@@ -93,13 +92,13 @@ public class EvaluatedResourcesTest extends FhirExecutionTestBase {
         engineVisitor.getState().clearEvaluatedResources();
 
 
-        evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
+        evaluationResult = engineVisitor.evaluate(library.getIdentifier(),
                 Set.of("Condition"), null, null, null, null);
         result = evaluationResult.expressionResults.get("Condition").value();
         assertThat(result, instanceOf(List.class));
         assertThat(evaluationResult.expressionResults.get("Condition").evaluatedResources().size(), is(1));
 
-        evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
+        evaluationResult = engineVisitor.evaluate(library.getIdentifier(),
                 Set.of("Union"), null, null, null, null);
         result = evaluationResult.expressionResults.get("Union").value();
         assertThat(result, instanceOf(List.class));

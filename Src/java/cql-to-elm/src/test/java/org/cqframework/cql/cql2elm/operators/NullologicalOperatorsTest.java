@@ -29,7 +29,7 @@ public class NullologicalOperatorsTest {
     @BeforeTest
     public void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
-        CqlTranslator translator = CqlTranslator.fromStream(NullologicalOperatorsTest.class.getResourceAsStream("../OperatorTests/NullologicalOperators.cql"), modelManager, new LibraryManager(modelManager));
+        CqlTranslator translator = CqlTranslator.fromStream(NullologicalOperatorsTest.class.getResourceAsStream("../OperatorTests/NullologicalOperators.cql"), new LibraryManager(modelManager));
         assertThat(translator.getErrors().size(), is(0));
         Library library = translator.toELM();
         defs = new HashMap<>();

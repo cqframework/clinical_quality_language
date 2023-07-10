@@ -28,7 +28,7 @@ public class TestUtils {
         var compilerOptions = new CqlCompilerOptions(options);
         LibraryManager libraryManager = new LibraryManager(modelManager, compilerOptions);
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
-        CqlTranslator translator = CqlTranslator.fromStream(namespaceInfo, inputStream, modelManager, libraryManager);
+        CqlTranslator translator = CqlTranslator.fromStream(namespaceInfo, inputStream,  libraryManager);
         return translator;
     }
 }

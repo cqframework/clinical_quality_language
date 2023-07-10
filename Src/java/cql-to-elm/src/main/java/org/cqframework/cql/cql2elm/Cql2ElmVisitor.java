@@ -739,7 +739,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         VersionedIdentifier vid = of.createVersionedIdentifier()
                 .withId(identifiers.remove(identifiers.size() - 1))
                 .withVersion(parseString(ctx.versionSpecifier()));
-        if (identifiers.size() > 0) {
+        if (!identifiers.isEmpty()) {
             vid.setSystem(libraryBuilder.resolveNamespaceUri(String.join(".", identifiers), true));
         }
         else if (libraryBuilder.getNamespaceInfo() != null) {
@@ -755,7 +755,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public UsingDef visitUsingDefinition(cqlParser.UsingDefinitionContext ctx) {
         List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
         String unqualifiedIdentifier = identifiers.remove(identifiers.size() - 1);
-        String namespaceName = identifiers.size() > 0 ? String.join(".", identifiers) :
+        String namespaceName = !identifiers.isEmpty() ? String.join(".", identifiers) :
                 libraryBuilder.isWellKnownModelName(unqualifiedIdentifier) ? null :
                         (libraryBuilder.getNamespaceInfo() != null ? libraryBuilder.getNamespaceInfo().getName() : null);
 
@@ -817,7 +817,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public Object visitIncludeDefinition(cqlParser.IncludeDefinitionContext ctx) {
         List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
         String unqualifiedIdentifier = identifiers.remove(identifiers.size() - 1);
-        String namespaceName = identifiers.size() > 0 ? String.join(".", identifiers) :
+        String namespaceName = !identifiers.isEmpty() ? String.join(".", identifiers) :
                 (libraryBuilder.getNamespaceInfo() != null ? libraryBuilder.getNamespaceInfo().getName() : null);
         String path = getLibraryPath(namespaceName, unqualifiedIdentifier);
         IncludeDef library = of.createIncludeDef()

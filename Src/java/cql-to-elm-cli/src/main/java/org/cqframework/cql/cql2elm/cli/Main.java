@@ -67,7 +67,7 @@ public class Main {
         modelManager.getModelInfoLoader().registerModelInfoProvider(new DefaultModelInfoProvider(inPath.getParent()), true);
         libraryManager.getLibrarySourceLoader().registerProvider(new DefaultLibrarySourceProvider(inPath.getParent()));
         libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
-        org.cqframework.cql.cql2elm.CqlTranslator translator = fromFile(inPath.toFile(), modelManager, libraryManager);
+        org.cqframework.cql.cql2elm.CqlTranslator translator = fromFile(inPath.toFile(),  libraryManager);
         libraryManager.getLibrarySourceLoader().clearProviders();
 
         if (!translator.getErrors().isEmpty()) {

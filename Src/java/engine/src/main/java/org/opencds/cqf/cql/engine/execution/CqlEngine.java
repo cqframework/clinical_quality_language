@@ -1,7 +1,6 @@
 package org.opencds.cqf.cql.engine.execution;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.cqframework.cql.cql2elm.CqlCompilerOptions;
 import org.cqframework.cql.elm.visiting.ElmBaseLibraryVisitor;
 import org.hl7.elm.r1.*;
 import org.hl7.elm.r1.Date;
@@ -47,7 +46,7 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
     public CqlEngine(Environment environment, Cache cache, Set<Options> engineOptions) {
 
         if (environment.getLibraryManager() == null) {
-            throw new IllegalArgumentException("libraryLoader can not be null.");
+            throw new IllegalArgumentException("Environment LibraryManager can not be null.");
         }
 
         if (engineOptions == null) {
@@ -123,10 +122,6 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
         return this.evaluate(libraryIdentifier, null, null, null, null, evaluationDateTime);
     }
 
-    public EvaluationResult evaluate(VersionedIdentifier libraryIdentifier, Map<VersionedIdentifier, Library> libraryCache, Set<String> expressions) {
-        return this.evaluate(libraryIdentifier, libraryCache, expressions, null, null, null, null);
-    }
-
     public EvaluationResult evaluate(VersionedIdentifier libraryIdentifier, Set<String> expressions) {
         return this.evaluate(libraryIdentifier, expressions, null, null, null);
     }
@@ -156,14 +151,11 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
     }
 
     public EvaluationResult evaluate(VersionedIdentifier libraryIdentifier, Set<String> expressions, Pair<String, Object> contextParameter, Map<String, Object> parameters, DebugMap debugMap, ZonedDateTime evaluationDateTime) {
-        // TODO: Figure out way to validate / invalidate library cache
-        Map<VersionedIdentifier, Library> libraryCache = new HashMap<>();
-
         if (libraryIdentifier == null) {
             throw new IllegalArgumentException("libraryIdentifier can not be null.");
         }
 
-        Library library = this.loadAndValidate(libraryCache, libraryIdentifier);
+        Library library = this.loadAndValidate(libraryIdentifier);
 
         if (expressions == null) {
             expressions = this.getExpressionSet(library);
@@ -176,31 +168,11 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
         return this.evaluateExpressions(expressions);
     }
 
-    public EvaluationResult evaluate(VersionedIdentifier libraryIdentifier, Map<VersionedIdentifier, Library> libraryCache, Set<String> expressions, Pair<String, Object> contextParameter, Map<String, Object> parameters, DebugMap debugMap, ZonedDateTime evaluationDateTime) {
-        // TODO: Figure out way to validate / invalidate library cache
-
+    public void init(VersionedIdentifier libraryIdentifier, Pair<String, Object> contextParameter, Map<String, Object> parameters, DebugMap debugMap, ZonedDateTime evaluationDateTime) {
         if (libraryIdentifier == null) {
             throw new IllegalArgumentException("libraryIdentifier can not be null.");
         }
-
-        Library library = this.loadAndValidate(libraryCache, libraryIdentifier);
-
-        if (expressions == null) {
-            expressions = this.getExpressionSet(library);
-        }
-
-        // TODO: Some testing to see if it's more performant to reset a context rather than create a new one.
-        this.initializeState(library, debugMap, evaluationDateTime);
-        this.setParametersForContext(library, contextParameter, parameters);
-
-        return this.evaluateExpressions(expressions);
-    }
-
-    public void init(VersionedIdentifier libraryIdentifier, Map<VersionedIdentifier, Library> libraryCache,  Pair<String, Object> contextParameter, Map<String, Object> parameters, DebugMap debugMap, ZonedDateTime evaluationDateTime) {
-        if (libraryIdentifier == null) {
-            throw new IllegalArgumentException("libraryIdentifier can not be null.");
-        }
-        Library library = this.loadAndValidate(libraryCache, libraryIdentifier);
+        Library library = this.loadAndValidate(libraryIdentifier);
 
         this.initializeState(library, debugMap, evaluationDateTime);
         this.setParametersForContext(library, contextParameter, parameters);
@@ -254,16 +226,9 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
         state.setParameters(library, parameters);
     }
 
-    private Library loadAndValidate(Map<VersionedIdentifier, Library> libraryCache, VersionedIdentifier libraryIdentifier) {
-        Library library;
-        if (libraryCache.containsKey(libraryIdentifier)) {
-            return libraryCache.get(libraryIdentifier);
-        }
+    private Library loadAndValidate(VersionedIdentifier libraryIdentifier) {
 
-        library = this.environment.getLibraryManager().getCachedLibrary(libraryIdentifier);
-        if(library == null) {
-            library = this.environment.getLibraryManager().resolveLibrary(libraryIdentifier).getLibrary();
-        }
+        var library = this.environment.getLibraryManager().resolveLibrary(libraryIdentifier).getLibrary();
 
         if (library == null) {
             throw new IllegalArgumentException(String.format("Unable to load library %s", libraryIdentifier.getId() + (libraryIdentifier.getVersion() != null ? "-" + libraryIdentifier.getVersion() : "")));
@@ -277,11 +242,10 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
 
         if (library.getIncludes() != null && library.getIncludes().getDef() != null) {
             for (IncludeDef include : library.getIncludes().getDef()) {
-                this.loadAndValidate(libraryCache, new VersionedIdentifier().withSystem(getUriPart(include.getPath())).withId(getNamePart(include.getPath())).withVersion(include.getVersion()));
+                this.loadAndValidate(new VersionedIdentifier().withSystem(getUriPart(include.getPath())).withId(getNamePart(include.getPath())).withVersion(include.getVersion()));
             }
         }
 
-        libraryCache.put(libraryIdentifier, library);
         return library;
     }
 

@@ -30,11 +30,11 @@ public class CqlTestBase {
     }
 
     public Library toLibrary(String text) {
-        return toLibrary(text,getModelManager(), getLibraryManager());
+        return toLibrary(text, getLibraryManager());
     }
 
-    public Library toLibrary(String text, ModelManager modelManager, LibraryManager libraryManager) {
-        CqlTranslator translator = CqlTranslator.fromText(text, modelManager, libraryManager);
+    public Library toLibrary(String text, LibraryManager libraryManager) {
+        CqlTranslator translator = CqlTranslator.fromText(text, libraryManager);
         return translator.toELM();
     }
 

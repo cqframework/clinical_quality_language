@@ -24,7 +24,7 @@ public class QueryTest {
     @BeforeTest
     public void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
-        CqlTranslator translator = CqlTranslator.fromStream(QueryTest.class.getResourceAsStream("../OperatorTests/Query.cql"), modelManager, new LibraryManager(modelManager));
+        CqlTranslator translator = CqlTranslator.fromStream(QueryTest.class.getResourceAsStream("../OperatorTests/Query.cql"), new LibraryManager(modelManager));
         assertThat(translator.getErrors().size(), is(0));
         Library library = translator.toELM();
         defs = new HashMap<>();

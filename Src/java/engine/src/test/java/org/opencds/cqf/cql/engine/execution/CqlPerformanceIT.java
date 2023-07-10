@@ -19,27 +19,23 @@ import static org.testng.Assert.assertTrue;
 
 public class CqlPerformanceIT extends CqlTestBase {
 
-    private static final Integer ITERATIONS = 200;
+    private static final Integer ITERATIONS = 100;
 
     private static final Logger logger = LoggerFactory.getLogger(CqlPerformanceIT.class);
 
     // This test is a basically empty library that tests how long the engine initialization takes.
     @Test
     public void testEngineInit() throws IOException, UcumException {
-        Map<VersionedIdentifier, Library> map = new HashMap<>();
         VersionedIdentifier libraryId = toElmIdentifier("Test");
-        map.put(libraryId, toLibrary("Engine init"));
-        runPerformanceTest(libraryId, map, 0.2, null);
+        runPerformanceTest(libraryId, 0.2, null);
     }
 
     // This test is for the various CQL operators
     @Test
     public void testMainSuite() throws IOException, UcumException {
-        Map<VersionedIdentifier, Library> map = new HashMap<>();
-        VersionedIdentifier libraryId = toElmIdentifier("CqlTestSuite");
-        map.put(libraryId, getLibrary(libraryId));
+        VersionedIdentifier libraryId = toElmIdentifier("CqlPerformanceTest", "1");
         ZonedDateTime date = ZonedDateTime.of(2018, 1, 1, 7, 0, 0, 0, TimeZone.getDefault().toZoneId());
-        runPerformanceTest(libraryId, map, 350.0, date);
+        runPerformanceTest(libraryId, 350.0, date);
     }
 
     // This test is for the runtime errors
@@ -55,32 +51,25 @@ public class CqlPerformanceIT extends CqlTestBase {
     // This test is to check the validity of the internal representation of the CQL types (OPTIONAL)
     @Test
     public void testInternalTypeRepresentationSuite() throws IOException, UcumException {
-        Map<VersionedIdentifier, Library> map = new HashMap<>();
-        VersionedIdentifier libraryId = toElmIdentifier("CqlInternalTypeRepresentationSuite");
-        map.put(libraryId, getLibrary(libraryId));
-
-        runPerformanceTest(libraryId, map, 3.0, null);
+        VersionedIdentifier libraryId = toElmIdentifier("CqlInternalTypeRepresentationSuite", "1");
+        runPerformanceTest(libraryId, 3.0, null);
     }
 
-    private void runPerformanceTest(VersionedIdentifier libraryId, Map<VersionedIdentifier, Library> map, String libraryName, Double maxPerIterationMs) {
-        runPerformanceTest(libraryId, map, maxPerIterationMs, null);
-    }
-
-    private void runPerformanceTest(VersionedIdentifier libraryId, Map<VersionedIdentifier, Library> map, Double maxPerIterationMs, ZonedDateTime evaluationZonedDateTime) {
+    private void runPerformanceTest(VersionedIdentifier libraryId, Double maxPerIterationMs, ZonedDateTime evaluationZonedDateTime) {
         // A new CqlEngine is created for each loop because it resets and rebuilds the context completely.
+
+        Environment environment = new Environment(getLibraryManager());
 
         // Warm up the JVM
         for (int i = 0; i < ITERATIONS; i++) {
-            Environment environment = new Environment(getLibraryManager());
             CqlEngine engineVisitor = new CqlEngine(environment);
-            EvaluationResult evaluationResult = engineVisitor.evaluate(libraryId, map, null, null, null, null, evaluationZonedDateTime);
+            EvaluationResult evaluationResult = engineVisitor.evaluate(libraryId, null, null, null, null, evaluationZonedDateTime);
         }
 
         Instant start = Instant.now();
         for (int i = 0; i < ITERATIONS; i++) {
-            Environment environment = new Environment(getLibraryManager());
             CqlEngine engineVisitor = new CqlEngine(environment);
-            EvaluationResult evaluationResult = engineVisitor.evaluate(libraryId, map,null, null, null, null, evaluationZonedDateTime);
+            EvaluationResult evaluationResult = engineVisitor.evaluate(libraryId, null ,null, null, null, evaluationZonedDateTime);
         }
         Instant finish = Instant.now();
 

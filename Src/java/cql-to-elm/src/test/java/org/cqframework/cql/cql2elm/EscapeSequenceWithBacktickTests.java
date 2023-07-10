@@ -25,7 +25,7 @@ public class EscapeSequenceWithBacktickTests {
     public void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
         LibraryManager libraryManager = new LibraryManager(modelManager);
-        CqlTranslator translator = CqlTranslator.fromStream(org.cqframework.cql.cql2elm.EscapeSequenceTests.class.getResourceAsStream("EscapeSequenceWithBacktickTests.cql"), modelManager, libraryManager);
+        CqlTranslator translator = CqlTranslator.fromStream(org.cqframework.cql.cql2elm.EscapeSequenceTests.class.getResourceAsStream("EscapeSequenceWithBacktickTests.cql"),  libraryManager);
         assertThat(translator.getErrors().size(), is(0));
         Library library = translator.toELM();
         defs = new HashMap<>();

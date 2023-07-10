@@ -9,7 +9,7 @@ public class TestLibrarySourceProvider implements LibrarySourceProvider {
     @Override
     public InputStream getLibrarySource(VersionedIdentifier libraryIdentifier) {
         String libraryFileName = String.format("%s%s.cql",
-                libraryIdentifier.getId(), libraryIdentifier.getVersion() != null ? ("-" + libraryIdentifier.getVersion()) : "");
+                libraryIdentifier.getId(), "");
         return TestLibrarySourceProvider.class.getResourceAsStream(libraryFileName);
     }
 }

@@ -5,8 +5,11 @@
     "cSpell.words": [
         "bools",
         "datumedge",
+        "fhirpath",
         "hamcrest",
+        "Inferencing",
         "qicore",
-        "testng"
+        "testng",
+        "trackback"
     ]
 }

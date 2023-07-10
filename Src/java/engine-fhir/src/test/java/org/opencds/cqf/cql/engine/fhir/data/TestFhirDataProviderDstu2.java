@@ -3,7 +3,6 @@ package org.opencds.cqf.cql.engine.fhir.data;
 import static org.testng.Assert.assertTrue;
 
 import org.hl7.fhir.dstu2.model.Encounter;
-import org.hl7.fhirpath.TranslatorHelper;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.EvaluationResult;
 import org.opencds.cqf.cql.engine.fhir.retrieve.FhirBundleCursor;
@@ -16,9 +15,9 @@ public class TestFhirDataProviderDstu2 extends FhirExecutionTestBase {
 
     @BeforeMethod
     public void before() {
-        CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
+        CqlEngine engineVisitor = getEngine();
         engineVisitor.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", dstu2Provider);
-        evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
+        evaluationResult = engineVisitor.evaluate(library.getIdentifier(),
                 null, null, null, null, null);
         //BaseFhirDataProvider provider = new FhirDataProviderDstu2().setEndpoint("http://fhirtest.uhn.ca/baseDstu2");
 //        FhirDataProviderDstu2 primitiveProvider = new FhirDataProviderDstu2().withEndpoint("http://fhirtest.uhn.ca/baseDstu2").withPackageName("ca.uhn.fhir.model.primitive");

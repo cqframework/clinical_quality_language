@@ -1,6 +1,7 @@
 package org.hl7.fhirpath;
 
 import org.cqframework.cql.cql2elm.*;
+import org.cqframework.cql.cql2elm.CqlCompilerOptions.Options;
 import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider;
 import org.hl7.elm.r1.Library;
 import org.cqframework.cql.elm.tracking.TrackBack;
@@ -12,11 +13,19 @@ import org.opencds.cqf.cql.engine.terminology.TerminologyProvider;
 import java.util.ArrayList;
 
 public class TranslatorHelper {
+
+    private TranslatorHelper() {
+        // intentionally empty
+    }
+
     private static ModelManager modelManager = new ModelManager();
     private static LibraryManager libraryManager;
 
     private static LibraryManager getLibraryManager() {
-      return getLibraryManager(CqlCompilerOptions.defaultOptions());
+        var options = CqlCompilerOptions.defaultOptions();
+        options.getOptions().remove(Options.DisableListDemotion);
+        options.getOptions().remove(Options.DisableListPromotion);
+        return getLibraryManager(options);
     }
 
     private static LibraryManager getLibraryManager(CqlCompilerOptions cqlCompilerOptions) {
@@ -31,17 +40,16 @@ public class TranslatorHelper {
         return getEnvironment(null);
     }
 
-
     public static Environment getEnvironment(TerminologyProvider terminologyProvider) {
         return new Environment(getLibraryManager(), null, terminologyProvider);
     }
 
-    public static CqlEngine getEngineVisitor() {
-        return getEngineVisitor(null);
+    public static CqlEngine getEngineVisitor(TerminologyProvider terminologyProvider) {
+        return getEngine(getEnvironment(terminologyProvider));
     }
 
-    public static CqlEngine getEngineVisitor(TerminologyProvider terminologyProvider) {
-        return new CqlEngine(getEnvironment(terminologyProvider));
+    public static CqlEngine getEngine(Environment environment) {
+        return new CqlEngine(environment);
     }
 
     public static  org.hl7.elm.r1.VersionedIdentifier toElmIdentifier(String name) {
@@ -52,12 +60,15 @@ public class TranslatorHelper {
         return new org.hl7.elm.r1.VersionedIdentifier().withId(name).withVersion(version);
     }
 
-    public Library translate(String cql) throws UcumException {
-        var compilerOptions = new CqlCompilerOptions(CqlCompilerException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.All, CqlCompilerOptions.Options.EnableDateRangeOptimization);
-        CqlTranslator translator = CqlTranslator.fromText(cql, modelManager, getLibraryManager(compilerOptions));
-        if (translator.getErrors().size() > 0) {
+    public static Library translate(String cql, LibraryManager libraryManager) throws UcumException {
+        CqlCompiler compiler = new CqlCompiler(libraryManager);
+        Library lib = compiler.run(cql);
+
+        libraryManager.getCompiledLibraries().put(lib.getIdentifier(), compiler.getCompiledLibrary());
+
+        if (!compiler.getErrors().isEmpty()) {
             ArrayList<String> errors = new ArrayList<>();
-            for (CqlCompilerException error : translator.getErrors()) {
+            for (CqlCompilerException error : compiler.getErrors()) {
                 TrackBack tb = error.getLocator();
                 String lines = tb == null ? "[n/a]"
                     : String.format("[%d:%d, %d:%d]", tb.getStartLine(), tb.getStartChar(), tb.getEndLine(),
@@ -67,6 +78,6 @@ public class TranslatorHelper {
             throw new IllegalArgumentException(errors.toString());
         }
 
-        return translator.toELM();
+        return lib;
     }
 }

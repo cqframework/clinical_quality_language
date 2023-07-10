@@ -11,7 +11,7 @@ public class CqlCompilerException extends RuntimeException {
         Error
     }
 
-    public static boolean HasErrors(List<CqlCompilerException> exceptions) {
+    public static boolean hasErrors(List<CqlCompilerException> exceptions) {
         for (CqlCompilerException exception : exceptions) {
             if (exception.getSeverity() == ErrorSeverity.Error) {
                 return true;
@@ -65,7 +65,7 @@ public class CqlCompilerException extends RuntimeException {
         this.locator = locator;
     }
 
-    private ErrorSeverity severity;
+    private final ErrorSeverity severity;
 
     public ErrorSeverity getSeverity() {
         return severity;

@@ -1,7 +1,5 @@
 package org.opencds.cqf.cql.engine.fhir.data;
 
-
-import org.hl7.fhirpath.TranslatorHelper;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.EvaluationResult;
 import org.testng.annotations.Test;
@@ -18,9 +16,9 @@ public class TestPrimitiveProfiles extends FhirExecutionTestBase {
     @Test
     public void testProfileCast() {
 
-        CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
+        CqlEngine engineVisitor = getEngine();
         engineVisitor.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);
-        EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
+        EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(),
                 null, null, null, null, null);
 
         Object result;

@@ -54,33 +54,31 @@ public class TestUtils {
 
     public static Object visitFile(String fileName) throws IOException {
         File file = new File(URLDecoder.decode(TestUtils.class.getResource(fileName).getFile(), "UTF-8"));
-        CqlTranslator translator = CqlTranslator.fromFile(file, getModelManager(), getLibraryManager());
+        CqlTranslator translator = CqlTranslator.fromFile(file, getLibraryManager());
         ensureValid(translator);
         return translator.toObject();
     }
 
     public static CompiledLibrary visitFileLibrary(String fileName) throws IOException {
         File file = new File(URLDecoder.decode(TestUtils.class.getResource(fileName).getFile(), "UTF-8"));
-        CqlTranslator translator = CqlTranslator.fromFile(file, getModelManager(), getLibraryManager());
+        CqlTranslator translator = CqlTranslator.fromFile(file, getLibraryManager());
         ensureValid(translator);
         return translator.getTranslatedLibrary();
     }
 
     public static Object visitData(String cqlData) {
-        CqlTranslator translator = CqlTranslator.fromText(cqlData, getModelManager(), getLibraryManager());
+        CqlTranslator translator = CqlTranslator.fromText(cqlData,  getLibraryManager());
         ensureValid(translator);
         return translator.toObject();
     }
 
     public static Library visitLibrary(String cqlLibrary) {
-        CqlTranslator translator = CqlTranslator.fromText(cqlLibrary, getModelManager(), getLibraryManager());
+        CqlTranslator translator = CqlTranslator.fromText(cqlLibrary, getLibraryManager());
         ensureValid(translator);
         return translator.toELM();
     }
 
     public static Object visitData(String cqlData, boolean enableAnnotations, boolean enableDateRangeOptimization) {
-        List<CqlCompilerOptions.Options> options = new ArrayList<>();
-
         var compilerOptions = new CqlCompilerOptions();
         if (enableAnnotations) {
            compilerOptions.getOptions().add(CqlCompilerOptions.Options.EnableAnnotations);
@@ -89,7 +87,7 @@ public class TestUtils {
             compilerOptions.getOptions().add(CqlCompilerOptions.Options.EnableDateRangeOptimization);
         }
 
-        CqlTranslator translator = CqlTranslator.fromText(cqlData, getModelManager(), getLibraryManager(compilerOptions));
+        CqlTranslator translator = CqlTranslator.fromText(cqlData,getLibraryManager(compilerOptions));
         ensureValid(translator);
         return translator.toObject();
     }
@@ -109,7 +107,7 @@ public class TestUtils {
         preprocessor.visit(tree);
         ModelManager modelManager = new ModelManager();
         LibraryManager libraryManager = new LibraryManager(modelManager);
-        LibraryBuilder libraryBuilder = new LibraryBuilder(modelManager, libraryManager);
+        LibraryBuilder libraryBuilder = new LibraryBuilder(libraryManager);
         Cql2ElmVisitor visitor = new Cql2ElmVisitor(libraryBuilder);
         visitor.setTokenStream(tokens);
         visitor.setLibraryInfo(preprocessor.getLibraryInfo());
@@ -153,7 +151,7 @@ public class TestUtils {
         ModelManager modelManager = new ModelManager();
         var compilerOptions = new CqlCompilerOptions(options);
         LibraryManager libraryManager = new LibraryManager(modelManager, compilerOptions);
-        CqlTranslator translator = CqlTranslator.fromText(cqlText, modelManager, libraryManager);
+        CqlTranslator translator = CqlTranslator.fromText(cqlText,  libraryManager);
         return translator;
     }
 
@@ -175,7 +173,7 @@ public class TestUtils {
         var compilerOptions = new CqlCompilerOptions(options);
         LibraryManager libraryManager = new LibraryManager(modelManager, compilerOptions);
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
-        CqlTranslator translator = CqlTranslator.fromStream(namespaceInfo, inputStream, modelManager, libraryManager);
+        CqlTranslator translator = CqlTranslator.fromStream(namespaceInfo, inputStream,  libraryManager);
         return translator;
     }
 
@@ -210,7 +208,7 @@ public class TestUtils {
         ModelManager modelManager = new ModelManager();
         LibraryManager libraryManager = new LibraryManager(modelManager, options);
         libraryManager.getLibrarySourceLoader().registerProvider(path == null ? new TestLibrarySourceProvider() : new TestLibrarySourceProvider(path));
-        CqlTranslator translator = CqlTranslator.fromFile(namespaceInfo, translationTestFile, modelManager, libraryManager);
+        CqlTranslator translator = CqlTranslator.fromFile(namespaceInfo, translationTestFile,  libraryManager);
         return translator;
     }
 }

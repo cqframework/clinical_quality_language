@@ -16,56 +16,56 @@ public class CqlTranslator {
 
     private CqlCompiler compiler;
 
-    public static CqlTranslator fromText(String cqlText, ModelManager modelManager, LibraryManager libraryManager){
-        return new CqlTranslator(null, null, CharStreams.fromString(cqlText), modelManager, libraryManager);
+    public static CqlTranslator fromText(String cqlText, LibraryManager libraryManager){
+        return new CqlTranslator(null, null, CharStreams.fromString(cqlText), libraryManager);
     }
 
-    public static CqlTranslator fromText(NamespaceInfo namespaceInfo, String cqlText, ModelManager modelManager, LibraryManager libraryManager) {
-        return new CqlTranslator(namespaceInfo, null, CharStreams.fromString(cqlText), modelManager, libraryManager);
+    public static CqlTranslator fromText(NamespaceInfo namespaceInfo, String cqlText, LibraryManager libraryManager) {
+        return new CqlTranslator(namespaceInfo, null, CharStreams.fromString(cqlText), libraryManager);
     }
 
-    public static CqlTranslator fromText(NamespaceInfo namespaceInfo, VersionedIdentifier sourceInfo, String cqlText, ModelManager modelManager, LibraryManager libraryManager) {
-        return new CqlTranslator(namespaceInfo, sourceInfo, CharStreams.fromString(cqlText), modelManager, libraryManager);
+    public static CqlTranslator fromText(NamespaceInfo namespaceInfo, VersionedIdentifier sourceInfo, String cqlText, LibraryManager libraryManager) {
+        return new CqlTranslator(namespaceInfo, sourceInfo, CharStreams.fromString(cqlText), libraryManager);
     }
 
 
-    public static CqlTranslator fromStream(NamespaceInfo namespaceInfo, InputStream cqlStream, ModelManager modelManager, LibraryManager libraryManager) throws IOException {
-        return new CqlTranslator(namespaceInfo, null, CharStreams.fromStream(cqlStream), modelManager, libraryManager);
+    public static CqlTranslator fromStream(NamespaceInfo namespaceInfo, InputStream cqlStream, LibraryManager libraryManager) throws IOException {
+        return new CqlTranslator(namespaceInfo, null, CharStreams.fromStream(cqlStream), libraryManager);
     }
 
-    public static CqlTranslator fromStream(InputStream cqlStream, ModelManager modelManager, LibraryManager libraryManager) throws IOException {
-        return new CqlTranslator(null, null, CharStreams.fromStream(cqlStream), modelManager, libraryManager);
+    public static CqlTranslator fromStream(InputStream cqlStream, LibraryManager libraryManager) throws IOException {
+        return new CqlTranslator(null, null, CharStreams.fromStream(cqlStream), libraryManager);
     }
 
-    public static CqlTranslator fromStream(NamespaceInfo namespaceInfo, VersionedIdentifier sourceInfo, InputStream cqlStream, ModelManager modelManager,
+    public static CqlTranslator fromStream(NamespaceInfo namespaceInfo, VersionedIdentifier sourceInfo, InputStream cqlStream,
                                            LibraryManager libraryManager) throws IOException {
-        return new CqlTranslator(namespaceInfo, sourceInfo, CharStreams.fromStream(cqlStream), modelManager, libraryManager);
+        return new CqlTranslator(namespaceInfo, sourceInfo, CharStreams.fromStream(cqlStream), libraryManager);
     }
 
-    public static CqlTranslator fromFile(String cqlFileName, ModelManager modelManager, LibraryManager libraryManager) throws IOException {
-        return new CqlTranslator(null, getSourceInfo(cqlFileName), CharStreams.fromStream(new FileInputStream(cqlFileName)), modelManager, libraryManager);
+    public static CqlTranslator fromFile(String cqlFileName, LibraryManager libraryManager) throws IOException {
+        return new CqlTranslator(null, getSourceInfo(cqlFileName), CharStreams.fromStream(new FileInputStream(cqlFileName)), libraryManager);
     }
 
-    public static CqlTranslator fromFile(NamespaceInfo namespaceInfo, String cqlFileName, ModelManager modelManager, LibraryManager libraryManager) throws IOException {
-        return new CqlTranslator(namespaceInfo, getSourceInfo(cqlFileName), CharStreams.fromStream(new FileInputStream(cqlFileName)), modelManager, libraryManager);
+    public static CqlTranslator fromFile(NamespaceInfo namespaceInfo, String cqlFileName, LibraryManager libraryManager) throws IOException {
+        return new CqlTranslator(namespaceInfo, getSourceInfo(cqlFileName), CharStreams.fromStream(new FileInputStream(cqlFileName)), libraryManager);
     }
 
-    public static CqlTranslator fromFile(File cqlFile, ModelManager modelManager, LibraryManager libraryManager) throws IOException {
-        return new CqlTranslator(null, getSourceInfo(cqlFile), CharStreams.fromStream(new FileInputStream(cqlFile)), modelManager, libraryManager);
+    public static CqlTranslator fromFile(File cqlFile, LibraryManager libraryManager) throws IOException {
+        return new CqlTranslator(null, getSourceInfo(cqlFile), CharStreams.fromStream(new FileInputStream(cqlFile)), libraryManager);
     }
 
-    public static CqlTranslator fromFile(NamespaceInfo namespaceInfo, File cqlFile, ModelManager modelManager, LibraryManager libraryManager) throws IOException {
-        return new CqlTranslator(namespaceInfo, getSourceInfo(cqlFile), CharStreams.fromStream(new FileInputStream(cqlFile)), modelManager, libraryManager);
+    public static CqlTranslator fromFile(NamespaceInfo namespaceInfo, File cqlFile, LibraryManager libraryManager) throws IOException {
+        return new CqlTranslator(namespaceInfo, getSourceInfo(cqlFile), CharStreams.fromStream(new FileInputStream(cqlFile)), libraryManager);
     }
 
-    public static CqlTranslator fromFile(NamespaceInfo namespaceInfo, VersionedIdentifier sourceInfo, File cqlFile, ModelManager modelManager,
+    public static CqlTranslator fromFile(NamespaceInfo namespaceInfo, VersionedIdentifier sourceInfo, File cqlFile,
                                          LibraryManager libraryManager) throws IOException {
-        return new CqlTranslator(namespaceInfo, sourceInfo, CharStreams.fromStream(new FileInputStream(cqlFile)), modelManager, libraryManager);
+        return new CqlTranslator(namespaceInfo, sourceInfo, CharStreams.fromStream(new FileInputStream(cqlFile)), libraryManager);
     }
 
-    private CqlTranslator(NamespaceInfo namespaceInfo, VersionedIdentifier sourceInfo, CharStream is, ModelManager modelManager,
+    private CqlTranslator(NamespaceInfo namespaceInfo, VersionedIdentifier sourceInfo, CharStream is,
                           LibraryManager libraryManager) {
-        compiler = new CqlCompiler(namespaceInfo, sourceInfo, modelManager, libraryManager);
+        compiler = new CqlCompiler(namespaceInfo, sourceInfo, libraryManager);
         compiler.run(is);
     }
 
@@ -133,29 +133,29 @@ public class CqlTranslator {
         return compiler.toRetrieves();
     }
 
-    public Map<String, Library> getLibraries() {
+    public Map<VersionedIdentifier, Library> getLibraries() {
         return compiler.getLibraries();
     }
 
-    public Map<String, CompiledLibrary> getTranslatedLibraries() {
+    public Map<VersionedIdentifier, CompiledLibrary> getTranslatedLibraries() {
         return compiler.getCompiledLibraries();
     }
 
-    public Map<String, String> getLibrariesAsXML() {
-        var result = new HashMap<String, String>();
-        for (Map.Entry<String, CompiledLibrary> entry : getTranslatedLibraries().entrySet()) {
-            result.put(entry.getKey(), toXml(entry.getValue().getLibrary()));
-        }
-        return result;
-    }
+    // public Map<String, String> getLibrariesAsXML() {
+    //     var result = new HashMap<String, String>();
+    //     for (Map.Entry<String, CompiledLibrary> entry : getTranslatedLibraries().entrySet()) {
+    //         result.put(entry.getKey(), toXml(entry.getValue().getLibrary()));
+    //     }
+    //     return result;
+    // }
 
-    public Map<String, String> getLibrariesAsJSON() {
-        var result = new HashMap<String, String>();
-        for (Map.Entry<String, CompiledLibrary> entry : getTranslatedLibraries().entrySet()) {
-            result.put(entry.getKey(), toJson(entry.getValue().getLibrary()));
-        }
-        return result;
-    }
+    // public Map<String, String> getLibrariesAsJSON() {
+    //     var result = new HashMap<String, String>();
+    //     for (Map.Entry<String, CompiledLibrary> entry : getTranslatedLibraries().entrySet()) {
+    //         result.put(entry.getKey(), toJson(entry.getValue().getLibrary()));
+    //     }
+    //     return result;
+    // }
 
     public List<CqlCompilerException> getExceptions() { return compiler.getExceptions(); }
 

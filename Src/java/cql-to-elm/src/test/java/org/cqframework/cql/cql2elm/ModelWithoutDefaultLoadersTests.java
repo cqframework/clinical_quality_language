@@ -32,7 +32,7 @@ public class ModelWithoutDefaultLoadersTests {
     public void testModelInfo() {
         CqlTranslator translator = null;
         try {
-            translator = CqlTranslator.fromStream(ModelWithoutDefaultLoadersTests.class.getResourceAsStream("ModelTests/ModelTest.cql"), modelManager, new LibraryManager(modelManager));
+            translator = CqlTranslator.fromStream(ModelWithoutDefaultLoadersTests.class.getResourceAsStream("ModelTests/ModelTest.cql"), new LibraryManager(modelManager));
             Library library = translator.toELM();
             assertThat(translator.getErrors().size(), is(0));
         } catch (IOException e) {

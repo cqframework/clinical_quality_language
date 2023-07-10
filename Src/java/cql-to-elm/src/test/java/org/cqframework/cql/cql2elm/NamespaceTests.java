@@ -80,7 +80,7 @@ public class NamespaceTests {
     public void testLibraryReferences() {
         CqlTranslator translator = null;
         try {
-            translator = CqlTranslator.fromStream(defaultNamespaceInfo, NamespaceTests.class.getResourceAsStream("NamespaceTests/ReferencingLibrary.cql"), modelManager, libraryManager);
+            translator = CqlTranslator.fromStream(defaultNamespaceInfo, NamespaceTests.class.getResourceAsStream("NamespaceTests/ReferencingLibrary.cql"),  libraryManager);
             assertThat(translator.getErrors().size(), is(0));
             assertThat(translator.toELM().getIdentifier().getSystem(), is(defaultNamespaceInfo.getUri()));
         } catch (IOException e) {
@@ -92,7 +92,7 @@ public class NamespaceTests {
     public void testInvalidLibraryReferences() {
         CqlTranslator translator = null;
         try {
-            translator = CqlTranslator.fromStream(defaultNamespaceInfo, NamespaceTests.class.getResourceAsStream("NamespaceTests/InvalidReferencingLibrary.cql"), modelManager, libraryManager);
+            translator = CqlTranslator.fromStream(defaultNamespaceInfo, NamespaceTests.class.getResourceAsStream("NamespaceTests/InvalidReferencingLibrary.cql"),  libraryManager);
             assertThat(translator.getErrors().size(), is(not(0)));
         } catch (IOException e) {
             e.printStackTrace();
@@ -103,7 +103,7 @@ public class NamespaceTests {
     public void testInvalidLibraryReference() {
         CqlTranslator translator = null;
         try {
-            translator = CqlTranslator.fromStream(defaultNamespaceInfo, NamespaceTests.class.getResourceAsStream("NamespaceTests/InvalidLibraryReference.cql"), modelManager, libraryManager);
+            translator = CqlTranslator.fromStream(defaultNamespaceInfo, NamespaceTests.class.getResourceAsStream("NamespaceTests/InvalidLibraryReference.cql"),  libraryManager);
             assertThat(translator.getErrors().size(), is(not(0)));
         } catch (IOException e) {
             e.printStackTrace();
@@ -114,7 +114,7 @@ public class NamespaceTests {
     public void testInvalidBaseLibrary() {
         CqlTranslator translator = null;
         try {
-            translator = CqlTranslator.fromStream(defaultNamespaceInfo, NamespaceTests.class.getResourceAsStream("NamespaceTests/ReferencingInvalidBaseLibrary.cql"), modelManager, libraryManager);
+            translator = CqlTranslator.fromStream(defaultNamespaceInfo, NamespaceTests.class.getResourceAsStream("NamespaceTests/ReferencingInvalidBaseLibrary.cql"),  libraryManager);
             assertThat(translator.getErrors().size(), is(1));
             assertThat(translator.getErrors().get(0), instanceOf(CqlCompilerException.class));
             assertThat(translator.getErrors().get(0).getLocator(), notNullValue());
@@ -144,7 +144,7 @@ public class NamespaceTests {
     @Test
     public void testMain() {
         try {
-            CqlTranslator translator = CqlTranslator.fromStream(defaultNamespaceInfo, NamespaceTests.class.getResourceAsStream("NamespaceTests/Main.cql"), modelManager, libraryManager);
+            CqlTranslator translator = CqlTranslator.fromStream(defaultNamespaceInfo, NamespaceTests.class.getResourceAsStream("NamespaceTests/Main.cql"),  libraryManager);
             assertThat(translator.getErrors().size(), is(0));
             assertThat(translator.toELM().getIdentifier().getId(), is("Main"));
             assertThat(translator.toELM().getIdentifier().getSystem(), is(defaultNamespaceInfo.getUri()));
@@ -157,7 +157,7 @@ public class NamespaceTests {
     @Test
     public void testReferencingMain() {
         try {
-            CqlTranslator translator = CqlTranslator.fromStream(defaultNamespaceInfo, NamespaceTests.class.getResourceAsStream("NamespaceTests/ReferencingMain.cql"), modelManager, libraryManager);
+            CqlTranslator translator = CqlTranslator.fromStream(defaultNamespaceInfo, NamespaceTests.class.getResourceAsStream("NamespaceTests/ReferencingMain.cql"),  libraryManager);
             assertThat(translator.getErrors().size(), is(0));
             assertThat(translator.toELM().getIdentifier().getId(), is("ReferencingMain"));
             assertThat(translator.toELM().getIdentifier().getSystem(), is(defaultNamespaceInfo.getUri()));
@@ -176,7 +176,7 @@ public class NamespaceTests {
     @Test
     public void testCoreMain() {
         try {
-            CqlTranslator translator = CqlTranslator.fromStream(coreNamespaceInfo, NamespaceTests.class.getResourceAsStream("NamespaceTests/Core/Main.cql"), modelManager, libraryManager);
+            CqlTranslator translator = CqlTranslator.fromStream(coreNamespaceInfo, NamespaceTests.class.getResourceAsStream("NamespaceTests/Core/Main.cql"),  libraryManager);
             assertThat(translator.getErrors().size(), is(0));
             assertThat(translator.toELM().getIdentifier().getId(), is("Main"));
             assertThat(translator.toELM().getIdentifier().getSystem(), is(coreNamespaceInfo.getUri()));
@@ -189,7 +189,7 @@ public class NamespaceTests {
     @Test
     public void testCoreReferencingMain() {
         try {
-            CqlTranslator translator = CqlTranslator.fromStream(coreNamespaceInfo, NamespaceTests.class.getResourceAsStream("NamespaceTests/Core/ReferencingMain.cql"), modelManager, libraryManager);
+            CqlTranslator translator = CqlTranslator.fromStream(coreNamespaceInfo, NamespaceTests.class.getResourceAsStream("NamespaceTests/Core/ReferencingMain.cql"),  libraryManager);
             assertThat(translator.getErrors().size(), is(0));
             assertThat(translator.toELM().getIdentifier().getId(), is("ReferencingMain"));
             assertThat(translator.toELM().getIdentifier().getSystem(), is(coreNamespaceInfo.getUri()));
@@ -208,7 +208,7 @@ public class NamespaceTests {
     @Test
     public void testSharedMain() {
         try {
-            CqlTranslator translator = CqlTranslator.fromStream(sharedNamespaceInfo, NamespaceTests.class.getResourceAsStream("NamespaceTests/Shared/Main.cql"), modelManager, libraryManager);
+            CqlTranslator translator = CqlTranslator.fromStream(sharedNamespaceInfo, NamespaceTests.class.getResourceAsStream("NamespaceTests/Shared/Main.cql"),  libraryManager);
             assertThat(translator.getErrors().size(), is(0));
             assertThat(translator.toELM().getIdentifier().getId(), is("Main"));
             assertThat(translator.toELM().getIdentifier().getSystem(), is(sharedNamespaceInfo.getUri()));
@@ -228,7 +228,7 @@ public class NamespaceTests {
     @Test
     public void testSharedReferencingMain() {
         try {
-            CqlTranslator translator = CqlTranslator.fromStream(sharedNamespaceInfo, NamespaceTests.class.getResourceAsStream("NamespaceTests/Shared/ReferencingMain.cql"), modelManager, libraryManager);
+            CqlTranslator translator = CqlTranslator.fromStream(sharedNamespaceInfo, NamespaceTests.class.getResourceAsStream("NamespaceTests/Shared/ReferencingMain.cql"),  libraryManager);
             assertThat(translator.getErrors().size(), is(0));
             assertThat(translator.toELM().getIdentifier().getId(), is("ReferencingMain"));
             assertThat(translator.toELM().getIdentifier().getSystem(), is(sharedNamespaceInfo.getUri()));
@@ -247,7 +247,7 @@ public class NamespaceTests {
     @Test
     public void testContentMain() {
         try {
-            CqlTranslator translator = CqlTranslator.fromStream(contentNamespaceInfo, NamespaceTests.class.getResourceAsStream("NamespaceTests/Content/Main.cql"), modelManager, libraryManager);
+            CqlTranslator translator = CqlTranslator.fromStream(contentNamespaceInfo, NamespaceTests.class.getResourceAsStream("NamespaceTests/Content/Main.cql"),  libraryManager);
             assertThat(translator.getErrors().size(), is(0));
             assertThat(translator.toELM().getIdentifier().getId(), is("Main"));
             assertThat(translator.toELM().getIdentifier().getSystem(), is(contentNamespaceInfo.getUri()));
@@ -271,7 +271,7 @@ public class NamespaceTests {
     @Test
     public void testContentReferencingMain() {
         try {
-            CqlTranslator translator = CqlTranslator.fromStream(contentNamespaceInfo, NamespaceTests.class.getResourceAsStream("NamespaceTests/Content/ReferencingMain.cql"), modelManager, libraryManager);
+            CqlTranslator translator = CqlTranslator.fromStream(contentNamespaceInfo, NamespaceTests.class.getResourceAsStream("NamespaceTests/Content/ReferencingMain.cql"),  libraryManager);
             assertThat(translator.getErrors().size(), is(0));
             assertThat(translator.toELM().getIdentifier().getId(), is("ReferencingMain"));
             assertThat(translator.toELM().getIdentifier().getSystem(), is(contentNamespaceInfo.getUri()));

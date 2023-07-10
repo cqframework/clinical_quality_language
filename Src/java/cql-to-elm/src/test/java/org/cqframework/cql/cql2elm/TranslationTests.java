@@ -28,7 +28,7 @@ public class TranslationTests {
 
         File propertyTestFile = new File(Cql2ElmVisitorTest.class.getResource("PropertyTest.cql").getFile());
         ModelManager modelManager = new ModelManager();
-        String actualXml = CqlTranslator.fromFile(propertyTestFile, modelManager, new LibraryManager(modelManager)).toXml();
+        String actualXml = CqlTranslator.fromFile(propertyTestFile, new LibraryManager(modelManager)).toXml();
         assertThat(actualXml, is(expectedXml));
     }
 
@@ -46,7 +46,7 @@ public class TranslationTests {
                 CqlCompilerOptions.Options.DisableListPromotion,
                 CqlCompilerOptions.Options.DisableMethodInvocation);
 
-        CqlTranslator translator = CqlTranslator.fromFile(propertyTestFile, modelManager, new LibraryManager(modelManager, compilerOptions));
+        CqlTranslator translator = CqlTranslator.fromFile(propertyTestFile, new LibraryManager(modelManager, compilerOptions));
         System.out.println(translator.toJson());
     }
 
@@ -55,7 +55,7 @@ public class TranslationTests {
         String expectedXml = "";
         File cqlFile = new File(Cql2ElmVisitorTest.class.getResource("CMS146v2_Test_CQM.cql").getFile());
         ModelManager modelManager = new ModelManager();
-        String actualXml = CqlTranslator.fromFile(cqlFile, modelManager, new LibraryManager(modelManager)).toXml();
+        String actualXml = CqlTranslator.fromFile(cqlFile, new LibraryManager(modelManager)).toXml();
         assertThat(actualXml, is(expectedXml));
     }
 

@@ -41,21 +41,17 @@ public class LibraryBuilder implements ModelResolver {
         All
     }
 
-    public LibraryBuilder(ModelManager modelManager, LibraryManager libraryManager) {
-        this(null, modelManager, libraryManager);
+    public LibraryBuilder(LibraryManager libraryManager) {
+        this(null, libraryManager);
     }
 
-    public LibraryBuilder(NamespaceInfo namespaceInfo, ModelManager modelManager, LibraryManager libraryManager) {
-        if (modelManager == null) {
-            throw new IllegalArgumentException("modelManager is null");
-        }
-
+    public LibraryBuilder(NamespaceInfo namespaceInfo, LibraryManager libraryManager) {
         if (libraryManager == null) {
             throw new IllegalArgumentException("libraryManager is null");
         }
 
         this.namespaceInfo = namespaceInfo; // Note: allowed to be null, implies global namespace
-        this.modelManager = modelManager;
+        this.modelManager = libraryManager.getModelManager();
         this.libraryManager = libraryManager;
         this.typeBuilder = new TypeBuilder(of, this);
 
@@ -623,7 +619,7 @@ public class LibraryBuilder implements ModelResolver {
     public void beginTranslation() {
         loadSystemLibrary();
 
-        libraryManager.beginCompilation(getLibraryName());
+        // libraryManager.beginCompilation(getLibraryName());
     }
 
     public VersionedIdentifier getLibraryIdentifier() {
@@ -637,7 +633,7 @@ public class LibraryBuilder implements ModelResolver {
 
     public void endTranslation() {
         applyTargetModelMaps();
-        libraryManager.endCompilation(getLibraryName());
+        // libraryManager.endCompilation(getLibraryName());
     }
 
     public boolean canResolveLibrary(IncludeDef includeDef) {

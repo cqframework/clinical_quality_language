@@ -13,6 +13,8 @@ import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.Retrieve;
 import org.hl7.elm.r1.VersionedIdentifier;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -29,32 +31,31 @@ public class CqlCompiler {
     private List<CqlCompilerException> errors = null;
     private List<CqlCompilerException> warnings = null;
     private List<CqlCompilerException> messages = null;
-    private VersionedIdentifier sourceInfo = null;
-    private NamespaceInfo namespaceInfo = null;
-    private ModelManager modelManager = null;
-    private LibraryManager libraryManager = null;
+    private final VersionedIdentifier sourceInfo;
+    private final NamespaceInfo namespaceInfo;
+    private final LibraryManager libraryManager;
 
-    public CqlCompiler(ModelManager modelManager, LibraryManager libraryManager) {
-        this(null, null, modelManager, libraryManager);
+    public CqlCompiler(LibraryManager libraryManager) {
+        this(null, null, libraryManager);
     }
 
-    public CqlCompiler(NamespaceInfo namespaceInfo, ModelManager modelManager, LibraryManager libraryManager) {
-        this(namespaceInfo, null, modelManager, libraryManager);
+    public CqlCompiler(NamespaceInfo namespaceInfo, LibraryManager libraryManager) {
+        this(namespaceInfo, null, libraryManager);
     }
 
-    public CqlCompiler(NamespaceInfo namespaceInfo, VersionedIdentifier sourceInfo, ModelManager modelManager,
+    public CqlCompiler(NamespaceInfo namespaceInfo, VersionedIdentifier sourceInfo,
                         LibraryManager libraryManager) {
-        this.sourceInfo = sourceInfo;
         this.namespaceInfo = namespaceInfo;
-        this.modelManager = modelManager;
         this.libraryManager = libraryManager;
 
-        if (this.sourceInfo == null) {
+        if (sourceInfo == null) {
             this.sourceInfo = new VersionedIdentifier().withId("Anonymous").withSystem("text/cql");
+        }
+        else {
+            this.sourceInfo = sourceInfo;
         }
 
         if (this.namespaceInfo != null) {
-            modelManager.getNamespaceManager().ensureNamespaceRegistered(this.namespaceInfo);
             libraryManager.getNamespaceManager().ensureNamespaceRegistered(this.namespaceInfo);
         }
 
@@ -75,14 +76,14 @@ public class CqlCompiler {
     public List<Retrieve> toRetrieves() {
         return retrieves;
     }
-    public Map<String, CompiledLibrary> getCompiledLibraries() {
+    public Map<VersionedIdentifier, CompiledLibrary> getCompiledLibraries() {
         return libraryManager.getCompiledLibraries();
     }
 
-    public Map<String, Library> getLibraries() {
-        Map<String, Library> result = new HashMap<String, Library>();
-        for (String libraryName : libraryManager.getCompiledLibraries().keySet()) {
-            result.put(libraryName, libraryManager.getCompiledLibraries().get(libraryName).getLibrary());
+    public Map<VersionedIdentifier, Library> getLibraries() {
+        var result = new HashMap<VersionedIdentifier, Library>();
+        for (var id : libraryManager.getCompiledLibraries().keySet()) {
+            result.put(id, libraryManager.getCompiledLibraries().get(id).getLibrary());
         }
         return result;
     }
@@ -147,6 +148,10 @@ public class CqlCompiler {
         }
     }
 
+    public Library run(File cqlFile) throws IOException {
+        return run(CharStreams.fromStream(new FileInputStream(cqlFile)));
+    }
+
     public Library run(String cqlText) {
         return run(CharStreams.fromString(cqlText));
     }
@@ -162,7 +167,7 @@ public class CqlCompiler {
         warnings = new ArrayList<>();
         messages = new ArrayList<>();
 
-        LibraryBuilder builder = new LibraryBuilder(namespaceInfo, modelManager, libraryManager);
+        LibraryBuilder builder = new LibraryBuilder(namespaceInfo, libraryManager);
         builder.setCompilerOptions(libraryManager.getCqlCompilerOptions());
         Cql2ElmVisitor visitor = new Cql2ElmVisitor(builder);
         builder.setVisitor(visitor);
