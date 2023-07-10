@@ -168,16 +168,6 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
         return this.evaluateExpressions(expressions);
     }
 
-    public void init(VersionedIdentifier libraryIdentifier, Pair<String, Object> contextParameter, Map<String, Object> parameters, DebugMap debugMap, ZonedDateTime evaluationDateTime) {
-        if (libraryIdentifier == null) {
-            throw new IllegalArgumentException("libraryIdentifier can not be null.");
-        }
-        Library library = this.loadAndValidate(libraryIdentifier);
-
-        this.initializeState(library, debugMap, evaluationDateTime);
-        this.setParametersForContext(library, contextParameter, parameters);
-    }
-
     private void initializeState(Library library, DebugMap debugMap, ZonedDateTime evaluationDateTime) {
         if (evaluationDateTime != null) {
             this.state.setEvaluationDateTime(evaluationDateTime);

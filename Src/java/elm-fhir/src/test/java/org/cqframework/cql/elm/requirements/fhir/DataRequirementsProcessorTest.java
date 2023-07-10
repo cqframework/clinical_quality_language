@@ -185,7 +185,7 @@ public class DataRequirementsProcessorTest {
         cqlTranslatorOptions.setAnalyzeDataRequirements(true);
         try {
             NamespaceInfo ni = new NamespaceInfo("fhir.cdc.opioid-cds", "http://fhir.org/guides/cdc/opioid-cds");
-            var setup = setup(ni, "OpioidCDSSTU3/cql/OpioidCDSREC10_bug_repo.cql", cqlTranslatorOptions);
+            var setup = setup(ni, "OpioidCDSSTU3/cql/OpioidCDSREC10.cql", cqlTranslatorOptions);
             DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
             org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(setup.manager(), setup.library(), cqlTranslatorOptions, null, false);
             assertNotNull(moduleDefinitionLibrary);
@@ -1761,30 +1761,14 @@ public class DataRequirementsProcessorTest {
             manager.getNamespaceManager().addNamespace(namespaceInfo);
         }
 
-        var info = getSourceInfo(translationTestFile);
+        var compiler = new CqlCompiler(namespaceInfo, manager);
 
-        var errors = new ArrayList<CqlCompilerException>();
+        var lib = compiler.run(translationTestFile);
 
-        var lib = manager.resolveLibrary(info, errors);
+        assertTrue(compiler.getErrors().isEmpty());
 
-        assertTrue(errors.isEmpty());
+        manager.getCompiledLibraries().put(lib.getIdentifier(), compiler.getCompiledLibrary());
 
-        return new Setup(manager, lib);
-    }
-
-    private static VersionedIdentifier getSourceInfo(File cqlFile) {
-        String name = cqlFile.getName();
-        int extensionIndex = name.lastIndexOf('.');
-        if (extensionIndex > 0) {
-            name = name.substring(0, extensionIndex);
-        }
-        String system = null;
-        try {
-            system = cqlFile.getCanonicalPath();
-        } catch (IOException e) {
-            system = cqlFile.getAbsolutePath();
-        }
-
-        return new VersionedIdentifier().withId(name).withSystem(system);
+        return new Setup(manager, compiler.getCompiledLibrary());
     }
 }

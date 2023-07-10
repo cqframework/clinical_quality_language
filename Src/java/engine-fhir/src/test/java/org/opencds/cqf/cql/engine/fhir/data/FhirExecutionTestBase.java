@@ -90,7 +90,7 @@ public abstract class FhirExecutionTestBase {
         String fileName = this.getClass().getSimpleName();
         if (library == null) {
             try {
-                File cqlFile = new File(URLDecoder.decode(this.getClass().getResource("fhir/" + fileName + ".cql").getFile(), "UTF-8"));
+                File cqlFile = new File(URLDecoder.decode(this.getClass().getResource(fileName + ".cql").getFile(), "UTF-8"));
 
                 CqlCompiler compiler = new CqlCompiler(getLibraryManager());
 

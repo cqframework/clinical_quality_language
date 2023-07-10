@@ -27,6 +27,7 @@ public class State {
 
     public State(Environment environment) {
         this.environment = environment;
+        this.setEvaluationDateTime(ZonedDateTime.now());
     }
 
     private static final Logger logger = LoggerFactory.getLogger(State.class);
@@ -55,17 +56,8 @@ public class State {
 
     private DebugMap debugMap;
 
-    public void setCurrentContext(Stack<String> currentContext) {
-        this.currentContext = currentContext;
-    }
-
-
     public Library getCurrentLibrary() {
         return currentLibrary.peek();
-    }
-
-    public void setCurrentLibrary(Stack<Library> currentLibrary) {
-        this.currentLibrary = currentLibrary;
     }
 
     public Map<String, Object> getParameters() {

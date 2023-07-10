@@ -16,7 +16,6 @@ public class ElmEvaluationHelper {
         // TODO: Cache for libraries?
 
         CqlEngine engine = getEngine(library, parameters, evaluationDateTime);
-        engine.init(library.getIdentifier(), null, null, null, evaluationDateTime);
         return engine.visitExpression(value, engine.getState());
     }
 
@@ -39,6 +38,4 @@ public class ElmEvaluationHelper {
     protected static ModelManager getModelManager() {
         return new ModelManager();
     }
-
-
 }
