@@ -2,16 +2,22 @@ package org.cqframework.cql.cql2elm;
 
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.hl7.cql_annotations.r1.Annotation;
+import org.hl7.cql_annotations.r1.CqlToElmBase;
+import org.hl7.cql_annotations.r1.Narrative;
 import org.hl7.cql_annotations.r1.Tag;
 import org.hl7.elm.r1.ExpressionDef;
 import org.hl7.elm.r1.FunctionDef;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import javax.xml.bind.JAXBElement;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertTrue;
 
 public class CommentTests {
     @BeforeClass
@@ -25,6 +31,57 @@ public class CommentTests {
         CqlTranslator translator = TestUtils.runSemanticTest("TestComments.cql", 0, CqlTranslatorOptions.Options.EnableAnnotations);
         CompiledLibrary library = translator.getTranslatedLibrary();
         assertThat(library.getLibrary().getAnnotation(), notNullValue());
+
+        Map<String, ExpressionDef> defs = new HashMap<>();
+
+        if (library.getLibrary().getStatements() != null) {
+            for (ExpressionDef def : library.getLibrary().getStatements().getDef()) {
+                defs.put(def.getName(), def);
+            }
+        }
+
+        // Validate that boolIpp has appropriate comment value
+        // Comment should be: "/* Multi-line works fine */\n// Single-line comment does not work\n"
+        ExpressionDef def = defs.get("boolIpp");
+        assertThat(def, notNullValue());
+        assertThat(def.getAnnotation(), notNullValue());
+        assertThat(def.getAnnotation().size(), is(1));
+        assertThat(def.getAnnotation().get(0), instanceOf(Annotation.class));
+        Annotation a = (Annotation)def.getAnnotation().get(0);
+        assertThat(a.getS().getContent(), notNullValue());
+        assertThat(a.getS().getContent().size(), is(2));
+        assertThat(a.getS().getContent().get(0), instanceOf(JAXBElement.class));
+        JAXBElement e = (JAXBElement)a.getS().getContent().get(0);
+        assertThat(e, notNullValue());
+        assertThat(e.getValue(), instanceOf(Narrative.class));
+        Narrative n = (Narrative)e.getValue();
+        assertThat(n.getContent(), notNullValue());
+        assertThat(n.getContent().size(), is(4));
+        assertThat(n.getContent().get(0), instanceOf(String.class));
+        String s = (String)n.getContent().get(0);
+        assertThat(s, is("/* Multi-line works fine */\n// Single-line comment does not work\n"));
+
+
+        // Validate that singleLineCommentTest has appropriate comment value
+        // Comment should be: "// Unmixed single-line comment works\n"
+        def = defs.get("singleLineCommentTest");
+        assertThat(def, notNullValue());
+        assertThat(def.getAnnotation(), notNullValue());
+        assertThat(def.getAnnotation().size(), is(1));
+        assertThat(def.getAnnotation().get(0), instanceOf(Annotation.class));
+        a = (Annotation)def.getAnnotation().get(0);
+        assertThat(a.getS().getContent(), notNullValue());
+        assertThat(a.getS().getContent().size(), is(2));
+        assertThat(a.getS().getContent().get(0), instanceOf(JAXBElement.class));
+        e = (JAXBElement)a.getS().getContent().get(0);
+        assertThat(e, notNullValue());
+        assertThat(e.getValue(), instanceOf(Narrative.class));
+        n = (Narrative)e.getValue();
+        assertThat(n.getContent(), notNullValue());
+        assertThat(n.getContent().size(), is(4));
+        assertThat(n.getContent().get(0), instanceOf(String.class));
+        s = (String)n.getContent().get(0);
+        assertThat(s, is("// Unmixed single-line comment works\n"));
     }
 
     @Test
