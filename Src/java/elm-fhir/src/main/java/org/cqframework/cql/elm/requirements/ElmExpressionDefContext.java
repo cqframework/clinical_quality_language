@@ -62,7 +62,7 @@ public class ElmExpressionDefContext {
         ElmQueryLetContext letContext = null;
         for (ElmQueryContext queryContext : queryStack) {
             letContext = queryContext.resolveLet(letName);
-            if (letName != null) {
+            if (letContext != null) {
                 break;
             }
         }
