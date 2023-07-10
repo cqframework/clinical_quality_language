@@ -293,6 +293,33 @@ public class BaseTest {
     }
 
     @Test
+    public void TestMedicationRequest() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("qicore/v411/TestMedicationRequest.cql", 0);
+        Library library = translator.toELM();
+        Map<String, ExpressionDef> defs = new HashMap<>();
+
+        if (library.getStatements() != null) {
+            for (ExpressionDef def : library.getStatements().getDef()) {
+                defs.put(def.getName(), def);
+            }
+        }
+
+        ExpressionDef def = defs.get("Antithrombotic Therapy at Discharge");
+        assertThat(def, notNullValue());
+        assertThat(def.getExpression(), instanceOf(Query.class));
+        Query q = (Query)def.getExpression();
+        assertThat(q.getSource().size(), is(1));
+        assertThat(q.getSource().get(0).getExpression(), instanceOf(Retrieve.class));
+        Retrieve r = (Retrieve)q.getSource().get(0).getExpression();
+        assertThat(r.getTemplateId(), is("http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationrequest"));
+        assertThat(r.getCodeProperty(), is("medication"));
+        assertThat(r.getCodeComparator(), is("in"));
+        assertThat(r.getCodes(), instanceOf(ValueSetRef.class));
+        ValueSetRef vsr = (ValueSetRef)r.getCodes();
+        assertThat(vsr.getName(), is("Antithrombotic Therapy"));
+    }
+
+    @Test
     public void TestChoiceUnion() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("qicore/v411/TestChoiceUnion.cql", 0);
         Library library = translator.toELM();
