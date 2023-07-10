@@ -11,7 +11,6 @@ import org.opencds.cqf.cql.engine.runtime.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.List;
@@ -41,7 +40,6 @@ public class State {
     private Stack<HashSet<Object>> evaluatedResourceStack = new Stack<>();
 
 
-
     private Environment environment;
 
     private Cache cache;
@@ -50,7 +48,6 @@ public class State {
     private Map<String, Object> contextValues = new HashMap<>();
 
     private ZonedDateTime evaluationZonedDateTime;
-    private OffsetDateTime evaluationOffsetDateTime;
     private DateTime evaluationDateTime;
 
 
@@ -187,16 +184,11 @@ public class State {
 
     public void setEvaluationDateTime(ZonedDateTime evaluationZonedDateTime) {
         this.evaluationZonedDateTime = evaluationZonedDateTime;
-        this.evaluationOffsetDateTime = evaluationZonedDateTime.toOffsetDateTime();
-        this.evaluationDateTime = new DateTime(evaluationOffsetDateTime);
+        this.evaluationDateTime = new DateTime(evaluationZonedDateTime.toOffsetDateTime());
     }
 
     public ZonedDateTime getEvaluationZonedDateTime() {
         return this.evaluationZonedDateTime;
-    }
-
-    public OffsetDateTime getEvaluationOffsetDateTime() {
-        return this.evaluationOffsetDateTime;
     }
 
     public DateTime getEvaluationDateTime() {
