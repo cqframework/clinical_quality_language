@@ -1627,6 +1627,7 @@ public class DataRequirementsProcessorTest {
         IParser parser = context.newJsonParser();
         org.hl7.fhir.r5.model.Library expectedModuleDefinitionLibrary = (org.hl7.fhir.r5.model.Library)parser.parseResource(DataRequirementsProcessorTest.class.getResourceAsStream(pathToExpectedModuleDefinitionLibrary));
         assertNotNull(expectedModuleDefinitionLibrary);
+        //outputModuleDefinitionLibrary(actualModuleDefinitionLibrary);
         actualModuleDefinitionLibrary.setDate(null);
         expectedModuleDefinitionLibrary.setDate(null);
         assertTrue(actualModuleDefinitionLibrary.equalsDeep(expectedModuleDefinitionLibrary));
@@ -1652,6 +1653,42 @@ public class DataRequirementsProcessorTest {
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions, new HashMap<String, Object>(), ZonedDateTime.of(2023, 1, 16, 0, 0, 0, 0, ZoneId.of("UTC")));
         assertNotNull(moduleDefinitionLibrary);
         assertEqualToExpectedModuleDefinitionLibrary(moduleDefinitionLibrary, "WithDependencies/Library-BSElements-data-requirements.json");
+
+        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+    }
+
+    @Test
+    public void TestCMS645() throws IOException {
+        CqlTranslatorOptions translatorOptions = getTranslatorOptions();
+        translatorOptions.setAnalyzeDataRequirements(false);
+        CqlTranslator translator = setupDataRequirementsAnalysis("CMS645/CMS645Test.cql", translatorOptions);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(translator, translatorOptions, new HashMap<String, Object>(), ZonedDateTime.of(2023, 1, 16, 0, 0, 0, 0, ZoneId.of("UTC")));
+        assertNotNull(moduleDefinitionLibrary);
+        assertEqualToExpectedModuleDefinitionLibrary(moduleDefinitionLibrary, "CMS645/CMS645-ModuleDefinitionLibrary.json");
+
+        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+    }
+
+    @Test
+    public void TestCMS143() throws IOException {
+        CqlTranslatorOptions translatorOptions = getTranslatorOptions();
+        translatorOptions.setAnalyzeDataRequirements(false);
+        CqlTranslator translator = setupDataRequirementsAnalysis("CMS143/cql/POAGOpticNerveEvaluationFHIR-0.0.003.cql", translatorOptions);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(translator, translatorOptions, new HashMap<String, Object>(), ZonedDateTime.of(2023, 1, 16, 0, 0, 0, 0, ZoneId.of("UTC")));
+        assertNotNull(moduleDefinitionLibrary);
+        assertEqualToExpectedModuleDefinitionLibrary(moduleDefinitionLibrary, "CMS143/resources/Library-EffectiveDataRequirements.json");
+
+        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+    }
+
+    @Test
+    public void TestCMS149() throws IOException {
+        CqlTranslatorOptions translatorOptions = getTranslatorOptions();
+        translatorOptions.setAnalyzeDataRequirements(false);
+        CqlTranslator translator = setupDataRequirementsAnalysis("CMS149/cql/DementiaCognitiveAssessmentFHIR-0.0.003.cql", translatorOptions);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(translator, translatorOptions, new HashMap<String, Object>(), ZonedDateTime.of(2023, 1, 16, 0, 0, 0, 0, ZoneId.of("UTC")));
+        assertNotNull(moduleDefinitionLibrary);
+        assertEqualToExpectedModuleDefinitionLibrary(moduleDefinitionLibrary, "CMS149/resources/Library-EffectiveDataRequirements.json");
 
         //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
