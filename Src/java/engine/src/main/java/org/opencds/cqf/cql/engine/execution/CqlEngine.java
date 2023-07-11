@@ -2,20 +2,18 @@ package org.opencds.cqf.cql.engine.execution;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.cqframework.cql.elm.visiting.ElmBaseLibraryVisitor;
+import org.hl7.cql.model.NamespaceManager;
 import org.hl7.elm.r1.*;
 import org.hl7.elm.r1.Date;
 import org.opencds.cqf.cql.engine.debug.DebugMap;
 import org.opencds.cqf.cql.engine.elm.executing.*;
 import org.opencds.cqf.cql.engine.exception.CqlException;
-import org.opencds.cqf.cql.engine.runtime.CodeSystem;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.List;
 
-import static org.opencds.cqf.cql.engine.execution.NamespaceHelper.getNamePart;
-import static org.opencds.cqf.cql.engine.execution.NamespaceHelper.getUriPart;
 
 /**
  * NOTE: We have updated CqlEngine to adopt a visitor pattern approach to traversing the ELM tree for execution:
@@ -41,6 +39,7 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
 
     public CqlEngine(Environment environment, Set<Options> engineOptions) {
         this(environment, null,  engineOptions);
+
     }
 
     public CqlEngine(Environment environment, Cache cache, Set<Options> engineOptions) {
@@ -61,8 +60,6 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
         } else {
             this.cache = new Cache();
         }
-
-        this.state.setCache(this.cache);
 
         if (engineOptions != null) {
             this.engineOptions = engineOptions;
@@ -178,7 +175,7 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
         this.state.init(library);
 
         if (this.engineOptions.contains(Options.EnableExpressionCaching)) {
-            this.state.getCache().setExpressionCaching(true);
+            this.cache.setExpressionCaching(true);
         }
 
         this.state.setDebugMap(debugMap);
@@ -188,7 +185,7 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
         EvaluationResult result = new EvaluationResult();
 
         for (String expression : expressions) {
-            ExpressionDef def = state.resolveExpressionRef(expression);
+            ExpressionDef def = Libraries.resolveExpressionRef(expression, state.getCurrentLibrary());
 
             if (def == null) {
                 throw new CqlException(String.format("Unable to resolve expression \"%s.\"", expression));
@@ -203,7 +200,6 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
         }
 
         result.setDebugResult(this.state.getDebugResult());
-        this.state.clearExpressions();
 
         return result;
     }
@@ -232,7 +228,7 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
 
         if (library.getIncludes() != null && library.getIncludes().getDef() != null) {
             for (IncludeDef include : library.getIncludes().getDef()) {
-                this.loadAndValidate(new VersionedIdentifier().withSystem(getUriPart(include.getPath())).withId(getNamePart(include.getPath())).withVersion(include.getVersion()));
+                this.loadAndValidate(new VersionedIdentifier().withSystem(NamespaceManager.getUriPart(include.getPath())).withId(NamespaceManager.getNamePart(include.getPath())).withVersion(include.getVersion()));
             }
         }
 
@@ -869,17 +865,7 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitCodeRef(CodeRef elm, State state) {
-        boolean enteredLibrary = false;
-        if (elm.getLibraryName() != null ) {
-            state.enterLibrary(elm.getLibraryName());
-            enteredLibrary = true;
-        }
-        CodeDef cd = state.resolveCodeRef(elm.getName());
-        CodeSystem cs = CodeSystemRefEvaluator.toCodeSystem(cd.getCodeSystem(), state);
-        if (enteredLibrary) {
-            state.exitLibrary(true);
-        }
-        return CodeRefEvaluator.toCode(elm, cs, state);
+        return CodeRefEvaluator.toCode(elm, state);
     }
 
     @Override

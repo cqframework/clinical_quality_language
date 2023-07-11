@@ -16,12 +16,14 @@ import org.opencds.cqf.cql.engine.data.SystemDataProvider;
 import org.opencds.cqf.cql.engine.exception.CqlException;
 import org.opencds.cqf.cql.engine.runtime.Tuple;
 import org.opencds.cqf.cql.engine.terminology.TerminologyProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.namespace.QName;
+
 
 /**
  * The Environment class represents the current CQL execution environment.
@@ -29,7 +31,6 @@ import javax.xml.namespace.QName;
  * of the CQL engine
  */
 public class Environment {
-
     private final LibraryManager libraryManager;
 
     private final Map<String, DataProvider> dataProviders = new HashMap<>();
@@ -331,8 +332,6 @@ public class Environment {
 
         return typeName;
     }
-
-    // -- Library resolutions
 
     public Library resolveLibrary(VersionedIdentifier identifier) {
         return this.libraryManager.resolveLibrary(identifier).getLibrary();

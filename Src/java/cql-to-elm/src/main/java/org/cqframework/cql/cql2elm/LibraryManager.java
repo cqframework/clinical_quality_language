@@ -1,6 +1,7 @@
 package org.cqframework.cql.cql2elm;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.diff.StringsComparator;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.cqframework.cql.elm.serializing.ElmLibraryReaderFactory;
 import org.fhir.ucum.UcumEssenceService;
@@ -196,6 +197,7 @@ public class LibraryManager {
         if (!this.cqlCompilerOptions.getEnableCqlOnly()) {
             result = tryCompiledLibraryElm(libraryIdentifier, this.cqlCompilerOptions);
             if (result != null) {
+                sortStatements(result);
                 return result;
             }
         }
@@ -238,8 +240,17 @@ public class LibraryManager {
                     libraryPath, libraryIdentifier.getVersion()), libraryIdentifier.getSystem(),
                     libraryIdentifier.getId(), libraryIdentifier.getVersion());
         } else {
+            sortStatements(result);
             return result;
         }
+    }
+
+    private void sortStatements(CompiledLibrary compiledLibrary) {
+        if (compiledLibrary == null || compiledLibrary.getLibrary().getStatements() == null) {
+            return;
+        }
+
+        compiledLibrary.getLibrary().getStatements().getDef().sort((a, b) -> a.getName().compareTo(b.getName()));
     }
 
     private CompiledLibrary tryCompiledLibraryElm(VersionedIdentifier libraryIdentifier, CqlCompilerOptions options) {
