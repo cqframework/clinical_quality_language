@@ -59,7 +59,7 @@ public class ToDateTimeEvaluator {
         }
 
         if (operand instanceof Date) {
-            return new DateTime(TemporalHelper.zoneToOffset(state.getEvaluationOffsetDateTime().getOffset()),
+            return new DateTime(TemporalHelper.zoneToOffset(state.getEvaluationZonedDateTime().getOffset()),
                     ((Date) operand).getDate().getYear(),
                     ((Date) operand).getDate().getMonthValue(),
                     ((Date) operand).getDate().getDayOfMonth(),
