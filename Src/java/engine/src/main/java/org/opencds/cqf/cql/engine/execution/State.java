@@ -23,6 +23,7 @@ public class State {
     }
 
     private final Cache cache = new Cache();
+
     private final Environment environment;
 
     private Stack<String> currentContext = new Stack<>();

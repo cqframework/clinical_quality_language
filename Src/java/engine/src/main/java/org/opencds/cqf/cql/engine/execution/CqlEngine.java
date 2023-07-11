@@ -29,40 +29,30 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
 
     private Environment environment;
     private State state;
-    private Cache cache;
     private Set<Options> engineOptions;
 
 
     public CqlEngine(Environment environment) {
-        this(environment, null, null);
+        this(environment, null);
     }
 
     public CqlEngine(Environment environment, Set<Options> engineOptions) {
-        this(environment, null,  engineOptions);
-
-    }
-
-    public CqlEngine(Environment environment, Cache cache, Set<Options> engineOptions) {
-
         if (environment.getLibraryManager() == null) {
             throw new IllegalArgumentException("Environment LibraryManager can not be null.");
-        }
-
-        if (engineOptions == null) {
-            engineOptions = EnumSet.of(CqlEngine.Options.EnableExpressionCaching);
         }
 
         this.environment = environment;
         this.state = new State(environment);
 
-        if (cache != null) {
-            this.cache = cache;
-        } else {
-            this.cache = new Cache();
+        if (engineOptions == null) {
+            this.engineOptions = EnumSet.of(CqlEngine.Options.EnableExpressionCaching);
+        }
+        else {
+            this.engineOptions = engineOptions;
         }
 
-        if (engineOptions != null) {
-            this.engineOptions = engineOptions;
+        if (this.engineOptions.contains(CqlEngine.Options.EnableExpressionCaching)) {
+            this.getCache().setExpressionCaching(true);
         }
     }
 
@@ -75,7 +65,7 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
     }
 
     public Cache getCache() {
-        return cache;
+        return this.state.getCache();
     }
 
     // TODO: Add debugging info as a parameter.
@@ -173,11 +163,6 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
         }
 
         this.state.init(library);
-
-        if (this.engineOptions.contains(Options.EnableExpressionCaching)) {
-            this.cache.setExpressionCaching(true);
-        }
-
         this.state.setDebugMap(debugMap);
     }
 
