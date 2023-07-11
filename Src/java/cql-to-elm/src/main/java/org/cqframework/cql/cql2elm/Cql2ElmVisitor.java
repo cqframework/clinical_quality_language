@@ -576,25 +576,32 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         else {
             String chunkContent = tokenStream.getText(chunk.getInterval());
             if (chunk.isHeaderChunk()) {
-                chunkContent = chunkContent.trim();
+                chunkContent = stripLeading(chunkContent);
             }
             chunkContent = normalizeWhitespace(chunkContent);
-            chunkContent = makeSeparationBetweenCommentAndDefinition(chunkContent);
             narrative.getContent().add(chunkContent);
         }
 
         return narrative;
     }
 
-    private String normalizeWhitespace(String input) {
-        return input.replace("\r\n", "\n");
+    // TODO: Should just use String.stripLeading() but that is only available in 11+
+    private String stripLeading(String s) {
+        int index = 0;
+        while (index < s.length()) {
+            if (!Character.isWhitespace(s.charAt(index))) {
+                break;
+            }
+            index++;
+        }
+        if (index == s.length()) {
+            return "";
+        }
+        return s.substring(index);
     }
 
-    private String makeSeparationBetweenCommentAndDefinition(String input) {
-        if(StringUtils.startsWith(input, "//") || StringUtils.endsWith(input, "*/")) {
-            return input + "\n";
-        }
-        return input;
+    private String normalizeWhitespace(String input) {
+        return input.replace("\r\n", "\n");
     }
 
     private boolean hasChunks(Narrative narrative) {

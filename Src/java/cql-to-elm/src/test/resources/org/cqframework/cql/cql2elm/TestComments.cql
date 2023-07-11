@@ -49,3 +49,11 @@ to ensure overlapping intervals do not contribute multiple times to the result#
 define function CumulativeDuration(Intervals List<Interval<DateTime>>):
   Sum((collapse Intervals) X return all duration in days of X)
 
+/* Multi-line works fine */
+// Single-line comment does not work
+define "boolIpp":
+  exists ["Encounter"] E where E.period.start during MeasurementPeriod
+
+// Unmixed single-line comment works
+define "singleLineCommentTest":
+  exists ["Encounter"] E where E.period.start during "MeasurementPeriod"
