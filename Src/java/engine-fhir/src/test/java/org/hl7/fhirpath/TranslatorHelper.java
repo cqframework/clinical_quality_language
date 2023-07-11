@@ -25,6 +25,7 @@ public class TranslatorHelper {
         var options = CqlCompilerOptions.defaultOptions();
         options.getOptions().remove(Options.DisableListDemotion);
         options.getOptions().remove(Options.DisableListPromotion);
+        options.getOptions().add(Options.EnableDateRangeOptimization);
         return getLibraryManager(options);
     }
 

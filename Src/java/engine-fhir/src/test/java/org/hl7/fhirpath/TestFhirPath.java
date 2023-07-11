@@ -143,6 +143,7 @@ public abstract class TestFhirPath {
 
         Library library = null;
         var env = TranslatorHelper.getEnvironment();
+        env.getLibraryManager().getCompiledLibraries().clear();
         // If the test expression is invalid, expect an error during translation and
         // fail if we don't get one
         InvalidType invalidType = test.getExpression().getInvalid();
@@ -175,6 +176,7 @@ public abstract class TestFhirPath {
             }
 
             CqlEngine engineVisitor = TranslatorHelper.getEngine(env);
+            engineVisitor.getCache().setExpressionCaching(false);
             engineVisitor.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", provider);
             if (resource != null) {
                 engineVisitor.getState().setParameter(null, resource.fhirType(), resource);

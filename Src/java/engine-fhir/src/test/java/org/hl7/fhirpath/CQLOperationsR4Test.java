@@ -346,6 +346,7 @@ public class CQLOperationsR4Test extends TestFhirPath implements ITest {
 
     @Test
     public void test() throws UcumException {
+
         if (SKIP.contains(getTestName())) {
             throw new SkipException("Skipping " + getTestName());
         }

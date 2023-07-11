@@ -13,15 +13,14 @@ public class ParameterRefEvaluator {
             var name = parameterRef.getName();
             String fullName = parameterRef.getLibraryName() != null ? String.format("%s.%s", state.getCurrentLibrary().getIdentifier().getId(), name) : name;
 
-            // TODO: Parameter cache
-            // if (parameters.containsKey(fullName)) {
-            //     return parameters.get(fullName);
-            // }
+            if (state.getParameters().containsKey(fullName)) {
+                return state.getParameters().get(fullName);
+            }
 
             ParameterDef parameterDef = Libraries.resolveParameterRef(name, state.getCurrentLibrary());
             Object result = parameterDef.getDefault() != null ? visitor.visitExpression(parameterDef.getDefault(), state) : null;
 
-            // parameters.put(fullName, result);
+            state.getParameters().put(fullName, result);
             return result;
         }
         finally {
