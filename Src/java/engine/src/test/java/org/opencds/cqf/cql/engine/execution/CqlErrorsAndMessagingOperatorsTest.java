@@ -84,10 +84,9 @@ public class CqlErrorsAndMessagingOperatorsTest extends CqlTestBase {
     public void TestObfuscation() {
         Map<String, DataProvider> dataProviders = new HashMap<>();
         dataProviders.put("urn:hl7-org:elm-types:r1", new CustomSystemDataProvider());
-        Environment environment = new Environment(getLibraryManager());
-        environment.setDataProviders(dataProviders);
+        Environment environment = new Environment(getLibraryManager(), dataProviders, null);
 
-        CqlEngine visitor = new CqlEngine(environment, null, null, null, createOptionsMin());
+        CqlEngine visitor = new CqlEngine(environment);
 
 
         try {

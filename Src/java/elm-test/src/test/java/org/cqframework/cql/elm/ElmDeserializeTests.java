@@ -8,8 +8,8 @@ import java.util.EnumSet;
 import javax.xml.bind.JAXBException;
 
 import org.cqframework.cql.cql2elm.CqlTranslator;
-import org.cqframework.cql.cql2elm.CqlTranslatorOptions;
-import org.cqframework.cql.cql2elm.TranslatorOptionsUtil;
+import org.cqframework.cql.cql2elm.CqlCompilerOptions;
+import org.cqframework.cql.cql2elm.CompilerOptions;
 import org.hl7.elm.r1.*;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -33,17 +33,17 @@ public class ElmDeserializeTests {
             Library library = new org.cqframework.cql.elm.serializing.jaxb.ElmJsonLibraryReader().read(new InputStreamReader(ElmDeserializeTests.class.getResourceAsStream("ElmDeserialize/ANCFHIRDummy.json")));
             Assert.assertTrue(library != null);
 
-            EnumSet<CqlTranslatorOptions.Options> translatorOptions = EnumSet.of(
-                    CqlTranslatorOptions.Options.EnableDateRangeOptimization,
-                    CqlTranslatorOptions.Options.EnableAnnotations,
-                    CqlTranslatorOptions.Options.EnableLocators,
-                    CqlTranslatorOptions.Options.EnableResultTypes,
-                    CqlTranslatorOptions.Options.DisableListDemotion,
-                    CqlTranslatorOptions.Options.DisableListPromotion,
-                    CqlTranslatorOptions.Options.DisableMethodInvocation
+            EnumSet<CqlCompilerOptions.Options> translatorOptions = EnumSet.of(
+                    CqlCompilerOptions.Options.EnableDateRangeOptimization,
+                    CqlCompilerOptions.Options.EnableAnnotations,
+                    CqlCompilerOptions.Options.EnableLocators,
+                    CqlCompilerOptions.Options.EnableResultTypes,
+                    CqlCompilerOptions.Options.DisableListDemotion,
+                    CqlCompilerOptions.Options.DisableListPromotion,
+                    CqlCompilerOptions.Options.DisableMethodInvocation
             );
 
-            Assert.assertEquals(TranslatorOptionsUtil.getTranslatorOptions(library), translatorOptions);
+            Assert.assertEquals(CompilerOptions.getCompilerOptions(library), translatorOptions);
 
             Assert.assertTrue(library.getStatements() != null);
             Assert.assertTrue(library.getStatements().getDef() != null);
@@ -64,10 +64,10 @@ public class ElmDeserializeTests {
             Library library = new org.cqframework.cql.elm.serializing.jaxb.ElmJsonLibraryReader().read(new InputStreamReader(ElmDeserializeTests.class.getResourceAsStream("ElmDeserialize/fhir/AdultOutpatientEncounters_FHIR4-2.0.000.json")));
             Assert.assertTrue(library != null);
 
-            EnumSet<CqlTranslatorOptions.Options> translatorOptions = EnumSet.of(
-                    CqlTranslatorOptions.Options.EnableAnnotations
+            EnumSet<CqlCompilerOptions.Options> translatorOptions = EnumSet.of(
+                    CqlCompilerOptions.Options.EnableAnnotations
             );
-            Assert.assertEquals(TranslatorOptionsUtil.getTranslatorOptions(library), translatorOptions);
+            Assert.assertEquals(CompilerOptions.getCompilerOptions(library), translatorOptions);
             Assert.assertEquals(library.getIdentifier().getId(), "AdultOutpatientEncounters_FHIR4");
             Assert.assertEquals(library.getIdentifier().getVersion(), "2.0.000");
             Assert.assertTrue(library.getUsings() != null);
@@ -94,16 +94,16 @@ public class ElmDeserializeTests {
             Assert.assertEquals(library.getIdentifier().getId(), "AdultOutpatientEncounters_FHIR4");
             Assert.assertEquals(library.getIdentifier().getVersion(), "2.0.000");
 
-            EnumSet<CqlTranslatorOptions.Options> translatorOptions = EnumSet.of(
-                    CqlTranslatorOptions.Options.EnableDateRangeOptimization,
-                    CqlTranslatorOptions.Options.EnableAnnotations,
-                    CqlTranslatorOptions.Options.EnableLocators,
-                    CqlTranslatorOptions.Options.EnableResultTypes,
-                    CqlTranslatorOptions.Options.DisableListDemotion,
-                    CqlTranslatorOptions.Options.DisableListPromotion,
-                    CqlTranslatorOptions.Options.DisableMethodInvocation
+            EnumSet<CqlCompilerOptions.Options> translatorOptions = EnumSet.of(
+                    CqlCompilerOptions.Options.EnableDateRangeOptimization,
+                    CqlCompilerOptions.Options.EnableAnnotations,
+                    CqlCompilerOptions.Options.EnableLocators,
+                    CqlCompilerOptions.Options.EnableResultTypes,
+                    CqlCompilerOptions.Options.DisableListDemotion,
+                    CqlCompilerOptions.Options.DisableListPromotion,
+                    CqlCompilerOptions.Options.DisableMethodInvocation
             );
-            Assert.assertEquals(TranslatorOptionsUtil.getTranslatorOptions(library), translatorOptions);
+            Assert.assertEquals(CompilerOptions.getCompilerOptions(library), translatorOptions);
 
             Assert.assertTrue(library.getUsings() != null);
             Assert.assertTrue(library.getUsings().getDef() != null);

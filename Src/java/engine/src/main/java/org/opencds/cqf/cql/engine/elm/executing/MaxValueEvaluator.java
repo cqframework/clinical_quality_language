@@ -54,7 +54,7 @@ public class MaxValueEvaluator {
     }
 
     public static Object internalEvaluate(QName typeName, State state) {
-        QName valueType = state.fixupQName(typeName);
+        QName valueType = state.getEnvironment().fixupQName(typeName);
         String type = valueType.getLocalPart();
         return maxValue(type);
     }

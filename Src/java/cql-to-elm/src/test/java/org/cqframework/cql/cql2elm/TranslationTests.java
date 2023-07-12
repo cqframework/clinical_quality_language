@@ -17,7 +17,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class TranslationTests {
@@ -29,7 +28,7 @@ public class TranslationTests {
 
         File propertyTestFile = new File(Cql2ElmVisitorTest.class.getResource("PropertyTest.cql").getFile());
         ModelManager modelManager = new ModelManager();
-        String actualXml = CqlTranslator.fromFile(propertyTestFile, modelManager, new LibraryManager(modelManager)).toXml();
+        String actualXml = CqlTranslator.fromFile(propertyTestFile, new LibraryManager(modelManager)).toXml();
         assertThat(actualXml, is(expectedXml));
     }
 
@@ -37,15 +36,17 @@ public class TranslationTests {
     public void testForPrintElm() throws IOException, JAXBException{
         File propertyTestFile = new File(TranslationTests.class.getResource("LibraryTests/SupplementalDataElements_FHIR4-2.0.0.cql").getFile());
         ModelManager modelManager = new ModelManager();
-        CqlTranslator translator = CqlTranslator.fromFile(propertyTestFile, modelManager, new LibraryManager(modelManager),
-                CqlCompilerException.ErrorSeverity.Info,
-                LibraryBuilder.SignatureLevel.All, CqlTranslatorOptions.Options.EnableDateRangeOptimization,
-                CqlTranslatorOptions.Options.EnableAnnotations,
-                CqlTranslatorOptions.Options.EnableLocators,
-                CqlTranslatorOptions.Options.EnableResultTypes,
-                CqlTranslatorOptions.Options.DisableListDemotion,
-                CqlTranslatorOptions.Options.DisableListPromotion,
-                CqlTranslatorOptions.Options.DisableMethodInvocation);
+
+        var compilerOptions = new CqlCompilerOptions(CqlCompilerException.ErrorSeverity.Info,
+                LibraryBuilder.SignatureLevel.All, CqlCompilerOptions.Options.EnableDateRangeOptimization,
+                CqlCompilerOptions.Options.EnableAnnotations,
+                CqlCompilerOptions.Options.EnableLocators,
+                CqlCompilerOptions.Options.EnableResultTypes,
+                CqlCompilerOptions.Options.DisableListDemotion,
+                CqlCompilerOptions.Options.DisableListPromotion,
+                CqlCompilerOptions.Options.DisableMethodInvocation);
+
+        CqlTranslator translator = CqlTranslator.fromFile(propertyTestFile, new LibraryManager(modelManager, compilerOptions));
         System.out.println(translator.toJson());
     }
 
@@ -54,7 +55,7 @@ public class TranslationTests {
         String expectedXml = "";
         File cqlFile = new File(Cql2ElmVisitorTest.class.getResource("CMS146v2_Test_CQM.cql").getFile());
         ModelManager modelManager = new ModelManager();
-        String actualXml = CqlTranslator.fromFile(cqlFile, modelManager, new LibraryManager(modelManager)).toXml();
+        String actualXml = CqlTranslator.fromFile(cqlFile, new LibraryManager(modelManager)).toXml();
         assertThat(actualXml, is(expectedXml));
     }
 
@@ -75,7 +76,7 @@ public class TranslationTests {
 
     @Test
     public void testAnnotationsPresent() throws IOException {
-        CqlTranslator translator = TestUtils.createTranslator("CMS146v2_Test_CQM.cql", CqlTranslatorOptions.Options.EnableAnnotations);
+        CqlTranslator translator = TestUtils.createTranslator("CMS146v2_Test_CQM.cql", CqlCompilerOptions.Options.EnableAnnotations);
         assertEquals(0, translator.getErrors().size());
         List<ExpressionDef> defs = translator.getTranslatedLibrary().getLibrary().getStatements().getDef();
         assertNotNull(defs.get(1).getAnnotation());
@@ -92,7 +93,7 @@ public class TranslationTests {
 
     @Test
     public void testTranslatorOptionsPresent() throws IOException {
-        CqlTranslator translator = TestUtils.createTranslator("CMS146v2_Test_CQM.cql", CqlTranslatorOptions.Options.EnableAnnotations);
+        CqlTranslator translator = TestUtils.createTranslator("CMS146v2_Test_CQM.cql", CqlCompilerOptions.Options.EnableAnnotations);
         assertEquals(0, translator.getErrors().size());
         Library library = translator.getTranslatedLibrary().getLibrary();
         assertNotNull(library.getAnnotation());

@@ -11,7 +11,7 @@ public class CqlConceptTest extends CqlTestBase {
     public void test_all_cql_concept_tests() throws IOException {
 
         Environment environment = new Environment(getLibraryManager());
-        CqlEngine engineVisitor = new CqlEngine(environment, null, null, null, createOptionsMin());
+        CqlEngine engineVisitor = new CqlEngine(environment);
 
         Set<String> set = new HashSet<>();
 

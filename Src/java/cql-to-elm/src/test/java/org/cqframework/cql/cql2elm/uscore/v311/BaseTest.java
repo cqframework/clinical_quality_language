@@ -16,11 +16,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 public class BaseTest {
-    @BeforeClass
-    public void Setup() {
-        // Reset test utils to clear any models loaded by other tests
-        TestUtils.reset();
-    }
+
 
     @Test
     public void testUSCore() throws IOException {

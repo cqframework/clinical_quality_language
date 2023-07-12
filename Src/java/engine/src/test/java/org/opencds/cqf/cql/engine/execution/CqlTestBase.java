@@ -4,8 +4,6 @@ import org.cqframework.cql.cql2elm.*;
 import org.hl7.elm.r1.Library;
 import org.testng.annotations.BeforeMethod;
 
-import java.util.ArrayList;
-
 public class CqlTestBase {
 
     private static ModelManager modelManager;
@@ -20,7 +18,7 @@ public class CqlTestBase {
     private static LibraryManager libraryManager;
     protected static LibraryManager getLibraryManager() {
         if (libraryManager == null) {
-            libraryManager =  new LibraryManager(getModelManager());
+            libraryManager =  new LibraryManager(getModelManager(), createOptionsMin());
             libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
         }
 
@@ -28,16 +26,15 @@ public class CqlTestBase {
     }
 
     public Library getLibrary(org.hl7.elm.r1.VersionedIdentifier libraryId) {
-        ArrayList<CqlCompilerException> errors = new ArrayList<CqlCompilerException>();
-        return environment.getLibraryManager().resolveLibrary(libraryId, createOptionsMin(), errors).getLibrary();
+        return environment.getLibraryManager().resolveLibrary(libraryId).getLibrary();
     }
 
     public Library toLibrary(String text) {
-        return toLibrary(text,getModelManager(), getLibraryManager());
+        return toLibrary(text, getLibraryManager());
     }
 
-    public Library toLibrary(String text, ModelManager modelManager, LibraryManager libraryManager) {
-        CqlTranslator translator = CqlTranslator.fromText(text, modelManager, libraryManager);
+    public Library toLibrary(String text, LibraryManager libraryManager) {
+        CqlTranslator translator = CqlTranslator.fromText(text, libraryManager);
         return translator.toELM();
     }
 
@@ -54,17 +51,17 @@ public class CqlTestBase {
     @BeforeMethod
     protected void beforeEachMethod(){
         environment = new Environment(getLibraryManager());
-        engineVisitor = new CqlEngine(environment, null, null, null, createOptionsMin());
+        engineVisitor = new CqlEngine(environment);
     }
 
-    public static CqlTranslatorOptions createOptionsMin() {
-        CqlTranslatorOptions result = new CqlTranslatorOptions();
-        result.setOptions(CqlTranslatorOptions.Options.EnableDateRangeOptimization,
-                CqlTranslatorOptions.Options.EnableLocators,
-                CqlTranslatorOptions.Options.EnableResultTypes,
-                CqlTranslatorOptions.Options.DisableListDemotion,
-                CqlTranslatorOptions.Options.DisableListPromotion,
-                CqlTranslatorOptions.Options.DisableMethodInvocation);
+    public static CqlCompilerOptions createOptionsMin() {
+        CqlCompilerOptions result = new CqlCompilerOptions();
+        result.setOptions(CqlCompilerOptions.Options.EnableDateRangeOptimization,
+                CqlCompilerOptions.Options.EnableLocators,
+                CqlCompilerOptions.Options.EnableResultTypes,
+                CqlCompilerOptions.Options.DisableListDemotion,
+                CqlCompilerOptions.Options.DisableListPromotion,
+                CqlCompilerOptions.Options.DisableMethodInvocation);
 
         return result;
     }

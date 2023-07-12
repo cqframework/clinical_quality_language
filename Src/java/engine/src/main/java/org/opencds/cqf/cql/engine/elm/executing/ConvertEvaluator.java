@@ -44,9 +44,9 @@ public class ConvertEvaluator {
 
     private static Class<?> resolveType(QName toType, TypeSpecifier typeSpecifier,State state) {
         if (typeSpecifier != null) {
-            return state.resolveType(typeSpecifier);
+            return state.getEnvironment().resolveType(typeSpecifier);
         }
-        return state.resolveType(toType);
+        return state.getEnvironment().resolveType(toType);
     }
 
     private static Object convert(Object operand, Class<?> type) {

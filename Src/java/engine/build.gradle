@@ -1,6 +1,5 @@
 plugins {
     id 'cql.library-conventions'
-    id 'cql.xjc-conventions'
 }
 
 dependencies {
@@ -14,15 +13,4 @@ dependencies {
     testImplementation project(':cql-to-elm')
     testImplementation project(':model-jackson')
     testImplementation project(':elm-jackson')
-}
-
-generateSources {
-    inputs.dir "${projectDir}/src/main/cql-lm/schema/elm"
-
-    doLast {
-        ant.xjc(destdir: xjc.destDir, schema: "${projectDir}/src/main/cql-lm/schema/elm/library.xsd") {
-            arg(line: "${xjc.args} -npa " +
-                "-p org.cqframework.cql.elm.execution")
-        }
-    }
 }

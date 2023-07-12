@@ -1,5 +1,15 @@
 {
     "java.configuration.updateBuildConfiguration": "automatic",
     "java.compile.nullAnalysis.mode": "automatic",
-    "java.jdt.ls.vmargs": "-noverify -Xmx4G -XX:+UseG1GC -XX:+UseStringDeduplication"
+    "java.jdt.ls.vmargs": "-noverify -Xmx4G -XX:+UseG1GC -XX:+UseStringDeduplication",
+    "cSpell.words": [
+        "bools",
+        "datumedge",
+        "fhirpath",
+        "hamcrest",
+        "Inferencing",
+        "qicore",
+        "testng",
+        "trackback"
+    ]
 }

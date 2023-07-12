@@ -12,7 +12,7 @@ public class OptionsTests {
 
     @Test
     public void testTranslatorOptions() throws IOException {
-        CqlTranslatorOptions options = CqlTranslatorOptions.defaultOptions();
+        var options = CqlTranslatorOptions.defaultOptions();
         StringWriter sw = new StringWriter();
         CqlTranslatorOptionsMapper.toWriter(sw, options);
         String result = sw.toString();

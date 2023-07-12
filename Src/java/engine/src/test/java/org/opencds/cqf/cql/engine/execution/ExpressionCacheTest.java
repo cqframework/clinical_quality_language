@@ -32,7 +32,7 @@ public class ExpressionCacheTest extends CqlTestBase {
         Boolean enteredLibrary = engineVisitor.getState().enterLibrary("Common");
         VersionedIdentifier commonId = engineVisitor.getState().getCurrentLibrary().getIdentifier();
 
-        result = engineVisitor.visitExpressionDef(engineVisitor.getState().resolveExpressionRef("Expression"), engineVisitor.getState());
+        result = engineVisitor.visitExpressionDef(Libraries.resolveExpressionRef("Expression", engineVisitor.getState().getCurrentLibrary()), engineVisitor.getState());
         assertNotNull(result);
         assertThat(result, is(3));
 

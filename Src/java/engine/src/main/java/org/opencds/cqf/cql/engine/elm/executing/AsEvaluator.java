@@ -27,14 +27,14 @@ public class AsEvaluator {
 
     private static Class<?> resolveType(As as, State state) {
         if (as.getAsTypeSpecifier() != null) {
-            return state.resolveType(as.getAsTypeSpecifier());
+            return state.getEnvironment().resolveType(as.getAsTypeSpecifier());
         }
 
-        return state.resolveType(as.getAsType());
+        return state.getEnvironment().resolveType(as.getAsType());
     }
 
     public static Object internalEvaluate(Object operand, As as, boolean isStrict, State state) {
         Class<?> clazz = resolveType(as, state);
-        return state.as(operand, clazz, isStrict);
+        return state.getEnvironment().as(operand, clazz, isStrict);
     }
 }

@@ -41,21 +41,17 @@ public class LibraryBuilder implements ModelResolver {
         All
     }
 
-    public LibraryBuilder(ModelManager modelManager, LibraryManager libraryManager, UcumService ucumService) {
-        this(null, modelManager, libraryManager, ucumService);
+    public LibraryBuilder(LibraryManager libraryManager) {
+        this(null, libraryManager);
     }
 
-    public LibraryBuilder(NamespaceInfo namespaceInfo, ModelManager modelManager, LibraryManager libraryManager, UcumService ucumService) {
-        if (modelManager == null) {
-            throw new IllegalArgumentException("modelManager is null");
-        }
-
+    public LibraryBuilder(NamespaceInfo namespaceInfo, LibraryManager libraryManager) {
         if (libraryManager == null) {
             throw new IllegalArgumentException("libraryManager is null");
         }
 
         this.namespaceInfo = namespaceInfo; // Note: allowed to be null, implies global namespace
-        this.modelManager = modelManager;
+        this.modelManager = libraryManager.getModelManager();
         this.libraryManager = libraryManager;
         this.typeBuilder = new TypeBuilder(of, this);
 
@@ -70,8 +66,6 @@ public class LibraryBuilder implements ModelResolver {
 
         compiledLibrary = new CompiledLibrary();
         compiledLibrary.setLibrary(library);
-
-        this.ucumService = ucumService;
     }
 
     // Only exceptions of severity Error
@@ -125,8 +119,7 @@ public class LibraryBuilder implements ModelResolver {
     private final ObjectFactory of = new ObjectFactory();
     private final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
     private boolean listTraversal = true;
-    private UcumService ucumService = null;
-    private CqlTranslatorOptions options;
+    private CqlCompilerOptions options;
     private CqlToElmInfo cqlToElmInfo = null;
     private TypeBuilder typeBuilder = null;
     private Cql2ElmVisitor visitor = null;
@@ -135,25 +128,25 @@ public class LibraryBuilder implements ModelResolver {
         listTraversal = true;
     }
 
-    public void setTranslatorOptions(CqlTranslatorOptions options) {
+    public void setCompilerOptions(CqlCompilerOptions options) {
         if (options == null) {
             throw new IllegalArgumentException("Options cannot be null");
         }
 
         this.options = options;
-        if (options.getOptions().contains(CqlTranslatorOptions.Options.DisableListTraversal)) {
+        if (options.getOptions().contains(CqlCompilerOptions.Options.DisableListTraversal)) {
             this.listTraversal = false;
         }
-        if (options.getOptions().contains(CqlTranslatorOptions.Options.DisableListDemotion)) {
+        if (options.getOptions().contains(CqlCompilerOptions.Options.DisableListDemotion)) {
             this.getConversionMap().disableListDemotion();
         }
-        if (options.getOptions().contains(CqlTranslatorOptions.Options.DisableListPromotion)) {
+        if (options.getOptions().contains(CqlCompilerOptions.Options.DisableListPromotion)) {
             this.getConversionMap().disableListPromotion();
         }
-        if (options.getOptions().contains(CqlTranslatorOptions.Options.EnableIntervalDemotion)) {
+        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableIntervalDemotion)) {
             this.getConversionMap().enableIntervalDemotion();
         }
-        if (options.getOptions().contains(CqlTranslatorOptions.Options.EnableIntervalPromotion)) {
+        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableIntervalPromotion)) {
             this.getConversionMap().enableIntervalPromotion();
         }
         setCompatibilityLevel(options.getCompatibilityLevel());
@@ -598,8 +591,8 @@ public class LibraryBuilder implements ModelResolver {
                 err.setEndChar(e.getLocator().getEndChar());
             }
 
-            if (e.getCause() != null && e.getCause() instanceof CqlTranslatorIncludeException) {
-                CqlTranslatorIncludeException incEx = (CqlTranslatorIncludeException) e.getCause();
+            if (e.getCause() != null && e.getCause() instanceof CqlIncludeException) {
+                CqlIncludeException incEx = (CqlIncludeException) e.getCause();
                 err.setTargetIncludeLibrarySystem(incEx.getLibrarySystem());
                 err.setTargetIncludeLibraryId(incEx.getLibraryId());
                 err.setTargetIncludeLibraryVersionId(incEx.getVersionId());
@@ -626,7 +619,7 @@ public class LibraryBuilder implements ModelResolver {
     public void beginTranslation() {
         loadSystemLibrary();
 
-        libraryManager.beginCompilation(getLibraryName());
+        // libraryManager.beginCompilation(getLibraryName());
     }
 
     public VersionedIdentifier getLibraryIdentifier() {
@@ -640,7 +633,7 @@ public class LibraryBuilder implements ModelResolver {
 
     public void endTranslation() {
         applyTargetModelMaps();
-        libraryManager.endCompilation(getLibraryName());
+        // libraryManager.endCompilation(getLibraryName());
     }
 
     public boolean canResolveLibrary(IncludeDef includeDef) {
@@ -669,7 +662,7 @@ public class LibraryBuilder implements ModelResolver {
                 .withVersion(includeDef.getVersion());
 
         ArrayList<CqlCompilerException> errors = new ArrayList<CqlCompilerException>();
-        CompiledLibrary referencedLibrary = libraryManager.resolveLibrary(libraryIdentifier, this.options, errors);
+        CompiledLibrary referencedLibrary = libraryManager.resolveLibrary(libraryIdentifier, errors);
         for (CqlCompilerException error : errors) {
             this.recordParsingException(error);
         }
@@ -1906,7 +1899,8 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     private void validateUcumUnit(String unit) {
-        if (ucumService != null) {
+        if (libraryManager.getUcumService() != null) {
+            var ucumService = libraryManager.getUcumService();
             String message = ucumService.validate(unit);
             if (message != null) {
                 // ERROR:

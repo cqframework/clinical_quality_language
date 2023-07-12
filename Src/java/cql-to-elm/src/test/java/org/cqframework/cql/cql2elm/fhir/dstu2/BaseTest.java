@@ -1,6 +1,6 @@
 package org.cqframework.cql.cql2elm.fhir.dstu2;
 
-import org.cqframework.cql.cql2elm.CqlTranslatorOptions;
+import org.cqframework.cql.cql2elm.CqlCompilerOptions;
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.hl7.cql.model.NamespaceInfo;
 import org.cqframework.cql.cql2elm.TestUtils;
@@ -13,19 +13,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.cqframework.cql.cql2elm.TestUtils.visitFile;
 import static org.cqframework.cql.cql2elm.TestUtils.visitFileLibrary;
-import static org.cqframework.cql.cql2elm.matchers.QuickDataType.quickDataType;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 public class BaseTest {
-    @BeforeClass
-    public void Setup() {
-        // Reset test utils to clear any models loaded by other tests
-        TestUtils.reset();
-    }
-
     @Test
     public void testEqualityWithConversions() throws IOException {
         CompiledLibrary library = visitFileLibrary("fhir/dstu2/EqualityWithConversions.cql");
@@ -59,7 +51,7 @@ public class BaseTest {
 
     @Test
     public void testChoiceDateRangeOptimization() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("fhir/dstu2/TestChoiceDateRangeOptimization.cql", 0, CqlTranslatorOptions.Options.EnableDateRangeOptimization);
+        CqlTranslator translator = TestUtils.runSemanticTest("fhir/dstu2/TestChoiceDateRangeOptimization.cql", 0, CqlCompilerOptions.Options.EnableDateRangeOptimization);
         Library library = translator.toELM();
         Map<String, ExpressionDef> defs = new HashMap<>();
 

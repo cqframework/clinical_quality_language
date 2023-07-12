@@ -1,7 +1,7 @@
 package org.cqframework.cql.elm.requirements.fhir;
 
 import ca.uhn.fhir.context.FhirVersionEnum;
-import org.cqframework.cql.cql2elm.CqlTranslatorOptions;
+import org.cqframework.cql.cql2elm.CqlCompilerOptions;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.elm.evaluation.ElmAnalysisHelper;
 import org.cqframework.cql.elm.evaluation.ElmEvaluationHelper;
@@ -46,19 +46,19 @@ public class DataRequirementsProcessor {
     }
 
     public Library gatherDataRequirements(LibraryManager libraryManager, CompiledLibrary translatedLibrary,
-                                          CqlTranslatorOptions options, Set<String> expressions,
+                                          CqlCompilerOptions options, Set<String> expressions,
                                           boolean includeLogicDefinitions) {
         return gatherDataRequirements(libraryManager, translatedLibrary, options, expressions, includeLogicDefinitions, true);
     }
 
     public Library gatherDataRequirements(LibraryManager libraryManager, CompiledLibrary translatedLibrary,
-                                          CqlTranslatorOptions options, Set<String> expressions,
+                                          CqlCompilerOptions options, Set<String> expressions,
                                           boolean includeLogicDefinitions, boolean recursive) {
         return gatherDataRequirements(libraryManager, translatedLibrary, options, expressions, null, null, includeLogicDefinitions, recursive);
     }
 
     public Library gatherDataRequirements(LibraryManager libraryManager, CompiledLibrary translatedLibrary,
-                                          CqlTranslatorOptions options, Set<String> expressions,
+                                          CqlCompilerOptions options, Set<String> expressions,
                                           Map<String, Object> parameters,
                                           boolean includeLogicDefinitions, boolean recursive) {
         return gatherDataRequirements(libraryManager, translatedLibrary, options, expressions, parameters, null, includeLogicDefinitions, recursive);
@@ -82,7 +82,7 @@ public class DataRequirementsProcessor {
      * @return
      */
     public Library gatherDataRequirements(LibraryManager libraryManager, CompiledLibrary translatedLibrary,
-                                          CqlTranslatorOptions options, Set<String> expressions,
+                                          CqlCompilerOptions options, Set<String> expressions,
                                           Map<String, Object> parameters, ZonedDateTime evaluationDateTime,
                                           boolean includeLogicDefinitions, boolean recursive) {
         if (libraryManager == null) {

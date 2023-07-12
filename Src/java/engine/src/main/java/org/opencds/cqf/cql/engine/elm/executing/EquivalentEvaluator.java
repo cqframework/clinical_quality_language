@@ -94,7 +94,7 @@ public class EquivalentEvaluator {
         }
 
         if (state != null) {
-            return state.objectEquivalent(left, right);
+            return state.getEnvironment().objectEquivalent(left, right);
         }
 
         throw new InvalidOperatorArgument(String.format("Equivalent(%s, %s) requires Context and context was null", left.getClass().getName(), right.getClass().getName()));

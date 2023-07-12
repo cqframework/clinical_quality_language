@@ -25,8 +25,8 @@ public class SortingTest {
     @BeforeTest
     public void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
-        CqlTranslator translator = CqlTranslator.fromStream(QueryTest.class.getResourceAsStream("../OperatorTests/Sorting.cql"), modelManager, new LibraryManager(modelManager));
-        
+        CqlTranslator translator = CqlTranslator.fromStream(QueryTest.class.getResourceAsStream("../OperatorTests/Sorting.cql"), new LibraryManager(modelManager));
+
         // The alias test creates an error
         assertThat(translator.getErrors().size(), is(1));
 

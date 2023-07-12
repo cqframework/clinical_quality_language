@@ -22,12 +22,6 @@ public class TestLibrarySourceProvider implements LibrarySourceProvider {
     }
 
     @Override
-    public boolean isLibraryContentAvailable(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
-        return TestLibrarySourceProvider.class.getResource(getFileName(libraryIdentifier, type)) != null;
-    }
-
-
-    @Override
     public InputStream getLibraryContent(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
         return TestLibrarySourceProvider.class.getResourceAsStream(getFileName(libraryIdentifier, type));
     }

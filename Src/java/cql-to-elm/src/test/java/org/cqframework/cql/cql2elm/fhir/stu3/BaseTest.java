@@ -1,11 +1,10 @@
 package org.cqframework.cql.cql2elm.fhir.stu3;
 
-import org.cqframework.cql.cql2elm.CqlTranslatorOptions;
+import org.cqframework.cql.cql2elm.CqlCompilerOptions;
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.TestUtils;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -13,21 +12,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.cqframework.cql.cql2elm.TestUtils.*;
-import static org.cqframework.cql.cql2elm.matchers.LiteralFor.literalFor;
-import static org.cqframework.cql.cql2elm.matchers.QdmDataType.qdmDataType;
 import static org.cqframework.cql.cql2elm.matchers.QuickDataType.quickDataType;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
 
 public class BaseTest {
-    @BeforeClass
-    public void Setup() {
-        // Reset test utils to clear any models loaded by other tests
-        TestUtils.reset();
-    }
-
     @Test
     public void testChoiceWithAlternativeConversion() throws IOException {
         ExpressionDef def = (ExpressionDef) visitFile("fhir/stu3/TestChoiceTypes.cql");
@@ -126,7 +115,7 @@ public class BaseTest {
 
     @Test
     public void testChoiceDateRangeOptimization() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("fhir/stu3/TestChoiceDateRangeOptimization.cql", 0, CqlTranslatorOptions.Options.EnableDateRangeOptimization);
+        CqlTranslator translator = TestUtils.runSemanticTest("fhir/stu3/TestChoiceDateRangeOptimization.cql", 0, CqlCompilerOptions.Options.EnableDateRangeOptimization);
         Library library = translator.toELM();
         Map<String, ExpressionDef> defs = new HashMap<>();
 

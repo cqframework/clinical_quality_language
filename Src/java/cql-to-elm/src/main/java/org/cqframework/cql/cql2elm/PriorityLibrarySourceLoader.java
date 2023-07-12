@@ -88,19 +88,6 @@ public class PriorityLibrarySourceLoader implements LibrarySourceLoader, Namespa
         return null;
     }
 
-    @Override
-    public boolean isLibraryContentAvailable(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
-        validateInput(libraryIdentifier, type);
-
-        for (LibrarySourceProvider provider : getProviders()) {
-            if (provider.isLibraryContentAvailable(libraryIdentifier, type)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     private NamespaceManager namespaceManager;
 
     @Override

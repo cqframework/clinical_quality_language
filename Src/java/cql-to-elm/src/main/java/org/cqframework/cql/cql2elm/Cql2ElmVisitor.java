@@ -149,26 +149,26 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         fromKeywordRequired = false;
     }
 
-    public void setTranslatorOptions(CqlTranslatorOptions options) {
-        if (options.getOptions().contains(CqlTranslatorOptions.Options.EnableDateRangeOptimization)) {
+    public void setTranslatorOptions(CqlCompilerOptions options) {
+        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableDateRangeOptimization)) {
             this.enableDateRangeOptimization();
         }
-        if (options.getOptions().contains(CqlTranslatorOptions.Options.EnableAnnotations)) {
+        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableAnnotations)) {
             this.enableAnnotations();
         }
-        if (options.getOptions().contains(CqlTranslatorOptions.Options.EnableLocators)) {
+        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableLocators)) {
             this.enableLocators();
         }
-        if (options.getOptions().contains(CqlTranslatorOptions.Options.EnableResultTypes)) {
+        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableResultTypes)) {
             this.enableResultTypes();
         }
-        if (options.getOptions().contains(CqlTranslatorOptions.Options.EnableDetailedErrors)) {
+        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableDetailedErrors)) {
             this.enableDetailedErrors();
         }
-        if (options.getOptions().contains(CqlTranslatorOptions.Options.DisableMethodInvocation)) {
+        if (options.getOptions().contains(CqlCompilerOptions.Options.DisableMethodInvocation)) {
             this.disableMethodInvocation();
         }
-        if (options.getOptions().contains(CqlTranslatorOptions.Options.RequireFromKeyword)) {
+        if (options.getOptions().contains(CqlCompilerOptions.Options.RequireFromKeyword)) {
             this.enableFromKeywordRequired();
         }
         libraryBuilder.setCompatibilityLevel(options.getCompatibilityLevel());
@@ -647,7 +647,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             // ERROR:
             try {
                 o = super.visit(tree);
-            } catch (CqlTranslatorIncludeException e) {
+            } catch (CqlIncludeException e) {
                 CqlCompilerException translatorException = new CqlCompilerException(e.getMessage(), getTrackBack(tree), e);
                 if (translatorException.getLocator() == null) {
                     throw translatorException;
@@ -746,7 +746,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         VersionedIdentifier vid = of.createVersionedIdentifier()
                 .withId(identifiers.remove(identifiers.size() - 1))
                 .withVersion(parseString(ctx.versionSpecifier()));
-        if (identifiers.size() > 0) {
+        if (!identifiers.isEmpty()) {
             vid.setSystem(libraryBuilder.resolveNamespaceUri(String.join(".", identifiers), true));
         }
         else if (libraryBuilder.getNamespaceInfo() != null) {
@@ -762,7 +762,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public UsingDef visitUsingDefinition(cqlParser.UsingDefinitionContext ctx) {
         List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
         String unqualifiedIdentifier = identifiers.remove(identifiers.size() - 1);
-        String namespaceName = identifiers.size() > 0 ? String.join(".", identifiers) :
+        String namespaceName = !identifiers.isEmpty() ? String.join(".", identifiers) :
                 libraryBuilder.isWellKnownModelName(unqualifiedIdentifier) ? null :
                         (libraryBuilder.getNamespaceInfo() != null ? libraryBuilder.getNamespaceInfo().getName() : null);
 
@@ -824,7 +824,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public Object visitIncludeDefinition(cqlParser.IncludeDefinitionContext ctx) {
         List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
         String unqualifiedIdentifier = identifiers.remove(identifiers.size() - 1);
-        String namespaceName = identifiers.size() > 0 ? String.join(".", identifiers) :
+        String namespaceName = !identifiers.isEmpty() ? String.join(".", identifiers) :
                 (libraryBuilder.getNamespaceInfo() != null ? libraryBuilder.getNamespaceInfo().getName() : null);
         String path = getLibraryPath(namespaceName, unqualifiedIdentifier);
         IncludeDef library = of.createIncludeDef()

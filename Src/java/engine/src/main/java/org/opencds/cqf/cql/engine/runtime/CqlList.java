@@ -61,8 +61,8 @@ public class CqlList {
 
     public Comparator<Object> columnSort = new Comparator<Object>() {
         public int compare(Object left, Object right) {
-            Object leftCol = state.resolvePath(left, path);
-            Object rightCol = state.resolvePath(right, path);
+            Object leftCol = state.getEnvironment().resolvePath(left, path);
+            Object rightCol = state.getEnvironment().resolvePath(right, path);
 
             return compareTo(leftCol, rightCol);
         }

@@ -4,7 +4,7 @@ plugins {
 }
 
 application {
-    mainClass = 'org.cqframework.cql.cql2elm.cli.CqlTranslator'
+    mainClass = 'org.cqframework.cql.cql2elm.cli.Main'
 }
 
 dependencies {

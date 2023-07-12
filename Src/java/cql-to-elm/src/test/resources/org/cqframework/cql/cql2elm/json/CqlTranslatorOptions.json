@@ -17,13 +17,6 @@
       "enum" : [ "Info", "Warning", "Error" ],
       "type" : "string"
     },
-    "formats" : {
-      "type" : "array",
-      "items" : {
-        "enum" : [ "XML", "JSON", "COFFEE" ],
-        "type" : "string"
-      }
-    },
     "options" : {
       "type" : "array",
       "items" : {

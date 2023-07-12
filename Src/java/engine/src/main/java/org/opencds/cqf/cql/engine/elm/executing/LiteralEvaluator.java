@@ -3,16 +3,13 @@ package org.opencds.cqf.cql.engine.elm.executing;
 import org.opencds.cqf.cql.engine.exception.CqlException;
 import org.opencds.cqf.cql.engine.exception.InvalidLiteral;
 import org.opencds.cqf.cql.engine.execution.State;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.xml.namespace.QName;
 import java.math.BigDecimal;
 
 public class LiteralEvaluator {
-    private static Logger logger = LoggerFactory.getLogger(LiteralEvaluator.class);
     public static Object internalEvaluate(QName valueT, String value, State state) {
-        QName valueType = state.fixupQName(valueT);
+        QName valueType = state.getEnvironment().fixupQName(valueT);
         switch (valueType.getLocalPart()) {
             case "Boolean": return Boolean.parseBoolean(value);
             case "Integer":

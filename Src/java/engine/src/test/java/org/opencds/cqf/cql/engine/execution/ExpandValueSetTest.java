@@ -41,7 +41,7 @@ public class ExpandValueSetTest {
 
         Environment environment = new Environment(libraryManager, null, terminologyProvider);
 
-        CqlEngine engineVisitor = new CqlEngine(environment, null, null, null, CqlTestBase.createOptionsMin());
+        CqlEngine engineVisitor = new CqlEngine(environment);
 
 
 

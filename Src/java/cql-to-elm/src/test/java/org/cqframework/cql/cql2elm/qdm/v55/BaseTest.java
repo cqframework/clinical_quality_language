@@ -3,7 +3,6 @@ package org.cqframework.cql.cql2elm.qdm.v55;
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.TestUtils;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -15,12 +14,6 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
 public class BaseTest {
-    @BeforeClass
-    public void Setup() {
-        // Reset test utils to clear any models loaded by other tests
-        TestUtils.reset();
-    }
-
     @Test
     public void testChoiceTypes() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("qdm/v55/TestChoiceTypes.cql", 0);

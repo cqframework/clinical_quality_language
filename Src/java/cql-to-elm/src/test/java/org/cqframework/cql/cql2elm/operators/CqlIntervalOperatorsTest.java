@@ -29,7 +29,7 @@ public class CqlIntervalOperatorsTest {
     @BeforeTest
     public void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
-        CqlTranslator translator = CqlTranslator.fromStream(CqlIntervalOperatorsTest.class.getResourceAsStream("../OperatorTests/CqlIntervalOperators.cql"), modelManager, new LibraryManager(modelManager));
+        CqlTranslator translator = CqlTranslator.fromStream(CqlIntervalOperatorsTest.class.getResourceAsStream("../OperatorTests/CqlIntervalOperators.cql"), new LibraryManager(modelManager));
         assertThat(translator.getErrors().size(), is(0));
         Library library = translator.toELM();
         defs = new HashMap<>();

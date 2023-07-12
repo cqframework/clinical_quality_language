@@ -9,7 +9,6 @@ import java.util.Set;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.ListResource;
 import org.hl7.fhir.dstu3.model.Patient;
-import org.hl7.fhirpath.TranslatorHelper;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.EvaluationResult;
@@ -79,9 +78,9 @@ public class TestFhirDataProviderDstu3 extends FhirExecutionTestBase {
 
     // @Test
     public void testChoiceTypes() {
-        CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
-        engineVisitor.getState().registerDataProvider("http://hl7.org/fhir", r4Provider);
-        EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
+        CqlEngine engineVisitor = getEngine();
+        engineVisitor.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);
+        EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(),
                 Set.of("testChoiceTypes"), null, null, null, null);
 
         Object result = evaluationResult.expressionResults.get("testChoiceTypes").value();
@@ -90,10 +89,10 @@ public class TestFhirDataProviderDstu3 extends FhirExecutionTestBase {
 
     // @Test
     public void testDateType() {
-        CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
-        engineVisitor.getState().registerDataProvider("http://hl7.org/fhir", r4Provider);
+        CqlEngine engineVisitor = getEngine();
+        engineVisitor.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);
         engineVisitor.getState().setContextValue("Patient", "Patient-12214");
-        EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
+        EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(),
                 Set.of("testDateType"), null, null, null, null);
 
         Object result = evaluationResult.expressionResults.get("testDateType").value();
@@ -101,22 +100,20 @@ public class TestFhirDataProviderDstu3 extends FhirExecutionTestBase {
     }
 
     @Test
-    public void testFhirObjectEqual()
-    {
-        CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
-        engineVisitor.getState().registerDataProvider("http://hl7.org/fhir", r4Provider);
-        EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
+    public void testFhirObjectEqual() {
+        CqlEngine engineVisitor = getEngine();
+        engineVisitor.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);
+        EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(),
                 Set.of("testFhirObjectEqual"), null, null, null, null);
         Object result = evaluationResult.expressionResults.get("testFhirObjectEqual").value();
         Assert.assertTrue((Boolean) result);
     }
 
     @Test
-    public void testFhirObjectEquivalent()
-    {
-        CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
-        engineVisitor.getState().registerDataProvider("http://hl7.org/fhir", r4Provider);
-        EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
+    public void testFhirObjectEquivalent() {
+        CqlEngine engineVisitor = getEngine();
+        engineVisitor.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);
+        EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(),
                 Set.of("testFhirObjectEquivalent"), null, null, null, null);
         Object result = evaluationResult.expressionResults.get("testFhirObjectEquivalent").value();
         Assert.assertTrue((Boolean) result);
@@ -240,12 +237,12 @@ public class TestFhirDataProviderDstu3 extends FhirExecutionTestBase {
 
 		dstu3RetrieveProvider.setTerminologyProvider(new Dstu3FhirTerminologyProvider(fhirClient));
         //dstu3Provider.setTerminologyProvider(new FhirTerminologyProvider().setEndpoint("http://measure.eval.kanvix.com/cqf-ruler/baseDstu3", false));
-        CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
-        engineVisitor.getState().registerDataProvider("http://hl7.org/fhir", dstu3Provider);
+        CqlEngine engineVisitor = getEngine();
+        engineVisitor.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", dstu3Provider);
         engineVisitor.getState().enterContext("Patient");
         engineVisitor.getState().setContextValue("Patient", "81ee6581-02b9-44de-b026-7401bf36643a");
 
-        EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(), getLibraryMap(),
+        EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(),
                 Set.of("GetProvenance"), null, null, null, null);
         Object result = evaluationResult.expressionResults.get("GetProvenance").value();
         Assert.assertTrue(result instanceof List && ((List<?>) result).size() == 1);

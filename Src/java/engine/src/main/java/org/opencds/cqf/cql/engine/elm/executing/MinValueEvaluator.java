@@ -55,7 +55,7 @@ public class MinValueEvaluator {
 
 
     public static Object internalEvaluate(QName vtype, State state) {
-        QName valueType = state.fixupQName(vtype);
+        QName valueType = state.getEnvironment().fixupQName(vtype);
         String type = valueType.getLocalPart();
         return minValue(type);
     }

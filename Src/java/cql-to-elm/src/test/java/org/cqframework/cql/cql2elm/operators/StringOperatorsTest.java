@@ -1,7 +1,10 @@
 package org.cqframework.cql.cql2elm.operators;
 
+import org.cqframework.cql.cql2elm.CqlCompilerOptions;
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.ModelManager;
+import org.cqframework.cql.cql2elm.CqlCompilerException.ErrorSeverity;
+import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
 import org.hl7.elm.r1.*;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -25,7 +28,7 @@ public class StringOperatorsTest {
     @BeforeTest
     public void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
-        CqlTranslator translator = CqlTranslator.fromStream(StringOperatorsTest.class.getResourceAsStream("../OperatorTests/StringOperators.cql"), modelManager, new LibraryManager(modelManager));
+        CqlTranslator translator = CqlTranslator.fromStream(StringOperatorsTest.class.getResourceAsStream("../OperatorTests/StringOperators.cql"), new LibraryManager(modelManager, new CqlCompilerOptions(ErrorSeverity.Warning, SignatureLevel.None)));
         assertThat(translator.getErrors().size(), is(0));
         Library library = translator.toELM();
         defs = new HashMap<>();

@@ -42,7 +42,7 @@ public class PathTests {
     public void testPaths() {
         CqlTranslator translator = null;
         try {
-            translator = CqlTranslator.fromStream(PathTests.class.getResourceAsStream("PathTests.cql"), modelManager, libraryManager);
+            translator = CqlTranslator.fromStream(PathTests.class.getResourceAsStream("PathTests.cql"),  libraryManager);
             Library library = translator.toELM();
             assertThat(translator.getErrors().size(), is(0));
         } catch (IOException e) {

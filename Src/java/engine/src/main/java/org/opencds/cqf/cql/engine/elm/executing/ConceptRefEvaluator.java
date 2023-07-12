@@ -4,6 +4,7 @@ import org.hl7.elm.r1.CodeDef;
 import org.hl7.elm.r1.CodeRef;
 import org.hl7.elm.r1.ConceptDef;
 import org.hl7.elm.r1.ConceptRef;
+import org.opencds.cqf.cql.engine.execution.Libraries;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.Code;
 import org.opencds.cqf.cql.engine.runtime.CodeSystem;
@@ -17,13 +18,13 @@ public class ConceptRefEvaluator {
     public static Concept toConcept(ConceptRef cr, State state) {
         boolean enteredLibrary = state.enterLibrary(cr.getLibraryName());
         try {
-            ConceptDef cd = state.resolveConceptRef(cr.getName());
+            ConceptDef cd = Libraries.resolveConceptRef(cr.getName(), state.getCurrentLibrary());
 
-            List<Code> codeList = new ArrayList<Code>();
+            var codeList = new ArrayList<Code>();
             for (CodeRef r : cd.getCode()) {
-                CodeDef codeDef = state.resolveCodeRef(r.getName());
+                CodeDef codeDef = Libraries.resolveCodeRef(r.getName(), state.getCurrentLibrary());
                 CodeSystem cs = CodeSystemRefEvaluator.toCodeSystem(codeDef.getCodeSystem(), state);
-                Code c = CodeRefEvaluator.toCode(r, cs, state);
+                Code c = CodeRefEvaluator.toCode(codeDef, cs);
                 codeList.add(c);
             }
 

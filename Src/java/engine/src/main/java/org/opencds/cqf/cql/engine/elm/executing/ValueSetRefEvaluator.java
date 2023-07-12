@@ -3,6 +3,7 @@ package org.opencds.cqf.cql.engine.elm.executing;
 import org.hl7.elm.r1.CodeSystemRef;
 import org.hl7.elm.r1.ValueSetDef;
 import org.hl7.elm.r1.ValueSetRef;
+import org.opencds.cqf.cql.engine.execution.Libraries;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.CodeSystem;
 import org.opencds.cqf.cql.engine.runtime.ValueSet;
@@ -14,7 +15,7 @@ public class ValueSetRefEvaluator {
     public static ValueSet toValueSet(State state, ValueSetRef vsr) {
         boolean enteredLibrary = state.enterLibrary(vsr.getLibraryName());
         try {
-            ValueSetDef vsd = state.resolveValueSetRef(vsr.getName());
+            ValueSetDef vsd = Libraries.resolveValueSetRef(vsr.getName(), state.getCurrentLibrary());
             ValueSet vs = new ValueSet().withId(vsd.getId()).withVersion(vsd.getVersion());
             for (CodeSystemRef csr : vsd.getCodeSystem()) {
                 CodeSystem cs = CodeSystemRefEvaluator.toCodeSystem(csr, state);
@@ -34,7 +35,7 @@ public class ValueSetRefEvaluator {
             return vs;
         }
         else {
-            TerminologyProvider tp = state.resolveTerminologyProvider();
+            TerminologyProvider tp = state.getEnvironment().getTerminologyProvider();
             return tp.expand(ValueSetInfo.fromValueSet(vs));
         }
     }

@@ -7,13 +7,14 @@ import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorVisitor;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
-import org.fhir.ucum.UcumService;
 import org.hl7.cql.model.NamespaceAware;
 import org.hl7.cql.model.NamespaceInfo;
 import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.Retrieve;
 import org.hl7.elm.r1.VersionedIdentifier;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -30,48 +31,36 @@ public class CqlCompiler {
     private List<CqlCompilerException> errors = null;
     private List<CqlCompilerException> warnings = null;
     private List<CqlCompilerException> messages = null;
-    private VersionedIdentifier sourceInfo = null;
-    private NamespaceInfo namespaceInfo = null;
-    private ModelManager modelManager = null;
-    private LibraryManager libraryManager = null;
-    private UcumService ucumService = null;
+    private final VersionedIdentifier sourceInfo;
+    private final NamespaceInfo namespaceInfo;
+    private final LibraryManager libraryManager;
 
-    public CqlCompiler(ModelManager modelManager, LibraryManager libraryManager) {
-        this(null, null, modelManager, libraryManager, null);
+    public CqlCompiler(LibraryManager libraryManager) {
+        this(null, null, libraryManager);
     }
 
-    public CqlCompiler(NamespaceInfo namespaceInfo, ModelManager modelManager, LibraryManager libraryManager) {
-        this(namespaceInfo, null, modelManager, libraryManager, null);
+    public CqlCompiler(NamespaceInfo namespaceInfo, LibraryManager libraryManager) {
+        this(namespaceInfo, null, libraryManager);
     }
 
-    public CqlCompiler(NamespaceInfo namespaceInfo, ModelManager modelManager,
-                        LibraryManager libraryManager, UcumService ucumService) {
-        this(namespaceInfo, null, modelManager, libraryManager, ucumService);
-    }
-
-    public CqlCompiler(NamespaceInfo namespaceInfo, VersionedIdentifier sourceInfo, ModelManager modelManager,
-                        LibraryManager libraryManager, UcumService ucumService) {
-        this.sourceInfo = sourceInfo;
+    public CqlCompiler(NamespaceInfo namespaceInfo, VersionedIdentifier sourceInfo,
+                        LibraryManager libraryManager) {
         this.namespaceInfo = namespaceInfo;
-        this.modelManager = modelManager;
         this.libraryManager = libraryManager;
-        this.ucumService = ucumService;
 
-        if (this.sourceInfo == null) {
+        if (sourceInfo == null) {
             this.sourceInfo = new VersionedIdentifier().withId("Anonymous").withSystem("text/cql");
+        }
+        else {
+            this.sourceInfo = sourceInfo;
         }
 
         if (this.namespaceInfo != null) {
-            modelManager.getNamespaceManager().ensureNamespaceRegistered(this.namespaceInfo);
             libraryManager.getNamespaceManager().ensureNamespaceRegistered(this.namespaceInfo);
         }
 
         if (libraryManager.getNamespaceManager().hasNamespaces() && libraryManager.getLibrarySourceLoader() instanceof NamespaceAware) {
             ((NamespaceAware)libraryManager.getLibrarySourceLoader()).setNamespaceManager(libraryManager.getNamespaceManager());
-        }
-
-        if (libraryManager.getUcumService() == null) {
-            libraryManager.setUcumService(this.ucumService);
         }
     }
 
@@ -87,14 +76,14 @@ public class CqlCompiler {
     public List<Retrieve> toRetrieves() {
         return retrieves;
     }
-    public Map<String, CompiledLibrary> getCompiledLibraries() {
+    public Map<VersionedIdentifier, CompiledLibrary> getCompiledLibraries() {
         return libraryManager.getCompiledLibraries();
     }
 
-    public Map<String, Library> getLibraries() {
-        Map<String, Library> result = new HashMap<String, Library>();
-        for (String libraryName : libraryManager.getCompiledLibraries().keySet()) {
-            result.put(libraryName, libraryManager.getCompiledLibraries().get(libraryName).getLibrary());
+    public Map<VersionedIdentifier, Library> getLibraries() {
+        var result = new HashMap<VersionedIdentifier, Library>();
+        for (var id : libraryManager.getCompiledLibraries().keySet()) {
+            result.put(id, libraryManager.getCompiledLibraries().get(id).getLibrary());
         }
         return result;
     }
@@ -159,74 +148,30 @@ public class CqlCompiler {
         }
     }
 
-    public Library run(String cqlText,
-                       CqlTranslatorOptions.Options... options) throws IOException {
-        return run(CharStreams.fromString(cqlText), new CqlTranslatorOptions(options));
+    public Library run(File cqlFile) throws IOException {
+        return run(CharStreams.fromStream(new FileInputStream(cqlFile)));
     }
 
-    public Library run(String cqlText,
-                       CqlCompilerException.ErrorSeverity errorLevel,
-                       CqlTranslatorOptions.Options... options) throws IOException {
-        return run(CharStreams.fromString(cqlText), new CqlTranslatorOptions(errorLevel, options));
+    public Library run(String cqlText) {
+        return run(CharStreams.fromString(cqlText));
     }
 
-    public Library run(String cqlText,
-                       CqlCompilerException.ErrorSeverity errorLevel,
-                       LibraryBuilder.SignatureLevel signatureLevel,
-                       CqlTranslatorOptions.Options... options) throws IOException {
-        return run(CharStreams.fromString(cqlText), new CqlTranslatorOptions(errorLevel, signatureLevel, options));
+
+    public Library run(InputStream is) throws IOException {
+        return run(CharStreams.fromStream(is));
     }
 
-    public Library run(InputStream is,
-                       CqlTranslatorOptions.Options... options) throws IOException {
-        return run(CharStreams.fromStream(is), new CqlTranslatorOptions(options));
-    }
-
-    public Library run(InputStream is,
-                       CqlCompilerException.ErrorSeverity errorLevel,
-                       CqlTranslatorOptions.Options... options) throws IOException {
-        return run(CharStreams.fromStream(is), new CqlTranslatorOptions(errorLevel, options));
-    }
-
-    public Library run(InputStream is,
-                       CqlCompilerException.ErrorSeverity errorLevel,
-                       LibraryBuilder.SignatureLevel signatureLevel,
-                       CqlTranslatorOptions.Options... options) throws IOException {
-        return run(CharStreams.fromStream(is), new CqlTranslatorOptions(errorLevel, signatureLevel, options));
-    }
-
-    public Library run(CharStream is,
-                       CqlTranslatorOptions.Options... options) {
-        return run(is, new CqlTranslatorOptions(options));
-    }
-
-    public Library run(CharStream is,
-                       CqlCompilerException.ErrorSeverity errorLevel,
-                       CqlTranslatorOptions.Options... options) {
-        return run(is, new CqlTranslatorOptions(errorLevel, LibraryBuilder.SignatureLevel.None, options));
-    }
-
-    public Library run(CharStream is,
-                       CqlCompilerException.ErrorSeverity errorLevel,
-                       LibraryBuilder.SignatureLevel signatureLevel,
-                       CqlTranslatorOptions.Options... options) {
-        return run(is, new CqlTranslatorOptions(errorLevel, signatureLevel, options));
-    }
-
-    public Library run(InputStream is, CqlTranslatorOptions options) throws IOException {
-        return run(CharStreams.fromStream(is), options);
-    }
-
-    public Library run(CharStream is, CqlTranslatorOptions options) {
+    public Library run(CharStream is) {
         exceptions = new ArrayList<>();
         errors = new ArrayList<>();
         warnings = new ArrayList<>();
         messages = new ArrayList<>();
-        LibraryBuilder builder = new LibraryBuilder(namespaceInfo, modelManager, libraryManager, ucumService);
-        builder.setTranslatorOptions(options);
+
+        LibraryBuilder builder = new LibraryBuilder(namespaceInfo, libraryManager);
+        builder.setCompilerOptions(libraryManager.getCqlCompilerOptions());
         Cql2ElmVisitor visitor = new Cql2ElmVisitor(builder);
         builder.setVisitor(visitor);
-        visitor.setTranslatorOptions(options);
+        visitor.setTranslatorOptions(libraryManager.getCqlCompilerOptions());
 
         CqlCompiler.CqlErrorListener errorListener = new CqlCompiler.CqlErrorListener(builder, visitor.isDetailedErrorsEnabled());
 

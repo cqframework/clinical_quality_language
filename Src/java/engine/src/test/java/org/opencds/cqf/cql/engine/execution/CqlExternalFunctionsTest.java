@@ -16,7 +16,7 @@ public class CqlExternalFunctionsTest extends CqlTestBase {
     public void testExternalFunctions() {
         VersionedIdentifier identifier = toElmIdentifier("CqlExternalFunctionsTest");
 
-        engineVisitor.getState().registerExternalFunctionProvider(
+        engineVisitor.getState().getEnvironment().registerExternalFunctionProvider(
                 identifier,
                 new SystemExternalFunctionProvider(Arrays.asList(MyMath.class.getDeclaredMethods()))
         );

@@ -14,12 +14,8 @@ import org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterResolver;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
 
 public class FhirHelpersDstu3Test {
-    private TranslatorHelper translator = new TranslatorHelper();
-
     private String getStringFromResourceStream(String resourceName) {
         java.io.InputStream input = TestFhirPath.class.getResourceAsStream(resourceName);
         try (BufferedReader stringReader = new BufferedReader(new InputStreamReader(input))) {
@@ -43,13 +39,12 @@ public class FhirHelpersDstu3Test {
     //@Test
     public void testFhirHelpersStu3() throws UcumException {
         String cql = getStringFromResourceStream("stu3/TestFHIRHelpers.cql");
-        Library library = translator.translate(cql);
+        var env = TranslatorHelper.getEnvironment();
+        Library library = TranslatorHelper.translate(cql, env.getLibraryManager());
 
-        CqlEngine engineVisitor = TranslatorHelper.getEngineVisitor();
+        CqlEngine engineVisitor = TranslatorHelper.getEngine(env);
 
         VersionedIdentifier libraryId = TranslatorHelper.toElmIdentifier("TestFHIRHelpers",  "0.1.0");
-        Map<VersionedIdentifier, Library> map = new HashMap<>();
-        map.put(libraryId, library);
 
         Dstu3FhirModelResolver modelResolver = new Dstu3FhirModelResolver();
         FhirContext fhirContext = modelResolver.getFhirContext();
@@ -58,8 +53,8 @@ public class FhirHelpersDstu3Test {
         CompositeDataProvider provider = new CompositeDataProvider(modelResolver, retrieveProvider);
         // BaseFhirDataProvider provider = new
         // FhirDataProviderStu3().setEndpoint("http://fhirtest.uhn.ca/baseDstu3");
-        engineVisitor.getState().registerDataProvider("http://hl7.org/fhir", provider);
-        EvaluationResult evaluationResult = engineVisitor.evaluate(libraryId, map,
+        engineVisitor.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", provider);
+        EvaluationResult evaluationResult = engineVisitor.evaluate(libraryId,
                 null, null, null, null, null);
 
         // TODO - fix
