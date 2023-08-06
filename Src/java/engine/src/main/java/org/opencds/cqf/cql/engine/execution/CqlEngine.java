@@ -2,6 +2,8 @@ package org.opencds.cqf.cql.engine.execution;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.cqframework.cql.elm.visiting.ElmBaseLibraryVisitor;
+import org.hl7.cql.model.IntervalType;
+import org.hl7.cql.model.ListType;
 import org.hl7.cql.model.NamespaceManager;
 import org.hl7.elm.r1.*;
 import org.hl7.elm.r1.Date;
@@ -430,9 +432,23 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitUnion(Union elm, State state) {
-        Object left = visitExpression(elm.getOperand().get(0), state);
-        Object right = visitExpression(elm.getOperand().get(1), state);
-        return UnionEvaluator.union(left, right, state);
+        var left = elm.getOperand().get(0);
+        var right = elm.getOperand().get(1);
+        Object leftResult = visitExpression(left, state);
+        Object rightResult = visitExpression(right, state);
+
+
+        // This will attempt to use the declared result types from the ELM to determine which type of Union
+        // to perform. If the types are not declared, it will fall back to checking the values of the result.
+        if (left.getResultType() instanceof ListType || right.getResultType() instanceof ListType || elm.getResultType() instanceof ListType) {
+            return UnionEvaluator.unionIterable((Iterable<?>)leftResult, (Iterable<?>)rightResult, state);
+        }
+        else if (left.getResultType() instanceof IntervalType || right.getResultType() instanceof IntervalType || elm.getResultType() instanceof ListType) {
+            return UnionEvaluator.unionInterval((org.opencds.cqf.cql.engine.runtime.Interval)leftResult, (org.opencds.cqf.cql.engine.runtime.Interval)rightResult, state);
+        }
+        else {
+            return UnionEvaluator.union(left, right, state);
+        }
     }
 
     @Override

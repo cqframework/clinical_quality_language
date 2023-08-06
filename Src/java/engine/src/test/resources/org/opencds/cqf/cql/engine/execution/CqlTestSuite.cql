@@ -4579,8 +4579,8 @@ define test_Union_OneToFiveOverlapped: TestMessage(Union_OneToFiveOverlapped = {
 define test_Union_OneToFiveOverlappedWithNulls: TestMessage(Union_OneToFiveOverlappedWithNulls ~ {1,null,2,3,4,5}, 'Union_OneToFiveOverlappedWithNulls', toString({1,null,2,3,4,5}), toString(Union_OneToFiveOverlappedWithNulls))
 define test_Union_Disjoint: TestMessage(Union_Disjoint = {1,2,4,5}, 'Union_Disjoint', toString({1,2,4,5}), toString(Union_Disjoint))
 define test_Union_NestedToFifteen: TestMessage(Union_NestedToFifteen = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15}, 'Union_NestedToFifteen', toString({1,2,3,4,5,6,7,8,9,10,11,12,13,14,15}), toString(Union_NestedToFifteen))
-define test_Union_NullUnion: TestMessage(Union_NullUnion is null, 'Union_NullUnion', 'null', toString(Union_NullUnion))
-define test_Union_UnionNull: TestMessage(Union_UnionNull is null, 'Union_UnionNull', 'null', toString(Union_UnionNull))
+define test_Union_NullUnion: TestMessage(Union_NullUnion = {1,2,3}, 'Union_NullUnion', toString({1,2,3}), toString(Union_NullUnion))
+define test_Union_UnionNull: TestMessage(Union_NullUnion = {1,2,3}, 'Union_UnionNull', toString({1,2,3}), toString(Union_UnionNull))
 
 // Except
 define Except_ExceptThreeFour: {1, 2, 3, 4, 5} except {3, 4}
