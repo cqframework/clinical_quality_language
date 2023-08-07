@@ -26,12 +26,12 @@ public class State {
 
     private final Environment environment;
 
-    private Stack<String> currentContext = new Stack<>();
+    private Deque<String> currentContext = new ArrayDeque<>();
 
-    private Stack<Stack<Variable> > windows = new Stack<>();
-    private Stack<Library> currentLibrary = new Stack<>();
+    private Deque<Deque<Variable> > windows = new ArrayDeque<>();
+    private Deque<Library> currentLibrary = new ArrayDeque<>();
 
-    private Stack<HashSet<Object>> evaluatedResourceStack = new Stack<>();
+    private Deque<HashSet<Object>> evaluatedResourceStack = new ArrayDeque<>();
 
     private Map<String, Object> parameters = new HashMap<>();
     private Map<String, Object> contextValues = new HashMap<>();
@@ -104,11 +104,11 @@ public class State {
         this.contextValues = contextValues;
     }
 
-    public Stack<Stack<Variable>> getWindows() {
+    public Deque<Deque<Variable>> getWindows() {
         return windows;
     }
 
-    public void setWindows(Stack<Stack<Variable>> windows) {
+    public void setWindows(Deque<Deque<Variable>> windows) {
         this.windows = windows;
     }
 
@@ -170,7 +170,7 @@ public class State {
     }
 
     public void pop() {
-        if (!windows.peek().empty())
+        if (!windows.peek().isEmpty())
             getStack().pop();
     }
 
@@ -179,10 +179,10 @@ public class State {
     }
 
     public Variable resolveVariable(String name) {
-        for (int i = windows.size() - 1; i >= 0; i--) {
-            for (int j = 0; j < windows.get(i).size(); j++) {
-                if (windows.get(i).get(j).getName().equals(name)) {
-                    return windows.get(i).get(j);
+        for (var window : windows) {
+            for (var v : window) {
+                if (v.getName().equals(name)) {
+                    return v;
                 }
             }
         }
@@ -200,14 +200,14 @@ public class State {
     }
 
     public void pushWindow() {
-        windows.push(new Stack<>());
+        windows.push(new ArrayDeque<>());
     }
 
     public void popWindow() {
         windows.pop();
     }
 
-    private Stack<Variable> getStack() {
+    private Deque<Variable> getStack() {
         return windows.peek();
     }
 
@@ -225,11 +225,11 @@ public class State {
     }
 
     public String getCurrentContext() {
-        if (currentContext.empty()) {
+        if (currentContext.isEmpty()) {
             return null;
         }
 
-        return currentContext.peek();
+        return currentContext.peekFirst();
     }
 
     public Object getCurrentContextValue() {
@@ -242,7 +242,7 @@ public class State {
     }
 
     public Set<Object> getEvaluatedResources() {
-        if (evaluatedResourceStack.empty()) {
+        if (evaluatedResourceStack.isEmpty()) {
             throw new IllegalStateException("Attempted to get the evaluatedResource stack when it's empty");
         }
 
@@ -260,7 +260,7 @@ public class State {
 
     //serves pop and merge to the down
     public void popEvaluatedResourceStack() {
-        if (evaluatedResourceStack.empty()) {
+        if (evaluatedResourceStack.isEmpty()) {
             throw new IllegalStateException("Attempted to pop the evaluatedResource stack when it's empty");
         }
 
@@ -288,9 +288,9 @@ public class State {
     }
 
     public Object resolveIdentifierRef(String name) {
-        for (int i = windows.size() - 1; i >= 0; i--) {
-            for (int j = 0; j < windows.get(i).size(); j++) {
-                Object value = windows.get(i).get(j).getValue();
+        for (var window : windows) {
+            for (var v : window) {
+                var value = v.getValue();
                 if (value instanceof org.opencds.cqf.cql.engine.runtime.Tuple) {
                     for (String key : ((org.opencds.cqf.cql.engine.runtime.Tuple) value).getElements().keySet()) {
                         if (key.equals(name)) {
