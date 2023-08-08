@@ -1136,42 +1136,42 @@ public class LibraryBuilder implements ModelResolver {
 
         CallContext callContext = new CallContext(libraryName, operatorName, allowPromotionAndDemotion, allowFluent, mustResolve, dataTypes.toArray(new DataType[dataTypes.size()]));
         OperatorResolution resolution = resolveCall(callContext);
-        if (resolution != null || mustResolve) {
-            checkOperator(callContext, resolution);
-
-            List<Expression> convertedOperands = new ArrayList<>();
-            Iterator<Expression> operandIterator = operands.iterator();
-            Iterator<DataType> signatureTypes = resolution.getOperator().getSignature().getOperandTypes().iterator();
-            Iterator<Conversion> conversionIterator = resolution.hasConversions() ? resolution.getConversions().iterator() : null;
-            while (operandIterator.hasNext()) {
-                Expression operand = operandIterator.next();
-                Conversion conversion = conversionIterator != null ? conversionIterator.next() : null;
-                if (conversion != null) {
-                    operand = convertExpression(operand, conversion);
-                }
-
-                DataType signatureType = signatureTypes.next();
-                operand = pruneChoices(operand, signatureType);
-
-                convertedOperands.add(operand);
-            }
-
-            invocation.setOperands(convertedOperands);
-
-            if (options.getSignatureLevel() == SignatureLevel.All || (options.getSignatureLevel() == SignatureLevel.Differing
-                && !resolution.getOperator().getSignature().equals(callContext.getSignature()))
-                    || (options.getSignatureLevel() == SignatureLevel.Overloads && resolution.getOperatorHasOverloads())) {
-                invocation.setSignature(dataTypesToTypeSpecifiers(resolution.getOperator().getSignature().getOperandTypes()));
-            }
-
-            invocation.setResultType(resolution.getOperator().getResultType());
-            if (resolution.getLibraryIdentifier() != null) {
-                resolution.setLibraryName(resolveIncludeAlias(resolution.getLibraryIdentifier()));
-            }
-            invocation.setResolution(resolution);
-            return invocation;
+        if (resolution == null && !mustResolve) {
+            return null;
         }
-        return null;
+
+        checkOperator(callContext, resolution);
+        List<Expression> convertedOperands = new ArrayList<>();
+        Iterator<Expression> operandIterator = operands.iterator();
+        Iterator<DataType> signatureTypes = resolution.getOperator().getSignature().getOperandTypes().iterator();
+        Iterator<Conversion> conversionIterator = resolution.hasConversions() ? resolution.getConversions().iterator() : null;
+        while (operandIterator.hasNext()) {
+            Expression operand = operandIterator.next();
+            Conversion conversion = conversionIterator != null ? conversionIterator.next() : null;
+            if (conversion != null) {
+                operand = convertExpression(operand, conversion);
+            }
+
+            DataType signatureType = signatureTypes.next();
+            operand = pruneChoices(operand, signatureType);
+
+            convertedOperands.add(operand);
+        }
+
+        invocation.setOperands(convertedOperands);
+
+        if (options.getSignatureLevel() == SignatureLevel.All || (options.getSignatureLevel() == SignatureLevel.Differing
+            && !resolution.getOperator().getSignature().equals(callContext.getSignature()))
+                || (options.getSignatureLevel() == SignatureLevel.Overloads && resolution.getOperatorHasOverloads())) {
+            invocation.setSignature(dataTypesToTypeSpecifiers(resolution.getOperator().getSignature().getOperandTypes()));
+        }
+
+        invocation.setResultType(resolution.getOperator().getResultType());
+        if (resolution.getLibraryIdentifier() != null) {
+            resolution.setLibraryName(resolveIncludeAlias(resolution.getLibraryIdentifier()));
+        }
+        invocation.setResolution(resolution);
+        return invocation;
     }
 
     private Expression pruneChoices(Expression expression, DataType targetType) {
