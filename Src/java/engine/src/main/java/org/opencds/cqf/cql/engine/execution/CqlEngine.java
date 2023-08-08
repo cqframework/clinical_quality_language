@@ -443,7 +443,7 @@ public class CqlEngine extends ElmBaseLibraryVisitor<Object, State> {
         if (left.getResultType() instanceof ListType || right.getResultType() instanceof ListType || elm.getResultType() instanceof ListType) {
             return UnionEvaluator.unionIterable((Iterable<?>)leftResult, (Iterable<?>)rightResult, state);
         }
-        else if (left.getResultType() instanceof IntervalType || right.getResultType() instanceof IntervalType || elm.getResultType() instanceof ListType) {
+        else if (left.getResultType() instanceof IntervalType || right.getResultType() instanceof IntervalType || elm.getResultType() instanceof IntervalType) {
             return UnionEvaluator.unionInterval((org.opencds.cqf.cql.engine.runtime.Interval)leftResult, (org.opencds.cqf.cql.engine.runtime.Interval)rightResult, state);
         }
         else {
