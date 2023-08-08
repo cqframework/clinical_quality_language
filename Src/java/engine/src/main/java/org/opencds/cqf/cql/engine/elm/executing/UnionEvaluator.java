@@ -6,6 +6,7 @@ import org.opencds.cqf.cql.engine.runtime.BaseTemporal;
 import org.opencds.cqf.cql.engine.runtime.Interval;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /*
@@ -30,59 +31,77 @@ Note that the union operator can also be invoked with the symbolic operator (|).
 
 public class UnionEvaluator {
 
-    public static Object union(Object left, Object right, State state) {
+    public static Interval unionInterval(Interval left, Interval right, State state) {
         if (left == null || right == null) {
             return null;
         }
 
-        if (left instanceof Interval && right instanceof Interval) {
-            Object leftStart = ((Interval) left).getStart();
-            Object leftEnd = ((Interval) left).getEnd();
-            Object rightStart = ((Interval) right).getStart();
-            Object rightEnd = ((Interval) right).getEnd();
+        Object leftStart = left.getStart();
+        Object leftEnd = left.getEnd();
+        Object rightStart = right.getStart();
+        Object rightEnd = right.getEnd();
 
-            if (leftStart == null || leftEnd == null
-                    || rightStart == null || rightEnd == null)
-            {
-                return null;
-            }
-
-            String precision = null;
-            if (leftStart instanceof BaseTemporal && rightStart instanceof BaseTemporal) {
-                precision = BaseTemporal.getHighestPrecision((BaseTemporal) leftStart, (BaseTemporal) leftEnd, (BaseTemporal) rightStart, (BaseTemporal) rightEnd);
-            }
-
-            Boolean overlapsOrMeets = OrEvaluator.or(
-                    OverlapsEvaluator.overlaps(left, right, precision, state),
-                    MeetsEvaluator.meets(left, right, precision, state)
-            );
-            if (overlapsOrMeets == null || !overlapsOrMeets) {
-                return null;
-            }
-
-            Object min = LessEvaluator.less(leftStart, rightStart, state) ? leftStart : rightStart;
-            Object max = GreaterEvaluator.greater(leftEnd, rightEnd, state) ? leftEnd : rightEnd;
-
-            return new Interval(min, true, max, true);
+        if (leftStart == null || leftEnd == null
+                || rightStart == null || rightEnd == null) {
+            return null;
         }
 
-        else if (left instanceof Iterable) {
-            // List Logic
-            List<Object> result = new ArrayList<>();
-            for (Object leftElement : (Iterable<?>)left) {
-                result.add(leftElement);
-            }
-
-            for (Object rightElement : (Iterable<?>)right) {
-                result.add(rightElement);
-            }
-            return DistinctEvaluator.distinct(result, state);
+        String precision = null;
+        if (leftStart instanceof BaseTemporal && rightStart instanceof BaseTemporal) {
+            precision = BaseTemporal.getHighestPrecision((BaseTemporal) leftStart, (BaseTemporal) leftEnd,
+                    (BaseTemporal) rightStart, (BaseTemporal) rightEnd);
         }
+
+        Boolean overlapsOrMeets = OrEvaluator.or(
+                OverlapsEvaluator.overlaps(left, right, precision, state),
+                MeetsEvaluator.meets(left, right, precision, state));
+        if (overlapsOrMeets == null || !overlapsOrMeets) {
+            return null;
+        }
+
+        Object min = LessEvaluator.less(leftStart, rightStart, state) ? leftStart : rightStart;
+        Object max = GreaterEvaluator.greater(leftEnd, rightEnd, state) ? leftEnd : rightEnd;
+
+        return new Interval(min, true, max, true);
+    }
+
+    public static Iterable<?> unionIterable(Iterable<?> left, Iterable<?> right, State state) {
+        if (left == null && right == null) {
+            return Collections.emptyList();
+        }
+
+        if (left == null) {
+            return DistinctEvaluator.distinct(right, state);
+        }
+
+        if (right == null) {
+            return DistinctEvaluator.distinct(left, state);
+        }
+
+        // List Logic
+        List<Object> result = new ArrayList<>();
+        for (Object leftElement : left) {
+            result.add(leftElement);
+        }
+
+        for (Object rightElement : right) {
+            result.add(rightElement);
+        }
+        return DistinctEvaluator.distinct(result, state);
+    }
+
+    public static Object union(Object left, Object right, State state) {
+        if (left instanceof Interval || right instanceof Interval) {
+            return unionInterval((Interval) left, (Interval) right, state);
+        } else if (left instanceof Iterable || right instanceof Iterable) {
+            return unionIterable((Iterable<?>) left, (Iterable<?>) right, state);
+        }
+
+        var leftName = left != null ? left.getClass().getName() : "<unknown>";
+        var rightName = right != null ? right.getClass().getName() : "<unknown>";
 
         throw new InvalidOperatorArgument(
                 "Union(Interval<T>, Interval<T>) or Union(List<T>, List<T>)",
-                String.format("Union(%s, %s)", left.getClass().getName(), right.getClass().getName())
-        );
+                String.format("Union(%s, %s)", leftName, rightName));
     }
-
 }

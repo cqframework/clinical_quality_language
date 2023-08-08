@@ -43,12 +43,10 @@ public class QueryEvaluator {
                 state.push(new Variable().withName(relationship.getAlias()).withValue(relatedElement));
                 try {
                     Object satisfiesRelatedCondition = visitor.visitExpression(relationship.getSuchThat(), state);
-                    if (relationship instanceof org.hl7.elm.r1.With
-                            || relationship instanceof org.hl7.elm.r1.Without) {
-                        if (satisfiesRelatedCondition instanceof Boolean && (Boolean) satisfiesRelatedCondition) {
+                    if ((relationship instanceof org.hl7.elm.r1.With
+                            || relationship instanceof org.hl7.elm.r1.Without) && Boolean.TRUE.equals(satisfiesRelatedCondition)) {
                             hasSatisfyingData = true;
                             break; // Once we have detected satisfying data, no need to continue testing
-                        }
                     }
                 } finally {
                     state.pop();

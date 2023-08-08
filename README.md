@@ -1,25 +1,31 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/info.cqframework/cql-to-elm/badge.svg)](https://maven-badges.herokuapp.com/maven-central/info.cqframework/cql-to-elm) [![project chat](https://img.shields.io/badge/zulip-join_chat-brightgreen.svg)](https://chat.fhir.org/#narrow/stream/179220-cql)
 
 # Clinical Quality Language
+
 Clinical Quality Language ([CQL](http://www.hl7.org/implement/standards/product_brief.cfm?product_id=400)) is a Health Level 7 ([HL7](http://www.hl7.org/index.cfm)) standard for the expression of clinical knowledge that can be used within a broad range of clinical domains, including Clinical Decision Support (CDS), and Clinical Quality Measurement (CQM).
 
-This repository contains documentation, examples, and tooling in support of the CQL specification, including a CQL verifier/translator.
+This repository contains documentation, examples, and tooling in support of the [CQL specification](https://cql.hl7.org/), including a CQL compiler and ELM runtime.
 
+* [CQL Specification](https://cql.hl7.org/) - Specification for CQL, along with an Authoring Guide and a Developer's guide
 * [Getting Started](https://github.com/cqframework/CQL-Formatting-and-Usage-Wiki/wiki/Getting-Started) - A collection of resources to help new users get started
 * [Cooking with CQL Examples](https://github.com/cqframework/CQL-Formatting-and-Usage-Wiki/wiki/Cooking-with-CQL-Examples) - Examples from Cooking with CQL sessions
 
 # Background
+
 CQL was developed as part of the Clinical Quality Framework ([CQF](https://oncprojectracking.healthit.gov/wiki/display/TechLabSC/CQF+Home)) initiative, a public-private partnership sponsored by the Centers for Medicare & Medicaid Services (CMS) and the U.S. Office of the National Coordinator for Health Information Technology (ONC) to identify, develop, and harmonize standards for clinical decision support and electronic clinical quality measurement.
 
 The Clinical Quality Language specification is maintained by the HL7 Clinical Decision Support ([CDS](http://www.hl7.org/Special/committees/dss/index.cfm)) Work Group with co-sponsorship from the HL7 Clinical Quality Information ([CQI](http://www.hl7.org/Special/committees/cqi/index.cfm)) Work Group.
 
 # Scope
+
 The primary focus of the tooling in this repository is to support and enable adoption and implementation of the Clinical Quality Language specification. In particular, the CQL-to-ELM translator provides a reference implementation for syntactic and semantic validation of Clinical Quality Language. As such, the features and functionality provided by these tools are ultimately defined by the CQL specification, and that specification is the source-of-truth for those requirements. This relationship to the CQL standard heavily informs and shapes the change management policies for maintenance of these tools.
 
 # Community
+
 The CQL community consists of multiple stakeholders including EHR vendors, clinical knowledge content vendors, knowledge artifact authors, and clinical quality content tool vendors. We encourage participation from these and other relevant stakeholders, and the processes and policies described here are intended to enable participation and support of the CQL tooling. Because this community of stakeholders both depends on and provides feedback to these tools, their participation in these processes is vital.
 
 # Change Management
+
 Changes to the tooling maintained within this repository are managed using as lightweight a process as possible, while still ensuring stable, viable, production quality software. These processes are described in the [Change Management](CHANGE_MANAGEMENT.md) topic.
 
 # Contents
@@ -29,9 +35,14 @@ Changes to the tooling maintained within this repository are managed using as li
 * [Java Quickstart](Src/java-quickstart/README.md)
 
 # License
+
 All code in this repository is licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0). All documentation is licensed under the [Creative Common Attribution 4.0 International license (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/).
 
+CQL compiler/translator, grammar, and associated tooling:
 Copyright 2014 The MITRE Corporation
+
+ELM runtime and associated components (specifically the `java/engine` and `java/engine-fhir` modules):
+Copyright 2016 University of Utah
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

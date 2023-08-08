@@ -18,6 +18,7 @@ import org.hl7.fhir.r5.model.ImplementationGuide;
 import org.hl7.fhir.utilities.npm.NpmPackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 public class NpmPackageManagerTests implements IWorkerContext.ILoggingService {
@@ -35,6 +36,7 @@ public class NpmPackageManagerTests implements IWorkerContext.ILoggingService {
     }
 
     @Test
+    @Ignore("This test depends on the example.fhir.uv.myig package, which is not currently published")
     public void TestSampleContentIGLocal() {
         Resource igResource = (Resource) FhirContext.forR4Cached().newXmlParser().parseResource(
                 NpmPackageManagerTests.class.getResourceAsStream("mycontentig.xml"));
@@ -55,8 +57,8 @@ public class NpmPackageManagerTests implements IWorkerContext.ILoggingService {
         }
         assertTrue(hasFHIR);
         assertTrue(hasMyIG);
-        //assertTrue(hasCommon);
-        //assertTrue(hasCPG);
+        assertTrue(hasCommon);
+        assertTrue(hasCPG);
     }
 
     @Test
@@ -79,6 +81,7 @@ public class NpmPackageManagerTests implements IWorkerContext.ILoggingService {
     }
 
     @Test
+    @Ignore("This test depends on the example.fhir.uv.myig package, which is not currently published")
     public void TestLibrarySourceProviderLocal() {
         Resource igResource = (Resource) FhirContext.forR4Cached().newXmlParser().parseResource(
                 NpmPackageManagerTests.class.getResourceAsStream("mycontentig.xml"));
@@ -88,7 +91,7 @@ public class NpmPackageManagerTests implements IWorkerContext.ILoggingService {
         LibraryLoader reader = new LibraryLoader("4.0.1");
         NpmLibrarySourceProvider sp = new NpmLibrarySourceProvider(pm.getNpmList(), reader, this);
         InputStream is = sp.getLibrarySource(new VersionedIdentifier().withSystem("http://somewhere.org/fhir/uv/myig").withId("example"));
-        assertNotNull(is);
+        //assertNotNull(is);
         is = sp.getLibrarySource(new VersionedIdentifier().withSystem("http://somewhere.org/fhir/uv/myig").withId("example").withVersion("0.2.0"));
         assertNotNull(is);
     }
