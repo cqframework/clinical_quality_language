@@ -24,58 +24,58 @@ public class CqlErrorsAndMessagingOperatorsTest extends CqlTestBase {
                "TestMessageWithNullCondition","TestMessageWithNullCode","TestMessageWithNullMessage", "TestWarningWithNullSource",
                 "TestWarningWithNullCondition","TestWarningWithNullCode","TestWarningWithNullMessage","TestTraceWithNullSource",
                 "TestTraceWithNullCondition","TestTraceWithNullCode","TestTraceWithNullMessage");
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlErrorsAndMessagingOperatorsTest"), set);
+        evaluationResult = engine.evaluate(toElmIdentifier("CqlErrorsAndMessagingOperatorsTest"), set);
 
-        Object result = result = evaluationResult.expressionResults.get("TestMessageInfo").value();
+        Object result = result = evaluationResult.forExpression("TestMessageInfo").value();
         assertThat(result, is(1));
         //Assert.assertEquals(result.toString(), "100: Test Message");
 
-        result = result = evaluationResult.expressionResults.get("TestMessageWarn").value();
+        result = result = evaluationResult.forExpression("TestMessageWarn").value();
         assertThat(result, is(2));
         //Assert.assertEquals(result.toString(), "200: You have been warned!");
 
-        result = result = evaluationResult.expressionResults.get("TestMessageTrace").value();
+        result = result = evaluationResult.forExpression("TestMessageTrace").value();
         assertThat(result, is(new ArrayList<Object>(Arrays.asList(3, 4, 5))));
         //Assert.assertEquals(result.toString(), "300: This is a trace\n[3, 4, 5]");
 
 
-        result = result = evaluationResult.expressionResults.get("TestMessageWithNullSeverity").value();
+        result = result = evaluationResult.forExpression("TestMessageWithNullSeverity").value();
         assertThat(result, is(1));
 
-        result = result = evaluationResult.expressionResults.get("TestMessageWithNullSource").value();
+        result = result = evaluationResult.forExpression("TestMessageWithNullSource").value();
         assertThat(result == null, is(true));
 
-        result = result = evaluationResult.expressionResults.get("TestMessageWithNullCondition").value();
+        result = result = evaluationResult.forExpression("TestMessageWithNullCondition").value();
         assertThat(result, is(1));
 
-        result = result = evaluationResult.expressionResults.get("TestMessageWithNullCode").value();
+        result = result = evaluationResult.forExpression("TestMessageWithNullCode").value();
         assertThat(result, is(1));
 
-        result = result = evaluationResult.expressionResults.get("TestMessageWithNullMessage").value();
+        result = result = evaluationResult.forExpression("TestMessageWithNullMessage").value();
         assertThat(result, is(1));
 
-        result = result = evaluationResult.expressionResults.get("TestWarningWithNullSource").value();
+        result = result = evaluationResult.forExpression("TestWarningWithNullSource").value();
         assertThat(result == null, is(true));
 
-        result = result = evaluationResult.expressionResults.get("TestWarningWithNullCondition").value();
+        result = result = evaluationResult.forExpression("TestWarningWithNullCondition").value();
         assertThat(result, is(1));
 
-        result = result = evaluationResult.expressionResults.get("TestWarningWithNullCode").value();
+        result = result = evaluationResult.forExpression("TestWarningWithNullCode").value();
         assertThat(result, is(1));
 
-        result = result = evaluationResult.expressionResults.get("TestWarningWithNullMessage").value();
+        result = result = evaluationResult.forExpression("TestWarningWithNullMessage").value();
         assertThat(result, is(1));
 
-        result = result = evaluationResult.expressionResults.get("TestTraceWithNullSource").value();
+        result = result = evaluationResult.forExpression("TestTraceWithNullSource").value();
         assertThat(result == null, is(true));
 
-        result = result = evaluationResult.expressionResults.get("TestTraceWithNullCondition").value();
+        result = result = evaluationResult.forExpression("TestTraceWithNullCondition").value();
         assertThat(result, is(1));
 
-        result = result = evaluationResult.expressionResults.get("TestTraceWithNullCode").value();
+        result = result = evaluationResult.forExpression("TestTraceWithNullCode").value();
         assertThat(result, is(1));
 
-        result = result = evaluationResult.expressionResults.get("TestTraceWithNullMessage").value();
+        result = result = evaluationResult.forExpression("TestTraceWithNullMessage").value();
         assertThat(result, is(1));
 
     }

@@ -60,6 +60,11 @@ define function toString(value Code):
     then 'null'
   else 'Code { code: ' + value.code + ' system: ' + value.system + ' version: ' + value.version + ' display: ' + value.display + ' }'
 
+define function toString(value List<Code>):
+  if value is null
+    then 'null'
+  else Combine((value V return toString(V)), ', ')
+
 define function toString(value Concept):
   if value is null
     then 'null'
@@ -119,11 +124,6 @@ define function toString(value Interval<Time>):
   if value is null
     then 'null'
   else '[' + toString(start of value) + ', ' + toString(end of value) + ']'
-
-define function toString(value List<Code>):
-  if value is null
-    then 'null'
-  else Combine((value V return toString(V)), ', ')
 
 define function toString(value List<Interval<Integer>>):
   if value is null

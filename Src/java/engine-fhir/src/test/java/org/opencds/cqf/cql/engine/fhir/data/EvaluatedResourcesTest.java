@@ -42,67 +42,67 @@ public class EvaluatedResourcesTest extends FhirExecutionTestBase {
 
     @Test
     public void testWithCache() {
-        CqlEngine engineVisitor = getEngine();
-        engineVisitor.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", new CompositeDataProvider(r4ModelResolver, rp));
-        engineVisitor.getCache().setExpressionCaching(true);
-        EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(),
+        CqlEngine engine = getEngine();
+        engine.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", new CompositeDataProvider(r4ModelResolver, rp));
+        engine.getCache().setExpressionCaching(true);
+        EvaluationResult evaluationResult = engine.evaluate(library.getIdentifier(),
                 Set.of("Union"), null, null, null, null);
 
 
-        Object result = evaluationResult.expressionResults.get("Union").value();
+        Object result = evaluationResult.forExpression("Union").value();
         assertThat(result, instanceOf(List.class));
-        assertThat(evaluationResult.expressionResults.get("Union").evaluatedResources().size(), is(2));
-        engineVisitor.getState().clearEvaluatedResources();
+        assertThat(evaluationResult.forExpression("Union").evaluatedResources().size(), is(2));
+        engine.getState().clearEvaluatedResources();
 
 
-        evaluationResult = engineVisitor.evaluate(library.getIdentifier(),
+        evaluationResult = engine.evaluate(library.getIdentifier(),
                 Set.of("Encounter"), null, null, null, null);
-        result = evaluationResult.expressionResults.get("Encounter").value();
+        result = evaluationResult.forExpression("Encounter").value();
         assertThat(result, instanceOf(List.class));
-        assertThat(evaluationResult.expressionResults.get("Encounter").evaluatedResources().size(), is(1));
-        engineVisitor.getState().clearEvaluatedResources();
+        assertThat(evaluationResult.forExpression("Encounter").evaluatedResources().size(), is(1));
+        engine.getState().clearEvaluatedResources();
 
 
-        evaluationResult = engineVisitor.evaluate(library.getIdentifier(),
+        evaluationResult = engine.evaluate(library.getIdentifier(),
                 Set.of("Condition"), null, null, null, null);
-        result = evaluationResult.expressionResults.get("Condition").value();
+        result = evaluationResult.forExpression("Condition").value();
         assertThat(result, instanceOf(List.class));
-        assertThat(evaluationResult.expressionResults.get("Condition").evaluatedResources().size(), is(1));
+        assertThat(evaluationResult.forExpression("Condition").evaluatedResources().size(), is(1));
 
     }
 
     @Test
     public void testWithoutCache() {
-        CqlEngine engineVisitor = getEngine();
-        engineVisitor.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", new CompositeDataProvider(r4ModelResolver, rp));
-        EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(),
+        CqlEngine engine = getEngine();
+        engine.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", new CompositeDataProvider(r4ModelResolver, rp));
+        EvaluationResult evaluationResult = engine.evaluate(library.getIdentifier(),
                 Set.of("Union"), null, null, null, null);
 
-        Object result = evaluationResult.expressionResults.get("Union").value();
+        Object result = evaluationResult.forExpression("Union").value();
         assertThat(result, instanceOf(List.class));
-        assertThat(evaluationResult.expressionResults.get("Union").evaluatedResources().size(), is(2));
-        engineVisitor.getState().clearEvaluatedResources();
+        assertThat(evaluationResult.forExpression("Union").evaluatedResources().size(), is(2));
+        engine.getState().clearEvaluatedResources();
 
 
-        evaluationResult = engineVisitor.evaluate(library.getIdentifier(),
+        evaluationResult = engine.evaluate(library.getIdentifier(),
                 Set.of("Encounter"), null, null, null, null);
-        result = evaluationResult.expressionResults.get("Encounter").value();
+        result = evaluationResult.forExpression("Encounter").value();
         assertThat(result, instanceOf(List.class));
-        assertThat(evaluationResult.expressionResults.get("Encounter").evaluatedResources().size(), is(1));
-        engineVisitor.getState().clearEvaluatedResources();
+        assertThat(evaluationResult.forExpression("Encounter").evaluatedResources().size(), is(1));
+        engine.getState().clearEvaluatedResources();
 
 
-        evaluationResult = engineVisitor.evaluate(library.getIdentifier(),
+        evaluationResult = engine.evaluate(library.getIdentifier(),
                 Set.of("Condition"), null, null, null, null);
-        result = evaluationResult.expressionResults.get("Condition").value();
+        result = evaluationResult.forExpression("Condition").value();
         assertThat(result, instanceOf(List.class));
-        assertThat(evaluationResult.expressionResults.get("Condition").evaluatedResources().size(), is(1));
+        assertThat(evaluationResult.forExpression("Condition").evaluatedResources().size(), is(1));
 
-        evaluationResult = engineVisitor.evaluate(library.getIdentifier(),
+        evaluationResult = engine.evaluate(library.getIdentifier(),
                 Set.of("Union"), null, null, null, null);
-        result = evaluationResult.expressionResults.get("Union").value();
+        result = evaluationResult.forExpression("Union").value();
         assertThat(result, instanceOf(List.class));
-        assertThat(evaluationResult.expressionResults.get("Union").evaluatedResources().size(), is(2));
-        engineVisitor.getState().clearEvaluatedResources();
+        assertThat(evaluationResult.forExpression("Union").evaluatedResources().size(), is(2));
+        engine.getState().clearEvaluatedResources();
     }
 }

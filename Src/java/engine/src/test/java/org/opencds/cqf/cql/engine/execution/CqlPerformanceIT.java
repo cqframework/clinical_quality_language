@@ -11,8 +11,6 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZonedDateTime;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.TimeZone;
 
 import static org.testng.Assert.assertTrue;
@@ -62,14 +60,14 @@ public class CqlPerformanceIT extends CqlTestBase {
 
         // Warm up the JVM
         for (int i = 0; i < ITERATIONS; i++) {
-            CqlEngine engineVisitor = new CqlEngine(environment);
-            EvaluationResult evaluationResult = engineVisitor.evaluate(libraryId, null, null, null, null, evaluationZonedDateTime);
+            CqlEngine engine = new CqlEngine(environment);
+            EvaluationResult evaluationResult = engine.evaluate(libraryId, null, null, null, null, evaluationZonedDateTime);
         }
 
         Instant start = Instant.now();
         for (int i = 0; i < ITERATIONS; i++) {
-            CqlEngine engineVisitor = new CqlEngine(environment);
-            EvaluationResult evaluationResult = engineVisitor.evaluate(libraryId, null ,null, null, null, evaluationZonedDateTime);
+            CqlEngine engine = new CqlEngine(environment);
+            EvaluationResult evaluationResult = engine.evaluate(libraryId, null ,null, null, null, evaluationZonedDateTime);
         }
         Instant finish = Instant.now();
 

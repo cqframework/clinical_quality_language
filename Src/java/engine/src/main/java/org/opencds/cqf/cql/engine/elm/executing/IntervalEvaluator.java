@@ -1,11 +1,11 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import org.cqframework.cql.elm.visiting.ElmLibraryVisitor;
 import org.hl7.elm.r1.Interval;
-import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.State;
 
 public class IntervalEvaluator {
-    public static Object internalEvaluate(Interval interval, State state, CqlEngine visitor) {
+    public static Object internalEvaluate(Interval interval, State state, ElmLibraryVisitor<Object, State> visitor) {
         Object low = interval.getLow() != null ? visitor.visitExpression(interval.getLow(), state) : null;
 
         Object lowClosedObj = false;

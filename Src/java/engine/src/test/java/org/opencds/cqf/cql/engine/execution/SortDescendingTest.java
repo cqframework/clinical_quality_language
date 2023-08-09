@@ -13,10 +13,10 @@ public class SortDescendingTest extends CqlTestBase {
 
         EvaluationResult evaluationResult;
 
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("SortDescendingTest"));
+        evaluationResult = engine.evaluate(toElmIdentifier("SortDescendingTest"));
 
 
-        Object result = evaluationResult.expressionResults.get("sorted list of numbers descending").value();
+        Object result = evaluationResult.forExpression("sorted list of numbers descending").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) result).get(0), 9));
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) result).get(1), 4));
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) result).get(2), 2));

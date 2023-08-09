@@ -23,73 +23,73 @@ public class CqlNulLogicalOperatorsTest extends CqlTestBase {
         Set<String> set = new HashSet<>();
         EvaluationResult evaluationResult;
 
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlNullologicalOperatorsTest"));
+        evaluationResult = engine.evaluate(toElmIdentifier("CqlNullologicalOperatorsTest"));
         Object result;
 
-        result = evaluationResult.expressionResults.get("CoalesceANull").value();
+        result = evaluationResult.forExpression("CoalesceANull").value();
         assertThat(result, is("a"));
 
-        result = evaluationResult.expressionResults.get("CoalesceNullA").value();
+        result = evaluationResult.forExpression("CoalesceNullA").value();
         assertThat(result, is("a"));
 
-        result = evaluationResult.expressionResults.get("CoalesceEmptyList").value();
+        result = evaluationResult.forExpression("CoalesceEmptyList").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("CoalesceListFirstA").value();
+        result = evaluationResult.forExpression("CoalesceListFirstA").value();
         assertThat(result, is("a"));
 
-        result = evaluationResult.expressionResults.get("CoalesceListLastA").value();
+        result = evaluationResult.forExpression("CoalesceListLastA").value();
         assertThat(result, is("a"));
 
-        result = evaluationResult.expressionResults.get("CoalesceFirstList").value();
+        result = evaluationResult.forExpression("CoalesceFirstList").value();
         assertThat(result, is(Collections.singletonList("a")));
 
-        result = evaluationResult.expressionResults.get("CoalesceLastList").value();
+        result = evaluationResult.forExpression("CoalesceLastList").value();
         assertThat(result, is(Collections.singletonList("a")));
 
-        result = evaluationResult.expressionResults.get("DateTimeCoalesce").value();
+        result = evaluationResult.forExpression("DateTimeCoalesce").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2012, 5, 18)));
 
-        result = evaluationResult.expressionResults.get("DateTimeListCoalesce").value();
+        result = evaluationResult.forExpression("DateTimeListCoalesce").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2012, 5, 18)));
 
-        result = evaluationResult.expressionResults.get("TimeCoalesce").value();
+        result = evaluationResult.forExpression("TimeCoalesce").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(5, 15, 33, 556)));
 
-        result = evaluationResult.expressionResults.get("TimeListCoalesce").value();
+        result = evaluationResult.forExpression("TimeListCoalesce").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(5, 15, 33, 556)));
 
-        result = evaluationResult.expressionResults.get("IsNullTrue").value();
+        result = evaluationResult.forExpression("IsNullTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("IsNullFalseEmptyString").value();
+        result = evaluationResult.forExpression("IsNullFalseEmptyString").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("IsNullAlsoFalseAbcString").value();
+        result = evaluationResult.forExpression("IsNullAlsoFalseAbcString").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("IsNullAlsoFalseNumber1").value();
+        result = evaluationResult.forExpression("IsNullAlsoFalseNumber1").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("IsNullAlsoFalseNumberZero").value();
+        result = evaluationResult.forExpression("IsNullAlsoFalseNumberZero").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("IsFalseFalse").value();
+        result = evaluationResult.forExpression("IsFalseFalse").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("IsFalseTrue").value();
+        result = evaluationResult.forExpression("IsFalseTrue").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("IsFalseNull").value();
+        result = evaluationResult.forExpression("IsFalseNull").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("IsTrueTrue").value();
+        result = evaluationResult.forExpression("IsTrueTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("IsTrueFalse").value();
+        result = evaluationResult.forExpression("IsTrueFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("IsTrueNull").value();
+        result = evaluationResult.forExpression("IsTrueNull").value();
         assertThat(result, is(false));
 
     }

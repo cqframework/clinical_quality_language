@@ -16,30 +16,30 @@ public class ExpressionCacheTest extends CqlTestBase {
     public void test_expression_cache() {
 
         EvaluationResult evaluationResult;
-        engineVisitor.getCache().setExpressionCaching(true);
+        engine.getCache().setExpressionCaching(true);
 
         VersionedIdentifier libId = toElmIdentifier("ExpressionCacheTest");
 
-        evaluationResult = engineVisitor.evaluate(libId);
+        evaluationResult = engine.evaluate(libId);
         Object result;
 
-        result = evaluationResult.expressionResults.get("Expression").value();
+        result = evaluationResult.forExpression("Expression").value();
         assertNotNull(result);
         assertThat(result, is(5));
 
         // The included library also has a define called "Expression" Previously it'd return 5 since
         // the expressions were cached only by name. This is the behavior that was broken.
-        Boolean enteredLibrary = engineVisitor.getState().enterLibrary("Common");
-        VersionedIdentifier commonId = engineVisitor.getState().getCurrentLibrary().getIdentifier();
+        Boolean enteredLibrary = engine.getState().enterLibrary("Common");
+        VersionedIdentifier commonId = engine.getState().getCurrentLibrary().getIdentifier();
 
-        result = engineVisitor.visitExpressionDef(Libraries.resolveExpressionRef("Expression", engineVisitor.getState().getCurrentLibrary()), engineVisitor.getState());
+        result = engine.getEvaluationVisitor().visitExpressionDef(Libraries.resolveExpressionRef("Expression", engine.getState().getCurrentLibrary()), engine.getState());
         assertNotNull(result);
         assertThat(result, is(3));
 
-        assertTrue(engineVisitor.getCache().isExpressionCached(commonId, "Expression"));
+        assertTrue(engine.getCache().isExpressionCached(commonId, "Expression"));
 
-        engineVisitor.getState().exitLibrary(enteredLibrary);
-        result = evaluationResult.expressionResults.get("Expression").value();
+        engine.getState().exitLibrary(enteredLibrary);
+        result = evaluationResult.forExpression("Expression").value();
         assertNotNull(result);
         assertThat(result, is(5));
     }

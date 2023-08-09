@@ -13,8 +13,8 @@ public class Issue39 extends CqlTestBase {
 
         EvaluationResult evaluationResult;
 
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("Issue39"));
-        Object result = evaluationResult.expressionResults.get("EquivalentIntervals").value();
+        evaluationResult = engine.evaluate(toElmIdentifier("Issue39"));
+        Object result = evaluationResult.forExpression("EquivalentIntervals").value();
         assertThat(result, is(true));
     }
 }

@@ -81,6 +81,10 @@ public class State {
         if (libraryName != null) {
             IncludeDef includeDef = Libraries.resolveLibraryRef(libraryName, getCurrentLibrary());
             var identifier = Libraries.toVersionedIdentifier(includeDef);
+
+            // We probably want to just load all relevant libraries into
+            // memory before we start evaluation. This will further separate
+            // environment from state.
             Library library = this.getEnvironment().resolveLibrary(identifier);
 
             currentLibrary.push(library);

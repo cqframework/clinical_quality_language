@@ -4,6 +4,7 @@ import org.hl7.cql.model.ChoiceType;
 import org.hl7.cql.model.DataType;
 import org.hl7.cql.model.NamedType;
 import org.hl7.elm.r1.*;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -633,6 +634,12 @@ public class SemanticTests {
     @Test
     public void TestQuotedForwards() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("TestQuotedForwards.cql", 0);
+    }
+
+    @Test
+    @Ignore("bug discovered during 3.0 release, test added to track it")
+    public void TestCircularReference() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("TestCircularReference.cql", 0);
     }
 
     private CqlTranslator runSemanticTest(String testFileName) throws IOException {

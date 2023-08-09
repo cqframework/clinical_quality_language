@@ -390,4 +390,14 @@ public class LibraryTests {
         assertThat(translator.getErrors().size(), equalTo(1));
         assertThat(translator.getErrors().get(0).getMessage(), equalTo("Could not resolve call to operator invalidInvocation with signature ()."));
     }
+
+    @Test
+    public void testExpression() throws IOException {
+        CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/expression.cql");
+        assertThat(translator.getErrors().size(), equalTo(0));
+
+        var compileLibrary = translator.getTranslatedLibrary().getLibrary();
+        var statements = compileLibrary.getStatements().getDef();
+        assertThat(statements.size(), equalTo(1));
+    }
 }
