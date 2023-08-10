@@ -58,6 +58,11 @@ public class CqlTestBase {
         return new org.hl7.elm.r1.VersionedIdentifier().withId(name).withVersion(version);
     }
 
+    public static CqlEngine getEngine(CqlCompilerOptions cqlCompilerOptions) {
+        var env = new Environment(getLibraryManager(cqlCompilerOptions));
+        return new CqlEngine(env);
+    }
+
     Environment environment;
     CqlEngine engine;
     @BeforeMethod

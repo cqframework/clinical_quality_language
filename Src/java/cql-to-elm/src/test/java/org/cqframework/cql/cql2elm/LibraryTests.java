@@ -393,7 +393,19 @@ public class LibraryTests {
 
     @Test
     public void testExpression() throws IOException {
+        // This test checks to the that the engine can compile short snippets of CQL
         CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/expression.cql");
+        assertThat(translator.getErrors().size(), equalTo(0));
+
+        var compileLibrary = translator.getTranslatedLibrary().getLibrary();
+        var statements = compileLibrary.getStatements().getDef();
+        assertThat(statements.size(), equalTo(1));
+    }
+
+        @Test
+    public void testExpression2() throws IOException {
+        // This test checks to the that the engine can compile short snippets of CQL
+        CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/expression2.cql");
         assertThat(translator.getErrors().size(), equalTo(0));
 
         var compileLibrary = translator.getTranslatedLibrary().getLibrary();

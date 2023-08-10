@@ -186,6 +186,7 @@ public class CqlEngine {
                 continue;
             }
 
+            // TODO: How do we want to return handle errors?
             Object object = this.evaluationVisitor.visitExpressionDef(def, this.state);
             result.expressionResults.put(expression, new ExpressionResult(object, this.state.getEvaluatedResources()));
         }

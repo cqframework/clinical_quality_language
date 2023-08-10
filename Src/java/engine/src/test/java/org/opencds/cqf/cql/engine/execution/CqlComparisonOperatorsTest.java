@@ -8,14 +8,27 @@ import org.testng.annotations.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+import static org.testng.Assert.assertFalse;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.cqframework.cql.cql2elm.CqlCompilerException;
+import org.cqframework.cql.cql2elm.CqlCompilerOptions;
 
 public class CqlComparisonOperatorsTest extends CqlTestBase {
 
     @Test
-    public void test_all_comparison_operators_tests() {
-        EvaluationResult evaluationResult;
+    public void test_cql_comparison_test_suite_compiles() {
+        var errors = new ArrayList<CqlCompilerException>();
+        this.getLibrary(toElmIdentifier("CqlComparisonOperatorsTest"), errors, testCompilerOptions());
+        assertFalse(CqlCompilerException.hasErrors(errors), String.format("Test library compiled with the following errors : %s", this.toString(errors)));
+    }
 
-        evaluationResult = engine.evaluate(toElmIdentifier("CqlComparisonOperatorsTest"));
+    @Test
+    public void test_all_comparison_operators_tests() {
+        var eng = getEngine(testCompilerOptions());
+        var evaluationResult = eng.evaluate(toElmIdentifier("CqlComparisonOperatorsTest"));
 
 
         Object result = evaluationResult.forExpression("BetweenIntTrue").value();
@@ -653,5 +666,30 @@ public class CqlComparisonOperatorsTest extends CqlTestBase {
         result = evaluationResult.forExpression("TimeNotEq10A10P").value();
         assertThat(result, is(true));
 
+    }
+
+    protected CqlCompilerOptions testCompilerOptions() {
+        var options = CqlCompilerOptions.defaultOptions();
+        // This test suite contains some definitions that use features that are usually
+        // turned off for CQL.
+        options.getOptions().remove(CqlCompilerOptions.Options.DisableListDemotion);
+        options.getOptions().remove(CqlCompilerOptions.Options.DisableListPromotion);
+        return options;
+    }
+
+
+    String toString(List<CqlCompilerException> errors) {
+        StringBuilder builder = new StringBuilder();
+
+        for (var e : errors) {
+            builder.append(e.toString() + System.lineSeparator());
+            if (e.getLocator() != null) {
+                builder.append("at" + System.lineSeparator());
+                builder.append(e.getLocator().toLocator() + System.lineSeparator());
+            }
+            builder.append(System.lineSeparator());
+        }
+
+        return builder.toString();
     }
 }
