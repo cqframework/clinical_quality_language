@@ -2,7 +2,6 @@ package org.opencds.cqf.cql.engine.execution;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.cqframework.cql.cql2elm.CqlCompilerException;
-import org.cqframework.cql.elm.visiting.ElmBaseLibraryVisitor;
 import org.hl7.cql.model.NamespaceManager;
 import org.hl7.elm.r1.*;
 import org.opencds.cqf.cql.engine.debug.DebugAction;
@@ -68,11 +67,41 @@ public class CqlEngine {
         return this.state.getCache();
     }
 
-    // This is a temporary arrangement until we further
-    // refine the relationship between the cql engine, its environment
-    // and its internal state.
+    /**
+     * @deprecated this is a temporary arrangement until we further refine the relationship
+     * between the engine, the environment, and the state
+     * @return the internal engine visitor
+     */
+    @Deprecated(forRemoval = true)
     public EvaluationVisitor getEvaluationVisitor() {
         return this.evaluationVisitor;
+    }
+
+    /**
+     * @deprecated I added to assist with unit testing, but really it's indicative of the fact
+     * that we need to further refine the engine API. Please use this sparingly as it will go away
+     * @param libraryIdentifier the library where the expression is defined
+     * @param expressionName the name of the expression to evaluate
+     * @param evaluationDateTime the value for "Now()"
+     * @return the result of the expression
+     */
+    @Deprecated(forRemoval = true)
+    public ExpressionResult expression(VersionedIdentifier libraryIdentifier, String expressionName, ZonedDateTime evaluationDateTime) {
+        var result = this.evaluate(libraryIdentifier, Set.of(expressionName), null, null, null, evaluationDateTime);
+        return result.forExpression(expressionName);
+    }
+
+    /**
+     * @deprecated I added to assist with unit testing, but really it's indicative of the fact
+     * that we need to further refine the engine API. Please use this sparingly as it will go away
+     * @param libraryIdentifier the library where the expression is defined
+     * @param expressionName the name of the expression to evaluate
+     * @return the result of the expression
+     */
+    @Deprecated(forRemoval = true)
+    public ExpressionResult expression(VersionedIdentifier libraryIdentifier, String expressionName) {
+        var result = this.evaluate(libraryIdentifier, Set.of(expressionName));
+        return result.forExpression(expressionName);
     }
 
     // TODO: Add debugging info as a parameter.
@@ -293,6 +322,8 @@ public class CqlEngine {
                 state.logDebugError(e);
             }
         }
+
+        throw e;
     }
 
     public void processException(Exception e, Element element, String message) {

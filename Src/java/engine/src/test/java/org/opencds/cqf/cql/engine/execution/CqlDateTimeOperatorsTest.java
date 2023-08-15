@@ -1,919 +1,1048 @@
 package org.opencds.cqf.cql.engine.execution;
 
+import org.hl7.elm.r1.VersionedIdentifier;
+import org.opencds.cqf.cql.engine.elm.executing.AfterEvaluator;
 import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator;
+import org.opencds.cqf.cql.engine.exception.CqlException;
+import org.opencds.cqf.cql.engine.exception.InvalidDateTime;
 import org.opencds.cqf.cql.engine.runtime.*;
-import org.opencds.cqf.cql.engine.runtime.Date;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.time.ZonedDateTime;
-import java.util.TimeZone;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
+@SuppressWarnings("removal")
 public class CqlDateTimeOperatorsTest extends CqlTestBase {
+
+    private static final VersionedIdentifier library = new VersionedIdentifier().withId("CqlDateTimeOperatorsTest");
+
+    /**
+     * {@link org.opencds.cqf.cql.engine.elm.execution.AddEvaluator#evaluate(Context)}
+     */
     @Test
-    public void test_all_date_time_tests() throws IOException {
-
-        EvaluationResult evaluationResult;
-        evaluationResult = engine.evaluate(toElmIdentifier("CqlDateTimeOperatorsTest"), ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, TimeZone.getDefault().toZoneId()));
-
-        Object result = evaluationResult.forExpression("DateTimeAdd5Years").value();
+    public void testAdd() {
+        Object result = engine.expression(library, "DateTimeAdd5Years").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2010, 10, 10)));
 
-        result = evaluationResult.forExpression("DateTimeAdd5Months").value();
+        try {
+            engine.expression(library, "DateTimeAddInvalidYears").value();
+            Assert.fail();
+        }
+        catch (InvalidDateTime ae) {
+            // pass
+        }
+
+        result = engine.expression(library, "DateTimeAdd5Months").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2005, 10, 10)));
 
-        result = evaluationResult.forExpression("DateTimeAddMonthsOverflow").value();
+        result = engine.expression(library, "DateTimeAddMonthsOverflow").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2006, 3, 10)));
 
-        result = evaluationResult.forExpression("DateTimeAddThreeWeeks").value();
+        result = engine.expression(library, "DateTimeAddThreeWeeks").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2018, 5, 23)));
 
-        result = evaluationResult.forExpression("DateTimeAddYearInWeeks").value();
+        result = engine.expression(library, "DateTimeAddYearInWeeks").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2019, 5, 23)));
 
-        result = evaluationResult.forExpression("DateTimeAdd5Days").value();
+        result = engine.expression(library, "DateTimeAdd5Days").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2005, 5, 15)));
 
-        result = evaluationResult.forExpression("DateTimeAddDaysOverflow").value();
+        result = engine.expression(library, "DateTimeAddDaysOverflow").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2016, 7, 1)));
 
-        result = evaluationResult.forExpression("DateTimeAdd5Hours").value();
+        result = engine.expression(library, "DateTimeAdd5Hours").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2005, 5, 10, 10)));
 
-        result = evaluationResult.forExpression("DateTimeAdd5HoursWithLeftMinPrecisionSecond").value();
+        result = engine.expression(library, "DateTimeAdd5HoursWithLeftMinPrecisionSecond").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2005, 5, 10, 10, 20, 30)));
 
-        result = evaluationResult.forExpression("DateTimeAdd5HoursWithLeftMinPrecisionDay").value();
+        result = engine.expression(library, "DateTimeAdd5HoursWithLeftMinPrecisionDay").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2005, 5, 10)));
 
-        result = evaluationResult.forExpression("DateTimeAdd5HoursWithLeftMinPrecisionDayOverflow").value();
+        result = engine.expression(library, "DateTimeAdd5HoursWithLeftMinPrecisionDayOverflow").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2005, 5, 11)));
 
-        result = evaluationResult.forExpression("DateAdd2YearsAsMonths").value();
+        result = engine.expression(library, "DateAdd2YearsAsMonths").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Date(2016)));
 
-        result = evaluationResult.forExpression("DateAdd2YearsAsMonthsRem1").value();
+        result = engine.expression(library, "DateAdd2YearsAsMonthsRem1").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Date(2016)));
 
-        result = evaluationResult.forExpression("DateAdd33Days").value();
+        result = engine.expression(library, "DateAdd33Days").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Date(2014,7)));
 
-        result = evaluationResult.forExpression("DateAdd1Year").value();
+        result = engine.expression(library, "DateAdd1Year").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Date(2015,6)));
 
-        result = evaluationResult.forExpression("DateTimeAddHoursOverflow").value();
+        result = engine.expression(library, "DateTimeAddHoursOverflow").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2016, 6, 11, 0)));
 
-        result = evaluationResult.forExpression("DateTimeAdd5Minutes").value();
+        result = engine.expression(library, "DateTimeAdd5Minutes").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2005, 5, 10, 5, 10)));
 
-        result = evaluationResult.forExpression("DateTimeAddMinutesOverflow").value();
+        result = engine.expression(library, "DateTimeAddMinutesOverflow").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2016, 6, 10, 6, 0)));
 
-        result = evaluationResult.forExpression("DateTimeAdd5Seconds").value();
+        result = engine.expression(library, "DateTimeAdd5Seconds").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2005, 5, 10, 5, 5, 10)));
 
-        result = evaluationResult.forExpression("DateTimeAddSecondsOverflow").value();
+        result = engine.expression(library, "DateTimeAddSecondsOverflow").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2016, 6, 10, 5, 6, 0)));
 
-        result = evaluationResult.forExpression("DateTimeAdd5Milliseconds").value();
+        result = engine.expression(library, "DateTimeAdd5Milliseconds").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2005, 5, 10, 5, 5, 5, 10)));
 
-        result = evaluationResult.forExpression("DateTimeAddMillisecondsOverflow").value();
+        result = engine.expression(library, "DateTimeAddMillisecondsOverflow").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2016, 6, 10, 5, 5, 6, 0)));
 
-        result = evaluationResult.forExpression("DateTimeAddLeapYear").value();
+        result = engine.expression(library, "DateTimeAddLeapYear").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2013, 2, 28)));
 
-        result = evaluationResult.forExpression("DateTimeAdd2YearsByMonths").value();
+        result = engine.expression(library, "DateTimeAdd2YearsByMonths").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2016)));
 
-        result = evaluationResult.forExpression("DateTimeAdd2YearsByDays").value();
+        result = engine.expression(library, "DateTimeAdd2YearsByDays").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2016)));
 
-        result = evaluationResult.forExpression("DateTimeAdd2YearsByDaysRem5Days").value();
+        result = engine.expression(library, "DateTimeAdd2YearsByDaysRem5Days").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2016)));
 
-        result = evaluationResult.forExpression("TimeAdd5Hours").value();
+        result = engine.expression(library, "TimeAdd5Hours").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(20, 59, 59, 999)));
 
-        result = evaluationResult.forExpression("TimeAdd1Minute").value();
+        result = engine.expression(library, "TimeAdd1Minute").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(16, 0, 59, 999)));
 
-        result = evaluationResult.forExpression("TimeAdd1Second").value();
+        result = engine.expression(library, "TimeAdd1Second").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(16, 0, 0, 999)));
 
-        result = evaluationResult.forExpression("TimeAdd1Millisecond").value();
+        result = engine.expression(library, "TimeAdd1Millisecond").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(16, 0, 0, 0)));
 
-        result = evaluationResult.forExpression("TimeAdd5Hours1Minute").value();
+        result = engine.expression(library, "TimeAdd5Hours1Minute").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(21, 0, 59, 999)));
 
         // checking access ordering and returning correct result
-        result = evaluationResult.forExpression("TimeAdd1Second").value();
+        result = engine.expression(library, "TimeAdd1Second").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(16, 0, 0, 999)));
 
-        result = evaluationResult.forExpression("TimeAdd5hoursByMinute").value();
+        result = engine.expression(library, "TimeAdd5hoursByMinute").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(20, 59, 59, 999)));
+    }
 
-        result = evaluationResult.forExpression("DateTimeAfterYearTrue").value();
+    /**
+     * {@link org.opencds.cqf.cql.engine.elm.execution.AfterEvaluator#evaluate(Context)}
+     */
+    @Test
+    public void testAfter() {
+
+        Object result = engine.expression(library, "DateTimeAfterYearTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeAfterYearFalse").value();
+        result = engine.expression(library, "DateTimeAfterYearFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeAfterMonthTrue").value();
+        result = engine.expression(library, "DateTimeAfterMonthTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeAfterMonthFalse").value();
+        result = engine.expression(library, "DateTimeAfterMonthFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeAfterDayTrue").value();
+        result = engine.expression(library, "DateTimeAfterDayTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeAfterDayTrue2").value();
+        result = engine.expression(library, "DateTimeAfterDayTrue2").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeAfterDayFalse").value();
+        result = engine.expression(library, "DateTimeAfterDayFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeAfterHourTrue").value();
+        result = engine.expression(library, "DateTimeAfterHourTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeAfterHourFalse").value();
+        result = engine.expression(library, "DateTimeAfterHourFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeAfterMinuteTrue").value();
+        result = engine.expression(library, "DateTimeAfterMinuteTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeAfterMinuteFalse").value();
+        result = engine.expression(library, "DateTimeAfterMinuteFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeAfterSecondTrue").value();
+        result = engine.expression(library, "DateTimeAfterSecondTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeAfterSecondFalse").value();
+        result = engine.expression(library, "DateTimeAfterSecondFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeAfterMillisecondTrue").value();
+        result = engine.expression(library, "DateTimeAfterMillisecondTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeAfterMillisecondFalse").value();
+        result = engine.expression(library, "DateTimeAfterMillisecondFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeAfterUncertain").value();
+        result = engine.expression(library, "DateTimeAfterUncertain").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("TimeAfterHourTrue").value();
+        result = engine.expression(library, "TimeAfterHourTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("TimeAfterHourFalse").value();
+        result = engine.expression(library, "TimeAfterHourFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("TimeAfterMinuteTrue").value();
+        result = engine.expression(library, "TimeAfterMinuteTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("TimeAfterMinuteFalse").value();
+        result = engine.expression(library, "TimeAfterMinuteFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("TimeAfterSecondTrue").value();
+        result = engine.expression(library, "TimeAfterSecondTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("TimeAfterSecondFalse").value();
+        result = engine.expression(library, "TimeAfterSecondFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("TimeAfterMillisecondTrue").value();
+        result = engine.expression(library, "TimeAfterMillisecondTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("TimeAfterMillisecondFalse").value();
+        result = engine.expression(library, "TimeAfterMillisecondFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("TimeAfterTimeCstor").value();
+        result = engine.expression(library, "TimeAfterTimeCstor").value();
+        assertThat(result, is(true));
+        try {
+            AfterEvaluator.after(12, "This is an error", null, engine.getState());
+            Assert.fail();
+        }
+        catch (CqlException e) {
+            // pass
+        }
+    }
+
+    /**
+     * {@link org.opencds.cqf.cql.engine.elm.execution.BeforeEvaluator#evaluate(Context)}
+     */
+    @Test
+    public void testBefore() {
+
+        Object result = engine.expression(library, "DateTimeBeforeYearTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeBeforeYearTrue").value();
-        assertThat(result, is(true));
-
-        result = evaluationResult.forExpression("DateTimeBeforeYearFalse").value();
+        result = engine.expression(library, "DateTimeBeforeYearFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeBeforeMonthTrue").value();
+        result = engine.expression(library, "DateTimeBeforeMonthTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeBeforeMonthFalse").value();
+        result = engine.expression(library, "DateTimeBeforeMonthFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeBeforeDayTrue").value();
+        result = engine.expression(library, "DateTimeBeforeDayTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeBeforeDayTrue2").value();
+        result = engine.expression(library, "DateTimeBeforeDayTrue2").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeBeforeDayFalse").value();
+        result = engine.expression(library, "DateTimeBeforeDayFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeBeforeHourTrue").value();
+        result = engine.expression(library, "DateTimeBeforeHourTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeBeforeHourFalse").value();
+        result = engine.expression(library, "DateTimeBeforeHourFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeBeforeMinuteTrue").value();
+        result = engine.expression(library, "DateTimeBeforeMinuteTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeBeforeMinuteFalse").value();
+        result = engine.expression(library, "DateTimeBeforeMinuteFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeBeforeSecondTrue").value();
+        result = engine.expression(library, "DateTimeBeforeSecondTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeBeforeSecondFalse").value();
+        result = engine.expression(library, "DateTimeBeforeSecondFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeBeforeMillisecondTrue").value();
+        result = engine.expression(library, "DateTimeBeforeMillisecondTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeBeforeMillisecondFalse").value();
+        result = engine.expression(library, "DateTimeBeforeMillisecondFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("BeforeTimezoneTrue").value();
+        result = engine.expression(library, "BeforeTimezoneTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("BeforeTimezoneFalse").value();
+        result = engine.expression(library, "BeforeTimezoneFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("TimeBeforeHourTrue").value();
+        result = engine.expression(library, "TimeBeforeHourTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("TimeBeforeHourFalse").value();
+        result = engine.expression(library, "TimeBeforeHourFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("TimeBeforeMinuteTrue").value();
+        result = engine.expression(library, "TimeBeforeMinuteTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("TimeBeforeMinuteFalse").value();
+        result = engine.expression(library, "TimeBeforeMinuteFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("TimeBeforeSecondTrue").value();
+        result = engine.expression(library, "TimeBeforeSecondTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("TimeBeforeSecondFalse").value();
+        result = engine.expression(library, "TimeBeforeSecondFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("TimeBeforeMillisecondTrue").value();
+        result = engine.expression(library, "TimeBeforeMillisecondTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("TimeBeforeMillisecondFalse").value();
+        result = engine.expression(library, "TimeBeforeMillisecondFalse").value();
         assertThat(result, is(false));
+    }
 
-        result = evaluationResult.forExpression("DateTimeYear").value();
+    /**
+     * {@link org.opencds.cqf.cql.engine.elm.execution.DateTimeEvaluator#evaluate(Context)}
+     */
+    @Test
+    public void testDateTime() {
+
+        Object result = engine.expression(library, "DateTimeYear").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2003)));
 
-        result = evaluationResult.forExpression("DateTimeMonth").value();
+        result = engine.expression(library, "DateTimeMonth").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2003, 10)));
 
-        result = evaluationResult.forExpression("DateTimeDay").value();
+        result = engine.expression(library, "DateTimeDay").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2003, 10, 29)));
 
-        result = evaluationResult.forExpression("DateTimeHour").value();
+        result = engine.expression(library, "DateTimeHour").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2003, 10, 29, 20)));
 
-        result = evaluationResult.forExpression("DateTimeMinute").value();
+        result = engine.expression(library, "DateTimeMinute").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2003, 10, 29, 20, 50)));
 
-        result = evaluationResult.forExpression("DateTimeSecond").value();
+        result = engine.expression(library, "DateTimeSecond").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2003, 10, 29, 20, 50, 33)));
 
-        result = evaluationResult.forExpression("DateTimeMillisecond").value();
+        result = engine.expression(library, "DateTimeMillisecond").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2003, 10, 29, 20, 50, 33, 955)));
+    }
 
-        result = evaluationResult.forExpression("DateTimeComponentFromYear").value();
+    /**
+     * {@link org.opencds.cqf.cql.engine.elm.execution.DateTimeComponentFromEvaluator#evaluate(Context)}
+     */
+    @Test
+    public void testDateTimeComponentFrom() {
+
+        Object result = engine.expression(library, "DateTimeComponentFromYear").value();
         assertThat(result, is(2003));
 
-        result = evaluationResult.forExpression("DateTimeComponentFromMonth").value();
+        result = engine.expression(library, "DateTimeComponentFromMonth").value();
         assertThat(result, is(10));
 
-        result = evaluationResult.forExpression("DateTimeComponentFromMonthMinBoundary").value();
+        result = engine.expression(library, "DateTimeComponentFromMonthMinBoundary").value();
         assertThat(result, is(1));
 
-        result = evaluationResult.forExpression("DateTimeComponentFromDay").value();
+        result = engine.expression(library, "DateTimeComponentFromDay").value();
         assertThat(result, is(29));
 
-        result = evaluationResult.forExpression("DateTimeComponentFromHour").value();
+        result = engine.expression(library, "DateTimeComponentFromHour").value();
         assertThat(result, is(20));
 
-        result = evaluationResult.forExpression("DateTimeComponentFromMinute").value();
+        result = engine.expression(library, "DateTimeComponentFromMinute").value();
         assertThat(result, is(50));
 
-        result = evaluationResult.forExpression("DateTimeComponentFromSecond").value();
+        result = engine.expression(library, "DateTimeComponentFromSecond").value();
         assertThat(result, is(33));
 
-        result = evaluationResult.forExpression("DateTimeComponentFromMillisecond").value();
+        result = engine.expression(library, "DateTimeComponentFromMillisecond").value();
         assertThat(result, is(955));
 
-        result = evaluationResult.forExpression("DateTimeComponentFromTimezone").value();
+        result = engine.expression(library, "DateTimeComponentFromTimezone").value();
         assertThat(result, is(new BigDecimal("1.0")));
 
-        result = evaluationResult.forExpression("DateTimeComponentFromDate").value();
+        result = engine.expression(library, "DateTimeComponentFromDate").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Date(2003, 10, 29)));
 
-        result = evaluationResult.forExpression("TimeComponentFromHour").value();
+        result = engine.expression(library, "TimeComponentFromHour").value();
         assertThat(result, is(23));
 
-        result = evaluationResult.forExpression("TimeComponentFromMinute").value();
+        result = engine.expression(library, "TimeComponentFromMinute").value();
         assertThat(result, is(20));
 
-        result = evaluationResult.forExpression("TimeComponentFromSecond").value();
+        result = engine.expression(library, "TimeComponentFromSecond").value();
         assertThat(result, is(15));
 
-        result = evaluationResult.forExpression("TimeComponentFromMilli").value();
+        result = engine.expression(library, "TimeComponentFromMilli").value();
         assertThat(result, is(555));
+    }
 
-        result = evaluationResult.forExpression("DateTimeDifferenceYear").value();
+    /**
+     * {@link org.opencds.cqf.cql.engine.elm.execution.DifferenceBetweenEvaluator#evaluate(Context)}
+     */
+    @Test
+    public void testDifference() {
+
+        Object result = engine.expression(library, "DateTimeDifferenceYear").value();
         assertThat(result, is(5));
 
-        result = evaluationResult.forExpression("DateTimeDifferenceMonth").value();
+        result = engine.expression(library, "DateTimeDifferenceMonth").value();
         assertThat(result, is(8));
 
-        result = evaluationResult.forExpression("DateTimeDifferenceDay").value();
+        result = engine.expression(library, "DateTimeDifferenceDay").value();
         assertThat(result, is(10));
 
-        result = evaluationResult.forExpression("DateTimeDifferenceHour").value();
+        result = engine.expression(library, "DateTimeDifferenceHour").value();
         assertThat(result, is(8));
 
-        result = evaluationResult.forExpression("DateTimeDifferenceMinute").value();
+        result = engine.expression(library, "DateTimeDifferenceMinute").value();
         assertThat(result, is(9));
 
-        result = evaluationResult.forExpression("DateTimeDifferenceSecond").value();
+        result = engine.expression(library, "DateTimeDifferenceSecond").value();
         assertThat(result, is(5));
 
-        result = evaluationResult.forExpression("DateTimeDifferenceMillisecond").value();
+        result = engine.expression(library, "DateTimeDifferenceMillisecond").value();
         assertThat(result, is(3600400));
 
-        result = evaluationResult.forExpression("DateTimeDifferenceWeeks").value();
+        result = engine.expression(library, "DateTimeDifferenceWeeks").value();
         assertThat(result, is(1));
 
-        result = evaluationResult.forExpression("DateTimeDifferenceWeeks2").value();
+        result = engine.expression(library, "DateTimeDifferenceWeeks2").value();
         assertThat(result, is(2));
 
-        result = evaluationResult.forExpression("DateTimeDifferenceWeeks2").value();
+        result = engine.expression(library, "DateTimeDifferenceWeeks2").value();
         assertThat(result, is(2));
 
-        result = evaluationResult.forExpression("DateTimeDifferenceNegative").value();
+        result = engine.expression(library, "DateTimeDifferenceNegative").value();
         assertThat(result, is(-18));
 
-        result = evaluationResult.forExpression("DateTimeDifferenceUncertain").value();
+        result = engine.expression(library, "DateTimeDifferenceUncertain").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("TimeDifferenceHour").value();
+        result = engine.expression(library, "TimeDifferenceHour").value();
         assertThat(result, is(3));
 
-        result = evaluationResult.forExpression("TimeDifferenceMinute").value();
+        result = engine.expression(library, "TimeDifferenceMinute").value();
         assertThat(result, is(5));
 
-        result = evaluationResult.forExpression("TimeDifferenceSecond").value();
+        result = engine.expression(library, "TimeDifferenceSecond").value();
         assertThat(result, is(5));
 
-        result = evaluationResult.forExpression("TimeDifferenceMillis").value();
+        result = engine.expression(library, "TimeDifferenceMillis").value();
         assertThat(result, is(-5));
 
-        result = evaluationResult.forExpression("DifferenceInHoursA").value();
+        result = engine.expression(library, "DifferenceInHoursA").value();
         assertThat(result, is(1));
 
-        result = evaluationResult.forExpression("DifferenceInMinutesA").value();
+        result = engine.expression(library, "DifferenceInMinutesA").value();
         assertThat(result, is(45));
 
-        result = evaluationResult.forExpression("DifferenceInDaysA").value();
+        result = engine.expression(library, "DifferenceInDaysA").value();
         assertThat(result, is(1));
 
-        result = evaluationResult.forExpression("DifferenceInHoursAA").value();
+        result = engine.expression(library, "DifferenceInHoursAA").value();
         assertThat(result, is(1));
 
-        result = evaluationResult.forExpression("DifferenceInMinutesAA").value();
+        result = engine.expression(library, "DifferenceInMinutesAA").value();
         assertThat(result, is(45));
 
-        result = evaluationResult.forExpression("DifferenceInDaysAA").value();
+        result = engine.expression(library, "DifferenceInDaysAA").value();
         assertThat(result, is(1));
+    }
 
-        result = evaluationResult.forExpression("DateTimeDurationBetweenYear").value();
+    /**
+     * {@link org.opencds.cqf.cql.engine.elm.execution.DurationBetweenEvaluator#evaluate(Context)}
+     */
+    @Test
+    public void testDuration() {
+
+        Object result = engine.expression(library, "DateTimeDurationBetweenYear").value();
         assertThat(result, is(5));
 
-        result = evaluationResult.forExpression("DurationInWeeks").value();
+        result = engine.expression(library, "DurationInWeeks").value();
         assertThat(result, is(1));
 
-        result = evaluationResult.forExpression("DurationInWeeks2").value();
+        result = engine.expression(library, "DurationInWeeks2").value();
         assertThat(result, is(1));
 
-        result = evaluationResult.forExpression("DurationInWeeks3").value();
+        result = engine.expression(library, "DurationInWeeks3").value();
         assertThat(result, is(2));
 
-        result = evaluationResult.forExpression("DateTimeDurationBetweenYearOffset").value();
+        result = engine.expression(library, "DateTimeDurationBetweenYearOffset").value();
         assertThat(result, is(4));
 
-        result = evaluationResult.forExpression("DateTimeDurationBetweenMonth").value();
+        result = engine.expression(library, "DateTimeDurationBetweenMonth").value();
         assertThat(result, is(0));
 
-        result = evaluationResult.forExpression("DateTimeDurationBetweenDaysDiffYears").value();
+        result = engine.expression(library, "DateTimeDurationBetweenDaysDiffYears").value();
         assertThat(result, is(-788));
 
-        result = evaluationResult.forExpression("DateTimeDurationBetweenUncertainInterval").value();
+        result = engine.expression(library, "DateTimeDurationBetweenUncertainInterval").value();
         Assert.assertTrue(((Interval)result).getStart().equals(17));
         Assert.assertTrue(((Interval)result).getEnd().equals(44));
 
-        result = evaluationResult.forExpression("DateTimeDurationBetweenUncertainInterval2").value();
+        result = engine.expression(library, "DateTimeDurationBetweenUncertainInterval2").value();
         Assert.assertTrue(((Interval)result).getStart().equals(5));
         Assert.assertTrue(((Interval)result).getEnd().equals(16));
 //        assertThat(((Uncertainty)result).getUncertaintyInterval(), is(new Interval(5, true, 17, true)));
 
-        result = evaluationResult.forExpression("DateTimeDurationBetweenUncertainAdd").value();
+        result = engine.expression(library, "DateTimeDurationBetweenUncertainAdd").value();
         Assert.assertTrue(((Interval)result).getStart().equals(34));
         Assert.assertTrue(((Interval)result).getEnd().equals(88));
 
-        result = evaluationResult.forExpression("DateTimeDurationBetweenUncertainSubtract").value();
+        result = engine.expression(library, "DateTimeDurationBetweenUncertainSubtract").value();
         Assert.assertTrue(((Interval)result).getStart().equals(12));
         Assert.assertTrue(((Interval)result).getEnd().equals(28));
 
-        result = evaluationResult.forExpression("DateTimeDurationBetweenUncertainMultiply").value();
+        result = engine.expression(library, "DateTimeDurationBetweenUncertainMultiply").value();
         Assert.assertTrue(((Interval)result).getStart().equals(289));
         Assert.assertTrue(((Interval)result).getEnd().equals(1936));
 
-        result = evaluationResult.forExpression("DateTimeDurationBetweenMonthUncertain").value();
+        try {
+            result = engine.expression(library, "DateTimeDurationBetweenUncertainDiv").value();
+            Assert.fail();
+        } catch (RuntimeException re) {
+            // pass
+        }
+
+        result = engine.expression(library, "DateTimeDurationBetweenMonthUncertain").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeDurationBetweenMonthUncertain2").value();
+        result = engine.expression(library, "DateTimeDurationBetweenMonthUncertain2").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.forExpression("DateTimeDurationBetweenMonthUncertain3").value();
+        result = engine.expression(library, "DateTimeDurationBetweenMonthUncertain3").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeDurationBetweenMonthUncertain4").value();
+        result = engine.expression(library, "DateTimeDurationBetweenMonthUncertain4").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeDurationBetweenMonthUncertain5").value();
+        result = engine.expression(library, "DateTimeDurationBetweenMonthUncertain5").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeDurationBetweenMonthUncertain6").value();
+        result = engine.expression(library, "DateTimeDurationBetweenMonthUncertain6").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeDurationBetweenMonthUncertain7").value();
+        result = engine.expression(library, "DateTimeDurationBetweenMonthUncertain7").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DurationInYears").value();
+        result = engine.expression(library, "DurationInYears").value();
         assertThat(result, is(1));
 
-        result = evaluationResult.forExpression("TimeDurationBetweenHour").value();
+        result = engine.expression(library, "TimeDurationBetweenHour").value();
         assertThat(result, is(2));
 
-        result = evaluationResult.forExpression("TimeDurationBetweenHourDiffPrecision").value();
+        result = engine.expression(library, "TimeDurationBetweenHourDiffPrecision").value();
         assertThat(result, is(1));
 
-        result = evaluationResult.forExpression("TimeDurationBetweenMinute").value();
+        result = engine.expression(library, "TimeDurationBetweenMinute").value();
         assertThat(result, is(4));
 
-        result = evaluationResult.forExpression("TimeDurationBetweenSecond").value();
+        result = engine.expression(library, "TimeDurationBetweenSecond").value();
         assertThat(result, is(4));
 
-        result = evaluationResult.forExpression("TimeDurationBetweenMillis").value();
+        result = engine.expression(library, "TimeDurationBetweenMillis").value();
         assertThat(result, is(5));
 
-        result = evaluationResult.forExpression("DurationInHoursA").value();
+        result = engine.expression(library, "DurationInHoursA").value();
         assertThat(result, is(1));
 
-        result = evaluationResult.forExpression("DurationInMinutesA").value();
+        result = engine.expression(library, "DurationInMinutesA").value();
         assertThat(result, is(45));
 
-//        result = evaluationResult.forExpression("DurationInDaysA").value();
+//        result = engine.expression(library, "DurationInDaysA").value();
 //        assertThat(result, is(1));
 
-        result = evaluationResult.forExpression("DurationInHoursAA").value();
+        result = engine.expression(library, "DurationInHoursAA").value();
         assertThat(result, is(1));
 
-        result = evaluationResult.forExpression("DurationInMinutesAA").value();
+        result = engine.expression(library, "DurationInMinutesAA").value();
         assertThat(result, is(45));
 
-        result = evaluationResult.forExpression("DurationInDaysAA").value();
+        result = engine.expression(library, "DurationInDaysAA").value();
         assertThat(result, is(1));
+    }
 
-        result = evaluationResult.forExpression("DateTimeNow").value();
+    /**
+     * {@link org.opencds.cqf.cql.engine.elm.execution.NowEvaluator#evaluate(Context)}
+     */
+    @Test
+    public void testNow() {
+
+        Object result = engine.expression(library, "DateTimeNow").value();
         assertThat(result, is(true));
 
         DateTime evaluationDateTime = new DateTime(null, 2016, 6, 10, 5, 5, 4, 999);
-        //context = new Context(library, evaluationDateTime.getDateTime().toZonedDateTime());
-        result = evaluationResult.forExpression("Issue34A").value();
-        //Assert.assertTrue(EquivalentEvaluator.equivalent(result, evaluationDateTime));
-        //Assert.assertTrue(((DateTime) result).getDateTime().getOffset().equals(evaluationDateTime.getDateTime().getOffset()));
+        result = engine.expression(library, "Issue34A", evaluationDateTime.getDateTime().toZonedDateTime()).value();
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, evaluationDateTime));
+        Assert.assertTrue(((DateTime) result).getDateTime().getOffset().equals(evaluationDateTime.getDateTime().getOffset()));
+    }
 
-        result = evaluationResult.forExpression("DateTimeSameAsYearTrue").value();
+    /**
+     * {@link org.opencds.cqf.cql.engine.elm.execution.SameAsEvaluator#evaluate(Context)}
+     */
+    @Test
+    public void testSameAs() {
+
+        Object result = engine.expression(library, "DateTimeSameAsYearTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameAsYearFalse").value();
+        result = engine.expression(library, "DateTimeSameAsYearFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeSameAsMonthTrue").value();
+        result = engine.expression(library, "DateTimeSameAsMonthTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameAsMonthFalse").value();
+        result = engine.expression(library, "DateTimeSameAsMonthFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeSameAsDayTrue").value();
+        result = engine.expression(library, "DateTimeSameAsDayTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameAsDayFalse").value();
+        result = engine.expression(library, "DateTimeSameAsDayFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeSameAsHourTrue").value();
+        result = engine.expression(library, "DateTimeSameAsHourTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameAsHourFalse").value();
+        result = engine.expression(library, "DateTimeSameAsHourFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeSameAsMinuteTrue").value();
+        result = engine.expression(library, "DateTimeSameAsMinuteTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameAsMinuteFalse").value();
+        result = engine.expression(library, "DateTimeSameAsMinuteFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeSameAsSecondTrue").value();
+        result = engine.expression(library, "DateTimeSameAsSecondTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameAsSecondFalse").value();
+        result = engine.expression(library, "DateTimeSameAsSecondFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeSameAsMillisecondTrue").value();
+        result = engine.expression(library, "DateTimeSameAsMillisecondTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameAsMillisecondFalse").value();
+        result = engine.expression(library, "DateTimeSameAsMillisecondFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeSameAsNull").value();
+        result = engine.expression(library, "DateTimeSameAsNull").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.forExpression("SameAsTimezoneTrue").value();
+        result = engine.expression(library, "SameAsTimezoneTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("SameAsTimezoneFalse").value();
+        result = engine.expression(library, "SameAsTimezoneFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("TimeSameAsHourTrue").value();
+        result = engine.expression(library, "TimeSameAsHourTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("TimeSameAsHourFalse").value();
+        result = engine.expression(library, "TimeSameAsHourFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("TimeSameAsMinuteTrue").value();
+        result = engine.expression(library, "TimeSameAsMinuteTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("TimeSameAsMinuteFalse").value();
+        result = engine.expression(library, "TimeSameAsMinuteFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("TimeSameAsSecondTrue").value();
+        result = engine.expression(library, "TimeSameAsSecondTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("TimeSameAsSecondFalse").value();
+        result = engine.expression(library, "TimeSameAsSecondFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("TimeSameAsMillisTrue").value();
+        result = engine.expression(library, "TimeSameAsMillisTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("TimeSameAsMillisFalse").value();
+        result = engine.expression(library, "TimeSameAsMillisFalse").value();
+        assertThat(result, is(false));
+    }
+
+    /**
+     * {@link org.opencds.cqf.cql.engine.elm.execution.SameOrAfterEvaluator#evaluate(Context)}
+     */
+    @Test
+    public void testSameOrAfter() {
+        Object result = engine.expression(library, "DateTimeSameOrAfterYearTrue1").value();
+        assertThat(result, is(true));
+
+        result = engine.expression(library, "DateTimeSameOrAfterYearTrue2").value();
+        assertThat(result, is(true));
+
+        result = engine.expression(library, "DateTimeSameOrAfterYearFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeSameOrAfterYearTrue1").value();
+        result = engine.expression(library, "DateTimeSameOrAfterMonthTrue1").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrAfterYearTrue2").value();
+        result = engine.expression(library, "DateTimeSameOrAfterMonthTrue2").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrAfterYearFalse").value();
+        result = engine.expression(library, "DateTimeSameOrAfterMonthFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeSameOrAfterMonthTrue1").value();
+        result = engine.expression(library, "DateTimeSameOrAfterDayTrue1").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrAfterMonthTrue2").value();
+        result = engine.expression(library, "DateTimeSameOrAfterDayTrue2").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrAfterMonthFalse").value();
+        result = engine.expression(library, "DateTimeSameOrAfterDayFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeSameOrAfterDayTrue1").value();
+        result = engine.expression(library, "DateTimeSameOrAfterHourTrue1").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrAfterDayTrue2").value();
+        result = engine.expression(library, "DateTimeSameOrAfterHourTrue2").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrAfterDayFalse").value();
+        result = engine.expression(library, "DateTimeSameOrAfterHourFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeSameOrAfterHourTrue1").value();
+        result = engine.expression(library, "DateTimeSameOrAfterMinuteTrue1").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrAfterHourTrue2").value();
+        result = engine.expression(library, "DateTimeSameOrAfterMinuteTrue2").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrAfterHourFalse").value();
+        result = engine.expression(library, "DateTimeSameOrAfterMinuteFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeSameOrAfterMinuteTrue1").value();
+        result = engine.expression(library, "DateTimeSameOrAfterSecondTrue1").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrAfterMinuteTrue2").value();
+        result = engine.expression(library, "DateTimeSameOrAfterSecondTrue2").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrAfterMinuteFalse").value();
+        result = engine.expression(library, "DateTimeSameOrAfterSecondFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeSameOrAfterSecondTrue1").value();
+        result = engine.expression(library, "DateTimeSameOrAfterMillisecondTrue1").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrAfterSecondTrue2").value();
+        result = engine.expression(library, "DateTimeSameOrAfterMillisecondTrue2").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrAfterSecondFalse").value();
+        result = engine.expression(library, "DateTimeSameOrAfterMillisecondFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeSameOrAfterMillisecondTrue1").value();
-        assertThat(result, is(true));
-
-        result = evaluationResult.forExpression("DateTimeSameOrAfterMillisecondTrue2").value();
-        assertThat(result, is(true));
-
-        result = evaluationResult.forExpression("DateTimeSameOrAfterMillisecondFalse").value();
-        assertThat(result, is(false));
-
-        result = evaluationResult.forExpression("DateTimeSameOrAfterNull1").value();
+        result = engine.expression(library, "DateTimeSameOrAfterNull1").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.forExpression("SameOrAfterTimezoneTrue").value();
+        result = engine.expression(library, "SameOrAfterTimezoneTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("SameOrAfterTimezoneFalse").value();
+        result = engine.expression(library, "SameOrAfterTimezoneFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("TimeSameOrAfterHourTrue1").value();
+        result = engine.expression(library, "TimeSameOrAfterHourTrue1").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("TimeSameOrAfterHourTrue2").value();
+        result = engine.expression(library, "TimeSameOrAfterHourTrue2").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("TimeSameOrAfterHourFalse").value();
+        result = engine.expression(library, "TimeSameOrAfterHourFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("TimeSameOrAfterMinuteTrue1").value();
+        result = engine.expression(library, "TimeSameOrAfterMinuteTrue1").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("TimeSameOrAfterMinuteTrue2").value();
+        result = engine.expression(library, "TimeSameOrAfterMinuteTrue2").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("TimeSameOrAfterMinuteFalse").value();
+        result = engine.expression(library, "TimeSameOrAfterMinuteFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("TimeSameOrAfterSecondTrue1").value();
+        result = engine.expression(library, "TimeSameOrAfterSecondTrue1").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("TimeSameOrAfterSecondTrue2").value();
+        result = engine.expression(library, "TimeSameOrAfterSecondTrue2").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("TimeSameOrAfterSecondFalse").value();
+        result = engine.expression(library, "TimeSameOrAfterSecondFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("TimeSameOrAfterMillisTrue1").value();
+        result = engine.expression(library, "TimeSameOrAfterMillisTrue1").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("TimeSameOrAfterMillisTrue2").value();
+        result = engine.expression(library, "TimeSameOrAfterMillisTrue2").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("TimeSameOrAfterMillisFalse").value();
+        result = engine.expression(library, "TimeSameOrAfterMillisFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("OnOrAfterTrue").value();
+        result = engine.expression(library, "OnOrAfterTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("Issue32DateTime").value();
+        result = engine.expression(library, "Issue32DateTime").value();
+        assertThat(result, is(true));
+    }
+
+    /**
+     * {@link org.opencds.cqf.cql.engine.elm.execution.SameOrBeforeEvaluator#evaluate(Context)}
+     */
+    @Test
+    public void testSameOrBefore() {
+        Object result = engine.expression(library, "DateTimeSameOrBeforeYearTrue1").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeYearTrue1").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeYearTrue2").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeYearTrue2").value();
-        assertThat(result, is(true));
-
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeYearFalse").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeYearFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeMonthTrue1").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeMonthTrue1").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeMonthTrue2").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeMonthTrue2").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeMonthFalse").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeMonthFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeDayTrue1").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeDayTrue1").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeDayTrue2").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeDayTrue2").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeDayFalse").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeDayFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeHourTrue1").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeHourTrue1").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeHourTrue2").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeHourTrue2").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeHourFalse").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeHourFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeMinuteTrue1").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeMinuteTrue1").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeMinuteTrue2").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeMinuteTrue2").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeMinuteFalse").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeMinuteFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeSecondTrue1").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeSecondTrue1").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeSecondTrue2").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeSecondTrue2").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeSecondFalse").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeSecondFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeMillisecondTrue1").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeMillisecondTrue1").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeMillisecondTrue2").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeMillisecondTrue2").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeMillisecondFalse").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeMillisecondFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeNull1").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeNull1").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.forExpression("SameOrBeforeTimezoneTrue").value();
+        result = engine.expression(library, "SameOrBeforeTimezoneTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("SameOrBeforeTimezoneFalse").value();
+        result = engine.expression(library, "SameOrBeforeTimezoneFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeYearTrue1").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeYearTrue1").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeYearTrue2").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeYearTrue2").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeYearFalse").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeYearFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeYearTrue1").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeYearTrue1").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeYearTrue2").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeYearTrue2").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeYearFalse").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeYearFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeYearTrue1").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeYearTrue1").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeYearTrue2").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeYearTrue2").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeYearFalse").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeYearFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeYearTrue1").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeYearTrue1").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeYearTrue2").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeYearTrue2").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeYearFalse").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeYearFalse").value();
         assertThat(result, is(false));
+    }
 
-        result = evaluationResult.forExpression("DateTimeSubtract5Years").value();
+    /**
+     * {@link org.opencds.cqf.cql.engine.elm.execution.SubtractEvaluator#evaluate(Context)}
+     */
+    @Test
+    public void testSubtract() {
+
+        Object result = engine.expression(library, "DateTimeSubtract5Years").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2000, 10, 10)));
 
-        result = evaluationResult.forExpression("DateTimeSubtract5Months").value();
+        try {
+            engine.expression(library, "DateTimeSubtractInvalidYears").value();
+            Assert.fail();
+        } catch (InvalidDateTime ae) {
+            // pass
+        }
+
+        result = engine.expression(library, "DateTimeSubtract5Months").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2005, 1, 10)));
 
-        result = evaluationResult.forExpression("DateTimeSubtractMonthsUnderflow").value();
+        result = engine.expression(library, "DateTimeSubtractMonthsUnderflow").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2004, 11, 10)));
 
-        result = evaluationResult.forExpression("DateTimeSubtractThreeWeeks").value();
+        result = engine.expression(library, "DateTimeSubtractThreeWeeks").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2018, 5, 2)));
 
-        result = evaluationResult.forExpression("DateTimeSubtractYearInWeeks").value();
+        result = engine.expression(library, "DateTimeSubtractYearInWeeks").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2017, 5, 23)));
 
-        result = evaluationResult.forExpression("DateTimeSubtract5Days").value();
+        result = engine.expression(library, "DateTimeSubtract5Days").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2005, 5, 5)));
 
-        result = evaluationResult.forExpression("DateTimeSubtractDaysUnderflow").value();
+        result = engine.expression(library, "DateTimeSubtractDaysUnderflow").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2016, 5, 30)));
 
-        result = evaluationResult.forExpression("DateTimeSubtract5Hours").value();
+        result = engine.expression(library, "DateTimeSubtract5Hours").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2005, 5, 10, 5)));
 
-        result = evaluationResult.forExpression("DateTimeSubtractHoursUnderflow").value();
+        result = engine.expression(library, "DateTimeSubtractHoursUnderflow").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2016, 6, 9, 23)));
 
-        result = evaluationResult.forExpression("DateTimeSubtract5Minutes").value();
+        result = engine.expression(library, "DateTimeSubtract5Minutes").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2005, 5, 10, 5, 5)));
 
-        result = evaluationResult.forExpression("DateTimeSubtractMinutesUnderflow").value();
+        result = engine.expression(library, "DateTimeSubtractMinutesUnderflow").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2016, 6, 10, 4, 59)));
 
-        result = evaluationResult.forExpression("DateTimeSubtract5Seconds").value();
+        result = engine.expression(library, "DateTimeSubtract5Seconds").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2005, 5, 10, 5, 5, 5)));
 
-        result = evaluationResult.forExpression("DateTimeSubtract1YearInSeconds").value();
+        result = engine.expression(library, "DateTimeSubtract1YearInSeconds").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2015, 5)));
 
-        result = evaluationResult.forExpression("DateTimeSubtract15HourPrecisionSecond").value();
+        result = engine.expression(library, "DateTimeSubtract15HourPrecisionSecond").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2016, 9, 30, 19, 20, 30)));
 
 
-        result = evaluationResult.forExpression("DateTimeSubtractSecondsUnderflow").value();
+        result = engine.expression(library, "DateTimeSubtractSecondsUnderflow").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2016, 6, 10, 5, 4, 59)));
 
-        result = evaluationResult.forExpression("DateTimeSubtract5Milliseconds").value();
+        result = engine.expression(library, "DateTimeSubtract5Milliseconds").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2005, 5, 10, 5, 5, 5, 5)));
 
-        result = evaluationResult.forExpression("DateTimeSubtractMillisecondsUnderflow").value();
+        result = engine.expression(library, "DateTimeSubtractMillisecondsUnderflow").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2016, 6, 10, 5, 5, 4, 999)));
 
-        result = evaluationResult.forExpression("DateTimeSubtract2YearsAsMonths").value();
+        result = engine.expression(library, "DateTimeSubtract2YearsAsMonths").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2012)));
 
-        result = evaluationResult.forExpression("DateTimeSubtract2YearsAsMonthsRem1").value();
+        result = engine.expression(library, "DateTimeSubtract2YearsAsMonthsRem1").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2012)));
 
-        result = evaluationResult.forExpression("DateSubtract2YearsAsMonthsRem1").value();
+        result = engine.expression(library, "DateSubtract2YearsAsMonthsRem1").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Date(2012)));
 
-        result = evaluationResult.forExpression("DateSubtract2YearsAsMonths").value();
+        result = engine.expression(library, "DateSubtract2YearsAsMonths").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Date(2012)));
 
-        result = evaluationResult.forExpression("DateSubtract33Days").value();
+        result = engine.expression(library, "DateSubtract33Days").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Date(2014,5)));
 
-        result = evaluationResult.forExpression("DateSubtract1Year").value();
+        result = engine.expression(library, "DateSubtract1Year").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Date(2013,6)));
 
-        result = evaluationResult.forExpression("TimeSubtract5Hours").value();
+        result = engine.expression(library, "TimeSubtract5Hours").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(10, 59, 59, 999)));
 
-        result = evaluationResult.forExpression("TimeSubtract1Minute").value();
+        result = engine.expression(library, "TimeSubtract1Minute").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(15, 58, 59, 999)));
 
-        result = evaluationResult.forExpression("TimeSubtract1Second").value();
+        result = engine.expression(library, "TimeSubtract1Second").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(15, 59, 58, 999)));
 
-        result = evaluationResult.forExpression("TimeSubtract1Millisecond").value();
+        result = engine.expression(library, "TimeSubtract1Millisecond").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(15, 59, 58, 999)));
 
-        result = evaluationResult.forExpression("TimeSubtract5Hours1Minute").value();
+        result = engine.expression(library, "TimeSubtract5Hours1Minute").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(10, 58, 59, 999)));
 
-        result = evaluationResult.forExpression("TimeSubtract5hoursByMinute").value();
+        result = engine.expression(library, "TimeSubtract5hoursByMinute").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(10, 59, 59, 999)));
+    }
 
-        result = evaluationResult.forExpression("TimeTest2").value();
+    /**
+     * {@link org.opencds.cqf.cql.engine.elm.execution.TimeEvaluator#evaluate(Context)}
+     */
+    @Test
+    public void testTime() {
+
+        Object result = engine.expression(library, "TimeTest2").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(23, 59, 59, 999)));
+    }
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeTodayTrue1").value();
+    /**
+     * {@link org.opencds.cqf.cql.engine.elm.execution.TimeOfDayEvaluator#evaluate(Context)}
+     */
+    @Test
+    public void testTimeOfDay() {
+        // TODO: uncomment once Time(x,x,x,x,x) format is fixed
+        //Context context = new Context(library);
+        // Object result = engine.expression(library, "TimeOfDayTest").value();
+        // assertThat(((Time)result).getPartial().getValue(0), is(10));
+    }
+
+    /**
+     * {@link org.opencds.cqf.cql.engine.elm.execution.TodayEvaluator#evaluate(Context)}
+     */
+    @Test
+    public void testToday() {
+
+        Object result = engine.expression(library, "DateTimeSameOrBeforeTodayTrue1").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeTodayTrue2").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeTodayTrue2").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("DateTimeSameOrBeforeTodayFalse").value();
+        result = engine.expression(library, "DateTimeSameOrBeforeTodayFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.forExpression("DateTimeAddTodayTrue").value();
+        result = engine.expression(library, "DateTimeAddTodayTrue").value();
         assertThat(result, is(true));
 
 //        context = new Context(library, new DateTime(TemporalHelper.getDefaultOffset(), 2016, 6, 10, 5, 5, 4, 999));
-//        result = evaluationResult.forExpression("Issue34B").value();
+//        result = engine.expression(library, "Issue34B").value();
 //        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2016, 6, 10)));
 //        Assert.assertTrue(((DateTime) result).getDateTime().getOffset().equals(TemporalHelper.getDefaultZoneOffset()));
-
-
     }
 }
