@@ -248,11 +248,11 @@ public class CqlEngine {
         var library = this.environment.getLibraryManager().resolveLibrary(libraryIdentifier, errors).getLibrary();
 
         if (library == null) {
-            throw new IllegalArgumentException(String.format("Unable to load library %s", libraryIdentifier.getId() + (libraryIdentifier.getVersion() != null ? "-" + libraryIdentifier.getVersion() : "")));
+            throw new CqlException(String.format("Unable to load library %s", libraryIdentifier.getId() + (libraryIdentifier.getVersion() != null ? "-" + libraryIdentifier.getVersion() : "")));
         }
 
         if (CqlCompilerException.hasErrors(errors)) {
-            throw new IllegalArgumentException(String.format("library %s loaded, but had errors", libraryIdentifier.getId() + (libraryIdentifier.getVersion() != null ? "-" + libraryIdentifier.getVersion() : "")));
+            throw new CqlException(String.format("library %s loaded, but had errors", libraryIdentifier.getId() + (libraryIdentifier.getVersion() != null ? "-" + libraryIdentifier.getVersion() : "")));
         }
 
         if (this.engineOptions.contains(Options.EnableValidation)) {
