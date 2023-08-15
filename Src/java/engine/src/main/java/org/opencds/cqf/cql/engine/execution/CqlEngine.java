@@ -102,8 +102,7 @@ public class CqlEngine {
      */
     @Deprecated(forRemoval = true)
     public ExpressionResult expression(VersionedIdentifier libraryIdentifier, String expressionName) {
-        var result = this.evaluate(libraryIdentifier, Set.of(expressionName));
-        return result.forExpression(expressionName);
+        return this.expression(libraryIdentifier, expressionName, null);
     }
 
     // TODO: Add debugging info as a parameter.

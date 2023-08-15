@@ -10,6 +10,7 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 
+@SuppressWarnings("removal")
 public class ExpressionCacheTest extends CqlTestBase {
 
     @Test
