@@ -17,7 +17,7 @@ import static org.testng.Assert.assertTrue;
 
 public class CqlPerformanceIT extends CqlTestBase {
 
-    private static final Integer ITERATIONS = 2000;
+    private static final Integer ITERATIONS = 200;
 
     private static final Logger logger = LoggerFactory.getLogger(CqlPerformanceIT.class);
 

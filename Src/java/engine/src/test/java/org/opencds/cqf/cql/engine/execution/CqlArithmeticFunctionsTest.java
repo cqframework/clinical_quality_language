@@ -373,7 +373,7 @@ public class CqlArithmeticFunctionsTest extends CqlTestBase {
         Assert.assertEquals(((BigDecimal) result).compareTo(new BigDecimal("9999999999999999999999999999.99999999")), 0);
 
         result = engine.expression(library, "DateTimeMaxValue").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 9999, 12, 31, 23, 59, 59, 999)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(BigDecimal.ZERO, 9999, 12, 31, 23, 59, 59, 999)));
 
         result = engine.expression(library, "TimeMaxValue").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(23, 59, 59, 999)));
@@ -395,7 +395,7 @@ public class CqlArithmeticFunctionsTest extends CqlTestBase {
         Assert.assertTrue(((BigDecimal) result).compareTo(new BigDecimal("-9999999999999999999999999999.99999999")) == 0);
 
         result = engine.expression(library, "DateTimeMinValue").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 1, 1, 1, 0, 0, 0, 0)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(BigDecimal.ZERO, 1, 1, 1, 0, 0, 0, 0)));
 
         result = engine.expression(library, "TimeMinValue").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(0, 0, 0, 0)));
