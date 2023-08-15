@@ -3,7 +3,7 @@ package org.opencds.cqf.cql.engine.execution;
 import static org.testng.Assert.assertEquals;
 
 import org.hl7.elm.r1.VersionedIdentifier;
-import org.junit.Ignore;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 @SuppressWarnings("removal")
