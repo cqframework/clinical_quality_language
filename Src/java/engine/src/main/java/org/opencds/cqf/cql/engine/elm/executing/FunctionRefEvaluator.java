@@ -115,7 +115,7 @@ public class FunctionRefEvaluator {
     private static String getUnresolvedMessage(State state, List<? extends Object> arguments, String name) {
         StringBuilder argStr = new StringBuilder();
         if (arguments != null) {
-            arguments.forEach(a -> argStr.append((argStr.length() > 0) ? ", " : "").append(state.getEnvironment().resolveType(a).getName()));
+            arguments.forEach(a -> argStr.append((argStr.length() > 0) ? ", " : "").append(state.getEnvironment().resolveType(a).getTypeName()));
         }
 
         return argStr.toString();

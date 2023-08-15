@@ -636,12 +636,6 @@ public class SemanticTests {
         CqlTranslator translator = TestUtils.runSemanticTest("TestQuotedForwards.cql", 0);
     }
 
-    @Test
-    @Ignore("bug discovered during 3.0 release, test added to track it")
-    public void TestCircularReference() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("TestCircularReference.cql", 0);
-    }
-
     private CqlTranslator runSemanticTest(String testFileName) throws IOException {
         return runSemanticTest(testFileName, 0);
     }

@@ -12,6 +12,8 @@ import java.util.*;
 
 public class CqlMainSuiteTest extends CqlTestBase {
 
+    private static final ZonedDateTime evalTime = ZonedDateTime.of(2018, 1, 1, 7, 0, 0, 0, TimeZone.getDefault().toZoneId());
+
     @Test
     public void test_cql_main_test_suite_compiles() {
         var errors = new ArrayList<CqlCompilerException>();
@@ -25,7 +27,7 @@ public class CqlMainSuiteTest extends CqlTestBase {
         // TODO: It'd be interesting to be able to inspect the
         // possible set of expressions from the CQL engine API
         // prior to evaluating them all
-        var result = e.evaluate(toElmIdentifier("CqlTestSuite"), ZonedDateTime.of(2018, 1, 1, 7, 0, 0, 0, TimeZone.getDefault().toZoneId()));
+        var result = e.evaluate(toElmIdentifier("CqlTestSuite"), evalTime);
 
         for (var entry : result.expressionResults.entrySet()) {
             if(entry.getKey().toString().startsWith("test")) {
@@ -46,6 +48,7 @@ public class CqlMainSuiteTest extends CqlTestBase {
         // turned off for CQL.
         options.getOptions().remove(CqlCompilerOptions.Options.DisableListDemotion);
         options.getOptions().remove(CqlCompilerOptions.Options.DisableListPromotion);
+
         return options;
     }
 

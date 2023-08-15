@@ -19,34 +19,39 @@ public class EngineFailedTests extends CqlTestBase {
         Environment environment = new Environment(getLibraryManager());
         CqlEngine engine = new CqlEngine(environment);
 
-        EvaluationResult evaluationResult;
+        EvaluationResult evaluationResult = null;
 
         try{
             evaluationResult = engine.evaluate(toElmIdentifier("CqlAllFailedTests"), Set.of("Exp1000"));
+            Assert.fail();
         }catch(UndefinedResult ae){
             assertThat(ae.getMessage(),is("Results in positive infinity"));
         }
 
         try{
             evaluationResult = engine.evaluate(toElmIdentifier("CqlAllFailedTests"), Set.of("Exp1000D"));
+            Assert.fail();
         }catch(UndefinedResult ae){
             assertThat(ae.getMessage(),is("Results in positive infinity"));
         }
 
         try{
             evaluationResult = engine.evaluate(toElmIdentifier("CqlAllFailedTests"), Set.of("Ln0"), null, null, null, null);
+            Assert.fail();
         }catch(UndefinedResult ae){
             assertThat(ae.getMessage(),is("Results in negative infinity"));
         }
 
         try{
             evaluationResult = engine.evaluate(toElmIdentifier("CqlAllFailedTests"), Set.of("LnNeg0"), null, null, null, null);
+            Assert.fail();
         }catch(UndefinedResult ae){
             assertThat(ae.getMessage(),is("Results in negative infinity"));
         }
 
         try{
             evaluationResult = engine.evaluate(toElmIdentifier("CqlAllFailedTests"), Set.of("PredecessorUnderflowDt"), null, null, null, null);
+            Assert.fail();
         }catch(RuntimeException re){
             assertThat(re.getMessage(),is("The year: 0 falls below the accepted bounds of 0001-9999."));
         }
@@ -101,13 +106,14 @@ public class EngineFailedTests extends CqlTestBase {
 
         try {
             evaluationResult = engine.evaluate(toElmIdentifier("CqlAllFailedTests"), Set.of("TestMessageError"), null, null, null, null);
-
+            Assert.fail();
         } catch (RuntimeException re) {
             Assert.assertEquals(re.getMessage(), String.format("400: This is an error!%n"));
         }
 
         try {
             evaluationResult = engine.evaluate(toElmIdentifier("CqlAllFailedTests"), Set.of("TestErrorWithNullSource"), null, null, null, null);
+            Assert.fail();
         }
         catch (RuntimeException re) {
             Assert.assertEquals(re.getMessage(), String.format("1: This is a message%nnull"));
@@ -115,6 +121,7 @@ public class EngineFailedTests extends CqlTestBase {
 
         try {
             evaluationResult = engine.evaluate(toElmIdentifier("CqlAllFailedTests"), Set.of("TestErrorWithNullCondition"), null, null, null, null);
+            Assert.fail();
         }
         catch (RuntimeException re) {
             Assert.assertEquals(re.getMessage(), String.format("1: This is a message%n"));
@@ -122,6 +129,7 @@ public class EngineFailedTests extends CqlTestBase {
 
         try {
             evaluationResult = engine.evaluate(toElmIdentifier("CqlAllFailedTests"), Set.of("TestErrorWithNullCode"), null, null, null, null);
+            Assert.fail();
         }
         catch (RuntimeException re) {
             Assert.assertEquals(re.getMessage(), String.format("This is a message%n"));
@@ -129,14 +137,11 @@ public class EngineFailedTests extends CqlTestBase {
 
         try {
             evaluationResult = engine.evaluate(toElmIdentifier("CqlAllFailedTests"), Set.of("TestErrorWithNullMessage"), null, null, null, null);
+            Assert.fail();
         }
         catch (RuntimeException re) {
             Assert.assertEquals(re.getMessage(), String.format("1: null%n"));
         }
-
     }
-
-
-
 }
 

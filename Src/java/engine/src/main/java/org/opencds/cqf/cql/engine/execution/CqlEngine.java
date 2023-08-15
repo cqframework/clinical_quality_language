@@ -187,8 +187,17 @@ public class CqlEngine {
             }
 
             // TODO: How do we want to return handle errors?
-            Object object = this.evaluationVisitor.visitExpressionDef(def, this.state);
-            result.expressionResults.put(expression, new ExpressionResult(object, this.state.getEvaluatedResources()));
+            try {
+                Object object = this.evaluationVisitor.visitExpressionDef(def, this.state);
+                result.expressionResults.put(expression, new ExpressionResult(object, this.state.getEvaluatedResources()));
+            }
+            catch(CqlException ce) {
+                processException(ce, def);
+            }
+            catch(Exception e) {
+                processException(e, def, String.format("Error evaluating expression: %s", expression));
+            }
+
         }
 
         result.setDebugResult(this.state.getDebugResult());
@@ -276,28 +285,22 @@ public class CqlEngine {
         return expressionNames;
     }
 
-    // TODO: pre/post visit to set state for this stuff. Needs to be universal
-    // May need to introduce a "traverser" concept
-    // Alternatively, we give CqlException the ability to set their own source locators.
-    public void processException(Exception e, Element element) {
-        if (e instanceof CqlException) {
-            CqlException ce = (CqlException) e;
-            if (ce.getSourceLocator() == null) {
-                ce.setSourceLocator(SourceLocator.fromNode(element, null));
-                DebugAction action = state.shouldDebug(ce);
-                if (action != DebugAction.NONE) {
-                    state.logDebugError(ce);
-                }
-            }
-            throw (RuntimeException) (e);
-        } else {
-            CqlException ce = new CqlException(e, SourceLocator.fromNode(element, null));
-            DebugAction action = state.shouldDebug(ce);
+    public void processException(CqlException e, Element element) {
+        if (e.getSourceLocator() == null) {
+            e.setSourceLocator(SourceLocator.fromNode(element, null));
+            DebugAction action = state.shouldDebug(e);
             if (action != DebugAction.NONE) {
-                state.logDebugError(ce);
+                state.logDebugError(e);
             }
-            throw (RuntimeException) ce;
         }
     }
 
+    public void processException(Exception e, Element element, String message) {
+        CqlException ce = new CqlException(message, e, SourceLocator.fromNode(element, null));
+        DebugAction action = state.shouldDebug(ce);
+        if (action != DebugAction.NONE) {
+            state.logDebugError(ce);
+        }
+        throw ce;
+    }
 }
