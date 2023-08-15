@@ -87,7 +87,9 @@ public class CqlEngine {
      */
     @Deprecated(forRemoval = true)
     public ExpressionResult expression(VersionedIdentifier libraryIdentifier, String expressionName, ZonedDateTime evaluationDateTime) {
-        var result = this.evaluate(libraryIdentifier, Set.of(expressionName), null, null, null, evaluationDateTime);
+        var set = new HashSet<String>();
+        set.add(expressionName);
+        var result = this.evaluate(libraryIdentifier, set, null, null, null, evaluationDateTime);
         return result.forExpression(expressionName);
     }
 
