@@ -13,13 +13,13 @@ public class LetClauseOutsideQueryContextTest extends CqlTestBase {
 
         EvaluationResult evaluationResult;
 
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("LetClauseOutsideQueryContextTest"));
+        evaluationResult = engine.evaluate(toElmIdentifier("LetClauseOutsideQueryContextTest"));
 
 
-        Object result = evaluationResult.expressionResults.get("First Position of list").value();
+        Object result = evaluationResult.forExpression("First Position of list").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(0), 1));
 
-        result = evaluationResult.expressionResults.get("Third Position of list With Same Name of Let As First").value();
+        result = evaluationResult.forExpression("Third Position of list With Same Name of Let As First").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(0), 3));
     }
 }

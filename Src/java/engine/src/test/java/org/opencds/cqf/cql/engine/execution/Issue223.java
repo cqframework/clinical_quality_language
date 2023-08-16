@@ -15,13 +15,13 @@ public class Issue223 extends CqlTestBase {
 
         EvaluationResult evaluationResult;
 
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("Issue223"));
-        Object result = evaluationResult.expressionResults.get("Access Flattened List of List Items").value();
+        evaluationResult = engine.evaluate(toElmIdentifier("Issue223"));
+        Object result = evaluationResult.forExpression("Access Flattened List of List Items").value();
         List<?> list = (List<?>)result;
         assertThat(list.size(), is(1));
         assertThat(list.get(0), is(true));
 
-        result = evaluationResult.expressionResults.get("Access Flattened List of List Items in a Single Query").value();
+        result = evaluationResult.forExpression("Access Flattened List of List Items in a Single Query").value();
         list = (List<?>)result;
         assertThat(list.size(), is(1));
         assertThat(list.get(0), is(true));

@@ -1,5 +1,6 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import org.cqframework.cql.elm.visiting.ElmLibraryVisitor;
 import org.hl7.elm.r1.Expression;
 import org.hl7.elm.r1.Literal;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
@@ -50,7 +51,7 @@ public class NegateEvaluator {
         );
     }
 
-    public static Object internalEvaluate(Expression operand, State state, CqlEngine visitor) {
+    public static Object internalEvaluate(Expression operand, State state, ElmLibraryVisitor<Object, State> visitor) {
 
         // Special case to handle literals of the minimum Integer value
         // since usual implementation would try to cast 2147483648 as a

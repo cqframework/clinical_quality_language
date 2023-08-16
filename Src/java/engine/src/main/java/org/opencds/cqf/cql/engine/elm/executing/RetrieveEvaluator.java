@@ -1,9 +1,9 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
 import org.hl7.elm.r1.ValueSetRef;
+import org.cqframework.cql.elm.visiting.ElmLibraryVisitor;
 import org.hl7.elm.r1.Retrieve;
 import org.opencds.cqf.cql.engine.data.DataProvider;
-import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.Code;
 import org.opencds.cqf.cql.engine.runtime.Concept;
@@ -17,7 +17,7 @@ import java.util.List;
 public class RetrieveEvaluator {
 
     @SuppressWarnings("unchecked")
-    public static Object internalEvaluate(Retrieve elm, State state, CqlEngine visitor) {
+    public static Object internalEvaluate(Retrieve elm, State state, ElmLibraryVisitor<Object, State> visitor) {
         QName dataType = state.getEnvironment().fixupQName(elm.getDataType());
         DataProvider dataProvider = state.getEnvironment().resolveDataProvider(dataType);
         Iterable<Code> codes = null;

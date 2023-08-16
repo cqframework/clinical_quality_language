@@ -5,11 +5,11 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
+import org.cqframework.cql.elm.visiting.ElmLibraryVisitor;
 import org.hl7.elm.r1.Expression;
 import org.opencds.cqf.cql.engine.elm.executing.EqualEvaluator;
 import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator;
 import org.opencds.cqf.cql.engine.exception.InvalidComparison;
-import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.execution.Variable;
 
@@ -17,12 +17,12 @@ public class CqlList {
     private State state;
     private String alias;
     private Expression expression;
-    private CqlEngine visitor;
+    private ElmLibraryVisitor<Object, State> visitor;
     private String path;
 
     public CqlList() { }
 
-    public CqlList(State state, CqlEngine visitor, String alias, Expression expression) {
+    public CqlList(State state, ElmLibraryVisitor<Object, State> visitor, String alias, Expression expression) {
         this.state = state;
         this.visitor = visitor;
         this.alias = alias;
@@ -59,7 +59,7 @@ public class CqlList {
         }
     };
 
-    public Comparator<Object> columnSort = new Comparator<Object>() {
+    public final Comparator<Object> columnSort = new Comparator<>() {
         public int compare(Object left, Object right) {
             Object leftCol = state.getEnvironment().resolvePath(left, path);
             Object rightCol = state.getEnvironment().resolvePath(right, path);

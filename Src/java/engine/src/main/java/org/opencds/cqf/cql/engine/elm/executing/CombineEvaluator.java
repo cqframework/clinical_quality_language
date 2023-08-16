@@ -22,7 +22,7 @@ public class CombineEvaluator {
 
         else {
             if (source instanceof Iterable) {
-                StringBuffer buffer = new StringBuffer("");
+                StringBuilder buffer = new StringBuilder("");
                 Iterator<?> iterator = ((Iterable<?>) source).iterator();
                 boolean first = true;
 

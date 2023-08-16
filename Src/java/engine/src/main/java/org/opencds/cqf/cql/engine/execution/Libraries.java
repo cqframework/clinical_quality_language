@@ -1,6 +1,5 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -135,9 +134,9 @@ public class Libraries {
     }
 
     public static VersionedIdentifier toVersionedIdentifier(IncludeDef includeDef) {
-                return new VersionedIdentifier()
-                .withSystem(NamespaceManager.getUriPart(includeDef.getPath()))
-                .withId(NamespaceManager.getNamePart(includeDef.getPath()))
-                .withVersion(includeDef.getVersion());
+        return new VersionedIdentifier()
+        .withSystem(NamespaceManager.getUriPart(includeDef.getPath()))
+        .withId(NamespaceManager.getNamePart(includeDef.getPath()))
+        .withVersion(includeDef.getVersion());
     }
 }

@@ -13,20 +13,20 @@ public class CqlFunctionOverloadTest extends CqlTestBase {
     public void test_function_overloads() {
         EvaluationResult evaluationResult;
 
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("FunctionOverloadTest"));
+        evaluationResult = engine.evaluate(toElmIdentifier("FunctionOverloadTest"));
 
         Object result;
 
-        result = evaluationResult.expressionResults.get("TestAnyFunctionWithInteger").value();
+        result = evaluationResult.forExpression("TestAnyFunctionWithInteger").value();
         assertThat(result, is(1));
 
-        result = evaluationResult.expressionResults.get("TestAnyFunctionWithString").value();
+        result = evaluationResult.forExpression("TestAnyFunctionWithString").value();
         assertThat(result, is("joe"));
 
-        result = evaluationResult.expressionResults.get("TestAnyFunctionWithDecimal").value();
+        result = evaluationResult.forExpression("TestAnyFunctionWithDecimal").value();
         assertThat(result, is(new BigDecimal("12.3")));
 
-        result = evaluationResult.expressionResults.get("TestAnyFunctionWithNoArgs").value();
+        result = evaluationResult.forExpression("TestAnyFunctionWithNoArgs").value();
         assertThat(result, is("any"));
 
     }

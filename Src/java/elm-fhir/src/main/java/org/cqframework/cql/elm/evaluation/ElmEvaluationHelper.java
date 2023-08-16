@@ -16,7 +16,7 @@ public class ElmEvaluationHelper {
         // TODO: Cache for libraries?
 
         CqlEngine engine = getEngine(library, parameters, evaluationDateTime);
-        return engine.visitExpression(value, engine.getState());
+        return engine.getEvaluationVisitor().visitExpression(value, engine.getState());
     }
 
     private static CqlEngine getEngine(Library library, Map<String, Object> parameters, ZonedDateTime evaluationDateTime) {

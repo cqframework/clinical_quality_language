@@ -20,21 +20,21 @@ public class TestCodeRef extends FhirExecutionTestBase {
 
     // @Test
     public void CodeRefTest1() {
-        CqlEngine engineVisitor = getEngine();
+        CqlEngine engine = getEngine();
 
-        EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(),
+        EvaluationResult evaluationResult = engine.evaluate(library.getIdentifier(),
                 Set.of("CodeRef1"), null, null, null, null);
 
-        assertTrue(evaluationResult.expressionResults.get("CodeRef1").value() != null);
+        assertTrue(evaluationResult.forExpression("CodeRef1").value() != null);
     }
 
     // @Test
     public void CodeRefTest2() {
-        CqlEngine engineVisitor = getEngine();
+        CqlEngine engine = getEngine();
 
-        EvaluationResult evaluationResult = engineVisitor.evaluate(library.getIdentifier(),
+        EvaluationResult evaluationResult = engine.evaluate(library.getIdentifier(),
                 Set.of("CodeRef2"), null, null, null, null);
 
-        assertTrue(evaluationResult.expressionResults.get("CodeRef2").value() != null);
+        assertTrue(evaluationResult.forExpression("CodeRef2").value() != null);
     }
 }
