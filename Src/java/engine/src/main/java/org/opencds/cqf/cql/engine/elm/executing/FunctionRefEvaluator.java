@@ -1,11 +1,11 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import org.cqframework.cql.elm.visiting.ElmLibraryVisitor;
 import org.hl7.elm.r1.Expression;
 import org.hl7.elm.r1.FunctionDef;
 import org.hl7.elm.r1.FunctionRef;
 import org.hl7.elm.r1.TypeSpecifier;
 import org.opencds.cqf.cql.engine.exception.CqlException;
-import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.Libraries;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.execution.Variable;
@@ -20,7 +20,7 @@ public class FunctionRefEvaluator {
 
     private static final Logger logger =LoggerFactory.getLogger(FunctionRefEvaluator.class);
 
-    public static Object internalEvaluate(FunctionRef functionRef, State state, CqlEngine visitor) {
+    public static Object internalEvaluate(FunctionRef functionRef, State state, ElmLibraryVisitor<Object,State> visitor) {
         ArrayList<Object> arguments = new ArrayList<>(functionRef.getOperand().size());
         for (Expression operand : functionRef.getOperand()) {
             arguments.add(visitor.visitExpression(operand, state));
@@ -115,7 +115,7 @@ public class FunctionRefEvaluator {
     private static String getUnresolvedMessage(State state, List<? extends Object> arguments, String name) {
         StringBuilder argStr = new StringBuilder();
         if (arguments != null) {
-            arguments.forEach(a -> argStr.append((argStr.length() > 0) ? ", " : "").append(state.getEnvironment().resolveType(a).getName()));
+            arguments.forEach(a -> argStr.append((argStr.length() > 0) ? ", " : "").append(state.getEnvironment().resolveType(a).getTypeName()));
         }
 
         return argStr.toString();

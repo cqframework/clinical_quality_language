@@ -11,12 +11,12 @@ public class CqlConceptTest extends CqlTestBase {
     public void test_all_cql_concept_tests() throws IOException {
 
         Environment environment = new Environment(getLibraryManager());
-        CqlEngine engineVisitor = new CqlEngine(environment);
+        CqlEngine engine = new CqlEngine(environment);
 
         Set<String> set = new HashSet<>();
 
 
-        EvaluationResult evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlConceptTest"));
+        EvaluationResult evaluationResult = engine.evaluate(toElmIdentifier("CqlConceptTest"));
 
 
         List<Code> codes = Arrays.asList(
@@ -28,7 +28,7 @@ public class CqlConceptTest extends CqlTestBase {
                 .withDisplay("test-concept-display")
                 .withCodes(codes);
 
-        CqlType actual = (CqlType)evaluationResult.expressionResults.get("testConceptRef").value();
+        CqlType actual = (CqlType)evaluationResult.forExpression("testConceptRef").value();
 
         assertEqual(expected, actual);
     }

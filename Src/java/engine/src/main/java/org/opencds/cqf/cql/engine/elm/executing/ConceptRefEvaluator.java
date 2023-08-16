@@ -11,7 +11,6 @@ import org.opencds.cqf.cql.engine.runtime.CodeSystem;
 import org.opencds.cqf.cql.engine.runtime.Concept;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ConceptRefEvaluator {
 

@@ -1,7 +1,7 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import org.cqframework.cql.elm.visiting.ElmLibraryVisitor;
 import org.hl7.elm.r1.*;
-import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.execution.Variable;
 import org.opencds.cqf.cql.engine.runtime.CqlList;
@@ -27,13 +27,13 @@ public class QueryEvaluator {
         }
     }
 
-    private static void evaluateLets(Query elm, State state, List<Variable> letVariables, CqlEngine visitor) {
+    private static void evaluateLets(Query elm, State state, List<Variable> letVariables, ElmLibraryVisitor<Object, State> visitor) {
         for (int i = 0; i < elm.getLet().size(); i++) {
             letVariables.get(i).setValue(visitor.visitExpression(elm.getLet().get(i).getExpression(), state));
         }
     }
 
-    private static boolean evaluateRelationships(Query elm, State state, CqlEngine visitor) {
+    private static boolean evaluateRelationships(Query elm, State state, ElmLibraryVisitor<Object, State> visitor) {
         // TODO: This is the most naive possible implementation here, but it should perform okay with 1) caching and 2) small data sets
         boolean shouldInclude = true;
         for (org.hl7.elm.r1.RelationshipClause relationship : elm.getRelationship()) {
@@ -63,7 +63,7 @@ public class QueryEvaluator {
         return shouldInclude;
     }
 
-    private static boolean evaluateWhere(Query elm, State state, CqlEngine visitor) {
+    private static boolean evaluateWhere(Query elm, State state, ElmLibraryVisitor<Object, State> visitor) {
         if (elm.getWhere() != null) {
             Object satisfiesCondition = visitor.visitExpression(elm.getWhere(), state);
             if (!(satisfiesCondition instanceof Boolean && (Boolean) satisfiesCondition)) {
@@ -74,7 +74,7 @@ public class QueryEvaluator {
         return true;
     }
 
-    private static Object evaluateReturn(Query elm, State state, List<Variable> variables, List<Object> elements, CqlEngine visitor) {
+    private static Object evaluateReturn(Query elm, State state, List<Variable> variables, List<Object> elements, ElmLibraryVisitor<Object, State> visitor) {
         return elm.getReturn() != null ? visitor.visitExpression(elm.getReturn().getExpression(), state) : constructResult(state, variables, elements);
     }
 
@@ -91,7 +91,7 @@ public class QueryEvaluator {
         return elements.get(0);
     }
 
-    public static void sortResult(Query elm, List<Object> result, State state, String alias, CqlEngine visitor) {
+    public static void sortResult(Query elm, List<Object> result, State state, String alias, ElmLibraryVisitor<Object, State> visitor) {
 
         SortClause sortClause = elm.getSort();
 
@@ -140,11 +140,11 @@ public class QueryEvaluator {
     }
 
     @SuppressWarnings("unchecked")
-    public static Object internalEvaluate(Query elm, State state, CqlEngine visitor) {
+    public static Object internalEvaluate(Query elm, State state, ElmLibraryVisitor<Object, State> visitor) {
 
-        ArrayList<Iterator<Object>> sources = new ArrayList<Iterator<Object>>();
-        ArrayList<Variable> variables = new ArrayList<Variable>();
-        ArrayList<Variable> letVariables = new ArrayList<Variable>();
+        var sources = new ArrayList<Iterator<Object>>();
+        var variables = new ArrayList<Variable>();
+        var letVariables = new ArrayList<Variable>();
         List<Object> result = new ArrayList<>();
         boolean sourceIsList = false;
         int pushCount = 0;

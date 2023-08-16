@@ -16,8 +16,6 @@ import org.opencds.cqf.cql.engine.data.SystemDataProvider;
 import org.opencds.cqf.cql.engine.exception.CqlException;
 import org.opencds.cqf.cql.engine.runtime.Tuple;
 import org.opencds.cqf.cql.engine.terminology.TerminologyProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -244,6 +242,7 @@ public class Environment {
             return List.class;
             // return resolveType(((ListTypeSpecifier)typeSpecifier).getElementType());
         } else if (typeSpecifier instanceof IntervalTypeSpecifier) {
+            // TODO: This doesn't allow for interval-distinguished overloads
             return org.opencds.cqf.cql.engine.runtime.Interval.class;
         } else if (typeSpecifier instanceof ChoiceTypeSpecifier) {
             // TODO: This doesn't allow for choice-distinguished overloads...

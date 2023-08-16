@@ -18,39 +18,39 @@ public class CqlInternalTypeRepresentationSuiteTest extends CqlTestBase {
     public void test_all_internal_type_representation() {
         EvaluationResult evaluationResult;
 
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlInternalTypeRepresentationSuite"), ZonedDateTime.of(2018, 1, 1, 7, 0, 0, 0, TimeZone.getDefault().toZoneId()));
+        evaluationResult = engine.evaluate(toElmIdentifier("CqlInternalTypeRepresentationSuite"), ZonedDateTime.of(2018, 1, 1, 7, 0, 0, 0, TimeZone.getDefault().toZoneId()));
 
         Object result;
 
-        result = evaluationResult.expressionResults.get("BoolTrue").value();
+        result = evaluationResult.forExpression("BoolTrue").value();
         Assert.assertTrue(result instanceof Boolean);
         Assert.assertTrue((Boolean) result);
 
-        result = evaluationResult.expressionResults.get("BoolFalse").value();
+        result = evaluationResult.forExpression("BoolFalse").value();
         Assert.assertTrue(result instanceof Boolean);
         Assert.assertTrue(!(Boolean) result);
 
-        result = evaluationResult.expressionResults.get("IntOne").value();
+        result = evaluationResult.forExpression("IntOne").value();
         Assert.assertTrue(result instanceof Integer);
         Assert.assertTrue((Integer) result == 1);
 
-        result = evaluationResult.expressionResults.get("DecimalTenth").value();
+        result = evaluationResult.forExpression("DecimalTenth").value();
         Assert.assertTrue(result instanceof BigDecimal);
         Assert.assertTrue(((BigDecimal) result).compareTo(new BigDecimal("0.1")) == 0);
 
-        result = evaluationResult.expressionResults.get("StringTrue").value();
+        result = evaluationResult.forExpression("StringTrue").value();
         Assert.assertTrue(result instanceof String);
         Assert.assertTrue(result.equals("true"));
 
-        result = evaluationResult.expressionResults.get("DateTimeX").value();
+        result = evaluationResult.forExpression("DateTimeX").value();
         Assert.assertTrue(result instanceof DateTime);
         Assert.assertTrue(((DateTime) result).equal(new DateTime(new BigDecimal("0.0"), 2012, 2, 15, 12, 10, 59, 456)));
 
-        result = evaluationResult.expressionResults.get("DateTimeFX").value();
+        result = evaluationResult.forExpression("DateTimeFX").value();
         Assert.assertTrue(result instanceof DateTime);
         Assert.assertTrue(((DateTime) result).equal(new DateTime(new BigDecimal("0.0"), 2012, 2, 15, 12, 10, 59, 456)));
 
-        result = evaluationResult.expressionResults.get("TimeX").value();
+        result = evaluationResult.forExpression("TimeX").value();
         Assert.assertTrue(result instanceof Time);
         Assert.assertTrue(((Time) result).equal(new Time(12, 10, 59, 456)));
 
@@ -129,7 +129,7 @@ public class CqlInternalTypeRepresentationSuiteTest extends CqlTestBase {
         elements.put("b", 2);
         result = evaluationResult.expressionResults.get("Structured_tuple").value();
         Assert.assertTrue(result instanceof Tuple);
-        Assert.assertTrue(((Tuple) result).equal(new Tuple(engineVisitor.getState()).withElements(elements)));
+        Assert.assertTrue(((Tuple) result).equal(new Tuple(engine.getState()).withElements(elements)));
 
         elements.clear();
         elements.put("class", "Portable CQL Test Suite");
@@ -139,7 +139,7 @@ public class CqlInternalTypeRepresentationSuiteTest extends CqlTestBase {
 
         result = evaluationResult.expressionResults.get("Structured_TupleA").value();
         Assert.assertTrue(result instanceof Tuple);
-        Assert.assertTrue(((Tuple) result).equal(new Tuple(engineVisitor.getState()).withElements(elements)));
+        Assert.assertTrue(((Tuple) result).equal(new Tuple(engine.getState()).withElements(elements)));
 
         result = evaluationResult.expressionResults.get("Interval_Open").value();
         Assert.assertTrue(result instanceof Interval);
@@ -187,22 +187,22 @@ public class CqlInternalTypeRepresentationSuiteTest extends CqlTestBase {
 
         result = evaluationResult.expressionResults.get("List_BoolList").value();
         Assert.assertTrue(result instanceof Iterable);
-        Boolean listComp = CqlList.equal((Iterable<?>) result, Arrays.asList(true, false, true), engineVisitor.getState());
+        Boolean listComp = CqlList.equal((Iterable<?>) result, Arrays.asList(true, false, true), engine.getState());
         Assert.assertTrue(listComp != null && listComp);
 
         result = evaluationResult.expressionResults.get("List_IntList").value();
         Assert.assertTrue(result instanceof Iterable);
-        listComp = CqlList.equal((Iterable<?>) result, Arrays.asList(9, 7, 8), engineVisitor.getState());
+        listComp = CqlList.equal((Iterable<?>) result, Arrays.asList(9, 7, 8), engine.getState());
         Assert.assertTrue(listComp != null && listComp);
 
         result = evaluationResult.expressionResults.get("List_DecimalList").value();
         Assert.assertTrue(result instanceof Iterable);
-        listComp = CqlList.equal((Iterable<?>) result, Arrays.asList(new BigDecimal("1.0"), new BigDecimal("2.1"), new BigDecimal("3.2")), engineVisitor.getState());
+        listComp = CqlList.equal((Iterable<?>) result, Arrays.asList(new BigDecimal("1.0"), new BigDecimal("2.1"), new BigDecimal("3.2")), engine.getState());
         Assert.assertTrue(listComp != null && listComp);
 
         result = evaluationResult.expressionResults.get("List_StringList").value();
         Assert.assertTrue(result instanceof Iterable);
-        listComp = CqlList.equal((Iterable<?>) result, Arrays.asList("a", "bee", "see"), engineVisitor.getState());
+        listComp = CqlList.equal((Iterable<?>) result, Arrays.asList("a", "bee", "see"), engine.getState());
         Assert.assertTrue(listComp != null && listComp);
 
         result = evaluationResult.expressionResults.get("List_DateTimeList").value();
@@ -214,7 +214,7 @@ public class CqlInternalTypeRepresentationSuiteTest extends CqlTestBase {
                         new DateTime(new BigDecimal("0.0"), 2012, 3, 15, 12, 10, 59, 456),
                         new DateTime(new BigDecimal("0.0"), 2012, 4, 15, 12, 10, 59, 456)
                 ),
-                engineVisitor.getState()
+                engine.getState()
         );
         Assert.assertTrue(listComp != null && listComp);
 
@@ -227,7 +227,7 @@ public class CqlInternalTypeRepresentationSuiteTest extends CqlTestBase {
                         new Time(13, 10, 59, 456),
                         new Time(14, 10, 59, 456)
                 ),
-                engineVisitor.getState()
+                engine.getState()
         );
         Assert.assertTrue(listComp != null && listComp);
 
@@ -240,7 +240,7 @@ public class CqlInternalTypeRepresentationSuiteTest extends CqlTestBase {
                         new Quantity().withValue(new BigDecimal("2.1")).withUnit("m"),
                         new Quantity().withValue(new BigDecimal("3.2")).withUnit("m")
                 ),
-                engineVisitor.getState()
+                engine.getState()
         );
         Assert.assertTrue(listComp != null && listComp);
 
@@ -252,7 +252,7 @@ public class CqlInternalTypeRepresentationSuiteTest extends CqlTestBase {
                         new Code().withCode("12345").withSystem("http://loinc.org").withVersion("1").withDisplay("Test Code"),
                         new Code().withCode("123456").withSystem("http://loinc.org").withVersion("1").withDisplay("Another Test Code")
                 ),
-                engineVisitor.getState()
+                engine.getState()
         );
         Assert.assertTrue(listComp != null && listComp);
 
@@ -269,7 +269,7 @@ public class CqlInternalTypeRepresentationSuiteTest extends CqlTestBase {
                         ).withDisplay("Another Test Concept")
 
                 ),
-                engineVisitor.getState()
+                engine.getState()
         );
         Assert.assertTrue(listComp != null && listComp);
 
@@ -284,10 +284,10 @@ public class CqlInternalTypeRepresentationSuiteTest extends CqlTestBase {
         listComp = CqlList.equal(
                 (Iterable<?>) result,
                 Arrays.asList(
-                        new Tuple(engineVisitor.getState()).withElements(elements), new Tuple(engineVisitor.getState()).withElements(elements2)
+                        new Tuple(engine.getState()).withElements(elements), new Tuple(engine.getState()).withElements(elements2)
 
                 ),
-                engineVisitor.getState()
+                engine.getState()
         );
         Assert.assertTrue(listComp != null && listComp);
 
@@ -295,7 +295,7 @@ public class CqlInternalTypeRepresentationSuiteTest extends CqlTestBase {
         Assert.assertTrue(result instanceof Iterable);
         listComp = CqlList.equal(
                 (Iterable<?>) result,
-                Arrays.asList(Arrays.asList(1,2,3), Arrays.asList("a", "b", "c")), engineVisitor.getState()
+                Arrays.asList(Arrays.asList(1,2,3), Arrays.asList("a", "b", "c")), engine.getState()
         );
         Assert.assertTrue(listComp != null && listComp);
 
@@ -306,18 +306,18 @@ public class CqlInternalTypeRepresentationSuiteTest extends CqlTestBase {
                 Arrays.asList(
                         new Interval(1, true, 5, true), new Interval(5, false, 9, false), new Interval(8, true, 10, false)
                 ),
-                engineVisitor.getState()
+                engine.getState()
         );
         Assert.assertTrue(listComp != null && listComp);
 
         result = evaluationResult.expressionResults.get("List_MixedList").value();
         Assert.assertTrue(result instanceof Iterable);
-        listComp = CqlList.equal((Iterable<?>) result, Arrays.asList(1, "two", 3), engineVisitor.getState());
+        listComp = CqlList.equal((Iterable<?>) result, Arrays.asList(1, "two", 3), engine.getState());
         Assert.assertTrue(listComp != null && listComp);
 
         result = evaluationResult.expressionResults.get("List_EmptyList").value();
         Assert.assertTrue(result instanceof Iterable);
-        listComp = CqlList.equal((Iterable<?>) result, Collections.EMPTY_LIST, engineVisitor.getState());
+        listComp = CqlList.equal((Iterable<?>) result, Collections.EMPTY_LIST, engine.getState());
         Assert.assertTrue(listComp != null && listComp);
 
     }

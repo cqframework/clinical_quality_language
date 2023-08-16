@@ -1,10 +1,10 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import org.cqframework.cql.elm.visiting.ElmLibraryVisitor;
 import org.hl7.elm.r1.Message;
 import org.opencds.cqf.cql.engine.data.DataProvider;
 import org.opencds.cqf.cql.engine.debug.SourceLocator;
 import org.opencds.cqf.cql.engine.exception.CqlException;
-import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,7 +65,7 @@ public class MessageEvaluator {
                 .orElse("");
     }
 
-    public static Object internalEvaluate(Message elm, State state, CqlEngine visitor) {
+    public static Object internalEvaluate(Message elm, State state, ElmLibraryVisitor<Object, State> visitor) {
         Object source = visitor.visitExpression(elm.getSource(), state);
         Boolean condition = (Boolean) visitor.visitExpression(elm.getCondition(), state);
         String code = (String) visitor.visitExpression(elm.getCode(), state);

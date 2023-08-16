@@ -25,277 +25,277 @@ public class CqlValueLiteralsAndSelectorsTest extends CqlTestBase {
         Set<String> set = new HashSet<>();
         EvaluationResult evaluationResult;
 
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlValueLiteralsAndSelectorsTest"));
+        evaluationResult = engine.evaluate(toElmIdentifier("CqlValueLiteralsAndSelectorsTest"));
         Object result;
 
-        result = evaluationResult.expressionResults.get("Null").value();
+        result = evaluationResult.forExpression("Null").value();
         Assert.assertNull(result);
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("BooleanFalse").value();
+        result = evaluationResult.forExpression("BooleanFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("BooleanTrue").value();
+        result = evaluationResult.forExpression("BooleanTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("IntegerZero").value();
+        result = evaluationResult.forExpression("IntegerZero").value();
         assertThat(result, is(0));
 
-        result = evaluationResult.expressionResults.get("IntegerPosZero").value();
+        result = evaluationResult.forExpression("IntegerPosZero").value();
         assertThat(result, is(+0));
 
-        result = evaluationResult.expressionResults.get("IntegerNegZero").value();
+        result = evaluationResult.forExpression("IntegerNegZero").value();
         assertThat(result, is(-0));
 
-        result = evaluationResult.expressionResults.get("IntegerOne").value();
+        result = evaluationResult.forExpression("IntegerOne").value();
         assertThat(result, is(1));
 
-        result = evaluationResult.expressionResults.get("IntegerPosOne").value();
+        result = evaluationResult.forExpression("IntegerPosOne").value();
         assertThat(result, is(+1));
 
-        result = evaluationResult.expressionResults.get("IntegerNegOne").value();
+        result = evaluationResult.forExpression("IntegerNegOne").value();
         assertThat(result, is(-1));
 
-        result = evaluationResult.expressionResults.get("IntegerTwo").value();
+        result = evaluationResult.forExpression("IntegerTwo").value();
         assertThat(result, is(2));
 
-        result = evaluationResult.expressionResults.get("IntegerPosTwo").value();
+        result = evaluationResult.forExpression("IntegerPosTwo").value();
         assertThat(result, is(+2));
 
-        result = evaluationResult.expressionResults.get("IntegerNegTwo").value();
+        result = evaluationResult.forExpression("IntegerNegTwo").value();
         assertThat(result, is(-2));
 
-        result = evaluationResult.expressionResults.get("Integer10Pow9").value();
+        result = evaluationResult.forExpression("Integer10Pow9").value();
         assertThat(result, is((int)Math.pow(10,9)));
 
-        result = evaluationResult.expressionResults.get("IntegerPos10Pow9").value();
+        result = evaluationResult.forExpression("IntegerPos10Pow9").value();
         assertThat(result, is(+1*(int)Math.pow(10,9)));
 
-        result = evaluationResult.expressionResults.get("IntegerNeg10Pow9").value();
+        result = evaluationResult.forExpression("IntegerNeg10Pow9").value();
         assertThat(result, is(-1*(int)Math.pow(10,9)));
 
-        result = evaluationResult.expressionResults.get("Integer2Pow31ToZero1IntegerMaxValue").value();
+        result = evaluationResult.forExpression("Integer2Pow31ToZero1IntegerMaxValue").value();
         assertThat(result, is(2147483647));
         assertThat(result, is((int)(Math.pow(2,30) -1 + Math.pow(2,30)))); //Power(2,30)-1+Power(2,30)
 
-        result = evaluationResult.expressionResults.get("IntegerPos2Pow31ToZero1IntegerMaxValue").value();
+        result = evaluationResult.forExpression("IntegerPos2Pow31ToZero1IntegerMaxValue").value();
         assertThat(result, is(+2147483647));
         assertThat(result, is(+1* (int)(Math.pow(2,30) -1 + Math.pow(2,30))));
 
-        result = evaluationResult.expressionResults.get("IntegerNeg2Pow31ToZero1").value();
+        result = evaluationResult.forExpression("IntegerNeg2Pow31ToZero1").value();
         assertThat(result, is(-2147483647));
         assertThat(result, is(-1* (int)(Math.pow(2,30) -1 + Math.pow(2,30))));
 
 
-        result = evaluationResult.expressionResults.get("IntegerNeg2Pow31IntegerMinValue").value();
+        result = evaluationResult.forExpression("IntegerNeg2Pow31IntegerMinValue").value();
         assertThat(result, is(-2147483648));
         assertThat(result, is(-1* (int)(Math.pow(2,30) ) -1* (int)(Math.pow(2,30) )));
 
-        result = evaluationResult.expressionResults.get("QuantityZero").value();
+        result = evaluationResult.forExpression("QuantityZero").value();
         assertThat(result, instanceOf(Quantity.class));
         assertThat(((Quantity)result).getValue(), comparesEqualTo(new BigDecimal(0)));
         assertThat(((Quantity)result).getUnit(), is("g"));
 
-        result = evaluationResult.expressionResults.get("QuantityPosZero").value();
+        result = evaluationResult.forExpression("QuantityPosZero").value();
         assertThat(result, instanceOf(Quantity.class));
         assertThat(((Quantity)result).getValue(), comparesEqualTo(new BigDecimal(0)));
         assertThat(((Quantity)result).getUnit(), is("g"));
 
-        result = evaluationResult.expressionResults.get("QuantityNegZero").value();
+        result = evaluationResult.forExpression("QuantityNegZero").value();
         assertThat(result, instanceOf(Quantity.class));
         assertThat(((Quantity)result).getValue(), comparesEqualTo(new BigDecimal(0)));
         assertThat(((Quantity)result).getUnit(), is("g"));
 
-        result = evaluationResult.expressionResults.get("QuantityOne").value();
+        result = evaluationResult.forExpression("QuantityOne").value();
         assertThat(result, instanceOf(Quantity.class));
         assertThat(((Quantity)result).getValue(), comparesEqualTo(new BigDecimal(1)));
         assertThat(((Quantity)result).getUnit(), is("g"));
 
-        result = evaluationResult.expressionResults.get("QuantityPosOne").value();
+        result = evaluationResult.forExpression("QuantityPosOne").value();
         assertThat(result, instanceOf(Quantity.class));
         assertThat(((Quantity)result).getValue(), comparesEqualTo(new BigDecimal(1)));
         assertThat(((Quantity)result).getUnit(), is("g"));
 
-        result = evaluationResult.expressionResults.get("QuantityNegOne").value();
+        result = evaluationResult.forExpression("QuantityNegOne").value();
         assertThat(result, instanceOf(Quantity.class));
         assertThat(((Quantity)result).getValue(), comparesEqualTo(new BigDecimal(0).subtract(new BigDecimal(1))));
         assertThat(((Quantity)result).getUnit(), is("g"));
 
-        result = evaluationResult.expressionResults.get("QuantitySmall").value();
+        result = evaluationResult.forExpression("QuantitySmall").value();
         assertThat(result, instanceOf(Quantity.class));
         assertThat(((Quantity)result).getValue(), comparesEqualTo(new BigDecimal(0.05).setScale(2, RoundingMode.HALF_EVEN)));
         assertThat(((Quantity)result).getUnit(), is("mg"));
 
-        result = evaluationResult.expressionResults.get("QuantityPosSmall").value();
+        result = evaluationResult.forExpression("QuantityPosSmall").value();
         assertThat(result, instanceOf(Quantity.class));
         assertThat(((Quantity)result).getValue(), comparesEqualTo(new BigDecimal(0.05).setScale(2, RoundingMode.HALF_EVEN)));
         assertThat(((Quantity)result).getUnit(), is("mg"));
 
-        result = evaluationResult.expressionResults.get("QuantityNegSmall").value();
+        result = evaluationResult.forExpression("QuantityNegSmall").value();
         assertThat(result, instanceOf(Quantity.class));
         assertThat(((Quantity)result).getValue(), comparesEqualTo(new BigDecimal(0).subtract(new BigDecimal(0.05).setScale(2, RoundingMode.HALF_EVEN))));
         assertThat(((Quantity)result).getUnit(), is("mg"));
 
-        result = evaluationResult.expressionResults.get("QuantityStep").value();
+        result = evaluationResult.forExpression("QuantityStep").value();
         assertThat(result, instanceOf(Quantity.class));
         assertThat(((Quantity)result).getValue(), comparesEqualTo(new BigDecimal(0.00000001).setScale(8, RoundingMode.HALF_EVEN)));
         assertThat(((Quantity)result).getUnit(), is("mg"));
 
-        result = evaluationResult.expressionResults.get("QuantityPosStep").value();
+        result = evaluationResult.forExpression("QuantityPosStep").value();
         assertThat(result, instanceOf(Quantity.class));
         assertThat(((Quantity)result).getValue(), comparesEqualTo(new BigDecimal(0.00000001).setScale(8, RoundingMode.HALF_EVEN)));
         assertThat(((Quantity)result).getUnit(), is("mg"));
 
-        result = evaluationResult.expressionResults.get("QuantityNegStep").value();
+        result = evaluationResult.forExpression("QuantityNegStep").value();
         assertThat(result, instanceOf(Quantity.class));
         assertThat(((Quantity)result).getValue(), comparesEqualTo(new BigDecimal(0).subtract(new BigDecimal(0.00000001).setScale(8, RoundingMode.HALF_EVEN))));
         assertThat(((Quantity)result).getUnit(), is("mg"));
 
         //define QuantityMax: 9999999999999999999999999999.99999999 'mg'
-        result = evaluationResult.expressionResults.get("QuantityMax").value();
+        result = evaluationResult.forExpression("QuantityMax").value();
         assertThat(result, instanceOf(Quantity.class));
         assertThat(((Quantity)result).getValue(), comparesEqualTo(new BigDecimal("9999999999999999999999999999.99999999")));
         assertThat(((Quantity)result).getUnit(), is("mg"));
 
         //define QuantityPosMax: +9999999999999999999999999999.99999999 'mg'
-        result = evaluationResult.expressionResults.get("QuantityPosMax").value();
+        result = evaluationResult.forExpression("QuantityPosMax").value();
         assertThat(result, instanceOf(Quantity.class));
         assertThat(((Quantity)result).getValue(), comparesEqualTo(new BigDecimal("9999999999999999999999999999.99999999")));
         assertThat(((Quantity)result).getUnit(), is("mg"));
 
         //define QuantityMin: -9999999999999999999999999999.99999999 'mg'
-        result = evaluationResult.expressionResults.get("QuantityMin").value();
+        result = evaluationResult.forExpression("QuantityMin").value();
         assertThat(result, instanceOf(Quantity.class));
         assertThat(((Quantity)result).getValue(), comparesEqualTo(new BigDecimal("-9999999999999999999999999999.99999999")));
         assertThat(((Quantity)result).getUnit(), is("mg"));
 
-        result = evaluationResult.expressionResults.get("DecimalZero").value();
+        result = evaluationResult.forExpression("DecimalZero").value();
         assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal(0.0)));
 
-        result = evaluationResult.expressionResults.get("DecimalPosZero").value();
-        assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal(0.0)));
-        //assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal(42.0).subtract(new BigDecimal(42.0))));
-
-        result = evaluationResult.expressionResults.get("DecimalNegZero").value();
+        result = evaluationResult.forExpression("DecimalPosZero").value();
         assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal(0.0)));
         //assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal(42.0).subtract(new BigDecimal(42.0))));
 
-        result = evaluationResult.expressionResults.get("DecimalOne").value();
+        result = evaluationResult.forExpression("DecimalNegZero").value();
+        assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal(0.0)));
+        //assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal(42.0).subtract(new BigDecimal(42.0))));
+
+        result = evaluationResult.forExpression("DecimalOne").value();
         assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.ONE));
 
-        result = evaluationResult.expressionResults.get("DecimalPosOne").value();
+        result = evaluationResult.forExpression("DecimalPosOne").value();
         assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.ONE));
 
-        result = evaluationResult.expressionResults.get("DecimalNegOne").value();
+        result = evaluationResult.forExpression("DecimalNegOne").value();
         assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal((double)-1)));
 
-        result = evaluationResult.expressionResults.get("DecimalTwo").value();
+        result = evaluationResult.forExpression("DecimalTwo").value();
         assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal(2.0)));
 
-        result = evaluationResult.expressionResults.get("DecimalPosTwo").value();
+        result = evaluationResult.forExpression("DecimalPosTwo").value();
         assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal(2.0)));
 
-        result = evaluationResult.expressionResults.get("DecimalNegTwo").value();
+        result = evaluationResult.forExpression("DecimalNegTwo").value();
         assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal((double)-2)));
 
-        result = evaluationResult.expressionResults.get("Decimal10Pow9").value();
+        result = evaluationResult.forExpression("Decimal10Pow9").value();
         assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal(Math.pow(10.0, 9.0))));
 
-        result = evaluationResult.expressionResults.get("DecimalNeg10Pow9").value();
+        result = evaluationResult.forExpression("DecimalNeg10Pow9").value();
         assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal(-Math.pow(10.0, 9.0))));
 
-        result = evaluationResult.expressionResults.get("Decimal2Pow31ToZero1").value();
+        result = evaluationResult.forExpression("Decimal2Pow31ToZero1").value();
         assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal(2147483647.0)));
         assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal(Math.pow(2.0,30.0) -1 + Math.pow(2.0,30.0))));
 
-        result = evaluationResult.expressionResults.get("DecimalPos2Pow31ToZero1").value();
+        result = evaluationResult.forExpression("DecimalPos2Pow31ToZero1").value();
         assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal(2147483647.0)));
         assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal(Math.pow(2.0,30.0) -1 + Math.pow(2.0,30.0))));
 
-        result = evaluationResult.expressionResults.get("DecimalNeg2Pow31ToZero1").value();
+        result = evaluationResult.forExpression("DecimalNeg2Pow31ToZero1").value();
         assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal(-2147483647.0)));
         assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal(-1*(Math.pow(2.0,30.0)) +1 -1*(Math.pow(2.0,30.0)))));
 
-        result = evaluationResult.expressionResults.get("Decimal2Pow31").value();
+        result = evaluationResult.forExpression("Decimal2Pow31").value();
         assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal(2147483648.0)));
         assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal((Math.pow(2.0,30.0)) + (Math.pow(2.0,30.0)))));
 
-        result = evaluationResult.expressionResults.get("DecimalPos2Pow31").value();
+        result = evaluationResult.forExpression("DecimalPos2Pow31").value();
         assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal(2147483648.0)));
         assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal((Math.pow(2.0,30.0)) + (Math.pow(2.0,30.0)))));
 
-        result = evaluationResult.expressionResults.get("DecimalNeg2Pow31").value();
+        result = evaluationResult.forExpression("DecimalNeg2Pow31").value();
         assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal(-2147483648.0)));
         assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal(-(Math.pow(2.0,30.0)) - (Math.pow(2.0,30.0)))));
 
-        result = evaluationResult.expressionResults.get("Decimal2Pow31ToInf1").value();
+        result = evaluationResult.forExpression("Decimal2Pow31ToInf1").value();
         assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal(2147483649.0)));
         assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal((Math.pow(2.0,30.0)) + 1.0 + (Math.pow(2.0,30.0)))));
 
-        result = evaluationResult.expressionResults.get("DecimalPos2Pow31ToInf1").value();
+        result = evaluationResult.forExpression("DecimalPos2Pow31ToInf1").value();
         assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal(2147483649.0)));
         assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal((Math.pow(2.0,30.0)) + 1.0 + (Math.pow(2.0,30.0)))));
 
-        result = evaluationResult.expressionResults.get("DecimalNeg2Pow31ToInf1").value();
+        result = evaluationResult.forExpression("DecimalNeg2Pow31ToInf1").value();
         assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal(-2147483649.0)));
         assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal(-(Math.pow(2.0,30.0)) -1.0 - (Math.pow(2.0,30.0)))));
 
-        result = evaluationResult.expressionResults.get("DecimalZeroStep").value();
+        result = evaluationResult.forExpression("DecimalZeroStep").value();
         assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal(0.00000000)));
         assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal(42.0).subtract(new BigDecimal(42.0))));
 
-        result = evaluationResult.expressionResults.get("DecimalPosZeroStep").value();
+        result = evaluationResult.forExpression("DecimalPosZeroStep").value();
         assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal(0.00000000)));
         assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal(42.0).subtract(new BigDecimal(42.0))));
 
-        result = evaluationResult.expressionResults.get("DecimalNegZeroStep").value();
+        result = evaluationResult.forExpression("DecimalNegZeroStep").value();
         assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal(-0.00000000)));
         assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal(42.0).subtract(new BigDecimal(42.0))));
 
-        result = evaluationResult.expressionResults.get("DecimalOneStep").value();
+        result = evaluationResult.forExpression("DecimalOneStep").value();
         assertThat(((BigDecimal)result), comparesEqualTo(new BigDecimal(Math.pow(10.0,-8)).setScale(8,RoundingMode.HALF_EVEN)));
         //assertThat(((BigDecimal)result).setScale(8, RoundingMode.HALF_EVEN), comparesEqualTo(new BigDecimal(Math.pow(10.0,-8)).setScale(8,RoundingMode.HALF_EVEN)));
 
-        result = evaluationResult.expressionResults.get("DecimalPosOneStep").value();
+        result = evaluationResult.forExpression("DecimalPosOneStep").value();
         assertThat(((BigDecimal)result), comparesEqualTo(new BigDecimal(Math.pow(10.0,-8)).setScale(8,RoundingMode.HALF_EVEN)));
         //assertThat(((BigDecimal)result).setScale(8, RoundingMode.HALF_EVEN), comparesEqualTo(new BigDecimal(Math.pow(10.0,-8)).setScale(8,RoundingMode.HALF_EVEN)));
 
-        result = evaluationResult.expressionResults.get("DecimalNegOneStep").value();
+        result = evaluationResult.forExpression("DecimalNegOneStep").value();
         assertThat(((BigDecimal)result), comparesEqualTo(new BigDecimal(-1 * Math.pow(10.0,-8)).setScale(8,RoundingMode.HALF_EVEN)));
         //assertThat(((BigDecimal)result).setScale(8, RoundingMode.HALF_EVEN), comparesEqualTo(new BigDecimal(-1*Math.pow(10.0,-8)).setScale(8,RoundingMode.HALF_EVEN)));
 
-        result = evaluationResult.expressionResults.get("DecimalTwoStep").value();
+        result = evaluationResult.forExpression("DecimalTwoStep").value();
         assertThat(((BigDecimal)result), comparesEqualTo(new BigDecimal(2 * Math.pow(10.0,-8)).setScale(8,RoundingMode.HALF_EVEN)));
         //assertThat(((BigDecimal)result).setScale(8, RoundingMode.HALF_EVEN), comparesEqualTo(new BigDecimal(2 * Math.pow(10.0,-8)).setScale(8,RoundingMode.HALF_EVEN)));
 
-        result = evaluationResult.expressionResults.get("DecimalPosTwoStep").value();
+        result = evaluationResult.forExpression("DecimalPosTwoStep").value();
         assertThat(((BigDecimal)result), comparesEqualTo(new BigDecimal(2 * Math.pow(10.0,-8)).setScale(8,RoundingMode.HALF_EVEN)));
         //assertThat(((BigDecimal)result).setScale(8, RoundingMode.HALF_EVEN), comparesEqualTo(new BigDecimal(2 * Math.pow(10.0,-8)).setScale(8,RoundingMode.HALF_EVEN)));
 
-        result = evaluationResult.expressionResults.get("DecimalNegTwoStep").value();
+        result = evaluationResult.forExpression("DecimalNegTwoStep").value();
         assertThat(((BigDecimal)result), comparesEqualTo(new BigDecimal(-2 * Math.pow(10.0,-8)).setScale(8,RoundingMode.HALF_EVEN)));
         //assertThat(((BigDecimal)result).setScale(8, RoundingMode.HALF_EVEN), comparesEqualTo(new BigDecimal(-2 * Math.pow(10.0,-8)).setScale(8,RoundingMode.HALF_EVEN)));
 
-        result = evaluationResult.expressionResults.get("DecimalTenStep").value();
+        result = evaluationResult.forExpression("DecimalTenStep").value();
         assertThat(((BigDecimal)result), comparesEqualTo(new BigDecimal(Math.pow(10.0,-7)).setScale(7,RoundingMode.HALF_EVEN)));
         //assertThat(((BigDecimal)result).setScale(7, RoundingMode.HALF_EVEN), comparesEqualTo(new BigDecimal(Math.pow(10.0,-7)).setScale(7,RoundingMode.HALF_EVEN)));
 
-        result = evaluationResult.expressionResults.get("DecimalPosTenStep").value();
+        result = evaluationResult.forExpression("DecimalPosTenStep").value();
         assertThat(((BigDecimal)result), comparesEqualTo(new BigDecimal(Math.pow(10.0,-7)).setScale(7,RoundingMode.HALF_EVEN)));
         //assertThat(((BigDecimal)result).setScale(7, RoundingMode.HALF_EVEN), comparesEqualTo(new BigDecimal(Math.pow(10.0,-7)).setScale(7,RoundingMode.HALF_EVEN)));
 
-        result = evaluationResult.expressionResults.get("DecimalNegTenStep").value();
+        result = evaluationResult.forExpression("DecimalNegTenStep").value();
         assertThat(((BigDecimal)result), comparesEqualTo(new BigDecimal(-1*Math.pow(10.0,-7)).setScale(7,RoundingMode.HALF_EVEN)));
         //assertThat(((BigDecimal)result).setScale(7, RoundingMode.HALF_EVEN), comparesEqualTo(new BigDecimal(-1*Math.pow(10.0,-7)).setScale(7,RoundingMode.HALF_EVEN)));
 
         //define DecimalMaxValue : 9999999999999999999999999999.99999999
-        result = evaluationResult.expressionResults.get("DecimalMaxValue").value();
+        result = evaluationResult.forExpression("DecimalMaxValue").value();
         assertThat(((BigDecimal)result), comparesEqualTo(new BigDecimal("9999999999999999999999999999.99999999")));
         //define DecimalPosMaxValue : +9999999999999999999999999999.99999999
-        result = evaluationResult.expressionResults.get("DecimalPosMaxValue").value();
+        result = evaluationResult.forExpression("DecimalPosMaxValue").value();
         assertThat(((BigDecimal)result), comparesEqualTo(new BigDecimal("9999999999999999999999999999.99999999")));
         //define DecimalMinValue: -9999999999999999999999999999.99999999
-        result = evaluationResult.expressionResults.get("DecimalMinValue").value();
+        result = evaluationResult.forExpression("DecimalMinValue").value();
         assertThat(((BigDecimal)result), comparesEqualTo(new BigDecimal("-9999999999999999999999999999.99999999")));
 
 

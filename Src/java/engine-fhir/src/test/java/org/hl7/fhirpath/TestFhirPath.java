@@ -175,11 +175,11 @@ public abstract class TestFhirPath {
                 }
             }
 
-            CqlEngine engineVisitor = TranslatorHelper.getEngine(env);
-            engineVisitor.getCache().setExpressionCaching(false);
-            engineVisitor.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", provider);
+            CqlEngine engine = TranslatorHelper.getEngine(env);
+            engine.getCache().setExpressionCaching(false);
+            engine.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", provider);
             if (resource != null) {
-                engineVisitor.getState().setParameter(null, resource.fhirType(), resource);
+                engine.getState().setParameter(null, resource.fhirType(), resource);
             }
 
             Object result = null;
@@ -189,10 +189,10 @@ public abstract class TestFhirPath {
                 VersionedIdentifier libraryId = TranslatorHelper.toElmIdentifier("TestFHIRPath");
                 Map<VersionedIdentifier, Library> map = new HashMap<>();
                 map.put(libraryId, library);
-                EvaluationResult evaluationResult = engineVisitor.evaluate(libraryId,
+                EvaluationResult evaluationResult = engine.evaluate(libraryId,
                         Set.of("Test"), null, null, null, null);
 
-                result = evaluationResult.expressionResults.get("Test").value();
+                result = evaluationResult.forExpression("Test").value();
                 testPassed = invalidType.equals(InvalidType.FALSE);
             } catch (Exception e) {
                 testPassed = invalidType.equals(InvalidType.TRUE);
@@ -217,7 +217,7 @@ public abstract class TestFhirPath {
             for (Object expectedResult : expectedResults) {
                 if (actualResultsIterator.hasNext()) {
                     Object actualResult = actualResultsIterator.next();
-                    Boolean comparison = compareResults(expectedResult, actualResult, engineVisitor.getState(), resolver);
+                    Boolean comparison = compareResults(expectedResult, actualResult, engine.getState(), resolver);
                     if (comparison == null || !comparison) {
                         System.out.println("Failing Test: " + test.getName());
                         System.out.println("- Expected Result: " + expectedResult + " (" + expectedResult.getClass() +")");

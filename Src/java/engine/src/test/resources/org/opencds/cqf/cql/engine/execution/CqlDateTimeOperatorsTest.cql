@@ -2,6 +2,7 @@ library CqlDateTimeOperatorsTest
 
 //Add
 define DateTimeAdd5Years: DateTime(2005, 10, 10) + 5 years
+define DateTimeAddInvalidYears: DateTime(2005, 10, 10) + 8000 years
 define DateTimeAdd5Months: DateTime(2005, 5, 10) + 5 months
 define DateTimeAddMonthsOverflow: DateTime(2005, 5, 10) + 10 months
 define DateTimeAddThreeWeeks: DateTime(2018, 5, 2) + 3 weeks
@@ -168,7 +169,7 @@ define DateTimeDurationBetweenUncertainInterval2: months between DateTime(2005) 
 define DateTimeDurationBetweenUncertainAdd: DateTimeDurationBetweenUncertainInterval + DateTimeDurationBetweenUncertainInterval
 define DateTimeDurationBetweenUncertainSubtract: DateTimeDurationBetweenUncertainInterval - DateTimeDurationBetweenUncertainInterval2
 define DateTimeDurationBetweenUncertainMultiply: DateTimeDurationBetweenUncertainInterval * DateTimeDurationBetweenUncertainInterval
-
+define DateTimeDurationBetweenUncertainDiv: DateTimeDurationBetweenUncertainInterval div DateTimeDurationBetweenUncertainInterval2
 define DateTimeDurationBetweenMonthUncertain: months between DateTime(2005) and DateTime(2006, 7) > 5
 define DateTimeDurationBetweenMonthUncertain2: months between DateTime(2005) and DateTime(2006, 2) > 5
 define DateTimeDurationBetweenMonthUncertain3: months between DateTime(2005) and DateTime(2006, 7) > 25
@@ -309,7 +310,7 @@ define TimeSameOrBeforeMillisFalse: @T23:55:25.966 same millisecond or before @T
 
 //Subtract
 define DateTimeSubtract5Years: DateTime(2005, 10, 10) - 5 years
-
+define DateTimeSubtractInvalidYears: DateTime(2005, 10, 10) - 2005 years
 define DateTimeSubtract5Months: DateTime(2005, 6, 10) - 5 months
 define DateTimeSubtractMonthsUnderflow: DateTime(2005, 5, 10) - 6 months
 define DateTimeSubtractThreeWeeks: DateTime(2018, 5, 23) - 3 weeks

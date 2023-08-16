@@ -10,8 +10,8 @@ public class Issue213 extends CqlTestBase {
 
 //        EvaluationResult evaluationResult;
 //
-//        evaluationResult = engineVisitor.evaluate(toElmIdentifier("Issue213"), null, null, null, null, null);
-//        Object result = evaluationResult.expressionResults.get("Collapsed Treatment Intervals").value();
+//        evaluationResult = engine.evaluate(toElmIdentifier("Issue213"), null, null, null, null, null);
+//        Object result = evaluationResult.forExpression("Collapsed Treatment Intervals").value();
 //        Assert.assertTrue(EquivalentEvaluator.equivalent(((Interval) ((List) result).get(0)).getStart(), new DateTime(null, 2018, 1, 1)));
 //        Assert.assertTrue(EquivalentEvaluator.equivalent(((Interval) ((List) result).get(0)).getEnd(), new DateTime(null, 2018, 8, 28)));
 //        Assert.assertTrue(EquivalentEvaluator.equivalent(((Interval) ((List) result).get(1)).getStart(), new DateTime(null, 2018, 8, 30)));

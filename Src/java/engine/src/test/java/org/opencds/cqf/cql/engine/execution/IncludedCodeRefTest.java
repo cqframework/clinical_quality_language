@@ -16,8 +16,8 @@ public class IncludedCodeRefTest extends CqlTestBase {
 
         EvaluationResult evaluationResult;
 
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("IncludedCodeRefTest"));
-        Object result = evaluationResult.expressionResults.get("IncludedCode").value();
+        evaluationResult = engine.evaluate(toElmIdentifier("IncludedCodeRefTest"));
+        Object result = evaluationResult.forExpression("IncludedCode").value();
         assertNotNull(result);
         assertThat(result, is(instanceOf(Code.class)));
 

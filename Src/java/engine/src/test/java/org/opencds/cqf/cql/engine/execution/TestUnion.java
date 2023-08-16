@@ -16,25 +16,25 @@ public class TestUnion extends CqlTestBase {
 
         EvaluationResult evaluationResult;
 
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("TestUnion"));
-        Object result = evaluationResult.expressionResults.get("NullAndNull").value();
+        evaluationResult = engine.evaluate(toElmIdentifier("TestUnion"));
+        Object result = evaluationResult.forExpression("NullAndNull").value();
         assertNotNull(result);
         assertTrue(((List<?>)result).isEmpty());
 
-        result = evaluationResult.expressionResults.get("NullAndEmpty").value();
+        result = evaluationResult.forExpression("NullAndEmpty").value();
         assertNotNull(result);
         assertTrue(((List<?>)result).isEmpty());
 
-        result = evaluationResult.expressionResults.get("EmptyAndNull").value();
+        result = evaluationResult.forExpression("EmptyAndNull").value();
         assertNotNull(result);
         assertTrue(((List<?>)result).isEmpty());
 
-        result = evaluationResult.expressionResults.get("NullAndSingle").value();
+        result = evaluationResult.forExpression("NullAndSingle").value();
         assertNotNull(result);
         assertEquals(1, ((List<?>)result).size());
         assertEquals(1, ((List<?>)result).get(0));
 
-        result = evaluationResult.expressionResults.get("SingleAndNull").value();
+        result = evaluationResult.forExpression("SingleAndNull").value();
         assertNotNull(result);
         assertEquals(1, ((List<?>)result).size());
         assertEquals(1, ((List<?>)result).get(0));

@@ -21,9 +21,8 @@ public class ExpEvaluator {
         }
 
         if (operand instanceof BigDecimal){
-            BigDecimal retVal;
             try {
-                retVal = new BigDecimal(Math.exp(((BigDecimal)operand).doubleValue()));
+                return BigDecimal.valueOf(Math.exp(((BigDecimal)operand).doubleValue()));
             }
             catch (NumberFormatException nfe) {
                 if (((BigDecimal)operand).compareTo(new BigDecimal(0)) > 0) {
@@ -36,7 +35,6 @@ public class ExpEvaluator {
                     throw new UndefinedResult(nfe.getMessage());
                 }
             }
-            return retVal;
         }
 
         throw new InvalidOperatorArgument(

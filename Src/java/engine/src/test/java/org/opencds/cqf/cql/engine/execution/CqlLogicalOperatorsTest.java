@@ -16,97 +16,97 @@ public class CqlLogicalOperatorsTest extends CqlTestBase {
         Set<String> set = new HashSet<>();
         EvaluationResult evaluationResult;
 
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlLogicalOperatorsTest"));
+        evaluationResult = engine.evaluate(toElmIdentifier("CqlLogicalOperatorsTest"));
         Object result;
 
-        result = evaluationResult.expressionResults.get("TrueAndTrue").value();
+        result = evaluationResult.forExpression("TrueAndTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("TrueAndFalse").value();
+        result = evaluationResult.forExpression("TrueAndFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("TrueAndNull").value();
+        result = evaluationResult.forExpression("TrueAndNull").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("FalseAndTrue").value();
+        result = evaluationResult.forExpression("FalseAndTrue").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("FalseAndFalse").value();
+        result = evaluationResult.forExpression("FalseAndFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("FalseAndNull").value();
+        result = evaluationResult.forExpression("FalseAndNull").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("NullAndTrue").value();
+        result = evaluationResult.forExpression("NullAndTrue").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("NullAndFalse").value();
+        result = evaluationResult.forExpression("NullAndFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("NullAndNull").value();
+        result = evaluationResult.forExpression("NullAndNull").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("NotTrue").value();
+        result = evaluationResult.forExpression("NotTrue").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("NotFalse").value();
+        result = evaluationResult.forExpression("NotFalse").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("NotNull").value();
+        result = evaluationResult.forExpression("NotNull").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("TrueOrTrue").value();
+        result = evaluationResult.forExpression("TrueOrTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("TrueOrFalse").value();
+        result = evaluationResult.forExpression("TrueOrFalse").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("TrueOrNull").value();
+        result = evaluationResult.forExpression("TrueOrNull").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("FalseOrTrue").value();
+        result = evaluationResult.forExpression("FalseOrTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("FalseOrFalse").value();
+        result = evaluationResult.forExpression("FalseOrFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("FalseOrNull").value();
+        result = evaluationResult.forExpression("FalseOrNull").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("NullOrTrue").value();
+        result = evaluationResult.forExpression("NullOrTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("NullOrFalse").value();
+        result = evaluationResult.forExpression("NullOrFalse").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("NullOrNull").value();
+        result = evaluationResult.forExpression("NullOrNull").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("TrueXorTrue").value();
+        result = evaluationResult.forExpression("TrueXorTrue").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("TrueXorFalse").value();
+        result = evaluationResult.forExpression("TrueXorFalse").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("TrueXorNull").value();
+        result = evaluationResult.forExpression("TrueXorNull").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("FalseXorTrue").value();
+        result = evaluationResult.forExpression("FalseXorTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("FalseXorFalse").value();
+        result = evaluationResult.forExpression("FalseXorFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("FalseXorNull").value();
+        result = evaluationResult.forExpression("FalseXorNull").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("NullXorTrue").value();
+        result = evaluationResult.forExpression("NullXorTrue").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("NullXorFalse").value();
+        result = evaluationResult.forExpression("NullXorFalse").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("NullXorNull").value();
+        result = evaluationResult.forExpression("NullXorNull").value();
         assertThat(result, is(nullValue()));
 
     }

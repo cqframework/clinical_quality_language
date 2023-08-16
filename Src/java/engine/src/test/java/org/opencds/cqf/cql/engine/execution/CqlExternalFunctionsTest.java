@@ -16,19 +16,19 @@ public class CqlExternalFunctionsTest extends CqlTestBase {
     public void testExternalFunctions() {
         VersionedIdentifier identifier = toElmIdentifier("CqlExternalFunctionsTest");
 
-        engineVisitor.getState().getEnvironment().registerExternalFunctionProvider(
+        engine.getState().getEnvironment().registerExternalFunctionProvider(
                 identifier,
                 new SystemExternalFunctionProvider(Arrays.asList(MyMath.class.getDeclaredMethods()))
         );
 
-        EvaluationResult evaluationResult = engineVisitor.evaluate(identifier);
+        EvaluationResult evaluationResult = engine.evaluate(identifier);
 
         Object result;
 
-        result = evaluationResult.expressionResults.get("CallMyPlus").value();
+        result = evaluationResult.forExpression("CallMyPlus").value();
         assertThat(result, is(10));
 
-        result = evaluationResult.expressionResults.get("CallMyMinus").value();
+        result = evaluationResult.forExpression("CallMyMinus").value();
         assertThat(result, is(-2));
     }
 }
