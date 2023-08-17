@@ -100,7 +100,7 @@ Communication should be done in an open and public manner. The project uses many
 Sometimes, communication occurs outside of these public channels, and that is okay; however, committers must summarize any private discussions that impact the tooling project in a public channel.
 
 # Code of Conduct
-In support of a healthy and inclusive community, we use and enforce a code of conduct for all members of our community, including committers and PMC members. Our code of conduct is adapted from the Contributor Covenant.
+In support of a healthy and inclusive community, we use and enforce a [code of conduct](CODE_OF_CONDUCT.md) for all members of our community, including committers and PMC members. Our code of conduct is adapted from the [Contributor Covenant](https://www.contributor-covenant.org/).
 
 If you encounter any violation of these terms, please contact the PMC Chair or a PMC committee member. All reports will be kept in strict confidence and dealt with promptly.
 
