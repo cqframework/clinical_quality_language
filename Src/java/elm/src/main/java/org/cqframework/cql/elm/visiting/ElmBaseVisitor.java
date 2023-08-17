@@ -585,7 +585,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
             result = aggregateResult(result, childResult);
         }
 
-        return null;
+        return result;
     }
 
     /**
@@ -1886,7 +1886,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
             T childResult = visitExpression(elm.getLength(), context);
             result = aggregateResult(result, childResult);
         }
-        return null;
+        return result;
     }
 
     /**
@@ -2153,7 +2153,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
             T childResult = visitExpression(elm.getMillisecond(), context);
             result = aggregateResult(result, childResult);
         }
-        return null;
+        return result;
     }
 
     /**
