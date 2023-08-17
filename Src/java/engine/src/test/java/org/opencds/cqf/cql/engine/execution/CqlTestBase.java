@@ -1,5 +1,7 @@
 package org.opencds.cqf.cql.engine.execution;
 
+import java.util.List;
+
 import org.cqframework.cql.cql2elm.*;
 import org.hl7.elm.r1.Library;
 import org.testng.annotations.BeforeMethod;
@@ -15,18 +17,28 @@ public class CqlTestBase {
         return modelManager;
     }
 
-    private static LibraryManager libraryManager;
     protected static LibraryManager getLibraryManager() {
-        if (libraryManager == null) {
-            libraryManager =  new LibraryManager(getModelManager(), createOptionsMin());
-            libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
-        }
+        return getLibraryManager(createOptionsMin());
+    }
 
-        return libraryManager;
+    protected static LibraryManager getLibraryManager(CqlCompilerOptions compilerOptions) {
+        var manager = new LibraryManager(getModelManager(), compilerOptions);
+        manager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
+
+        return manager;
+    }
+
+    public Library getLibrary(org.hl7.elm.r1.VersionedIdentifier libraryId, List<CqlCompilerException> errors, CqlCompilerOptions options) {
+        return getLibraryManager(options).resolveLibrary(libraryId, errors).getLibrary();
+    }
+
+
+    public Library getLibrary(org.hl7.elm.r1.VersionedIdentifier libraryId, List<CqlCompilerException> errors) {
+        return environment.getLibraryManager().resolveLibrary(libraryId, errors).getLibrary();
     }
 
     public Library getLibrary(org.hl7.elm.r1.VersionedIdentifier libraryId) {
-        return environment.getLibraryManager().resolveLibrary(libraryId).getLibrary();
+        return this.getLibrary(libraryId, null);
     }
 
     public Library toLibrary(String text) {
@@ -46,12 +58,17 @@ public class CqlTestBase {
         return new org.hl7.elm.r1.VersionedIdentifier().withId(name).withVersion(version);
     }
 
+    public static CqlEngine getEngine(CqlCompilerOptions cqlCompilerOptions) {
+        var env = new Environment(getLibraryManager(cqlCompilerOptions));
+        return new CqlEngine(env);
+    }
+
     Environment environment;
-    CqlEngine engineVisitor;
+    CqlEngine engine;
     @BeforeMethod
     protected void beforeEachMethod(){
         environment = new Environment(getLibraryManager());
-        engineVisitor = new CqlEngine(environment);
+        engine = new CqlEngine(environment);
     }
 
     public static CqlCompilerOptions createOptionsMin() {

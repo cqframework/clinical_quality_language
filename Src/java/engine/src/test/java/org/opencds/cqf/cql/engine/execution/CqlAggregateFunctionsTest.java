@@ -22,53 +22,53 @@ public class CqlAggregateFunctionsTest extends CqlTestBase {
     public void test_all_aggregate_function_tests() {
         EvaluationResult evaluationResult;
 
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlAggregateFunctionsTest"));
-        Object result = evaluationResult.expressionResults.get("AllTrueAllTrue").value();
+        evaluationResult = engine.evaluate(toElmIdentifier("CqlAggregateFunctionsTest"));
+        Object result = evaluationResult.forExpression("AllTrueAllTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("AllTrueTrueFirst").value();
+        result = evaluationResult.forExpression("AllTrueTrueFirst").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("AllTrueFalseFirst").value();
+        result = evaluationResult.forExpression("AllTrueFalseFirst").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("AllTrueAllTrueFalseTrue").value();
+        result = evaluationResult.forExpression("AllTrueAllTrueFalseTrue").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("AllTrueAllFalseTrueFalse").value();
+        result = evaluationResult.forExpression("AllTrueAllFalseTrueFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("AllTrueNullFirst").value();
+        result = evaluationResult.forExpression("AllTrueNullFirst").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("AllTrueEmptyList").value();
+        result = evaluationResult.forExpression("AllTrueEmptyList").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("AnyTrueAllTrue").value();
+        result = evaluationResult.forExpression("AnyTrueAllTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("AnyTrueAllFalse").value();
+        result = evaluationResult.forExpression("AnyTrueAllFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("AnyTrueAllTrueFalseTrue").value();
+        result = evaluationResult.forExpression("AnyTrueAllTrueFalseTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("AnyTrueAllFalseTrueFalse").value();
+        result = evaluationResult.forExpression("AnyTrueAllFalseTrueFalse").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("AnyTrueTrueFirst").value();
+        result = evaluationResult.forExpression("AnyTrueTrueFirst").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("AnyTrueFalseFirst").value();
+        result = evaluationResult.forExpression("AnyTrueFalseFirst").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("AnyTrueNullFirstThenTrue").value();
+        result = evaluationResult.forExpression("AnyTrueNullFirstThenTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("AnyTrueNullFirstThenFalse").value();
+        result = evaluationResult.forExpression("AnyTrueNullFirstThenFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("AnyTrueEmptyList").value();
+        result = evaluationResult.forExpression("AnyTrueEmptyList").value();
         assertThat(result, is(false));
 
         try {
@@ -80,7 +80,7 @@ public class CqlAggregateFunctionsTest extends CqlTestBase {
         }
 
         try {
-            result = AvgEvaluator.avg(Arrays.asList("this", "is", "error"), engineVisitor.getState());
+            result = AvgEvaluator.avg(Arrays.asList("this", "is", "error"), engine.getState());
             Assert.fail();
         }
         catch (InvalidOperatorArgument e) {
@@ -88,92 +88,92 @@ public class CqlAggregateFunctionsTest extends CqlTestBase {
         }
 
 
-        result = evaluationResult.expressionResults.get("AvgTest1").value();
+        result = evaluationResult.forExpression("AvgTest1").value();
         assertThat(result, is(new BigDecimal("3.0")));
 
         result = evaluationResult.expressionResults.get("Product_Long").value();
         assertThat(result, is(100L));
 
-        result = evaluationResult.expressionResults.get("CountTest1").value();
+        result = evaluationResult.forExpression("CountTest1").value();
         assertThat(result, is(4));
 
-        result = evaluationResult.expressionResults.get("CountTestDateTime").value();
+        result = evaluationResult.forExpression("CountTestDateTime").value();
         assertThat(result, is(3));
 
-        result = evaluationResult.expressionResults.get("CountTestTime").value();
+        result = evaluationResult.forExpression("CountTestTime").value();
         assertThat(result, is(3));
 
-        result = evaluationResult.expressionResults.get("CountTestNull").value();
+        result = evaluationResult.forExpression("CountTestNull").value();
         assertThat(result, is(0));
 
-        result = evaluationResult.expressionResults.get("MaxTestInteger").value();
+        result = evaluationResult.forExpression("MaxTestInteger").value();
         assertThat(result, is(90));
 
-        result = evaluationResult.expressionResults.get("MaxTestLong").value();
+        result = evaluationResult.forExpression("MaxTestLong").value();
         assertThat(result, is(90L));
 
-        result = evaluationResult.expressionResults.get("MaxTestString").value();
+        result = evaluationResult.forExpression("MaxTestString").value();
         assertThat(result, is("zebra"));
 
-        result = evaluationResult.expressionResults.get("MaxTestDateTime").value();
+        result = evaluationResult.forExpression("MaxTestDateTime").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2012, 10, 6)));
 
-        result = evaluationResult.expressionResults.get("MaxTestTime").value();
+        result = evaluationResult.forExpression("MaxTestTime").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(20, 59, 59, 999)));
 
 
-        result = evaluationResult.expressionResults.get("MedianTestDecimal").value();
+        result = evaluationResult.forExpression("MedianTestDecimal").value();
         assertThat(result, is(new BigDecimal("3.5")));
 
-        result = evaluationResult.expressionResults.get("MinTestInteger").value();
+        result = evaluationResult.forExpression("MinTestInteger").value();
         assertThat(result, is(0));
 
-        result = evaluationResult.expressionResults.get("MinTestLong").value();
+        result = evaluationResult.forExpression("MinTestLong").value();
         assertThat(result, is(0L));
 
-        result = evaluationResult.expressionResults.get("MinTestString").value();
+        result = evaluationResult.forExpression("MinTestString").value();
         assertThat(result, is("bye"));
 
-        result = evaluationResult.expressionResults.get("MinTestDateTime").value();
+        result = evaluationResult.forExpression("MinTestDateTime").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2012, 9, 5)));
 
-        result = evaluationResult.expressionResults.get("MinTestTime").value();
+        result = evaluationResult.forExpression("MinTestTime").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(5, 59, 59, 999)));
 
 
-        result = evaluationResult.expressionResults.get("ModeTestInteger").value();
+        result = evaluationResult.forExpression("ModeTestInteger").value();
         assertThat(result, is(9));
-        result = evaluationResult.expressionResults.get("ModeTestDateTime2").value();
+        result = evaluationResult.forExpression("ModeTestDateTime2").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2012, 10, 5)));
 
-        result = evaluationResult.expressionResults.get("ModeTestTime").value();
+        result = evaluationResult.forExpression("ModeTestTime").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(5, 59, 59, 999)));
 
-        result = evaluationResult.expressionResults.get("ModeTestDateTime").value();
+        result = evaluationResult.forExpression("ModeTestDateTime").value();
         Assert.assertTrue(((DateTime)result).equal(new DateTime(null, 2012, 9, 5)));
 
-        result = evaluationResult.expressionResults.get("PopStdDevTest1").value();
+        result = evaluationResult.forExpression("PopStdDevTest1").value();
         Assert.assertTrue(((BigDecimal) result).compareTo(new BigDecimal("1.41421356")) == 0); //23730951454746218587388284504413604736328125
 
-        result = evaluationResult.expressionResults.get("PopVarianceTest1").value();
+        result = evaluationResult.forExpression("PopVarianceTest1").value();
         Assert.assertTrue(((BigDecimal) result).compareTo(new BigDecimal("2.0")) == 0);
 
-        result = evaluationResult.expressionResults.get("StdDevTest1").value();
+        result = evaluationResult.forExpression("StdDevTest1").value();
         Assert.assertTrue(((BigDecimal) result).compareTo(new BigDecimal("1.58113883")) == 0); //00841897613935316257993690669536590576171875
 
-        result = evaluationResult.expressionResults.get("SumTest1").value();
+        result = evaluationResult.forExpression("SumTest1").value();
         assertThat(result, is(new BigDecimal("20.0")));
 
-        result = evaluationResult.expressionResults.get("SumTestLong").value();
+        result = evaluationResult.forExpression("SumTestLong").value();
         assertThat(result, is(20L));
 
-        result = evaluationResult.expressionResults.get("SumTestQuantity").value();
+        result = evaluationResult.forExpression("SumTestQuantity").value();
         Assert.assertTrue(((Quantity) result).equal(new Quantity().withValue(new BigDecimal("15.0")).withUnit("ml")));
 
-        result = evaluationResult.expressionResults.get("SumTestNull").value();
+        result = evaluationResult.forExpression("SumTestNull").value();
         assertThat(result, is(1));
 
-        result = evaluationResult.expressionResults.get("VarianceTest1").value();
+        result = evaluationResult.forExpression("VarianceTest1").value();
         Assert.assertTrue(((BigDecimal) result).compareTo(new BigDecimal("2.5")) == 0);
 
     }

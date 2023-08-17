@@ -1,13 +1,13 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import org.cqframework.cql.elm.visiting.ElmLibraryVisitor;
 import org.hl7.elm.r1.Property;
-import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.Tuple;
 
 public class PropertyEvaluator {
 
-    public static Object internalEvaluate(Property elm, State state, CqlEngine visitor) {
+    public static Object internalEvaluate(Property elm, State state, ElmLibraryVisitor<Object, State> visitor) {
         Object target = null;
 
         if (elm.getSource() != null) {

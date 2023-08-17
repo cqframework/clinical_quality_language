@@ -12,37 +12,37 @@ public class CqlFunctionTest extends CqlTestBase {
     public void test_all_function_tests() {
         EvaluationResult evaluationResult;
 
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlFunctionTests"));
+        evaluationResult = engine.evaluate(toElmIdentifier("CqlFunctionTests"));
 
         Object result;
-        result = evaluationResult.expressionResults.get("FunctionTestStringArg").value();
+        result = evaluationResult.forExpression("FunctionTestStringArg").value();
         assertThat(result, is("hello"));
 
-        result = evaluationResult.expressionResults.get("FunctionTestNullStringArg").value();
+        result = evaluationResult.forExpression("FunctionTestNullStringArg").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("FunctionTestMultipleArgs").value();
+        result = evaluationResult.forExpression("FunctionTestMultipleArgs").value();
         assertThat(result, is("hell0"));
 
-        result = evaluationResult.expressionResults.get("FunctionTestNullMultipleArgs").value();
+        result = evaluationResult.forExpression("FunctionTestNullMultipleArgs").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("FunctionTestOverload").value();
+        result = evaluationResult.forExpression("FunctionTestOverload").value();
         assertThat(result, is("hell00.000"));
 
-        result = evaluationResult.expressionResults.get("FunctionTestNullOverload").value();
+        result = evaluationResult.forExpression("FunctionTestNullOverload").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("FunctionTestTupleArg").value();
+        result = evaluationResult.forExpression("FunctionTestTupleArg").value();
         assertThat(result, is(3));
 
-        result = evaluationResult.expressionResults.get("FunctionTestNullTupleArg").value();
+        result = evaluationResult.forExpression("FunctionTestNullTupleArg").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("FunctionTestQuantityArg").value();
+        result = evaluationResult.forExpression("FunctionTestQuantityArg").value();
         assertThat(result, is("cm"));
 
-        result = evaluationResult.expressionResults.get("FunctionTestNullQuantityArg").value();
+        result = evaluationResult.forExpression("FunctionTestNullQuantityArg").value();
         assertThat(result, is(nullValue()));
 
     }

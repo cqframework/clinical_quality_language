@@ -14,27 +14,27 @@ public class IncludedSignatureOutputTests extends CqlTestBase {
 
         EvaluationResult evaluationResult;
 
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("IncludedSignatureOutputTests"));
-        
-        Object result = evaluationResult.expressionResults.get("TestOverload").value();
+        evaluationResult = engine.evaluate(toElmIdentifier("IncludedSignatureOutputTests"));
+
+        Object result = evaluationResult.forExpression("TestOverload").value();
         assertThat(result, is(5));
 
-        result = evaluationResult.expressionResults.get("TestOverloadOneInt").value();
+        result = evaluationResult.forExpression("TestOverloadOneInt").value();
         assertThat(result, is(1));
 
-        result = evaluationResult.expressionResults.get("TestOverloadOneDecimal").value();
+        result = evaluationResult.forExpression("TestOverloadOneDecimal").value();
         assertThat(result, is(new BigDecimal("2.0")));
 
-        result = evaluationResult.expressionResults.get("TestOverloadTwoInts").value();
+        result = evaluationResult.forExpression("TestOverloadTwoInts").value();
         assertThat(result, is(1));
 
-        result = evaluationResult.expressionResults.get("TestOverloadTwoDecimals").value();
+        result = evaluationResult.forExpression("TestOverloadTwoDecimals").value();
         assertThat(result, is(new BigDecimal("2.0")));
 
-        result = evaluationResult.expressionResults.get("TestOverloadOneIntOneDecimal").value();
+        result = evaluationResult.forExpression("TestOverloadOneIntOneDecimal").value();
         assertThat(result, is(new BigDecimal("2.0")));
 
-        result = evaluationResult.expressionResults.get("TestOverloadOneIntTwoDecimal").value();
+        result = evaluationResult.forExpression("TestOverloadOneIntTwoDecimal").value();
         assertThat(result, is(1));
     }
 }

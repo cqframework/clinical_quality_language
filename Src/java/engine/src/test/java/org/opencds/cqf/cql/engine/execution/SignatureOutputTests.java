@@ -14,25 +14,25 @@ public class SignatureOutputTests extends CqlTestBase {
 
         EvaluationResult evaluationResult;
 
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("SignatureOutputTests"));
+        evaluationResult = engine.evaluate(toElmIdentifier("SignatureOutputTests"));
 
 
-        Object result = evaluationResult.expressionResults.get("TestIntegerOverload").value();
+        Object result = evaluationResult.forExpression("TestIntegerOverload").value();
         assertThat(result, is(new BigDecimal("1")));
 
-        result = evaluationResult.expressionResults.get("TestDecimalOverload").value();
+        result = evaluationResult.forExpression("TestDecimalOverload").value();
         assertThat(result, is(new BigDecimal("1.0")));
 
-        result = evaluationResult.expressionResults.get("TestMultipleOverload").value();
+        result = evaluationResult.forExpression("TestMultipleOverload").value();
         assertThat(result, is(5));
 
-        result = evaluationResult.expressionResults.get("TestIntegerMultipleOverload").value();
+        result = evaluationResult.forExpression("TestIntegerMultipleOverload").value();
         assertThat(result, is(1));
 
-        result = evaluationResult.expressionResults.get("TestDecimalMultipleOverload").value();
+        result = evaluationResult.forExpression("TestDecimalMultipleOverload").value();
         assertThat(result, is(new BigDecimal("2.0")));
 
-        result = evaluationResult.expressionResults.get("TestIntegerAndDecimalMultipleOverload").value();
+        result = evaluationResult.forExpression("TestIntegerAndDecimalMultipleOverload").value();
         assertThat(result, is(1));
     }
 }

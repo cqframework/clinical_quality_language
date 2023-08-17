@@ -1,5 +1,6 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import org.cqframework.cql.elm.visiting.ElmLibraryVisitor;
 import org.hl7.elm.r1.ParameterDef;
 import org.hl7.elm.r1.ParameterRef;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
@@ -7,7 +8,7 @@ import org.opencds.cqf.cql.engine.execution.Libraries;
 import org.opencds.cqf.cql.engine.execution.State;
 
 public class ParameterRefEvaluator {
-    public static Object internalEvaluate(ParameterRef parameterRef, State state, CqlEngine visitor) {
+    public static Object internalEvaluate(ParameterRef parameterRef, State state, ElmLibraryVisitor<Object, State> visitor) {
         boolean enteredLibrary = state.enterLibrary(parameterRef.getLibraryName());
         try {
             var name = parameterRef.getName();

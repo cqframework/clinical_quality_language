@@ -26,15 +26,11 @@ public class CqlException extends RuntimeException {
     }
 
     public CqlException(Throwable cause, SourceLocator sourceLocator) {
-        super(cause);
-        this.sourceLocator = sourceLocator;
-        this.severity = Severity.ERROR;
+        this(null, cause, sourceLocator, null);
     }
 
     public CqlException(String message, SourceLocator sourceLocator, Severity severity) {
-        super(message);
-        this.sourceLocator = sourceLocator;
-        this.severity = severity != null ? severity : Severity.ERROR;
+        this(message, null, sourceLocator, severity);
     }
 
     public CqlException(String message, Throwable cause, SourceLocator sourceLocator, Severity severity) {
@@ -49,7 +45,7 @@ public class CqlException extends RuntimeException {
         return severity;
     }
 
-    private transient SourceLocator sourceLocator = null;
+    private transient SourceLocator sourceLocator;
 
     public SourceLocator getSourceLocator() {
         return sourceLocator;

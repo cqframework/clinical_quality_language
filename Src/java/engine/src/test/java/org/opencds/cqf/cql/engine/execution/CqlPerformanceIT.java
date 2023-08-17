@@ -1,7 +1,7 @@
 package org.opencds.cqf.cql.engine.execution;
 
+import org.cqframework.cql.cql2elm.CqlCompilerOptions;
 import org.fhir.ucum.UcumException;
-import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,8 +11,6 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZonedDateTime;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.TimeZone;
 
 import static org.testng.Assert.assertTrue;
@@ -23,7 +21,8 @@ public class CqlPerformanceIT extends CqlTestBase {
 
     private static final Logger logger = LoggerFactory.getLogger(CqlPerformanceIT.class);
 
-    // This test is a basically empty library that tests how long the engine initialization takes.
+    // This test is a basically empty library that tests how long the engine
+    // initialization takes.
     @Test
     public void testEngineInit() throws IOException, UcumException {
         VersionedIdentifier libraryId = toElmIdentifier("Test");
@@ -39,44 +38,62 @@ public class CqlPerformanceIT extends CqlTestBase {
     }
 
     // This test is for the runtime errors
-//     @Test
+    // @Test
     // TODO: Ratio type not implemented error
     public void testErrorSuite() throws IOException, UcumException {
-//         Map<VersionedIdentifier, Library> map = new HashMap<>();
-//         VersionedIdentifier libraryId = toElmIdentifier("CqlErrorTestSuite");
-//         map.put(libraryId, getLibrary(libraryId));
-//         runPerformanceTest(libraryId, map, 10.0, null);
+        // Map<VersionedIdentifier, Library> map = new HashMap<>();
+        // VersionedIdentifier libraryId = toElmIdentifier("CqlErrorTestSuite");
+        // map.put(libraryId, getLibrary(libraryId));
+        // runPerformanceTest(libraryId, map, 10.0, null);
     }
 
-    // This test is to check the validity of the internal representation of the CQL types (OPTIONAL)
+    // This test is to check the validity of the internal representation of the CQL
+    // types (OPTIONAL)
     @Test
     public void testInternalTypeRepresentationSuite() throws IOException, UcumException {
         VersionedIdentifier libraryId = toElmIdentifier("CqlInternalTypeRepresentationSuite", "1");
         runPerformanceTest(libraryId, 3.0, null);
     }
 
-    private void runPerformanceTest(VersionedIdentifier libraryId, Double maxPerIterationMs, ZonedDateTime evaluationZonedDateTime) {
-        // A new CqlEngine is created for each loop because it resets and rebuilds the context completely.
+    private void runPerformanceTest(VersionedIdentifier libraryId, Double maxPerIterationMs,
+            ZonedDateTime evaluationZonedDateTime) {
+        // A new CqlEngine is created for each loop because it resets and rebuilds the
+        // context completely.
 
-        Environment environment = new Environment(getLibraryManager());
+        Environment environment = new Environment(getLibraryManager(testCompilerOptions()));
 
         // Warm up the JVM
         for (int i = 0; i < ITERATIONS; i++) {
-            CqlEngine engineVisitor = new CqlEngine(environment);
-            EvaluationResult evaluationResult = engineVisitor.evaluate(libraryId, null, null, null, null, evaluationZonedDateTime);
+            CqlEngine engine = new CqlEngine(environment);
+            EvaluationResult evaluationResult = engine.evaluate(libraryId, null, null, null, null,
+                    evaluationZonedDateTime);
         }
 
         Instant start = Instant.now();
         for (int i = 0; i < ITERATIONS; i++) {
-            CqlEngine engineVisitor = new CqlEngine(environment);
-            EvaluationResult evaluationResult = engineVisitor.evaluate(libraryId, null ,null, null, null, evaluationZonedDateTime);
+            CqlEngine engine = new CqlEngine(environment);
+            EvaluationResult evaluationResult = engine.evaluate(libraryId, null, null, null, null,
+                    evaluationZonedDateTime);
         }
         Instant finish = Instant.now();
 
         long timeElapsed = Duration.between(start, finish).toMillis();
-        Double perIteration = (double)timeElapsed / (double)ITERATIONS;
+        Double perIteration = (double) timeElapsed / (double) ITERATIONS;
 
-        logger.info("{} performance test took {} millis for {} iterations. Per iteration: {} ms", libraryId.getId(), timeElapsed, ITERATIONS, perIteration);
-        assertTrue(perIteration < maxPerIterationMs, String.format("%s took longer per iteration than allowed. max: %3.2f, actual: %3.2f", libraryId.getId(), maxPerIterationMs, perIteration));
+        logger.info("{} performance test took {} millis for {} iterations. Per iteration: {} ms", libraryId.getId(),
+                timeElapsed, ITERATIONS, perIteration);
+        assertTrue(perIteration < maxPerIterationMs,
+                String.format("%s took longer per iteration than allowed. max: %3.2f, actual: %3.2f", libraryId.getId(),
+                        maxPerIterationMs, perIteration));
+    }
+
+    protected CqlCompilerOptions testCompilerOptions() {
+        var options = CqlCompilerOptions.defaultOptions();
+        // This test suite contains some definitions that use features that are usually
+        // turned off for CQL.
+        options.getOptions().remove(CqlCompilerOptions.Options.DisableListDemotion);
+        options.getOptions().remove(CqlCompilerOptions.Options.DisableListPromotion);
+
+        return options;
     }
 }

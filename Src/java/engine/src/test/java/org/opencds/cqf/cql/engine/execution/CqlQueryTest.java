@@ -16,17 +16,17 @@ public class CqlQueryTest extends CqlTestBase {
         Set<String> set = new HashSet<>();
         EvaluationResult evaluationResult;
 
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlQueryTests"));
+        evaluationResult = engine.evaluate(toElmIdentifier("CqlQueryTests"));
         Object result;
 
-        result = evaluationResult.expressionResults.get("RightShift").value();
+        result = evaluationResult.forExpression("RightShift").value();
         Assert.assertEquals(result, Arrays.asList(null, "A", "B", "C"));
-        result = evaluationResult.expressionResults.get("LeftShift").value();
+        result = evaluationResult.forExpression("LeftShift").value();
         Assert.assertEquals(result, Arrays.asList("B", "C", "D", null));
-        result = evaluationResult.expressionResults.get("LeftShift2").value();
+        result = evaluationResult.forExpression("LeftShift2").value();
         Assert.assertEquals(result, Arrays.asList("B", "C", "D", null));
 
-        result = evaluationResult.expressionResults.get("Multisource").value();
+        result = evaluationResult.forExpression("Multisource").value();
         Assert.assertTrue(result instanceof List);
         List<?> results = (List<?>) result;
         Assert.assertTrue(results.size() == 1);
@@ -34,27 +34,27 @@ public class CqlQueryTest extends CqlTestBase {
         Tuple resultTuple = (Tuple) results.get(0);
         Assert.assertTrue(resultTuple.getElements().containsKey("A") && resultTuple.getElements().containsKey("B"));
 
-        result = evaluationResult.expressionResults.get("Complex Multisource").value();
+        result = evaluationResult.forExpression("Complex Multisource").value();
         Assert.assertTrue(result instanceof List);
         results = (List<?>) result;
         Assert.assertTrue(results.size() == 4);
 
-        result = evaluationResult.expressionResults.get("Let Test Fails").value();
+        result = evaluationResult.forExpression("Let Test Fails").value();
 
 
-        result = evaluationResult.expressionResults.get("Triple Source Query").value();
+        result = evaluationResult.forExpression("Triple Source Query").value();
         Assert.assertTrue(result instanceof List);
         results = (List<?>) result;
         Assert.assertTrue(results.size() == 27);
 
-        result = evaluationResult.expressionResults.get("Let Expression in Multi Source Query").value();
+        result = evaluationResult.forExpression("Let Expression in Multi Source Query").value();
         Assert.assertTrue(result instanceof List);
         results = (List<?>) result;
         Assert.assertTrue(results.size() == 1);
         Assert.assertTrue(EquivalentEvaluator.equivalent(results.get(0), 3));
 
 
-        result = evaluationResult.expressionResults.get("Accessing Third Element of Triple Source Query").value();
+        result = evaluationResult.forExpression("Accessing Third Element of Triple Source Query").value();
         Assert.assertTrue(result instanceof List);
         results = (List<?>) result;
         Assert.assertTrue(results.size() == 1);

@@ -57,6 +57,8 @@ define ExpNeg0  : Exp(-0)
 define Exp1  : Exp(1)
 define Exp1Long  : Exp(1L)
 define ExpNeg1  : Exp(-1)
+define Exp1000  : Exp(1000)
+define Exp1000D  : Exp(1000.0)
 
 //HighBoundary
 
@@ -88,6 +90,8 @@ define LowBoundaryNullPrecision : LowBoundary(1.58888, null)
 
 //Ln
 define LnNull  : Ln(null)
+define Ln0  : Ln(0)
+define LnNeg0  : Ln(-0)
 define Ln1  : Ln(1)
 define Ln1Long  : Ln(1L)
 define LnNeg1  : Ln(-1)
@@ -162,6 +166,8 @@ define PredecessorOf101D: predecessor of 1.01
 define PredecessorOf1QCM: predecessor of 1.0 'cm'
 define PredecessorOfJan12000: predecessor of DateTime(2000,1,1)
 define PredecessorOfNoon: predecessor of @T12:00:00.000
+define PredecessorUnderflowDt: predecessor of DateTime(0001, 1, 1, 0, 0, 0, 0)
+define PredecessorUnderflowT: predecessor of @T00:00:00.000
 
 //Power
 define PowerNullToNull: Power(null as Integer, null as Integer)
@@ -210,6 +216,8 @@ define SuccessorOf1D: successor of 1.0
 define SuccessorOf101D: successor of 1.01
 define SuccessorOfJan12000: successor of DateTime(2000,1,1)
 define SuccessorOfNoon: successor of @T12:00:00.000
+define SuccessorOverflowDt: successor of DateTime(9999, 12, 31, 23, 59, 59, 999)
+define SuccessorOverflowT: successor of @T23:59:59.999
 
 //Truncate
 define TruncateNull: Truncate(null as Decimal)

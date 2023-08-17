@@ -1,5 +1,7 @@
 package org.opencds.cqf.cql.engine.execution;
 
+import org.cqframework.cql.cql2elm.CqlCompilerException;
+import org.cqframework.cql.cql2elm.CqlCompilerOptions;
 import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator;
 import org.opencds.cqf.cql.engine.runtime.*;
 import org.testng.Assert;
@@ -7,6 +9,7 @@ import org.testng.annotations.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.testng.Assert.assertFalse;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,64 +18,69 @@ import java.util.List;
 
 public class ListOperatorsTest extends CqlTestBase {
 
+@Test
+    public void test_cql_list_test_suite_compiles() {
+        var errors = new ArrayList<CqlCompilerException>();
+        this.getLibrary(toElmIdentifier("CqlListOperatorsTest"), errors, testCompilerOptions());
+        assertFalse(CqlCompilerException.hasErrors(errors), String.format("Test library compiled with the following errors : %s", this.toString(errors)));
+    }
+
     @Test
     public void test_all_interval_operators() {
+        var eng = getEngine(testCompilerOptions());
 
-        EvaluationResult evaluationResult;
+        var evaluationResult = eng.evaluate(toElmIdentifier("CqlListOperatorsTest"));
 
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlListOperatorsTest"));
-        Object result;
-
-        result = evaluationResult.expressionResults.get("simpleList").value();
+        var result = evaluationResult.forExpression("simpleList").value();
         assertThat(result, is(Arrays.asList(4, 5, 1, 6, 2, 1)));
 
 
-        result = evaluationResult.expressionResults.get("simpleSortAsc").value();
+        result = evaluationResult.forExpression("simpleSortAsc").value();
         assertThat(result, is(Arrays.asList(1, 1, 2, 4, 5, 6)));
 
-        result = evaluationResult.expressionResults.get("simpleSortDesc").value();
+        result = evaluationResult.forExpression("simpleSortDesc").value();
         assertThat(result, is(Arrays.asList(6, 5, 4, 2, 1, 1)));
 
-        result = evaluationResult.expressionResults.get("simpleSortStringAsc").value();
+        result = evaluationResult.forExpression("simpleSortStringAsc").value();
         assertThat(result, is(Arrays.asList("Armadillo", "Wolf", "aardvark", "alligator", "back", "iguana", "zebra")));
 
-        result = evaluationResult.expressionResults.get("simpleSortStringDesc").value();
+        result = evaluationResult.forExpression("simpleSortStringDesc").value();
         assertThat(result, is(Arrays.asList("zebra", "iguana", "back", "alligator", "aardvark", "Wolf", "Armadillo")));
 
-        result = evaluationResult.expressionResults.get("SortDatesAsc").value();
+        result = evaluationResult.forExpression("SortDatesAsc").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) result).get(0), new DateTime(null, 2012, 1, 1)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) result).get(1), new DateTime(null, 2012, 1, 1, 12)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) result).get(2), new DateTime(null, 2012, 10, 5)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) result).get(3), new DateTime(null, 2012, 10, 5, 10)));
 
-        result = evaluationResult.expressionResults.get("SortDatesDesc").value();
+        result = evaluationResult.forExpression("SortDatesDesc").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) result).get(0), new DateTime(null, 2012, 10, 5, 10)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) result).get(1), new DateTime(null, 2012, 10, 5)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) result).get(2), new DateTime(null, 2012, 1, 1, 12)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) result).get(3), new DateTime(null, 2012, 1, 1)));
 
-        result = evaluationResult.expressionResults.get("SortIntWithNullAsc1").value();
+        result = evaluationResult.forExpression("SortIntWithNullAsc1").value();
         assertThat(result, is(Arrays.asList(null, 1, 2, 3)));
 
-        result = evaluationResult.expressionResults.get("SortIntWithNullAsc2").value();
+        result = evaluationResult.forExpression("SortIntWithNullAsc2").value();
         assertThat(result, is(Arrays.asList(null, 1, 2, 3)));
 
-        result = evaluationResult.expressionResults.get("SortIntWithNullDesc1").value();
+        result = evaluationResult.forExpression("SortIntWithNullDesc1").value();
         assertThat(result, is(Arrays.asList(3, 2, 1, null)));
 
-        result = evaluationResult.expressionResults.get("SortIntWithNullDesc2").value();
+        result = evaluationResult.forExpression("SortIntWithNullDesc2").value();
         assertThat(result, is(Arrays.asList(3, 2, 1, null)));
 
-        result = evaluationResult.expressionResults.get("intList").value();
+        result = evaluationResult.forExpression("intList").value();
         assertThat(result, is(Arrays.asList(3, 2, 1)));
 
-//        result = evaluationResult.expressionResults.get("decimalList").value();
+//        result = evaluationResult.forExpression("decimalList").value();
 //        assertThat(result, is(Arrays.asList(new BigDecimal(3.8).setScale(1, RoundingMode.HALF_EVEN), new BigDecimal(2.4).setScale(1, RoundingMode.HALF_EVEN), new BigDecimal(1.9).setScale(1, RoundingMode.HALF_EVEN))));
 
-        //    result = evaluationResult.expressionResults.get("quantityList").value();
+        //    result = evaluationResult.forExpression("quantityList").value();
         //    assertThat(result, is(Arrays.asList(new Quantity().withValue(new BigDecimal("19.99")).withUnit("lbs") , new Quantity().withValue(new BigDecimal("17.33")).withUnit("lbs") ,  new Quantity().withValue(new BigDecimal("10.66")).withUnit("lbs") )));
 
-        result = evaluationResult.expressionResults.get("dateTimeList").value();
+        result = evaluationResult.forExpression("dateTimeList").value();
         List<DateTime> arrListDateTime = new ArrayList<>();
         arrListDateTime.add(new DateTime(null, 2016));
         arrListDateTime.add(new DateTime(null, 2015));
@@ -80,629 +88,652 @@ public class ListOperatorsTest extends CqlTestBase {
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, arrListDateTime));
 
 
-        result = evaluationResult.expressionResults.get("timeList").value();
+        result = evaluationResult.forExpression("timeList").value();
         List<Time> arrList = new ArrayList<>();
         arrList.add(new Time(15, 59, 59, 999));
         arrList.add(new Time(15, 12, 59, 999));
         arrList.add(new Time(15, 12, 13, 999));
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, arrList));
 
-        result = evaluationResult.expressionResults.get("ContainsNullFirst").value();
+        result = evaluationResult.forExpression("ContainsNullFirst").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("ContainsABCHasA").value();
+        result = evaluationResult.forExpression("ContainsABCHasA").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("ContainsJan2012True").value();
+        result = evaluationResult.forExpression("ContainsJan2012True").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("ContainsJan2012False").value();
+        result = evaluationResult.forExpression("ContainsJan2012False").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("ContainsTimeTrue").value();
+        result = evaluationResult.forExpression("ContainsTimeTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("ContainsTimeFalse").value();
+        result = evaluationResult.forExpression("ContainsTimeFalse").value();
         assertThat(result, is(false));
 
-//        result = evaluationResult.expressionResults.get("ContainsNullLeft").value();
+//        result = evaluationResult.forExpression("ContainsNullLeft").value();
 //        assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("DescendentsEmptyList").value();
+        result = evaluationResult.forExpression("DescendentsEmptyList").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("DistinctEmptyList").value();
+        result = evaluationResult.forExpression("DistinctEmptyList").value();
         assertThat(result, is(Collections.emptyList()));
 
-        result = evaluationResult.expressionResults.get("DistinctNullNullNull").value();
+        result = evaluationResult.forExpression("DistinctNullNullNull").value();
         assertThat(result, is(new ArrayList<Object>() {{
             add(null);
         }}));
 
-        result = evaluationResult.expressionResults.get("DistinctANullANull").value();
+        result = evaluationResult.forExpression("DistinctANullANull").value();
         assertThat(result, is(Arrays.asList("a", null)));
 
-        result = evaluationResult.expressionResults.get("Distinct112233").value();
+        result = evaluationResult.forExpression("Distinct112233").value();
         assertThat(result, is(Arrays.asList(1, 2, 3)));
 
-        result = evaluationResult.expressionResults.get("Distinct123123").value();
+        result = evaluationResult.forExpression("Distinct123123").value();
         assertThat(result, is(Arrays.asList(1, 2, 3)));
 
-        result = evaluationResult.expressionResults.get("DistinctAABBCC").value();
+        result = evaluationResult.forExpression("DistinctAABBCC").value();
         assertThat(result, is(Arrays.asList("a", "b", "c")));
 
-        result = evaluationResult.expressionResults.get("DistinctABCABC").value();
+        result = evaluationResult.forExpression("DistinctABCABC").value();
         assertThat(result, is(Arrays.asList("a", "b", "c")));
 
-        result = evaluationResult.expressionResults.get("DistinctDateTime").value();
+        result = evaluationResult.forExpression("DistinctDateTime").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(0), new DateTime(null, 2012, 10, 5)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(1), new DateTime(null, 2012, 1, 1)));
         assertThat(((List<?>)result).size(), is(2));
 
-        result = evaluationResult.expressionResults.get("DistinctTime").value();
+        result = evaluationResult.forExpression("DistinctTime").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(0), new Time(15, 59, 59, 999)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(1), new Time(20, 59, 59, 999)));
         assertThat(((List<?>)result).size(), is(2));
 
-        result = evaluationResult.expressionResults.get("EqualNullNull").value();
+        result = evaluationResult.forExpression("EqualNullNull").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("EqualEmptyListNull").value();
+        result = evaluationResult.forExpression("EqualEmptyListNull").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("EqualNullEmptyList").value();
+        result = evaluationResult.forExpression("EqualNullEmptyList").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("EqualEmptyListAndEmptyList").value();
+        result = evaluationResult.forExpression("EqualEmptyListAndEmptyList").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("Equal12And123").value();
+        result = evaluationResult.forExpression("Equal12And123").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("Equal123And12").value();
+        result = evaluationResult.forExpression("Equal123And12").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("Equal123And123").value();
+        result = evaluationResult.forExpression("Equal123And123").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("EqualDateTimeTrue").value();
+        result = evaluationResult.forExpression("EqualDateTimeTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("EqualDateTimeFalse").value();
+        result = evaluationResult.forExpression("EqualDateTimeFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("EqualTimeTrue").value();
+        result = evaluationResult.forExpression("EqualTimeTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("EqualTimeFalse").value();
+        result = evaluationResult.forExpression("EqualTimeFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("ExceptEmptyListAndEmptyList").value();
+        result = evaluationResult.forExpression("ExceptEmptyListAndEmptyList").value();
         assertThat(result, is(Collections.emptyList()));
 
-        result = evaluationResult.expressionResults.get("Except1234And23").value();
+        result = evaluationResult.forExpression("Except1234And23").value();
         assertThat(result, is(Arrays.asList(1, 4)));
 
-        result = evaluationResult.expressionResults.get("Except23And1234").value();
+        result = evaluationResult.forExpression("Except23And1234").value();
         assertThat(result, is(Collections.emptyList()));
 
-        result = evaluationResult.expressionResults.get("ExceptDateTimeList").value();
+        result = evaluationResult.forExpression("ExceptDateTimeList").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(0), new DateTime(null, 2012, 5, 10)));
         assertThat(((List<?>)result).size(), is(1));
 
-        result = evaluationResult.expressionResults.get("ExceptTimeList").value();
+        result = evaluationResult.forExpression("ExceptTimeList").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(0), new Time(15, 59, 59, 999)));
         assertThat(((List<?>)result).size(), is(1));
 
-        result = evaluationResult.expressionResults.get("ExceptNullRight").value();
+        result = evaluationResult.forExpression("ExceptNullRight").value();
         assertThat(result, is(Arrays.asList(1, 4)));
 
-        result = evaluationResult.expressionResults.get("ExistsEmpty").value();
+        result = evaluationResult.forExpression("ExistsEmpty").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("ExistsListNull").value();
+        result = evaluationResult.forExpression("ExistsListNull").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("Exists1").value();
+        result = evaluationResult.forExpression("Exists1").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("Exists12").value();
+        result = evaluationResult.forExpression("Exists12").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("ExistsDateTime").value();
+        result = evaluationResult.forExpression("ExistsDateTime").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("ExistsTime").value();
+        result = evaluationResult.forExpression("ExistsTime").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("ExistsNull").value();
+        result = evaluationResult.forExpression("ExistsNull").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("FlattenEmpty").value();
+        result = evaluationResult.forExpression("FlattenEmpty").value();
         assertThat(result, is(Collections.emptyList()));
 
-        result = evaluationResult.expressionResults.get("FlattenListNullAndNull").value();
+        result = evaluationResult.forExpression("FlattenListNullAndNull").value();
         assertThat(result, is(Arrays.asList(null, null)));
 
-        result = evaluationResult.expressionResults.get("FlattenNullAndListNull").value();
+        result = evaluationResult.forExpression("FlattenNullAndListNull").value();
         assertThat(result, is(Arrays.asList(null, null)));
 
-        result = evaluationResult.expressionResults.get("FlattenList12And34").value();
+        result = evaluationResult.forExpression("FlattenList12And34").value();
         assertThat(result, is(Arrays.asList(1, 2, 3, 4)));
 
-        result = evaluationResult.expressionResults.get("FlattenDateTime").value();
+        result = evaluationResult.forExpression("FlattenDateTime").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(0), new DateTime(null, 2012, 5, 10)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(1), new DateTime(null, 2014, 12, 10)));
         assertThat(((List<?>)result).size(), is(2));
 
-        result = evaluationResult.expressionResults.get("FlattenTime").value();
+        result = evaluationResult.forExpression("FlattenTime").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(0), new Time(15, 59, 59, 999)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(1), new Time(20, 59, 59, 999)));
         assertThat(((List<?>)result).size(), is(2));
 
-        result = evaluationResult.expressionResults.get("FirstEmpty").value();
+        result = evaluationResult.forExpression("FirstEmpty").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("FirstNull1").value();
+        result = evaluationResult.forExpression("FirstNull1").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("First1Null").value();
+        result = evaluationResult.forExpression("First1Null").value();
         assertThat(result, is(1));
 
-        result = evaluationResult.expressionResults.get("First12").value();
+        result = evaluationResult.forExpression("First12").value();
         assertThat(result, is(1));
 
-        result = evaluationResult.expressionResults.get("FirstDateTime").value();
+        result = evaluationResult.forExpression("FirstDateTime").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2012, 5, 10)));
 
-        result = evaluationResult.expressionResults.get("FirstTime").value();
+        result = evaluationResult.forExpression("FirstTime").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(15, 59, 59, 999)));
 
-        result = evaluationResult.expressionResults.get("InNullEmpty").value();
+        result = evaluationResult.forExpression("InNullEmpty").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("InNullAnd1Null").value();
+        result = evaluationResult.forExpression("InNullAnd1Null").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("In1Null").value();
+        result = evaluationResult.forExpression("In1Null").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("In1And12").value();
+        result = evaluationResult.forExpression("In1And12").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("In3And12").value();
+        result = evaluationResult.forExpression("In3And12").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("InDateTimeTrue").value();
+        result = evaluationResult.forExpression("InDateTimeTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("InDateTimeFalse").value();
+        result = evaluationResult.forExpression("InDateTimeFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("InTimeTrue").value();
+        result = evaluationResult.forExpression("InTimeTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("InTimeFalse").value();
+        result = evaluationResult.forExpression("InTimeFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("IncludesEmptyAndEmpty").value();
+        result = evaluationResult.forExpression("IncludesEmptyAndEmpty").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("IncludesListNullAndListNull").value();
+        result = evaluationResult.forExpression("IncludesListNullAndListNull").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("Includes123AndEmpty").value();
+        result = evaluationResult.forExpression("Includes123AndEmpty").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("Includes123And2").value();
+        result = evaluationResult.forExpression("Includes123And2").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("Includes123And4").value();
+        result = evaluationResult.forExpression("Includes123And4").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("IncludesDateTimeTrue").value();
+        result = evaluationResult.forExpression("IncludesDateTimeTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("IncludesDateTimeFalse").value();
+        result = evaluationResult.forExpression("IncludesDateTimeFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("IncludesTimeTrue").value();
+        result = evaluationResult.forExpression("IncludesTimeTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("IncludesTimeFalse").value();
+        result = evaluationResult.forExpression("IncludesTimeFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("IncludesNullLeft").value();
+        result = evaluationResult.forExpression("IncludesNullLeft").value();
         assertThat(result, is(false));
 
         // TODO: fix test - going to ContainsEvaluator
-//        result = evaluationResult.expressionResults.get("IncludesNullRight").value();
+//        result = evaluationResult.forExpression("IncludesNullRight").value();
 //        assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("IncludedInEmptyAndEmpty").value();
+        result = evaluationResult.forExpression("IncludedInEmptyAndEmpty").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("IncludedInListNullAndListNull").value();
+        result = evaluationResult.forExpression("IncludedInListNullAndListNull").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("IncludedInEmptyAnd123").value();
+        result = evaluationResult.forExpression("IncludedInEmptyAnd123").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("IncludedIn2And123").value();
+        result = evaluationResult.forExpression("IncludedIn2And123").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("IncludedIn4And123").value();
+        result = evaluationResult.forExpression("IncludedIn4And123").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("IncludedInDateTimeTrue").value();
+        result = evaluationResult.forExpression("IncludedInDateTimeTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("IncludedInDateTimeFalse").value();
+        result = evaluationResult.forExpression("IncludedInDateTimeFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("IncludedInTimeTrue").value();
+        result = evaluationResult.forExpression("IncludedInTimeTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("IncludedInTimeFalse").value();
+        result = evaluationResult.forExpression("IncludedInTimeFalse").value();
         assertThat(result, is(false));
 
         // TODO: fix test - going to InEvaluator
-//        result = evaluationResult.expressionResults.get("IncludedInNullLeft").value();
+//        result = evaluationResult.forExpression("IncludedInNullLeft").value();
 //        assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("IncludedInNullRight").value();
+        result = evaluationResult.forExpression("IncludedInNullRight").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("IndexerNull1List").value();
+        result = evaluationResult.forExpression("IndexerNull1List").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("Indexer0Of12").value();
+        result = evaluationResult.forExpression("Indexer0Of12").value();
         assertThat(result, is(1));
 
-        result = evaluationResult.expressionResults.get("Indexer1Of12").value();
+        result = evaluationResult.forExpression("Indexer1Of12").value();
         assertThat(result, is(2));
 
-        result = evaluationResult.expressionResults.get("Indexer2Of12").value();
+        result = evaluationResult.forExpression("Indexer2Of12").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("IndexerNeg1Of12").value();
+        result = evaluationResult.forExpression("IndexerNeg1Of12").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("IndexerDateTime").value();
+        result = evaluationResult.forExpression("IndexerDateTime").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2012, 5, 10)));
 
-        result = evaluationResult.expressionResults.get("IndexerTime").value();
+        result = evaluationResult.forExpression("IndexerTime").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(15, 59, 59, 999)));
 
-        result = evaluationResult.expressionResults.get("IndexOfEmptyNull").value();
+        result = evaluationResult.forExpression("IndexOfEmptyNull").value();
         assertThat(result, is(-1));
 
-        result = evaluationResult.expressionResults.get("IndexOfNullEmpty").value();
+        result = evaluationResult.forExpression("IndexOfNullEmpty").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("IndexOfNullIn1Null").value();
+        result = evaluationResult.forExpression("IndexOfNullIn1Null").value();
         assertThat(result, is(1));
 
-        result = evaluationResult.expressionResults.get("IndexOf1In12").value();
+        result = evaluationResult.forExpression("IndexOf1In12").value();
         assertThat(result, is(0));
 
-        result = evaluationResult.expressionResults.get("IndexOf2In12").value();
+        result = evaluationResult.forExpression("IndexOf2In12").value();
         assertThat(result, is(1));
 
-        result = evaluationResult.expressionResults.get("IndexOf3In12").value();
+        result = evaluationResult.forExpression("IndexOf3In12").value();
         assertThat(result, is(-1));
 
-        result = evaluationResult.expressionResults.get("IndexOfDateTime").value();
+        result = evaluationResult.forExpression("IndexOfDateTime").value();
         assertThat(result, is(2));
 
-        result = evaluationResult.expressionResults.get("IndexOfTime").value();
+        result = evaluationResult.forExpression("IndexOfTime").value();
         assertThat(result, is(1));
 
-        result = evaluationResult.expressionResults.get("IntersectEmptyListAndEmptyList").value();
+        result = evaluationResult.forExpression("IntersectEmptyListAndEmptyList").value();
         assertThat(result, is(Collections.emptyList()));
 
-        result = evaluationResult.expressionResults.get("Intersect1234And23").value();
+        result = evaluationResult.forExpression("Intersect1234And23").value();
         assertThat(result, is(Arrays.asList(2, 3)));
 
-        result = evaluationResult.expressionResults.get("Intersect23And1234").value();
+        result = evaluationResult.forExpression("Intersect23And1234").value();
         assertThat(result, is(Arrays.asList(2, 3)));
 
-        result = evaluationResult.expressionResults.get("IntersectDateTime").value();
+        result = evaluationResult.forExpression("IntersectDateTime").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(0), new DateTime(null, 2012, 5, 10)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(1), new DateTime(null, 2014, 12, 10)));
         assertThat(((List<?>)result).size(), is(2));
 
-        result = evaluationResult.expressionResults.get("IntersectTime").value();
+        result = evaluationResult.forExpression("IntersectTime").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(0), new Time(15, 59, 59, 999)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(1), new Time(20, 59, 59, 999)));
         assertThat(((List<?>)result).size(), is(2));
 
-        result = evaluationResult.expressionResults.get("LastEmpty").value();
+        result = evaluationResult.forExpression("LastEmpty").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("LastNull1").value();
+        result = evaluationResult.forExpression("LastNull1").value();
         assertThat(result, is(1));
 
-        result = evaluationResult.expressionResults.get("Last1Null").value();
+        result = evaluationResult.forExpression("Last1Null").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("Last12").value();
+        result = evaluationResult.forExpression("Last12").value();
         assertThat(result, is(2));
 
-        result = evaluationResult.expressionResults.get("LastDateTime").value();
+        result = evaluationResult.forExpression("LastDateTime").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2014, 12, 10)));
 
-        result = evaluationResult.expressionResults.get("LastTime").value();
+        result = evaluationResult.forExpression("LastTime").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(20, 59, 59, 999)));
 
-        result = evaluationResult.expressionResults.get("LengthEmptyList").value();
+        result = evaluationResult.forExpression("LengthEmptyList").value();
         assertThat(result, is(0));
 
-        result = evaluationResult.expressionResults.get("LengthNull1").value();
+        result = evaluationResult.forExpression("LengthNull1").value();
         assertThat(result, is(2));
 
-        result = evaluationResult.expressionResults.get("Length1Null").value();
+        result = evaluationResult.forExpression("Length1Null").value();
         assertThat(result, is(2));
 
-        result = evaluationResult.expressionResults.get("Length12").value();
+        result = evaluationResult.forExpression("Length12").value();
         assertThat(result, is(2));
 
-        result = evaluationResult.expressionResults.get("LengthDateTime").value();
+        result = evaluationResult.forExpression("LengthDateTime").value();
         assertThat(result, is(3));
 
-        result = evaluationResult.expressionResults.get("LengthTime").value();
+        result = evaluationResult.forExpression("LengthTime").value();
         assertThat(result, is(6));
 
-        result = evaluationResult.expressionResults.get("LengthNullList").value();
+        result = evaluationResult.forExpression("LengthNullList").value();
         assertThat(result, is(0));
 
-        result = evaluationResult.expressionResults.get("EquivalentEmptyAndEmpty").value();
+        result = evaluationResult.forExpression("EquivalentEmptyAndEmpty").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("EquivalentABCAndABC").value();
+        result = evaluationResult.forExpression("EquivalentABCAndABC").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("EquivalentABCAndAB").value();
+        result = evaluationResult.forExpression("EquivalentABCAndAB").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("EquivalentABCAnd123").value();
+        result = evaluationResult.forExpression("EquivalentABCAnd123").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("Equivalent123AndABC").value();
+        result = evaluationResult.forExpression("Equivalent123AndABC").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("Equivalent123AndString123").value();
+        result = evaluationResult.forExpression("Equivalent123AndString123").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("EquivalentDateTimeTrue").value();
+        result = evaluationResult.forExpression("EquivalentDateTimeTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("EquivalentDateTimeNull").value();
+        result = evaluationResult.forExpression("EquivalentDateTimeNull").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("EquivalentDateTimeFalse").value();
+        result = evaluationResult.forExpression("EquivalentDateTimeFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("EquivalentTimeTrue").value();
+        result = evaluationResult.forExpression("EquivalentTimeTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("EquivalentTimeNull").value();
+        result = evaluationResult.forExpression("EquivalentTimeNull").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("EquivalentTimeFalse").value();
+        result = evaluationResult.forExpression("EquivalentTimeFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("NotEqualEmptyAndEmpty").value();
+        result = evaluationResult.forExpression("NotEqualEmptyAndEmpty").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("NotEqualABCAndABC").value();
+        result = evaluationResult.forExpression("NotEqualABCAndABC").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("NotEqualABCAndAB").value();
+        result = evaluationResult.forExpression("NotEqualABCAndAB").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("NotEqualABCAnd123").value();
+        result = evaluationResult.forExpression("NotEqualABCAnd123").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("NotEqual123AndABC").value();
+        result = evaluationResult.forExpression("NotEqual123AndABC").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("NotEqual123AndString123").value();
+        result = evaluationResult.forExpression("NotEqual123AndString123").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("NotEqualDateTimeTrue").value();
+        result = evaluationResult.forExpression("NotEqualDateTimeTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("NotEqualDateTimeFalse").value();
+        result = evaluationResult.forExpression("NotEqualDateTimeFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("NotEqualTimeTrue").value();
+        result = evaluationResult.forExpression("NotEqualTimeTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("NotEqualTimeFalse").value();
+        result = evaluationResult.forExpression("NotEqualTimeFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("ProperIncludesEmptyAndEmpty").value();
+        result = evaluationResult.forExpression("ProperIncludesEmptyAndEmpty").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("ProperIncludesListNullAndListNull").value();
+        result = evaluationResult.forExpression("ProperIncludesListNullAndListNull").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("ProperIncludes123AndEmpty").value();
+        result = evaluationResult.forExpression("ProperIncludes123AndEmpty").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("ProperIncludes123And2").value();
+        result = evaluationResult.forExpression("ProperIncludes123And2").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("ProperIncludes123And4").value();
+        result = evaluationResult.forExpression("ProperIncludes123And4").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("ProperIncludesDateTimeTrue").value();
+        result = evaluationResult.forExpression("ProperIncludesDateTimeTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("ProperIncludesDateTimeFalse").value();
+        result = evaluationResult.forExpression("ProperIncludesDateTimeFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("ProperIncludesTimeTrue").value();
+        result = evaluationResult.forExpression("ProperIncludesTimeTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("ProperIncludesTimeFalse").value();
+        result = evaluationResult.forExpression("ProperIncludesTimeFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("ProperlyIncludesNullLeft").value();
+        result = evaluationResult.forExpression("ProperlyIncludesNullLeft").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("ProperlyIncludes1And111").value();
+        result = evaluationResult.forExpression("ProperlyIncludes1And111").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("ProperContainsNullRightFalse").value();
+        result = evaluationResult.forExpression("ProperContainsNullRightFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("ProperContainsNullRightTrue").value();
+        result = evaluationResult.forExpression("ProperContainsNullRightTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("ProperContainsTimeTrue").value();
+        result = evaluationResult.forExpression("ProperContainsTimeTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("ProperContainsTimeNull").value();
+        result = evaluationResult.forExpression("ProperContainsTimeNull").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("ProperInNullRightFalse").value();
+        result = evaluationResult.forExpression("ProperInNullRightFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("ProperInNullRightTrue").value();
+        result = evaluationResult.forExpression("ProperInNullRightTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("ProperInTimeTrue").value();
+        result = evaluationResult.forExpression("ProperInTimeTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("ProperInTimeNull").value();
+        result = evaluationResult.forExpression("ProperInTimeNull").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("ProperIncludedInEmptyAndEmpty").value();
+        result = evaluationResult.forExpression("ProperIncludedInEmptyAndEmpty").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("ProperIncludedInListNullAndListNull").value();
+        result = evaluationResult.forExpression("ProperIncludedInListNullAndListNull").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("ProperIncludedInEmptyAnd123").value();
+        result = evaluationResult.forExpression("ProperIncludedInEmptyAnd123").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("ProperIncludedIn2And123").value();
+        result = evaluationResult.forExpression("ProperIncludedIn2And123").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("ProperIncludedIn4And123").value();
+        result = evaluationResult.forExpression("ProperIncludedIn4And123").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("ProperIncludedInDateTimeTrue").value();
+        result = evaluationResult.forExpression("ProperIncludedInDateTimeTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("ProperIncludedInDateTimeFalse").value();
+        result = evaluationResult.forExpression("ProperIncludedInDateTimeFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("ProperIncludedInTimeTrue").value();
+        result = evaluationResult.forExpression("ProperIncludedInTimeTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("ProperIncludedInTimeFalse").value();
+        result = evaluationResult.forExpression("ProperIncludedInTimeFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("ProperlyIncludedInNullRight").value();
+        result = evaluationResult.forExpression("ProperlyIncludedInNullRight").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("ProperlyIncludedIn11And1").value();
+        result = evaluationResult.forExpression("ProperlyIncludedIn11And1").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("SingletonFromEmpty").value();
+        result = evaluationResult.forExpression("SingletonFromEmpty").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("SingletonFromListNull").value();
+        result = evaluationResult.forExpression("SingletonFromListNull").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("SingletonFrom1").value();
+        result = evaluationResult.forExpression("SingletonFrom1").value();
         assertThat(result, is(1));
 
-        result = evaluationResult.expressionResults.get("SingletonFromDateTime").value();
+        result = evaluationResult.forExpression("SingletonFromDateTime").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2012, 5, 10)));
 
-        result = evaluationResult.expressionResults.get("SingletonFromTime").value();
+        result = evaluationResult.forExpression("SingletonFromTime").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(15, 59, 59, 999)));
 
-        result = evaluationResult.expressionResults.get("SkipNull").value();
+        result = evaluationResult.forExpression("SkipNull").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("SkipEven").value();
+        result = evaluationResult.forExpression("SkipEven").value();
         assertThat(result, is(Arrays.asList(3,4,5)));
 
-        result = evaluationResult.expressionResults.get("SkipOdd").value();
+        result = evaluationResult.forExpression("SkipOdd").value();
         assertThat(result, is(Arrays.asList(4,5)));
 
-        result = evaluationResult.expressionResults.get("SkipNone").value();
+        result = evaluationResult.forExpression("SkipNone").value();
         assertThat(result, is(Arrays.asList(1,2,3,4,5)));
 
-        result = evaluationResult.expressionResults.get("SkipAll").value();
+        result = evaluationResult.forExpression("SkipAll").value();
         assertThat(result, is(Collections.emptyList()));
 
-        result = evaluationResult.expressionResults.get("TailNull").value();
+        result = evaluationResult.forExpression("TailNull").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("TailEven").value();
+        result = evaluationResult.forExpression("TailEven").value();
         assertThat(result, is(Arrays.asList(2,3,4)));
 
-        result = evaluationResult.expressionResults.get("TailOdd").value();
+        result = evaluationResult.forExpression("TailOdd").value();
         assertThat(result, is(Arrays.asList(2,3,4,5)));
 
-        result = evaluationResult.expressionResults.get("TailEmpty").value();
+        result = evaluationResult.forExpression("TailEmpty").value();
         assertThat(result, is(Collections.emptyList()));
 
-        result = evaluationResult.expressionResults.get("TailOneElement").value();
+        result = evaluationResult.forExpression("TailOneElement").value();
         assertThat(result, is(Collections.emptyList()));
 
-        result = evaluationResult.expressionResults.get("TakeNull").value();
+        result = evaluationResult.forExpression("TakeNull").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("TakeNullEmpty").value();
+        result = evaluationResult.forExpression("TakeNullEmpty").value();
         assertThat(result, is(Collections.emptyList()));
 
-        result = evaluationResult.expressionResults.get("TakeEmpty").value();
+        result = evaluationResult.forExpression("TakeEmpty").value();
         assertThat(result, is(Collections.emptyList()));
 
-        result = evaluationResult.expressionResults.get("TakeEven").value();
+        result = evaluationResult.forExpression("TakeEven").value();
         assertThat(result, is(Arrays.asList(1,2)));
 
-        result = evaluationResult.expressionResults.get("TakeOdd").value();
+        result = evaluationResult.forExpression("TakeOdd").value();
         assertThat(result, is(Arrays.asList(1,2,3)));
 
-        result = evaluationResult.expressionResults.get("TakeAll").value();
+        result = evaluationResult.forExpression("TakeAll").value();
         assertThat(result, is(Arrays.asList(1,2,3,4)));
 
-        result = evaluationResult.expressionResults.get("UnionEmptyAndEmpty").value();
+        result = evaluationResult.forExpression("UnionEmptyAndEmpty").value();
         assertThat(result, is(Collections.emptyList()));
 
-        result = evaluationResult.expressionResults.get("UnionListNullAndListNull").value();
+        result = evaluationResult.forExpression("UnionListNullAndListNull").value();
         assertThat(result, is(Collections.singletonList(null)));
 
-        result = evaluationResult.expressionResults.get("Union123AndEmpty").value();
+        result = evaluationResult.forExpression("Union123AndEmpty").value();
         assertThat(result, is(Arrays.asList(1, 2, 3)));
 
-        result = evaluationResult.expressionResults.get("Union123And2").value();
+        result = evaluationResult.forExpression("Union123And2").value();
         assertThat(result, is(Arrays.asList(1, 2, 3)));
 
-        result = evaluationResult.expressionResults.get("Union123And4").value();
+        result = evaluationResult.forExpression("Union123And4").value();
         assertThat(result, is(Arrays.asList(1, 2, 3, 4)));
 
-        result = evaluationResult.expressionResults.get("UnionDateTime").value();
+        result = evaluationResult.forExpression("UnionDateTime").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(0), new DateTime(null, 2001, 9, 11)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(1), new DateTime(null, 2012, 5, 10)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(2), new DateTime(null, 2014, 12, 10)));
         assertThat(((List<?>)result).size(), is(3));
 
-        result = evaluationResult.expressionResults.get("UnionTime").value();
+        result = evaluationResult.forExpression("UnionTime").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(0), new Time(15, 59, 59, 999)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(1), new Time(20, 59, 59, 999)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(2), new Time(12, 59, 59, 999)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(3), new Time(10, 59, 59, 999)));
         assertThat(((List<?>)result).size(), is(4));
+    }
+
+    protected CqlCompilerOptions testCompilerOptions() {
+        var options = CqlCompilerOptions.defaultOptions();
+        // This test suite contains some definitions that use features that are usually
+        // turned off for CQL.
+        options.getOptions().remove(CqlCompilerOptions.Options.DisableListDemotion);
+        options.getOptions().remove(CqlCompilerOptions.Options.DisableListPromotion);
+        return options;
+    }
 
 
+    String toString(List<CqlCompilerException> errors) {
+        StringBuilder builder = new StringBuilder();
+
+        for (var e : errors) {
+            builder.append(e.toString() + System.lineSeparator());
+            if (e.getLocator() != null) {
+                builder.append("at" + System.lineSeparator());
+                builder.append(e.getLocator().toLocator() + System.lineSeparator());
+            }
+            builder.append(System.lineSeparator());
+        }
+
+        return builder.toString();
     }
 }

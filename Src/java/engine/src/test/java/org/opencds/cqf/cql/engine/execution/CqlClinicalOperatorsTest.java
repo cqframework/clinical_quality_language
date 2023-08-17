@@ -17,37 +17,37 @@ public class CqlClinicalOperatorsTest extends CqlTestBase {
     public void test_all_clinical_operators_tests() {
         EvaluationResult evaluationResult;
 
-        evaluationResult = engineVisitor.evaluate(toElmIdentifier("CqlClinicalOperatorsTest"), ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, TimeZone.getDefault().toZoneId()));
+        evaluationResult = engine.evaluate(toElmIdentifier("CqlClinicalOperatorsTest"), ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, TimeZone.getDefault().toZoneId()));
 
 
-        Object result = evaluationResult.expressionResults.get("CalculateAgeYears").value();
+        Object result = evaluationResult.forExpression("CalculateAgeYears").value();
         assertThat(result, is(6));
 
-        result = evaluationResult.expressionResults.get("CalculateAgeMonths").value();
+        result = evaluationResult.forExpression("CalculateAgeMonths").value();
         assertThat(result, is(72));
 
-        result = evaluationResult.expressionResults.get("CalculateAgeDays").value();
+        result = evaluationResult.forExpression("CalculateAgeDays").value();
         assertThat(result, is(2191));
 
-        result = evaluationResult.expressionResults.get("CalculateAgeHours").value();
+        result = evaluationResult.forExpression("CalculateAgeHours").value();
         assertThat(result, is(52583));
 
-        result = evaluationResult.expressionResults.get("CalculateAgeMinutes").value();
+        result = evaluationResult.forExpression("CalculateAgeMinutes").value();
         assertThat(result, is(3155040));
 
-        result = evaluationResult.expressionResults.get("CalculateAgeSeconds").value();
+        result = evaluationResult.forExpression("CalculateAgeSeconds").value();
         assertThat(result, is(189302400));
 
-        result = evaluationResult.expressionResults.get("CalculateAgeUncertain").value();
+        result = evaluationResult.forExpression("CalculateAgeUncertain").value();
         assertThat(result.toString(), is((new Interval(61, true, 72, true)).toString()));
 
-        result = evaluationResult.expressionResults.get("CalculateAgeAtYears").value();
+        result = evaluationResult.forExpression("CalculateAgeAtYears").value();
         assertThat(result, is(17));
 
-        result = evaluationResult.expressionResults.get("CalculateAgeAtMonths").value();
+        result = evaluationResult.forExpression("CalculateAgeAtMonths").value();
         assertThat(result, is(197));
 
-        result = evaluationResult.expressionResults.get("CalculateAgeAtDays").value();
+        result = evaluationResult.forExpression("CalculateAgeAtDays").value();
         assertThat(result, is(6038));
 
         // BTR -> 2020-10-09
@@ -55,87 +55,87 @@ public class CqlClinicalOperatorsTest extends CqlTestBase {
         // Microsoft SQL Server also returns 144912, but this is a pretty absurd test case, changed to 144911
         // After committing to the build site, the test fails because it happens to be running somewhere that the timezone behavior is different
         // So, changing this test to be a more reasonable test of hours calculation
-        result = evaluationResult.expressionResults.get("CalculateAgeAtHours").value();
+        result = evaluationResult.forExpression("CalculateAgeAtHours").value();
         assertThat(result, is(27));
 
         // BTR -> 2020-10-09
         // Was 8694720, same as SQL Server, but again, edge case, changing
-        result = evaluationResult.expressionResults.get("CalculateAgeAtMinutes").value();
+        result = evaluationResult.forExpression("CalculateAgeAtMinutes").value();
         assertThat(result, is(27 * 60 + 10));
 
         // BTR -> 2020-10-09
         // Was 521683200, same as SQL Server, but again, edge case, changing
-        result = evaluationResult.expressionResults.get("CalculateAgeAtSeconds").value();
+        result = evaluationResult.forExpression("CalculateAgeAtSeconds").value();
         assertThat(result, is((27 * 60 + 10) * 60 + 15));
 
-        result = evaluationResult.expressionResults.get("CalculateAgeAtUncertain").value();
+        result = evaluationResult.forExpression("CalculateAgeAtUncertain").value();
         Assert.assertTrue(((Interval)result).getStart().equals(187));
         Assert.assertTrue(((Interval)result).getEnd().equals(198));
 
-        result = evaluationResult.expressionResults.get("Issue70A").value();
+        result = evaluationResult.forExpression("Issue70A").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("Issue70B").value();
+        result = evaluationResult.forExpression("Issue70B").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("CodeEqualTrue").value();
+        result = evaluationResult.forExpression("CodeEqualTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("CodeEqualFalse").value();
+        result = evaluationResult.forExpression("CodeEqualFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("CodeEqualNullVersion").value();
+        result = evaluationResult.forExpression("CodeEqualNullVersion").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("ConceptEqualTrue").value();
+        result = evaluationResult.forExpression("ConceptEqualTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("ConceptEqualFalse").value();
+        result = evaluationResult.forExpression("ConceptEqualFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("ConceptEqualNullDisplay").value();
+        result = evaluationResult.forExpression("ConceptEqualNullDisplay").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("CodeEqualNull").value();
+        result = evaluationResult.forExpression("CodeEqualNull").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("ConceptEqualNull").value();
+        result = evaluationResult.forExpression("ConceptEqualNull").value();
         assertThat(result, is(nullValue()));
 
-        result = evaluationResult.expressionResults.get("CodeEquivalentTrue").value();
+        result = evaluationResult.forExpression("CodeEquivalentTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("CodeEquivalentFalse").value();
+        result = evaluationResult.forExpression("CodeEquivalentFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("ConceptEquivalentTrue").value();
+        result = evaluationResult.forExpression("ConceptEquivalentTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("ConceptEquivalentTrueDisplayMismatch").value();
+        result = evaluationResult.forExpression("ConceptEquivalentTrueDisplayMismatch").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("ConceptEquivalentTrueIntersection1And4").value();
+        result = evaluationResult.forExpression("ConceptEquivalentTrueIntersection1And4").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("ConceptEquivalentTrueIntersection2And4").value();
+        result = evaluationResult.forExpression("ConceptEquivalentTrueIntersection2And4").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("ConceptEquivalentFalse").value();
+        result = evaluationResult.forExpression("ConceptEquivalentFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("CodeEquivalentNull").value();
+        result = evaluationResult.forExpression("CodeEquivalentNull").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("ConceptEquivalentNull").value();
+        result = evaluationResult.forExpression("ConceptEquivalentNull").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("CodeToConceptEquivalentFalse").value();
+        result = evaluationResult.forExpression("CodeToConceptEquivalentFalse").value();
         assertThat(result, is(false));
 
-        result = evaluationResult.expressionResults.get("CodeToConceptEquivalentTrue").value();
+        result = evaluationResult.forExpression("CodeToConceptEquivalentTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.expressionResults.get("ConceptToConceptMismatchedDisplayTrue").value();
+        result = evaluationResult.forExpression("ConceptToConceptMismatchedDisplayTrue").value();
         assertThat(result, is(true));
 
 
