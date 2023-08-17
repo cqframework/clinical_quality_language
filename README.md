@@ -1,4 +1,4 @@
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/info.cqframework/cql-to-elm/badge.svg)](https://maven-badges.herokuapp.com/maven-central/info.cqframework/cql-to-elm) [![project chat](https://img.shields.io/badge/zulip-join_chat-brightgreen.svg)](https://chat.fhir.org/#narrow/stream/179220-cql)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/info.cqframework/cql-to-elm/badge.svg)](https://maven-badges.herokuapp.com/maven-central/info.cqframework/cql-to-elm) [![project chat](https://img.shields.io/badge/zulip-join_chat-brightgreen.svg)](https://chat.fhir.org/#narrow/stream/179220-cql)[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md)
 
 # Clinical Quality Language
 
