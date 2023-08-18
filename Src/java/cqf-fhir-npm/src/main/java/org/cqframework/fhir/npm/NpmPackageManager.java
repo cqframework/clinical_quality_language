@@ -6,7 +6,6 @@ import org.hl7.fhir.r5.model.ImplementationGuide;
 import org.hl7.fhir.utilities.VersionUtilities;
 import org.hl7.fhir.utilities.npm.FilesystemPackageCacheManager;
 import org.hl7.fhir.utilities.npm.NpmPackage;
-import org.hl7.fhir.utilities.npm.ToolsVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
