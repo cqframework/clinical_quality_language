@@ -6,11 +6,15 @@ import java.util.Map;
 
 import org.cqframework.cql.cql2elm.LibrarySourceProvider;
 
-public class InnMemoryLibrarySourceProvider implements LibrarySourceProvider {
+/**
+ * This class provides CQL content for a given VersionedIdentifier based on a
+ * pre-populated Map. This is mostly useful for testing scenarios
+ */
+public class MapLibrarySourceProvider implements LibrarySourceProvider {
 
     private Map<org.hl7.elm.r1.VersionedIdentifier, String> libraries = null;
 
-    public InnMemoryLibrarySourceProvider(Map<org.hl7.elm.r1.VersionedIdentifier, String> libraries) {
+    public MapLibrarySourceProvider(Map<org.hl7.elm.r1.VersionedIdentifier, String> libraries) {
         this.libraries = libraries;
     }
 
