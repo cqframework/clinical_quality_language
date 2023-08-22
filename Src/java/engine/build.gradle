@@ -13,4 +13,5 @@ dependencies {
     testImplementation project(':cql-to-elm')
     testImplementation project(':model-jackson')
     testImplementation project(':elm-jackson')
+    testImplementation 'org.mockito:mockito-core:5.4.0'
 }
