@@ -27,7 +27,7 @@ public class NpmPackageManagerTests implements IWorkerContext.ILoggingService {
     private final VersionConvertor_40_50 convertor = new VersionConvertor_40_50(new BaseAdvisor_40_50());
 
     @Test
-    public void TestSampleIGLocal() {
+    public void TestSampleIGLocalNoDependencies() {
         Resource igResource = (Resource) FhirContext.forR4Cached().newXmlParser().parseResource(
                 NpmPackageManagerTests.class.getResourceAsStream("myig.xml"));
         ImplementationGuide ig = (ImplementationGuide) convertor.convertResource(igResource);
@@ -36,33 +36,29 @@ public class NpmPackageManagerTests implements IWorkerContext.ILoggingService {
     }
 
     @Test
-    @Ignore("This test depends on the example.fhir.uv.myig package, which is not currently published")
-    public void TestSampleContentIGLocal() {
+    public void TestSampleContentIGLocalWithRecursiveDependencies() {
         Resource igResource = (Resource) FhirContext.forR4Cached().newXmlParser().parseResource(
                 NpmPackageManagerTests.class.getResourceAsStream("mycontentig.xml"));
         ImplementationGuide ig = (ImplementationGuide) convertor.convertResource(igResource);
         NpmPackageManager pm = new NpmPackageManager(ig);
         assertTrue(pm.getNpmList().size() >= 3);
         boolean hasFHIR = false;
-        boolean hasMyIG = false;
         boolean hasCommon = false;
         boolean hasCPG = false;
         for (NpmPackage p : pm.getNpmList()) {
             switch (p.canonical()) {
                 case "http://hl7.org/fhir": hasFHIR = true; break;
-                case "http://somewhere.org/fhir/uv/myig": hasMyIG = true; break;
                 case "http://fhir.org/guides/cqf/common": hasCommon = true; break;
                 case "http://hl7.org/fhir/uv/cpg": hasCPG = true; break;
             }
         }
         assertTrue(hasFHIR);
-        assertTrue(hasMyIG);
         assertTrue(hasCommon);
         assertTrue(hasCPG);
     }
 
     @Test
-    public void TestOpioidMMEIGLocal() {
+    public void TestOpioidMMEIGLocalWithSingleFileDependency() {
         Resource igResource = (Resource) FhirContext.forR4Cached().newXmlParser().parseResource(
                 NpmPackageManagerTests.class.getResourceAsStream("opioid-mme-r4.xml"));
         ImplementationGuide ig = (ImplementationGuide) convertor.convertResource(igResource);
