@@ -3,7 +3,8 @@ plugins {
 }
 
 ext {
-    hapiVersion = project['hapi.version'];
+    hapiVersion = project['hapi.version']
+    coreVersion = project['fhir-core.version']
 }
 
 dependencies {
@@ -11,9 +12,9 @@ dependencies {
         exclude group: 'org.eclipse.jetty'
     }
 
-    implementation "ca.uhn.hapi.fhir:org.hl7.fhir.r5"
-    implementation "ca.uhn.hapi.fhir:org.hl7.fhir.convertors"
-    implementation "ca.uhn.hapi.fhir:org.hl7.fhir.utilities"
+    implementation "ca.uhn.hapi.fhir:org.hl7.fhir.r5:${coreVersion}"
+    implementation "ca.uhn.hapi.fhir:org.hl7.fhir.convertors:${coreVersion}"
+    implementation "ca.uhn.hapi.fhir:org.hl7.fhir.utilities:${coreVersion}"
 
     implementation "ca.uhn.hapi.fhir:hapi-fhir-base"
     implementation "ca.uhn.hapi.fhir:hapi-fhir-converter"
