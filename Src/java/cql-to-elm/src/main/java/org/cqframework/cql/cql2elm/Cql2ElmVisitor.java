@@ -1,10 +1,10 @@
 package org.cqframework.cql.cql2elm;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cqframework.cql.cql2elm.model.invocation.*;
 import org.cqframework.cql.cql2elm.preprocessor.*;
@@ -22,6 +22,8 @@ import org.hl7.elm.r1.*;
 import org.hl7.elm.r1.Element;
 import org.hl7.elm.r1.Interval;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.*;
 import javax.xml.namespace.QName;
@@ -31,9 +33,11 @@ import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 
 public class Cql2ElmVisitor extends cqlBaseVisitor {
+    static final Logger logger = LoggerFactory.getLogger(Cql2ElmVisitor.class);
     private final ObjectFactory of = new ObjectFactory();
     private final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
     private boolean annotate = false;
@@ -4435,9 +4439,16 @@ DATETIME
         boolean checkForward = libraryName == null || libraryName.equals("") || libraryName.equals(this.libraryInfo.getLibraryName());
         Expression result = libraryBuilder.resolveFunction(libraryName, functionName, expressions, !checkForward, allowPromotionAndDemotion, allowFluent);
         if (result == null) {
+            final CallContext expectedCallContext = getCallContext(libraryName, functionName, expressions, mustResolve, allowPromotionAndDemotion, allowFluent);
+
+            // LUKETODO: this is retrieved from a Map
             Iterable<FunctionDefinitionInfo> functionInfos = libraryInfo.resolveFunctionReference(functionName);
             if (functionInfos != null) {
                 for (FunctionDefinitionInfo functionInfo : functionInfos) {
+                    if (! ForwardInvocationChecker.areFunctionsEquivalent(expectedCallContext, functionInfo, ctx -> preCompile(ctx))) {
+                        continue;
+                    }
+
                     String saveContext = currentContext;
                     currentContext = functionInfo.getContext();
                     try {
@@ -4507,6 +4518,70 @@ DATETIME
         return resolveFunction(null, identifier, paramListCtx);
     }
 
+    private PreCompileOutput preCompile(cqlParser.FunctionDefinitionContext ctx) {
+        logger.info("preCompile: ctx: {}", ctx);
+        final FunctionDef fun = of.createFunctionDef()
+                .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
+                .withName(parseString(ctx.identifierOrFunctionIdentifier()));
+
+        if (ctx.fluentModifier() != null) {
+            libraryBuilder.checkCompatibilityLevel("Fluent functions", "1.5");
+            fun.setFluent(true);
+        }
+
+        if (ctx.operandDefinition() != null) {
+            for (cqlParser.OperandDefinitionContext opdef : ctx.operandDefinition()) {
+                TypeSpecifier typeSpecifier = parseTypeSpecifier(opdef.typeSpecifier());
+                logger.info("preCompile: typeSpecififer: {}", typeSpecifier);
+                logger.info("preCompile: typeSpecififer.resultType: {}", typeSpecifier.getResultType());
+                fun.getOperand().add(
+                        (OperandDef)of.createOperandDef()
+                                .withName(parseString(opdef.referentialIdentifier()))
+                                .withOperandTypeSpecifier(typeSpecifier)
+                                .withResultType(typeSpecifier.getResultType())
+                );
+            }
+        }
+
+        logger.info("preCompile: fun.getOperand(): {}", fun.getOperand());
+
+        final cqlParser.TypeSpecifierContext typeSpecifierContext = ctx.typeSpecifier();
+
+        if (typeSpecifierContext != null) {
+            return PreCompileOutput.withReturnType(fun, parseTypeSpecifier(typeSpecifierContext));
+        }
+
+        return PreCompileOutput.noReturnType(fun);
+    }
+
+    private CallContext getCallContext(String libraryName, String functionName, List<Expression> expressions, boolean mustResolve, boolean allowPromotionAndDemotion, boolean allowFluent) {
+        final FunctionRef expectedCalledFunctionRef = buildFunctionRef(libraryName, functionName, expressions);
+        final FunctionRefInvocation functionRefInvocation = new FunctionRefInvocation(expectedCalledFunctionRef);
+        final List<DataType> dataTypes = new ArrayList<>();
+        for (Expression operand : functionRefInvocation.getOperands()) {
+            if (operand == null || operand.getResultType() == null) {
+                throw new IllegalArgumentException(String.format("Could not determine signature for invocation of operator %s%s.",
+                        libraryName == null ? "" : libraryName + ".", expectedCalledFunctionRef.getName()));
+            }
+            dataTypes.add(operand.getResultType());
+        }
+
+        return new CallContext(libraryName, expectedCalledFunctionRef.getName(), allowPromotionAndDemotion, allowFluent, mustResolve, dataTypes.toArray(new DataType[dataTypes.size()]));
+    }
+
+    // TODO: code reuse
+    private FunctionRef buildFunctionRef(String libraryName, String functionName, Iterable<Expression> paramList) {
+        FunctionRef fun = of.createFunctionRef()
+                .withLibraryName(libraryName)
+                .withName(functionName);
+
+        for (Expression param : paramList) {
+            fun.getOperand().add(param);
+        }
+
+        return fun;
+    }
+
     @Override
     public Expression visitFunction(cqlParser.FunctionContext ctx) {
         return resolveFunctionOrQualifiedFunction(parseString(ctx.referentialIdentifier()), ctx.paramList());
@@ -4523,6 +4598,9 @@ DATETIME
     }
 
     public Object internalVisitFunctionDefinition(cqlParser.FunctionDefinitionContext ctx) {
+        // LUKETODO: compileFunctionHeader()
+        // use this to compute the hash as well
+        // START compile signature
         FunctionDef fun = of.createFunctionDef()
                 .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
                 .withName(parseString(ctx.identifierOrFunctionIdentifier()));
@@ -4548,6 +4626,7 @@ DATETIME
         if (ctx.typeSpecifier() != null) {
             resultType = parseTypeSpecifier(ctx.typeSpecifier());
         }
+        // END compile signature
 
         if (!libraryBuilder.getCompiledLibrary().contains(fun)) {
             if (ctx.functionBody() != null) {
@@ -4555,8 +4634,19 @@ DATETIME
                 try {
                     libraryBuilder.pushExpressionContext(currentContext);
                     try {
-                        libraryBuilder.pushExpressionDefinition(String.format("%s()", fun.getName()));
+                        // LUKETODO:  this is where the first "toString()" gets pushed to the libraryBuilder
+                        logger.info("libraryBuilder.pushExpressionDefinition: {}", fun.getName());
+                        // LUKETODO:  consider storing in some sort of Map so as to not preCompile multiple times
+                        // LUKETODO:  even if there is one preCompile, it's still expensive:  we should avoid this
+                        // LUKETODO: Is there a way to compute the hash without a preCompile?
+                        // LUKETODO:  get FunctionDefinitionContext String libraryName, String functionName, List<Expression> expressions
+                        final String identifierFromHashedClass = generateHashForLibraryBuilder(ctx);
+                        logger.info("identifierFromHashedClass: {}", identifierFromHashedClass);
+//                        libraryBuilder.pushExpressionDefinition(String.format("%s()", fun.getName()));
+                        libraryBuilder.pushExpressionDefinition(String.format("%s()", identifierFromHashedClass));
                         try {
+                            // LUKETODO: this is where we try to resolve the overloaded call to "toString()"
+                            logger.info("parseExpression: {}", fun.getName());
                             fun.setExpression(parseExpression(ctx.functionBody()));
                         } finally {
                             libraryBuilder.popExpressionDefinition();
@@ -4594,6 +4684,48 @@ DATETIME
         }
 
         return fun;
+    }
+
+    private String generateHashForLibraryBuilder(cqlParser.FunctionDefinitionContext ctx) {
+//        return generateHashWithPreCompile(ctx);
+        return generateHashWithoutPreCompile(ctx);
+    }
+
+    private String generateHashWithPreCompile(cqlParser.FunctionDefinitionContext ctx) {
+        final PreCompileOutput preCompileOutput = preCompile(ctx);
+        // TODO: generateHash() from cqlParser.FunctionDefinitionContext ctx but same requirements, like text()?
+
+        return preCompileOutput.generateHash();
+    }
+
+    private String generateHashWithoutPreCompile(cqlParser.FunctionDefinitionContext ctx) {
+        final List<cqlParser.OperandDefinitionContext> operandDefinitionContexts = ctx.operandDefinition();
+
+        final String signature = operandDefinitionContexts == null ? ""
+                : operandDefinitionContexts.stream()
+                .map(cqlParser.OperandDefinitionContext::typeSpecifier)
+                // TODO: test this with multiple different signatures
+                .map(RuleContext::getText)
+//                .map(typeSpecifier -> typeSpecifier.children)
+//                .filter(children -> children.size() >= 2)
+//                .map(children -> children.get(1))
+//                .map(ParseTree::getText)
+                .collect(Collectors.joining(","));
+
+        if (operandDefinitionContexts != null) {
+            // TODO: find a good heuristic
+            for (cqlParser.OperandDefinitionContext operandDefinitionContext : operandDefinitionContexts) {
+                final cqlParser.TypeSpecifierContext typeSpecifierContext = operandDefinitionContext.typeSpecifier();
+                final String typeSpecifierContextText = typeSpecifierContext.getText();
+                if (typeSpecifierContext.children.size() >= 1) {
+                    final ParseTree parseTree = operandDefinitionContext.children.get(0);
+                    final String text = parseTree.getText();
+                    logger.info("text: " + text );
+                }
+            }
+        }
+
+        return parseString(ctx.identifierOrFunctionIdentifier()) + ": " + signature;
     }
 
     @Override

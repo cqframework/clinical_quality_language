@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
 import org.cqframework.cql.gen.cqlBaseListener;
@@ -435,15 +436,28 @@ public class LibraryTests {
         assertThat(statements.size(), equalTo(1));
     }
 
+    // LUKETODO:  if we suppress all toString() calls from Cql2ElmVisitor, we get this error:  "Could not resolve call to operator toString with signature (list<System.Code>).]"
+    // LUKETODO:  if we leave the code as is, this is what we get: "Cannot resolve reference to expression or function toString() because it results in a circular reference."
+    // LUKETODO:  if we ensure only the method call with the correct signature is passed, this is what we get: "Cannot resolve reference to expression or function toString() because it results in a circular reference.]"
     @Test
-    @Ignore("bug discovered during 3.0 release, test added to track it")
     public void TestForwardDeclarations() throws IOException {
         CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestForwardDeclaration.cql");
-        assertThat(translator.getErrors().size(), equalTo(0));
+        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(0));
 
-        var compileLibrary = translator.getTranslatedLibrary().getLibrary();
-        var statements = compileLibrary.getStatements().getDef();
-        assertThat(statements.size(), equalTo(1));
+        Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
+        List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
+        assertThat("Statements: " + statements.stream().map(ExpressionDef::getName).toList(), statements.size(), equalTo(2));
+    }
+
+    // LUKETODO: either get rid of this or merge with the other test method
+    @Test
+    public void TestForwardDeclarations_luke() throws IOException {
+        CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestForwardDeclaration_luke.cql");
+        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(0));
+
+        Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
+        List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
+        assertThat("Statements: " + statements.stream().map(ExpressionDef::getName).toList(), statements.size(), equalTo(5));
     }
 
 }

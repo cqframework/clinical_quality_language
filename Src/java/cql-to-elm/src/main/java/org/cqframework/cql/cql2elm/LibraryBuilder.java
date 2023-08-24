@@ -10,6 +10,9 @@ import org.hl7.cql_annotations.r1.CqlToElmInfo;
 import org.hl7.cql_annotations.r1.ErrorSeverity;
 import org.hl7.cql_annotations.r1.ErrorType;
 import org.hl7.elm.r1.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.xml.namespace.QName;
 import java.math.BigDecimal;
 import java.util.*;
@@ -19,6 +22,7 @@ import java.util.List;
  * Created by Bryn on 12/29/2016.
  */
 public class LibraryBuilder implements ModelResolver {
+    static final Logger logger = LoggerFactory.getLogger(LibraryBuilder.class);
     public static enum SignatureLevel {
         /*
         Indicates signatures will never be included in operator invocations
@@ -2915,15 +2919,33 @@ public class LibraryBuilder implements ModelResolver {
         }
     }
 
+    // TODO:  create a hash of the name and the argument types
     public void pushExpressionDefinition(String identifier) {
         if (expressionDefinitions.contains(identifier)) {
+            logger.info("ERROR: class: {}, pushExpressionDefinition: {}", this, identifier);
             // ERROR:
             throw new IllegalArgumentException(String.format("Cannot resolve reference to expression or function %s because it results in a circular reference.", identifier));
         }
+        logger.info("SUCCESS: class: {}, pushExpressionDefinition: {}", this, identifier);
+        // LUKETODO:  it looks like the first time we add to this we are adding "define function toString(value Concept)"
         expressionDefinitions.push(new ExpressionDefinitionContext(identifier));
     }
 
+    // LUKETODO:  child.toText() won't quite work given duplicate methods with different variable names
+    /*
+    define function toString(value Integer):
+     toString(value.string())
+    define function toString(value2 Integer):
+         toString(value2.string())
+     */
+
+    /*
+    hash ~= fun.name() + combine(operands.stream().map(o -> o.getType().text()), ",")
+     */
+
     public void popExpressionDefinition() {
+        // LUKETODO:  in the reverse case we've already popped before calling push with toString()
+        logger.info("popExpressionDefinition");
         expressionDefinitions.pop();
     }
 

@@ -15,6 +15,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
 
+// LUKETODO: run  this after making changes with hashing function
+// LUKETODO: looks like we're good after passing the hash to the LibraryBuilder
 public class SemanticTests {
 
     @Test

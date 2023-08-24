@@ -12,6 +12,8 @@ import org.hl7.cql.model.NamespaceInfo;
 import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.Retrieve;
 import org.hl7.elm.r1.VersionedIdentifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 public class CqlCompiler {
+    static final Logger logger = LoggerFactory.getLogger(CqlCompiler.class);
     private Library library = null;
     private CompiledLibrary compiledLibrary = null;
     private Object visitResult = null;
@@ -193,6 +196,7 @@ public class CqlCompiler {
         visitor.setTokenStream(tokens);
         visitor.setLibraryInfo(preprocessor.getLibraryInfo());
 
+        logger.info("visitor.visit(tree)");
         visitResult = visitor.visit(tree);
         library = builder.getLibrary();
         compiledLibrary = builder.getCompiledLibrary();
