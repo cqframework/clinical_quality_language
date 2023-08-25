@@ -29,9 +29,10 @@ import java.util.stream.StreamSupport;
  */
 public class ForwardInvocationValidator {
     static final Logger logger = LoggerFactory.getLogger(ForwardInvocationValidator.class);
-    private static final Pattern REGEX_GENERIC_TYPE_NAMESPACE = Pattern.compile("<[a-zA-z]*.");
+    private static final Pattern REGEX_GENERIC_TYPE_NAMESPACE = Pattern.compile("[a-zA-z]*\\.");
 
     // LUKETODO: We definitely need better names for the parameters
+    // LUKETODO: why is BaseTest.TestIntervalImplicitConversion failing when the params clearly don't match: (13,11): Could not resolve call to operator LengthInDays with signature (FHIR.Period).
     public static boolean areFunctionsEquivalent(CallContext callContextFromCaller, FunctionDefinitionInfo foundFunctionToBeEvaluated, Function<cqlParser.FunctionDefinitionContext, PreCompileOutput> preCompileFunction) {
         if (areFunctionsSuperficiallyEquivalent(callContextFromCaller, foundFunctionToBeEvaluated)) {
             return areFunctionsPreCompileEquivalent(callContextFromCaller, foundFunctionToBeEvaluated.getDefinition(), preCompileFunction);
@@ -123,15 +124,7 @@ public class ForwardInvocationValidator {
     }
 
     private static String removeQualifierFromTypeOrGenericType(final String typeOrGenericType) {
-        if (typeOrGenericType.contains(".")) {
-            if (typeOrGenericType.contains("<")) {
-                return REGEX_GENERIC_TYPE_NAMESPACE.matcher(typeOrGenericType)
-                        .replaceAll("<");
-            } else {
-                return typeOrGenericType.split("\\.")[1];
-            }
-        }
-
-        return typeOrGenericType;
+        return REGEX_GENERIC_TYPE_NAMESPACE.matcher(typeOrGenericType)
+                .replaceAll("");
     }
 }
