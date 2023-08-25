@@ -4441,7 +4441,6 @@ DATETIME
         if (result == null) {
             final CallContext expectedCallContext = getCallContext(libraryName, functionName, expressions, mustResolve, allowPromotionAndDemotion, allowFluent);
 
-            // LUKETODO: this is retrieved from a Map
             Iterable<FunctionDefinitionInfo> functionInfos = libraryInfo.resolveFunctionReference(functionName);
             if (functionInfos != null) {
                 for (FunctionDefinitionInfo functionInfo : functionInfos) {

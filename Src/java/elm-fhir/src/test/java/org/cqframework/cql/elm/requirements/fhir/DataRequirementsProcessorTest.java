@@ -4,9 +4,11 @@ import ca.uhn.fhir.context.FhirContext;
 import org.cqframework.cql.cql2elm.*;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider;
+import org.hamcrest.Matchers;
 import org.hl7.cql.model.NamespaceInfo;
 import org.hl7.elm.r1.*;
 import ca.uhn.fhir.parser.IParser;
+import org.hl7.elm.r1.Library;
 import org.hl7.fhir.r5.model.*;
 import org.testng.annotations.Test;
 
@@ -25,6 +27,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.testng.Assert.*;
 
 
