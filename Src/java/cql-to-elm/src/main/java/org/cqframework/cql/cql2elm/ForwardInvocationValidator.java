@@ -50,11 +50,11 @@ public class ForwardInvocationValidator {
         final Signature callerSignature = callContextFromCaller.getSignature();
         final List<DataType> paramTypesFromCaller =
                 StreamSupport.stream(callerSignature.getOperandTypes().spliterator(), false)
-                        .collect(Collectors.toUnmodifiableList());
+                        .collect(Collectors.toList());
         final List<String> expectedCallParamStrings = paramTypesFromCaller.stream()
                 .map(Object::toString)
                 .map(String::toLowerCase)
-                .collect(Collectors.toUnmodifiableList());
+                .collect(Collectors.toList());
 
         final cqlParser.FunctionDefinitionContext definition = foundFunctionToBeEvaluated.getDefinition();
         final List<ParseTree> functionToBeEvaluatedChildren = definition.children;
@@ -62,7 +62,7 @@ public class ForwardInvocationValidator {
         final List<ParseTree> operandDefinitionContexts =
                 functionToBeEvaluatedChildren.stream()
                         .filter(cqlParser.OperandDefinitionContext.class::isInstance)
-                        .collect(Collectors.toUnmodifiableList());
+                        .collect(Collectors.toList());
 
         final List<String> paramStringsFromFunctionToBeEvaluated = operandDefinitionContexts.stream()
                 .filter(context -> context.getChildCount() >= 2)
@@ -71,7 +71,7 @@ public class ForwardInvocationValidator {
                 .map(child -> child.getChild(0))
                 .map(ParseTree::getText)
                 .map(String::toLowerCase)
-                .collect(Collectors.toUnmodifiableList());
+                .collect(Collectors.toList());
 
         return areBothTypeListsSemanticallyEquivalent(expectedCallParamStrings, paramStringsFromFunctionToBeEvaluated);
     }
@@ -89,13 +89,13 @@ public class ForwardInvocationValidator {
         final Signature callerSignature = callContextFromCaller.getSignature();
         final List<DataType> paramTypesFromCaller =
                 StreamSupport.stream(callerSignature.getOperandTypes().spliterator(), false)
-                        .collect(Collectors.toUnmodifiableList());
+                        .collect(Collectors.toList());
 
         final List<OperandDef> operandFromFound = evaluatedFunctionPreCompileOutput.getFunctionDef().getOperand();
 
         final List<DataType> paramTypesFromFound = operandFromFound.stream()
                 .map(Trackable::getResultType)
-                .collect(Collectors.toUnmodifiableList());
+                .collect(Collectors.toList());
 
         return paramTypesFromCaller.equals(paramTypesFromFound);
     }
