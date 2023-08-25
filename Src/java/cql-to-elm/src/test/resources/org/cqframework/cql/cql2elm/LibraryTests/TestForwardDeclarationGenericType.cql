@@ -16,7 +16,6 @@ define function toString(value List<System.Code>):
         ', '
     )
 
-    /*
 // define function toString(value Concept, aString String):
 define function toString(value Concept, aString String):
     Combine(
@@ -24,26 +23,15 @@ define function toString(value Concept, aString String):
         ', '
     )
 
-// define function toString(value Concept, aString String):
-define function toString(value List<System.Code>, aString String):
+// define function toString(value Concept, value String):
+define function toString(value List<System.Code>, value String):
     Combine(
         value C return 'Code: ' + C.display,
         ', '
     )
 
 // define function toString(value Date):
-define function toString(value Date):
-    Combine(
-        value C return 'Code: ' + C.display,
-        ', '
-    )
+define function toString(value Date): null
 
 // define function toString(value List<String>):
-define function toString(value List<String>):
-    Combine(
-        value C return 'Code: ' + C.display,
-        ', '
-    )
-     */
-
-// TODO:  add a bunch of other overloaded declarations
+define function toString(value List<String>): null
