@@ -25,7 +25,6 @@ define function toString(value Concept, aString String):
         value C return 'Code: ' + C.display,
         ', '
     )
-     */
 
 // value List<System.Code>, aString String)
 define function toString(value List<System.Code>, aString String):
@@ -33,20 +32,29 @@ define function toString(value List<System.Code>, aString String):
         value C return 'Code: ' + C.display,
         ', '
     )
+     */
 
 /*
+// TODO:  test this from a test that already imports FHIR
+define function toString(value List<Code>):
+null
+
 // define function thing(value List<String>):
 define function toString(value List<System.String>):
     null
 
 
 // TODO:  test this from a test that already imports FHIR
-define function toString(value List<FHIR.Code>):
-null
+define function toString(value List<FHIR.Quantity>): null
+define function toString(value List<System.Quantity>): null
+ */
+define function toString(value FHIR.Quantity): null
+define function toString(value System.Quantity): null
 
+    /*
 // define function thing(value Date):
 define function toString(value Date):
 ''
- */
+     */
 
 // TODO:  add a bunch of other overloaded declarations

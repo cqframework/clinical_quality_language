@@ -11,16 +11,17 @@ import org.hl7.elm.r1.OperandDef;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 // LUKETODO: better name
 public class ForwardInvocationChecker {
-    static final Logger logger = LoggerFactory.getLogger(Cql2ElmVisitor.class);
+    static final Logger logger = LoggerFactory.getLogger(ForwardInvocationChecker.class);
+    private static final Pattern REGEX_GENERIC_TYPE_NAMESPACE = Pattern.compile("<[a-zA-z]*.");
 
     public static boolean areFunctionsEquivalent(CallContext callContextFromCaller, FunctionDefinitionInfo foundFunctionToBeEvaluated, Function<cqlParser.FunctionDefinitionContext, PreCompileOutput> preCompileFunction) {
 //        if (1 == 1) {
@@ -82,36 +83,12 @@ public class ForwardInvocationChecker {
                 .map(String::toLowerCase)
                 .collect(Collectors.toUnmodifiableList());
 
-        final boolean isSemanticallyEqual = expectedCallParamStrings.equals(paramStringsFromFunctionToBeEvaluated);
+        // LUKETODO:  list<System.Code> vs list<Code>
+//        final boolean isSemanticallyEqual = expectedCallParamStrings.equals(paramStringsFromFunctionToBeEvaluated);
+        // LUKETODO:  inline
+        final boolean isSemanticallyEqual = areBothTypeListsSemanticallyEquivalent(expectedCallParamStrings, paramStringsFromFunctionToBeEvaluated);
 
         return isSemanticallyEqual;
-
-
-//        if (optOperandDefinitionContext.isPresent()) {
-//            final ParseTree parseTree = optOperandDefinitionContext.get();
-//
-//            final int childCount = parseTree.getChildCount();
-//
-//            if (childCount >= 2) {
-//                final ParseTree paramType = parseTree.getChild(1);
-////                logger.info("paramType: {}", paramType);
-//                // TODO: error handling
-//                // TODO: Probably need some kind of recursion here
-//                final ParseTree childLevel1 = paramType.getChild(0);
-//                final String childLevel1Text = childLevel1.getText();
-////                logger.info("childLevel1.getText() : {}", childLevel1Text);
-//
-//                // "list" vs. "List"
-//                // LUKETODO: we have a bug:   System.String (expectedCallParam) vs. String
-//                // should we simply do a contains here and then proceed to compilation
-//                final boolean isSemanticallyEqual = expectedCallParam.equalsIgnoreCase(childLevel1.getText());
-//                logger.info("childLevel1Text: {}, isSemanticallyEqual: {}", childLevel1Text, isSemanticallyEqual);
-//
-//                return isSemanticallyEqual;
-//            }
-//        }
-
-//        return false;
     }
 
     // LUKETODO:  how to get the
@@ -137,5 +114,45 @@ public class ForwardInvocationChecker {
                 .collect(Collectors.toUnmodifiableList());
 
         return paramTypesFromCaller.equals(paramTypesFromFound);
+    }
+
+    private static boolean areBothTypeListsSemanticallyEquivalent(List<String> expectedCallParamStrings, List<String> paramStringsFromFunctionToBeEvaluated) {
+        if (expectedCallParamStrings.size() != paramStringsFromFunctionToBeEvaluated.size()) {
+            return false;
+        }
+
+        for (int index = 0; index < expectedCallParamStrings.size(); index++) {
+            final String expectedCallParamString = expectedCallParamStrings.get(index);
+            final String paramStringFromFunctionToBeEvaluated = paramStringsFromFunctionToBeEvaluated.get(index);
+
+            if (! expectedCallParamString.equals(paramStringFromFunctionToBeEvaluated )) {
+                // LUKETODO:  generics
+//                final String expectedCallParamStringToUse = expectedCallParamString.contains(".") ? expectedCallParamString.split("\\.")[1] : expectedCallParamString;
+//                final String paramStringFromFunctionToBeEvaluatedToUse = paramStringFromFunctionToBeEvaluated.contains(".") ? paramStringFromFunctionToBeEvaluated.split("\\.")[1] : expectedCallParamString;
+                final String expectedCallParamStringToUse = removeQualifierFromTypeOrGenericType(expectedCallParamString);
+                final String paramStringFromFunctionToBeEvaluatedToUse = removeQualifierFromTypeOrGenericType(paramStringFromFunctionToBeEvaluated);
+
+                if (! expectedCallParamStringToUse.equals(paramStringFromFunctionToBeEvaluatedToUse)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+//        return expectedCallParamStrings.equals(paramStringsFromFunctionToBeEvaluated);
+    }
+
+    private static String removeQualifierFromTypeOrGenericType(final String typeOrGenericType) {
+        if (typeOrGenericType.contains(".")) {
+            if (typeOrGenericType.contains("<")) {
+                final String replaced = REGEX_GENERIC_TYPE_NAMESPACE.matcher(typeOrGenericType)
+                        .replaceAll("<");
+                return replaced;
+            } else {
+                return typeOrGenericType.split("\\.")[1];
+            }
+        }
+
+        return typeOrGenericType;
     }
 }

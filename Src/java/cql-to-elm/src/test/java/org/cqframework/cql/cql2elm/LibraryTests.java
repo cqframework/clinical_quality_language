@@ -457,7 +457,7 @@ public class LibraryTests {
 
         Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
         List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
-        assertThat("Statements: " + statements.stream().map(ExpressionDef::getName).toList(), statements.size(), equalTo(5));
+        assertThat("Statements: " + statements.stream().map(ExpressionDef::getName).toList(), statements.size(), equalTo(2));
     }
 
 }

@@ -146,15 +146,24 @@ public class TranslationTests {
         assertThat(as.getAsTypeSpecifier(), is(instanceOf(ChoiceTypeSpecifier.class)));
     }
 
-    // LUKETODO: is this right place?
     @Test
-    public void testForwardDeclarationSameTypeDifferentNamespace() throws IOException {
-        final CqlTranslator translator = TestUtils.createTranslator("TestForwardDeclaratonSameTypeDifferentNamespace.cql");
+    public void testForwardDeclarationSameTypeDifferentNamespaceNormalTypes() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslator("TestForwardDeclaratonSameTypeDifferentNamespaceNormalTypes.cql");
         assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), Matchers.equalTo(0));
 
-//        Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
-//        List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
-//        assertThat("Statements: " + statements.stream().map(ExpressionDef::getName).toList(), statements.size(), Matchers.equalTo(3));
+        Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
+        List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
+        assertThat("Statements: " + statements.stream().map(ExpressionDef::getName).toList(), statements.size(), Matchers.equalTo(3));
+    }
+
+    @Test
+    public void testForwardDeclarationSameTypeDifferentNamespaceGenericTypes() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslator("TestForwardDeclaratonSameTypeDifferentNamespaceGenericTypes.cql");
+        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), Matchers.equalTo(0));
+
+        Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
+        List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
+        assertThat("Statements: " + statements.stream().map(ExpressionDef::getName).toList(), statements.size(), Matchers.equalTo(3));
     }
 
     // This test creates a bunch of translators on the common pool to suss out any race conditions.
