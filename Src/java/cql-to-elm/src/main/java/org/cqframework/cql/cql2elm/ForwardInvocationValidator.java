@@ -18,17 +18,11 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-// LUKETODO: better name
-public class ForwardInvocationChecker {
-    static final Logger logger = LoggerFactory.getLogger(ForwardInvocationChecker.class);
+public class ForwardInvocationValidator {
+    static final Logger logger = LoggerFactory.getLogger(ForwardInvocationValidator.class);
     private static final Pattern REGEX_GENERIC_TYPE_NAMESPACE = Pattern.compile("<[a-zA-z]*.");
 
     public static boolean areFunctionsEquivalent(CallContext callContextFromCaller, FunctionDefinitionInfo foundFunctionToBeEvaluated, Function<cqlParser.FunctionDefinitionContext, PreCompileOutput> preCompileFunction) {
-//        if (1 == 1) {
-//            // TODO:  passing false here breaks the fluent tests
-//            return true;
-//        }
-
         if (areFunctionsSuperficiallyEquivalent(callContextFromCaller, foundFunctionToBeEvaluated)) {
             return areFunctionsPreCompileEquivalent(callContextFromCaller, foundFunctionToBeEvaluated.getDefinition(), preCompileFunction);
         }
@@ -41,11 +35,7 @@ public class ForwardInvocationChecker {
             return false;
         }
 
-        // LUKETODO:  this breaks the fluent functions tests
         // LUKETODO:  do I need to compare return types as well?
-
-        // LUKETODO:  this code is good as first
-        // LUKETODO:  match on number of argumetns, then argument types, then partial compilation
         final Signature callerSignature = callContextFromCaller.getSignature();
         final List<DataType> paramTypesFromCaller =
                 StreamSupport.stream(callerSignature.getOperandTypes().spliterator(), false)
@@ -59,15 +49,6 @@ public class ForwardInvocationChecker {
         // Right-side context
         final cqlParser.FunctionDefinitionContext definition = foundFunctionToBeEvaluated.getDefinition();
         final List<ParseTree> functionToBeEvaluatedChildren = definition.children;
-
-        // LUKETODO:  data types that are namespaces System.Integer vs. Integer
-//        >>>> may need to do partial compilation of both function signatures
-        // LUKETODO:  what about methods with multiple parameters?
-        // LUKETODO:  ensure we inspect the types, not the names of the arguments
-        final Optional<ParseTree> optOperandDefinitionContext =
-                functionToBeEvaluatedChildren.stream()
-                        .filter(cqlParser.OperandDefinitionContext.class::isInstance)
-                        .findFirst();
 
         final List<ParseTree> operandDefinitionContexts =
                 functionToBeEvaluatedChildren.stream()
@@ -83,15 +64,9 @@ public class ForwardInvocationChecker {
                 .map(String::toLowerCase)
                 .collect(Collectors.toUnmodifiableList());
 
-        // LUKETODO:  list<System.Code> vs list<Code>
-//        final boolean isSemanticallyEqual = expectedCallParamStrings.equals(paramStringsFromFunctionToBeEvaluated);
-        // LUKETODO:  inline
-        final boolean isSemanticallyEqual = areBothTypeListsSemanticallyEquivalent(expectedCallParamStrings, paramStringsFromFunctionToBeEvaluated);
-
-        return isSemanticallyEqual;
+        return areBothTypeListsSemanticallyEquivalent(expectedCallParamStrings, paramStringsFromFunctionToBeEvaluated);
     }
 
-    // LUKETODO:  how to get the
     private static boolean areFunctionsPreCompileEquivalent(CallContext callContextFromCaller, cqlParser.FunctionDefinitionContext definition, Function<cqlParser.FunctionDefinitionContext, PreCompileOutput> preCompileFunction) {
         final PreCompileOutput evaluatedFunctionPreCompileOutput = preCompileFunction.apply(definition);
 
@@ -126,9 +101,6 @@ public class ForwardInvocationChecker {
             final String paramStringFromFunctionToBeEvaluated = paramStringsFromFunctionToBeEvaluated.get(index);
 
             if (! expectedCallParamString.equals(paramStringFromFunctionToBeEvaluated )) {
-                // LUKETODO:  generics
-//                final String expectedCallParamStringToUse = expectedCallParamString.contains(".") ? expectedCallParamString.split("\\.")[1] : expectedCallParamString;
-//                final String paramStringFromFunctionToBeEvaluatedToUse = paramStringFromFunctionToBeEvaluated.contains(".") ? paramStringFromFunctionToBeEvaluated.split("\\.")[1] : expectedCallParamString;
                 final String expectedCallParamStringToUse = removeQualifierFromTypeOrGenericType(expectedCallParamString);
                 final String paramStringFromFunctionToBeEvaluatedToUse = removeQualifierFromTypeOrGenericType(paramStringFromFunctionToBeEvaluated);
 
@@ -139,15 +111,13 @@ public class ForwardInvocationChecker {
         }
 
         return true;
-//        return expectedCallParamStrings.equals(paramStringsFromFunctionToBeEvaluated);
     }
 
     private static String removeQualifierFromTypeOrGenericType(final String typeOrGenericType) {
         if (typeOrGenericType.contains(".")) {
             if (typeOrGenericType.contains("<")) {
-                final String replaced = REGEX_GENERIC_TYPE_NAMESPACE.matcher(typeOrGenericType)
+                return REGEX_GENERIC_TYPE_NAMESPACE.matcher(typeOrGenericType)
                         .replaceAll("<");
-                return replaced;
             } else {
                 return typeOrGenericType.split("\\.")[1];
             }

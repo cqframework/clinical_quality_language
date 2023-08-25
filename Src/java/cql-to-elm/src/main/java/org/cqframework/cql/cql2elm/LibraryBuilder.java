@@ -2922,30 +2922,13 @@ public class LibraryBuilder implements ModelResolver {
     // TODO:  create a hash of the name and the argument types
     public void pushExpressionDefinition(String identifier) {
         if (expressionDefinitions.contains(identifier)) {
-            logger.info("ERROR: class: {}, pushExpressionDefinition: {}", this, identifier);
             // ERROR:
             throw new IllegalArgumentException(String.format("Cannot resolve reference to expression or function %s because it results in a circular reference.", identifier));
         }
-        logger.info("SUCCESS: class: {}, pushExpressionDefinition: {}", this, identifier);
-        // LUKETODO:  it looks like the first time we add to this we are adding "define function toString(value Concept)"
         expressionDefinitions.push(new ExpressionDefinitionContext(identifier));
     }
 
-    // LUKETODO:  child.toText() won't quite work given duplicate methods with different variable names
-    /*
-    define function toString(value Integer):
-     toString(value.string())
-    define function toString(value2 Integer):
-         toString(value2.string())
-     */
-
-    /*
-    hash ~= fun.name() + combine(operands.stream().map(o -> o.getType().text()), ",")
-     */
-
     public void popExpressionDefinition() {
-        // LUKETODO:  in the reverse case we've already popped before calling push with toString()
-        logger.info("popExpressionDefinition");
         expressionDefinitions.pop();
     }
 

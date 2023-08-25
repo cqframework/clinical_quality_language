@@ -4444,7 +4444,7 @@ DATETIME
             Iterable<FunctionDefinitionInfo> functionInfos = libraryInfo.resolveFunctionReference(functionName);
             if (functionInfos != null) {
                 for (FunctionDefinitionInfo functionInfo : functionInfos) {
-                    if (! ForwardInvocationChecker.areFunctionsEquivalent(expectedCallContext, functionInfo, ctx -> preCompile(ctx))) {
+                    if (! ForwardInvocationValidator.areFunctionsEquivalent(expectedCallContext, functionInfo, this::preCompile)) {
                         continue;
                     }
 
@@ -4518,7 +4518,6 @@ DATETIME
     }
 
     private PreCompileOutput preCompile(cqlParser.FunctionDefinitionContext ctx) {
-        logger.info("preCompile: ctx: {}", ctx);
         final FunctionDef fun = of.createFunctionDef()
                 .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
                 .withName(parseString(ctx.identifierOrFunctionIdentifier()));
@@ -4531,8 +4530,6 @@ DATETIME
         if (ctx.operandDefinition() != null) {
             for (cqlParser.OperandDefinitionContext opdef : ctx.operandDefinition()) {
                 TypeSpecifier typeSpecifier = parseTypeSpecifier(opdef.typeSpecifier());
-                logger.info("preCompile: typeSpecififer: {}", typeSpecifier);
-                logger.info("preCompile: typeSpecififer.resultType: {}", typeSpecifier.getResultType());
                 fun.getOperand().add(
                         (OperandDef)of.createOperandDef()
                                 .withName(parseString(opdef.referentialIdentifier()))
@@ -4541,8 +4538,6 @@ DATETIME
                 );
             }
         }
-
-        logger.info("preCompile: fun.getOperand(): {}", fun.getOperand());
 
         final cqlParser.TypeSpecifierContext typeSpecifierContext = ctx.typeSpecifier();
 
@@ -4597,9 +4592,6 @@ DATETIME
     }
 
     public Object internalVisitFunctionDefinition(cqlParser.FunctionDefinitionContext ctx) {
-        // LUKETODO: compileFunctionHeader()
-        // use this to compute the hash as well
-        // START compile signature
         FunctionDef fun = of.createFunctionDef()
                 .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
                 .withName(parseString(ctx.identifierOrFunctionIdentifier()));
@@ -4633,19 +4625,9 @@ DATETIME
                 try {
                     libraryBuilder.pushExpressionContext(currentContext);
                     try {
-                        // LUKETODO:  this is where the first "toString()" gets pushed to the libraryBuilder
-                        logger.info("libraryBuilder.pushExpressionDefinition: {}", fun.getName());
-                        // LUKETODO:  consider storing in some sort of Map so as to not preCompile multiple times
-                        // LUKETODO:  even if there is one preCompile, it's still expensive:  we should avoid this
-                        // LUKETODO: Is there a way to compute the hash without a preCompile?
-                        // LUKETODO:  get FunctionDefinitionContext String libraryName, String functionName, List<Expression> expressions
                         final String identifierFromHashedClass = generateHashForLibraryBuilder(ctx);
-                        logger.info("identifierFromHashedClass: {}", identifierFromHashedClass);
-//                        libraryBuilder.pushExpressionDefinition(String.format("%s()", fun.getName()));
                         libraryBuilder.pushExpressionDefinition(String.format("%s()", identifierFromHashedClass));
                         try {
-                            // LUKETODO: this is where we try to resolve the overloaded call to "toString()"
-                            logger.info("parseExpression: {}", fun.getName());
                             fun.setExpression(parseExpression(ctx.functionBody()));
                         } finally {
                             libraryBuilder.popExpressionDefinition();
@@ -4686,13 +4668,13 @@ DATETIME
     }
 
     private String generateHashForLibraryBuilder(cqlParser.FunctionDefinitionContext ctx) {
+        // LUKETODO: should we consider preCompile here for correctness even though it's expensive?
 //        return generateHashWithPreCompile(ctx);
         return generateHashWithoutPreCompile(ctx);
     }
 
     private String generateHashWithPreCompile(cqlParser.FunctionDefinitionContext ctx) {
         final PreCompileOutput preCompileOutput = preCompile(ctx);
-        // TODO: generateHash() from cqlParser.FunctionDefinitionContext ctx but same requirements, like text()?
 
         return preCompileOutput.generateHash();
     }
@@ -4702,27 +4684,10 @@ DATETIME
 
         final String signature = operandDefinitionContexts == null ? ""
                 : operandDefinitionContexts.stream()
-                .map(cqlParser.OperandDefinitionContext::typeSpecifier)
-                // TODO: test this with multiple different signatures
-                .map(RuleContext::getText)
-//                .map(typeSpecifier -> typeSpecifier.children)
-//                .filter(children -> children.size() >= 2)
-//                .map(children -> children.get(1))
-//                .map(ParseTree::getText)
-                .collect(Collectors.joining(","));
-
-        if (operandDefinitionContexts != null) {
-            // TODO: find a good heuristic
-            for (cqlParser.OperandDefinitionContext operandDefinitionContext : operandDefinitionContexts) {
-                final cqlParser.TypeSpecifierContext typeSpecifierContext = operandDefinitionContext.typeSpecifier();
-                final String typeSpecifierContextText = typeSpecifierContext.getText();
-                if (typeSpecifierContext.children.size() >= 1) {
-                    final ParseTree parseTree = operandDefinitionContext.children.get(0);
-                    final String text = parseTree.getText();
-                    logger.info("text: " + text );
-                }
-            }
-        }
+                .map(context -> context.children)
+                .filter(children -> children.size() >= 2)
+                .map(children -> children.get(0).getText() + " " + children.get(1).getText())
+                .collect(Collectors.joining(", "));
 
         return parseString(ctx.identifierOrFunctionIdentifier()) + ": " + signature;
     }

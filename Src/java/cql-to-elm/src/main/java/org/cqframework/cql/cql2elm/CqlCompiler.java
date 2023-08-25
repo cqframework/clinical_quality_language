@@ -196,7 +196,6 @@ public class CqlCompiler {
         visitor.setTokenStream(tokens);
         visitor.setLibraryInfo(preprocessor.getLibraryInfo());
 
-        logger.info("visitor.visit(tree)");
         visitResult = visitor.visit(tree);
         library = builder.getLibrary();
         compiledLibrary = builder.getCompiledLibrary();

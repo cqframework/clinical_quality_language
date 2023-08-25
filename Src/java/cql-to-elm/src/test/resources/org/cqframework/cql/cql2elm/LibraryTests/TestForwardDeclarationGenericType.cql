@@ -1,5 +1,7 @@
 library TestForwardDeclaration
 
+// This is to test that forward declartions for overloaded functions works as expected.
+
 define function toString(value Concept):
   if value is null
     then 'null'
@@ -21,19 +23,15 @@ define function toString(value Concept, aString String):
         ', '
     )
 
-// value List<System.Code>, aString String)
-define function toString(value List<System.Code>, aString String):
+// define function toString(value Concept, value String):
+define function toString(value List<System.Code>, value String):
     Combine(
         value C return 'Code: ' + C.display,
         ', '
     )
 
-// define function thing(value List<String>):
-define function toString(value List<System.String>):
-    null
+// define function toString(value Date):
+define function toString(value Date): null
 
-// define function thing(value Date):
-define function toString(value Date):
-''
-
-// TODO:  add a bunch of other overloaded declarations
+// define function toString(value List<String>):
+define function toString(value List<String>): null

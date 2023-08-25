@@ -436,28 +436,23 @@ public class LibraryTests {
         assertThat(statements.size(), equalTo(1));
     }
 
-    // LUKETODO:  if we suppress all toString() calls from Cql2ElmVisitor, we get this error:  "Could not resolve call to operator toString with signature (list<System.Code>).]"
-    // LUKETODO:  if we leave the code as is, this is what we get: "Cannot resolve reference to expression or function toString() because it results in a circular reference."
-    // LUKETODO:  if we ensure only the method call with the correct signature is passed, this is what we get: "Cannot resolve reference to expression or function toString() because it results in a circular reference.]"
     @Test
-    public void TestForwardDeclarations() throws IOException {
-        CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestForwardDeclaration.cql");
+    public void TestForwardDeclarationsNormalType() throws IOException {
+        CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestForwardDeclarationNormalType.cql");
         assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(0));
 
         Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
         List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
-        assertThat("Statements: " + statements.stream().map(ExpressionDef::getName).toList(), statements.size(), equalTo(2));
+        assertThat("Statements: " + statements.stream().map(ExpressionDef::getName).toList(), statements.size(), equalTo(6));
     }
 
-    // LUKETODO: either get rid of this or merge with the other test method
     @Test
-    public void TestForwardDeclarations_luke() throws IOException {
-        CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestForwardDeclaration_luke.cql");
+    public void TestForwardDeclarationsGenericType() throws IOException {
+        CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestForwardDeclarationGenericType.cql");
         assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(0));
 
         Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
         List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
-        assertThat("Statements: " + statements.stream().map(ExpressionDef::getName).toList(), statements.size(), equalTo(2));
+        assertThat("Statements: " + statements.stream().map(ExpressionDef::getName).toList(), statements.size(), equalTo(6));
     }
-
 }

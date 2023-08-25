@@ -148,7 +148,7 @@ public class TranslationTests {
 
     @Test
     public void testForwardDeclarationSameTypeDifferentNamespaceNormalTypes() throws IOException {
-        final CqlTranslator translator = TestUtils.createTranslator("TestForwardDeclaratonSameTypeDifferentNamespaceNormalTypes.cql");
+        final CqlTranslator translator = TestUtils.createTranslator("TestForwardDeclarationSameTypeDifferentNamespaceNormalTypes.cql");
         assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), Matchers.equalTo(0));
 
         Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
@@ -158,12 +158,18 @@ public class TranslationTests {
 
     @Test
     public void testForwardDeclarationSameTypeDifferentNamespaceGenericTypes() throws IOException {
-        final CqlTranslator translator = TestUtils.createTranslator("TestForwardDeclaratonSameTypeDifferentNamespaceGenericTypes.cql");
+        final CqlTranslator translator = TestUtils.createTranslator("TestForwardDeclarationSameTypeDifferentNamespaceGenericTypes.cql");
         assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), Matchers.equalTo(0));
 
         Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
         List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
         assertThat("Statements: " + statements.stream().map(ExpressionDef::getName).toList(), statements.size(), Matchers.equalTo(3));
+    }
+
+    @Test
+    public void testBadTypeDeclarationOutputsSensibleError() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslator("TestBadTypeDeclarationInParam.cql");
+        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), Matchers.equalTo(0));
     }
 
     // This test creates a bunch of translators on the common pool to suss out any race conditions.
