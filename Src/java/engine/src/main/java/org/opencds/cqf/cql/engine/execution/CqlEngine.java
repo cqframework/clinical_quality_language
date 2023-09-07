@@ -11,6 +11,7 @@ import org.opencds.cqf.cql.engine.exception.CqlException;
 
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -225,7 +226,7 @@ public class CqlEngine {
                 processException(ce, def);
             }
             catch(Exception e) {
-                processException(e, def, String.format("Error evaluating expression: %s", expression));
+                processException(e, def, String.format("Error evaluating expression %s: %s", expression, e.getMessage()));
             }
 
         }
@@ -253,7 +254,9 @@ public class CqlEngine {
         }
 
         if (CqlCompilerException.hasErrors(errors)) {
-            throw new CqlException(String.format("library %s loaded, but had errors", libraryIdentifier.getId() + (libraryIdentifier.getVersion() != null ? "-" + libraryIdentifier.getVersion() : "")));
+            throw new CqlException(String.format("library %s loaded, but had errors: %s",
+            libraryIdentifier.getId() + (libraryIdentifier.getVersion() != null ? "-" + libraryIdentifier.getVersion() : ""),
+            String.join(", ", errors.stream().map(e -> e.getMessage()).collect(Collectors.toList()))));
         }
 
         if (this.engineOptions.contains(Options.EnableValidation)) {
