@@ -4440,12 +4440,25 @@ DATETIME
         boolean checkForward = libraryName == null || libraryName.equals("") || libraryName.equals(this.libraryInfo.getLibraryName());
         Expression result = libraryBuilder.resolveFunction(libraryName, functionName, expressions, !checkForward, allowPromotionAndDemotion, allowFluent);
         if (result == null) {
+            // LUKETODO:  using the CallContext causes this test to fail: org.cqframework.cql.cql2elm.fhir.dstu2.BaseTest#testImplicitFHIRHelpers
+            // This is because the CallContext callParamString is
+            // fhir.period
+            // but the resolved FunctionDefinitionInfo has
+            // interval<datetime>
+            // LUKETODO:  same problem with the preCompile:
+            // FHIR.Period
+            // vs.
+            // Interval<System.DateTime>
+            // How does Encounter.Period resolve to Interval<DateTime> when Period does not subclass Interval in any way?
             final CallContext expectedCallContext = getCallContext(libraryName, functionName, expressions, mustResolve, allowPromotionAndDemotion, allowFluent);
+            // LUKETODO:  this won't work:  IllegalArgumentException:  Could not resolve call to operator LengthInDays:
+//            final Expression resolvedFunctionExpression = libraryBuilder.resolveFunction(libraryName, functionName, expressions, mustResolve, allowPromotionAndDemotion, allowFluent);
+            final Expression resolvedFunctionExpression = null;
 
             Iterable<FunctionDefinitionInfo> functionInfos = libraryInfo.resolveFunctionReference(functionName);
             if (functionInfos != null) {
                 for (FunctionDefinitionInfo functionInfo : functionInfos) {
-                    if (! ForwardInvocationValidator.areFunctionsEquivalent(expectedCallContext, functionInfo, this::preCompile)) {
+                    if (! ForwardInvocationValidator.areFunctionsEquivalent(expectedCallContext, functionInfo, this::preCompile, libraryBuilder.getConversionMap(), libraryBuilder.getCompiledLibrary().getOperatorMap())) {
                         continue;
                     }
 
@@ -4670,6 +4683,7 @@ DATETIME
     private String generateHashForLibraryBuilder(cqlParser.FunctionDefinitionContext ctx) {
         // LUKETODO: should we consider preCompile here for correctness even though it's expensive?
 //        return generateHashWithPreCompile(ctx);
+        final String preCompileHash = generateHashWithPreCompile(ctx);
         return generateHashWithoutPreCompile(ctx);
     }
 

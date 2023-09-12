@@ -1802,7 +1802,7 @@ public class DataRequirementsProcessorTest {
 
         var lib = compiler.run(translationTestFile);
 
-        assertTrue(compiler.getErrors().isEmpty());
+        assertTrue(compiler.getErrors().isEmpty(), "Errors: " + compiler.getErrors());
 
         manager.getCompiledLibraries().put(lib.getIdentifier(), compiler.getCompiledLibrary());
 

@@ -1,6 +1,4 @@
 library TestForwardDeclaration
 
-// This is to test that forward declartions for overloaded functions works as expected.
-
 define function toString(value List<System.Code>): null
 define function toString(value Concept): null

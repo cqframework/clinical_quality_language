@@ -435,6 +435,26 @@ public class LibraryTests {
     }
 
     @Test
+    public void TestForwardDeclaration() throws IOException {
+        CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestForwardDeclaration.cql");
+        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(0));
+
+        Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
+        List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
+        assertThat("Statements: " + statements.stream().map(ExpressionDef::getName).toList(), statements.size(), equalTo(2));
+    }
+
+    @Test
+    public void TestForwardDeclarationLuke() throws IOException {
+        CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestForwardDeclarationLuke.cql");
+        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(0));
+
+        Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
+        List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
+        assertThat("Statements: " + statements.stream().map(ExpressionDef::getName).toList(), statements.size(), equalTo(2));
+    }
+
+    @Test
     public void TestForwardDeclarationsNormalType() throws IOException {
         CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestForwardDeclarationNormalType.cql");
         assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(0));
@@ -451,6 +471,16 @@ public class LibraryTests {
 
         Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
         List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
-        assertThat("Statements: " + statements.stream().map(ExpressionDef::getName).toList(), statements.size(), equalTo(6));
+        assertThat("Statements: " + statements.stream().map(ExpressionDef::getName).toList(), statements.size(), equalTo(5));
+    }
+
+    @Test
+    public void TestForwardDeclarationsImplicitConversion() throws IOException {
+        CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestForwardDeclarationImplicitConversion.cql");
+        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(0));
+
+        Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
+        List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
+        assertThat("Statements: " + statements.stream().map(ExpressionDef::getName).toList(), statements.size(), equalTo(3));
     }
 }

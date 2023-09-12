@@ -31,6 +31,10 @@ public class OperatorMap {
         return entry;
     }
 
+    public OperatorEntry getOperatorEntryFromOperators(String operatorName) {
+        return operators.get(operatorName);
+    }
+
     public boolean supportsOperator(String libraryName, String operatorName, DataType... signature) {
         CallContext call = new CallContext(libraryName, operatorName, false, false, false, signature);
         try {

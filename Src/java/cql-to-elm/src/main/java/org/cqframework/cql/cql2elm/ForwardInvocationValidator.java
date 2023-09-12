@@ -1,8 +1,7 @@
 package org.cqframework.cql.cql2elm;
 
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.cqframework.cql.cql2elm.model.CallContext;
-import org.cqframework.cql.cql2elm.model.Signature;
+import org.cqframework.cql.cql2elm.model.*;
 import org.cqframework.cql.cql2elm.preprocessor.FunctionDefinitionInfo;
 import org.cqframework.cql.elm.tracking.Trackable;
 import org.cqframework.cql.gen.cqlParser;
@@ -33,15 +32,16 @@ public class ForwardInvocationValidator {
 
     // LUKETODO: We definitely need better names for the parameters
     // LUKETODO: why is BaseTest.TestIntervalImplicitConversion failing when the params clearly don't match: (13,11): Could not resolve call to operator LengthInDays with signature (FHIR.Period).
-    public static boolean areFunctionsEquivalent(CallContext callContextFromCaller, FunctionDefinitionInfo foundFunctionToBeEvaluated, Function<cqlParser.FunctionDefinitionContext, PreCompileOutput> preCompileFunction) {
-        if (areFunctionsSuperficiallyEquivalent(callContextFromCaller, foundFunctionToBeEvaluated)) {
-            return areFunctionsPreCompileEquivalent(callContextFromCaller, foundFunctionToBeEvaluated.getDefinition(), preCompileFunction);
+    public static boolean areFunctionsEquivalent(CallContext callContextFromCaller, FunctionDefinitionInfo foundFunctionToBeEvaluated, Function<cqlParser.FunctionDefinitionContext, PreCompileOutput> preCompileFunction, ConversionMap conversionMap, OperatorMap operatorMap) {
+        if (areFunctionsSuperficiallyEquivalent(callContextFromCaller, foundFunctionToBeEvaluated, conversionMap, operatorMap)) {
+            return areFunctionsPreCompileEquivalent(callContextFromCaller, foundFunctionToBeEvaluated.getDefinition(), preCompileFunction, conversionMap);
         }
 
         return false;
+//        return true;
     }
 
-    private static boolean areFunctionsSuperficiallyEquivalent(CallContext callContextFromCaller, FunctionDefinitionInfo foundFunctionToBeEvaluated) {
+    private static boolean areFunctionsSuperficiallyEquivalent(CallContext callContextFromCaller, FunctionDefinitionInfo foundFunctionToBeEvaluated, ConversionMap conversionMap, OperatorMap operatorMap) {
         if (! callContextFromCaller.getOperatorName().equals(foundFunctionToBeEvaluated.getName())) {
             return false;
         }
@@ -74,10 +74,14 @@ public class ForwardInvocationValidator {
                 .map(String::toLowerCase)
                 .collect(Collectors.toList());
 
-        return areBothTypeListsSemanticallyEquivalent(expectedCallParamStrings, paramStringsFromFunctionToBeEvaluated);
+        return areBothTypeListsSemanticallyEquivalent(callContextFromCaller, expectedCallParamStrings, paramStringsFromFunctionToBeEvaluated, conversionMap, operatorMap);
     }
 
-    private static boolean areFunctionsPreCompileEquivalent(CallContext callContextFromCaller, cqlParser.FunctionDefinitionContext definition, Function<cqlParser.FunctionDefinitionContext, PreCompileOutput> preCompileFunction) {
+    // LUKETODO:  the way this is resolved by the compiler is with CompiledLibrary#resolveOperator, which takes a ConversionMap
+    // The ConversionMap comes from the LibaryBuilder
+    // LibraryBuilder passes the ConversionMap
+
+    private static boolean areFunctionsPreCompileEquivalent(CallContext callContextFromCaller, cqlParser.FunctionDefinitionContext definition, Function<cqlParser.FunctionDefinitionContext, PreCompileOutput> preCompileFunction, ConversionMap conversionMap) {
         final PreCompileOutput evaluatedFunctionPreCompileOutput = preCompileFunction.apply(definition);
 
         // another sanity check
@@ -98,13 +102,20 @@ public class ForwardInvocationValidator {
                 .map(Trackable::getResultType)
                 .collect(Collectors.toList());
 
-        return paramTypesFromCaller.equals(paramTypesFromFound);
+        if (!paramTypesFromCaller.equals(paramTypesFromFound)) {
+            return handleConversionMapForPreCompile(callContextFromCaller, evaluatedFunctionPreCompileOutput, conversionMap);
+
+        }
+
+        return true;
     }
 
-    private static boolean areBothTypeListsSemanticallyEquivalent(List<String> expectedCallParamStrings, List<String> paramStringsFromFunctionToBeEvaluated) {
+    private static boolean areBothTypeListsSemanticallyEquivalent(CallContext callContextFromCaller, List<String> expectedCallParamStrings, List<String> paramStringsFromFunctionToBeEvaluated, ConversionMap conversionMap, OperatorMap operatorMap) {
         if (expectedCallParamStrings.size() != paramStringsFromFunctionToBeEvaluated.size()) {
             return false;
         }
+
+        boolean result = true;
 
         for (int index = 0; index < expectedCallParamStrings.size(); index++) {
             final String expectedCallParamString = expectedCallParamStrings.get(index);
@@ -115,8 +126,99 @@ public class ForwardInvocationValidator {
                 final String paramStringFromFunctionToBeEvaluatedToUse = removeQualifierFromTypeOrGenericType(paramStringFromFunctionToBeEvaluated);
 
                 if (! expectedCallParamStringToUse.equals(paramStringFromFunctionToBeEvaluatedToUse)) {
-                    return false;
+                    result = false;
                 }
+            }
+        }
+
+        if (!result) {
+            return handleConversionMap(callContextFromCaller, paramStringsFromFunctionToBeEvaluated, conversionMap);
+        }
+
+        return true;
+    }
+
+    // LUKETODO: better name for method
+    private static boolean handleConversionMap(CallContext callContextFromCaller, List<String> paramStringsFromFunctionToBeEvaluated, ConversionMap conversionMap) {
+//        if (1 == 1) {
+//            return false;
+//        }
+        // LUKETODO: test multiple param functions
+        final List<DataType> dataTypes = StreamSupport.stream(callContextFromCaller.getSignature().getOperandTypes().spliterator(), false)
+                .collect(Collectors.toList());
+        // sanity check
+        if (dataTypes.size() != paramStringsFromFunctionToBeEvaluated.size()) {
+            return false;
+        }
+
+        for (int index = 0; index < dataTypes .size(); index++) {
+            final DataType dataType = dataTypes.get(index);
+            final String paramStringFromFunctionToBeEvaluated = paramStringsFromFunctionToBeEvaluated.get(index);
+
+            final List<Conversion> conversions = conversionMap.getConversions(dataType);
+            if (conversions.size() != 1) {
+                // LUKETODO:  not sure what to do here
+                return false;
+            }
+
+            final Conversion conversion = conversions.get(0);
+
+            // LUKETODO:  this is a NASTY HACK to get all LibraryTests working
+            if (conversion.getOperator().getFunctionDef() != null) {
+                return false;
+            }
+
+            final String conversionTypeString = conversion.getToType().toString();
+            final String removedQualifier = removeQualifierFromTypeOrGenericType(conversionTypeString);
+
+            final boolean conversionTest = removedQualifier.equalsIgnoreCase(paramStringFromFunctionToBeEvaluated);
+
+            if (!conversionTest) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static boolean handleConversionMapForPreCompile(CallContext callContextFromCaller, PreCompileOutput evaluatedFunctionPreCompileOutput, ConversionMap conversionMap) {
+//        if (1 == 1) {
+//            return false;
+//        }
+        final List<DataType> dataTypes = StreamSupport.stream(callContextFromCaller.getSignature().getOperandTypes().spliterator(), false)
+                .collect(Collectors.toList());
+
+        final List<OperandDef> operandFromFound = evaluatedFunctionPreCompileOutput.getFunctionDef().getOperand();
+
+        final List<DataType> paramTypesFromFound = operandFromFound.stream()
+                .map(Trackable::getResultType)
+                .collect(Collectors.toList());
+
+        if (dataTypes.size() != paramTypesFromFound.size()) {
+            return false;
+        }
+
+        for (int index = 0; index < dataTypes.size(); index++) {
+            final DataType dataType = dataTypes.get(index);
+            final DataType dataType1 = paramTypesFromFound.get(index);
+
+            final List<Conversion> conversions = conversionMap.getConversions(dataType);
+
+            if (conversions.size() != 1) {
+                // LUKETODO:  not sure what to do here
+                return false;
+            }
+
+            final Conversion conversion = conversions.get(0);
+            if (conversion.getOperator().getFunctionDef() != null) {
+                return false;
+            }
+            final DataType conversionType = conversion.getToType();
+
+            final boolean conversionTest = dataType1.equals(conversionType);
+
+            if (!conversionTest) {
+                return false;
             }
         }
 
