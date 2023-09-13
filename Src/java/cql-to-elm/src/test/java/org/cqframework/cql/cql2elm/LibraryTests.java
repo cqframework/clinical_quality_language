@@ -219,6 +219,7 @@ public class LibraryTests {
         try {
             translator = CqlTranslator
                     .fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/TestMeasure.cql"), libraryManager);
+            // LUKETODO:  fails because of a duplicate error raising the count to 4
             assertThat(translator.getErrors().size(), is(3));
 
             for (CqlCompilerException error : translator.getErrors()) {
@@ -311,6 +312,13 @@ public class LibraryTests {
 
     @Test
     public void testSyntaxErrorReferencingLibrary() throws IOException {
+        // LUKETODO:  fails because of an unexpected Library
+        /*
+        Expected: "SyntaxErrorWithLibrary"
+         but: was "SyntaxErrorReferencingLibrary"
+        Expected :SyntaxErrorWithLibrary
+        Actual   :SyntaxErrorReferencingLibrary
+         */
         CqlTranslator translator = TestUtils.createTranslator("LibraryTests/SyntaxErrorReferencingLibrary.cql");
         assertThat(translator.getErrors().size(), greaterThanOrEqualTo(2));
         assertThat(translator.getErrors().get(0).getLocator().getLibrary().getId(),
@@ -320,6 +328,13 @@ public class LibraryTests {
 
     @Test
     public void testSyntaxErrorReferencingLibraryFromStream() throws IOException {
+        // LUKETODO:  fails because of an unexpected Library
+        /*
+        Expected: "SyntaxErrorWithLibrary"
+         but: was "SyntaxErrorReferencingLibrary"
+        Expected :SyntaxErrorWithLibrary
+        Actual   :SyntaxErrorReferencingLibrary
+         */
         CqlTranslator translator = TestUtils
                 .createTranslatorFromStream("LibraryTests/SyntaxErrorReferencingLibrary.cql");
         assertThat(translator.getErrors().size(), greaterThanOrEqualTo(2));

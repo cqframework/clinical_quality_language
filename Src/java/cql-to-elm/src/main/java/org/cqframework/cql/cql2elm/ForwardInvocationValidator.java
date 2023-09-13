@@ -138,6 +138,16 @@ public class ForwardInvocationValidator {
         return true;
     }
 
+    /*
+    JP:  NEED ANOTHER PHASE HERE
+        THREE PHASES
+        compile the headers first (effectively, the pre-compile)
+        try to compile the body of the function in the second pass
+
+
+        1. pre compile CallContext?
+     */
+
     // LUKETODO: better name for method
     private static boolean handleConversionMap(CallContext callContextFromCaller, List<String> paramStringsFromFunctionToBeEvaluated, ConversionMap conversionMap) {
 //        if (1 == 1) {

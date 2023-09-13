@@ -190,8 +190,30 @@ public class CqlCompiler {
         preprocessor.setTokenStream(tokens);
         preprocessor.visit(tree);
 
+        // >>CqlPreprocessorVisitor?.visitUsingDefinition()
+        // >>> guts of that method and add to LibraryBuilder
+        // visitFunctionBody() will be empty
+        // resolveFunctionOrQualifiedFunction()
+        // >>> return partially compiled function>>>  preCompile
+
+        // LUKETODO: something needs to return a partial compilation result
+        // LUKETODO: something needs to return PreCompileOutput
+
+        // Cql2ElmVisitor    visitFunciton()  calls resolveFunctionHeader()
+        // visitFunctionBody()
+        // LibraryBuilder >>> should consider pre compiled headers rather than what it's doing
+
+        // TODO:  tokens is only needed for parsing UsingDefinitionInfo
+        final CqlNewTypeVisitor typeVisitor = new CqlNewTypeVisitor(builder, preprocessor.getLibraryInfo(), tokens);
+
+//        // resolve usings and function signatures
+//        // throw errors in the event of duplicate function signatures
+        typeVisitor.visit(tree);
+
         visitor.setTokenStream(tokens);
         visitor.setLibraryInfo(preprocessor.getLibraryInfo());
+        visitor.setUsingDef(typeVisitor.getUsingDef());
+        visitor.setPreCompileOutput(typeVisitor.getPreCompileOutput());
 
         visitResult = visitor.visit(tree);
         library = builder.getLibrary();

@@ -51,10 +51,16 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private boolean fromKeywordRequired = false;
     private TokenStream tokenStream;
 
+    private Object usingInfo;
+    private Map<String,String> functionHeaders;
+
     private final LibraryBuilder libraryBuilder;
     private final SystemMethodResolver systemMethodResolver;
 
     private LibraryInfo libraryInfo = null;
+    private UsingDef usingDef;
+    private PreCompileOutput preCompileOutput;
+
     public void setLibraryInfo(LibraryInfo libraryInfo) {
         if (libraryInfo == null) {
             throw new IllegalArgumentException("libraryInfo is null");
@@ -153,6 +159,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public void disableFromKeywordRequired() {
         fromKeywordRequired = false;
     }
+
+//    public Object getUsingInfo() {
+//        return usingInfo;
+//    }
+//
+//    public Map<String, String> getFunctionHeaders() {
+//        return functionHeaders;
+//    }
 
     public void setTranslatorOptions(CqlCompilerOptions options) {
         if (options.getOptions().contains(CqlCompilerOptions.Options.EnableDateRangeOptimization)) {
@@ -710,16 +724,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public Object visitLibrary(cqlParser.LibraryContext ctx) {
 
         Object lastResult = null;
-        // NOTE: Need to set the library identifier here so the builder can begin the translation appropriately
-        VersionedIdentifier identifier = new VersionedIdentifier().withId(libraryInfo.getLibraryName()).withVersion(libraryInfo.getVersion());
-        if (libraryInfo.getNamespaceName() != null) {
-            identifier.setSystem(libraryBuilder.resolveNamespaceUri(libraryInfo.getNamespaceName(), true));
-        }
-        else if (libraryBuilder.getNamespaceInfo() != null) {
-            identifier.setSystem(libraryBuilder.getNamespaceInfo().getUri());
-        }
-        libraryBuilder.setLibraryIdentifier(identifier);
-        libraryBuilder.beginTranslation();
         try {
             // Loop through and call visit on each child (to ensure they are tracked)
             for (int i = 0; i < ctx.getChildCount(); i++) {
@@ -740,9 +744,47 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             return lastResult;
         }
         finally {
-            libraryBuilder.endTranslation();
+//            libraryBuilder.endTranslation();
         }
     }
+
+//    @Override
+//    public Object visitLibrary(cqlParser.LibraryContext ctx) {
+//
+//        Object lastResult = null;
+//        // NOTE: Need to set the library identifier here so the builder can begin the translation appropriately
+//        VersionedIdentifier identifier = new VersionedIdentifier().withId(libraryInfo.getLibraryName()).withVersion(libraryInfo.getVersion());
+//        if (libraryInfo.getNamespaceName() != null) {
+//            identifier.setSystem(libraryBuilder.resolveNamespaceUri(libraryInfo.getNamespaceName(), true));
+//        }
+//        else if (libraryBuilder.getNamespaceInfo() != null) {
+//            identifier.setSystem(libraryBuilder.getNamespaceInfo().getUri());
+//        }
+//        libraryBuilder.setLibraryIdentifier(identifier);
+//        libraryBuilder.beginTranslation();
+//        try {
+//            // Loop through and call visit on each child (to ensure they are tracked)
+//            for (int i = 0; i < ctx.getChildCount(); i++) {
+//                ParseTree tree = ctx.getChild(i);
+//                TerminalNode terminalNode = tree instanceof TerminalNode ? (TerminalNode)tree : null;
+//                if (terminalNode != null && terminalNode.getSymbol().getType() == cqlLexer.EOF) {
+//                    continue;
+//                }
+//
+//                Object childResult = visit(tree);
+//                // Only set the last result if we received something useful
+//                if (childResult != null) {
+//                    lastResult = childResult;
+//                }
+//            }
+//
+//            // Return last result (consistent with super implementation and helps w/ testing)
+//            return lastResult;
+//        }
+//        finally {
+//            libraryBuilder.endTranslation();
+//        }
+//    }
 
     @Override
     @SuppressWarnings("unchecked")
@@ -4842,5 +4884,13 @@ DATETIME
         }
 
         return tb;
+    }
+
+    public void setUsingDef(UsingDef usingDef) {
+        this.usingDef = usingDef;
+    }
+
+    public void setPreCompileOutput(PreCompileOutput preCompileOutput) {
+        this.preCompileOutput = preCompileOutput;
     }
 }
