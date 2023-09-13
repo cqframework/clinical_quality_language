@@ -59,12 +59,8 @@ public class CachingModelResolverDecorator implements ModelResolver {
 
   @Override
   public Class<?> resolveType(Object value) {
-    if (!perPackageTypeResolutionsByClass.containsKey(this.getPackageName())) {
-      perPackageTypeResolutionsByClass.put(this.getPackageName(), new ConcurrentHashMap<>());
-    }
-
     Map<Class<?>, Class<?>> packageTypeResolutions =
-        perPackageTypeResolutionsByClass.get(this.getPackageName());
+        perPackageTypeResolutionsByClass.computeIfAbsent(this.getPackageName(), p -> new ConcurrentHashMap<>());
 
     Class<?> valueClass = value.getClass();
     return packageTypeResolutions

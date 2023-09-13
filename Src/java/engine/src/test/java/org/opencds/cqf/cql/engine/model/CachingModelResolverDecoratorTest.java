@@ -8,14 +8,17 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
+
 
 // TODO: Extend testing to cover more of the CachedModelResolver
 public class CachingModelResolverDecoratorTest {
 
 
-    //@Test
+    @Test
     public void context_path_resolved_only_once() {
         var m = mock(ModelResolver.class);
+        when(m.getPackageName()).thenReturn("test.package");
         when(m.getContextPath("Patient", "Patient")).thenReturn("id");
 
         var cache = new CachingModelResolverDecorator(m);
