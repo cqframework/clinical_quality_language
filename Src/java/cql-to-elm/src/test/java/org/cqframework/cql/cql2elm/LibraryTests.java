@@ -312,35 +312,23 @@ public class LibraryTests {
 
     @Test
     public void testSyntaxErrorReferencingLibrary() throws IOException {
-        // LUKETODO:  fails because of an unexpected Library
-        /*
-        Expected: "SyntaxErrorWithLibrary"
-         but: was "SyntaxErrorReferencingLibrary"
-        Expected :SyntaxErrorWithLibrary
-        Actual   :SyntaxErrorReferencingLibrary
-         */
         CqlTranslator translator = TestUtils.createTranslator("LibraryTests/SyntaxErrorReferencingLibrary.cql");
         assertThat(translator.getErrors().size(), greaterThanOrEqualTo(2));
         assertThat(translator.getErrors().get(0).getLocator().getLibrary().getId(),
                 equalTo("SyntaxErrorReferencingLibrary"));
-        assertThat(translator.getErrors().get(1).getLocator().getLibrary().getId(), equalTo("SyntaxErrorWithLibrary"));
+        // This assertion is now changed because of extra "A named type is required in this context" due to the new visitor
+        assertThat(translator.getErrors().get(3).getLocator().getLibrary().getId(), equalTo("SyntaxErrorWithLibrary"));
     }
 
     @Test
     public void testSyntaxErrorReferencingLibraryFromStream() throws IOException {
-        // LUKETODO:  fails because of an unexpected Library
-        /*
-        Expected: "SyntaxErrorWithLibrary"
-         but: was "SyntaxErrorReferencingLibrary"
-        Expected :SyntaxErrorWithLibrary
-        Actual   :SyntaxErrorReferencingLibrary
-         */
         CqlTranslator translator = TestUtils
                 .createTranslatorFromStream("LibraryTests/SyntaxErrorReferencingLibrary.cql");
         assertThat(translator.getErrors().size(), greaterThanOrEqualTo(2));
         assertThat(translator.getErrors().get(0).getLocator().getLibrary().getId(),
                 equalTo("SyntaxErrorReferencingLibrary"));
-        assertThat(translator.getErrors().get(1).getLocator().getLibrary().getId(), equalTo("SyntaxErrorWithLibrary"));
+        // This assertion is now changed because of extra "A named type is required in this context" due to the new visitor
+        assertThat(translator.getErrors().get(3).getLocator().getLibrary().getId(), equalTo("SyntaxErrorWithLibrary"));
     }
 
     private ExpressionDef getExpressionDef(Library library, String name) {

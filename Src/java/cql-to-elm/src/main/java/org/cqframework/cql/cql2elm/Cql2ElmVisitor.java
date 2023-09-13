@@ -807,32 +807,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     @SuppressWarnings("unchecked")
     public UsingDef visitUsingDefinition(cqlParser.UsingDefinitionContext ctx) {
-        List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
-        String unqualifiedIdentifier = identifiers.remove(identifiers.size() - 1);
-        String namespaceName = !identifiers.isEmpty() ? String.join(".", identifiers) :
-                libraryBuilder.isWellKnownModelName(unqualifiedIdentifier) ? null :
-                        (libraryBuilder.getNamespaceInfo() != null ? libraryBuilder.getNamespaceInfo().getName() : null);
-
-        String path = null;
-        NamespaceInfo modelNamespace = null;
-        if (namespaceName != null) {
-            String namespaceUri = libraryBuilder.resolveNamespaceUri(namespaceName, true);
-            path = NamespaceManager.getPath(namespaceUri, unqualifiedIdentifier);
-            modelNamespace = new NamespaceInfo(namespaceName, namespaceUri);
-        }
-        else {
-            path = unqualifiedIdentifier;
-        }
-
-        String localIdentifier = ctx.localIdentifier() == null ? unqualifiedIdentifier : parseString(ctx.localIdentifier());
-        if (!localIdentifier.equals(unqualifiedIdentifier)) {
-            throw new IllegalArgumentException(
-                    String.format("Local identifiers for models must be the same as the name of the model in this release of the translator (Model %s, Called %s)",
-                            unqualifiedIdentifier, localIdentifier));
-        }
-
-        Model model = getModel(modelNamespace, unqualifiedIdentifier, parseString(ctx.versionSpecifier()), localIdentifier);
-        return libraryBuilder.resolveUsingRef(localIdentifier);
+        return usingDef;
     }
 
     public Model getModel() {
