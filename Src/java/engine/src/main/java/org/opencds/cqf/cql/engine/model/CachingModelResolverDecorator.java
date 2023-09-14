@@ -1,15 +1,13 @@
 package org.opencds.cqf.cql.engine.model;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class CachingModelResolverDecorator implements ModelResolver {
-  private static Map<String, Map<String, Map<String, Object>>> perPackageContextResolutions =
-      new ConcurrentHashMap<>();
-  private static Map<String, Map<String, Class<?>>> perPackageTypeResolutionsByTypeName =
-      new ConcurrentHashMap<>();
-  private static Map<String, Map<Class<?>, Class<?>>> perPackageTypeResolutionsByClass =
-      new ConcurrentHashMap<>();
+  private static Map<String, Map<String, Map<String, Optional<Object>>>> perPackageContextResolutions = new ConcurrentHashMap<>();
+  private static Map<String, Map<String, Optional<Class<?>>>> perPackageTypeResolutionsByTypeName = new ConcurrentHashMap<>();
+  private static Map<String, Map<Class<?>, Optional<Class<?>>>> perPackageTypeResolutionsByClass = new ConcurrentHashMap<>();
 
   private ModelResolver innerResolver;
 
@@ -36,35 +34,68 @@ public class CachingModelResolverDecorator implements ModelResolver {
 
   @Override
   public Object getContextPath(String contextType, String targetType) {
-    if (!perPackageContextResolutions.containsKey(this.getPackageName())) {
-      perPackageContextResolutions.put(this.getPackageName(), new ConcurrentHashMap<>());
+    if (contextType == null) {
+      return null;
     }
 
-    Map<String, Map<String, Object>> packageContextResolutions =
-        perPackageContextResolutions.get(this.getPackageName());
+    for (var pn : this.getPackageNames()) {
+      var packageContextResolutions = perPackageContextResolutions.computeIfAbsent(pn, p -> new ConcurrentHashMap<>());
 
-    var contextTypeResolutions = packageContextResolutions
-      .computeIfAbsent(contextType, c -> new ConcurrentHashMap<>());
-    return contextTypeResolutions
-      .computeIfAbsent(targetType, t -> this.innerResolver.getContextPath(contextType, t));
+      var contextTypeResolutions = packageContextResolutions
+          .computeIfAbsent(contextType, c -> new ConcurrentHashMap<>());
+
+      var result = contextTypeResolutions
+          .computeIfAbsent(targetType, t -> Optional.ofNullable(this.innerResolver.getContextPath(contextType, t)));
+
+      if (result.isPresent()) {
+        return result.get();
+      }
+    }
+
+    return null;
   }
 
   @Override
   public Class<?> resolveType(String typeName) {
-    var packageTypeResolutions = perPackageTypeResolutionsByTypeName
-      .computeIfAbsent(this.getPackageName(), p -> new ConcurrentHashMap<>());
-    return packageTypeResolutions
-      .computeIfAbsent(typeName, t -> this.innerResolver.resolveType(t));
+    if (typeName == null) {
+      return null;
+    }
+
+    for (var pn : this.getPackageNames()) {
+      var packageTypeResolutions = perPackageTypeResolutionsByTypeName
+          .computeIfAbsent(pn, p -> new ConcurrentHashMap<>());
+
+      var result = packageTypeResolutions
+          .computeIfAbsent(typeName, t -> Optional.ofNullable(this.innerResolver.resolveType(t)));
+
+      if (result.isPresent()) {
+        return result.get();
+      }
+    }
+
+    return null;
   }
 
   @Override
   public Class<?> resolveType(Object value) {
-    Map<Class<?>, Class<?>> packageTypeResolutions =
-        perPackageTypeResolutionsByClass.computeIfAbsent(this.getPackageName(), p -> new ConcurrentHashMap<>());
+    if (value == null) {
+      return null;
+    }
 
     Class<?> valueClass = value.getClass();
-    return packageTypeResolutions
-      .computeIfAbsent(valueClass, v -> this.innerResolver.resolveType(v));
+    for (var pn : this.getPackageNames()) {
+      var packageTypeResolutions = perPackageTypeResolutionsByClass
+          .computeIfAbsent(pn, p -> new ConcurrentHashMap<>());
+
+      var result = packageTypeResolutions
+          .computeIfAbsent(valueClass, t -> Optional.ofNullable(this.innerResolver.resolveType(t)));
+
+      if (result.isPresent()) {
+        return result.get();
+      }
+    }
+
+    return null;
   }
 
   @Override
