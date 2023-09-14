@@ -219,8 +219,14 @@ public class ForwardInvocationValidator {
 
             final List<Conversion> conversions = conversionMap.getConversions(dataType);
 
-            if (conversions.size() != 1) {
-                // LUKETODO:  not sure what to do here
+            if (conversions.size() == 0) {
+                // LUKETODO:  not sure what to do here: TestCMS645
+                // LUKETODO:  fluent function
+                return false;
+            }
+
+            if (conversions.size() > 1) {
+                // LUKETODO:  not sure what to do here: TestCMS645
                 return false;
             }
 

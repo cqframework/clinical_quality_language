@@ -44,10 +44,6 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
         libraryBuilder = theLibraryBuilder;
     }
 
-    // LUKETODO: get rid of this:
-//    public CqlPreprocessorVisitor() {
-//    }
-
     public LibraryInfo getLibraryInfo() {
         return libraryInfo;
     }
@@ -59,12 +55,6 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     public void setTokenStream(TokenStream value) {
         tokenStream = value;
     }
-
-//    @Override
-//    public Object visit(ParseTree tree) {
-//        // LUKETODO:  do we need to enhance this with the error-recording code in the Cql2ElmVisitor?
-//        return super.visit(tree);
-//    }
 
     @Override
     public Object visit(ParseTree tree) {
@@ -187,7 +177,6 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     @Override
     @SuppressWarnings("unchecked")
     public Object visitUsingDefinition(cqlParser.UsingDefinitionContext ctx) {
-        // LUKETODO:  do we need to replicate the logic in Cql2ElmVisitor?  ModelManager is missing
         UsingDefinitionInfo usingDefinition = new UsingDefinitionInfo();
         List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
         final String unqualifiedIdentifier = identifiers.remove(identifiers.size() - 1);
@@ -340,9 +329,7 @@ Expected: is "http://hl7.org/fhir"
 
     @Override
     public Object visitFunctionDefinition(cqlParser.FunctionDefinitionContext ctx) {
-        // LUKETODO:  not sure where to put this:
         final PreCompileOutput preCompileOutput = preCompile(ctx);
-//        logger.info("preCompileOutput: {}", preCompileOutput);
         FunctionDefinitionInfo functionDefinition = new FunctionDefinitionInfo();
         functionDefinition.setName(parseString(ctx.identifierOrFunctionIdentifier()));
         functionDefinition.setContext(currentContext);
@@ -440,47 +427,6 @@ Expected: is "http://hl7.org/fhir"
         }
     }
 
-    // LUKETODO: this is what triggers a recursive CqlCompiler.run() but there is already an implementation for this method:
-//    @Override
-//    @SuppressWarnings("unchecked")
-//    public Object visitIncludeDefinition(cqlParser.IncludeDefinitionContext ctx) {
-//        List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
-//        String unqualifiedIdentifier = identifiers.remove(identifiers.size() - 1);
-//        String namespaceName = !identifiers.isEmpty() ? String.join(".", identifiers) :
-//                (libraryBuilder.getNamespaceInfo() != null ? libraryBuilder.getNamespaceInfo().getName() : null);
-//        String path = getLibraryPath(namespaceName, unqualifiedIdentifier);
-//        IncludeDef library = of.createIncludeDef()
-//                .withLocalIdentifier(ctx.localIdentifier() == null ? unqualifiedIdentifier : parseString(ctx.localIdentifier()))
-//                .withPath(path)
-//                .withVersion(parseString(ctx.versionSpecifier()));
-//
-//        // TODO: This isn't great because it complicates the loading process (and results in the source being loaded twice in the general case)
-//        // But the full fix is to introduce source resolution/caching to enable this layer to determine whether the library identifier resolved
-//        // with the namespace
-//        if (!libraryBuilder.canResolveLibrary(library)) {
-//            namespaceName = identifiers.size() > 0 ? String.join(".", identifiers) :
-//                    libraryBuilder.isWellKnownLibraryName(unqualifiedIdentifier) ? null :
-//                            (libraryBuilder.getNamespaceInfo() != null ? libraryBuilder.getNamespaceInfo().getName() : null);
-//            path = getLibraryPath(namespaceName, unqualifiedIdentifier);
-//            library = of.createIncludeDef()
-//                    .withLocalIdentifier(ctx.localIdentifier() == null ? unqualifiedIdentifier : parseString(ctx.localIdentifier()))
-//                    .withPath(path)
-//                    .withVersion(parseString(ctx.versionSpecifier()));
-//        }
-//
-//        libraryBuilder.addInclude(library);
-//
-//        return library;
-//    }
-
-    private String getLibraryPath(String namespaceName, String unqualifiedIdentifier) {
-        if (namespaceName != null) {
-            String namespaceUri = libraryBuilder.resolveNamespaceUri(namespaceName, true);
-            return NamespaceManager.getPath(namespaceUri, unqualifiedIdentifier);
-        }
-
-        return unqualifiedIdentifier;
-    }
 
     @Override
     public NamedTypeSpecifier visitNamedTypeSpecifier(cqlParser.NamedTypeSpecifierContext ctx) {
@@ -493,6 +439,19 @@ Expected: is "http://hl7.org/fhir"
 
         // Fluent API would be nice here, but resultType isn't part of the model so...
         result.setResultType(resultType);
+
+        return result;
+    }
+
+    @Override
+    public TupleElementDefinition visitTupleElementDefinition(cqlParser.TupleElementDefinitionContext ctx) {
+        TupleElementDefinition result = of.createTupleElementDefinition()
+                .withName(parseString(ctx.referentialIdentifier()))
+                .withElementType(parseTypeSpecifier(ctx.typeSpecifier()));
+
+        if (includeDeprecatedElements) {
+            result.setType(result.getElementType());
+        }
 
         return result;
     }
@@ -599,11 +558,6 @@ Expected: is "http://hl7.org/fhir"
         return libraryBuilder.resolveUsingRef(localIdentifier);
     }
 
-    // LUKETODO:
-    /*
-[Test worker] ERROR org.cqframework.cql.cql2elm.Cql2ElmVisitor - Exception: class java.lang.String cannot be cast to class org.hl7.elm.r1.TypeSpecifier (java.lang.String is in module java.base of loader 'bootstrap'; org.hl7.elm.r1.TypeSpecifier is in unnamed module of loader 'app')
-java.lang.ClassCastException: class java.lang.String cannot be cast to class org.hl7.elm.r1.TypeSpecifier (java.lang.String is in module java.base of loader 'bootstrap'; org.hl7.elm.r1.TypeSpecifier is in unnamed module of loader 'app')
-     */
     private PreCompileOutput preCompile(cqlParser.FunctionDefinitionContext ctx) {
         final FunctionDef fun = of.createFunctionDef().withAccessLevel(parseAccessModifier(ctx.accessModifier())).withName(parseString(ctx.identifierOrFunctionIdentifier()));
 
@@ -648,18 +602,6 @@ java.lang.ClassCastException: class java.lang.String cannot be cast to class org
 
     private TypeSpecifier parseTypeSpecifier(ParseTree pt) {
         return pt == null ? null : (TypeSpecifier) visit(pt);
-//        if (pt == null) {
-//            return null;
-//        }
-//
-//        final Object visit = visit(pt);
-//        try {
-//            return (TypeSpecifier)visit;
-//        } catch (Exception e) {
-//            // LUKETODO:  this seems to happen on the "second round" of CqlCompiler.run(), not the first
-//            logger.error("Exception: " +e.getMessage(), e);
-//            throw e;
-//        }
     }
 
     private boolean pushChunk(ParseTree tree) {

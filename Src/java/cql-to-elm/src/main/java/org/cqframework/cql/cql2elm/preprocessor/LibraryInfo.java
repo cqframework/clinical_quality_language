@@ -3,10 +3,13 @@ package org.cqframework.cql.cql2elm.preprocessor;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.cqframework.cql.gen.cqlParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 public class LibraryInfo extends BaseInfo {
+    static final Logger logger = LoggerFactory.getLogger(LibraryInfo.class);
     private String namespaceName;
     private String libraryName;
     private String version;
@@ -224,11 +227,17 @@ public class LibraryInfo extends BaseInfo {
     public void addFunctionDefinition(FunctionDefinitionInfo functionDefinition) {
         List<FunctionDefinitionInfo> infos = functionDefinitions.get(functionDefinition.getName());
         if (infos == null) {
-            infos = new ArrayList<FunctionDefinitionInfo>();
+            infos = new ArrayList<>();
             functionDefinitions.put(functionDefinition.getName(), infos);
         }
-        infos.add(functionDefinition);
-        addDefinition(functionDefinition);
+
+        // TODO: JP - Ensure no duplicate FunctionDefinitionInfos (meaning the same signature)
+        if (! infos.contains(functionDefinition)) {
+            infos.add(functionDefinition);
+            addDefinition(functionDefinition);
+        } else {
+            logger.info("function already contained so not adding it: {}", functionDefinition);
+        }
     }
 
     public Iterable<FunctionDefinitionInfo> resolveFunctionReference(String identifier) {
