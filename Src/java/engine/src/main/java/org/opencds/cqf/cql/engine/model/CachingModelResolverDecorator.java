@@ -1,15 +1,15 @@
 package org.opencds.cqf.cql.engine.model;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class CachingModelResolverDecorator implements ModelResolver {
   private static Map<String, Map<String, Map<String, Object>>> perPackageContextResolutions =
-      new HashMap<>();
+      new ConcurrentHashMap<>();
   private static Map<String, Map<String, Class<?>>> perPackageTypeResolutionsByTypeName =
-      new HashMap<>();
+      new ConcurrentHashMap<>();
   private static Map<String, Map<Class<?>, Class<?>>> perPackageTypeResolutionsByClass =
-      new HashMap<>();
+      new ConcurrentHashMap<>();
 
   private ModelResolver innerResolver;
 
@@ -37,14 +37,14 @@ public class CachingModelResolverDecorator implements ModelResolver {
   @Override
   public Object getContextPath(String contextType, String targetType) {
     if (!perPackageContextResolutions.containsKey(this.getPackageName())) {
-      perPackageContextResolutions.put(this.getPackageName(), new HashMap<>());
+      perPackageContextResolutions.put(this.getPackageName(), new ConcurrentHashMap<>());
     }
 
     Map<String, Map<String, Object>> packageContextResolutions =
         perPackageContextResolutions.get(this.getPackageName());
 
     var contextTypeResolutions = packageContextResolutions
-      .computeIfAbsent(contextType, c -> new HashMap<>());
+      .computeIfAbsent(contextType, c -> new ConcurrentHashMap<>());
     return contextTypeResolutions
       .computeIfAbsent(targetType, t -> this.innerResolver.getContextPath(contextType, t));
   }
@@ -52,19 +52,15 @@ public class CachingModelResolverDecorator implements ModelResolver {
   @Override
   public Class<?> resolveType(String typeName) {
     var packageTypeResolutions = perPackageTypeResolutionsByTypeName
-      .computeIfAbsent(this.getPackageName(), p -> new HashMap<>());
+      .computeIfAbsent(this.getPackageName(), p -> new ConcurrentHashMap<>());
     return packageTypeResolutions
       .computeIfAbsent(typeName, t -> this.innerResolver.resolveType(t));
   }
 
   @Override
   public Class<?> resolveType(Object value) {
-    if (!perPackageTypeResolutionsByClass.containsKey(this.getPackageName())) {
-      perPackageTypeResolutionsByClass.put(this.getPackageName(), new HashMap<>());
-    }
-
     Map<Class<?>, Class<?>> packageTypeResolutions =
-        perPackageTypeResolutionsByClass.get(this.getPackageName());
+        perPackageTypeResolutionsByClass.computeIfAbsent(this.getPackageName(), p -> new ConcurrentHashMap<>());
 
     Class<?> valueClass = value.getClass();
     return packageTypeResolutions
