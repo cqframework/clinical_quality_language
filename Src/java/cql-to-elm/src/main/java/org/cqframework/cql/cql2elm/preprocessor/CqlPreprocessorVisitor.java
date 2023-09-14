@@ -187,10 +187,11 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     @Override
     @SuppressWarnings("unchecked")
     public Object visitUsingDefinition(cqlParser.UsingDefinitionContext ctx) {
-        // LUKETODO:  do we need to enhance this so we also build the UsingDef same as Cql2ElmVisitor?
+        // LUKETODO:  do we need to replicate the logic in Cql2ElmVisitor?  ModelManager is missing
         UsingDefinitionInfo usingDefinition = new UsingDefinitionInfo();
         List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
-        usingDefinition.setName(identifiers.remove(identifiers.size() - 1));
+        final String unqualifiedIdentifier = identifiers.remove(identifiers.size() - 1);
+        usingDefinition.setName(unqualifiedIdentifier);
         if (identifiers.size() > 0) {
             usingDefinition.setNamespaceName(String.join(".", identifiers));
         }
@@ -206,6 +207,26 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
         usingDefinition.setDefinition(ctx);
         processHeader(ctx, usingDefinition);
         libraryInfo.addUsingDefinition(usingDefinition);
+
+        // LUKETODO: start new code
+        final String namespaceName = !identifiers.isEmpty() ? String.join(".", identifiers) :
+                libraryBuilder.isWellKnownModelName(unqualifiedIdentifier) ? null :
+                        (libraryBuilder.getNamespaceInfo() != null ? libraryBuilder.getNamespaceInfo().getName() : null);
+
+        NamespaceInfo modelNamespace = null;
+        if (namespaceName != null) {
+            String namespaceUri = libraryBuilder.resolveNamespaceUri(namespaceName, true);
+            modelNamespace = new NamespaceInfo(namespaceName, namespaceUri);
+        }
+
+        String localIdentifier = ctx.localIdentifier() == null ? unqualifiedIdentifier : parseString(ctx.localIdentifier());
+        if (!localIdentifier.equals(unqualifiedIdentifier)) {
+            throw new IllegalArgumentException(
+                    String.format("Local identifiers for models must be the same as the name of the model in this release of the translator (Model %s, Called %s)",
+                            unqualifiedIdentifier, localIdentifier));
+        }
+
+        Model model = getModel(modelNamespace, unqualifiedIdentifier, parseString(ctx.versionSpecifier()), localIdentifier);
 
         // LUKETODO: what to do with this?
         // LUKETODO:
@@ -224,6 +245,7 @@ Expected: is "http://hl7.org/fhir"
 	at org.cqframework.cql.cql2elm.CMS146ElmTest.testUsingDataModel(CMS146ElmTest.java:45)
          */
 //        final UsingDef usingDef = visitUsingDefinitionFromElm(ctx);
+        // LUKETODO: end new code
 
         return usingDefinition;
     }
@@ -318,15 +340,16 @@ Expected: is "http://hl7.org/fhir"
 
     @Override
     public Object visitFunctionDefinition(cqlParser.FunctionDefinitionContext ctx) {
+        // LUKETODO:  not sure where to put this:
+        final PreCompileOutput preCompileOutput = preCompile(ctx);
+//        logger.info("preCompileOutput: {}", preCompileOutput);
         FunctionDefinitionInfo functionDefinition = new FunctionDefinitionInfo();
         functionDefinition.setName(parseString(ctx.identifierOrFunctionIdentifier()));
         functionDefinition.setContext(currentContext);
         functionDefinition.setDefinition(ctx);
+        functionDefinition.setPreCompileOutput(preCompileOutput);
         processHeader(ctx, functionDefinition);
         libraryInfo.addFunctionDefinition(functionDefinition);
-        // LUKETODO:  not sure where to put this:
-        final PreCompileOutput preCompileOutput = preCompile(ctx);
-//        logger.info("preCompileOutput: {}", preCompileOutput);
 
         return functionDefinition;
     }
@@ -380,6 +403,7 @@ Expected: is "http://hl7.org/fhir"
     private boolean locate = false;
     private boolean resultTypes = false;
     private final List<Expression> expressions = new ArrayList<>();
+    private boolean includeDeprecatedElements = false;
     @Override
     public Object visitLibrary(cqlParser.LibraryContext ctx) {
 
@@ -470,6 +494,55 @@ Expected: is "http://hl7.org/fhir"
         // Fluent API would be nice here, but resultType isn't part of the model so...
         result.setResultType(resultType);
 
+        return result;
+    }
+
+    @Override
+    public Object visitTupleTypeSpecifier(cqlParser.TupleTypeSpecifierContext ctx) {
+        TupleType resultType = new TupleType();
+        TupleTypeSpecifier typeSpecifier = of.createTupleTypeSpecifier();
+        for (cqlParser.TupleElementDefinitionContext definitionContext : ctx.tupleElementDefinition()) {
+            TupleElementDefinition element = (TupleElementDefinition)visit(definitionContext);
+            resultType.addElement(new TupleTypeElement(element.getName(), element.getElementType().getResultType()));
+            typeSpecifier.getElement().add(element);
+        }
+
+        typeSpecifier.setResultType(resultType);
+
+        return typeSpecifier;
+    }
+
+    @Override
+    public ChoiceTypeSpecifier visitChoiceTypeSpecifier(cqlParser.ChoiceTypeSpecifierContext ctx) {
+        ArrayList<TypeSpecifier> typeSpecifiers = new ArrayList<TypeSpecifier>();
+        ArrayList<DataType> types = new ArrayList<DataType>();
+        for (cqlParser.TypeSpecifierContext typeSpecifierContext : ctx.typeSpecifier()) {
+            TypeSpecifier typeSpecifier = parseTypeSpecifier(typeSpecifierContext);
+            typeSpecifiers.add(typeSpecifier);
+            types.add(typeSpecifier.getResultType());
+        }
+        ChoiceTypeSpecifier result = of.createChoiceTypeSpecifier().withChoice(typeSpecifiers);
+        if (includeDeprecatedElements) {
+            result.getType().addAll(typeSpecifiers);
+        }
+        ChoiceType choiceType = new ChoiceType(types);
+        result.setResultType(choiceType);
+        return result;
+    }
+
+    @Override
+    public IntervalTypeSpecifier visitIntervalTypeSpecifier(cqlParser.IntervalTypeSpecifierContext ctx) {
+        IntervalTypeSpecifier result = of.createIntervalTypeSpecifier().withPointType(parseTypeSpecifier(ctx.typeSpecifier()));
+        IntervalType intervalType = new IntervalType(result.getPointType().getResultType());
+        result.setResultType(intervalType);
+        return result;
+    }
+
+    @Override
+    public ListTypeSpecifier visitListTypeSpecifier(cqlParser.ListTypeSpecifierContext ctx) {
+        ListTypeSpecifier result = of.createListTypeSpecifier().withElementType(parseTypeSpecifier(ctx.typeSpecifier()));
+        ListType listType = new ListType(result.getElementType().getResultType());
+        result.setResultType(listType);
         return result;
     }
 

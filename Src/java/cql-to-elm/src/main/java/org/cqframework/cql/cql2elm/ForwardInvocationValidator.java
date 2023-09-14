@@ -32,21 +32,22 @@ public class ForwardInvocationValidator {
 
     // LUKETODO: We definitely need better names for the parameters
     // LUKETODO: why is BaseTest.TestIntervalImplicitConversion failing when the params clearly don't match: (13,11): Could not resolve call to operator LengthInDays with signature (FHIR.Period).
-    public static boolean areFunctionsEquivalent(CallContext callContextFromCaller, FunctionDefinitionInfo foundFunctionToBeEvaluated, Function<cqlParser.FunctionDefinitionContext, PreCompileOutput> preCompileFunction, ConversionMap conversionMap, OperatorMap operatorMap) {
+    public static boolean areFunctionsEquivalent(CallContext callContextFromCaller, FunctionDefinitionInfo foundFunctionToBeEvaluated, ConversionMap conversionMap) {
         // LUKETODO: for now disable this:
-        if (1==1) {
-            return true;
-        }
-
-        if (areFunctionsSuperficiallyEquivalent(callContextFromCaller, foundFunctionToBeEvaluated, conversionMap, operatorMap)) {
-            return areFunctionsPreCompileEquivalent(callContextFromCaller, foundFunctionToBeEvaluated.getDefinition(), preCompileFunction, conversionMap);
-        }
-
-        return false;
-//        return true;
+//        if (1==1) {
+//            return true;
+//        }
+        return areFunctionsPreCompileEquivalent(callContextFromCaller, foundFunctionToBeEvaluated, conversionMap);
+//
+//        if (areFunctionsSuperficiallyEquivalent(callContextFromCaller, foundFunctionToBeEvaluated, conversionMap, operatorMap)) {
+//            return areFunctionsPreCompileEquivalent(callContextFromCaller, foundFunctionToBeEvaluated, conversionMap);
+//        }
+//
+//        return false;
+////        return true;
     }
 
-    private static boolean areFunctionsSuperficiallyEquivalent(CallContext callContextFromCaller, FunctionDefinitionInfo foundFunctionToBeEvaluated, ConversionMap conversionMap, OperatorMap operatorMap) {
+    private static boolean areFunctionsSuperficiallyEquivalent(CallContext callContextFromCaller, FunctionDefinitionInfo foundFunctionToBeEvaluated, ConversionMap conversionMap) {
         if (! callContextFromCaller.getOperatorName().equals(foundFunctionToBeEvaluated.getName())) {
             return false;
         }
@@ -79,18 +80,17 @@ public class ForwardInvocationValidator {
                 .map(String::toLowerCase)
                 .collect(Collectors.toList());
 
-        return areBothTypeListsSemanticallyEquivalent(callContextFromCaller, expectedCallParamStrings, paramStringsFromFunctionToBeEvaluated, conversionMap, operatorMap);
+        return areBothTypeListsSemanticallyEquivalent(callContextFromCaller, expectedCallParamStrings, paramStringsFromFunctionToBeEvaluated, conversionMap);
     }
 
     // LUKETODO:  the way this is resolved by the compiler is with CompiledLibrary#resolveOperator, which takes a ConversionMap
     // The ConversionMap comes from the LibaryBuilder
     // LibraryBuilder passes the ConversionMap
 
-    private static boolean areFunctionsPreCompileEquivalent(CallContext callContextFromCaller, cqlParser.FunctionDefinitionContext definition, Function<cqlParser.FunctionDefinitionContext, PreCompileOutput> preCompileFunction, ConversionMap conversionMap) {
-        final PreCompileOutput evaluatedFunctionPreCompileOutput = preCompileFunction.apply(definition);
-
+    private static boolean areFunctionsPreCompileEquivalent(CallContext callContextFromCaller, FunctionDefinitionInfo functionDefinitionInfo, ConversionMap conversionMap) {
         // another sanity check
-        if (! callContextFromCaller.getOperatorName().equals(evaluatedFunctionPreCompileOutput.getFunctionDef().getName())) {
+        final PreCompileOutput preCompileOutput = functionDefinitionInfo.getPreCompileOutput();
+        if (! callContextFromCaller.getOperatorName().equals(preCompileOutput.getFunctionDef().getName())) {
             return false;
         }
 
@@ -101,21 +101,21 @@ public class ForwardInvocationValidator {
                 StreamSupport.stream(callerSignature.getOperandTypes().spliterator(), false)
                         .collect(Collectors.toList());
 
-        final List<OperandDef> operandFromFound = evaluatedFunctionPreCompileOutput.getFunctionDef().getOperand();
+        final List<OperandDef> operandFromFound = preCompileOutput.getFunctionDef().getOperand();
 
         final List<DataType> paramTypesFromFound = operandFromFound.stream()
                 .map(Trackable::getResultType)
                 .collect(Collectors.toList());
 
         if (!paramTypesFromCaller.equals(paramTypesFromFound)) {
-            return handleConversionMapForPreCompile(callContextFromCaller, evaluatedFunctionPreCompileOutput, conversionMap);
+            return handleConversionMapForPreCompile(callContextFromCaller, preCompileOutput, conversionMap);
 
         }
 
         return true;
     }
 
-    private static boolean areBothTypeListsSemanticallyEquivalent(CallContext callContextFromCaller, List<String> expectedCallParamStrings, List<String> paramStringsFromFunctionToBeEvaluated, ConversionMap conversionMap, OperatorMap operatorMap) {
+    private static boolean areBothTypeListsSemanticallyEquivalent(CallContext callContextFromCaller, List<String> expectedCallParamStrings, List<String> paramStringsFromFunctionToBeEvaluated, ConversionMap conversionMap) {
         if (expectedCallParamStrings.size() != paramStringsFromFunctionToBeEvaluated.size()) {
             return false;
         }

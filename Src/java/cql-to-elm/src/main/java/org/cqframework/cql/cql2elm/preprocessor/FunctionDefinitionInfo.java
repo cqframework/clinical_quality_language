@@ -1,11 +1,13 @@
 package org.cqframework.cql.cql2elm.preprocessor;
 
 import org.antlr.v4.runtime.misc.Interval;
+import org.cqframework.cql.cql2elm.PreCompileOutput;
 import org.cqframework.cql.gen.cqlParser;
 
 public class FunctionDefinitionInfo extends BaseInfo {
     private String name;
     private String context;
+    private PreCompileOutput preCompileOutput;
 
     public String getName() {
         return name;
@@ -13,6 +15,14 @@ public class FunctionDefinitionInfo extends BaseInfo {
 
     public void setName(String value) {
         name = value;
+    }
+
+    public void setPreCompileOutput(PreCompileOutput preCompileOutput) {
+        this.preCompileOutput = preCompileOutput;
+    }
+
+    public PreCompileOutput getPreCompileOutput() {
+        return this.preCompileOutput;
     }
 
     public String getContext() { return context; }
@@ -24,17 +34,13 @@ public class FunctionDefinitionInfo extends BaseInfo {
         return (cqlParser.FunctionDefinitionContext)super.getDefinition();
     }
 
-    public void setDefinition(cqlParser.FunctionDefinitionContext value) {
-        super.setDefinition(value);
-    }
-
     public FunctionDefinitionInfo withName(String value) {
         setName(value);
         return this;
     }
 
-    public FunctionDefinitionInfo withDefinition(cqlParser.FunctionDefinitionContext value) {
-        setDefinition(value);
+    public FunctionDefinitionInfo withPreCompileOutput(PreCompileOutput value) {
+        setPreCompileOutput(value);
         return this;
     }
 }

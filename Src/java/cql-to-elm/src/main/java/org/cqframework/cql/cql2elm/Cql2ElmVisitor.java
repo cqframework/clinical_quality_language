@@ -1,11 +1,9 @@
 package org.cqframework.cql.cql2elm;
 
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cqframework.cql.cql2elm.model.invocation.*;
 import org.cqframework.cql.cql2elm.preprocessor.*;
@@ -55,8 +53,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private final SystemMethodResolver systemMethodResolver;
 
     private LibraryInfo libraryInfo = null;
-    private UsingDef usingDef;
-    private PreCompileOutput preCompileOutput;
 
     public void setLibraryInfo(LibraryInfo libraryInfo) {
         if (libraryInfo == null) {
@@ -4443,52 +4439,64 @@ DATETIME
         // check for forward declarations of functions
         boolean checkForward = libraryName == null || libraryName.equals("") || libraryName.equals(this.libraryInfo.getLibraryName());
         Expression result = libraryBuilder.resolveFunction(libraryName, functionName, expressions, !checkForward, allowPromotionAndDemotion, allowFluent);
-        if (result == null) {
-            // LUKETODO:  using the CallContext causes this test to fail: org.cqframework.cql.cql2elm.fhir.dstu2.BaseTest#testImplicitFHIRHelpers
-            // This is because the CallContext callParamString is
-            // fhir.period
-            // but the resolved FunctionDefinitionInfo has
-            // interval<datetime>
-            // LUKETODO:  same problem with the preCompile:
-            // FHIR.Period
-            // vs.
-            // Interval<System.DateTime>
-            // How does Encounter.Period resolve to Interval<DateTime> when Period does not subclass Interval in any way?
-            final CallContext expectedCallContext = getCallContext(libraryName, functionName, expressions, mustResolve, allowPromotionAndDemotion, allowFluent);
-            // LUKETODO:  this won't work:  IllegalArgumentException:  Could not resolve call to operator LengthInDays:
-//            final Expression resolvedFunctionExpression = libraryBuilder.resolveFunction(libraryName, functionName, expressions, mustResolve, allowPromotionAndDemotion, allowFluent);
-            final Expression resolvedFunctionExpression = null;
+        if (result != null) {
+            return result;
+        }
+        return handleFunctionNotResolved(libraryName, functionName, expressions, mustResolve, allowPromotionAndDemotion, allowFluent);
 
-            Iterable<FunctionDefinitionInfo> functionInfos = libraryInfo.resolveFunctionReference(functionName);
-            if (functionInfos != null) {
-                for (FunctionDefinitionInfo functionInfo : functionInfos) {
-                    if (! ForwardInvocationValidator.areFunctionsEquivalent(expectedCallContext, functionInfo, this::preCompile, libraryBuilder.getConversionMap(), libraryBuilder.getCompiledLibrary().getOperatorMap())) {
-                        continue;
-                    }
+//        return handleFunctionNotResolved(libraryName, functionName, expressions, mustResolve, allowPromotionAndDemotion, allowFluent);
+    }
 
-                    String saveContext = currentContext;
-                    currentContext = functionInfo.getContext();
-                    try {
-                        Stack<Chunk> saveChunks = chunks;
-                        chunks = new Stack<Chunk>();
-                        forwardFunctions.push(functionInfo);
-                        try {
-                            // Have to call the visit to allow the outer processing to occur
-                            visit(functionInfo.getDefinition());
-                        }
-                        finally {
-                            forwardFunctions.pop();
-                            chunks = saveChunks;
-                        }
-                    } finally {
-                        currentContext = saveContext;
-                    }
-                }
-            }
-            result = libraryBuilder.resolveFunction(libraryName, functionName, expressions, mustResolve, allowPromotionAndDemotion, allowFluent);
+    private Expression handleFunctionNotResolved(String libraryName, String functionName, List<Expression> expressions, boolean mustResolve, boolean allowPromotionAndDemotion, boolean allowFluent) {
+        // No matching function that's already been compiled, so start attempting to compile one
+
+        // This is because the CallContext callParamString is
+        // fhir.period
+        // but the resolved FunctionDefinitionInfo has
+        // interval<datetime>
+        // LUKETODO:  same problem with the preCompile:
+        // FHIR.Period
+        // vs.
+        // Interval<System.DateTime>
+        // How does Encounter.Period resolve to Interval<DateTime> when Period does not subclass Interval in any way?
+        final CallContext expectedCallContext = getCallContext(libraryName, functionName, expressions, mustResolve, allowPromotionAndDemotion, allowFluent);
+
+        final Iterable<FunctionDefinitionInfo> functionInfos = libraryInfo.resolveFunctionReference(functionName);
+
+        final FunctionDefinitionInfo resolvedFunctionInfo = resolveOnSignature(expectedCallContext, functionInfos);
+        // TODO: JP - null = no matching function definition = Exception
+        if (forwardFunctions.search(resolvedFunctionInfo) != -1) {
+
         }
 
-        return result;
+        forwardFunctions.push(resolvedFunctionInfo);
+        try {
+            // TODO: JP - If stack alrleady contains this functionInfo, explode. Recursion is disallowed.
+            // Have to call the visit to allow the outer processing to occur
+            visit(resolvedFunctionInfo.getDefinition());
+        }
+        finally {
+            forwardFunctions.pop();
+
+        }
+        return libraryBuilder.resolveFunction(libraryName, functionName, expressions, mustResolve, allowPromotionAndDemotion, allowFluent);
+    }
+
+    private FunctionDefinitionInfo resolveOnSignature(CallContext expectedCallContext, Iterable<FunctionDefinitionInfo> functionInfos) {
+        final List<FunctionDefinitionInfo> resolvedFunctionDefinitionInfos = new ArrayList<>();
+        if (functionInfos != null) {
+            for (FunctionDefinitionInfo functionInfo : functionInfos) {
+                final boolean areFunctionsEquivalent = ForwardInvocationValidator.areFunctionsEquivalent(expectedCallContext, functionInfo, libraryBuilder.getConversionMap());
+                if (areFunctionsEquivalent) {
+                    resolvedFunctionDefinitionInfos.add(functionInfo);
+                }
+            }
+        }
+
+        if (resolvedFunctionDefinitionInfos.size() != 1) {
+            throw new CqlCompilerException("not exactly one function: " + resolvedFunctionDefinitionInfos.size());
+        }
+        return resolvedFunctionDefinitionInfos.get(0);
     }
 
     public Expression resolveFunctionOrQualifiedFunction(String identifier, cqlParser.ParamListContext paramListCtx) {
@@ -4686,20 +4694,12 @@ DATETIME
     }
 
     private String generateHashForLibraryBuilder(cqlParser.FunctionDefinitionContext ctx) {
-        // LUKETODO: should we consider preCompile here for correctness even though it's expensive?
-//        return generateHashWithPreCompile(ctx);
-//        final String preCompileHash = generateHashWithPreCompile(ctx);
-//        return generateHashWithoutPreCompile(ctx);
-//        return preCompileOutput.generateHash();
-
-        logger.info("--------------------------------");
+//        logger.info("--------------------------------");
         final String hashNoPreCompile = generateHashWithoutPreCompile(ctx);
-        logger.info("hashWithoutPreCompile: [{}]", hashNoPreCompile);
-        final String hashNewPrecompile = generateHashWithPreCompile(ctx);
-        logger.info("hashWithNEWPreCompile: [{}]", hashNewPrecompile);
-//        final String hashOldPreCompile = Optional.ofNullable(preCompileOutput).map(PreCompileOutput::generateHash).orElse(null);
-//        logger.info("hashWithEXTPreCompile: [{}]", hashOldPreCompile);
-        logger.info("--------------------------------");
+//        logger.info("hashWithoutPreCompile: [{}]", hashNoPreCompile);
+//        final String hashNewPrecompile = generateHashWithPreCompile(ctx);
+//        logger.info("hashWithNEWPreCompile: [{}]", hashNewPrecompile);
+//        logger.info("--------------------------------");
 
         return hashNoPreCompile;
     }
@@ -4859,13 +4859,5 @@ DATETIME
         }
 
         return tb;
-    }
-
-    public void setUsingDef(UsingDef usingDef) {
-        this.usingDef = usingDef;
-    }
-
-    public void setPreCompileOutput(PreCompileOutput preCompileOutput) {
-        this.preCompileOutput = preCompileOutput;
     }
 }
