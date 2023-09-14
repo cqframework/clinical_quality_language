@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 import org.hl7.fhir.r5.model.*;
@@ -12,6 +13,9 @@ import org.opencds.cqf.cql.engine.runtime.*;
 import org.opencds.cqf.cql.engine.runtime.Quantity;
 import org.opencds.cqf.cql.engine.runtime.Ratio;
 import org.opencds.cqf.cql.engine.runtime.Tuple;
+
+import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
+
 import org.apache.commons.lang3.NotImplementedException;
 import org.hl7.fhir.instance.model.api.IBase;
 import org.hl7.fhir.instance.model.api.IBaseCoding;
@@ -71,8 +75,10 @@ class R5FhirTypeConverter extends BaseFhirTypeConverter {
         if (value == null) {
             return null;
         }
-
-        return new DateTimeType(value.getDateTime().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+        var result = new DateTimeType(value.getDateTime().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+        result.setPrecision(toFhirPrecision(value.getPrecision()));
+        return result;
+//        return new DateTimeType(value.toJavaDate(), toFhirPrecision(value.getPrecision()), TimeZone.getTimeZone(value.getDateTime().getOffset().getId()));
     }
 
     @Override

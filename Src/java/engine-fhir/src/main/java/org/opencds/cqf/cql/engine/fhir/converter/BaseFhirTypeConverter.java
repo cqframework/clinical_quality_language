@@ -21,11 +21,14 @@ import org.opencds.cqf.cql.engine.runtime.CqlType;
 import org.opencds.cqf.cql.engine.runtime.Date;
 import org.opencds.cqf.cql.engine.runtime.DateTime;
 import org.opencds.cqf.cql.engine.runtime.Interval;
+import org.opencds.cqf.cql.engine.runtime.Precision;
 import org.opencds.cqf.cql.engine.runtime.Quantity;
 import org.opencds.cqf.cql.engine.runtime.Ratio;
 import org.opencds.cqf.cql.engine.runtime.TemporalHelper;
 import org.opencds.cqf.cql.engine.runtime.Time;
 import org.opencds.cqf.cql.engine.runtime.Tuple;
+
+import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 
 abstract class BaseFhirTypeConverter implements FhirTypeConverter {
 
@@ -424,5 +427,23 @@ abstract class BaseFhirTypeConverter implements FhirTypeConverter {
             case Calendar.DAY_OF_MONTH: return new org.opencds.cqf.cql.engine.runtime.Date(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
             default: throw new InvalidPrecision(String.format("Invalid temporal precision %s", calendarConstant));
         }
+    }
+
+    protected TemporalPrecisionEnum toFhirPrecision(Precision precision) {
+      String name = null;
+      switch (precision) {
+        case WEEK:
+        case HOUR:
+        case MINUTE:
+          name = TemporalPrecisionEnum.DAY.name();
+          break;
+        case MILLISECOND:
+          name = TemporalPrecisionEnum.MILLI.name();
+          break;
+        default:
+          name = precision.name();
+          break;
+      }
+      return TemporalPrecisionEnum.valueOf(name);
     }
 }
