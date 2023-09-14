@@ -316,8 +316,10 @@ public class LibraryTests {
         assertThat(translator.getErrors().size(), greaterThanOrEqualTo(2));
         assertThat(translator.getErrors().get(0).getLocator().getLibrary().getId(),
                 equalTo("SyntaxErrorReferencingLibrary"));
+        assertThat(translator.getErrors().get(1).getLocator().getLibrary().getId(), equalTo("SyntaxErrorWithLibrary"));
+        // LUKETODO: consider this change:
         // This assertion is now changed because of extra "A named type is required in this context" due to the new visitor
-        assertThat(translator.getErrors().get(3).getLocator().getLibrary().getId(), equalTo("SyntaxErrorWithLibrary"));
+//        assertThat(translator.getErrors().get(3).getLocator().getLibrary().getId(), equalTo("SyntaxErrorWithLibrary"));
     }
 
     @Test
@@ -327,8 +329,10 @@ public class LibraryTests {
         assertThat(translator.getErrors().size(), greaterThanOrEqualTo(2));
         assertThat(translator.getErrors().get(0).getLocator().getLibrary().getId(),
                 equalTo("SyntaxErrorReferencingLibrary"));
+        assertThat(translator.getErrors().get(1).getLocator().getLibrary().getId(), equalTo("SyntaxErrorWithLibrary"));
+        // LUKETODO: consider this change:
         // This assertion is now changed because of extra "A named type is required in this context" due to the new visitor
-        assertThat(translator.getErrors().get(3).getLocator().getLibrary().getId(), equalTo("SyntaxErrorWithLibrary"));
+//        assertThat(translator.getErrors().get(3).getLocator().getLibrary().getId(), equalTo("SyntaxErrorWithLibrary"));
     }
 
     private ExpressionDef getExpressionDef(Library library, String name) {

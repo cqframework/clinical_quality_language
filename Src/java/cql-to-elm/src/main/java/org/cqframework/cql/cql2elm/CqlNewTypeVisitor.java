@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
+@Deprecated
 public class CqlNewTypeVisitor extends cqlBaseVisitor {
     static final Logger logger = LoggerFactory.getLogger(Cql2ElmVisitor.class);
     private final ObjectFactory of = new ObjectFactory();
@@ -477,12 +478,8 @@ public class CqlNewTypeVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitFunctionDefinition(cqlParser.FunctionDefinitionContext ctx) {
-        try {
-            preCompileOutput = preCompile(ctx);
-        } catch (Exception theException) {
-            logger.info("Exception", theException);
-            // ignore
-        }
+        // LUKETODO: this breaks a TON of tests org.cqframework.cql.cql2elm.CqlSemanticException: class java.lang.String cannot be cast to class org.hl7.elm.r1.TypeSpecifier
+        preCompileOutput = preCompile(ctx);
 
         return defaultResult();
     }
@@ -637,7 +634,19 @@ public class CqlNewTypeVisitor extends cqlBaseVisitor {
     }
 
     private TypeSpecifier parseTypeSpecifier(ParseTree pt) {
-        return pt == null ? null : (TypeSpecifier) visit(pt);
+//            return pt == null ? null : (TypeSpecifier) visit(pt);
+        if (pt == null) {
+            return null;
+        }
+
+        final Object visit = visit(pt);
+        try {
+            return (TypeSpecifier)visit;
+        } catch (Exception e) {
+            // LUKETODO:  this seems to happen on the "second round" of CqlCompiler.run(), not the first
+            logger.error("Exception: " +e.getMessage(), e);
+            throw e;
+        }
     }
 
     private void processHeader(ParseTree ctx, BaseInfo info) {

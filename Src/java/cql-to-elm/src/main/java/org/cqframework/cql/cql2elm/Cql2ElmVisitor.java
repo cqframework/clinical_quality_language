@@ -51,9 +51,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private boolean fromKeywordRequired = false;
     private TokenStream tokenStream;
 
-    private Object usingInfo;
-    private Map<String,String> functionHeaders;
-
     private final LibraryBuilder libraryBuilder;
     private final SystemMethodResolver systemMethodResolver;
 
@@ -159,14 +156,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public void disableFromKeywordRequired() {
         fromKeywordRequired = false;
     }
-
-//    public Object getUsingInfo() {
-//        return usingInfo;
-//    }
-//
-//    public Map<String, String> getFunctionHeaders() {
-//        return functionHeaders;
-//    }
 
     public void setTranslatorOptions(CqlCompilerOptions options) {
         if (options.getOptions().contains(CqlCompilerOptions.Options.EnableDateRangeOptimization)) {
@@ -724,6 +713,16 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public Object visitLibrary(cqlParser.LibraryContext ctx) {
 
         Object lastResult = null;
+        // NOTE: Need to set the library identifier here so the builder can begin the translation appropriately
+//        VersionedIdentifier identifier = new VersionedIdentifier().withId(libraryInfo.getLibraryName()).withVersion(libraryInfo.getVersion());
+//        if (libraryInfo.getNamespaceName() != null) {
+//            identifier.setSystem(libraryBuilder.resolveNamespaceUri(libraryInfo.getNamespaceName(), true));
+//        }
+//        else if (libraryBuilder.getNamespaceInfo() != null) {
+//            identifier.setSystem(libraryBuilder.getNamespaceInfo().getUri());
+//        }
+//        libraryBuilder.setLibraryIdentifier(identifier);
+//        libraryBuilder.beginTranslation();
         try {
             // Loop through and call visit on each child (to ensure they are tracked)
             for (int i = 0; i < ctx.getChildCount(); i++) {
@@ -748,44 +747,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
     }
 
-//    @Override
-//    public Object visitLibrary(cqlParser.LibraryContext ctx) {
-//
-//        Object lastResult = null;
-//        // NOTE: Need to set the library identifier here so the builder can begin the translation appropriately
-//        VersionedIdentifier identifier = new VersionedIdentifier().withId(libraryInfo.getLibraryName()).withVersion(libraryInfo.getVersion());
-//        if (libraryInfo.getNamespaceName() != null) {
-//            identifier.setSystem(libraryBuilder.resolveNamespaceUri(libraryInfo.getNamespaceName(), true));
-//        }
-//        else if (libraryBuilder.getNamespaceInfo() != null) {
-//            identifier.setSystem(libraryBuilder.getNamespaceInfo().getUri());
-//        }
-//        libraryBuilder.setLibraryIdentifier(identifier);
-//        libraryBuilder.beginTranslation();
-//        try {
-//            // Loop through and call visit on each child (to ensure they are tracked)
-//            for (int i = 0; i < ctx.getChildCount(); i++) {
-//                ParseTree tree = ctx.getChild(i);
-//                TerminalNode terminalNode = tree instanceof TerminalNode ? (TerminalNode)tree : null;
-//                if (terminalNode != null && terminalNode.getSymbol().getType() == cqlLexer.EOF) {
-//                    continue;
-//                }
-//
-//                Object childResult = visit(tree);
-//                // Only set the last result if we received something useful
-//                if (childResult != null) {
-//                    lastResult = childResult;
-//                }
-//            }
-//
-//            // Return last result (consistent with super implementation and helps w/ testing)
-//            return lastResult;
-//        }
-//        finally {
-//            libraryBuilder.endTranslation();
-//        }
-//    }
-
     @Override
     @SuppressWarnings("unchecked")
     public VersionedIdentifier visitLibraryDefinition(cqlParser.LibraryDefinitionContext ctx) {
@@ -807,7 +768,32 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     @SuppressWarnings("unchecked")
     public UsingDef visitUsingDefinition(cqlParser.UsingDefinitionContext ctx) {
-        return usingDef;
+        List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
+        String unqualifiedIdentifier = identifiers.remove(identifiers.size() - 1);
+        String namespaceName = !identifiers.isEmpty() ? String.join(".", identifiers) :
+                libraryBuilder.isWellKnownModelName(unqualifiedIdentifier) ? null :
+                        (libraryBuilder.getNamespaceInfo() != null ? libraryBuilder.getNamespaceInfo().getName() : null);
+
+        String path = null;
+        NamespaceInfo modelNamespace = null;
+        if (namespaceName != null) {
+            String namespaceUri = libraryBuilder.resolveNamespaceUri(namespaceName, true);
+            path = NamespaceManager.getPath(namespaceUri, unqualifiedIdentifier);
+            modelNamespace = new NamespaceInfo(namespaceName, namespaceUri);
+        }
+        else {
+            path = unqualifiedIdentifier;
+        }
+
+        String localIdentifier = ctx.localIdentifier() == null ? unqualifiedIdentifier : parseString(ctx.localIdentifier());
+        if (!localIdentifier.equals(unqualifiedIdentifier)) {
+            throw new IllegalArgumentException(
+                    String.format("Local identifiers for models must be the same as the name of the model in this release of the translator (Model %s, Called %s)",
+                            unqualifiedIdentifier, localIdentifier));
+        }
+
+        Model model = getModel(modelNamespace, unqualifiedIdentifier, parseString(ctx.versionSpecifier()), localIdentifier);
+        return libraryBuilder.resolveUsingRef(localIdentifier);
     }
 
     public Model getModel() {
@@ -843,6 +829,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     @SuppressWarnings("unchecked")
+    // LUKETODO: This is what triggers a recursive CqlCompiler.run()
     public Object visitIncludeDefinition(cqlParser.IncludeDefinitionContext ctx) {
         List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
         String unqualifiedIdentifier = identifiers.remove(identifiers.size() - 1);
@@ -4623,6 +4610,7 @@ DATETIME
     }
 
     public Object internalVisitFunctionDefinition(cqlParser.FunctionDefinitionContext ctx) {
+        // LUKETODO: this is the original code for preCompile
         FunctionDef fun = of.createFunctionDef()
                 .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
                 .withName(parseString(ctx.identifierOrFunctionIdentifier()));
@@ -4700,8 +4688,20 @@ DATETIME
     private String generateHashForLibraryBuilder(cqlParser.FunctionDefinitionContext ctx) {
         // LUKETODO: should we consider preCompile here for correctness even though it's expensive?
 //        return generateHashWithPreCompile(ctx);
-        final String preCompileHash = generateHashWithPreCompile(ctx);
-        return generateHashWithoutPreCompile(ctx);
+//        final String preCompileHash = generateHashWithPreCompile(ctx);
+//        return generateHashWithoutPreCompile(ctx);
+//        return preCompileOutput.generateHash();
+
+        logger.info("--------------------------------");
+        final String hashNoPreCompile = generateHashWithoutPreCompile(ctx);
+        logger.info("hashWithoutPreCompile: [{}]", hashNoPreCompile);
+        final String hashNewPrecompile = generateHashWithPreCompile(ctx);
+        logger.info("hashWithNEWPreCompile: [{}]", hashNewPrecompile);
+//        final String hashOldPreCompile = Optional.ofNullable(preCompileOutput).map(PreCompileOutput::generateHash).orElse(null);
+//        logger.info("hashWithEXTPreCompile: [{}]", hashOldPreCompile);
+        logger.info("--------------------------------");
+
+        return hashNoPreCompile;
     }
 
     private String generateHashWithPreCompile(cqlParser.FunctionDefinitionContext ctx) {
