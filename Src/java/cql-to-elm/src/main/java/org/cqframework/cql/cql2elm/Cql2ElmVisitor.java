@@ -4464,17 +4464,19 @@ DATETIME
 
         if (forwardFunctions.search(resolvedFunctionInfo) != -1) {
             // TODO: JP - If stack alrleady contains this functionInfo, explode. Recursion is disallowed.
-//            throw new CqlCompilerException("function has already been resolved: " + resolvedFunctionInfo);
+            throw new CqlCompilerException("function has already been resolved: " + resolvedFunctionInfo);
         }
 
+        // N.B.: We process the
+        final Stack<Chunk> saveChunks = chunks;
+        chunks = new Stack<>();
         forwardFunctions.push(resolvedFunctionInfo);
         try {
             // Have to call the visit to allow the outer processing to occur
             visit(resolvedFunctionInfo.getDefinition());
-        }
-        finally {
+        } finally {
             forwardFunctions.pop();
-
+            chunks = saveChunks;
         }
         return libraryBuilder.resolveFunction(libraryName, functionName, expressions, mustResolve, allowPromotionAndDemotion, allowFluent);
     }
@@ -4483,19 +4485,28 @@ DATETIME
         if (functionInfos != null) {
             final List<FunctionDefinitionInfo> resolvedFunctionDefinitionInfos = new ArrayList<>();
             for (FunctionDefinitionInfo functionInfo : functionInfos) {
+                forwardFunctionCounter++;
+                logger.info("functionInfo # {} to process: {}", forwardFunctionCounter, functionInfo);
                 final boolean areFunctionsEquivalent = ForwardInvocationValidator.areFunctionsEquivalent(expectedCallContext, functionInfo, libraryBuilder.getConversionMap());
                 if (areFunctionsEquivalent) {
+//                if (1 == 1) {
                     resolvedFunctionDefinitionInfos.add(functionInfo);
                 }
             }
-            if (resolvedFunctionDefinitionInfos.size() != 1) {
-//                throw new CqlCompilerException("not exactly one function: " + resolvedFunctionDefinitionInfos.size());
+            if (resolvedFunctionDefinitionInfos.size() == 0) {
+                throw new CqlCompilerException("forward declaration resolution found NO functions for name:" + expectedCallContext.getOperatorName());
+            }
+            if (resolvedFunctionDefinitionInfos.size() > 1) {
+                throw new CqlCompilerException("forward declaration resolution found more than one functions for name:" + expectedCallContext.getOperatorName());
             }
             return resolvedFunctionDefinitionInfos.get(0);
         }
 
         return null;
     }
+
+    // LUKETODO:   get rid of this once the code stabiliizes
+    private static int forwardFunctionCounter = 0;
 
     public Expression resolveFunctionOrQualifiedFunction(String identifier, cqlParser.ParamListContext paramListCtx) {
         if (libraryBuilder.hasExpressionTarget()) {

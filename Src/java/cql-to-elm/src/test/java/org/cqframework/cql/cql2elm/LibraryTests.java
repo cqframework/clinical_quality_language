@@ -220,6 +220,12 @@ public class LibraryTests {
             translator = CqlTranslator
                     .fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/TestMeasure.cql"), libraryManager);
             // LUKETODO:  fails because of a duplicate error raising the count to 4
+            /*
+            0 = {CqlSemanticException@3555} "org.cqframework.cql.cql2elm.CqlSemanticException: Could not load model information for model QDM, version 5.4 because version 5.5 is already loaded."
+1 = {CqlSemanticException@3556} "org.cqframework.cql.cql2elm.CqlSemanticException: Could not load model information for model QDM, version 5.4 because version 5.5 is already loaded."
+2 = {CqlSemanticException@3557} "org.cqframework.cql.cql2elm.CqlSemanticException: Could not resolve context name Patient in model System."
+3 = {CqlSemanticException@3558} "org.cqframework.cql.cql2elm.CqlSemanticException: Could not validate reference to expression Patient because its definition contains errors."
+             */
             assertThat(translator.getErrors().size(), is(3));
 
             for (CqlCompilerException error : translator.getErrors()) {

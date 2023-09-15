@@ -1659,6 +1659,7 @@ public class DataRequirementsProcessorTest {
 
     @Test
     public void TestCMS645() throws IOException {
+        // LUKETODO:  this is failing because this is a fluent function
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         compilerOptions.setAnalyzeDataRequirements(false);
         var manager = setupDataRequirementsAnalysis("CMS645/CMS645Test.cql", compilerOptions);

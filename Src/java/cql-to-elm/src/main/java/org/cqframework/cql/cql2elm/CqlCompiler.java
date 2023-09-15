@@ -12,6 +12,8 @@ import org.hl7.cql.model.NamespaceInfo;
 import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.Retrieve;
 import org.hl7.elm.r1.VersionedIdentifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 public class CqlCompiler {
+    static final Logger logger = LoggerFactory.getLogger(CqlCompiler.class);
     private Library library = null;
     private CompiledLibrary compiledLibrary = null;
     private Object visitResult = null;
@@ -161,7 +164,11 @@ public class CqlCompiler {
         return run(CharStreams.fromStream(is));
     }
 
+    private static int numRecursions = 0;
+
     public Library run(CharStream is) {
+        numRecursions++;
+        logger.info("numRecursions: {}", numRecursions);
         exceptions = new ArrayList<>();
         errors = new ArrayList<>();
         warnings = new ArrayList<>();
