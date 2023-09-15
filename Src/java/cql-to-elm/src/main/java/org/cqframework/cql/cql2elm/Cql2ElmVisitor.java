@@ -4552,6 +4552,7 @@ DATETIME
         return resolveFunction(null, identifier, paramListCtx);
     }
 
+    // LUKETODO:  get rid of this
     private PreCompileOutput preCompile(cqlParser.FunctionDefinitionContext ctx) {
         final FunctionDef fun = of.createFunctionDef()
                 .withAccessLevel(parseAccessModifier(ctx.accessModifier()))

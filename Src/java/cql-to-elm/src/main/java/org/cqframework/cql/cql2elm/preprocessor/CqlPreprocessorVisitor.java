@@ -575,6 +575,7 @@ Expected: is "http://hl7.org/fhir"
 
         final cqlParser.TypeSpecifierContext typeSpecifierContext = ctx.typeSpecifier();
 
+        // LUKETODO: I don't think this is ever non-null
         if (typeSpecifierContext != null) {
             return PreCompileOutput.withReturnType(fun, parseTypeSpecifier(typeSpecifierContext));
         }

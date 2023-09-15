@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -53,6 +54,28 @@ public class ForwardInvocationValidator {
         final List<DataType> paramTypesFromFound = operandFromFound.stream()
                 .map(Trackable::getResultType)
                 .collect(Collectors.toList());
+
+        if (Optional.ofNullable(preCompileOutput.getFunctionDef().isFluent())
+                .orElse(false)) {
+            // LUKETODO:  we need to special case this since the param list is different for the caller and callee for fluent functions
+            logger.info("fluent function");
+        }
+
+        // LUKETODO:  this fails because the callContext and preCompile arg lists don't match up:
+        // Also, the comes from the passed in List<Expression>, which has 3 params, not 4.
+        // The function def has a Choice<DateTime, Quantity, Interval<DateTime>, Interval<Quantity>>, so there's a bug somewhere
+        /*
+0 = {ClassType@3459} "System.Quantity"
+1 = {IntervalType@4699} "interval<System.Quantity>"
+2 = {IntervalType@4700} "interval<System.DateTime>"
+
+vs.
+
+0 = {SimpleType@3429} "System.DateTime"
+1 = {ClassType@3459} "System.Quantity"
+2 = {IntervalType@4730} "interval<System.DateTime>"
+3 = {IntervalType@4731} "interval<System.Quantity>"
+         */
 
         if (!paramTypesFromCaller.equals(paramTypesFromFound)) {
             return handleConversionMapForPreCompile(callContextFromCaller, preCompileOutput, conversionMap);
