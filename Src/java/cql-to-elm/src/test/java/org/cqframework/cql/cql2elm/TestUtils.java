@@ -106,10 +106,9 @@ public class TestUtils {
         ModelManager modelManager = new ModelManager();
         LibraryManager libraryManager = new LibraryManager(modelManager);
         LibraryBuilder libraryBuilder = new LibraryBuilder(libraryManager);
-        CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor(libraryBuilder);
+        CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor(libraryBuilder, tokens);
         preprocessor.visit(tree);
         Cql2ElmVisitor visitor = new Cql2ElmVisitor(libraryBuilder);
-        visitor.setTokenStream(tokens);
         visitor.setLibraryInfo(preprocessor.getLibraryInfo());
         return visitor;
     }

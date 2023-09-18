@@ -164,11 +164,7 @@ public class CqlCompiler {
         return run(CharStreams.fromStream(is));
     }
 
-    private static int numRecursions = 0;
-
     public Library run(CharStream is) {
-        numRecursions++;
-        logger.info("numRecursions: {}", numRecursions);
         exceptions = new ArrayList<>();
         errors = new ArrayList<>();
         warnings = new ArrayList<>();
@@ -193,8 +189,7 @@ public class CqlCompiler {
         parser.addErrorListener(errorListener);
         ParseTree tree = parser.library();
 
-        CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor(builder);
-        preprocessor.setTokenStream(tokens);
+        CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor(builder, tokens);
         preprocessor.visit(tree);
 
         visitor.setTokenStream(tokens);

@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
- * Compares the function for which we want to resolve a forward reference with one of the candidates.
+ * Compares the function for which we want to resolve a forward reference with one of the candidates by leveraging preCompile/function headers.
  * <p/>
  * There are two distinct steps:
  * <p/>
@@ -28,23 +28,16 @@ public class ForwardInvocationValidator {
     static final Logger logger = LoggerFactory.getLogger(ForwardInvocationValidator.class);
     private static final Pattern REGEX_GENERIC_TYPE_NAMESPACE = Pattern.compile("[a-zA-z]*\\.");
 
-    // LUKETODO: We definitely need better names for the parameters
-    // LUKETODO: why is BaseTest.TestIntervalImplicitConversion failing when the params clearly don't match: (13,11): Could not resolve call to operator LengthInDays with signature (FHIR.Period).
-    public static boolean areFunctionsEquivalent(CallContext callContextFromCaller, FunctionDefinitionInfo foundFunctionToBeEvaluated, ConversionMap conversionMap) {
-        return areFunctionsPreCompileEquivalent(callContextFromCaller, foundFunctionToBeEvaluated, conversionMap);
-    }
-
-
-    private static boolean areFunctionsPreCompileEquivalent(CallContext callContextFromCaller, FunctionDefinitionInfo functionDefinitionInfo, ConversionMap conversionMap) {
-        // another sanity check
-        final PreCompileOutput preCompileOutput = functionDefinitionInfo.getPreCompileOutput();
-        if (! callContextFromCaller.getOperatorName().equals(preCompileOutput.getFunctionDef().getName())) {
+    public static boolean areFunctionHeadersEquivalent(CallContext callContextFromCallingFunction, FunctionDefinitionInfo candidateFunctionDefinition, ConversionMap conversionMap) {
+        // sanity check
+        final PreCompileOutput preCompileOutput = candidateFunctionDefinition.getPreCompileOutput();
+        if (! callContextFromCallingFunction.getOperatorName().equals(preCompileOutput.getFunctionDef().getName())) {
             return false;
         }
 
         // LUKETODO:  can we compare return types here?  do we need to?
 
-        final Signature callerSignature = callContextFromCaller.getSignature();
+        final Signature callerSignature = callContextFromCallingFunction.getSignature();
         final List<DataType> paramTypesFromCaller =
                 StreamSupport.stream(callerSignature.getOperandTypes().spliterator(), false)
                         .collect(Collectors.toList());
@@ -78,20 +71,18 @@ vs.
          */
 
         if (!paramTypesFromCaller.equals(paramTypesFromFound)) {
-            return handleConversionMapForPreCompile(callContextFromCaller, preCompileOutput, conversionMap);
+            return handleConversionMap(callContextFromCallingFunction, preCompileOutput, conversionMap);
 
         }
 
         return true;
     }
 
-
-
-    private static boolean handleConversionMapForPreCompile(CallContext callContextFromCaller, PreCompileOutput evaluatedFunctionPreCompileOutput, ConversionMap conversionMap) {
-        final List<DataType> dataTypes = StreamSupport.stream(callContextFromCaller.getSignature().getOperandTypes().spliterator(), false)
+    private static boolean handleConversionMap(CallContext callContextFromCallingFunction, PreCompileOutput candidateFunctionDefinition, ConversionMap conversionMap) {
+        final List<DataType> dataTypes = StreamSupport.stream(callContextFromCallingFunction.getSignature().getOperandTypes().spliterator(), false)
                 .collect(Collectors.toList());
 
-        final List<OperandDef> operandFromFound = evaluatedFunctionPreCompileOutput.getFunctionDef().getOperand();
+        final List<OperandDef> operandFromFound = candidateFunctionDefinition.getFunctionDef().getOperand();
 
         final List<DataType> paramTypesFromFound = operandFromFound.stream()
                 .map(Trackable::getResultType)
@@ -131,10 +122,5 @@ vs.
         }
 
         return true;
-    }
-
-    private static String removeQualifierFromTypeOrGenericType(final String typeOrGenericType) {
-        return REGEX_GENERIC_TYPE_NAMESPACE.matcher(typeOrGenericType)
-                .replaceAll("");
     }
 }

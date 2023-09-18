@@ -707,40 +707,25 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitLibrary(cqlParser.LibraryContext ctx) {
-
         Object lastResult = null;
-        // NOTE: Need to set the library identifier here so the builder can begin the translation appropriately
-//        VersionedIdentifier identifier = new VersionedIdentifier().withId(libraryInfo.getLibraryName()).withVersion(libraryInfo.getVersion());
-//        if (libraryInfo.getNamespaceName() != null) {
-//            identifier.setSystem(libraryBuilder.resolveNamespaceUri(libraryInfo.getNamespaceName(), true));
-//        }
-//        else if (libraryBuilder.getNamespaceInfo() != null) {
-//            identifier.setSystem(libraryBuilder.getNamespaceInfo().getUri());
-//        }
-//        libraryBuilder.setLibraryIdentifier(identifier);
-//        libraryBuilder.beginTranslation();
-        try {
-            // Loop through and call visit on each child (to ensure they are tracked)
-            for (int i = 0; i < ctx.getChildCount(); i++) {
-                ParseTree tree = ctx.getChild(i);
-                TerminalNode terminalNode = tree instanceof TerminalNode ? (TerminalNode)tree : null;
-                if (terminalNode != null && terminalNode.getSymbol().getType() == cqlLexer.EOF) {
-                    continue;
-                }
 
-                Object childResult = visit(tree);
-                // Only set the last result if we received something useful
-                if (childResult != null) {
-                    lastResult = childResult;
-                }
+        // Loop through and call visit on each child (to ensure they are tracked)
+        for (int i = 0; i < ctx.getChildCount(); i++) {
+            ParseTree tree = ctx.getChild(i);
+            TerminalNode terminalNode = tree instanceof TerminalNode ? (TerminalNode)tree : null;
+            if (terminalNode != null && terminalNode.getSymbol().getType() == cqlLexer.EOF) {
+                continue;
             }
 
-            // Return last result (consistent with super implementation and helps w/ testing)
-            return lastResult;
+            Object childResult = visit(tree);
+            // Only set the last result if we received something useful
+            if (childResult != null) {
+                lastResult = childResult;
+            }
         }
-        finally {
-//            libraryBuilder.endTranslation();
-        }
+
+        // Return last result (consistent with super implementation and helps w/ testing)
+        return lastResult;
     }
 
     @Override
@@ -4491,7 +4476,7 @@ DATETIME
             for (FunctionDefinitionInfo functionInfo : functionInfos) {
                 forwardFunctionCounter++;
                 logger.info("functionInfo # {} to process: {}", forwardFunctionCounter, functionInfo);
-                final boolean areFunctionsEquivalent = ForwardInvocationValidator.areFunctionsEquivalent(expectedCallContext, functionInfo, libraryBuilder.getConversionMap());
+                final boolean areFunctionsEquivalent = ForwardInvocationValidator.areFunctionHeadersEquivalent(expectedCallContext, functionInfo, libraryBuilder.getConversionMap());
                 if (areFunctionsEquivalent) {
 //                if (1 == 1) {
                     resolvedFunctionDefinitionInfos.add(functionInfo);
