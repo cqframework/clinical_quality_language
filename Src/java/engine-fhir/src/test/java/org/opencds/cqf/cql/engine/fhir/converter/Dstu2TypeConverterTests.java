@@ -259,6 +259,7 @@ public class Dstu2TypeConverterTests {
         assertEquals(expectedDate.getValueAsString(), actualDate.getValueAsString());
 
         expectedDate = new DateTimeType("2019-10-10T01:00:00-06:00");
+        ((DateTimeType) expectedDate).setTimeZone(TimeZone.getTimeZone("MST"));
         actualDate = this.typeConverter.toFhirDateTime(new DateTime("2019-10-10T00:00:00", ZoneOffset.ofHours(-7)));
         assertEquals(expectedDate.getValueAsString(), actualDate.getValueAsString());
 
