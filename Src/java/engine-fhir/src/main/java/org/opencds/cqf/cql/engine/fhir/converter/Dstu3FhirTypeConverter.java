@@ -72,7 +72,9 @@ class Dstu3FhirTypeConverter extends BaseFhirTypeConverter {
             return null;
         }
 
-        return new DateTimeType(value.toJavaDate(), TemporalPrecisionEnum.valueOf(value.getPrecision().name()));
+        var result = new DateTimeType(value.getDateTime().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+        result.setPrecision(toFhirPrecision(value.getPrecision()));
+        return result;
     }
 
     @Override

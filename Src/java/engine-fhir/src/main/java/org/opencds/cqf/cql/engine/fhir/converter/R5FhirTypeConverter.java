@@ -75,10 +75,10 @@ class R5FhirTypeConverter extends BaseFhirTypeConverter {
         if (value == null) {
             return null;
         }
+
         var result = new DateTimeType(value.getDateTime().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
         result.setPrecision(toFhirPrecision(value.getPrecision()));
         return result;
-//        return new DateTimeType(value.toJavaDate(), toFhirPrecision(value.getPrecision()), TimeZone.getTimeZone(value.getDateTime().getOffset().getId()));
     }
 
     @Override
