@@ -10,23 +10,20 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
  * Compares the function for which we want to resolve a forward reference with one of the candidates by leveraging preCompile/function headers.
  * <p/>
- * There are two distinct steps:
- * <p/>
  * <ol>
- *     <li>First pass: Superficial comparison as a relatively cheap way to validate both functions are the same by checking the String semantics.</li>
- *     <li>Second pass: If the first pass works, trigger a pre compile on the candidate function and compare that to the calling function.  This is more expensive but more accurate.</li>
+ *     <li>Compare the {@link CallContext} of the function from the point of view of the calling code to the candidate function definition, which includes a list of {@link FunctionDefinitionInfo}s retrieved by function name.</li>
+ *     <li>Compare the data types of the parameters for the calling and called functions.</li>
+ *     <li>Take into account implicit conversions (ex FHIRHelpers) when the parameter lists don't match.</li>
  * </ol>
  */
 public class ForwardInvocationValidator {
     static final Logger logger = LoggerFactory.getLogger(ForwardInvocationValidator.class);
-    private static final Pattern REGEX_GENERIC_TYPE_NAMESPACE = Pattern.compile("[a-zA-z]*\\.");
 
     public static boolean areFunctionHeadersEquivalent(CallContext callContextFromCallingFunction, FunctionDefinitionInfo candidateFunctionDefinition, ConversionMap conversionMap) {
         // sanity check

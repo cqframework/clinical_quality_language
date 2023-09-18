@@ -3941,32 +3941,10 @@ DATETIME
     }
 
     public Object internalVisitFunctionDefinition(cqlParser.FunctionDefinitionContext ctx) {
-        // LUKETODO: this is the original code for preCompile
-        FunctionDef fun = of.createFunctionDef()
-                .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
-                .withName(parseString(ctx.identifierOrFunctionIdentifier()));
+        final PreCompileOutput preCompileOutput = preCompile(ctx);
 
-        if (ctx.fluentModifier() != null) {
-            libraryBuilder.checkCompatibilityLevel("Fluent functions", "1.5");
-            fun.setFluent(true);
-        }
-
-        if (ctx.operandDefinition() != null) {
-            for (cqlParser.OperandDefinitionContext opdef : ctx.operandDefinition()) {
-                TypeSpecifier typeSpecifier = parseTypeSpecifier(opdef.typeSpecifier());
-                fun.getOperand().add(
-                        (OperandDef)of.createOperandDef()
-                                .withName(parseString(opdef.referentialIdentifier()))
-                                .withOperandTypeSpecifier(typeSpecifier)
-                                .withResultType(typeSpecifier.getResultType())
-                );
-            }
-        }
-
-        TypeSpecifier resultType = null;
-        if (ctx.typeSpecifier() != null) {
-            resultType = parseTypeSpecifier(ctx.typeSpecifier());
-        }
+        final FunctionDef fun = preCompileOutput.getFunctionDef();
+        final TypeSpecifier resultType = preCompileOutput.getResultType();
 
         if (!libraryBuilder.getCompiledLibrary().contains(fun)) {
             if (ctx.functionBody() != null) {

@@ -194,6 +194,31 @@ public class CqlPreprocesorElmCommonVisitor extends cqlBaseVisitor {
         return result;
     }
 
+    public PreCompileOutput preCompile(cqlParser.FunctionDefinitionContext ctx) {
+        final FunctionDef fun = of.createFunctionDef().withAccessLevel(parseAccessModifier(ctx.accessModifier())).withName(parseString(ctx.identifierOrFunctionIdentifier()));
+
+        if (ctx.fluentModifier() != null) {
+            libraryBuilder.checkCompatibilityLevel("Fluent functions", "1.5");
+            fun.setFluent(true);
+        }
+
+        if (ctx.operandDefinition() != null) {
+            for (cqlParser.OperandDefinitionContext opdef : ctx.operandDefinition()) {
+                TypeSpecifier typeSpecifier = parseTypeSpecifier(opdef.typeSpecifier());
+                fun.getOperand().add((OperandDef) of.createOperandDef().withName(parseString(opdef.referentialIdentifier())).withOperandTypeSpecifier(typeSpecifier).withResultType(typeSpecifier.getResultType()));
+            }
+        }
+
+        final cqlParser.TypeSpecifierContext typeSpecifierContext = ctx.typeSpecifier();
+
+        // LUKETODO: I don't think this is ever non-null
+        if (typeSpecifierContext != null) {
+            return PreCompileOutput.withReturnType(fun, parseTypeSpecifier(typeSpecifierContext));
+        }
+
+        return PreCompileOutput.noReturnType(fun);
+    }
+
     protected TypeSpecifier parseTypeSpecifier(ParseTree pt) {
         return pt == null ? null : (TypeSpecifier) visit(pt);
     }
@@ -737,12 +762,10 @@ public class CqlPreprocesorElmCommonVisitor extends cqlBaseVisitor {
         return StringEscapeUtils.unescapeCql(pt == null ? null : (String)visit(pt));
     }
 
-    // LUKETODO: consider moving these methods into a common library
     public static String normalizeWhitespace(String input) {
         return input.replace("\r\n", "\n");
     }
 
-    // LUKETODO:  add common methods used by CqlPreprocessorVisitor and Cql2ElmVisitor
     public static boolean isStartingWithDigit(String header, int index) {
         return (index < header.length()) && Character.isDigit(header.charAt(index));
     }

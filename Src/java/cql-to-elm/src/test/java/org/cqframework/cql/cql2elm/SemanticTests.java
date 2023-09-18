@@ -232,7 +232,6 @@ public class SemanticTests {
 
     @Test
     public void testUndeclaredForward() throws IOException {
-        // LUKETODO: This is the code path in the old world: and at least one unit test expects this failure
         runSemanticTest("OperatorTests/UndeclaredForward.cql", 1);
     }
 

@@ -306,29 +306,4 @@ public class CqlPreprocessorVisitor extends CqlPreprocesorElmCommonVisitor {
         identifiers.add(identifier);
         return identifiers;
     }
-
-    private PreCompileOutput preCompile(cqlParser.FunctionDefinitionContext ctx) {
-        final FunctionDef fun = of.createFunctionDef().withAccessLevel(parseAccessModifier(ctx.accessModifier())).withName(parseString(ctx.identifierOrFunctionIdentifier()));
-
-        if (ctx.fluentModifier() != null) {
-            libraryBuilder.checkCompatibilityLevel("Fluent functions", "1.5");
-            fun.setFluent(true);
-        }
-
-        if (ctx.operandDefinition() != null) {
-            for (cqlParser.OperandDefinitionContext opdef : ctx.operandDefinition()) {
-                TypeSpecifier typeSpecifier = parseTypeSpecifier(opdef.typeSpecifier());
-                fun.getOperand().add((OperandDef) of.createOperandDef().withName(parseString(opdef.referentialIdentifier())).withOperandTypeSpecifier(typeSpecifier).withResultType(typeSpecifier.getResultType()));
-            }
-        }
-
-        final cqlParser.TypeSpecifierContext typeSpecifierContext = ctx.typeSpecifier();
-
-        // LUKETODO: I don't think this is ever non-null
-        if (typeSpecifierContext != null) {
-            return PreCompileOutput.withReturnType(fun, parseTypeSpecifier(typeSpecifierContext));
-        }
-
-        return PreCompileOutput.noReturnType(fun);
-    }
 }
