@@ -136,7 +136,6 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     @Override
     @SuppressWarnings("unchecked")
     public Object visitLibraryDefinition(cqlParser.LibraryDefinitionContext ctx) {
-        // LUKETODO:  do we need to enhance this so that it it invokes libraryBuilder.beginTranslation();?
         List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
         libraryInfo.setLibraryName(identifiers.remove(identifiers.size() - 1));
         if (identifiers.size() > 0) {
@@ -216,24 +215,6 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
         }
 
         Model model = getModel(modelNamespace, unqualifiedIdentifier, parseString(ctx.versionSpecifier()), localIdentifier);
-
-        // LUKETODO: what to do with this?
-        // LUKETODO:
-        /*
-         Expected: is "http://hl7.org/fhir"
-     but: was "urn:hl7-org:elm-types:r1"
-Expected :http://hl7.org/fhir
-Actual   :urn:hl7-org:elm-types:r1
-<Click to see difference>
-
-java.lang.AssertionError:
-Expected: is "http://hl7.org/fhir"
-     but: was "urn:hl7-org:elm-types:r1"
-	at org.hamcrest.MatcherAssert.assertThat(MatcherAssert.java:20)
-	at org.hamcrest.MatcherAssert.assertThat(MatcherAssert.java:8)
-	at org.cqframework.cql.cql2elm.CMS146ElmTest.testUsingDataModel(CMS146ElmTest.java:45)
-         */
-//        final UsingDef usingDef = visitUsingDefinitionFromElm(ctx);
         // LUKETODO: end new code
 
         return usingDefinition;

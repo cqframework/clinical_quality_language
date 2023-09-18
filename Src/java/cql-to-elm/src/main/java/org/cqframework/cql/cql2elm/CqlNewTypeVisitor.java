@@ -478,7 +478,6 @@ public class CqlNewTypeVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitFunctionDefinition(cqlParser.FunctionDefinitionContext ctx) {
-        // LUKETODO: this breaks a TON of tests org.cqframework.cql.cql2elm.CqlSemanticException: class java.lang.String cannot be cast to class org.hl7.elm.r1.TypeSpecifier
         preCompileOutput = preCompile(ctx);
 
         return defaultResult();
@@ -634,19 +633,7 @@ public class CqlNewTypeVisitor extends cqlBaseVisitor {
     }
 
     private TypeSpecifier parseTypeSpecifier(ParseTree pt) {
-//            return pt == null ? null : (TypeSpecifier) visit(pt);
-        if (pt == null) {
-            return null;
-        }
-
-        final Object visit = visit(pt);
-        try {
-            return (TypeSpecifier)visit;
-        } catch (Exception e) {
-            // LUKETODO:  this seems to happen on the "second round" of CqlCompiler.run(), not the first
-            logger.error("Exception: " +e.getMessage(), e);
-            throw e;
-        }
+            return pt == null ? null : (TypeSpecifier) visit(pt);
     }
 
     private void processHeader(ParseTree ctx, BaseInfo info) {

@@ -788,7 +788,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                             unqualifiedIdentifier, localIdentifier));
         }
 
-        Model model = getModel(modelNamespace, unqualifiedIdentifier, parseString(ctx.versionSpecifier()), localIdentifier);
         return libraryBuilder.resolveUsingRef(localIdentifier);
     }
 
@@ -825,7 +824,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     @SuppressWarnings("unchecked")
-    // LUKETODO: This is what triggers a recursive CqlCompiler.run()
     public Object visitIncludeDefinition(cqlParser.IncludeDefinitionContext ctx) {
         List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
         String unqualifiedIdentifier = identifiers.remove(identifiers.size() - 1);
@@ -4459,6 +4457,12 @@ DATETIME
 //            throw new CqlCompilerException("could not resolve function: " + functionName);
             // LUKETODO: This is the code path in the old world: and at least one unit test expects this failure
             // among other tests, this line allows testFHIRPath to pass
+            // org.cqframework.cql.cql2elm.fhir.dstu2.BaseTest > testParameterContext FAILED
+            // org.cqframework.cql.cql2elm.fhir.r401.BaseTest > testFHIRPath FAILED
+            // org.cqframework.cql.cql2elm.fhir.r401.BaseTest > testParameterContext FAILED
+//            org.cqframework.cql.elm.requirements.fhir.DataRequirementsProcessorTest > TestDataRequirementsProcessorOpioidIssueExpression FAILED
+//            org.cqframework.cql.elm.requirements.fhir.DataRequirementsProcessorTest > TestDataRequirementsProcessorOpioidIssueLibrary FAILED
+
             return libraryBuilder.resolveFunction(libraryName, functionName, expressions, mustResolve, allowPromotionAndDemotion, allowFluent);
         }
 
@@ -4550,38 +4554,6 @@ DATETIME
 
         // If there is no target, resolve as a system function
         return resolveFunction(null, identifier, paramListCtx);
-    }
-
-    // LUKETODO:  get rid of this
-    private PreCompileOutput preCompile(cqlParser.FunctionDefinitionContext ctx) {
-        final FunctionDef fun = of.createFunctionDef()
-                .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
-                .withName(parseString(ctx.identifierOrFunctionIdentifier()));
-
-        if (ctx.fluentModifier() != null) {
-            libraryBuilder.checkCompatibilityLevel("Fluent functions", "1.5");
-            fun.setFluent(true);
-        }
-
-        if (ctx.operandDefinition() != null) {
-            for (cqlParser.OperandDefinitionContext opdef : ctx.operandDefinition()) {
-                TypeSpecifier typeSpecifier = parseTypeSpecifier(opdef.typeSpecifier());
-                fun.getOperand().add(
-                        (OperandDef)of.createOperandDef()
-                                .withName(parseString(opdef.referentialIdentifier()))
-                                .withOperandTypeSpecifier(typeSpecifier)
-                                .withResultType(typeSpecifier.getResultType())
-                );
-            }
-        }
-
-        final cqlParser.TypeSpecifierContext typeSpecifierContext = ctx.typeSpecifier();
-
-        if (typeSpecifierContext != null) {
-            return PreCompileOutput.withReturnType(fun, parseTypeSpecifier(typeSpecifierContext));
-        }
-
-        return PreCompileOutput.noReturnType(fun);
     }
 
     private CallContext getCallContext(String libraryName, String functionName, List<Expression> expressions, boolean mustResolve, boolean allowPromotionAndDemotion, boolean allowFluent) {
@@ -4704,23 +4676,7 @@ DATETIME
     }
 
     private String generateHashForLibraryBuilder(cqlParser.FunctionDefinitionContext ctx) {
-//        logger.info("--------------------------------");
-        final String hashNoPreCompile = generateHashWithoutPreCompile(ctx);
-//        logger.info("hashWithoutPreCompile: [{}]", hashNoPreCompile);
-//        final String hashNewPrecompile = generateHashWithPreCompile(ctx);
-//        logger.info("hashWithNEWPreCompile: [{}]", hashNewPrecompile);
-//        logger.info("--------------------------------");
-
-        return hashNoPreCompile;
-    }
-
-    private String generateHashWithPreCompile(cqlParser.FunctionDefinitionContext ctx) {
-        final PreCompileOutput preCompileOutput = preCompile(ctx);
-
-        return preCompileOutput.generateHash();
-    }
-
-    private String generateHashWithoutPreCompile(cqlParser.FunctionDefinitionContext ctx) {
+        // Since we don't have access to the preCompile output, generate a simple lightweight hash based on semantic function details
         final List<cqlParser.OperandDefinitionContext> operandDefinitionContexts = ctx.operandDefinition();
 
         final String signature = operandDefinitionContexts == null ? ""
