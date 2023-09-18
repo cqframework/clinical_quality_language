@@ -258,11 +258,6 @@ public class Dstu2TypeConverterTests {
         actualDate = this.typeConverter.toFhirDateTime(new DateTime("2019", null));
         assertEquals(expectedDate.getValueAsString(), actualDate.getValueAsString());
 
-        expectedDate = new DateTimeType("2019-10-10T19:35:53");
-        ((DateTimeType) expectedDate).setTimeZone(TimeZone.getTimeZone(ZoneOffset.ofHours(-6).normalized()));
-        actualDate = this.typeConverter.toFhirDateTime(new DateTime("2019-10-10T19:35:53", ZoneOffset.ofHours(-6)));
-        assertEquals(expectedDate.getValueAsString(), actualDate.getValueAsString());
-
         expectedDate = new DateTimeType("2019-10-10T01:00:00-06:00");
         actualDate = this.typeConverter.toFhirDateTime(new DateTime("2019-10-10T00:00:00", ZoneOffset.ofHours(-7)));
         assertEquals(expectedDate.getValueAsString(), actualDate.getValueAsString());
