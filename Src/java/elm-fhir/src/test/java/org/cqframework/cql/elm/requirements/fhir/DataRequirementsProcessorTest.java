@@ -939,7 +939,7 @@ public class DataRequirementsProcessorTest {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         var manager = setupDataRequirementsAnalysis("TestCases/TestCase2e.cql", compilerOptions);
         // Evaluate this test as of 12/31/2022
-        ZonedDateTime evaluationDateTime = ZonedDateTime.of(2022, 12, 31, 0, 0, 0, 0, ZoneId.systemDefault());
+        ZonedDateTime evaluationDateTime = ZonedDateTime.of(2022, 12, 31, 0, 0, 0, 0, ZoneId.of("Z"));
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions, new HashMap<String, Object>(), evaluationDateTime);
 
         /*
@@ -975,7 +975,7 @@ public class DataRequirementsProcessorTest {
                     for (DataRequirement.DataRequirementDateFilterComponent dfc : dr.getDateFilter()) {
                         if ("onset".equals(dfc.getPath())) {
                             if (dfc.getValue() instanceof Period) {
-                                String expectedPeriodStartString = expectedPeriodStart.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME).replace(":00-", ":00.000-"); //"2022-10-02T00:00:00.000-07:00"
+                                String expectedPeriodStartString = expectedPeriodStart.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME).replace(":00Z", ":00.000Z"); //"2022-10-02T00:00:00.000-07:00"
                                 String expectedPeriodEndString = expectedPeriodEnd.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME); //"2022-12-30T23:59:59.999-07:00"
                                 if (((Period)dfc.getValue()).hasStart() && ((Period)dfc.getValue()).getStartElement().asStringValue().equals(expectedPeriodStartString)
                                         && ((Period)dfc.getValue()).hasEnd() && ((Period)dfc.getValue()).getEndElement().asStringValue().equals(expectedPeriodEndString)) {
