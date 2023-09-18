@@ -29,12 +29,12 @@ import java.util.Stack;
 /**
  * Common functionality used by {@link CqlPreprocessorVisitor} and {@link Cql2ElmVisitor}
  */
-public abstract class CqlPreprocesorElmCommonVisitor extends cqlBaseVisitor {
+public class CqlPreprocesorElmCommonVisitor extends cqlBaseVisitor {
     protected final ObjectFactory of = new ObjectFactory();
     protected final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
-    private final Stack<Chunk> chunks = new Stack<>();
+    protected Stack<Chunk> chunks = new Stack<>();
     protected final LibraryBuilder libraryBuilder;
-    protected final TokenStream tokenStream;
+    protected TokenStream tokenStream;
     protected LibraryInfo libraryInfo = new LibraryInfo();
     private boolean annotate = false;
     private boolean detailedErrors = false;
@@ -44,9 +44,17 @@ public abstract class CqlPreprocesorElmCommonVisitor extends cqlBaseVisitor {
     private final List<Expression> expressions = new ArrayList<>();
     private boolean includeDeprecatedElements = false;
 
+    public CqlPreprocesorElmCommonVisitor(LibraryBuilder libraryBuilder) {
+        this.libraryBuilder = libraryBuilder;
+    }
+
     public CqlPreprocesorElmCommonVisitor(LibraryBuilder libraryBuilder, TokenStream tokenStream) {
         this.libraryBuilder = libraryBuilder;
         this.tokenStream = tokenStream;
+    }
+
+    public void setTokenStream(TokenStream theTokenStream) {
+        tokenStream = theTokenStream;
     }
 
     @Override
@@ -194,7 +202,7 @@ public abstract class CqlPreprocesorElmCommonVisitor extends cqlBaseVisitor {
         return pt == null ? AccessModifier.PUBLIC : (AccessModifier) visit(pt);
     }
 
-    private List<String> parseQualifiers(cqlParser.NamedTypeSpecifierContext ctx) {
+    protected List<String> parseQualifiers(cqlParser.NamedTypeSpecifierContext ctx) {
         List<String> qualifiers = new ArrayList<>();
         if (ctx.qualifier() != null) {
             for (cqlParser.QualifierContext qualifierContext : ctx.qualifier()) {
@@ -423,6 +431,14 @@ public abstract class CqlPreprocesorElmCommonVisitor extends cqlBaseVisitor {
 
     public boolean isAnnotationEnabled() {
         return annotate;
+    }
+
+    public void enableAnnotations() {
+        annotate = true;
+    }
+
+    public void disableAnnotations() {
+        annotate = false;
     }
 
     private Annotation buildAnnotation(Chunk chunk) {
