@@ -153,7 +153,7 @@ public class TranslationTests {
 
         Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
         List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
-        assertThat("Statements: " + statements.stream().map(ExpressionDef::getName).toList(), statements.size(), Matchers.equalTo(3));
+        assertThat(statements.size(), Matchers.equalTo(3));
     }
 
     @Test
@@ -163,7 +163,7 @@ public class TranslationTests {
 
         Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
         List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
-        assertThat("Statements: " + statements.stream().map(ExpressionDef::getName).toList(), statements.size(), Matchers.equalTo(3));
+        assertThat(statements.size(), Matchers.equalTo(3));
     }
 
     // This test creates a bunch of translators on the common pool to suss out any race conditions.

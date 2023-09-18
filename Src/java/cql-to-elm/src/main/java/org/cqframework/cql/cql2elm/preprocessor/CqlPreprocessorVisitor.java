@@ -30,6 +30,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
+import static org.cqframework.cql.cql2elm.preprocessor.CqlPreprocesorElmCommonVisitor.isStartingWithDigit;
+
 public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     static final Logger logger = LoggerFactory.getLogger(CqlPreprocessorVisitor.class);
     private final ObjectFactory of = new ObjectFactory();
@@ -1071,10 +1073,6 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
 
     private void addExpression(Expression expression) {
         expressions.add(expression);
-    }
-
-    private boolean isStartingWithDigit(String header, int index) {
-        return (index < header.length()) && Character.isDigit(header.charAt(index));
     }
     // LUKETODO:  end new methods
 }

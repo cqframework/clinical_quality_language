@@ -219,13 +219,6 @@ public class LibraryTests {
         try {
             translator = CqlTranslator
                     .fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/TestMeasure.cql"), libraryManager);
-            // LUKETODO:  fails because of a duplicate error raising the count to 4
-            /*
-            0 = {CqlSemanticException@3555} "org.cqframework.cql.cql2elm.CqlSemanticException: Could not load model information for model QDM, version 5.4 because version 5.5 is already loaded."
-1 = {CqlSemanticException@3556} "org.cqframework.cql.cql2elm.CqlSemanticException: Could not load model information for model QDM, version 5.4 because version 5.5 is already loaded."
-2 = {CqlSemanticException@3557} "org.cqframework.cql.cql2elm.CqlSemanticException: Could not resolve context name Patient in model System."
-3 = {CqlSemanticException@3558} "org.cqframework.cql.cql2elm.CqlSemanticException: Could not validate reference to expression Patient because its definition contains errors."
-             */
             assertThat(translator.getErrors().size(), is(3));
 
             for (CqlCompilerException error : translator.getErrors()) {
@@ -448,7 +441,7 @@ public class LibraryTests {
 
         Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
         List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
-        assertThat("Statements: " + statements.stream().map(ExpressionDef::getName).toList(), statements.size(), equalTo(2));
+        assertThat(statements.size(), equalTo(2));
     }
 
     @Test
@@ -458,7 +451,7 @@ public class LibraryTests {
 
         Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
         List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
-        assertThat("Statements: " + statements.stream().map(ExpressionDef::getName).toList(), statements.size(), equalTo(2));
+        assertThat(statements.size(), equalTo(2));
     }
 
     @Test
@@ -468,7 +461,7 @@ public class LibraryTests {
 
         Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
         List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
-        assertThat("Statements: " + statements.stream().map(ExpressionDef::getName).toList(), statements.size(), equalTo(6));
+        assertThat(statements.size(), equalTo(6));
     }
 
     @Test
@@ -478,16 +471,16 @@ public class LibraryTests {
 
         Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
         List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
-        assertThat("Statements: " + statements.stream().map(ExpressionDef::getName).toList(), statements.size(), equalTo(5));
+        assertThat(statements.size(), equalTo(5));
     }
 
     @Test
     public void TestForwardDeclarationsImplicitConversion() throws IOException {
         CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestForwardDeclarationImplicitConversion.cql");
-        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(0));
+        assertThat(translator.getErrors().size(), equalTo(0));
 
         Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
         List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
-        assertThat("Statements: " + statements.stream().map(ExpressionDef::getName).toList(), statements.size(), equalTo(3));
+        assertThat(statements.size(), equalTo(3));
     }
 }
