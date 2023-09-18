@@ -10,6 +10,9 @@ import org.opencds.cqf.cql.engine.runtime.*;
 import org.opencds.cqf.cql.engine.runtime.Quantity;
 import org.opencds.cqf.cql.engine.runtime.Ratio;
 import org.opencds.cqf.cql.engine.runtime.Tuple;
+
+import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
+
 import org.apache.commons.lang3.NotImplementedException;
 import org.hl7.fhir.instance.model.api.IBase;
 import org.hl7.fhir.instance.model.api.IBaseCoding;
@@ -70,7 +73,9 @@ class R4FhirTypeConverter extends BaseFhirTypeConverter {
             return null;
         }
 
-        return new DateTimeType(value.getDateTime().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+        var result = new DateTimeType(value.getDateTime().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+        result.setPrecision(toFhirPrecision(value.getPrecision()));
+        return result;
     }
 
     @Override

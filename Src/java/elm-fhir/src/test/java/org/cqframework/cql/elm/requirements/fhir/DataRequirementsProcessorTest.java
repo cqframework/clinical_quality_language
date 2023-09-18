@@ -939,7 +939,7 @@ public class DataRequirementsProcessorTest {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         var manager = setupDataRequirementsAnalysis("TestCases/TestCase2e.cql", compilerOptions);
         // Evaluate this test as of 12/31/2022
-        ZonedDateTime evaluationDateTime = ZonedDateTime.of(2022, 12, 31, 0, 0, 0, 0, ZoneId.systemDefault());
+        ZonedDateTime evaluationDateTime = ZonedDateTime.of(2022, 12, 31, 0, 0, 0, 0, ZoneId.of("Z"));
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions, new HashMap<String, Object>(), evaluationDateTime);
 
         /*
@@ -975,7 +975,7 @@ public class DataRequirementsProcessorTest {
                     for (DataRequirement.DataRequirementDateFilterComponent dfc : dr.getDateFilter()) {
                         if ("onset".equals(dfc.getPath())) {
                             if (dfc.getValue() instanceof Period) {
-                                String expectedPeriodStartString = expectedPeriodStart.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME); //"2022-10-02T00:00:00-07:00"
+                                String expectedPeriodStartString = expectedPeriodStart.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME).replace(":00Z", ":00.000Z"); //"2022-10-02T00:00:00.000-07:00"
                                 String expectedPeriodEndString = expectedPeriodEnd.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME); //"2022-12-30T23:59:59.999-07:00"
                                 if (((Period)dfc.getValue()).hasStart() && ((Period)dfc.getValue()).getStartElement().asStringValue().equals(expectedPeriodStartString)
                                         && ((Period)dfc.getValue()).hasEnd() && ((Period)dfc.getValue()).getEndElement().asStringValue().equals(expectedPeriodEndString)) {
@@ -1079,7 +1079,7 @@ public class DataRequirementsProcessorTest {
                     DataRequirement.DataRequirementDateFilterComponent dfc = dr.getDateFilterFirstRep();
                     if ("onset".equals(dfc.getPath())) {
                         if (dfc.getValue() instanceof Period) {
-                            String expectedPeriodStartString = expectedPeriodStart.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME); // "2022-10-02T00:00:00-07:00"
+                            String expectedPeriodStartString = expectedPeriodStart.format(DateTimeFormatter.ISO_LOCAL_DATE); // "2022-10-02"
                             if (((Period)dfc.getValue()).hasStart() && ((Period)dfc.getValue()).hasEnd() && ((Period)dfc.getValue()).getStartElement().asStringValue().equals(expectedPeriodStartString)) {
                                 expectedDataRequirement = dr;
                             }
@@ -1138,10 +1138,10 @@ public class DataRequirementsProcessorTest {
                     for (DataRequirement.DataRequirementDateFilterComponent dfc : dr.getDateFilter()) {
                         if ("onset".equals(dfc.getPath())) {
                             if (dfc.getValue() instanceof Period) {
-                                String expectedPeriodStart1String = expectedPeriodStart1.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME); // "2022-10-02T00:00:00-07:00"
+                                String expectedPeriodStart1String = expectedPeriodStart1.format(DateTimeFormatter.ISO_LOCAL_DATE); // "2022-10-02"
                                 String expectedPeriodEnd1String = expectedPeriodEnd1.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME); // "9999-12-31T23:59:59.999Z"
-                                String expectedPeriodStart2String = expectedPeriodStart2.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME); // "0001-01-01T00:00:00Z"
-                                String expectedPeriodEnd2String = expectedPeriodEnd2.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME); // "2022-12-31T00:00:00-07:00"
+                                String expectedPeriodStart2String = expectedPeriodStart2.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME).replace(":00Z", ":00.000Z"); // "0001-01-01T00:00:00.000Z"
+                                String expectedPeriodEnd2String = expectedPeriodEnd2.format(DateTimeFormatter.ISO_LOCAL_DATE); // "2022-12-31"
                                 if (((Period)dfc.getValue()).hasStart() && ((Period)dfc.getValue()).getStartElement().asStringValue().equals(expectedPeriodStart1String)
                                         && ((Period)dfc.getValue()).hasEnd() && ((Period)dfc.getValue()).getEndElement().asStringValue().equals(expectedPeriodEnd1String)) {
                                     hasFilter1 = true;

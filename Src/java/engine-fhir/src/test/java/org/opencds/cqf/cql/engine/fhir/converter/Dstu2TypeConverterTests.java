@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.hl7.fhir.dstu2.model.Attachment;
@@ -42,12 +43,15 @@ import org.opencds.cqf.cql.engine.runtime.CqlType;
 import org.opencds.cqf.cql.engine.runtime.Date;
 import org.opencds.cqf.cql.engine.runtime.DateTime;
 import org.opencds.cqf.cql.engine.runtime.Interval;
+import org.opencds.cqf.cql.engine.runtime.Precision;
 import org.opencds.cqf.cql.engine.runtime.Quantity;
 import org.opencds.cqf.cql.engine.runtime.Ratio;
 import org.opencds.cqf.cql.engine.runtime.Time;
 import org.opencds.cqf.cql.engine.runtime.Tuple;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 
 public class Dstu2TypeConverterTests {
 
@@ -252,7 +256,17 @@ public class Dstu2TypeConverterTests {
 
         expectedDate = new DateTimeType("2019");
         actualDate = this.typeConverter.toFhirDateTime(new DateTime("2019", null));
-        assertEquals(expectedDate.getValue(), actualDate.getValue());
+        assertEquals(expectedDate.getValueAsString(), actualDate.getValueAsString());
+
+        expectedDate = new DateTimeType("2019-10-10T01:00:00-06:00");
+        ((DateTimeType) expectedDate).setTimeZone(TimeZone.getTimeZone("MST"));
+        actualDate = this.typeConverter.toFhirDateTime(new DateTime("2019-10-10T00:00:00", ZoneOffset.ofHours(-7)));
+        assertEquals(expectedDate.getValueAsString(), actualDate.getValueAsString());
+
+        expectedDate = new DateTimeType("2019-10-10T19:35:53.000Z");
+        ((DateTimeType) expectedDate).setPrecision(TemporalPrecisionEnum.MILLI);
+        actualDate = this.typeConverter.toFhirDateTime(new DateTime("2019-10-10T19:35:53", ZoneOffset.UTC).withPrecision(Precision.MILLISECOND));
+        assertEquals(expectedDate.getValueAsString(), actualDate.getValueAsString());
     }
 
     @Test
