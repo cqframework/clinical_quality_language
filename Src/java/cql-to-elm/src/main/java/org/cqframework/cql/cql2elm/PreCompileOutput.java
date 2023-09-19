@@ -1,26 +1,24 @@
 package org.cqframework.cql.cql2elm;
 
 import org.hl7.elm.r1.FunctionDef;
-import org.hl7.elm.r1.OperandDef;
 import org.hl7.elm.r1.TypeSpecifier;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
-import java.util.stream.Collectors;
 
-// TODO: javadoc
+/**
+ * POJO for the result of a pre compile operation (AKA: partial compile of function headers)
+ */
 public class PreCompileOutput {
-    private final FunctionDef myFunctionDef;
-    private final TypeSpecifier myResultType;
-    private final String myHash;
+    private final FunctionDef functionDef;
+    private final TypeSpecifier resultType;
 
     public FunctionDef getFunctionDef() {
-        return myFunctionDef;
+        return functionDef;
     }
 
     public TypeSpecifier getResultType() {
-        return myResultType;
+        return resultType;
     }
 
     public static PreCompileOutput noReturnType(FunctionDef theFunctionDef) {
@@ -32,22 +30,8 @@ public class PreCompileOutput {
     }
 
     private PreCompileOutput(FunctionDef theFunctionDef, TypeSpecifier theResultType) {
-        myFunctionDef = theFunctionDef;
-        myResultType = theResultType;
-        myHash = generateHash();
-    }
-
-    public String generateHash() {
-//            hash ~= fun.name() + combine(operands.stream().map(o -> o.getType().text()), ",")
-        final List<OperandDef> operand = myFunctionDef.getOperand();
-
-        // TODO:  operand type is null
-        final String commaDelimitedParamTypes = operand.stream()
-                .map(OperandDef::getResultType)
-                .map(Object::toString)
-                .collect(Collectors.joining(","));
-
-        return myFunctionDef.getName() + ": " + commaDelimitedParamTypes;
+        functionDef = theFunctionDef;
+        resultType = theResultType;
     }
 
     @Override
@@ -59,19 +43,19 @@ public class PreCompileOutput {
             return false;
         }
         PreCompileOutput that = (PreCompileOutput) theO;
-        return Objects.equals(myFunctionDef, that.myFunctionDef) && Objects.equals(myResultType, that.myResultType);
+        return Objects.equals(functionDef, that.functionDef) && Objects.equals(resultType, that.resultType);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(myFunctionDef, myResultType);
+        return Objects.hash(functionDef, resultType);
     }
 
     @Override
     public String toString() {
         return new StringJoiner(", ", PreCompileOutput.class.getSimpleName() + "[", "]")
-                .add("myFunctionDef=" + myFunctionDef)
-                .add("myResultType=" + myResultType)
+                .add("myFunctionDef=" + functionDef)
+                .add("myResultType=" + resultType)
                 .toString();
     }
 }
