@@ -211,7 +211,7 @@ public class CqlPreprocesorElmCommonVisitor extends cqlBaseVisitor {
 
         final cqlParser.TypeSpecifierContext typeSpecifierContext = ctx.typeSpecifier();
 
-        // LUKETODO: I don't think this is ever non-null
+        // TODO: I don't think this is ever non-null:  Is this even needed?
         if (typeSpecifierContext != null) {
             return PreCompileOutput.withReturnType(fun, parseTypeSpecifier(typeSpecifierContext));
         }

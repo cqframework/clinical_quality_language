@@ -3836,7 +3836,6 @@ DATETIME
         if (functionInfos != null) {
             final List<FunctionDefinitionInfo> resolvedFunctionDefinitionInfos = new ArrayList<>();
             for (FunctionDefinitionInfo functionInfo : functionInfos) {
-                // LUKETODO:  operatorMap from System Library or Compiled Library?
                 final boolean areFunctionsEquivalent = ForwardInvocationValidator.areFunctionHeadersEquivalent(expectedCallContext, functionInfo, libraryBuilder.getConversionMap(), libraryBuilder.getSystemLibrary().getOperatorMap());
                 if (areFunctionsEquivalent) {
                     resolvedFunctionDefinitionInfos.add(functionInfo);
