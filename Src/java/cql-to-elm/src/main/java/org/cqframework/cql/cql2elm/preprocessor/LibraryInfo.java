@@ -2,14 +2,13 @@ package org.cqframework.cql.cql2elm.preprocessor;
 
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.cqframework.cql.cql2elm.CqlCompilerException;
 import org.cqframework.cql.gen.cqlParser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.hl7.elm.r1.OperandDef;
 
 import java.util.*;
 
 public class LibraryInfo extends BaseInfo {
-    static final Logger logger = LoggerFactory.getLogger(LibraryInfo.class);
     private String namespaceName;
     private String libraryName;
     private String version;
@@ -232,11 +231,11 @@ public class LibraryInfo extends BaseInfo {
         }
 
         // Ensure no duplicate FunctionDefinitionInfos (meaning the same signature)
-        if (! infos.contains(functionDefinition)) {
+        if (! isFunctionDefInfoAlreadyPresent(infos, functionDefinition)) {
             infos.add(functionDefinition);
             addDefinition(functionDefinition);
         } else {
-            logger.info("function already contained so not adding it: {}", functionDefinition);
+            throw new CqlCompilerException(String.format("Duplicate function detected from library: [%s] with name: [%s]", libraryName, functionDefinition.getName()));
         }
     }
 
@@ -270,5 +269,39 @@ public class LibraryInfo extends BaseInfo {
 
     public BaseInfo resolveDefinition(ParseTree pt) {
         return definitions.get(pt.getSourceInterval());
+    }
+
+    private static boolean isFunctionDefInfoAlreadyPresent(List<FunctionDefinitionInfo> existingFunctionDefInfos, FunctionDefinitionInfo functionDefinition) {
+        // equals/hashCode only goes so far because we don't control the entire class hierarchy
+        if (existingFunctionDefInfos.contains(functionDefinition)) {
+            return existingFunctionDefInfos.stream()
+                    .anyMatch(existingFunctionDefInfo -> matchesFunctionDefInfos(existingFunctionDefInfo, functionDefinition));
+        }
+
+        return false;
+    }
+
+    private static boolean matchesFunctionDefInfos(FunctionDefinitionInfo existingInfo, FunctionDefinitionInfo newInfo) {
+        final List<OperandDef> existingOperands = existingInfo.getPreCompileOutput().getFunctionDef().getOperand();
+        final List<OperandDef> newOperands = newInfo.getPreCompileOutput().getFunctionDef().getOperand();
+
+        if (existingOperands.size() != newOperands.size()) {
+            return false;
+        }
+
+        for (int index = 0; index < existingOperands.size(); index++) {
+            final OperandDef existingOperand = existingOperands.get(index);
+            final OperandDef newOperand = newOperands.get(index);
+
+            if (!matchesOperands(existingOperand, newOperand)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static boolean matchesOperands(OperandDef existingOperand, OperandDef newOperand) {
+        return existingOperand.getResultType().equals(newOperand.getResultType());
     }
 }
