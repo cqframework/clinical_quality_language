@@ -1123,6 +1123,18 @@ public class LibraryBuilder implements ModelResolver {
         return result != null ? result.getExpression() : null;
     }
 
+    // LUKETODO:  warn/error if annotation settings do not support overloads
+    /*
+    In ELM (roughly "CQL bytecode") type annotations are optional.This means that in certain cases function signatures that are distinguishable at compile time are not distinguishable at runtime. This is conceptually similar to the idea of "type erasure" in Java, where generic type overloads are not allowed.
+    The CQL compiler has flags that allow it to emit type information into ELM, specifically EnableAnnotations and EnableResultTypes. For CQL where function overload resolution would be ambiguous if type information is omitted and those flags are not enabled, the CQL compiler should warn that the resulting ELM will be ambiguous.
+     */
+    // define test_Union_OneToTen: TestMessage(Union_OneToTen = {1,2,3,4,5,6,7,8,9,10}, 'Union_OneToTen', toString({1,2,3,4,5,6,7,8,9,10}), toString(Union_OneToTen))
+    // define test_Union_OneToFiveOverlapped: TestMessage(Union_OneToFiveOverlapped = {1,2,3,4,5}, 'Union_OneToFiveOverlapped', toString({1,2,3,4,5}), toString(Union_OneToFiveOverlapped))
+    // define test_Union_OneToFiveOverlappedWithNulls: TestMessage(Union_OneToFiveOverlappedWithNulls ~ {1,null,2,3,4,5}, 'Union_OneToFiveOverlappedWithNulls', toString({1,null,2,3,4,5}), toString(Union_OneToFiveOverlappedWithNulls))
+    // define test_Union_Disjoint: TestMessage(Union_Disjoint = {1,2,4,5}, 'Union_Disjoint', toString({1,2,4,5}), toString(Union_Disjoint))
+    // define test_Union_NestedToFifteen: TestMessage(Union_NestedToFifteen = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15}, 'Union_NestedToFifteen', toString({1,2,3,4,5,6,7,8,9,10,11,12,13,14,15}), toString(Union_NestedToFifteen))
+    // define test_Union_NullUnion: TestMessage(Union_NullUnion = {1,2,3}, 'Union_NullUnion', toString({1,2,3}), toString(Union_NullUnion))
+    // define test_Union_UnionNull: TestMessage(Union_UnionNull = {1,2,3}, 'Union_UnionNull', toString({1,2,3}), toString(Union_UnionNull))
     public Invocation resolveInvocation(String libraryName, String operatorName, Invocation invocation, boolean mustResolve, boolean allowPromotionAndDemotion, boolean allowFluent) {
         Iterable<Expression> operands = invocation.getOperands();
         List<DataType> dataTypes = new ArrayList<>();
