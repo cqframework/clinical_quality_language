@@ -17,20 +17,6 @@ define function toString(value List<System.Code>):
     )
 
 // define function toString(value Concept, value String):
-//define function toString(value Concept, value String):
-//    Combine(
-//        value C return 'Code: ' + C.display,
-//        ', '
-//    )
-
-// define function toString(value Concept, value String):
-//define function toString(value Concept, value String):
-//    Combine(
-//        value C return 'Code: ' + C.display,
-//        ', '
-//    )
-
-// define function toString(value Concept, value String):
 define function toString(value List<System.Code>, value String):
     Combine(
         value C return 'Code: ' + C.display,

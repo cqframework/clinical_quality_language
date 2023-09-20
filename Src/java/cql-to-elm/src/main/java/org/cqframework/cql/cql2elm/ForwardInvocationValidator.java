@@ -53,6 +53,7 @@ public class ForwardInvocationValidator {
             }
         }
 
+        logger.info("TRUE: callContextFromCaller.getOperatorName(): {}", callContextFromCaller.getOperatorName());
         return true;
     }
 
@@ -61,45 +62,24 @@ public class ForwardInvocationValidator {
             return true;
         }
 
-        final Conversion foundConversion = conversionMap.findConversion(dataTypeFromCaller, dataTypeFromCandidate, true, true, operatorMap);
+        return handleImplicitConversion(dataTypeFromCaller, dataTypeFromCandidate, conversionMap, operatorMap);
+    }
 
-        final List<Conversion> conversionsFromCaller = conversionMap.getConversions(dataTypeFromCaller);
+    private static boolean handleImplicitConversion(DataType theDataTypeFromCaller, DataType theDataTypeFromCandidate, ConversionMap theConversionMap, OperatorMap theOperatorMap) {
+        final Conversion foundConversion = theConversionMap.findConversion(theDataTypeFromCaller, theDataTypeFromCandidate, false, true, theOperatorMap);
 
-        if (conversionsFromCaller.size() == 0) {
-            return false;
-        }
+        return Optional.ofNullable(foundConversion)
+                .map(nonNullConversion -> {
+                    // Handle the case of a forward declaration of to$tring(value Concept) calling toString(value List<System.Code>) as this would otherwise
+                    // result in an error due to a false positive of the forward declaration resolving itself
+                    if (foundConversion.getOperator() != null) {
+                        if (foundConversion.getOperator().getFunctionDef() != null) {
+                            return false;
+                        }
+                    }
 
-        if (conversionsFromCaller.size() > 1) {
-            logger.info("MORE THAN ONE CONVERSION TYPE!!!!!!!!!!!!!!!");
-            // LUKETODO:  not sure what to do here
-            return false;
-        }
-
-        final Conversion conversion = conversionsFromCaller.get(0);
-
-        // LUKETODO:  how to replicate this with foundConversion
-        if (conversion.getOperator().getFunctionDef() != null) {
-            return false;
-        }
-
-        final boolean newResult;
-
-        if (foundConversion != null) {
-            if (foundConversion.getOperator().getFunctionDef() != null) {
-                newResult = false;
-            } else {
-                newResult = foundConversion.getToType().equals(dataTypeFromCandidate);
-            }
-        } else {
-            newResult = false;
-        }
-
-        return newResult;
-
-//            final boolean newResult =  Optional.ofNullable(foundConversion)
-//                    .filter(conversion -> conversion.getOperator().getFunctionDef() == null)
-//                    .map(Conversion::getToType)
-//                    .map(toType -> toType.equals(dataTypeFromCandidate))
-//                    .orElse(false);
+                    return foundConversion.getToType().equals(theDataTypeFromCandidate);
+                })
+                .orElse(false);
     }
 }
