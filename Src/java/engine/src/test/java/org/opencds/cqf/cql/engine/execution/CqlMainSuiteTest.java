@@ -6,6 +6,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertThrows;
 
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -31,71 +32,63 @@ public class CqlMainSuiteTest extends CqlTestBase {
         var result = e.evaluate(toElmIdentifier("CqlTestSuite"), evalTime);
 
         for (var entry : result.expressionResults.entrySet()) {
-            if(entry.getKey().toString().startsWith("test")) {
-                if(((ExpressionResult)entry.getValue()).value() != null) {
+            if(entry.getKey().startsWith("test")) {
+                if(entry.getValue().value() != null) {
                 Assert.assertEquals(
-                        (String) ((ExpressionResult) entry.getValue()).value(),
-                        entry.getKey().toString().replaceAll("test_", "") + " TEST PASSED"
+                        (String) entry.getValue().value(),
+                        entry.getKey().replaceAll("test_", "") + " TEST PASSED"
                 );
                 }
             }
         }
-
     }
 
     @Test
-    public void test_generic_overloads() {
+    public void testOverloadsNoEnableAnnotations() {
         var e = getEngine(testCompilerOptionsNoEnableAnnotations());
 
-        // TODO: It'd be interesting to be able to inspect the
-        // possible set of expressions from the CQL engine API
-        // prior to evaluating them all
-        var result = e.evaluate(toElmIdentifier("CqlGenericOverloadsSuite"), evalTime);
+        assertThrows(CqlCompilerException.class, () -> e.evaluate(toElmIdentifier("CqlOverloadTests"), evalTime));
+    }
 
-        for (var entry : result.expressionResults.entrySet()) {
-            if(entry.getKey().toString().startsWith("test")) {
-                if(((ExpressionResult)entry.getValue()).value() != null) {
-                    Assert.assertEquals(
-                            (String) ((ExpressionResult) entry.getValue()).value(),
-                            entry.getKey().toString().replaceAll("test_", "") + " TEST PASSED"
-                    );
-                }
-            }
-        }
+    @Test
+    public void testGenericOverloadsNoEnableAnnotations() {
+        var e = getEngine(testCompilerOptionsNoEnableAnnotations());
 
+        assertThrows(CqlCompilerException.class, () -> e.evaluate(toElmIdentifier("CqlGenericOverloadTests"), evalTime));
     }
 
     // LUKETODO:  play around with different compile options such as removing EnableAnnotations, and adding EnableResultTypes
    protected CqlCompilerOptions testCompilerOptions() {
-        var options = CqlCompilerOptions.defaultOptions();
-        // This test suite contains some definitions that use features that are usually
-        // turned off for CQL.
-        options.getOptions().remove(CqlCompilerOptions.Options.DisableListDemotion);
-        options.getOptions().remove(CqlCompilerOptions.Options.DisableListPromotion);
-
-        return options;
+       return testCompilerOptions(CqlCompilerOptions.Options.DisableListDemotion,
+               CqlCompilerOptions.Options.DisableListPromotion);
     }
 
     protected CqlCompilerOptions testCompilerOptionsNoEnableAnnotations() {
-        var options = CqlCompilerOptions.defaultOptions();
+        return testCompilerOptions(CqlCompilerOptions.Options.DisableListDemotion,
+                CqlCompilerOptions.Options.DisableListPromotion,
+                CqlCompilerOptions.Options.EnableAnnotations);
+    }
+
+    protected CqlCompilerOptions testCompilerOptions(CqlCompilerOptions.Options... optionsToRemove) {
+        final CqlCompilerOptions options = CqlCompilerOptions.defaultOptions();
+        final Set<CqlCompilerOptions.Options> optionsOptions = options.getOptions();
+
         // This test suite contains some definitions that use features that are usually
         // turned off for CQL.
-        options.getOptions().remove(CqlCompilerOptions.Options.DisableListDemotion);
-        options.getOptions().remove(CqlCompilerOptions.Options.DisableListPromotion);
-        options.getOptions().remove(CqlCompilerOptions.Options.EnableAnnotations);
+        Arrays.stream(optionsToRemove).forEach(optionsOptions::remove);
 
         return options;
     }
 
 
-    String toString(List<CqlCompilerException> errors) {
+    private String toString(List<CqlCompilerException> errors) {
         StringBuilder builder = new StringBuilder();
 
         for (var e : errors) {
-            builder.append(e.toString() + System.lineSeparator());
+            builder.append(e.toString()).append(System.lineSeparator());
             if (e.getLocator() != null) {
-                builder.append("at" + System.lineSeparator());
-                builder.append(e.getLocator().toLocator() + System.lineSeparator());
+                builder.append("at").append(System.lineSeparator());
+                builder.append(e.getLocator().toLocator()).append(System.lineSeparator());
             }
             builder.append(System.lineSeparator());
         }

@@ -3,26 +3,22 @@ package org.cqframework.cql.cql2elm;
 import org.cqframework.cql.cql2elm.model.*;
 import org.cqframework.cql.cql2elm.model.invocation.*;
 import org.cqframework.cql.elm.tracking.TrackBack;
-import org.cqframework.cql.elm.tracking.Trackable;
+import org.fhir.ucum.UcumService;
 import org.hl7.cql.model.*;
-import org.hl7.cql_annotations.r1.*;
+import org.hl7.cql_annotations.r1.CqlToElmError;
+import org.hl7.cql_annotations.r1.CqlToElmInfo;
+import org.hl7.cql_annotations.r1.ErrorSeverity;
+import org.hl7.cql_annotations.r1.ErrorType;
 import org.hl7.elm.r1.*;
-import org.hl7.elm.r1.ObjectFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.xml.namespace.QName;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * Created by Bryn on 12/29/2016.
  */
 public class LibraryBuilder implements ModelResolver {
-    private static Logger logger = LoggerFactory.getLogger(LibraryBuilder.class);
     public static enum SignatureLevel {
         /*
         Indicates signatures will never be included in operator invocations
@@ -1127,36 +1123,7 @@ public class LibraryBuilder implements ModelResolver {
         return result != null ? result.getExpression() : null;
     }
 
-    // LUKETODO:  warn/error if annotation settings do not support overloads
-    // Error: Invalid path: code for type: java.lang.Integer - this is likely an issue with the data model.
-    //org.opencds.cqf.cql.engine.exception.CqlException: Invalid path: code for type: java.lang.Integer - this is likely an issue with the data model.
-    // This error looks like a RED HERRING, since something else is going on.
-    /*
-    In ELM (roughly "CQL bytecode") type annotations are optional.This means that in certain cases function signatures that are distinguishable at compile time are not distinguishable at runtime. This is conceptually similar to the idea of "type erasure" in Java, where generic type overloads are not allowed.
-    The CQL compiler has flags that allow it to emit type information into ELM, specifically EnableAnnotations and EnableResultTypes. For CQL where function overload resolution would be ambiguous if type information is omitted and those flags are not enabled, the CQL compiler should warn that the resulting ELM will be ambiguous.
-     */
-    // define test_Union_OneToTen: TestMessage(Union_OneToTen = {1,2,3,4,5,6,7,8,9,10}, 'Union_OneToTen', toString({1,2,3,4,5,6,7,8,9,10}), toString(Union_OneToTen))
-    // define test_Union_OneToFiveOverlapped: TestMessage(Union_OneToFiveOverlapped = {1,2,3,4,5}, 'Union_OneToFiveOverlapped', toString({1,2,3,4,5}), toString(Union_OneToFiveOverlapped))
-    // define test_Union_OneToFiveOverlappedWithNulls: TestMessage(Union_OneToFiveOverlappedWithNulls ~ {1,null,2,3,4,5}, 'Union_OneToFiveOverlappedWithNulls', toString({1,null,2,3,4,5}), toString(Union_OneToFiveOverlappedWithNulls))
-    // define test_Union_Disjoint: TestMessage(Union_Disjoint = {1,2,4,5}, 'Union_Disjoint', toString({1,2,4,5}), toString(Union_Disjoint))
-    // define test_Union_NestedToFifteen: TestMessage(Union_NestedToFifteen = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15}, 'Union_NestedToFifteen', toString({1,2,3,4,5,6,7,8,9,10,11,12,13,14,15}), toString(Union_NestedToFifteen))
-    // define test_Union_NullUnion: TestMessage(Union_NullUnion = {1,2,3}, 'Union_NullUnion', toString({1,2,3}), toString(Union_NullUnion))
-    // define test_Union_UnionNull: TestMessage(Union_UnionNull = {1,2,3}, 'Union_UnionNull', toString({1,2,3}), toString(Union_UnionNull))
     public Invocation resolveInvocation(String libraryName, String operatorName, Invocation invocation, boolean mustResolve, boolean allowPromotionAndDemotion, boolean allowFluent) {
-        final String translatorOptions = cqlToElmInfo.getTranslatorOptions();
-
-        if (! translatorOptions.contains("EnableAnnotations") && ! translatorOptions.contains("EnableResultTypes")) {
-            final Expression expression = invocation.getExpression();
-            final Iterable<Expression> operands = invocation.getOperands();
-            logger.info("libraryName; {}, operatorName: {}, invocation: {}", libraryName, operatorName, StreamSupport.stream(operands.spliterator(), false)
-                            .map(Trackable::getResultType)
-                    .collect(Collectors.toList()));
-            // LUKETODO:  detect that we have multiple overloaded functions
-            // LUKETODO:  what are we looking for, exactly?
-            // 1) The actual function invocation?  toString({1,2,3,4,5})?
-            // 2) The presence of multiple library.statements.operands with resultTypes that have a list<???> ?
-        }
-
         Iterable<Expression> operands = invocation.getOperands();
         List<DataType> dataTypes = new ArrayList<>();
         for (Expression operand : operands) {

@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.cqframework.cql.cql2elm.CqlCompilerException;
 import org.cqframework.cql.cql2elm.StringEscapeUtils;
 import org.cqframework.cql.gen.cqlBaseVisitor;
 import org.cqframework.cql.gen.cqlLexer;
@@ -11,6 +12,8 @@ import org.cqframework.cql.gen.cqlParser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     private LibraryInfo libraryInfo = new LibraryInfo();
@@ -207,11 +210,30 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitFunctionDefinition(cqlParser.FunctionDefinitionContext ctx) {
+        final String functionName = parseString(ctx.identifierOrFunctionIdentifier());
+
         FunctionDefinitionInfo functionDefinition = new FunctionDefinitionInfo();
-        functionDefinition.setName(parseString(ctx.identifierOrFunctionIdentifier()));
+        functionDefinition.setName(functionName);
         functionDefinition.setContext(currentContext);
         functionDefinition.setDefinition(ctx);
         processHeader(ctx, functionDefinition);
+
+        // LUKETODO:  merge in 1191
+        final String translatorOptions = "";
+
+        if (! translatorOptions.contains("EnableAnnotations") && ! translatorOptions.contains("EnableResultTypes")) {
+            final Iterable<FunctionDefinitionInfo> functionDefinitionInfos = libraryInfo.resolveFunctionReference(functionName);
+
+            if (functionDefinitionInfos != null) {
+                final List<FunctionDefinitionInfo> exisitngFunctionDefinitionInfos = StreamSupport.stream(functionDefinitionInfos.spliterator(), false)
+                        .collect(Collectors.toList());
+
+                if (exisitngFunctionDefinitionInfos.stream().anyMatch(info -> info.getDefinition().operandDefinition().size() == ctx.operandDefinition().size())) {
+                    throw new CqlCompilerException("something");
+                }
+            }
+        }
+
         libraryInfo.addFunctionDefinition(functionDefinition);
         return functionDefinition;
     }
