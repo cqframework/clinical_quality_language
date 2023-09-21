@@ -24,6 +24,7 @@ public class CqlMainSuiteTest extends CqlTestBase {
     @Test
     public void test_all_portable_cql_engine_tests() {
         var e = getEngine(testCompilerOptions());
+
         // TODO: It'd be interesting to be able to inspect the
         // possible set of expressions from the CQL engine API
         // prior to evaluating them all
@@ -44,7 +45,8 @@ public class CqlMainSuiteTest extends CqlTestBase {
 
     @Test
     public void test_generic_overloads() {
-        var e = getEngine(testCompilerOptions());
+        var e = getEngine(testCompilerOptionsNoEnableAnnotations());
+
         // TODO: It'd be interesting to be able to inspect the
         // possible set of expressions from the CQL engine API
         // prior to evaluating them all
@@ -63,12 +65,24 @@ public class CqlMainSuiteTest extends CqlTestBase {
 
     }
 
+    // LUKETODO:  play around with different compile options such as removing EnableAnnotations, and adding EnableResultTypes
    protected CqlCompilerOptions testCompilerOptions() {
         var options = CqlCompilerOptions.defaultOptions();
         // This test suite contains some definitions that use features that are usually
         // turned off for CQL.
         options.getOptions().remove(CqlCompilerOptions.Options.DisableListDemotion);
         options.getOptions().remove(CqlCompilerOptions.Options.DisableListPromotion);
+
+        return options;
+    }
+
+    protected CqlCompilerOptions testCompilerOptionsNoEnableAnnotations() {
+        var options = CqlCompilerOptions.defaultOptions();
+        // This test suite contains some definitions that use features that are usually
+        // turned off for CQL.
+        options.getOptions().remove(CqlCompilerOptions.Options.DisableListDemotion);
+        options.getOptions().remove(CqlCompilerOptions.Options.DisableListPromotion);
+        options.getOptions().remove(CqlCompilerOptions.Options.EnableAnnotations);
 
         return options;
     }
