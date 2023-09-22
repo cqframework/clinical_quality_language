@@ -218,21 +218,27 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
         functionDefinition.setDefinition(ctx);
         processHeader(ctx, functionDefinition);
 
-        // LUKETODO:  merge in 1191
-        final String translatorOptions = "";
-
-        if (! translatorOptions.contains("EnableAnnotations") && ! translatorOptions.contains("EnableResultTypes")) {
-            final Iterable<FunctionDefinitionInfo> functionDefinitionInfos = libraryInfo.resolveFunctionReference(functionName);
-
-            if (functionDefinitionInfos != null) {
-                final List<FunctionDefinitionInfo> exisitngFunctionDefinitionInfos = StreamSupport.stream(functionDefinitionInfos.spliterator(), false)
-                        .collect(Collectors.toList());
-
-                if (exisitngFunctionDefinitionInfos.stream().anyMatch(info -> info.getDefinition().operandDefinition().size() == ctx.operandDefinition().size())) {
-                    throw new CqlCompilerException("something");
-                }
-            }
-        }
+        // LUKETODO:  merge in 1191 and then uncomment
+//        final String translatorOptions = libraryBuilder.getCompilerOptions();
+//
+//        if (! translatorOptions.contains("EnableAnnotations") && ! translatorOptions.contains("EnableResultTypes")) {
+//            final Iterable<FunctionDefinitionInfo> functionDefinitionInfos = libraryInfo.resolveFunctionReference(functionName);
+//
+//            if (functionDefinitionInfos != null) {
+//                final List<PreCompileOutput> existingPreCompileOutputs = StreamSupport.stream(functionDefinitionInfos.spliterator(), false)
+//                        .map(FunctionDefinitionInfo::getPreCompileOutput)
+//                        .collect(Collectors.toList());
+//
+//                final Optional<PreCompileOutput> optMatchingExistingPreCompileOutput =
+//                        existingPreCompileOutputs.stream().filter(existingPreCompileOutput -> existingPreCompileOutput.getFunctionDef().getOperand().size() == preCompileOutput.getFunctionDef().getOperand().size()).findFirst();
+//
+//                optMatchingExistingPreCompileOutput.ifPresent(matchingExistingPreCompileOutput -> {
+//                    logger.error("Function name: {}, existing params: {}, passed params: {}", functionName, functionTypes(preCompileOutput), functionTypes(matchingExistingPreCompileOutput));
+////                    // LUKETODO:  This breaks a bunch of unit tests because this code applies to the libraries as wel
+//                    throw new CqlCompilerException("Function overloading cannot be resolved due to compiler options for function: " + functionName);
+//                });
+//            }
+//        }
 
         libraryInfo.addFunctionDefinition(functionDefinition);
         return functionDefinition;
@@ -277,4 +283,15 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
         identifiers.add(identifier);
         return identifiers;
     }
+
+    // LUKETODO:  merge in 1191 and then uncomment
+//    private static List<String> functionTypes(PreCompileOutput preCompileOutput) {
+//        return preCompileOutput.getFunctionDef()
+//                .getOperand()
+//                .stream()
+//                .map(OperandDef::getOperandTypeSpecifier)
+//                .map(Trackable::getResultType)
+//                .map(Object::toString)
+//                .collect(Collectors.toList());
+//    }
 }

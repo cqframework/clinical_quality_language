@@ -157,6 +157,10 @@ public class LibraryBuilder implements ModelResolver {
         this.visitor = visitor;
     }
 
+    public String getCompilerOptions() {
+        return cqlToElmInfo.getTranslatorOptions();
+    }
+
     private String compatibilityLevel = null;
     public boolean isCompatibilityLevel3() {
         return "1.3".equals(compatibilityLevel);

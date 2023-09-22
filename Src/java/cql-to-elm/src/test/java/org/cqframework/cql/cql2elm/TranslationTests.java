@@ -85,7 +85,7 @@ public class TranslationTests {
 
     @Test
     public void testAnnotationsAbsent() throws IOException {
-        CqlTranslator translator = TestUtils.createTranslator("CMS146v2_Test_CQM.cql");
+        CqlTranslator translator = TestUtils.createTranslatorNoEnableAnnotations("CMS146v2_Test_CQM.cql");
         assertEquals(0, translator.getErrors().size());
         List<ExpressionDef> defs = translator.getTranslatedLibrary().getLibrary().getStatements().getDef();
         assertTrue(defs.get(1).getAnnotation().size() == 0);

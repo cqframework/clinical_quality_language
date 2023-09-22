@@ -82,7 +82,7 @@ public class CommentTests {
 
     @Test
     public void testTags() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("TestTags.cql", 0);
+        CqlTranslator translator = TestUtils.runSemanticTestNoAnnotations("TestTags.cql", 0);
         CompiledLibrary library = translator.getTranslatedLibrary();
         assertThat(library.getLibrary().getAnnotation(), notNullValue());
         Annotation a = null;

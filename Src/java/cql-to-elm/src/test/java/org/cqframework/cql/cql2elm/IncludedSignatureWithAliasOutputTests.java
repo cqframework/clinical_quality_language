@@ -20,6 +20,7 @@ public class IncludedSignatureWithAliasOutputTests {
         File testFile = new File(URLDecoder.decode(Cql2ElmVisitorTest.class.getResource("SignatureTests/IncludedSignatureWithAliasOutputTests.cql").getFile(), "UTF-8"));
         ModelManager modelManager = new ModelManager();
         var options = new CqlCompilerOptions(CqlCompilerException.ErrorSeverity.Info, signatureLevel);
+        options.getOptions().add(CqlCompilerOptions.Options.EnableAnnotations);
         LibraryManager libraryManager = new LibraryManager(modelManager, options);
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider("SignatureTests"));
         CqlTranslator translator = CqlTranslator.fromFile(testFile,  libraryManager);

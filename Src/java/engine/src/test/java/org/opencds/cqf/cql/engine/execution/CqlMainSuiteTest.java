@@ -2,6 +2,7 @@ package org.opencds.cqf.cql.engine.execution;
 
 import org.cqframework.cql.cql2elm.CqlCompilerException;
 import org.cqframework.cql.cql2elm.CqlCompilerOptions;
+import org.opencds.cqf.cql.engine.exception.CqlException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -47,14 +48,14 @@ public class CqlMainSuiteTest extends CqlTestBase {
     public void testOverloadsNoEnableAnnotations() {
         var e = getEngine(testCompilerOptionsNoEnableAnnotations());
 
-        assertThrows(CqlCompilerException.class, () -> e.evaluate(toElmIdentifier("CqlOverloadTests"), evalTime));
+        assertThrows(CqlException.class, () -> e.evaluate(toElmIdentifier("CqlOverloadTests"), evalTime));
     }
 
     @Test
     public void testGenericOverloadsNoEnableAnnotations() {
         var e = getEngine(testCompilerOptionsNoEnableAnnotations());
 
-        assertThrows(CqlCompilerException.class, () -> e.evaluate(toElmIdentifier("CqlGenericOverloadTests"), evalTime));
+        assertThrows(CqlException.class, () -> e.evaluate(toElmIdentifier("CqlGenericOverloadTests"), evalTime));
     }
 
     // LUKETODO:  play around with different compile options such as removing EnableAnnotations, and adding EnableResultTypes

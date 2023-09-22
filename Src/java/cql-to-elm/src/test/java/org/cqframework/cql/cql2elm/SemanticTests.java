@@ -79,7 +79,7 @@ public class SemanticTests {
 
     @Test
     public void testDateTimeOperators() throws IOException {
-        runSemanticTest("OperatorTests/DateTimeOperators.cql");
+        runSemanticTestNoAnnotations("OperatorTests/DateTimeOperators.cql");
     }
 
     @Test
@@ -232,12 +232,12 @@ public class SemanticTests {
 
     @Test
     public void testUndeclaredForward() throws IOException {
-        runSemanticTest("OperatorTests/UndeclaredForward.cql", 1);
+        runSemanticTestNoAnnotations("OperatorTests/UndeclaredForward.cql", 1);
     }
 
     @Test
     public void testUndeclaredSignature() throws IOException {
-        runSemanticTest("OperatorTests/UndeclaredSignature.cql", 1);
+        runSemanticTestNoAnnotations("OperatorTests/UndeclaredSignature.cql", 1);
     }
 
     @Test
@@ -266,12 +266,12 @@ public class SemanticTests {
 
     @Test
     public void tricksyParse() throws IOException {
-        runSemanticTest("TricksyParse.cql");
+        runSemanticTestNoAnnotations("TricksyParse.cql");
     }
 
     @Test
     public void shouldFail() throws IOException {
-        runSemanticTest("ShouldFail.cql", 1);
+        runSemanticTestNoAnnotations("ShouldFail.cql", 1);
     }
 
     @Test
@@ -570,7 +570,7 @@ public class SemanticTests {
     public void TestVSCastFunction15() throws IOException {
         // TODO: This test needs to pass, most likely by implicitly converting a ValueSet to a ValueSetRef? Or maybe a new explicit ELM operation?
         CqlCompilerOptions options = new CqlCompilerOptions()
-                .withOptions(CqlCompilerOptions.Options.DisableListDemotion, CqlCompilerOptions.Options.DisableListPromotion, CqlCompilerOptions.Options.DisableMethodInvocation);
+                .withOptions(CqlCompilerOptions.Options.DisableListDemotion, CqlCompilerOptions.Options.DisableListPromotion, CqlCompilerOptions.Options.DisableMethodInvocation, CqlCompilerOptions.Options.EnableAnnotations);
         CqlTranslator translator = TestUtils.runSemanticTest("TestVSCastFunction.cql", 0, options);
         ExpressionDef ed = translator.getTranslatedLibrary().resolveExpressionRef("TestConditionsViaFunction");
 
@@ -638,6 +638,14 @@ public class SemanticTests {
 
     private CqlTranslator runSemanticTest(String testFileName) throws IOException {
         return runSemanticTest(testFileName, 0);
+    }
+
+    private CqlTranslator runSemanticTestNoAnnotations(String testFileName) throws IOException {
+        return TestUtils.runSemanticTestNoAnnotations(testFileName, 0);
+    }
+
+    private CqlTranslator runSemanticTestNoAnnotations(String testFileName, int expectedErrors) throws IOException {
+        return TestUtils.runSemanticTestNoAnnotations(testFileName, expectedErrors);
     }
 
     private CqlTranslator runSemanticTest(String testFileName, int expectedErrors) throws IOException {
