@@ -446,4 +446,15 @@ public class LibraryTests {
         assertThat(statements.size(), equalTo(1));
     }
 
+
+    @Test
+    public void TestNonForwardDeclarationsImplicitConversion() throws IOException {
+        CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestNonForwardDeclarationScoringImplicitConversion.cql");
+        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(0));
+
+//        Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
+//        List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
+//        assertThat(statements.size(), equalTo(3));
+    }
+
 }
