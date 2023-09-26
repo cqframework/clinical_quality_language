@@ -527,7 +527,7 @@ public class LibraryTests {
 
         final Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
         final List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
-        assertThat(statements.size(), equalTo(3));
+        assertThat(statements.size(), equalTo(4));
         final Optional<ExpressionDef> toString = statements.stream().filter(statement -> statement.getName().equals("caller")).findFirst();
         assertTrue(toString.isPresent());
 
@@ -538,7 +538,7 @@ public class LibraryTests {
         final FunctionRef functionRef = (FunctionRef) expression;
 
         assertEquals("callee", functionRef.getName());
-        assertEquals(2, functionRef.getOperand().size());
+        assertEquals(3, functionRef.getOperand().size());
         assertEquals("System.Decimal", functionRef.getOperand().get(0).getResultType().toString());
         assertEquals("System.Decimal", functionRef.getOperand().get(1).getResultType().toString());
     }

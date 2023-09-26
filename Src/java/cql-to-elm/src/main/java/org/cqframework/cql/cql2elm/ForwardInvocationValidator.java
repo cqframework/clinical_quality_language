@@ -19,27 +19,41 @@ import java.util.stream.StreamSupport;
  * <ol>
  *     <li>Compare the {@link CallContext} of the function from the point of view of the calling code to the candidate function definition, which includes a list of {@link FunctionDefinitionInfo}s retrieved by function name.</li>
  *     <li>Compare the data types of the parameters for the calling and called functions.</li>
- *     <li>Take into account implicit conversions (ex FHIRHelpers) when the parameter lists don't match.</li>
+ *     <li>Take into account implicit conversions (ex FHIRHelpers) when the parameter lists don't match, including each conversion's score.</li>
  * </ol>
  */
 public class ForwardInvocationValidator {
-    static final Logger logger = LoggerFactory.getLogger(ForwardInvocationValidator.class);
+    private static final Logger logger = LoggerFactory.getLogger(ForwardInvocationValidator.class);
+
+    private static class ForwardInvocationResult {
+        private final static ForwardInvocationResult NON_MATCH = new ForwardInvocationResult(null, Integer.MAX_VALUE);
+        private final static ForwardInvocationResult FULL_MATCH = new ForwardInvocationResult(null, Integer.MIN_VALUE);
+        private final int[] scores;
+        private final FunctionDefinitionInfo functionDefinitionInfo;
+
+        public ForwardInvocationResult(FunctionDefinitionInfo theFunctionDefinitionInfo, int... scores) {
+            functionDefinitionInfo = theFunctionDefinitionInfo;
+            this.scores = scores;
+        }
+
+        public int[] getScores() {
+            return scores;
+        }
+
+        private int getFirstScore() {
+            return scores[0];
+        }
+
+        public Optional<FunctionDefinitionInfo> getFunctionDefinitionInfo() {
+            return Optional.ofNullable(functionDefinitionInfo);
+        }
+    }
 
     public static FunctionDefinitionInfo resolveOnSignature(CallContext callContextFromCaller, Iterable<FunctionDefinitionInfo> candidateFunctionDefinitions, ConversionMap conversionMap) {
-        final Map<DataType, List<Conversion>> allMultipleConversions = conversionMap.getAllMultipleConversions();
-
-        allMultipleConversions.forEach((key, value) -> logger.info("from: {}, to: {}", key, value.stream().map(conv -> String.format("to: %s, implicit: %s, score: %s", conv.getToType(), conv.isImplicit(), conv.getScore())).collect(Collectors.toList())));
-
-//from: System.Integer, to: [to: System.String, implicit: false, score: 4, to: System.Boolean, implicit: false, score: 4, to: System.Long, implicit: true, score: 4, to: System.Decimal, implicit: true, score: 4, to: System.Quantity, implicit: true, score: 5]
-//from: System.Date, to: [to: System.String, implicit: false, score: 4, to: System.DateTime, implicit: true, score: 4]
-//from: System.Decimal, to: [to: System.String, implicit: false, score: 4, to: System.Boolean, implicit: false, score: 4, to: System.Quantity, implicit: true, score: 5]
-//from: System.Long, to: [to: System.String, implicit: false, score: 4, to: System.Boolean, implicit: false, score: 4, to: System.Integer, implicit: false, score: 4, to: System.Decimal, implicit: true, score: 4]
-
         if (candidateFunctionDefinitions != null) {
             final List<DataType> paramTypesFromCaller = StreamSupport.stream(callContextFromCaller.getSignature().getOperandTypes().spliterator(), false)
                     .collect(Collectors.toList());;
 
-                    // LUKETODO:  duplicate keys (Integer and Integer)
             final Map<DataType, List<Conversion>> implicitConversionsPerParamType = paramTypesFromCaller.stream()
                     .distinct()
                     .collect(Collectors.toMap(Function.identity(), entry -> conversionMap.getConversions(entry)
@@ -47,87 +61,12 @@ public class ForwardInvocationValidator {
                             .filter(Conversion::isImplicit)
                             .collect(Collectors.toList())));
 
-            final Optional<Integer> minScoreIfApplicable = implicitConversionsPerParamType.values().stream().flatMap(Collection::stream).map(Conversion::getScore).min(Comparator.comparing(Function.identity()));
-
-            final Map<DataType, List<Conversion>> implicitConversionsPerParamWithMinimumScore = implicitConversionsPerParamType
-                    .entrySet()
-                    .stream()
-                    .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream()
-                            .filter(conv -> minScoreIfApplicable.map(minScore -> minScore == conv.getScore())
-                                    .orElse(false))
-                            .collect(Collectors.toList())));
-
-            final List<FunctionDefinitionInfo> resolvedFunctionDefinitionInfos = new ArrayList<>();
-            // LUKETODO:  need to consider scores for multiple conversions
-            // LUKETODO:  what about functions with multiple implicit params each with different scores?
-            ForwardInvocationResult previousResult = ForwardInvocationResult.NON_MATCH;
+            final List<ForwardInvocationResult> resolvedFunctionDefinitionInfos = new ArrayList<>();
 
             for (FunctionDefinitionInfo candidateFunctionDefinition : candidateFunctionDefinitions) {
-                /*
-                1. NO MATCH
-                2. Non-implicit match
-                3. Score above
-                4. Score below
-                 */
+                final ForwardInvocationResult currentResult = scoreFunctionHeaderOrNothing(callContextFromCaller, candidateFunctionDefinition, implicitConversionsPerParamType);
 
-                final ForwardInvocationResult currentResult = ForwardInvocationValidator.scoreFunctionHeaderOrNothing(callContextFromCaller, candidateFunctionDefinition, implicitConversionsPerParamType);
-                if (ForwardInvocationResult.NON_MATCH == currentResult) {
-                    continue;
-                }
-
-                if (ForwardInvocationResult.FULL_MATCH == currentResult) {
-                    resolvedFunctionDefinitionInfos.clear();
-                    resolvedFunctionDefinitionInfos.add(candidateFunctionDefinition);
-                }
-
-                if (ForwardInvocationResult.NON_MATCH == previousResult) {
-                    resolvedFunctionDefinitionInfos.clear();
-                    resolvedFunctionDefinitionInfos.add(candidateFunctionDefinition);
-                } else {
-                    if (currentResult.scores.length == previousResult.scores.length) {
-                        if (currentResult.scores.length > 1) {
-                            Boolean allScoresLessThan = null;
-                            Boolean previousScoreMatch = null;
-                            boolean hasScoreMismatch = false;
-
-                            // LUKETODO:  [4,5] vs [5,4]
-                            // >> it could be [4,5,5] vis [5,4,4] and it doesn't matter
-                            for (int index = 0; index < currentResult.scores.length; index++) {
-                                final int currentScore = currentResult.scores[index];
-                                final int previousScore = previousResult.scores[index];
-
-                                if (allScoresLessThan == null) {
-                                    allScoresLessThan = currentScore < previousScore;
-                                } else {
-                                    allScoresLessThan = (currentScore < previousScore) && allScoresLessThan;
-                                }
-
-                                if (previousScoreMatch != null) {
-                                    if (previousScoreMatch !=  (currentScore < previousScore)) {
-                                        hasScoreMismatch = true;
-                                    }
-                                }
-
-                                previousScoreMatch = currentScore < previousScore;
-                            }
-
-                            if (allScoresLessThan != null && allScoresLessThan.booleanValue()) {
-                                resolvedFunctionDefinitionInfos.clear();
-                                resolvedFunctionDefinitionInfos.add(candidateFunctionDefinition);
-                            } else if (hasScoreMismatch) {
-                                // LUKETODO:  needs to be more specific in order to capture [4,5] vs [5,4]
-                                resolvedFunctionDefinitionInfos.clear();
-                            }
-                        } else {
-                            if (currentResult.getFirstScore() < previousResult.getFirstScore()) {
-                                resolvedFunctionDefinitionInfos.clear();
-                                resolvedFunctionDefinitionInfos.add(candidateFunctionDefinition);
-                            }
-                        }
-                    }
-                }
-
-                previousResult = currentResult;
+                doStuff(currentResult, resolvedFunctionDefinitionInfos);
             }
             if (resolvedFunctionDefinitionInfos.size() == 0) {
                 throw new CqlCompilerException("forward declaration resolution found NO functions for name:" + callContextFromCaller.getOperatorName());
@@ -135,55 +74,81 @@ public class ForwardInvocationValidator {
             if (resolvedFunctionDefinitionInfos.size() > 1) {
                 throw new CqlCompilerException("forward declaration resolution found more than one functions for name:" + callContextFromCaller.getOperatorName());
             }
-            return resolvedFunctionDefinitionInfos.get(0);
+            // LUKETODO: warning on get
+            return resolvedFunctionDefinitionInfos.get(0).getFunctionDefinitionInfo().get();
         }
 
         return null;
     }
 
-    private static boolean evaluateScores(ForwardInvocationResult previousResult, ForwardInvocationResult currentResult) {
+    // LUKETODO: what about multiple scored results?  we can't just assume there will always just be two
+    private static void doStuff(ForwardInvocationResult currentResult, List<ForwardInvocationResult> forwardInvocationResults) {
+        // LUKETODO: get rid of this:
+        final ForwardInvocationResult prevRes1 = forwardInvocationResults.isEmpty() ? ForwardInvocationResult.NON_MATCH : forwardInvocationResults.get(0);
+
         if (ForwardInvocationResult.NON_MATCH == currentResult) {
-            return false;
+            return;
         }
 
-        if (ForwardInvocationResult.FULL_MATCH == currentResult) {
-            return true;
+        if (forwardInvocationResults.isEmpty()) {
+            forwardInvocationResults.add(currentResult);
+            return;
         }
 
-        if (currentResult.scores.length == previousResult.scores.length) {
-            Boolean allScoresLessThan = null;
+        if (currentResult.scores.length == 1) {
+            final Optional<Integer> optMinPrevScores = forwardInvocationResults.stream()
+                    .filter(result -> result.scores.length == 1)
+                    .map(ForwardInvocationResult::getFirstScore)
+                    .min(Integer::compareTo);
 
-            for (int index = 0; index < currentResult.scores.length; index++) {
-                final int currentScore = currentResult.scores[index];
-                final int previousScore = previousResult.scores[index];
-
-                if (allScoresLessThan == null) {
-                    allScoresLessThan = currentScore < previousScore;
-                } else {
-
-                    allScoresLessThan = (currentScore < previousScore) && allScoresLessThan;
-                }
+            if (currentResult.getFirstScore() < optMinPrevScores.orElse(Integer.MAX_VALUE)) {
+                forwardInvocationResults.clear();
+                forwardInvocationResults.add(currentResult);
             }
 
-            return allScoresLessThan;
+            return;
         }
 
-        // LUKETODO: solve problem of [4,5] and [5,4] and remove all
-        // LUKETODO: get rid of this since it doesn't make sense.... instead check for the previous invocation
-        return currentResult.getFirstScore() < previousResult.getFirstScore();
-    }
-
-    private static class ForwardInvocationResult {
-        private final static ForwardInvocationResult NON_MATCH = new ForwardInvocationResult(Integer.MAX_VALUE);
-        private final static ForwardInvocationResult FULL_MATCH = new ForwardInvocationResult(Integer.MIN_VALUE);
-        private final int[] scores;
-
-        public ForwardInvocationResult(int... scores) {
-            this.scores = scores;
+        if (forwardInvocationResults.stream()
+                .map(ForwardInvocationResult::getScores)
+                .anyMatch(scores -> scores.length != currentResult.scores.length)) {
+            return;
         }
 
-        private int getFirstScore() {
-            return scores[0];
+        Boolean allScoresLessThanOrEqual = null;
+        Boolean previousScoreMatch = null;
+
+        for (int index = 0; index < currentResult.scores.length; index++) {
+            final int currentScore = currentResult.scores[index];
+
+            final List<int[]> previousScoresForPreviousResults = forwardInvocationResults.stream()
+                    .map(ForwardInvocationResult::getScores)
+                    .collect(Collectors.toList());
+
+            for (int[] previousScores : previousScoresForPreviousResults) {
+                final int previousScore = previousScores[index];
+
+                if (allScoresLessThanOrEqual == null) {
+                    allScoresLessThanOrEqual = currentScore <= previousScore;
+                } else {
+                    allScoresLessThanOrEqual = (currentScore <= previousScore) && allScoresLessThanOrEqual;
+                }
+
+                if (previousScoreMatch != null) {
+                    // Previous candidate has scores of [4,5] but the current candidate has scores [5,4] so we cannot resolve
+                    if (previousScoreMatch != (currentScore <= previousScore)) {
+                        // LUKETODO: get warning
+                        throw new CqlCompilerException("Cannot resolve forward declaration for function call:" + currentResult.getFunctionDefinitionInfo().get().getName());
+                    }
+                }
+
+                previousScoreMatch = currentScore < previousScore;
+            }
+        }
+
+        if (allScoresLessThanOrEqual != null && allScoresLessThanOrEqual.booleanValue()) {
+            forwardInvocationResults.clear();
+            forwardInvocationResults.add(currentResult);
         }
     }
 
@@ -221,7 +186,7 @@ public class ForwardInvocationValidator {
             scores[index] = score;
         }
 
-        return new ForwardInvocationResult(scores);
+        return new ForwardInvocationResult(candidateFunctionDefinition, scores);
     }
 
     private static int compareEachMethodParam(DataType dataTypeFromCaller, DataType dataTypeFromCandidate, Map<DataType, List<Conversion>> implicitConversionsPerParamType) {
@@ -240,11 +205,7 @@ public class ForwardInvocationValidator {
                 .filter(conv -> conv.getToType().equals(dataTypeFromCandidate))
                 .collect(Collectors.toList());
 
-        if (conversionsMatchingToType.size() > 1) {
-            return Integer.MAX_VALUE;
-        }
-
-        if (conversionsMatchingToType.size() < 1) {
+        if (conversionsMatchingToType.size() != 1) {
             return Integer.MAX_VALUE;
         }
 
