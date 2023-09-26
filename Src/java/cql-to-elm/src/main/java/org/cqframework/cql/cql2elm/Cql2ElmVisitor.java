@@ -3797,7 +3797,10 @@ DATETIME
 
         final Iterable<FunctionDefinitionInfo> functionInfos = libraryInfo.resolveFunctionReference(functionName);
 
-        final FunctionDefinitionInfo resolvedFunctionInfo = resolveOnSignature(expectedCallContext, functionInfos);
+        final FunctionDefinitionInfo resolvedFunctionInfo =
+                ForwardInvocationValidator.resolveOnSignature(expectedCallContext,
+                        functionInfos,
+                        libraryBuilder.getConversionMap());
         if (resolvedFunctionInfo == null) {
             // Preserve the old behaviour of attempting to resolve the function anyway, otherwise several tests will fail, including:
             // r401.BaseTest > testFHIRPath,  dstu2.BaseTest > testParameterContext,
@@ -3823,27 +3826,6 @@ DATETIME
             chunks = saveChunks;
         }
         return libraryBuilder.resolveFunction(libraryName, functionName, expressions, mustResolve, allowPromotionAndDemotion, allowFluent);
-    }
-
-    private FunctionDefinitionInfo resolveOnSignature(CallContext expectedCallContext, Iterable<FunctionDefinitionInfo> functionInfos) {
-        if (functionInfos != null) {
-            final List<FunctionDefinitionInfo> resolvedFunctionDefinitionInfos = new ArrayList<>();
-            for (FunctionDefinitionInfo functionInfo : functionInfos) {
-                final boolean areFunctionsEquivalent = ForwardInvocationValidator.areFunctionHeadersEquivalent(expectedCallContext, functionInfo, libraryBuilder.getConversionMap(), libraryBuilder.getSystemLibrary().getOperatorMap());
-                if (areFunctionsEquivalent) {
-                    resolvedFunctionDefinitionInfos.add(functionInfo);
-                }
-            }
-            if (resolvedFunctionDefinitionInfos.size() == 0) {
-                throw new CqlCompilerException("forward declaration resolution found NO functions for name:" + expectedCallContext.getOperatorName());
-            }
-            if (resolvedFunctionDefinitionInfos.size() > 1) {
-                throw new CqlCompilerException("forward declaration resolution found more than one functions for name:" + expectedCallContext.getOperatorName());
-            }
-            return resolvedFunctionDefinitionInfos.get(0);
-        }
-
-        return null;
     }
 
     public Expression resolveFunctionOrQualifiedFunction(String identifier, cqlParser.ParamListContext paramListCtx) {

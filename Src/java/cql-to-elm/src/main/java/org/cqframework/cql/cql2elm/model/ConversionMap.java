@@ -2,10 +2,8 @@ package org.cqframework.cql.cql2elm.model;
 
 import org.hl7.cql.model.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ConversionMap {
     public enum ConversionScore {
@@ -395,5 +393,25 @@ public class ConversionMap {
         }
 
         return result;
+    }
+
+    // LUKETODO: get rid of this:  this is for debugging only
+    public Map<DataType, List<Conversion>> getAllMultipleConversions() {
+        return map.entrySet().stream()
+                .filter(entry -> entry.getValue().size() > 1)
+                .filter(entry -> entry.getValue().stream().anyMatch(Conversion::isImplicit))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", ConversionMap.class.getSimpleName() + "[", "]")
+                .add("map=" + map)
+                .add("genericConversions=" + genericConversions)
+                .add("listDemotion=" + listDemotion)
+                .add("listPromotion=" + listPromotion)
+                .add("intervalDemotion=" + intervalDemotion)
+                .add("intervalPromotion=" + intervalPromotion)
+                .toString();
     }
 }
