@@ -17,8 +17,8 @@ class ForwardInvocationResult {
         return new ForwardInvocationResult(functionDefinitionInfo, Integer.MAX_VALUE);
     }
 
-    public ForwardInvocationResult(FunctionDefinitionInfo theFunctionDefinitionInfo, int... scores) {
-        functionDefinitionInfo = theFunctionDefinitionInfo;
+    public ForwardInvocationResult(FunctionDefinitionInfo functionDefinitionInfo, int... scores) {
+        this.functionDefinitionInfo = functionDefinitionInfo;
         this.scores = scores;
     }
 

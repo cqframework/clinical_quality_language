@@ -1,4 +1,4 @@
-library TestForwardDeclarationScoringImplicitConversionMultipleParams
+library TestForwardDeclarationScoringImplicitConversionMultipleParamsCannotResolve
 
 define function caller():
    callee(1, 2)

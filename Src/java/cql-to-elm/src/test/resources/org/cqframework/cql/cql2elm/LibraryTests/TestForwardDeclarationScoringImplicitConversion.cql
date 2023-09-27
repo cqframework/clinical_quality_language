@@ -1,4 +1,4 @@
-library TestForwardDeclaration
+library TestForwardDeclarationScoringImplicitConversion
 
 define function toString():
    calledFunc(1)

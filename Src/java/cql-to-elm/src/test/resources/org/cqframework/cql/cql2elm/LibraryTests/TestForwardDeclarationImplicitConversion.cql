@@ -1,4 +1,4 @@
-library TestForwardDeclaration
+library TestForwardDeclarationImplicitConversion
 
 // This is to test that forward declartions for overloaded functions works as expected.
 using FHIR version '4.0.0'

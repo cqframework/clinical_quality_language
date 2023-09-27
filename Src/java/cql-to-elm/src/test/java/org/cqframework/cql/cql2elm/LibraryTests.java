@@ -571,11 +571,6 @@ public class LibraryTests {
         assertEquals("System.Decimal", functionRef.getOperand().get(0).getResultType().toString());
     }
 
-//from: System.Integer, to: [to: System.String, implicit: false, score: 4, to: System.Boolean, implicit: false, score: 4, to: System.Long, implicit: true, score: 4, to: System.Decimal, implicit: true, score: 4, to: System.Quantity, implicit: true, score: 5]
-//from: System.Date, to: [to: System.String, implicit: false, score: 4, to: System.DateTime, implicit: true, score: 4]
-//from: System.Decimal, to: [to: System.String, implicit: false, score: 4, to: System.Boolean, implicit: false, score: 4, to: System.Quantity, implicit: true, score: 5]
-//from: System.Long, to: [to: System.String, implicit: false, score: 4, to: System.Boolean, implicit: false, score: 4, to: System.Integer, implicit: false, score: 4, to: System.Decimal, implicit: true, score: 4]
-
     @Test
     public void TestNonForwardDeclarationsScoringImplicitConversionMultipleParams() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestNonForwardDeclarationScoringImplicitConversionMultipleParams.cql");
@@ -602,7 +597,6 @@ public class LibraryTests {
     @Test
     public void TestNonForwardDeclarationsScoringImplicitConversionMultipleParamsCannotResolve() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestNonForwardDeclarationScoringImplicitConversionMultipleParamsCannotResolve.cql");
-        // LUKETODO: more than 1 error?
         assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), greaterThanOrEqualTo(1));
     }
 }

@@ -42,10 +42,10 @@ public class FunctionDefinitionInfo extends BaseInfo {
     }
 
     @Override
-    public boolean equals(Object theO) {
-        if (this == theO) return true;
-        if (theO == null || getClass() != theO.getClass()) return false;
-        FunctionDefinitionInfo that = (FunctionDefinitionInfo) theO;
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (other == null || getClass() != other.getClass()) return false;
+        FunctionDefinitionInfo that = (FunctionDefinitionInfo) other;
         return Objects.equals(name, that.name) && Objects.equals(context, that.context) && Objects.equals(preCompileOutput, that.preCompileOutput);
     }
 

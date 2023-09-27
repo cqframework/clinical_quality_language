@@ -1,4 +1,4 @@
-library TestForwardDeclaration
+library TestForwardDeclarationGeneritcType
 
 // This is to test that forward declartions for overloaded functions works as expected.
 

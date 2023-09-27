@@ -1,4 +1,4 @@
-library TestForwardDeclarationScoringImplicitConversionMultipleParams
+library TestNonForwardDeclarationScoringImplicitConversionMultipleParamsCannotResolve
 
 define function callee(value System.Decimal, value2 System.Quantity): null
 define function callee(value System.Quantity, value2 System.Decimal): null

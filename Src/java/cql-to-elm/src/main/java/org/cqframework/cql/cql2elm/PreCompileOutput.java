@@ -21,28 +21,28 @@ public class PreCompileOutput {
         return resultType;
     }
 
-    public static PreCompileOutput noReturnType(FunctionDef theFunctionDef) {
-        return new PreCompileOutput(theFunctionDef, null);
+    public static PreCompileOutput noReturnType(FunctionDef functionDef) {
+        return new PreCompileOutput(functionDef, null);
     }
 
-    public static PreCompileOutput withReturnType(FunctionDef theFunctionDef, TypeSpecifier theResultType) {
-        return new PreCompileOutput(theFunctionDef, theResultType);
+    public static PreCompileOutput withReturnType(FunctionDef functionDef, TypeSpecifier resultType) {
+        return new PreCompileOutput(functionDef, resultType);
     }
 
-    private PreCompileOutput(FunctionDef theFunctionDef, TypeSpecifier theResultType) {
-        functionDef = theFunctionDef;
-        resultType = theResultType;
+    private PreCompileOutput(FunctionDef functionDef, TypeSpecifier resultType) {
+        this.functionDef = functionDef;
+        this.resultType = resultType;
     }
 
     @Override
-    public boolean equals(Object theO) {
-        if (this == theO) {
+    public boolean equals(Object other) {
+        if (this == other) {
             return true;
         }
-        if (theO == null || getClass() != theO.getClass()) {
+        if (other == null || getClass() != other.getClass()) {
             return false;
         }
-        PreCompileOutput that = (PreCompileOutput) theO;
+        PreCompileOutput that = (PreCompileOutput) other;
         return Objects.equals(functionDef, that.functionDef) && Objects.equals(resultType, that.resultType);
     }
 
@@ -54,8 +54,8 @@ public class PreCompileOutput {
     @Override
     public String toString() {
         return new StringJoiner(", ", PreCompileOutput.class.getSimpleName() + "[", "]")
-                .add("myFunctionDef=" + functionDef)
-                .add("myResultType=" + resultType)
+                .add("functionDef=" + functionDef)
+                .add("resultType=" + resultType)
                 .toString();
     }
 }
