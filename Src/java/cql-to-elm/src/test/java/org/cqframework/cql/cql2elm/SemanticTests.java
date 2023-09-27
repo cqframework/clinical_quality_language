@@ -4,16 +4,18 @@ import org.hl7.cql.model.ChoiceType;
 import org.hl7.cql.model.DataType;
 import org.hl7.cql.model.NamedType;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.testng.Assert.assertThrows;
 
 public class SemanticTests {
 
@@ -634,6 +636,20 @@ public class SemanticTests {
     @Test
     public void TestQuotedForwards() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("TestQuotedForwards.cql", 0);
+    }
+
+    @Test
+    public void testIncorrectParameterType1204() throws IOException {
+        final CqlTranslator translator = runSemanticTest("TestIncorrectParameterType1204.cql", 2);
+
+        final List<CqlCompilerException> errors = translator.getErrors();
+
+        assertTrue(errors.stream().map(Throwable::getMessage).anyMatch("Could not find type for model: FHIR and name: Code"::equals));
+    }
+
+    @Test
+    public void testNonExistentFileName() {
+        assertThrows(IOException.class, () -> TestUtils.runSemanticTest("ThisFileDoesNotExist.cql", 0));
     }
 
     private CqlTranslator runSemanticTest(String testFileName) throws IOException {
