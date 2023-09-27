@@ -4,7 +4,6 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cqframework.cql.cql2elm.model.invocation.*;
 import org.cqframework.cql.cql2elm.preprocessor.*;
@@ -922,7 +921,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         DataType resultType = libraryBuilder.resolveTypeName(modelIdentifier, identifier);
         if (null == resultType) {
-            throw new CqlCompilerException(String.format("Could not find type for library: %s and name: %s", modelIdentifier, identifier));
+            throw new CqlCompilerException(String.format("Could not find type for model: %s and name: %s", modelIdentifier, identifier));
         }
         NamedTypeSpecifier result = of.createNamedTypeSpecifier()
                 .withName(libraryBuilder.dataTypeToQName(resultType));

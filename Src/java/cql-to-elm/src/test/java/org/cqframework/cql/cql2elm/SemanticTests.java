@@ -644,7 +644,7 @@ public class SemanticTests {
 
         final List<CqlCompilerException> errors = translator.getErrors();
 
-        assertTrue(errors.stream().map(Throwable::getMessage).anyMatch("Could not find type for library: FHIR and name: Code"::equals));
+        assertTrue(errors.stream().map(Throwable::getMessage).anyMatch("Could not find type for model: FHIR and name: Code"::equals));
     }
 
     @Test
