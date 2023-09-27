@@ -921,6 +921,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         String identifier = getTypeIdentifier(qualifiers, parseString(ctx.referentialOrTypeNameIdentifier()));
 
         DataType resultType = libraryBuilder.resolveTypeName(modelIdentifier, identifier);
+        if (null == resultType) {
+            throw new CqlCompilerException(String.format("Could not find type for library: %s and name: %s", modelIdentifier, identifier));
+        }
         NamedTypeSpecifier result = of.createNamedTypeSpecifier()
                 .withName(libraryBuilder.dataTypeToQName(resultType));
 

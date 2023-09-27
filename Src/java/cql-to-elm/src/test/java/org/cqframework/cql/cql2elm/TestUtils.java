@@ -14,13 +14,13 @@ import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorVisitor;
 import org.hl7.cql.model.NamespaceInfo;
 import org.hl7.elm.r1.Library;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -204,7 +204,9 @@ public class TestUtils {
         }
         String fileName = segments[segments.length - 1];
 
-        File translationTestFile = new File(URLDecoder.decode(Cql2ElmVisitorTest.class.getResource(testFileName).getFile(), "UTF-8"));
+        final URL resource = Optional.ofNullable(Cql2ElmVisitorTest.class.getResource(testFileName))
+                .orElseThrow(() -> new FileNotFoundException("cannot find file with path: " + testFileName));
+        File translationTestFile = new File(URLDecoder.decode(resource.getFile(), StandardCharsets.UTF_8));
         ModelManager modelManager = new ModelManager();
         LibraryManager libraryManager = new LibraryManager(modelManager, options);
         libraryManager.getLibrarySourceLoader().registerProvider(path == null ? new TestLibrarySourceProvider() : new TestLibrarySourceProvider(path));
