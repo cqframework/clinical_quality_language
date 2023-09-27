@@ -9,10 +9,6 @@ class ForwardInvocationResult {
     private final int[] scores;
     private final FunctionDefinitionInfo functionDefinitionInfo;
 
-    public static ForwardInvocationResult unImplicitMatch(FunctionDefinitionInfo functionDefinitionInfo) {
-        return new ForwardInvocationResult(functionDefinitionInfo, Integer.MIN_VALUE);
-    }
-
     public static ForwardInvocationResult noMatch(FunctionDefinitionInfo functionDefinitionInfo) {
         return new ForwardInvocationResult(functionDefinitionInfo, Integer.MAX_VALUE);
     }

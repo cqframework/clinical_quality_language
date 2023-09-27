@@ -113,7 +113,7 @@ public class ForwardInvocationValidator {
         final FunctionDef functionDefFromCandidate = candidateFunctionDefinition.getPreCompileOutput().getFunctionDef();
 
         if (! callContextFromCaller.getOperatorName().equals(functionDefFromCandidate.getName())) {
-            return ForwardInvocationResult.unImplicitMatch(candidateFunctionDefinition);
+            return ForwardInvocationResult.noMatch(candidateFunctionDefinition);
         }
 
         final List<DataType> paramTypesFromCaller = StreamSupport.stream(callContextFromCaller.getSignature().getOperandTypes().spliterator(), false)
@@ -135,10 +135,6 @@ public class ForwardInvocationValidator {
             final DataType dataTypeFromCandidate = paramTypesFromCandidate.get(index);
 
             final int score = compareEachMethodParam(dataTypeFromCaller, dataTypeFromCandidate, implicitConversionsPerParamType);
-
-            if (Integer.MAX_VALUE == score) {
-                return ForwardInvocationResult.noMatch(candidateFunctionDefinition);
-            }
 
             scores[index] = score;
         }
