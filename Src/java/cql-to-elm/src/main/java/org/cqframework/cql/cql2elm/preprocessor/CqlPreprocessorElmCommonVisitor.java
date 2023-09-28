@@ -29,7 +29,7 @@ import java.util.Stack;
 /**
  * Common functionality used by {@link CqlPreprocessorVisitor} and {@link Cql2ElmVisitor}
  */
-public class CqlPreprocesorElmCommonVisitor extends cqlBaseVisitor {
+public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
     protected final ObjectFactory of = new ObjectFactory();
     protected final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
     protected Stack<Chunk> chunks = new Stack<>();
@@ -44,11 +44,11 @@ public class CqlPreprocesorElmCommonVisitor extends cqlBaseVisitor {
     private final List<Expression> expressions = new ArrayList<>();
     private boolean includeDeprecatedElements = false;
 
-    public CqlPreprocesorElmCommonVisitor(LibraryBuilder libraryBuilder) {
+    public CqlPreprocessorElmCommonVisitor(LibraryBuilder libraryBuilder) {
         this.libraryBuilder = libraryBuilder;
     }
 
-    public CqlPreprocesorElmCommonVisitor(LibraryBuilder libraryBuilder, TokenStream tokenStream) {
+    public CqlPreprocessorElmCommonVisitor(LibraryBuilder libraryBuilder, TokenStream tokenStream) {
         this.libraryBuilder = libraryBuilder;
         this.tokenStream = tokenStream;
     }
@@ -118,6 +118,25 @@ public class CqlPreprocesorElmCommonVisitor extends cqlBaseVisitor {
     }
 
     @Override
+    public NamedTypeSpecifier visitNamedTypeSpecifier(cqlParser.NamedTypeSpecifierContext ctx) {
+        List<String> qualifiers = parseQualifiers(ctx);
+        String modelIdentifier = getModelIdentifier(qualifiers);
+        String identifier = getTypeIdentifier(qualifiers, parseString(ctx.referentialOrTypeNameIdentifier()));
+
+        DataType resultType = libraryBuilder.resolveTypeName(modelIdentifier, identifier);
+        if (null == resultType) {
+            throw new CqlCompilerException(String.format("Could not find type for model: %s and name: %s", modelIdentifier, identifier));
+        }
+        NamedTypeSpecifier result = of.createNamedTypeSpecifier()
+                .withName(libraryBuilder.dataTypeToQName(resultType));
+
+        // Fluent API would be nice here, but resultType isn't part of the model so...
+        result.setResultType(resultType);
+
+        return result;
+    }
+
+    @Override
     public TupleElementDefinition visitTupleElementDefinition(cqlParser.TupleElementDefinitionContext ctx) {
         TupleElementDefinition result = of.createTupleElementDefinition()
                 .withName(parseString(ctx.referentialIdentifier()))
@@ -143,21 +162,6 @@ public class CqlPreprocesorElmCommonVisitor extends cqlBaseVisitor {
         typeSpecifier.setResultType(resultType);
 
         return typeSpecifier;
-    }
-
-    @Override
-    public NamedTypeSpecifier visitNamedTypeSpecifier(cqlParser.NamedTypeSpecifierContext ctx) {
-        List<String> qualifiers = parseQualifiers(ctx);
-        String modelIdentifier = getModelIdentifier(qualifiers);
-        String identifier = getTypeIdentifier(qualifiers, parseString(ctx.referentialOrTypeNameIdentifier()));
-
-        DataType resultType = libraryBuilder.resolveTypeName(modelIdentifier, identifier);
-        NamedTypeSpecifier result = of.createNamedTypeSpecifier().withName(libraryBuilder.dataTypeToQName(resultType));
-
-        // Fluent API would be nice here, but resultType isn't part of the model so...
-        result.setResultType(resultType);
-
-        return result;
     }
 
     @Override

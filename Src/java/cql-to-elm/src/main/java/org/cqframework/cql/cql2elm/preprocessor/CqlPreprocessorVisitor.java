@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CqlPreprocessorVisitor extends CqlPreprocesorElmCommonVisitor {
+public class CqlPreprocessorVisitor extends CqlPreprocessorElmCommonVisitor {
     static final Logger logger = LoggerFactory.getLogger(CqlPreprocessorVisitor.class);
     private boolean implicitContextCreated = false;
     private String currentContext = "Unfiltered";

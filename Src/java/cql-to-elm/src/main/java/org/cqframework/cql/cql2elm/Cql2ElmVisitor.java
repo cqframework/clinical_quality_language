@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 
-public class Cql2ElmVisitor extends CqlPreprocesorElmCommonVisitor {
+public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     static final Logger logger = LoggerFactory.getLogger(Cql2ElmVisitor.class);
     private boolean locate = false;
     private boolean resultTypes = false;
@@ -328,25 +328,6 @@ public class Cql2ElmVisitor extends CqlPreprocesorElmCommonVisitor {
         libraryBuilder.addParameter(param);
 
         return param;
-    }
-
-    @Override
-    public NamedTypeSpecifier visitNamedTypeSpecifier(cqlParser.NamedTypeSpecifierContext ctx) {
-        List<String> qualifiers = parseQualifiers(ctx);
-        String modelIdentifier = getModelIdentifier(qualifiers);
-        String identifier = getTypeIdentifier(qualifiers, parseString(ctx.referentialOrTypeNameIdentifier()));
-
-        DataType resultType = libraryBuilder.resolveTypeName(modelIdentifier, identifier);
-        if (null == resultType) {
-            throw new CqlCompilerException(String.format("Could not find type for model: %s and name: %s", modelIdentifier, identifier));
-        }
-        NamedTypeSpecifier result = of.createNamedTypeSpecifier()
-                .withName(libraryBuilder.dataTypeToQName(resultType));
-
-        // Fluent API would be nice here, but resultType isn't part of the model so...
-        result.setResultType(resultType);
-
-        return result;
     }
 
     @Override
@@ -700,7 +681,7 @@ public class Cql2ElmVisitor extends CqlPreprocesorElmCommonVisitor {
     @Override
     public Object visitInstanceSelector(cqlParser.InstanceSelectorContext ctx) {
         Instance instance = of.createInstance();
-        NamedTypeSpecifier classTypeSpecifier = visitNamedTypeSpecifier(ctx.namedTypeSpecifier());
+        NamedTypeSpecifier classTypeSpecifier = (NamedTypeSpecifier)visitNamedTypeSpecifier(ctx.namedTypeSpecifier());
         instance.setClassType(classTypeSpecifier.getName());
         instance.setResultType(classTypeSpecifier.getResultType());
 
