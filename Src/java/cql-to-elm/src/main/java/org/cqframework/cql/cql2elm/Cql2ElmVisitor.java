@@ -3,6 +3,7 @@ package org.cqframework.cql.cql2elm;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.apache.commons.lang3.tuple.Pair;
 import org.cqframework.cql.cql2elm.model.invocation.*;
 import org.cqframework.cql.cql2elm.preprocessor.*;
 import org.cqframework.cql.elm.tracking.TrackBack;
@@ -328,6 +329,52 @@ public class Cql2ElmVisitor extends CqlPreprocesorElmCommonVisitor {
         libraryBuilder.addParameter(param);
 
         return param;
+    }
+
+    private List<String> parseQualifiers(cqlParser.NamedTypeSpecifierContext ctx) {
+        List<String> qualifiers = new ArrayList<>();
+        if (ctx.qualifier() != null) {
+            for (cqlParser.QualifierContext qualifierContext : ctx.qualifier()) {
+                String qualifier = parseString(qualifierContext);
+                qualifiers.add(qualifier);
+            }
+        }
+        return qualifiers;
+    }
+
+    private String getModelIdentifier(List<String> qualifiers) {
+        return qualifiers.size() > 0 ? qualifiers.get(0) : null;
+    }
+
+    private String getTypeIdentifier(List<String> qualifiers, String identifier) {
+        if (qualifiers.size() > 1) {
+            String result = null;
+            for (int i = 1; i < qualifiers.size(); i++) {
+                result = result == null ? qualifiers.get(i) : (result + "." + qualifiers.get(i));
+            }
+            return result + "." + identifier;
+        }
+
+        return identifier;
+    }
+
+    @Override
+    public NamedTypeSpecifier visitNamedTypeSpecifier(cqlParser.NamedTypeSpecifierContext ctx) {
+        List<String> qualifiers = parseQualifiers(ctx);
+        String modelIdentifier = getModelIdentifier(qualifiers);
+        String identifier = getTypeIdentifier(qualifiers, parseString(ctx.referentialOrTypeNameIdentifier()));
+
+        DataType resultType = libraryBuilder.resolveTypeName(modelIdentifier, identifier);
+        if (null == resultType) {
+            throw new CqlCompilerException(String.format("Could not find type for model: %s and name: %s", modelIdentifier, identifier));
+        }
+        NamedTypeSpecifier result = of.createNamedTypeSpecifier()
+                .withName(libraryBuilder.dataTypeToQName(resultType));
+
+        // Fluent API would be nice here, but resultType isn't part of the model so...
+        result.setResultType(resultType);
+
+        return result;
     }
 
     @Override
