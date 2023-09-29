@@ -181,6 +181,8 @@ public class TranslationTests {
         CompletableFuture.allOf(cfs).join();
     }
 
+    // LUKETODO:  add All of the translator tests from CqlTestSuite on
+
     private CqlTranslator createTranslator() {
         try {
             return TestUtils.createTranslator("CMS146v2_Test_CQM.cql");

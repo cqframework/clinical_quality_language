@@ -486,6 +486,34 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         return cd;
     }
 
+    @Override
+    public NamedTypeSpecifier visitNamedTypeSpecifier(cqlParser.NamedTypeSpecifierContext ctx) {
+        List<String> qualifiers = parseQualifiers(ctx);
+        String modelIdentifier = getModelIdentifier(qualifiers);
+        String identifier = getTypeIdentifier(qualifiers, parseString(ctx.referentialOrTypeNameIdentifier()));
+
+        final GenericResult<NamedTypeSpecifier > retrievedResult = libraryBuilder.getNamedTypeSpecifierResult(String.format("%s:%s", modelIdentifier, identifier));
+
+        if (retrievedResult != null) {
+            if (retrievedResult.hasError()) {
+                return null;
+            }
+            return retrievedResult.getUnderlyingThing();
+        }
+
+        DataType resultType = libraryBuilder.resolveTypeName(modelIdentifier, identifier);
+        if (null == resultType) {
+            throw new CqlCompilerException(String.format("Could not find type for model: %s and name: %s", modelIdentifier, identifier));
+        }
+        NamedTypeSpecifier result = of.createNamedTypeSpecifier()
+                .withName(libraryBuilder.dataTypeToQName(resultType));
+
+        // Fluent API would be nice here, but resultType isn't part of the model so...
+        result.setResultType(resultType);
+
+        return result;
+    }
+
     private boolean isUnfilteredContext(String contextName) {
         return contextName.equals("Unfiltered") || (libraryBuilder.isCompatibilityLevel3() && contextName.equals("Population"));
     }
@@ -3795,7 +3823,7 @@ DATETIME
         // No matching function that's already been compiled, so start attempting to compile one
         final CallContext expectedCallContext = getCallContext(libraryName, functionName, expressions, mustResolve, allowPromotionAndDemotion, allowFluent);
 
-        final Iterable<FunctionDefinitionInfo> functionInfos = libraryInfo.resolveFunctionReference(functionName);
+        final Iterable<GenericResult<FunctionDefinitionInfo>> functionInfos = libraryInfo.resolveFunctionReferenceFromName(functionName);
 
         final FunctionDefinitionInfo resolvedFunctionInfo =
                 ForwardInvocationValidator.resolveOnSignature(expectedCallContext,
@@ -3916,7 +3944,32 @@ DATETIME
     }
 
     public Object internalVisitFunctionDefinition(cqlParser.FunctionDefinitionContext ctx) {
-        final PreCompileOutput preCompileOutput = preCompile(ctx);
+        final String functionDefinitionName = parseString(ctx.identifierOrFunctionIdentifier());
+        final String identifierFromHashedClass = generateHashForLibraryBuilder(ctx);
+        final Iterable<GenericResult<FunctionDefinitionInfo>> functionDefinitionInfos = libraryInfo.resolveFunctionReferenceFromHash(identifierFromHashedClass);
+
+        // LUKETODO: we'd rather not do the preCompile twice but how tell which is the right
+        // LUKETODO:  if we do this we get duplicate function definitions
+        // LUKETODO:  we need to do the same "result" pattern as before
+        // LUKETODO:   preComile() fails with an Exception so we never get to invoke add()
+        Optional<GenericResult<FunctionDefinitionInfo>> foundFunction = Optional.empty();
+        if (functionDefinitionInfos != null) {
+            for (GenericResult<FunctionDefinitionInfo> functionDefinitionInfo : functionDefinitionInfos) {
+                foundFunction = Optional.of(functionDefinitionInfo);
+            }
+        }
+
+        if (foundFunction.isPresent()) {
+            final GenericResult<FunctionDefinitionInfo> functionDefinitionInfoGenericResult = foundFunction.get();
+            if (functionDefinitionInfoGenericResult.hasError()) {
+                return null;
+            }
+        }
+
+        final PreCompileOutput preCompileOutput = foundFunction.map(GenericResult::getUnderlyingThing).map(FunctionDefinitionInfo::getPreCompileOutput)
+                .orElse(preCompile(ctx));
+
+//        final PreCompileOutput preCompileOutput = preCompile(ctx);
 
         final FunctionDef fun = preCompileOutput.getFunctionDef();
         final TypeSpecifier resultType = preCompileOutput.getResultType();
@@ -3928,7 +3981,6 @@ DATETIME
                     libraryBuilder.pushExpressionContext(currentContext);
                     try {
                         // Ensure uniqueness among functions with the same name but different signatures
-                        final String identifierFromHashedClass = generateHashForLibraryBuilder(ctx);
                         libraryBuilder.pushExpressionDefinition(String.format("%s()", identifierFromHashedClass));
                         try {
                             fun.setExpression(parseExpression(ctx.functionBody()));
@@ -3987,6 +4039,9 @@ DATETIME
     @Override
     public Object visitFunctionDefinition(cqlParser.FunctionDefinitionContext ctx) {
         FunctionDef result = (FunctionDef)internalVisitFunctionDefinition(ctx);
+        if (result == null) {
+            return null;
+        }
         Operator operator = Operator.fromFunctionDef(result);
         if (forwardFunctions.isEmpty() || !forwardFunctions.peek().getName().equals(operator.getName())) {
             Set<Signature> definedSignatures = definedFunctionDefinitions.get(operator.getName());

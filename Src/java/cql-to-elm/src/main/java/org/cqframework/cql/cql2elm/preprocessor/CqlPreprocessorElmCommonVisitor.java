@@ -117,14 +117,18 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
         }
     }
 
+    // LUKETODO:  force each subclass to explicitly implement this
+    // LUKETODO:  There are some code paths where this class is not getting invoked:  for example, from Elm's visitFunctionDefinition
     @Override
     public NamedTypeSpecifier visitNamedTypeSpecifier(cqlParser.NamedTypeSpecifierContext ctx) {
         List<String> qualifiers = parseQualifiers(ctx);
         String modelIdentifier = getModelIdentifier(qualifiers);
         String identifier = getTypeIdentifier(qualifiers, parseString(ctx.referentialOrTypeNameIdentifier()));
+        final String typeSpecifierKey = String.format("%s:%s", modelIdentifier, identifier);
 
         DataType resultType = libraryBuilder.resolveTypeName(modelIdentifier, identifier);
         if (null == resultType) {
+            libraryBuilder.addNamedTypeSpecifierResult(typeSpecifierKey, GenericResult.withError());
             throw new CqlCompilerException(String.format("Could not find type for model: %s and name: %s", modelIdentifier, identifier));
         }
         NamedTypeSpecifier result = of.createNamedTypeSpecifier()
@@ -132,6 +136,8 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
 
         // Fluent API would be nice here, but resultType isn't part of the model so...
         result.setResultType(resultType);
+
+        libraryBuilder.addNamedTypeSpecifierResult(typeSpecifierKey, GenericResult.withTypeSpecifier(result));
 
         return result;
     }

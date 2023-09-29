@@ -3,7 +3,6 @@ package org.cqframework.cql.cql2elm;
 import org.cqframework.cql.cql2elm.model.*;
 import org.cqframework.cql.cql2elm.model.invocation.*;
 import org.cqframework.cql.elm.tracking.TrackBack;
-import org.fhir.ucum.UcumService;
 import org.hl7.cql.model.*;
 import org.hl7.cql_annotations.r1.CqlToElmError;
 import org.hl7.cql_annotations.r1.CqlToElmInfo;
@@ -93,6 +92,8 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     private final Map<String, Model> models = new LinkedHashMap<>();
+
+    private final Map<String, GenericResult<NamedTypeSpecifier>> nameTypeSpecifiers = new HashMap<>();
     private final Map<String, CompiledLibrary> libraries = new LinkedHashMap<>();
     private final SystemFunctionResolver systemFunctionResolver = new SystemFunctionResolver(this);
     private final Stack<String> expressionContext = new Stack<>();
@@ -260,6 +261,19 @@ public class LibraryBuilder implements ModelResolver {
         }
 
         return model;
+    }
+
+    public GenericResult<NamedTypeSpecifier> getNamedTypeSpecifierResult(String namedTypeSpecifierIdentifier) {
+        return nameTypeSpecifiers.get(namedTypeSpecifierIdentifier);
+    }
+
+    public void addNamedTypeSpecifierResult(String namedTypeSpecifierIdentifier, GenericResult<NamedTypeSpecifier> namedTypeSpecifierResult) {
+        if (! nameTypeSpecifiers.containsKey(namedTypeSpecifierIdentifier)) {
+            nameTypeSpecifiers.put(namedTypeSpecifierIdentifier, namedTypeSpecifierResult);
+        } else {
+            // LUKETODO:  log ?
+            // already there
+        }
     }
 
     private void loadConversionMap(Model model) {

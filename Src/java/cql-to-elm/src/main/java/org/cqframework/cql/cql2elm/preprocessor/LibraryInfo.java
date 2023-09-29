@@ -3,10 +3,12 @@ package org.cqframework.cql.cql2elm.preprocessor;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.cqframework.cql.cql2elm.CqlCompilerException;
+import org.cqframework.cql.cql2elm.GenericResult;
 import org.cqframework.cql.gen.cqlParser;
 import org.hl7.elm.r1.OperandDef;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class LibraryInfo extends BaseInfo {
     private String namespaceName;
@@ -22,7 +24,7 @@ public class LibraryInfo extends BaseInfo {
     private final Map<String, ConceptDefinitionInfo> conceptDefinitions;
     private final Map<String, ParameterDefinitionInfo> parameterDefinitions;
     private final Map<String, ExpressionDefinitionInfo> expressionDefinitions;
-    private final Map<String, List<FunctionDefinitionInfo>> functionDefinitions;
+    private final Map<String, List<GenericResult<FunctionDefinitionInfo>>> functionDefinitions;
     private final List<ContextDefinitionInfo> contextDefinitions;
     private final Map<Interval, BaseInfo> definitions;
 
@@ -223,34 +225,55 @@ public class LibraryInfo extends BaseInfo {
         return null;
     }
 
-    public void addFunctionDefinition(FunctionDefinitionInfo functionDefinition) {
-        List<FunctionDefinitionInfo> infos = functionDefinitions.get(functionDefinition.getName());
+    public void addFunctionDefinitionByHash(String hash, GenericResult<FunctionDefinitionInfo> functionDefinition) {
+        List<GenericResult<FunctionDefinitionInfo>> infos = functionDefinitions.get(hash);
         if (infos == null) {
             infos = new ArrayList<>();
-            functionDefinitions.put(functionDefinition.getName(), infos);
+            functionDefinitions.put(hash, infos);
         }
 
         // Ensure no duplicate FunctionDefinitionInfos (meaning the same signature)
         if (! isFunctionDefInfoAlreadyPresent(infos, functionDefinition)) {
             infos.add(functionDefinition);
-            addDefinition(functionDefinition);
+            if (! functionDefinition.hasError()) {
+                addDefinition(functionDefinition.getUnderlyingThing());
+            }
         } else {
-            throw new CqlCompilerException(String.format("Duplicate function detected from library: [%s] with name: [%s]", libraryName, functionDefinition.getName()));
+            throw new CqlCompilerException(String.format("Duplicate function detected from library: [%s] with name: [%s]", libraryName, hash));
         }
     }
 
-    public Iterable<FunctionDefinitionInfo> resolveFunctionReference(String identifier) {
+    public Iterable<GenericResult<FunctionDefinitionInfo>> resolveFunctionReferenceFromHash(String hash) {
+        return functionDefinitions.get(hash);
+    }
+
+    public Iterable<GenericResult<FunctionDefinitionInfo>> resolveFunctionReference(String identifier) {
         return functionDefinitions.get(identifier);
     }
 
-    public String resolveFunctionName(String identifier) {
-        Iterable<FunctionDefinitionInfo> functionDefinitions = resolveFunctionReference(identifier);
-        for (FunctionDefinitionInfo functionInfo : functionDefinitions) {
-            return functionInfo.getName();
+    public Iterable<GenericResult<FunctionDefinitionInfo>> resolveFunctionReferenceFromName(String name) {
+        final List<String> keys = functionDefinitions.keySet()
+                .stream()
+                .filter(key -> key.startsWith(name))
+                .collect(Collectors.toList());
+
+        if (keys.isEmpty()) {
+            return null;
         }
 
-        return null;
+        return keys.stream().map(functionDefinitions::get)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
+//
+//    public String resolveFunctionName(String identifier) {
+//        Iterable<FunctionDefinitionInfo> functionDefinitions = resolveFunctionReference(identifier);
+//        for (FunctionDefinitionInfo functionInfo : functionDefinitions) {
+//            return functionInfo.getName();
+//        }
+//
+//        return null;
+//    }
 
     public void addContextDefinition(ContextDefinitionInfo contextDefinition) {
         contextDefinitions.add(contextDefinition);
@@ -271,9 +294,10 @@ public class LibraryInfo extends BaseInfo {
         return definitions.get(pt.getSourceInterval());
     }
 
-    private static boolean isFunctionDefInfoAlreadyPresent(List<FunctionDefinitionInfo> existingFunctionDefInfos, FunctionDefinitionInfo functionDefinition) {
+    private static boolean isFunctionDefInfoAlreadyPresent(List<GenericResult<FunctionDefinitionInfo>> existingFunctionDefInfos, GenericResult<FunctionDefinitionInfo> functionDefinition) {
         // equals/hashCode only goes so far because we don't control the entire class hierarchy
-        if (existingFunctionDefInfos.contains(functionDefinition)) {
+        // LUKETODO:  This is not entirely right
+        if (existingFunctionDefInfos.contains(GenericResult.withTypeSpecifier(functionDefinition))) {
             return existingFunctionDefInfos.stream()
                     .anyMatch(existingFunctionDefInfo -> matchesFunctionDefInfos(existingFunctionDefInfo, functionDefinition));
         }
@@ -281,9 +305,13 @@ public class LibraryInfo extends BaseInfo {
         return false;
     }
 
-    private static boolean matchesFunctionDefInfos(FunctionDefinitionInfo existingInfo, FunctionDefinitionInfo newInfo) {
-        final List<OperandDef> existingOperands = existingInfo.getPreCompileOutput().getFunctionDef().getOperand();
-        final List<OperandDef> newOperands = newInfo.getPreCompileOutput().getFunctionDef().getOperand();
+    private static boolean matchesFunctionDefInfos(GenericResult<FunctionDefinitionInfo> existingInfo, GenericResult<FunctionDefinitionInfo> newInfo) {
+        if (existingInfo.hasError() || newInfo.hasError()) {
+            return existingInfo.hasError() && newInfo.hasError();
+        }
+
+        final List<OperandDef> existingOperands = existingInfo.getUnderlyingThing().getPreCompileOutput().getFunctionDef().getOperand();
+        final List<OperandDef> newOperands = newInfo.getUnderlyingThing().getPreCompileOutput().getFunctionDef().getOperand();
 
         if (existingOperands.size() != newOperands.size()) {
             return false;
