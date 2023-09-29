@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CqlPreprocessorVisitor extends CqlPreprocessorElmCommonVisitor {
     static final Logger logger = LoggerFactory.getLogger(CqlPreprocessorVisitor.class);
@@ -259,7 +258,7 @@ public class CqlPreprocessorVisitor extends CqlPreprocessorElmCommonVisitor {
         try {
             preCompileOutput = preCompile(ctx);
         } catch (Exception exception) {
-            libraryInfo.addFunctionDefinitionByHash(generateHashForLibraryBuilder(ctx), GenericResult.withError());
+            libraryInfo.addFunctionDefinitionByHash(generateHashForLibraryBuilder(ctx), ResultWithPossibleError.withError());
             throw exception;
         }
         FunctionDefinitionInfo functionDefinition = new FunctionDefinitionInfo();
@@ -268,24 +267,31 @@ public class CqlPreprocessorVisitor extends CqlPreprocessorElmCommonVisitor {
         functionDefinition.setDefinition(ctx);
         functionDefinition.setPreCompileOutput(preCompileOutput);
         processHeader(ctx, functionDefinition);
-//        libraryInfo.addFunctionDefinitionByHash(parseString(ctx.identifierOrFunctionIdentifier()), functionDefinition);
-        libraryInfo.addFunctionDefinitionByHash(generateHashForLibraryBuilder(ctx), GenericResult.withTypeSpecifier(functionDefinition));
+        libraryInfo.addFunctionDefinitionByHash(generateHashForLibraryBuilder(ctx), ResultWithPossibleError.withTypeSpecifier(functionDefinition));
         return functionDefinition;
     }
 
-    // LUKETODO:  dupe
-    private String generateHashForLibraryBuilder(cqlParser.FunctionDefinitionContext ctx) {
-        // Since we don't have access to the preCompile output, generate a simple lightweight hash based on semantic function details
-        final List<cqlParser.OperandDefinitionContext> operandDefinitionContexts = ctx.operandDefinition();
+    @Override
+    public NamedTypeSpecifier visitNamedTypeSpecifier(cqlParser.NamedTypeSpecifierContext ctx) {
+        List<String> qualifiers = parseQualifiers(ctx);
+        String modelIdentifier = getModelIdentifier(qualifiers);
+        String identifier = getTypeIdentifier(qualifiers, parseString(ctx.referentialOrTypeNameIdentifier()));
+        final String typeSpecifierKey = String.format("%s:%s", modelIdentifier, identifier);
 
-        final String signature = operandDefinitionContexts == null ? ""
-                : operandDefinitionContexts.stream()
-                .map(context -> context.children)
-                .filter(children -> children.size() >= 2)
-                .map(children -> children.get(0).getText() + " " + children.get(1).getText())
-                .collect(Collectors.joining(", "));
+        DataType resultType = libraryBuilder.resolveTypeName(modelIdentifier, identifier);
+        if (null == resultType) {
+            libraryBuilder.addNamedTypeSpecifierResult(typeSpecifierKey, ResultWithPossibleError.withError());
+            throw new CqlCompilerException(String.format("Could not find type for model: %s and name: %s", modelIdentifier, identifier));
+        }
+        NamedTypeSpecifier result = of.createNamedTypeSpecifier()
+                .withName(libraryBuilder.dataTypeToQName(resultType));
 
-        return parseString(ctx.identifierOrFunctionIdentifier()) + ": " + signature;
+        // Fluent API would be nice here, but resultType isn't part of the model so...
+        result.setResultType(resultType);
+
+        libraryBuilder.addNamedTypeSpecifierResult(typeSpecifierKey, ResultWithPossibleError.withTypeSpecifier(result));
+
+        return result;
     }
 
     @Override

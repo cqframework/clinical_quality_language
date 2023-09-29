@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 /**
  * Common functionality used by {@link CqlPreprocessorVisitor} and {@link Cql2ElmVisitor}
@@ -115,31 +116,6 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
             popChunk(tree, o, pushedChunk);
             processTags(tree, o);
         }
-    }
-
-    // LUKETODO:  force each subclass to explicitly implement this
-    // LUKETODO:  There are some code paths where this class is not getting invoked:  for example, from Elm's visitFunctionDefinition
-    @Override
-    public NamedTypeSpecifier visitNamedTypeSpecifier(cqlParser.NamedTypeSpecifierContext ctx) {
-        List<String> qualifiers = parseQualifiers(ctx);
-        String modelIdentifier = getModelIdentifier(qualifiers);
-        String identifier = getTypeIdentifier(qualifiers, parseString(ctx.referentialOrTypeNameIdentifier()));
-        final String typeSpecifierKey = String.format("%s:%s", modelIdentifier, identifier);
-
-        DataType resultType = libraryBuilder.resolveTypeName(modelIdentifier, identifier);
-        if (null == resultType) {
-            libraryBuilder.addNamedTypeSpecifierResult(typeSpecifierKey, GenericResult.withError());
-            throw new CqlCompilerException(String.format("Could not find type for model: %s and name: %s", modelIdentifier, identifier));
-        }
-        NamedTypeSpecifier result = of.createNamedTypeSpecifier()
-                .withName(libraryBuilder.dataTypeToQName(resultType));
-
-        // Fluent API would be nice here, but resultType isn't part of the model so...
-        result.setResultType(resultType);
-
-        libraryBuilder.addNamedTypeSpecifierResult(typeSpecifierKey, GenericResult.withTypeSpecifier(result));
-
-        return result;
     }
 
     @Override
@@ -766,6 +742,20 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
         }
 
         return null;
+    }
+
+    protected String generateHashForLibraryBuilder(cqlParser.FunctionDefinitionContext ctx) {
+        // Since we don't have access to the preCompile output, generate a simple lightweight hash based on semantic function details
+        final List<cqlParser.OperandDefinitionContext> operandDefinitionContexts = ctx.operandDefinition();
+
+        final String signature = operandDefinitionContexts == null ? ""
+                : operandDefinitionContexts.stream()
+                .map(context -> context.children)
+                .filter(children -> children.size() >= 2)
+                .map(children -> children.get(0).getText() + " " + children.get(1).getText())
+                .collect(Collectors.joining(", "));
+
+        return parseString(ctx.identifierOrFunctionIdentifier()) + ": " + signature;
     }
 
     protected String parseString(ParseTree pt) {

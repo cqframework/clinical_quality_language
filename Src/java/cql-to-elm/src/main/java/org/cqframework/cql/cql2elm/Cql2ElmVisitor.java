@@ -23,7 +23,6 @@ import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 
 public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
@@ -492,13 +491,13 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         String modelIdentifier = getModelIdentifier(qualifiers);
         String identifier = getTypeIdentifier(qualifiers, parseString(ctx.referentialOrTypeNameIdentifier()));
 
-        final GenericResult<NamedTypeSpecifier > retrievedResult = libraryBuilder.getNamedTypeSpecifierResult(String.format("%s:%s", modelIdentifier, identifier));
+        final ResultWithPossibleError<NamedTypeSpecifier > retrievedResult = libraryBuilder.getNamedTypeSpecifierResult(String.format("%s:%s", modelIdentifier, identifier));
 
         if (retrievedResult != null) {
             if (retrievedResult.hasError()) {
                 return null;
             }
-            return retrievedResult.getUnderlyingThing();
+            return retrievedResult.getUnderlyingResultIfExists();
         }
 
         DataType resultType = libraryBuilder.resolveTypeName(modelIdentifier, identifier);
@@ -3823,7 +3822,7 @@ DATETIME
         // No matching function that's already been compiled, so start attempting to compile one
         final CallContext expectedCallContext = getCallContext(libraryName, functionName, expressions, mustResolve, allowPromotionAndDemotion, allowFluent);
 
-        final Iterable<GenericResult<FunctionDefinitionInfo>> functionInfos = libraryInfo.resolveFunctionReferenceFromName(functionName);
+        final Iterable<FunctionDefinitionInfo> functionInfos = libraryInfo.resolveFunctionReferenceFromName(functionName);
 
         final FunctionDefinitionInfo resolvedFunctionInfo =
                 ForwardInvocationValidator.resolveOnSignature(expectedCallContext,
@@ -3944,32 +3943,21 @@ DATETIME
     }
 
     public Object internalVisitFunctionDefinition(cqlParser.FunctionDefinitionContext ctx) {
-        final String functionDefinitionName = parseString(ctx.identifierOrFunctionIdentifier());
         final String identifierFromHashedClass = generateHashForLibraryBuilder(ctx);
-        final Iterable<GenericResult<FunctionDefinitionInfo>> functionDefinitionInfos = libraryInfo.resolveFunctionReferenceFromHash(identifierFromHashedClass);
+        final ResultWithPossibleError<FunctionDefinitionInfo> functionDefinitionInfo = libraryInfo.resolveFunctionReferenceFromHash(identifierFromHashedClass);
+        final Optional<ResultWithPossibleError<FunctionDefinitionInfo>> optFoundFunction = Optional.ofNullable(functionDefinitionInfo);
 
-        // LUKETODO: we'd rather not do the preCompile twice but how tell which is the right
-        // LUKETODO:  if we do this we get duplicate function definitions
-        // LUKETODO:  we need to do the same "result" pattern as before
-        // LUKETODO:   preComile() fails with an Exception so we never get to invoke add()
-        Optional<GenericResult<FunctionDefinitionInfo>> foundFunction = Optional.empty();
-        if (functionDefinitionInfos != null) {
-            for (GenericResult<FunctionDefinitionInfo> functionDefinitionInfo : functionDefinitionInfos) {
-                foundFunction = Optional.of(functionDefinitionInfo);
-            }
-        }
-
-        if (foundFunction.isPresent()) {
-            final GenericResult<FunctionDefinitionInfo> functionDefinitionInfoGenericResult = foundFunction.get();
-            if (functionDefinitionInfoGenericResult.hasError()) {
+        if (optFoundFunction.isPresent()) {
+            final ResultWithPossibleError<FunctionDefinitionInfo> functionDefinitionInfoResultWithPossibleError = optFoundFunction.get();
+            if (functionDefinitionInfoResultWithPossibleError.hasError()) {
                 return null;
             }
         }
 
-        final PreCompileOutput preCompileOutput = foundFunction.map(GenericResult::getUnderlyingThing).map(FunctionDefinitionInfo::getPreCompileOutput)
+        // Ensure we only build the function headers once, retrieving the previously built one if it exists
+        final PreCompileOutput preCompileOutput = optFoundFunction.map(ResultWithPossibleError::getUnderlyingResultIfExists)
+                .map(FunctionDefinitionInfo::getPreCompileOutput)
                 .orElse(preCompile(ctx));
-
-//        final PreCompileOutput preCompileOutput = preCompile(ctx);
 
         final FunctionDef fun = preCompileOutput.getFunctionDef();
         final TypeSpecifier resultType = preCompileOutput.getResultType();
@@ -4020,20 +4008,6 @@ DATETIME
         }
 
         return fun;
-    }
-
-    private String generateHashForLibraryBuilder(cqlParser.FunctionDefinitionContext ctx) {
-        // Since we don't have access to the preCompile output, generate a simple lightweight hash based on semantic function details
-        final List<cqlParser.OperandDefinitionContext> operandDefinitionContexts = ctx.operandDefinition();
-
-        final String signature = operandDefinitionContexts == null ? ""
-                : operandDefinitionContexts.stream()
-                .map(context -> context.children)
-                .filter(children -> children.size() >= 2)
-                .map(children -> children.get(0).getText() + " " + children.get(1).getText())
-                .collect(Collectors.joining(", "));
-
-        return parseString(ctx.identifierOrFunctionIdentifier()) + ": " + signature;
     }
 
     @Override

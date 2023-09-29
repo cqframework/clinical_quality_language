@@ -25,7 +25,7 @@ import java.util.stream.StreamSupport;
 public class ForwardInvocationValidator {
     private static final Logger logger = LoggerFactory.getLogger(ForwardInvocationValidator.class);
 
-    public static FunctionDefinitionInfo resolveOnSignature(CallContext callContextFromCaller, Iterable<GenericResult<FunctionDefinitionInfo>> candidateFunctionDefinitions, ConversionMap conversionMap) {
+    public static FunctionDefinitionInfo resolveOnSignature(CallContext callContextFromCaller, Iterable<FunctionDefinitionInfo> candidateFunctionDefinitions, ConversionMap conversionMap) {
         if (candidateFunctionDefinitions != null) {
             final List<DataType> paramTypesFromCaller = StreamSupport.stream(callContextFromCaller.getSignature().getOperandTypes().spliterator(), false)
                     .collect(Collectors.toList());;
@@ -39,12 +39,10 @@ public class ForwardInvocationValidator {
 
             final List<ForwardInvocationResult> resolvedFunctionDefinitionInfos = new ArrayList<>();
 
-            for (GenericResult<FunctionDefinitionInfo> candidateFunctionDefinition : candidateFunctionDefinitions) {
-                if (! candidateFunctionDefinition.hasError()) {
-                    final ForwardInvocationResult currentResult = scoreFunctionHeaderOrNothing(callContextFromCaller, candidateFunctionDefinition.getUnderlyingThing(), implicitConversionsPerParamType);
+            for (FunctionDefinitionInfo candidateFunctionDefinition : candidateFunctionDefinitions) {
+                final ForwardInvocationResult currentResult = scoreFunctionHeaderOrNothing(callContextFromCaller, candidateFunctionDefinition, implicitConversionsPerParamType);
 
-                    evaluateCandidateParamScores(currentResult, resolvedFunctionDefinitionInfos);
-                }
+                evaluateCandidateParamScores(currentResult, resolvedFunctionDefinitionInfos);
             }
             if (resolvedFunctionDefinitionInfos.size() == 0) {
                 throw new CqlCompilerException("forward declaration resolution found NO functions for name:" + callContextFromCaller.getOperatorName());
