@@ -546,7 +546,7 @@ public class LibraryTests {
     @Test
     public void TestForwardDeclarationsScoringImplicitConversionMultipleParamsCannotResolve() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestForwardDeclarationScoringImplicitConversionMultipleParamsCannotResolve.cql");
-        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), greaterThan(1));
+        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(2));
     }
 
     @Test
@@ -597,6 +597,6 @@ public class LibraryTests {
     @Test
     public void TestNonForwardDeclarationsScoringImplicitConversionMultipleParamsCannotResolve() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestNonForwardDeclarationScoringImplicitConversionMultipleParamsCannotResolve.cql");
-        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), greaterThanOrEqualTo(1));
+        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(2));
     }
 }
