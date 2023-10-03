@@ -203,3 +203,18 @@ define TestMedicationRequirement:
 define TestBoundDataRequirement:
   TestMedicationRequirement R
     where R.code in "Aspirin"
+
+
+define TestChoiceMedicationRequest:
+  [MedicationRequest: "Aspirin"]
+
+// If the terminology target is a choice of a terminology-valued element and a reference
+
+define TestChoiceMedicationRequestExpanded:
+  [MedicationRequest: medication in "Aspirin"]
+   union (
+     [MedicationRequest] MR
+      with [Medication] M
+        such that M.id = Last(Split(MR.medication.reference, '/'))
+          and M.code in "Aspirin"
+  )
