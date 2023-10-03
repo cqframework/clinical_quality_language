@@ -3472,23 +3472,96 @@ DATETIME
 
         // Only expand a choice-valued code path if no comparator is specified
         // Otherwise, a code comparator will always choose a specific representation
+        boolean hasFHIRHelpers = libraryInfo.resolveLibraryName("FHIRHelpers") != null;
         if (property != null && property.getResultType() instanceof ChoiceType && codeComparator == null) {
             for (DataType propertyType : ((ChoiceType)property.getResultType()).getTypes()) {
-                Retrieve retrieve = buildRetrieve(ctx, useStrictRetrieveTyping, namedType, classType, codePath,
-                        codeComparator, property, propertyType, propertyException, terminology);
-                retrieves.add(retrieve);
-                retrieve.setResultType(new ListType((DataType) namedType));
+                if (hasFHIRHelpers && propertyType instanceof NamedType && ((NamedType)propertyType).getSimpleName().equals("Reference") && namedType.getSimpleName().equals("MedicationRequest")) {
+                    // TODO: This is a model-specific special case to support QICore
+                    // This functionality needs to be generalized to a retrieve mapping in the model info
+                    // But that requires a model info change (to represent references, right now the model info only includes context relationships)
+                    // The reference expands to [MedicationRequest] MR with [Medication] M such that M.id = Last(Split(MR.medication.reference, '/')) and M.code in <valueset>
+                    Retrieve mrRetrieve = buildRetrieve(ctx, useStrictRetrieveTyping, namedType, classType, null, null, null, null, null, null);
+                    retrieves.add(mrRetrieve);
+                    mrRetrieve.setResultType(new ListType((DataType) namedType));
+                    DataType mDataType = libraryBuilder.resolveTypeName(model, "Medication");
+                    ClassType mClassType = (ClassType)mDataType;
+                    NamedType mNamedType = mClassType;
+                    Retrieve mRetrieve = buildRetrieve(ctx, useStrictRetrieveTyping, mNamedType, mClassType, null, null, null, null, null, null);
+                    retrieves.add(mRetrieve);
+                    mRetrieve.setResultType(new ListType((DataType) namedType));
+                    Query q = of.createQuery();
+                    AliasedQuerySource aqs = of.createAliasedQuerySource().withExpression(mrRetrieve).withAlias("MR");
+                    track(aqs, ctx);
+                    aqs.setResultType(aqs.getExpression().getResultType());
+                    q.getSource().add(aqs);
+                    track(q, ctx);
+                    q.setResultType(aqs.getResultType());
+                    With w = of.createWith().withExpression(mRetrieve).withAlias("M");
+                    track(w, ctx);
+                    w.setResultType(w.getExpression().getResultType());
+                    q.getRelationship().add(w);
+                    String idPath = "id";
+                    DataType idType = libraryBuilder.resolvePath(mDataType, idPath);
+                    Property idProperty = libraryBuilder.buildProperty("M", idPath, false, idType);
+                    String refPath = "medication.reference";
+                    DataType refType = libraryBuilder.resolvePath(dataType, refPath);
+                    Property refProperty = libraryBuilder.buildProperty("MR", refPath, false, refType);
+                    Split split = of.createSplit().withStringToSplit(refProperty).withSeparator(libraryBuilder.createLiteral("/"));
+                    libraryBuilder.resolveCall("System", "Split", new SplitInvocation(split));
+                    Last last = of.createLast().withSource(split);
+                    libraryBuilder.resolveCall("System", "Last", new LastInvocation(last));
+                    Equal e = of.createEqual().withOperand(idProperty, last);
+                    libraryBuilder.resolveBinaryCall("System", "Equal", e);
 
-                if (result == null) {
-                    result = retrieve;
+                    DataType mCodeType = libraryBuilder.resolvePath((DataType)mNamedType, "code");
+                    Property mProperty = of.createProperty().withPath("code");
+                    mProperty.setResultType(mCodeType);
+                    String mCodeComparator = "~";
+                    if (terminology.getResultType() instanceof ListType) {
+                        mCodeComparator = "in";
+
+                    }
+                    else if (libraryBuilder.isCompatibleWith("1.5")) {
+                        mCodeComparator = terminology.getResultType().isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary")) ? "in" : "~";
+                    }
+
+                    Expression terminologyComparison = null;
+                    if (mCodeComparator.equals("in")) {
+                        terminologyComparison = libraryBuilder.resolveIn(mProperty, terminology);
+                    }
+                    else {
+                        BinaryExpression equivalent = of.createEquivalent().withOperand(mProperty, terminology);
+                        libraryBuilder.resolveBinaryCall("System", "Equivalent", equivalent);
+                        terminologyComparison = equivalent;
+                    }
+                    And a = of.createAnd().withOperand(e, terminologyComparison);
+                    libraryBuilder.resolveBinaryCall("System", "And", a);
+                    w.withSuchThat(a);
+
+                    if (result == null) {
+                        result = q;
+                    }
+                    else {
+                        track(q, ctx);
+                        result = libraryBuilder.resolveUnion(result, q);
+                    }
                 }
                 else {
-                    // Should only include the result if it resolved appropriately with the codeComparator
-                    // Allowing it to go through for now
-                    //if (retrieve.getCodeProperty() != null && retrieve.getCodeComparator() != null && retrieve.getCodes() != null) {
+                    Retrieve retrieve = buildRetrieve(ctx, useStrictRetrieveTyping, namedType, classType, codePath,
+                            codeComparator, property, propertyType, propertyException, terminology);
+                    retrieves.add(retrieve);
+                    retrieve.setResultType(new ListType((DataType) namedType));
+
+                    if (result == null) {
+                        result = retrieve;
+                    } else {
+                        // Should only include the result if it resolved appropriately with the codeComparator
+                        // Allowing it to go through for now
+                        //if (retrieve.getCodeProperty() != null && retrieve.getCodeComparator() != null && retrieve.getCodes() != null) {
                         track(retrieve, ctx);
                         result = libraryBuilder.resolveUnion(result, retrieve);
-                    //}
+                        //}
+                    }
                 }
             }
         }
@@ -3520,7 +3593,7 @@ DATETIME
             retrieve.setContext(contextExpression);
         }
 
-        if (ctx.terminology() != null) {
+        if (terminology != null) {
             // Resolve the terminology target using an in or ~ operator
             try {
                 if (codeComparator == null) {
