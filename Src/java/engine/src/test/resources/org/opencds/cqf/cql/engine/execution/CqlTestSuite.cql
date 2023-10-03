@@ -725,6 +725,10 @@ define NotEqual_AEqB_Int: 5 != 5
 define NotEqual_ALtB_Int: 5 != 6
 define NotEqual_EqTuples: Tuple{a: 1, b: Tuple{c: 1}} != Tuple{a: 1, b: Tuple{c: 1}}
 define NotEqual_UneqTuples: Tuple{a: 1, b: Tuple{c: 1}} != Tuple{a: 1, b: Tuple{c: -1}}
+// TODO: fix once issue is resolved in translator
+//define NotEqual_TupleDifferentKeys: Tuple{ Foo: null } != Tuple{ Bar: null }
+define NotEqual_EqTuplesWithNullFields: Tuple{a: 'Hello', b: null} != Tuple{a: 'Hello', b: null}
+define NotEqual_UneqTuplesWithNullFields: Tuple{a: 'Hello', b: null} != Tuple{a: 'Goodbye', b: null}
 define NotEqual_UncertTuplesWithNullFieldOnOne: Tuple{a: 'Hello', b: null} != Tuple{a: 'Hello', b: 'null'}
 define NotEqual_EqDateTimes: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) != DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
 define NotEqual_UneqDateTimes: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) != DateTime(2000, 3, 15, 13, 30, 25, 201, +1.0)
