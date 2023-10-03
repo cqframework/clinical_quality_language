@@ -310,6 +310,44 @@ public class BaseTest {
         assertThat(r.getCodes(), instanceOf(ValueSetRef.class));
         ValueSetRef vsr = (ValueSetRef)r.getCodes();
         assertThat(vsr.getName(), is("Antithrombotic Therapy"));
+
+        def = defs.get("Antithrombotic Therapy at Discharge (2)");
+        assertThat(def, notNullValue());
+        assertThat(def.getExpression(), instanceOf(Union.class));
+        Union u = (Union)def.getExpression();
+        assertThat(u.getOperand().size(), is(2));
+        assertThat(u.getOperand().get(0), instanceOf(Retrieve.class));
+        r = (Retrieve)u.getOperand().get(0);
+        assertThat(r.getTemplateId(), is("http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationrequest"));
+        assertThat(r.getCodeProperty(), is("medication"));
+        assertThat(r.getCodeComparator(), is("in"));
+        assertThat(r.getCodes(), instanceOf(ValueSetRef.class));
+        vsr = (ValueSetRef)r.getCodes();
+        assertThat(vsr.getName(), is("Antithrombotic Therapy"));
+
+        assertThat(u.getOperand().get(1), instanceOf(Query.class));
+        q = (Query)u.getOperand().get(1);
+        assertThat(q.getSource().size(), is(1));
+        assertThat(q.getSource().get(0).getExpression(), instanceOf(Retrieve.class));
+        r = (Retrieve)q.getSource().get(0).getExpression();
+        assertThat(r.getTemplateId(), is("http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationrequest"));
+        assertThat(r.getCodeProperty() == null, is(true));
+        assertThat(r.getCodes() == null, is(true));
+        assertThat(q.getRelationship(), notNullValue());
+        assertThat(q.getRelationship().size(), is(1));
+        assertThat(q.getRelationship().get(0), instanceOf(With.class));
+        With w = (With)q.getRelationship().get(0);
+        assertThat(w.getExpression(), instanceOf(Retrieve.class));
+        r = (Retrieve)w.getExpression();
+        assertThat(r.getTemplateId(), is("http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medication"));
+        assertThat(r.getCodeProperty() == null, is(true));
+        assertThat(r.getCodes() == null, is(true));
+        assertThat(w.getSuchThat(), instanceOf(And.class));
+        And a = (And)w.getSuchThat();
+        assertThat(a.getOperand().get(0), instanceOf(Equal.class));
+        assertThat(a.getOperand().get(1), instanceOf(InValueSet.class));
+        InValueSet ivs = (InValueSet)a.getOperand().get(1);
+        assertThat(ivs.getValueset().getName(), is("Antithrombotic Therapy"));
     }
 
     @Test

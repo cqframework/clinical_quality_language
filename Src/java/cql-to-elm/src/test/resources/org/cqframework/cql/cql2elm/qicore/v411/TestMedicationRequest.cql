@@ -10,3 +10,6 @@ context Patient
 
 define "Antithrombotic Therapy at Discharge":
   ["MedicationRequest": medication in "Antithrombotic Therapy"] Antithrombotic
+
+define "Antithrombotic Therapy at Discharge (2)":
+  ["MedicationRequest": "Antithrombotic Therapy"]
