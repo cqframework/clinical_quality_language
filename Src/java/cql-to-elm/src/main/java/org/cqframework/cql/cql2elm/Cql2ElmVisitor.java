@@ -22,7 +22,7 @@ import org.hl7.elm.r1.Element;
 import org.hl7.elm.r1.Interval;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 
-import javax.xml.bind.*;
+import jakarta.xml.bind.*;
 import javax.xml.namespace.QName;
 import java.io.Serializable;
 import java.math.BigDecimal;
