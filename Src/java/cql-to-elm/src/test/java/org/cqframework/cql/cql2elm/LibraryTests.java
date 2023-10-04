@@ -446,4 +446,10 @@ public class LibraryTests {
         assertThat(statements.size(), equalTo(1));
     }
 
+    @Test
+    public void testAmbiguousFailOnAmbiguousFunctionResolutionWithoutTypeInformation() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestForwardDeclaration.cql");
+        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(0));
+    }
+
 }
