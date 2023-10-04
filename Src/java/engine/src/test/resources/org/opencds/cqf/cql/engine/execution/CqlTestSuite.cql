@@ -258,25 +258,34 @@ define test_Avg_has_null_q: TestMessage(Avg_has_null_q = 1.5 'ml', 'Avg_has_null
 // define test_Avg_q_diff_units: TestMessage(Avg_q_diff_units = 3.0 'ml', 'Avg_q_diff_units', toString(3.0 'ml'), toString(Avg_q_diff_units))
 
 // Median
+define Median_odd: Median({5,1,2,3,4})
 define Median_even: Median({5,1,2,3,4,6})
 define Median_odd_q: Median({5 'ml',1 'ml',2 'ml',3 'ml',4 'ml'})
 define Median_even_q: Median({5 'ml',1 'ml',2 'ml',3 'ml',4 'ml',6 'ml'})
 define Median_empty: Median(List<Integer>{})
 define Median_has_null: Median({1,null,null,2})
 define Median_dup_vals_even: Median({3,1,2,2,2,3,4,5})
+define Median_dup_vals_odd:  Median({3,1,2,2,2,3,4,5,6})
 define Median_has_null_q: Median({1 'ml',null,null,2 'ml'})
 define Median_dup_vals_even_q: Median({3 'ml',1 'ml',2 'ml',2 'ml',2 'ml',3 'ml',4 'ml',5 'ml'})
 define Median_dup_vals_odd_q:  Median({3 'ml',1 'ml',2 'ml',2 'ml',2 'ml',3 'ml',4 'ml',5 'ml',6 'ml'})
+define Median_q_diff_units: Median({5 'ml',0.001 'l',0.02 'dl',3 'ml',4 'ml',6 'ml'})
 
+// TODO: possible issue in translator causing Median_odd = 3 to fail (Integer not being implicitly promoted to Decimal)
+define test_Median_odd: TestMessage(Median_odd = 3.0, 'Median_odd', toString(3), toString(Median_odd))
 define test_Median_even: TestMessage(Median_even = 3.5, 'Median_even', toString(3.5), toString(Median_even))
 define test_Median_odd_q: TestMessage(Median_odd_q = 3 'ml', 'Median_odd_q', toString(3 'ml'), toString(Median_odd_q))
 define test_Median_even_q: TestMessage(Median_even_q = 3.5 'ml', 'Median_even_q', toString(3.5 'ml'), toString(Median_even_q))
 define test_Median_empty: TestMessage(Median_empty is null, 'Median_empty', 'null', toString(Median_empty))
 define test_Median_has_null: TestMessage(Median_has_null = 1.5, 'Median_has_null', toString(1.5), toString(Median_has_null))
 define test_Median_dup_vals_even: TestMessage(Median_dup_vals_even = 2.5, 'Median_dup_vals_even', toString(2.5), toString(Median_dup_vals_even))
+// TODO: possible issue in translator causing Median_dup_vals_odd = 3 to fail (Integer not being implicitly promoted to Decimal)
+define test_Median_dup_vals_odd: TestMessage(Median_dup_vals_odd = 3.0, 'Median_dup_vals_odd', toString(3), toString(Median_dup_vals_odd))
 define test_Median_has_null_q: TestMessage(Median_has_null_q = 1.5 'ml', 'Median_has_null_q', toString(1.5 'ml'), toString(Median_has_null_q))
 define test_Median_dup_vals_even_q: TestMessage(Median_dup_vals_even_q = 2.5 'ml', 'Median_dup_vals_even_q', toString(2.5 'ml'), toString(Median_dup_vals_even_q))
 define test_Median_dup_vals_odd_q: TestMessage(Median_dup_vals_odd_q = 3 'ml', 'Median_dup_vals_odd_q', toString(3 'ml'), toString(Median_dup_vals_odd_q))
+// TODO - this behavior has yet to be implemented for Quantity
+// define test_Median_q_diff_units: TestMessage(Median_q_diff_units = 3.5 'ml', 'Median_q_diff_units', toString(3.5 'ml'), toString(Median_q_diff_units))
 
 // Mode
 define Mode_not_null: Mode({1,2,2,2,3,4,5})
@@ -353,11 +362,14 @@ define test_Product_Null_Quantity: TestMessage(Product_Null_Quantity is null, 'P
 
 // GeometricMean
 define GeometricMean_Decimal: GeometricMean({2.0, 8.0, null})
+define GeometricMean_Zero: GeometricMean({2.0, 8.0, 0})
 define GeometricMean_Null: GeometricMean({1, 2, null})
 define GeometricMean_Nulls: GeometricMean({null, null, null})
 define GeometricMean_Null_List: GeometricMean(null as List<Decimal>)
 
 define test_GeometricMean_Decimal: TestMessage(GeometricMean_Decimal = 4.0, 'GeometricMean_Decimal', toString(4.0), toString(GeometricMean_Decimal))
+// TODO: possible issue in translator causing GeometricMean_Zero = 0 to fail (Integer not being implicitly promoted to Decimal)
+define test_GeometricMean_Zero: TestMessage(GeometricMean_Zero = 0.0, 'GeometricMean_Zero', toString(0.0), toString(GeometricMean_Zero))
 define test_GeometricMean_Null: TestMessage(GeometricMean_Null = 1.41421356, 'GeometricMean_Null', toString(1.41421356), toString(GeometricMean_Null))
 define test_GeometricMean_Nulls: TestMessage(GeometricMean_Nulls is null, 'GeometricMean_Nulls', 'null', toString(GeometricMean_Nulls))
 define test_GeometricMean_Null_List: TestMessage(GeometricMean_Null_List is null, 'GeometricMean_Null_List', 'null', toString(GeometricMean_Null_List))
@@ -430,15 +442,32 @@ define test_MultiplyVariables: TestMessage(MultiplyVariables = 110, 'MultiplyVar
 // Divide
 define Hundred: 100
 define Four: 4
+define TenDividedByTwo: 10 / 2
 define TenDividedByFour: 10 / 4
+define DivideMultiple: 1000 / 4 / 10 / 5
 define DivideVariables: Hundred / Four
 
+// TODO: possible issue in translator causing TenDividedByTwo = 5 to fail (Integer not being implicitly promoted to Decimal)
+define test_TenDividedByTwo: TestMessage(TenDividedByTwo = 5.0, 'TenDividedByTwo', toString(5.0), toString(TenDividedByTwo))
 define test_TenDividedByFour: TestMessage(TenDividedByFour = 2.5, 'TenDividedByFour', toString(2.5), toString(TenDividedByFour))
+// TODO: possible issue in translator causing DivideMultiple = 5 to fail (Integer not being implicitly promoted to Decimal)
+define test_DivideMultiple: TestMessage(DivideMultiple = 5.0, 'DivideMultiple', toString(5.0), toString(DivideMultiple))
+// TODO: possible issue in translator causing DivideVariables = 25 to fail (Integer not being implicitly promoted to Decimal)
+define test_DivideVariables: TestMessage(DivideVariables = 25.0, 'DivideVariables', toString(25.0), toString(DivideVariables))
 
 // Negate
 define NegativeOne: -1
 
 define test_NegativeOne: TestMessage(NegativeOne = -1, 'NegativeOne', toString(-1), toString(NegativeOne))
+
+// MathPrecedence
+define Arithmetic_Mixed: 1 + 5 * 10 - 15 / 3
+define Arithmetic_Parenthetical: (1 + 5) * (10 - 15) / 3
+
+// TODO: possible issue in translator causing Arithmetic_Mixed = 46 to fail (Integer not being implicitly promoted to Decimal)
+define test_Arithmetic_Mixed: TestMessage(Arithmetic_Mixed = 46.0, 'Arithmetic_Mixed', toString(46.0), toString(Arithmetic_Mixed))
+// TODO: possible issue in translator causing Arithmetic_Parenthetical = -10 to fail (Integer not being implicitly promoted to Decimal)
+define test_Arithmetic_Parenthetical: TestMessage(Arithmetic_Parenthetical = -10.0, 'Arithmetic_Parenthetical', toString(-10.0), toString(Arithmetic_Parenthetical))
 
 // Power
 define Pow: 3 ^ 4
@@ -514,16 +543,28 @@ define test_AbsNeg: TestMessage(AbsNeg = 10, 'AbsNeg', toString(10), toString(Ab
 define test_AbsZero: TestMessage(AbsZero = 0, 'AbsZero', toString(0), toString(AbsZero))
 
 // Round
+define RoundUp: Round(4.56)
 define RoundUp_percent: Round(4.56,1)
+define RoundDown: Round(4.49)
 define RoundDown_percent: Round(4.43,1)
 
+// TODO: possible issue in translator causing RoundUp = 5 to fail (Integer not being implicitly promoted to Decimal)
+define test_RoundUp: TestMessage(RoundUp = 5.0, 'RoundUp', toString(5.0), toString(RoundUp))
 define test_RoundUp_percent: TestMessage(RoundUp_percent = 4.6, 'RoundUp_percent', toString(4.6), toString(RoundUp_percent))
+// TODO: possible issue in translator causing RoundDown = 4 to fail (Integer not being implicitly promoted to Decimal)
+define test_RoundDown: TestMessage(RoundDown = 4.0, 'RoundDown', toString(4.0), toString(RoundDown))
 define test_RoundDown_percent: TestMessage(RoundDown_percent = 4.4, 'RoundDown_percent', toString(4.4), toString(RoundDown_percent))
 
 // Ln
 define Ln_Four: Ln(4)
 
 define test_Ln_Four: TestMessage(Ln_Four = 1.38629436, 'Ln_Four', toString(1.38629436), toString(Ln_Four))
+
+// Log
+define Log_BaseTen: Log(10000,10)
+
+// TODO: possible issue in translator causing Log_BaseTen = 4 to fail (Integer not being implicitly promoted to Decimal)
+define test_Log_BaseTen: TestMessage(Log_BaseTen = 4.0, 'Log_BaseTen', toString(4.0), toString(Log_BaseTen))
 
 // Successor
 define Successor_Is: successor of 2
@@ -730,6 +771,8 @@ define NotEqual_UneqTuples: Tuple{a: 1, b: Tuple{c: 1}} != Tuple{a: 1, b: Tuple{
 define NotEqual_EqTuplesWithNullFields: Tuple{a: 'Hello', b: null} != Tuple{a: 'Hello', b: null}
 define NotEqual_UneqTuplesWithNullFields: Tuple{a: 'Hello', b: null} != Tuple{a: 'Goodbye', b: null}
 define NotEqual_UncertTuplesWithNullFieldOnOne: Tuple{a: 'Hello', b: null} != Tuple{a: 'Hello', b: 'null'}
+// TODO: fix once issue is resolved in translator
+//define NotEqual_UncertTuplesWithDiffNullFields: Tuple{a: 'Hello', b: null} != Tuple{a: 'Hello', c: null}
 define NotEqual_EqDateTimes: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) != DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
 define NotEqual_UneqDateTimes: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) != DateTime(2000, 3, 15, 13, 30, 25, 201, +1.0)
 define NotEqual_EqDateTimesTZ: DateTime(2000, 3, 15, 23, 30, 25, 200, +1.0) != DateTime(2000, 3, 16, 2, 30, 25, 200, +4.0)
@@ -759,9 +802,11 @@ define test_NotEqual_AEqB_Int: TestMessage(not NotEqual_AEqB_Int, 'NotEqual_AEqB
 define test_NotEqual_ALtB_Int: TestMessage(NotEqual_ALtB_Int, 'NotEqual_ALtB_Int', toString(true), toString(NotEqual_ALtB_Int))
 define test_NotEqual_EqTuples: TestMessage(not NotEqual_EqTuples, 'NotEqual_EqTuples', toString(false), toString(NotEqual_EqTuples))
 define test_NotEqual_UneqTuples: TestMessage(NotEqual_UneqTuples, 'NotEqual_UneqTuples', toString(true), toString(NotEqual_UneqTuples))
+//define test_NotEqual_TupleDifferentKeys: TestMessage(NotEqual_TupleDifferentKeys, 'NotEqual_TupleDifferentKeys', toString(true), toString(NotEqual_TupleDifferentKeys))
 define test_NotEqual_EqTuplesWithNullFields: TestMessage(not NotEqual_EqTuplesWithNullFields, 'NotEqual_EqTuplesWithNullFields', toString(false), toString(NotEqual_EqTuplesWithNullFields))
 define test_NotEqual_UneqTuplesWithNullFields: TestMessage(NotEqual_UneqTuplesWithNullFields, 'NotEqual_UneqTuplesWithNullFields', toString(true), toString(NotEqual_UneqTuplesWithNullFields))
 define test_NotEqual_UncertTuplesWithNullFieldOnOne: TestMessage(NotEqual_UncertTuplesWithNullFieldOnOne is null, 'NotEqual_UncertTuplesWithNullFieldOnOne', 'null', toString(NotEqual_UncertTuplesWithNullFieldOnOne))
+//define test_NotEqual_UncertTuplesWithDiffNullFields: TestMessage(NotEqual_UncertTuplesWithDiffNullFields, 'NotEqual_UncertTuplesWithDiffNullFields', toString(true), toString(NotEqual_UncertTuplesWithDiffNullFields))
 define test_NotEqual_EqDateTimes: TestMessage(not NotEqual_EqDateTimes, 'NotEqual_EqDateTimes', toString(false), toString(NotEqual_EqDateTimes))
 define test_NotEqual_UneqDateTimes: TestMessage(NotEqual_UneqDateTimes, 'NotEqual_UneqDateTimes', toString(true), toString(NotEqual_UneqDateTimes))
 define test_NotEqual_EqDateTimesTZ: TestMessage(not NotEqual_EqDateTimesTZ, 'NotEqual_EqDateTimesTZ', toString(false), toString(NotEqual_EqDateTimesTZ))
@@ -3778,6 +3823,7 @@ define QuantityIntervalListWithNullLowNoOverlap: { Interval[ToQuantity(4), ToQua
 define CollapseQuantityIntervalListWithNullLowNoOverlapExpected: { Interval[null, ToQuantity(2)], Interval[ToQuantity(4), ToQuantity(8)]}
 define QuantityIntervalListWithNullHighNoOverlap: { Interval[ToQuantity(4), null], Interval[ToQuantity(1), ToQuantity(2)] }
 define CollapseQuantityIntervalListWithNullHighNoOverlapExpected: { Interval[ToQuantity(1), ToQuantity(2)], Interval[ToQuantity(4), null]}
+// define NullIvlCollapse_NullCollapse: collapse null // Translation Error
 define NullIvlCollapse_CollapseNullLowIntervalList: collapse NullLowIntervalList
 define NullIvlCollapse_CollapseNullHighIntervalList: collapse NullHighIntervalList
 define NullIvlCollapse_NullInCollapse: collapse { Interval[1,3], null }
