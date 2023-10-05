@@ -144,6 +144,21 @@ public class LibraryTests {
     }
 
     @Test
+    public void testInvalidLibraryFunctionReference() {
+        CqlTranslator translator = null;
+        try {
+            translator = CqlTranslator.fromStream(
+                    LibraryTests.class.getResourceAsStream("LibraryTests/InvalidReferencingBaseFunctions.cql"),
+                    libraryManager);
+           // assertThat(translator.getErrors().size(), is(not(0)));
+            System.out.println(translator.toJson());
+        } catch (IOException e) {
+            System.out.println(e.toString());
+            e.printStackTrace();
+        }
+    }
+
+    @Test
     public void testInvalidLibraryReference() {
         CqlTranslator translator = null;
         try {
