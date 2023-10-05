@@ -14,10 +14,7 @@ import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
 import org.cqframework.cql.gen.cqlBaseListener;
 import org.hl7.cql_annotations.r1.CqlToElmError;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Ignore;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 public class LibraryTests {
 
@@ -446,32 +443,30 @@ public class LibraryTests {
         assertThat(statements.size(), equalTo(1));
     }
 
-    // LUKETODO: test with FHIRHelpers when NOT calling overloaded method:  should still fail
-    // LUKETODO: test with FHIRHelpers when calling one of overloaded ToInstant()
-    @Test
-    public void testForwardAmbiguousFailOnAmbiguousFunctionResolutionWithoutTypeInformation_SignatureLevelNone() throws IOException {
-        final CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestForwardAmbiguousFunctionResolutionWithoutTypeInformation.cql", SignatureLevel.None);
+    private static final String FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE = "LibraryTests/TestForwardAmbiguousFunctionResolutionWithoutTypeInformation.cql";
+    private static final String NON_FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE = "LibraryTests/TestNonForwardAmbiguousFunctionResolutionWithoutTypeInformation.cql";
+
+    @DataProvider
+    private static Object[][] sigParams() {
+        return new Object[][] {
+                {FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE, SignatureLevel.None},
+                {FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE, SignatureLevel.Differing},
+                {FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE, SignatureLevel.Overloads},
+                {FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE, SignatureLevel.All},
+                {NON_FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE, SignatureLevel.None},
+                {NON_FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE, SignatureLevel.Differing},
+                {NON_FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE, SignatureLevel.Overloads},
+                {NON_FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE, SignatureLevel.All}
+                };
+    }
+
+    @Test(dataProvider = "sigParams")
+    public void testForwardAmbiguousFailOnAmbiguousFunctionResolutionWithoutTypeInformation_SignatureLevelNone(String testFileName, SignatureLevel signatureLevel) throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslatorFromStream(testFileName, signatureLevel);
         // LUKETODO:  assert for the specific type of error, if possible
-        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), greaterThanOrEqualTo(1));
-    }
-
-    @Test
-    public void testForwardAmbiguousFailOnAmbiguousFunctionResolutionWithoutTypeInformation_SignatureLevelAll() throws IOException {
-        final CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestForwardAmbiguousFunctionResolutionWithoutTypeInformation.cql", SignatureLevel.All);
-        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(0));
-    }
-
-    // LUKETODO:  parameterized
-    @Test
-    public void testNonForwwardAmbiguousFailOnAmbiguousFunctionResolutionWithoutTypeInformation_SignatureLevelNone() throws IOException {
-        final CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestNonForwardAmbiguousFunctionResolutionWithoutTypeInformation.cql", SignatureLevel.None);
-        // LUKETODO:  assert for the specific type of error, if possible
-        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(1));
-    }
-
-    @Test
-    public void testNonForwardAmbiguousFailOnAmbiguousFunctionResolutionWithoutTypeInformation_SignatureLevelAll() throws IOException {
-        final CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestNonForwardAmbiguousFunctionResolutionWithoutTypeInformation.cql", SignatureLevel.All);
-        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(0));
+        final int expectedErrorCount = SignatureLevel.None == signatureLevel ?
+                NON_FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE.equals(testFileName) ? 1 : 2
+                : 0;
+        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(expectedErrorCount));
     }
 }

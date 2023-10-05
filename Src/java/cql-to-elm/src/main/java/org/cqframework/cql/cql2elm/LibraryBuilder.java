@@ -13,6 +13,7 @@ import javax.xml.namespace.QName;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Bryn on 12/29/2016.
@@ -1311,29 +1312,27 @@ public class LibraryBuilder implements ModelResolver {
 
     public void validateAmbiguousOverloadedForwardDeclarationsSignatureNone() throws CqlCompilerException {
         // Check for ambiguous overloaded functions
-        if (options.getSignatureLevel() == SignatureLevel.None) {
-            final Library library1 = compiledLibrary.getLibrary();
-            final Library.Statements statements = library1.getStatements();
+        if (SignatureLevel.None == options.getSignatureLevel()) {
+            final Library.Statements statements = compiledLibrary.getLibrary().getStatements();
             if (statements != null) {
-                final List<ExpressionDef> defs = statements.getDef();
+                final Map<String, Integer> paramCountByFunctionName = new HashMap<>();
 
-                final Map<String, Integer> objectObjectHashMap = new HashMap<>();
+                final List<FunctionDef> funcDefs = statements.getDef().stream()
+                        .filter(FunctionDef.class::isInstance)
+                        .map(FunctionDef.class::cast)
+                        .collect(Collectors.toList());
 
-                for (ExpressionDef expressionDef : defs) {
-                    if (expressionDef instanceof FunctionDef) {
-                        final FunctionDef functionDef = (FunctionDef) expressionDef;
-                        final List<OperandDef> operand = functionDef.getOperand();
+                for (FunctionDef funcDef : funcDefs) {
+                    final String functionDefName = funcDef.getName();
+                    final List<OperandDef> operand = funcDef.getOperand();
 
-                        final String functionDefName = functionDef.getName();
-
-                        if (objectObjectHashMap.containsKey(functionDefName)) {
-                            if (objectObjectHashMap.get(functionDefName) == operand.size()) {
-                                throw new CqlCompilerException(String.format("Please consider setting your compiler signature level to a setting other than None:  Ambiguous forward function declaration for function name: %s", functionDefName));
-                            }
+                    if (operand.size() == paramCountByFunctionName.computeIfAbsent(functionDefName, str -> -1)) {
+                        if (paramCountByFunctionName.get(functionDefName) == operand.size()) {
+                            throw new CqlCompilerException(String.format("Please consider setting your compiler signature level to a setting other than None:  Ambiguous forward function declaration for function name: %s", functionDefName));
                         }
-
-                        objectObjectHashMap.put(functionDefName, operand.size());
                     }
+
+                    paramCountByFunctionName.put(functionDefName, operand.size());
                 }
             }
         }
