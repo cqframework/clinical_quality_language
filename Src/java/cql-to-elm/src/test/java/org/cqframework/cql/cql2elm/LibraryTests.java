@@ -446,10 +446,32 @@ public class LibraryTests {
         assertThat(statements.size(), equalTo(1));
     }
 
+    // LUKETODO: test with FHIRHelpers when NOT calling overloaded method:  should still fail
+    // LUKETODO: test with FHIRHelpers when calling one of overloaded ToInstant()
     @Test
-    public void testAmbiguousFailOnAmbiguousFunctionResolutionWithoutTypeInformation() throws IOException {
-        final CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestForwardDeclaration.cql");
+    public void testForwardAmbiguousFailOnAmbiguousFunctionResolutionWithoutTypeInformation_SignatureLevelNone() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestForwardAmbiguousFunctionResolutionWithoutTypeInformation.cql", SignatureLevel.None);
+        // LUKETODO:  assert for the specific type of error, if possible
+        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), greaterThanOrEqualTo(1));
+    }
+
+    @Test
+    public void testForwardAmbiguousFailOnAmbiguousFunctionResolutionWithoutTypeInformation_SignatureLevelAll() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestForwardAmbiguousFunctionResolutionWithoutTypeInformation.cql", SignatureLevel.All);
         assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(0));
     }
 
+    // LUKETODO:  parameterized
+    @Test
+    public void testNonForwwardAmbiguousFailOnAmbiguousFunctionResolutionWithoutTypeInformation_SignatureLevelNone() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestNonForwardAmbiguousFunctionResolutionWithoutTypeInformation.cql", SignatureLevel.None);
+        // LUKETODO:  assert for the specific type of error, if possible
+        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(0));
+    }
+
+    @Test
+    public void testNonForwardAmbiguousFailOnAmbiguousFunctionResolutionWithoutTypeInformation_SignatureLevelAll() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestNonForwardAmbiguousFunctionResolutionWithoutTypeInformation.cql", SignatureLevel.All);
+        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(0));
+    }
 }

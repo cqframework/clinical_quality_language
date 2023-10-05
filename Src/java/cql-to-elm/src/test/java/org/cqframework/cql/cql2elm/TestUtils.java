@@ -18,8 +18,7 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -32,7 +31,13 @@ public class TestUtils {
     }
 
     private static LibraryManager getLibraryManager() {
-        return getLibraryManager(new CqlCompilerOptions(ErrorSeverity.Warning, SignatureLevel.None));
+        final SignatureLevel sig = null;
+        return getLibraryManager(sig);
+    }
+
+    private static LibraryManager getLibraryManager(SignatureLevel nullableSignatureLevel) {
+        return getLibraryManager(new CqlCompilerOptions(ErrorSeverity.Warning,
+                Objects.requireNonNullElse(nullableSignatureLevel, SignatureLevel.All)));
 
     }
 
@@ -53,15 +58,23 @@ public class TestUtils {
     }
 
     public static Object visitFile(String fileName) throws IOException {
-        File file = new File(URLDecoder.decode(TestUtils.class.getResource(fileName).getFile(), "UTF-8"));
-        CqlTranslator translator = CqlTranslator.fromFile(file, getLibraryManager());
+        return visitFile(fileName, null);
+    }
+
+    public static Object visitFile(String fileName, SignatureLevel nullableSignatureLevel) throws IOException {
+        final File file = getFileOrThrow(fileName);
+        CqlTranslator translator = CqlTranslator.fromFile(file, getLibraryManager(nullableSignatureLevel));
         ensureValid(translator);
         return translator.toObject();
     }
 
     public static CompiledLibrary visitFileLibrary(String fileName) throws IOException {
-        File file = new File(URLDecoder.decode(TestUtils.class.getResource(fileName).getFile(), "UTF-8"));
-        CqlTranslator translator = CqlTranslator.fromFile(file, getLibraryManager());
+        return visitFileLibrary(fileName, null);
+    }
+
+    public static CompiledLibrary visitFileLibrary(String fileName, SignatureLevel nullableSignatureLevel) throws IOException {
+        final File file = getFileOrThrow(fileName);
+        CqlTranslator translator = CqlTranslator.fromFile(file, getLibraryManager(nullableSignatureLevel));
         ensureValid(translator);
         return translator.getTranslatedLibrary();
     }
@@ -156,21 +169,29 @@ public class TestUtils {
     }
 
     public static CqlTranslator createTranslatorFromStream(String testFileName, CqlCompilerOptions.Options... options) throws IOException {
-        return createTranslatorFromStream(null, testFileName, options);
+        return createTranslatorFromStream(null, testFileName, null, options);
     }
 
-    public static CqlTranslator createTranslatorFromStream(NamespaceInfo namespaceInfo, String testFileName, CqlCompilerOptions.Options... options) throws IOException {
+    public static CqlTranslator createTranslatorFromStream(String testFileName, SignatureLevel signatureLevel, CqlCompilerOptions.Options... options) throws IOException {
+        return createTranslatorFromStream(null, testFileName, signatureLevel, options);
+    }
+
+    public static CqlTranslator createTranslatorFromStream(NamespaceInfo namespaceInfo, String testFileName, SignatureLevel nullableSignatureLevel, CqlCompilerOptions.Options... options) throws IOException {
         InputStream inputStream = Cql2ElmVisitorTest.class.getResourceAsStream(testFileName);
-        return createTranslatorFromStream(null, inputStream, options);
+        if (inputStream == null) {
+            throw new FileNotFoundException("cannot find file with path: " + testFileName);
+        }
+        return createTranslatorFromStream(null, inputStream, nullableSignatureLevel, options);
     }
 
     public static CqlTranslator createTranslatorFromStream(InputStream inputStream, CqlCompilerOptions.Options... options) throws IOException {
-        return createTranslatorFromStream(null, inputStream, options);
+        return createTranslatorFromStream(null, inputStream, null, options);
     }
 
-    public static CqlTranslator createTranslatorFromStream(NamespaceInfo namespaceInfo, InputStream inputStream, CqlCompilerOptions.Options... options) throws IOException {
+    public static CqlTranslator createTranslatorFromStream(NamespaceInfo namespaceInfo, InputStream inputStream, SignatureLevel nullableSignatureLevel, CqlCompilerOptions.Options... options) throws IOException {
         ModelManager modelManager = new ModelManager();
         var compilerOptions = new CqlCompilerOptions(options);
+        Optional.ofNullable(nullableSignatureLevel).ifPresent(compilerOptions::setSignatureLevel);
         LibraryManager libraryManager = new LibraryManager(modelManager, compilerOptions);
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
         CqlTranslator translator = CqlTranslator.fromStream(namespaceInfo, inputStream,  libraryManager);
@@ -204,13 +225,17 @@ public class TestUtils {
         }
         String fileName = segments[segments.length - 1];
 
-        final URL resource = Optional.ofNullable(Cql2ElmVisitorTest.class.getResource(testFileName))
-                .orElseThrow(() -> new FileNotFoundException("cannot find file with path: " + testFileName));
-        File translationTestFile = new File(URLDecoder.decode(resource.getFile(), StandardCharsets.UTF_8));
+        final File translationTestFile = getFileOrThrow(testFileName);
         ModelManager modelManager = new ModelManager();
         LibraryManager libraryManager = new LibraryManager(modelManager, options);
         libraryManager.getLibrarySourceLoader().registerProvider(path == null ? new TestLibrarySourceProvider() : new TestLibrarySourceProvider(path));
         CqlTranslator translator = CqlTranslator.fromFile(namespaceInfo, translationTestFile,  libraryManager);
         return translator;
+    }
+
+    private static File getFileOrThrow(String theFileName) throws FileNotFoundException {
+        final URL resource = Optional.ofNullable(Cql2ElmVisitorTest.class.getResource(theFileName))
+                .orElseThrow(() -> new FileNotFoundException("cannot find file with path: " + theFileName));
+        return new File(URLDecoder.decode(resource.getFile(), StandardCharsets.UTF_8));
     }
 }

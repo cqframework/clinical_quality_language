@@ -3,7 +3,6 @@ package org.cqframework.cql.cql2elm;
 import org.cqframework.cql.cql2elm.model.*;
 import org.cqframework.cql.cql2elm.model.invocation.*;
 import org.cqframework.cql.elm.tracking.TrackBack;
-import org.fhir.ucum.UcumService;
 import org.hl7.cql.model.*;
 import org.hl7.cql_annotations.r1.CqlToElmError;
 import org.hl7.cql_annotations.r1.CqlToElmInfo;
@@ -1308,6 +1307,61 @@ public class LibraryBuilder implements ModelResolver {
         }
 
         return fun;
+    }
+
+    public void validateAmbiguousOverloadedForwardDeclarationsSignatureNone() throws CqlCompilerException {
+        // LUKETODO: I think this is where we need to detect this condition (issue 1127)
+        // LUKETODO:  how do we tell if this is an overloaded call?
+
+
+        // LUKETODO: forward function evaluation only?
+        // Check for ambiguous overloaded functions
+        if (options.getSignatureLevel() == SignatureLevel.None) {
+            final Library library1 = compiledLibrary.getLibrary();
+            final Library.Statements statements = library1.getStatements();
+            if (statements != null) {
+                final List<ExpressionDef> defs = statements.getDef();
+
+                final Map<String, Integer> objectObjectHashMap = new HashMap<>();
+
+                // LUKETODO:  conditions:
+                // 1) function has the same name
+                // 2) function has the same number of params
+                // 3) found a second time >>>> throw
+                for (ExpressionDef expressionDef : defs) {
+                    if (expressionDef instanceof FunctionDef) {
+                        final FunctionDef functionDef = (FunctionDef) expressionDef;
+                        final List<OperandDef> operand = functionDef.getOperand();
+
+                        final String functionDefName = functionDef.getName();
+
+                        if (objectObjectHashMap.containsKey(functionDefName)) {
+                            if (objectObjectHashMap.get(functionDefName) == operand.size()) {
+                                // LUKETODO:  it looks like this affects Library defs as well
+                                // example FHIR Helpers:
+                                // org.cqframework.cql.cql2elm.fhir.dstu2.BaseTest#testEqualityWithConversions()
+                            /*
+define function "ToInterval"(period FHIR.Period ):
+  if period is null then
+        null
+    else
+        Interval[period."start".value, period."end".value]
+
+define function "ToQuantity"(quantity FHIR.Quantity ):
+  if quantity is null then
+        null
+    else
+        System.Quantity { value: quantity.value.value, unit: quantity.unit.value }
+                             */
+                                throw new CqlCompilerException("ambiguous forward function declaration for function name: " + functionDefName);
+                            }
+                        }
+
+                        objectObjectHashMap.put(functionDefName, operand.size());
+                    }
+                }
+            }
+        }
     }
 
     public void verifyComparable(DataType dataType) {
