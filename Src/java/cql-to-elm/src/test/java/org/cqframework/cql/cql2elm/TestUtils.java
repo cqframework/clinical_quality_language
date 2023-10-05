@@ -92,7 +92,7 @@ public class TestUtils {
         for (CqlCompilerException error : translator.getErrors()) {
             builder.append(String.format("%s%n", error.getMessage()));
         }
-        if (!builder.isEmpty()) {
+        if (builder.length() > 0) {
             throw new IllegalStateException(builder.toString());
         }
     }
