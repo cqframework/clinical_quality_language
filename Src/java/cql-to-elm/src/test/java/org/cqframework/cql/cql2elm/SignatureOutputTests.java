@@ -5,7 +5,6 @@ import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,17 +16,11 @@ import static org.hamcrest.Matchers.is;
  */
 public class SignatureOutputTests {
 
+    private static final String CQL_TEST_FILE = "SignatureTests/SignatureOutputTests.cql";
     private Map<String, ExpressionDef> defs;
 
     private Library getLibrary(LibraryBuilder.SignatureLevel signatureLevel) throws IOException {
-        File testFile = new File(URLDecoder.decode(Cql2ElmVisitorTest.class.getResource("SignatureTests/SignatureOutputTests.cql").getFile(), "UTF-8"));
-        ModelManager modelManager = new ModelManager();
-        var compilerOptions = new CqlCompilerOptions(CqlCompilerException.ErrorSeverity.Info, signatureLevel);
-        CqlTranslator translator = CqlTranslator.fromFile(testFile, new LibraryManager(modelManager, compilerOptions));
-        for (CqlCompilerException error : translator.getErrors()) {
-            System.err.println(String.format("(%d,%d): %s",
-                    error.getLocator().getStartLine(), error.getLocator().getStartChar(), error.getMessage()));
-        }
+        final CqlTranslator translator = getTranslator(signatureLevel);
         assertThat(translator.getErrors().size(), is(0));
         defs = new HashMap<>();
         Library library = translator.toELM();
@@ -39,43 +32,15 @@ public class SignatureOutputTests {
         return library;
     }
 
+
+    private static CqlTranslator getTranslator(LibraryBuilder.SignatureLevel signatureLevel) throws IOException {
+        return TestUtils.getTranslator(CQL_TEST_FILE, null, signatureLevel);
+    }
+
     @Test
     public void TestNone() throws IOException {
-        // LUKETODO:  this is explicitly None and is now failing
-        Library library = getLibrary(LibraryBuilder.SignatureLevel.None);
-        // Verify none of the outputs have signatures
-        ExpressionDef def = defs.get("TestAdd");
-        assertThat(((OperatorExpression)def.getExpression()).getSignature().size(), is(0));
-
-        def = defs.get("TestDateAdd");
-        assertThat(((OperatorExpression)def.getExpression()).getSignature().size(), is(0));
-
-        def = defs.get("TestDateTime");
-        assertThat(((OperatorExpression)def.getExpression()).getSignature().size(), is(0));
-
-        def = defs.get("TestAvg");
-        assertThat(((AggregateExpression)def.getExpression()).getSignature().size(), is(0));
-
-        def = defs.get("TestDivide");
-        assertThat(((OperatorExpression)def.getExpression()).getSignature().size(), is(0));
-
-        def = defs.get("TestIntegerOverload");
-        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
-
-        def = defs.get("TestDecimalOverload");
-        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
-
-        def = defs.get("TestMultipleOverload");
-        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
-
-        def = defs.get("TestIntegerMultipleOverload");
-        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
-
-        def = defs.get("TestDecimalMultipleOverload");
-        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
-
-        def = defs.get("TestIntegerAndDecimalMultipleOverload");
-        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
+        final CqlTranslator translator = getTranslator(LibraryBuilder.SignatureLevel.None);
+        assertThat(translator.getErrors().size(), is(8));
     }
 
     @Test

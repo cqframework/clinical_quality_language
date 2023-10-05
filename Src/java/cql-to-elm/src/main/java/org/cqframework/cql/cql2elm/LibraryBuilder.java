@@ -1310,11 +1310,6 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     public void validateAmbiguousOverloadedForwardDeclarationsSignatureNone() throws CqlCompilerException {
-        // LUKETODO: I think this is where we need to detect this condition (issue 1127)
-        // LUKETODO:  how do we tell if this is an overloaded call?
-
-
-        // LUKETODO: forward function evaluation only?
         // Check for ambiguous overloaded functions
         if (options.getSignatureLevel() == SignatureLevel.None) {
             final Library library1 = compiledLibrary.getLibrary();
@@ -1324,10 +1319,6 @@ public class LibraryBuilder implements ModelResolver {
 
                 final Map<String, Integer> objectObjectHashMap = new HashMap<>();
 
-                // LUKETODO:  conditions:
-                // 1) function has the same name
-                // 2) function has the same number of params
-                // 3) found a second time >>>> throw
                 for (ExpressionDef expressionDef : defs) {
                     if (expressionDef instanceof FunctionDef) {
                         final FunctionDef functionDef = (FunctionDef) expressionDef;
@@ -1337,23 +1328,7 @@ public class LibraryBuilder implements ModelResolver {
 
                         if (objectObjectHashMap.containsKey(functionDefName)) {
                             if (objectObjectHashMap.get(functionDefName) == operand.size()) {
-                                // LUKETODO:  it looks like this affects Library defs as well
-                                // example FHIR Helpers:
-                                // org.cqframework.cql.cql2elm.fhir.dstu2.BaseTest#testEqualityWithConversions()
-                            /*
-define function "ToInterval"(period FHIR.Period ):
-  if period is null then
-        null
-    else
-        Interval[period."start".value, period."end".value]
-
-define function "ToQuantity"(quantity FHIR.Quantity ):
-  if quantity is null then
-        null
-    else
-        System.Quantity { value: quantity.value.value, unit: quantity.unit.value }
-                             */
-                                throw new CqlCompilerException("ambiguous forward function declaration for function name: " + functionDefName);
+                                throw new CqlCompilerException(String.format("Please consider setting your compiler signature level to a setting other than None:  Ambiguous forward function declaration for function name: %s", functionDefName));
                             }
                         }
 

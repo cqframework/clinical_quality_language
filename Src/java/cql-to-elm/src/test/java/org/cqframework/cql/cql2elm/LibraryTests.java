@@ -466,7 +466,7 @@ public class LibraryTests {
     public void testNonForwwardAmbiguousFailOnAmbiguousFunctionResolutionWithoutTypeInformation_SignatureLevelNone() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestNonForwardAmbiguousFunctionResolutionWithoutTypeInformation.cql", SignatureLevel.None);
         // LUKETODO:  assert for the specific type of error, if possible
-        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(0));
+        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(1));
     }
 
     @Test
