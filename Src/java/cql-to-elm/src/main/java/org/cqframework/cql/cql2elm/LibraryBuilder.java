@@ -3,7 +3,6 @@ package org.cqframework.cql.cql2elm;
 import org.cqframework.cql.cql2elm.model.*;
 import org.cqframework.cql.cql2elm.model.invocation.*;
 import org.cqframework.cql.elm.tracking.TrackBack;
-import org.fhir.ucum.UcumService;
 import org.hl7.cql.model.*;
 import org.hl7.cql_annotations.r1.CqlToElmError;
 import org.hl7.cql_annotations.r1.CqlToElmInfo;
@@ -14,6 +13,7 @@ import javax.xml.namespace.QName;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Bryn on 12/29/2016.
@@ -1308,6 +1308,34 @@ public class LibraryBuilder implements ModelResolver {
         }
 
         return fun;
+    }
+
+    public void validateAmbiguousOverloadedForwardDeclarationsSignatureNone() throws CqlCompilerException {
+        // Check for ambiguous overloaded functions
+        if (SignatureLevel.None == options.getSignatureLevel()) {
+            final Library.Statements statements = compiledLibrary.getLibrary().getStatements();
+            if (statements != null) {
+                final Map<String, Integer> paramCountByFunctionName = new HashMap<>();
+
+                final List<FunctionDef> funcDefs = statements.getDef().stream()
+                        .filter(FunctionDef.class::isInstance)
+                        .map(FunctionDef.class::cast)
+                        .collect(Collectors.toList());
+
+                for (FunctionDef funcDef : funcDefs) {
+                    final String functionDefName = funcDef.getName();
+                    final List<OperandDef> operand = funcDef.getOperand();
+
+                    if (operand.size() == paramCountByFunctionName.computeIfAbsent(functionDefName, str -> -1)) {
+                        if (paramCountByFunctionName.get(functionDefName) == operand.size()) {
+                            throw new CqlCompilerException(String.format("Please consider setting your compiler signature level to a setting other than None:  Ambiguous forward function declaration for function name: %s", functionDefName));
+                        }
+                    }
+
+                    paramCountByFunctionName.put(functionDefName, operand.size());
+                }
+            }
+        }
     }
 
     public void verifyComparable(DataType dataType) {
