@@ -16,9 +16,7 @@ import java.util.Optional;
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
 import org.hl7.cql_annotations.r1.CqlToElmError;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 public class LibraryTests {
 
@@ -598,5 +596,35 @@ public class LibraryTests {
     public void TestNonForwardDeclarationsScoringImplicitConversionMultipleParamsCannotResolve() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestNonForwardDeclarationScoringImplicitConversionMultipleParamsCannotResolve.cql");
         assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(2));
+    }
+
+    private static final String FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE = "LibraryTests/TestForwardAmbiguousFunctionResolutionWithoutTypeInformation.cql";
+    private static final String NON_FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE = "LibraryTests/TestNonForwardAmbiguousFunctionResolutionWithoutTypeInformation.cql";
+
+    @DataProvider
+    private static Object[][] sigParams() {
+        return new Object[][] {
+                {FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE, SignatureLevel.None},
+                {FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE, SignatureLevel.Differing},
+                {FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE, SignatureLevel.Overloads},
+                {FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE, SignatureLevel.All},
+                {NON_FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE, SignatureLevel.None},
+                {NON_FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE, SignatureLevel.Differing},
+                {NON_FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE, SignatureLevel.Overloads},
+                {NON_FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE, SignatureLevel.All}
+                };
+    }
+
+    @Test(dataProvider = "sigParams")
+    public void testForwardAmbiguousFailOnAmbiguousFunctionResolutionWithoutTypeInformation_SignatureLevelNone(String testFileName, SignatureLevel signatureLevel) throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslatorFromStream(testFileName, signatureLevel);
+        final int expectedErrorCount = SignatureLevel.None == signatureLevel ?
+                NON_FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE.equals(testFileName) ? 1 : 2
+                : 0;
+        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(expectedErrorCount));
+
+        if (expectedErrorCount > 0) {
+            assertThat(translator.getErrors().get(0).getMessage(), equalTo("Please consider setting your compiler signature level to a setting other than None:  Ambiguous forward function declaration for function name: TestAny"));
+        }
     }
 }

@@ -3884,6 +3884,7 @@ DATETIME
         // If the function cannot be resolved in the builder and the call is to a function in the current library,
         // check for forward declarations of functions
         boolean checkForward = libraryName == null || libraryName.equals("") || libraryName.equals(this.libraryInfo.getLibraryName());
+        libraryBuilder.validateAmbiguousOverloadedForwardDeclarationsSignatureNone();
         Expression result = libraryBuilder.resolveFunction(libraryName, functionName, expressions, !checkForward, allowPromotionAndDemotion, allowFluent);
         if (result != null) {
             return result;
