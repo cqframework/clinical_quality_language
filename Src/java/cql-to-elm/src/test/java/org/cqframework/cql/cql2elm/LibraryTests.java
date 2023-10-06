@@ -463,10 +463,13 @@ public class LibraryTests {
     @Test(dataProvider = "sigParams")
     public void testForwardAmbiguousFailOnAmbiguousFunctionResolutionWithoutTypeInformation_SignatureLevelNone(String testFileName, SignatureLevel signatureLevel) throws IOException {
         final CqlTranslator translator = TestUtils.createTranslatorFromStream(testFileName, signatureLevel);
-        // LUKETODO:  assert for the specific type of error, if possible
         final int expectedErrorCount = SignatureLevel.None == signatureLevel ?
                 NON_FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE.equals(testFileName) ? 1 : 2
                 : 0;
         assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(expectedErrorCount));
+
+        if (expectedErrorCount > 0) {
+            assertThat(translator.getErrors().get(0).getMessage(), equalTo("Please consider setting your compiler signature level to a setting other than None:  Ambiguous forward function declaration for function name: TestAny"));
+        }
     }
 }
