@@ -3889,7 +3889,10 @@ DATETIME
         if (result != null) {
             return result;
         }
-        return handleFunctionNotResolved(libraryName, functionName, expressions, mustResolve, allowPromotionAndDemotion, allowFluent);
+        final Expression forwardResolvedFunction = handleFunctionNotResolved(libraryName, functionName, expressions, mustResolve, allowPromotionAndDemotion, allowFluent);
+        // We need to call this twice because in the new world we may not have compiled all the function declarations yet.
+        libraryBuilder.validateAmbiguousOverloadedForwardDeclarationsSignatureNone();
+        return forwardResolvedFunction;
     }
 
     private Expression handleFunctionNotResolved(String libraryName, String functionName, List<Expression> expressions, boolean mustResolve, boolean allowPromotionAndDemotion, boolean allowFluent) {
