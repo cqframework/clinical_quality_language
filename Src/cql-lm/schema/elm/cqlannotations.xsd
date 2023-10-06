@@ -138,6 +138,7 @@
 		<xs:extension base="CqlToElmBase">
 		    <xs:attribute name="translatorVersion" type="xs:string"/>
 		    <xs:attribute name="translatorOptions" type="xs:string"/>
+		    <xs:attribute name="signatureLevel" type="xs:string"/>
 		</xs:extension>
 	</xs:complexContent>
   </xs:complexType>

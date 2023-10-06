@@ -607,7 +607,8 @@
     },
     "annotation" : [ {
       "type" : "CqlToElmInfo",
-      "translatorOptions" : ""
+      "translatorOptions" : "",
+      "signatureLevel" : "{SIGNATURE_LEVEL_TOKEN}"
     }, {
       "type" : "CqlToElmError",
       "libraryId" : "CMS146",
