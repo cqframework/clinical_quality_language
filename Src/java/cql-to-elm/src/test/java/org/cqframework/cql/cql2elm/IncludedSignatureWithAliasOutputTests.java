@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 public class IncludedSignatureWithAliasOutputTests {
 
@@ -37,7 +37,8 @@ public class IncludedSignatureWithAliasOutputTests {
     @Test
     public void TestNone() throws IOException {
         final CqlTranslator translator = getTranslator(LibraryBuilder.SignatureLevel.None);
-        assertThat(translator.getErrors().size(), is(8));
+        assertThat(translator.getErrors().size(), greaterThan(1));
+        assertThat(translator.getErrors().get(0).getMessage(), equalTo("Please consider setting your compiler signature level to a setting other than None:  Ambiguous forward function declaration for function name: MultipleOverloadTest"));
     }
 
     @Test

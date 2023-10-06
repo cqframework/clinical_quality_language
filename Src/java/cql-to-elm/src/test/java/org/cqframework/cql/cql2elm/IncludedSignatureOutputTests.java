@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 /**
  * Created by Bryn on 4/12/2018.
@@ -39,7 +39,8 @@ public class IncludedSignatureOutputTests {
     @Test
     public void TestNone() throws IOException {
         final CqlTranslator translator = getTranslator(LibraryBuilder.SignatureLevel.None);
-        assertThat(translator.getErrors().size(), is(8));
+        assertThat(translator.getErrors().size(), greaterThan(1));
+        assertThat(translator.getErrors().get(0).getMessage(), equalTo("Please consider setting your compiler signature level to a setting other than None:  Ambiguous forward function declaration for function name: MultipleOverloadTest"));
     }
 
     @Test
