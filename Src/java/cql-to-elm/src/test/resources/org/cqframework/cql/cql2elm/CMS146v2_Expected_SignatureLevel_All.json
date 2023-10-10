@@ -1,0 +1,919 @@
+{
+  "library" : {
+    "type" : "Library",
+    "identifier" : {
+      "type" : "VersionedIdentifier",
+      "id" : "CMS146",
+      "version" : "2"
+    },
+    "schemaIdentifier" : {
+      "type" : "VersionedIdentifier",
+      "id" : "urn:hl7-org:elm",
+      "version" : "r1"
+    },
+    "usings" : {
+      "type" : "Library$Usings",
+      "def" : [ {
+        "type" : "UsingDef",
+        "localIdentifier" : "System",
+        "uri" : "urn:hl7-org:elm-types:r1"
+      }, {
+        "type" : "UsingDef",
+        "localIdentifier" : "QUICK",
+        "uri" : "http://hl7.org/fhir"
+      } ]
+    },
+    "parameters" : {
+      "type" : "Library$Parameters",
+      "def" : [ {
+        "type" : "ParameterDef",
+        "default" : {
+          "type" : "Interval",
+          "low" : {
+            "type" : "DateTime",
+            "year" : {
+              "type" : "Literal",
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "2013"
+            },
+            "month" : {
+              "type" : "Literal",
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "1"
+            },
+            "day" : {
+              "type" : "Literal",
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "1"
+            },
+            "hour" : {
+              "type" : "Literal",
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "0"
+            },
+            "minute" : {
+              "type" : "Literal",
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "0"
+            },
+            "second" : {
+              "type" : "Literal",
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "0"
+            },
+            "millisecond" : {
+              "type" : "Literal",
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "0"
+            },
+            "signature" : [ {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{urn:hl7-org:elm-types:r1}Integer"
+            }, {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{urn:hl7-org:elm-types:r1}Integer"
+            }, {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{urn:hl7-org:elm-types:r1}Integer"
+            }, {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{urn:hl7-org:elm-types:r1}Integer"
+            }, {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{urn:hl7-org:elm-types:r1}Integer"
+            }, {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{urn:hl7-org:elm-types:r1}Integer"
+            }, {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{urn:hl7-org:elm-types:r1}Integer"
+            } ]
+          },
+          "high" : {
+            "type" : "DateTime",
+            "year" : {
+              "type" : "Literal",
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "2014"
+            },
+            "month" : {
+              "type" : "Literal",
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "1"
+            },
+            "day" : {
+              "type" : "Literal",
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "1"
+            },
+            "hour" : {
+              "type" : "Literal",
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "0"
+            },
+            "minute" : {
+              "type" : "Literal",
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "0"
+            },
+            "second" : {
+              "type" : "Literal",
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "0"
+            },
+            "millisecond" : {
+              "type" : "Literal",
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "0"
+            },
+            "signature" : [ {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{urn:hl7-org:elm-types:r1}Integer"
+            }, {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{urn:hl7-org:elm-types:r1}Integer"
+            }, {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{urn:hl7-org:elm-types:r1}Integer"
+            }, {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{urn:hl7-org:elm-types:r1}Integer"
+            }, {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{urn:hl7-org:elm-types:r1}Integer"
+            }, {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{urn:hl7-org:elm-types:r1}Integer"
+            }, {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{urn:hl7-org:elm-types:r1}Integer"
+            } ]
+          },
+          "lowClosed" : true,
+          "highClosed" : false
+        },
+        "name" : "MeasurementPeriod",
+        "accessLevel" : "Public"
+      } ]
+    },
+    "valueSets" : {
+      "type" : "Library$ValueSets",
+      "def" : [ {
+        "type" : "ValueSetDef",
+        "name" : "Acute Pharyngitis",
+        "id" : "2.16.840.1.113883.3.464.1003.102.12.1011",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ValueSetDef",
+        "name" : "Acute Tonsillitis",
+        "id" : "2.16.840.1.113883.3.464.1003.102.12.1012",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ValueSetDef",
+        "name" : "Ambulatory/ED Visit",
+        "id" : "2.16.840.1.113883.3.464.1003.101.12.1061",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ValueSetDef",
+        "name" : "Antibiotic Medications",
+        "id" : "2.16.840.1.113883.3.464.1003.196.12.1001",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ValueSetDef",
+        "name" : "Group A Streptococcus Test",
+        "id" : "2.16.840.1.113883.3.464.1003.198.12.1012",
+        "accessLevel" : "Public"
+      } ]
+    },
+    "contexts" : {
+      "type" : "Library$Contexts",
+      "def" : [ {
+        "type" : "ContextDef",
+        "name" : "Patient"
+      } ]
+    },
+    "statements" : {
+      "type" : "Library$Statements",
+      "def" : [ {
+        "type" : "ExpressionDef",
+        "expression" : {
+          "type" : "SingletonFrom",
+          "operand" : {
+            "type" : "Retrieve",
+            "dataType" : "{http://hl7.org/fhir}Patient",
+            "templateId" : "patient-qicore-qicore-patient"
+          }
+        },
+        "name" : "Patient",
+        "context" : "Patient"
+      }, {
+        "type" : "ExpressionDef",
+        "expression" : {
+          "type" : "And",
+          "signature" : [ {
+            "type" : "NamedTypeSpecifier",
+            "name" : "{urn:hl7-org:elm-types:r1}Boolean"
+          }, {
+            "type" : "NamedTypeSpecifier",
+            "name" : "{urn:hl7-org:elm-types:r1}Boolean"
+          } ],
+          "operand" : [ {
+            "type" : "GreaterOrEqual",
+            "signature" : [ {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{urn:hl7-org:elm-types:r1}Integer"
+            }, {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{urn:hl7-org:elm-types:r1}Integer"
+            } ],
+            "operand" : [ {
+              "type" : "CalculateAgeAt",
+              "signature" : [ {
+                "type" : "NamedTypeSpecifier",
+                "name" : "{urn:hl7-org:elm-types:r1}DateTime"
+              }, {
+                "type" : "NamedTypeSpecifier",
+                "name" : "{urn:hl7-org:elm-types:r1}DateTime"
+              } ],
+              "operand" : [ {
+                "type" : "Property",
+                "source" : {
+                  "type" : "ExpressionRef",
+                  "name" : "Patient"
+                },
+                "path" : "birthDate"
+              }, {
+                "type" : "Start",
+                "signature" : [ {
+                  "type" : "IntervalTypeSpecifier",
+                  "pointType" : {
+                    "type" : "NamedTypeSpecifier",
+                    "name" : "{urn:hl7-org:elm-types:r1}DateTime"
+                  }
+                } ],
+                "operand" : {
+                  "type" : "ParameterRef",
+                  "name" : "MeasurementPeriod"
+                }
+              } ],
+              "precision" : "Year"
+            }, {
+              "type" : "Literal",
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "2"
+            } ]
+          }, {
+            "type" : "Less",
+            "signature" : [ {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{urn:hl7-org:elm-types:r1}Integer"
+            }, {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{urn:hl7-org:elm-types:r1}Integer"
+            } ],
+            "operand" : [ {
+              "type" : "CalculateAgeAt",
+              "signature" : [ {
+                "type" : "NamedTypeSpecifier",
+                "name" : "{urn:hl7-org:elm-types:r1}DateTime"
+              }, {
+                "type" : "NamedTypeSpecifier",
+                "name" : "{urn:hl7-org:elm-types:r1}DateTime"
+              } ],
+              "operand" : [ {
+                "type" : "Property",
+                "source" : {
+                  "type" : "ExpressionRef",
+                  "name" : "Patient"
+                },
+                "path" : "birthDate"
+              }, {
+                "type" : "Start",
+                "signature" : [ {
+                  "type" : "IntervalTypeSpecifier",
+                  "pointType" : {
+                    "type" : "NamedTypeSpecifier",
+                    "name" : "{urn:hl7-org:elm-types:r1}DateTime"
+                  }
+                } ],
+                "operand" : {
+                  "type" : "ParameterRef",
+                  "name" : "MeasurementPeriod"
+                }
+              } ],
+              "precision" : "Year"
+            }, {
+              "type" : "Literal",
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "18"
+            } ]
+          } ]
+        },
+        "name" : "InDemographic",
+        "context" : "Patient",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ExpressionDef",
+        "expression" : {
+          "type" : "Union",
+          "signature" : [ {
+            "type" : "ListTypeSpecifier",
+            "elementType" : {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{http://hl7.org/fhir}Condition"
+            }
+          }, {
+            "type" : "ListTypeSpecifier",
+            "elementType" : {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{http://hl7.org/fhir}Condition"
+            }
+          } ],
+          "operand" : [ {
+            "type" : "Retrieve",
+            "codes" : {
+              "type" : "ValueSetRef",
+              "name" : "Acute Pharyngitis",
+              "preserve" : true
+            },
+            "dataType" : "{http://hl7.org/fhir}Condition",
+            "templateId" : "condition-qicore-qicore-condition",
+            "codeProperty" : "code",
+            "codeComparator" : "in"
+          }, {
+            "type" : "Retrieve",
+            "codes" : {
+              "type" : "ValueSetRef",
+              "name" : "Acute Tonsillitis",
+              "preserve" : true
+            },
+            "dataType" : "{http://hl7.org/fhir}Condition",
+            "templateId" : "condition-qicore-qicore-condition",
+            "codeProperty" : "code",
+            "codeComparator" : "in"
+          } ]
+        },
+        "name" : "Pharyngitis",
+        "context" : "Patient",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ExpressionDef",
+        "expression" : {
+          "type" : "Retrieve",
+          "codes" : {
+            "type" : "ValueSetRef",
+            "name" : "Antibiotic Medications",
+            "preserve" : true
+          },
+          "dataType" : "{http://hl7.org/fhir}MedicationPrescription",
+          "templateId" : "medicationprescription-qicore-qicore-medicationprescription",
+          "codeProperty" : "medication.code",
+          "codeComparator" : "in"
+        },
+        "name" : "Antibiotics",
+        "context" : "Patient",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ExpressionDef",
+        "expression" : {
+          "type" : "Query",
+          "source" : [ {
+            "type" : "AliasedQuerySource",
+            "expression" : {
+              "type" : "Retrieve",
+              "codes" : {
+                "type" : "ValueSetRef",
+                "name" : "Ambulatory/ED Visit",
+                "preserve" : true
+              },
+              "dataType" : "{http://hl7.org/fhir}Encounter",
+              "templateId" : "encounter-qicore-qicore-encounter",
+              "codeProperty" : "type",
+              "codeComparator" : "in"
+            },
+            "alias" : "E"
+          } ],
+          "relationship" : [ {
+            "type" : "With",
+            "expression" : {
+              "type" : "ExpressionRef",
+              "name" : "Pharyngitis"
+            },
+            "suchThat" : {
+              "type" : "OverlapsAfter",
+              "signature" : [ {
+                "type" : "IntervalTypeSpecifier",
+                "pointType" : {
+                  "type" : "NamedTypeSpecifier",
+                  "name" : "{urn:hl7-org:elm-types:r1}DateTime"
+                }
+              }, {
+                "type" : "IntervalTypeSpecifier",
+                "pointType" : {
+                  "type" : "NamedTypeSpecifier",
+                  "name" : "{urn:hl7-org:elm-types:r1}DateTime"
+                }
+              } ],
+              "operand" : [ {
+                "type" : "Interval",
+                "low" : {
+                  "type" : "Property",
+                  "path" : "onsetDateTime",
+                  "scope" : "P"
+                },
+                "high" : {
+                  "type" : "Property",
+                  "path" : "abatementDate",
+                  "scope" : "P"
+                },
+                "lowClosed" : true,
+                "highClosed" : true
+              }, {
+                "type" : "Property",
+                "path" : "period",
+                "scope" : "E"
+              } ]
+            },
+            "alias" : "P"
+          }, {
+            "type" : "With",
+            "expression" : {
+              "type" : "ExpressionRef",
+              "name" : "Antibiotics"
+            },
+            "suchThat" : {
+              "type" : "And",
+              "signature" : [ {
+                "type" : "NamedTypeSpecifier",
+                "name" : "{urn:hl7-org:elm-types:r1}Boolean"
+              }, {
+                "type" : "NamedTypeSpecifier",
+                "name" : "{urn:hl7-org:elm-types:r1}Boolean"
+              } ],
+              "operand" : [ {
+                "type" : "In",
+                "signature" : [ {
+                  "type" : "NamedTypeSpecifier",
+                  "name" : "{urn:hl7-org:elm-types:r1}DateTime"
+                }, {
+                  "type" : "IntervalTypeSpecifier",
+                  "pointType" : {
+                    "type" : "NamedTypeSpecifier",
+                    "name" : "{urn:hl7-org:elm-types:r1}DateTime"
+                  }
+                } ],
+                "operand" : [ {
+                  "type" : "Property",
+                  "path" : "dateWritten",
+                  "scope" : "A"
+                }, {
+                  "type" : "Interval",
+                  "low" : {
+                    "type" : "Start",
+                    "signature" : [ {
+                      "type" : "IntervalTypeSpecifier",
+                      "pointType" : {
+                        "type" : "NamedTypeSpecifier",
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime"
+                      }
+                    } ],
+                    "operand" : {
+                      "type" : "Property",
+                      "path" : "period",
+                      "scope" : "E"
+                    }
+                  },
+                  "high" : {
+                    "type" : "Add",
+                    "signature" : [ {
+                      "type" : "NamedTypeSpecifier",
+                      "name" : "{urn:hl7-org:elm-types:r1}DateTime"
+                    }, {
+                      "type" : "NamedTypeSpecifier",
+                      "name" : "{urn:hl7-org:elm-types:r1}Quantity"
+                    } ],
+                    "operand" : [ {
+                      "type" : "Start",
+                      "signature" : [ {
+                        "type" : "IntervalTypeSpecifier",
+                        "pointType" : {
+                          "type" : "NamedTypeSpecifier",
+                          "name" : "{urn:hl7-org:elm-types:r1}DateTime"
+                        }
+                      } ],
+                      "operand" : {
+                        "type" : "Property",
+                        "path" : "period",
+                        "scope" : "E"
+                      }
+                    }, {
+                      "type" : "Quantity",
+                      "value" : 3,
+                      "unit" : "days"
+                    } ]
+                  },
+                  "lowClosed" : false,
+                  "highClosed" : true
+                } ]
+              }, {
+                "type" : "Not",
+                "signature" : [ {
+                  "type" : "NamedTypeSpecifier",
+                  "name" : "{urn:hl7-org:elm-types:r1}Boolean"
+                } ],
+                "operand" : {
+                  "type" : "IsNull",
+                  "signature" : [ {
+                    "type" : "NamedTypeSpecifier",
+                    "name" : "{urn:hl7-org:elm-types:r1}Any"
+                  } ],
+                  "operand" : {
+                    "type" : "Start",
+                    "signature" : [ {
+                      "type" : "IntervalTypeSpecifier",
+                      "pointType" : {
+                        "type" : "NamedTypeSpecifier",
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime"
+                      }
+                    } ],
+                    "operand" : {
+                      "type" : "Property",
+                      "path" : "period",
+                      "scope" : "E"
+                    }
+                  }
+                }
+              } ]
+            },
+            "alias" : "A"
+          } ],
+          "where" : {
+            "type" : "IncludedIn",
+            "signature" : [ {
+              "type" : "IntervalTypeSpecifier",
+              "pointType" : {
+                "type" : "NamedTypeSpecifier",
+                "name" : "{urn:hl7-org:elm-types:r1}DateTime"
+              }
+            }, {
+              "type" : "IntervalTypeSpecifier",
+              "pointType" : {
+                "type" : "NamedTypeSpecifier",
+                "name" : "{urn:hl7-org:elm-types:r1}DateTime"
+              }
+            } ],
+            "operand" : [ {
+              "type" : "Property",
+              "path" : "period",
+              "scope" : "E"
+            }, {
+              "type" : "ParameterRef",
+              "name" : "MeasurementPeriod"
+            } ]
+          }
+        },
+        "name" : "TargetEncounters",
+        "context" : "Patient",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ExpressionDef",
+        "expression" : {
+          "type" : "Query",
+          "source" : [ {
+            "type" : "AliasedQuerySource",
+            "expression" : {
+              "type" : "ExpressionRef",
+              "name" : "Pharyngitis"
+            },
+            "alias" : "P"
+          } ],
+          "relationship" : [ {
+            "type" : "With",
+            "expression" : {
+              "type" : "ExpressionRef",
+              "name" : "TargetEncounters"
+            },
+            "suchThat" : {
+              "type" : "OverlapsAfter",
+              "signature" : [ {
+                "type" : "IntervalTypeSpecifier",
+                "pointType" : {
+                  "type" : "NamedTypeSpecifier",
+                  "name" : "{urn:hl7-org:elm-types:r1}DateTime"
+                }
+              }, {
+                "type" : "IntervalTypeSpecifier",
+                "pointType" : {
+                  "type" : "NamedTypeSpecifier",
+                  "name" : "{urn:hl7-org:elm-types:r1}DateTime"
+                }
+              } ],
+              "operand" : [ {
+                "type" : "Interval",
+                "low" : {
+                  "type" : "Property",
+                  "path" : "onsetDateTime",
+                  "scope" : "P"
+                },
+                "high" : {
+                  "type" : "Property",
+                  "path" : "abatementDate",
+                  "scope" : "P"
+                },
+                "lowClosed" : true,
+                "highClosed" : true
+              }, {
+                "type" : "Property",
+                "path" : "period",
+                "scope" : "E"
+              } ]
+            },
+            "alias" : "E"
+          } ]
+        },
+        "name" : "TargetDiagnoses",
+        "context" : "Patient",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ExpressionDef",
+        "expression" : {
+          "type" : "Exists",
+          "signature" : [ {
+            "type" : "ListTypeSpecifier",
+            "elementType" : {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{http://hl7.org/fhir}MedicationPrescription"
+            }
+          } ],
+          "operand" : {
+            "type" : "Query",
+            "source" : [ {
+              "type" : "AliasedQuerySource",
+              "expression" : {
+                "type" : "ExpressionRef",
+                "name" : "Antibiotics"
+              },
+              "alias" : "A"
+            } ],
+            "relationship" : [ {
+              "type" : "With",
+              "expression" : {
+                "type" : "ExpressionRef",
+                "name" : "TargetDiagnoses"
+              },
+              "suchThat" : {
+                "type" : "And",
+                "signature" : [ {
+                  "type" : "NamedTypeSpecifier",
+                  "name" : "{urn:hl7-org:elm-types:r1}Boolean"
+                }, {
+                  "type" : "NamedTypeSpecifier",
+                  "name" : "{urn:hl7-org:elm-types:r1}Boolean"
+                } ],
+                "operand" : [ {
+                  "type" : "In",
+                  "signature" : [ {
+                    "type" : "NamedTypeSpecifier",
+                    "name" : "{urn:hl7-org:elm-types:r1}DateTime"
+                  }, {
+                    "type" : "IntervalTypeSpecifier",
+                    "pointType" : {
+                      "type" : "NamedTypeSpecifier",
+                      "name" : "{urn:hl7-org:elm-types:r1}DateTime"
+                    }
+                  } ],
+                  "operand" : [ {
+                    "type" : "Property",
+                    "path" : "dateWritten",
+                    "scope" : "A"
+                  }, {
+                    "type" : "Interval",
+                    "low" : {
+                      "type" : "Subtract",
+                      "signature" : [ {
+                        "type" : "NamedTypeSpecifier",
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime"
+                      }, {
+                        "type" : "NamedTypeSpecifier",
+                        "name" : "{urn:hl7-org:elm-types:r1}Quantity"
+                      } ],
+                      "operand" : [ {
+                        "type" : "Property",
+                        "path" : "onsetDateTime",
+                        "scope" : "D"
+                      }, {
+                        "type" : "Quantity",
+                        "value" : 30,
+                        "unit" : "days"
+                      } ]
+                    },
+                    "high" : {
+                      "type" : "Property",
+                      "path" : "onsetDateTime",
+                      "scope" : "D"
+                    },
+                    "lowClosed" : true,
+                    "highClosed" : false
+                  } ]
+                }, {
+                  "type" : "Not",
+                  "signature" : [ {
+                    "type" : "NamedTypeSpecifier",
+                    "name" : "{urn:hl7-org:elm-types:r1}Boolean"
+                  } ],
+                  "operand" : {
+                    "type" : "IsNull",
+                    "signature" : [ {
+                      "type" : "NamedTypeSpecifier",
+                      "name" : "{urn:hl7-org:elm-types:r1}Any"
+                    } ],
+                    "operand" : {
+                      "type" : "Property",
+                      "path" : "onsetDateTime",
+                      "scope" : "D"
+                    }
+                  }
+                } ]
+              },
+              "alias" : "D"
+            } ]
+          }
+        },
+        "name" : "HasPriorAntibiotics",
+        "context" : "Patient",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ExpressionDef",
+        "expression" : {
+          "type" : "Exists",
+          "signature" : [ {
+            "type" : "ListTypeSpecifier",
+            "elementType" : {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{http://hl7.org/fhir}Encounter"
+            }
+          } ],
+          "operand" : {
+            "type" : "ExpressionRef",
+            "name" : "TargetEncounters"
+          }
+        },
+        "name" : "HasTargetEncounter",
+        "context" : "Patient",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ExpressionDef",
+        "expression" : {
+          "type" : "And",
+          "signature" : [ {
+            "type" : "NamedTypeSpecifier",
+            "name" : "{urn:hl7-org:elm-types:r1}Boolean"
+          }, {
+            "type" : "NamedTypeSpecifier",
+            "name" : "{urn:hl7-org:elm-types:r1}Boolean"
+          } ],
+          "operand" : [ {
+            "type" : "ExpressionRef",
+            "name" : "InDemographic"
+          }, {
+            "type" : "ExpressionRef",
+            "name" : "HasTargetEncounter"
+          } ]
+        },
+        "name" : "InInitialPopulation",
+        "context" : "Patient",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ExpressionDef",
+        "expression" : {
+          "type" : "Literal",
+          "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
+          "value" : "true"
+        },
+        "name" : "InDenominator",
+        "context" : "Patient",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ExpressionDef",
+        "expression" : {
+          "type" : "ExpressionRef",
+          "name" : "HasPriorAntibiotics"
+        },
+        "name" : "InDenominatorExclusions",
+        "context" : "Patient",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ExpressionDef",
+        "expression" : {
+          "type" : "Exists",
+          "signature" : [ {
+            "type" : "ListTypeSpecifier",
+            "elementType" : {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{http://hl7.org/fhir}Observation"
+            }
+          } ],
+          "operand" : {
+            "type" : "Query",
+            "source" : [ {
+              "type" : "AliasedQuerySource",
+              "expression" : {
+                "type" : "Retrieve",
+                "codes" : {
+                  "type" : "ValueSetRef",
+                  "name" : "Group A Streptococcus Test",
+                  "preserve" : true
+                },
+                "dataType" : "{http://hl7.org/fhir}Observation",
+                "templateId" : "observation-qicore-qicore-observation",
+                "codeProperty" : "code",
+                "codeComparator" : "in"
+              },
+              "alias" : "R"
+            } ],
+            "relationship" : [ ],
+            "where" : {
+              "type" : "And",
+              "signature" : [ {
+                "type" : "NamedTypeSpecifier",
+                "name" : "{urn:hl7-org:elm-types:r1}Boolean"
+              }, {
+                "type" : "NamedTypeSpecifier",
+                "name" : "{urn:hl7-org:elm-types:r1}Boolean"
+              } ],
+              "operand" : [ {
+                "type" : "In",
+                "signature" : [ {
+                  "type" : "NamedTypeSpecifier",
+                  "name" : "{urn:hl7-org:elm-types:r1}DateTime"
+                }, {
+                  "type" : "IntervalTypeSpecifier",
+                  "pointType" : {
+                    "type" : "NamedTypeSpecifier",
+                    "name" : "{urn:hl7-org:elm-types:r1}DateTime"
+                  }
+                } ],
+                "operand" : [ {
+                  "type" : "Property",
+                  "path" : "issued",
+                  "scope" : "R"
+                }, {
+                  "type" : "ParameterRef",
+                  "name" : "MeasurementPeriod"
+                } ]
+              }, {
+                "type" : "Not",
+                "signature" : [ {
+                  "type" : "NamedTypeSpecifier",
+                  "name" : "{urn:hl7-org:elm-types:r1}Boolean"
+                } ],
+                "operand" : {
+                  "type" : "IsNull",
+                  "signature" : [ {
+                    "type" : "NamedTypeSpecifier",
+                    "name" : "{urn:hl7-org:elm-types:r1}Any"
+                  } ],
+                  "operand" : {
+                    "type" : "Property",
+                    "path" : "valueQuantity",
+                    "scope" : "R"
+                  }
+                }
+              } ]
+            }
+          }
+        },
+        "name" : "InNumerator",
+        "context" : "Patient",
+        "accessLevel" : "Public"
+      } ]
+    },
+    "annotation" : [ {
+      "type" : "CqlToElmInfo",
+      "translatorOptions" : "",
+      "signatureLevel" : "All"
+    }, {
+      "type" : "CqlToElmError",
+      "libraryId" : "CMS146",
+      "libraryVersion" : "2",
+      "startLine" : 22,
+      "startChar" : 5,
+      "endLine" : 22,
+      "endChar" : 54,
+      "message" : "Could not resolve code path medication.code for the type of the retrieve QUICK.MedicationPrescription.",
+      "errorType" : "semantic",
+      "errorSeverity" : "warning"
+    }, {
+      "type" : "CqlToElmError",
+      "libraryId" : "CMS146",
+      "libraryVersion" : "2",
+      "startLine" : 22,
+      "startChar" : 5,
+      "endLine" : 22,
+      "endChar" : 54,
+      "message" : "Could not resolve membership operator for terminology target of the retrieve.",
+      "errorType" : "semantic",
+      "errorSeverity" : "warning"
+    } ]
+  }
+}
