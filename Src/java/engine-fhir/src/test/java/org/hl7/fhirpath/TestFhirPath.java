@@ -9,7 +9,7 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.*;
 
-import javax.xml.bind.JAXB;
+import jakarta.xml.bind.JAXB;
 
 import org.hl7.elm.r1.Library;
 import org.fhir.ucum.UcumException;

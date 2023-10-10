@@ -3,9 +3,9 @@ package org.cqframework.cql.elm.serializing.jaxb;
 import org.cqframework.cql.elm.serializing.ElmLibraryReader;
 import org.hl7.elm.r1.Library;
 
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
 import javax.xml.transform.Source;
 import java.io.File;
 import java.io.IOException;

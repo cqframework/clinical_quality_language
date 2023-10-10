@@ -5,7 +5,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.EnumSet;
 
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.CqlCompilerOptions;

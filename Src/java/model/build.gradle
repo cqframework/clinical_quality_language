@@ -4,6 +4,8 @@ plugins {
 }
 
 dependencies {
+    implementation 'com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.15.2'
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.1'
     implementation 'org.apache.commons:commons-text:1.9'
 }
 

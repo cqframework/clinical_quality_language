@@ -5,7 +5,7 @@ import org.hl7.cql_annotations.r1.CqlToElmInfo;
 import org.hl7.elm.r1.*;
 import org.testng.annotations.Test;
 
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;

@@ -30,7 +30,7 @@ import org.cqframework.cql.elm.requirements.ElmRequirementsVisitor;
 import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverter;
 import org.opencds.cqf.cql.engine.fhir.converter.FhirTypeConverterFactory;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;

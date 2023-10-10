@@ -7,6 +7,8 @@ dependencies {
     api 'org.fhir:ucum:1.0.3'
     api 'xpp3:xpp3_min:1.1.4c'
     api 'xmlpull:xmlpull:1.1.3.1'
+    api 'com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.15.2'
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.1'
     implementation project(path: ':elm')
     implementation project(path: ':cql-to-elm')
 
