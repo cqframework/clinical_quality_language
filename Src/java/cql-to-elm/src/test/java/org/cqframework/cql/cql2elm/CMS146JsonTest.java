@@ -2,7 +2,6 @@ package org.cqframework.cql.cql2elm;
 
 import org.cqframework.cql.cql2elm.CqlCompilerException.ErrorSeverity;
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
-import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
