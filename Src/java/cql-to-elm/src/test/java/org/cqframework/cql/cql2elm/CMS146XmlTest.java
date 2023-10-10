@@ -36,7 +36,6 @@ public class CMS146XmlTest {
         final ModelManager modelManager = new ModelManager();
         final CqlTranslator translator = CqlTranslator.fromFile(cms146, new LibraryManager(modelManager, new CqlCompilerOptions(ErrorSeverity.Warning, expectedSignatureLevel)));
         final String actualXml = translator.toXml().trim();
-        Assert.assertEquals(actualXml, expectedXml);
         assertThat(actualXml, equalTo(expectedXml));
     }
 
