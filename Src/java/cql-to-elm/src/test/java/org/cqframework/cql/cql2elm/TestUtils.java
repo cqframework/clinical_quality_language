@@ -18,8 +18,7 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -74,7 +73,7 @@ public class TestUtils {
     }
 
     public static Object visitData(String cqlData, boolean enableAnnotations, boolean enableDateRangeOptimization) {
-        var compilerOptions = new CqlCompilerOptions();
+        var compilerOptions = getCqlCompilerOptions();
         if (enableAnnotations) {
            compilerOptions.getOptions().add(CqlCompilerOptions.Options.EnableAnnotations);
         }
@@ -127,13 +126,37 @@ public class TestUtils {
         return runSemanticTest(null, testFileName, expectedErrors, options);
     }
 
+    public static CqlTranslator runSemanticTestNoAnnotations(String fileName) throws IOException {
+        final CqlCompilerOptions cqlCompilerOptions = new CqlCompilerOptions();
+        final CqlTranslator translator = createTranslator(null, fileName, cqlCompilerOptions);
+
+        for (CqlCompilerException error : translator.getErrors()) {
+            System.err.printf("(%d,%d): %s%n",
+                    error.getLocator().getStartLine(), error.getLocator().getStartChar(), error.getMessage());
+        }
+        assertThat(translator.getErrors().size(), is(0));
+        return translator;
+    }
+
+    public static CqlTranslator runSemanticTestNoAnnotations(String fileName, int expectedErrors) throws IOException {
+        final CqlCompilerOptions cqlCompilerOptions = new CqlCompilerOptions();
+        final CqlTranslator translator = createTranslator(null, fileName, cqlCompilerOptions);
+
+        for (CqlCompilerException error : translator.getErrors()) {
+            System.err.printf("(%d,%d): %s%n",
+                    error.getLocator().getStartLine(), error.getLocator().getStartChar(), error.getMessage());
+        }
+        assertThat(translator.getErrors().size(), is(expectedErrors));
+        return translator;
+    }
+
     public static CqlTranslator runSemanticTest(NamespaceInfo namespaceInfo, String testFileName, int expectedErrors, CqlCompilerOptions.Options... options) throws IOException {
-        final CqlCompilerOptions cqlCompilerOptions = new CqlCompilerOptions(options);
+        final CqlCompilerOptions cqlCompilerOptions = getCqlCompilerOptions(options);
         return runSemanticTest(namespaceInfo, testFileName, expectedErrors, cqlCompilerOptions);
     }
 
     public static CqlTranslator runSemanticTest(NamespaceInfo namespaceInfo, String testFileName, int expectedErrors, SignatureLevel nullableSignatureLevel, CqlCompilerOptions.Options... options) throws IOException {
-        final CqlCompilerOptions cqlCompilerOptions = new CqlCompilerOptions(options);
+        final CqlCompilerOptions cqlCompilerOptions = getCqlCompilerOptions(options);
         Optional.ofNullable(nullableSignatureLevel).ifPresent(cqlCompilerOptions::setSignatureLevel);
         return runSemanticTest(namespaceInfo, testFileName, expectedErrors, cqlCompilerOptions);
     }
@@ -171,7 +194,7 @@ public class TestUtils {
 
     public static CqlTranslator createTranslatorFromStream(NamespaceInfo namespaceInfo, InputStream inputStream, SignatureLevel nullableSignatureLevel, CqlCompilerOptions.Options... options) throws IOException {
         ModelManager modelManager = new ModelManager();
-        var compilerOptions = new CqlCompilerOptions(options);
+        var compilerOptions = getCqlCompilerOptions(options);
         Optional.ofNullable(nullableSignatureLevel).ifPresent(compilerOptions::setSignatureLevel);
         final LibraryManager libraryManager = getLibraryManager(modelManager, compilerOptions);
         return CqlTranslator.fromStream(namespaceInfo, inputStream,  libraryManager);
@@ -183,15 +206,20 @@ public class TestUtils {
         return libraryManager;
     }
 
+    // LUKETODO:   refactor eliminate duplicate new code
     public static CqlTranslator createTranslator(String testFileName, CqlCompilerOptions.Options... options) throws IOException {
-        return createTranslator(null, testFileName, new CqlCompilerOptions(options));
+        return createTranslator(null, testFileName, getCqlCompilerOptions(options));
+    }
+
+    public static CqlTranslator createTranslatorNoAnnotations(String testFileName, CqlCompilerOptions.Options... options) throws IOException {
+        return createTranslator(null, testFileName, getCqlCompilerOptionsNoAnnotations(options));
     }
 
     public static CqlTranslator getTranslator(String cqlTestFile, String nullableLibrarySourceProvider, LibraryBuilder.SignatureLevel signatureLevel) throws IOException {
         final File testFile = getFileOrThrow(cqlTestFile);
         final ModelManager modelManager = new ModelManager();
 
-        final CqlCompilerOptions compilerOptions = new CqlCompilerOptions(CqlCompilerException.ErrorSeverity.Info, signatureLevel);
+        final CqlCompilerOptions compilerOptions = getCqlCompilerOptions(signatureLevel);
 
         final LibraryManager libraryManager = getLibraryManager(compilerOptions, modelManager, nullableLibrarySourceProvider);
         return CqlTranslator.fromFile(testFile,  libraryManager);
@@ -229,8 +257,9 @@ public class TestUtils {
     }
 
     private static LibraryManager getLibraryManager(SignatureLevel nullableSignatureLevel) {
+        // LUKETODO:  merge getCompilerOptions()
         return getLibraryManager(new CqlCompilerOptions(ErrorSeverity.Warning,
-                Objects.requireNonNullElse(nullableSignatureLevel, SignatureLevel.All)));
+                Objects.requireNonNullElse(nullableSignatureLevel, SignatureLevel.All), withEnableAnnotations()));
 
     }
 
@@ -240,7 +269,7 @@ public class TestUtils {
 
     private static LibraryManager getLibraryManager(CqlCompilerOptions.Options... options) {
         final ModelManager modelManager = new ModelManager();
-        final CqlCompilerOptions compilerOptions = new CqlCompilerOptions(options);
+        final CqlCompilerOptions compilerOptions = getCqlCompilerOptions(options);
         return getLibraryManager(compilerOptions, modelManager, null);
     }
 
@@ -248,5 +277,24 @@ public class TestUtils {
         final LibraryManager libraryManager = new LibraryManager(modelManager, options);
         libraryManager.getLibrarySourceLoader().registerProvider(path == null ? new TestLibrarySourceProvider() : new TestLibrarySourceProvider(path));
         return libraryManager;
+    }
+
+    private static CqlCompilerOptions getCqlCompilerOptions(SignatureLevel theSignatureLevel) {
+        // LUKETODO:  merge getCompilerOptions()
+        return new CqlCompilerOptions(ErrorSeverity.Info, theSignatureLevel, withEnableAnnotations());
+    }
+
+    private static CqlCompilerOptions getCqlCompilerOptions(CqlCompilerOptions.Options... options) {
+        return new CqlCompilerOptions(withEnableAnnotations(options));
+    }
+
+    private static CqlCompilerOptions getCqlCompilerOptionsNoAnnotations(CqlCompilerOptions.Options... options) {
+        return new CqlCompilerOptions(options);
+    }
+
+    private static CqlCompilerOptions.Options[] withEnableAnnotations(CqlCompilerOptions.Options... options) {
+        final List<CqlCompilerOptions.Options> optionsList = new ArrayList<>(Arrays.asList(options));
+        optionsList.add(CqlCompilerOptions.Options.EnableAnnotations);
+        return optionsList.toArray(CqlCompilerOptions.Options[]::new);
     }
 }

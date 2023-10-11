@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.cqframework.cql.cql2elm.*;
 import org.cqframework.cql.cql2elm.model.Model;
+import org.cqframework.cql.elm.tracking.Trackable;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 import org.hl7.cql.model.*;
@@ -15,6 +16,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class CqlPreprocessorVisitor extends CqlPreprocessorElmCommonVisitor {
     static final Logger logger = LoggerFactory.getLogger(CqlPreprocessorVisitor.class);
@@ -254,6 +258,8 @@ public class CqlPreprocessorVisitor extends CqlPreprocessorElmCommonVisitor {
 
     @Override
     public Object visitFunctionDefinition(cqlParser.FunctionDefinitionContext ctx) {
+        final String functionName = parseString(ctx.identifierOrFunctionIdentifier());
+
         final PreCompileOutput preCompileOutput;
         try {
             preCompileOutput = preCompile(ctx);
@@ -261,13 +267,20 @@ public class CqlPreprocessorVisitor extends CqlPreprocessorElmCommonVisitor {
             libraryInfo.addFunctionDefinitionByHash(generateHashForLibraryBuilder(ctx), ResultWithPossibleError.withError());
             throw exception;
         }
-        FunctionDefinitionInfo functionDefinition = new FunctionDefinitionInfo();
+        final FunctionDefinitionInfo functionDefinition = new FunctionDefinitionInfo();
         functionDefinition.setName(parseString(ctx.identifierOrFunctionIdentifier()));
         functionDefinition.setContext(currentContext);
         functionDefinition.setDefinition(ctx);
         functionDefinition.setPreCompileOutput(preCompileOutput);
         processHeader(ctx, functionDefinition);
+
+        final String translatorOptions = libraryBuilder.getCompilerOptions();
+
+        validateOverloadsForDisabledAnnotations(translatorOptions, preCompileOutput, functionName);
+
+        // This needs to be called after the validate overloads method above otherwise it will detect a duplicate overload for the same function being currently evaluated
         libraryInfo.addFunctionDefinitionByHash(generateHashForLibraryBuilder(ctx), ResultWithPossibleError.withTypeSpecifier(functionDefinition));
+
         return functionDefinition;
     }
 
@@ -332,5 +345,39 @@ public class CqlPreprocessorVisitor extends CqlPreprocessorElmCommonVisitor {
         String identifier = parseString(ctx.referentialIdentifier());
         identifiers.add(identifier);
         return identifiers;
+    }
+
+    private void validateOverloadsForDisabledAnnotations(String theTranslatorOptions, PreCompileOutput thePreCompileOutput, String theFunctionName) {
+        if (! theTranslatorOptions.contains("EnableAnnotations") && ! theTranslatorOptions.contains("EnableResultTypes")) {
+            final int preCompileOutputOperandSize = thePreCompileOutput.getFunctionDef().getOperand().size();
+
+            final Iterable<FunctionDefinitionInfo> functionDefinitionInfos = libraryInfo.resolveFunctionReferenceFromName(theFunctionName);
+
+            if (functionDefinitionInfos != null) {
+                final List<PreCompileOutput> existingPreCompileOutputs = StreamSupport.stream(functionDefinitionInfos.spliterator(), false)
+                        .map(FunctionDefinitionInfo::getPreCompileOutput)
+                        .collect(Collectors.toList());
+
+                final Optional<PreCompileOutput> optMatchingExistingPreCompileOutput =
+                        existingPreCompileOutputs.stream()
+                                .filter(existingPreCompileOutput -> existingPreCompileOutput.getFunctionDef().getOperand().size() == preCompileOutputOperandSize)
+                                .findFirst();
+
+                optMatchingExistingPreCompileOutput.ifPresent(matchingExistingPreCompileOutput -> {
+                    logger.error("Function name: {}, existing params: {}, passed params: {}", theFunctionName, functionTypes(thePreCompileOutput), functionTypes(matchingExistingPreCompileOutput));
+                    throw new CqlCompilerException("Function overloading cannot be resolved due to compiler options for function: " + theFunctionName);
+                });
+            }
+        }
+    }
+
+    private static List<String> functionTypes(PreCompileOutput preCompileOutput) {
+        return preCompileOutput.getFunctionDef()
+                .getOperand()
+                .stream()
+                .map(OperandDef::getOperandTypeSpecifier)
+                .map(Trackable::getResultType)
+                .map(Object::toString)
+                .collect(Collectors.toList());
     }
 }

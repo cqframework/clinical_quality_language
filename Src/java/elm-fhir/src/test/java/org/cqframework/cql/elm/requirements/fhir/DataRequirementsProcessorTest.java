@@ -101,7 +101,7 @@ public class DataRequirementsProcessorTest {
 
     @Test
     public void TestDataRequirementsProcessorOpioidIssueExpression() {
-        CqlCompilerOptions cqlTranslatorOptions = new CqlCompilerOptions();
+        final CqlCompilerOptions cqlTranslatorOptions = getCompilerOptions();
         cqlTranslatorOptions.setCollapseDataRequirements(true);
         cqlTranslatorOptions.setAnalyzeDataRequirements(true);
         try {
@@ -180,7 +180,7 @@ public class DataRequirementsProcessorTest {
 
     @Test
     public void TestDataRequirementsProcessorOpioidIssueLibrary() {
-        CqlCompilerOptions cqlTranslatorOptions = new CqlCompilerOptions();
+        final CqlCompilerOptions cqlTranslatorOptions = getCompilerOptions();
         cqlTranslatorOptions.setCollapseDataRequirements(true);
         cqlTranslatorOptions.setAnalyzeDataRequirements(true);
         try {
@@ -336,7 +336,7 @@ public class DataRequirementsProcessorTest {
 
     @Test
     public void TestDataRequirementsProcessorWithExpressions() {
-        CqlCompilerOptions cqlTranslatorOptions = new CqlCompilerOptions();
+        final CqlCompilerOptions cqlTranslatorOptions = getCompilerOptions();
         try {
             Set<String> expressions = new HashSet<>();
             // TODO - add expressions to expressions
@@ -404,7 +404,7 @@ public class DataRequirementsProcessorTest {
 
     @Test
     public void TestLibraryDataRequirements() {
-        CqlCompilerOptions cqlTranslatorOptions = new CqlCompilerOptions();
+        final CqlCompilerOptions cqlTranslatorOptions = getCompilerOptions();
 
         try {
 //            CqlTranslator translator = createTranslator("/ecqm/resources/library-EXM506-2.2.000.json", cqlTranslatorOptions);
@@ -498,7 +498,7 @@ public class DataRequirementsProcessorTest {
 
     @Test
     public void TestDataRequirementsFHIRReferences() {
-        CqlCompilerOptions cqlTranslatorOptions = new CqlCompilerOptions();
+        final CqlCompilerOptions cqlTranslatorOptions = getCompilerOptions();
 
         try {
             var setup = setup("FHIRReferencesRevisited.cql", cqlTranslatorOptions);
@@ -518,7 +518,11 @@ public class DataRequirementsProcessorTest {
     }
 
     private CqlCompilerOptions getCompilerOptions() {
-        return new CqlCompilerOptions();
+        final CqlCompilerOptions cqlCompilerOptions = new CqlCompilerOptions();
+
+        cqlCompilerOptions.getOptions().add(CqlCompilerOptions.Options.EnableAnnotations);
+
+        return cqlCompilerOptions;
     }
 
     private Setup setupDataRequirementsGather(String fileName, CqlCompilerOptions cqlTranslatorOptions) throws IOException {
@@ -1683,7 +1687,7 @@ public class DataRequirementsProcessorTest {
 
     @Test
     public void TestCMS149() throws IOException {
-        CqlCompilerOptions compilerOptions = getCompilerOptions();
+        final CqlCompilerOptions compilerOptions = getCompilerOptions();
         compilerOptions.setAnalyzeDataRequirements(false);
         var manager = setupDataRequirementsAnalysis("CMS149/cql/DementiaCognitiveAssessmentFHIR-0.0.003.cql", compilerOptions);
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions, new HashMap<String, Object>(), ZonedDateTime.of(2023, 1, 16, 0, 0, 0, 0, ZoneId.of("UTC")));
@@ -1695,7 +1699,7 @@ public class DataRequirementsProcessorTest {
 
     @Test
     public void TestDataRequirementsProcessorWithPertinence() {
-        CqlCompilerOptions cqlTranslatorOptions = new CqlCompilerOptions();
+        final CqlCompilerOptions cqlTranslatorOptions = getCompilerOptions();
 
         cqlTranslatorOptions.getOptions().add(CqlCompilerOptions.Options.EnableAnnotations);
         try {
@@ -1724,7 +1728,7 @@ public class DataRequirementsProcessorTest {
 
     @Test
     public void TestDataRequirementsProcessorWithPertinenceAgain() {
-        CqlCompilerOptions cqlTranslatorOptions = new CqlCompilerOptions();
+        final CqlCompilerOptions cqlTranslatorOptions = getCompilerOptions();
 
         cqlTranslatorOptions.getOptions().add(CqlCompilerOptions.Options.EnableAnnotations);
         try {
