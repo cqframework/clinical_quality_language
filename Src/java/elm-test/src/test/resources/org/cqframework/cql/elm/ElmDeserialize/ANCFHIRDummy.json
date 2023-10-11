@@ -104,7 +104,8 @@
     },
     "annotation" : [ {
       "type" : "CqlToElmInfo",
-      "translatorOptions" : "EnableDateRangeOptimization,EnableAnnotations,EnableLocators,EnableResultTypes,DisableListDemotion,DisableListPromotion,DisableMethodInvocation"
+      "translatorOptions" : "EnableDateRangeOptimization,EnableAnnotations,EnableLocators,EnableResultTypes,DisableListDemotion,DisableListPromotion,DisableMethodInvocation",
+      "signatureLevel" : "All"
     } ]
   }
 }
