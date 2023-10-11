@@ -127,7 +127,7 @@ public class LibraryTests {
     }
 
     @Test
-    public void testPrivateFunctionAccessError() {
+    public void testInvalidLibraryReferences() {
         CqlTranslator translator = null;
         try {
             translator = CqlTranslator.fromStream(
@@ -140,7 +140,7 @@ public class LibraryTests {
     }
 
     @Test
-    public void testInvalidLibraryFunctionReference() {
+    public void testPrivateFunctionAccessError() {
         CqlTranslator translator = null;
         try {
             translator = CqlTranslator.fromStream(
