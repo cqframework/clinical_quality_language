@@ -1,6 +1,7 @@
 package org.cqframework.cql.cql2elm;
 
 import org.cqframework.cql.elm.tracking.TrackBack;
+import org.hamcrest.Matchers;
 import org.hl7.cql_annotations.r1.CqlToElmInfo;
 import org.hl7.elm.r1.*;
 import org.testng.annotations.Ignore;
@@ -235,6 +236,26 @@ public class TranslationTests {
     public void median_q_diff_units() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslator("Median_q_diff_units.cql");
         assertEquals("Errors: " + translator.getErrors(), 0, translator.getErrors().size());
+    }
+
+    @Test
+    public void testForwardDeclarationSameTypeDifferentNamespaceNormalTypes() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslator("TestForwardDeclarationSameTypeDifferentNamespaceNormalTypes.cql");
+        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), Matchers.equalTo(0));
+
+        Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
+        List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
+        assertThat(statements.size(), Matchers.equalTo(3));
+    }
+
+    @Test
+    public void testForwardDeclarationSameTypeDifferentNamespaceGenericTypes() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslator("TestForwardDeclarationSameTypeDifferentNamespaceGenericTypes.cql");
+        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), Matchers.equalTo(0));
+
+        Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
+        List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
+        assertThat(statements.size(), Matchers.equalTo(3));
     }
 
     // This test creates a bunch of translators on the common pool to suss out any race conditions.

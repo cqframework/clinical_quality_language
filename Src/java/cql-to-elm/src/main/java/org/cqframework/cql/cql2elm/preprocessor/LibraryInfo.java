@@ -2,9 +2,13 @@ package org.cqframework.cql.cql2elm.preprocessor;
 
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.cqframework.cql.cql2elm.CqlCompilerException;
+import org.cqframework.cql.cql2elm.ResultWithPossibleError;
 import org.cqframework.cql.gen.cqlParser;
+import org.hl7.elm.r1.OperandDef;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class LibraryInfo extends BaseInfo {
     private String namespaceName;
@@ -20,7 +24,7 @@ public class LibraryInfo extends BaseInfo {
     private final Map<String, ConceptDefinitionInfo> conceptDefinitions;
     private final Map<String, ParameterDefinitionInfo> parameterDefinitions;
     private final Map<String, ExpressionDefinitionInfo> expressionDefinitions;
-    private final Map<String, List<FunctionDefinitionInfo>> functionDefinitions;
+    private final Map<String, ResultWithPossibleError<FunctionDefinitionInfo>> functionDefinitions;
     private final List<ContextDefinitionInfo> contextDefinitions;
     private final Map<Interval, BaseInfo> definitions;
 
@@ -221,27 +225,42 @@ public class LibraryInfo extends BaseInfo {
         return null;
     }
 
-    public void addFunctionDefinition(FunctionDefinitionInfo functionDefinition) {
-        List<FunctionDefinitionInfo> infos = functionDefinitions.get(functionDefinition.getName());
-        if (infos == null) {
-            infos = new ArrayList<FunctionDefinitionInfo>();
-            functionDefinitions.put(functionDefinition.getName(), infos);
+    public void addFunctionDefinitionByHash(String hash, ResultWithPossibleError<FunctionDefinitionInfo> functionDefinition) {
+        final ResultWithPossibleError<FunctionDefinitionInfo> info = functionDefinitions.get(hash);
+
+        // Ensure no duplicate FunctionDefinitionInfos (meaning the same signature)
+        if (! isFunctionDefInfoAlreadyPresent(info, functionDefinition)) {
+            functionDefinitions.put(hash, functionDefinition);
+            if (! functionDefinition.hasError()) {
+                addDefinition(functionDefinition.getUnderlyingResultIfExists());
+            }
+        } else {
+            throw new CqlCompilerException(String.format("Duplicate function detected from library: [%s] with name: [%s]", libraryName, hash));
         }
-        infos.add(functionDefinition);
-        addDefinition(functionDefinition);
     }
 
-    public Iterable<FunctionDefinitionInfo> resolveFunctionReference(String identifier) {
-        return functionDefinitions.get(identifier);
+    public ResultWithPossibleError<FunctionDefinitionInfo> resolveFunctionReferenceFromHash(String hash) {
+        return functionDefinitions.get(hash);
     }
 
-    public String resolveFunctionName(String identifier) {
-        Iterable<FunctionDefinitionInfo> functionDefinitions = resolveFunctionReference(identifier);
-        for (FunctionDefinitionInfo functionInfo : functionDefinitions) {
-            return functionInfo.getName();
+    // This is meant to be called from functions that don't have access to a cqlParser.FunctionDefinitionContext
+    public List<FunctionDefinitionInfo> resolveFunctionReferenceFromName(String name) {
+        final List<String> keys = functionDefinitions.keySet()
+                .stream()
+                .filter(key -> key.startsWith(name))
+                .collect(Collectors.toList());
+
+        if (keys.isEmpty()) {
+            return null;
         }
 
-        return null;
+        return functionDefinitions.entrySet()
+                .stream()
+                .filter(entry -> keys.contains(entry.getKey()))
+                .map(Map.Entry::getValue)
+                .filter(result -> ! result.hasError())
+                .map(ResultWithPossibleError::getUnderlyingResultIfExists)
+                .collect(Collectors.toList());
     }
 
     public void addContextDefinition(ContextDefinitionInfo contextDefinition) {
@@ -261,5 +280,42 @@ public class LibraryInfo extends BaseInfo {
 
     public BaseInfo resolveDefinition(ParseTree pt) {
         return definitions.get(pt.getSourceInterval());
+    }
+
+    private static boolean isFunctionDefInfoAlreadyPresent(ResultWithPossibleError<FunctionDefinitionInfo> existingFunctionDefInfo, ResultWithPossibleError<FunctionDefinitionInfo> functionDefinition) {
+        // equals/hashCode only goes so far because we don't control the entire class hierarchy
+        return matchesFunctionDefInfos(existingFunctionDefInfo, functionDefinition);
+    }
+
+    private static boolean matchesFunctionDefInfos(ResultWithPossibleError<FunctionDefinitionInfo> existingInfo, ResultWithPossibleError<FunctionDefinitionInfo> newInfo) {
+        if (existingInfo == null) {
+            return false;
+        }
+
+        if (existingInfo.hasError() || newInfo.hasError()) {
+            return existingInfo.hasError() && newInfo.hasError();
+        }
+
+        final List<OperandDef> existingOperands = existingInfo.getUnderlyingResultIfExists().getPreCompileOutput().getFunctionDef().getOperand();
+        final List<OperandDef> newOperands = newInfo.getUnderlyingResultIfExists().getPreCompileOutput().getFunctionDef().getOperand();
+
+        if (existingOperands.size() != newOperands.size()) {
+            return false;
+        }
+
+        for (int index = 0; index < existingOperands.size(); index++) {
+            final OperandDef existingOperand = existingOperands.get(index);
+            final OperandDef newOperand = newOperands.get(index);
+
+            if (!matchesOperands(existingOperand, newOperand)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static boolean matchesOperands(OperandDef existingOperand, OperandDef newOperand) {
+        return existingOperand.getResultType().equals(newOperand.getResultType());
     }
 }

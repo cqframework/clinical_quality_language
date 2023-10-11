@@ -98,13 +98,12 @@ public class TestUtils {
     }
 
     private static Cql2ElmVisitor createElmTranslatorVisitor(TokenStream tokens, ParseTree tree) {
-        CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor();
-        preprocessor.visit(tree);
         ModelManager modelManager = new ModelManager();
         LibraryManager libraryManager = getLibraryManager(modelManager, null);
         LibraryBuilder libraryBuilder = new LibraryBuilder(libraryManager);
+        CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor(libraryBuilder, tokens);
+        preprocessor.visit(tree);
         Cql2ElmVisitor visitor = new Cql2ElmVisitor(libraryBuilder);
-        visitor.setTokenStream(tokens);
         visitor.setLibraryInfo(preprocessor.getLibraryInfo());
         return visitor;
     }
