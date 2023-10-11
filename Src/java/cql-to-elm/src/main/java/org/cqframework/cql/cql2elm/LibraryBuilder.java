@@ -153,6 +153,7 @@ public class LibraryBuilder implements ModelResolver {
         }
         setCompatibilityLevel(options.getCompatibilityLevel());
         this.cqlToElmInfo.setTranslatorOptions(options.toString());
+        this.cqlToElmInfo.setSignatureLevel(options.getSignatureLevel().name());
     }
 
     public void setVisitor(Cql2ElmVisitor visitor) {
