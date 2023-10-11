@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm;
 
+import org.apache.commons.lang3.StringUtils;
 import org.cqframework.cql.cql2elm.model.*;
 import org.cqframework.cql.cql2elm.model.invocation.*;
 import org.cqframework.cql.elm.tracking.TrackBack;
@@ -1211,18 +1212,26 @@ public class LibraryBuilder implements ModelResolver {
                     }
                 }
                 */
-
-                if (result != null) {
-                    checkAccessLevel(result.getOperator().getLibraryName(), result.getOperator().getName(),
-                            result.getOperator().getAccessLevel());
-                }
             }
         }
         else {
             result = resolveLibrary(callContext.getLibraryName()).resolveCall(callContext, conversionMap);
         }
 
+        if (result != null &&
+                isInterFunctionAccess(this.library.getIdentifier().getId(), result.getOperator().getLibraryName())) {
+            checkAccessLevel(result.getOperator().getLibraryName(), result.getOperator().getName(),
+                    result.getOperator().getAccessLevel());
+        }
+
         return result;
+    }
+
+    private boolean isInterFunctionAccess(String f1, String f2) {
+        if(StringUtils.isNoneBlank(f1) && StringUtils.isNoneBlank(f2)) {
+            return !f1.equalsIgnoreCase(f2);
+        }
+        return false;
     }
 
     public void checkOperator(CallContext callContext, OperatorResolution resolution) {

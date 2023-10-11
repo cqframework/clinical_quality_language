@@ -11,7 +11,6 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
-import org.cqframework.cql.gen.cqlBaseListener;
 import org.hl7.cql_annotations.r1.CqlToElmError;
 import org.hl7.elm.r1.*;
 import org.testng.annotations.AfterClass;
@@ -131,7 +130,7 @@ public class LibraryTests {
     }
 
     @Test
-    public void testInvalidLibraryReferences() {
+    public void testPrivateFunctionAccessError() {
         CqlTranslator translator = null;
         try {
             translator = CqlTranslator.fromStream(
@@ -150,10 +149,10 @@ public class LibraryTests {
             translator = CqlTranslator.fromStream(
                     LibraryTests.class.getResourceAsStream("LibraryTests/InvalidReferencingBaseFunctions.cql"),
                     libraryManager);
-           // assertThat(translator.getErrors().size(), is(not(0)));
-            System.out.println(translator.toJson());
+            assertThat(translator.getErrors().size(), is(not(0)));
+            assertThat(translator.getErrors().get(0).getMessage(),
+                    is("Object f1 in library BaseFunctions is marked private and cannot be referenced from another library."));
         } catch (IOException e) {
-            System.out.println(e.toString());
             e.printStackTrace();
         }
     }
