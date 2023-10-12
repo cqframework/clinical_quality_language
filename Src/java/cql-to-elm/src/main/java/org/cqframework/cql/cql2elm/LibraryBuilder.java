@@ -94,6 +94,8 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     private final Map<String, Model> models = new LinkedHashMap<>();
+
+    private final Map<String, ResultWithPossibleError<NamedTypeSpecifier>> nameTypeSpecifiers = new HashMap<>();
     private final Map<String, CompiledLibrary> libraries = new LinkedHashMap<>();
     private final SystemFunctionResolver systemFunctionResolver = new SystemFunctionResolver(this);
     private final Stack<String> expressionContext = new Stack<>();
@@ -152,6 +154,7 @@ public class LibraryBuilder implements ModelResolver {
         }
         setCompatibilityLevel(options.getCompatibilityLevel());
         this.cqlToElmInfo.setTranslatorOptions(options.toString());
+        this.cqlToElmInfo.setSignatureLevel(options.getSignatureLevel().name());
     }
 
     public void setVisitor(Cql2ElmVisitor visitor) {
@@ -261,6 +264,16 @@ public class LibraryBuilder implements ModelResolver {
         }
 
         return model;
+    }
+
+    public ResultWithPossibleError<NamedTypeSpecifier> getNamedTypeSpecifierResult(String namedTypeSpecifierIdentifier) {
+        return nameTypeSpecifiers.get(namedTypeSpecifierIdentifier);
+    }
+
+    public void addNamedTypeSpecifierResult(String namedTypeSpecifierIdentifier, ResultWithPossibleError<NamedTypeSpecifier> namedTypeSpecifierResult) {
+        if (! nameTypeSpecifiers.containsKey(namedTypeSpecifierIdentifier)) {
+            nameTypeSpecifiers.put(namedTypeSpecifierIdentifier, namedTypeSpecifierResult);
+        }
     }
 
     private void loadConversionMap(Model model) {

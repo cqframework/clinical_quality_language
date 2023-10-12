@@ -186,8 +186,7 @@ public class CqlCompiler {
         parser.addErrorListener(errorListener);
         ParseTree tree = parser.library();
 
-        CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor();
-        preprocessor.setTokenStream(tokens);
+        CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor(builder, tokens);
         preprocessor.visit(tree);
 
         visitor.setTokenStream(tokens);

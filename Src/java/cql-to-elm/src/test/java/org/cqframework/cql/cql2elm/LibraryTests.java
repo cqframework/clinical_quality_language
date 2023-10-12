@@ -2,13 +2,14 @@ package org.cqframework.cql.cql2elm;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -474,14 +475,167 @@ public class LibraryTests {
     }
 
     @Test
-    @Ignore("bug discovered during 3.0 release, test added to track it")
-    public void TestForwardDeclarations() throws IOException {
-        CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestForwardDeclaration.cql");
+    public void TestForwardDeclaration() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestForwardDeclaration.cql");
+        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(0));
+
+        final Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
+        final List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
+        assertThat(statements.size(), equalTo(2));
+    }
+
+    @Test
+    public void TestForwardDeclarationsNormalType() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestForwardDeclarationNormalType.cql");
+        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(0));
+
+        final Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
+        final List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
+        assertThat(statements.size(), equalTo(6));
+    }
+
+    @Test
+    public void TestForwardDeclarationsGenericType() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestForwardDeclarationGenericType.cql");
+        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(0));
+
+        final Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
+        final List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
+        assertThat(statements.size(), equalTo(5));
+    }
+
+    @Test
+    public void TestForwardDeclarationsImplicitConversion() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestForwardDeclarationImplicitConversion.cql");
         assertThat(translator.getErrors().size(), equalTo(0));
 
-        var compileLibrary = translator.getTranslatedLibrary().getLibrary();
-        var statements = compileLibrary.getStatements().getDef();
-        assertThat(statements.size(), equalTo(1));
+        final Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
+        final List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
+        assertThat(statements.size(), equalTo(3));
+    }
+
+    @Test
+    public void TestForwardDeclarationsScoringImplicitConversion() throws IOException {
+        CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestForwardDeclarationScoringImplicitConversion.cql");
+        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(0));
+
+        final Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
+        final List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
+        assertThat(statements.size(), equalTo(3));
+        final Optional<ExpressionDef> toString = statements.stream().filter(statement -> statement.getName().equals("toString")).findFirst();
+        assertTrue(toString.isPresent());
+
+        final Expression expression = toString.get().getExpression();
+        assertNotNull(expression);
+        assertTrue(expression instanceof FunctionRef);
+
+        final FunctionRef functionRef = (FunctionRef) expression;
+
+        assertEquals("calledFunc", functionRef.getName());
+        assertEquals(1, functionRef.getOperand().size());
+        assertEquals("System.Decimal", functionRef.getOperand().get(0).getResultType().toString());
+    }
+
+    @Test
+    public void TestForwardDeclarationsScoringImplicitConversionNonRelevantFunctionFirst() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestForwardDeclarationScoringImplicitConversionNonRelevantFunctionFirst.cql");
+        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(0));
+
+        final Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
+        final List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
+        assertThat(statements.size(), equalTo(3));
+        final Optional<ExpressionDef> toString = statements.stream().filter(statement -> statement.getName().equals("toString")).findFirst();
+        assertTrue(toString.isPresent());
+
+        final Expression expression = toString.get().getExpression();
+        assertNotNull(expression);
+        assertTrue(expression instanceof FunctionRef);
+
+        final FunctionRef functionRef = (FunctionRef) expression;
+
+        assertEquals("calledFunc", functionRef.getName());
+        assertEquals(1, functionRef.getOperand().size());
+        assertEquals("System.Decimal", functionRef.getOperand().get(0).getResultType().toString());
+    }
+
+    @Test
+    public void TestForwardDeclarationsScoringImplicitConversionMultipleParams() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestForwardDeclarationScoringImplicitConversionMultipleParams.cql");
+        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(0));
+
+        final Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
+        final List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
+        assertThat(statements.size(), equalTo(4));
+        final Optional<ExpressionDef> toString = statements.stream().filter(statement -> statement.getName().equals("caller")).findFirst();
+        assertTrue(toString.isPresent());
+
+        final Expression expression = toString.get().getExpression();
+        assertNotNull(expression);
+        assertTrue(expression instanceof FunctionRef);
+
+        final FunctionRef functionRef = (FunctionRef) expression;
+
+        assertEquals("callee", functionRef.getName());
+        assertEquals(3, functionRef.getOperand().size());
+        assertEquals("System.Decimal", functionRef.getOperand().get(0).getResultType().toString());
+        assertEquals("System.Decimal", functionRef.getOperand().get(1).getResultType().toString());
+    }
+
+    @Test
+    public void TestForwardDeclarationsScoringImplicitConversionMultipleParamsCannotResolve() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestForwardDeclarationScoringImplicitConversionMultipleParamsCannotResolve.cql");
+        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(2));
+    }
+
+    @Test
+    public void TestNonForwardDeclarationsScoringImplicitConversion() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestNonForwardDeclarationScoringImplicitConversion.cql");
+        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(0));
+
+        final Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
+        final List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
+        assertThat(statements.size(), equalTo(3));
+        final Optional<ExpressionDef> toString = statements.stream().filter(statement -> statement.getName().equals("toString")).findFirst();
+        assertTrue(toString.isPresent());
+
+        final Expression expression = toString.get().getExpression();
+        assertNotNull(expression);
+        assertTrue(expression instanceof FunctionRef);
+
+        final FunctionRef functionRef = (FunctionRef) expression;
+
+        assertEquals("calledFunc", functionRef.getName());
+        assertEquals(1, functionRef.getOperand().size());
+        assertEquals("System.Decimal", functionRef.getOperand().get(0).getResultType().toString());
+    }
+
+    @Test
+    public void TestNonForwardDeclarationsScoringImplicitConversionMultipleParams() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestNonForwardDeclarationScoringImplicitConversionMultipleParams.cql");
+        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(0));
+
+        final Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
+        final List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
+        assertThat(statements.size(), equalTo(3));
+        final Optional<ExpressionDef> toString = statements.stream().filter(statement -> statement.getName().equals("caller")).findFirst();
+        assertTrue(toString.isPresent());
+
+        final Expression expression = toString.get().getExpression();
+        assertNotNull(expression);
+        assertTrue(expression instanceof FunctionRef);
+
+        final FunctionRef functionRef = (FunctionRef) expression;
+
+        assertEquals("callee", functionRef.getName());
+        assertEquals(2, functionRef.getOperand().size());
+        assertEquals("System.Decimal", functionRef.getOperand().get(0).getResultType().toString());
+        assertEquals("System.Decimal", functionRef.getOperand().get(1).getResultType().toString());
+    }
+
+    @Test
+    public void TestNonForwardDeclarationsScoringImplicitConversionMultipleParamsCannotResolve() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestNonForwardDeclarationScoringImplicitConversionMultipleParamsCannotResolve.cql");
+        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(2));
     }
 
     private static final String FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE = "LibraryTests/TestForwardAmbiguousFunctionResolutionWithoutTypeInformation.cql";
