@@ -163,13 +163,44 @@ public class TranslationTests {
         final DataType resultType1 = operandDef1.getOperandTypeSpecifier().getResultType();
         final QName resultTypeName1 = operandDef1.getOperandTypeSpecifier().getResultTypeName();
 
-        logger.info("resultType1: [{}], resultTypeName1: [{}]", resultType1, resultTypeName1);
+//        logger.info("resultType1: [{}], resultTypeName1: [{}]", resultType1, resultTypeName1);
 
         final DataType resultType2 = operandDef2.getOperandTypeSpecifier().getResultType();
         final QName resultTypeName2 = operandDef2.getOperandTypeSpecifier().getResultTypeName();
 
-        logger.info("resultType2: [{}], resultTypeName2: [{}]", resultType2, resultTypeName2);
+//        logger.info("resultType2: [{}], resultTypeName2: [{}]", resultType2, resultTypeName2);
+//        logger.info("----------------------------------------------");
+
+        final Library elm = translator.toELM();
+
+        final List<ExpressionDef> defs = elm.getStatements().getDef();
+
+        assertThat(defs.size(), equalTo(2));
+
+        final FunctionDef elmfunctionDef1 = (FunctionDef)expressionDefs.get(0);
+        final FunctionDef elmfunctionDef2 = (FunctionDef)expressionDefs.get(1);
+
+        final List<OperandDef> elmoperands1 = elmfunctionDef1.getOperand();
+        final List<OperandDef> elmoperands2 = elmfunctionDef2.getOperand();
+
+        final OperandDef elmoperandDef1 = elmoperands1.get(0);
+        final OperandDef elmoperandDef2 = elmoperands2.get(0);
+
+        final DataType elmresultType1 = elmoperandDef1.getOperandTypeSpecifier().getResultType();
+        final QName elmresultTypeName1 = elmoperandDef1.getOperandTypeSpecifier().getResultTypeName();
+        final DataType returnType1 = elmfunctionDef1.getResultType();
+        final QName returnTypeName1 = elmfunctionDef1.getResultTypeName();
+
+        logger.info("resultType1: [{}], resultTypeName1: [{}], returnType1: [{}], returnTypeName1: [{}]", elmresultType1, elmresultTypeName1, returnType1, returnTypeName1);
+
+        final DataType elmresultType2 = elmoperandDef2.getOperandTypeSpecifier().getResultType();
+        final QName elmresultTypeName2 = elmoperandDef2.getOperandTypeSpecifier().getResultTypeName();
+        final DataType returnType2 = elmfunctionDef2.getResultType();
+        final QName returnTypeName2 = elmfunctionDef2.getResultTypeName();
+
+        logger.info("resultType2: [{}], resultTypeName2: [{}], returnType2: [{}], returnTypeName2: [{}]", elmresultType2, elmresultTypeName2, returnType2, returnTypeName2);
         logger.info("----------------------------------------------");
+
     }
 
     @Test
