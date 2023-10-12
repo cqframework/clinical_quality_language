@@ -1218,8 +1218,7 @@ public class LibraryBuilder implements ModelResolver {
             result = resolveLibrary(callContext.getLibraryName()).resolveCall(callContext, conversionMap);
         }
 
-        if (result != null &&
-                isInterFunctionAccess(this.library.getIdentifier().getId(), result.getOperator().getLibraryName())) {
+        if (result != null) {
             checkAccessLevel(result.getOperator().getLibraryName(), result.getOperator().getName(),
                     result.getOperator().getAccessLevel());
         }
@@ -1253,9 +1252,10 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     public void checkAccessLevel(String libraryName, String objectName, AccessModifier accessModifier) {
-        if (accessModifier == AccessModifier.PRIVATE) {
+        if (accessModifier == AccessModifier.PRIVATE &&
+                isInterFunctionAccess(this.library.getIdentifier().getId(), libraryName)) {
             // ERROR:
-            throw new IllegalArgumentException(String.format("Object %s in library %s is marked private and cannot be referenced from another library.", objectName, libraryName));
+            throw new CqlSemanticException(String.format("Identifier %s in library %s is marked private and cannot be referenced from another library.", objectName, libraryName));
         }
     }
 
@@ -2689,7 +2689,7 @@ public class LibraryBuilder implements ModelResolver {
             }
 
             if (element instanceof CodeSystemDef) {
-                checkAccessLevel(libraryName, memberIdentifier, ((CodeSystemDef)element).getAccessLevel());
+                checkAccessLevel(libraryName, memberIdentifier, ((CodeSystemDef) element).getAccessLevel());
                 CodeSystemRef result = of.createCodeSystemRef()
                         .withLibraryName(libraryName)
                         .withName(memberIdentifier);
