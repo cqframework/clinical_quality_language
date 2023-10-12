@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm;
 
-import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorVisitor;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.hamcrest.Matchers;
 import org.hl7.cql.model.DataType;
@@ -113,24 +112,29 @@ public class TranslationTests {
     private static final String CQL_OVERLOAD_TESTS_FILE = "CqlOverloadTests.cql";
     private static final String CQL_GENERIC_OVERLOAD_TESTS_FILE = "CqlGenericOverloadTests.cql";
 
+    private static final Set<CqlCompilerOptions.Options> NOTHING = Set.of();
+
+    private static final Set<CqlCompilerOptions.Options> ENABLE_ALL = Set.of(CqlCompilerOptions.Options.EnableAnnotations, CqlCompilerOptions.Options.EnableDateRangeOptimization, CqlCompilerOptions.Options.EnableLocators, CqlCompilerOptions.Options.EnableDetailedErrors, CqlCompilerOptions.Options.EnableIntervalDemotion, CqlCompilerOptions.Options.EnableIntervalPromotion, CqlCompilerOptions.Options.EnableResultTypes);
+    private static final Set<CqlCompilerOptions.Options> DISABLE_ALL = Set.of(CqlCompilerOptions.Options.DisableDefaultModelInfoLoad, CqlCompilerOptions.Options.DisableListDemotion, CqlCompilerOptions.Options.DisableListPromotion, CqlCompilerOptions.Options.DisableListTraversal, CqlCompilerOptions.Options.DisableMethodInvocation);
+
     @DataProvider(name = "testCqlAndCompilerOptions")
     public static Object[][] testCqlAndCompilerOptions() {
         return new Object[][] {
-                {CQL_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, Set.of()},
-                {CQL_GENERIC_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, Set.of()},
+                {CQL_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, NOTHING},
+                {CQL_GENERIC_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, NOTHING},
                 {CQL_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, Set.of(CqlCompilerOptions.Options.DisableListDemotion)},
                 {CQL_GENERIC_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, Set.of(CqlCompilerOptions.Options.DisableListDemotion)},
                 {CQL_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, Set.of(CqlCompilerOptions.Options.DisableListDemotion, CqlCompilerOptions.Options.DisableListPromotion)},
                 {CQL_GENERIC_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, Set.of(CqlCompilerOptions.Options.DisableListDemotion, CqlCompilerOptions.Options.DisableListPromotion)},
-                {CQL_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, Set.of(CqlCompilerOptions.Options.DisableListDemotion, CqlCompilerOptions.Options.DisableListPromotion)},
-                {CQL_GENERIC_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, Set.of(CqlCompilerOptions.Options.DisableListDemotion, CqlCompilerOptions.Options.DisableListPromotion)},
+                {CQL_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, DISABLE_ALL},
+                {CQL_GENERIC_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, DISABLE_ALL},
                 {CQL_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, Set.of(CqlCompilerOptions.Options.EnableAnnotations)},
                 {CQL_GENERIC_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, Set.of(CqlCompilerOptions.Options.EnableAnnotations)},
                 {CQL_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, Set.of(CqlCompilerOptions.Options.EnableResultTypes)},
                 {CQL_GENERIC_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, Set.of(CqlCompilerOptions.Options.EnableResultTypes)},
                 {CQL_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, Set.of(CqlCompilerOptions.Options.EnableAnnotations, CqlCompilerOptions.Options.EnableResultTypes)},
                 {CQL_GENERIC_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, Set.of(CqlCompilerOptions.Options.EnableAnnotations, CqlCompilerOptions.Options.EnableResultTypes)},
-                {CQL_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, Set.of(CqlCompilerOptions.Options.DisableListDemotion, CqlCompilerOptions.Options.DisableListPromotion, CqlCompilerOptions.Options.DisableDefaultModelInfoLoad)},
+                {CQL_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, ENABLE_ALL},
                 {CQL_GENERIC_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, Set.of(CqlCompilerOptions.Options.DisableListDemotion, CqlCompilerOptions.Options.DisableListPromotion, CqlCompilerOptions.Options.DisableDefaultModelInfoLoad)}
         };
     }
