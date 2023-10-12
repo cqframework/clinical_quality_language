@@ -4,6 +4,7 @@ import org.cqframework.cql.cql2elm.CqlCompilerException;
 import org.cqframework.cql.cql2elm.CqlCompilerOptions;
 import org.opencds.cqf.cql.engine.exception.CqlException;
 import org.testng.Assert;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertFalse;
@@ -19,13 +20,13 @@ public class CqlMainSuiteTest extends CqlTestBase {
     @Test
     public void test_cql_main_test_suite_compiles() {
         var errors = new ArrayList<CqlCompilerException>();
-        this.getLibrary(toElmIdentifier("CqlTestSuite"), errors, testCompilerOptions());
+        this.getLibrary(toElmIdentifier("CqlTestSuite"), errors, testCompilerOptionsWithBlacklist());
         assertFalse(CqlCompilerException.hasErrors(errors), String.format("Test library compiled with the following errors : %s", this.toString(errors)));
     }
 
     @Test
     public void test_all_portable_cql_engine_tests() {
-        var e = getEngine(testCompilerOptions());
+        var e = getEngine(testCompilerOptionsWithBlacklist());
         // TODO: It'd be interesting to be able to inspect the
         // possible set of expressions from the CQL engine API
         // prior to evaluating them all
@@ -43,33 +44,52 @@ public class CqlMainSuiteTest extends CqlTestBase {
         }
     }
 
-    @Test
-    public void testOverloadsNoEnableAnnotations() {
-        var e = getEngine(testCompilerOptionsNoEnableAnnotations());
+    private static final String CQL_OVERLOAD_TESTS_FILE = "CqlOverloadTests";
+    private static final String CQL_GENERIC_OVERLOAD_TESTS_FILE = "CqlGenericOverloadTests";
 
-        assertThrows(CqlException.class, () -> e.evaluate(toElmIdentifier("CqlOverloadTests"), evalTime));
+    @DataProvider(name = "testCqlAndCompilerOptions")
+    public static Object[][] testCqlAndCompilerOptions() {
+        return new Object[][] {
+                {CQL_OVERLOAD_TESTS_FILE, Set.of(CqlCompilerOptions.Options.DisableListDemotion)},
+                {CQL_GENERIC_OVERLOAD_TESTS_FILE, Set.of(CqlCompilerOptions.Options.DisableListDemotion)},
+                {CQL_OVERLOAD_TESTS_FILE, Set.of(CqlCompilerOptions.Options.DisableListDemotion, CqlCompilerOptions.Options.DisableListPromotion)},
+                {CQL_GENERIC_OVERLOAD_TESTS_FILE, Set.of(CqlCompilerOptions.Options.DisableListDemotion, CqlCompilerOptions.Options.DisableListPromotion)},
+                {CQL_OVERLOAD_TESTS_FILE, Set.of(CqlCompilerOptions.Options.DisableListDemotion, CqlCompilerOptions.Options.DisableListPromotion)},
+                {CQL_GENERIC_OVERLOAD_TESTS_FILE, Set.of(CqlCompilerOptions.Options.DisableListDemotion, CqlCompilerOptions.Options.DisableListPromotion)},
+                {CQL_OVERLOAD_TESTS_FILE, Set.of(CqlCompilerOptions.Options.EnableAnnotations)},
+                {CQL_GENERIC_OVERLOAD_TESTS_FILE, Set.of(CqlCompilerOptions.Options.EnableAnnotations)},
+                {CQL_OVERLOAD_TESTS_FILE, Set.of(CqlCompilerOptions.Options.EnableResultTypes)},
+                {CQL_GENERIC_OVERLOAD_TESTS_FILE, Set.of(CqlCompilerOptions.Options.EnableResultTypes)},
+                {CQL_OVERLOAD_TESTS_FILE, Set.of(CqlCompilerOptions.Options.EnableAnnotations, CqlCompilerOptions.Options.EnableResultTypes)},
+                {CQL_GENERIC_OVERLOAD_TESTS_FILE, Set.of(CqlCompilerOptions.Options.EnableAnnotations, CqlCompilerOptions.Options.EnableResultTypes)},
+                {CQL_OVERLOAD_TESTS_FILE, Set.of(CqlCompilerOptions.Options.DisableListDemotion, CqlCompilerOptions.Options.DisableListPromotion, CqlCompilerOptions.Options.DisableDefaultModelInfoLoad)},
+                {CQL_GENERIC_OVERLOAD_TESTS_FILE, Set.of(CqlCompilerOptions.Options.DisableListDemotion, CqlCompilerOptions.Options.DisableListPromotion, CqlCompilerOptions.Options.DisableDefaultModelInfoLoad)}
+            };
     }
 
-    @Test
-    public void testGenericOverloadsNoEnableAnnotations() {
-        var e = getEngine(testCompilerOptionsNoEnableAnnotations());
+    @Test(dataProvider = "testCqlAndCompilerOptions")
+    public void testOverloadsNoEnableAnnotations(String testFile, Collection<CqlCompilerOptions.Options> options) {
+        final CqlEngine engine = getEngine(testCompilerOptionsWithWhitelist(options));
 
-        assertThrows(CqlException.class, () -> e.evaluate(toElmIdentifier("CqlGenericOverloadTests"), evalTime));
+        if (options.contains(CqlCompilerOptions.Options.EnableAnnotations) || options.contains(CqlCompilerOptions.Options.EnableResultTypes)) {
+            // No Exception thrown
+            engine.evaluate(toElmIdentifier(testFile), evalTime);
+
+        } else {
+            assertThrows(CqlException.class, () -> engine.evaluate(toElmIdentifier(testFile), evalTime));
+        }
     }
 
-    // LUKETODO:  play around with different compile options such as removing EnableAnnotations, and adding EnableResultTypes
-   protected CqlCompilerOptions testCompilerOptions() {
-       return testCompilerOptions(CqlCompilerOptions.Options.DisableListDemotion,
+    protected CqlCompilerOptions testCompilerOptionsWithWhitelist(Collection<CqlCompilerOptions.Options> options) {
+        return new CqlCompilerOptions(options.toArray(new CqlCompilerOptions.Options[0]));
+    }
+
+   protected CqlCompilerOptions testCompilerOptionsWithBlacklist() {
+       return testCompilerOptionsWithBlacklist(CqlCompilerOptions.Options.DisableListDemotion,
                CqlCompilerOptions.Options.DisableListPromotion);
     }
 
-    protected CqlCompilerOptions testCompilerOptionsNoEnableAnnotations() {
-        return testCompilerOptions(CqlCompilerOptions.Options.DisableListDemotion,
-                CqlCompilerOptions.Options.DisableListPromotion,
-                CqlCompilerOptions.Options.EnableAnnotations);
-    }
-
-    protected CqlCompilerOptions testCompilerOptions(CqlCompilerOptions.Options... optionsToRemove) {
+    protected CqlCompilerOptions testCompilerOptionsWithBlacklist(CqlCompilerOptions.Options... optionsToRemove) {
         final CqlCompilerOptions options = CqlCompilerOptions.defaultOptions();
         final Set<CqlCompilerOptions.Options> optionsOptions = options.getOptions();
 

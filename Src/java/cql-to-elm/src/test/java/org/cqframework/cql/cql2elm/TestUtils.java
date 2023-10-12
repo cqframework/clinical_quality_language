@@ -39,49 +39,50 @@ public class TestUtils {
     }
 
     public static Object visitFile(String fileName) throws IOException {
-        return visitFile(fileName, null);
+        return visitFile(fileName, SignatureLevel.Overloads);
     }
 
-    public static Object visitFile(String fileName, SignatureLevel nullableSignatureLevel) throws IOException {
+    public static Object visitFile(String fileName, SignatureLevel signatureLevel) throws IOException {
         final File file = getFileOrThrow(fileName);
-        CqlTranslator translator = CqlTranslator.fromFile(file, getLibraryManager(nullableSignatureLevel));
+        final CqlTranslator translator = CqlTranslator.fromFile(file, getLibraryManager(ErrorSeverity.Info, signatureLevel));
         ensureValid(translator);
         return translator.toObject();
     }
 
     public static CompiledLibrary visitFileLibrary(String fileName) throws IOException {
-        return visitFileLibrary(fileName, null);
+        return visitFileLibrary(fileName, SignatureLevel.Overloads);
     }
 
-    public static CompiledLibrary visitFileLibrary(String fileName, SignatureLevel nullableSignatureLevel) throws IOException {
+    public static CompiledLibrary visitFileLibrary(String fileName, SignatureLevel signatureLevel) throws IOException {
         final File file = getFileOrThrow(fileName);
-        CqlTranslator translator = CqlTranslator.fromFile(file, getLibraryManager(nullableSignatureLevel));
+        CqlTranslator translator = CqlTranslator.fromFile(file, getLibraryManager(ErrorSeverity.Info, signatureLevel));
         ensureValid(translator);
         return translator.getTranslatedLibrary();
     }
 
     public static Object visitData(String cqlData) {
-        CqlTranslator translator = CqlTranslator.fromText(cqlData,  getLibraryManager());
+        CqlTranslator translator = CqlTranslator.fromText(cqlData,  getLibraryManager(ErrorSeverity.Info, SignatureLevel.Overloads));
         ensureValid(translator);
         return translator.toObject();
     }
 
     public static Library visitLibrary(String cqlLibrary) {
-        CqlTranslator translator = CqlTranslator.fromText(cqlLibrary, getLibraryManager());
+        CqlTranslator translator = CqlTranslator.fromText(cqlLibrary, getLibraryManager(ErrorSeverity.Info, SignatureLevel.Overloads));
         ensureValid(translator);
         return translator.toELM();
     }
 
     public static Object visitData(String cqlData, boolean enableAnnotations, boolean enableDateRangeOptimization) {
-        var compilerOptions = getCqlCompilerOptions();
+        final HashSet<CqlCompilerOptions.Options> options = new HashSet<>();
         if (enableAnnotations) {
-           compilerOptions.getOptions().add(CqlCompilerOptions.Options.EnableAnnotations);
+            options.add(CqlCompilerOptions.Options.EnableAnnotations);
         }
         if (enableDateRangeOptimization) {
-            compilerOptions.getOptions().add(CqlCompilerOptions.Options.EnableDateRangeOptimization);
+            options.add(CqlCompilerOptions.Options.EnableDateRangeOptimization);
         }
 
-        CqlTranslator translator = CqlTranslator.fromText(cqlData,getLibraryManager(compilerOptions));
+
+        final CqlTranslator translator = CqlTranslator.fromText(cqlData,getLibraryManager(ErrorSeverity.Info, SignatureLevel.Overloads, options.toArray(new CqlCompilerOptions.Options[0])));
         ensureValid(translator);
         return translator.toObject();
     }
@@ -127,15 +128,7 @@ public class TestUtils {
     }
 
     public static CqlTranslator runSemanticTestNoAnnotations(String fileName) throws IOException {
-        final CqlCompilerOptions cqlCompilerOptions = new CqlCompilerOptions();
-        final CqlTranslator translator = createTranslator(null, fileName, cqlCompilerOptions);
-
-        for (CqlCompilerException error : translator.getErrors()) {
-            System.err.printf("(%d,%d): %s%n",
-                    error.getLocator().getStartLine(), error.getLocator().getStartChar(), error.getMessage());
-        }
-        assertThat(translator.getErrors().size(), is(0));
-        return translator;
+        return runSemanticTestNoAnnotations(fileName, 0);
     }
 
     public static CqlTranslator runSemanticTestNoAnnotations(String fileName, int expectedErrors) throws IOException {
@@ -151,13 +144,12 @@ public class TestUtils {
     }
 
     public static CqlTranslator runSemanticTest(NamespaceInfo namespaceInfo, String testFileName, int expectedErrors, CqlCompilerOptions.Options... options) throws IOException {
-        final CqlCompilerOptions cqlCompilerOptions = getCqlCompilerOptions(options);
+        final CqlCompilerOptions cqlCompilerOptions = getCqlCompilerOptions(ErrorSeverity.Info, SignatureLevel.Overloads, options);
         return runSemanticTest(namespaceInfo, testFileName, expectedErrors, cqlCompilerOptions);
     }
 
-    public static CqlTranslator runSemanticTest(NamespaceInfo namespaceInfo, String testFileName, int expectedErrors, SignatureLevel nullableSignatureLevel, CqlCompilerOptions.Options... options) throws IOException {
-        final CqlCompilerOptions cqlCompilerOptions = getCqlCompilerOptions(options);
-        Optional.ofNullable(nullableSignatureLevel).ifPresent(cqlCompilerOptions::setSignatureLevel);
+    public static CqlTranslator runSemanticTest(NamespaceInfo namespaceInfo, String testFileName, int expectedErrors, SignatureLevel signatureLevel, CqlCompilerOptions.Options... options) throws IOException {
+        final CqlCompilerOptions cqlCompilerOptions = getCqlCompilerOptions(ErrorSeverity.Info, signatureLevel, options);
         return runSemanticTest(namespaceInfo, testFileName, expectedErrors, cqlCompilerOptions);
     }
 
@@ -172,30 +164,29 @@ public class TestUtils {
     }
 
     public static CqlTranslator createTranslatorFromText(String cqlText, CqlCompilerOptions.Options... options) {
-        final LibraryManager libraryManager = getLibraryManager(options);
+        final LibraryManager libraryManager = getLibraryManager(ErrorSeverity.Info, SignatureLevel.Overloads, options);
         return CqlTranslator.fromText(cqlText,  libraryManager);
     }
 
     public static CqlTranslator createTranslatorFromStream(String testFileName, CqlCompilerOptions.Options... options) throws IOException {
-        return createTranslatorFromStream(null, testFileName, null, options);
+        return createTranslatorFromStream(null, testFileName, SignatureLevel.Overloads, options);
     }
 
     public static CqlTranslator createTranslatorFromStream(String testFileName, SignatureLevel signatureLevel, CqlCompilerOptions.Options... options) throws IOException {
         return createTranslatorFromStream(null, testFileName, signatureLevel, options);
     }
 
-    public static CqlTranslator createTranslatorFromStream(NamespaceInfo namespaceInfo, String testFileName, SignatureLevel nullableSignatureLevel, CqlCompilerOptions.Options... options) throws IOException {
+    public static CqlTranslator createTranslatorFromStream(NamespaceInfo namespaceInfo, String testFileName, SignatureLevel signatureLevel, CqlCompilerOptions.Options... options) throws IOException {
         InputStream inputStream = Cql2ElmVisitorTest.class.getResourceAsStream(testFileName);
         if (inputStream == null) {
             throw new FileNotFoundException("cannot find file with path: " + testFileName);
         }
-        return createTranslatorFromStream(null, inputStream, nullableSignatureLevel, options);
+        return createTranslatorFromStream(null, inputStream, signatureLevel, options);
     }
 
-    public static CqlTranslator createTranslatorFromStream(NamespaceInfo namespaceInfo, InputStream inputStream, SignatureLevel nullableSignatureLevel, CqlCompilerOptions.Options... options) throws IOException {
+    public static CqlTranslator createTranslatorFromStream(NamespaceInfo namespaceInfo, InputStream inputStream, SignatureLevel signatureLevel, CqlCompilerOptions.Options... options) throws IOException {
         ModelManager modelManager = new ModelManager();
-        var compilerOptions = getCqlCompilerOptions(options);
-        Optional.ofNullable(nullableSignatureLevel).ifPresent(compilerOptions::setSignatureLevel);
+        var compilerOptions = getCqlCompilerOptions(ErrorSeverity.Info, signatureLevel, options);
         final LibraryManager libraryManager = getLibraryManager(modelManager, compilerOptions);
         return CqlTranslator.fromStream(namespaceInfo, inputStream,  libraryManager);
     }
@@ -206,9 +197,8 @@ public class TestUtils {
         return libraryManager;
     }
 
-    // LUKETODO:   refactor eliminate duplicate new code
     public static CqlTranslator createTranslator(String testFileName, CqlCompilerOptions.Options... options) throws IOException {
-        return createTranslator(null, testFileName, getCqlCompilerOptions(options));
+        return createTranslator(null, testFileName, getCqlCompilerOptions(ErrorSeverity.Info, SignatureLevel.Overloads, options));
     }
 
     public static CqlTranslator createTranslatorNoAnnotations(String testFileName, CqlCompilerOptions.Options... options) throws IOException {
@@ -219,7 +209,7 @@ public class TestUtils {
         final File testFile = getFileOrThrow(cqlTestFile);
         final ModelManager modelManager = new ModelManager();
 
-        final CqlCompilerOptions compilerOptions = getCqlCompilerOptions(signatureLevel);
+        final CqlCompilerOptions compilerOptions = getCqlCompilerOptions(ErrorSeverity.Warning, signatureLevel);
 
         final LibraryManager libraryManager = getLibraryManager(compilerOptions, modelManager, nullableLibrarySourceProvider);
         return CqlTranslator.fromFile(testFile,  libraryManager);
@@ -251,25 +241,9 @@ public class TestUtils {
         return new File(URLDecoder.decode(resource.getFile(), StandardCharsets.UTF_8));
     }
 
-    private static LibraryManager getLibraryManager() {
-        final SignatureLevel sig = null;
-        return getLibraryManager(sig);
-    }
-
-    private static LibraryManager getLibraryManager(SignatureLevel nullableSignatureLevel) {
-        // LUKETODO:  merge getCompilerOptions()
-        return getLibraryManager(new CqlCompilerOptions(ErrorSeverity.Warning,
-                Objects.requireNonNullElse(nullableSignatureLevel, SignatureLevel.All), withEnableAnnotations()));
-
-    }
-
-    private static LibraryManager getLibraryManager(CqlCompilerOptions options) {
-        return getLibraryManager(getModelManager(), options);
-    }
-
-    private static LibraryManager getLibraryManager(CqlCompilerOptions.Options... options) {
+    private static LibraryManager getLibraryManager(ErrorSeverity errorSeverity, SignatureLevel signatureLevel, CqlCompilerOptions.Options... options) {
         final ModelManager modelManager = new ModelManager();
-        final CqlCompilerOptions compilerOptions = getCqlCompilerOptions(options);
+        final CqlCompilerOptions compilerOptions = getCqlCompilerOptions(errorSeverity, signatureLevel, options);
         return getLibraryManager(compilerOptions, modelManager, null);
     }
 
@@ -279,13 +253,8 @@ public class TestUtils {
         return libraryManager;
     }
 
-    private static CqlCompilerOptions getCqlCompilerOptions(SignatureLevel theSignatureLevel) {
-        // LUKETODO:  merge getCompilerOptions()
-        return new CqlCompilerOptions(ErrorSeverity.Info, theSignatureLevel, withEnableAnnotations());
-    }
-
-    private static CqlCompilerOptions getCqlCompilerOptions(CqlCompilerOptions.Options... options) {
-        return new CqlCompilerOptions(withEnableAnnotations(options));
+    private static CqlCompilerOptions getCqlCompilerOptions(ErrorSeverity errorSeverity, SignatureLevel signatureLevel, CqlCompilerOptions.Options... options) {
+        return new CqlCompilerOptions(errorSeverity, signatureLevel, withEnableAnnotations(options));
     }
 
     private static CqlCompilerOptions getCqlCompilerOptionsNoAnnotations(CqlCompilerOptions.Options... options) {
