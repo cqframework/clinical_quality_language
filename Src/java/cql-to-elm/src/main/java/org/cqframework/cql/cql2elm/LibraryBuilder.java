@@ -2632,11 +2632,24 @@ public class LibraryBuilder implements ModelResolver {
             result.setResultType(source.getResultType());
             return result;
         }
-        else if (targetMap.contains("%value.")) {
+        else if (targetMap.startsWith("%value.")) {
             String propertyName = targetMap.substring(7);
-            Property p = of.createProperty().withSource(source).withPath(propertyName);
-            p.setResultType(source.getResultType());
-            return p;
+            // If the source is a list, the mapping is expected to apply to every element in the list
+            // ((source $this return all $this.value)
+            if (source.getResultType() instanceof ListType) {
+                AliasedQuerySource s = of.createAliasedQuerySource().withExpression(source).withAlias("$this");
+                Property p = of.createProperty().withScope("$this").withPath(propertyName);
+                p.setResultType(((ListType)source.getResultType()).getElementType());
+                ReturnClause r = of.createReturnClause().withDistinct(false).withExpression(p);
+                Query q = of.createQuery().withSource(s).withReturn(r);
+                q.setResultType(source.getResultType());
+                return q;
+            }
+            else {
+                Property p = of.createProperty().withSource(source).withPath(propertyName);
+                p.setResultType(source.getResultType());
+                return p;
+            }
         }
 
         throw new IllegalArgumentException(String.format("TargetMapping not implemented: %s", targetMap));
