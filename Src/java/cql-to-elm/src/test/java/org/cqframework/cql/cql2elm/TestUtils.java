@@ -205,6 +205,10 @@ public class TestUtils {
         return createTranslator(null, testFileName, getCqlCompilerOptionsNoAnnotations(options));
     }
 
+    public static CqlTranslator createTranslatorNoAnnotations(String testFileName, SignatureLevel signatureLevel, CqlCompilerOptions.Options... options) throws IOException {
+        return createTranslator(null, testFileName, getCqlCompilerOptionsNoAnnotations(ErrorSeverity.Warning, signatureLevel, options));
+    }
+
     public static CqlTranslator getTranslator(String cqlTestFile, String nullableLibrarySourceProvider, LibraryBuilder.SignatureLevel signatureLevel) throws IOException {
         final File testFile = getFileOrThrow(cqlTestFile);
         final ModelManager modelManager = new ModelManager();
@@ -255,6 +259,10 @@ public class TestUtils {
 
     private static CqlCompilerOptions getCqlCompilerOptions(ErrorSeverity errorSeverity, SignatureLevel signatureLevel, CqlCompilerOptions.Options... options) {
         return new CqlCompilerOptions(errorSeverity, signatureLevel, withEnableAnnotations(options));
+    }
+
+    private static CqlCompilerOptions getCqlCompilerOptionsNoAnnotations(ErrorSeverity errorSeverity, SignatureLevel signatureLevel, CqlCompilerOptions.Options... options) {
+        return new CqlCompilerOptions(errorSeverity, signatureLevel, options);
     }
 
     private static CqlCompilerOptions getCqlCompilerOptionsNoAnnotations(CqlCompilerOptions.Options... options) {

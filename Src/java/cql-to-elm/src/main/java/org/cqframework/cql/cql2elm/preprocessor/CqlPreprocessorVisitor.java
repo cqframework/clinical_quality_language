@@ -348,27 +348,28 @@ public class CqlPreprocessorVisitor extends CqlPreprocessorElmCommonVisitor {
     }
 
     private void validateOverloadsForDisabledAnnotations(String theTranslatorOptions, PreCompileOutput thePreCompileOutput, String theFunctionName) {
-        if (! theTranslatorOptions.contains("EnableAnnotations") && ! theTranslatorOptions.contains("EnableResultTypes")) {
-            final int preCompileOutputOperandSize = thePreCompileOutput.getFunctionDef().getOperand().size();
-
-            final Iterable<FunctionDefinitionInfo> functionDefinitionInfos = libraryInfo.resolveFunctionReferenceFromName(theFunctionName);
-
-            if (functionDefinitionInfos != null) {
-                final List<PreCompileOutput> existingPreCompileOutputs = StreamSupport.stream(functionDefinitionInfos.spliterator(), false)
-                        .map(FunctionDefinitionInfo::getPreCompileOutput)
-                        .collect(Collectors.toList());
-
-                final Optional<PreCompileOutput> optMatchingExistingPreCompileOutput =
-                        existingPreCompileOutputs.stream()
-                                .filter(existingPreCompileOutput -> existingPreCompileOutput.getFunctionDef().getOperand().size() == preCompileOutputOperandSize)
-                                .findFirst();
-
-                optMatchingExistingPreCompileOutput.ifPresent(matchingExistingPreCompileOutput -> {
-                    logger.error("Function name: {}, existing params: {}, passed params: {}", theFunctionName, functionTypes(thePreCompileOutput), functionTypes(matchingExistingPreCompileOutput));
-                    throw new CqlCompilerException("Function overloading cannot be resolved due to compiler options for function: " + theFunctionName);
-                });
-            }
-        }
+        // LUKETODO:  leave this commented out until we figure out which compile options to check for and then adjust the if conditions accordingly
+//        if (! theTranslatorOptions.contains("EnableAnnotations") && ! theTranslatorOptions.contains("EnableResultTypes")) {
+//            final int preCompileOutputOperandSize = thePreCompileOutput.getFunctionDef().getOperand().size();
+//
+//            final Iterable<FunctionDefinitionInfo> functionDefinitionInfos = libraryInfo.resolveFunctionReferenceFromName(theFunctionName);
+//
+//            if (functionDefinitionInfos != null) {
+//                final List<PreCompileOutput> existingPreCompileOutputs = StreamSupport.stream(functionDefinitionInfos.spliterator(), false)
+//                        .map(FunctionDefinitionInfo::getPreCompileOutput)
+//                        .collect(Collectors.toList());
+//
+//                final Optional<PreCompileOutput> optMatchingExistingPreCompileOutput =
+//                        existingPreCompileOutputs.stream()
+//                                .filter(existingPreCompileOutput -> existingPreCompileOutput.getFunctionDef().getOperand().size() == preCompileOutputOperandSize)
+//                                .findFirst();
+//
+//                optMatchingExistingPreCompileOutput.ifPresent(matchingExistingPreCompileOutput -> {
+//                    logger.error("Function name: {}, existing params: {}, passed params: {}", theFunctionName, functionTypes(thePreCompileOutput), functionTypes(matchingExistingPreCompileOutput));
+//                    throw new CqlCompilerException("Function overloading cannot be resolved due to compiler options for function: " + theFunctionName);
+//                });
+//            }
+//        }
     }
 
     private static List<String> functionTypes(PreCompileOutput preCompileOutput) {

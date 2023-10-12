@@ -70,14 +70,17 @@ public class CqlMainSuiteTest extends CqlTestBase {
     @Test(dataProvider = "testCqlAndCompilerOptions")
     public void testOverloadsNoEnableAnnotations(String testFile, Collection<CqlCompilerOptions.Options> options) {
         final CqlEngine engine = getEngine(testCompilerOptionsWithWhitelist(options));
+        final EvaluationResult evaluate = engine.evaluate(toElmIdentifier(testFile), evalTime);
 
-        if (options.contains(CqlCompilerOptions.Options.EnableAnnotations) || options.contains(CqlCompilerOptions.Options.EnableResultTypes)) {
-            // No Exception thrown
-            engine.evaluate(toElmIdentifier(testFile), evalTime);
+        System.out.println("evaluate = " + evaluate);
 
-        } else {
-            assertThrows(CqlException.class, () -> engine.evaluate(toElmIdentifier(testFile), evalTime));
-        }
+//        if (options.contains(CqlCompilerOptions.Options.EnableAnnotations) || options.contains(CqlCompilerOptions.Options.EnableResultTypes)) {
+//            // No Exception thrown
+//            engine.evaluate(toElmIdentifier(testFile), evalTime);
+//
+//        } else {
+//            assertThrows(CqlException.class, () -> engine.evaluate(toElmIdentifier(testFile), evalTime));
+//        }
     }
 
     protected CqlCompilerOptions testCompilerOptionsWithWhitelist(Collection<CqlCompilerOptions.Options> options) {

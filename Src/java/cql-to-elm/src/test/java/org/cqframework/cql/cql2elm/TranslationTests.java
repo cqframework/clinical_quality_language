@@ -1,18 +1,23 @@
 package org.cqframework.cql.cql2elm;
 
+import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorVisitor;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.hamcrest.Matchers;
+import org.hl7.cql.model.DataType;
 import org.hl7.cql_annotations.r1.CqlToElmInfo;
 import org.hl7.elm.r1.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.namespace.QName;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -20,6 +25,8 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 public class TranslationTests {
+    private static final Logger logger = LoggerFactory.getLogger(TranslationTests.class);
+
     // TODO: sameXMLAs? Couldn't find such a thing in hamcrest, but I don't want this to run on the JSON, I want it to verify the actual XML.
     @Test(enabled=false)
     public void testPatientPropertyAccess() throws IOException, JAXBException {
@@ -101,6 +108,64 @@ public class TranslationTests {
         assertThat(library.getAnnotation().get(0), instanceOf(CqlToElmInfo.class));
         CqlToElmInfo info = (CqlToElmInfo)library.getAnnotation().get(0);
         assertThat(info.getTranslatorOptions(), is("EnableAnnotations"));
+    }
+
+    private static final String CQL_OVERLOAD_TESTS_FILE = "CqlOverloadTests.cql";
+    private static final String CQL_GENERIC_OVERLOAD_TESTS_FILE = "CqlGenericOverloadTests.cql";
+
+    @DataProvider(name = "testCqlAndCompilerOptions")
+    public static Object[][] testCqlAndCompilerOptions() {
+        return new Object[][] {
+                {CQL_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, Set.of()},
+                {CQL_GENERIC_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, Set.of()},
+                {CQL_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, Set.of(CqlCompilerOptions.Options.DisableListDemotion)},
+                {CQL_GENERIC_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, Set.of(CqlCompilerOptions.Options.DisableListDemotion)},
+                {CQL_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, Set.of(CqlCompilerOptions.Options.DisableListDemotion, CqlCompilerOptions.Options.DisableListPromotion)},
+                {CQL_GENERIC_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, Set.of(CqlCompilerOptions.Options.DisableListDemotion, CqlCompilerOptions.Options.DisableListPromotion)},
+                {CQL_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, Set.of(CqlCompilerOptions.Options.DisableListDemotion, CqlCompilerOptions.Options.DisableListPromotion)},
+                {CQL_GENERIC_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, Set.of(CqlCompilerOptions.Options.DisableListDemotion, CqlCompilerOptions.Options.DisableListPromotion)},
+                {CQL_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, Set.of(CqlCompilerOptions.Options.EnableAnnotations)},
+                {CQL_GENERIC_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, Set.of(CqlCompilerOptions.Options.EnableAnnotations)},
+                {CQL_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, Set.of(CqlCompilerOptions.Options.EnableResultTypes)},
+                {CQL_GENERIC_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, Set.of(CqlCompilerOptions.Options.EnableResultTypes)},
+                {CQL_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, Set.of(CqlCompilerOptions.Options.EnableAnnotations, CqlCompilerOptions.Options.EnableResultTypes)},
+                {CQL_GENERIC_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, Set.of(CqlCompilerOptions.Options.EnableAnnotations, CqlCompilerOptions.Options.EnableResultTypes)},
+                {CQL_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, Set.of(CqlCompilerOptions.Options.DisableListDemotion, CqlCompilerOptions.Options.DisableListPromotion, CqlCompilerOptions.Options.DisableDefaultModelInfoLoad)},
+                {CQL_GENERIC_OVERLOAD_TESTS_FILE, LibraryBuilder.SignatureLevel.None, Set.of(CqlCompilerOptions.Options.DisableListDemotion, CqlCompilerOptions.Options.DisableListPromotion, CqlCompilerOptions.Options.DisableDefaultModelInfoLoad)}
+        };
+    }
+
+    @Test(dataProvider = "testCqlAndCompilerOptions")
+    public void testCompilerOptions(String testFile, LibraryBuilder.SignatureLevel signatureLevel, Collection<CqlCompilerOptions.Options> options) throws IOException {
+        logger.info("fileName: {}, signatureLevel: {}, compileOptions: {}", testFile, signatureLevel, options);
+
+        final CqlTranslator translator = TestUtils.createTranslatorNoAnnotations(testFile, signatureLevel, options.toArray(new CqlCompilerOptions.Options[0]));
+
+        assertEquals(0, translator.getErrors().size());
+
+        final List<ExpressionDef> expressionDefs = translator.getTranslatedLibrary().getLibrary().getStatements().getDef();
+
+        assertThat(expressionDefs.size(), equalTo(2));
+
+        final FunctionDef functionDef1 = (FunctionDef)expressionDefs.get(0);
+        final FunctionDef functionDef2 = (FunctionDef)expressionDefs.get(1);
+
+        final List<OperandDef> operands1 = functionDef1.getOperand();
+        final List<OperandDef> operands2 = functionDef2.getOperand();
+
+        final OperandDef operandDef1 = operands1.get(0);
+        final OperandDef operandDef2 = operands2.get(0);
+
+        final DataType resultType1 = operandDef1.getOperandTypeSpecifier().getResultType();
+        final QName resultTypeName1 = operandDef1.getOperandTypeSpecifier().getResultTypeName();
+
+        logger.info("resultType1: [{}], resultTypeName1: [{}]", resultType1, resultTypeName1);
+
+        final DataType resultType2 = operandDef2.getOperandTypeSpecifier().getResultType();
+        final QName resultTypeName2 = operandDef2.getOperandTypeSpecifier().getResultTypeName();
+
+        logger.info("resultType2: [{}], resultTypeName2: [{}]", resultType2, resultTypeName2);
+        logger.info("----------------------------------------------");
     }
 
     @Test
