@@ -272,7 +272,7 @@ public class BaseTest {
     }
 
     @Test
-    public void testFHIRNamespaces2() throws IOException {
+    public void testFHIRNamespacesSignatureLevelNone() throws IOException {
         TestUtils.runSemanticTest(new NamespaceInfo("Public", "http://cql.hl7.org/public"), "fhir/dstu2/TestFHIRNamespaces.cql", 0, LibraryBuilder.SignatureLevel.None);
     }
 
