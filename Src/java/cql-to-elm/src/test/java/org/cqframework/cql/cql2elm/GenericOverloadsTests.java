@@ -1,13 +1,11 @@
 package org.cqframework.cql.cql2elm;
 
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
-import org.hl7.cql.model.ClassType;
 import org.hl7.elm.r1.ExpressionDef;
 import org.hl7.elm.r1.FunctionDef;
 import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.ListTypeSpecifier;
 import org.hl7.elm.r1.NamedTypeSpecifier;
-import org.hl7.elm.r1.Library.Statements;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -19,7 +17,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static java.util.stream.Collectors.toList;
 
 public class GenericOverloadsTests {
@@ -27,8 +24,8 @@ public class GenericOverloadsTests {
     private static final String CQL_TEST_FILE = "SignatureTests/GenericOverloadsTests.cql";
     private Map<String, ExpressionDef> defs;
 
-    private Library getLibrary(boolean enableResultTypes) throws IOException {
-        final CqlTranslator translator = getTranslator(enableResultTypes);
+    private Library getLibrary(boolean enableResultTypes, SignatureLevel level) throws IOException {
+        final CqlTranslator translator = getTranslator(enableResultTypes, level);
         assertThat(translator.getErrors().size(), is(0));
         defs = new HashMap<>();
         Library library = translator.toELM();
@@ -41,10 +38,10 @@ public class GenericOverloadsTests {
     }
 
 
-    private static CqlTranslator getTranslator(boolean enableResultTypes) throws IOException {
+    private static CqlTranslator getTranslator(boolean enableResultTypes, SignatureLevel level) throws IOException {
         var options = new CqlCompilerOptions();
         options.getOptions().clear();
-        options.setSignatureLevel(SignatureLevel.Overloads);
+        options.setSignatureLevel(level);
         if (enableResultTypes) {
             options.getOptions().add(CqlCompilerOptions.Options.EnableResultTypes);
         }
@@ -83,7 +80,7 @@ public class GenericOverloadsTests {
 
     @Test
     public void TestResultTypes() throws IOException {
-        Library library = getLibrary(true);
+        Library library = getLibrary(true, SignatureLevel.Overloads);
 
         var stringifies = stringifies(library);
         stringifies.forEach(this::validateResultTypes);
@@ -91,7 +88,23 @@ public class GenericOverloadsTests {
 
     @Test
     public void TestNoResultTypes() throws IOException {
-        Library library = getLibrary(false);
+        Library library = getLibrary(false, SignatureLevel.Overloads);
+
+        var stringifies = stringifies(library);
+        stringifies.forEach(this::validateResultTypes);
+    }
+
+    @Test
+    public void TestResultTypesSignatureNone() throws IOException {
+        Library library = getLibrary(true, SignatureLevel.None);
+
+        var stringifies = stringifies(library);
+        stringifies.forEach(this::validateResultTypes);
+    }
+
+    @Test
+    public void TestNoResultTypesSignatureNone() throws IOException {
+        Library library = getLibrary(false, SignatureLevel.None);
 
         var stringifies = stringifies(library);
         stringifies.forEach(this::validateResultTypes);
