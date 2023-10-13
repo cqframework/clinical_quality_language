@@ -30,7 +30,7 @@ public class CqlCompilerOptions {
     private boolean enableCqlOnly = false;
     private String compatibilityLevel = "1.5";
     private CqlCompilerException.ErrorSeverity errorLevel = CqlCompilerException.ErrorSeverity.Info;
-    private LibraryBuilder.SignatureLevel signatureLevel = LibraryBuilder.SignatureLevel.Overloads;
+    private LibraryBuilder.SignatureLevel signatureLevel = LibraryBuilder.SignatureLevel.None;
     private boolean analyzeDataRequirements = false;
     private boolean collapseDataRequirements = false;
 
@@ -62,11 +62,11 @@ public class CqlCompilerOptions {
      * @param options
      */
     public CqlCompilerOptions(Options... options) {
-        this(CqlCompilerException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.Overloads, options);
+        this(CqlCompilerException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.None, options);
     }
 
     public CqlCompilerOptions(CqlCompilerException.ErrorSeverity errorLevel, Options... options) {
-        this(errorLevel, LibraryBuilder.SignatureLevel.Overloads, options);
+        this(errorLevel, LibraryBuilder.SignatureLevel.None, options);
     }
 
     /**

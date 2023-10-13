@@ -123,6 +123,12 @@ public class TestUtils {
         return runSemanticTest(null, testFileName, expectedErrors, options);
     }
 
+    public static CqlTranslator runSemanticTest(String testFileName, int expectedErrors, SignatureLevel nullableSignatureLevel, CqlCompilerOptions.Options... options) throws IOException {
+        final CqlCompilerOptions cqlCompilerOptions = new CqlCompilerOptions(options);
+        Optional.ofNullable(nullableSignatureLevel).ifPresent(cqlCompilerOptions::setSignatureLevel);
+        return runSemanticTest(testFileName, expectedErrors, cqlCompilerOptions);
+    }
+
     public static CqlTranslator runSemanticTest(String testFileName, int expectedErrors, CqlCompilerOptions options) throws IOException {
         return runSemanticTest(null, testFileName, expectedErrors, options);
     }
