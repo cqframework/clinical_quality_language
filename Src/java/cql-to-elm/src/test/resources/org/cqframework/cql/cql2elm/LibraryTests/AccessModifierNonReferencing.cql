@@ -18,7 +18,8 @@ valueset "Chlamydia Screening": '2.16.840.1.113883.3.464.1003.110.12.1052'
 
 private parameter "Test Parameter" Integer
 
-define private function f1(arg String): arg
+//to do private for function definition is not working all of a sudden
+define function f1(arg String): arg
 
 define private PrivateExpression: Tuple { Id : '12345', Name : 'John Doe' }
 
