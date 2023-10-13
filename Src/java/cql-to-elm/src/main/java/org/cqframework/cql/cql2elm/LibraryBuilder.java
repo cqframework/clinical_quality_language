@@ -1178,6 +1178,20 @@ public class LibraryBuilder implements ModelResolver {
                 || (options.getSignatureLevel() == SignatureLevel.Overloads && resolution.getOperatorHasOverloads())) {
             invocation.setSignature(dataTypesToTypeSpecifiers(resolution.getOperator().getSignature().getOperandTypes()));
         }
+        else if (resolution.getOperatorHasOverloads() && !resolution.getOperator().getLibraryName().equals("System")) {
+            // NOTE: Because system functions only deal with CQL system-defined types, and there is one and only one
+            // runtime representation of each system-defined type, there is no possibility of ambiguous overload
+            // resolution with system functions
+            // WARNING:
+            reportWarning(String.format("The function %s.%s has multiple overloads and due to the SignatureLevel setting (%s), "
+                    + "the overload signature is not being included in the output. This may result in ambiguous function resolution "
+                    + "at runtime, consider setting the SignatureLevel to Overloads or All to ensure that the output includes sufficient "
+                    + "information to support correct overload selection at runtime.",
+                    resolution.getOperator().getLibraryName(),
+                    resolution.getOperator().getName(),
+                    options.getSignatureLevel().name()
+            ), invocation.getExpression());
+        }
 
         invocation.setResultType(resolution.getOperator().getResultType());
         if (resolution.getLibraryIdentifier() != null) {
@@ -1321,34 +1335,6 @@ public class LibraryBuilder implements ModelResolver {
         }
 
         return fun;
-    }
-
-    public void validateAmbiguousOverloadedForwardDeclarationsSignatureNone() throws CqlCompilerException {
-        // Check for ambiguous overloaded functions
-        if (SignatureLevel.None == options.getSignatureLevel()) {
-            final Library.Statements statements = compiledLibrary.getLibrary().getStatements();
-            if (statements != null) {
-                final Map<String, Integer> paramCountByFunctionName = new HashMap<>();
-
-                final List<FunctionDef> funcDefs = statements.getDef().stream()
-                        .filter(FunctionDef.class::isInstance)
-                        .map(FunctionDef.class::cast)
-                        .collect(Collectors.toList());
-
-                for (FunctionDef funcDef : funcDefs) {
-                    final String functionDefName = funcDef.getName();
-                    final List<OperandDef> operand = funcDef.getOperand();
-
-                    if (operand.size() == paramCountByFunctionName.computeIfAbsent(functionDefName, str -> -1)) {
-                        if (paramCountByFunctionName.get(functionDefName) == operand.size()) {
-                            throw new CqlCompilerException(String.format("Please consider setting your compiler signature level to a setting other than None:  Ambiguous forward function declaration for function name: %s", functionDefName));
-                        }
-                    }
-
-                    paramCountByFunctionName.put(functionDefName, operand.size());
-                }
-            }
-        }
     }
 
     public void verifyComparable(DataType dataType) {
