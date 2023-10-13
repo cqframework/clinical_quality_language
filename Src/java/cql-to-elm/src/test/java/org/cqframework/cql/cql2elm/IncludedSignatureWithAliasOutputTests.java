@@ -37,8 +37,8 @@ public class IncludedSignatureWithAliasOutputTests {
     @Test
     public void TestNone() throws IOException {
         final CqlTranslator translator = getTranslator(LibraryBuilder.SignatureLevel.None);
-        assertThat(translator.getErrors().size(), greaterThan(1));
-        assertThat(translator.getErrors().get(0).getMessage(), equalTo("Please consider setting your compiler signature level to a setting other than None:  Ambiguous forward function declaration for function name: MultipleOverloadTest"));
+        assertThat(translator.getWarnings().size(), greaterThan(1));
+        assertThat(translator.getWarnings().get(0).getMessage(), equalTo("The function SignatureOutputTests.MultipleOverloadTest has multiple overloads and due to the SignatureLevel setting (None), the overload signature is not being included in the output. This may result in ambiguous function resolution at runtime, consider setting the SignatureLevel to Overloads or All to ensure that the output includes sufficient information to support correct overload selection at runtime."));
     }
 
     @Test
