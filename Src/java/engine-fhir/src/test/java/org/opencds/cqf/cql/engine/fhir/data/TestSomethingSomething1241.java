@@ -2,6 +2,7 @@ package org.opencds.cqf.cql.engine.fhir.data;
 
 import org.hl7.fhir.CodeableConcept;
 import org.hl7.fhir.Observation;
+import org.hl7.fhir.Reference;
 import org.hl7.fhir.RelatedPerson;
 import org.hl7.fhir.r4.model.Condition;
 import org.hl7.fhir.r4.model.Encounter;
@@ -37,28 +38,25 @@ public class TestSomethingSomething1241 extends FhirExecutionTestBase {
         final Patient patient1 = getPatient(null);
         final Patient patient2 = getPatient(null);
 
-        final Observation observation1 = getObservation();
-        final Observation observation2 = getObservation();
+        final Reference reference1 = new Reference().withReference(new org.hl7.fhir.String().withValue("Patient/123"));
+        final Reference reference2 = new Reference().withReference(new org.hl7.fhir.String().withValue("Patient/456"));;
+        final Observation observation1 = getObservation(reference1);
+        final Observation observation2 = getObservation(reference2);
 
         switch (dataType) {
             case "RelatedPerson":
                 // LUKETODO:  we may need IDs here
                 return List.of(relatedPerson);
-            case "Patent":
-                // LUKETODO:  we may need IDs here
-                return List.of(patient1, patient2);
             case OBSERVATION:
                 // LUKETODO:  we may need IDs here
                 return List.of(observation1, observation2);
-            case "Mother Relationship":
-                throw new RuntimeException("something");
-            case "Estimated Due Date Exam":
-                throw new RuntimeException("somethingElse");
             default:
                 break;
         }
         return null;
     };
+    private static final String MOTHER_OBSERVATION = "Mother Observation";
+    private static final String CHILD_OBSERVATION = "Child Observation";
 
     // LUKETODO:  better name
     // LUKETODO:  the case class resolves its CQL file from the name of the class
@@ -75,17 +73,29 @@ public class TestSomethingSomething1241 extends FhirExecutionTestBase {
         engine.getState().getEnvironment().registerDataProvider(URL_FHIR, new CompositeDataProvider(r4ModelResolver, retrieveProvider));
         engine.getCache().setExpressionCaching(true);
 
-        final EvaluationResult evaluationResult = engine.evaluate(library.getIdentifier(),
-                Set.of(OBSERVATION), null, null, null, null);
-        final Object result = evaluationResult.forExpression(OBSERVATION).value();
-        assertThat(result, instanceOf(List.class));
-        assertThat(evaluationResult.forExpression(OBSERVATION).evaluatedResources().size(), is(1));
+        // LUKETODO:  code reuse
+        final EvaluationResult evaluationResultMotherObservation = engine.evaluate(library.getIdentifier(),
+                Set.of(MOTHER_OBSERVATION), null, null, null, null);
+        final Object resultMotherObservation  = evaluationResultMotherObservation.forExpression(MOTHER_OBSERVATION).value();
+
+        final EvaluationResult evaluationResultChildObservation = engine.evaluate(library.getIdentifier(),
+                Set.of(CHILD_OBSERVATION), null, null, null, null);
+        final Object resultChildObservation  = evaluationResultChildObservation.forExpression(CHILD_OBSERVATION).value();
+
+        assertThat(resultMotherObservation , instanceOf(List.class));
+//        assertThat(evaluationResultMotherObservation .forExpression(MOTHER_OBSERVATION).evaluatedResources().size(), is(1));
+        engine.getState().clearEvaluatedResources();
+
+        assertThat(resultChildObservation , instanceOf(List.class));
+        assertThat(evaluationResultChildObservation .forExpression(CHILD_OBSERVATION).evaluatedResources().size(), is(1));
         engine.getState().clearEvaluatedResources();
     }
 
     @Nonnull
-    private static Observation getObservation() {
+    private static Observation getObservation(Reference reference) {
         final Observation observation = new Observation();
+
+        observation.setSubject(reference);
 
         return observation;
     }
