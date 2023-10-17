@@ -70,6 +70,9 @@ public class OperatorEntry {
         }
 
         private SignatureNodes subSignatures = new SignatureNodes();
+        public boolean hasSubSignatures() {
+            return subSignatures.hasSignatures();
+        }
 
         @Override
         public int hashCode() {
@@ -94,6 +97,10 @@ public class OperatorEntry {
 
     private static class SignatureNodes {
         private Map<Signature, SignatureNode> signatures = new HashMap<>();
+
+        public boolean hasSignatures() {
+            return signatures.size() > 0;
+        }
 
         public boolean contains(Operator operator) {
             boolean result = signatures.containsKey(operator.getSignature());
@@ -147,6 +154,11 @@ public class OperatorEntry {
 
                 if (n.getSignature().getSize() == callContext.getSignature().getSize()) {
                     signatureCount++;
+
+                    // Any subSignature will count as an overload
+                    if (n.hasSubSignatures()) {
+                        signatureCount++;
+                    }
                 }
 
                 List<OperatorResolution> nodeResults = n.resolve(callContext, conversionMap, operatorMap);

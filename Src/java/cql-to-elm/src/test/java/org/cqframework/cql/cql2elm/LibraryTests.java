@@ -544,7 +544,7 @@ public class LibraryTests {
     @Test
     public void TestForwardDeclarationsScoringImplicitConversionMultipleParamsCannotResolve() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestForwardDeclarationScoringImplicitConversionMultipleParamsCannotResolve.cql");
-        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(2));
+        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(1));
     }
 
     @Test
@@ -595,7 +595,7 @@ public class LibraryTests {
     @Test
     public void TestNonForwardDeclarationsScoringImplicitConversionMultipleParamsCannotResolve() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestNonForwardDeclarationScoringImplicitConversionMultipleParamsCannotResolve.cql");
-        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(2));
+        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(1));
     }
 
     private static final String FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE = "LibraryTests/TestForwardAmbiguousFunctionResolutionWithoutTypeInformation.cql";
@@ -618,9 +618,7 @@ public class LibraryTests {
     @Test(dataProvider = "sigParams")
     public void testForwardAmbiguousFailOnAmbiguousFunctionResolutionWithoutTypeInformation_SignatureLevelNone(String testFileName, SignatureLevel signatureLevel) throws IOException {
         final CqlTranslator translator = TestUtils.createTranslatorFromStream(testFileName, signatureLevel);
-        final int expectedWarningCount = (SignatureLevel.None == signatureLevel || SignatureLevel.Differing == signatureLevel) ?
-                NON_FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE.equals(testFileName) ? 1 : 2
-                : 0;
+        final int expectedWarningCount = (SignatureLevel.None == signatureLevel || SignatureLevel.Differing == signatureLevel) ? 2 : 0;
         assertThat("Warnings: " + translator.getWarnings(), translator.getWarnings().size(), equalTo(expectedWarningCount));
 
         if (expectedWarningCount > 0) {

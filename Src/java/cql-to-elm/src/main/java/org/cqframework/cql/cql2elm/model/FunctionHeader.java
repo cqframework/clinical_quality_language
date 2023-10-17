@@ -1,6 +1,7 @@
-package org.cqframework.cql.cql2elm;
+package org.cqframework.cql.cql2elm.model;
 
 import org.hl7.elm.r1.FunctionDef;
+import org.hl7.elm.r1.OperandDef;
 import org.hl7.elm.r1.TypeSpecifier;
 
 import java.util.Objects;
@@ -9,9 +10,11 @@ import java.util.StringJoiner;
 /**
  * POJO for the result of a pre compile operation (AKA: partial compile of function headers)
  */
-public class PreCompileOutput {
+public class FunctionHeader {
     private final FunctionDef functionDef;
     private final TypeSpecifier resultType;
+
+    private boolean isCompiled = false;
 
     public FunctionDef getFunctionDef() {
         return functionDef;
@@ -21,15 +24,15 @@ public class PreCompileOutput {
         return resultType;
     }
 
-    public static PreCompileOutput noReturnType(FunctionDef functionDef) {
-        return new PreCompileOutput(functionDef, null);
+    public static FunctionHeader noReturnType(FunctionDef functionDef) {
+        return new FunctionHeader(functionDef, null);
     }
 
-    public static PreCompileOutput withReturnType(FunctionDef functionDef, TypeSpecifier resultType) {
-        return new PreCompileOutput(functionDef, resultType);
+    public static FunctionHeader withReturnType(FunctionDef functionDef, TypeSpecifier resultType) {
+        return new FunctionHeader(functionDef, resultType);
     }
 
-    private PreCompileOutput(FunctionDef functionDef, TypeSpecifier resultType) {
+    private FunctionHeader(FunctionDef functionDef, TypeSpecifier resultType) {
         this.functionDef = functionDef;
         this.resultType = resultType;
     }
@@ -42,7 +45,7 @@ public class PreCompileOutput {
         if (other == null || getClass() != other.getClass()) {
             return false;
         }
-        PreCompileOutput that = (PreCompileOutput) other;
+        FunctionHeader that = (FunctionHeader) other;
         return Objects.equals(functionDef, that.functionDef) && Objects.equals(resultType, that.resultType);
     }
 
@@ -53,9 +56,28 @@ public class PreCompileOutput {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", PreCompileOutput.class.getSimpleName() + "[", "]")
+        return new StringJoiner(", ", FunctionHeader.class.getSimpleName() + "[", "]")
                 .add("functionDef=" + functionDef)
                 .add("resultType=" + resultType)
                 .toString();
+    }
+
+    public String getMangledName() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(functionDef.getName());
+        sb.append("_");
+        for (OperandDef od : functionDef.getOperand()) {
+            sb.append(od.getOperandTypeSpecifier() != null ? od.getOperandTypeSpecifier().toString() : "void");
+        }
+        sb.append("_");
+        return sb.toString();
+    }
+
+    public boolean getIsCompiled() {
+        return isCompiled;
+    }
+
+    public void setIsCompiled() {
+        isCompiled = true;
     }
 }
