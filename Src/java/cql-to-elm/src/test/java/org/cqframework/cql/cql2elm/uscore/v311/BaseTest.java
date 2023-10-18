@@ -140,6 +140,136 @@ public class BaseTest {
         assertThat(property.getPath(), is("maritalStatus"));
 
 /*
+         <expression localId="7" xsi:type="Indexer">
+            <operand localId="5" xsi:type="Flatten">
+               <operand xsi:type="Query">
+                  <source alias="$this">
+                     <expression localId="4" path="name" xsi:type="Property">
+                        <source localId="3" name="Patient" xsi:type="ExpressionRef"/>
+                     </expression>
+                  </source>
+                  <where xsi:type="Not">
+                     <operand xsi:type="IsNull">
+                        <operand xsi:type="Query">
+                           <source alias="$this">
+                              <expression path="given" xsi:type="Property">
+                                 <source name="$this" xsi:type="AliasRef"/>
+                              </expression>
+                           </source>
+                           <return distinct="false">
+                              <expression path="value" scope="$this" xsi:type="Property"/>
+                           </return>
+                        </operand>
+                     </operand>
+                  </where>
+                  <return distinct="false">
+                     <expression xsi:type="Query">
+                        <source alias="$this">
+                           <expression path="given" xsi:type="Property">
+                              <source name="$this" xsi:type="AliasRef"/>
+                           </expression>
+                        </source>
+                        <return distinct="false">
+                           <expression path="value" scope="$this" xsi:type="Property"/>
+                        </return>
+                     </expression>
+                  </return>
+               </operand>
+            </operand>
+            <operand localId="6" valueType="t:Integer" value="0" xsi:type="Literal"/>
+         </expression>
+*/
+        def = defs.get("TestPluralPrimitive");
+        assertThat(def.getExpression(), instanceOf(Indexer.class));
+        Indexer i = (Indexer)def.getExpression();
+        assertThat(i.getOperand().size(), is(2));
+        assertThat(i.getOperand().get(0), instanceOf(Flatten.class));
+        Flatten f = (Flatten)i.getOperand().get(0);
+        assertThat(f.getOperand(), instanceOf(Query.class));
+        Query q = (Query)f.getOperand();
+        assertThat(q.getSource().size(), is(1));
+        AliasedQuerySource aqs = q.getSource().get(0);
+        assertThat(aqs.getAlias(), is("$this"));
+        assertThat(aqs.getExpression(), instanceOf(Property.class));
+        Property p = (Property)aqs.getExpression();
+        assertThat(p.getPath(), is("name"));
+        ReturnClause r = q.getReturn();
+        assertThat(r.isDistinct(), is(false));
+        assertThat(r.getExpression(), instanceOf(Query.class));
+        q = (Query)r.getExpression();
+        assertThat(q.getSource().size(), is(1));
+        aqs = q.getSource().get(0);
+        assertThat(aqs.getAlias(), is("$this"));
+        assertThat(aqs.getExpression(), instanceOf(Property.class));
+        p = (Property)aqs.getExpression();
+        assertThat(p.getSource(), instanceOf(AliasRef.class));
+        AliasRef ar = (AliasRef)p.getSource();
+        assertThat(ar.getName(), is("$this"));
+        assertThat(p.getPath(), is("given"));
+        r = q.getReturn();
+        assertThat(r.isDistinct(), is(false));
+        assertThat(r.getExpression(), instanceOf(Property.class));
+        p = (Property)r.getExpression();
+        assertThat(p.getPath(), is("value"));
+        assertThat(p.getScope(), is("$this"));
+        assertThat(i.getOperand().get(1), instanceOf(Literal.class));
+        Literal l = (Literal)i.getOperand().get(1);
+        assertThat(l.getValue(), is("0"));
+
+/*
+         <expression localId="15" xsi:type="Indexer">
+            <operand localId="13" xsi:type="Query">
+               <source alias="$this">
+                  <expression path="given" xsi:type="Property">
+                     <source localId="12" xsi:type="Indexer">
+                        <operand localId="10" path="name" xsi:type="Property">
+                           <source localId="9" name="Patient" xsi:type="ExpressionRef"/>
+                        </operand>
+                        <operand localId="11" valueType="t:Integer" value="0" xsi:type="Literal"/>
+                     </source>
+                  </expression>
+               </source>
+               <return distinct="false">
+                  <expression path="value" scope="$this" xsi:type="Property"/>
+               </return>
+            </operand>
+            <operand localId="14" valueType="t:Integer" value="0" xsi:type="Literal"/>
+         </expression>
+*/
+
+        def = defs.get("TestSpecificPluralPrimitive");
+        assertThat(def.getExpression(), instanceOf(Indexer.class));
+        i = (Indexer)def.getExpression();
+        assertThat(i.getOperand().size(), is(2));
+        assertThat(i.getOperand().get(0), instanceOf(Query.class));
+        q = (Query)i.getOperand().get(0);
+        assertThat(q.getSource().size(), is(1));
+        aqs = q.getSource().get(0);
+        assertThat(aqs.getAlias(), is("$this"));
+        assertThat(aqs.getExpression(), instanceOf(Property.class));
+        p = (Property)aqs.getExpression();
+        assertThat(p.getPath(), is("given"));
+        assertThat(p.getSource(), instanceOf(Indexer.class));
+        Indexer i2 = (Indexer)p.getSource();
+        assertThat(i2.getOperand().size(), is(2));
+        assertThat(i2.getOperand().get(0), instanceOf(Property.class));
+        p = (Property)i2.getOperand().get(0);
+        assertThat(p.getPath(), is("name"));
+        assertThat(i2.getOperand().get(1), instanceOf(Literal.class));
+        l = (Literal)i2.getOperand().get(1);
+        assertThat(l.getValue(), is("0"));
+        r = q.getReturn();
+        assertThat(r.isDistinct(), is(false));
+        assertThat(r.getExpression(), instanceOf(Property.class));
+        p = (Property)r.getExpression();
+        assertThat(p.getPath(), is("value"));
+        assertThat(p.getScope(), is("$this"));
+        assertThat(i.getOperand().get(1), instanceOf(Literal.class));
+        l = (Literal)i.getOperand().get(1);
+        assertThat(l.getValue(), is("0"));
+
+
+/*
          <expression localId="118" locator="61:3-63:34" xmlns:ns111="http://hl7.org/fhir/us/core" resultTypeName="ns111:PatientProfile" xsi:type="Query">
             <source localId="109" locator="61:3-61:11" xmlns:ns112="http://hl7.org/fhir/us/core" resultTypeName="ns112:PatientProfile" alias="P">
                <expression localId="108" locator="61:3-61:9" xmlns:ns113="http://hl7.org/fhir/us/core" resultTypeName="ns113:PatientProfile" name="Patient" xsi:type="ExpressionRef"/>

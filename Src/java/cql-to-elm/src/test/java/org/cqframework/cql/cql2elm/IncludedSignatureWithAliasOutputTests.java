@@ -5,28 +5,20 @@ import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 public class IncludedSignatureWithAliasOutputTests {
 
+    private static final String CQL_TEST_FILE = "SignatureTests/IncludedSignatureWithAliasOutputTests.cql";
+    private static final String LIBRARY_SOURCE_PROVIDER = "SignatureTests";
     private Map<String, ExpressionDef> defs;
 
     private Library getLibrary(LibraryBuilder.SignatureLevel signatureLevel) throws IOException {
-        File testFile = new File(URLDecoder.decode(Cql2ElmVisitorTest.class.getResource("SignatureTests/IncludedSignatureWithAliasOutputTests.cql").getFile(), "UTF-8"));
-        ModelManager modelManager = new ModelManager();
-        var options = new CqlCompilerOptions(CqlCompilerException.ErrorSeverity.Info, signatureLevel);
-        LibraryManager libraryManager = new LibraryManager(modelManager, options);
-        libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider("SignatureTests"));
-        CqlTranslator translator = CqlTranslator.fromFile(testFile,  libraryManager);
-        for (CqlCompilerException error : translator.getErrors()) {
-            System.err.println(String.format("(%d,%d): %s",
-                    error.getLocator().getStartLine(), error.getLocator().getStartChar(), error.getMessage()));
-        }
+        final CqlTranslator translator = getTranslator(signatureLevel);
         assertThat(translator.getErrors().size(), is(0));
         defs = new HashMap<>();
         Library library = translator.toELM();
@@ -38,31 +30,15 @@ public class IncludedSignatureWithAliasOutputTests {
         return library;
     }
 
+    private static CqlTranslator getTranslator(LibraryBuilder.SignatureLevel signatureLevel) throws IOException {
+        return TestUtils.getTranslator(CQL_TEST_FILE, LIBRARY_SOURCE_PROVIDER, signatureLevel);
+    }
+
     @Test
     public void TestNone() throws IOException {
-        Library library = getLibrary(LibraryBuilder.SignatureLevel.None);
-
-        // Verify none of the outputs have signatures
-        ExpressionDef def = defs.get("TestOverload");
-        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
-
-        def = defs.get("TestOverloadOneInt");
-        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
-
-        def = defs.get("TestOverloadOneDecimal");
-        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
-
-        def = defs.get("TestOverloadTwoInts");
-        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
-
-        def = defs.get("TestOverloadTwoDecimals");
-        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
-
-        def = defs.get("TestOverloadOneIntOneDecimal");
-        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
-
-        def = defs.get("TestOverloadOneIntTwoDecimal");
-        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
+        final CqlTranslator translator = getTranslator(LibraryBuilder.SignatureLevel.None);
+        assertThat(translator.getWarnings().size(), greaterThan(1));
+        assertThat(translator.getWarnings().get(0).getMessage(), equalTo("The function SignatureOutputTests.MultipleOverloadTest has multiple overloads and due to the SignatureLevel setting (None), the overload signature is not being included in the output. This may result in ambiguous function resolution at runtime, consider setting the SignatureLevel to Overloads or All to ensure that the output includes sufficient information to support correct overload selection at runtime."));
     }
 
     @Test

@@ -3,7 +3,6 @@ package org.cqframework.cql.cql2elm;
 import org.cqframework.cql.cql2elm.model.*;
 import org.cqframework.cql.cql2elm.model.invocation.*;
 import org.cqframework.cql.elm.tracking.TrackBack;
-import org.fhir.ucum.UcumService;
 import org.hl7.cql.model.*;
 import org.hl7.cql_annotations.r1.CqlToElmError;
 import org.hl7.cql_annotations.r1.CqlToElmInfo;
@@ -14,6 +13,7 @@ import javax.xml.namespace.QName;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Bryn on 12/29/2016.
@@ -93,6 +93,8 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     private final Map<String, Model> models = new LinkedHashMap<>();
+
+    private final Map<String, ResultWithPossibleError<NamedTypeSpecifier>> nameTypeSpecifiers = new HashMap<>();
     private final Map<String, CompiledLibrary> libraries = new LinkedHashMap<>();
     private final SystemFunctionResolver systemFunctionResolver = new SystemFunctionResolver(this);
     private final Stack<String> expressionContext = new Stack<>();
@@ -151,6 +153,7 @@ public class LibraryBuilder implements ModelResolver {
         }
         setCompatibilityLevel(options.getCompatibilityLevel());
         this.cqlToElmInfo.setTranslatorOptions(options.toString());
+        this.cqlToElmInfo.setSignatureLevel(options.getSignatureLevel().name());
     }
 
     public void setVisitor(Cql2ElmVisitor visitor) {
@@ -260,6 +263,16 @@ public class LibraryBuilder implements ModelResolver {
         }
 
         return model;
+    }
+
+    public ResultWithPossibleError<NamedTypeSpecifier> getNamedTypeSpecifierResult(String namedTypeSpecifierIdentifier) {
+        return nameTypeSpecifiers.get(namedTypeSpecifierIdentifier);
+    }
+
+    public void addNamedTypeSpecifierResult(String namedTypeSpecifierIdentifier, ResultWithPossibleError<NamedTypeSpecifier> namedTypeSpecifierResult) {
+        if (! nameTypeSpecifiers.containsKey(namedTypeSpecifierIdentifier)) {
+            nameTypeSpecifiers.put(namedTypeSpecifierIdentifier, namedTypeSpecifierResult);
+        }
     }
 
     private void loadConversionMap(Model model) {
@@ -1164,6 +1177,20 @@ public class LibraryBuilder implements ModelResolver {
             && !resolution.getOperator().getSignature().equals(callContext.getSignature()))
                 || (options.getSignatureLevel() == SignatureLevel.Overloads && resolution.getOperatorHasOverloads())) {
             invocation.setSignature(dataTypesToTypeSpecifiers(resolution.getOperator().getSignature().getOperandTypes()));
+        }
+        else if (resolution.getOperatorHasOverloads() && !resolution.getOperator().getLibraryName().equals("System")) {
+            // NOTE: Because system functions only deal with CQL system-defined types, and there is one and only one
+            // runtime representation of each system-defined type, there is no possibility of ambiguous overload
+            // resolution with system functions
+            // WARNING:
+            reportWarning(String.format("The function %s.%s has multiple overloads and due to the SignatureLevel setting (%s), "
+                    + "the overload signature is not being included in the output. This may result in ambiguous function resolution "
+                    + "at runtime, consider setting the SignatureLevel to Overloads or All to ensure that the output includes sufficient "
+                    + "information to support correct overload selection at runtime.",
+                    resolution.getOperator().getLibraryName(),
+                    resolution.getOperator().getName(),
+                    options.getSignatureLevel().name()
+            ), invocation.getExpression());
         }
 
         invocation.setResultType(resolution.getOperator().getResultType());
@@ -2591,11 +2618,24 @@ public class LibraryBuilder implements ModelResolver {
             result.setResultType(source.getResultType());
             return result;
         }
-        else if (targetMap.contains("%value.")) {
+        else if (targetMap.startsWith("%value.")) {
             String propertyName = targetMap.substring(7);
-            Property p = of.createProperty().withSource(source).withPath(propertyName);
-            p.setResultType(source.getResultType());
-            return p;
+            // If the source is a list, the mapping is expected to apply to every element in the list
+            // ((source $this return all $this.value)
+            if (source.getResultType() instanceof ListType) {
+                AliasedQuerySource s = of.createAliasedQuerySource().withExpression(source).withAlias("$this");
+                Property p = of.createProperty().withScope("$this").withPath(propertyName);
+                p.setResultType(((ListType)source.getResultType()).getElementType());
+                ReturnClause r = of.createReturnClause().withDistinct(false).withExpression(p);
+                Query q = of.createQuery().withSource(s).withReturn(r);
+                q.setResultType(source.getResultType());
+                return q;
+            }
+            else {
+                Property p = of.createProperty().withSource(source).withPath(propertyName);
+                p.setResultType(source.getResultType());
+                return p;
+            }
         }
 
         throw new IllegalArgumentException(String.format("TargetMapping not implemented: %s", targetMap));

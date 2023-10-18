@@ -362,6 +362,10 @@
                 "type" : "Not",
                 "operand" : {
                   "type" : "IsNull",
+                  "signature" : [ {
+                    "type" : "NamedTypeSpecifier",
+                    "name" : "{urn:hl7-org:elm-types:r1}Any"
+                  } ],
                   "operand" : {
                     "type" : "Start",
                     "operand" : {
@@ -490,6 +494,10 @@
                   "type" : "Not",
                   "operand" : {
                     "type" : "IsNull",
+                    "signature" : [ {
+                      "type" : "NamedTypeSpecifier",
+                      "name" : "{urn:hl7-org:elm-types:r1}Any"
+                    } ],
                     "operand" : {
                       "type" : "Property",
                       "path" : "onsetDateTime",
@@ -590,6 +598,10 @@
                 "type" : "Not",
                 "operand" : {
                   "type" : "IsNull",
+                  "signature" : [ {
+                    "type" : "NamedTypeSpecifier",
+                    "name" : "{urn:hl7-org:elm-types:r1}Any"
+                  } ],
                   "operand" : {
                     "type" : "Property",
                     "path" : "valueQuantity",
@@ -607,7 +619,8 @@
     },
     "annotation" : [ {
       "type" : "CqlToElmInfo",
-      "translatorOptions" : ""
+      "translatorOptions" : "",
+      "signatureLevel" : "Differing"
     }, {
       "type" : "CqlToElmError",
       "libraryId" : "CMS146",
