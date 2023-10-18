@@ -157,7 +157,7 @@ public class LibraryTests {
                 .collect(Collectors.toSet());
 
         assertTrue(errors.contains("Identifier ICD-10:2014 in library Base is marked private and cannot be referenced from another library."));
-//            assertTrue(errors.contains("Identifier f1 in library AccessModifierBase is marked private and cannot be referenced from another library."));
+        assertTrue(errors.contains("Identifier f1 in library AccessModifierBase is marked private and cannot be referenced from another library."));
         assertTrue(errors.contains("Identifier PrivateExpression in library Base is marked private and cannot be referenced from another library."));
         assertTrue(errors.contains("Identifier Test Parameter in library Base is marked private and cannot be referenced from another library."));
         assertTrue(errors.contains("Identifier Female Administrative Sex in library Base is marked private and cannot be referenced from another library."));
