@@ -2,11 +2,11 @@ package org.cqframework.cql.cql2elm.fhir.dstu2;
 
 import org.cqframework.cql.cql2elm.CqlCompilerOptions;
 import org.cqframework.cql.cql2elm.CqlTranslator;
+import org.cqframework.cql.cql2elm.LibraryBuilder;
 import org.hl7.cql.model.NamespaceInfo;
 import org.cqframework.cql.cql2elm.TestUtils;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -269,6 +269,11 @@ public class BaseTest {
         assertThat(includeDef, notNullValue());
         assertThat(includeDef.getPath(), is("http://hl7.org/fhir/FHIRHelpers"));
         assertThat(includeDef.getVersion(), is("1.0.2"));
+    }
+
+    @Test
+    public void testFHIRNamespacesSignatureLevelNone() throws IOException {
+        TestUtils.runSemanticTest(new NamespaceInfo("Public", "http://cql.hl7.org/public"), "fhir/dstu2/TestFHIRNamespaces.cql", 0, LibraryBuilder.SignatureLevel.None);
     }
 
     @Test
