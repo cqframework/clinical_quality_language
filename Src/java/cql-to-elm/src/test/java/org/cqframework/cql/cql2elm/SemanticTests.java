@@ -18,7 +18,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.testng.Assert.assertThrows;
 
-
 public class SemanticTests {
 
     @Test
