@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm;
 
+import org.apache.commons.lang3.StringUtils;
 import org.cqframework.cql.cql2elm.model.*;
 import org.cqframework.cql.cql2elm.model.invocation.*;
 import org.cqframework.cql.elm.tracking.TrackBack;
@@ -1274,18 +1275,25 @@ public class LibraryBuilder implements ModelResolver {
                     }
                 }
                 */
-
-                if (result != null) {
-                    checkAccessLevel(result.getOperator().getLibraryName(), result.getOperator().getName(),
-                            result.getOperator().getAccessLevel());
-                }
             }
         }
         else {
             result = resolveLibrary(callContext.getLibraryName()).resolveCall(callContext, conversionMap);
         }
 
+        if (result != null) {
+            checkAccessLevel(result.getOperator().getLibraryName(), result.getOperator().getName(),
+                    result.getOperator().getAccessLevel());
+        }
+
         return result;
+    }
+
+    private boolean isInterFunctionAccess(String f1, String f2) {
+        if(StringUtils.isNoneBlank(f1) && StringUtils.isNoneBlank(f2)) {
+            return !f1.equalsIgnoreCase(f2);
+        }
+        return false;
     }
 
     public void checkOperator(CallContext callContext, OperatorResolution resolution) {
@@ -1307,9 +1315,10 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     public void checkAccessLevel(String libraryName, String objectName, AccessModifier accessModifier) {
-        if (accessModifier == AccessModifier.PRIVATE) {
+        if (accessModifier == AccessModifier.PRIVATE &&
+                isInterFunctionAccess(this.library.getIdentifier().getId(), libraryName)) {
             // ERROR:
-            throw new IllegalArgumentException(String.format("Object %s in library %s is marked private and cannot be referenced from another library.", objectName, libraryName));
+            throw new CqlSemanticException(String.format("Identifier %s in library %s is marked private and cannot be referenced from another library.", objectName, libraryName));
         }
     }
 
@@ -2732,7 +2741,7 @@ public class LibraryBuilder implements ModelResolver {
             }
 
             if (element instanceof CodeSystemDef) {
-                checkAccessLevel(libraryName, memberIdentifier, ((CodeSystemDef)element).getAccessLevel());
+                checkAccessLevel(libraryName, memberIdentifier, ((CodeSystemDef) element).getAccessLevel());
                 CodeSystemRef result = of.createCodeSystemRef()
                         .withLibraryName(libraryName)
                         .withName(memberIdentifier);
