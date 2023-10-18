@@ -18,8 +18,6 @@ import java.util.List;
 
 public class CqlPreprocessorVisitor extends CqlPreprocessorElmCommonVisitor {
     static final Logger logger = LoggerFactory.getLogger(CqlPreprocessorVisitor.class);
-    private boolean implicitContextCreated = false;
-    private String currentContext = "Unfiltered";
     private int lastSourceIndex = -1;
 
     public CqlPreprocessorVisitor(LibraryBuilder libraryBuilder, TokenStream tokenStream) {
@@ -220,10 +218,10 @@ public class CqlPreprocessorVisitor extends CqlPreprocessorElmCommonVisitor {
         String modelIdentifier = ctx.modelIdentifier() != null ? parseString(ctx.modelIdentifier()) : null;
         String unqualifiedContext = parseString(ctx.identifier());
         if (modelIdentifier != null && !modelIdentifier.equals("")) {
-            currentContext = modelIdentifier + "." + unqualifiedContext;
+            setCurrentContext(modelIdentifier + "." + unqualifiedContext);
         }
         else {
-            currentContext = unqualifiedContext;
+            setCurrentContext(unqualifiedContext);
         }
 
         ContextDefinitionInfo contextDefinition = new ContextDefinitionInfo();
@@ -231,21 +229,21 @@ public class CqlPreprocessorVisitor extends CqlPreprocessorElmCommonVisitor {
         processHeader(ctx, contextDefinition);
         libraryInfo.addContextDefinition(contextDefinition);
 
-        if (!implicitContextCreated && !unqualifiedContext.equals("Unfiltered")) {
+        if (!getImplicitContextCreated() && !unqualifiedContext.equals("Unfiltered")) {
             ExpressionDefinitionInfo expressionDefinition = new ExpressionDefinitionInfo();
             expressionDefinition.setName(unqualifiedContext);
-            expressionDefinition.setContext(currentContext);
+            expressionDefinition.setContext(getCurrentContext());
             libraryInfo.addExpressionDefinition(expressionDefinition);
-            implicitContextCreated = true;
+            setImplicitContextCreated(true);
         }
-        return currentContext;
+        return getCurrentContext();
     }
 
     @Override
     public Object visitExpressionDefinition(cqlParser.ExpressionDefinitionContext ctx) {
         ExpressionDefinitionInfo expressionDefinition = new ExpressionDefinitionInfo();
         expressionDefinition.setName(parseString(ctx.identifier()));
-        expressionDefinition.setContext(currentContext);
+        expressionDefinition.setContext(getCurrentContext());
         expressionDefinition.setDefinition(ctx);
         processHeader(ctx, expressionDefinition);
         libraryInfo.addExpressionDefinition(expressionDefinition);
@@ -254,20 +252,12 @@ public class CqlPreprocessorVisitor extends CqlPreprocessorElmCommonVisitor {
 
     @Override
     public Object visitFunctionDefinition(cqlParser.FunctionDefinitionContext ctx) {
-        final PreCompileOutput preCompileOutput;
-        try {
-            preCompileOutput = preCompile(ctx);
-        } catch (Exception exception) {
-            libraryInfo.addFunctionDefinitionByHash(generateHashForLibraryBuilder(ctx), ResultWithPossibleError.withError());
-            throw exception;
-        }
         FunctionDefinitionInfo functionDefinition = new FunctionDefinitionInfo();
         functionDefinition.setName(parseString(ctx.identifierOrFunctionIdentifier()));
-        functionDefinition.setContext(currentContext);
+        functionDefinition.setContext(getCurrentContext());
         functionDefinition.setDefinition(ctx);
-        functionDefinition.setPreCompileOutput(preCompileOutput);
         processHeader(ctx, functionDefinition);
-        libraryInfo.addFunctionDefinitionByHash(generateHashForLibraryBuilder(ctx), ResultWithPossibleError.withTypeSpecifier(functionDefinition));
+        libraryInfo.addFunctionDefinition(functionDefinition);
         return functionDefinition;
     }
 

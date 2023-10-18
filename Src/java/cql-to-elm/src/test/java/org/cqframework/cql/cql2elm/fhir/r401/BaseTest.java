@@ -2,6 +2,7 @@ package org.cqframework.cql.cql2elm.fhir.r401;
 
 import org.cqframework.cql.cql2elm.CqlCompilerOptions;
 import org.cqframework.cql.cql2elm.CqlTranslator;
+import org.cqframework.cql.cql2elm.LibraryBuilder;
 import org.hl7.cql.model.NamespaceInfo;
 import org.cqframework.cql.cql2elm.TestUtils;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
@@ -830,5 +831,31 @@ public class BaseTest {
         QueryLetRef qlr = (QueryLetRef)p.getSource();
         assertThat(qlr.getName(), equalTo("M"));
         assertThat(eqv.getOperand().get(1), instanceOf(ToConcept.class));
+    }
+
+    @Test
+    public void testOverload() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestOverload.cql", 0);
+        assertThat(translator.getWarnings().size(), greaterThan(0));
+        assertThat(translator.getWarnings().get(0).getMessage(), startsWith("The function TestOverload.Stringify has multiple"));
+    }
+
+    @Test
+    public void testOverloadOutput() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestOverload.cql", 0, LibraryBuilder.SignatureLevel.Overloads);
+        assertThat(translator.getWarnings().size(), is(0));
+    }
+
+    @Test
+    public void testOverloadForward() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestOverloadForward.cql", 0);
+        assertThat(translator.getWarnings().size(), greaterThan(0));
+        assertThat(translator.getWarnings().get(0).getMessage(), startsWith("The function TestOverloadForward.Stringify has multiple"));
+    }
+
+    @Test
+    public void testOverloadForwardOutput() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestOverloadForward.cql", 0, LibraryBuilder.SignatureLevel.Overloads);
+        assertThat(translator.getWarnings().size(), is(0));
     }
 }
