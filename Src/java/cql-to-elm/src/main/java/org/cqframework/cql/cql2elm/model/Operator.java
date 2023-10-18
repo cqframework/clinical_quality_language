@@ -115,4 +115,7 @@ public class Operator {
     public DataType getResultType() {
         return this.resultType;
     }
+    public void setResultType(DataType resultType) {
+        this.resultType = resultType;
+    }
 }
