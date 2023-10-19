@@ -16,6 +16,7 @@ import java.util.List;
 
 public class RetrieveEvaluator {
     // LUKETODO:  change is going to be in here
+    // LUKETODO:  It'll need some notion of "recontextualizing" the retrieve. This could be a stack of current contexts, or perhaps a separate branch statement.
     /*
         context Patient
 

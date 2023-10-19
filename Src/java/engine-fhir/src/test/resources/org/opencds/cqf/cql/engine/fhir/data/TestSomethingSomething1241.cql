@@ -6,10 +6,7 @@ using FHIR version '4.0.1'
 
 context Patient
 
-define "Mother": singleton from ([RelatedPerson])
+define "Primary Care Doctor": singleton from (["Practitioner"])
 
-define "Child Observation":
-    ["Observation"]
-
-define "Mother Observation":
-    ["Mother" -> "Observation"]
+define "All Patient for GP":
+    ["Primary Care Doctor" -> "Patient"]
