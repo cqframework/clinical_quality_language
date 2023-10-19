@@ -676,10 +676,11 @@ public class SemanticTests {
         expectedChoiceTypes.add("System.Boolean");
         expectedChoiceTypes.add("System.Integer");
 
+        List<String> actualChoiceTypes = new ArrayList<>();
         for (DataType dt : choiceType.getTypes()) {
-                assertTrue("Expected types are String, Boolean, and Integer: ", expectedChoiceTypes.contains(((NamedType)dt).getName()));
+            actualChoiceTypes.add(((NamedType)dt).getName());        
         }
-        
+        assertTrue("Expected types are String, Boolean, and Integer: ", actualChoiceTypes.equals(expectedChoiceTypes));
     }
 
     @Test
@@ -703,10 +704,11 @@ public class SemanticTests {
         expectedChoiceTypes.add("System.String");
         expectedChoiceTypes.add("System.Boolean");
 
+        List<String> actualChoiceTypes = new ArrayList<>();
         for (DataType dt : choiceType.getTypes()) {
-                assertTrue("Expected return types are String and Boolean: ", expectedChoiceTypes.contains(((NamedType)dt).getName()));
+                actualChoiceTypes.add(((NamedType)dt).getName());
         }
-
+        assertTrue("Expected return types are String and Boolean: ", actualChoiceTypes.equals(expectedChoiceTypes));
     }
 
     private CqlTranslator runSemanticTest(String testFileName) throws IOException {
