@@ -4,6 +4,7 @@ import org.hl7.cql_annotations.r1.CqlToElmBase;
 import org.hl7.cql_annotations.r1.CqlToElmInfo;
 import org.hl7.elm.r1.Library;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
@@ -30,7 +31,7 @@ public class CompilerOptions {
      * @param library The library to extracts the options from.
      * @return The set of options used to translate the library.
      */
-    public static Set<CqlCompilerOptions.Options> getCompilerOptions(Library library) {
+    public static CqlCompilerOptions getCompilerOptions(Library library) {
         requireNonNull(library, "library can not be null");
         if (library.getAnnotation() == null || library.getAnnotation().isEmpty()) {
             return null;
@@ -56,25 +57,71 @@ public class CompilerOptions {
      * Parses a string representing CQL compiler Options into an EnumSet. The
      * string is expected
      * to be a comma delimited list of values from the CqlCompiler.Options
-     * enumeration.
-     * For example "EnableListPromotion, EnableListDemotion".
+     * enumeration, or property values of the CqlCompilerOptions class of the
+     * form [property-name]=[property-value]
+     * For example "EnableListPromotion, EnableListDemotion, validateUnits=true, signatureLevel=Overloads".
      *
      * @param compilerOptions the string to parse
      * @return the set of options
      */
-    public static Set<CqlCompilerOptions.Options> parseCompilerOptions(String compilerOptions) {
+    public static CqlCompilerOptions parseCompilerOptions(String compilerOptions) {
         if (compilerOptions == null || compilerOptions.isEmpty()) {
             return null;
         }
 
         EnumSet<CqlCompilerOptions.Options> optionSet = EnumSet.noneOf(CqlCompilerOptions.Options.class);
         String[] options = compilerOptions.trim().split(",");
+        List<String> propertyOptions = new ArrayList<>();
 
         for (String option : options) {
-            optionSet.add(CqlCompilerOptions.Options.valueOf(option));
+            try {
+                optionSet.add(CqlCompilerOptions.Options.valueOf(option));
+            }
+            catch (IllegalArgumentException E) {
+                propertyOptions.add(option);
+            }
         }
 
-        return optionSet;
+        CqlCompilerOptions result = new CqlCompilerOptions(optionSet.toArray(new CqlCompilerOptions.Options[optionSet.size()]));
+
+        for (String propertyOption : propertyOptions) {
+            if (propertyOption.indexOf("=") >= 0) {
+                String[] parts = propertyOption.split("=");
+                switch (parts[0]) {
+                    case "validateUnits":
+                        result.setValidateUnits(Boolean.valueOf(parts[1]));
+                    break;
+                    case "verifyOnly":
+                        result.setVerifyOnly(Boolean.valueOf(parts[1]));
+                    break;
+                    case "enableCqlOnly":
+                        result.setEnableCqlOnly(Boolean.valueOf(parts[1]));
+                    break;
+                    case "errorLevel":
+                        result.setErrorLevel(CqlCompilerException.ErrorSeverity.valueOf(parts[1]));
+                    break;
+                    case "signatureLevel":
+                        result.setSignatureLevel(LibraryBuilder.SignatureLevel.valueOf(parts[1]));
+                    break;
+                    case "compatibilityLevel":
+                        result.setCompatibilityLevel(parts[1]);
+                    break;
+                    case "analyzeDataRequirements":
+                        result.setAnalyzeDataRequirements(Boolean.valueOf(parts[1]));
+                    break;
+                    case "collapseDataRequirements":
+                        result.setCollapseDataRequirements(Boolean.valueOf(parts[1]));
+                    break;
+                    default:
+                        // TODO: Log a warning that an unknown property is being dropped
+                    break;
+                }
+            }
+            else {
+                // TODO: Log a warning that an unknown property value is being dropped?
+            }
+        }
+        return result;
     }
 
     /**

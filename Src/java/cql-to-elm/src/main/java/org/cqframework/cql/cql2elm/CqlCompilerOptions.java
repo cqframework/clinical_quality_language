@@ -46,6 +46,9 @@ public class CqlCompilerOptions {
      */
     public static CqlCompilerOptions defaultOptions() {
         // Default options based on recommended settings: http://build.fhir.org/ig/HL7/cqf-measures/using-cql.html#translation-to-elm
+        // NOTE: Any change to these defaults (as specified here and via the member initializers above) needs to be reflected in
+        // the ToString() implementation, and consideration must be given to whether the change in the default would need to result
+        // in a change to default serialization to avoid a change in default overriding a setting from an options file or library
         CqlCompilerOptions result = new CqlCompilerOptions();
         result.options.add(Options.EnableAnnotations);
         result.options.add(Options.EnableLocators);
@@ -387,16 +390,82 @@ public class CqlCompilerOptions {
         return this;
     }
 
+    private void ensureSeparator(StringBuilder sb) {
+        if (sb.length() > 0) {
+            sb.append(",");
+        }
+    }
+
     @Override
     public String toString() {
+        // NOTE: The serialization is done this way to 1) avoid the need for a complete JSON serialization inside a string element in the annotations
+        // 2) avoid declaring the option structure as elements in the CqltoElmInfo class
+        // 3) allow for backwards compatibility of deserialization with the previous serialization (which only output options)
+        StringBuilder translatorOptions = new StringBuilder();
         if (this.getOptions() != null) {
-            StringBuilder translatorOptions = new StringBuilder();
             for (Options option : this.getOptions()) {
-                if (translatorOptions.length() > 0) {
-                    translatorOptions.append(",");
-                }
+                ensureSeparator(translatorOptions);
                 translatorOptions.append(option.name());
             }
+        }
+
+        // validateUnits
+        if (!validateUnits) {
+            ensureSeparator(translatorOptions);
+            translatorOptions.append("validateUnits=");
+            translatorOptions.append(validateUnits);
+        }
+
+        // verifyOnly
+        if (verifyOnly) {
+            ensureSeparator(translatorOptions);
+            translatorOptions.append("verifyOnly=");
+            translatorOptions.append(verifyOnly);
+        }
+
+        // enableCqlOnly
+        if (enableCqlOnly) {
+            ensureSeparator(translatorOptions);
+            translatorOptions.append("enableCqlOnly=");
+            translatorOptions.append(enableCqlOnly);
+        }
+
+        // compatibilityLevel
+        if (compatibilityLevel != null && !compatibilityLevel.equals("1.5")) {
+            ensureSeparator(translatorOptions);
+            translatorOptions.append("compatibilityLevel=");
+            translatorOptions.append(compatibilityLevel);
+        }
+
+        // ErrorLevel
+        if (errorLevel != null && errorLevel != CqlCompilerException.ErrorSeverity.Info) {
+            ensureSeparator(translatorOptions);
+            translatorOptions.append("errorLevel=");
+            translatorOptions.append(errorLevel);
+        }
+
+        // SignatureLevel
+        if (signatureLevel != null && signatureLevel != LibraryBuilder.SignatureLevel.None) {
+            ensureSeparator(translatorOptions);
+            translatorOptions.append("signatureLevel=");
+            translatorOptions.append(signatureLevel.toString());
+        }
+
+        // AnalyzeDataRequirements
+        if (analyzeDataRequirements) {
+            ensureSeparator(translatorOptions);
+            translatorOptions.append("analyzeDataRequirements=");
+            translatorOptions.append(analyzeDataRequirements);
+        }
+
+        // CollapseDataRequirements
+        if (collapseDataRequirements) {
+            ensureSeparator(translatorOptions);
+            translatorOptions.append("collapseDataRequirements-");
+            translatorOptions.append(collapseDataRequirements);
+        }
+
+        if (translatorOptions.length() > 0) {
             return translatorOptions.toString();
         }
         return null;
