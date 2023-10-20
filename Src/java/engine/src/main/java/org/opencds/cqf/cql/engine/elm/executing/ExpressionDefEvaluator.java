@@ -20,6 +20,7 @@ public class ExpressionDefEvaluator {
                 return er.value();
             }
 
+            // LUKETODO:  we have the expression name here
             Object value = visitor.visitExpression(expressionDef.getExpression(), state);
 
             if (state.getCache().isExpressionCachingEnabled()) {

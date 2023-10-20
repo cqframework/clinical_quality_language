@@ -17,20 +17,9 @@ import java.util.List;
 public class RetrieveEvaluator {
     // LUKETODO:  change is going to be in here
     // LUKETODO:  It'll need some notion of "recontextualizing" the retrieve. This could be a stack of current contexts, or perhaps a separate branch statement.
-    /*
-        context Patient
 
-        define "Mother": singleton from ([RelatedPerson: "Mother Relationship"])
-
-        define "Estimated Due Date":
-          Last(
-            ["Mother" -> "Observation": "Estimated Due Date Exam"] Exam
-              sort by effective
-          )
-
-        define "Gestational Age in Days at Birth":
-          (280 - (duration in days between "Estimated Due Date" and "Birth Date")) div 7
-     */
+    // LUKETODO:  get rid of this once experimentation is over
+    private static Object additionalContext = null;
 
     @SuppressWarnings("unchecked")
     public static Object internalEvaluate(Retrieve elm, State state, ElmLibraryVisitor<Object, State> visitor) {
@@ -77,6 +66,23 @@ public class RetrieveEvaluator {
                 elm.getCodeProperty(), codes, valueSet, elm.getDateProperty(), elm.getDateLowProperty(), elm.getDateHighProperty(),
                 dateRange);
 
+        // LUKETODO:  get rid of this block
+        if (additionalContext == null) {
+            additionalContext = result;
+        } else {
+            if (additionalContext instanceof Iterable) {
+                final Iterable<Object> iterable = (Iterable<Object>) additionalContext;
+
+                final Object next = iterable.iterator().next();
+
+                // LUKETODO:  This class is effectively static and does NOT have access to fhir classes, so we need to get creative
+                System.out.println("next = " + next);
+            }
+        }
+
+        // LUKETODO:  it's only at this point that I have the practitioner
+        // LUKETODO:  how to model this in a general way?
+        // LUKETODO:  can I get the expression name "Primary Care Doctor" ? from somewhere in here, or just the resource type?
 
         // TODO: We probably shouldn't eagerly load this, but we need to track
         // this throughout the engine and only add it to the list when it's actually used
