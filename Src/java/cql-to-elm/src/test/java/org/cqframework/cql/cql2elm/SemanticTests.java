@@ -7,6 +7,8 @@ import org.hl7.elm.r1.*;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -650,6 +652,64 @@ public class SemanticTests {
     @Test
     public void testNonExistentFileName() {
         assertThrows(IOException.class, () -> TestUtils.runSemanticTest("ThisFileDoesNotExist.cql", 0));
+    }
+
+    @Test
+    public void testCaseConditionalReturnTypes() throws IOException {
+        CqlTranslator translator = runSemanticTest("Issue648.cql", 0);
+        org.hl7.elm.r1.Library library = translator.toELM();
+        Map<String, ExpressionDef> defs = new HashMap<>();
+
+        if (library.getStatements() != null) {
+            for (ExpressionDef def : library.getStatements().getDef()) {
+                defs.put(def.getName(), def);
+            }
+        }
+
+        ExpressionDef caseDef = defs.get("Cases");
+    
+        assertThat(caseDef.getResultType(), instanceOf(ChoiceType.class));
+
+        ChoiceType choiceType = (ChoiceType)caseDef.getResultType();
+
+        Set<String> expectedChoiceTypes = new HashSet<>();
+        expectedChoiceTypes.add("System.String");
+        expectedChoiceTypes.add("System.Boolean");
+        expectedChoiceTypes.add("System.Integer");
+
+        Set<String> actualChoiceTypes = new HashSet<>();
+        for (DataType dt : choiceType.getTypes()) {
+            actualChoiceTypes.add(((NamedType)dt).getName());
+        }
+        assertTrue("Expected types are String, Boolean, and Integer: ", actualChoiceTypes.equals(expectedChoiceTypes));
+    }
+
+    @Test
+    public void testIfConditionalReturnTypes() throws IOException {
+        CqlTranslator translator = runSemanticTest("Issue648.cql", 0);
+        org.hl7.elm.r1.Library library = translator.toELM();
+        Map<String, ExpressionDef> defs = new HashMap<>();
+
+        if (library.getStatements() != null) {
+            for (ExpressionDef def : library.getStatements().getDef()) {
+                defs.put(def.getName(), def);
+            }
+        }
+
+        ExpressionDef ifDef = defs.get("If");
+        assertThat(ifDef.getResultType(), instanceOf(ChoiceType.class));
+
+        ChoiceType choiceType = (ChoiceType)ifDef.getResultType();
+
+        Set<String> expectedChoiceTypes = new HashSet<>();
+        expectedChoiceTypes.add("System.String");
+        expectedChoiceTypes.add("System.Boolean");
+
+        Set<String> actualChoiceTypes = new HashSet<>();
+        for (DataType dt : choiceType.getTypes()) {
+                actualChoiceTypes.add(((NamedType)dt).getName());
+        }
+        assertTrue("Expected return types are String and Boolean: ", actualChoiceTypes.equals(expectedChoiceTypes));
     }
 
     private CqlTranslator runSemanticTest(String testFileName) throws IOException {
