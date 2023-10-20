@@ -7,6 +7,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cqframework.cql.cql2elm.*;
 import org.cqframework.cql.cql2elm.model.Chunk;
+import org.cqframework.cql.cql2elm.model.FunctionHeader;
 import org.cqframework.cql.cql2elm.model.Model;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.cqframework.cql.elm.tracking.Trackable;
@@ -33,6 +34,8 @@ import java.util.stream.Collectors;
 public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
     protected final ObjectFactory of = new ObjectFactory();
     protected final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
+    private boolean implicitContextCreated = false;
+    private String currentContext = "Unfiltered";
     protected Stack<Chunk> chunks = new Stack<>();
     protected final LibraryBuilder libraryBuilder;
     protected TokenStream tokenStream;
@@ -52,6 +55,28 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
     public CqlPreprocessorElmCommonVisitor(LibraryBuilder libraryBuilder, TokenStream tokenStream) {
         this.libraryBuilder = libraryBuilder;
         this.tokenStream = tokenStream;
+    }
+
+    protected boolean getImplicitContextCreated() {
+        return this.implicitContextCreated;
+    }
+
+    protected void setImplicitContextCreated(boolean implicitContextCreated) {
+        this.implicitContextCreated = implicitContextCreated;
+    }
+
+    protected String getCurrentContext() {
+        return this.currentContext;
+    }
+
+    protected void setCurrentContext(String currentContext) {
+        this.currentContext = currentContext;
+    }
+
+    protected String saveCurrentContext(String currentContext) {
+        String saveContext = this.currentContext;
+        this.currentContext = currentContext;
+        return saveContext;
     }
 
     public void setTokenStream(TokenStream theTokenStream) {
@@ -180,8 +205,12 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
         return result;
     }
 
-    public PreCompileOutput preCompile(cqlParser.FunctionDefinitionContext ctx) {
-        final FunctionDef fun = of.createFunctionDef().withAccessLevel(parseAccessModifier(ctx.accessModifier())).withName(parseString(ctx.identifierOrFunctionIdentifier()));
+    public FunctionHeader parseFunctionHeader(cqlParser.FunctionDefinitionContext ctx) {
+        final FunctionDef fun =
+                of.createFunctionDef()
+                        .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
+                        .withName(parseString(ctx.identifierOrFunctionIdentifier()))
+                        .withContext(getCurrentContext());
 
         if (ctx.fluentModifier() != null) {
             libraryBuilder.checkCompatibilityLevel("Fluent functions", "1.5");
@@ -197,12 +226,11 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
 
         final cqlParser.TypeSpecifierContext typeSpecifierContext = ctx.typeSpecifier();
 
-        // TODO: I don't think this is ever non-null:  Is this even needed?
         if (typeSpecifierContext != null) {
-            return PreCompileOutput.withReturnType(fun, parseTypeSpecifier(typeSpecifierContext));
+            return FunctionHeader.withReturnType(fun, parseTypeSpecifier(typeSpecifierContext));
         }
 
-        return PreCompileOutput.noReturnType(fun);
+        return FunctionHeader.noReturnType(fun);
     }
 
     protected TypeSpecifier parseTypeSpecifier(ParseTree pt) {
@@ -742,20 +770,6 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
         }
 
         return null;
-    }
-
-    protected String generateHashForLibraryBuilder(cqlParser.FunctionDefinitionContext ctx) {
-        // Since we don't have access to the preCompile output, generate a simple lightweight hash based on semantic function details
-        final List<cqlParser.OperandDefinitionContext> operandDefinitionContexts = ctx.operandDefinition();
-
-        final String signature = operandDefinitionContexts == null ? ""
-                : operandDefinitionContexts.stream()
-                .map(context -> context.children)
-                .filter(children -> children.size() >= 2)
-                .map(children -> children.get(0).getText() + " " + children.get(1).getText())
-                .collect(Collectors.joining(", "));
-
-        return parseString(ctx.identifierOrFunctionIdentifier()) + ": " + signature;
     }
 
     protected String parseString(ParseTree pt) {

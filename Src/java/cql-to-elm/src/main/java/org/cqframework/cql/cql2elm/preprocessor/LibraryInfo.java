@@ -24,7 +24,7 @@ public class LibraryInfo extends BaseInfo {
     private final Map<String, ConceptDefinitionInfo> conceptDefinitions;
     private final Map<String, ParameterDefinitionInfo> parameterDefinitions;
     private final Map<String, ExpressionDefinitionInfo> expressionDefinitions;
-    private final Map<String, ResultWithPossibleError<FunctionDefinitionInfo>> functionDefinitions;
+    private final Map<String, List<FunctionDefinitionInfo>> functionDefinitions;
     private final List<ContextDefinitionInfo> contextDefinitions;
     private final Map<Interval, BaseInfo> definitions;
 
@@ -225,42 +225,27 @@ public class LibraryInfo extends BaseInfo {
         return null;
     }
 
-    public void addFunctionDefinitionByHash(String hash, ResultWithPossibleError<FunctionDefinitionInfo> functionDefinition) {
-        final ResultWithPossibleError<FunctionDefinitionInfo> info = functionDefinitions.get(hash);
-
-        // Ensure no duplicate FunctionDefinitionInfos (meaning the same signature)
-        if (! isFunctionDefInfoAlreadyPresent(info, functionDefinition)) {
-            functionDefinitions.put(hash, functionDefinition);
-            if (! functionDefinition.hasError()) {
-                addDefinition(functionDefinition.getUnderlyingResultIfExists());
-            }
-        } else {
-            throw new CqlCompilerException(String.format("Duplicate function detected from library: [%s] with name: [%s]", libraryName, hash));
+    public void addFunctionDefinition(FunctionDefinitionInfo functionDefinition) {
+        List<FunctionDefinitionInfo> infos = functionDefinitions.get(functionDefinition.getName());
+        if (infos == null) {
+            infos = new ArrayList<FunctionDefinitionInfo>();
+            functionDefinitions.put(functionDefinition.getName(), infos);
         }
+        infos.add(functionDefinition);
+        addDefinition(functionDefinition);
     }
 
-    public ResultWithPossibleError<FunctionDefinitionInfo> resolveFunctionReferenceFromHash(String hash) {
-        return functionDefinitions.get(hash);
+    public Iterable<FunctionDefinitionInfo> resolveFunctionReference(String identifier) {
+        return functionDefinitions.get(identifier);
     }
 
-    // This is meant to be called from functions that don't have access to a cqlParser.FunctionDefinitionContext
-    public List<FunctionDefinitionInfo> resolveFunctionReferenceFromName(String name) {
-        final List<String> keys = functionDefinitions.keySet()
-                .stream()
-                .filter(key -> key.startsWith(name))
-                .collect(Collectors.toList());
-
-        if (keys.isEmpty()) {
-            return null;
+    public String resolveFunctionName(String identifier) {
+        Iterable<FunctionDefinitionInfo> functionDefinitions = resolveFunctionReference(identifier);
+        for (FunctionDefinitionInfo functionInfo : functionDefinitions) {
+            return functionInfo.getName();
         }
 
-        return functionDefinitions.entrySet()
-                .stream()
-                .filter(entry -> keys.contains(entry.getKey()))
-                .map(Map.Entry::getValue)
-                .filter(result -> ! result.hasError())
-                .map(ResultWithPossibleError::getUnderlyingResultIfExists)
-                .collect(Collectors.toList());
+        return null;
     }
 
     public void addContextDefinition(ContextDefinitionInfo contextDefinition) {

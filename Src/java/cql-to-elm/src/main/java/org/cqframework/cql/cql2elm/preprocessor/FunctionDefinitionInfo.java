@@ -1,6 +1,6 @@
 package org.cqframework.cql.cql2elm.preprocessor;
 
-import org.cqframework.cql.cql2elm.PreCompileOutput;
+import org.cqframework.cql.cql2elm.model.FunctionHeader;
 import org.cqframework.cql.gen.cqlParser;
 
 import java.util.Objects;
@@ -9,7 +9,7 @@ import java.util.StringJoiner;
 public class FunctionDefinitionInfo extends BaseInfo {
     private String name;
     private String context;
-    private PreCompileOutput preCompileOutput;
+    private FunctionHeader functionHeader;
 
     public String getName() {
         return name;
@@ -19,12 +19,12 @@ public class FunctionDefinitionInfo extends BaseInfo {
         name = value;
     }
 
-    public void setPreCompileOutput(PreCompileOutput preCompileOutput) {
-        this.preCompileOutput = preCompileOutput;
+    public void setPreCompileOutput(FunctionHeader functionHeader) {
+        this.functionHeader = functionHeader;
     }
 
-    public PreCompileOutput getPreCompileOutput() {
-        return this.preCompileOutput;
+    public FunctionHeader getPreCompileOutput() {
+        return this.functionHeader;
     }
 
     public String getContext() { return context; }
@@ -46,12 +46,12 @@ public class FunctionDefinitionInfo extends BaseInfo {
         if (this == other) return true;
         if (other == null || getClass() != other.getClass()) return false;
         FunctionDefinitionInfo that = (FunctionDefinitionInfo) other;
-        return Objects.equals(name, that.name) && Objects.equals(context, that.context) && Objects.equals(preCompileOutput, that.preCompileOutput);
+        return Objects.equals(name, that.name) && Objects.equals(context, that.context) && Objects.equals(functionHeader, that.functionHeader);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, context, preCompileOutput);
+        return Objects.hash(name, context, functionHeader);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class FunctionDefinitionInfo extends BaseInfo {
         return new StringJoiner(", ", FunctionDefinitionInfo.class.getSimpleName() + "[", "]")
                 .add("name='" + name + "'")
                 .add("context='" + context + "'")
-                .add("preCompileOutput=" + preCompileOutput)
+                .add("preCompileOutput=" + functionHeader)
                 .toString();
     }
 }
