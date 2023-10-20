@@ -1,8 +1,7 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
 import org.cqframework.cql.elm.visiting.ElmLibraryVisitor;
-import org.hl7.elm.r1.Retrieve;
-import org.hl7.elm.r1.ValueSetRef;
+import org.hl7.elm.r1.*;
 import org.opencds.cqf.cql.engine.data.DataProvider;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.Code;
@@ -14,12 +13,19 @@ import org.slf4j.LoggerFactory;
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class RetrieveEvaluator {
     private static final Logger logger = LoggerFactory.getLogger(RetrieveEvaluator .class);
     // LUKETODO:  change is going to be in here
     // LUKETODO:  It'll need some notion of "recontextualizing" the retrieve. This could be a stack of current contexts, or perhaps a separate branch statement.
+
+
+    private static Iterable<Code> previousCodes = null;
 
     @SuppressWarnings("unchecked")
     public static Object internalEvaluate(Retrieve elm, State state, ElmLibraryVisitor<Object, State> visitor) {
@@ -60,12 +66,91 @@ public class RetrieveEvaluator {
             dateRange = (Interval) visitor.visitExpression(elm.getDateRange(), state);
         }
 
-        Iterable<Object> result = dataProvider.retrieve(state.getCurrentContext(),
-                (String) dataProvider.getContextPath(state.getCurrentContext(), dataType.getLocalPart()),
+        Optional<String> optContextFromElm = Optional.empty();
+        Optional<String> optContextPathFromElm = Optional.empty();
+        List<Code> previousCodesForElm = List.of();
+
+        final Expression context = elm.getContext();
+
+        if (context != null) {
+            logger.info("context class: {}", context.getClass());
+
+            if (context instanceof org.hl7.elm.r1.ExpressionRef) {
+                final ExpressionRef expressionRef = (ExpressionRef) context;
+
+                final String name = expressionRef.getName();
+
+                logger.info("name: {}", name);
+
+                final List<ExpressionDef> matchingExpressionRefs = state.getCurrentLibrary().getStatements().getDef()
+                        .stream()
+                        .filter(expression -> name.equals(expression.getName()))
+                        .collect(Collectors.toList());
+
+                if (! matchingExpressionRefs.isEmpty()) {
+                    final ExpressionDef expressionDef = matchingExpressionRefs.get(0);
+
+                    final Expression expression = expressionDef.getExpression();
+
+                    if (expression instanceof SingletonFrom) {
+                        final SingletonFrom singletonFrom = (SingletonFrom) expression;
+
+                        final Expression operand = singletonFrom.getOperand();
+
+                        if (operand instanceof Retrieve) {
+                            final Retrieve retrieve = (Retrieve) operand;
+
+                            final Expression retrieveExpression = retrieve.getCodes();
+
+                            if (retrieveExpression instanceof ToList) {
+                                final ToList toList = (ToList) retrieveExpression;
+
+                                final Expression toListOperand = toList.getOperand();
+
+                                if (toListOperand instanceof org.hl7.elm.r1.List) {
+                                    final org.hl7.elm.r1.List toListOperandAsList = (org.hl7.elm.r1.List) toListOperand;
+
+                                    logger.info("toListOperandAsList: {}", toListOperandAsList);
+
+                                    final List<Expression> element = toListOperandAsList.getElement();
+
+                                    if (! element.isEmpty()) {
+                                        final Expression toListExpression = element.get(0);
+
+                                        if (toListExpression instanceof Property) {
+                                            final Property property = (Property) toListExpression;
+
+                                            final String contextResultTypeString = context.getResultType().toString();
+
+                                            // LUKETODO:  this is probably completely wrong
+                                            optContextFromElm = Optional.of(contextResultTypeString.contains(".") ? contextResultTypeString.split("\\.")[1] : contextResultTypeString);
+                                            optContextPathFromElm = Optional.ofNullable(property.getPath());
+                                            previousCodesForElm = StreamSupport.stream(previousCodes.spliterator(), false)
+                                                    .collect(Collectors.toList());
+
+                                            // LUKETODO:  Codes:  xyz
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        final String currentContext = optContextFromElm.orElse(state.getCurrentContext());
+        final String contextPath = optContextPathFromElm.orElse((String) dataProvider.getContextPath(state.getCurrentContext(), dataType.getLocalPart()));
+        final Iterable<Code> codesToUse = previousCodesForElm.isEmpty() ? codes : previousCodesForElm;
+
+        Iterable<Object> result = dataProvider.retrieve(currentContext,
+                contextPath,
                 state.getCurrentContextValue(), dataType.getLocalPart(), elm.getTemplateId(),
-                elm.getCodeProperty(), codes, valueSet, elm.getDateProperty(), elm.getDateLowProperty(), elm.getDateHighProperty(),
+                elm.getCodeProperty(), codesToUse, valueSet, elm.getDateProperty(), elm.getDateLowProperty(), elm.getDateHighProperty(),
                 dateRange);
 
+        previousCodes = codes;
 
         // LUKETODO:  it's only at this point that I have the practitioner
         // LUKETODO:  we don't have access to the types here (Practitioner/Patient/etc)

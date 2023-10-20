@@ -75,8 +75,8 @@ public class TestSomethingSomething1241 extends FhirExecutionTestBase {
         final Patient patient789 = getPatient("789", LocalDate.of(1990, Month.JULY, 19), practitionerXyz);
 
         // LUKETODO:  set up these patients with the other practitioner
-        final Patient patientAbc = getPatient("abc", LocalDate.of(1970, Month.MARCH, 21), practitionerXyz);
-        final Patient patientDef = getPatient("def", LocalDate.of(1975, Month.AUGUST, 21), practitionerXyz);
+        final Patient patientAbc = getPatient("abc", LocalDate.of(1970, Month.MARCH, 21), practitionerZulu);
+        final Patient patientDef = getPatient("def", LocalDate.of(1975, Month.AUGUST, 21), practitionerZulu);
 
         final Set<Patient> allPatients = Set.of(patient123, patient456, patient789, patientAbc, patientDef);
         final Set<Practitioner> allPractitioners = Set.of(practitionerXyz, practitionerZulu);
@@ -123,12 +123,17 @@ public class TestSomethingSomething1241 extends FhirExecutionTestBase {
         // c) LUKETODO:  this is what we need to return
         if (PATIENT.equals(dataType) && PRACTITIONER.equals(context) && "generalPractitioner".equals(contextPath) && strings.contains("xyz")) {
             logger.info(">>> patients for practitioner xyz");
-            return allPatients.stream()
-                            .filter(patient -> patient.getGeneralPractitioner().stream()
-                                    .map(Element::getId)
-                                    .collect(Collectors.toList())
-                                    .contains(practitionerXyz.getId()))
-                            .collect(Collectors.toList());
+            // LUKETODO:  inline everything
+            final List<Object> collect = allPatients.stream()
+                    .filter(patient -> {
+                        final List<String> practitioners = patient.getGeneralPractitioner().stream()
+                                .map(gp -> gp.getReference().split("Practitioner/")[1])
+                                .collect(Collectors.toList());
+
+                        return practitioners.contains(practitionerXyz.getId());
+                    })
+                    .collect(Collectors.toList());
+            return collect;
         }
 
         // LUKETODO: Remove this
