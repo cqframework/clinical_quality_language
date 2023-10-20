@@ -7,7 +7,8 @@ import org.hl7.elm.r1.*;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -671,14 +672,14 @@ public class SemanticTests {
 
         ChoiceType choiceType = (ChoiceType)caseDef.getResultType();
 
-        List<String> expectedChoiceTypes = new ArrayList<>();
+        Set<String> expectedChoiceTypes = new HashSet<>();
         expectedChoiceTypes.add("System.String");
         expectedChoiceTypes.add("System.Boolean");
         expectedChoiceTypes.add("System.Integer");
 
-        List<String> actualChoiceTypes = new ArrayList<>();
+        Set<String> actualChoiceTypes = new HashSet<>();
         for (DataType dt : choiceType.getTypes()) {
-            actualChoiceTypes.add(((NamedType)dt).getName());        
+            actualChoiceTypes.add(((NamedType)dt).getName());
         }
         assertTrue("Expected types are String, Boolean, and Integer: ", actualChoiceTypes.equals(expectedChoiceTypes));
     }
@@ -700,11 +701,11 @@ public class SemanticTests {
 
         ChoiceType choiceType = (ChoiceType)ifDef.getResultType();
 
-        List<String> expectedChoiceTypes = new ArrayList<>();
+        Set<String> expectedChoiceTypes = new HashSet<>();
         expectedChoiceTypes.add("System.String");
         expectedChoiceTypes.add("System.Boolean");
 
-        List<String> actualChoiceTypes = new ArrayList<>();
+        Set<String> actualChoiceTypes = new HashSet<>();
         for (DataType dt : choiceType.getTypes()) {
                 actualChoiceTypes.add(((NamedType)dt).getName());
         }
