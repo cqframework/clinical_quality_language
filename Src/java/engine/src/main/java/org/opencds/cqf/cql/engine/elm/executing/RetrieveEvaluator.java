@@ -1,25 +1,25 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
-import org.hl7.elm.r1.ValueSetRef;
 import org.cqframework.cql.elm.visiting.ElmLibraryVisitor;
 import org.hl7.elm.r1.Retrieve;
+import org.hl7.elm.r1.ValueSetRef;
 import org.opencds.cqf.cql.engine.data.DataProvider;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.Code;
 import org.opencds.cqf.cql.engine.runtime.Concept;
 import org.opencds.cqf.cql.engine.runtime.Interval;
 import org.opencds.cqf.cql.engine.runtime.ValueSet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
 
 public class RetrieveEvaluator {
+    private static final Logger logger = LoggerFactory.getLogger(RetrieveEvaluator .class);
     // LUKETODO:  change is going to be in here
     // LUKETODO:  It'll need some notion of "recontextualizing" the retrieve. This could be a stack of current contexts, or perhaps a separate branch statement.
-
-    // LUKETODO:  get rid of this once experimentation is over
-    private static Object additionalContext = null;
 
     @SuppressWarnings("unchecked")
     public static Object internalEvaluate(Retrieve elm, State state, ElmLibraryVisitor<Object, State> visitor) {
@@ -66,21 +66,9 @@ public class RetrieveEvaluator {
                 elm.getCodeProperty(), codes, valueSet, elm.getDateProperty(), elm.getDateLowProperty(), elm.getDateHighProperty(),
                 dateRange);
 
-        // LUKETODO:  get rid of this block
-        if (additionalContext == null) {
-            additionalContext = result;
-        } else {
-            if (additionalContext instanceof Iterable) {
-                final Iterable<Object> iterable = (Iterable<Object>) additionalContext;
-
-                final Object next = iterable.iterator().next();
-
-                // LUKETODO:  This class is effectively static and does NOT have access to fhir classes, so we need to get creative
-                System.out.println("next = " + next);
-            }
-        }
 
         // LUKETODO:  it's only at this point that I have the practitioner
+        // LUKETODO:  we don't have access to the types here (Practitioner/Patient/etc)
         // LUKETODO:  how to model this in a general way?
         // LUKETODO:  can I get the expression name "Primary Care Doctor" ? from somewhere in here, or just the resource type?
 
