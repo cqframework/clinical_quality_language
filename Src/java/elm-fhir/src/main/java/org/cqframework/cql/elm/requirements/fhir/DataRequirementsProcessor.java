@@ -343,6 +343,14 @@ public class DataRequirementsProcessor {
             }
         }
 
+        for (ElmRequirement req : requirements.getFunctionDefs()) {
+            FunctionDef def = (FunctionDef)req.getElement();
+            org.hl7.cql_annotations.r1.Annotation a = getAnnotation(def);
+            if (a != null) {
+                result.add(toLogicDefinition(req, def, toNarrativeText(a), sequence++));
+            }
+        }
+
         return result;
     }
 

@@ -521,6 +521,12 @@ public class DataRequirementsProcessorTest {
         return new CqlCompilerOptions();
     }
 
+    private Setup setupUncollapsedDataRequirementsGather(String fileName, CqlCompilerOptions cqlTranslatorOptions) throws IOException {
+        cqlTranslatorOptions.setCollapseDataRequirements(false);
+        cqlTranslatorOptions.setAnalyzeDataRequirements(false);
+        return setup(fileName, cqlTranslatorOptions);
+    }
+
     private Setup setupDataRequirementsGather(String fileName, CqlCompilerOptions cqlTranslatorOptions) throws IOException {
         cqlTranslatorOptions.setCollapseDataRequirements(true);
         cqlTranslatorOptions.setAnalyzeDataRequirements(false);
@@ -544,6 +550,13 @@ public class DataRequirementsProcessorTest {
     private org.hl7.fhir.r5.model.Library getModuleDefinitionLibrary(Setup setup, CqlCompilerOptions cqlTranslatorOptions, Map<String, Object> parameters, ZonedDateTime evaluationDateTime) {
         DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(setup.manager(), setup.library(), cqlTranslatorOptions, null, parameters, evaluationDateTime, false,false);
+        assertTrue(moduleDefinitionLibrary.getType().getCode("http://terminology.hl7.org/CodeSystem/library-type").equalsIgnoreCase("module-definition"));
+        return moduleDefinitionLibrary;
+    }
+
+    private org.hl7.fhir.r5.model.Library getModuleDefinitionLibrary(Setup setup, CqlCompilerOptions cqlTranslatorOptions, Map<String, Object> parameters, ZonedDateTime evaluationDateTime, boolean includeLogicDefinitions) {
+        DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(setup.manager(), setup.library(), cqlTranslatorOptions, null, parameters, evaluationDateTime, includeLogicDefinitions,false);
         assertTrue(moduleDefinitionLibrary.getType().getCode("http://terminology.hl7.org/CodeSystem/library-type").equalsIgnoreCase("module-definition"));
         return moduleDefinitionLibrary;
     }
@@ -1691,6 +1704,34 @@ public class DataRequirementsProcessorTest {
         assertEqualToExpectedModuleDefinitionLibrary(moduleDefinitionLibrary, "CMS149/resources/Library-EffectiveDataRequirements.json");
 
         //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+    }
+    
+    private Extension getLogicDefinitionByName(List<Extension> logicDefinitions, String libraryName, String name) {
+        for (Extension ld : logicDefinitions) {
+            Extension ln = ld.getExtensionByUrl("libraryName");
+            assertTrue(ln != null && ln.hasValue());
+            Extension n = ld.getExtensionByUrl("name");
+            assertTrue(n != null && n.hasValue());
+            if (ln.getValueStringType().getValue().equals(libraryName) && n.getValueStringType().getValue().equals(name)) {
+                return ld;
+            }
+        }
+        return null;
+    }
+
+    @Test
+    public void TestDeviceOrder() throws IOException {
+        CqlCompilerOptions compilerOptions = CqlCompilerOptions.defaultOptions();
+        var manager = setupDataRequirementsGather("DeviceOrder/TestDeviceOrder.cql", compilerOptions);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions, new HashMap<String, Object>(), ZonedDateTime.of(2023, 1, 16, 0, 0, 0, 0, ZoneId.of("UTC")), true);
+        assertNotNull(moduleDefinitionLibrary);
+        outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+
+        List<Extension> logicDefinitions = moduleDefinitionLibrary.getExtensionsByUrl("http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition");
+        assertTrue(logicDefinitions != null);
+        assertTrue(logicDefinitions.size() > 0);
+        Extension logicDefinition = getLogicDefinitionByName(logicDefinitions, "TestDeviceOrder", "isDeviceOrder");
+        assertTrue(logicDefinition != null);
     }
 
     @Test
