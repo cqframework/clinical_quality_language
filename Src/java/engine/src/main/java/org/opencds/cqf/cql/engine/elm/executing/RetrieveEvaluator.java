@@ -23,11 +23,30 @@ public class RetrieveEvaluator {
     // LUKETODO:  change is going to be in here
     // LUKETODO:  It'll need some notion of "recontextualizing" the retrieve. This could be a stack of current contexts, or perhaps a separate branch statement.
 
-    // LUKETODO: This needs to replaced by a Visitor pattern.... somehow  or should this be added to the State?
-    private static Iterable<Code> previousCodes = null;
-
     @SuppressWarnings("unchecked")
     public static Object internalEvaluate(Retrieve elm, State state, ElmLibraryVisitor<Object, State> visitor) {
+        final Expression context = elm.getContext();
+
+        boolean changedContext = false;
+
+        if (context != null) {
+            // LUKETODO:  this is an IDType....... JP will need to figure this out
+            // LUKETODO:  add a pertinent comment that this whole thing is a hack to "get the type to identify itself"
+            final Object contextValue = visitor.visitExpression(context, state);
+            final String name = contextValue.getClass().getPackage().getName();
+            final DataProvider dataProvider = state.getEnvironment().resolveDataProvider(name);
+            final String contextTypeName = contextValue.getClass().getSimpleName();
+            final String contextIdPath = instanceOfCast(dataProvider.getContextPath(contextTypeName, contextTypeName), String.class);
+            final Object contextId = dataProvider.resolvePath(contextValue, contextIdPath);
+
+            logger.info("contextTypeName: [{}], contextIdPath: [{}],  contextId: [{}]", contextTypeName, contextIdPath, contextId);
+
+            state.setContextValue(contextTypeName, contextId);
+            state.enterContext(contextTypeName);
+
+            changedContext = true;
+        }
+
         QName dataType = state.getEnvironment().fixupQName(elm.getDataType());
         DataProvider dataProvider = state.getEnvironment().resolveDataProvider(dataType);
         Iterable<Code> codes = null;
@@ -65,73 +84,11 @@ public class RetrieveEvaluator {
             dateRange = (Interval) visitor.visitExpression(elm.getDateRange(), state);
         }
 
-        Optional<String> optContextFromElm = Optional.empty();
-        Optional<String> optContextPathFromElm = Optional.empty();
-        List<Code> previousCodesForElm = List.of();
-
-        final Expression context = elm.getContext();
-
-        if (context != null) {
-            logger.info("context class: {}", context.getClass());
-
-            final ExpressionRef expressionRef = instanceOfCast(context, ExpressionRef.class);
-            final String name = expressionRef.getName();
-
-            logger.info("name: {}", name);
-
-            final List<ExpressionDef> matchingExpressionRefs = state.getCurrentLibrary().getStatements().getDef()
-                    .stream()
-                    .filter(expression -> name.equals(expression.getName()))
-                    .collect(Collectors.toList());
-
-            if (!matchingExpressionRefs.isEmpty()) {
-                final ExpressionDef expressionDef = matchingExpressionRefs.get(0);
-                final SingletonFrom singletonFrom = instanceOfCast(expressionDef.getExpression(), SingletonFrom.class);
-                final Retrieve retrieve = instanceOfCast(singletonFrom.getOperand(), Retrieve.class);
-                final ToList toList = instanceOfCast(retrieve.getCodes(), ToList.class);
-                final org.hl7.elm.r1.List toListOperandAsList = instanceOfCast(toList.getOperand(), org.hl7.elm.r1.List.class);
-                final List<Expression> element = toListOperandAsList.getElement();
-
-                if (!element.isEmpty()) {
-                    final Property property = instanceOfCast(element.get(0), Property.class);
-
-                    final String contextResultTypeString = context.getResultType().toString();
-
-                    // LUKETODO:  this is probably completely wrong:  ie  FHIR.Practitioner becomes Practitioner
-
-                    /*
-                    property = {Property@6545} "org.hl7.elm.r1.Property@591b4895[annotation=<null>(default), resultTypeSpecifier=<null>(default), localId=<null>(default), locator=<null>(default), resultTypeName=<null>(default), source=org.hl7.elm.r1.ExpressionRef@19f02a07[annotation=<null>(default), resultTypeSpecifier=<null>(default), localId=<null>(default), locator=<null>(default), resultTypeName=<null>(default), name=Patient, libraryName=<null>(default)], path=generalPractitioner, scope=<null>(default)]"
-                         source = {ExpressionRef@6566} "org.hl7.elm.r1.ExpressionRef@19f02a07[annotation=<null>(default), resultTypeSpecifier=<null>(default), localId=<null>(default), locator=<null>(default), resultTypeName=<null>(default), name=Patient, libraryName=<null>(default)]"
-                           path = "generalPractitioner"
-
-                    contextResultTypeString = FHIR.Practitioner
-
-                    previousCodes = {ArrayList@6514}  size = 1
-                     0 = {ImmutableCollections$List12@6516}  size = 1
-                      0 = {Reference@6562}
-                           reference = {StringType@6563} "Practitioner/xyz"
-                     */
-
-                    optContextFromElm = Optional.of(contextResultTypeString.contains(".") ? contextResultTypeString.split("\\.")[1] : contextResultTypeString);
-                    optContextPathFromElm = Optional.ofNullable(property.getPath());
-                    previousCodesForElm = StreamSupport.stream(previousCodes.spliterator(), false)
-                            .collect(Collectors.toList());
-                }
-            }
-        }
-
-
-        final String currentContext = optContextFromElm.orElse(state.getCurrentContext());
-        final String contextPath = optContextPathFromElm.orElse((String) dataProvider.getContextPath(state.getCurrentContext(), dataType.getLocalPart()));
-        final Iterable<Code> codesToUse = previousCodesForElm.isEmpty() ? codes : previousCodesForElm;
-
-        Iterable<Object> result = dataProvider.retrieve(currentContext,
-                contextPath,
+        Iterable<Object> result = dataProvider.retrieve(state.getCurrentContext(),
+                (String) dataProvider.getContextPath(state.getCurrentContext(), dataType.getLocalPart()),
                 state.getCurrentContextValue(), dataType.getLocalPart(), elm.getTemplateId(),
-                elm.getCodeProperty(), codesToUse, valueSet, elm.getDateProperty(), elm.getDateLowProperty(), elm.getDateHighProperty(),
+                elm.getCodeProperty(), codes, valueSet, elm.getDateProperty(), elm.getDateLowProperty(), elm.getDateHighProperty(),
                 dateRange);
-
-        previousCodes = codes;
 
         // LUKETODO:  it's only at this point that I have the practitioner
         // LUKETODO:  we don't have access to the types here (Practitioner/Patient/etc)
@@ -147,6 +104,10 @@ public class RetrieveEvaluator {
             for (var o : result) {
                 evaluatedResource.add(o);
             }
+        }
+
+        if (changedContext) {
+            state.exitContext();
         }
 
         return result;

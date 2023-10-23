@@ -90,9 +90,15 @@ public class TestSomethingSomething1241 extends FhirExecutionTestBase {
             dataType: [Practitioner], context: [Patient], contextPath: [null], contextValue: [123]
             dataType: [Patient], context: [Patient], contextPath: [id], contextValue: [123]
          */
+        // LUKETODO:    fix this method
         final Collection<String> strings = extractReferencesFromCodes(codes);
 
         logger.info("dataType: [{}], context: [{}], contextPath: [{}], contextValue: [{}], codePath: [{}], codes: [{}]", dataType, context, contextPath, contextValue, codePath, strings);
+
+//        if (codes.iterator().hasNext()) {
+//
+//        }
+
 
         // LUKETODO:  on the 3rd iteration, we're hitting this, which is wrong:
         // a)
@@ -104,7 +110,9 @@ public class TestSomethingSomething1241 extends FhirExecutionTestBase {
         }
 
         // b)
-        if (PRACTITIONER.equals(dataType) && PATIENT.equals(context) && ID.equals(codePath) && strings.contains(XYZ)) {
+//        if (PRACTITIONER.equals(dataType) && PATIENT.equals(context) && ID.equals(codePath) && strings.contains(XYZ)) {
+        if (PRACTITIONER.equals(dataType) && PATIENT.equals(context) && ID.equals(codePath)) {
+            final String codeAsString = (String)(Object)codes.iterator().next();
             logger.info(">>> practitioner xyz");
             final Optional<Patient> optPatient123 = allPatients.stream()
                     .filter(patient -> _PATIENT_123.equals(patient.getId()))
@@ -126,7 +134,10 @@ public class TestSomethingSomething1241 extends FhirExecutionTestBase {
 
 
         // c) LUKETODO:  this is what we need to return
-        if (PATIENT.equals(dataType) && PRACTITIONER.equals(context) && GENERAL_PRACTITIONER.equals(contextPath) && strings.contains(XYZ)) {
+//        final boolean equals = XYZ.equals(contextValue);
+        final boolean equals = "xyz".equals(contextValue.toString());
+        if (PATIENT.equals(dataType) && PRACTITIONER.equals(context) && GENERAL_PRACTITIONER.equals(contextPath) && equals) {
+//            final String codeAsString = (String)(Object)codes.iterator().next();
             logger.info(">>> patients for practitioner xyz");
             return allPatients.stream()
                     .filter(patient -> getMatchingPractitioners(patient)

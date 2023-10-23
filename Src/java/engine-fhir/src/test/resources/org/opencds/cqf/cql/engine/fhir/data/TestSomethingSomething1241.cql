@@ -6,7 +6,7 @@ using FHIR version '4.0.1'
 
 context Patient
 
-define "Primary Care Doctor": singleton from (["Practitioner" : id in {Patient.generalPractitioner}])
+define "Primary Care Doctor": singleton from (["Practitioner" : id in Patient.generalPractitioner.reference.value])
 
 define "All Patient for GP":
     ["Primary Care Doctor" -> "Patient"]
