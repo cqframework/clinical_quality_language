@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,7 +23,7 @@ public class RetrieveEvaluator {
     // LUKETODO:  change is going to be in here
     // LUKETODO:  It'll need some notion of "recontextualizing" the retrieve. This could be a stack of current contexts, or perhaps a separate branch statement.
 
-
+    // LUKETODO: This needs to replaced by a Visitor pattern.... somehow  or should this be added to the State?
     private static Iterable<Code> previousCodes = null;
 
     @SuppressWarnings("unchecked")
@@ -75,66 +74,48 @@ public class RetrieveEvaluator {
         if (context != null) {
             logger.info("context class: {}", context.getClass());
 
-            if (context instanceof org.hl7.elm.r1.ExpressionRef) {
-                final ExpressionRef expressionRef = (ExpressionRef) context;
+            final ExpressionRef expressionRef = instanceOfCast(context, ExpressionRef.class);
+            final String name = expressionRef.getName();
 
-                final String name = expressionRef.getName();
+            logger.info("name: {}", name);
 
-                logger.info("name: {}", name);
+            final List<ExpressionDef> matchingExpressionRefs = state.getCurrentLibrary().getStatements().getDef()
+                    .stream()
+                    .filter(expression -> name.equals(expression.getName()))
+                    .collect(Collectors.toList());
 
-                final List<ExpressionDef> matchingExpressionRefs = state.getCurrentLibrary().getStatements().getDef()
-                        .stream()
-                        .filter(expression -> name.equals(expression.getName()))
-                        .collect(Collectors.toList());
+            if (!matchingExpressionRefs.isEmpty()) {
+                final ExpressionDef expressionDef = matchingExpressionRefs.get(0);
+                final SingletonFrom singletonFrom = instanceOfCast(expressionDef.getExpression(), SingletonFrom.class);
+                final Retrieve retrieve = instanceOfCast(singletonFrom.getOperand(), Retrieve.class);
+                final ToList toList = instanceOfCast(retrieve.getCodes(), ToList.class);
+                final org.hl7.elm.r1.List toListOperandAsList = instanceOfCast(toList.getOperand(), org.hl7.elm.r1.List.class);
+                final List<Expression> element = toListOperandAsList.getElement();
 
-                if (! matchingExpressionRefs.isEmpty()) {
-                    final ExpressionDef expressionDef = matchingExpressionRefs.get(0);
+                if (!element.isEmpty()) {
+                    final Property property = instanceOfCast(element.get(0), Property.class);
 
-                    final Expression expression = expressionDef.getExpression();
+                    final String contextResultTypeString = context.getResultType().toString();
 
-                    if (expression instanceof SingletonFrom) {
-                        final SingletonFrom singletonFrom = (SingletonFrom) expression;
+                    // LUKETODO:  this is probably completely wrong:  ie  FHIR.Practitioner becomes Practitioner
 
-                        final Expression operand = singletonFrom.getOperand();
+                    /*
+                    property = {Property@6545} "org.hl7.elm.r1.Property@591b4895[annotation=<null>(default), resultTypeSpecifier=<null>(default), localId=<null>(default), locator=<null>(default), resultTypeName=<null>(default), source=org.hl7.elm.r1.ExpressionRef@19f02a07[annotation=<null>(default), resultTypeSpecifier=<null>(default), localId=<null>(default), locator=<null>(default), resultTypeName=<null>(default), name=Patient, libraryName=<null>(default)], path=generalPractitioner, scope=<null>(default)]"
+                         source = {ExpressionRef@6566} "org.hl7.elm.r1.ExpressionRef@19f02a07[annotation=<null>(default), resultTypeSpecifier=<null>(default), localId=<null>(default), locator=<null>(default), resultTypeName=<null>(default), name=Patient, libraryName=<null>(default)]"
+                           path = "generalPractitioner"
 
-                        if (operand instanceof Retrieve) {
-                            final Retrieve retrieve = (Retrieve) operand;
+                    contextResultTypeString = FHIR.Practitioner
 
-                            final Expression retrieveExpression = retrieve.getCodes();
+                    previousCodes = {ArrayList@6514}  size = 1
+                     0 = {ImmutableCollections$List12@6516}  size = 1
+                      0 = {Reference@6562}
+                           reference = {StringType@6563} "Practitioner/xyz"
+                     */
 
-                            if (retrieveExpression instanceof ToList) {
-                                final ToList toList = (ToList) retrieveExpression;
-
-                                final Expression toListOperand = toList.getOperand();
-
-                                if (toListOperand instanceof org.hl7.elm.r1.List) {
-                                    final org.hl7.elm.r1.List toListOperandAsList = (org.hl7.elm.r1.List) toListOperand;
-
-                                    logger.info("toListOperandAsList: {}", toListOperandAsList);
-
-                                    final List<Expression> element = toListOperandAsList.getElement();
-
-                                    if (! element.isEmpty()) {
-                                        final Expression toListExpression = element.get(0);
-
-                                        if (toListExpression instanceof Property) {
-                                            final Property property = (Property) toListExpression;
-
-                                            final String contextResultTypeString = context.getResultType().toString();
-
-                                            // LUKETODO:  this is probably completely wrong
-                                            optContextFromElm = Optional.of(contextResultTypeString.contains(".") ? contextResultTypeString.split("\\.")[1] : contextResultTypeString);
-                                            optContextPathFromElm = Optional.ofNullable(property.getPath());
-                                            previousCodesForElm = StreamSupport.stream(previousCodes.spliterator(), false)
-                                                    .collect(Collectors.toList());
-
-                                            // LUKETODO:  Codes:  xyz
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    optContextFromElm = Optional.of(contextResultTypeString.contains(".") ? contextResultTypeString.split("\\.")[1] : contextResultTypeString);
+                    optContextPathFromElm = Optional.ofNullable(property.getPath());
+                    previousCodesForElm = StreamSupport.stream(previousCodes.spliterator(), false)
+                            .collect(Collectors.toList());
                 }
             }
         }
@@ -169,5 +150,13 @@ public class RetrieveEvaluator {
         }
 
         return result;
+    }
+
+    private static <T,S> S instanceOfCast(T superType, Class<S> clazz) {
+        if (clazz.isInstance(superType)) {
+            return clazz.cast(superType);
+        }
+
+        throw new IllegalArgumentException(String.format("Subtype of %s is not as expected", superType));
     }
 }
