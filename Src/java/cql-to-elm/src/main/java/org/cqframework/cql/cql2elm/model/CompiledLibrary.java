@@ -115,7 +115,7 @@ public class CompiledLibrary {
 
     public void add(FunctionDef functionDef, Operator operator) {
         ensureLibrary(operator);
-        ensureResultType(operator);
+        //ensureResultType(operator);
         operators.addOperator(operator);
         functionDefs.put(operator, functionDef);
     }

@@ -197,6 +197,11 @@ public class SystemDataProvider extends BaseModelResolver implements DataProvide
     }
 
     @Override
+    public String resolveId(Object target) {
+        return null;
+    }
+
+    @Override
     public Object getContextPath(String contextType, String targetType) {
         return null;
     }

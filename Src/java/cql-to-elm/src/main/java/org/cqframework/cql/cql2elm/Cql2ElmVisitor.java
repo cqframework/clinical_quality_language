@@ -44,13 +44,13 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         this.libraryInfo = libraryInfo;
     }
 
-    //Put them here for now, but eventually somewhere else?
     private final Set<String> definedExpressionDefinitions = new HashSet<>();
     private final Stack<ExpressionDefinitionInfo> forwards = new Stack<>();
-    private final Map<String, Set<Signature>> definedFunctionDefinitions = new HashMap<>();
-    private final Stack<FunctionDefinitionInfo> forwardFunctions = new Stack<>();
+    private final Map<cqlParser.FunctionDefinitionContext, FunctionHeader> functionHeaders = new HashMap<>();
+
+    private final Map<FunctionDef, FunctionHeader> functionHeadersByDef = new HashMap<>();
+    private final Map<FunctionHeader, cqlParser.FunctionDefinitionContext> functionDefinitions = new HashMap<>();
     private final Stack<TimingOperatorContext> timingOperators = new Stack<>();
-    private String currentContext = "Patient"; // default context to patient
     private final List<Retrieve> retrieves = new ArrayList<>();
     private final List<Expression> expressions = new ArrayList<>();
     private final Map<String, Element> contextDefinitions = new HashMap<>();
@@ -522,7 +522,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         String modelIdentifier = parseString(ctx.modelIdentifier());
         String unqualifiedIdentifier = parseString(ctx.identifier());
 
-        currentContext = modelIdentifier != null ? modelIdentifier + "." + unqualifiedIdentifier : unqualifiedIdentifier;
+        setCurrentContext(modelIdentifier != null ? modelIdentifier + "." + unqualifiedIdentifier : unqualifiedIdentifier);
 
         if (!isUnfilteredContext(unqualifiedIdentifier)) {
             ModelContext modelContext = libraryBuilder.resolveContextName(modelIdentifier, unqualifiedIdentifier);
@@ -553,7 +553,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
                         modelContextDefinition = of.createExpressionDef()
                                 .withName(unqualifiedIdentifier)
-                                .withContext(currentContext)
+                                .withContext(getCurrentContext())
                                 .withExpression(of.createSingletonFrom().withOperand(contextRetrieve));
                         track(modelContextDefinition, ctx);
                         ((ExpressionDef)modelContextDefinition).getExpression().setResultType(contextType);
@@ -565,7 +565,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 else {
                     modelContextDefinition = of.createExpressionDef()
                             .withName(unqualifiedIdentifier)
-                            .withContext(currentContext)
+                            .withContext(getCurrentContext())
                             .withExpression(of.createNull());
                     track(modelContextDefinition, ctx);
                     ((ExpressionDef)modelContextDefinition).getExpression().setResultType(libraryBuilder.resolveTypeName("System", "Any"));
@@ -576,13 +576,13 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
             }
         }
 
-        ContextDef contextDef = of.createContextDef().withName(currentContext);
+        ContextDef contextDef = of.createContextDef().withName(getCurrentContext());
         track(contextDef, ctx);
         if (libraryBuilder.isCompatibleWith("1.5")) {
             libraryBuilder.addContext(contextDef);
         }
 
-        return currentContext;
+        return getCurrentContext();
     }
 
     private boolean isImplicitContextExpressionDef(ExpressionDef def) {
@@ -613,14 +613,14 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 removeImplicitContextExpressionDef(def);
                 def = null;
             }
-            libraryBuilder.pushExpressionContext(currentContext);
+            libraryBuilder.pushExpressionContext(getCurrentContext());
             try {
                 libraryBuilder.pushExpressionDefinition(identifier);
                 try {
                     def = of.createExpressionDef()
                             .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
                             .withName(identifier)
-                            .withContext(currentContext)
+                            .withContext(getCurrentContext())
                             .withExpression((Expression) visit(ctx.expression()));
                     if (def.getExpression() != null) {
                         def.setResultType(def.getExpression().getResultType());
@@ -3812,8 +3812,7 @@ DATETIME
         if (result == null) {
             ExpressionDefinitionInfo expressionInfo = libraryInfo.resolveExpressionReference(identifier);
             if (expressionInfo != null) {
-                String saveContext = currentContext;
-                currentContext = expressionInfo.getContext();
+                String saveContext = saveCurrentContext(expressionInfo.getContext());
                 try {
                     Stack<Chunk> saveChunks = chunks;
                     chunks = new Stack<Chunk>();
@@ -3833,7 +3832,7 @@ DATETIME
                         forwards.pop();
                     }
                 } finally {
-                    currentContext = saveContext;
+                    setCurrentContext(saveContext);
                 }
             }
 
@@ -3881,52 +3880,73 @@ DATETIME
 
         functionName = ensureSystemFunctionName(libraryName, functionName);
 
-        // If the function cannot be resolved in the builder and the call is to a function in the current library,
-        // check for forward declarations of functions
-        boolean checkForward = libraryName == null || libraryName.equals("") || libraryName.equals(this.libraryInfo.getLibraryName());
-        Expression result = libraryBuilder.resolveFunction(libraryName, functionName, expressions, !checkForward, allowPromotionAndDemotion, allowFluent);
-        if (result != null) {
-            return result;
-        }
-        final Expression forwardResolvedFunction = handleFunctionNotResolved(libraryName, functionName, expressions, mustResolve, allowPromotionAndDemotion, allowFluent);
-        return forwardResolvedFunction;
-    }
+        // 1. Ensure all overloads of the function are registered with the operator map
+        // 2. Resolve the function, allowing for the case that operator map is a skeleton
+        // 3. If the resolution from the operator map is a skeleton, compile the function body to determine the result type
 
-    private Expression handleFunctionNotResolved(String libraryName, String functionName, List<Expression> expressions, boolean mustResolve, boolean allowPromotionAndDemotion, boolean allowFluent) {
-        // No matching function that's already been compiled, so start attempting to compile one
-        final CallContext expectedCallContext = getCallContext(libraryName, functionName, expressions, mustResolve, allowPromotionAndDemotion, allowFluent);
-
-        final Iterable<FunctionDefinitionInfo> functionInfos = libraryInfo.resolveFunctionReferenceFromName(functionName);
-
-        final FunctionDefinitionInfo resolvedFunctionInfo =
-                ForwardInvocationValidator.resolveOnSignature(expectedCallContext,
-                        functionInfos,
-                        libraryBuilder.getConversionMap());
-        if (resolvedFunctionInfo == null) {
-            // Preserve the old behaviour of attempting to resolve the function anyway, otherwise several tests will fail, including:
-            // r401.BaseTest > testFHIRPath,  dstu2.BaseTest > testParameterContext,
-            // fhir.DataRequirementsProcessorTest > TestDataRequirementsProcessorOpioidIssueExpression,
-            // fhir.DataRequirementsProcessorTest > TestDataRequirementsProcessorOpioidIssueLibrary
-            return libraryBuilder.resolveFunction(libraryName, functionName, expressions, mustResolve, allowPromotionAndDemotion, allowFluent);
+        // Find all functionDefinitionInfo instances with the given name
+        // register each functionDefinitionInfo
+        if (libraryName == null || libraryName.equals("") || libraryName.equals(this.libraryInfo.getLibraryName())) {
+            Iterable<FunctionDefinitionInfo> fdis = libraryInfo.resolveFunctionReference(functionName);
+            if (fdis != null) {
+                for (FunctionDefinitionInfo fdi : fdis) {
+                    String saveContext = saveCurrentContext(fdi.getContext());
+                    try {
+                        registerFunctionDefinition(fdi.getDefinition());
+                    } finally {
+                        this.setCurrentContext(saveContext);
+                    }
+                }
+            }
         }
 
-        if (forwardFunctions.search(resolvedFunctionInfo) != -1) {
-            // If stack already contains this functionInfo, explode. Recursion is disallowed.
-            throw new CqlCompilerException("function has already been resolved: " + resolvedFunctionInfo);
+        Invocation result = libraryBuilder.resolveFunction(libraryName, functionName, expressions, mustResolve, allowPromotionAndDemotion, allowFluent);
+
+        if (result instanceof FunctionRefInvocation) {
+            FunctionRefInvocation invocation = (FunctionRefInvocation)result;
+            if (invocation.getResolution() != null
+                    && invocation.getResolution().getOperator() != null
+                    && (invocation.getResolution().getOperator().getLibraryName() == null
+                        || invocation.getResolution().getOperator().getLibraryName().equals(libraryBuilder.getCompiledLibrary().getIdentifier().getId()))) {
+                Operator op = invocation.getResolution().getOperator();
+                FunctionHeader fh = getFunctionHeader(op);
+                if (!fh.getIsCompiled()) {
+                    cqlParser.FunctionDefinitionContext ctx = getFunctionDefinitionContext(fh);
+                    String saveContext = saveCurrentContext(fh.getFunctionDef().getContext());
+                    Stack<Chunk> saveChunks = chunks;
+                    chunks = new Stack<Chunk>();
+                    try {
+                        FunctionDef fd = compileFunctionDefinition(ctx);
+                        op.setResultType(fd.getResultType());
+                        invocation.setResultType(op.getResultType());
+                    }
+                    finally {
+                        setCurrentContext(saveContext);
+                        this.chunks = saveChunks;
+                    }
+                }
+            }
         }
 
-        // N.B.: We process the
-        final Stack<Chunk> saveChunks = chunks;
-        chunks = new Stack<>();
-        forwardFunctions.push(resolvedFunctionInfo);
-        try {
-            // Have to call the visit to allow the outer processing to occur
-            visit(resolvedFunctionInfo.getDefinition());
-        } finally {
-            forwardFunctions.pop();
-            chunks = saveChunks;
+        if (mustResolve) {
+            // Extra internal error handling, these should never be hit if the two-phase operator compile is working as expected
+            if (result == null) {
+                throw new IllegalArgumentException("Internal error: could not resolve function");
+            }
+
+            if (result.getExpression() == null) {
+                throw new IllegalArgumentException("Internal error: could not resolve invocation expression");
+            }
+
+            if (result.getExpression().getResultType() == null) {
+                throw new IllegalArgumentException("Internal error: could not determine result type");
+            }
         }
-        return libraryBuilder.resolveFunction(libraryName, functionName, expressions, mustResolve, allowPromotionAndDemotion, allowFluent);
+
+        if (result == null) {
+            return null;
+        }
+        return result.getExpression();
     }
 
     public Expression resolveFunctionOrQualifiedFunction(String identifier, cqlParser.ParamListContext paramListCtx) {
@@ -3973,34 +3993,6 @@ DATETIME
         return resolveFunction(null, identifier, paramListCtx);
     }
 
-    private CallContext getCallContext(String libraryName, String functionName, List<Expression> expressions, boolean mustResolve, boolean allowPromotionAndDemotion, boolean allowFluent) {
-        final FunctionRef expectedCalledFunctionRef = buildFunctionRef(libraryName, functionName, expressions);
-        final FunctionRefInvocation functionRefInvocation = new FunctionRefInvocation(expectedCalledFunctionRef);
-        final List<DataType> dataTypes = new ArrayList<>();
-        for (Expression operand : functionRefInvocation.getOperands()) {
-            if (operand == null || operand.getResultType() == null) {
-                throw new IllegalArgumentException(String.format("Could not determine signature for invocation of operator %s%s.",
-                        libraryName == null ? "" : libraryName + ".", expectedCalledFunctionRef.getName()));
-            }
-            dataTypes.add(operand.getResultType());
-        }
-
-        return new CallContext(libraryName, expectedCalledFunctionRef.getName(), allowPromotionAndDemotion, allowFluent, mustResolve, dataTypes.toArray(new DataType[dataTypes.size()]));
-    }
-
-    // TODO: code reuse
-    private FunctionRef buildFunctionRef(String libraryName, String functionName, Iterable<Expression> paramList) {
-        FunctionRef fun = of.createFunctionRef()
-                .withLibraryName(libraryName)
-                .withName(functionName);
-
-        for (Expression param : paramList) {
-            fun.getOperand().add(param);
-        }
-
-        return fun;
-    }
-
     @Override
     public Expression visitFunction(cqlParser.FunctionContext ctx) {
         return resolveFunctionOrQualifiedFunction(parseString(ctx.referentialIdentifier()), ctx.paramList());
@@ -4016,96 +4008,156 @@ DATETIME
         return visit(ctx.expression());
     }
 
-    public Object internalVisitFunctionDefinition(cqlParser.FunctionDefinitionContext ctx) {
-        final String identifierFromHashedClass = generateHashForLibraryBuilder(ctx);
-        final ResultWithPossibleError<FunctionDefinitionInfo> functionDefinitionInfo = libraryInfo.resolveFunctionReferenceFromHash(identifierFromHashedClass);
-        final Optional<ResultWithPossibleError<FunctionDefinitionInfo>> optFoundFunction = Optional.ofNullable(functionDefinitionInfo);
+    private FunctionHeader getFunctionHeader(cqlParser.FunctionDefinitionContext ctx) {
+        FunctionHeader fh = functionHeaders.get(ctx);
+        if (fh == null) {
 
-        if (optFoundFunction.isPresent()) {
-            final ResultWithPossibleError<FunctionDefinitionInfo> functionDefinitionInfoResultWithPossibleError = optFoundFunction.get();
-            if (functionDefinitionInfoResultWithPossibleError.hasError()) {
-                return null;
+            final Stack<Chunk> saveChunks = chunks;
+            chunks = new Stack<>();
+            try {
+                // Have to call the visit to allow the outer processing to occur
+                fh = parseFunctionHeader(ctx);
+            } finally {
+                chunks = saveChunks;
+            }
+
+            functionHeaders.put(ctx, fh);
+            functionDefinitions.put(fh, ctx);
+            functionHeadersByDef.put(fh.getFunctionDef(), fh);
+        }
+        return fh;
+    }
+
+    private FunctionDef getFunctionDef(Operator op) {
+        FunctionDef target = null;
+        List<DataType> st = new ArrayList<>();
+        for (DataType dt : op.getSignature().getOperandTypes()) {
+            st.add(dt);
+        }
+        Iterable<FunctionDef> fds = libraryBuilder.getCompiledLibrary().resolveFunctionRef(op.getName(), st);
+        for (FunctionDef fd : fds) {
+            if (fd.getOperand().size() == op.getSignature().getSize()) {
+                Iterator<DataType> signatureTypes = op.getSignature().getOperandTypes().iterator();
+                boolean signaturesMatch = true;
+                for (int i = 0; i < fd.getOperand().size(); i++) {
+                    if (!DataTypes.equal(fd.getOperand().get(i).getResultType(), signatureTypes.next())) {
+                        signaturesMatch = false;
+                    }
+                }
+                if (signaturesMatch) {
+                    if (target == null) {
+                        target = fd;
+                    }
+                    else {
+                        throw new IllegalArgumentException(String.format("Internal error attempting to resolve function header for %s", op.getName()));
+                    }
+                }
             }
         }
 
-        // Ensure we only build the function headers once, retrieving the previously built one if it exists
-        final PreCompileOutput preCompileOutput = optFoundFunction.map(ResultWithPossibleError::getUnderlyingResultIfExists)
-                .map(FunctionDefinitionInfo::getPreCompileOutput)
-                .orElse(preCompile(ctx));
+        return target;
+    }
 
-        final FunctionDef fun = preCompileOutput.getFunctionDef();
-        final TypeSpecifier resultType = preCompileOutput.getResultType();
+    private FunctionHeader getFunctionHeaderByDef(FunctionDef fd) {
+        // Shouldn't need to do this, something about the hashCode implementation of FunctionDef is throwing this off,
+        // Don't have time to investigate right now, this should work fine, could potentially be improved
+        for (Map.Entry<FunctionDef, FunctionHeader> entry : functionHeadersByDef.entrySet()) {
+            if (entry.getKey() == fd) {
+                return entry.getValue();
+            }
+        }
 
-        if (!libraryBuilder.getCompiledLibrary().contains(fun)) {
-            if (ctx.functionBody() != null) {
-                libraryBuilder.beginFunctionDef(fun);
+        return null;
+    }
+
+    private FunctionHeader getFunctionHeader(Operator op) {
+        FunctionDef fd = getFunctionDef(op);
+        if (fd == null) {
+            throw new IllegalArgumentException(String.format("Could not resolve function header for operator %s", op.getName()));
+        }
+        FunctionHeader result = getFunctionHeaderByDef(fd);
+        //FunctionHeader result = functionHeadersByDef.get(fd);
+        if (result == null) {
+            throw new IllegalArgumentException(String.format("Could not resolve function header for operator %s", op.getName()));
+        }
+        return result;
+    }
+
+    private cqlParser.FunctionDefinitionContext getFunctionDefinitionContext(FunctionHeader fh) {
+        cqlParser.FunctionDefinitionContext ctx = functionDefinitions.get(fh);
+        if (ctx == null) {
+            throw new IllegalArgumentException(String.format("Could not resolve function definition context for function header %s", fh.getFunctionDef().getName()));
+        }
+        return ctx;
+    }
+
+    public void registerFunctionDefinition(cqlParser.FunctionDefinitionContext ctx) {
+        FunctionHeader fh = getFunctionHeader(ctx);
+        if (!libraryBuilder.getCompiledLibrary().contains(fh.getFunctionDef())) {
+            libraryBuilder.addExpression(fh.getFunctionDef());
+        }
+    }
+
+    public FunctionDef compileFunctionDefinition(cqlParser.FunctionDefinitionContext ctx) {
+        FunctionHeader fh = getFunctionHeader(ctx);
+
+        final FunctionDef fun = fh.getFunctionDef();
+        final TypeSpecifier resultType = fh.getResultType();
+        final Operator op = libraryBuilder.resolveFunctionDefinition(fh.getFunctionDef());
+        if (op == null) {
+            throw new IllegalArgumentException(String.format("Internal error: Could not resolve operator map entry for function header %s", fh.getMangledName()));
+        }
+
+        if (ctx.functionBody() != null) {
+            libraryBuilder.beginFunctionDef(fun);
+            try {
+                libraryBuilder.pushExpressionContext(getCurrentContext());
                 try {
-                    libraryBuilder.pushExpressionContext(currentContext);
+                    libraryBuilder.pushExpressionDefinition(fh.getMangledName());
                     try {
-                        // Ensure uniqueness among functions with the same name but different signatures
-                        libraryBuilder.pushExpressionDefinition(String.format("%s()", identifierFromHashedClass));
-                        try {
-                            fun.setExpression(parseExpression(ctx.functionBody()));
-                        } finally {
-                            libraryBuilder.popExpressionDefinition();
-                        }
+                        fun.setExpression(parseExpression(ctx.functionBody()));
                     } finally {
-                        libraryBuilder.popExpressionContext();
+                        libraryBuilder.popExpressionDefinition();
                     }
                 } finally {
-                    libraryBuilder.endFunctionDef();
+                    libraryBuilder.popExpressionContext();
                 }
-
-                if (resultType != null && fun.getExpression() != null && fun.getExpression().getResultType() != null) {
-                    if (!DataTypes.subTypeOf(fun.getExpression().getResultType(), resultType.getResultType())) {
-                        // ERROR:
-                        throw new IllegalArgumentException(String.format("Function %s has declared return type %s but the function body returns incompatible type %s.",
-                                fun.getName(), resultType.getResultType(), fun.getExpression().getResultType()));
-                    }
-                }
-
-                fun.setResultType(fun.getExpression().getResultType());
+            } finally {
+                libraryBuilder.endFunctionDef();
             }
-            else {
-                fun.setExternal(true);
-                if (resultType == null) {
+
+            if (resultType != null && fun.getExpression() != null && fun.getExpression().getResultType() != null) {
+                if (!DataTypes.subTypeOf(fun.getExpression().getResultType(), resultType.getResultType())) {
                     // ERROR:
-                    throw new IllegalArgumentException(String.format("Function %s is marked external but does not declare a return type.", fun.getName()));
+                    throw new IllegalArgumentException(String.format("Function %s has declared return type %s but the function body returns incompatible type %s.",
+                            fun.getName(), resultType.getResultType(), fun.getExpression().getResultType()));
                 }
-                fun.setResultType(resultType.getResultType());
             }
 
-            fun.setContext(currentContext);
-            if (fun.getResultType() != null) {
-                libraryBuilder.addExpression(fun);
-            }
+            fun.setResultType(fun.getExpression().getResultType());
+            op.setResultType(fun.getResultType());
         }
+        else {
+            fun.setExternal(true);
+            if (resultType == null) {
+                // ERROR:
+                throw new IllegalArgumentException(String.format("Function %s is marked external but does not declare a return type.", fun.getName()));
+            }
+            fun.setResultType(resultType.getResultType());
+            op.setResultType(fun.getResultType());
+        }
+
+        fun.setContext(getCurrentContext());
+        fh.setIsCompiled();
 
         return fun;
     }
 
     @Override
     public Object visitFunctionDefinition(cqlParser.FunctionDefinitionContext ctx) {
-        FunctionDef result = (FunctionDef)internalVisitFunctionDefinition(ctx);
-        if (result == null) {
-            return null;
-        }
-        Operator operator = Operator.fromFunctionDef(result);
-        if (forwardFunctions.isEmpty() || !forwardFunctions.peek().getName().equals(operator.getName())) {
-            Set<Signature> definedSignatures = definedFunctionDefinitions.get(operator.getName());
-            if (definedSignatures == null) {
-                definedSignatures = new HashSet<>();
-                definedFunctionDefinitions.put(operator.getName(), definedSignatures);
-            }
-
-            if (definedSignatures.contains(operator.getSignature())) {
-                throw new IllegalArgumentException(String.format("A function named %s with the same type of arguments is already defined in this library.", operator.getName()));
-            }
-
-            definedSignatures.add(operator.getSignature());
-        }
-
-        return result;
+        registerFunctionDefinition(ctx);
+        FunctionDef fun = compileFunctionDefinition(ctx);
+        return fun;
     }
 
     private Expression parseLiteralExpression(ParseTree pt) {
