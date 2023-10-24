@@ -85,7 +85,6 @@ public class TestCqlEngineRelatedContextSupport extends FhirExecutionTestBase {
 
 
         // c) All patients belonging to Patient 123'd generalPractitioner
-        // LUKETODO: Need to fix this once we figure out how to deal with IdType in RetrieveEvaluator
         final boolean equals = "xyz".equals(contextValue.toString());
         if (PATIENT.equals(dataType) && PRACTITIONER.equals(context) && GENERAL_PRACTITIONER.equals(contextPath) && equals) {
             logger.info(">>> patients for practitioner xyz");

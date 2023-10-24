@@ -27,16 +27,14 @@ public class RetrieveEvaluator {
         Iterable<Object> result = Collections.emptyList();
 
         if (context != null) {
-            // LUKETODO:  this is an IDType....... JP will need to figure this out
             /*
-            This whole block is a bit a hack in the sense that we need to the context (ex Practitioner) identifies itself in a non-domain specific way3
+                This whole block is a bit a hack in the sense that we need to the context (ex Practitioner) identifies itself in a non-domain specific way3
              */
             final Object contextValue = visitor.visitExpression(context, state);
             final String name = contextValue.getClass().getPackage().getName();
             final DataProvider dataProvider = state.getEnvironment().resolveDataProvider(name);
             final String contextTypeName = contextValue.getClass().getSimpleName();
-            final String contextIdPath = instanceOfCast(dataProvider.getContextPath(contextTypeName, contextTypeName), String.class);
-            final Object contextId = dataProvider.resolvePath(contextValue, contextIdPath);
+            final String contextId = dataProvider.resolveId(contextValue);
 
             state.setContextValue(contextTypeName, contextId);
             isEnteredContext = state.enterContext(contextTypeName);

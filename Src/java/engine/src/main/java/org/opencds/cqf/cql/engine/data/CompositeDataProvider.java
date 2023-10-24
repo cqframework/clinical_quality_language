@@ -90,6 +90,11 @@ public class CompositeDataProvider implements DataProvider {
     }
 
     @Override
+    public String resolveId(Object target) {
+        return this.modelResolver.resolveId(target);
+    }
+
+    @Override
     public Iterable<Object> retrieve(String context, String contextPath, Object contextValue, String dataType,
             String templateId, String codePath, Iterable<Code> codes, String valueSet, String datePath,
             String dateLowPath, String dateHighPath, Interval dateRange) {

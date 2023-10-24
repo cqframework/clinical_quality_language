@@ -119,6 +119,11 @@ public class CachingModelResolverDecorator implements ModelResolver {
   }
 
   @Override
+  public String resolveId(Object target) {
+    return innerResolver.resolveId(target);
+  }
+
+  @Override
   public Boolean is(Object value, Class<?> type) {
     return this.innerResolver.is(value, type);
   }
