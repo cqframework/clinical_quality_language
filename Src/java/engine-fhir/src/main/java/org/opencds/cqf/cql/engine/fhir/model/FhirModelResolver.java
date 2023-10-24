@@ -11,13 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.hl7.fhir.exceptions.FHIRException;
-import org.hl7.fhir.instance.model.api.IAnyResource;
-import org.hl7.fhir.instance.model.api.IBase;
-import org.hl7.fhir.instance.model.api.IBaseBackboneElement;
-import org.hl7.fhir.instance.model.api.IBaseElement;
-import org.hl7.fhir.instance.model.api.IBaseEnumeration;
-import org.hl7.fhir.instance.model.api.ICompositeType;
-import org.hl7.fhir.instance.model.api.IPrimitiveType;
+import org.hl7.fhir.instance.model.api.*;
 import org.opencds.cqf.cql.engine.exception.DataProviderException;
 import org.opencds.cqf.cql.engine.exception.InvalidCast;
 import org.opencds.cqf.cql.engine.exception.InvalidPrecision;
@@ -85,6 +79,15 @@ public abstract class FhirModelResolver<BaseType, BaseDateTimeType, TimeType, Si
     protected FhirContext fhirContext;
 
     protected List<String> packageNames;
+
+
+    @Override
+    public String resolveId(Object target) {
+        if (target instanceof IBaseResource) {
+            return ((IBaseResource)target).getIdElement().getIdPart();
+        }
+        return null;
+    }
 
     public Object getContextPath(String contextType, String targetType) {
         if (targetType == null || contextType == null) {
@@ -670,3 +673,4 @@ public abstract class FhirModelResolver<BaseType, BaseDateTimeType, TimeType, Si
         }
     }
 }
+
