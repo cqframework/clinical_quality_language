@@ -22,6 +22,13 @@ public class CqlMainSuiteTest extends CqlTestBase {
     }
 
     @Test
+    public void test_cql_timezone_tests() {
+        var errors = new ArrayList<CqlCompilerException>();
+        this.getLibrary(toElmIdentifier("CqlTimeZoneTestSuite"), errors, testCompilerOptions());
+        assertFalse(CqlCompilerException.hasErrors(errors), String.format("Test library compiled with the following errors : %s", this.toString(errors)));
+    }
+
+    @Test
     public void test_all_portable_cql_engine_tests() {
         var e = getEngine(testCompilerOptions());
         // TODO: It'd be interesting to be able to inspect the
