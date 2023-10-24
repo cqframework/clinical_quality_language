@@ -424,14 +424,14 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
 
     @Override
     public ElmRequirement visitTernaryExpression(TernaryExpression elm, ElmRequirementsContext context) {
-        super.visitTernaryExpression(elm, context);
-        return new ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm);
+        ElmRequirement requirements = super.visitTernaryExpression(elm, context);
+        return new ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm).combine(requirements);
     }
 
     @Override
     public ElmRequirement visitNaryExpression(NaryExpression elm, ElmRequirementsContext context) {
-        super.visitNaryExpression(elm, context);
-        return new ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm);
+        ElmRequirement requirements = super.visitNaryExpression(elm, context);
+        return new ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm).combine(requirements);
     }
 
     @Override
@@ -1275,6 +1275,11 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
         }
         finally {
             aliasContext = context.getCurrentQueryContext().exitAliasDefinitionContext(result);
+        }
+        // If this is an operator requirement, report it directly to the context, otherwise the context it contains will not be reported
+        // since query requirements are abstracted to an ElmDataRequirement
+        if (result instanceof ElmOperatorRequirement) {
+            context.reportRequirements(result, null);
         }
         return aliasContext.getRequirements();
     }
