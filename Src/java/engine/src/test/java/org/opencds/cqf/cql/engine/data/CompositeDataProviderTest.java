@@ -1,25 +1,19 @@
-package org.opencds.cqf.cql.engine.model;
+package org.opencds.cqf.cql.engine.data;
 
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
+import org.opencds.cqf.cql.engine.model.ModelResolver;
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider;
-import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.util.Date;
 
+import static org.mockito.Mockito.*;
+import static org.testng.Assert.*;
 
-// TODO: Extend testing to cover more of the CachedModelResolver
-public class CachingModelResolverDecoratorTest {
+public class CompositeDataProviderTest {
     @Mock
     private ModelResolver mockModelResolver;
     @Mock
@@ -38,20 +32,6 @@ public class CachingModelResolverDecoratorTest {
     }
 
     @Test
-    public void context_path_resolved_only_once() {
-        var m = mock(ModelResolver.class);
-        when(m.getPackageName()).thenReturn("test.package");
-        when(m.getContextPath("Patient", "Patient")).thenReturn("id");
-
-        var cache = new CachingModelResolverDecorator(m);
-        cache.getContextPath("Patient", "Patient");
-        var result = cache.getContextPath("Patient", "Patient");
-
-        assertEquals("id", result);
-        verify(m, times(1)).getContextPath("Patient", "Patient");
-    }
-
-    @Test
     void testResolveIdString() {
         final String object = "object";
         final String id = "text";
@@ -60,7 +40,7 @@ public class CachingModelResolverDecoratorTest {
 
         final CompositeDataProvider compositeDataProvider = new CompositeDataProvider(mockModelResolver, mockRetrieveProvider);
 
-        Assert.assertEquals(id, compositeDataProvider.resolveId(object));
+        assertEquals(id, compositeDataProvider.resolveId(object));
         verify(mockModelResolver, times(1)).resolveId(object);
     }
 
@@ -73,7 +53,7 @@ public class CachingModelResolverDecoratorTest {
 
         final CompositeDataProvider compositeDataProvider = new CompositeDataProvider(mockModelResolver, mockRetrieveProvider);
 
-        Assert.assertEquals(id, compositeDataProvider.resolveId(object));
+        assertEquals(id, compositeDataProvider.resolveId(object));
         verify(mockModelResolver, times(1)).resolveId(object);
     }
 
@@ -86,7 +66,7 @@ public class CachingModelResolverDecoratorTest {
 
         final CompositeDataProvider compositeDataProvider = new CompositeDataProvider(mockModelResolver, mockRetrieveProvider);
 
-        Assert.assertEquals(id, compositeDataProvider.resolveId(object));
+        assertEquals(id, compositeDataProvider.resolveId(object));
         verify(mockModelResolver, times(1)).resolveId(object);
     }
 }
