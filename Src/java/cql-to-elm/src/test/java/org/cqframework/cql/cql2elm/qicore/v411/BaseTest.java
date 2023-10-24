@@ -1,6 +1,7 @@
 package org.cqframework.cql.cql2elm.qicore.v411;
 
 import org.cqframework.cql.cql2elm.CqlTranslator;
+import org.cqframework.cql.cql2elm.LibraryBuilder;
 import org.cqframework.cql.cql2elm.TestUtils;
 import org.hl7.elm.r1.*;
 import org.testng.annotations.Test;
@@ -19,7 +20,7 @@ import static org.junit.Assert.assertNotNull;
 public class BaseTest {
     @Test
     public void testAuthoringPatterns() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("qicore/v411/AuthoringPatterns.cql", 0);
+        CqlTranslator translator = TestUtils.runSemanticTest("qicore/v411/AuthoringPatterns.cql", 0, LibraryBuilder.SignatureLevel.Overloads);
 
         assertThat(translator.getWarnings().size(), is(0));
     }

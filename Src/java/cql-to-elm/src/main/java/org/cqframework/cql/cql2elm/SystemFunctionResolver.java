@@ -2,6 +2,7 @@ package org.cqframework.cql.cql2elm;
 
 
 import org.cqframework.cql.cql2elm.model.Conversion;
+import org.cqframework.cql.cql2elm.model.Invocation;
 import org.cqframework.cql.cql2elm.model.PropertyResolution;
 import org.cqframework.cql.cql2elm.model.SystemModel;
 import org.cqframework.cql.cql2elm.model.invocation.*;
@@ -18,7 +19,7 @@ public class SystemFunctionResolver {
         this.builder = builder;
     }
 
-    public Expression resolveSystemFunction(FunctionRef fun) {
+    public Invocation resolveSystemFunction(FunctionRef fun) {
         if (fun.getLibraryName() == null || "System".equals(fun.getLibraryName())) {
             switch (fun.getName()) {
                 // Aggregate Functions
@@ -367,22 +368,24 @@ public class SystemFunctionResolver {
 
     // Age-Related Function Support
 
-    private CalculateAge resolveCalculateAge(Expression e, DateTimePrecision p) {
+    private UnaryExpressionInvocation resolveCalculateAge(Expression e, DateTimePrecision p) {
         CalculateAge operator = of.createCalculateAge()
                 .withPrecision(p)
                 .withOperand(e);
 
-        builder.resolveUnaryCall("System", "CalculateAge", operator);
-        return operator;
+        UnaryExpressionInvocation invocation = new UnaryExpressionInvocation(operator);
+        builder.resolveInvocation("System", "CalculateAge", invocation);
+        return invocation;
     }
 
-    private CalculateAgeAt resolveCalculateAgeAt(List<Expression> e, DateTimePrecision p) {
+    private BinaryExpressionInvocation resolveCalculateAgeAt(List<Expression> e, DateTimePrecision p) {
         CalculateAgeAt operator = of.createCalculateAgeAt()
                 .withPrecision(p)
                 .withOperand(e);
 
-        builder.resolveBinaryCall("System", "CalculateAgeAt", operator);
-        return operator;
+        BinaryExpressionInvocation invocation = new BinaryExpressionInvocation(operator);
+        builder.resolveInvocation("System", "CalculateAgeAt", invocation);
+        return invocation;
     }
 
     private static DateTimePrecision resolveAgeRelatedFunctionPrecision(FunctionRef fun) {
@@ -427,7 +430,7 @@ public class SystemFunctionResolver {
 
     // Arithmetic Function Support
 
-    private Round resolveRound(FunctionRef fun) {
+    private RoundInvocation resolveRound(FunctionRef fun) {
         if (fun.getOperand().isEmpty() || fun.getOperand().size() > 2) {
             throw new IllegalArgumentException("Could not resolve call to system operator Round.  Expected 1 or 2 arguments.");
         }
@@ -435,116 +438,130 @@ public class SystemFunctionResolver {
         if (fun.getOperand().size() == 2) {
             round.setPrecision(fun.getOperand().get(1));
         }
-        builder.resolveCall("System", "Round", new RoundInvocation(round));
-        return round;
+        RoundInvocation invocation = new RoundInvocation(round);
+        builder.resolveInvocation("System", "Round", new RoundInvocation(round));
+        return invocation;
     }
 
     // DateTime Function Support
 
-    private DateTime resolveDateTime(FunctionRef fun) {
+    private DateTimeInvocation resolveDateTime(FunctionRef fun) {
         final DateTime dt = of.createDateTime();
         DateTimeInvocation.setDateTimeFieldsFromOperands(dt, fun.getOperand());
-        builder.resolveCall("System", "DateTime", new DateTimeInvocation(dt));
-        return dt;
+        DateTimeInvocation invocation = new DateTimeInvocation(dt);
+        builder.resolveInvocation("System", "DateTime", invocation);
+        return invocation;
     }
 
-    private Date resolveDate(FunctionRef fun) {
+    private DateInvocation resolveDate(FunctionRef fun) {
         final Date d = of.createDate();
         DateInvocation.setDateFieldsFromOperands(d, fun.getOperand());
-        builder.resolveCall("System", "Date", new DateInvocation(d));
-        return d;
+        DateInvocation invocation = new DateInvocation(d);
+        builder.resolveInvocation("System", "Date", invocation);
+        return invocation;
     }
 
-    private Time resolveTime(FunctionRef fun) {
+    private TimeInvocation resolveTime(FunctionRef fun) {
         final Time t = of.createTime();
         TimeInvocation.setTimeFieldsFromOperands(t, fun.getOperand());
-        builder.resolveCall("System", "Time", new TimeInvocation(t));
-        return t;
+        TimeInvocation invocation = new TimeInvocation(t);
+        builder.resolveInvocation("System", "Time", invocation);
+        return invocation;
     }
 
-    private Now resolveNow(FunctionRef fun) {
+    private ZeroOperandExpressionInvocation resolveNow(FunctionRef fun) {
         checkNumberOfOperands(fun, 0);
         final Now now = of.createNow();
-        builder.resolveCall("System", "Now", new ZeroOperandExpressionInvocation(now));
-        return now;
+        ZeroOperandExpressionInvocation invocation = new ZeroOperandExpressionInvocation(now);
+        builder.resolveInvocation("System", "Now", invocation);
+        return invocation;
     }
 
-    private Today resolveToday(FunctionRef fun) {
+    private ZeroOperandExpressionInvocation resolveToday(FunctionRef fun) {
         checkNumberOfOperands(fun, 0);
         final Today today = of.createToday();
-        builder.resolveCall("System", "Today", new ZeroOperandExpressionInvocation(today));
-        return today;
+        ZeroOperandExpressionInvocation invocation = new ZeroOperandExpressionInvocation(today);
+        builder.resolveInvocation("System", "Today", invocation);
+        return invocation;
     }
 
-    private TimeOfDay resolveTimeOfDay(FunctionRef fun) {
+    private ZeroOperandExpressionInvocation resolveTimeOfDay(FunctionRef fun) {
         checkNumberOfOperands(fun, 0);
         final TimeOfDay timeOfDay = of.createTimeOfDay();
-        builder.resolveCall("System", "TimeOfDay", new ZeroOperandExpressionInvocation(timeOfDay));
-        return timeOfDay;
+        ZeroOperandExpressionInvocation invocation = new ZeroOperandExpressionInvocation(timeOfDay);
+        builder.resolveInvocation("System", "TimeOfDay", invocation);
+        return invocation;
     }
 
     // List Function Support
 
-    private IndexOf resolveIndexOf(FunctionRef fun) {
+    private IndexOfInvocation resolveIndexOf(FunctionRef fun) {
         checkNumberOfOperands(fun, 2);
         final IndexOf indexOf = of.createIndexOf();
         indexOf.setSource(fun.getOperand().get(0));
         indexOf.setElement(fun.getOperand().get(1));
-        builder.resolveCall("System", "IndexOf", new IndexOfInvocation(indexOf));
-        return indexOf;
+        IndexOfInvocation invocation = new IndexOfInvocation(indexOf);
+        builder.resolveInvocation("System", "IndexOf", invocation);
+        return invocation;
     }
 
-    private First resolveFirst(FunctionRef fun) {
+    private FirstInvocation resolveFirst(FunctionRef fun) {
         checkNumberOfOperands(fun, 1);
         final First first = of.createFirst();
         first.setSource(fun.getOperand().get(0));
-        builder.resolveCall("System", "First", new FirstInvocation(first));
-        return first;
+        FirstInvocation invocation = new FirstInvocation(first);
+        builder.resolveInvocation("System", "First", invocation);
+        return invocation;
     }
 
-    private Last resolveLast(FunctionRef fun) {
+    private LastInvocation resolveLast(FunctionRef fun) {
         checkNumberOfOperands(fun, 1);
         final Last last = of.createLast();
         last.setSource(fun.getOperand().get(0));
-        builder.resolveCall("System", "Last", new LastInvocation(last));
-        return last;
+        LastInvocation invocation = new LastInvocation(last);
+        builder.resolveInvocation("System", "Last", invocation);
+        return invocation;
     }
 
-    private Slice resolveSkip(FunctionRef fun) {
+    private SkipInvocation resolveSkip(FunctionRef fun) {
         checkNumberOfOperands(fun, 2);
         Slice slice = of.createSlice();
         slice.setSource(fun.getOperand().get(0));
         slice.setStartIndex(fun.getOperand().get(1));
         slice.setEndIndex(builder.buildNull(fun.getOperand().get(1).getResultType()));
-        builder.resolveCall("System", "Skip", new SkipInvocation(slice));
-        return slice;
+        SkipInvocation invocation = new SkipInvocation(slice);
+        builder.resolveInvocation("System", "Skip", invocation);
+        return invocation;
     }
 
-    private Slice resolveTake(FunctionRef fun) {
+    private TakeInvocation resolveTake(FunctionRef fun) {
         checkNumberOfOperands(fun, 2);
         Slice slice = of.createSlice();
         slice.setSource(fun.getOperand().get(0));
         slice.setStartIndex(builder.createLiteral(0));
         Coalesce coalesce = of.createCoalesce().withOperand(fun.getOperand().get(1), builder.createLiteral(0));
-        builder.resolveCall("System", "Coalesce", new NaryExpressionInvocation(coalesce));
+        NaryExpressionInvocation naryInvocation = new NaryExpressionInvocation(coalesce);
+        builder.resolveInvocation("System", "Coalesce", naryInvocation);
         slice.setEndIndex(coalesce);
-        builder.resolveCall("System", "Take", new TakeInvocation(slice));
-        return slice;
+        TakeInvocation invocation = new TakeInvocation(slice);
+        builder.resolveInvocation("System", "Take", invocation);
+        return invocation;
     }
 
-    private Slice resolveTail(FunctionRef fun) {
+    private TailInvocation resolveTail(FunctionRef fun) {
         checkNumberOfOperands(fun, 1);
         Slice slice = of.createSlice();
         slice.setSource(fun.getOperand().get(0));
         slice.setStartIndex(builder.createLiteral(1));
         slice.setEndIndex(builder.buildNull(builder.resolveTypeName("System", "Integer")));
-        builder.resolveCall("System", "Tail", new TailInvocation(slice));
-        return slice;
+        TailInvocation invocation = new TailInvocation(slice);
+        builder.resolveInvocation("System", "Tail", invocation);
+        return invocation;
     }
 
     // String Function Support
 
-    private Combine resolveCombine(FunctionRef fun) {
+    private CombineInvocation resolveCombine(FunctionRef fun) {
         if (fun.getOperand().isEmpty() || fun.getOperand().size() > 2) {
             throw new IllegalArgumentException("Could not resolve call to system operator Combine.  Expected 1 or 2 arguments.");
         }
@@ -552,47 +569,52 @@ public class SystemFunctionResolver {
         if (fun.getOperand().size() == 2) {
             combine.setSeparator(fun.getOperand().get(1));
         }
-        builder.resolveCall("System", "Combine", new CombineInvocation(combine));
-        return combine;
+        CombineInvocation invocation = new CombineInvocation(combine);
+        builder.resolveInvocation("System", "Combine", invocation);
+        return invocation;
     }
 
-    private Split resolveSplit(FunctionRef fun) {
+    private SplitInvocation resolveSplit(FunctionRef fun) {
         checkNumberOfOperands(fun, 2);
         final Split split = of.createSplit()
                 .withStringToSplit(fun.getOperand().get(0))
                 .withSeparator(fun.getOperand().get(1));
-        builder.resolveCall("System", "Split", new SplitInvocation(split));
-        return split;
+        SplitInvocation invocation = new SplitInvocation(split);
+        builder.resolveInvocation("System", "Split", invocation);
+        return invocation;
     }
 
-    private SplitOnMatches resolveSplitOnMatches(FunctionRef fun) {
+    private SplitOnMatchesInvocation resolveSplitOnMatches(FunctionRef fun) {
         checkNumberOfOperands(fun, 2);
         final SplitOnMatches splitOnMatches = of.createSplitOnMatches()
                 .withStringToSplit(fun.getOperand().get(0))
                 .withSeparatorPattern(fun.getOperand().get(1));
-        builder.resolveCall("System", "SplitOnMatches", new SplitOnMatchesInvocation(splitOnMatches));
-        return splitOnMatches;
+        SplitOnMatchesInvocation invocation = new SplitOnMatchesInvocation(splitOnMatches);
+        builder.resolveInvocation("System", "SplitOnMatches", invocation);
+        return invocation;
     }
 
-    private PositionOf resolvePositionOf(FunctionRef fun) {
+    private PositionOfInvocation resolvePositionOf(FunctionRef fun) {
         checkNumberOfOperands(fun, 2);
         final PositionOf pos = of.createPositionOf()
                 .withPattern(fun.getOperand().get(0))
                 .withString(fun.getOperand().get(1));
-        builder.resolveCall("System", "PositionOf", new PositionOfInvocation(pos));
-        return pos;
+        PositionOfInvocation invocation = new PositionOfInvocation(pos);
+        builder.resolveInvocation("System", "PositionOf", invocation);
+        return invocation;
     }
 
-    private LastPositionOf resolveLastPositionOf(FunctionRef fun) {
+    private LastPositionOfInvocation resolveLastPositionOf(FunctionRef fun) {
         checkNumberOfOperands(fun, 2);
         final LastPositionOf pos = of.createLastPositionOf()
                 .withPattern(fun.getOperand().get(0))
                 .withString(fun.getOperand().get(1));
-        builder.resolveCall("System", "LastPositionOf", new LastPositionOfInvocation(pos));
-        return pos;
+        LastPositionOfInvocation invocation = new LastPositionOfInvocation(pos);
+        builder.resolveInvocation("System", "LastPositionOf", invocation);
+        return invocation;
     }
 
-    private Substring resolveSubstring(FunctionRef fun) {
+    private SubstringInvocation resolveSubstring(FunctionRef fun) {
         if (fun.getOperand().size() < 2 || fun.getOperand().size() > 3) {
             throw new IllegalArgumentException("Could not resolve call to system operator Substring.  Expected 2 or 3 arguments.");
         }
@@ -602,12 +624,13 @@ public class SystemFunctionResolver {
         if (fun.getOperand().size() == 3) {
             substring.setLength(fun.getOperand().get(2));
         }
-        builder.resolveCall("System", "Substring", new SubstringInvocation(substring));
-        return substring;
+        SubstringInvocation invocation = new SubstringInvocation(substring);
+        builder.resolveInvocation("System", "Substring", invocation);
+        return invocation;
     }
 
     // Error Functions
-    private Message resolveMessage(FunctionRef fun) {
+    private MessageInvocation resolveMessage(FunctionRef fun) {
         if (fun.getOperand().size() != 5) {
             throw new IllegalArgumentException("Could not resolve call to system operator Message. Expected 5 arguments.");
         }
@@ -619,13 +642,14 @@ public class SystemFunctionResolver {
                 .withSeverity(fun.getOperand().get(3))
                 .withMessage(fun.getOperand().get(4));
 
-        builder.resolveCall("System", "Message", new MessageInvocation(message));
-        return message;
+        MessageInvocation invocation = new MessageInvocation(message);
+        builder.resolveInvocation("System", "Message", invocation);
+        return invocation;
     }
 
     // Type Functions
 
-    private Convert resolveConvert(FunctionRef fun) {
+    private ConvertInvocation resolveConvert(FunctionRef fun) {
         checkNumberOfOperands(fun, 1);
         final Convert convert = of.createConvert().withOperand(fun.getOperand().get(0));
         final SystemModel sm = builder.getSystemModel();
@@ -667,13 +691,14 @@ public class SystemFunctionResolver {
                 throw new IllegalArgumentException(
                         String.format("Could not resolve call to system operator %s. Unknown conversion type.", fun.getName()));
         }
-        builder.resolveCall("System", fun.getName(), new ConvertInvocation(convert));
-        return convert;
+        ConvertInvocation invocation = new ConvertInvocation(convert);
+        builder.resolveInvocation("System", fun.getName(), invocation);
+        return invocation;
     }
 
     // General Function Support
 
-    private UnaryExpression resolveUnary(FunctionRef fun) {
+    private UnaryExpressionInvocation resolveUnary(FunctionRef fun) {
         UnaryExpression operator = null;
         try {
             Class<?> clazz = Class.forName("org.hl7.elm.r1." + fun.getName());
@@ -681,8 +706,9 @@ public class SystemFunctionResolver {
                 operator = (UnaryExpression) clazz.getConstructor().newInstance();
                 checkNumberOfOperands(fun, 1);
                 operator.setOperand(fun.getOperand().get(0));
-                builder.resolveUnaryCall("System", fun.getName(), operator);
-                return operator;
+                UnaryExpressionInvocation invocation = new UnaryExpressionInvocation(operator);
+                builder.resolveInvocation("System", fun.getName(), invocation);
+                return invocation;
             }
         } catch (Exception e) {
             // Do nothing but fall through
@@ -690,7 +716,7 @@ public class SystemFunctionResolver {
         return null;
     }
 
-    private BinaryExpression resolveBinary(FunctionRef fun) {
+    private BinaryExpressionInvocation resolveBinary(FunctionRef fun) {
         BinaryExpression operator = null;
         try {
             Class<?> clazz = Class.forName("org.hl7.elm.r1." + fun.getName());
@@ -698,8 +724,9 @@ public class SystemFunctionResolver {
                 operator = (BinaryExpression) clazz.getConstructor().newInstance();
                 checkNumberOfOperands(fun, 2);
                 operator.getOperand().addAll(fun.getOperand());
-                builder.resolveBinaryCall("System", fun.getName(), operator);
-                return operator;
+                BinaryExpressionInvocation invocation = new BinaryExpressionInvocation(operator);
+                builder.resolveInvocation("System", fun.getName(), invocation);
+                return invocation;
             }
         } catch (Exception e) {
             // Do nothing but fall through
@@ -707,7 +734,7 @@ public class SystemFunctionResolver {
         return null;
     }
 
-    private TernaryExpression resolveTernary(FunctionRef fun) {
+    private TernaryExpressionInvocation resolveTernary(FunctionRef fun) {
         TernaryExpression operator = null;
         try {
             Class<?> clazz = Class.forName("org.hl7.elm.r1." + fun.getName());
@@ -715,8 +742,9 @@ public class SystemFunctionResolver {
                 operator = (TernaryExpression)clazz.getConstructor().newInstance();
                 checkNumberOfOperands(fun, 3);
                 operator.getOperand().addAll(fun.getOperand());
-                builder.resolveTernaryCall("System", fun.getName(), operator);
-                return operator;
+                TernaryExpressionInvocation invocation = new TernaryExpressionInvocation(operator);
+                builder.resolveInvocation("System", fun.getName(), invocation);
+                return invocation;
             }
         }
         catch (Exception e) {
@@ -725,15 +753,16 @@ public class SystemFunctionResolver {
         return null;
     }
 
-    private NaryExpression resolveNary(FunctionRef fun) {
+    private NaryExpressionInvocation resolveNary(FunctionRef fun) {
         NaryExpression operator = null;
         try {
             Class<?> clazz = Class.forName("org.hl7.elm.r1." + fun.getName());
             if (NaryExpression.class.isAssignableFrom(clazz)) {
                 operator = (NaryExpression) clazz.getConstructor().newInstance();
                 operator.getOperand().addAll(fun.getOperand());
-                builder.resolveCall("System", fun.getName(), new NaryExpressionInvocation(operator));
-                return operator;
+                NaryExpressionInvocation invocation = new NaryExpressionInvocation(operator);
+                builder.resolveInvocation("System", fun.getName(), invocation);
+                return invocation;
             }
         } catch (Exception e) {
             // Do nothing but fall through
@@ -741,7 +770,7 @@ public class SystemFunctionResolver {
         return null;
     }
 
-    private AggregateExpression resolveAggregate(FunctionRef fun) {
+    private AggregateExpressionInvocation resolveAggregate(FunctionRef fun) {
         AggregateExpression operator = null;
         try {
             Class<?> clazz = Class.forName("org.hl7.elm.r1." + fun.getName());
@@ -749,8 +778,9 @@ public class SystemFunctionResolver {
                 operator = (AggregateExpression) clazz.getConstructor().newInstance();
                 checkNumberOfOperands(fun, 1);
                 operator.setSource(fun.getOperand().get(0));
-                builder.resolveAggregateCall("System", fun.getName(), operator);
-                return operator;
+                AggregateExpressionInvocation invocation = new AggregateExpressionInvocation(operator);
+                builder.resolveInvocation("System", fun.getName(), invocation);
+                return invocation;
             }
         } catch (Exception e) {
             // Do nothing but fall through

@@ -59,6 +59,12 @@ define TestPrimitives:
       and P.maritalStatus in "Marital Status"
       and P.maritalStatus ~ "Marital Status - Married"
 
+define TestPluralPrimitive:
+  Patient.name.given[0]
+
+define TestSpecificPluralPrimitive:
+  Patient.name[0].given[0]
+
 define TestChoice:
   Patient P
     where P.deceased is false

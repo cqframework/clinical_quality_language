@@ -19,7 +19,7 @@ dependencies {
         exclude group: 'xpp3'
     }
 
-    implementation 'org.apache.commons:commons-text:1.9'
+    implementation 'org.apache.commons:commons-text:1.10.0'
     implementation 'com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations:2.13.2'
 
     testImplementation project(':elm-jackson')
