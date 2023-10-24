@@ -93,7 +93,6 @@ public class CompositeDataProvider implements DataProvider {
     public Iterable<Object> retrieve(String context, String contextPath, Object contextValue, String dataType,
             String templateId, String codePath, Iterable<Code> codes, String valueSet, String datePath,
             String dateLowPath, String dateHighPath, Interval dateRange) {
-        // LUKETODO:  this calls the retrieveProvider that we created:
         return this.retrieveProvider.retrieve(context, contextPath, contextValue, dataType, templateId, codePath, codes, valueSet, datePath, dateLowPath, dateHighPath, dateRange);
     }
 }

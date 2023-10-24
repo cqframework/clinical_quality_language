@@ -66,7 +66,6 @@ public class State {
         }
     }
 
-    // LUKETODO:  this is the pattern we want
     public void setParameter(String libraryName, String name, Object value) {
         boolean enteredLibrary = enterLibrary(libraryName);
         try {
@@ -78,7 +77,6 @@ public class State {
         }
     }
 
-    // LUKETODO:  this is the pattern we want
     public boolean enterLibrary(String libraryName) {
         if (libraryName != null) {
             IncludeDef includeDef = Libraries.resolveLibraryRef(libraryName, getCurrentLibrary());
@@ -96,7 +94,6 @@ public class State {
         return false;
     }
 
-    // LUKETODO:  this is the pattern we want
     public void exitLibrary(boolean enteredLibrary) {
         if (enteredLibrary) {
             currentLibrary.pop();
@@ -219,20 +216,25 @@ public class State {
     }
 
     public void setContextValue(String context, Object contextValue) {
-        // LUKETODO:  don't blindly clear the cache
-        // LUKETODO:  get the value from the Map, and if present, do some sort of equality check vs. the contextValue param
-        contextValues.put(context, contextValue);
-        this.cache.getExpressions().clear();
+        if (! contextValues.containsKey(context) || ! contextValues.get(context).equals(contextValue)) {
+            contextValues.put(context, contextValue);
+            cache.getExpressions().clear();
+        }
     }
 
-    // LUKETODO:  need to fix this pattern to the same as enterLibrary()
-    public void enterContext(String context) {
-        currentContext.push(context);
+    public boolean enterContext(String context) {
+        if (context != null) {
+            currentContext.push(context);
+            return true;
+        }
+
+        return false;
     }
 
-    // LUKETODO:  need to fix this pattern to the same as exitLibrary()
-    public void exitContext() {
-        currentContext.pop();
+    public void exitContext(boolean isEnteredContext) {
+        if (isEnteredContext) {
+            currentContext.pop();
+        }
     }
 
     public String getCurrentContext() {
