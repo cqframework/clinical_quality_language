@@ -22,13 +22,6 @@ public class CqlMainSuiteTest extends CqlTestBase {
     }
 
     @Test
-    public void test_cql_timezone_tests() {
-        var errors = new ArrayList<CqlCompilerException>();
-        this.getLibrary(toElmIdentifier("CqlTimeZoneTestSuite"), errors, testCompilerOptions());
-        assertFalse(CqlCompilerException.hasErrors(errors), String.format("Test library compiled with the following errors : %s", this.toString(errors)));
-    }
-
-    @Test
     public void test_all_portable_cql_engine_tests() {
         var e = getEngine(testCompilerOptions());
         // TODO: It'd be interesting to be able to inspect the
@@ -47,6 +40,28 @@ public class CqlMainSuiteTest extends CqlTestBase {
             }
         }
 
+    }
+
+    @Test
+    public void test_cql_timezone_tests() {
+        var e = getEngine(testCompilerOptions());
+        // TODO: It'd be interesting to be able to inspect the
+        // possible set of expressions from the CQL engine API
+        // prior to evaluating them all
+
+        // LUKETODO:  the below CQL file compiles, it just fails here:
+        var result = e.evaluate(toElmIdentifier("CqlTimeZoneTestSuite"), evalTime);
+
+        for (var entry : result.expressionResults.entrySet()) {
+            if(entry.getKey().toString().startsWith("test")) {
+                if(((ExpressionResult)entry.getValue()).value() != null) {
+                    Assert.assertEquals(
+                            (String) ((ExpressionResult) entry.getValue()).value(),
+                            entry.getKey().toString().replaceAll("test_", "") + " TEST PASSED"
+                    );
+                }
+            }
+        }
     }
 
    protected CqlCompilerOptions testCompilerOptions() {
