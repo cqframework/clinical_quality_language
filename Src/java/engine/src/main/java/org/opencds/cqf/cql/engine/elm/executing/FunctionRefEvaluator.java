@@ -103,7 +103,7 @@ public class FunctionRefEvaluator {
         }
 
         if (candidateDefs.size() > 1 && !hasSignature) {
-            logger.debug(
+            logger.warn(
                     "Using runtime function resolution for '{}'. It's recommended to always include signatures in ELM",
                     name);
         }
