@@ -1052,9 +1052,9 @@ public class CqlDateTimeOperatorsTest extends CqlTestBase {
     public void testNewfoundland() {
         final SoftAssert softAssert = new SoftAssert();
 
-        evaluateExpression("SameAs_SameHour", true, softAssert);
-        evaluateExpression("SameOrAfter_SameHour", true, softAssert);
         evaluateExpression("After_SameHour", false, softAssert);
+        evaluateExpression("SameAs_SameHour", true, softAssert);
+        evaluateExpression("SameOrAfter_HourBefore", false, softAssert);
         evaluateExpression("SameOrBefore_SameHour", true, softAssert);
 
         softAssert.assertAll();
