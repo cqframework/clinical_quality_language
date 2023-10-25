@@ -131,6 +131,7 @@ public class DateTime extends BaseTemporal {
             final int totalMinutesModulo60 = totalMinutes % 60;
 
             final int minutes = totalMinutesModulo60 == 0
+//            final int minutes = totalMinutesModulo60 != 500000
                     ? new BigDecimal("60").multiply(offset.remainder(BigDecimal.ONE)) .intValue()
                     : Math.abs(totalMinutesModulo60); // This is for a half hour or 45 minute timezone, such as Newfoundland, Canada
             dateString.append(ZoneOffset.ofHoursMinutes(offset.intValue(),
