@@ -1045,4 +1045,20 @@ public class CqlDateTimeOperatorsTest extends CqlTestBase {
 //        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2016, 6, 10)));
 //        Assert.assertTrue(((DateTime) result).getDateTime().getOffset().equals(TemporalHelper.getDefaultZoneOffset()));
     }
+
+    // LUKETODO: better name
+    @Test
+    public void testNewfoundland() {
+        evaluateExpression("SameAs_SameHour", true);
+        evaluateExpression("SameOrAfter_SameHour", true);
+        evaluateExpression("After_SameHour", false);
+        evaluateExpression("SameOrBefore_SameHour", true);
+    }
+
+    private void evaluateExpression(String DateTimeSameOrBeforeTodayTrue1, boolean expectedResult) {
+        Object result = engine.expression(library, DateTimeSameOrBeforeTodayTrue1).value();
+        assertThat(result, is(expectedResult));
+    }
+
+
 }
