@@ -78,7 +78,7 @@ public class ElmRequirements extends ElmRequirement {
     For expressions, unique by qualified name
     For data requirements, collapse according to the CQL specification: https://cql.hl7.org/05-languagesemantics.html#artifact-data-requirements
      */
-    public ElmRequirements collapse() {
+    public ElmRequirements collapse(ElmRequirementsContext context) {
         ElmRequirements result = new ElmRequirements(this.libraryIdentifier, this.element);
 
         // UsingDefs
@@ -243,6 +243,7 @@ public class ElmRequirements extends ElmRequirement {
         // Retrieves
         // Sort retrieves by type/profile to reduce search space
         LinkedHashMap<String, List<ElmRequirement>> retrievesByType = new LinkedHashMap<String, List<ElmRequirement>>();
+        List<ElmRequirement> unboundRequirements = new ArrayList<>();
         for (ElmRequirement r : getRetrieves()) {
             Retrieve retrieve = (Retrieve)r.getElement();
             if (retrieve.getDataType() != null) {
@@ -257,8 +258,39 @@ public class ElmRequirements extends ElmRequirement {
                 }
                 typeRetrieves.add(r);
             }
-            // TODO: What to do with data requirements that are captured to track unbound element references
+            else {
+                unboundRequirements.add(r);
+            }
         }
+
+        // Distribute unbound property requirements
+        // If an ElmDataRequirement has a retrieve that does not have a dataType (i.e. it is not a direct data access layer retrieve
+        // but rather is the result of requirements inference), then distribute the property references it contains to
+        // all data layer-bound retrieves of the same type
+        // In other words, we can't unambiguously tie the property reference to any particular retrieve of that type,
+        // so apply it to all of them
+        for (ElmRequirement requirement : unboundRequirements) {
+            if (requirement instanceof ElmDataRequirement) {
+                ElmDataRequirement dataRequirement = (ElmDataRequirement)requirement;
+                if (dataRequirement.hasProperties()) {
+                    String typeUri =  context.getTypeResolver().getTypeUri(dataRequirement.getRetrieve().getResultType());
+                    if (typeUri != null) {
+                        List<ElmRequirement> typeRequirements = retrievesByType.get(typeUri);
+                        if (typeRequirements != null) {
+                            for (ElmRequirement typeRequirement : typeRequirements) {
+                                if (typeRequirement instanceof ElmDataRequirement) {
+                                    ElmDataRequirement typeDataRequirement = (ElmDataRequirement)typeRequirement;
+                                    for (Property p : dataRequirement.getProperties()) {
+                                        typeDataRequirement.addProperty(p);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
 
         // Equivalent
             // Has the same context, type/profile, code path and date path

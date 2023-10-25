@@ -8,8 +8,9 @@ import org.opencds.cqf.cql.engine.execution.State;
 
 public class ExpressionDefEvaluator {
     public  static Object internalEvaluate(ExpressionDef expressionDef, State state, ElmLibraryVisitor<Object,State> visitor) {
+        boolean isEnteredContext = false;
         if (expressionDef.getContext() != null) {
-            state.enterContext(expressionDef.getContext());
+            isEnteredContext = state.enterContext(expressionDef.getContext());
         }
         try {
             state.pushEvaluatedResourceStack();
@@ -31,9 +32,8 @@ public class ExpressionDefEvaluator {
         }
         finally {
             state.popEvaluatedResourceStack();
-            if (expressionDef.getContext() != null) {
-                state.exitContext();
-            }
+            // state.enterContext.getContext() == null will result in isEnteredContext = false, which means pop() won't be called
+            state.exitContext(isEnteredContext);
         }
     }
 }

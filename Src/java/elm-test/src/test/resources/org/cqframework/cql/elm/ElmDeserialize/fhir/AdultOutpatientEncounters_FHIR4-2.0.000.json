@@ -3,7 +3,8 @@
     "annotation": [
       {
         "translatorOptions": "EnableAnnotations",
-        "type": "CqlToElmInfo"
+        "type": "CqlToElmInfo",
+        "signatureLevel" : "Differing"
       }
     ],
     "identifier": {

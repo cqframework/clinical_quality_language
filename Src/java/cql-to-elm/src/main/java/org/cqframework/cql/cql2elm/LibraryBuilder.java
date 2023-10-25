@@ -1,9 +1,9 @@
 package org.cqframework.cql.cql2elm;
 
+import org.apache.commons.lang3.StringUtils;
 import org.cqframework.cql.cql2elm.model.*;
 import org.cqframework.cql.cql2elm.model.invocation.*;
 import org.cqframework.cql.elm.tracking.TrackBack;
-import org.fhir.ucum.UcumService;
 import org.hl7.cql.model.*;
 import org.hl7.cql_annotations.r1.CqlToElmError;
 import org.hl7.cql_annotations.r1.CqlToElmInfo;
@@ -14,6 +14,7 @@ import javax.xml.namespace.QName;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Bryn on 12/29/2016.
@@ -93,6 +94,8 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     private final Map<String, Model> models = new LinkedHashMap<>();
+
+    private final Map<String, ResultWithPossibleError<NamedTypeSpecifier>> nameTypeSpecifiers = new HashMap<>();
     private final Map<String, CompiledLibrary> libraries = new LinkedHashMap<>();
     private final SystemFunctionResolver systemFunctionResolver = new SystemFunctionResolver(this);
     private final Stack<String> expressionContext = new Stack<>();
@@ -151,6 +154,7 @@ public class LibraryBuilder implements ModelResolver {
         }
         setCompatibilityLevel(options.getCompatibilityLevel());
         this.cqlToElmInfo.setTranslatorOptions(options.toString());
+        this.cqlToElmInfo.setSignatureLevel(options.getSignatureLevel().name());
     }
 
     public void setVisitor(Cql2ElmVisitor visitor) {
@@ -260,6 +264,16 @@ public class LibraryBuilder implements ModelResolver {
         }
 
         return model;
+    }
+
+    public ResultWithPossibleError<NamedTypeSpecifier> getNamedTypeSpecifierResult(String namedTypeSpecifierIdentifier) {
+        return nameTypeSpecifiers.get(namedTypeSpecifierIdentifier);
+    }
+
+    public void addNamedTypeSpecifierResult(String namedTypeSpecifierIdentifier, ResultWithPossibleError<NamedTypeSpecifier> namedTypeSpecifierResult) {
+        if (! nameTypeSpecifiers.containsKey(namedTypeSpecifierIdentifier)) {
+            nameTypeSpecifiers.put(namedTypeSpecifierIdentifier, namedTypeSpecifierResult);
+        }
     }
 
     private void loadConversionMap(Model model) {
@@ -1123,8 +1137,15 @@ public class LibraryBuilder implements ModelResolver {
         return result != null ? result.getExpression() : null;
     }
 
-    public Invocation resolveInvocation(String libraryName, String operatorName, Invocation invocation, boolean mustResolve, boolean allowPromotionAndDemotion, boolean allowFluent) {
-        Iterable<Expression> operands = invocation.getOperands();
+    public Invocation resolveInvocation(String libraryName, String operatorName, Invocation invocation) {
+        return resolveInvocation(libraryName, operatorName, invocation, true, false, false);
+    }
+
+    public Invocation resolveInvocation(String libraryName, String operatorName, Invocation invocation, boolean allowPromotionAndDemotion, boolean allowFluent) {
+        return resolveInvocation(libraryName, operatorName, invocation, true, allowPromotionAndDemotion, allowFluent);
+    }
+
+    public CallContext buildCallContext(String libraryName, String operatorName, Iterable<Expression> operands, boolean mustResolve, boolean allowPromotionAndDemotion, boolean allowFluent) {
         List<DataType> dataTypes = new ArrayList<>();
         for (Expression operand : operands) {
             if (operand == null || operand.getResultType() == null) {
@@ -1135,6 +1156,12 @@ public class LibraryBuilder implements ModelResolver {
         }
 
         CallContext callContext = new CallContext(libraryName, operatorName, allowPromotionAndDemotion, allowFluent, mustResolve, dataTypes.toArray(new DataType[dataTypes.size()]));
+        return callContext;
+    }
+
+    public Invocation resolveInvocation(String libraryName, String operatorName, Invocation invocation, boolean mustResolve, boolean allowPromotionAndDemotion, boolean allowFluent) {
+        Iterable<Expression> operands = invocation.getOperands();
+        CallContext callContext = buildCallContext(libraryName, operatorName, operands, mustResolve, allowPromotionAndDemotion, allowFluent);
         OperatorResolution resolution = resolveCall(callContext);
         if (resolution == null && !mustResolve) {
             return null;
@@ -1165,6 +1192,20 @@ public class LibraryBuilder implements ModelResolver {
                 || (options.getSignatureLevel() == SignatureLevel.Overloads && resolution.getOperatorHasOverloads())) {
             invocation.setSignature(dataTypesToTypeSpecifiers(resolution.getOperator().getSignature().getOperandTypes()));
         }
+        else if (resolution.getOperatorHasOverloads() && !resolution.getOperator().getLibraryName().equals("System")) {
+            // NOTE: Because system functions only deal with CQL system-defined types, and there is one and only one
+            // runtime representation of each system-defined type, there is no possibility of ambiguous overload
+            // resolution with system functions
+            // WARNING:
+            reportWarning(String.format("The function %s.%s has multiple overloads and due to the SignatureLevel setting (%s), "
+                    + "the overload signature is not being included in the output. This may result in ambiguous function resolution "
+                    + "at runtime, consider setting the SignatureLevel to Overloads or All to ensure that the output includes sufficient "
+                    + "information to support correct overload selection at runtime.",
+                    resolution.getOperator().getLibraryName(),
+                    resolution.getOperator().getName(),
+                    options.getSignatureLevel().name()
+            ), invocation.getExpression());
+        }
 
         invocation.setResultType(resolution.getOperator().getResultType());
         if (resolution.getLibraryIdentifier() != null) {
@@ -1178,6 +1219,28 @@ public class LibraryBuilder implements ModelResolver {
         // TODO: In theory, we could collapse expressions that are unnecessarily broad, given the targetType (type leading)
         // This is a placeholder for where this functionality would be added in the future.
         return expression;
+    }
+
+    public Operator resolveFunctionDefinition(FunctionDef fd) {
+
+        String libraryName = compiledLibrary.getIdentifier().getId();
+        String operatorName = fd.getName();
+        List<DataType> dataTypes = new ArrayList<>();
+        for (OperandDef operand : fd.getOperand()) {
+            if (operand == null || operand.getResultType() == null) {
+                throw new IllegalArgumentException(String.format("Could not determine signature for invocation of operator %s%s.",
+                        libraryName == null ? "" : libraryName + ".", operatorName));
+            }
+            dataTypes.add(operand.getResultType());
+        }
+
+        CallContext callContext = new CallContext(compiledLibrary.getIdentifier().getId(), fd.getName(), false, fd.isFluent() == null ? false : fd.isFluent(), false, dataTypes.toArray(new DataType[dataTypes.size()]));
+        // Resolve exact, no conversion map
+        OperatorResolution resolution = compiledLibrary.resolveCall(callContext, null);
+        if (resolution != null) {
+            return resolution.getOperator();
+        }
+        return null;
     }
 
     public OperatorResolution resolveCall(CallContext callContext) {
@@ -1199,6 +1262,7 @@ public class LibraryBuilder implements ModelResolver {
                 }
                 /*
                 // Implicit resolution is only allowed for the system library functions.
+                // Except for fluent functions, so consider whether we should have an ambiguous warnings for fluent function resolution?
                 for (CompiledLibrary library : libraries.values()) {
                     OperatorResolution libraryResult = library.resolveCall(callContext, libraryBuilder.getConversionMap());
                     if (libraryResult != null) {
@@ -1211,18 +1275,25 @@ public class LibraryBuilder implements ModelResolver {
                     }
                 }
                 */
-
-                if (result != null) {
-                    checkAccessLevel(result.getOperator().getLibraryName(), result.getOperator().getName(),
-                            result.getOperator().getAccessLevel());
-                }
             }
         }
         else {
             result = resolveLibrary(callContext.getLibraryName()).resolveCall(callContext, conversionMap);
         }
 
+        if (result != null) {
+            checkAccessLevel(result.getOperator().getLibraryName(), result.getOperator().getName(),
+                    result.getOperator().getAccessLevel());
+        }
+
         return result;
+    }
+
+    private boolean isInterFunctionAccess(String f1, String f2) {
+        if(StringUtils.isNoneBlank(f1) && StringUtils.isNoneBlank(f2)) {
+            return !f1.equalsIgnoreCase(f2);
+        }
+        return false;
     }
 
     public void checkOperator(CallContext callContext, OperatorResolution resolution) {
@@ -1244,14 +1315,15 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     public void checkAccessLevel(String libraryName, String objectName, AccessModifier accessModifier) {
-        if (accessModifier == AccessModifier.PRIVATE) {
+        if (accessModifier == AccessModifier.PRIVATE &&
+                isInterFunctionAccess(this.library.getIdentifier().getId(), libraryName)) {
             // ERROR:
-            throw new IllegalArgumentException(String.format("Object %s in library %s is marked private and cannot be referenced from another library.", objectName, libraryName));
+            throw new CqlSemanticException(String.format("Identifier %s in library %s is marked private and cannot be referenced from another library.", objectName, libraryName));
         }
     }
 
     public Expression resolveFunction(String libraryName, String functionName, Iterable<Expression> paramList) {
-        return resolveFunction(libraryName, functionName, paramList, true, false, false);
+        return resolveFunction(libraryName, functionName, paramList, true, false, false).getExpression();
     }
 
     private FunctionRef buildFunctionRef(String libraryName, String functionName, Iterable<Expression> paramList) {
@@ -1266,18 +1338,18 @@ public class LibraryBuilder implements ModelResolver {
         return fun;
     }
 
-    public Expression resolveFunction(String libraryName, String functionName, Iterable<Expression> paramList, boolean mustResolve, boolean allowPromotionAndDemotion, boolean allowFluent) {
+    public Invocation resolveFunction(String libraryName, String functionName, Iterable<Expression> paramList, boolean mustResolve, boolean allowPromotionAndDemotion, boolean allowFluent) {
         FunctionRef fun = buildFunctionRef(libraryName, functionName, paramList);
 
-        // First attempt to resolve as a system or local function
-        FunctionRefInvocation invocation = new FunctionRefInvocation(fun);
-        fun = (FunctionRef)resolveCall(fun.getLibraryName(), fun.getName(), invocation, mustResolve, allowPromotionAndDemotion, allowFluent);
+        // Attempt normal resolution, but don't require one
+        Invocation invocation = new FunctionRefInvocation(fun);
+        fun = (FunctionRef)resolveCall(fun.getLibraryName(), fun.getName(), invocation, false, allowPromotionAndDemotion, allowFluent);
         if (fun != null) {
             if ("System".equals(invocation.getResolution().getOperator().getLibraryName())) {
                 FunctionRef systemFun = buildFunctionRef(libraryName, functionName, paramList); // Rebuild the fun from the original arguments, otherwise it will resolve with conversions in place
-                Expression systemFunction = systemFunctionResolver.resolveSystemFunction(systemFun);
-                if (systemFunction != null) {
-                    return systemFunction;
+                Invocation systemFunctionInvocation = systemFunctionResolver.resolveSystemFunction(systemFun);
+                if (systemFunctionInvocation != null) {
+                    return systemFunctionInvocation;
                 }
             }
             else {
@@ -1293,10 +1365,11 @@ public class LibraryBuilder implements ModelResolver {
             // 2. It is an error condition that needs to be reported
         if (fun == null) {
             fun = buildFunctionRef(libraryName, functionName, paramList);
+            invocation = new FunctionRefInvocation(fun);
 
             if (!allowFluent) {
                 // Only attempt to resolve as a system function if this is not a fluent call or it is a required resolution
-                Expression systemFunction = systemFunctionResolver.resolveSystemFunction(fun);
+                Invocation systemFunction = systemFunctionResolver.resolveSystemFunction(fun);
                 if (systemFunction != null) {
                     return systemFunction;
                 }
@@ -1304,10 +1377,13 @@ public class LibraryBuilder implements ModelResolver {
                 checkLiteralContext();
             }
 
-            fun = (FunctionRef)resolveCall(fun.getLibraryName(), fun.getName(), new FunctionRefInvocation(fun), mustResolve, allowPromotionAndDemotion, allowFluent);
+            fun = (FunctionRef)resolveCall(fun.getLibraryName(), fun.getName(), invocation, mustResolve, allowPromotionAndDemotion, allowFluent);
+            if (fun == null) {
+                return null;
+            }
         }
 
-        return fun;
+        return invocation;
     }
 
     public void verifyComparable(DataType dataType) {
@@ -1602,9 +1678,9 @@ public class LibraryBuilder implements ModelResolver {
                     .withName(conversion.getOperator().getName())
                     .withOperand(expression);
 
-            Expression systemFunction = systemFunctionResolver.resolveSystemFunction(functionRef);
-            if (systemFunction != null) {
-                return systemFunction;
+            Invocation systemFunctionInvocation = systemFunctionResolver.resolveSystemFunction(functionRef);
+            if (systemFunctionInvocation != null) {
+                return systemFunctionInvocation.getExpression();
             }
 
             resolveCall(functionRef.getLibraryName(), functionRef.getName(), new FunctionRefInvocation(functionRef), false, false);
@@ -2591,11 +2667,24 @@ public class LibraryBuilder implements ModelResolver {
             result.setResultType(source.getResultType());
             return result;
         }
-        else if (targetMap.contains("%value.")) {
+        else if (targetMap.startsWith("%value.")) {
             String propertyName = targetMap.substring(7);
-            Property p = of.createProperty().withSource(source).withPath(propertyName);
-            p.setResultType(source.getResultType());
-            return p;
+            // If the source is a list, the mapping is expected to apply to every element in the list
+            // ((source $this return all $this.value)
+            if (source.getResultType() instanceof ListType) {
+                AliasedQuerySource s = of.createAliasedQuerySource().withExpression(source).withAlias("$this");
+                Property p = of.createProperty().withScope("$this").withPath(propertyName);
+                p.setResultType(((ListType)source.getResultType()).getElementType());
+                ReturnClause r = of.createReturnClause().withDistinct(false).withExpression(p);
+                Query q = of.createQuery().withSource(s).withReturn(r);
+                q.setResultType(source.getResultType());
+                return q;
+            }
+            else {
+                Property p = of.createProperty().withSource(source).withPath(propertyName);
+                p.setResultType(source.getResultType());
+                return p;
+            }
         }
 
         throw new IllegalArgumentException(String.format("TargetMapping not implemented: %s", targetMap));
@@ -2652,7 +2741,7 @@ public class LibraryBuilder implements ModelResolver {
             }
 
             if (element instanceof CodeSystemDef) {
-                checkAccessLevel(libraryName, memberIdentifier, ((CodeSystemDef)element).getAccessLevel());
+                checkAccessLevel(libraryName, memberIdentifier, ((CodeSystemDef) element).getAccessLevel());
                 CodeSystemRef result = of.createCodeSystemRef()
                         .withLibraryName(libraryName)
                         .withName(memberIdentifier);
@@ -2936,6 +3025,9 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     public void pushExpressionContext(String context) {
+        if (context == null) {
+            throw new IllegalArgumentException("Expression context cannot be null");
+        }
         expressionContext.push(context);
     }
 

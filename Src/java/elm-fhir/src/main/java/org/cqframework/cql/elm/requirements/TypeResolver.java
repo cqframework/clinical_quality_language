@@ -4,6 +4,7 @@ import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.model.Model;
 import org.hl7.cql.model.*;
 import org.hl7.elm.r1.*;
+import org.hl7.elm_modelinfo.r1.ModelInfo;
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
@@ -19,6 +20,64 @@ public class TypeResolver {
     private LibraryManager libraryManager;
     public LibraryManager getLibraryManager() {
         return libraryManager;
+    }
+
+    public String getTypeUri(DataType type) {
+        if (type instanceof ListType) {
+            return getTypeUri(((ListType)type).getElementType());
+        }
+        if (type instanceof ClassType) {
+            ClassType classType = (ClassType)type;
+            if (classType.getIdentifier() != null) {
+                return classType.getIdentifier();
+            }
+        }
+
+        if (type instanceof NamedType) {
+            return dataTypeToQName(type).getLocalPart();
+        }
+
+        return null;
+    }
+
+    public QName dataTypeToProfileQName(DataType type) {
+        if (type instanceof ClassType) {
+            ClassType classType = (ClassType)type;
+            if (classType.getIdentifier() != null) {
+                int tailIndex = classType.getIdentifier().lastIndexOf('/');
+                if (tailIndex > 0) {
+                    String tail = classType.getIdentifier().substring(tailIndex + 1);
+                    String namespace = classType.getIdentifier().substring(0, tailIndex);
+                    return new QName(namespace, tail);
+                }
+            }
+        }
+
+        if (type instanceof NamedType) {
+            return dataTypeToQName(type);
+        }
+
+        return null;
+    }
+    /**
+     * Return the QName for the given type (without target mapping)
+     * This is to preserve data requirements reporting for profiled types when
+     * reported against unbound data requirements. This will only work when
+     * the ELM tree has type references (which typically means it came
+     * straight from the translator, although type resolution could be
+     * performed by a visitor on an ELM tree).
+     * @param type The data type to determine a QName for
+     * @return The QName for the given type (without target mapping)
+     */
+    public QName dataTypeToQName(DataType type) {
+        if (type instanceof NamedType) {
+            NamedType namedType = (NamedType)type;
+            ModelInfo modelInfo = libraryManager.getModelManager().resolveModel(namedType.getNamespace()).getModelInfo();
+            return new QName(modelInfo.getUrl(), namedType.getSimpleName());
+        }
+
+        // ERROR:
+        throw new IllegalArgumentException("A named type is required in this context.");
     }
 
     public DataType resolveTypeName(QName typeName) {

@@ -18,10 +18,7 @@ import org.cqframework.cql.cql2elm.model.Model;
 import org.hl7.cql.model.ModelIdentifier;
 import org.hl7.elm_modelinfo.r1.ClassInfo;
 import org.hl7.elm_modelinfo.r1.TypeInfo;
-import org.hl7.fhir.r4.model.Base;
-import org.hl7.fhir.r4.model.BaseDateTimeType;
-import org.hl7.fhir.r4.model.DateTimeType;
-import org.hl7.fhir.r4.model.Enumeration;
+import org.hl7.fhir.r4.model.*;
 import org.hl7.fhir.r4.model.Enumerations.AbstractType;
 import org.hl7.fhir.r4.model.Enumerations.AdministrativeGender;
 import org.hl7.fhir.r4.model.Enumerations.AgeUnits;
@@ -44,11 +41,6 @@ import org.hl7.fhir.r4.model.Enumerations.RequestResourceType;
 import org.hl7.fhir.r4.model.Enumerations.ResourceType;
 import org.hl7.fhir.r4.model.Enumerations.SearchParamType;
 import org.hl7.fhir.r4.model.Enumerations.SpecialValues;
-import org.hl7.fhir.r4.model.IdType;
-import org.hl7.fhir.r4.model.Patient;
-import org.hl7.fhir.r4.model.Quantity;
-import org.hl7.fhir.r4.model.SimpleQuantity;
-import org.hl7.fhir.r4.model.VisionPrescription;
 import org.opencds.cqf.cql.engine.fhir.exception.UnknownType;
 import org.opencds.cqf.cql.engine.model.ModelResolver;
 import org.testng.annotations.Test;
@@ -416,5 +408,41 @@ public class TestR4ModelResolver {
 
         Object result = resolver.resolvePath(dt, "value");
         assertNull(result);
+    }
+
+    @Test
+    public void resolveIdPatient() {
+        final String expectedId = "123";
+        final FhirModelResolver<Base,BaseDateTimeType,?,?,?,?,?,?> resolver = new R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4));
+
+        final Patient patient = new Patient();
+        patient.setId(expectedId);
+
+        assertEquals(resolver.resolveId(patient), expectedId);
+    }
+
+    @Test
+    public void resolveIdProcedure() {
+        final String expectedId = "456";
+        final FhirModelResolver<Base,BaseDateTimeType,?,?,?,?,?,?> resolver = new R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4));
+
+        final Procedure procedure = new Procedure();
+        procedure.setId(expectedId);
+
+        assertEquals(resolver.resolveId(procedure), expectedId);
+    }
+
+    @Test
+    public void resolveIdStringReturnsNull() {
+        final FhirModelResolver<Base,BaseDateTimeType,?,?,?,?,?,?> resolver = new R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4));
+
+        assertNull(resolver.resolveId(new Date()));
+    }
+
+    @Test
+    public void resolveIdStringTypeReturnsNull() {
+        final FhirModelResolver<Base,BaseDateTimeType,?,?,?,?,?,?> resolver = new R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4));
+
+        assertNull(resolver.resolveId(new StringType()));
     }
 }

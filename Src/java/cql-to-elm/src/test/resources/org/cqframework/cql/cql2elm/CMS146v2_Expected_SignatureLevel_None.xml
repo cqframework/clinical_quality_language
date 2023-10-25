@@ -1,0 +1,291 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<Library type="Library">
+  <wstxns1:identifier xmlns:wstxns1="urn:hl7-org:elm:r1" wstxns1:type="VersionedIdentifier" id="CMS146" version="2"/>
+  <wstxns2:schemaIdentifier xmlns:wstxns2="urn:hl7-org:elm:r1" wstxns2:type="VersionedIdentifier" id="urn:hl7-org:elm" version="r1"/>
+  <wstxns3:usings xmlns:wstxns3="urn:hl7-org:elm:r1" wstxns3:type="Library$Usings">
+    <wstxns3:def>
+      <wstxns3:def wstxns3:type="UsingDef" localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
+      <wstxns3:def wstxns3:type="UsingDef" localIdentifier="QUICK" uri="http://hl7.org/fhir"/>
+    </wstxns3:def>
+  </wstxns3:usings>
+  <wstxns4:parameters xmlns:wstxns4="urn:hl7-org:elm:r1" wstxns4:type="Library$Parameters">
+    <wstxns4:def>
+      <wstxns4:def wstxns4:type="ParameterDef" name="MeasurementPeriod" accessLevel="Public">
+        <wstxns4:default wstxns4:type="Interval" lowClosed="true" highClosed="false">
+          <wstxns4:low wstxns4:type="DateTime">
+            <wstxns4:year wstxns4:type="Literal" valueType="{urn:hl7-org:elm-types:r1}Integer" value="2013"/>
+            <wstxns4:month wstxns4:type="Literal" valueType="{urn:hl7-org:elm-types:r1}Integer" value="1"/>
+            <wstxns4:day wstxns4:type="Literal" valueType="{urn:hl7-org:elm-types:r1}Integer" value="1"/>
+            <wstxns4:hour wstxns4:type="Literal" valueType="{urn:hl7-org:elm-types:r1}Integer" value="0"/>
+            <wstxns4:minute wstxns4:type="Literal" valueType="{urn:hl7-org:elm-types:r1}Integer" value="0"/>
+            <wstxns4:second wstxns4:type="Literal" valueType="{urn:hl7-org:elm-types:r1}Integer" value="0"/>
+            <wstxns4:millisecond wstxns4:type="Literal" valueType="{urn:hl7-org:elm-types:r1}Integer" value="0"/>
+          </wstxns4:low>
+          <wstxns4:high wstxns4:type="DateTime">
+            <wstxns4:year wstxns4:type="Literal" valueType="{urn:hl7-org:elm-types:r1}Integer" value="2014"/>
+            <wstxns4:month wstxns4:type="Literal" valueType="{urn:hl7-org:elm-types:r1}Integer" value="1"/>
+            <wstxns4:day wstxns4:type="Literal" valueType="{urn:hl7-org:elm-types:r1}Integer" value="1"/>
+            <wstxns4:hour wstxns4:type="Literal" valueType="{urn:hl7-org:elm-types:r1}Integer" value="0"/>
+            <wstxns4:minute wstxns4:type="Literal" valueType="{urn:hl7-org:elm-types:r1}Integer" value="0"/>
+            <wstxns4:second wstxns4:type="Literal" valueType="{urn:hl7-org:elm-types:r1}Integer" value="0"/>
+            <wstxns4:millisecond wstxns4:type="Literal" valueType="{urn:hl7-org:elm-types:r1}Integer" value="0"/>
+          </wstxns4:high>
+        </wstxns4:default>
+      </wstxns4:def>
+    </wstxns4:def>
+  </wstxns4:parameters>
+  <wstxns5:valueSets xmlns:wstxns5="urn:hl7-org:elm:r1" wstxns5:type="Library$ValueSets">
+    <wstxns5:def>
+      <wstxns5:def wstxns5:type="ValueSetDef" name="Acute Pharyngitis" id="2.16.840.1.113883.3.464.1003.102.12.1011" accessLevel="Public"/>
+      <wstxns5:def wstxns5:type="ValueSetDef" name="Acute Tonsillitis" id="2.16.840.1.113883.3.464.1003.102.12.1012" accessLevel="Public"/>
+      <wstxns5:def wstxns5:type="ValueSetDef" name="Ambulatory/ED Visit" id="2.16.840.1.113883.3.464.1003.101.12.1061" accessLevel="Public"/>
+      <wstxns5:def wstxns5:type="ValueSetDef" name="Antibiotic Medications" id="2.16.840.1.113883.3.464.1003.196.12.1001" accessLevel="Public"/>
+      <wstxns5:def wstxns5:type="ValueSetDef" name="Group A Streptococcus Test" id="2.16.840.1.113883.3.464.1003.198.12.1012" accessLevel="Public"/>
+    </wstxns5:def>
+  </wstxns5:valueSets>
+  <wstxns6:contexts xmlns:wstxns6="urn:hl7-org:elm:r1" wstxns6:type="Library$Contexts">
+    <wstxns6:def>
+      <wstxns6:def wstxns6:type="ContextDef" name="Patient"/>
+    </wstxns6:def>
+  </wstxns6:contexts>
+  <wstxns7:statements xmlns:wstxns7="urn:hl7-org:elm:r1" wstxns7:type="Library$Statements">
+    <wstxns7:def>
+      <wstxns7:def wstxns7:type="ExpressionDef" name="Patient" context="Patient">
+        <wstxns7:expression wstxns7:type="SingletonFrom">
+          <wstxns7:operand wstxns7:type="Retrieve" dataType="{http://hl7.org/fhir}Patient" templateId="patient-qicore-qicore-patient"/>
+        </wstxns7:expression>
+      </wstxns7:def>
+      <wstxns7:def wstxns7:type="ExpressionDef" name="InDemographic" context="Patient" accessLevel="Public">
+        <wstxns7:expression wstxns7:type="And">
+          <wstxns7:operand>
+            <wstxns7:operand wstxns7:type="GreaterOrEqual">
+              <wstxns7:operand>
+                <wstxns7:operand wstxns7:type="CalculateAgeAt" precision="Year">
+                  <wstxns7:operand>
+                    <wstxns7:operand wstxns7:type="Property" path="birthDate">
+                      <wstxns7:source wstxns7:type="ExpressionRef" name="Patient"/>
+                    </wstxns7:operand>
+                    <wstxns7:operand wstxns7:type="Start">
+                      <wstxns7:operand wstxns7:type="ParameterRef" name="MeasurementPeriod"/>
+                    </wstxns7:operand>
+                  </wstxns7:operand>
+                </wstxns7:operand>
+                <wstxns7:operand wstxns7:type="Literal" valueType="{urn:hl7-org:elm-types:r1}Integer" value="2"/>
+              </wstxns7:operand>
+            </wstxns7:operand>
+            <wstxns7:operand wstxns7:type="Less">
+              <wstxns7:operand>
+                <wstxns7:operand wstxns7:type="CalculateAgeAt" precision="Year">
+                  <wstxns7:operand>
+                    <wstxns7:operand wstxns7:type="Property" path="birthDate">
+                      <wstxns7:source wstxns7:type="ExpressionRef" name="Patient"/>
+                    </wstxns7:operand>
+                    <wstxns7:operand wstxns7:type="Start">
+                      <wstxns7:operand wstxns7:type="ParameterRef" name="MeasurementPeriod"/>
+                    </wstxns7:operand>
+                  </wstxns7:operand>
+                </wstxns7:operand>
+                <wstxns7:operand wstxns7:type="Literal" valueType="{urn:hl7-org:elm-types:r1}Integer" value="18"/>
+              </wstxns7:operand>
+            </wstxns7:operand>
+          </wstxns7:operand>
+        </wstxns7:expression>
+      </wstxns7:def>
+      <wstxns7:def wstxns7:type="ExpressionDef" name="Pharyngitis" context="Patient" accessLevel="Public">
+        <wstxns7:expression wstxns7:type="Union">
+          <wstxns7:operand>
+            <wstxns7:operand wstxns7:type="Retrieve" dataType="{http://hl7.org/fhir}Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" codeComparator="in">
+              <wstxns7:codes wstxns7:type="ValueSetRef" name="Acute Pharyngitis" preserve="true"/>
+            </wstxns7:operand>
+            <wstxns7:operand wstxns7:type="Retrieve" dataType="{http://hl7.org/fhir}Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" codeComparator="in">
+              <wstxns7:codes wstxns7:type="ValueSetRef" name="Acute Tonsillitis" preserve="true"/>
+            </wstxns7:operand>
+          </wstxns7:operand>
+        </wstxns7:expression>
+      </wstxns7:def>
+      <wstxns7:def wstxns7:type="ExpressionDef" name="Antibiotics" context="Patient" accessLevel="Public">
+        <wstxns7:expression wstxns7:type="Retrieve" dataType="{http://hl7.org/fhir}MedicationPrescription" templateId="medicationprescription-qicore-qicore-medicationprescription" codeProperty="medication.code" codeComparator="in">
+          <wstxns7:codes wstxns7:type="ValueSetRef" name="Antibiotic Medications" preserve="true"/>
+        </wstxns7:expression>
+      </wstxns7:def>
+      <wstxns7:def wstxns7:type="ExpressionDef" name="TargetEncounters" context="Patient" accessLevel="Public">
+        <wstxns7:expression wstxns7:type="Query">
+          <wstxns7:source>
+            <wstxns7:source wstxns7:type="AliasedQuerySource" alias="E">
+              <wstxns7:expression wstxns7:type="Retrieve" dataType="{http://hl7.org/fhir}Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" codeComparator="in">
+                <wstxns7:codes wstxns7:type="ValueSetRef" name="Ambulatory/ED Visit" preserve="true"/>
+              </wstxns7:expression>
+            </wstxns7:source>
+          </wstxns7:source>
+          <wstxns7:relationship>
+            <wstxns7:relationship wstxns7:type="With" alias="P">
+              <wstxns7:expression wstxns7:type="ExpressionRef" name="Pharyngitis"/>
+              <wstxns7:suchThat wstxns7:type="OverlapsAfter">
+                <wstxns7:operand>
+                  <wstxns7:operand wstxns7:type="Interval" lowClosed="true" highClosed="true">
+                    <wstxns7:low wstxns7:type="Property" path="onsetDateTime" scope="P"/>
+                    <wstxns7:high wstxns7:type="Property" path="abatementDate" scope="P"/>
+                  </wstxns7:operand>
+                  <wstxns7:operand wstxns7:type="Property" path="period" scope="E"/>
+                </wstxns7:operand>
+              </wstxns7:suchThat>
+            </wstxns7:relationship>
+            <wstxns7:relationship wstxns7:type="With" alias="A">
+              <wstxns7:expression wstxns7:type="ExpressionRef" name="Antibiotics"/>
+              <wstxns7:suchThat wstxns7:type="And">
+                <wstxns7:operand>
+                  <wstxns7:operand wstxns7:type="In">
+                    <wstxns7:operand>
+                      <wstxns7:operand wstxns7:type="Property" path="dateWritten" scope="A"/>
+                      <wstxns7:operand wstxns7:type="Interval" lowClosed="false" highClosed="true">
+                        <wstxns7:low wstxns7:type="Start">
+                          <wstxns7:operand wstxns7:type="Property" path="period" scope="E"/>
+                        </wstxns7:low>
+                        <wstxns7:high wstxns7:type="Add">
+                          <wstxns7:operand>
+                            <wstxns7:operand wstxns7:type="Start">
+                              <wstxns7:operand wstxns7:type="Property" path="period" scope="E"/>
+                            </wstxns7:operand>
+                            <wstxns7:operand wstxns7:type="Quantity" value="3" unit="days"/>
+                          </wstxns7:operand>
+                        </wstxns7:high>
+                      </wstxns7:operand>
+                    </wstxns7:operand>
+                  </wstxns7:operand>
+                  <wstxns7:operand wstxns7:type="Not">
+                    <wstxns7:operand wstxns7:type="IsNull">
+                      <wstxns7:operand wstxns7:type="Start">
+                        <wstxns7:operand wstxns7:type="Property" path="period" scope="E"/>
+                      </wstxns7:operand>
+                    </wstxns7:operand>
+                  </wstxns7:operand>
+                </wstxns7:operand>
+              </wstxns7:suchThat>
+            </wstxns7:relationship>
+          </wstxns7:relationship>
+          <wstxns7:where wstxns7:type="IncludedIn">
+            <wstxns7:operand>
+              <wstxns7:operand wstxns7:type="Property" path="period" scope="E"/>
+              <wstxns7:operand wstxns7:type="ParameterRef" name="MeasurementPeriod"/>
+            </wstxns7:operand>
+          </wstxns7:where>
+        </wstxns7:expression>
+      </wstxns7:def>
+      <wstxns7:def wstxns7:type="ExpressionDef" name="TargetDiagnoses" context="Patient" accessLevel="Public">
+        <wstxns7:expression wstxns7:type="Query">
+          <wstxns7:source>
+            <wstxns7:source wstxns7:type="AliasedQuerySource" alias="P">
+              <wstxns7:expression wstxns7:type="ExpressionRef" name="Pharyngitis"/>
+            </wstxns7:source>
+          </wstxns7:source>
+          <wstxns7:relationship>
+            <wstxns7:relationship wstxns7:type="With" alias="E">
+              <wstxns7:expression wstxns7:type="ExpressionRef" name="TargetEncounters"/>
+              <wstxns7:suchThat wstxns7:type="OverlapsAfter">
+                <wstxns7:operand>
+                  <wstxns7:operand wstxns7:type="Interval" lowClosed="true" highClosed="true">
+                    <wstxns7:low wstxns7:type="Property" path="onsetDateTime" scope="P"/>
+                    <wstxns7:high wstxns7:type="Property" path="abatementDate" scope="P"/>
+                  </wstxns7:operand>
+                  <wstxns7:operand wstxns7:type="Property" path="period" scope="E"/>
+                </wstxns7:operand>
+              </wstxns7:suchThat>
+            </wstxns7:relationship>
+          </wstxns7:relationship>
+        </wstxns7:expression>
+      </wstxns7:def>
+      <wstxns7:def wstxns7:type="ExpressionDef" name="HasPriorAntibiotics" context="Patient" accessLevel="Public">
+        <wstxns7:expression wstxns7:type="Exists">
+          <wstxns7:operand wstxns7:type="Query">
+            <wstxns7:source>
+              <wstxns7:source wstxns7:type="AliasedQuerySource" alias="A">
+                <wstxns7:expression wstxns7:type="ExpressionRef" name="Antibiotics"/>
+              </wstxns7:source>
+            </wstxns7:source>
+            <wstxns7:relationship>
+              <wstxns7:relationship wstxns7:type="With" alias="D">
+                <wstxns7:expression wstxns7:type="ExpressionRef" name="TargetDiagnoses"/>
+                <wstxns7:suchThat wstxns7:type="And">
+                  <wstxns7:operand>
+                    <wstxns7:operand wstxns7:type="In">
+                      <wstxns7:operand>
+                        <wstxns7:operand wstxns7:type="Property" path="dateWritten" scope="A"/>
+                        <wstxns7:operand wstxns7:type="Interval" lowClosed="true" highClosed="false">
+                          <wstxns7:low wstxns7:type="Subtract">
+                            <wstxns7:operand>
+                              <wstxns7:operand wstxns7:type="Property" path="onsetDateTime" scope="D"/>
+                              <wstxns7:operand wstxns7:type="Quantity" value="30" unit="days"/>
+                            </wstxns7:operand>
+                          </wstxns7:low>
+                          <wstxns7:high wstxns7:type="Property" path="onsetDateTime" scope="D"/>
+                        </wstxns7:operand>
+                      </wstxns7:operand>
+                    </wstxns7:operand>
+                    <wstxns7:operand wstxns7:type="Not">
+                      <wstxns7:operand wstxns7:type="IsNull">
+                        <wstxns7:operand wstxns7:type="Property" path="onsetDateTime" scope="D"/>
+                      </wstxns7:operand>
+                    </wstxns7:operand>
+                  </wstxns7:operand>
+                </wstxns7:suchThat>
+              </wstxns7:relationship>
+            </wstxns7:relationship>
+          </wstxns7:operand>
+        </wstxns7:expression>
+      </wstxns7:def>
+      <wstxns7:def wstxns7:type="ExpressionDef" name="HasTargetEncounter" context="Patient" accessLevel="Public">
+        <wstxns7:expression wstxns7:type="Exists">
+          <wstxns7:operand wstxns7:type="ExpressionRef" name="TargetEncounters"/>
+        </wstxns7:expression>
+      </wstxns7:def>
+      <wstxns7:def wstxns7:type="ExpressionDef" name="InInitialPopulation" context="Patient" accessLevel="Public">
+        <wstxns7:expression wstxns7:type="And">
+          <wstxns7:operand>
+            <wstxns7:operand wstxns7:type="ExpressionRef" name="InDemographic"/>
+            <wstxns7:operand wstxns7:type="ExpressionRef" name="HasTargetEncounter"/>
+          </wstxns7:operand>
+        </wstxns7:expression>
+      </wstxns7:def>
+      <wstxns7:def wstxns7:type="ExpressionDef" name="InDenominator" context="Patient" accessLevel="Public">
+        <wstxns7:expression wstxns7:type="Literal" valueType="{urn:hl7-org:elm-types:r1}Boolean" value="true"/>
+      </wstxns7:def>
+      <wstxns7:def wstxns7:type="ExpressionDef" name="InDenominatorExclusions" context="Patient" accessLevel="Public">
+        <wstxns7:expression wstxns7:type="ExpressionRef" name="HasPriorAntibiotics"/>
+      </wstxns7:def>
+      <wstxns7:def wstxns7:type="ExpressionDef" name="InNumerator" context="Patient" accessLevel="Public">
+        <wstxns7:expression wstxns7:type="Exists">
+          <wstxns7:operand wstxns7:type="Query">
+            <wstxns7:source>
+              <wstxns7:source wstxns7:type="AliasedQuerySource" alias="R">
+                <wstxns7:expression wstxns7:type="Retrieve" dataType="{http://hl7.org/fhir}Observation" templateId="observation-qicore-qicore-observation" codeProperty="code" codeComparator="in">
+                  <wstxns7:codes wstxns7:type="ValueSetRef" name="Group A Streptococcus Test" preserve="true"/>
+                </wstxns7:expression>
+              </wstxns7:source>
+            </wstxns7:source>
+            <wstxns7:relationship/>
+            <wstxns7:where wstxns7:type="And">
+              <wstxns7:operand>
+                <wstxns7:operand wstxns7:type="In">
+                  <wstxns7:operand>
+                    <wstxns7:operand wstxns7:type="Property" path="issued" scope="R"/>
+                    <wstxns7:operand wstxns7:type="ParameterRef" name="MeasurementPeriod"/>
+                  </wstxns7:operand>
+                </wstxns7:operand>
+                <wstxns7:operand wstxns7:type="Not">
+                  <wstxns7:operand wstxns7:type="IsNull">
+                    <wstxns7:operand wstxns7:type="Property" path="valueQuantity" scope="R"/>
+                  </wstxns7:operand>
+                </wstxns7:operand>
+              </wstxns7:operand>
+            </wstxns7:where>
+          </wstxns7:operand>
+        </wstxns7:expression>
+      </wstxns7:def>
+    </wstxns7:def>
+  </wstxns7:statements>
+  <wstxns8:annotation xmlns:wstxns8="urn:hl7-org:elm:r1">
+    <wstxns8:annotation wstxns8:type="CqlToElmInfo" translatorOptions="" signatureLevel="None"/>
+    <wstxns8:annotation wstxns8:type="CqlToElmError" libraryId="CMS146" libraryVersion="2" startLine="22" startChar="5" endLine="22" endChar="54" message="Could not resolve code path medication.code for the type of the retrieve QUICK.MedicationPrescription." errorType="semantic" errorSeverity="warning"/>
+    <wstxns8:annotation wstxns8:type="CqlToElmError" libraryId="CMS146" libraryVersion="2" startLine="22" startChar="5" endLine="22" endChar="54" message="Could not resolve membership operator for terminology target of the retrieve." errorType="semantic" errorSeverity="warning"/>
+  </wstxns8:annotation>
+</Library>
