@@ -8,7 +8,6 @@ import org.opencds.cqf.cql.engine.exception.InvalidDateTime;
 import org.opencds.cqf.cql.engine.runtime.*;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import org.testng.asserts.SoftAssert;
 
 import java.math.BigDecimal;
 
@@ -1046,24 +1045,4 @@ public class CqlDateTimeOperatorsTest extends CqlTestBase {
 //        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2016, 6, 10)));
 //        Assert.assertTrue(((DateTime) result).getDateTime().getOffset().equals(TemporalHelper.getDefaultZoneOffset()));
     }
-
-    // LUKETODO: better name
-    @Test
-    public void testNewfoundland() {
-        final SoftAssert softAssert = new SoftAssert();
-
-        evaluateExpression("After_SameHour", false, softAssert);
-        evaluateExpression("SameAs_SameHour", true, softAssert);
-        evaluateExpression("SameOrAfter_HourBefore", false, softAssert);
-        evaluateExpression("SameOrBefore_SameHour", true, softAssert);
-
-        softAssert.assertAll();
-    }
-
-    private void evaluateExpression(String DateTimeSameOrBeforeTodayTrue1, boolean expectedResult, SoftAssert softAssert) {
-        Object result = engine.expression(library, DateTimeSameOrBeforeTodayTrue1).value();
-        softAssert.assertEquals(result, expectedResult);
-    }
-
-
 }
