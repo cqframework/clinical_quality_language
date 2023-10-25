@@ -14,6 +14,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.isA;
 
 import java.util.Date;
 
@@ -49,6 +50,21 @@ public class CachingModelResolverDecoratorTest {
 
         assertEquals("id", result);
         verify(m, times(1)).getContextPath("Patient", "Patient");
+    }
+
+    @Test
+    public void type_resolved_only_once() {
+        var m = mock(ModelResolver.class);
+        when(m.getPackageName()).thenReturn("test.package");
+        when(m.resolveType(isA(Integer.class))).thenReturn((Class)Integer.class);
+        when(m.resolveType(isA(Class.class))).thenThrow(new RuntimeException("Can't get a class of a class"));
+
+        var cache = new CachingModelResolverDecorator(m);
+        cache.resolveType(5);
+        var result = cache.resolveType(5);
+
+        assertEquals(Integer.class, result);
+        verify(m, times(1)).resolveType(5);
     }
 
     @Test
