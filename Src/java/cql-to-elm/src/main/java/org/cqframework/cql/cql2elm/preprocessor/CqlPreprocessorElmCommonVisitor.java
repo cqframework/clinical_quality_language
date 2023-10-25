@@ -45,6 +45,10 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
     private int nextLocalId = 1;
     private boolean locate = false;
     private boolean resultTypes = false;
+    private boolean dateRangeOptimization = false;
+    private boolean methodInvocation = true;
+    private boolean fromKeywordRequired = false;
+
     private final List<Expression> expressions = new ArrayList<>();
     private boolean includeDeprecatedElements = false;
 
@@ -782,5 +786,111 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
 
     public static boolean isStartingWithDigit(String header, int index) {
         return (index < header.length()) && Character.isDigit(header.charAt(index));
+    }
+
+
+    public void enableLocators() {
+        locate = true;
+    }
+
+    public boolean locatorsEnabled() {
+        return locate;
+    }
+
+    public void disableLocators() {
+        locate = false;
+    }
+
+    public void enableResultTypes() {
+        resultTypes = true;
+    }
+
+    public void disableResultTypes() {
+        resultTypes = false;
+    }
+
+    public boolean resultTypesEnabled() {
+        return resultTypes;
+    }
+
+    public void enableDateRangeOptimization() {
+        dateRangeOptimization = true;
+    }
+
+    public void disableDateRangeOptimization() {
+        dateRangeOptimization = false;
+    }
+
+    public boolean getDateRangeOptimization() {
+        return dateRangeOptimization;
+    }
+
+    public void enableDetailedErrors() {
+        detailedErrors = true;
+    }
+
+    public void disableDetailedErrors() {
+        detailedErrors = false;
+    }
+
+    public boolean isDetailedErrorsEnabled() {
+        return detailedErrors;
+    }
+
+    public void enableMethodInvocation() {
+        methodInvocation = true;
+    }
+
+    public void disableMethodInvocation() {
+        methodInvocation = false;
+    }
+
+    public boolean isMethodInvocationEnabled() {
+        return methodInvocation;
+    }
+
+    public boolean isFromKeywordRequired() {
+        return fromKeywordRequired;
+    }
+
+    public void enableFromKeywordRequired() {
+        fromKeywordRequired = true;
+    }
+
+    public void disableFromKeywordRequired() {
+        fromKeywordRequired = false;
+    }
+
+    public boolean getIncludeDeprecatedElements() {
+        return includeDeprecatedElements;
+    }
+
+    public void setIncludeDeprecatedElements(boolean includeDeprecatedElements) {
+        this.includeDeprecatedElements = includeDeprecatedElements;
+    }
+
+    public void setTranslatorOptions(CqlCompilerOptions options) {
+        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableDateRangeOptimization)) {
+            this.enableDateRangeOptimization();
+        }
+        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableAnnotations)) {
+            this.enableAnnotations();
+        }
+        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableLocators)) {
+            this.enableLocators();
+        }
+        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableResultTypes)) {
+            this.enableResultTypes();
+        }
+        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableDetailedErrors)) {
+            this.enableDetailedErrors();
+        }
+        if (options.getOptions().contains(CqlCompilerOptions.Options.DisableMethodInvocation)) {
+            this.disableMethodInvocation();
+        }
+        if (options.getOptions().contains(CqlCompilerOptions.Options.RequireFromKeyword)) {
+            this.enableFromKeywordRequired();
+        }
+        libraryBuilder.setCompatibilityLevel(options.getCompatibilityLevel());
     }
 }

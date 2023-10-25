@@ -200,27 +200,8 @@
   } ],
   "dataRequirement": [ {
     "type": "Patient",
-    "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-patient" ]
-  }, {
-    "type": "Patient",
     "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-patient" ],
-    "mustSupport": [ "url", "extension" ],
-    "codeFilter": [ {
-      "path": "url",
-      "code": [ {
-        "code": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity"
-      } ]
-    } ]
-  }, {
-    "type": "Patient",
-    "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-patient" ],
-    "mustSupport": [ "url", "extension" ],
-    "codeFilter": [ {
-      "path": "url",
-      "code": [ {
-        "code": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-race"
-      } ]
-    } ]
+    "mustSupport": [ "ethnicity", "race" ]
   }, {
     "type": "Coverage",
     "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-coverage" ],
@@ -232,7 +213,7 @@
   }, {
     "type": "Encounter",
     "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-encounter" ],
-    "mustSupport": [ "type" ],
+    "mustSupport": [ "type", "period", "period.low", "period.lowClosed", "period.high", "period.highClosed", "class", "status", "status.value" ],
     "codeFilter": [ {
       "path": "type",
       "valueSet": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.526.3.1492"
@@ -240,7 +221,7 @@
   }, {
     "type": "Encounter",
     "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-encounter" ],
-    "mustSupport": [ "type" ],
+    "mustSupport": [ "type", "period", "period.low", "period.lowClosed", "period.high", "period.highClosed", "class", "status", "status.value" ],
     "codeFilter": [ {
       "path": "type",
       "valueSet": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1012"
@@ -248,7 +229,7 @@
   }, {
     "type": "Encounter",
     "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-encounter" ],
-    "mustSupport": [ "type" ],
+    "mustSupport": [ "type", "period", "period.low", "period.lowClosed", "period.high", "period.highClosed", "class", "status", "status.value" ],
     "codeFilter": [ {
       "path": "type",
       "valueSet": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1014"
@@ -256,7 +237,7 @@
   }, {
     "type": "Encounter",
     "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-encounter" ],
-    "mustSupport": [ "type" ],
+    "mustSupport": [ "type", "period", "period.low", "period.lowClosed", "period.high", "period.highClosed", "class", "status", "status.value" ],
     "codeFilter": [ {
       "path": "type",
       "valueSet": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1016"
@@ -264,7 +245,7 @@
   }, {
     "type": "Encounter",
     "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-encounter" ],
-    "mustSupport": [ "type" ],
+    "mustSupport": [ "type", "period", "period.low", "period.lowClosed", "period.high", "period.highClosed", "class", "status", "status.value" ],
     "codeFilter": [ {
       "path": "type",
       "valueSet": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.526.3.1496"
@@ -272,7 +253,7 @@
   }, {
     "type": "Encounter",
     "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-encounter" ],
-    "mustSupport": [ "type" ],
+    "mustSupport": [ "type", "period", "period.low", "period.lowClosed", "period.high", "period.highClosed", "class", "status", "status.value" ],
     "codeFilter": [ {
       "path": "type",
       "valueSet": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.526.3.1023"
@@ -280,7 +261,7 @@
   }, {
     "type": "Encounter",
     "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-encounter" ],
-    "mustSupport": [ "type" ],
+    "mustSupport": [ "type", "period", "period.low", "period.lowClosed", "period.high", "period.highClosed", "class", "status", "status.value" ],
     "codeFilter": [ {
       "path": "type",
       "valueSet": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.526.3.1011"
@@ -288,7 +269,7 @@
   }, {
     "type": "Encounter",
     "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-encounter" ],
-    "mustSupport": [ "type" ],
+    "mustSupport": [ "type", "period", "period.low", "period.lowClosed", "period.high", "period.highClosed", "class", "status", "status.value" ],
     "codeFilter": [ {
       "path": "type",
       "valueSet": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1001"
@@ -296,10 +277,18 @@
   }, {
     "type": "Encounter",
     "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-encounter" ],
-    "mustSupport": [ "type" ],
+    "mustSupport": [ "type", "period", "period.low", "period.lowClosed", "period.high", "period.highClosed", "class", "status", "status.value" ],
     "codeFilter": [ {
       "path": "type",
       "valueSet": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1008"
+    } ]
+  }, {
+    "type": "Encounter",
+    "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-encounter" ],
+    "mustSupport": [ "type", "period", "period.low", "period.lowClosed", "period.high", "period.highClosed", "class", "status", "status.value" ],
+    "codeFilter": [ {
+      "path": "type",
+      "valueSet": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.526.3.1012"
     } ]
   }, {
     "type": "Condition",
@@ -308,6 +297,38 @@
     "codeFilter": [ {
       "path": "code",
       "valueSet": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.526.3.1005"
+    } ]
+  }, {
+    "type": "Observation",
+    "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-observation" ],
+    "mustSupport": [ "code", "issued", "issued.value", "value" ],
+    "codeFilter": [ {
+      "path": "code",
+      "valueSet": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.526.3.1006"
+    } ]
+  }, {
+    "type": "Observation",
+    "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-observation" ],
+    "mustSupport": [ "code", "issued", "issued.value", "value" ],
+    "codeFilter": [ {
+      "path": "code",
+      "valueSet": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.526.3.1332"
+    } ]
+  }, {
+    "type": "Observation",
+    "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-observationnotdone" ],
+    "mustSupport": [ "code", "issued", "issued.value", "status", "status.value", "extension" ],
+    "codeFilter": [ {
+      "path": "code",
+      "valueSet": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.526.3.1006"
+    } ]
+  }, {
+    "type": "Observation",
+    "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-observationnotdone" ],
+    "mustSupport": [ "code", "issued", "issued.value", "status", "status.value", "extension" ],
+    "codeFilter": [ {
+      "path": "code",
+      "valueSet": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.526.3.1332"
     } ]
   } ]
 }
