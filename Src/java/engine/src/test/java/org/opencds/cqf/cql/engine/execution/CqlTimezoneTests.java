@@ -4,8 +4,6 @@ import org.cqframework.cql.cql2elm.CqlCompilerOptions;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.ModelManager;
 import org.hl7.elm.r1.VersionedIdentifier;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testng.annotations.*;
 import org.testng.asserts.SoftAssert;
 
@@ -13,52 +11,47 @@ import java.util.TimeZone;
 
 @SuppressWarnings("removal")
 public class CqlTimezoneTests {
-    private static final Logger logger = LoggerFactory.getLogger(CqlTimezoneTests.class);
+    private static final String NORTH_AMERICA_MOUNTAIN = "America/Denver"; // This is the baseline:  Normal hour on the hour timezone
     private static final String NEWFOUNDLAND = "America/St_Johns";
+    private static final String INDIA = "Asia/Kolkata";
+    private static final String AUSTRALIA_NORTHERN_TERRITORY = "Australia/Darwin";
+    private static final String AUSTRALIA_EUCLA= "Australia/Eucla";
+    private static final String AUSTRALIA_BROKEN_HILL = "Australia/Broken_Hill";
+    private static final String AUSTRALIA_LORD_HOWE = "Australia/Lord_Howe";
+    private static final String AUSTRALIA_SOUTH = "Australia/Adelaide";
+
+    private static final String INDIAN_COCOS = "Indian/Cocos";
+    private static final String PACIFIC_CHATHAM = "Pacific/Chatham";
 
     private static ModelManager modelManager;
 
-    private static final VersionedIdentifier library = new VersionedIdentifier().withId("CqlDateTimeOperatorsTest");
+    private static final VersionedIdentifier library = new VersionedIdentifier().withId("CqlTimezoneTests");
 
-    private Environment environment;
-    private CqlEngine engine;
-    private String oldTz;
-
-    // LUKETODO:  parameterized
-    // LUKETODO:  India, Australia Northern Terrirot, Eucia, South Australia, Broken Hill, Lord Howe Island, Coco Islands, Chatham Islands, Sri Lanka, Afghanistan, Iran, Myanmar, Nepal, French Polynesia, Marquesas Islands
-
-    @BeforeMethod
-    void beforeEachMethod(){
-        oldTz = System.getProperty("user.timezone");
-        // This is the ONLY thing that will work.  System.setProperty() and -Dusertimezone do NOT work
-        TimeZone.setDefault(TimeZone.getTimeZone(NEWFOUNDLAND));
-
-        environment = new Environment(getLibraryManager());
-        engine = new CqlEngine(environment);
-
+    @DataProvider
+    private static Object[][] timezones() {
+        return new Object[][] {{NORTH_AMERICA_MOUNTAIN},{NEWFOUNDLAND},{INDIA},{AUSTRALIA_NORTHERN_TERRITORY},{AUSTRALIA_EUCLA},{AUSTRALIA_BROKEN_HILL},{AUSTRALIA_LORD_HOWE},{AUSTRALIA_SOUTH},{INDIAN_COCOS},{PACIFIC_CHATHAM}};
     }
 
-    @AfterMethod
-    void afterEachMethod(){
-        environment = new Environment(getLibraryManager());
-        engine = new CqlEngine(environment);
+    @Test(dataProvider = "timezones")
+    public void testExpressionsProblematicForWeirdTimezones(String timezone) {
+        final String oldTz = System.getProperty("user.timezone");
+        // This is the ONLY thing that will work.  System.setProperty() and -Duser.timezone do NOT work
+        TimeZone.setDefault(TimeZone.getTimeZone(timezone));
 
-        TimeZone.setDefault(TimeZone.getTimeZone(oldTz));
-    }
+        try {
+            final Environment localEnvironment = new Environment(getLibraryManager());
+            final CqlEngine localEngine = new CqlEngine(localEnvironment);
+            final SoftAssert softAssert = new SoftAssert();
 
-    // LUKETODO: better name
-    @Test
-    public void testNewfoundland() {
-        final Environment localEnvironment = new Environment(getLibraryManager());
-        final CqlEngine localEngine = new CqlEngine(localEnvironment);
-        final SoftAssert softAssert = new SoftAssert();
+            evaluateExpression(localEngine, "After_SameHour", false, softAssert);
+            evaluateExpression(localEngine, "SameAs_SameHour", true, softAssert);
+            evaluateExpression(localEngine, "SameOrAfter_HourBefore", false, softAssert);
+            evaluateExpression(localEngine, "SameOrBefore_SameHour", true, softAssert);
 
-        evaluateExpression(localEngine, "After_SameHour", false, softAssert);
-        evaluateExpression(localEngine, "SameAs_SameHour", true, softAssert);
-        evaluateExpression(localEngine, "SameOrAfter_HourBefore", false, softAssert);
-        evaluateExpression(localEngine, "SameOrBefore_SameHour", true, softAssert);
-
-        softAssert.assertAll();
+            softAssert.assertAll();
+        } finally {
+            TimeZone.setDefault(TimeZone.getTimeZone(oldTz));
+        }
     }
     protected static LibraryManager getLibraryManager() {
         return getLibraryManager(createOptionsMin());
