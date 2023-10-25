@@ -49,7 +49,6 @@ public class CqlMainSuiteTest extends CqlTestBase {
         // possible set of expressions from the CQL engine API
         // prior to evaluating them all
 
-        // LUKETODO:  the below CQL file compiles, it just fails here:
         var result = e.evaluate(toElmIdentifier("CqlTimeZoneTestSuite"), evalTime);
 
         for (var entry : result.expressionResults.entrySet()) {

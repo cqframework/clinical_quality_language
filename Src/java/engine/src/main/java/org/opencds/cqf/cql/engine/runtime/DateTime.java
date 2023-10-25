@@ -1,9 +1,7 @@
 package org.opencds.cqf.cql.engine.runtime;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -128,7 +126,16 @@ public class DateTime extends BaseTemporal {
         // Otherwise, parse as a LocalDateTime and then interpret that in the evaluation timezone
 
         if (offset != null) {
-            dateString.append(ZoneOffset.ofHoursMinutes(offset.intValue(), new BigDecimal("60").multiply(offset.remainder(BigDecimal.ONE)).intValue()).getId());
+            final int totalSeconds = ZonedDateTime.now().getOffset().getTotalSeconds();
+            final int totalMinutes = totalSeconds / 60;
+            final int totalMinutesModulo60 = totalMinutes % 60;
+
+            final int minutes = totalMinutesModulo60 == 0
+                    ? new BigDecimal("60").multiply(offset.remainder(BigDecimal.ONE)) .intValue()
+                    : Math.abs(totalMinutesModulo60); // This is for a half hour or 45 minute timezone, such as Newfoundland, Canada
+            dateString.append(ZoneOffset.ofHoursMinutes(offset.intValue(),
+                            minutes)
+                    .getId());
             setDateTime(OffsetDateTime.parse(dateString.toString()));
         }
         else {
