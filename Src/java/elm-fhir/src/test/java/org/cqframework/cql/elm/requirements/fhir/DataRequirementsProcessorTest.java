@@ -1712,6 +1712,17 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
+    public void TestPCSBMI() throws IOException {
+        CqlCompilerOptions compilerOptions = CqlCompilerOptions.defaultOptions();
+        var manager = setupDataRequirementsAnalysis("PCSBMI/PCSBMIScreenAndFollowUpFHIR.cql", compilerOptions);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions, new HashMap<String, Object>(), ZonedDateTime.of(2023, 1, 16, 0, 0, 0, 0, ZoneId.of("UTC")));
+        assertNotNull(moduleDefinitionLibrary);
+        assertEqualToExpectedModuleDefinitionLibrary(moduleDefinitionLibrary, "PCSBMI/PCSBMI-ModuleDefinitionLibrary.json");
+
+        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+    }
+
+    @Test
     public void TestCMS143() throws IOException {
         CqlCompilerOptions compilerOptions = CqlCompilerOptions.defaultOptions();
         compilerOptions.getOptions().add(CqlCompilerOptions.Options.EnableResultTypes);

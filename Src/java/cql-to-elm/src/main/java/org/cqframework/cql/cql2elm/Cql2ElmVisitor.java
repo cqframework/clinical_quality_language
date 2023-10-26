@@ -3871,6 +3871,9 @@ DATETIME
                     return systemMethodResolver.resolveMethod((Expression)target, identifier, paramListCtx, true);
                 }
 
+                if (!isMethodInvocationEnabled()) {
+                    throw new CqlCompilerException(String.format("The identifier %s could not be resolved as an invocation because method-style invocation is disabled.", identifier), CqlCompilerException.ErrorSeverity.Error);
+                }
                 throw new IllegalArgumentException(String.format("Invalid invocation target: %s", target.getClass().getName()));
             }
             finally {
