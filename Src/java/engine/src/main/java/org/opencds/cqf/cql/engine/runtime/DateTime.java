@@ -7,6 +7,7 @@ import java.time.temporal.ChronoField;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.function.Predicate;
 
 import org.opencds.cqf.cql.engine.exception.InvalidDateTime;
 
@@ -143,68 +144,8 @@ public class DateTime extends BaseTemporal {
         zoneId = toZoneId(offset);
     }
 
-    private static ZoneId toZoneId(BigDecimal offset) {
-        return ZoneId.getAvailableZoneIds()
-                .stream()
-                .map(ZoneId::of)
-                .filter(zoneId -> isZoneEquivalentToOffset(zoneId, offset))
-                .findFirst()
-                .orElse(null);
-    }
-
-    private ZoneId toZoneId(OffsetDateTime offsetDateTime) {
-        return ZoneId.getAvailableZoneIds()
-                .stream()
-                .map(ZoneId::of)
-                .filter(zoneId -> isZoneEquivalentToOffset(zoneId, offsetDateTime))
-                .findFirst()
-                .orElse(null);
-    }
-
-    private static ZoneId toZoneId(ZoneOffset offset) {
-        return ZoneId.getAvailableZoneIds()
-                .stream()
-                .map(ZoneId::of)
-                .filter(zoneId -> isZoneEquivalentToOffset(zoneId, offset))
-                .findFirst()
-                .orElse(null);
-    }
-
-    private boolean isZoneEquivalentToOffset(ZoneId zoneId, OffsetDateTime offsetDateTime) {
-        if (offsetDateTime== null) {
-            return false;
-        }
-
-        final ZoneOffset zoneIdOffset = LocalDateTime.now().atZone(zoneId).getOffset();
-        final ZoneOffset offsetDateTimeOffset = offsetDateTime.getOffset();
-
-        return zoneIdOffset.equals(offsetDateTimeOffset);
-    }
-
-    private static boolean isZoneEquivalentToOffset(ZoneId zoneId, ZoneOffset zoneOffset) {
-        if (zoneOffset == null) {
-            return false;
-        }
-
-        final ZoneOffset zoneIdOffset = LocalDateTime.now().atZone(zoneId).getOffset();
-
-        return zoneIdOffset.equals(zoneOffset);
-    }
-
-    private static boolean isZoneEquivalentToOffset(ZoneId zoneId, BigDecimal offset) {
-        if (offset == null) {
-            return false;
-        }
-
-        final ZoneOffset zoneOffset = LocalDateTime.now().atZone(zoneId).getOffset();
-        final long offsetSeconds = zoneOffset.getLong(ChronoField.OFFSET_SECONDS);
-        final BigDecimal offsetMinutes = BigDecimal.valueOf(offsetSeconds).divide(BigDecimal.valueOf(60), 2, RoundingMode.CEILING);
-        final BigDecimal offsetHours = offsetMinutes
-                .divide(BigDecimal.valueOf(60), 2, RoundingMode.CEILING);
-
-        final double zoneDouble = offsetHours.doubleValue();
-        final double offsetDouble = offset.doubleValue();
-        return zoneDouble == offsetDouble;
+    public ZoneId getZoneId() {
+        return zoneId;
     }
 
     public DateTime expandPartialMinFromPrecision(Precision thePrecision) {
@@ -290,11 +231,6 @@ public class DateTime extends BaseTemporal {
         return dateTime;
     }
 
-    // LUKETODO:  better name
-    public ZoneId getZoneId() {
-        return zoneId;
-    }
-
     @Override
     public Integer compareToPrecision(BaseTemporal other, Precision thePrecision) {
         boolean leftMeetsPrecisionRequirements = this.precision.toDateTimeIndex() >= thePrecision.toDateTimeIndex();
@@ -366,5 +302,51 @@ public class DateTime extends BaseTemporal {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         return new DateTime(OffsetDateTime.ofInstant(calendar.toInstant(), calendar.getTimeZone().toZoneId()), Precision.MILLISECOND);
+    }
+
+    private ZoneId toZoneId(OffsetDateTime offsetDateTime) {
+        return toZoneId(offsetDateTime.getOffset());
+    }
+
+    private static ZoneId toZoneId(ZoneOffset offset) {
+        if (offset == null) {
+            return null;
+        }
+
+        return toZoneId(zoneId -> isZoneEquivalentToOffset(zoneId, offset));
+    }
+
+    private static ZoneId toZoneId(BigDecimal offset) {
+        if (offset == null) {
+            return null;
+        }
+
+        return toZoneId(zoneId -> isZoneEquivalentToOffset(zoneId, offset));
+    }
+
+    private static ZoneId toZoneId(Predicate<ZoneId> predicate) {
+        return ZoneId.getAvailableZoneIds()
+                .stream()
+                .map(ZoneId::of)
+                .filter(predicate)
+                .findFirst()
+                .orElse(null);
+    }
+
+    private static boolean isZoneEquivalentToOffset(ZoneId zoneId, ZoneOffset zoneOffset) {
+        final ZoneOffset zoneIdOffset = LocalDateTime.now().atZone(zoneId).getOffset();
+
+        return zoneIdOffset.equals(zoneOffset);
+    }
+
+    private static boolean isZoneEquivalentToOffset(ZoneId zoneId, BigDecimal offset) {
+        final ZoneOffset zoneOffset = LocalDateTime.now().atZone(zoneId).getOffset();
+        final long offsetSeconds = zoneOffset.getLong(ChronoField.OFFSET_SECONDS);
+        final BigDecimal offsetMinutes = BigDecimal.valueOf(offsetSeconds)
+                .divide(BigDecimal.valueOf(60), 2, RoundingMode.CEILING);
+        final BigDecimal offsetHours = offsetMinutes
+                .divide(BigDecimal.valueOf(60), 2, RoundingMode.CEILING);
+
+        return offsetHours.doubleValue() == offset.doubleValue();
     }
 }
