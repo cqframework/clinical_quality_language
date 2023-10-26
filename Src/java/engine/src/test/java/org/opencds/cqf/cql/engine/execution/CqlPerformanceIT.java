@@ -15,6 +15,7 @@ import java.util.TimeZone;
 
 import static org.testng.Assert.assertTrue;
 
+// LUKETODO:  this test suite is failing with performance problems
 public class CqlPerformanceIT extends CqlTestBase {
 
     private static final Integer ITERATIONS = 200;
