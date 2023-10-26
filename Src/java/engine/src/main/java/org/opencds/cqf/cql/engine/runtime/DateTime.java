@@ -1,15 +1,19 @@
 package org.opencds.cqf.cql.engine.runtime;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.*;
+import java.time.temporal.ChronoField;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Optional;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 import org.opencds.cqf.cql.engine.exception.InvalidDateTime;
-import org.opencds.cqf.cql.engine.execution.State;
 
 public class DateTime extends BaseTemporal {
+    private final ZoneId zoneId;
 
     private OffsetDateTime dateTime;
     public OffsetDateTime getDateTime() {
@@ -38,11 +42,17 @@ public class DateTime extends BaseTemporal {
     public DateTime(OffsetDateTime dateTime) {
         setDateTime(dateTime);
         this.precision = Precision.MILLISECOND;
+
+        zoneId = toZoneId(dateTime);
     }
 
     public DateTime(OffsetDateTime dateTime, Precision precision) {
         setDateTime(dateTime);
         this.precision = precision;
+
+        final String offsetDateTimeId = dateTime.getOffset().getId();
+
+        zoneId = toZoneId(dateTime);
     }
 
     public DateTime(String dateString, ZoneOffset offset) {
@@ -89,6 +99,8 @@ public class DateTime extends BaseTemporal {
         else {
             setDateTime(TemporalHelper.toOffsetDateTime(LocalDateTime.parse(dateString)));
         }
+
+        zoneId = toZoneId(offset);
     }
 
     public DateTime(BigDecimal offset, int ... dateElements) {
@@ -122,18 +134,29 @@ public class DateTime extends BaseTemporal {
         precision = Precision.fromDateTimeIndex(stringElements.length - 1);
         dateString = new StringBuilder().append(TemporalHelper.autoCompleteDateTimeString(dateString.toString(), precision));
 
+        // LUKETODO: normally, the calling method provides an offset, which is supposed to derived from the TZ
+        // so we shouldn't do anything funky with timezones here:  we should just interpret the offset as passed and
+        // process the minutes correctly
+
         // If the incoming string has an offset specified, use that offset
         // Otherwise, parse as a LocalDateTime and then interpret that in the evaluation timezone
 
         if (offset != null) {
+            // LUKETODO:  this is for debugging purposes:  remove when testing is done
+            final ZoneId zoneId = ZoneId.systemDefault();
             final int totalSeconds = ZonedDateTime.now().getOffset().getTotalSeconds();
             final int totalMinutes = totalSeconds / 60;
             final int totalMinutesModulo60 = totalMinutes % 60;
 
-            final int minutes = totalMinutesModulo60 == 0
-//            final int minutes = totalMinutesModulo60 != 500000
-                    ? new BigDecimal("60").multiply(offset.remainder(BigDecimal.ONE)) .intValue()
-                    : Math.abs(totalMinutesModulo60); // This is for a half hour or 45 minute timezone, such as Newfoundland, Canada
+            final boolean hoursPositiveNumber = offset.intValue() >= 0;
+            final boolean minutesPositiveNumber = totalMinutesModulo60 >= 0;
+
+            final int oldCalculation = new BigDecimal("60").multiply(offset.remainder(BigDecimal.ONE)).intValue();
+
+//            final int minutes = totalMinutesModulo60 == 0
+            final int minutes = totalMinutesModulo60 != 500000
+                    ? oldCalculation
+                    : (hoursPositiveNumber == minutesPositiveNumber) ? totalMinutesModulo60 : Math.negateExact(totalMinutesModulo60); // This is for a half hour or 45 minute timezone, such as Newfoundland, Canada
             dateString.append(ZoneOffset.ofHoursMinutes(offset.intValue(),
                             minutes)
                     .getId());
@@ -143,6 +166,131 @@ public class DateTime extends BaseTemporal {
             setDateTime(TemporalHelper.toOffsetDateTime(LocalDateTime.parse(dateString.toString())));
         }
 
+        // This is the number of milliseconds to add to UTC
+        final int offset1 = TimeZone.getDefault().getOffset(new Date().toInstant().toEpochMilli());
+        final Integer intValueOfOffset = Optional.ofNullable(offset).map(BigDecimal::intValue).orElse(-1);
+
+        zoneId =
+//                null;
+                toZoneId(offset);
+
+        /*
+        0 = "+12:00"
+1 = "+14:00"
+2 = "-01:00"
+3 = "-03:00"
+4 = "-09:00"
+5 = "-07:00"
+6 = "-02:30"
+7 = "-05:00"
+8 = "+03:00"
+9 = "+01:00"
+10 = "+04:30"
+11 = "+07:00"
+12 = "+05:45"
+13 = "+05:00"
+14 = "+06:30"
+15 = "+10:00"
+16 = "+09:00"
+17 = "Z"
+18 = "-11:00"
+19 = "-06:00"
+20 = "+13:45"
+21 = "+10:30"
+22 = "+11:00"
+23 = "+13:00"
+24 = "-09:30"
+25 = "-08:00"
+26 = "-02:00"
+27 = "-04:00"
+28 = "+02:00"
+29 = "+03:30"
+30 = "+04:00"
+31 = "+06:00"
+32 = "+08:45"
+33 = "+08:00"
+34 = "-12:00"
+35 = "+05:30"
+36 = "+09:30"
+37 = "-10:00"
+         */
+
+//        zoneOffsetIds.stream()
+//                .filter(offsetId )
+    }
+
+    private static ZoneId toZoneId(BigDecimal offset) {
+        return ZoneId.getAvailableZoneIds()
+                .stream()
+                .map(ZoneId::of)
+                .filter(zoneId -> isZoneEquivalentToOffset(zoneId, offset))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private ZoneId toZoneId(OffsetDateTime offsetDateTime) {
+        return ZoneId.getAvailableZoneIds()
+                .stream()
+                .map(ZoneId::of)
+                .filter(zoneId -> isZoneEquivalentToOffset(zoneId, offsetDateTime))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private static ZoneId toZoneId(ZoneOffset offset) {
+        return ZoneId.getAvailableZoneIds()
+                .stream()
+                .map(ZoneId::of)
+                .filter(zoneId -> isZoneEquivalentToOffset(zoneId, offset))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private boolean isZoneEquivalentToOffset(ZoneId zoneId, OffsetDateTime offsetDateTime) {
+        if (offsetDateTime== null) {
+            return false;
+        }
+
+        final ZoneOffset zoneIdOffset = LocalDateTime.now().atZone(zoneId).getOffset();
+        final ZoneOffset offsetDateTimeOffset = offsetDateTime.getOffset();
+
+        return zoneIdOffset.equals(offsetDateTimeOffset);
+    }
+
+    private static boolean isZoneEquivalentToOffset(ZoneId zoneId, ZoneOffset zoneOffset) {
+        if (zoneOffset == null) {
+            return false;
+        }
+
+        final ZoneOffset zoneIdOffset = LocalDateTime.now().atZone(zoneId).getOffset();
+
+        return zoneIdOffset.equals(zoneOffset);
+    }
+
+    private static boolean isZoneEquivalentToOffset(ZoneId zoneId, BigDecimal offset) {
+        if (offset == null) {
+            return false;
+        }
+
+        final ZoneOffset zoneOffset = LocalDateTime.now().atZone(zoneId).getOffset();
+        final long offsetSeconds = zoneOffset.getLong(ChronoField.OFFSET_SECONDS);
+        final BigDecimal offsetMinutes = BigDecimal.valueOf(offsetSeconds).divide(BigDecimal.valueOf(60), 2, RoundingMode.CEILING);
+        final BigDecimal offsetHours = offsetMinutes
+                .divide(BigDecimal.valueOf(60), 2, RoundingMode.CEILING);
+
+        final double zoneDouble = offsetHours.doubleValue();
+        final double offsetDouble = offset.doubleValue();
+        final boolean result = zoneDouble == offsetDouble;
+        return result;
+
+//                .map(zoneId -> LocalDateTime.now().atZone(zoneId))
+//                .map(ZonedDateTime::getOffset)
+//                .map(zonedDateTimeoffset -> zonedDateTimeoffset.get(ChronoField.OFFSET_SECONDS))
+
+//                .map(offsetSeconds -> offsetSeconds / 60)
+//                .map(offsetMinutes -> BigDecimal.valueOf(offsetMinutes).divide(BigDecimal.valueOf(60), RoundingMode.HALF_UP))
+//                .map(BigDecimal::doubleValue)
+//                .filter(bigDecimal -> bigDecimal.equals(offset))
     }
 
     public DateTime expandPartialMinFromPrecision(Precision thePrecision) {
@@ -212,10 +360,18 @@ public class DateTime extends BaseTemporal {
         }
     }
 
-    public OffsetDateTime getNormalized(Precision precision, State c) {
+    public OffsetDateTime getNormalized(Precision precision) {
+        return getNormalized(precision, zoneId);
+    }
+    public OffsetDateTime getNormalized(Precision precision, ZoneId nullableZoneId) {
+
+        // LUKETODO: remove this:
+//        zoneId = null;
+        // LUKETODO:  for debugging only
+        final ZoneId aDefault = TimeZone.getDefault().toZoneId();
         if (precision.toDateTimeIndex() > Precision.DAY.toDateTimeIndex()) {
-            if (c != null) {
-                return dateTime.atZoneSameInstant(c.getEvaluationZonedDateTime().getZone()).toOffsetDateTime();
+            if (nullableZoneId != null) {
+                return dateTime.atZoneSameInstant(nullableZoneId).toOffsetDateTime();
             }
 
             return dateTime.atZoneSameInstant(TimeZone.getDefault().toZoneId()).toOffsetDateTime();
@@ -224,8 +380,9 @@ public class DateTime extends BaseTemporal {
         return dateTime;
     }
 
-    public OffsetDateTime getNormalized(Precision precision) {
-        return getNormalized(precision, null);
+    // LUKETODO:  better name
+    public ZoneId getZoneId() {
+        return zoneId;
     }
 
     @Override
@@ -235,11 +392,24 @@ public class DateTime extends BaseTemporal {
 
         // adjust dates to evaluation offset
         OffsetDateTime leftDateTime = this.getNormalized(thePrecision);
-        OffsetDateTime rightDateTime = ((DateTime) other).getNormalized(thePrecision);
+        // LUKETODO;  normalize to "this" zoneId?
+        OffsetDateTime rightDateTime = ((DateTime) other).getNormalized(thePrecision, getZoneId());
 
         if (!leftMeetsPrecisionRequirements || !rightMeetsPrecisionRequirements) {
             thePrecision = Precision.getLowestDateTimePrecision(this.precision, other.precision);
         }
+
+
+//        final ZoneOffset offset1 = ZonedDateTime.now().getOffset();
+//        final BigDecimal offsetAsBigDecimal = TemporalHelper.zoneToOffset(offset1);
+
+        // GOOD: Mountain
+//        leftDateTime = {OffsetDateTime@3605} "2000-03-15T05:30:25.200-07:00"
+//        rightDateTime = {OffsetDateTime@3610} "2000-03-15T05:14:47.500-07:00"
+
+        // BAD: Newfoundland
+//        leftDateTime = {OffsetDateTime@3770} "2000-03-15T09:00:25.200-03:30"
+//        rightDateTime = {OffsetDateTime@3775} "2000-03-15T08:44:47.500-03:30"
 
         for (int i = 0; i < thePrecision.toDateTimeIndex() + 1; ++i) {
             int leftComp = leftDateTime.get(Precision.getDateTimeChronoFieldFromIndex(i));
