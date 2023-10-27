@@ -329,19 +329,19 @@ public class DateTime extends BaseTemporal {
     }
 
     private ZoneId toZoneId(Predicate<ZoneId> predicate) {
-        final Set<String> allDstOffsets = allZoneIds.stream().
-                map(zoneId ->  zoneId.getId() + zoneId.getRules().getStandardOffset(LocalDateTime.of(2023, Month.JUNE, 25, 5, 15, 0).atZone(zoneId).toInstant()).toString())
-                .collect(Collectors.toSet());
-
-        final Set<String> allNonDstOffsets = allZoneIds.stream().
-                map(zoneId ->  zoneId.getId() + zoneId.getRules().getStandardOffset(LocalDateTime.of(2023, Month.DECEMBER, 25, 5, 15, 0).atZone(zoneId).toInstant()).toString())
-                .collect(Collectors.toSet());
-
-        final Set<String> dstMontreal = allDstOffsets.stream().filter(offset -> offset.contains("Montreal")).collect(Collectors.toSet());
-        final Set<String> nonDstMontreal = allNonDstOffsets.stream().filter(offset -> offset.contains("Montreal")).collect(Collectors.toSet());
-
-        final Set<String> dstNewfoundland = allDstOffsets.stream().filter(offset -> offset.contains("St_Johns")).collect(Collectors.toSet());
-        final Set<String> nonDstNewfoundland = allNonDstOffsets.stream().filter(offset -> offset.contains("St_Johns")).collect(Collectors.toSet());
+//        final Set<String> allDstOffsets = allZoneIds.stream().
+//                map(zoneId ->  zoneId.getId() + zoneId.getRules().getStandardOffset(LocalDateTime.of(2023, Month.JUNE, 25, 5, 15, 0).atZone(zoneId).toInstant()).toString())
+//                .collect(Collectors.toSet());
+//
+//        final Set<String> allNonDstOffsets = allZoneIds.stream().
+//                map(zoneId ->  zoneId.getId() + zoneId.getRules().getStandardOffset(LocalDateTime.of(2023, Month.DECEMBER, 25, 5, 15, 0).atZone(zoneId).toInstant()).toString())
+//                .collect(Collectors.toSet());
+//
+//        final Set<String> dstMontreal = allDstOffsets.stream().filter(offset -> offset.contains("Montreal")).collect(Collectors.toSet());
+//        final Set<String> nonDstMontreal = allNonDstOffsets.stream().filter(offset -> offset.contains("Montreal")).collect(Collectors.toSet());
+//
+//        final Set<String> dstNewfoundland = allDstOffsets.stream().filter(offset -> offset.contains("St_Johns")).collect(Collectors.toSet());
+//        final Set<String> nonDstNewfoundland = allNonDstOffsets.stream().filter(offset -> offset.contains("St_Johns")).collect(Collectors.toSet());
 
         // LUKETODO:  there is a performance issue with CQL and it's probably because we don't inline enough here:
         return allZoneIds.stream()
