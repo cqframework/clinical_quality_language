@@ -15,6 +15,8 @@ import org.opencds.cqf.cql.engine.exception.InvalidDateTime;
 
 public class DateTime extends BaseTemporal {
     private final ZoneId zoneId;
+    private ZoneOffset zoneOffset = null;
+
     // Performance optimization
     private final Set<ZoneId> allZoneIds = getAllZoneIds();
 
@@ -47,12 +49,14 @@ public class DateTime extends BaseTemporal {
         this.precision = Precision.MILLISECOND;
 
         zoneId = toZoneId(dateTime);
+        zoneOffset = toZoneOffset(dateTime);
     }
 
     public DateTime(OffsetDateTime dateTime, Precision precision) {
         setDateTime(dateTime);
         this.precision = precision;
         zoneId = toZoneId(dateTime);
+        zoneOffset = toZoneOffset(dateTime);
     }
 
     public DateTime(String dateString, ZoneOffset offset) {
@@ -101,6 +105,7 @@ public class DateTime extends BaseTemporal {
         }
 
         zoneId = toZoneId(offset);
+        zoneOffset = offset;
     }
 
     public DateTime(BigDecimal offset, int ... dateElements) {
@@ -138,7 +143,8 @@ public class DateTime extends BaseTemporal {
         // Otherwise, parse as a LocalDateTime and then interpret that in the evaluation timezone
 
         if (offset != null) {
-            dateString.append(ZoneOffset.ofHoursMinutes(offset.intValue(), new BigDecimal("60").multiply(offset.remainder(BigDecimal.ONE)).intValue()).getId());
+//            dateString.append(ZoneOffset.ofHoursMinutes(offset.intValue(), new BigDecimal("60").multiply(offset.remainder(BigDecimal.ONE)).intValue()).getId());
+            dateString.append(toZoneOffset(offset).getId());
             setDateTime(OffsetDateTime.parse(dateString.toString()));
         }
         else {
@@ -146,10 +152,15 @@ public class DateTime extends BaseTemporal {
         }
 
         zoneId = toZoneId(offset);
+        zoneOffset = toZoneOffset(offset);
     }
 
     public ZoneId getZoneId() {
         return zoneId;
+    }
+
+    public ZoneOffset getZoneOffset() {
+        return zoneOffset;
     }
 
     public DateTime expandPartialMinFromPrecision(Precision thePrecision) {
@@ -220,13 +231,27 @@ public class DateTime extends BaseTemporal {
     }
 
     public OffsetDateTime getNormalized(Precision precision) {
-        return getNormalized(precision, zoneId);
+//        return getNormalized(precision, zoneId);
+        return getNormalized(precision, zoneOffset);
     }
 
     public OffsetDateTime getNormalized(Precision precision, ZoneId nullableZoneId) {
         if (precision.toDateTimeIndex() > Precision.DAY.toDateTimeIndex()) {
             if (nullableZoneId != null) {
                 return dateTime.atZoneSameInstant(nullableZoneId).toOffsetDateTime();
+            }
+
+            return dateTime.atZoneSameInstant(TimeZone.getDefault().toZoneId()).toOffsetDateTime();
+        }
+
+        return dateTime;
+    }
+
+    public OffsetDateTime getNormalized(Precision precision, ZoneOffset nullableZoneOffset) {
+        if (precision.toDateTimeIndex() > Precision.DAY.toDateTimeIndex()) {
+            if (nullableZoneOffset != null) {
+//                return dateTime.atZoneSameInstant(nullableZoneId).toOffsetDateTime();
+                return dateTime.withOffsetSameInstant(nullableZoneOffset);
             }
 
             return dateTime.atZoneSameInstant(TimeZone.getDefault().toZoneId()).toOffsetDateTime();
@@ -242,7 +267,8 @@ public class DateTime extends BaseTemporal {
 
         // adjust dates to evaluation offset
         OffsetDateTime leftDateTime = this.getNormalized(thePrecision);
-        OffsetDateTime rightDateTime = ((DateTime) other).getNormalized(thePrecision, getZoneId());
+//        OffsetDateTime rightDateTime = ((DateTime) other).getNormalized(thePrecision, getZoneId());
+        OffsetDateTime rightDateTime = ((DateTime) other).getNormalized(thePrecision, getZoneOffset());
 
         if (!leftMeetsPrecisionRequirements || !rightMeetsPrecisionRequirements) {
             thePrecision = Precision.getLowestDateTimePrecision(this.precision, other.precision);
@@ -326,6 +352,34 @@ public class DateTime extends BaseTemporal {
         }
 
         return toZoneId(zoneId -> isZoneEquivalentToOffset(zoneId, offset));
+    }
+
+    private ZoneOffset toZoneOffset(OffsetDateTime offsetDateTime) {
+        return offsetDateTime.getOffset();
+    }
+
+    private ZoneOffset toZoneOffset(BigDecimal offsetAsBigDecimal) {
+        if (offsetAsBigDecimal == null) {
+            return null;
+        }
+
+        return ZoneOffset.ofHoursMinutes(offsetAsBigDecimal.intValue(),
+                new BigDecimal(60)
+                .multiply(offsetAsBigDecimal.remainder(BigDecimal.ONE)).intValue());
+
+//        return allZoneIds.stream()
+//                .map(zoneId -> LocalDateTime.now().atZone(zoneId).getOffset())
+//                .filter(aZoneOffset -> {
+//                    final long offsetSeconds = aZoneOffset.getLong(ChronoField.OFFSET_SECONDS);
+//                    final BigDecimal offsetMinutes = BigDecimal.valueOf(offsetSeconds)
+//                            .divide(BigDecimal.valueOf(60), 2, RoundingMode.CEILING);
+//                    final BigDecimal offsetHours = offsetMinutes
+//                            .divide(BigDecimal.valueOf(60), 2, RoundingMode.CEILING);
+//
+//                    return offsetHours.doubleValue() == offsetAsBigDecimal.doubleValue();
+//                })
+//                .findFirst()
+//                .orElse(null);
     }
 
     private ZoneId toZoneId(Predicate<ZoneId> predicate) {

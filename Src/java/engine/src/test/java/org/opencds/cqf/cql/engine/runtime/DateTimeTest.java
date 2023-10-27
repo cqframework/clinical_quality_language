@@ -77,9 +77,6 @@ public class DateTimeTest {
                 {NON_DST_2024_02_27_07_28_0_STRING, ZoneOffset.UTC, Precision.HOUR},
                 {NON_DST_2024_02_27_07_28_0_STRING, NON_DST_OFFSET_NORTH_AMERICA_EASTERN, Precision.HOUR},
                 {NON_DST_2024_02_27_07_28_0_STRING, NON_DST_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.HOUR},
-                // LUKETODO:  why does only the Eastern time offset work here??
-                // Either I pass in "-02:30" and I get the timezone one hour off, or I get null
-//                {NON_DST_2024_02_27_07_28_0_STRING, DST_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.HOUR},
                 {NON_DST_2024_02_27_07_28_0_STRING, NON_DST_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.HOUR},
                 {DST_2024_06_15_23_32_0_STRING, null, Precision.MILLISECOND},
                 {DST_2024_06_15_23_32_0_STRING, ZoneOffset.UTC, Precision.MILLISECOND},
@@ -98,12 +95,20 @@ public class DateTimeTest {
         assertEquals(normalizedDateTime, dateTime.getDateTime());
     }
 
-    @Test
-    void testDateStringsOtherZoneId() {
-        final OffsetDateTime expectedOffsetDateTime = OffsetDateTime.of(DST_2023_10_26_22_12_0.minusHours(2), DST_OFFSET_NORTH_AMERICA_MOUNTAIN);
-        final DateTime dateTime = new DateTime(DST_2023_10_26_22_12_0_STRING, DST_OFFSET_NORTH_AMERICA_EASTERN);
+    // LUKETODO:  more test cases
+    @DataProvider
+    private static Object[][] dateStringsOtherZoneId() {
+        return new Object[][]{
+                {DST_2023_10_26_22_12_0, DST_OFFSET_NORTH_AMERICA_EASTERN, DST_OFFSET_NORTH_AMERICA_MOUNTAIN}
+        };
+    }
 
-        final OffsetDateTime normalizedDateTime = dateTime.getNormalized(Precision.HOUR, DST_OFFSET_NORTH_AMERICA_MOUNTAIN);
+    @Test(dataProvider = "dateStringsOtherZoneId")
+    void testDateStringsOtherZoneId(LocalDateTime localDateTime, ZoneOffset zoneOffsetInit, ZoneOffset zonedOffsetGetNormalized) {
+        final OffsetDateTime expectedOffsetDateTime = OffsetDateTime.of(localDateTime.minusSeconds(zoneOffsetInit.getTotalSeconds() - zonedOffsetGetNormalized.getTotalSeconds()), zonedOffsetGetNormalized);
+        final DateTime dateTime = new DateTime(FORMATTER.format(localDateTime), zoneOffsetInit);
+
+        final OffsetDateTime normalizedDateTime = dateTime.getNormalized(Precision.HOUR, zonedOffsetGetNormalized);
 
         assertEquals(normalizedDateTime, expectedOffsetDateTime);
     }
@@ -160,6 +165,7 @@ public class DateTimeTest {
                 {BigDecimal.ZERO, Precision.HOUR, NON_DST_2024_02_27_07_28_0_INTS},
                 {NON_DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_EASTERN, Precision.HOUR, NON_DST_2024_02_27_07_28_0_INTS},
                 {NON_DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.HOUR, NON_DST_2024_02_27_07_28_0_INTS},
+                // LUKETODO:  This fails with an offset of "-3.50"
                 {NON_DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.HOUR, NON_DST_2024_02_27_07_28_0_INTS},
                 {null, Precision.MILLISECOND, DST_2024_06_15_23_32_0_INTS},
                 {BigDecimal.ZERO, Precision.MILLISECOND, DST_2024_06_15_23_32_0_INTS},
@@ -179,5 +185,13 @@ public class DateTimeTest {
         assertEquals(normalizedDateTime, dateTime.getDateTime());
     }
 
-    // LUKETODO:  consider 2 param getNormalized
+    @Test
+    void testNewfoundlandNonDst() {
+        final int[] dateElementsArray = NON_DST_2024_02_27_07_28_0_INTS.stream().mapToInt(anInt -> anInt).toArray();
+        final DateTime dateTime = new DateTime(NON_DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, dateElementsArray);
+
+        final OffsetDateTime normalizedDateTime = dateTime.getNormalized(Precision.HOUR);
+
+        assertEquals(normalizedDateTime, dateTime.getDateTime());
+    }
 }
