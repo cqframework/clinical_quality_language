@@ -6,13 +6,17 @@ import java.time.*;
 import java.time.temporal.ChronoField;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Set;
 import java.util.TimeZone;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.opencds.cqf.cql.engine.exception.InvalidDateTime;
 
 public class DateTime extends BaseTemporal {
     private final ZoneId zoneId;
+    // Performance optimization
+    private final Set<ZoneId> allZoneIds = getAllZoneIds();
 
     private OffsetDateTime dateTime;
     public OffsetDateTime getDateTime() {
@@ -308,7 +312,7 @@ public class DateTime extends BaseTemporal {
         return toZoneId(offsetDateTime.getOffset());
     }
 
-    private static ZoneId toZoneId(ZoneOffset offset) {
+    private ZoneId toZoneId(ZoneOffset offset) {
         if (offset == null) {
             return null;
         }
@@ -316,7 +320,7 @@ public class DateTime extends BaseTemporal {
         return toZoneId(zoneId -> isZoneEquivalentToOffset(zoneId, offset));
     }
 
-    private static ZoneId toZoneId(BigDecimal offset) {
+    private ZoneId toZoneId(BigDecimal offset) {
         if (offset == null) {
             return null;
         }
@@ -324,13 +328,33 @@ public class DateTime extends BaseTemporal {
         return toZoneId(zoneId -> isZoneEquivalentToOffset(zoneId, offset));
     }
 
-    private static ZoneId toZoneId(Predicate<ZoneId> predicate) {
-        return ZoneId.getAvailableZoneIds()
-                .stream()
-                .map(ZoneId::of)
+    private ZoneId toZoneId(Predicate<ZoneId> predicate) {
+        final Set<String> allDstOffsets = allZoneIds.stream().
+                map(zoneId ->  zoneId.getId() + zoneId.getRules().getStandardOffset(LocalDateTime.of(2023, Month.JUNE, 25, 5, 15, 0).atZone(zoneId).toInstant()).toString())
+                .collect(Collectors.toSet());
+
+        final Set<String> allNonDstOffsets = allZoneIds.stream().
+                map(zoneId ->  zoneId.getId() + zoneId.getRules().getStandardOffset(LocalDateTime.of(2023, Month.DECEMBER, 25, 5, 15, 0).atZone(zoneId).toInstant()).toString())
+                .collect(Collectors.toSet());
+
+        final Set<String> dstMontreal = allDstOffsets.stream().filter(offset -> offset.contains("Montreal")).collect(Collectors.toSet());
+        final Set<String> nonDstMontreal = allNonDstOffsets.stream().filter(offset -> offset.contains("Montreal")).collect(Collectors.toSet());
+
+        final Set<String> dstNewfoundland = allDstOffsets.stream().filter(offset -> offset.contains("St_Johns")).collect(Collectors.toSet());
+        final Set<String> nonDstNewfoundland = allNonDstOffsets.stream().filter(offset -> offset.contains("St_Johns")).collect(Collectors.toSet());
+
+        // LUKETODO:  there is a performance issue with CQL and it's probably because we don't inline enough here:
+        return allZoneIds.stream()
                 .filter(predicate)
                 .findFirst()
                 .orElse(null);
+    }
+
+    private static Set<ZoneId> getAllZoneIds() {
+        return ZoneId.getAvailableZoneIds()
+                .stream()
+                .map(ZoneId::of)
+                .collect(Collectors.toSet());
     }
 
     private static boolean isZoneEquivalentToOffset(ZoneId zoneId, ZoneOffset zoneOffset) {

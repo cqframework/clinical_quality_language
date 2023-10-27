@@ -16,35 +16,38 @@ import java.util.List;
 import static org.testng.Assert.*;
 
 public class DateTimeTest {
-    private static final LocalDateTime LDT_2023_10_26_22_12_0 = LocalDateTime.of(2023, Month.OCTOBER, 26, 22, 12, 0);
-    private static final LocalDateTime LDT_2023_11_03_02_52_0 = LocalDateTime.of(2023, Month.NOVEMBER, 3, 2, 52, 0);
+    private static final LocalDateTime DST_2023_10_26_22_12_0 = LocalDateTime.of(2023, Month.OCTOBER, 26, 22, 12, 0);
+    private static final LocalDateTime DST_2023_11_03_02_52_0 = LocalDateTime.of(2023, Month.NOVEMBER, 3, 2, 52, 0);
     // This is OUTSIDE of Daylight Savings Time
-    private static final LocalDateTime LDT_2024_02_27_07_28_0 = LocalDateTime.of(2024, Month.FEBRUARY, 27, 7, 28, 0);
-    private static final LocalDateTime LDT_2024_06_15_23_32_0 = LocalDateTime.of(2024, Month.JULY, 15, 23, 32, 0);
+    private static final LocalDateTime NON_DST_2024_02_27_07_28_0 = LocalDateTime.of(2024, Month.FEBRUARY, 27, 7, 28, 0);
+    private static final LocalDateTime DST_2024_06_15_23_32_0 = LocalDateTime.of(2024, Month.JULY, 15, 23, 32, 0);
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
-    private static final String _2023_10_26 = FORMATTER.format(LDT_2023_10_26_22_12_0);
-    private static final String _2023_11_03 = FORMATTER.format(LDT_2023_11_03_02_52_0);
-    private static final String _2024_02_27 = FORMATTER.format(LDT_2024_02_27_07_28_0);
-    private static final String _2024_06_15 = FORMATTER.format(LDT_2024_06_15_23_32_0);
+    private static final String DST_2023_10_26_22_12_0_STRING = FORMATTER.format(DST_2023_10_26_22_12_0);
+    private static final String DST_2023_11_03_02_52_0_STRING = FORMATTER.format(DST_2023_11_03_02_52_0);
+    private static final String NON_DST_2024_02_27_07_28_0_STRING = FORMATTER.format(NON_DST_2024_02_27_07_28_0);
+    private static final String DST_2024_06_15_23_32_0_STRING = FORMATTER.format(DST_2024_06_15_23_32_0);
 
-    private static final List<Integer> _2023_10_26_22_12_0 = toList(LDT_2024_06_15_23_32_0);
+    private static final List<Integer> DST_2023_10_26_22_12_0_INTS = toList(DST_2024_06_15_23_32_0);
 
-    private static final List<Integer> _2023_11_03_02_52_0 = toList(LDT_2023_11_03_02_52_0);
-    private static final List<Integer> _2024_02_27_07_28_0 = toList(LDT_2024_02_27_07_28_0);
-    private static final List<Integer> _2024_06_15_23_32_0 = toList(LDT_2024_06_15_23_32_0);
+    private static final List<Integer> DST_2023_11_03_02_52_0_INTS = toList(DST_2023_11_03_02_52_0);
+    private static final List<Integer> NON_DST_2024_02_27_07_28_0_INTS = toList(NON_DST_2024_02_27_07_28_0);
+    private static final List<Integer> DST_2024_06_15_23_32_0_INTS = toList(DST_2024_06_15_23_32_0);
 
-    // LUKETODO:  change each of these offsets when dealing with standard (non-DST) time
-    private static final ZoneOffset OFFSET_NORTH_AMERICA_EASTERN = ZoneOffset.of("-04:00");
-    private static final ZoneOffset OFFSET_NORTH_AMERICA_MOUNTAIN = ZoneOffset.of("-06:00");
-    private static final ZoneOffset OFFSET_NORTH_AMERICA_NEWFOUNDLAND = ZoneOffset.of("-02:30");
-    private static final ZoneOffset OFFSET_NORTH_AMERICA_NEWFOUNDLAND_DST = ZoneOffset.of("-03:30");
+    private static final ZoneOffset DST_OFFSET_NORTH_AMERICA_EASTERN = ZoneOffset.of("-04:00");
+    private static final ZoneOffset NON_DST_OFFSET_NORTH_AMERICA_EASTERN = ZoneOffset.of("-05:00");
+    private static final ZoneOffset DST_OFFSET_NORTH_AMERICA_MOUNTAIN = ZoneOffset.of("-06:00");
+    private static final ZoneOffset NON_DST_OFFSET_NORTH_AMERICA_MOUNTAIN = ZoneOffset.of("-07:00");
+    private static final ZoneOffset DST_OFFSET_NORTH_AMERICA_NEWFOUNDLAND = ZoneOffset.of("-02:30");
+    private static final ZoneOffset NON_DST_OFFSET_NORTH_AMERICA_NEWFOUNDLAND = ZoneOffset.of("-03:30");
 
-    private static final BigDecimal BIG_DECIMAL_OFFSET_NORTH_AMERICA_EASTERN = toBigDecimal(OFFSET_NORTH_AMERICA_EASTERN);
-    private static final BigDecimal BIG_DECIMAL_OFFSET_NORTH_AMERICA_MOUNTAIN = toBigDecimal(OFFSET_NORTH_AMERICA_MOUNTAIN);
-    private static final BigDecimal BIG_DECIMAL_OFFSET_NORTH_AMERICA_NEWFOUNDLAND = toBigDecimal(OFFSET_NORTH_AMERICA_NEWFOUNDLAND);
-    private static final BigDecimal BIG_DECIMAL_OFFSET_NORTH_AMERICA_NEWFOUNDLAND_DST = toBigDecimal(OFFSET_NORTH_AMERICA_NEWFOUNDLAND_DST);
+    private static final BigDecimal DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_EASTERN = toBigDecimal(DST_OFFSET_NORTH_AMERICA_EASTERN);
+    private static final BigDecimal NON_DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_EASTERN = toBigDecimal(NON_DST_OFFSET_NORTH_AMERICA_EASTERN);
+    private static final BigDecimal DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_MOUNTAIN = toBigDecimal(DST_OFFSET_NORTH_AMERICA_MOUNTAIN);
+    private static final BigDecimal NON_DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_MOUNTAIN = toBigDecimal(NON_DST_OFFSET_NORTH_AMERICA_MOUNTAIN);
+    private static final BigDecimal DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_NEWFOUNDLAND = toBigDecimal(DST_OFFSET_NORTH_AMERICA_NEWFOUNDLAND);
+    private static final BigDecimal NON_DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_NEWFOUNDLAND = toBigDecimal(NON_DST_OFFSET_NORTH_AMERICA_NEWFOUNDLAND);
 
     private static BigDecimal toBigDecimal(ZoneOffset zoneOffset) {
         final long offsetSeconds = zoneOffset.getLong(ChronoField.OFFSET_SECONDS);
@@ -60,26 +63,29 @@ public class DateTimeTest {
     @DataProvider
     private static Object[][] dateStrings() {
         return new Object[][] {
-                {_2023_10_26, null, Precision.HOUR},
-                {_2023_10_26, ZoneOffset.UTC, Precision.HOUR},
-                {_2023_10_26, OFFSET_NORTH_AMERICA_EASTERN, Precision.HOUR},
-                {_2023_10_26, OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.HOUR},
-                {_2023_10_26, OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.HOUR},
-                {_2023_10_26, null, Precision.MILLISECOND},
-                {_2023_11_03, ZoneOffset.UTC, Precision.MILLISECOND},
-                {_2023_11_03, OFFSET_NORTH_AMERICA_EASTERN, Precision.MILLISECOND},
-                {_2023_11_03, OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.MILLISECOND},
-                {_2023_11_03, OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.MILLISECOND},
-                {_2024_02_27, null, Precision.HOUR},
-                {_2024_02_27, ZoneOffset.UTC, Precision.HOUR},
-                {_2024_02_27, OFFSET_NORTH_AMERICA_EASTERN, Precision.HOUR},
-                {_2024_02_27, OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.HOUR},
-                {_2024_02_27, OFFSET_NORTH_AMERICA_NEWFOUNDLAND_DST, Precision.HOUR},
-                {_2024_06_15, null, Precision.MILLISECOND},
-                {_2024_06_15, ZoneOffset.UTC, Precision.MILLISECOND},
-                {_2024_06_15, OFFSET_NORTH_AMERICA_EASTERN, Precision.MILLISECOND},
-                {_2024_06_15, OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.MILLISECOND},
-                {_2024_06_15, OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.MILLISECOND}
+                {DST_2023_10_26_22_12_0_STRING, null, Precision.HOUR},
+                {DST_2023_10_26_22_12_0_STRING, ZoneOffset.UTC, Precision.HOUR},
+                {DST_2023_10_26_22_12_0_STRING, DST_OFFSET_NORTH_AMERICA_EASTERN, Precision.HOUR},
+                {DST_2023_10_26_22_12_0_STRING, DST_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.HOUR},
+                {DST_2023_10_26_22_12_0_STRING, DST_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.HOUR},
+                {DST_2023_10_26_22_12_0_STRING, null, Precision.MILLISECOND},
+                {DST_2023_11_03_02_52_0_STRING, ZoneOffset.UTC, Precision.MILLISECOND},
+                {DST_2023_11_03_02_52_0_STRING, DST_OFFSET_NORTH_AMERICA_EASTERN, Precision.MILLISECOND},
+                {DST_2023_11_03_02_52_0_STRING, DST_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.MILLISECOND},
+                {DST_2023_11_03_02_52_0_STRING, DST_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.MILLISECOND},
+                {NON_DST_2024_02_27_07_28_0_STRING, null, Precision.HOUR},
+                {NON_DST_2024_02_27_07_28_0_STRING, ZoneOffset.UTC, Precision.HOUR},
+                {NON_DST_2024_02_27_07_28_0_STRING, NON_DST_OFFSET_NORTH_AMERICA_EASTERN, Precision.HOUR},
+                {NON_DST_2024_02_27_07_28_0_STRING, NON_DST_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.HOUR},
+                // LUKETODO:  why does only the Eastern time offset work here??
+                // Either I pass in "-02:30" and I get the timezone one hour off, or I get null
+//                {NON_DST_2024_02_27_07_28_0_STRING, DST_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.HOUR},
+                {NON_DST_2024_02_27_07_28_0_STRING, NON_DST_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.HOUR},
+                {DST_2024_06_15_23_32_0_STRING, null, Precision.MILLISECOND},
+                {DST_2024_06_15_23_32_0_STRING, ZoneOffset.UTC, Precision.MILLISECOND},
+                {DST_2024_06_15_23_32_0_STRING, DST_OFFSET_NORTH_AMERICA_EASTERN, Precision.MILLISECOND},
+                {DST_2024_06_15_23_32_0_STRING, DST_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.MILLISECOND},
+                {DST_2024_06_15_23_32_0_STRING, DST_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.MILLISECOND}
         };
     }
 
@@ -92,25 +98,35 @@ public class DateTimeTest {
         assertEquals(normalizedDateTime, dateTime.getDateTime());
     }
 
+    @Test
+    void testDateStringsOtherZoneId() {
+        final OffsetDateTime expectedOffsetDateTime = OffsetDateTime.of(DST_2023_10_26_22_12_0.minusHours(2), DST_OFFSET_NORTH_AMERICA_MOUNTAIN);
+        final DateTime dateTime = new DateTime(DST_2023_10_26_22_12_0_STRING, DST_OFFSET_NORTH_AMERICA_EASTERN);
+
+        final OffsetDateTime normalizedDateTime = dateTime.getNormalized(Precision.HOUR, DST_OFFSET_NORTH_AMERICA_MOUNTAIN);
+
+        assertEquals(normalizedDateTime, expectedOffsetDateTime);
+    }
+
     @DataProvider
     private static Object[][] offsetPrecisions() {
         return new Object[][] {
-//                {LDT_2023_10_26_22_12_0, ZoneOffset.UTC, Precision.HOUR},
-//                {LDT_2023_10_26_22_12_0, OFFSET_NORTH_AMERICA_EASTERN, Precision.HOUR},
-//                {LDT_2023_10_26_22_12_0, OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.HOUR},
-//                {LDT_2023_10_26_22_12_0, OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.HOUR},
-//                {LDT_2023_11_03_02_52_0, ZoneOffset.UTC, Precision.MILLISECOND},
-//                {LDT_2023_11_03_02_52_0, OFFSET_NORTH_AMERICA_EASTERN, Precision.MILLISECOND},
-//                {LDT_2023_11_03_02_52_0, OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.MILLISECOND},
-//                {LDT_2023_11_03_02_52_0, OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.MILLISECOND},
-//                {LDT_2024_02_27_07_28_0, ZoneOffset.UTC, Precision.HOUR},
-                {LDT_2024_02_27_07_28_0, OFFSET_NORTH_AMERICA_EASTERN, Precision.HOUR},
-//                {LDT_2024_02_27_07_28_0, OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.HOUR},
-                {LDT_2024_02_27_07_28_0, OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.HOUR},
-//                {LDT_2024_06_15_23_32_0, ZoneOffset.UTC, Precision.MILLISECOND},
-//                {LDT_2024_06_15_23_32_0, OFFSET_NORTH_AMERICA_EASTERN, Precision.MILLISECOND},
-//                {LDT_2024_06_15_23_32_0, OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.MILLISECOND},
-//                {LDT_2024_06_15_23_32_0, OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.MILLISECOND},
+                {DST_2023_10_26_22_12_0, ZoneOffset.UTC, Precision.HOUR},
+                {DST_2023_10_26_22_12_0, NON_DST_OFFSET_NORTH_AMERICA_EASTERN, Precision.HOUR},
+                {DST_2023_10_26_22_12_0, DST_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.HOUR},
+                {DST_2023_10_26_22_12_0, DST_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.HOUR},
+                {DST_2023_11_03_02_52_0, ZoneOffset.UTC, Precision.MILLISECOND},
+                {DST_2023_11_03_02_52_0, NON_DST_OFFSET_NORTH_AMERICA_EASTERN, Precision.MILLISECOND},
+                {DST_2023_11_03_02_52_0, DST_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.MILLISECOND},
+                {DST_2023_11_03_02_52_0, DST_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.MILLISECOND},
+                {NON_DST_2024_02_27_07_28_0, ZoneOffset.UTC, Precision.HOUR},
+                {NON_DST_2024_02_27_07_28_0, NON_DST_OFFSET_NORTH_AMERICA_EASTERN, Precision.HOUR},
+                {NON_DST_2024_02_27_07_28_0, NON_DST_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.HOUR},
+                {NON_DST_2024_02_27_07_28_0, NON_DST_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.HOUR},
+                {DST_2024_06_15_23_32_0, ZoneOffset.UTC, Precision.MILLISECOND},
+                {DST_2024_06_15_23_32_0, NON_DST_OFFSET_NORTH_AMERICA_EASTERN, Precision.MILLISECOND},
+                {DST_2024_06_15_23_32_0, DST_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.MILLISECOND},
+                {DST_2024_06_15_23_32_0, DST_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.MILLISECOND},
         };
     }
 
@@ -130,26 +146,26 @@ public class DateTimeTest {
     @DataProvider
     private static Object[][] bigDecimals() {
         return new Object[][] {
-                {null, Precision.HOUR, _2023_10_26_22_12_0},
-                {BigDecimal.ZERO, Precision.HOUR, _2023_10_26_22_12_0},
-                {BIG_DECIMAL_OFFSET_NORTH_AMERICA_EASTERN, Precision.HOUR, _2023_10_26_22_12_0},
-                {BIG_DECIMAL_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.HOUR, _2023_10_26_22_12_0},
-                {BIG_DECIMAL_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.HOUR, _2023_10_26_22_12_0},
-                {null, Precision.MILLISECOND, _2023_11_03_02_52_0},
-                {BigDecimal.ZERO, Precision.MILLISECOND, _2023_11_03_02_52_0},
-                {BIG_DECIMAL_OFFSET_NORTH_AMERICA_EASTERN, Precision.MILLISECOND, _2023_11_03_02_52_0},
-                {BIG_DECIMAL_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.MILLISECOND, _2023_11_03_02_52_0},
-                {BIG_DECIMAL_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.MILLISECOND, _2023_11_03_02_52_0},
-                {null, Precision.HOUR, _2024_02_27_07_28_0},
-                {BigDecimal.ZERO, Precision.HOUR, _2024_02_27_07_28_0},
-                {BIG_DECIMAL_OFFSET_NORTH_AMERICA_EASTERN, Precision.HOUR, _2024_02_27_07_28_0},
-                {BIG_DECIMAL_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.HOUR, _2024_02_27_07_28_0},
-                {BIG_DECIMAL_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.HOUR, _2024_02_27_07_28_0},
-                {null, Precision.MILLISECOND, _2024_06_15_23_32_0},
-                {BigDecimal.ZERO, Precision.MILLISECOND, _2024_06_15_23_32_0},
-                {BIG_DECIMAL_OFFSET_NORTH_AMERICA_EASTERN, Precision.MILLISECOND, _2024_06_15_23_32_0},
-                {BIG_DECIMAL_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.HOUR, _2024_06_15_23_32_0},
-                {BIG_DECIMAL_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.MILLISECOND, _2024_06_15_23_32_0},
+                {null, Precision.HOUR, DST_2023_10_26_22_12_0_INTS},
+                {BigDecimal.ZERO, Precision.HOUR, DST_2023_10_26_22_12_0_INTS},
+                {DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_EASTERN, Precision.HOUR, DST_2023_10_26_22_12_0_INTS},
+                {DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.HOUR, DST_2023_10_26_22_12_0_INTS},
+                {DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.HOUR, DST_2023_10_26_22_12_0_INTS},
+                {null, Precision.MILLISECOND, DST_2023_11_03_02_52_0_INTS},
+                {BigDecimal.ZERO, Precision.MILLISECOND, DST_2023_11_03_02_52_0_INTS},
+                {DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_EASTERN, Precision.MILLISECOND, DST_2023_11_03_02_52_0_INTS},
+                {DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.MILLISECOND, DST_2023_11_03_02_52_0_INTS},
+                {DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.MILLISECOND, DST_2023_11_03_02_52_0_INTS},
+                {null, Precision.HOUR, NON_DST_2024_02_27_07_28_0_INTS},
+                {BigDecimal.ZERO, Precision.HOUR, NON_DST_2024_02_27_07_28_0_INTS},
+                {NON_DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_EASTERN, Precision.HOUR, NON_DST_2024_02_27_07_28_0_INTS},
+                {NON_DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.HOUR, NON_DST_2024_02_27_07_28_0_INTS},
+                {NON_DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.HOUR, NON_DST_2024_02_27_07_28_0_INTS},
+                {null, Precision.MILLISECOND, DST_2024_06_15_23_32_0_INTS},
+                {BigDecimal.ZERO, Precision.MILLISECOND, DST_2024_06_15_23_32_0_INTS},
+                {DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_EASTERN, Precision.MILLISECOND, DST_2024_06_15_23_32_0_INTS},
+                {DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.HOUR, DST_2024_06_15_23_32_0_INTS},
+                {DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.MILLISECOND, DST_2024_06_15_23_32_0_INTS},
         };
     }
 
