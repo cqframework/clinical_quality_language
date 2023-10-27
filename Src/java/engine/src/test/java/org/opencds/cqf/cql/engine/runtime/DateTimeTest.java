@@ -40,6 +40,7 @@ public class DateTimeTest {
     private static final ZoneOffset DST_OFFSET_NORTH_AMERICA_MOUNTAIN = ZoneOffset.of("-06:00");
     private static final ZoneOffset NON_DST_OFFSET_NORTH_AMERICA_MOUNTAIN = ZoneOffset.of("-07:00");
     private static final ZoneOffset DST_OFFSET_NORTH_AMERICA_NEWFOUNDLAND = ZoneOffset.of("-02:30");
+    // This offset doesn't exist for an ZoneID
     private static final ZoneOffset NON_DST_OFFSET_NORTH_AMERICA_NEWFOUNDLAND = ZoneOffset.of("-03:30");
 
     private static final BigDecimal DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_EASTERN = toBigDecimal(DST_OFFSET_NORTH_AMERICA_EASTERN);
@@ -95,20 +96,34 @@ public class DateTimeTest {
         assertEquals(normalizedDateTime, dateTime.getDateTime());
     }
 
-    // LUKETODO:  more test cases
     @DataProvider
     private static Object[][] dateStringsOtherZoneId() {
         return new Object[][]{
-                {DST_2023_10_26_22_12_0, DST_OFFSET_NORTH_AMERICA_EASTERN, DST_OFFSET_NORTH_AMERICA_MOUNTAIN}
+                {DST_2023_10_26_22_12_0, DST_OFFSET_NORTH_AMERICA_EASTERN, DST_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.HOUR},
+                {DST_2023_10_26_22_12_0, DST_OFFSET_NORTH_AMERICA_MOUNTAIN, DST_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.HOUR},
+                {DST_2023_10_26_22_12_0, DST_OFFSET_NORTH_AMERICA_EASTERN, DST_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.HOUR},
+                {DST_2023_10_26_22_12_0, DST_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, DST_OFFSET_NORTH_AMERICA_EASTERN, Precision.HOUR},
+                {NON_DST_2024_02_27_07_28_0, NON_DST_OFFSET_NORTH_AMERICA_EASTERN, NON_DST_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.HOUR},
+                {NON_DST_2024_02_27_07_28_0, NON_DST_OFFSET_NORTH_AMERICA_MOUNTAIN, NON_DST_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.HOUR},
+                {NON_DST_2024_02_27_07_28_0, NON_DST_OFFSET_NORTH_AMERICA_EASTERN, NON_DST_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.HOUR},
+                {NON_DST_2024_02_27_07_28_0, NON_DST_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, NON_DST_OFFSET_NORTH_AMERICA_EASTERN, Precision.HOUR},
+                {DST_2023_10_26_22_12_0, DST_OFFSET_NORTH_AMERICA_EASTERN, DST_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.MILLISECOND},
+                {DST_2023_10_26_22_12_0, DST_OFFSET_NORTH_AMERICA_MOUNTAIN, DST_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.MILLISECOND},
+                {DST_2023_10_26_22_12_0, DST_OFFSET_NORTH_AMERICA_EASTERN, DST_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.MILLISECOND},
+                {DST_2023_10_26_22_12_0, DST_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, DST_OFFSET_NORTH_AMERICA_EASTERN, Precision.MILLISECOND},
+                {NON_DST_2024_02_27_07_28_0, NON_DST_OFFSET_NORTH_AMERICA_EASTERN, NON_DST_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.MILLISECOND},
+                {NON_DST_2024_02_27_07_28_0, NON_DST_OFFSET_NORTH_AMERICA_MOUNTAIN, NON_DST_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.MILLISECOND},
+                {NON_DST_2024_02_27_07_28_0, NON_DST_OFFSET_NORTH_AMERICA_EASTERN, NON_DST_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.MILLISECOND},
+                {NON_DST_2024_02_27_07_28_0, NON_DST_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, NON_DST_OFFSET_NORTH_AMERICA_EASTERN, Precision.MILLISECOND},
         };
     }
 
     @Test(dataProvider = "dateStringsOtherZoneId")
-    void testDateStringsOtherZoneId(LocalDateTime localDateTime, ZoneOffset zoneOffsetInit, ZoneOffset zonedOffsetGetNormalized) {
+    void testDateStringsOtherZoneId(LocalDateTime localDateTime, ZoneOffset zoneOffsetInit, ZoneOffset zonedOffsetGetNormalized, Precision precision) {
         final OffsetDateTime expectedOffsetDateTime = OffsetDateTime.of(localDateTime.minusSeconds(zoneOffsetInit.getTotalSeconds() - zonedOffsetGetNormalized.getTotalSeconds()), zonedOffsetGetNormalized);
         final DateTime dateTime = new DateTime(FORMATTER.format(localDateTime), zoneOffsetInit);
 
-        final OffsetDateTime normalizedDateTime = dateTime.getNormalized(Precision.HOUR, zonedOffsetGetNormalized);
+        final OffsetDateTime normalizedDateTime = dateTime.getNormalized(precision, zonedOffsetGetNormalized);
 
         assertEquals(normalizedDateTime, expectedOffsetDateTime);
     }
@@ -165,7 +180,6 @@ public class DateTimeTest {
                 {BigDecimal.ZERO, Precision.HOUR, NON_DST_2024_02_27_07_28_0_INTS},
                 {NON_DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_EASTERN, Precision.HOUR, NON_DST_2024_02_27_07_28_0_INTS},
                 {NON_DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.HOUR, NON_DST_2024_02_27_07_28_0_INTS},
-                // LUKETODO:  This fails with an offset of "-3.50"
                 {NON_DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.HOUR, NON_DST_2024_02_27_07_28_0_INTS},
                 {null, Precision.MILLISECOND, DST_2024_06_15_23_32_0_INTS},
                 {BigDecimal.ZERO, Precision.MILLISECOND, DST_2024_06_15_23_32_0_INTS},
@@ -181,16 +195,6 @@ public class DateTimeTest {
         final DateTime dateTime = new DateTime(offset, dateElementsArray);
 
         final OffsetDateTime normalizedDateTime = dateTime.getNormalized(precision);
-
-        assertEquals(normalizedDateTime, dateTime.getDateTime());
-    }
-
-    @Test
-    void testNewfoundlandNonDst() {
-        final int[] dateElementsArray = NON_DST_2024_02_27_07_28_0_INTS.stream().mapToInt(anInt -> anInt).toArray();
-        final DateTime dateTime = new DateTime(NON_DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, dateElementsArray);
-
-        final OffsetDateTime normalizedDateTime = dateTime.getNormalized(Precision.HOUR);
 
         assertEquals(normalizedDateTime, dateTime.getDateTime());
     }
