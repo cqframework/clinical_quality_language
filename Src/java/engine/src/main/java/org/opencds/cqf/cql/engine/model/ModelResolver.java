@@ -149,4 +149,12 @@ public interface ModelResolver {
      * @return flag indicating whether the objects are equal
      */
     Boolean objectEquivalent(Object left, Object right);
+
+    /**
+     * Ensure that for a given object each implementation can introspect that object in its own way to resolve a String ID.
+     *
+     * @param target An Object from which an implementation can resolve an ID.
+     * @return The ID resolved from the target Object.
+     */
+    String resolveId(Object target);
 }

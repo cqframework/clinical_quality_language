@@ -193,6 +193,10 @@ public class TestUtils {
         return createTranslator(null, testFileName, new CqlCompilerOptions(options));
     }
 
+    public static CqlTranslator createTranslator(String testFileName, CqlCompilerOptions options) throws IOException {
+        return createTranslator(null, testFileName, options);
+    }
+
     public static CqlTranslator getTranslator(String cqlTestFile, String nullableLibrarySourceProvider, LibraryBuilder.SignatureLevel signatureLevel) throws IOException {
         final File testFile = getFileOrThrow(cqlTestFile);
         final ModelManager modelManager = new ModelManager();
