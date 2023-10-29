@@ -2,6 +2,7 @@ package org.opencds.cqf.cql.engine.elm.executing;
 
 import org.cqframework.cql.elm.visiting.ElmLibraryVisitor;
 import org.hl7.elm.r1.*;
+import org.opencds.cqf.cql.engine.exception.CqlException;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.execution.Variable;
 import org.opencds.cqf.cql.engine.runtime.CqlList;
@@ -76,6 +77,13 @@ public class QueryEvaluator {
 
     private static Object evaluateReturn(Query elm, State state, List<Variable> variables, List<Object> elements, ElmLibraryVisitor<Object, State> visitor) {
         return elm.getReturn() != null ? visitor.visitExpression(elm.getReturn().getExpression(), state) : constructResult(state, variables, elements);
+    }
+
+    private static Object evaluateAggregate(Query elm, State state, List<Variable> variables, List<Object> elements, ElmLibraryVisitor<Object, State> visitor) {
+        Object initial = visitor.visitExpression(elm.getAggregate().getStarting(), state);
+        Object iteration = visitor.visitExpression(elm.getAggregate().getExpression(), state);
+
+        return AggregateEvaluator.aggregate(elements, initial, iteration, state);
     }
 
     private static Object constructResult(State state, List<Variable> variables, List<Object> elements) {
@@ -188,7 +196,18 @@ public class QueryEvaluator {
                     continue;
                 }
 
-                result.add(evaluateReturn(elm, state, variables, elements, visitor));
+                if (elm.getAggregate() != null && elm.getReturn() != null) {
+                    throw new CqlException("aggregate and return are mutually exclusive");
+                }
+
+                if (elm.getReturn() != null) {
+                    result.add(evaluateReturn(elm, state, variables, elements, visitor));
+                }
+                else {
+                    result.add(evaluateAggregate(elm, state, variables, elements, visitor));
+                }
+
+
             }
         } finally {
             while (pushCount > 0) {

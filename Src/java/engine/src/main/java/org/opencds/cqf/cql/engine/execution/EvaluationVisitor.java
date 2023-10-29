@@ -52,6 +52,22 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
     }
 
     @Override
+    public Object visitAggregateExpression(AggregateExpression aggregateExpression, State state) {
+        return aggregateExpression.getSource();
+    }
+
+    @Override
+    public Object visitAggregate(Aggregate aggregate, State state) {
+        Object source = visitExpression(aggregate.getSource(), state);
+        Object initial = visitExpression(aggregate.getInitialValue(), state);
+        Object iteration = visitExpression(aggregate.getIteration(), state);
+
+        // TODO: Is source pre-distincted?
+
+        return AggregateEvaluator.aggregate(source, initial, iteration, state);
+    }
+
+    @Override
     public Object visitAliasRef(AliasRef aliasRef, State state) {
         return AliasRefEvaluator.internalEvaluate(aliasRef.getName(), state);
     }
