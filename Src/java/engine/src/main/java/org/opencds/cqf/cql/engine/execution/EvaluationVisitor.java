@@ -51,21 +51,22 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
         return AfterEvaluator.after(left, right, precision, state);
     }
 
-    @Override
-    public Object visitAggregateExpression(AggregateExpression aggregateExpression, State state) {
-        return aggregateExpression.getSource();
-    }
+    // TODO: Neither of these matter. New undocumented CQL features?
+    // @Override
+    // public Object visitAggregateExpression(AggregateExpression aggregateExpression, State state) {
+    //     return aggregateExpression.getSource();
+    // }
 
-    @Override
-    public Object visitAggregate(Aggregate aggregate, State state) {
-        Object source = visitExpression(aggregate.getSource(), state);
-        Object initial = visitExpression(aggregate.getInitialValue(), state);
-        Object iteration = visitExpression(aggregate.getIteration(), state);
+    // @Override
+    // public Object visitAggregate(Aggregate aggregate, State state) {
+    //     Object source = visitExpression(aggregate.getSource(), state);
+    //     Object initial = visitExpression(aggregate.getInitialValue(), state);
+    //     Object iteration = visitExpression(aggregate.getIteration(), state);
 
-        // TODO: Is source pre-distincted?
+    //     // TODO: Is source pre-distincted?
 
-        return AggregateEvaluator.aggregate(source, initial, iteration, state);
-    }
+    //     return AggregateEvaluator.aggregate(source, initial, iteration, state);
+    // }
 
     @Override
     public Object visitAliasRef(AliasRef aliasRef, State state) {
