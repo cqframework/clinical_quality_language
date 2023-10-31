@@ -88,7 +88,7 @@ public class CachingModelResolverDecorator implements ModelResolver {
           .computeIfAbsent(pn, p -> new ConcurrentHashMap<>());
 
       var result = packageTypeResolutions
-          .computeIfAbsent(valueClass, t -> Optional.ofNullable(this.innerResolver.resolveType(t)));
+          .computeIfAbsent(valueClass, t -> Optional.ofNullable(this.innerResolver.resolveType(value)));
 
       if (result.isPresent()) {
         return result.get();

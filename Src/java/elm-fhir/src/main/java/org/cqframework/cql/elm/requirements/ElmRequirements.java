@@ -296,6 +296,7 @@ public class ElmRequirements extends ElmRequirement {
             // Has the same context, type/profile, code path and date path
         // If two retrieves are "equivalent" they can be merged
         // TODO: code/date-range consolidation
+        Map<String, String> requirementIdMap = new HashMap<>();
         for (Map.Entry<String, List<ElmRequirement>> entry : retrievesByType.entrySet()) {
             // Determine unique set per type/profile
             CollapsedElmRequirements collapsedRetrieves = new CollapsedElmRequirements();
@@ -303,8 +304,35 @@ public class ElmRequirements extends ElmRequirement {
                 collapsedRetrieves.add(requirement);
             }
 
+            // Collect target mappings
+            for (Map.Entry<String, String> idMapEntry : collapsedRetrieves.getRequirementIdMap().entrySet()) {
+                requirementIdMap.put(idMapEntry.getKey(), idMapEntry.getValue());
+            }
+
             for (ElmRequirement r : collapsedRetrieves.getUniqueRequirements()) {
                 result.reportRequirement(r);
+            }
+        }
+
+        // Fixup references in the resulting requirements
+        for (ElmRequirement requirement : result.getRequirements()) {
+            if (requirement.getElement() instanceof Retrieve) {
+                Retrieve r = ((Retrieve)requirement.getElement());
+                if (r.getIncludedIn() != null) {
+                    String mappedId = requirementIdMap.get(r.getIncludedIn());
+                    if (mappedId != null) {
+                        r.setIncludedIn(mappedId);
+                    }
+                }
+
+                for (IncludeElement includeElement : r.getInclude()) {
+                    if (includeElement.getIncludeFrom() != null) {
+                        String mappedId = requirementIdMap.get(includeElement.getIncludeFrom());
+                        if (mappedId != null) {
+                            includeElement.setIncludeFrom(mappedId);
+                        }
+                    }
+                }
             }
         }
 
