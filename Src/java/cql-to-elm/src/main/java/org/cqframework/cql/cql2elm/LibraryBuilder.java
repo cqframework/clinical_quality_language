@@ -14,13 +14,23 @@ import javax.xml.namespace.QName;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by Bryn on 12/29/2016.
  */
 public class LibraryBuilder implements ModelResolver {
-    public static enum SignatureLevel {
+
+    private static final String SYSTEM = "System";
+    private static final String INTEGER = "Integer";
+    private static final String DECIMAL = "Decimal";
+    private static final String $_THIS = "$this";
+    private static final String HIGH = "high";
+    private static final String HIGH_CLOSED = "highClosed";
+    private static final String COMPATIBILITY_LEVEL_1_5 = "1.5";
+    private static final String $_INDEX = "$index";
+    private static final String $_TOTAL = "$total";
+
+    public enum SignatureLevel {
         /*
         Indicates signatures will never be included in operator invocations
          */
@@ -243,7 +253,7 @@ public class LibraryBuilder implements ModelResolver {
 
     private void setDefaultModel(Model model) {
         // The default model is the first model that is not System
-        if (defaultModel == null && !model.getModelInfo().getName().equals("System")) {
+        if (defaultModel == null && ! SYSTEM.equals(model.getModelInfo().getName())) {
             defaultModel = model;
         }
     }
@@ -295,7 +305,7 @@ public class LibraryBuilder implements ModelResolver {
 
     public boolean hasUsings() {
         for (Model model : models.values()) {
-            if (!model.getModelInfo().getName().equals("System")) {
+            if (! SYSTEM.equals(model.getModelInfo().getName())) {
                 return true;
             }
         }
@@ -314,9 +324,9 @@ public class LibraryBuilder implements ModelResolver {
 
     public ClassType resolveLabel(String modelName, String label) {
         ClassType result = null;
-        if (modelName == null || modelName.equals("")) {
+        if (modelName == null || modelName.isEmpty()) {
             for (Model model : models.values()) {
-                ClassType modelResult = model.resolveLabel(label);
+                ClassType modelResult = model.resolveLabel(modelName, label);
                 if (modelResult != null) {
                     if (result != null) {
                         throw new IllegalArgumentException(String.format("Label %s is ambiguous between %s and %s.",
@@ -328,7 +338,7 @@ public class LibraryBuilder implements ModelResolver {
             }
         }
         else {
-            result = getModel(modelName).resolveLabel(label);
+            result = getModel(modelName).resolveLabel(modelName, label);
         }
 
         return result;
@@ -338,7 +348,7 @@ public class LibraryBuilder implements ModelResolver {
         // Attempt to resolve as a label first
         ModelContext result = null;
 
-        if (modelName == null || modelName.equals("")) {
+        if (modelName == null || modelName.isEmpty()) {
             // Attempt to resolve in the default model if one is available
             if (defaultModel != null) {
                 ModelContext modelResult = defaultModel.resolveContextName(contextName);
@@ -411,7 +421,7 @@ public class LibraryBuilder implements ModelResolver {
                     // NOTE: This is a hack to allow the new ToValueSet operator in FHIRHelpers for backwards-compatibility
                     // The operator still cannot be used in 1.4, but the definition will compile. This really should be being done with preprocessor directives,
                     // but that's a whole other project in and of itself.
-                    if (!isCompatibleWith("1.5") && !isFHIRHelpers(compiledLibrary)) {
+                    if (!isCompatibleWith(COMPATIBILITY_LEVEL_1_5) && !isFHIRHelpers(compiledLibrary)) {
                         throw new IllegalArgumentException(String.format("The type %s was introduced in CQL 1.5 and cannot be referenced at compatibility level %s",
                                 ((NamedType)result).getName(), getCompatibilityLevel()));
                     }
@@ -462,7 +472,7 @@ public class LibraryBuilder implements ModelResolver {
 
     public SystemModel getSystemModel() {
         // TODO: Support loading different versions of the system library
-        return (SystemModel)getModel(new ModelIdentifier().withId("System"), "System");
+        return (SystemModel)getModel(new ModelIdentifier().withId(SYSTEM), SYSTEM);
     }
 
     public Model getModel(String modelName) {
@@ -507,12 +517,12 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     public CompiledLibrary getSystemLibrary() {
-        return resolveLibrary("System");
+        return resolveLibrary(SYSTEM);
     }
 
     public CompiledLibrary resolveLibrary(String identifier) {
 
-        if (!identifier.equals("System")) {
+        if (! SYSTEM.equals(identifier)) {
             checkLiteralContext();
         }
 
@@ -746,6 +756,10 @@ public class LibraryBuilder implements ModelResolver {
         library.getContexts().getDef().add(cd);
     }
 
+    public ResolvedIdentifierList resolveCaseIgnored(String identifier) {
+        return compiledLibrary.resolveCaseIgnored(identifier);
+    }
+
     public void addExpression(ExpressionDef expDef) {
         if (library.getStatements() == null) {
             library.setStatements(of.createLibraryStatements());
@@ -922,7 +936,7 @@ public class LibraryBuilder implements ModelResolver {
             union.setLocalId(Integer.toString(visitor.getNextLocalId()));
         }
 
-        resolveNaryCall("System", "Union", union);
+        resolveNaryCall(SYSTEM, "Union", union);
         return union;
     }
 
@@ -941,26 +955,26 @@ public class LibraryBuilder implements ModelResolver {
         // TODO: Take advantage of nary intersect
         BinaryWrapper wrapper = normalizeListTypes(left, right);
         Intersect intersect = of.createIntersect().withOperand(wrapper.left, wrapper.right);
-        resolveNaryCall("System", "Intersect", intersect);
+        resolveNaryCall(SYSTEM, "Intersect", intersect);
         return intersect;
     }
 
     public Expression resolveExcept(Expression left, Expression right) {
         BinaryWrapper wrapper = normalizeListTypes(left, right);
         Except except = of.createExcept().withOperand(wrapper.left, wrapper.right);
-        resolveNaryCall("System", "Except", except);
+        resolveNaryCall(SYSTEM, "Except", except);
         return except;
     }
 
     public Expression resolveIn(Expression left, Expression right) {
-        if (right instanceof ValueSetRef || (isCompatibleWith("1.5") && right.getResultType().isCompatibleWith(resolveTypeName("System", "ValueSet")) && !right.getResultType().equals(resolveTypeName("System", "Any")))) {
+        if (right instanceof ValueSetRef || (isCompatibleWith(COMPATIBILITY_LEVEL_1_5) && right.getResultType().isCompatibleWith(resolveTypeName(SYSTEM, "ValueSet")) && !right.getResultType().equals(resolveTypeName(SYSTEM, "Any")))) {
             if (left.getResultType() instanceof ListType) {
                 AnyInValueSet anyIn = of.createAnyInValueSet()
                         .withCodes(left)
                         .withValueset(right instanceof ValueSetRef ? (ValueSetRef)right : null)
                         .withValuesetExpression(right instanceof ValueSetRef ? null : right);
 
-                resolveCall("System", "AnyInValueSet", new AnyInValueSetInvocation(anyIn));
+                resolveCall(SYSTEM, "AnyInValueSet", new AnyInValueSetInvocation(anyIn));
                 return anyIn;
             }
 
@@ -968,17 +982,17 @@ public class LibraryBuilder implements ModelResolver {
                     .withCode(left)
                     .withValueset(right instanceof ValueSetRef ? (ValueSetRef)right : null)
                     .withValuesetExpression(right instanceof ValueSetRef ? null : right);
-            resolveCall("System", "InValueSet", new InValueSetInvocation(in));
+            resolveCall(SYSTEM, "InValueSet", new InValueSetInvocation(in));
             return in;
         }
 
-        if (right instanceof CodeSystemRef || (isCompatibleWith("1.5") && right.getResultType().isCompatibleWith(resolveTypeName("System", "CodeSystem")) && !right.getResultType().equals(resolveTypeName("System", "Any")))) {
+        if (right instanceof CodeSystemRef || (isCompatibleWith(COMPATIBILITY_LEVEL_1_5) && right.getResultType().isCompatibleWith(resolveTypeName(SYSTEM, "CodeSystem")) && !right.getResultType().equals(resolveTypeName(SYSTEM, "Any")))) {
             if (left.getResultType() instanceof ListType) {
                 AnyInCodeSystem anyIn = of.createAnyInCodeSystem()
                         .withCodes(left)
                         .withCodesystem(right instanceof CodeSystemRef ? (CodeSystemRef)right : null)
                         .withCodesystemExpression(right instanceof CodeSystemRef ? null : right);
-                resolveCall("System", "AnyInCodeSystem", new AnyInCodeSystemInvocation(anyIn));
+                resolveCall(SYSTEM, "AnyInCodeSystem", new AnyInCodeSystemInvocation(anyIn));
                 return anyIn;
             }
 
@@ -986,19 +1000,19 @@ public class LibraryBuilder implements ModelResolver {
                     .withCode(left)
                     .withCodesystem(right instanceof CodeSystemRef ? (CodeSystemRef)right : null)
                     .withCodesystemExpression(right instanceof CodeSystemRef ? null : right);
-            resolveCall("System", "InCodeSystem", new InCodeSystemInvocation(in));
+            resolveCall(SYSTEM, "InCodeSystem", new InCodeSystemInvocation(in));
             return in;
         }
 
         In in = of.createIn().withOperand(left, right);
-        resolveBinaryCall("System", "In", in);
+        resolveBinaryCall(SYSTEM, "In", in);
         return in;
     }
 
     public Expression resolveContains(Expression left, Expression right) {
         // TODO: Add terminology overloads
         Contains contains = of.createContains().withOperand(left, right);
-        resolveBinaryCall("System", "Contains", contains);
+        resolveBinaryCall(SYSTEM, "Contains", contains);
         return contains;
     }
 
@@ -1009,7 +1023,7 @@ public class LibraryBuilder implements ModelResolver {
 
     public Invocation resolveInInvocation(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
         In in = of.createIn().withOperand(left, right).withPrecision(dateTimePrecision);
-        return resolveBinaryInvocation("System", "In", in);
+        return resolveBinaryInvocation(SYSTEM, "In", in);
     }
 
     public Expression resolveProperIn(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
@@ -1019,7 +1033,7 @@ public class LibraryBuilder implements ModelResolver {
 
     public Invocation resolveProperInInvocation(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
         ProperIn properIn = of.createProperIn().withOperand(left, right).withPrecision(dateTimePrecision);
-        return resolveBinaryInvocation("System", "ProperIn", properIn);
+        return resolveBinaryInvocation(SYSTEM, "ProperIn", properIn);
     }
 
     public Expression resolveContains(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
@@ -1029,7 +1043,7 @@ public class LibraryBuilder implements ModelResolver {
 
     public Invocation resolveContainsInvocation(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
         Contains contains = of.createContains().withOperand(left, right).withPrecision(dateTimePrecision);
-        return resolveBinaryInvocation("System", "Contains", contains);
+        return resolveBinaryInvocation(SYSTEM, "Contains", contains);
     }
 
     public Expression resolveProperContains(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
@@ -1039,7 +1053,7 @@ public class LibraryBuilder implements ModelResolver {
 
     public Invocation resolveProperContainsInvocation(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
         ProperContains properContains = of.createProperContains().withOperand(left, right).withPrecision(dateTimePrecision);
-        return resolveBinaryInvocation("System", "ProperContains", properContains);
+        return resolveBinaryInvocation(SYSTEM, "ProperContains", properContains);
     }
 
     private Expression lowestScoringInvocation(Invocation primary, Invocation secondary) {
@@ -1062,10 +1076,10 @@ public class LibraryBuilder implements ModelResolver {
 
     public Expression resolveIncludes(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
         Includes includes = of.createIncludes().withOperand(left, right).withPrecision(dateTimePrecision);
-        Invocation includesInvocation = resolveBinaryInvocation("System", "Includes", includes, false, false);
+        Invocation includesInvocation = resolveBinaryInvocation(SYSTEM, "Includes", includes, false, false);
 
         Contains contains = of.createContains().withOperand(left, right).withPrecision(dateTimePrecision);
-        Invocation containsInvocation = resolveBinaryInvocation("System", "Contains", contains, false, false);
+        Invocation containsInvocation = resolveBinaryInvocation(SYSTEM, "Contains", contains, false, false);
 
         Expression result = lowestScoringInvocation(includesInvocation, containsInvocation);
         if (result != null) {
@@ -1073,15 +1087,15 @@ public class LibraryBuilder implements ModelResolver {
         }
 
         // Neither operator resolved, so force a resolve to throw
-        return resolveBinaryCall("System", "Includes", includes);
+        return resolveBinaryCall(SYSTEM, "Includes", includes);
     }
 
     public Expression resolveProperIncludes(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
         ProperIncludes properIncludes = of.createProperIncludes().withOperand(left, right).withPrecision(dateTimePrecision);
-        Invocation properIncludesInvocation = resolveBinaryInvocation("System", "ProperIncludes", properIncludes, false, false);
+        Invocation properIncludesInvocation = resolveBinaryInvocation(SYSTEM, "ProperIncludes", properIncludes, false, false);
 
         ProperContains properContains = of.createProperContains().withOperand(left, right).withPrecision(dateTimePrecision);
-        Invocation properContainsInvocation = resolveBinaryInvocation("System", "ProperContains", properContains, false, false);
+        Invocation properContainsInvocation = resolveBinaryInvocation(SYSTEM, "ProperContains", properContains, false, false);
 
         Expression result = lowestScoringInvocation(properIncludesInvocation, properContainsInvocation);
         if (result != null) {
@@ -1089,15 +1103,15 @@ public class LibraryBuilder implements ModelResolver {
         }
 
         // Neither operator resolved, so force a resolve to throw
-        return resolveBinaryCall("System", "ProperIncludes", properIncludes);
+        return resolveBinaryCall(SYSTEM, "ProperIncludes", properIncludes);
     }
 
     public Expression resolveIncludedIn(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
         IncludedIn includedIn = of.createIncludedIn().withOperand(left, right).withPrecision(dateTimePrecision);
-        Invocation includedInInvocation = resolveBinaryInvocation("System", "IncludedIn", includedIn, false, false);
+        Invocation includedInInvocation = resolveBinaryInvocation(SYSTEM, "IncludedIn", includedIn, false, false);
 
         In in = of.createIn().withOperand(left, right).withPrecision(dateTimePrecision);
-        Invocation inInvocation = resolveBinaryInvocation("System", "In", in, false, false);
+        Invocation inInvocation = resolveBinaryInvocation(SYSTEM, "In", in, false, false);
 
         Expression result = lowestScoringInvocation(includedInInvocation, inInvocation);
         if (result != null) {
@@ -1105,15 +1119,15 @@ public class LibraryBuilder implements ModelResolver {
         }
 
         // Neither operator resolved, so force a resolve to throw
-        return resolveBinaryCall("System", "IncludedIn", includedIn);
+        return resolveBinaryCall(SYSTEM, "IncludedIn", includedIn);
     }
 
     public Expression resolveProperIncludedIn(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
         ProperIncludedIn properIncludedIn = of.createProperIncludedIn().withOperand(left, right).withPrecision(dateTimePrecision);
-        Invocation properIncludedInInvocation = resolveBinaryInvocation("System", "ProperIncludedIn", properIncludedIn, false, false);
+        Invocation properIncludedInInvocation = resolveBinaryInvocation(SYSTEM, "ProperIncludedIn", properIncludedIn, false, false);
 
         ProperIn properIn = of.createProperIn().withOperand(left, right).withPrecision(dateTimePrecision);
-        Invocation properInInvocation = resolveBinaryInvocation("System", "ProperIn", properIn, false, false);
+        Invocation properInInvocation = resolveBinaryInvocation(SYSTEM, "ProperIn", properIn, false, false);
 
         Expression result = lowestScoringInvocation(properIncludedInInvocation, properInInvocation);
         if (result != null) {
@@ -1121,7 +1135,7 @@ public class LibraryBuilder implements ModelResolver {
         }
 
         // Neither operator resolved, so force a resolve to throw
-        return resolveBinaryCall("System", "ProperIncludedIn", properIncludedIn);
+        return resolveBinaryCall(SYSTEM, "ProperIncludedIn", properIncludedIn);
     }
 
     public Expression resolveCall(String libraryName, String operatorName, Invocation invocation) {
@@ -1192,7 +1206,7 @@ public class LibraryBuilder implements ModelResolver {
                 || (options.getSignatureLevel() == SignatureLevel.Overloads && resolution.getOperatorHasOverloads())) {
             invocation.setSignature(dataTypesToTypeSpecifiers(resolution.getOperator().getSignature().getOperandTypes()));
         }
-        else if (resolution.getOperatorHasOverloads() && !resolution.getOperator().getLibraryName().equals("System")) {
+        else if (resolution.getOperatorHasOverloads() && ! SYSTEM.equals(resolution.getOperator().getLibraryName())) {
             // NOTE: Because system functions only deal with CQL system-defined types, and there is one and only one
             // runtime representation of each system-defined type, there is no possibility of ambiguous overload
             // resolution with system functions
@@ -1345,7 +1359,7 @@ public class LibraryBuilder implements ModelResolver {
         Invocation invocation = new FunctionRefInvocation(fun);
         fun = (FunctionRef)resolveCall(fun.getLibraryName(), fun.getName(), invocation, false, allowPromotionAndDemotion, allowFluent);
         if (fun != null) {
-            if ("System".equals(invocation.getResolution().getOperator().getLibraryName())) {
+            if (SYSTEM.equals(invocation.getResolution().getOperator().getLibraryName())) {
                 FunctionRef systemFun = buildFunctionRef(libraryName, functionName, paramList); // Rebuild the fun from the original arguments, otherwise it will resolve with conversions in place
                 Invocation systemFunctionInvocation = systemFunctionResolver.resolveSystemFunction(systemFun);
                 if (systemFunctionInvocation != null) {
@@ -1390,7 +1404,7 @@ public class LibraryBuilder implements ModelResolver {
         Expression left = (Expression)of.createLiteral().withResultType(dataType);
         Expression right = (Expression)of.createLiteral().withResultType(dataType);
         BinaryExpression comparison = of.createLess().withOperand(left, right);
-        resolveBinaryCall("System", "Less", comparison);
+        resolveBinaryCall(SYSTEM, "Less", comparison);
     }
 
     public Expression convertExpression(Expression expression, DataType targetType) {
@@ -1439,7 +1453,7 @@ public class LibraryBuilder implements ModelResolver {
 
         SingletonFrom singletonFrom = of.createSingletonFrom().withOperand(expression);
         singletonFrom.setResultType(fromType.getElementType());
-        resolveUnaryCall("System", "SingletonFrom", singletonFrom);
+        resolveUnaryCall(SYSTEM, "SingletonFrom", singletonFrom);
         // WARNING:
         reportWarning("List-valued expression was demoted to a singleton.", expression);
 
@@ -1456,7 +1470,7 @@ public class LibraryBuilder implements ModelResolver {
             expression = convertExpression(expression, conversion.getConversion());
         }
 
-        if (expression.getResultType().equals(resolveTypeName("System", "Boolean"))) {
+        if (expression.getResultType().equals(resolveTypeName(SYSTEM, "Boolean"))) {
             // WARNING:
             reportWarning("Boolean-valued expression was promoted to a list.", expression);
         }
@@ -1477,7 +1491,7 @@ public class LibraryBuilder implements ModelResolver {
 
         PointFrom pointFrom = of.createPointFrom().withOperand(expression);
         pointFrom.setResultType(fromType.getPointType());
-        resolveUnaryCall("System", "PointFrom", pointFrom);
+        resolveUnaryCall(SYSTEM, "PointFrom", pointFrom);
         // WARNING:
         reportWarning("Interval-valued expression was demoted to a point.", expression);
 
@@ -1506,7 +1520,7 @@ public class LibraryBuilder implements ModelResolver {
         Interval toInterval = of.createInterval().withLow(expression).withHigh(expression).withLowClosed(true).withHighClosed(true);
         toInterval.setResultType(new IntervalType(expression.getResultType()));
         condition.setElse(toInterval);
-        condition.setResultType(resolveTypeName("System", "Boolean"));
+        condition.setResultType(resolveTypeName(SYSTEM, "Boolean"));
         return condition;
     }
 
@@ -1522,16 +1536,16 @@ public class LibraryBuilder implements ModelResolver {
                 .withLowClosedExpression((Property) of.createProperty()
                         .withSource(expression)
                         .withPath("lowClosed")
-                        .withResultType(resolveTypeName("System", "Boolean")))
+                        .withResultType(resolveTypeName(SYSTEM, "Boolean")))
                 .withHigh(convertExpression((Property) of.createProperty()
                                 .withSource(expression)
-                                .withPath("high")
+                                .withPath(HIGH)
                                 .withResultType(fromType.getPointType()),
                         conversion.getConversion()))
                 .withHighClosedExpression((Property) of.createProperty()
                         .withSource(expression)
-                        .withPath("highClosed")
-                        .withResultType(resolveTypeName("System", "Boolean")))
+                        .withPath(HIGH_CLOSED)
+                        .withResultType(resolveTypeName(SYSTEM, "Boolean")))
                 .withResultType(toType);
         return interval;
     }
@@ -1549,7 +1563,7 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     public Is buildIs(Expression expression, DataType isType) {
-        Is result = (Is)of.createIs().withOperand(expression).withResultType(resolveTypeName("System", "Boolean"));
+        Is result = (Is)of.createIs().withOperand(expression).withResultType(resolveTypeName(SYSTEM, "Boolean"));
         if (isType instanceof NamedType) {
             result.setIsType(dataTypeToQName(isType));
         }
@@ -1573,14 +1587,14 @@ public class LibraryBuilder implements ModelResolver {
 
     public IsNull buildIsNull(Expression expression) {
         IsNull isNull = of.createIsNull().withOperand(expression);
-        isNull.setResultType(resolveTypeName("System", "Boolean"));
+        isNull.setResultType(resolveTypeName(SYSTEM, "Boolean"));
         return isNull;
     }
 
     public Not buildIsNotNull(Expression expression) {
         IsNull isNull = buildIsNull(expression);
         Not not = of.createNot().withOperand(isNull);
-        not.setResultType(resolveTypeName("System", "Boolean"));
+        not.setResultType(resolveTypeName(SYSTEM, "Boolean"));
         return not;
     }
 
@@ -1600,13 +1614,13 @@ public class LibraryBuilder implements ModelResolver {
 
     public Expression buildPredecessor(Expression source) {
         Predecessor result = of.createPredecessor().withOperand(source);
-        resolveUnaryCall("System", "Predecessor", result);
+        resolveUnaryCall(SYSTEM, "Predecessor", result);
         return result;
     }
 
     public Expression buildSuccessor(Expression source) {
         Successor result = of.createSuccessor().withOperand(source);
-        resolveUnaryCall("System", "Successor", result);
+        resolveUnaryCall(SYSTEM, "Successor", result);
         return result;
     }
 
@@ -1688,37 +1702,37 @@ public class LibraryBuilder implements ModelResolver {
             return functionRef;
         }
         else {
-            if (conversion.getToType().equals(resolveTypeName("System", "Boolean"))) {
+            if (conversion.getToType().equals(resolveTypeName(SYSTEM, "Boolean"))) {
                 return (Expression)of.createToBoolean().withOperand(expression).withResultType(conversion.getToType());
             }
-            else if (conversion.getToType().equals(resolveTypeName("System", "Integer"))) {
+            else if (conversion.getToType().equals(resolveTypeName(SYSTEM, INTEGER))) {
                 return (Expression)of.createToInteger().withOperand(expression).withResultType(conversion.getToType());
             }
-            else if (conversion.getToType().equals(resolveTypeName("System", "Long"))) {
+            else if (conversion.getToType().equals(resolveTypeName(SYSTEM, "Long"))) {
                 return (Expression)of.createToLong().withOperand(expression).withResultType(conversion.getToType());
             }
-            else if (conversion.getToType().equals(resolveTypeName("System", "Decimal"))) {
+            else if (conversion.getToType().equals(resolveTypeName(SYSTEM, DECIMAL))) {
                 return (Expression)of.createToDecimal().withOperand(expression).withResultType(conversion.getToType());
             }
-            else if (conversion.getToType().equals(resolveTypeName("System", "String"))) {
+            else if (conversion.getToType().equals(resolveTypeName(SYSTEM, "String"))) {
                 return (Expression)of.createToString().withOperand(expression).withResultType(conversion.getToType());
             }
-            else if (conversion.getToType().equals(resolveTypeName("System", "Date"))) {
+            else if (conversion.getToType().equals(resolveTypeName(SYSTEM, "Date"))) {
                 return (Expression)of.createToDate().withOperand(expression).withResultType(conversion.getToType());
             }
-            else if (conversion.getToType().equals(resolveTypeName("System", "DateTime"))) {
+            else if (conversion.getToType().equals(resolveTypeName(SYSTEM, "DateTime"))) {
                 return (Expression)of.createToDateTime().withOperand(expression).withResultType(conversion.getToType());
             }
-            else if (conversion.getToType().equals(resolveTypeName("System", "Time"))) {
+            else if (conversion.getToType().equals(resolveTypeName(SYSTEM, "Time"))) {
                 return (Expression)of.createToTime().withOperand(expression).withResultType(conversion.getToType());
             }
-            else if (conversion.getToType().equals(resolveTypeName("System", "Quantity"))) {
+            else if (conversion.getToType().equals(resolveTypeName(SYSTEM, "Quantity"))) {
                 return (Expression)of.createToQuantity().withOperand(expression).withResultType(conversion.getToType());
             }
-            else if (conversion.getToType().equals(resolveTypeName("System", "Ratio"))) {
+            else if (conversion.getToType().equals(resolveTypeName(SYSTEM, "Ratio"))) {
                 return (Expression)of.createToRatio().withOperand(expression).withResultType(conversion.getToType());
             }
-            else if (conversion.getToType().equals(resolveTypeName("System", "Concept"))) {
+            else if (conversion.getToType().equals(resolveTypeName(SYSTEM, "Concept"))) {
                 return (Expression)of.createToConcept().withOperand(expression).withResultType(conversion.getToType());
             }
             else {
@@ -1872,7 +1886,7 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     public Literal createLiteral(String val, String type) {
-        DataType resultType = resolveTypeName("System", type);
+        DataType resultType = resolveTypeName(SYSTEM, type);
         Literal result = of.createLiteral().withValue(val).withValueType(dataTypeToQName(resultType));
         result.setResultType(resultType);
         return result;
@@ -1887,15 +1901,15 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     public Literal createLiteral(Integer integer) {
-        return createLiteral(String.valueOf(integer), "Integer");
+        return createLiteral(String.valueOf(integer), INTEGER);
     }
 
     public Literal createLiteral(Double value) {
-        return createLiteral(String.valueOf(value), "Decimal");
+        return createLiteral(String.valueOf(value), DECIMAL);
     }
 
     public Literal createNumberLiteral(String value) {
-        DataType resultType = resolveTypeName("System", value.contains(".") ? "Decimal" : "Integer");
+        DataType resultType = resolveTypeName(SYSTEM, value.contains(".") ? DECIMAL : INTEGER);
         Literal result = of.createLiteral()
                 .withValue(value)
                 .withValueType(dataTypeToQName(resultType));
@@ -1904,7 +1918,7 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     public Literal createLongNumberLiteral(String value) {
-        DataType resultType = resolveTypeName("System", "Long");
+        DataType resultType = resolveTypeName(SYSTEM, "Long");
         Literal result = of.createLiteral()
                 .withValue(value)
                 .withValueType(dataTypeToQName(resultType));
@@ -1988,14 +2002,14 @@ public class LibraryBuilder implements ModelResolver {
     public Quantity createQuantity(BigDecimal value, String unit) {
         validateUnit(unit);
         Quantity result = of.createQuantity().withValue(value).withUnit(unit);
-        DataType resultType = resolveTypeName("System", "Quantity");
+        DataType resultType = resolveTypeName(SYSTEM, "Quantity");
         result.setResultType(resultType);
         return result;
     }
 
     public Ratio createRatio(Quantity numerator, Quantity denominator) {
         Ratio result = of.createRatio().withNumerator(numerator).withDenominator(denominator);
-        DataType resultType = resolveTypeName("System", "Ratio");
+        DataType resultType = resolveTypeName(SYSTEM, "Ratio");
         result.setResultType(resultType);
         return result;
     }
@@ -2053,7 +2067,7 @@ public class LibraryBuilder implements ModelResolver {
         while (currentType != null) {
             if (currentType instanceof ClassType) {
                 ClassType classType = (ClassType)currentType;
-                if (identifier.startsWith("?") && isCompatibleWith("1.5")) {
+                if (identifier.startsWith("?") && isCompatibleWith(COMPATIBILITY_LEVEL_1_5)) {
                     String searchPath = identifier.substring(1);
                     for (SearchType s : classType.getSearches()) {
                         if (s.getName().equals(searchPath)) {
@@ -2085,11 +2099,11 @@ public class LibraryBuilder implements ModelResolver {
                 IntervalType intervalType = (IntervalType)currentType;
                 switch (identifier) {
                     case "low":
-                    case "high":
+                    case HIGH:
                         return new PropertyResolution(intervalType.getPointType(), identifier);
                     case "lowClosed":
-                    case "highClosed":
-                        return new PropertyResolution(resolveTypeName("System", "Boolean"), identifier);
+                    case HIGH_CLOSED:
+                        return new PropertyResolution(resolveTypeName(SYSTEM, "Boolean"), identifier);
                     default:
                         // ERROR:
                         throw new IllegalArgumentException(String.format("Invalid interval property name %s.", identifier));
@@ -2187,59 +2201,111 @@ public class LibraryBuilder implements ModelResolver {
         // 11: An unresolved identifier error is thrown
 
         // In a type specifier context, return the identifier as a Literal for resolution as a type by the caller
+        ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
+
         if (inTypeSpecifierContext()) {
-            return this.createLiteral(identifier);
+            resolvedIdentifierList.addExactMatchIdentifier(identifier, this.createLiteral(identifier));
         }
 
-        // In the sort clause of a plural query, names may be resolved based on the result type of the query
-        Expression resultElement = resolveQueryResultElement(identifier);
-        if (resultElement != null) {
-            return resultElement;
-        }
+        resolvedIdentifierList.addAllResolvedIdentifiers(resolveQueryResultElements(identifier));
 
         // In the case of a $this alias, names may be resolved as implicit property references
-        Expression thisElement = resolveQueryThisElement(identifier);
-        if (thisElement != null) {
-            return thisElement;
+        resolvedIdentifierList.addAllResolvedIdentifiers(resolveQueryThisElements(identifier));
+
+        if (MatchType.resolveMatchType(identifier, $_INDEX) != MatchType.NONE) {
+            final Iteration result = of.createIteration();
+            result.setResultType(resolveTypeName(SYSTEM, INTEGER));
+            resolvedIdentifierList.addResolvedIdentifier(identifier, identifier, $_INDEX, result);
         }
 
-        if (identifier.equals("$index")) {
-            Iteration result = of.createIteration();
-            result.setResultType(resolveTypeName("System", "Integer"));
-            return result;
+        if (MatchType.resolveMatchType(identifier, $_TOTAL) != MatchType.NONE) {
+            final Total result = of.createTotal();
+            result.setResultType(resolveTypeName(SYSTEM, DECIMAL)); // TODO: This isn't right, but we don't set up a query for the Aggregate operator right now...
+            resolvedIdentifierList.addResolvedIdentifier(identifier, identifier, $_TOTAL, result);
         }
 
-        if (identifier.equals("$total")) {
-            Total result = of.createTotal();
-            result.setResultType(resolveTypeName("System", "Decimal")); // TODO: This isn't right, but we don't set up a query for the Aggregate operator right now...
-            return result;
+        //each match in resolveAliases returns AliasedQuerySource as the resolved element.  These
+        //need to be converted to AliasRef
+        ResolvedIdentifierList aliasMatches = resolveAliases(identifier);
+        for (ResolvedIdentifier aliasRI : aliasMatches.getResolvedIdentifierList()) {
+            final AliasRef result = getAliasRef(identifier, aliasRI);
+            resolvedIdentifierList.addResolvedIdentifier(identifier, aliasRI.getMatchType(), result);
         }
 
-        AliasedQuerySource alias = resolveAlias(identifier);
-        if (alias != null) {
-            AliasRef result = of.createAliasRef().withName(identifier);
-            if (alias.getResultType() instanceof ListType) {
-                result.setResultType(((ListType)alias.getResultType()).getElementType());
+        //process each to be QueryLetRef
+        ResolvedIdentifierList letsMatches = resolveQueryLets(identifier);
+        for (ResolvedIdentifier letsRI : letsMatches.getResolvedIdentifierList()){
+            QueryLetRef result = getQueryLetRef(identifier, letsRI);
+            resolvedIdentifierList.addResolvedIdentifier(identifier, letsRI.getMatchType(), result);
+        }
+
+        ResolvedIdentifierList operandRefMatches = resolveOperandRefs(identifier);
+        for (ResolvedIdentifier operandRI : operandRefMatches.getResolvedIdentifierList()) {
+            OperandRef result = (OperandRef) operandRI.getResolvedElement();
+            resolvedIdentifierList.addResolvedIdentifier(identifier, operandRI.getMatchType(), result);
+        }
+        resolvedIdentifierList.addAllResolvedIdentifiers(operandRefMatches);
+
+        //no processing required of resolvedElements
+        resolvedIdentifierList.addAllResolvedIdentifiers(resolveElements(identifier));
+
+        // If no other resolution occurs, and we are in a specific context, and there is a parameter with the same name as the context,
+        // the identifier may be resolved as an implicit property reference on that context.
+        if (!inLiteralContext() && inSpecificContext() && resolvedIdentifierList.getFirstInstanceOfExactMatch() == null) {
+            Element contextElement = resolve(currentExpressionContext());
+            if (contextElement instanceof ParameterDef) {
+                ParameterDef contextParameter = (ParameterDef) contextElement;
+
+                checkLiteralContext();
+                ParameterRef parameterRef = of.createParameterRef().withName(contextParameter.getName());
+                parameterRef.setResultType(contextParameter.getResultType());
+                if (parameterRef.getResultType() == null) {
+                    // ERROR:
+                    throw new IllegalArgumentException(String.format("Could not validate reference to parameter %s because its definition contains errors.",
+                            parameterRef.getName()));
+                }
+
+                PropertyResolution resolution = resolveProperty(parameterRef.getResultType(), identifier, false);
+                if (resolution != null) {
+                    Expression contextAccessor = buildProperty(parameterRef, resolution.getName(), resolution.isSearch(), resolution.getType());
+                    contextAccessor = applyTargetMap(contextAccessor, resolution.getTargetMap());
+                    resolvedIdentifierList.addExactMatchIdentifier(identifier, contextAccessor);
+                }
             }
-            else {
-                result.setResultType(alias.getResultType());
+        }
+
+        //shift the first instance of MatchType.EXACT, which will be what is returned.  The remainder of the list
+        //is looked at to determine if hidden identifiers were found.
+        ResolvedIdentifier firstCaseMatch = resolvedIdentifierList.shiftFirstInstanceOfExactMatch();
+
+        if (firstCaseMatch != null) {
+
+            //getAllMatchedIdentifiers returns any recorded identifier where MatchType is not NONE
+            List<ResolvedIdentifier> allHiddenCaseMatches = resolvedIdentifierList.getAllMatchedIdentifiers();
+
+            //issue warning that multiple matches occurred:
+            if (! allHiddenCaseMatches.isEmpty()) {
+                this.reportWarning("Identifier hiding detected: " +
+                                "Identifier" + (allHiddenCaseMatches.size() > 1 ? "s" : "") + " in a broader scope hidden: " +
+                                this.formatMatchedMessage(allHiddenCaseMatches),
+                        (Expression) firstCaseMatch.getResolvedElement());
             }
-            return result;
+            //return first match:
+            return (Expression) firstCaseMatch.getResolvedElement();
+        } else if (mustResolve) {
+            // ERROR:
+            throw new IllegalArgumentException(String.format("Could not resolve identifier %s in the current library.", identifier));
         }
 
-        LetClause let = resolveQueryLet(identifier);
-        if (let != null) {
-            QueryLetRef result = of.createQueryLetRef().withName(identifier);
-            result.setResultType(let.getResultType());
-            return result;
-        }
+        return null;
+    }
 
-        OperandRef operandRef = resolveOperandRef(identifier);
-        if (operandRef != null) {
-            return operandRef;
-        }
+    private ResolvedIdentifierList resolveElements(String identifier) {
+        final ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
 
         Element element = resolve(identifier);
+
+        final ResolvedIdentifierList caseIgnoredElements = compiledLibrary.resolveCaseIgnored(identifier);
 
         if (element instanceof ExpressionDef) {
             checkLiteralContext();
@@ -2250,7 +2316,7 @@ public class LibraryBuilder implements ModelResolver {
                 throw new IllegalArgumentException(String.format("Could not validate reference to expression %s because its definition contains errors.",
                         expressionRef.getName()));
             }
-            return expressionRef;
+            resolvedIdentifierList.addExactMatchIdentifier(identifier, expressionRef);
         }
 
         if (element instanceof ParameterDef) {
@@ -2262,7 +2328,7 @@ public class LibraryBuilder implements ModelResolver {
                 throw new IllegalArgumentException(String.format("Could not validate reference to parameter %s because its definition contains errors.",
                         parameterRef.getName()));
             }
-            return parameterRef;
+            resolvedIdentifierList.addExactMatchIdentifier(identifier, parameterRef);
         }
 
         if (element instanceof ValueSetDef) {
@@ -2274,10 +2340,10 @@ public class LibraryBuilder implements ModelResolver {
                 throw new IllegalArgumentException(String.format("Could not validate reference to valueset %s because its definition contains errors.",
                         valuesetRef.getName()));
             }
-            if (isCompatibleWith("1.5")) {
+            if (isCompatibleWith(COMPATIBILITY_LEVEL_1_5)) {
                 valuesetRef.setPreserve(true);
             }
-            return valuesetRef;
+            resolvedIdentifierList.addExactMatchIdentifier(identifier, valuesetRef);
         }
 
         if (element instanceof CodeSystemDef) {
@@ -2289,8 +2355,7 @@ public class LibraryBuilder implements ModelResolver {
                 throw new IllegalArgumentException(String.format("Could not validate reference to codesystem %s because its definition contains errors.",
                         codesystemRef.getName()));
             }
-            return codesystemRef;
-
+            resolvedIdentifierList.addExactMatchIdentifier(identifier, codesystemRef);
         }
 
         if (element instanceof CodeDef) {
@@ -2302,7 +2367,7 @@ public class LibraryBuilder implements ModelResolver {
                 throw new IllegalArgumentException(String.format("Could not validate reference to code %s because its definition contains errors.",
                         codeRef.getName()));
             }
-            return codeRef;
+            resolvedIdentifierList.addExactMatchIdentifier(identifier, codeRef);
         }
 
         if (element instanceof ConceptDef) {
@@ -2314,34 +2379,104 @@ public class LibraryBuilder implements ModelResolver {
                 throw new IllegalArgumentException(String.format("Could not validate reference to concept %s because its definition contains error.",
                         conceptRef.getName()));
             }
-            return conceptRef;
+            resolvedIdentifierList.addExactMatchIdentifier(identifier, conceptRef);
         }
 
         if (element instanceof IncludeDef) {
             checkLiteralContext();
             LibraryRef libraryRef = new LibraryRef();
             libraryRef.setLibraryName(((IncludeDef) element).getLocalIdentifier());
-            return libraryRef;
+            resolvedIdentifierList.addExactMatchIdentifier(identifier, libraryRef);
         }
 
-        // If no other resolution occurs, and we are in a specific context, and there is a parameter with the same name as the context,
-        // the identifier may be resolved as an implicit property reference on that context.
-        ParameterRef parameterRef = resolveImplicitContext();
-        if (parameterRef != null) {
-            PropertyResolution resolution = resolveProperty(parameterRef.getResultType(), identifier, false);
-            if (resolution != null) {
-                Expression contextAccessor = buildProperty(parameterRef, resolution.getName(), resolution.isSearch(), resolution.getType());
-                contextAccessor = applyTargetMap(contextAccessor, resolution.getTargetMap());
-                return contextAccessor;
+        resolvedIdentifierList.addAllResolvedIdentifiers(caseIgnoredElements);
+
+        return resolvedIdentifierList;
+    }
+
+    private QueryLetRef getQueryLetRef(String identifier, ResolvedIdentifier s) {
+        QueryLetRef result = of.createQueryLetRef().withName(identifier);
+        LetClause let = (LetClause) s.getResolvedElement();
+        result.setResultType(let.getResultType());
+        return result;
+    }
+
+    private AliasRef getAliasRef(String identifier, ResolvedIdentifier aliasRI) {
+        AliasRef result = of.createAliasRef().withName(identifier);
+        AliasedQuerySource aqs = (AliasedQuerySource) aliasRI.getResolvedElement();
+        if (aqs.getResultType() instanceof ListType) {
+            result.setResultType(((ListType) aqs.getResultType()).getElementType());
+        } else {
+            result.setResultType(aqs.getResultType());
+        }
+        return result;
+    }
+
+    private String formatMatchedMessage(List<ResolvedIdentifier> list) {
+        final StringBuilder sb = new StringBuilder();
+        for (ResolvedIdentifier p : list){
+            String matchType;
+            switch (p.getMatchType()) {
+                case EXACT:  matchType = " with exact case matching.";
+                    break;
+                case CASE_IGNORED:  matchType = " with case insensitive matching.";
+                    break;
+                default: matchType = " with invalid MatchType.";
+                    break;
             }
+            sb.append(String.format(lookupElementWarning(p.getResolvedElement()), p.getIdentifier())).append(matchType).append("\n");
         }
+        return sb.toString();
+    }
 
-        if (mustResolve) {
-            // ERROR:
-            throw new IllegalArgumentException(String.format("Could not resolve identifier %s in the current library.", identifier));
+    private String lookupElementWarning(Object element) {
+        if (element instanceof ExpressionDef) {
+            return "%s resolved as an expression definition";
         }
-
-        return null;
+        else if (element instanceof ParameterDef) {
+            return "%s resolved as a parameter";
+        }
+        else if (element instanceof ValueSetDef) {
+            return "%s resolved as a value set";
+        }
+        else if (element instanceof CodeSystemDef) {
+            return "%s resolved as a code system";
+        }
+        else if (element instanceof CodeDef) {
+            return "%s resolved as a code";
+        }
+        else if (element instanceof ConceptDef) {
+            return "%s resolved as a concept";
+        }
+        else if (element instanceof IncludeDef) {
+            return "%s resolved as a library";
+        }
+        else if (element instanceof IdentifierRef) {
+            return "%s resolved as an element of the result of a query";
+        }
+        else if (element instanceof Iteration) {
+            return "%s resolved as the index iteration accessor";
+        }
+        else if (element instanceof Total) {
+            return "%s resolved as the total aggregation accessor";
+        }
+        else if (element instanceof AliasRef) {
+            return "%s resolved as an alias of a query";
+        }
+        else if (element instanceof QueryLetRef ) {
+            return "%s resolved as a let of a query";
+        }
+        else if (element instanceof OperandRef ) {
+            return "%s resolved as an operand to a function";
+        }
+        else if (element instanceof Literal) {
+            return "%s resolved as a potential type name";
+        }
+        else if (element instanceof Expression ) {
+            return "%s resolved as a context accessor";
+        }
+        //default message if no match is made:
+        return "%s resolved more than once: " + element.getClass();
     }
 
     /**
@@ -2524,8 +2659,8 @@ public class LibraryBuilder implements ModelResolver {
             String functionArgument = targetMap.substring(invocationStart + 1, targetMap.lastIndexOf(')'));
             Expression argumentSource = functionArgument.equals("%value") ? source : applyTargetMap(source, functionArgument);
             if (argumentSource.getResultType() instanceof ListType) {
-                Query query = of.createQuery().withSource(of.createAliasedQuerySource().withExpression(argumentSource).withAlias("$this"));
-                FunctionRef fr = of.createFunctionRef().withLibraryName(libraryName).withName(functionName).withOperand(of.createAliasRef().withName("$this"));
+                Query query = of.createQuery().withSource(of.createAliasedQuerySource().withExpression(argumentSource).withAlias($_THIS));
+                FunctionRef fr = of.createFunctionRef().withLibraryName(libraryName).withName(functionName).withOperand(of.createAliasRef().withName($_THIS));
                 // This doesn't quite work because the US.Core types aren't subtypes of FHIR types.
                 //resolveCall(libraryName, functionName, new FunctionRefInvocation(fr), false, false);
                 query.setReturn(of.createReturnClause().withDistinct(false).withExpression(fr));
@@ -2578,7 +2713,7 @@ public class LibraryBuilder implements ModelResolver {
             }
 
             // Build a query with the current result as source and the indexer content as criteria in the where clause
-            AliasedQuerySource querySource = of.createAliasedQuerySource().withExpression(result).withAlias("$this");
+            AliasedQuerySource querySource = of.createAliasedQuerySource().withExpression(result).withAlias($_THIS);
 
             Expression criteria = null;
             for (String indexerItem : indexer.split(",")) {
@@ -2590,7 +2725,7 @@ public class LibraryBuilder implements ModelResolver {
                 Expression left = null;
                 for (String path : indexerItems[0].split("\\.")) {
                     if (left == null) {
-                        left = of.createProperty().withScope("$this").withPath(path);
+                        left = of.createProperty().withScope($_THIS).withPath(path);
                     }
                     else {
                         left = of.createProperty().withSource(left).withPath(path);
@@ -2650,7 +2785,7 @@ public class LibraryBuilder implements ModelResolver {
                 if (!targetPath.isEmpty()) {
                     query.setReturn(of.createReturnClause()
                             .withDistinct(false).withExpression(of.createProperty()
-                                    .withSource(of.createAliasRef().withName("$this")).withPath(targetPath)));
+                                    .withSource(of.createAliasRef().withName($_THIS)).withPath(targetPath)));
                 }
 
                 // The value reference should go inside the query, rather than being applied as a property outside of it
@@ -2670,10 +2805,10 @@ public class LibraryBuilder implements ModelResolver {
         else if (targetMap.startsWith("%value.")) {
             String propertyName = targetMap.substring(7);
             // If the source is a list, the mapping is expected to apply to every element in the list
-            // ((source $this return all $this.value)
+            // ((source $_THIS return all $this.value)
             if (source.getResultType() instanceof ListType) {
-                AliasedQuerySource s = of.createAliasedQuerySource().withExpression(source).withAlias("$this");
-                Property p = of.createProperty().withScope("$this").withPath(propertyName);
+                AliasedQuerySource s = of.createAliasedQuerySource().withExpression(source).withAlias($_THIS);
+                Property p = of.createProperty().withScope($_THIS).withPath(propertyName);
                 p.setResultType(((ListType)source.getResultType()).getElementType());
                 ReturnClause r = of.createReturnClause().withDistinct(false).withExpression(p);
                 Query q = of.createQuery().withSource(s).withReturn(r);
@@ -2782,15 +2917,15 @@ public class LibraryBuilder implements ModelResolver {
             // listValue.property ::= listValue X where X.property is not null return all X.property
             ListType listType = (ListType)left.getResultType();
             PropertyResolution resolution = resolveProperty(listType.getElementType(), memberIdentifier);
-            Expression accessor = buildProperty(of.createAliasRef().withName("$this"), resolution.getName(), resolution.isSearch(), resolution.getType());
+            Expression accessor = buildProperty(of.createAliasRef().withName($_THIS), resolution.getName(), resolution.isSearch(), resolution.getType());
             accessor = applyTargetMap(accessor, resolution.getTargetMap());
             Expression not = buildIsNotNull(accessor);
 
             // Recreate property, it needs to be accessed twice
-            accessor = buildProperty(of.createAliasRef().withName("$this"), resolution.getName(), resolution.isSearch(), resolution.getType());
+            accessor = buildProperty(of.createAliasRef().withName($_THIS), resolution.getName(), resolution.isSearch(), resolution.getType());
             accessor = applyTargetMap(accessor, resolution.getTargetMap());
 
-            AliasedQuerySource source = of.createAliasedQuerySource().withExpression(left).withAlias("$this");
+            AliasedQuerySource source = of.createAliasedQuerySource().withExpression(left).withAlias($_THIS);
             source.setResultType(left.getResultType());
             Query query = of.createQuery()
                     .withSource(source)
@@ -2814,49 +2949,54 @@ public class LibraryBuilder implements ModelResolver {
         }
     }
 
-    private Expression resolveQueryResultElement(String identifier) {
+    private ResolvedIdentifierList resolveQueryResultElements(String identifier) {
+        final ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
         if (inQueryContext()) {
             QueryContext query = peekQueryContext();
             if (query.inSortClause() && !query.isSingular()) {
-                if (identifier.equals("$this")) {
+                if (identifier.equals($_THIS)) {
                     IdentifierRef result = new IdentifierRef().withName(identifier);
                     result.setResultType(query.getResultElementType());
-                    return result;
+                    resolvedIdentifierList.addResolvedIdentifier(identifier, identifier, $_THIS, result);
                 }
 
                 PropertyResolution resolution = resolveProperty(query.getResultElementType(), identifier, false);
                 if (resolution != null) {
                     IdentifierRef result = new IdentifierRef().withName(resolution.getName());
                     result.setResultType(resolution.getType());
-                    return applyTargetMap(result, resolution.getTargetMap());
+                    resolvedIdentifierList.addExactMatchIdentifier(identifier, applyTargetMap(result, resolution.getTargetMap()));
                 }
             }
         }
 
-        return null;
+        return resolvedIdentifierList;
     }
 
-    private AliasedQuerySource resolveAlias(String identifier) {
+    private ResolvedIdentifierList resolveAliases(String identifier) {
+        final ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
         // Need to use a for loop to go through backwards, iteration on a Stack is bottom up
         if (inQueryContext()) {
             for (int i = getScope().getQueries().size() - 1; i >= 0; i--) {
                 AliasedQuerySource source = getScope().getQueries().get(i).resolveAlias(identifier);
                 if (source != null) {
-                    return source;
+                    resolvedIdentifierList.addExactMatchIdentifier(identifier, source);
                 }
+                resolvedIdentifierList.addAllResolvedIdentifiers(getScope().getQueries().get(i).resolveCaseIgnoredAliases(identifier));
             }
         }
 
-        return null;
+        return resolvedIdentifierList;
     }
 
-    private Expression resolveQueryThisElement(String identifier) {
+    private ResolvedIdentifierList resolveQueryThisElements(String identifier) {
+        final ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
         if (inQueryContext()) {
             QueryContext query = peekQueryContext();
             if (query.isImplicit()) {
-                AliasedQuerySource source = resolveAlias("$this");
-                if (source != null) {
-                    AliasRef aliasRef = of.createAliasRef().withName("$this");
+                final ResolvedIdentifier aliasCaseMatch = resolveAliases($_THIS).shiftFirstInstanceOfExactMatch();
+                if (aliasCaseMatch != null) {
+                    final AliasedQuerySource source = (AliasedQuerySource) aliasCaseMatch.getResolvedElement();
+                    AliasRef aliasRef = of.createAliasRef().withName($_THIS);
                     if (source.getResultType() instanceof ListType) {
                         aliasRef.setResultType(((ListType)source.getResultType()).getElementType());
                     }
@@ -2866,41 +3006,47 @@ public class LibraryBuilder implements ModelResolver {
 
                     PropertyResolution result = resolveProperty(aliasRef.getResultType(), identifier, false);
                     if (result != null) {
-                        return resolveAccessor(aliasRef, identifier);
+                        resolvedIdentifierList.addExactMatchIdentifier(identifier, resolveAccessor(aliasRef, identifier));
                     }
                 }
             }
         }
 
-        return null;
+        return resolvedIdentifierList;
     }
 
-    private LetClause resolveQueryLet(String identifier) {
+    private ResolvedIdentifierList resolveQueryLets(String identifier) {
+        final ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
         // Need to use a for loop to go through backwards, iteration on a Stack is bottom up
         if (inQueryContext()) {
             for (int i = getScope().getQueries().size() - 1; i >= 0; i--) {
                 LetClause let = getScope().getQueries().get(i).resolveLet(identifier);
                 if (let != null) {
-                    return let;
+                    resolvedIdentifierList.addExactMatchIdentifier(identifier, let);
                 }
+                resolvedIdentifierList.addAllResolvedIdentifiers(getScope().getQueries().get(i).resolveCaseIgnoredLets(identifier));
             }
         }
 
-        return null;
+        return resolvedIdentifierList;
     }
 
-    private OperandRef resolveOperandRef(String identifier) {
+    private ResolvedIdentifierList resolveOperandRefs(String identifier) {
+        final ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
         if (!functionDefs.empty()) {
             for (OperandDef operand : functionDefs.peek().getOperand()) {
                 if (operand.getName().equals(identifier)) {
-                    return (OperandRef)of.createOperandRef()
-                            .withName(identifier)
-                            .withResultType(operand.getResultType());
+                    resolvedIdentifierList.addResolvedIdentifier(identifier,
+                            operand.getName(),
+                            identifier,
+                            of.createOperandRef()
+                                    .withName(identifier)
+                                    .withResultType(operand.getResultType()));
                 }
             }
         }
 
-        return null;
+        return resolvedIdentifierList;
     }
 
     private DataType getExpressionDefResultType(ExpressionDef expressionDef) {

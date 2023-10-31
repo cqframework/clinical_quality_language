@@ -407,6 +407,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
             return retrievedResult.getUnderlyingResultIfExists();
         }
 
+        // LUKETODO:  the fix goes here
         DataType resultType = libraryBuilder.resolveTypeName(modelIdentifier, identifier);
         if (null == resultType) {
             throw new CqlCompilerException(String.format("Could not find type for model: %s and name: %s", modelIdentifier, identifier));

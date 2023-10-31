@@ -22,7 +22,8 @@ public class BaseTest {
     public void testAuthoringPatterns() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("qicore/v411/AuthoringPatterns.cql", 0, LibraryBuilder.SignatureLevel.Overloads);
 
-        assertThat(translator.getWarnings().size(), is(0));
+        // LUKETODO:  Identifier hiding detected: Identifier in a broader scope hidden: Application of Intermittent Pneumatic Compression Devices (IPC) resolved as a value set with case insensitive matching.
+        assertThat(translator.getWarnings().toString(), translator.getWarnings().size(), is(0));
     }
 
     @Test

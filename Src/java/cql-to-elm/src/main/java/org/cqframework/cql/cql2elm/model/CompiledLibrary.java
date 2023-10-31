@@ -140,6 +140,17 @@ public class CompiledLibrary {
         return namespace.get(identifier);
     }
 
+    public ResolvedIdentifierList resolveCaseIgnored(String identifier) {
+        ResolvedIdentifierList ret = new ResolvedIdentifierList();
+
+        namespace.entrySet()
+                .stream()
+                .filter(k -> k.getKey().equalsIgnoreCase(identifier) && !k.getKey().equals(identifier))
+                .forEach(entry -> ret.addResolvedIdentifier(new ResolvedIdentifier(entry.getKey(), MatchType.CASE_IGNORED, entry.getValue())));
+
+        return ret;
+    }
+
     public UsingDef resolveUsingRef(String identifier) {
         Element element = resolve(identifier);
         if (element instanceof UsingDef) {

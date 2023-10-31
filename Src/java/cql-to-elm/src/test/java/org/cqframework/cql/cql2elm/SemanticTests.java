@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -646,7 +647,18 @@ public class SemanticTests {
 
         final List<CqlCompilerException> errors = translator.getErrors();
 
-        assertTrue(errors.stream().map(Throwable::getMessage).anyMatch("Could not find type for model: FHIR and name: Code"::equals));
+        assertTrue(errors.stream().map(Throwable::getMessage).collect(Collectors.toSet()).toString(), errors.stream().map(Throwable::getMessage).anyMatch("Could not find type for model: null and name: ThisTypeDoesNotExist"::equals));
+    }
+
+    @Test
+    public void testIdentifierCaseMismatch598() throws IOException {
+        // LUKETODO:  Try this with both case sensitive and case insensitive configs
+        // LUKETODO:  Try the opposite as well, lowercase when we expect capital
+        final CqlTranslator translator = runSemanticTest("TestIdentifierCaseMismatch598.cql", 2);
+
+        final List<CqlCompilerException> errors = translator.getErrors();
+
+        assertTrue(errors.stream().map(Throwable::getMessage).collect(Collectors.toSet()).toString(), errors.stream().map(Throwable::getMessage).anyMatch("Invalid case for library: FHIR and Code (should be code)"::equals));
     }
 
     @Test

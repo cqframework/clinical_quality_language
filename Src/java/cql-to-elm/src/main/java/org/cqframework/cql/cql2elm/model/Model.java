@@ -102,10 +102,24 @@ public class Model {
         return null;
     }
 
-    public ClassType resolveLabel(String label) {
+    public ClassType resolveLabel(String modelName, String label) {
+        // LUKETODO:  why is this wrong?
+//        if (! (info.isCaseSensitive() != null ? info.isCaseSensitive() : false)) {
+//            if (! classIndex.containsKey(label)) {
+//                classIndex.keySet()
+//                        .stream()
+//                        .filter(key -> key.equalsIgnoreCase(label))
+//                        .findFirst()
+//                        .ifPresent(actualKey -> {
+//                            throw new IllegalArgumentException(String.format("Invalid case for library: %s and %s (should be %s)", modelName, label, actualKey));
+//                        });
+//            }
+//        }
+
         return classIndex.get(casify(label));
     }
 
+    // TODO: LD: Do we actually support this concept of cane insensitivity?
     private String casify(String typeName) {
         return (this.info.isCaseSensitive() != null ? this.info.isCaseSensitive() : false) ? typeName.toLowerCase() : typeName;
     }

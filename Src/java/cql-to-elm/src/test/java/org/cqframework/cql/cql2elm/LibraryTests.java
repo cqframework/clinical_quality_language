@@ -655,4 +655,18 @@ public class LibraryTests {
             assertThat(translator.getWarnings().get(0).getMessage(), equalTo(String.format("The function TestAmbiguousFailOnAmbiguousFunctionResolutionWithoutTypeInformation.TestAny has multiple overloads and due to the SignatureLevel setting (%s), the overload signature is not being included in the output. This may result in ambiguous function resolution at runtime, consider setting the SignatureLevel to Overloads or All to ensure that the output includes sufficient information to support correct overload selection at runtime.", signatureLevel.name())));
         }
     }
+
+    @Test
+    public void testHiddenIdentifiers() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/HiddenIdentifier.cql");
+        // LUKETODO:  this fails now due to 0 warnings:  implement fix from other branch
+        // LUKETODO:  assert actual exception
+        // LUKETODO:  consider moving this to SemanticTests
+        assertThat(translator.getWarnings().size(), is(1));
+        assertThat(translator.getWarnings()
+                        .stream()
+                        .map(Throwable::getMessage)
+                        .collect(Collectors.toList()),
+                contains("Identifier hiding detected: Identifiers in a broader scope hidden: testOperand resolved as an operand to a function with exact case matching.\ntestOperand resolved as an operand to a function with exact case matching.\n"));
+    }
 }
