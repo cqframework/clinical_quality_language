@@ -28,26 +28,30 @@ public class QueryEvaluator {
         }
     }
 
-    private static void evaluateLets(Query elm, State state, List<Variable> letVariables, ElmLibraryVisitor<Object, State> visitor) {
+    private static void evaluateLets(Query elm, State state, List<Variable> letVariables,
+            ElmLibraryVisitor<Object, State> visitor) {
         for (int i = 0; i < elm.getLet().size(); i++) {
             letVariables.get(i).setValue(visitor.visitExpression(elm.getLet().get(i).getExpression(), state));
         }
     }
 
     private static boolean evaluateRelationships(Query elm, State state, ElmLibraryVisitor<Object, State> visitor) {
-        // TODO: This is the most naive possible implementation here, but it should perform okay with 1) caching and 2) small data sets
+        // TODO: This is the most naive possible implementation here, but it should
+        // perform okay with 1) caching and 2) small data sets
         boolean shouldInclude = true;
         for (org.hl7.elm.r1.RelationshipClause relationship : elm.getRelationship()) {
             boolean hasSatisfyingData = false;
-            Iterable<Object> relatedSourceData = ensureIterable(visitor.visitExpression(relationship.getExpression(), state));
+            Iterable<Object> relatedSourceData = ensureIterable(
+                    visitor.visitExpression(relationship.getExpression(), state));
             for (Object relatedElement : relatedSourceData) {
                 state.push(new Variable().withName(relationship.getAlias()).withValue(relatedElement));
                 try {
                     Object satisfiesRelatedCondition = visitor.visitExpression(relationship.getSuchThat(), state);
                     if ((relationship instanceof org.hl7.elm.r1.With
-                            || relationship instanceof org.hl7.elm.r1.Without) && Boolean.TRUE.equals(satisfiesRelatedCondition)) {
-                            hasSatisfyingData = true;
-                            break; // Once we have detected satisfying data, no need to continue testing
+                            || relationship instanceof org.hl7.elm.r1.Without)
+                            && Boolean.TRUE.equals(satisfiesRelatedCondition)) {
+                        hasSatisfyingData = true;
+                        break; // Once we have detected satisfying data, no need to continue testing
                     }
                 } finally {
                     state.pop();
@@ -57,7 +61,8 @@ public class QueryEvaluator {
             if ((relationship instanceof org.hl7.elm.r1.With && !hasSatisfyingData)
                     || (relationship instanceof org.hl7.elm.r1.Without && hasSatisfyingData)) {
                 shouldInclude = false;
-                break; // Once we have determined the row should not be included, no need to continue testing other related information
+                break; // Once we have determined the row should not be included, no need to continue
+                       // testing other related information
             }
         }
 
@@ -75,11 +80,14 @@ public class QueryEvaluator {
         return true;
     }
 
-    private static Object evaluateReturn(Query elm, State state, List<Variable> variables, List<Object> elements, ElmLibraryVisitor<Object, State> visitor) {
-        return elm.getReturn() != null ? visitor.visitExpression(elm.getReturn().getExpression(), state) : constructResult(state, variables, elements);
+    private static Object evaluateReturn(Query elm, State state, List<Variable> variables, List<Object> elements,
+            ElmLibraryVisitor<Object, State> visitor) {
+        return elm.getReturn() != null ? visitor.visitExpression(elm.getReturn().getExpression(), state)
+                : constructResult(state, variables, elements);
     }
 
-    private static Object evaluateAggregate(Query elm, State state, List<Variable> variables, List<Object> elements, ElmLibraryVisitor<Object, State> visitor) {
+    private static Object evaluateAggregate(Query elm, State state, List<Variable> variables, List<Object> elements,
+            ElmLibraryVisitor<Object, State> visitor) {
         Object initial = visitor.visitExpression(elm.getAggregate().getStarting(), state);
         Object iteration = visitor.visitExpression(elm.getAggregate().getExpression(), state);
 
@@ -99,7 +107,8 @@ public class QueryEvaluator {
         return elements.get(0);
     }
 
-    public static void sortResult(Query elm, List<Object> result, State state, String alias, ElmLibraryVisitor<Object, State> visitor) {
+    public static void sortResult(Query elm, List<Object> result, State state, String alias,
+            ElmLibraryVisitor<Object, State> visitor) {
 
         SortClause sortClause = elm.getSort();
 
@@ -108,7 +117,8 @@ public class QueryEvaluator {
             for (SortByItem byItem : sortClause.getBy()) {
 
                 if (byItem instanceof ByExpression) {
-                    result.sort(new CqlList(state, visitor, alias, ((ByExpression) byItem).getExpression()).expressionSort);
+                    result.sort(
+                            new CqlList(state, visitor, alias, ((ByExpression) byItem).getExpression()).expressionSort);
                 } else if (byItem instanceof ByColumn) {
                     result.sort(new CqlList(state, ((ByColumn) byItem).getPath()).columnSort);
                 } else {
@@ -196,18 +206,7 @@ public class QueryEvaluator {
                     continue;
                 }
 
-                if (elm.getAggregate() != null && elm.getReturn() != null) {
-                    throw new CqlException("aggregate and return are mutually exclusive");
-                }
-
-                if (elm.getReturn() != null) {
-                    result.add(evaluateReturn(elm, state, variables, elements, visitor));
-                }
-                else {
-                    result.add(evaluateAggregate(elm, state, variables, elements, visitor));
-                }
-
-
+                result.add(evaluateReturn(elm, state, variables, elements, visitor));
             }
         } finally {
             while (pushCount > 0) {
@@ -216,8 +215,17 @@ public class QueryEvaluator {
             }
         }
 
+        if (elm.getAggregate() != null && elm.getReturn() != null) {
+            throw new CqlException("aggregate and return are mutually exclusive");
+        }
+
         if (elm.getReturn() != null && elm.getReturn().isDistinct()) {
             result = DistinctEvaluator.distinct(result, state);
+        }
+
+
+        if (elm.getAggregate() != null) {
+            result = evaluateAggregate(elm, state, variables, result, visitor);
         }
 
         sortResult(elm, result, state, null, visitor);

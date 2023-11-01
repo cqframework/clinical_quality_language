@@ -1,6 +1,8 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
 import org.opencds.cqf.cql.engine.execution.State;
+
+import java.util.List;
 import java.util.Objects;
 
 /*
@@ -15,7 +17,7 @@ https://cql.hl7.org/03-developersguide.html#aggregate-queries
 
 public class AggregateEvaluator {
 
-    public static Object aggregate(Object source, Object initial, Object iteration, State state) {
+    public static Object aggregate(List<Object> source, Object initial, Object iteration, State state) {
         Objects.requireNonNull(source, "source can not be null");
         Objects.requireNonNull(iteration, "iteration can not be null");
         Objects.requireNonNull(state, "state can not be null");
