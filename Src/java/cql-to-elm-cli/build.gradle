@@ -14,7 +14,7 @@ dependencies {
     implementation project(':model-jaxb')
     implementation project(':elm-jaxb')
     implementation 'net.sf.jopt-simple:jopt-simple:4.7'
-    runtimeOnly 'org.eclipse.persistence:org.eclipse.persistence.moxy:2.7.7'
+    runtimeOnly 'org.eclipse.persistence:org.eclipse.persistence.moxy:4.0.1'
     runtimeOnly 'xpp3:xpp3_min:1.1.4c'
     runtimeOnly 'xmlpull:xmlpull:1.1.3.1'
 
