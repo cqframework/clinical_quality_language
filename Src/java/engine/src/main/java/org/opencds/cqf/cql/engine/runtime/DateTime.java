@@ -3,6 +3,7 @@ package org.opencds.cqf.cql.engine.runtime;
 import org.opencds.cqf.cql.engine.exception.InvalidDateTime;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -30,7 +31,7 @@ public class DateTime extends BaseTemporal {
 //        if (zoneOffset != null) {
 //            throw new IllegalArgumentException("something");
 //        }
-        zoneOffset = dateTime.getOffset();
+//        zoneOffset = dateTime.getOffset();
     }
     public DateTime withDateTime(OffsetDateTime dateTime) {
         setDateTime(dateTime);
@@ -45,7 +46,7 @@ public class DateTime extends BaseTemporal {
     public DateTime(OffsetDateTime dateTime) {
         setDateTime(dateTime);
         this.precision = Precision.MILLISECOND;
-//        zoneOffset = toZoneOffset(dateTime);
+        zoneOffset = toZoneOffset(dateTime);
     }
 
     public DateTime(OffsetDateTime dateTime, Precision precision) {
@@ -143,7 +144,15 @@ public class DateTime extends BaseTemporal {
             setDateTime(OffsetDateTime.parse(dateString.toString()));
         }
         else {
-            setDateTime(TemporalHelper.toOffsetDateTime(LocalDateTime.parse(dateString.toString())));
+//            setDateTime(TemporalHelper.toOffsetDateTime(LocalDateTime.parse(dateString.toString())));
+            final LocalDateTime parse = LocalDateTime.parse(dateString.toString());
+            final TimeZone defaultTimezone = TimeZone.getDefault();
+
+            // LUKETODO:  this isn't strictly correct at it should come from State, but let's go with it
+            final ZoneOffset offsetFromCurrentTimezone = OffsetDateTime.now().getOffset();
+
+            setDateTime(parse.atOffset(offsetFromCurrentTimezone));
+//            setDateTime(TemporalHelper.toOffsetDateTime(LocalDateTime.parse(dateString.toString())));
         }
     }
 

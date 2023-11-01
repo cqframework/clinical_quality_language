@@ -787,7 +787,7 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
         final BigDecimal totalSeconds = BigDecimal.valueOf(zoneOffset.getTotalSeconds());
         // LUKETODO: the 863 tests FAIL here
 //        final BigDecimal totalSeconds = BigDecimal.valueOf(zoneOffsetConsidersDst.getTotalSeconds());
-        final BigDecimal totalMinutes = totalSeconds.divide(sixty, 2, RoundingMode.HALF_EVEN);
+        final BigDecimal totalMinutes = totalSeconds.divide(sixty, RoundingMode.HALF_EVEN);
         final BigDecimal totalHours = totalMinutes.divide(sixty, 2, RoundingMode.HALF_EVEN);
 
         return totalHours;

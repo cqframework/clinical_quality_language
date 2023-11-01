@@ -87,17 +87,8 @@ public class TemporalHelper {
     }
 
     // LUKETODO:  We never pass a non-null state here.  This is effectively dead code
-    public static ZonedDateTime toZonedDateTime(LocalDateTime localDateTime, State c) {
-        if (c != null) {
-            return localDateTime.atZone(c.getEvaluationZonedDateTime().getZone());
-        }
-        else {
-            return localDateTime.atZone(TimeZone.getDefault().toZoneId());
-        }
-    }
-
     public static ZonedDateTime toZonedDateTime(LocalDateTime localDateTime) {
-        return toZonedDateTime(localDateTime, null);
+        return localDateTime.atZone(TimeZone.getDefault().toZoneId());
     }
 
     public static OffsetDateTime toOffsetDateTime(LocalDateTime localDateTime) {
