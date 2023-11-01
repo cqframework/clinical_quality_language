@@ -22,6 +22,10 @@ public class CqlTestBase {
     @DataProvider
     static Object[][] timezones() {
         return new Object[][] {{NORTH_AMERICA_MOUNTAIN},{NEWFOUNDLAND},{INDIA},{AUSTRALIA_NORTHERN_TERRITORY},{AUSTRALIA_EUCLA},{AUSTRALIA_BROKEN_HILL},{AUSTRALIA_LORD_HOWE},{AUSTRALIA_SOUTH},{INDIAN_COCOS},{PACIFIC_CHATHAM}};
+//        return new Object[][] {{AUSTRALIA_BROKEN_HILL}};
+//        return new Object[][] {{NORTH_AMERICA_MOUNTAIN},{NEWFOUNDLAND},{INDIA}};
+//        return new Object[][] {{NORTH_AMERICA_MOUNTAIN},{NEWFOUNDLAND}};
+//        return new Object[][] {{NORTH_AMERICA_MOUNTAIN}};
     }
 
     private static ModelManager modelManager;

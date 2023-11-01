@@ -86,6 +86,7 @@ public class TemporalHelper {
         return new BigDecimal(Double.toString(seconds/60f/60f));
     }
 
+    // LUKETODO:  We never pass a non-null state here.  This is effectively dead code
     public static ZonedDateTime toZonedDateTime(LocalDateTime localDateTime, State c) {
         if (c != null) {
             return localDateTime.atZone(c.getEvaluationZonedDateTime().getZone());

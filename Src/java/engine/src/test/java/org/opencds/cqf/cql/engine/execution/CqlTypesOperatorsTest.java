@@ -187,7 +187,10 @@ public class CqlTypesOperatorsTest extends CqlTestBase {
             softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2014, 1, 1)));
 
             result = evaluationResult.forExpression("ToDateTime2").value();
-            softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2014, 1, 1, 12, 5)));
+            // result OLD code:  2014-01-01T12:05-07:00
+            // expected OLD code: 2014-01-01T12:05-07:00
+            final DateTime expectedResult = new DateTime(null, 2014, 1, 1, 12, 5);
+            softAssert.assertTrue(EquivalentEvaluator.equivalent(result, expectedResult));
 
             result = evaluationResult.forExpression("ToDateTime3").value();
             softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2014, 1, 1, 12, 5, 5, 955)));

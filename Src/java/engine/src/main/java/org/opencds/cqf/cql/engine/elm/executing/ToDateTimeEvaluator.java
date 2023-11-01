@@ -6,6 +6,8 @@ import org.opencds.cqf.cql.engine.runtime.Date;
 import org.opencds.cqf.cql.engine.runtime.DateTime;
 import org.opencds.cqf.cql.engine.runtime.TemporalHelper;
 
+import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 
 /*
@@ -59,7 +61,12 @@ public class ToDateTimeEvaluator {
         }
 
         if (operand instanceof Date) {
-            return new DateTime(TemporalHelper.zoneToOffset(state.getEvaluationZonedDateTime().getOffset()),
+            final Date operandAsDate = (Date) operand;
+            final ZonedDateTime evaluationZonedDateTime = state.getEvaluationZonedDateTime();
+
+            // LUKETODO: we need to construct a Date object here, then use it to derive the offset according to the State or default tiemzone
+            final BigDecimal offset = TemporalHelper.zoneToOffset(evaluationZonedDateTime.getOffset());
+            return new DateTime(offset,
                     ((Date) operand).getDate().getYear(),
                     ((Date) operand).getDate().getMonthValue(),
                     ((Date) operand).getDate().getDayOfMonth(),

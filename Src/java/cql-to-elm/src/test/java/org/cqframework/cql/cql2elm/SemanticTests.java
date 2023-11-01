@@ -718,6 +718,11 @@ public class SemanticTests {
         assertTrue("Expected return types are String and Boolean: ", actualChoiceTypes.equals(expectedChoiceTypes));
     }
 
+    @Test
+    public void testIssue863() throws IOException {
+        final CqlTranslator translator = TestUtils.runSemanticTest("Issue863.cql", 0);
+    }
+
     private CqlTranslator runSemanticTest(String testFileName) throws IOException {
         return runSemanticTest(testFileName, 0);
     }

@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 public class DateTime extends BaseTemporal {
-    private final ZoneOffset zoneOffset;
+    private ZoneOffset zoneOffset;
 
     private OffsetDateTime dateTime;
     public OffsetDateTime getDateTime() {
@@ -25,7 +25,12 @@ public class DateTime extends BaseTemporal {
         if (dateTime.getYear() > 9999) {
             throw new InvalidDateTime(String.format("The year: %d falls above the accepted bounds of 0001-9999.", dateTime.getYear()));
         }
+        // LUKETODO:  should we now consider setting the zoneOffset here?
         this.dateTime = dateTime;
+//        if (zoneOffset != null) {
+//            throw new IllegalArgumentException("something");
+//        }
+        zoneOffset = dateTime.getOffset();
     }
     public DateTime withDateTime(OffsetDateTime dateTime) {
         setDateTime(dateTime);
@@ -40,7 +45,7 @@ public class DateTime extends BaseTemporal {
     public DateTime(OffsetDateTime dateTime) {
         setDateTime(dateTime);
         this.precision = Precision.MILLISECOND;
-        zoneOffset = toZoneOffset(dateTime);
+//        zoneOffset = toZoneOffset(dateTime);
     }
 
     public DateTime(OffsetDateTime dateTime, Precision precision) {
@@ -134,7 +139,7 @@ public class DateTime extends BaseTemporal {
         // Otherwise, parse as a LocalDateTime and then interpret that in the evaluation timezone
 
         if (offset != null) {
-            dateString.append(toZoneOffset(offset).getId());
+            dateString.append(zoneOffset.getId());
             setDateTime(OffsetDateTime.parse(dateString.toString()));
         }
         else {
