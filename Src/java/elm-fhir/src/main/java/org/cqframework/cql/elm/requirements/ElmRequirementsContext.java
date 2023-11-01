@@ -3,7 +3,9 @@ package org.cqframework.cql.elm.requirements;
 import org.cqframework.cql.cql2elm.*;
 import org.cqframework.cql.cql2elm.model.LibraryRef;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
+import org.hl7.cql.model.ClassType;
 import org.hl7.cql.model.DataType;
+import org.hl7.cql.model.NamedType;
 import org.hl7.cql.model.NamespaceManager;
 import org.hl7.elm.r1.*;
 
@@ -467,6 +469,14 @@ public class ElmRequirementsContext {
                 }
             }
         }
+        else if (requirement instanceof ElmOperatorRequirement) {
+            ElmOperatorRequirement operatorRequirement = (ElmOperatorRequirement)requirement;
+            for (ElmRequirement r : operatorRequirement.getRequirements()) {
+                if (inferredRequirements == null || !inferredRequirements.hasRequirement(r)) {
+                    reportRequirements(r, inferredRequirements);
+                }
+            }
+        }
         else {
             reportRequirement(requirement);
         }
@@ -485,22 +495,43 @@ public class ElmRequirementsContext {
         return null;
     }
 
+    private QName getProfiledType(DataType type) {
+        return typeResolver.dataTypeToProfileQName(type);
+    }
+
     private Map<QName, ElmDataRequirement> unboundDataRequirements = new LinkedHashMap<QName, ElmDataRequirement>();
 
-    private ElmDataRequirement getDataRequirementForTypeName(QName typeName) {
-        ElmDataRequirement requirement = unboundDataRequirements.get(typeName);
-        if (requirement == null) {
-            Retrieve retrieve = new Retrieve();
-            retrieve.setDataType(typeName);
-            if (typeName.getNamespaceURI() != null && typeName.getLocalPart() != null) {
-                retrieve.setTemplateId(typeName.getNamespaceURI() + "/" + typeName.getLocalPart());
-            }
-            requirement = new ElmDataRequirement(getCurrentLibraryIdentifier(), retrieve);
-            unboundDataRequirements.put(typeName, requirement);
-            reportRequirement(requirement);
+    private ElmDataRequirement getDataRequirementForTypeName(QName typeName, QName profiledTypeName) {
+        DataType type = null;
+        try {
+            type = typeResolver.resolveTypeName(typeName);
+        }
+        catch (Exception e) {
+            // ignore an exception resolving the type, just don't attempt to build an unbound requirement
+            // We should only be building unbound requirements for retrievable types, so if we can't determine
+            // retrievability, ignore the requirement
         }
 
-        return requirement;
+        if (type != null && type instanceof ClassType && ((ClassType)type).isRetrievable()) {
+            ElmDataRequirement requirement = unboundDataRequirements.get(profiledTypeName != null ? profiledTypeName : typeName);
+            if (requirement == null) {
+                Retrieve retrieve = new Retrieve();
+                retrieve.setDataType(typeName);
+                if (profiledTypeName != null && profiledTypeName.getNamespaceURI() != null && profiledTypeName.getLocalPart() != null) {
+                    retrieve.setTemplateId(profiledTypeName.getNamespaceURI() + "/" + profiledTypeName.getLocalPart());
+                }
+                else if (typeName.getNamespaceURI() != null && typeName.getLocalPart() != null) {
+                    retrieve.setTemplateId(typeName.getNamespaceURI() + "/" + typeName.getLocalPart());
+                }
+                requirement = new ElmDataRequirement(getCurrentLibraryIdentifier(), retrieve);
+                unboundDataRequirements.put(typeName, requirement);
+                reportRequirement(requirement);
+            }
+
+            return requirement;
+        }
+
+        return null;
     }
 
     public ElmPropertyRequirement reportProperty(Property property) {
@@ -556,11 +587,13 @@ public class ElmRequirementsContext {
         else {
             QName typeName = getType(property.getSource());
             if (typeName != null) {
-                ElmDataRequirement requirement = getDataRequirementForTypeName(typeName);
-                ElmPropertyRequirement propertyRequirement = new ElmPropertyRequirement(getCurrentLibraryIdentifier(),
-                        property, property.getSource(), false);
-                requirement.reportProperty(propertyRequirement);
-                return propertyRequirement;
+                ElmDataRequirement requirement = getDataRequirementForTypeName(typeName, getProfiledType(property.getSource().getResultType()));
+                if (requirement != null) {
+                    ElmPropertyRequirement propertyRequirement = new ElmPropertyRequirement(getCurrentLibraryIdentifier(),
+                            property, property.getSource(), false);
+                    requirement.reportProperty(propertyRequirement);
+                    return propertyRequirement;
+                }
             }
         }
 

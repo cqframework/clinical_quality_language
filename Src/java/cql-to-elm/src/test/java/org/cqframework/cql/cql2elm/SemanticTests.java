@@ -503,6 +503,12 @@ public class SemanticTests {
         assertThat(ivs.getValuesetExpression(), instanceOf(OperandRef.class));
     }
 
+    @Test
+    public void testIssue827() throws IOException {
+        // https://github.com/cqframework/clinical_quality_language/issues/827
+        TestUtils.runSemanticTest("Issue827.cql", 0);
+    }
+
 
     @Test
     public void testIssueEmptySourceInterval() throws IOException {
@@ -667,7 +673,7 @@ public class SemanticTests {
         }
 
         ExpressionDef caseDef = defs.get("Cases");
-    
+
         assertThat(caseDef.getResultType(), instanceOf(ChoiceType.class));
 
         ChoiceType choiceType = (ChoiceType)caseDef.getResultType();

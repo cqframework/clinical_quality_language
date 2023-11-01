@@ -175,12 +175,81 @@ public class DataRequirementsProcessor {
 
         // Collapse the requirements
         if (options.getCollapseDataRequirements()) {
-            requirements = requirements.collapse();
+            for (ElmRequirement requirement : requirements.getRequirements()) {
+                collapseExtensionReference(context, requirement);
+            }
+            requirements = requirements.collapse(context);
         }
 
         return createLibrary(context, requirements, translatedLibrary.getIdentifier(), expressionDefs, parameters, evaluationDateTime, includeLogicDefinitions);
     }
 
+    /**
+     * If the requirement has property references to `url` and `extension`, and a code filter on `url` to a literal extension value,
+     * replace the `url` and `extension` property references with a new property reference to the tail of the extension
+     * Also remove `us-core-` and `qicore-` as wellknown prefixes
+     * TODO: Use the structure definition element slice name as the name of the property, rather than the hard-coded removal
+     * of well-known prefixes
+     * @param requirement
+     */
+    private void collapseExtensionReference(ElmRequirementsContext context, ElmRequirement requirement) {
+        if (requirement instanceof ElmDataRequirement) {
+            ElmDataRequirement dataRequirement = (ElmDataRequirement)requirement;
+            if (dataRequirement.hasProperties()) {
+                Property urlProperty = null;
+                Property extensionProperty = null;
+                for (Property p : dataRequirement.getProperties()) {
+                    if (p.getPath().equals("url")) {
+                        urlProperty = p;
+                        continue;
+                    }
+
+                    if (p.getPath().equals("extension")) {
+                        extensionProperty = p;
+                        continue;
+                    }
+                }
+
+                if (urlProperty != null) {
+                    Retrieve r = dataRequirement.getRetrieve();
+                    if (r != null) {
+                        CodeFilterElement extensionFilterElement = null;
+                        org.hl7.fhir.r5.model.DataRequirement.DataRequirementCodeFilterComponent extensionFilterComponent = null;
+                        for (CodeFilterElement cfe : r.getCodeFilter()) {
+                            org.hl7.fhir.r5.model.DataRequirement.DataRequirementCodeFilterComponent cfc =
+                                    toCodeFilterComponent(context, dataRequirement.getLibraryIdentifier(), cfe.getProperty(), cfe.getValue());
+
+                            if (cfc.hasPath() && cfc.hasCode() && "url".equals(cfc.getPath()) && cfc.getCodeFirstRep().hasCode() && cfc.getCodeFirstRep().getCode().startsWith("http://")) {
+                                extensionFilterElement = cfe;
+                                extensionFilterComponent = cfc;
+                                break;
+                            }
+                        }
+
+                        if (extensionFilterElement != null && extensionFilterComponent != null) {
+                            String extensionName = extensionFilterComponent.getCodeFirstRep().getCode();
+                            int tailIndex = extensionName.lastIndexOf("/");
+                            if (tailIndex > 0) {
+                                extensionName = extensionName.substring(tailIndex + 1);
+                            }
+                            if (extensionName.startsWith("us-core-")) {
+                                extensionName = extensionName.substring(8);
+                            }
+                            if (extensionName.startsWith("qicore-")) {
+                                extensionName = extensionName.substring(7);
+                            }
+                            r.getCodeFilter().remove(extensionFilterElement);
+                            dataRequirement.removeProperty(urlProperty);
+                            if (extensionProperty != null) {
+                                dataRequirement.removeProperty(extensionProperty);
+                            }
+                            dataRequirement.addProperty(new Property().withPath(extensionName));
+                        }
+                    }
+                }
+            }
+        }
+    }
     private Library createLibrary(ElmRequirementsContext context, ElmRequirements requirements,
             VersionedIdentifier libraryIdentifier, Iterable<ExpressionDef> expressionDefs,
             Map<String, Object> parameters, ZonedDateTime evaluationDateTime, boolean includeLogicDefinitions) {
@@ -337,6 +406,14 @@ public class DataRequirementsProcessor {
         int sequence = 0;
         for (ElmRequirement req : requirements.getExpressionDefs()) {
             ExpressionDef def = (ExpressionDef)req.getElement();
+            org.hl7.cql_annotations.r1.Annotation a = getAnnotation(def);
+            if (a != null) {
+                result.add(toLogicDefinition(req, def, toNarrativeText(a), sequence++));
+            }
+        }
+
+        for (ElmRequirement req : requirements.getFunctionDefs()) {
+            FunctionDef def = (FunctionDef)req.getElement();
             org.hl7.cql_annotations.r1.Annotation a = getAnnotation(def);
             if (a != null) {
                 result.add(toLogicDefinition(req, def, toNarrativeText(a), sequence++));

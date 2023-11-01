@@ -27,14 +27,6 @@ import java.util.regex.Pattern;
 
 public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     static final Logger logger = LoggerFactory.getLogger(Cql2ElmVisitor.class);
-    private boolean locate = false;
-    private boolean resultTypes = false;
-    private boolean dateRangeOptimization = false;
-    private boolean detailedErrors = false;
-    private boolean methodInvocation = true;
-    private boolean includeDeprecatedElements = false;
-    private boolean fromKeywordRequired = false;
-
     private final SystemMethodResolver systemMethodResolver;
 
     public void setLibraryInfo(LibraryInfo libraryInfo) {
@@ -63,91 +55,6 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         }
 
         this.systemMethodResolver = new SystemMethodResolver(this, libraryBuilder);
-    }
-
-    public void enableLocators() {
-        locate = true;
-    }
-
-    public void disableLocators() {
-        locate = false;
-    }
-
-    public void enableResultTypes() {
-        resultTypes = true;
-    }
-
-    public void disableResultTypes() {
-        resultTypes = false;
-    }
-
-    public void enableDateRangeOptimization() {
-        dateRangeOptimization = true;
-    }
-
-    public void disableDateRangeOptimization() {
-        dateRangeOptimization = false;
-    }
-
-    public boolean getDateRangeOptimization() {
-        return dateRangeOptimization;
-    }
-
-    public void enableDetailedErrors() {
-        detailedErrors = true;
-    }
-
-    public void disableDetailedErrors() {
-        detailedErrors = false;
-    }
-
-    public boolean isDetailedErrorsEnabled() {
-        return detailedErrors;
-    }
-
-    public void enableMethodInvocation() {
-        methodInvocation = true;
-    }
-
-    public void disableMethodInvocation() {
-        methodInvocation = false;
-    }
-
-    public boolean isFromKeywordRequired() {
-        return fromKeywordRequired;
-    }
-
-    public void enableFromKeywordRequired() {
-        fromKeywordRequired = true;
-    }
-
-    public void disableFromKeywordRequired() {
-        fromKeywordRequired = false;
-    }
-
-    public void setTranslatorOptions(CqlCompilerOptions options) {
-        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableDateRangeOptimization)) {
-            this.enableDateRangeOptimization();
-        }
-        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableAnnotations)) {
-            this.enableAnnotations();
-        }
-        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableLocators)) {
-            this.enableLocators();
-        }
-        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableResultTypes)) {
-            this.enableResultTypes();
-        }
-        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableDetailedErrors)) {
-            this.enableDetailedErrors();
-        }
-        if (options.getOptions().contains(CqlCompilerOptions.Options.DisableMethodInvocation)) {
-            this.disableMethodInvocation();
-        }
-        if (options.getOptions().contains(CqlCompilerOptions.Options.RequireFromKeyword)) {
-            this.enableFromKeywordRequired();
-        }
-        libraryBuilder.setCompatibilityLevel(options.getCompatibilityLevel());
     }
 
     public List<Retrieve> getRetrieves() {
@@ -335,7 +242,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 .withName(parseString(ctx.referentialIdentifier()))
                 .withElementType(parseTypeSpecifier(ctx.typeSpecifier()));
 
-        if (includeDeprecatedElements) {
+        if (getIncludeDeprecatedElements()) {
             result.setType(result.getElementType());
         }
 
@@ -3123,7 +3030,7 @@ DATETIME
     @Override
     public Object visitSourceClause(cqlParser.SourceClauseContext ctx) {
         boolean hasFrom = "from".equals(ctx.getChild(0).getText());
-        if (!hasFrom && fromKeywordRequired) {
+        if (!hasFrom && isFromKeywordRequired()) {
             throw new IllegalArgumentException("The from keyword is required for queries.");
         }
 
@@ -3177,7 +3084,7 @@ DATETIME
                 }
 
                 Expression where = ctx.whereClause() != null ? (Expression) visit(ctx.whereClause()) : null;
-                if (dateRangeOptimization && where != null) {
+                if (getDateRangeOptimization() && where != null) {
                     for (AliasedQuerySource aqs : sources) {
                         where = optimizeDateRangeInQuery(where, aqs);
                     }
@@ -3960,10 +3867,13 @@ DATETIME
 
                 // NOTE: FHIRPath method invocation
                 // If the target is an expression, resolve as a method invocation
-                if (target instanceof Expression && methodInvocation) {
+                if (target instanceof Expression && isMethodInvocationEnabled()) {
                     return systemMethodResolver.resolveMethod((Expression)target, identifier, paramListCtx, true);
                 }
 
+                if (!isMethodInvocationEnabled()) {
+                    throw new CqlCompilerException(String.format("The identifier %s could not be resolved as an invocation because method-style invocation is disabled.", identifier), CqlCompilerException.ErrorSeverity.Error);
+                }
                 throw new IllegalArgumentException(String.format("Invalid invocation target: %s", target.getClass().getName()));
             }
             finally {
@@ -4219,11 +4129,11 @@ DATETIME
     }
 
     private void decorate(Element element, TrackBack tb) {
-        if (locate && tb != null) {
+        if (locatorsEnabled() && tb != null) {
             element.setLocator(tb.toLocator());
         }
 
-        if (resultTypes && element.getResultType() != null) {
+        if (resultTypesEnabled() && element.getResultType() != null) {
             if (element.getResultType() instanceof NamedType) {
                 element.setResultTypeName(libraryBuilder.dataTypeToQName(element.getResultType()));
             }

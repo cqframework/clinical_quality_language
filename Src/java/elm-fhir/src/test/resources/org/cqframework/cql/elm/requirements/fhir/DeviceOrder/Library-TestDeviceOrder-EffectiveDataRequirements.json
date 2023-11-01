@@ -1,0 +1,89 @@
+{
+  "resourceType": "Library",
+  "extension": [ {
+    "url": "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition",
+    "extension": [ {
+      "url": "libraryName",
+      "valueString": "TestDeviceOrder"
+    }, {
+      "url": "name",
+      "valueString": "Has Criteria Indicating Frailty"
+    }, {
+      "url": "statement",
+      "valueString": "define \"Has Criteria Indicating Frailty\":\n  exists ( (([DeviceRequest: \"Frailty Device\"]).isDeviceOrder()) FrailtyDeviceOrder\n      where FrailtyDeviceOrder.doNotPerform() is not true\n      and FrailtyDeviceOrder.authoredOn.toInterval() during day of \"Measurement Period\"\n  )"
+    }, {
+      "url": "displaySequence",
+      "valueInteger": 0
+    } ]
+  }, {
+    "url": "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition",
+    "extension": [ {
+      "url": "libraryName",
+      "valueString": "TestDeviceOrder"
+    }, {
+      "url": "name",
+      "valueString": "isDeviceOrder"
+    }, {
+      "url": "statement",
+      "valueString": "define fluent function isDeviceOrder(DeviceRequest List<DeviceRequest>):\n  DeviceRequest D\n    where D.status in { 'active', 'completed' }\n      and D.intent = 'order'"
+    }, {
+      "url": "displaySequence",
+      "valueInteger": 1
+    } ]
+  } ],
+  "status": "active",
+  "type": {
+    "coding": [ {
+      "system": "http://terminology.hl7.org/CodeSystem/library-type",
+      "code": "module-definition"
+    } ]
+  },
+  "relatedArtifact": [ {
+    "type": "depends-on",
+    "display": "QICore model information",
+    "resource": "http://hl7.org/fhir/Library/QICore-ModelInfo"
+  }, {
+    "type": "depends-on",
+    "display": "Library FHIRHelpers",
+    "resource": "Library/FHIRHelpers|4.0.1"
+  }, {
+    "type": "depends-on",
+    "display": "Library QICoreCommon",
+    "resource": "Library/QICoreCommon|1.5.000"
+  }, {
+    "type": "depends-on",
+    "display": "Value set Frailty Device",
+    "resource": "http://example.org/fhir/valueset/frailty-device"
+  } ],
+  "parameter": [ {
+    "name": "Measurement Period",
+    "use": "in",
+    "min": 0,
+    "max": "1",
+    "type": "Period"
+  }, {
+    "name": "Patient",
+    "use": "out",
+    "min": 0,
+    "max": "1",
+    "type": "Resource"
+  }, {
+    "name": "Has Criteria Indicating Frailty",
+    "use": "out",
+    "min": 0,
+    "max": "1",
+    "type": "boolean"
+  } ],
+  "dataRequirement": [ {
+    "type": "Patient",
+    "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-patient" ]
+  }, {
+    "type": "DeviceRequest",
+    "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-devicerequest" ],
+    "mustSupport": [ "code", "status", "status.value", "intent", "intent.value", "authoredOn", "authoredOn.value" ],
+    "codeFilter": [ {
+      "path": "code",
+      "valueSet": "http://example.org/fhir/valueset/frailty-device"
+    } ]
+  } ]
+}
