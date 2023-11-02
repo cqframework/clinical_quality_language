@@ -2244,6 +2244,7 @@ public class LibraryBuilder implements ModelResolver {
         ResolvedIdentifierList operandRefMatches = resolveOperandRefs(identifier);
         for (ResolvedIdentifier operandRI : operandRefMatches.getResolvedIdentifierList()) {
             OperandRef result = (OperandRef) operandRI.getResolvedElement();
+            // LUKETODO:  I think this is where the phantom hidden identifier comes from:
             resolvedIdentifierList.addResolvedIdentifier(identifier, operandRI.getMatchType(), result);
         }
         resolvedIdentifierList.addAllResolvedIdentifiers(operandRefMatches);

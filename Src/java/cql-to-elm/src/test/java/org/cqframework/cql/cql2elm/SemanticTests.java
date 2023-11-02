@@ -734,6 +734,22 @@ public class SemanticTests {
         assertThat(warningMessages, contains("Case insensitive clashes detected: Identifier for identifiers: [Patients] resolved as an expression definition with case insensitive matching.\n"));
     }
 
+    @Test
+    public void testSoMuchNestingNormal() throws IOException {
+        final CqlTranslator translator = TestUtils.runSemanticTest("TestSoMuchNestingNormal.cql", 0);
+        final List<CqlCompilerException> warnings = translator.getWarnings();
+
+        assertThat(warnings.toString(), translator.getWarnings().size(), is(0));
+    }
+
+    @Test
+    public void testSoMuchNestingHiding() throws IOException {
+        final CqlTranslator translator = TestUtils.runSemanticTest("TestSoMuchNestingHiding.cql", 0);
+        final List<CqlCompilerException> warnings = translator.getWarnings();
+
+        assertThat(warnings.toString(), translator.getWarnings().size(), is(2));
+    }
+
     private CqlTranslator runSemanticTest(String testFileName) throws IOException {
         return runSemanticTest(testFileName, 0);
     }

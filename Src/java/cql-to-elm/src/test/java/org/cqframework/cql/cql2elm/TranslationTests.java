@@ -273,6 +273,14 @@ public class TranslationTests {
         CompletableFuture.allOf(cfs).join();
     }
 
+    @Test
+    public void testHidingVariousUseCases() throws IOException {
+        final CqlTranslator translator = TestUtils.runSemanticTest("TestHidingVariousUseCases.cql", 0);
+        final List<CqlCompilerException> warnings = translator.getWarnings();
+
+        assertThat(warnings.toString(), translator.getWarnings().size(), is(13));
+    }
+
     private CqlTranslator createTranslator() {
         try {
             return TestUtils.createTranslator("CMS146v2_Test_CQM.cql");

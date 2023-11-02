@@ -1,15 +1,19 @@
 package org.cqframework.cql.cql2elm.model;
 
+import org.cqframework.cql.cql2elm.LibraryBuilder;
 import org.hl7.cql.model.NamespaceManager;
 import org.hl7.cql.model.DataType;
 import org.hl7.cql_annotations.r1.Annotation;
 import org.hl7.cql_annotations.r1.Tag;
 import org.hl7.elm.r1.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.List;
 
 public class CompiledLibrary {
+    private static final Logger logger = LoggerFactory.getLogger(CompiledLibrary.class);
     private VersionedIdentifier identifier;
     private Library library;
     private final Map<String, Element> namespace = new HashMap<>();
@@ -147,6 +151,16 @@ public class CompiledLibrary {
                 .stream()
                 .filter(k -> k.getKey().equalsIgnoreCase(identifier) && !k.getKey().equals(identifier))
                 .forEach(entry -> ret.addResolvedIdentifier(new ResolvedIdentifier(entry.getKey(), MatchType.CASE_IGNORED, entry.getValue())));
+
+        // LUKETODO:  this doesn't seem to be the source of the a vs. a problem
+        if (! ret.getResolvedIdentifierList().isEmpty()) {
+            for (Map.Entry<String, Element> entry : namespace.entrySet()) {
+                logger.info("identifier: [{}], entry.getKey(): [{}]", identifier, entry.getKey());
+                final boolean first = entry.getKey().equalsIgnoreCase(identifier);
+                final boolean second = entry.getKey().equals(identifier);
+                logger.info("first: {}, second: {}", first, second);
+            }
+        }
 
         return ret;
     }
