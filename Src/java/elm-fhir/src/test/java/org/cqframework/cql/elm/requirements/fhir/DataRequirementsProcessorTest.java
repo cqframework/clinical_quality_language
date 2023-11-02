@@ -1703,6 +1703,7 @@ public class DataRequirementsProcessorTest {
     public void TestCMS645() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         compilerOptions.setAnalyzeDataRequirements(false);
+        // LUKETODO:  java.lang.IllegalArgumentException: Invalid interval property name $this.
         var manager = setupDataRequirementsAnalysis("CMS645/CMS645Test.cql", compilerOptions);
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions, new HashMap<String, Object>(), ZonedDateTime.of(2023, 1, 16, 0, 0, 0, 0, ZoneId.of("UTC")));
         assertNotNull(moduleDefinitionLibrary);

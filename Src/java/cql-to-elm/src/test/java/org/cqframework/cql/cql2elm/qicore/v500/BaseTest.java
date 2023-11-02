@@ -29,6 +29,10 @@ public class BaseTest {
 
     @Test
     public void testAuthoringPatterns() throws IOException {
+
+        // LUKETODO:  warnings:
+        // "Application of Intermittent Pneumatic Compression Devices (IPC)" vs.
+        // "Application of intermittent pneumatic compression devices (IPC)"
         CqlTranslator translator = TestUtils.runSemanticTest("qicore/v500/AuthoringPatterns.cql", 0, LibraryBuilder.SignatureLevel.Overloads);
 
         assertThat(translator.getWarnings().size(), is(0));

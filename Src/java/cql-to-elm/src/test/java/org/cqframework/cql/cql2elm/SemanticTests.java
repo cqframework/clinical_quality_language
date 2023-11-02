@@ -662,17 +662,6 @@ public class SemanticTests {
     }
 
     @Test
-    public void testIdentifierCaseMismatchWithinBody598() throws IOException {
-        final CqlTranslator translator = runSemanticTest("TestIdentifierCaseMismatchWithinBody598.cql", 2);
-
-        final List<CqlCompilerException> errors = translator.getErrors();
-
-        assertTrue(errors.stream().map(Throwable::getMessage).collect(Collectors.toSet()).toString(), errors.stream().map(Throwable::getMessage).anyMatch("Invalid case for library: FHIR and Code (should be code)"::equals));
-    }
-
-    // LUKETODO: case insensitive reference within function body
-
-    @Test
     public void testNonExistentFileName() {
         assertThrows(IOException.class, () -> TestUtils.runSemanticTest("ThisFileDoesNotExist.cql", 0));
     }
@@ -742,7 +731,7 @@ public class SemanticTests {
         final List<CqlCompilerException> warnings = translator.getWarnings();
         assertThat(warnings.toString(), translator.getWarnings().size(), is(1));
         final Set<String> warningMessages = warnings.stream().map(Throwable::getMessage).collect(Collectors.toSet());
-        assertThat(warningMessages, contains("Case insensitive clashes detected: Identifier for identifiers: Patients resolved as an expression definition with case insensitive matching.\n"));
+        assertThat(warningMessages, contains("Case insensitive clashes detected: Identifier for identifiers: [Patients] resolved as an expression definition with case insensitive matching.\n"));
     }
 
     private CqlTranslator runSemanticTest(String testFileName) throws IOException {

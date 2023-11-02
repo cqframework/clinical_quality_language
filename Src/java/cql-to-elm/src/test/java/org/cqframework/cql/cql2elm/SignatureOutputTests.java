@@ -39,6 +39,7 @@ public class SignatureOutputTests {
 
     @Test
     public void TestNone() throws IOException {
+        // LUKETODO:  this is giving us a ton of warnings for hidden identifiers:  valye, left, right, middle, etc
         final CqlTranslator translator = getTranslator(LibraryBuilder.SignatureLevel.None);
         assertThat(translator.getWarnings().size(), greaterThan(1));
         assertThat(translator.getWarnings().get(0).getMessage(), equalTo("The function SignatureOutputTests.MultipleOverloadTest has multiple overloads and due to the SignatureLevel setting (None), the overload signature is not being included in the output. This may result in ambiguous function resolution at runtime, consider setting the SignatureLevel to Overloads or All to ensure that the output includes sufficient information to support correct overload selection at runtime."));

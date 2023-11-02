@@ -667,6 +667,6 @@ public class LibraryTests {
                         .stream()
                         .map(Throwable::getMessage)
                         .collect(Collectors.toList()),
-                contains("Identifier hiding detected: Identifiers in a broader scope hidden: testOperand resolved as an operand to a function with exact case matching.\ntestOperand resolved as an operand to a function with exact case matching.\n"));
+                contains("Identifier hiding detected: Identifiers in a broader scope hidden: [testOperand] resolved as an operand to a function with exact case matching.\n[testOperand] resolved as an operand to a function with exact case matching.\n"));
     }
 }
