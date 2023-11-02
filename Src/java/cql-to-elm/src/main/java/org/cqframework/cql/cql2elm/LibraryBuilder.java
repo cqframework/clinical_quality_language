@@ -10,15 +10,20 @@ import org.hl7.cql_annotations.r1.CqlToElmInfo;
 import org.hl7.cql_annotations.r1.ErrorSeverity;
 import org.hl7.cql_annotations.r1.ErrorType;
 import org.hl7.elm.r1.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.xml.namespace.QName;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Bryn on 12/29/2016.
  */
 public class LibraryBuilder implements ModelResolver {
+    private static final Logger logger = LoggerFactory.getLogger(LibraryBuilder.class);
 
     private static final String SYSTEM = "System";
     private static final String INTEGER = "Integer";
@@ -2186,6 +2191,7 @@ public class LibraryBuilder implements ModelResolver {
         return null;
     }
 
+    // LUKETODO:  when is this called?
     public Expression resolveIdentifier(String identifier, boolean mustResolve) {
         // An Identifier will always be:
         // 1: The name of an alias
@@ -2285,10 +2291,28 @@ public class LibraryBuilder implements ModelResolver {
 
             //issue warning that multiple matches occurred:
             if (! allHiddenCaseMatches.isEmpty()) {
-                this.reportWarning("Identifier hiding detected: " +
-                                "Identifier" + (allHiddenCaseMatches.size() > 1 ? "s" : "") + " in a broader scope hidden: " +
-                                this.formatMatchedMessage(allHiddenCaseMatches),
-                        (Expression) firstCaseMatch.getResolvedElement());
+                if (this.library.getIdentifier().getId().contains("Case") || this.library.getIdentifier().getId().contains("Hidden")) {
+                    logger.info("allHiddenCaseMatches: {}", allHiddenCaseMatches.stream().map(match -> match.getIdentifier() + " " + match.getMatchType()).collect(Collectors.toSet()));
+                }
+                // LUKETODO:  what about "NONE"?
+                final List<ResolvedIdentifier> caseInsensitiveMatches = allHiddenCaseMatches.stream().filter(match -> MatchType.CASE_IGNORED == match.getMatchType()).collect(Collectors.toList());
+                final List<ResolvedIdentifier> exactIdentifierMatches = allHiddenCaseMatches.stream().filter(match -> MatchType.EXACT == match.getMatchType()).collect(Collectors.toList());
+
+                if (! caseInsensitiveMatches.isEmpty()) {
+                    this.reportWarning("Case insensitive clashes detected: " +
+                                    "Identifier" + (caseInsensitiveMatches.size() > 1 ? "s" : "") + " for identifiers: " +
+                                    this.formatMatchedMessage(caseInsensitiveMatches ),
+                            (Expression) firstCaseMatch.getResolvedElement());
+
+                }
+
+                if (! exactIdentifierMatches.isEmpty()) {
+                    this.reportWarning("Identifier hiding detected: " +
+                                    "Identifier" + (exactIdentifierMatches.size() > 1 ? "s" : "") + " in a broader scope hidden: " +
+                                    this.formatMatchedMessage(exactIdentifierMatches),
+                            (Expression) firstCaseMatch.getResolvedElement());
+
+                }
             }
             //return first match:
             return (Expression) firstCaseMatch.getResolvedElement();
@@ -2305,7 +2329,9 @@ public class LibraryBuilder implements ModelResolver {
 
         Element element = resolve(identifier);
 
+        // LUKETODO:  toggle between the two for testing purposes
         final ResolvedIdentifierList caseIgnoredElements = compiledLibrary.resolveCaseIgnored(identifier);
+//        final ResolvedIdentifierList caseIgnoredElements = new ResolvedIdentifierList();
 
         if (element instanceof ExpressionDef) {
             checkLiteralContext();

@@ -3,10 +3,14 @@ package org.cqframework.cql.cql2elm.model;
 import org.cqframework.cql.cql2elm.ModelManager;
 import org.hl7.cql.model.*;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 public class Model {
+    private static final Logger logger = LoggerFactory.getLogger(Model.class);
+
     public Model(ModelInfo modelInfo, ModelManager modelManager) throws ClassNotFoundException {
         info = modelInfo;
         index = new HashMap<>();

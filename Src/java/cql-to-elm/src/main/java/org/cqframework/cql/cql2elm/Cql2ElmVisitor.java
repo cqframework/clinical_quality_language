@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 
 
 public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
-    static final Logger logger = LoggerFactory.getLogger(Cql2ElmVisitor.class);
+    private static final Logger logger = LoggerFactory.getLogger(Cql2ElmVisitor.class);
     private final SystemMethodResolver systemMethodResolver;
 
     public void setLibraryInfo(LibraryInfo libraryInfo) {
@@ -407,7 +407,6 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
             return retrievedResult.getUnderlyingResultIfExists();
         }
 
-        // LUKETODO:  the fix goes here
         DataType resultType = libraryBuilder.resolveTypeName(modelIdentifier, identifier);
         if (null == resultType) {
             throw new CqlCompilerException(String.format("Could not find type for model: %s and name: %s", modelIdentifier, identifier));
