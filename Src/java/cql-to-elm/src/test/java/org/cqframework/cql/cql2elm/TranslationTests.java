@@ -264,11 +264,17 @@ public class TranslationTests {
     public void multiThreadedTranslation() throws IOException {
         List<CompletableFuture<Void>> futures = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            futures.add(CompletableFuture.runAsync(this::createTranslator));
+            futures.add(CompletableFuture.runAsync(() -> {
+                try {
+                    TestUtils.createTranslator("CMS146v2_Test_CQM.cql");
+                }
+                catch(IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }));
         }
 
-        @SuppressWarnings("rawtypes")
-        CompletableFuture[] cfs = futures.toArray(new CompletableFuture[futures.size()]);
+        CompletableFuture<?>[] cfs = futures.toArray(new CompletableFuture[0]);
 
         CompletableFuture.allOf(cfs).join();
     }
@@ -278,15 +284,12 @@ public class TranslationTests {
         final CqlTranslator translator = TestUtils.runSemanticTest("TestHidingVariousUseCases.cql", 0);
         final List<CqlCompilerException> warnings = translator.getWarnings();
 
-        assertThat(warnings.toString(), translator.getWarnings().size(), is(13));
-    }
+        // LUKETODO:  missing:
+        // 1) "FHIRHidden"
+        // 2) "FHIRHidden2"
+        // 3) "Definition"
+        // 4) "VariableHidden"
 
-    private CqlTranslator createTranslator() {
-        try {
-            return TestUtils.createTranslator("CMS146v2_Test_CQM.cql");
-        }
-        catch(IOException e) {
-            throw new RuntimeException(e);
-        }
+        assertThat(warnings.toString(), translator.getWarnings().size(), is(13));
     }
 }
