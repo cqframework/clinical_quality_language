@@ -2292,15 +2292,26 @@ public class LibraryBuilder implements ModelResolver {
             if (! allHiddenCaseMatches.isEmpty()) {
                 final String id = Optional.ofNullable(this.library.getIdentifier()).map(VersionedIdentifier::getId).orElse(null);
                 if (id != null) {
-                    if (id.contains("Case") || id.contains("Hidden")) {
-                        logger.info("allHiddenCaseMatches: {}", allHiddenCaseMatches.stream().map(match -> match.getIdentifier() + " " + match.getMatchType()).collect(Collectors.toSet()));
+                    if (id.contains("Case") || id.contains("Hidden") || id.contains("Test")) {
+                        logger.info("allHiddenCaseMatches: {}", allHiddenCaseMatches.stream().map(match -> match.getIdentifier() + match.getResolvedElement().getClass() + " " + match.getMatchType()).collect(Collectors.toSet()));
                     }
                 }
 
-                final List<ResolvedIdentifier> filtered = allHiddenCaseMatches.stream().filter(match -> match.getResolvedElement() instanceof OperandDef).collect(Collectors.toList());
+                final Object resolvedElement = allHiddenCaseMatches.get(0).getResolvedElement();
+
+                final boolean isExpressionDef = resolvedElement instanceof ExpressionDef;
+                final boolean isOperandDef = resolvedElement instanceof OperandDef;
+
+                final List<ResolvedIdentifier> filtered = allHiddenCaseMatches.stream()
+                        // LUKETODO:  consider filtering out other "Ref"s
+                        .filter(match -> ! (match.getResolvedElement() instanceof OperandRef))
+                        .collect(Collectors.toList());
+//                final List<ResolvedIdentifier> filtered = allHiddenCaseMatches;
                 // LUKETODO:  what about "NONE"?
+                // LUKETODO:  unite the two into a single warning block
                 final List<ResolvedIdentifier> caseInsensitiveMatches = filtered.stream().filter(match -> MatchType.CASE_IGNORED == match.getMatchType()).collect(Collectors.toList());
                 final List<ResolvedIdentifier> exactIdentifierMatches = filtered.stream().filter(match -> MatchType.EXACT == match.getMatchType()).collect(Collectors.toList());
+
 
                 if (! caseInsensitiveMatches.isEmpty()) {
                     this.reportWarning("Case insensitive clashes detected: " +

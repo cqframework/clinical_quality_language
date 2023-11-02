@@ -658,6 +658,7 @@ public class LibraryTests {
 
     @Test
     public void testHiddenIdentifiers() throws IOException {
+        // LUKETODO:  is this test case wrong?  this only passes if we consider OperandRefs
         final CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/HiddenIdentifier.cql");
         // LUKETODO:  this fails now due to 0 warnings:  implement fix from other branch
         // LUKETODO:  assert actual exception

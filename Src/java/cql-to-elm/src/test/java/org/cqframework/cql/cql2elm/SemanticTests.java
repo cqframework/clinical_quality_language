@@ -651,14 +651,13 @@ public class SemanticTests {
     }
 
     @Test
-    public void testIdentifierCaseMismatch598() throws IOException {
-        // LUKETODO:  Try this with both case sensitive and case insensitive configs
-        // LUKETODO:  Try the opposite as well, lowercase when we expect capital
-        final CqlTranslator translator = runSemanticTest("TestIdentifierCaseMismatch598.cql", 2);
+    public void testIdentifierCaseMismatch() throws IOException {
+        final CqlTranslator translator = runSemanticTest("TestIdentifierCaseMismatch.cql", 2);
 
         final List<CqlCompilerException> errors = translator.getErrors();
 
-        assertTrue(errors.stream().map(Throwable::getMessage).collect(Collectors.toSet()).toString(), errors.stream().map(Throwable::getMessage).anyMatch("Invalid case for library: FHIR and Code (should be code)"::equals));
+        // Make it clear we treat a Library type with a mismatched case the same as a non-existent type
+        assertTrue(errors.stream().map(Throwable::getMessage).collect(Collectors.toSet()).toString(), errors.stream().map(Throwable::getMessage).anyMatch("Could not find type for model: FHIR and name: Code"::equals));
     }
 
     @Test
@@ -727,7 +726,7 @@ public class SemanticTests {
     // LUKETODO: need tests with aliases
     @Test
     public void testCaseInsensitiveWarning() throws IOException {
-        final CqlTranslator translator = TestUtils.runSemanticTest("CaseInsensitiveWarning.cql", 0, LibraryBuilder.SignatureLevel.All);
+        final CqlTranslator translator = TestUtils.runSemanticTest("TestCaseInsensitiveWarning.cql", 0, LibraryBuilder.SignatureLevel.All);
         final List<CqlCompilerException> warnings = translator.getWarnings();
         assertThat(warnings.toString(), translator.getWarnings().size(), is(1));
         final Set<String> warningMessages = warnings.stream().map(Throwable::getMessage).collect(Collectors.toSet());
@@ -747,7 +746,18 @@ public class SemanticTests {
         final CqlTranslator translator = TestUtils.runSemanticTest("TestSoMuchNestingHiding.cql", 0);
         final List<CqlCompilerException> warnings = translator.getWarnings();
 
-        assertThat(warnings.toString(), translator.getWarnings().size(), is(2));
+        // LUKETODO:  we're getting 4 but I'm not sure if they're dupes
+        // LUKETODO:  What's the bit about List-valued expression:  this may be valid
+        /*
+        Identifier hiding detected: Identifier in a broader scope hidden: [SoMuchNesting] resolved as a let of a query with exact case matching.
+        Identifier hiding detected: Identifiers in a broader scope hidden: [SoMuchNesting] resolved as an alias of a query with exact case matching. [SoMuchNesting] resolved as a let of a query with exact case matching.
+        List-valued expression was demoted to a singleton.
+        Identifier hiding detected: Identifiers in a broader scope hidden: [SoMuchNesting] resolved as an alias of a query with exact case matching. [SoMuchNesting] resolved as a let of a query with exact case matching. [SoMuchNesting] resolved as a let of a query with exact case matching.
+         */
+        assertThat(warnings.toString(), translator.getWarnings().size(), is(3));
+        // 1) First SoMuchNesting hiding
+        // 2) Second SoMuchNesting hiding
+        // 3) List-valued expression was demoted to a singleton (from baseline)
     }
 
     private CqlTranslator runSemanticTest(String testFileName) throws IOException {

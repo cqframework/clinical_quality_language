@@ -154,6 +154,15 @@ public class TestUtils {
         return translator;
     }
 
+    public static CqlTranslator runSemanticTestWithOrWithoutErrors(NamespaceInfo namespaceInfo, String testFileName, CqlCompilerOptions.Options... options) throws IOException {
+        CqlTranslator translator = createTranslator(namespaceInfo, testFileName, new CqlCompilerOptions(options));
+        for (CqlCompilerException error : translator.getErrors()) {
+            System.err.printf("(%d,%d): %s%n",
+                    error.getLocator().getStartLine(), error.getLocator().getStartChar(), error.getMessage());
+        }
+        return translator;
+    }
+
     public static CqlTranslator createTranslatorFromText(String cqlText, CqlCompilerOptions.Options... options) {
         final LibraryManager libraryManager = getLibraryManager(options);
         return CqlTranslator.fromText(cqlText,  libraryManager);
