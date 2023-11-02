@@ -10,6 +10,7 @@ import org.opencds.cqf.cql.engine.runtime.Tuple;
 import org.opencds.cqf.cql.engine.runtime.iterators.QueryIterator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -86,12 +87,16 @@ public class QueryEvaluator {
                 : constructResult(state, variables, elements);
     }
 
-    private static Object evaluateAggregate(Query elm, State state, List<Variable> variables, List<Object> elements,
+    private static List<Object> evaluateAggregate(AggregateClause elm, State state, List<Object> elements,
             ElmLibraryVisitor<Object, State> visitor) {
-        Object initial = visitor.visitExpression(elm.getAggregate().getStarting(), state);
-        Object iteration = visitor.visitExpression(elm.getAggregate().getExpression(), state);
+        Object initial = visitor.visitExpression(elm.getStarting(), state);
+        Object iteration = visitor.visitExpression(elm.getExpression(), state);
 
-        return AggregateEvaluator.aggregate(elements, initial, iteration, state);
+        if (elm.isDistinct()) {
+            elements = DistinctEvaluator.distinct(elements, state);
+        }
+
+        return Collections.singletonList(AggregateEvaluator.aggregate(elements, initial, iteration, state));
     }
 
     private static Object constructResult(State state, List<Variable> variables, List<Object> elements) {
@@ -223,9 +228,8 @@ public class QueryEvaluator {
             result = DistinctEvaluator.distinct(result, state);
         }
 
-
         if (elm.getAggregate() != null) {
-            result = evaluateAggregate(elm, state, variables, result, visitor);
+            result = evaluateAggregate(elm.getAggregate(), state, result, visitor);
         }
 
         sortResult(elm, result, state, null, visitor);
@@ -234,7 +238,7 @@ public class QueryEvaluator {
             return null;
         }
 
-        return sourceIsList ? result : result.get(0);
+        return elm.getAggregate() != null || !sourceIsList ? result.get(0) : result;
     }
 
     private static void assignVariables(List<Variable> variables, List<Object> elements) {
