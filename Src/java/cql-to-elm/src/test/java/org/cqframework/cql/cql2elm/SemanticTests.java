@@ -718,6 +718,31 @@ public class SemanticTests {
         assertTrue("Expected return types are String and Boolean: ", actualChoiceTypes.equals(expectedChoiceTypes));
     }
 
+    @Test
+    public void testIssue1225() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("Issue1225.cql", 0);
+        Library library = translator.toELM();
+        Map<String, ExpressionDef> defs = new HashMap<>();
+
+        if (library.getStatements() != null) {
+            for (ExpressionDef def : library.getStatements().getDef()) {
+                defs.put(def.getName(), def);
+            }
+        }
+        /*  Execute CQL for USCore v3.1.1 Patient.address.line and Patient.address.line[0] */
+        ExpressionDef def = defs.get("Address"); 
+        assertThat(def.getExpression(), instanceOf(Flatten.class));
+        def = defs.get("Address Line 1");
+        assertThat(def.getExpression(), instanceOf(Indexer.class));
+        Indexer i = (Indexer)def.getExpression();
+        assertThat(i.getOperand().size(), is(2));
+        assertThat(i.getOperand().get(0), instanceOf(Flatten.class));
+        Flatten f = (Flatten)i.getOperand().get(0);
+        assertThat(f.getOperand(), instanceOf(Query.class));
+        Query q = (Query)f.getOperand();
+        assertThat(q.getSource().size(), is(1));
+   }
+
     private CqlTranslator runSemanticTest(String testFileName) throws IOException {
         return runSemanticTest(testFileName, 0);
     }
