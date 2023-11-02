@@ -87,18 +87,22 @@ public class QueryEvaluator {
                 : constructResult(state, variables, elements);
     }
 
-    private static List<Object> evaluateAggregate(AggregateClause elm, String alias, State state, ElmLibraryVisitor<Object, State> visitor, List<Object> elements) {
-        return Collections.singletonList(AggregateClauseEvaluator.aggregate(elm, alias, state, visitor, elements));
+    private static List<Object> evaluateAggregate(AggregateClause elm, State state, ElmLibraryVisitor<Object, State> visitor, List<Object> elements) {
+        return Collections.singletonList(AggregateClauseEvaluator.aggregate(elm, state, visitor, elements));
+    }
+
+    private static Object constructTuple(State state, List<Variable> variables, List<Object> elements) {
+        LinkedHashMap<String, Object> elementMap = new LinkedHashMap<>();
+        for (int i = 0; i < variables.size(); i++) {
+            elementMap.put(variables.get(i).getName(), variables.get(i).getValue());
+        }
+
+        return new Tuple(state).withElements(elementMap);
     }
 
     private static Object constructResult(State state, List<Variable> variables, List<Object> elements) {
         if (variables.size() > 1) {
-            LinkedHashMap<String, Object> elementMap = new LinkedHashMap<>();
-            for (int i = 0; i < variables.size(); i++) {
-                elementMap.put(variables.get(i).getName(), variables.get(i).getValue());
-            }
-
-            return new Tuple(state).withElements(elementMap);
+            return constructTuple(state, variables, elements);
         }
 
         return elements.get(0);
@@ -156,6 +160,9 @@ public class QueryEvaluator {
 
     @SuppressWarnings("unchecked")
     public static Object internalEvaluate(Query elm, State state, ElmLibraryVisitor<Object, State> visitor) {
+        if (elm.getAggregate() != null && elm.getReturn() != null) {
+            throw new CqlException("aggregate and return are mutually exclusive");
+        }
 
         var sources = new ArrayList<Iterator<Object>>();
         var variables = new ArrayList<Variable>();
@@ -203,7 +210,13 @@ public class QueryEvaluator {
                     continue;
                 }
 
-                result.add(evaluateReturn(elm, state, variables, elements, visitor));
+                if (elm.getAggregate() != null) {
+                    result.add(constructTuple(state, variables, elements));
+                }
+                else {
+                    result.add(evaluateReturn(elm, state, variables, elements, visitor));
+                }
+
             }
         } finally {
             while (pushCount > 0) {
@@ -212,18 +225,12 @@ public class QueryEvaluator {
             }
         }
 
-        if (elm.getAggregate() != null && elm.getReturn() != null) {
-            throw new CqlException("aggregate and return are mutually exclusive");
-        }
-
         if (elm.getReturn() != null && elm.getReturn().isDistinct()) {
             result = DistinctEvaluator.distinct(result, state);
         }
 
         if (elm.getAggregate() != null) {
-            // TODO: JP - Hmm... this ain't right...
-            var alias = elm.getSource().get(0).getAlias();
-            result = evaluateAggregate(elm.getAggregate(), alias, state, visitor, result);
+            result = evaluateAggregate(elm.getAggregate(), state, visitor, result);
         }
 
         sortResult(elm, result, state, null, visitor);

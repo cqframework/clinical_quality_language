@@ -2,8 +2,10 @@ package org.opencds.cqf.cql.engine.elm.executing;
 
 import org.cqframework.cql.elm.visiting.ElmLibraryVisitor;
 import org.hl7.elm.r1.AggregateClause;
+import org.opencds.cqf.cql.engine.exception.CqlException;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.execution.Variable;
+import org.opencds.cqf.cql.engine.runtime.Tuple;
 
 import java.util.List;
 import java.util.Objects;
@@ -20,7 +22,7 @@ https://cql.hl7.org/03-developersguide.html#aggregate-queries
 
 public class AggregateClauseEvaluator {
 
-    public static Object aggregate(AggregateClause elm, String alias, State state, ElmLibraryVisitor<Object, State> visitor, List<Object> elements) {
+    public static Object aggregate(AggregateClause elm, State state, ElmLibraryVisitor<Object, State> visitor, List<Object> elements) {
         Objects.requireNonNull(elm, "elm can not be null");
         Objects.requireNonNull(elements, "elements can not be null");
         Objects.requireNonNull(state, "state can not be null");
@@ -36,15 +38,25 @@ public class AggregateClauseEvaluator {
 
         for(var e : elements) {
             state.push(new Variable().withName(elm.getIdentifier()).withValue(aggregatedValue));
-            state.push(new Variable().withName(alias).withValue(e));
+            int pushes = 1;
+            if (!(e instanceof Tuple)) {
+                throw new CqlException("expected aggregation source to be a Tuple");
+            }
+            var tuple = (Tuple)e;
+            for (var p : tuple.getElements().entrySet()) {
+                state.push(new Variable().withName(p.getKey()).withValue(p.getValue()));
+                pushes++;
+            }
+
             try {
                 aggregatedValue= visitor.visitExpression(elm.getExpression(), state);
             }
             finally {
-                state.pop();
-                state.pop();
+                while(pushes > 0) {
+                    state.pop();
+                    pushes--;
+                }
             }
-
         }
 
         return aggregatedValue;

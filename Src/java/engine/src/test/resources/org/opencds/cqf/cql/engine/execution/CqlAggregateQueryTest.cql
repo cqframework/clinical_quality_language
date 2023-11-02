@@ -31,7 +31,7 @@ define "B": {1, 2}
 define "C": {1, 2}
 
 define MegaMulti:
-   from "1" X, "2" Y, "3" Z
+   from "A" X, "B" Y, "C" Z
     aggregate Agg starting 0: Agg + X + Y + Z // 36 -- (1+1+1)+(1+1+2)+(1+2+1)+(1+2+2)+(2+1+1)+(2+1+2)+(2+2+1)+(2+2+2)
 
 
