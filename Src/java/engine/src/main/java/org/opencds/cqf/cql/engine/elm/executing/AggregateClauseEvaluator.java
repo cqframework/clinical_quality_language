@@ -49,7 +49,7 @@ public class AggregateClauseEvaluator {
             }
 
             try {
-                aggregatedValue= visitor.visitExpression(elm.getExpression(), state);
+                aggregatedValue = visitor.visitExpression(elm.getExpression(), state);
             }
             finally {
                 while(pushes > 0) {
