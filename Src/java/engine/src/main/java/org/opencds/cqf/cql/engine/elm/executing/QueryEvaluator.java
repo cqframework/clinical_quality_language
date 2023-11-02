@@ -87,16 +87,8 @@ public class QueryEvaluator {
                 : constructResult(state, variables, elements);
     }
 
-    private static List<Object> evaluateAggregate(AggregateClause elm, State state, List<Object> elements,
-            ElmLibraryVisitor<Object, State> visitor) {
-        Object initial = visitor.visitExpression(elm.getStarting(), state);
-        Object iteration = visitor.visitExpression(elm.getExpression(), state);
-
-        if (elm.isDistinct()) {
-            elements = DistinctEvaluator.distinct(elements, state);
-        }
-
-        return Collections.singletonList(AggregateEvaluator.aggregate(elements, initial, iteration, state));
+    private static List<Object> evaluateAggregate(AggregateClause elm, String alias, State state, ElmLibraryVisitor<Object, State> visitor, List<Object> elements) {
+        return Collections.singletonList(AggregateClauseEvaluator.aggregate(elm, alias, state, visitor, elements));
     }
 
     private static Object constructResult(State state, List<Variable> variables, List<Object> elements) {
@@ -229,7 +221,9 @@ public class QueryEvaluator {
         }
 
         if (elm.getAggregate() != null) {
-            result = evaluateAggregate(elm.getAggregate(), state, result, visitor);
+            // TODO: JP - Hmm... this ain't right...
+            var alias = elm.getSource().get(0).getAlias();
+            result = evaluateAggregate(elm.getAggregate(), alias, state, visitor, result);
         }
 
         sortResult(elm, result, state, null, visitor);
