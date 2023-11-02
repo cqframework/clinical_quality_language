@@ -20,5 +20,14 @@ public class CqlAggregateQueryTest extends CqlTestBase {
 
         result = evaluationResult.forExpression("AggregateSumDistinct").value();
         assertThat(result, is(15));
+
+        result = evaluationResult.forExpression("Multi").value();
+        assertThat(result, is(6));
+
+        result = evaluationResult.forExpression("MegaMulti").value();
+        assertThat(result, is(36));
+
+        result = evaluationResult.forExpression("MegaMultiDistinct").value();
+        assertThat(result, is(37));
     }
 }
