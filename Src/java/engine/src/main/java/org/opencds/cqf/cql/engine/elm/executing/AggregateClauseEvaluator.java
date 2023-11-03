@@ -46,6 +46,8 @@ public class AggregateClauseEvaluator {
 
             try {
                 state.push(new Variable().withName(elm.getIdentifier()).withValue(aggregatedValue));
+                pushes++;
+
                 for (var p : tuple.getElements().entrySet()) {
                     state.push(new Variable().withName(p.getKey()).withValue(p.getValue()));
                     pushes++;
