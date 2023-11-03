@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 public class FunctionRefEvaluator {
 
-    private static final Logger logger =LoggerFactory.getLogger(FunctionRefEvaluator.class);
+    private static final Logger logger = LoggerFactory.getLogger(FunctionRefEvaluator.class);
 
     public static Object internalEvaluate(FunctionRef functionRef, State state, ElmLibraryVisitor<Object,State> visitor) {
         ArrayList<Object> arguments = new ArrayList<>(functionRef.getOperand().size());
