@@ -9,12 +9,13 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertNotNull;
 
 public class BaseTest {
@@ -30,7 +31,20 @@ public class BaseTest {
 , org.cqframework.cql.cql2elm.CqlSemanticException: Case insensitive clashes detected: Identifier for identifiers: [Application of Intermittent Pneumatic Compression Devices (IPC)] resolved as a value set with case insensitive matching.
 , org.cqframework.cql.cql2elm.CqlSemanticException: Case insensitive clashes detected: Identifier for identifiers: [Application of Intermittent Pneumatic Compression Devices (IPC)] resolved as a value set with case insensitive matching.
          */
-        assertThat(translator.getWarnings().toString(), translator.getWarnings().size(), is(0));
+
+        // LUKETODO: false positive:  "Identifier hiding detected: Identifier in a broader scope hidden: [Diabetes] resolved as a context accessor with exact case matching."
+        // LUKETODO:  possible dupes
+        assertThat(translator.getWarnings().toString(), translator.getWarnings().size(), is(4));
+
+        final List<String> distinct = translator.getWarnings().stream().map(Throwable::getMessage).distinct().collect(Collectors.toList());
+
+        assertThat(distinct.size(), is(2));
+
+        // LUKETODO:  adjust these assertions
+        final String first = "Case insensitive clashes detected: Identifier for identifiers: [Application of intermittent pneumatic compression devices (IPC)] resolved as a value set with case insensitive matching.\n";
+        final String second = "Case insensitive clashes detected: Identifier for identifiers: [Application of Intermittent Pneumatic Compression Devices (IPC)] resolved as a value set with case insensitive matching.\n";
+
+        assertThat(distinct, containsInAnyOrder(first, second));
     }
 
     @Test

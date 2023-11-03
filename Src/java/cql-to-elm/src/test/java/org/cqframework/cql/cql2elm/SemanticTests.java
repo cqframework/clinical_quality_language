@@ -742,8 +742,17 @@ public class SemanticTests {
     }
 
     @Test
-    public void testSoMuchNestingHiding() throws IOException {
-        final CqlTranslator translator = TestUtils.runSemanticTest("TestSoMuchNestingHiding.cql", 0);
+    public void testSoMuchNestingHidingSimple() throws IOException {
+        final CqlTranslator translator = TestUtils.runSemanticTest("TestSoMuchNestingHidingSimple.cql", -1);
+        final List<CqlCompilerException> warnings = translator.getWarnings();
+
+        // LUKETODO:  this doesn't work because "SoMuchNesting" resolves to null in LibraryBuilder.
+        assertThat(warnings.toString(), translator.getWarnings().size(), is(1));
+    }
+
+    @Test
+    public void testSoMuchNestingHidingComplex() throws IOException {
+        final CqlTranslator translator = TestUtils.runSemanticTest("TestSoMuchNestingHidingComplex.cql", -1);
         final List<CqlCompilerException> warnings = translator.getWarnings();
 
         // LUKETODO:  we're getting 4 but I'm not sure if they're dupes

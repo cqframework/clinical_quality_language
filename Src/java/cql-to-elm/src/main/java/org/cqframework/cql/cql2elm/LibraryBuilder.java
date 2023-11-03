@@ -2202,6 +2202,13 @@ public class LibraryBuilder implements ModelResolver {
         // 10: The name of a property on a specific context
         // 11: An unresolved identifier error is thrown
 
+        final String id = Optional.ofNullable(this.library.getIdentifier()).map(VersionedIdentifier::getId).orElse(null);
+        if (id != null) {
+            if ((id.contains("Test") || id.contains("Authori") ) && !identifier.contains("Test")) {
+                logger.info("identifier: {}, mustResolve: {}", identifier, mustResolve);
+            }
+        }
+
         // In a type specifier context, return the identifier as a Literal for resolution as a type by the caller
         ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
 
@@ -2288,14 +2295,15 @@ public class LibraryBuilder implements ModelResolver {
             //getAllMatchedIdentifiers returns any recorded identifier where MatchType is not NONE
             List<ResolvedIdentifier> allHiddenCaseMatches = resolvedIdentifierList.getAllMatchedIdentifiers();
 
+            if (id != null) {
+                if (id.contains("Authoring") || id.contains("Hidden") || id.contains("Test")) {
+                    logger.info("resolvedIdentifierList: {}", resolvedIdentifierList.getResolvedIdentifierList().stream().map(match -> "[" + match.getIdentifier() + "] " + match.getResolvedElement().getClass() + " " + match.getMatchType()).collect(Collectors.toSet()));
+                    logger.info("allHiddenCaseMatches: {}", allHiddenCaseMatches.stream().map(match -> "[" + match.getIdentifier() + "] " + match.getResolvedElement().getClass() + " " + match.getMatchType()).collect(Collectors.toSet()));
+                }
+            }
+
             //issue warning that multiple matches occurred:
             if (! allHiddenCaseMatches.isEmpty()) {
-                final String id = Optional.ofNullable(this.library.getIdentifier()).map(VersionedIdentifier::getId).orElse(null);
-                if (id != null) {
-                    if (id.contains("Case") || id.contains("Hidden") || id.contains("Test")) {
-                        logger.info("allHiddenCaseMatches: {}", allHiddenCaseMatches.stream().map(match -> match.getIdentifier() + match.getResolvedElement().getClass() + " " + match.getMatchType()).collect(Collectors.toSet()));
-                    }
-                }
 
                 final Object resolvedElement = allHiddenCaseMatches.get(0).getResolvedElement();
 
@@ -2305,6 +2313,7 @@ public class LibraryBuilder implements ModelResolver {
                 final List<ResolvedIdentifier> filtered = allHiddenCaseMatches.stream()
                         // LUKETODO:  consider filtering out other "Ref"s
                         .filter(match -> ! (match.getResolvedElement() instanceof OperandRef))
+                        .filter(match -> ! (match.getResolvedElement() instanceof ValueSetRef))
                         .collect(Collectors.toList());
 //                final List<ResolvedIdentifier> filtered = allHiddenCaseMatches;
                 // LUKETODO:  what about "NONE"?
@@ -2334,6 +2343,12 @@ public class LibraryBuilder implements ModelResolver {
         } else if (mustResolve) {
             // ERROR:
             throw new IllegalArgumentException(String.format("Could not resolve identifier %s in the current library.", identifier));
+        }
+
+        if (id != null) {
+            if (id.contains("Test") && ! identifier.contains("Test")) {
+                logger.info("returning null");
+            }
         }
 
         return null;
@@ -2999,14 +3014,14 @@ public class LibraryBuilder implements ModelResolver {
                     IdentifierRef result = new IdentifierRef().withName(identifier);
                     result.setResultType(query.getResultElementType());
                     resolvedIdentifierList.addResolvedIdentifier(identifier, identifier, $_THIS, result);
-                }
-
-                // LUKETODO:  when we do this with "$this", it results in an IllegalArgumentException because "resolveProperty()" does not consider "$this"
-                PropertyResolution resolution = resolveProperty(query.getResultElementType(), identifier, false);
-                if (resolution != null) {
-                    IdentifierRef result = new IdentifierRef().withName(resolution.getName());
-                    result.setResultType(resolution.getType());
-                    resolvedIdentifierList.addExactMatchIdentifier(identifier, applyTargetMap(result, resolution.getTargetMap()));
+                } else { // LUKETODO:  We do this to prevent an error processing "$this" in resolveProperty()
+                    // LUKETODO:  when we do this with "$this", it results in an IllegalArgumentException because "resolveProperty()" does not consider "$this"
+                    PropertyResolution resolution = resolveProperty(query.getResultElementType(), identifier, false);
+                    if (resolution != null) {
+                        IdentifierRef result = new IdentifierRef().withName(resolution.getName());
+                        result.setResultType(resolution.getType());
+                        resolvedIdentifierList.addExactMatchIdentifier(identifier, applyTargetMap(result, resolution.getTargetMap()));
+                    }
                 }
             }
         }
