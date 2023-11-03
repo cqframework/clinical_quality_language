@@ -81,31 +81,17 @@ public class QueryEvaluator {
         return true;
     }
 
-    private static Object evaluateReturn(Query elm, State state, List<Variable> variables, List<Object> elements,
-            ElmLibraryVisitor<Object, State> visitor) {
-        return elm.getReturn() != null ? visitor.visitExpression(elm.getReturn().getExpression(), state)
-                : constructResult(state, variables, elements);
-    }
-
     private static List<Object> evaluateAggregate(AggregateClause elm, State state, ElmLibraryVisitor<Object, State> visitor, List<Object> elements) {
         return Collections.singletonList(AggregateClauseEvaluator.aggregate(elm, state, visitor, elements));
     }
 
-    private static Object constructTuple(State state, List<Variable> variables, List<Object> elements) {
-        LinkedHashMap<String, Object> elementMap = new LinkedHashMap<>();
-        for (int i = 0; i < variables.size(); i++) {
-            elementMap.put(variables.get(i).getName(), variables.get(i).getValue());
+    private static Object constructTuple(State state, List<Variable> variables) {
+        var elementMap = new LinkedHashMap<String, Object>();
+        for (var v : variables) {
+            elementMap.put(v.getName(), v.getValue());
         }
 
         return new Tuple(state).withElements(elementMap);
-    }
-
-    private static Object constructResult(State state, List<Variable> variables, List<Object> elements) {
-        if (variables.size() > 1) {
-            return constructTuple(state, variables, elements);
-        }
-
-        return elements.get(0);
     }
 
     public static void sortResult(Query elm, List<Object> result, State state, String alias,
@@ -196,12 +182,11 @@ public class QueryEvaluator {
             while (iterator.hasNext()) {
                 List<Object> elements = (List<Object>) iterator.next();
 
-                // Assign range variables
+                // Assign  variables
                 assignVariables(variables, elements);
 
                 evaluateLets(elm, state, letVariables, visitor);
 
-                // Evaluate relationships
                 if (!evaluateRelationships(elm, state, visitor)) {
                     continue;
                 }
@@ -210,13 +195,18 @@ public class QueryEvaluator {
                     continue;
                 }
 
-                if (elm.getAggregate() != null) {
-                    result.add(constructTuple(state, variables, elements));
+                // There's a "return" clause in the CQL
+                if (elm.getReturn() != null) {
+                    result.add(visitor.visitExpression(elm.getReturn().getExpression(), state));
                 }
+                // There's an "aggregate" clause in the CQL OR there's an implicit multi-source return
+                else if (elm.getAggregate() != null || variables.size() > 1) {
+                    result.add(constructTuple(state, variables));
+                }
+                // implicit return with 1 source
                 else {
-                    result.add(evaluateReturn(elm, state, variables, elements, visitor));
+                    result.add(elements.get(0));
                 }
-
             }
         } finally {
             while (pushCount > 0) {
