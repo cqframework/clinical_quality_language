@@ -37,20 +37,22 @@ public class AggregateClauseEvaluator {
         }
 
         for(var e : elements) {
-            state.push(new Variable().withName(elm.getIdentifier()).withValue(aggregatedValue));
-            int pushes = 1;
             if (!(e instanceof Tuple)) {
-                throw new CqlException("expected aggregation source to be a Tuple");
+                    throw new CqlException("expected aggregation source to be a Tuple");
             }
             var tuple = (Tuple)e;
-            for (var p : tuple.getElements().entrySet()) {
-                state.push(new Variable().withName(p.getKey()).withValue(p.getValue()));
-                pushes++;
-            }
+
+            int pushes = 0;
 
             try {
-                aggregatedValue = visitor.visitExpression(elm.getExpression(), state);
-            }
+                state.push(new Variable().withName(elm.getIdentifier()).withValue(aggregatedValue));
+                for (var p : tuple.getElements().entrySet()) {
+                    state.push(new Variable().withName(p.getKey()).withValue(p.getValue()));
+                    pushes++;
+                }
+
+                    aggregatedValue = visitor.visitExpression(elm.getExpression(), state);
+                }
             finally {
                 while(pushes > 0) {
                     state.pop();
