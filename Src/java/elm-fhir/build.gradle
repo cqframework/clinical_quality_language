@@ -12,6 +12,7 @@ dependencies {
     implementation project(':engine')
     implementation project(":engine-fhir")
     implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.1'
 
     testImplementation project(':quick')
     testImplementation "org.reflections:reflections:0.10.2"

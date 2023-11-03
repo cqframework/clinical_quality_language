@@ -3,5 +3,7 @@ plugins {
 }
 
 dependencies {
+    api 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.1'
+    api 'jakarta.json:jakarta.json-api:2.1.3'
     implementation project(':model')
 }
