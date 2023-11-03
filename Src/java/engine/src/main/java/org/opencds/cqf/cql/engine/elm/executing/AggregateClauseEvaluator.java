@@ -38,7 +38,7 @@ public class AggregateClauseEvaluator {
 
         for(var e : elements) {
             if (!(e instanceof Tuple)) {
-                    throw new CqlException("expected aggregation source to be a Tuple");
+                throw new CqlException("expected aggregation source to be a Tuple");
             }
             var tuple = (Tuple)e;
 
