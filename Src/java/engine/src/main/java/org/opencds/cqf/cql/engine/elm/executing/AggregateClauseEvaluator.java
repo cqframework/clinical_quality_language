@@ -51,8 +51,8 @@ public class AggregateClauseEvaluator {
                     pushes++;
                 }
 
-                    aggregatedValue = visitor.visitExpression(elm.getExpression(), state);
-                }
+                aggregatedValue = visitor.visitExpression(elm.getExpression(), state);
+            }
             finally {
                 while(pushes > 0) {
                     state.pop();
