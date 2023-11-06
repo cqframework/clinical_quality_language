@@ -150,7 +150,7 @@ public class TestUtils {
             System.err.printf("(%d,%d): %s%n",
                     error.getLocator().getStartLine(), error.getLocator().getStartChar(), error.getMessage());
         }
-        // We want to defer asserting on errors to the unit test
+        // We want to defer asserting on errors to the unit test by passing -1
         if (expectedErrors != -1) {
             assertThat(translator.getErrors().size(), is(expectedErrors));
         }

@@ -70,7 +70,7 @@ public class QueryContext {
     }
 
     public ResolvedIdentifierList resolveCaseIgnoredAliases(String identifier) {
-        ResolvedIdentifierList ret = new ResolvedIdentifierList();
+        ResolvedIdentifierList ret = ResolvedIdentifierList.inner();
 
         sources.entrySet()
                 .stream()
@@ -85,7 +85,7 @@ public class QueryContext {
     }
 
     public ResolvedIdentifierList resolveCaseIgnoredLets(String identifier) {
-        ResolvedIdentifierList ret = new ResolvedIdentifierList();
+        ResolvedIdentifierList ret = ResolvedIdentifierList.inner();
 
         lets.entrySet()
                 .stream()

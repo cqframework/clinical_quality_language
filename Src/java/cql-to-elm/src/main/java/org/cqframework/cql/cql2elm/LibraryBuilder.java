@@ -1442,7 +1442,8 @@ public class LibraryBuilder implements ModelResolver {
         return query;
     }
 
-    private void reportWarning(String message, Expression expression) {
+    // LUKETDDO:  make this private again
+    public void reportWarning(String message, Expression expression) {
         TrackBack trackback = expression.getTrackbacks() != null && expression.getTrackbacks().size() > 0 ? expression.getTrackbacks().get(0) : null;
         CqlSemanticException warning = new CqlSemanticException(message, CqlCompilerException.ErrorSeverity.Warning, trackback);
         recordParsingException(warning);
@@ -2188,7 +2189,8 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     // LUKETODO:  when is this called?
-    public Expression resolveIdentifier(String identifier, boolean mustResolve) {
+    // LUKETODO:  name of a type in a model
+    public Expression resolveIdentifier(String identifier, boolean mustResolve, boolean hasSameEnclosingFunction) {
         // An Identifier will always be:
         // 1: The name of an alias
         // 2: The name of a query define clause
@@ -2210,7 +2212,7 @@ public class LibraryBuilder implements ModelResolver {
         }
 
         // In a type specifier context, return the identifier as a Literal for resolution as a type by the caller
-        ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
+        ResolvedIdentifierList resolvedIdentifierList = ResolvedIdentifierList.outer(hasSameEnclosingFunction);
 
         if (inTypeSpecifierContext()) {
             resolvedIdentifierList.addExactMatchIdentifier(identifier, this.createLiteral(identifier));
@@ -2286,76 +2288,17 @@ public class LibraryBuilder implements ModelResolver {
             }
         }
 
-        //shift the first instance of MatchType.EXACT, which will be what is returned.  The remainder of the list
-        //is looked at to determine if hidden identifiers were found.
-        ResolvedIdentifier firstCaseMatch = resolvedIdentifierList.shiftFirstInstanceOfExactMatch();
-
-        if (firstCaseMatch != null) {
-
-            //getAllMatchedIdentifiers returns any recorded identifier where MatchType is not NONE
-            List<ResolvedIdentifier> allHiddenCaseMatches = resolvedIdentifierList.getAllMatchedIdentifiers();
-
-            if (id != null) {
-                if (id.contains("Authoring") || id.contains("Hidden") || id.contains("Test")) {
-                    logger.info("resolvedIdentifierList: {}", resolvedIdentifierList.getResolvedIdentifierList().stream().map(match -> "[" + match.getIdentifier() + "] " + match.getResolvedElement().getClass() + " " + match.getMatchType()).collect(Collectors.toSet()));
-                    logger.info("allHiddenCaseMatches: {}", allHiddenCaseMatches.stream().map(match -> "[" + match.getIdentifier() + "] " + match.getResolvedElement().getClass() + " " + match.getMatchType()).collect(Collectors.toSet()));
-                }
-            }
-
-            //issue warning that multiple matches occurred:
-            if (! allHiddenCaseMatches.isEmpty()) {
-
-                final Object resolvedElement = allHiddenCaseMatches.get(0).getResolvedElement();
-
-                final boolean isExpressionDef = resolvedElement instanceof ExpressionDef;
-                final boolean isOperandDef = resolvedElement instanceof OperandDef;
-
-                final List<ResolvedIdentifier> filtered = allHiddenCaseMatches.stream()
-                        // LUKETODO:  consider filtering out other "Ref"s
-                        .filter(match -> ! (match.getResolvedElement() instanceof OperandRef))
-                        .filter(match -> ! (match.getResolvedElement() instanceof ValueSetRef))
-                        .collect(Collectors.toList());
-//                final List<ResolvedIdentifier> filtered = allHiddenCaseMatches;
-                // LUKETODO:  what about "NONE"?
-                // LUKETODO:  unite the two into a single warning block
-                final List<ResolvedIdentifier> caseInsensitiveMatches = filtered.stream().filter(match -> MatchType.CASE_IGNORED == match.getMatchType()).collect(Collectors.toList());
-                final List<ResolvedIdentifier> exactIdentifierMatches = filtered.stream().filter(match -> MatchType.EXACT == match.getMatchType()).collect(Collectors.toList());
-
-
-                if (! caseInsensitiveMatches.isEmpty()) {
-                    this.reportWarning("Case insensitive clashes detected: " +
-                                    "Identifier" + (caseInsensitiveMatches.size() > 1 ? "s" : "") + " for identifiers: " +
-                                    this.formatMatchedMessage(caseInsensitiveMatches),
-                            (Expression) firstCaseMatch.getResolvedElement());
-
-                }
-
-                if (! exactIdentifierMatches.isEmpty()) {
-                    this.reportWarning("Identifier hiding detected: " +
-                                    "Identifier" + (exactIdentifierMatches.size() > 1 ? "s" : "") + " in a broader scope hidden: " +
-                                    this.formatMatchedMessage(exactIdentifierMatches),
-                            (Expression) firstCaseMatch.getResolvedElement());
-
-                }
-            }
-            //return first match:
-            return (Expression) firstCaseMatch.getResolvedElement();
-        } else if (mustResolve) {
-            // ERROR:
-            throw new IllegalArgumentException(String.format("Could not resolve identifier %s in the current library.", identifier));
-        }
-
         if (id != null) {
-            if (id.contains("Test") && ! identifier.contains("Test")) {
-                logger.info("returning null");
+            if (id.contains("Authoring") || id.contains("Hidden") || id.contains("Test")) {
+                logger.info("resolvedIdentifierList 1: {}", resolvedIdentifierList.getResolvedIdentifierList().stream().map(match -> "[" + match.getIdentifier() + "] " + match.getResolvedElement().getClass() + " " + match.getMatchType()).collect(Collectors.toSet()));
             }
         }
 
-        return null;
+        return resolvedIdentifierList.checkForDupesOuter(identifier, mustResolve, this);
     }
 
     private ResolvedIdentifierList resolveElements(String identifier) {
-        final ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
+        final ResolvedIdentifierList resolvedIdentifierList = ResolvedIdentifierList.inner();
 
         Element element = resolve(identifier);
 
@@ -2445,6 +2388,13 @@ public class LibraryBuilder implements ModelResolver {
             resolvedIdentifierList.addExactMatchIdentifier(identifier, libraryRef);
         }
 
+        if (element instanceof UsingDef) {
+            checkLiteralContext();
+            LibraryRef libraryRef = new LibraryRef();
+            libraryRef.setLibraryName(((UsingDef) element).getLocalIdentifier());
+            resolvedIdentifierList.addExactMatchIdentifier(identifier, libraryRef);
+        }
+
         resolvedIdentifierList.addAllResolvedIdentifiers(caseIgnoredElements);
 
         return resolvedIdentifierList;
@@ -2468,7 +2418,8 @@ public class LibraryBuilder implements ModelResolver {
         return result;
     }
 
-    private String formatMatchedMessage(List<ResolvedIdentifier> list) {
+    // LUKETODO: make this private
+    public String formatMatchedMessage(List<ResolvedIdentifier> list) {
         final StringBuilder sb = new StringBuilder();
         for (ResolvedIdentifier p : list){
             String matchType;
@@ -2755,7 +2706,8 @@ public class LibraryBuilder implements ModelResolver {
                         result = sourceProperty.getSource();
                     }
                     else if (sourceProperty.getScope() != null) {
-                        result = resolveIdentifier(sourceProperty.getScope(), true);
+                        // LUKETODO:  can this ever be true?
+                        result = resolveIdentifier(sourceProperty.getScope(), true, false);
                     }
                     else {
                         throw new IllegalArgumentException(String.format("Cannot resolve %parent reference in targetMap %s",
@@ -3006,7 +2958,7 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     private ResolvedIdentifierList resolveQueryResultElements(String identifier) {
-        final ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
+        final ResolvedIdentifierList resolvedIdentifierList = ResolvedIdentifierList.inner();
         if (inQueryContext()) {
             QueryContext query = peekQueryContext();
             if (query.inSortClause() && !query.isSingular()) {
@@ -3030,10 +2982,12 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     private ResolvedIdentifierList resolveAliases(String identifier) {
-        final ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
+        final ResolvedIdentifierList resolvedIdentifierList = ResolvedIdentifierList.inner();
         // Need to use a for loop to go through backwards, iteration on a Stack is bottom up
         if (inQueryContext()) {
-            for (int i = getScope().getQueries().size() - 1; i >= 0; i--) {
+            final Scope scope = getScope();
+            final Stack<QueryContext> queries = scope.getQueries();
+            for (int i = queries.size() - 1; i >= 0; i--) {
                 AliasedQuerySource source = getScope().getQueries().get(i).resolveAlias(identifier);
                 if (source != null) {
                     resolvedIdentifierList.addExactMatchIdentifier(identifier, source);
@@ -3046,7 +3000,7 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     private ResolvedIdentifierList resolveQueryThisElements(String identifier) {
-        final ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
+        final ResolvedIdentifierList resolvedIdentifierList = ResolvedIdentifierList.inner();
         if (inQueryContext()) {
             QueryContext query = peekQueryContext();
             if (query.isImplicit()) {
@@ -3072,11 +3026,16 @@ public class LibraryBuilder implements ModelResolver {
         return resolvedIdentifierList;
     }
 
+    // LUKETODO:  this only resolves a single "let var"
+    // LUKETODO:  I think this is due to the 2nd "let var" being within a return
     private ResolvedIdentifierList resolveQueryLets(String identifier) {
-        final ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
+        final ResolvedIdentifierList resolvedIdentifierList = ResolvedIdentifierList.inner();
         // Need to use a for loop to go through backwards, iteration on a Stack is bottom up
         if (inQueryContext()) {
-            for (int i = getScope().getQueries().size() - 1; i >= 0; i--) {
+            final Scope scope = getScope();
+            final Stack<QueryContext> queries = scope.getQueries();
+            final Stack<Expression> targets = scope.getTargets();
+            for (int i = queries.size() - 1; i >= 0; i--) {
                 LetClause let = getScope().getQueries().get(i).resolveLet(identifier);
                 if (let != null) {
                     resolvedIdentifierList.addExactMatchIdentifier(identifier, let);
@@ -3089,7 +3048,7 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     private ResolvedIdentifierList resolveOperandRefs(String identifier) {
-        final ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
+        final ResolvedIdentifierList resolvedIdentifierList = ResolvedIdentifierList.inner();
         if (!functionDefs.empty()) {
             for (OperandDef operand : functionDefs.peek().getOperand()) {
                 if (operand.getName().equals(identifier)) {

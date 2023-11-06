@@ -34,17 +34,18 @@ public class BaseTest {
 
         // LUKETODO: false positive:  "Identifier hiding detected: Identifier in a broader scope hidden: [Diabetes] resolved as a context accessor with exact case matching."
         // LUKETODO:  possible dupes
-        assertThat(translator.getWarnings().toString(), translator.getWarnings().size(), is(4));
+        assertThat(translator.getWarnings().toString(), translator.getWarnings().size(), is(5));
 
         final List<String> distinct = translator.getWarnings().stream().map(Throwable::getMessage).distinct().collect(Collectors.toList());
 
-        assertThat(distinct.size(), is(2));
+        assertThat(distinct.size(), is(3));
 
         // LUKETODO:  adjust these assertions
         final String first = "Case insensitive clashes detected: Identifier for identifiers: [Application of intermittent pneumatic compression devices (IPC)] resolved as a value set with case insensitive matching.\n";
         final String second = "Case insensitive clashes detected: Identifier for identifiers: [Application of Intermittent Pneumatic Compression Devices (IPC)] resolved as a value set with case insensitive matching.\n";
+        final String third = "Identifier hiding detected: Identifier in a broader scope hidden: [Diabetes] resolved as a context accessor with exact case matching.\n";
 
-        assertThat(distinct, containsInAnyOrder(first, second));
+        assertThat(distinct, containsInAnyOrder(first, second, third));
     }
 
     @Test

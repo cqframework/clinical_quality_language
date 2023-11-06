@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -285,11 +286,12 @@ public class TranslationTests {
         final List<CqlCompilerException> warnings = translator.getWarnings();
 
         // LUKETODO:  missing:
-        // 1) "FHIRHidden"
-        // 2) "FHIRHidden2"
-        // 3) "Definition"
-        // 4) "VariableHidden"
+        // 1) FHIR isn't detected (ex FHIRHidden and FHIRHidden2)
+        // 2) varalias isn't detected (ex VariableHidden:  why isn't this in lets?)
+        // 3)
 
-        assertThat(warnings.toString(), translator.getWarnings().size(), is(13));
+        final String collect = warnings.stream().map(Throwable::getMessage).collect(Collectors.joining("\n"));
+
+        assertThat(collect, translator.getWarnings().size(), is(13));
     }
 }

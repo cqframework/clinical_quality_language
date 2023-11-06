@@ -3039,7 +3039,18 @@ DATETIME
             if (sources.size() > 0 && !hasFrom) {
                 throw new IllegalArgumentException("The from keyword is required for multi-source queries.");
             }
-            sources.add((AliasedQuerySource) visit(source));
+            final AliasedQuerySource sourceToAdd = (AliasedQuerySource) visit(source);
+            sources.add(sourceToAdd);
+
+            final String identifier = sourceToAdd.getAlias();
+            final ExpressionDefinitionInfo expressionDefinitionInfo = libraryInfo.resolveExpressionReference(identifier);
+
+            if (expressionDefinitionInfo != null && expressionDefinitionInfo.getDefinition() != null) {
+                // LUKETODO:  do we need to traverse the parse tree to prove the relationship?
+                libraryBuilder.reportWarning(String.format("X: Identifier hiding detected: Identifier in a broader scope hidden: [%s]", identifier),
+                        sourceToAdd.getExpression());
+
+            }
         }
         return sources;
     }
@@ -3047,6 +3058,7 @@ DATETIME
     @Override
     @SuppressWarnings("unchecked")
     public Object visitQuery(cqlParser.QueryContext ctx) {
+        // LUKETODO:  this might be where we need to add an additional fix
         QueryContext queryContext = new QueryContext();
         libraryBuilder.pushQueryContext(queryContext);
         try {
@@ -3666,31 +3678,63 @@ DATETIME
 
     @Override
     public Expression visitExternalConstant(cqlParser.ExternalConstantContext ctx) {
-        return libraryBuilder.resolveIdentifier(ctx.getText(), true);
+        // LUKETODO:  can this ever be true?
+        return libraryBuilder.resolveIdentifier(ctx.getText(), true, false);
     }
 
     @Override
     public Expression visitThisInvocation(cqlParser.ThisInvocationContext ctx) {
-        return libraryBuilder.resolveIdentifier(ctx.getText(), true);
+        // LUKETODO:  can this ever be true?
+        return libraryBuilder.resolveIdentifier(ctx.getText(), true, false);
     }
 
     @Override
     public Expression visitMemberInvocation(cqlParser.MemberInvocationContext ctx) {
+        // LUKETODO:  this is one of the code paths to resolve the enclosing expression for identifier hiding
+        // LUKETODO:  I think this is the "return SoMuchNesting + 1" Part
         String identifier = parseString(ctx.referentialIdentifier());
-        return resolveMemberIdentifier(identifier);
+
+//        final ParserRuleContext parent = ctx.getParent();
+//        final ParseTree child = parent.getChild(0);
+//
+//        final ParseTree child1 = child.getChild(0);
+//        final ParseTree child2 = child1.getChild(0);
+//        final ParseTree child3 = child2.getChild(0);
+//        final ParseTree child4 = child3.getChild(0);
+//
+//        final String text = child3.getText();
+//
+//        final ParseTree child5 = ctx.getChild(0);
+//        final ParseTree child6 = child5.getChild(0);
+//        final ParseTree child7 = child6.getChild(0);
+//        final String childText = child7.getText();
+//
+//        final boolean equals = childText.equals(text);
+//
+//        final ExpressionDefinitionInfo expressionDefinitionInfo = libraryInfo.resolveExpressionReference(identifier);
+//
+//        logger.info("child type: {}, parent type: {}", ctx.getChild(0).getClass(), parent.getClass());
+//
+//        final ParseTree expressionDefChild3 = expressionDefinitionInfo.getDefinition().getChild(3);
+
+
+        // LUKETODO:  need to compare double-quotes to double-quotes "Encounter" vs "Encounter", not "Encounter" vs Encounter
+        // LUKETODO:  still too many false positives:  somehow "MeasurementPeriod" is a parent of "MeasuyrementPeriod"
+//        return resolveMemberIdentifier(identifier, equals);
+        return resolveMemberIdentifier(identifier, false);
     }
 
     @Override
     public Expression visitQualifiedMemberInvocation(cqlParser.QualifiedMemberInvocationContext ctx) {
         String identifier = parseString(ctx.referentialIdentifier());
-        return resolveMemberIdentifier(identifier);
+        return resolveMemberIdentifier(identifier, false);
     }
 
     public Expression resolveQualifiedIdentifier(List<String> identifiers) {
         Expression current = null;
         for (String identifier : identifiers) {
             if (current == null) {
-                current = resolveIdentifier(identifier);
+                current = resolveIdentifier(identifier, false);
             } else {
                 current = libraryBuilder.resolveAccessor(current, identifier);
             }
@@ -3699,7 +3743,7 @@ DATETIME
         return current;
     }
 
-    public Expression resolveMemberIdentifier(String identifier) {
+    public Expression resolveMemberIdentifier(String identifier, boolean has) {
         if (libraryBuilder.hasExpressionTarget()) {
             Expression target = libraryBuilder.popExpressionTarget();
             try {
@@ -3710,12 +3754,12 @@ DATETIME
             }
         }
 
-        return resolveIdentifier(identifier);
+        return resolveIdentifier(identifier, has);
     }
 
-    private Expression resolveIdentifier(String identifier) {
+    private Expression resolveIdentifier(String identifier, boolean has) {
         // If the identifier cannot be resolved in the library builder, check for forward declarations for expressions and parameters
-        Expression result = libraryBuilder.resolveIdentifier(identifier, false);
+        Expression result = libraryBuilder.resolveIdentifier(identifier, false, has);
         if (result == null) {
             ExpressionDefinitionInfo expressionInfo = libraryInfo.resolveExpressionReference(identifier);
             if (expressionInfo != null) {
@@ -3747,7 +3791,8 @@ DATETIME
             if (parameterInfo != null) {
                 visitParameterDefinition(parameterInfo.getDefinition());
             }
-            result = libraryBuilder.resolveIdentifier(identifier, true);
+            // LUKETODO:  can this ever be true?
+            result = libraryBuilder.resolveIdentifier(identifier, true, has);
         }
 
         return result;
@@ -3882,7 +3927,8 @@ DATETIME
         }
 
         // If we are in an implicit $this context, the function may be resolved as a method invocation
-        Expression thisRef = libraryBuilder.resolveIdentifier("$this", false);
+        // LUKETODO:  can this ever be true?
+        Expression thisRef = libraryBuilder.resolveIdentifier("$this", false, false);
         if (thisRef != null) {
             Expression result = systemMethodResolver.resolveMethod(thisRef, identifier, paramListCtx, false);
             if (result != null) {

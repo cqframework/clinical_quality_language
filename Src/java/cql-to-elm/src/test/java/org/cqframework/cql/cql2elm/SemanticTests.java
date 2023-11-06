@@ -723,7 +723,6 @@ public class SemanticTests {
         assertTrue("Expected return types are String and Boolean: ", actualChoiceTypes.equals(expectedChoiceTypes));
     }
 
-    // LUKETODO: need tests with aliases
     @Test
     public void testCaseInsensitiveWarning() throws IOException {
         final CqlTranslator translator = TestUtils.runSemanticTest("TestCaseInsensitiveWarning.cql", 0, LibraryBuilder.SignatureLevel.All);
@@ -743,16 +742,36 @@ public class SemanticTests {
 
     @Test
     public void testSoMuchNestingHidingSimple() throws IOException {
+        // LUKETODO:  get rid of -1
         final CqlTranslator translator = TestUtils.runSemanticTest("TestSoMuchNestingHidingSimple.cql", -1);
         final List<CqlCompilerException> warnings = translator.getWarnings();
 
         // LUKETODO:  this doesn't work because "SoMuchNesting" resolves to null in LibraryBuilder.
         assertThat(warnings.toString(), translator.getWarnings().size(), is(1));
+        // LUKETODO:  add more assertions
     }
 
     @Test
     public void testSoMuchNestingHidingComplex() throws IOException {
         final CqlTranslator translator = TestUtils.runSemanticTest("TestSoMuchNestingHidingComplex.cql", -1);
+        final List<CqlCompilerException> warnings = translator.getWarnings();
+
+        final List<String> collect = warnings.stream().map(Throwable::getMessage).collect(Collectors.toList());
+        assertThat(collect.toString(), translator.getWarnings().size(), is(2));
+
+        final List<String> distinct = translator.getWarnings().stream().map(Throwable::getMessage).distinct().collect(Collectors.toList());
+
+        assertThat(distinct.size(), is(2));
+
+        final String first = "X: Identifier hiding detected: Identifier in a broader scope hidden: [SoMuchNesting]";
+        final String second = "Identifier hiding detected: Identifier in a broader scope hidden: [SoMuchNesting] resolved as a let of a query with exact case matching.\n";
+
+        assertThat(distinct, containsInAnyOrder(first, second));
+    }
+
+    @Test
+    public void testSoMuchNestingHidingComplex2() throws IOException {
+        final CqlTranslator translator = TestUtils.runSemanticTest("TestSoMuchNestingHidingComplex2.cql", -1);
         final List<CqlCompilerException> warnings = translator.getWarnings();
 
         // LUKETODO:  we're getting 4 but I'm not sure if they're dupes
@@ -763,7 +782,8 @@ public class SemanticTests {
         List-valued expression was demoted to a singleton.
         Identifier hiding detected: Identifiers in a broader scope hidden: [SoMuchNesting] resolved as an alias of a query with exact case matching. [SoMuchNesting] resolved as a let of a query with exact case matching. [SoMuchNesting] resolved as a let of a query with exact case matching.
          */
-        assertThat(warnings.toString(), translator.getWarnings().size(), is(3));
+        final List<String> collect = warnings.stream().map(Throwable::getMessage).collect(Collectors.toList());
+        assertThat(collect.toString(), translator.getWarnings().size(), is(3));
         // 1) First SoMuchNesting hiding
         // 2) Second SoMuchNesting hiding
         // 3) List-valued expression was demoted to a singleton (from baseline)

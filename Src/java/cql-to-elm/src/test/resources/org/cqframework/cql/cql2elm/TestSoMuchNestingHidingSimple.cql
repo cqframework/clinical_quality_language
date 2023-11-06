@@ -1,4 +1,4 @@
-library TestSoMuchNestingHiding
+library TestSoMuchNestingHidingSimple
 
 define "SoMuchNesting":
   ({1, 2, 3})

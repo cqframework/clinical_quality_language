@@ -1,4 +1,4 @@
-library TestSoMuchNestingHidingComplex
+library TestSoMuchNestingHidingComplex2
 
 define "SoMuchNesting":
   ({
@@ -20,3 +20,7 @@ define "SoMuchNesting":
         First("SoMuchNesting")
     return
         "SoMuchNesting"
+            "SoMuchNesting"
+            let "SoMuchNesting":
+                Add("SoMuchNesting", 1)
+            return "SoMuchNesting"
