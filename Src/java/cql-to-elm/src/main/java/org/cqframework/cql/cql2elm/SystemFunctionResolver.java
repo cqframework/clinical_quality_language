@@ -412,8 +412,7 @@ public class SystemFunctionResolver {
     }
 
     private Expression getPatientBirthDateProperty() {
-        // LUKETODO:  can this ever be true?
-        Expression source = builder.resolveIdentifier("Patient", true, false);
+        Expression source = builder.resolveIdentifier("Patient", true);
         String birthDateProperty = builder.getDefaultModel().getModelInfo().getPatientBirthDatePropertyName();
         // If the property has a qualifier, resolve it as a path (without model mapping)
         if (birthDateProperty.indexOf('.') >= 1) {

@@ -2188,9 +2188,8 @@ public class LibraryBuilder implements ModelResolver {
         return null;
     }
 
-    // LUKETODO:  when is this called?
     // LUKETODO:  name of a type in a model
-    public Expression resolveIdentifier(String identifier, boolean mustResolve, boolean hasSameEnclosingFunction) {
+    public Expression resolveIdentifier(String identifier, boolean mustResolve) {
         // An Identifier will always be:
         // 1: The name of an alias
         // 2: The name of a query define clause
@@ -2212,7 +2211,7 @@ public class LibraryBuilder implements ModelResolver {
         }
 
         // In a type specifier context, return the identifier as a Literal for resolution as a type by the caller
-        ResolvedIdentifierList resolvedIdentifierList = ResolvedIdentifierList.outer(hasSameEnclosingFunction);
+        ResolvedIdentifierList resolvedIdentifierList = ResolvedIdentifierList.outer();
 
         if (inTypeSpecifierContext()) {
             resolvedIdentifierList.addExactMatchIdentifier(identifier, this.createLiteral(identifier));
@@ -2706,8 +2705,7 @@ public class LibraryBuilder implements ModelResolver {
                         result = sourceProperty.getSource();
                     }
                     else if (sourceProperty.getScope() != null) {
-                        // LUKETODO:  can this ever be true?
-                        result = resolveIdentifier(sourceProperty.getScope(), true, false);
+                        result = resolveIdentifier(sourceProperty.getScope(), true);
                     }
                     else {
                         throw new IllegalArgumentException(String.format("Cannot resolve %parent reference in targetMap %s",

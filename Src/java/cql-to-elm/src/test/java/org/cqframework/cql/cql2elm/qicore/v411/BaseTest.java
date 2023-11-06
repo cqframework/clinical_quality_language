@@ -23,17 +23,6 @@ public class BaseTest {
     public void testAuthoringPatterns() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("qicore/v411/AuthoringPatterns.cql", 0, LibraryBuilder.SignatureLevel.Overloads);
 
-        // LUKETODO:  Identifier hiding detected: Identifier in a broader scope hidden: Application of Intermittent Pneumatic Compression Devices (IPC) resolved as a value set with case insensitive matching.
-        /*
-        java.lang.AssertionError: [org.cqframework.cql.cql2elm.CqlSemanticException: Identifier hiding detected: Identifier in a broader scope hidden: [Diabetes] resolved as a context accessor with exact case matching.
-, org.cqframework.cql.cql2elm.CqlSemanticException: Case insensitive clashes detected: Identifier for identifiers: [Application of intermittent pneumatic compression devices (IPC)] resolved as a value set with case insensitive matching.
-, org.cqframework.cql.cql2elm.CqlSemanticException: Case insensitive clashes detected: Identifier for identifiers: [Application of intermittent pneumatic compression devices (IPC)] resolved as a value set with case insensitive matching.
-, org.cqframework.cql.cql2elm.CqlSemanticException: Case insensitive clashes detected: Identifier for identifiers: [Application of Intermittent Pneumatic Compression Devices (IPC)] resolved as a value set with case insensitive matching.
-, org.cqframework.cql.cql2elm.CqlSemanticException: Case insensitive clashes detected: Identifier for identifiers: [Application of Intermittent Pneumatic Compression Devices (IPC)] resolved as a value set with case insensitive matching.
-         */
-
-        // LUKETODO: false positive:  "Identifier hiding detected: Identifier in a broader scope hidden: [Diabetes] resolved as a context accessor with exact case matching."
-        // LUKETODO:  possible dupes
         assertThat(translator.getWarnings().toString(), translator.getWarnings().size(), is(5));
 
         final List<String> distinct = translator.getWarnings().stream().map(Throwable::getMessage).distinct().collect(Collectors.toList());

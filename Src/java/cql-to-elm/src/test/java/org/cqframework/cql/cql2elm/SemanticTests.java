@@ -731,6 +731,16 @@ public class SemanticTests {
         final Set<String> warningMessages = warnings.stream().map(Throwable::getMessage).collect(Collectors.toSet());
         assertThat(warningMessages, contains("Case insensitive clashes detected: Identifier for identifiers: [Patients] resolved as an expression definition with case insensitive matching.\n"));
     }
+    @Test
+    public void testHiddenIdentifierFromReturn() throws IOException {
+        // LUKETODO:  get rid of -1
+        final CqlTranslator translator = TestUtils.runSemanticTest("TestHiddenIdentifierFromReturn.cql", -1);
+        final List<CqlCompilerException> warnings = translator.getWarnings();
+
+        // LUKETODO:  this doesn't work because "SoMuchNesting" resolves to null in LibraryBuilder.
+        assertThat(warnings.toString(), translator.getWarnings().size(), is(1));
+        // LUKETODO:  add more assertions
+    }
 
     @Test
     public void testSoMuchNestingNormal() throws IOException {

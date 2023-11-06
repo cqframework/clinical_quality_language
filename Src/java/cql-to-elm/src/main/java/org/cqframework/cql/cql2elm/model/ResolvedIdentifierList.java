@@ -17,24 +17,22 @@ public class ResolvedIdentifierList {
     private static final Logger logger = LoggerFactory.getLogger(ResolvedIdentifierList.class);
 
     private final List<ResolvedIdentifier> list;
-    private final boolean hasEnclosingFunctionWithSameName;
 
-    public static ResolvedIdentifierList outer(boolean hasEnclosingFunctionWithSameName) {
-        return new ResolvedIdentifierList(hasEnclosingFunctionWithSameName, new ArrayList<>());
+    public static ResolvedIdentifierList outer() {
+        return new ResolvedIdentifierList(new ArrayList<>());
     }
 
     public static ResolvedIdentifierList inner() {
-        return new ResolvedIdentifierList(false, new ArrayList<>());
+        return new ResolvedIdentifierList(new ArrayList<>());
     }
 
     public static ResolvedIdentifierList copy(ResolvedIdentifierList resolvedIdentifierList, ResolvedIdentifier toRemove) {
         final List<ResolvedIdentifier> resolvedIdentifiersCopy = new ArrayList<>(resolvedIdentifierList.getResolvedIdentifierList());
         resolvedIdentifiersCopy.remove(toRemove);
-        return new ResolvedIdentifierList(resolvedIdentifierList.hasEnclosingFunctionWithSameName, resolvedIdentifiersCopy);
+        return new ResolvedIdentifierList( resolvedIdentifiersCopy);
     }
 
-    private ResolvedIdentifierList(boolean hasEnclosingFunctionWithSameName, List<ResolvedIdentifier> list) {
-        this.hasEnclosingFunctionWithSameName = hasEnclosingFunctionWithSameName;
+    private ResolvedIdentifierList(List<ResolvedIdentifier> list) {
         this.list = list;
     }
 
@@ -148,24 +146,10 @@ public class ResolvedIdentifierList {
 
     public void checkForDupes(ResolvedIdentifier firstCaseMatch, LibraryBuilder libraryBuilder) {
         //issue warning that multiple matches occurred:
-        if (hasEnclosingFunctionWithSameName) {
-            final List<ResolvedIdentifier> filtered = list.stream()
-                    // LUKETODO:  consider filtering out other "Ref"s
-                    .filter(match -> !(match.getResolvedElement() instanceof OperandRef))
-                    .filter(match -> !(match.getResolvedElement() instanceof ValueSetRef))
-                    .collect(Collectors.toList());
-            if (!filtered.isEmpty()) {
-                libraryBuilder.reportWarning("Identifier hiding detected: " +
-                                "Identifier" + (filtered.size() > 1 ? "s" : "") + " in a broader scope hidden: " +
-                                libraryBuilder.formatMatchedMessage(filtered),
-                        (Expression) firstCaseMatch.getResolvedElement());
-            }
-        } else if (! remainders.isEmpty()) {
+        if (! remainders.isEmpty()) {
             final List<ResolvedIdentifier> filtered = remainders.stream()
                     // LUKETODO:  consider filtering out other "Ref"s
                     .filter(match -> !(match.getResolvedElement() instanceof OperandRef))
-                    // LUKETODO:  this makes the ValueSet hiding use case fail
-//                    .filter(match -> !(match.getResolvedElement() instanceof ValueSetRef))
                     .collect(Collectors.toList());
 
             // LUKETODO:  what about "NONE"?

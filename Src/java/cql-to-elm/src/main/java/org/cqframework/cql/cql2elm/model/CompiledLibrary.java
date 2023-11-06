@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm.model;
 
-import org.cqframework.cql.cql2elm.LibraryBuilder;
 import org.hl7.cql.model.NamespaceManager;
 import org.hl7.cql.model.DataType;
 import org.hl7.cql_annotations.r1.Annotation;
@@ -151,16 +150,6 @@ public class CompiledLibrary {
                 .stream()
                 .filter(k -> k.getKey().equalsIgnoreCase(identifier) && !k.getKey().equals(identifier))
                 .forEach(entry -> ret.addResolvedIdentifier(new ResolvedIdentifier(entry.getKey(), MatchType.CASE_IGNORED, entry.getValue())));
-
-        // LUKETODO:  this doesn't seem to be the source of the a vs. a problem
-        if (! ret.getResolvedIdentifierList().isEmpty()) {
-            for (Map.Entry<String, Element> entry : namespace.entrySet()) {
-                logger.info("identifier: [{}], entry.getKey(): [{}]", identifier, entry.getKey());
-                final boolean first = entry.getKey().equalsIgnoreCase(identifier);
-                final boolean second = entry.getKey().equals(identifier);
-                logger.info("first: {}, second: {}", first, second);
-            }
-        }
 
         return ret;
     }
