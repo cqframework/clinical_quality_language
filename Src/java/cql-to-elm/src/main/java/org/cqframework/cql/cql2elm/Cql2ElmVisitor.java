@@ -3438,12 +3438,29 @@ DATETIME
         return e.getResultType().equals(libraryBuilder.resolveTypeName("System", "DateTime"));
     }
 
+    // LUKETODO:  try to find a better solution
+    private final Set<String> outerLets = new HashSet<>();
+
+    // LUKETODO:  this is where we find "let var : varalias + 2"
     @Override
     public Object visitLetClause(cqlParser.LetClauseContext ctx) {
+        logger.info("lets START");
         List<LetClause> letClauseItems = new ArrayList<>();
-        for (cqlParser.LetClauseItemContext letClauseItem : ctx.letClauseItem()) {
-            letClauseItems.add((LetClause) visit(letClauseItem));
+        final List<cqlParser.LetClauseItemContext> lets = ctx.letClauseItem();
+        logger.info("lets: {}", lets);
+        for (cqlParser.LetClauseItemContext letClauseItem : lets) {
+            logger.info("letClauseItem: {}", letClauseItem);
+            final String[] split = letClauseItem.getText().split(":");
+            final String letName = split[0];
+            final LetClause visitedLet = (LetClause)visit(letClauseItem);
+            if (outerLets.contains(letName)) {
+                libraryBuilder.reportWarning(String.format("X: Identifier hiding: %s", letName), visitedLet.getExpression());
+            }
+            logger.info("visitedLet: {}", visitedLet);
+            letClauseItems.add(visitedLet);
+            outerLets.add(visitedLet.getIdentifier());
         }
+        logger.info("lets END");
         return letClauseItems;
     }
 
@@ -3456,6 +3473,7 @@ DATETIME
         return letClause;
     }
 
+    // LUKETODO:  this seems to capture "var varialias
     @Override
     public Object visitAliasedQuerySource(cqlParser.AliasedQuerySourceContext ctx) {
         AliasedQuerySource source = of.createAliasedQuerySource().withExpression(parseExpression(ctx.querySource()))
@@ -3639,6 +3657,7 @@ DATETIME
         return of.createSortClause().withBy(sortItems);
     }
 
+    // LUKETODO: the first "var" comes from here
     @Override
     @SuppressWarnings("unchecked")
     public Object visitQuerySource(cqlParser.QuerySourceContext ctx) {
@@ -3685,6 +3704,8 @@ DATETIME
         return libraryBuilder.resolveIdentifier(ctx.getText(), true);
     }
 
+    // LUKETODO:  this is where the first varalias comes from
+    // LUKETODO:  this is where the second varalias comes from as well
     @Override
     public Expression visitMemberInvocation(cqlParser.MemberInvocationContext ctx) {
         String identifier = parseString(ctx.referentialIdentifier());
