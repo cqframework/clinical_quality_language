@@ -4,8 +4,7 @@ plugins {
 }
 
 dependencies {
-    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.1'
-    implementation project(':model')
+    api project(':model')
 }
 
 generateSources {

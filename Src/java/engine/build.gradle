@@ -3,10 +3,8 @@ plugins {
 }
 
 dependencies {
-    api 'org.apache.commons:commons-text:1.10.0'
-    api 'org.fhir:ucum:1.0.8'
-    implementation project(':elm')
-    implementation project(':cql-to-elm')
+    api project(':elm')
+    api project(':cql-to-elm')
 
     testImplementation project(':model-jackson')
     testImplementation project(':elm-jackson')

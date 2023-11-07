@@ -35,7 +35,6 @@ dependencies {
     // on Android. But for test purposes we use them pretty much everywhere.
     testRuntimeOnly 'org.eclipse.persistence:org.eclipse.persistence.moxy:4.0.2'
     testRuntimeOnly 'org.eclipse.parsson:parsson:1.1.5'
-    testRuntimeOnly 'xpp3:xpp3:1.1.4c'
 }
 
 jar {
