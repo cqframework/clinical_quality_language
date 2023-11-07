@@ -14,9 +14,9 @@ public class ResolvedIdentifier {
     //class should only be initialized via ResolvedIdentifierList
     private ResolvedIdentifier() {}
 
-    protected ResolvedIdentifier(String identifier,
-                                 MatchType matchType,
-                                 Object resolvedElement) {
+    public ResolvedIdentifier(String identifier,
+                              MatchType matchType,
+                              Object resolvedElement) {
 
         this.matchType = matchType;
         this.identifier = identifier;

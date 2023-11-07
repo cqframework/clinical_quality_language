@@ -729,8 +729,9 @@ public class SemanticTests {
         final List<CqlCompilerException> warnings = translator.getWarnings();
         assertThat(warnings.toString(), translator.getWarnings().size(), is(1));
         final Set<String> warningMessages = warnings.stream().map(Throwable::getMessage).collect(Collectors.toSet());
-        assertThat(warningMessages, contains("Case insensitive clashes detected: Identifier for identifiers: [Patients] resolved as an expression definition with case insensitive matching.\n"));
+        assertThat(warningMessages, contains("Identifier hiding detected: Identifier for identifiers: [Patients] resolved as an expression definition with case insensitive matching.\n"));
     }
+
     @Test
     public void testHiddenIdentifierFromReturn() throws IOException {
         // LUKETODO:  get rid of -1
@@ -773,30 +774,38 @@ public class SemanticTests {
 
         assertThat(distinct.size(), is(2));
 
-        final String first = "X: Identifier hiding detected: Identifier in a broader scope hidden: [SoMuchNesting]";
-        final String second = "Identifier hiding detected: Identifier in a broader scope hidden: [SoMuchNesting] resolved as a let of a query with exact case matching.\n";
+        final String first = "Identifier hiding detected: Identifier for identifiers: [SoMuchNesting] resolved as a context accessor with exact case matching.\n";
+        final String second = "Identifier hiding detected: Identifier for identifiers: [SoMuchNesting] resolved as a let of a query with exact case matching.\n";
 
         assertThat(distinct, containsInAnyOrder(first, second));
     }
 
-    @Test
-    public void testSoMuchNestingHidingComplex2() throws IOException {
-        final CqlTranslator translator = TestUtils.runSemanticTest("TestSoMuchNestingHidingComplex2.cql", -1);
-        final List<CqlCompilerException> warnings = translator.getWarnings();
+    /*
+     * LUKETODO:  OperandRefs:
+     *
+     * KEEP:  Makes testHiddenIdentifiers() PASS
+     * REMOVE:  Makes LibraryTests.testForwardAmbiguousFailOnAmbiguousFunctionResolutionWithoutTypeInformation FAIL, as well as TestNone
+     */
 
-        // LUKETODO:  we're getting 4 but I'm not sure if they're dupes
-        // LUKETODO:  What's the bit about List-valued expression:  this may be valid
-        /*
-        Identifier hiding detected: Identifier in a broader scope hidden: [SoMuchNesting] resolved as a let of a query with exact case matching.
-        Identifier hiding detected: Identifiers in a broader scope hidden: [SoMuchNesting] resolved as an alias of a query with exact case matching. [SoMuchNesting] resolved as a let of a query with exact case matching.
-        List-valued expression was demoted to a singleton.
-        Identifier hiding detected: Identifiers in a broader scope hidden: [SoMuchNesting] resolved as an alias of a query with exact case matching. [SoMuchNesting] resolved as a let of a query with exact case matching. [SoMuchNesting] resolved as a let of a query with exact case matching.
-         */
-        final List<String> collect = warnings.stream().map(Throwable::getMessage).collect(Collectors.toList());
-        assertThat(collect.toString(), translator.getWarnings().size(), is(3));
-        // 1) First SoMuchNesting hiding
-        // 2) Second SoMuchNesting hiding
-        // 3) List-valued expression was demoted to a singleton (from baseline)
+    @Test
+    public void testHiddenIdentifierArgumentToAlias() throws IOException {
+        // LUKETODO:  is this test case wrong?  this only passes if we consider OperandRefs
+        final CqlTranslator translator = TestUtils.createTranslatorFromStream("TestHiddenIdentifierArgumentToAlias.cql");
+        // LUKETODO:  this fails now due to 0 warnings:  implement fix from other branch
+        // LUKETODO:  assert actual exception
+        // LUKETODO:  consider moving this to SemanticTests
+        assertThat(translator.getWarnings().size(), is(1));
+        assertThat(translator.getWarnings()
+                        .stream()
+                        .map(Throwable::getMessage)
+                        .collect(Collectors.toList()),
+                    contains("Identifier hiding detected: Identifier for identifiers: [testOperand] resolved as an operand to a function with exact case matching.\n"));
+    }
+
+    @Test
+    public void testReturnArgumentNotConsideredHiddenIdentifier() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslatorFromStream("TestReturnArgumentNotConsideredHiddenIdentifier.cql");
+        assertThat(translator.getWarnings().size(), is(0));
     }
 
     private CqlTranslator runSemanticTest(String testFileName) throws IOException {

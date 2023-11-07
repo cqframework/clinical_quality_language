@@ -2188,6 +2188,30 @@ public class LibraryBuilder implements ModelResolver {
         return null;
     }
 
+    // LUKETODO:  make this a Stack:  push when you encounter a new definition
+//        >>> expression definition always there
+//        >>> aliases will need to be popped when they fall out of scope
+//        >>> lets
+    // >>>> nested aliases
+
+    /*
+    each is a separate scope
+    each is a query within which
+
+    aliases, lets and argument names :   scope narrowed and locally stored
+
+    push/pop (iow, scoped identifiers) = function argument names, lets, and aliases
+
+    global:  models, includied libraries, valuesets, codesystems, definitions, "parameters"
+
+    push only (iow, library scoped identifiers) = models, included libraries, valuesets, defnitions, codes, codesystems, parameters
+
+    define "Encounters":
+       (Encounter E where E.date = @2018) union (Encounter E where E.date = @2020)
+     */
+
+    private final ResolvedIdentifierList resolvedIdentifierList = ResolvedIdentifierList.outer();
+
     // LUKETODO:  name of a type in a model
     public Expression resolveIdentifier(String identifier, boolean mustResolve) {
         // An Identifier will always be:
@@ -2211,7 +2235,7 @@ public class LibraryBuilder implements ModelResolver {
         }
 
         // In a type specifier context, return the identifier as a Literal for resolution as a type by the caller
-        ResolvedIdentifierList resolvedIdentifierList = ResolvedIdentifierList.outer();
+//        ResolvedIdentifierList resolvedIdentifierList = ResolvedIdentifierList.outer();
 
         if (inTypeSpecifierContext()) {
             resolvedIdentifierList.addExactMatchIdentifier(identifier, this.createLiteral(identifier));
@@ -2257,11 +2281,11 @@ public class LibraryBuilder implements ModelResolver {
             // or maybe we just disregard OperandRefs in the hidden identifier resolution?
             resolvedIdentifierList.addResolvedIdentifier(identifier, operandRI.getMatchType(), result);
         }
-        resolvedIdentifierList.addAllResolvedIdentifiers(operandRefMatches);
 
         //no processing required of resolvedElements
         resolvedIdentifierList.addAllResolvedIdentifiers(resolveElements(identifier));
 
+        // LUKETODO:  what does this code do, exactly?
         // If no other resolution occurs, and we are in a specific context, and there is a parameter with the same name as the context,
         // the identifier may be resolved as an implicit property reference on that context.
         if (!inLiteralContext() && inSpecificContext() && resolvedIdentifierList.getFirstInstanceOfExactMatch() == null) {
@@ -2417,7 +2441,15 @@ public class LibraryBuilder implements ModelResolver {
         return result;
     }
 
-    // LUKETODO: make this private
+    public void warnOnHiding(ResolvedIdentifier firstCaseMatch, List<ResolvedIdentifier> resolvedIdentifiers) {
+        final boolean isPlural = resolvedIdentifiers.size() > 1;
+
+        reportWarning("Identifier hiding detected: " +
+                        "Identifier" + (isPlural ? "s" : "") + " for identifiers: " +
+                        formatMatchedMessage(resolvedIdentifiers),
+                (Expression) firstCaseMatch.getResolvedElement());
+    }
+
     public String formatMatchedMessage(List<ResolvedIdentifier> list) {
         final StringBuilder sb = new StringBuilder();
         for (ResolvedIdentifier p : list){

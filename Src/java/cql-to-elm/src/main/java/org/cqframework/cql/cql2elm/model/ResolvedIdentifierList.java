@@ -14,10 +14,12 @@ import java.util.stream.Collectors;
  * Basic utility for maintaining a list of objects representing resolved identifiers, categorized by case sensitive matching
  */
 public class ResolvedIdentifierList {
+    // LUKETODO:  either turn this into a stack or make use of a stack
     private static final Logger logger = LoggerFactory.getLogger(ResolvedIdentifierList.class);
 
     private final List<ResolvedIdentifier> list;
 
+    // LUKETODO:  get rid of the distinction between outer and inner as we don't need it anymore
     public static ResolvedIdentifierList outer() {
         return new ResolvedIdentifierList(new ArrayList<>());
     }
@@ -87,12 +89,7 @@ public class ResolvedIdentifierList {
      *
      * @return ResolvedIdentifier
      */
-    // LUKETODO:  this "shiftFirst" algorithm is fraught with race conditions and needs to be replaced with something more immutable like "returnRemainder"
     // LUKETODO:  add the identifier name as a field for debugging purposes
-    // LUKETODO:  move the whole "check for dupes" logic in here
-    // LUKETODO:  we want a requirement like the following:
-    // 1) Check for dupes with EXACT matches
-    // 2) Also check if we duplicate the enclosing expression name
     public ResolvedIdentifier shiftFirstInstanceOfExactMatch() {
         if (shiftedFirstInstance != null && remainders != null) {
             return shiftedFirstInstance;
@@ -107,7 +104,7 @@ public class ResolvedIdentifierList {
             shiftedFirstInstance = new ResolvedIdentifier(first.getIdentifier(), first.getMatchType(), first.getResolvedElement());
             final List<ResolvedIdentifier> tempList = new ArrayList<>(list);
             tempList.remove(shiftedFirstInstance);
-            remainders = Collections.unmodifiableList(tempList);
+            remainders = new ArrayList<>(tempList);
             return shiftedFirstInstance;
         }
 
@@ -129,7 +126,16 @@ public class ResolvedIdentifierList {
 
             checkForDupes(firstCaseMatch, libraryBuilder);
             //return first match:
-            return (Expression) firstCaseMatch.getResolvedElement();
+            final Expression resolvedElement = (Expression) firstCaseMatch.getResolvedElement();
+
+            if (remainders != null) {
+                remainders.clear();
+            }
+
+            list.clear();
+            shiftedFirstInstance = null;
+
+            return resolvedElement;
         } else if (mustResolve) {
             // ERROR:
             throw new IllegalArgumentException(String.format("Could not resolve identifier %s in the current library.", identifier));
@@ -141,42 +147,38 @@ public class ResolvedIdentifierList {
 //            }
 //        }
 
+        // LUKETODO:  we need to record an identifier as "returned" so it's no longer considered even if
+        if (remainders != null) {
+            remainders.clear();
+        }
+        list.clear();
+        shiftedFirstInstance = null;
+
         return null;
     }
 
     public void checkForDupes(ResolvedIdentifier firstCaseMatch, LibraryBuilder libraryBuilder) {
         //issue warning that multiple matches occurred:
         if (! remainders.isEmpty()) {
+            /*
+            int i = 0;
+            for (int j = 0; j < 10; j++) {
+               final int i = j; // inner variable within for
+            }
+            final int i = 0;
+             */
+
             final List<ResolvedIdentifier> filtered = remainders.stream()
                     // LUKETODO:  consider filtering out other "Ref"s
-                    .filter(match -> !(match.getResolvedElement() instanceof OperandRef))
+                    // LUKETODO: requires some "finess" to differentiate:
+                    // 1) forward definitions
+                    // 2) operand hiding
+//                    .filter(match -> !(match.getResolvedElement() instanceof OperandRef))
                     .collect(Collectors.toList());
 
             // LUKETODO:  what about "NONE"?
-            // LUKETODO:  unite the two into a single warning block
-            final List<ResolvedIdentifier> caseInsensitiveMatches =
-                    filtered.stream()
-                            .filter(match -> MatchType.CASE_IGNORED == match.getMatchType())
-                            .collect(Collectors.toList());
-            final List<ResolvedIdentifier> exactIdentifierMatches =
-                    filtered.stream()
-                            .filter(match -> MatchType.EXACT == match.getMatchType())
-                            .collect(Collectors.toList());
-
-            if (!caseInsensitiveMatches.isEmpty()) {
-                libraryBuilder.reportWarning("Case insensitive clashes detected: " +
-                                "Identifier" + (caseInsensitiveMatches.size() > 1 ? "s" : "") + " for identifiers: " +
-                                libraryBuilder.formatMatchedMessage(caseInsensitiveMatches),
-                        (Expression) firstCaseMatch.getResolvedElement());
-
-            }
-
-            if (!exactIdentifierMatches.isEmpty()) {
-                libraryBuilder.reportWarning("Identifier hiding detected: " +
-                                "Identifier" + (exactIdentifierMatches.size() > 1 ? "s" : "") + " in a broader scope hidden: " +
-                                libraryBuilder.formatMatchedMessage(exactIdentifierMatches),
-                        (Expression) firstCaseMatch.getResolvedElement());
-
+            if (! filtered.isEmpty()) {
+                libraryBuilder.warnOnHiding(firstCaseMatch, filtered);
             }
         }
     }

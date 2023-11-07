@@ -284,12 +284,6 @@ public class TranslationTests {
     public void testHidingVariousUseCases() throws IOException {
         final CqlTranslator translator = TestUtils.runSemanticTest("TestHidingVariousUseCases.cql", 0);
         final List<CqlCompilerException> warnings = translator.getWarnings();
-
-        // LUKETODO:  missing:
-        // 1) FHIR isn't detected (ex FHIRHidden and FHIRHidden2)
-        // 2) varalias isn't detected (ex VariableHidden:  why isn't this in lets?)
-        // 3)
-
         final String collect = warnings.stream().map(Throwable::getMessage).collect(Collectors.joining("\n"));
 
         assertThat(collect, translator.getWarnings().size(), is(13));

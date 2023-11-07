@@ -3027,6 +3027,7 @@ DATETIME
         return retrieve;
     }
 
+
     @Override
     public Object visitSourceClause(cqlParser.SourceClauseContext ctx) {
         boolean hasFrom = "from".equals(ctx.getChild(0).getText());
@@ -3046,9 +3047,15 @@ DATETIME
             final ExpressionDefinitionInfo expressionDefinitionInfo = libraryInfo.resolveExpressionReference(identifier);
 
             if (expressionDefinitionInfo != null && expressionDefinitionInfo.getDefinition() != null) {
+                // LUKETODO:  mulitiple dupes
+                // LUKETODO:  case insensitive
+                // LUKETODO:  unit test case insensitive
+                final ResolvedIdentifier firstCase = new ResolvedIdentifier(identifier, MatchType.EXACT, sourceToAdd.getExpression());
+                final ResolvedIdentifier secondCase = new ResolvedIdentifier(identifier, MatchType.EXACT, sourceToAdd.getExpression());
+                libraryBuilder.warnOnHiding(firstCase, Collections.singletonList(secondCase));
                 // LUKETODO:  do we need to traverse the parse tree to prove the relationship?
-                libraryBuilder.reportWarning(String.format("X: Identifier hiding detected: Identifier in a broader scope hidden: [%s]", identifier),
-                        sourceToAdd.getExpression());
+//                libraryBuilder.reportWarning(String.format("X: Identifier hiding detected: Identifier in a broader scope hidden: [%s]", identifier),
+//                        sourceToAdd.getExpression());
 
             }
         }
@@ -3439,6 +3446,7 @@ DATETIME
     }
 
     // LUKETODO:  try to find a better solution
+    // LUKETODO:  enhance with the actual expression
     private final Set<String> outerLets = new HashSet<>();
 
     // LUKETODO:  this is where we find "let var : varalias + 2"
@@ -3453,8 +3461,14 @@ DATETIME
             final String[] split = letClauseItem.getText().split(":");
             final String letName = split[0];
             final LetClause visitedLet = (LetClause)visit(letClauseItem);
+            // LUKETODO:  case insensitive
+            // LUKETODO:  unit test case insensitive
             if (outerLets.contains(letName)) {
-                libraryBuilder.reportWarning(String.format("X: Identifier hiding: %s", letName), visitedLet.getExpression());
+                // LUKETODO:  first case must be the expression
+                final ResolvedIdentifier firstCase = new ResolvedIdentifier(letName, MatchType.EXACT, visitedLet.getExpression());
+                final ResolvedIdentifier secondCase = new ResolvedIdentifier(letName, MatchType.EXACT, visitedLet.getExpression());
+                libraryBuilder.warnOnHiding(firstCase, Collections.singletonList(secondCase));
+//                libraryBuilder.reportWarning(String.format("X: Identifier hiding: %s", letName), visitedLet.getExpression());
             }
             logger.info("visitedLet: {}", visitedLet);
             letClauseItems.add(visitedLet);
