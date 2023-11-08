@@ -323,4 +323,14 @@ public class CqlPreprocessorVisitor extends CqlPreprocessorElmCommonVisitor {
         identifiers.add(identifier);
         return identifiers;
     }
+
+    @Override
+    protected boolean pushIdentifier(ParseTree theTree) {
+        return false;
+    }
+
+    @Override
+    protected void popIdentifier(ParseTree theTree, boolean pushedIdentifier) {
+        // do nothing
+    }
 }

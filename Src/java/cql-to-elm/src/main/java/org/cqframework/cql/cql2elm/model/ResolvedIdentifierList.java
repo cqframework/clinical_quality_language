@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,26 +16,7 @@ public class ResolvedIdentifierList {
     // LUKETODO:  either turn this into a stack or make use of a stack
     private static final Logger logger = LoggerFactory.getLogger(ResolvedIdentifierList.class);
 
-    private final List<ResolvedIdentifier> list;
-
-    // LUKETODO:  get rid of the distinction between outer and inner as we don't need it anymore
-    public static ResolvedIdentifierList outer() {
-        return new ResolvedIdentifierList(new ArrayList<>());
-    }
-
-    public static ResolvedIdentifierList inner() {
-        return new ResolvedIdentifierList(new ArrayList<>());
-    }
-
-    public static ResolvedIdentifierList copy(ResolvedIdentifierList resolvedIdentifierList, ResolvedIdentifier toRemove) {
-        final List<ResolvedIdentifier> resolvedIdentifiersCopy = new ArrayList<>(resolvedIdentifierList.getResolvedIdentifierList());
-        resolvedIdentifiersCopy.remove(toRemove);
-        return new ResolvedIdentifierList( resolvedIdentifiersCopy);
-    }
-
-    private ResolvedIdentifierList(List<ResolvedIdentifier> list) {
-        this.list = list;
-    }
+    private final List<ResolvedIdentifier> list = new ArrayList<>();
 
     public List<ResolvedIdentifier> getResolvedIdentifierList() {
         return this.list;
@@ -120,8 +100,8 @@ public class ResolvedIdentifierList {
 
             //getAllMatchedIdentifiers returns any recorded identifier where MatchType is not NONE
 //                if (id.contains("Authoring") || id.contains("Hidden") || id.contains("Test")) {
-                    logger.info("resolvedIdentifierList 2: {}", getResolvedIdentifierList().stream().map(match -> "[" + match.getIdentifier() + "] " + match.getResolvedElement().getClass() + " " + match.getMatchType()).collect(Collectors.toSet()));
-                    logger.info("allHiddenCaseMatches: {}", remainders.stream().map(match -> "[" + match.getIdentifier() + "] " + match.getResolvedElement().getClass() + " " + match.getMatchType()).collect(Collectors.toSet()));
+//                    logger.info("resolvedIdentifierList 2: {}", getResolvedIdentifierList().stream().map(match -> "[" + match.getIdentifier() + "] " + match.getResolvedElement().getClass() + " " + match.getMatchType()).collect(Collectors.toSet()));
+//                    logger.info("allHiddenCaseMatches: {}", remainders.stream().map(match -> "[" + match.getIdentifier() + "] " + match.getResolvedElement().getClass() + " " + match.getMatchType()).collect(Collectors.toSet()));
 //                }
 
             checkForDupes(firstCaseMatch, libraryBuilder);
@@ -143,7 +123,7 @@ public class ResolvedIdentifierList {
 
 //        if (id != null) {
 //            if (id.contains("Test") && ! identifier.contains("Test")) {
-                logger.info("returning null");
+//                logger.info("returning null");
 //            }
 //        }
 
@@ -168,18 +148,7 @@ public class ResolvedIdentifierList {
             final int i = 0;
              */
 
-            final List<ResolvedIdentifier> filtered = remainders.stream()
-                    // LUKETODO:  consider filtering out other "Ref"s
-                    // LUKETODO: requires some "finess" to differentiate:
-                    // 1) forward definitions
-                    // 2) operand hiding
-//                    .filter(match -> !(match.getResolvedElement() instanceof OperandRef))
-                    .collect(Collectors.toList());
-
-            // LUKETODO:  what about "NONE"?
-            if (! filtered.isEmpty()) {
-                libraryBuilder.warnOnHiding(firstCaseMatch, filtered);
-            }
+            libraryBuilder.warnOnHiding(firstCaseMatch, remainders);
         }
     }
 

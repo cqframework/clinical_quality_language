@@ -47,6 +47,47 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     private final List<Expression> expressions = new ArrayList<>();
     private final Map<String, Element> contextDefinitions = new HashMap<>();
 
+
+    // LUKETODO:  think about this carefully
+    // LUKETODO:  make this a Stack:  push when you encounter a new definition
+//        >>> expression definition always there
+//        >>> aliases will need to be popped when they fall out of scope
+//        >>> lets
+    // >>>> nested aliases
+
+    /*
+    each is a separate scope
+    each is a query within which
+
+    aliases, lets and argument names :   scope narrowed and locally stored
+
+    push/pop (iow, scoped identifiers) =
+    function argument names,
+    lets,
+    and aliases
+
+    global:
+    models,
+    includied libraries,
+    valuesets,
+    codesystems,
+    definitions,
+    "parameters"
+
+    push only (iow, library scoped identifiers) =
+    models, included libraries,
+    valuesets,
+    defnitions,
+    codes,
+    codesystems,
+    parameters
+
+    define "Encounters":
+       (Encounter E where E.date = @2018) union (Encounter E where E.date = @2020)
+     */
+
+    private final Stack<Element> resolvedIdentifierStack = new Stack<>();
+
     public Cql2ElmVisitor(LibraryBuilder libraryBuilder) {
         super(libraryBuilder);
 
@@ -196,6 +237,9 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         }
 
         libraryBuilder.addInclude(library);
+        resolvedIdentifierStack.push(library);
+        // LUKETODO: expression?
+//        libraryBuilder.pushIdentifier(library.getLocalIdentifier(), null, true);
 
         return library;
     }
@@ -232,6 +276,9 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         }
 
         libraryBuilder.addParameter(param);
+        resolvedIdentifierStack.push(param);
+//         LUKETODO:  how do we push parameters with an expression?
+//        libraryBuilder.pushAndCheck(param.getName(), null, true);
 
         return param;
     }
@@ -274,6 +321,9 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         }
 
         libraryBuilder.addCodeSystem(cs);
+        resolvedIdentifierStack.push(cs);
+        // LUKETODO:  we need an expression
+//        libraryBuilder.pushIdentifier(cs.getName(), null, true);
         return cs;
     }
 
@@ -345,6 +395,9 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
             vs.setResultType(new ListType(libraryBuilder.resolveTypeName("System", "Code")));
         }
         libraryBuilder.addValueSet(vs);
+        resolvedIdentifierStack.push(vs);
+        // LUKETODO:  we need an expression
+//        libraryBuilder.pushIdentifier(vs.getName(), null, true);
 
         return vs;
     }
@@ -513,6 +566,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
     public ExpressionDef internalVisitExpressionDefinition(cqlParser.ExpressionDefinitionContext ctx) {
         String identifier = parseString(ctx.identifier());
+        // LUKETODO: how do we add an expression here?
+        libraryBuilder.pushIdentifier(identifier, null, true);
         ExpressionDef def = libraryBuilder.resolveExpressionRef(identifier);
         if (def == null || isImplicitContextExpressionDef(def)) {
             if (def != null && isImplicitContextExpressionDef(def)) {
@@ -540,6 +595,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 libraryBuilder.popExpressionContext();
             }
         }
+        resolvedIdentifierStack.push(def);
 
         return def;
     }
@@ -3044,6 +3100,10 @@ DATETIME
             sources.add(sourceToAdd);
 
             final String identifier = sourceToAdd.getAlias();
+
+            // LUKETODO:  this solves one alias use case
+//            libraryBuilder.pushIdentifier(identifier, sourceToAdd.getExpression(), false);
+
             final ExpressionDefinitionInfo expressionDefinitionInfo = libraryInfo.resolveExpressionReference(identifier);
 
             if (expressionDefinitionInfo != null && expressionDefinitionInfo.getDefinition() != null) {
@@ -3090,9 +3150,15 @@ DATETIME
                 expressionContextPushed = true;
             }
             */
+            List<LetClause> dfcx = null;
             try {
+                dfcx = ctx.letClause() != null ? (List<LetClause>) visit(ctx.letClause()) : null;
 
-                List<LetClause> dfcx = ctx.letClause() != null ? (List<LetClause>) visit(ctx.letClause()) : null;
+                if (dfcx != null) {
+                    for (LetClause letClause : dfcx) {
+                        libraryBuilder.pushIdentifier(letClause.getIdentifier(), letClause.getExpression(), true);
+                    }
+                }
 
                 List<RelationshipClause> qicx = new ArrayList<>();
                 if (ctx.queryInclusionClause() != null) {
@@ -3198,10 +3264,17 @@ DATETIME
                 if (expressionContextPushed) {
                     libraryBuilder.popExpressionContext();
                 }
+                // LUKETODO:  do the let pops here?
+                if (dfcx != null) {
+                    for (LetClause letClause : dfcx) {
+                        libraryBuilder.popIdentifier();;
+                    }
+                }
             }
 
         } finally {
             libraryBuilder.popQueryContext();
+            // LUKETODO:  do the let pops here?
         }
     }
 
@@ -3452,12 +3525,12 @@ DATETIME
     // LUKETODO:  this is where we find "let var : varalias + 2"
     @Override
     public Object visitLetClause(cqlParser.LetClauseContext ctx) {
-        logger.info("lets START");
+//        logger.info("lets START");
         List<LetClause> letClauseItems = new ArrayList<>();
         final List<cqlParser.LetClauseItemContext> lets = ctx.letClauseItem();
-        logger.info("lets: {}", lets);
+//        logger.info("lets: {}", lets);
         for (cqlParser.LetClauseItemContext letClauseItem : lets) {
-            logger.info("letClauseItem: {}", letClauseItem);
+//            logger.info("letClauseItem: {}", letClauseItem);
             final String[] split = letClauseItem.getText().split(":");
             final String letName = split[0];
             final LetClause visitedLet = (LetClause)visit(letClauseItem);
@@ -3470,11 +3543,11 @@ DATETIME
                 libraryBuilder.warnOnHiding(firstCase, Collections.singletonList(secondCase));
 //                libraryBuilder.reportWarning(String.format("X: Identifier hiding: %s", letName), visitedLet.getExpression());
             }
-            logger.info("visitedLet: {}", visitedLet);
+//            logger.info("visitedLet: {}", visitedLet);
             letClauseItems.add(visitedLet);
             outerLets.add(visitedLet.getIdentifier());
         }
-        logger.info("lets END");
+//        logger.info("lets END");
         return letClauseItems;
     }
 
@@ -3487,12 +3560,14 @@ DATETIME
         return letClause;
     }
 
-    // LUKETODO:  this seems to capture "var varialias
     @Override
     public Object visitAliasedQuerySource(cqlParser.AliasedQuerySourceContext ctx) {
         AliasedQuerySource source = of.createAliasedQuerySource().withExpression(parseExpression(ctx.querySource()))
                 .withAlias(parseString(ctx.alias()));
         source.setResultType(source.getExpression().getResultType());
+        resolvedIdentifierStack.push(source);
+        // LUKETDOO: see if this solves one alias union case
+        libraryBuilder.pushIdentifier(source.getAlias(), source.getExpression(), false);
         return source;
     }
 
@@ -3757,6 +3832,57 @@ DATETIME
         }
 
         return resolveIdentifier(identifier);
+    }
+
+    // 1) pushIdentifier always, or for the ones we know about
+    // 2) popIdentifier selectively
+    // 3) if we have, say, conflicting aliases, this is already a compile error so don't bother checking
+    // 4) Need try/finally on processing the alias, but can pop it right away
+
+
+    @Override
+    protected boolean pushIdentifier(ParseTree tree) {
+        // 1) Figure out the identifier (ex ctx.getText())
+        // 2) This is the candidate for push and possibly pop
+
+        final String parentClass = tree.getParent() != null ? tree.getParent().getClass().getSimpleName() : null;
+//        logger.info("pushIdentifier class: [{}], parent class: [{}], name: [{}]", tree.getClass().getSimpleName(), parentClass, tree.getText());
+
+        // LUKETODO only return true if there are no Exceptions
+        // LUKETODO:  try narrow the use case to push the identifier:  for instance, check for ParserRuleContext
+        if (tree instanceof ParserRuleContext) {
+            final ParserRuleContext parserRuleContext = (ParserRuleContext) tree;
+
+            if (tree instanceof cqlParser.TermExpressionContext) {
+                final cqlParser.TermExpressionContext expressionContext = (cqlParser.TermExpressionContext) parserRuleContext;
+
+                // LUKETODO:  can we find the parent here and decide whether or not to pop?
+                final ParserRuleContext parent = expressionContext.getParent();
+
+                // LUKETODO:  how can we get the identifier reliably by getting these ParseTree objects?
+
+                final List<ParseTree> children = expressionContext.children;
+
+//            logger.info("parent: {}, children: {}", parent.getClass(), children);
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    protected void popIdentifier(ParseTree tree, boolean pushedIdentifier) {
+        // 1) Figure out the identifier (ex ctx.getText())
+        final Class<?> parentClass = tree.getParent() != null ? tree.getParent().getClass() : null;
+        final String parentClassName = parentClass != null ? parentClass.getSimpleName() : null;
+//        logger.info("pushIdentifier class: [{}], parent class: [{}], name: [{}]", tree.getClass().getSimpleName(), parentClassName, tree.getText());
+
+        if (pushedIdentifier) {
+            if (tree instanceof cqlParser.TermExpressionContext && parentClass != null && tree.getParent() instanceof cqlParser.InFixSetExpressionContext) {
+//                logger.info("WILL POP");
+            }
+            // LUKETODO only pop here
+        }
     }
 
     private Expression resolveIdentifier(String identifier) {
@@ -4063,6 +4189,13 @@ DATETIME
         if (op == null) {
             throw new IllegalArgumentException(String.format("Internal error: Could not resolve operator map entry for function header %s", fh.getMangledName()));
         }
+        // LUKETODO:  either special case function definitions or skip them entirely
+//        libraryBuilder.pushAndCheck(fun.getName(), fun.getExpression(), true);
+        final List<OperandDef> operand = op.getFunctionDef().getOperand();
+        for (OperandDef operandDef : operand) {
+            // LUKETODO:  we need an expression
+            libraryBuilder.pushIdentifier(operandDef.getName(), null, true);
+        }
 
         if (ctx.functionBody() != null) {
             libraryBuilder.beginFunctionDef(fun);
@@ -4079,6 +4212,9 @@ DATETIME
                     libraryBuilder.popExpressionContext();
                 }
             } finally {
+                for (OperandDef operandDef : operand) {
+                    libraryBuilder.popIdentifier();
+                }
                 libraryBuilder.endFunctionDef();
             }
 
@@ -4113,6 +4249,7 @@ DATETIME
     public Object visitFunctionDefinition(cqlParser.FunctionDefinitionContext ctx) {
         registerFunctionDefinition(ctx);
         FunctionDef fun = compileFunctionDefinition(ctx);
+        resolvedIdentifierStack.push(fun.getExpression());
         return fun;
     }
 

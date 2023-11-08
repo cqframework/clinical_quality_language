@@ -70,14 +70,14 @@ public class QueryContext {
     }
 
     public ResolvedIdentifierList resolveCaseIgnoredAliases(String identifier) {
-        ResolvedIdentifierList ret = ResolvedIdentifierList.inner();
+        final ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
 
         sources.entrySet()
                 .stream()
                 .filter(k -> k.getKey().equalsIgnoreCase(identifier) && !k.getKey().equals(identifier))
-                .forEach(entry -> ret.addResolvedIdentifier(new ResolvedIdentifier(entry.getKey(), MatchType.CASE_IGNORED, entry.getValue())));
+                .forEach(entry -> resolvedIdentifierList.addResolvedIdentifier(new ResolvedIdentifier(entry.getKey(), MatchType.CASE_IGNORED, entry.getValue())));
 
-        return ret;
+        return resolvedIdentifierList;
     }
 
     public LetClause resolveLet(String identifier) {
@@ -85,14 +85,14 @@ public class QueryContext {
     }
 
     public ResolvedIdentifierList resolveCaseIgnoredLets(String identifier) {
-        ResolvedIdentifierList ret = ResolvedIdentifierList.inner();
+        final ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
 
         lets.entrySet()
                 .stream()
                 .filter(k -> k.getKey().equalsIgnoreCase(identifier) && !k.getKey().equals(identifier))
-                .forEach(entry -> ret.addResolvedIdentifier(new ResolvedIdentifier(entry.getKey(), MatchType.CASE_IGNORED, entry.getValue())));
+                .forEach(entry -> resolvedIdentifierList.addResolvedIdentifier(new ResolvedIdentifier(entry.getKey(), MatchType.CASE_IGNORED, entry.getValue())));
 
-        return ret;
+        return resolvedIdentifierList;
     }
 
     private boolean isSingularValue = true;

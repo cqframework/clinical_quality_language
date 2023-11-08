@@ -17,7 +17,6 @@ import javax.xml.namespace.QName;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by Bryn on 12/29/2016.
@@ -114,6 +113,7 @@ public class LibraryBuilder implements ModelResolver {
     private final Map<String, CompiledLibrary> libraries = new LinkedHashMap<>();
     private final SystemFunctionResolver systemFunctionResolver = new SystemFunctionResolver(this);
     private final Stack<String> expressionContext = new Stack<>();
+
     private final ExpressionDefinitionContextStack expressionDefinitions = new ExpressionDefinitionContextStack();
     private final Stack<FunctionDef> functionDefs = new Stack<>();
     private int literalContext = 0;
@@ -2188,29 +2188,8 @@ public class LibraryBuilder implements ModelResolver {
         return null;
     }
 
-    // LUKETODO:  make this a Stack:  push when you encounter a new definition
-//        >>> expression definition always there
-//        >>> aliases will need to be popped when they fall out of scope
-//        >>> lets
-    // >>>> nested aliases
 
-    /*
-    each is a separate scope
-    each is a query within which
-
-    aliases, lets and argument names :   scope narrowed and locally stored
-
-    push/pop (iow, scoped identifiers) = function argument names, lets, and aliases
-
-    global:  models, includied libraries, valuesets, codesystems, definitions, "parameters"
-
-    push only (iow, library scoped identifiers) = models, included libraries, valuesets, defnitions, codes, codesystems, parameters
-
-    define "Encounters":
-       (Encounter E where E.date = @2018) union (Encounter E where E.date = @2020)
-     */
-
-    private final ResolvedIdentifierList resolvedIdentifierList = ResolvedIdentifierList.outer();
+    private final ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
 
     // LUKETODO:  name of a type in a model
     public Expression resolveIdentifier(String identifier, boolean mustResolve) {
@@ -2230,7 +2209,7 @@ public class LibraryBuilder implements ModelResolver {
         final String id = Optional.ofNullable(this.library.getIdentifier()).map(VersionedIdentifier::getId).orElse(null);
         if (id != null) {
             if ((id.contains("Test") || id.contains("Authori") ) && !identifier.contains("Test")) {
-                logger.info("identifier: {}, mustResolve: {}", identifier, mustResolve);
+//                logger.info("identifier: {}, mustResolve: {}", identifier, mustResolve);
             }
         }
 
@@ -2313,7 +2292,7 @@ public class LibraryBuilder implements ModelResolver {
 
         if (id != null) {
             if (id.contains("Authoring") || id.contains("Hidden") || id.contains("Test")) {
-                logger.info("resolvedIdentifierList 1: {}", resolvedIdentifierList.getResolvedIdentifierList().stream().map(match -> "[" + match.getIdentifier() + "] " + match.getResolvedElement().getClass() + " " + match.getMatchType()).collect(Collectors.toSet()));
+//                logger.info("resolvedIdentifierList 1: {}", resolvedIdentifierList.getResolvedIdentifierList().stream().map(match -> "[" + match.getIdentifier() + "] " + match.getResolvedElement().getClass() + " " + match.getMatchType()).collect(Collectors.toSet()));
             }
         }
 
@@ -2321,7 +2300,7 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     private ResolvedIdentifierList resolveElements(String identifier) {
-        final ResolvedIdentifierList resolvedIdentifierList = ResolvedIdentifierList.inner();
+        final ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
 
         Element element = resolve(identifier);
 
@@ -2444,10 +2423,10 @@ public class LibraryBuilder implements ModelResolver {
     public void warnOnHiding(ResolvedIdentifier firstCaseMatch, List<ResolvedIdentifier> resolvedIdentifiers) {
         final boolean isPlural = resolvedIdentifiers.size() > 1;
 
-        reportWarning("Identifier hiding detected: " +
-                        "Identifier" + (isPlural ? "s" : "") + " for identifiers: " +
-                        formatMatchedMessage(resolvedIdentifiers),
-                (Expression) firstCaseMatch.getResolvedElement());
+//        reportWarning("Identifier hiding detected: " +
+//                        "Identifier" + (isPlural ? "s" : "") + " for identifiers: " +
+//                        formatMatchedMessage(resolvedIdentifiers),
+//                (Expression) firstCaseMatch.getResolvedElement());
     }
 
     public String formatMatchedMessage(List<ResolvedIdentifier> list) {
@@ -2988,7 +2967,7 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     private ResolvedIdentifierList resolveQueryResultElements(String identifier) {
-        final ResolvedIdentifierList resolvedIdentifierList = ResolvedIdentifierList.inner();
+        final ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
         if (inQueryContext()) {
             QueryContext query = peekQueryContext();
             if (query.inSortClause() && !query.isSingular()) {
@@ -3012,7 +2991,7 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     private ResolvedIdentifierList resolveAliases(String identifier) {
-        final ResolvedIdentifierList resolvedIdentifierList = ResolvedIdentifierList.inner();
+        final ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
         // Need to use a for loop to go through backwards, iteration on a Stack is bottom up
         if (inQueryContext()) {
             final Scope scope = getScope();
@@ -3030,7 +3009,7 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     private ResolvedIdentifierList resolveQueryThisElements(String identifier) {
-        final ResolvedIdentifierList resolvedIdentifierList = ResolvedIdentifierList.inner();
+        final ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
         if (inQueryContext()) {
             QueryContext query = peekQueryContext();
             if (query.isImplicit()) {
@@ -3059,7 +3038,7 @@ public class LibraryBuilder implements ModelResolver {
     // LUKETODO:  this only resolves a single "let var"
     // LUKETODO:  I think this is due to the 2nd "let var" being within a return
     private ResolvedIdentifierList resolveQueryLets(String identifier) {
-        final ResolvedIdentifierList resolvedIdentifierList = ResolvedIdentifierList.inner();
+        final ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
         // Need to use a for loop to go through backwards, iteration on a Stack is bottom up
         if (inQueryContext()) {
             final Scope scope = getScope();
@@ -3078,7 +3057,7 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     private ResolvedIdentifierList resolveOperandRefs(String identifier) {
-        final ResolvedIdentifierList resolvedIdentifierList = ResolvedIdentifierList.inner();
+        final ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
         if (!functionDefs.empty()) {
             for (OperandDef operand : functionDefs.peek().getOperand()) {
                 if (operand.getName().equals(identifier)) {
@@ -3125,6 +3104,33 @@ public class LibraryBuilder implements ModelResolver {
         }
 
         throw new IllegalArgumentException(String.format("Invalid context reference from %s context to %s context.", currentExpressionContext(), expressionDef.getContext()));
+    }
+
+    // LUKETDOO:  move up
+    private final Stack<String> identifiersStack = new Stack<>();
+
+    // LUKETODO:  how to handle overloads?
+    // LUKETODO:  what to do about all the callers that do not have an expression?
+    public void pushIdentifier(String identifier, Expression expression, boolean shouldPush) {
+        final int search = identifiersStack.search(identifier);
+
+        // LUKETODO:  this Stack seems to get purged after we've dealt with the imported libraries
+
+        if (search != -1 && expression != null) {
+            // LUKETOOD:  handle null expression
+            // LUKETODO:  fix this with a better message, match type, etc
+
+            // LUKETODO:  case sensitive
+            reportWarning(String.format("Identifier hiding detected: Identifier for identifiers: [%s] resolved as a context accessor with exact case matching.\n", identifier), expression);
+        }
+
+        if (shouldPush) {
+            identifiersStack.push(identifier);
+        }
+    }
+
+    public void popIdentifier() {
+        identifiersStack.pop();
     }
 
     private class Scope {

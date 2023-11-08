@@ -26,12 +26,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
-import java.util.stream.Collectors;
 
 /**
  * Common functionality used by {@link CqlPreprocessorVisitor} and {@link Cql2ElmVisitor}
  */
-public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
+public abstract class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
     protected final ObjectFactory of = new ObjectFactory();
     protected final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
     private boolean implicitContextCreated = false;
@@ -90,6 +89,7 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
     @Override
     public Object visit(ParseTree tree) {
         boolean pushedChunk = pushChunk(tree);
+        final boolean pushedIdentifier = pushIdentifier(tree);
         Object o = null;
         try {
             // ERROR:
@@ -143,9 +143,13 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
             return o;
         } finally {
             popChunk(tree, o, pushedChunk);
+            popIdentifier(tree, pushedIdentifier );
             processTags(tree, o);
         }
     }
+
+    abstract protected boolean pushIdentifier(ParseTree tree);
+    abstract protected void popIdentifier(ParseTree tree, boolean poppedIdentifier);
 
     @Override
     public TupleElementDefinition visitTupleElementDefinition(cqlParser.TupleElementDefinitionContext ctx) {

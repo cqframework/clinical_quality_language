@@ -144,7 +144,7 @@ public class CompiledLibrary {
     }
 
     public ResolvedIdentifierList resolveCaseIgnored(String identifier) {
-        ResolvedIdentifierList ret = ResolvedIdentifierList.inner();
+        ResolvedIdentifierList ret = new ResolvedIdentifierList();
 
         namespace.entrySet()
                 .stream()
