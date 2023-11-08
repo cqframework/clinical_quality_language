@@ -284,8 +284,26 @@ public class TranslationTests {
     public void testHidingVariousUseCases() throws IOException {
         final CqlTranslator translator = TestUtils.runSemanticTest("TestHidingVariousUseCases.cql", 0);
         final List<CqlCompilerException> warnings = translator.getWarnings();
-        final String collect = warnings.stream().map(Throwable::getMessage).collect(Collectors.joining("\n"));
+        final List<String> warningMessages = warnings.stream().map(Throwable::getMessage).collect(Collectors.toList());
 
-        assertThat(collect, translator.getWarnings().size(), is(13));
+        assertThat(warningMessages.toString(), translator.getWarnings().size(), is(13));
+
+        final List<String> distinct = warningMessages.stream().distinct().collect(Collectors.toList());
+
+        assertThat(warningMessages.toString(), distinct.size(), is(11));
+
+        final String hidingDefinition = "Identifier hiding detected: Identifier for identifiers: [Definition] resolved as a context accessor with exact case matching.\n";
+        final String hidingVarLet = "Identifier hiding detected: Identifier for identifiers: [var] resolved as a let of a query with exact case matching.\n";
+        final String hidingContextValueSet = "Identifier hiding detected: Identifier for identifiers: [ValueSet] resolved as a context accessor with exact case matching.\n";
+        final String hidingLetValueSet = "Identifier hiding detected: Identifier for identifiers: [ValueSet] resolved as a let of a query with exact case matching.\n";
+        final String hidingContextCode = "Identifier hiding detected: Identifier for identifiers: [Code] resolved as a context accessor with exact case matching.\n";
+        final String hidingLetCode = "Identifier hiding detected: Identifier for identifiers: [Code] resolved as a let of a query with exact case matching.\n";
+        final String hidingContextCodeSystem = "Identifier hiding detected: Identifier for identifiers: [CodeSystem] resolved as a context accessor with exact case matching.\n";
+        final String hidingLetCodeSystem = "Identifier hiding detected: Identifier for identifiers: [CodeSystem] resolved as a let of a query with exact case matching.\n";
+        final String hidingContextFhir = "Identifier hiding detected: Identifier for identifiers: [FHIR] resolved as a context accessor with exact case matching.\n";
+        final String hidingLetFhir = "Identifier hiding detected: Identifier for identifiers: [FHIR] resolved as a let of a query with exact case matching.\n";
+        final String hidingAliasLet = "Identifier hiding detected: Identifier for identifiers: [Alias] resolved as a let of a query with exact case matching.\n";
+
+        assertThat(distinct, containsInAnyOrder(hidingDefinition, hidingVarLet, hidingContextValueSet, hidingLetValueSet, hidingContextCode, hidingLetCode, hidingContextCodeSystem, hidingLetCodeSystem, hidingContextFhir, hidingLetFhir, hidingAliasLet));
     }
 }

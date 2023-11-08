@@ -23,13 +23,12 @@ public class HidingTests {
 
     @Test
     public void testHiddenIdentifierFromReturn() throws IOException {
-        // LUKETODO:  get rid of -1
-        final CqlTranslator translator = TestUtils.runSemanticTest("TestHiddenIdentifierFromReturn.cql", -1);
+        final CqlTranslator translator = TestUtils.runSemanticTest("TestHiddenIdentifierFromReturn.cql", 0);
         final List<CqlCompilerException> warnings = translator.getWarnings();
 
         assertThat(warnings.toString(), translator.getWarnings().size(), is(1));
         final Set<String> warningMessages = warnings.stream().map(Throwable::getMessage).collect(Collectors.toSet());
-        assertThat(warningMessages, contains("Identifier hiding detected: Identifier for identifiers: [var] resolved as a context accessor with exact case matching.\n"));
+        assertThat(warningMessages, contains("Identifier hiding detected: Identifier for identifiers: [var] resolved as a let of a query with exact case matching.\n"));
     }
 
     @Test
@@ -78,7 +77,7 @@ public class HidingTests {
 
     @Test
     public void testSoMuchNestingHidingComplex() throws IOException {
-        final CqlTranslator translator = TestUtils.runSemanticTest("TestSoMuchNestingHidingComplex.cql", -1);
+        final CqlTranslator translator = TestUtils.runSemanticTest("TestSoMuchNestingHidingComplex.cql", 0);
         final List<CqlCompilerException> warnings = translator.getWarnings();
 
         final List<String> collect = warnings.stream().map(Throwable::getMessage).collect(Collectors.toList());
@@ -92,6 +91,24 @@ public class HidingTests {
         final String second = "Identifier hiding detected: Identifier for identifiers: [SoMuchNesting] resolved as a let of a query with exact case matching.\n";
 
         assertThat(distinct, containsInAnyOrder(first, second));
+    }
+
+    @Test
+    public void testHidingLetAlias() throws IOException {
+        final CqlTranslator translator = TestUtils.runSemanticTest("TestHidingLetAlias.cql", 0);
+        final List<CqlCompilerException> warnings = translator.getWarnings();
+
+        final List<String> collect = warnings.stream().map(Throwable::getMessage).collect(Collectors.toList());
+        assertThat(collect.toString(), translator.getWarnings().size(), is(1));
+
+//        final List<String> distinct = translator.getWarnings().stream().map(Throwable::getMessage).distinct().collect(Collectors.toList());
+//
+//        assertThat(distinct.size(), is(2));
+//
+//        final String first = "Identifier hiding detected: Identifier for identifiers: [SoMuchNesting] resolved as a context accessor with exact case matching.\n";
+//        final String second = "Identifier hiding detected: Identifier for identifiers: [SoMuchNesting] resolved as a let of a query with exact case matching.\n";
+//
+//        assertThat(distinct, containsInAnyOrder(first, second));
     }
 
     @Test

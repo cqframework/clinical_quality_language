@@ -2409,6 +2409,52 @@ public class LibraryBuilder implements ModelResolver {
         return result;
     }
 
+    public QueryLetRef getQueryLetRef(LetClause let) {
+        QueryLetRef result = of.createQueryLetRef().withName(let.getIdentifier());
+        result.setResultType(let.getResultType());
+        return result;
+    }
+
+    public ValueSetRef getValueSetRef(ValueSetDef valueSetDef) {
+        checkLiteralContext();
+        ValueSetRef valuesetRef = of.createValueSetRef().withName(valueSetDef.getName());
+        valuesetRef.setResultType(valueSetDef.getResultType());
+        if (valuesetRef.getResultType() == null) {
+            // ERROR:
+            throw new IllegalArgumentException(String.format("Could not validate reference to valueset %s because its definition contains errors.",
+                    valuesetRef.getName()));
+        }
+        if (isCompatibleWith(COMPATIBILITY_LEVEL_1_5)) {
+            valuesetRef.setPreserve(true);
+        }
+
+        return valuesetRef;
+    }
+
+    public Expression getCodeRef(CodeDef codeDef) {
+        checkLiteralContext();
+        CodeRef codeRef = of.createCodeRef().withName((codeDef).getName());
+        codeRef.setResultType(codeDef.getResultType());
+        if (codeRef.getResultType() == null) {
+            // ERROR:
+            throw new IllegalArgumentException(String.format("Could not validate reference to code %s because its definition contains errors.",
+                    codeRef.getName()));
+        }
+        return codeRef;
+    }
+
+    public Expression getCodeSystemRef(CodeSystemDef codeSystemDef) {
+        checkLiteralContext();
+        CodeSystemRef codesystemRef = of.createCodeSystemRef().withName(codeSystemDef.getName());
+        codesystemRef.setResultType(codeSystemDef.getResultType());
+        if (codesystemRef.getResultType() == null) {
+            // ERROR:
+            throw new IllegalArgumentException(String.format("Could not validate reference to codesystem %s because its definition contains errors.",
+                    codesystemRef.getName()));
+        }
+        return null;
+    }
+
     private AliasRef getAliasRef(String identifier, ResolvedIdentifier aliasRI) {
         AliasRef result = of.createAliasRef().withName(identifier);
         AliasedQuerySource aqs = (AliasedQuerySource) aliasRI.getResolvedElement();
@@ -2422,6 +2468,8 @@ public class LibraryBuilder implements ModelResolver {
 
     public void warnOnHiding(ResolvedIdentifier firstCaseMatch, List<ResolvedIdentifier> resolvedIdentifiers) {
         final boolean isPlural = resolvedIdentifiers.size() > 1;
+
+        final String s = formatMatchedMessage(resolvedIdentifiers);
 
 //        reportWarning("Identifier hiding detected: " +
 //                        "Identifier" + (isPlural ? "s" : "") + " for identifiers: " +
@@ -2446,7 +2494,8 @@ public class LibraryBuilder implements ModelResolver {
         return sb.toString();
     }
 
-    private String lookupElementWarning(Object element) {
+    // LUKETODO:  make private and integrate into something
+    public String lookupElementWarning(Object element) {
         if (element instanceof ExpressionDef) {
             return "[%s] resolved as an expression definition";
         }
@@ -3111,6 +3160,7 @@ public class LibraryBuilder implements ModelResolver {
 
     // LUKETODO:  how to handle overloads?
     // LUKETODO:  what to do about all the callers that do not have an expression?
+    // LUKETODO:  replicate the pattern in ResolvedIdentifierList and ensure all callers have a relevant Expression passed
     public void pushIdentifier(String identifier, Expression expression, boolean shouldPush) {
         final int search = identifiersStack.search(identifier);
 
@@ -3120,8 +3170,18 @@ public class LibraryBuilder implements ModelResolver {
             // LUKETOOD:  handle null expression
             // LUKETODO:  fix this with a better message, match type, etc
 
+            final String lookedUp = lookupElementWarning(expression);
+
+            final boolean isPlural = false;
+
+            final String message = "Identifier hiding detected: Identifier" + (isPlural ? "s" : "") + " for identifiers: " +
+                    String.format(lookedUp, identifier) +
+                    " with exact case matching.\n"; // LUKETODO:  don't hard-code this
+
+            reportWarning(message, expression);
+
             // LUKETODO:  case sensitive
-            reportWarning(String.format("Identifier hiding detected: Identifier for identifiers: [%s] resolved as a context accessor with exact case matching.\n", identifier), expression);
+//            reportWarning(String.format("Identifier hiding detected: Identifier for identifiers: [%s] resolved as a context accessor with exact case matching.\n", identifier), expression);
         }
 
         if (shouldPush) {

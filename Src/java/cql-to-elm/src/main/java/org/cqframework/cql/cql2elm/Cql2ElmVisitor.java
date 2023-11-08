@@ -174,6 +174,9 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                             unqualifiedIdentifier, localIdentifier));
         }
 
+        // LUKETODO:  what, if anything, do I use as an Expression here?
+        libraryBuilder.pushIdentifier(localIdentifier, null, true);
+
         // The model was already calculated by CqlPreprocessorVisitor
         return libraryBuilder.resolveUsingRef(localIdentifier);
     }
@@ -322,8 +325,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
         libraryBuilder.addCodeSystem(cs);
         resolvedIdentifierStack.push(cs);
-        // LUKETODO:  we need an expression
-//        libraryBuilder.pushIdentifier(cs.getName(), null, true);
+        libraryBuilder.pushIdentifier(cs.getName(), libraryBuilder.getCodeSystemRef(cs), true);
         return cs;
     }
 
@@ -396,8 +398,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         }
         libraryBuilder.addValueSet(vs);
         resolvedIdentifierStack.push(vs);
-        // LUKETODO:  we need an expression
-//        libraryBuilder.pushIdentifier(vs.getName(), null, true);
+        libraryBuilder.pushIdentifier(vs.getName(), libraryBuilder.getValueSetRef(vs), true);
 
         return vs;
     }
@@ -419,6 +420,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
         cd.setResultType(libraryBuilder.resolveTypeName("Code"));
         libraryBuilder.addCode(cd);
+        libraryBuilder.pushIdentifier(cd.getName(), libraryBuilder.getCodeRef(cd), true);
 
         return cd;
     }
@@ -3127,9 +3129,9 @@ DATETIME
     public Object visitQuery(cqlParser.QueryContext ctx) {
         QueryContext queryContext = new QueryContext();
         libraryBuilder.pushQueryContext(queryContext);
+        List<AliasedQuerySource> sources = null;
         try {
 
-            List<AliasedQuerySource> sources;
             queryContext.enterSourceClause();
             try {
                 sources = (List<AliasedQuerySource>)visit(ctx.sourceClause());
@@ -3139,6 +3141,11 @@ DATETIME
             }
 
             queryContext.addPrimaryQuerySources(sources);
+
+            for (AliasedQuerySource source : sources) {
+                // LUKETODO:  this triggers a lot of false positives
+                libraryBuilder.pushIdentifier(source.getAlias(), source.getExpression(), true);
+            }
 
             // If we are evaluating a population-level query whose source ranges over any patient-context expressions,
             // then references to patient context expressions within the iteration clauses of the query can be accessed
@@ -3156,7 +3163,7 @@ DATETIME
 
                 if (dfcx != null) {
                     for (LetClause letClause : dfcx) {
-                        libraryBuilder.pushIdentifier(letClause.getIdentifier(), letClause.getExpression(), true);
+                        libraryBuilder.pushIdentifier(letClause.getIdentifier(), libraryBuilder.getQueryLetRef(letClause), true);
                     }
                 }
 
@@ -3264,17 +3271,21 @@ DATETIME
                 if (expressionContextPushed) {
                     libraryBuilder.popExpressionContext();
                 }
-                // LUKETODO:  do the let pops here?
                 if (dfcx != null) {
                     for (LetClause letClause : dfcx) {
-                        libraryBuilder.popIdentifier();;
+                        libraryBuilder.popIdentifier();
                     }
                 }
+
             }
 
         } finally {
             libraryBuilder.popQueryContext();
-            // LUKETODO:  do the let pops here?
+            if (sources != null) {
+                for (AliasedQuerySource source : sources) {
+                    libraryBuilder.popIdentifier();
+                }
+            }
         }
     }
 
@@ -3566,8 +3577,8 @@ DATETIME
                 .withAlias(parseString(ctx.alias()));
         source.setResultType(source.getExpression().getResultType());
         resolvedIdentifierStack.push(source);
-        // LUKETDOO: see if this solves one alias union case
-        libraryBuilder.pushIdentifier(source.getAlias(), source.getExpression(), false);
+        // LUKETDOO: do we need this at all?
+//        libraryBuilder.pushIdentifier(source.getAlias(), source.getExpression(), false);
         return source;
     }
 
