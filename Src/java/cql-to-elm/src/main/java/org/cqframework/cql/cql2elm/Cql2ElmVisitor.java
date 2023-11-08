@@ -568,9 +568,9 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
     public ExpressionDef internalVisitExpressionDefinition(cqlParser.ExpressionDefinitionContext ctx) {
         String identifier = parseString(ctx.identifier());
-        // LUKETODO: how do we add an expression here?
-        libraryBuilder.pushIdentifier(identifier, null, true);
         ExpressionDef def = libraryBuilder.resolveExpressionRef(identifier);
+        // LUKETODO: how do we add an expression here?
+        libraryBuilder.pushIdentifier(identifier, (def != null) ? def.getExpression() : null, true);
         if (def == null || isImplicitContextExpressionDef(def)) {
             if (def != null && isImplicitContextExpressionDef(def)) {
                 libraryBuilder.removeExpression(def);

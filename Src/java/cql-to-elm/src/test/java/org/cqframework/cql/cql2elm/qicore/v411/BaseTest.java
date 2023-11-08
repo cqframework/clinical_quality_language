@@ -23,12 +23,13 @@ public class BaseTest {
     public void testAuthoringPatterns() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("qicore/v411/AuthoringPatterns.cql", 0, LibraryBuilder.SignatureLevel.Overloads);
 
-        assertThat(translator.getWarnings().toString(), translator.getWarnings().size(), is(5));
+        assertThat(translator.getWarnings().stream().map(Throwable::getMessage).collect(Collectors.toList()).toString(), translator.getWarnings().size(), is(5));
 
         final List<String> distinct = translator.getWarnings().stream().map(Throwable::getMessage).distinct().collect(Collectors.toList());
 
         assertThat(distinct.size(), is(3));
 
+        // LUKETODO: why are we only getting a single case mismatch warning whereas we were getting 2 before?
         final String first = "Identifier hiding detected: Identifier for identifiers: [Diabetes] resolved as a context accessor with exact case matching.\n";
         final String second = "Identifier hiding detected: Identifier for identifiers: [Application of intermittent pneumatic compression devices (IPC)] resolved as a value set with case insensitive matching.\n";
         final String third = "Identifier hiding detected: Identifier for identifiers: [Application of Intermittent Pneumatic Compression Devices (IPC)] resolved as a value set with case insensitive matching.\n";

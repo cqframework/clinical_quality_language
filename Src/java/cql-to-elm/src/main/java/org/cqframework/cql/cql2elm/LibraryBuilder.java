@@ -1444,7 +1444,7 @@ public class LibraryBuilder implements ModelResolver {
 
     // LUKETDDO:  make this private again
     public void reportWarning(String message, Expression expression) {
-        TrackBack trackback = expression.getTrackbacks() != null && expression.getTrackbacks().size() > 0 ? expression.getTrackbacks().get(0) : null;
+        TrackBack trackback = expression != null && expression.getTrackbacks() != null && expression.getTrackbacks().size() > 0 ? expression.getTrackbacks().get(0) : null;
         CqlSemanticException warning = new CqlSemanticException(message, CqlCompilerException.ErrorSeverity.Warning, trackback);
         recordParsingException(warning);
     }
@@ -2494,6 +2494,17 @@ public class LibraryBuilder implements ModelResolver {
         return sb.toString();
     }
 
+    public String formatMatchedMessage(MatchType matchType) {
+        switch (matchType) {
+            case EXACT:
+                return " with exact case matching.";
+            case CASE_IGNORED:
+                return " with case insensitive matching.";
+            default:
+                return " with invalid MatchType.";
+        }
+    }
+
     // LUKETODO:  make private and integrate into something
     public String lookupElementWarning(Object element) {
         if (element instanceof ExpressionDef) {
@@ -2542,7 +2553,7 @@ public class LibraryBuilder implements ModelResolver {
             return "[%s] resolved as a context accessor";
         }
         //default message if no match is made:
-        return "[%s] resolved more than once: " + element.getClass();
+        return "[%s] resolved more than once: " + ((element != null) ? element.getClass() : "[null]");
     }
 
     /**
@@ -3155,28 +3166,48 @@ public class LibraryBuilder implements ModelResolver {
         throw new IllegalArgumentException(String.format("Invalid context reference from %s context to %s context.", currentExpressionContext(), expressionDef.getContext()));
     }
 
-    // LUKETDOO:  move up
-    private final Stack<String> identifiersStack = new Stack<>();
+    // LUKETODO:  move up
+    private final Deque<String> identifiersDeque = new ArrayDeque<>();
 
     // LUKETODO:  how to handle overloads?
+    // LUKETODO:  handle function definitions and overloads
     // LUKETODO:  what to do about all the callers that do not have an expression?
     // LUKETODO:  replicate the pattern in ResolvedIdentifierList and ensure all callers have a relevant Expression passed
     public void pushIdentifier(String identifier, Expression expression, boolean shouldPush) {
-        final int search = identifiersStack.search(identifier);
+        final boolean search = identifiersDeque.contains(identifier);
+
+        final MatchType matchType = identifiersDeque.stream()
+                .map(innerIdentifier -> {
+                    if (innerIdentifier.equals(identifier)) {
+                        return MatchType.EXACT;
+                    }
+
+                    if (innerIdentifier.equalsIgnoreCase(identifier)) {
+                        return MatchType.CASE_IGNORED;
+                    }
+
+                    return MatchType.NONE;
+                })
+                .filter(innerMatchType -> MatchType.NONE != innerMatchType)
+                .findFirst()
+                .orElse(MatchType.NONE);
 
         // LUKETODO:  this Stack seems to get purged after we've dealt with the imported libraries
 
-        if (search != -1 && expression != null) {
+//        if (search && expression != null) {
+        if (MatchType.NONE != matchType) {
             // LUKETOOD:  handle null expression
             // LUKETODO:  fix this with a better message, match type, etc
 
             final String lookedUp = lookupElementWarning(expression);
+            final String matchedMessage = formatMatchedMessage(matchType);
 
             final boolean isPlural = false;
 
             final String message = "Identifier hiding detected: Identifier" + (isPlural ? "s" : "") + " for identifiers: " +
                     String.format(lookedUp, identifier) +
-                    " with exact case matching.\n"; // LUKETODO:  don't hard-code this
+                    matchedMessage + "\n";
+//                    " with exact case matching.\n"; // LUKETODO:  don't hard-code this
 
             reportWarning(message, expression);
 
@@ -3185,12 +3216,12 @@ public class LibraryBuilder implements ModelResolver {
         }
 
         if (shouldPush) {
-            identifiersStack.push(identifier);
+            identifiersDeque.push(identifier);
         }
     }
 
     public void popIdentifier() {
-        identifiersStack.pop();
+        identifiersDeque.pop();
     }
 
     private class Scope {
