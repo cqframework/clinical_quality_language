@@ -144,4 +144,15 @@ public class HidingTests {
         assertThat(warningMessages.toString(), warnings.size(), is(1));
         assertThat(warningMessages, contains("Identifier hiding detected: Identifier for identifiers: [FHIRHelpers] resolved as an alias of a query with exact case matching.\n"));
     }
+
+    @Test
+    public void testHidingCommaMissingInListConstruction() throws IOException {
+        final CqlTranslator translator = TestUtils.runSemanticTestNoErrors("HidingTests/TestHidingCommaMissingInListConstruction.cql");
+        final List<CqlCompilerException> warnings = translator.getWarnings();
+        final List<String> warningMessages = warnings.stream().map(Throwable::getMessage).collect(Collectors.toList());
+        assertThat(warningMessages.toString(), warnings.size(), is(2));
+        final List<String> distinctWarningMessages = warningMessages.stream().distinct().collect(Collectors.toList());
+        assertThat(distinctWarningMessages.toString(), distinctWarningMessages.size(), is(1));
+        assertThat(distinctWarningMessages, contains("Identifier hiding detected: Identifier for identifiers: [5] resolved as an alias of a query with exact case matching.\n"));
+    }
 }
