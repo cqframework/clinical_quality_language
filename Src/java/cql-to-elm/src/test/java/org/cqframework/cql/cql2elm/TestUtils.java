@@ -123,6 +123,10 @@ public class TestUtils {
         return runSemanticTest(null, testFileName, expectedErrors, options);
     }
 
+    public static CqlTranslator runSemanticTestNoErrors(String testFileName, CqlCompilerOptions.Options... options) throws IOException {
+        return runSemanticTest(null, testFileName, 0, options);
+    }
+
     public static CqlTranslator runSemanticTest(String testFileName, int expectedErrors, SignatureLevel nullableSignatureLevel, CqlCompilerOptions.Options... options) throws IOException {
         final CqlCompilerOptions cqlCompilerOptions = new CqlCompilerOptions(options);
         Optional.ofNullable(nullableSignatureLevel).ifPresent(cqlCompilerOptions::setSignatureLevel);
@@ -152,7 +156,7 @@ public class TestUtils {
         }
         // We want to defer asserting on errors to the unit test by passing -1
         if (expectedErrors != -1) {
-            assertThat(translator.getErrors().size(), is(expectedErrors));
+            assertThat(translator.getErrors().toString(), translator.getErrors().size(), is(expectedErrors));
         }
         return translator;
     }

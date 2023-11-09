@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.cqframework.cql.cql2elm.model.*;
 import org.cqframework.cql.cql2elm.model.invocation.*;
 import org.cqframework.cql.elm.tracking.TrackBack;
+import org.cqframework.cql.elm.tracking.Trackable;
 import org.hl7.cql.model.*;
 import org.hl7.cql_annotations.r1.CqlToElmError;
 import org.hl7.cql_annotations.r1.CqlToElmInfo;
@@ -2455,6 +2456,12 @@ public class LibraryBuilder implements ModelResolver {
         return null;
     }
 
+    public ParameterRef resolveParameterRef(ParameterDef theParameterDef) {
+        final ParameterRef parameterRef = of.createParameterRef().withName(theParameterDef.getName());
+        parameterRef.setResultType(parameterRef.getResultType());
+        return parameterRef;
+    }
+
     private AliasRef getAliasRef(String identifier, ResolvedIdentifier aliasRI) {
         AliasRef result = of.createAliasRef().withName(identifier);
         AliasedQuerySource aqs = (AliasedQuerySource) aliasRI.getResolvedElement();
@@ -2507,13 +2514,15 @@ public class LibraryBuilder implements ModelResolver {
 
     // LUKETODO:  make private and integrate into something
     public String lookupElementWarning(Object element) {
+        // LUKETODO:  why are these Defs and not Refs?
         if (element instanceof ExpressionDef) {
             return "[%s] resolved as an expression definition";
         }
         else if (element instanceof ParameterDef) {
             return "[%s] resolved as a parameter";
         }
-        else if (element instanceof ValueSetDef) {
+        // LUKETODO:  scrutinize these conditions:
+        else if (element instanceof ValueSetDef || element instanceof ValueSetRef) {
             return "[%s] resolved as a value set";
         }
         else if (element instanceof CodeSystemDef) {
@@ -3134,6 +3143,12 @@ public class LibraryBuilder implements ModelResolver {
         return resolvedIdentifierList;
     }
 
+    public OperandRef resolveOperandRef(OperandDef operandDef) {
+        return (OperandRef)of.createOperandRef()
+                .withName(operandDef.getName())
+                .withResultType(operandDef.getResultType());
+    }
+
     private DataType getExpressionDefResultType(ExpressionDef expressionDef) {
         // If the current expression context is the same as the expression def context, return the expression def result type.
         if (currentExpressionContext().equals(expressionDef.getContext())) {
@@ -3173,9 +3188,7 @@ public class LibraryBuilder implements ModelResolver {
     // LUKETODO:  handle function definitions and overloads
     // LUKETODO:  what to do about all the callers that do not have an expression?
     // LUKETODO:  replicate the pattern in ResolvedIdentifierList and ensure all callers have a relevant Expression passed
-    public void pushIdentifier(String identifier, Expression expression, boolean shouldPush) {
-        final boolean search = identifiersDeque.contains(identifier);
-
+    public void pushIdentifier(String identifier, Expression expression, boolean shouldPush, boolean onlyOnce) {
         final MatchType matchType = identifiersDeque.stream()
                 .map(innerIdentifier -> {
                     if (innerIdentifier.equals(identifier)) {
@@ -3194,11 +3207,7 @@ public class LibraryBuilder implements ModelResolver {
 
         // LUKETODO:  this Stack seems to get purged after we've dealt with the imported libraries
 
-//        if (search && expression != null) {
-        if (MatchType.NONE != matchType) {
-            // LUKETOOD:  handle null expression
-            // LUKETODO:  fix this with a better message, match type, etc
-
+        if (MatchType.NONE != matchType && ! onlyOnce) {
             final String lookedUp = lookupElementWarning(expression);
             final String matchedMessage = formatMatchedMessage(matchType);
 
@@ -3207,12 +3216,8 @@ public class LibraryBuilder implements ModelResolver {
             final String message = "Identifier hiding detected: Identifier" + (isPlural ? "s" : "") + " for identifiers: " +
                     String.format(lookedUp, identifier) +
                     matchedMessage + "\n";
-//                    " with exact case matching.\n"; // LUKETODO:  don't hard-code this
 
             reportWarning(message, expression);
-
-            // LUKETODO:  case sensitive
-//            reportWarning(String.format("Identifier hiding detected: Identifier for identifiers: [%s] resolved as a context accessor with exact case matching.\n", identifier), expression);
         }
 
         if (shouldPush) {

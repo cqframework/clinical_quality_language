@@ -282,7 +282,7 @@ public class TranslationTests {
 
     @Test
     public void testHidingVariousUseCases() throws IOException {
-        final CqlTranslator translator = TestUtils.runSemanticTest("TestHidingVariousUseCases.cql", 0);
+        final CqlTranslator translator = TestUtils.runSemanticTest("HidingTests/TestHidingVariousUseCases.cql", 0);
         final List<CqlCompilerException> warnings = translator.getWarnings();
         final List<String> warningMessages = warnings.stream().map(Throwable::getMessage).collect(Collectors.toList());
 

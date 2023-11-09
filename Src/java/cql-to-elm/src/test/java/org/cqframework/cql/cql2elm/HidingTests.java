@@ -14,7 +14,7 @@ public class HidingTests {
 
     @Test
     public void testCaseInsensitiveWarning() throws IOException {
-        final CqlTranslator translator = TestUtils.runSemanticTest("TestCaseInsensitiveWarning.cql", 0, LibraryBuilder.SignatureLevel.All);
+        final CqlTranslator translator = TestUtils.runSemanticTest("HidingTests/TestHidingCaseInsensitiveWarning.cql", 0, LibraryBuilder.SignatureLevel.All);
         final List<CqlCompilerException> warnings = translator.getWarnings();
         assertThat(warnings.toString(), translator.getWarnings().size(), is(1));
         final Set<String> warningMessages = warnings.stream().map(Throwable::getMessage).collect(Collectors.toSet());
@@ -25,7 +25,7 @@ public class HidingTests {
 
     @Test
     public void testHiddenIdentifierFromReturn() throws IOException {
-        final CqlTranslator translator = TestUtils.runSemanticTest("TestHiddenIdentifierFromReturn.cql", 0);
+        final CqlTranslator translator = TestUtils.runSemanticTestNoErrors("HidingTests/TestHiddenIdentifierFromReturn.cql");
         final List<CqlCompilerException> warnings = translator.getWarnings();
 
         assertThat(warnings.toString(), translator.getWarnings().size(), is(1));
@@ -35,7 +35,7 @@ public class HidingTests {
 
     @Test
     public void testHidingUnionWithSameAlias() throws IOException {
-        final CqlTranslator translator = TestUtils.runSemanticTest("TestHidingUnionSameAlias.cql", 0);
+        final CqlTranslator translator = TestUtils.runSemanticTestNoErrors("HidingTests/TestHidingUnionSameAlias.cql");
         final List<CqlCompilerException> warnings = translator.getWarnings();
 
         assertThat(warnings.toString(), translator.getWarnings().size(), is(0));
@@ -43,7 +43,7 @@ public class HidingTests {
 
     @Test
     public void testHidingUnionWithSameAliasEachHides() throws IOException {
-        final CqlTranslator translator = TestUtils.runSemanticTest("TestHidingUnionSameAliasEachHides.cql", 0);
+        final CqlTranslator translator = TestUtils.runSemanticTestNoErrors("HidingTests/TestHidingUnionSameAliasEachHides.cql");
         final List<CqlCompilerException> warnings = translator.getWarnings();
 
         assertThat(warnings.toString(), translator.getWarnings().size(), is(2));
@@ -59,7 +59,7 @@ public class HidingTests {
 
     @Test
     public void testSoMuchNestingNormal() throws IOException {
-        final CqlTranslator translator = TestUtils.runSemanticTest("TestSoMuchNestingNormal.cql", 0);
+        final CqlTranslator translator = TestUtils.runSemanticTestNoErrors("HidingTests/TestHidingSoMuchNestingNormal.cql");
         final List<CqlCompilerException> warnings = translator.getWarnings();
 
         assertThat(warnings.toString(), translator.getWarnings().size(), is(0));
@@ -67,8 +67,7 @@ public class HidingTests {
 
     @Test
     public void testSoMuchNestingHidingSimple() throws IOException {
-        // LUKETODO:  get rid of -1
-        final CqlTranslator translator = TestUtils.runSemanticTest("TestSoMuchNestingHidingSimple.cql", -1);
+        final CqlTranslator translator = TestUtils.runSemanticTestNoErrors("HidingTests/TestHidingSoMuchNestingHidingSimple.cql");
         final List<CqlCompilerException> warnings = translator.getWarnings();
 
         // LUKETODO:  this doesn't work because "SoMuchNesting" resolves to null in LibraryBuilder.
@@ -79,7 +78,7 @@ public class HidingTests {
 
     @Test
     public void testSoMuchNestingHidingComplex() throws IOException {
-        final CqlTranslator translator = TestUtils.runSemanticTest("TestSoMuchNestingHidingComplex.cql", 0);
+        final CqlTranslator translator = TestUtils.runSemanticTestNoErrors("HidingTests/TestHidingSoMuchNestingHidingComplex.cql");
         final List<CqlCompilerException> warnings = translator.getWarnings();
 
         final List<String> collect = warnings.stream().map(Throwable::getMessage).collect(Collectors.toList());
@@ -97,39 +96,56 @@ public class HidingTests {
 
     @Test
     public void testHidingLetAlias() throws IOException {
-        final CqlTranslator translator = TestUtils.runSemanticTest("TestHidingLetAlias.cql", 0);
+        final CqlTranslator translator = TestUtils.runSemanticTestNoErrors("HidingTests/TestHidingLetAlias.cql");
         final List<CqlCompilerException> warnings = translator.getWarnings();
 
-        final List<String> collect = warnings.stream().map(Throwable::getMessage).collect(Collectors.toList());
-        assertThat(collect.toString(), translator.getWarnings().size(), is(1));
-
-//        final List<String> distinct = translator.getWarnings().stream().map(Throwable::getMessage).distinct().collect(Collectors.toList());
-//
-//        assertThat(distinct.size(), is(2));
-//
-//        final String first = "Identifier hiding detected: Identifier for identifiers: [SoMuchNesting] resolved as a context accessor with exact case matching.\n";
-//        final String second = "Identifier hiding detected: Identifier for identifiers: [SoMuchNesting] resolved as a let of a query with exact case matching.\n";
-//
-//        assertThat(distinct, containsInAnyOrder(first, second));
+        final List<String> warningMessages = warnings.stream().map(Throwable::getMessage).collect(Collectors.toList());
+        assertThat(warningMessages.toString(), translator.getWarnings().size(), is(1));
+        assertThat(warningMessages, contains("Identifier hiding detected: Identifier for identifiers: [Alias] resolved as a let of a query with exact case matching.\n"));
     }
 
     @Test
     public void testHiddenIdentifierArgumentToAlias() throws IOException {
-        final CqlTranslator translator = TestUtils.createTranslatorFromStream("TestHiddenIdentifierArgumentToAlias.cql");
+        final CqlTranslator translator = TestUtils.runSemanticTestNoErrors("HidingTests/TestHiddenIdentifierArgumentToAlias.cql");
 
         assertThat(translator.getWarnings().size(), is(1));
         assertThat(translator.getWarnings()
                         .stream()
                         .map(Throwable::getMessage)
                         .collect(Collectors.toList()),
-// LUKETODO:  do we need to be particular about what's hiding what??
-//                    contains("Identifier hiding detected: Identifier for identifiers: [testOperand] resolved as an operand to a function with exact case matching.\n"));
                     contains("Identifier hiding detected: Identifier for identifiers: [testOperand] resolved as a context accessor with exact case matching.\n"));
     }
 
     @Test
     public void testReturnArgumentNotConsideredHiddenIdentifier() throws IOException {
-        final CqlTranslator translator = TestUtils.createTranslatorFromStream("TestReturnArgumentNotConsideredHiddenIdentifier.cql");
+        final CqlTranslator translator = TestUtils.runSemanticTestNoErrors("HidingTests/TestHidingReturnArgumentNotConsideredHiddenIdentifier.cql");
         assertThat(translator.getWarnings().size(), is(0));
+    }
+
+    @Test
+    public void testHidingFunctionDefinitionWithOverloads() throws IOException {
+        final CqlTranslator translator = TestUtils.runSemanticTestNoErrors("HidingTests/TestHidingFunctionDefinitionWithOverloads.cql");
+        final List<CqlCompilerException> warnings = translator.getWarnings();
+        final List<String> warningMessages = warnings.stream().map(Throwable::getMessage).collect(Collectors.toList());
+        assertThat(warningMessages.toString(), warnings.size(), is(1));
+        assertThat(warningMessages, contains("Identifier hiding detected: Identifier for identifiers: [IWantToBeHidden] resolved as a context accessor with exact case matching.\n"));
+    }
+
+    @Test
+    public void testHidingParameterDefinition() throws IOException {
+        final CqlTranslator translator = TestUtils.runSemanticTestNoErrors("HidingTests/TestHidingParameterDefinition.cql");
+        final List<CqlCompilerException> warnings = translator.getWarnings();
+        final List<String> warningMessages = warnings.stream().map(Throwable::getMessage).collect(Collectors.toList());
+        assertThat(warningMessages.toString(), warnings.size(), is(1));
+        assertThat(warningMessages, contains("Identifier hiding detected: Identifier for identifiers: [Measurement Period] resolved as a context accessor with exact case matching.\n"));
+    }
+
+    @Test
+    public void testHidingIncludeDefinition() throws IOException {
+        final CqlTranslator translator = TestUtils.runSemanticTestNoErrors("HidingTests/TestHidingIncludeDefinition.cql");
+        final List<CqlCompilerException> warnings = translator.getWarnings();
+        final List<String> warningMessages = warnings.stream().map(Throwable::getMessage).collect(Collectors.toList());
+        assertThat(warningMessages.toString(), warnings.size(), is(1));
+        assertThat(warningMessages, contains("Identifier hiding detected: Identifier for identifiers: [FHIRHelpers] resolved as a context accessor with exact case matching.\n"));
     }
 }

@@ -30,19 +30,18 @@ public class BaseTest {
 
     @Test
     public void testAuthoringPatterns() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("qicore/v500/AuthoringPatterns.cql", 0, LibraryBuilder.SignatureLevel.Overloads);
+        final CqlTranslator translator = TestUtils.runSemanticTest("qicore/v500/AuthoringPatterns.cql", 0, LibraryBuilder.SignatureLevel.Overloads);
 
-        assertThat(translator.getWarnings().toString(), translator.getWarnings().size(), is(5));
+        assertThat(translator.getWarnings().toString(), translator.getWarnings().size(), is(2));
 
         final List<String> distinct = translator.getWarnings().stream().map(Throwable::getMessage).distinct().collect(Collectors.toList());
 
-        assertThat(distinct.size(), is(3));
+        assertThat(distinct.size(), is(2));
 
         final String first = "Identifier hiding detected: Identifier for identifiers: [Diabetes] resolved as a context accessor with exact case matching.\n";
-        final String second = "Identifier hiding detected: Identifier for identifiers: [Application of intermittent pneumatic compression devices (IPC)] resolved as a value set with case insensitive matching.\n";
-        final String third = "Identifier hiding detected: Identifier for identifiers: [Application of Intermittent Pneumatic Compression Devices (IPC)] resolved as a value set with case insensitive matching.\n";
+        final String second = "Identifier hiding detected: Identifier for identifiers: [Application of Intermittent Pneumatic Compression Devices (IPC)] resolved as a value set with case insensitive matching.\n";
 
-        assertThat(distinct, containsInAnyOrder(first, second, third));
+        assertThat(distinct, containsInAnyOrder(first, second));
     }
 
     @Test
