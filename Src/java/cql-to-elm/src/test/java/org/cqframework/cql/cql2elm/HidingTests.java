@@ -18,9 +18,7 @@ public class HidingTests {
         final List<CqlCompilerException> warnings = translator.getWarnings();
         assertThat(warnings.toString(), translator.getWarnings().size(), is(1));
         final Set<String> warningMessages = warnings.stream().map(Throwable::getMessage).collect(Collectors.toSet());
-//        assertThat(warningMessages, contains("Identifier hiding detected: Identifier for identifiers: [Patients] resolved as an expression definition with case insensitive matching.\n"));
-        // LUKETODO:  figure out null Expression problem
-        assertThat(warningMessages, contains("Identifier hiding detected: Identifier for identifiers: [patients] resolved more than once: [null] with case insensitive matching.\n"));
+        assertThat(warningMessages, contains("Identifier hiding detected: Identifier for identifiers: [patients] resolved as an expression definition with case insensitive matching.\n"));
     }
 
     @Test
@@ -52,7 +50,7 @@ public class HidingTests {
 
         assertThat(distinct.size(), is(1));
 
-        final String first = "Identifier hiding detected: Identifier for identifiers: [IWantToBeHidden] resolved as a context accessor with exact case matching.\n";
+        final String first = "Identifier hiding detected: Identifier for identifiers: [IWantToBeHidden] resolved as an alias of a query with exact case matching.\n";
 
         assertThat(distinct, containsInAnyOrder(first));
     }
@@ -70,10 +68,8 @@ public class HidingTests {
         final CqlTranslator translator = TestUtils.runSemanticTestNoErrors("HidingTests/TestHidingSoMuchNestingHidingSimple.cql");
         final List<CqlCompilerException> warnings = translator.getWarnings();
 
-        // LUKETODO:  this doesn't work because "SoMuchNesting" resolves to null in LibraryBuilder.
         assertThat(warnings.toString(), translator.getWarnings().size(), is(1));
-        // LUKETODO:  add more assertions
-        assertThat(warnings.stream().map(Throwable::getMessage).collect(Collectors.toList()), containsInAnyOrder("Identifier hiding detected: Identifier for identifiers: [SoMuchNesting] resolved as a context accessor with exact case matching.\n"));
+        assertThat(warnings.stream().map(Throwable::getMessage).collect(Collectors.toList()), containsInAnyOrder("Identifier hiding detected: Identifier for identifiers: [SoMuchNesting] resolved as an alias of a query with exact case matching.\n"));
     }
 
     @Test
@@ -88,7 +84,7 @@ public class HidingTests {
 
         assertThat(distinct.size(), is(2));
 
-        final String first = "Identifier hiding detected: Identifier for identifiers: [SoMuchNesting] resolved as a context accessor with exact case matching.\n";
+        final String first = "Identifier hiding detected: Identifier for identifiers: [SoMuchNesting] resolved as an alias of a query with exact case matching.\n";
         final String second = "Identifier hiding detected: Identifier for identifiers: [SoMuchNesting] resolved as a let of a query with exact case matching.\n";
 
         assertThat(distinct, containsInAnyOrder(first, second));
@@ -113,7 +109,7 @@ public class HidingTests {
                         .stream()
                         .map(Throwable::getMessage)
                         .collect(Collectors.toList()),
-                    contains("Identifier hiding detected: Identifier for identifiers: [testOperand] resolved as a context accessor with exact case matching.\n"));
+                    contains("Identifier hiding detected: Identifier for identifiers: [testOperand] resolved as an alias of a query with exact case matching.\n"));
     }
 
     @Test
@@ -128,7 +124,7 @@ public class HidingTests {
         final List<CqlCompilerException> warnings = translator.getWarnings();
         final List<String> warningMessages = warnings.stream().map(Throwable::getMessage).collect(Collectors.toList());
         assertThat(warningMessages.toString(), warnings.size(), is(1));
-        assertThat(warningMessages, contains("Identifier hiding detected: Identifier for identifiers: [IWantToBeHidden] resolved as a context accessor with exact case matching.\n"));
+        assertThat(warningMessages, contains("Identifier hiding detected: Identifier for identifiers: [IWantToBeHidden] resolved as an alias of a query with exact case matching.\n"));
     }
 
     @Test
@@ -137,7 +133,7 @@ public class HidingTests {
         final List<CqlCompilerException> warnings = translator.getWarnings();
         final List<String> warningMessages = warnings.stream().map(Throwable::getMessage).collect(Collectors.toList());
         assertThat(warningMessages.toString(), warnings.size(), is(1));
-        assertThat(warningMessages, contains("Identifier hiding detected: Identifier for identifiers: [Measurement Period] resolved as a context accessor with exact case matching.\n"));
+        assertThat(warningMessages, contains("Identifier hiding detected: Identifier for identifiers: [Measurement Period] resolved as an alias of a query with exact case matching.\n"));
     }
 
     @Test
@@ -146,6 +142,6 @@ public class HidingTests {
         final List<CqlCompilerException> warnings = translator.getWarnings();
         final List<String> warningMessages = warnings.stream().map(Throwable::getMessage).collect(Collectors.toList());
         assertThat(warningMessages.toString(), warnings.size(), is(1));
-        assertThat(warningMessages, contains("Identifier hiding detected: Identifier for identifiers: [FHIRHelpers] resolved as a context accessor with exact case matching.\n"));
+        assertThat(warningMessages, contains("Identifier hiding detected: Identifier for identifiers: [FHIRHelpers] resolved as an alias of a query with exact case matching.\n"));
     }
 }

@@ -38,7 +38,7 @@ public class BaseTest {
 
         assertThat(distinct.size(), is(2));
 
-        final String first = "Identifier hiding detected: Identifier for identifiers: [Diabetes] resolved as a context accessor with exact case matching.\n";
+        final String first = "Identifier hiding detected: Identifier for identifiers: [Diabetes] resolved as an alias of a query with exact case matching.\n";
         final String second = "Identifier hiding detected: Identifier for identifiers: [Application of Intermittent Pneumatic Compression Devices (IPC)] resolved as a value set with case insensitive matching.\n";
 
         assertThat(distinct, containsInAnyOrder(first, second));

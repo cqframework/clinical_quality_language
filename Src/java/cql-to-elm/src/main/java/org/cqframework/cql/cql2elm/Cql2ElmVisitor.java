@@ -47,38 +47,6 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     private final List<Expression> expressions = new ArrayList<>();
     private final Map<String, Element> contextDefinitions = new HashMap<>();
 
-
-    /*
-    each is a separate scope
-    each is a query within which
-
-    aliases, lets and argument names :   scope narrowed and locally stored
-
-    push/pop (iow, scoped identifiers) =
-    function argument names,
-    lets,
-    and aliases
-
-    global:
-    models,
-    includied libraries,
-    valuesets,
-    codesystems,
-    definitions,
-    "parameters"
-
-    push only (iow, library scoped identifiers) =
-    models, included libraries,
-    valuesets,
-    defnitions,
-    codes,
-    codesystems,
-    parameters
-
-    define "Encounters":
-       (Encounter E where E.date = @2018) union (Encounter E where E.date = @2020)
-     */
-
     public Cql2ElmVisitor(LibraryBuilder libraryBuilder) {
         super(libraryBuilder);
 
@@ -165,11 +133,10 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                             unqualifiedIdentifier, localIdentifier));
         }
 
-        // LUKETODO:  what, if anything, do I use as an Expression here?
-        libraryBuilder.pushIdentifier(localIdentifier, null, true, false);
-
         // The model was already calculated by CqlPreprocessorVisitor
-        return libraryBuilder.resolveUsingRef(localIdentifier);
+        final UsingDef usingDef = libraryBuilder.resolveUsingRef(localIdentifier);
+        libraryBuilder.pushIdentifierForHiding(localIdentifier, false, usingDef, null);
+        return usingDef;
     }
 
     public Model getModel() {
@@ -231,7 +198,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         }
 
         libraryBuilder.addInclude(library);
-        libraryBuilder.pushIdentifier(library.getLocalIdentifier(), null, true, false);
+        libraryBuilder.pushIdentifierForHiding(library.getLocalIdentifier(), false, library, null);
 
         return library;
     }
@@ -268,9 +235,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         }
 
         libraryBuilder.addParameter(param);
-        libraryBuilder.pushIdentifier(param.getName(), libraryBuilder.resolveParameterRef(param), true, false);
-//         LUKETODO:  how do we push parameters with an expression?
-//        libraryBuilder.pushAndCheck(param.getName(), null, true);
+        libraryBuilder.pushIdentifierForHiding(param.getName(), false, param, libraryBuilder.resolveParameterRef(param));
 
         return param;
     }
@@ -313,7 +278,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         }
 
         libraryBuilder.addCodeSystem(cs);
-        libraryBuilder.pushIdentifier(cs.getName(), libraryBuilder.getCodeSystemRef(cs), true, false);
+        libraryBuilder.pushIdentifierForHiding(cs.getName(), false, cs, libraryBuilder.getCodeSystemRef(cs));
         return cs;
     }
 
@@ -385,7 +350,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
             vs.setResultType(new ListType(libraryBuilder.resolveTypeName("System", "Code")));
         }
         libraryBuilder.addValueSet(vs);
-        libraryBuilder.pushIdentifier(vs.getName(), libraryBuilder.getValueSetRef(vs), true, false);
+        libraryBuilder.pushIdentifierForHiding(vs.getName(), false, vs, libraryBuilder.getValueSetRef(vs));
 
         return vs;
     }
@@ -407,7 +372,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
         cd.setResultType(libraryBuilder.resolveTypeName("Code"));
         libraryBuilder.addCode(cd);
-        libraryBuilder.pushIdentifier(cd.getName(), libraryBuilder.getCodeRef(cd), true, false);
+        libraryBuilder.pushIdentifierForHiding(cd.getName(), false, cd, libraryBuilder.getCodeRef(cd));
 
         return cd;
     }
@@ -556,8 +521,12 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     public ExpressionDef internalVisitExpressionDefinition(cqlParser.ExpressionDefinitionContext ctx) {
         String identifier = parseString(ctx.identifier());
         ExpressionDef def = libraryBuilder.resolveExpressionRef(identifier);
-        // LUKETODO: how do we add an expression here?
-        libraryBuilder.pushIdentifier(identifier, (def != null) ? def.getExpression() : null, true, false);
+
+        // lightweight ExpressionDef to be used to output a hiding warning message
+        final ExpressionDef hallowExpressionDef = of.createExpressionDef()
+                .withName(identifier)
+                .withContext(getCurrentContext());
+        libraryBuilder.pushIdentifierForHiding(identifier, false, hallowExpressionDef, null);
         if (def == null || isImplicitContextExpressionDef(def)) {
             if (def != null && isImplicitContextExpressionDef(def)) {
                 libraryBuilder.removeExpression(def);
@@ -3107,8 +3076,7 @@ DATETIME
             queryContext.addPrimaryQuerySources(sources);
 
             for (AliasedQuerySource source : sources) {
-                // LUKETODO:  this triggers a lot of false positives
-                libraryBuilder.pushIdentifier(source.getAlias(), source.getExpression(), true, false);
+                libraryBuilder.pushIdentifierForHiding(source.getAlias(), false, source, source.getExpression());
             }
 
             // If we are evaluating a population-level query whose source ranges over any patient-context expressions,
@@ -3127,7 +3095,7 @@ DATETIME
 
                 if (dfcx != null) {
                     for (LetClause letClause : dfcx) {
-                        libraryBuilder.pushIdentifier(letClause.getIdentifier(), libraryBuilder.getQueryLetRef(letClause), true, false);
+                        libraryBuilder.pushIdentifierForHiding(letClause.getIdentifier(), false, letClause, libraryBuilder.getQueryLetRef(letClause));
                     }
                 }
 
@@ -3237,7 +3205,7 @@ DATETIME
                 }
                 if (dfcx != null) {
                     for (LetClause letClause : dfcx) {
-                        libraryBuilder.popIdentifier();
+                        libraryBuilder.popIdentifierForHiding();
                     }
                 }
 
@@ -3247,7 +3215,7 @@ DATETIME
             libraryBuilder.popQueryContext();
             if (sources != null) {
                 for (AliasedQuerySource source : sources) {
-                    libraryBuilder.popIdentifier();
+                    libraryBuilder.popIdentifierForHiding();
                 }
             }
         }
@@ -4083,12 +4051,10 @@ DATETIME
         if (op == null) {
             throw new IllegalArgumentException(String.format("Internal error: Could not resolve operator map entry for function header %s", fh.getMangledName()));
         }
-        // LUKETODO:  either special case function definitions or skip them entirely
-        libraryBuilder.pushIdentifier(fun.getName(), fun.getExpression(), true, true);
+        libraryBuilder.pushIdentifierForHiding(fun.getName(), true, fun, fun.getExpression());
         final List<OperandDef> operand = op.getFunctionDef().getOperand();
         for (OperandDef operandDef : operand) {
-            // LUKETODO:  we need an expression
-            libraryBuilder.pushIdentifier(operandDef.getName(), libraryBuilder.resolveOperandRef(operandDef), true, false);
+            libraryBuilder.pushIdentifierForHiding(operandDef.getName(), false, operandDef, libraryBuilder.resolveOperandRef(operandDef));
         }
 
         if (ctx.functionBody() != null) {
@@ -4107,7 +4073,7 @@ DATETIME
                 }
             } finally {
                 for (OperandDef operandDef : operand) {
-                    libraryBuilder.popIdentifier();
+                    libraryBuilder.popIdentifierForHiding();
                 }
                 libraryBuilder.endFunctionDef();
             }

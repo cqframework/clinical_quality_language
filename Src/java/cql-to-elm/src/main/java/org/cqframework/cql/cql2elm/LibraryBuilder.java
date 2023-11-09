@@ -100,6 +100,7 @@ public class LibraryBuilder implements ModelResolver {
     private final Stack<String> expressionContext = new Stack<>();
     private final ExpressionDefinitionContextStack expressionDefinitions = new ExpressionDefinitionContextStack();
     private final Stack<FunctionDef> functionDefs = new Stack<>();
+    private final Deque<String> identifiersToCheckForHiding = new ArrayDeque<>();
     private int literalContext = 0;
     private int typeSpecifierContext = 0;
     private NamespaceInfo namespaceInfo = null;
@@ -1427,7 +1428,7 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     private void reportWarning(String message, Expression expression) {
-        TrackBack trackback = expression != null && expression.getTrackbacks() != null && expression.getTrackbacks().size() > 0 ? expression.getTrackbacks().get(0) : null;
+        TrackBack trackback = expression != null && expression.getTrackbacks() != null && !expression.getTrackbacks().isEmpty() ? expression.getTrackbacks().get(0) : null;
         CqlSemanticException warning = new CqlSemanticException(message, CqlCompilerException.ErrorSeverity.Warning, trackback);
         recordParsingException(warning);
     }
@@ -2395,7 +2396,7 @@ public class LibraryBuilder implements ModelResolver {
         return parameterRef;
     }
 
-    public String formatMatchedMessage(MatchType matchType) {
+    private static String formatMatchedMessage(MatchType matchType) {
         switch (matchType) {
             case EXACT:
                 return " with exact case matching.";
@@ -2406,17 +2407,15 @@ public class LibraryBuilder implements ModelResolver {
         }
     }
 
-    // LUKETODO:  make private and integrate into something
-    public String lookupElementWarning(Object element) {
-        // LUKETODO:  why are these Defs and not Refs?
+    private static String lookupElementWarning(Object element) {
+        // TODO:  this list is not exhaustive and may need to be updated
         if (element instanceof ExpressionDef) {
             return "[%s] resolved as an expression definition";
         }
         else if (element instanceof ParameterDef) {
             return "[%s] resolved as a parameter";
         }
-        // LUKETODO:  scrutinize these conditions:
-        else if (element instanceof ValueSetDef || element instanceof ValueSetRef) {
+        else if (element instanceof ValueSetDef) {
             return "[%s] resolved as a value set";
         }
         else if (element instanceof CodeSystemDef) {
@@ -2431,29 +2430,17 @@ public class LibraryBuilder implements ModelResolver {
         else if (element instanceof IncludeDef) {
             return "[%s] resolved as a library";
         }
-        else if (element instanceof IdentifierRef) {
-            return "[%s] resolved as an element of the result of a query";
-        }
-        else if (element instanceof Iteration) {
-            return "[%s] resolved as the index iteration accessor";
-        }
-        else if (element instanceof Total) {
-            return "[%s] resolved as the total aggregation accessor";
-        }
-        else if (element instanceof AliasRef) {
+        else if (element instanceof AliasedQuerySource) {
             return "[%s] resolved as an alias of a query";
         }
-        else if (element instanceof QueryLetRef ) {
+        else if (element instanceof LetClause) {
             return "[%s] resolved as a let of a query";
         }
-        else if (element instanceof OperandRef ) {
+        else if (element instanceof OperandDef) {
             return "[%s] resolved as an operand to a function";
         }
-        else if (element instanceof Literal) {
-            return "[%s] resolved as a potential type name";
-        }
-        else if (element instanceof Expression ) {
-            return "[%s] resolved as a context accessor";
+        else if (element instanceof UsingDef) {
+            return "[%s] resolved as a using definition";
         }
         //default message if no match is made:
         return "[%s] resolved more than once: " + ((element != null) ? element.getClass() : "[null]");
@@ -3056,15 +3043,25 @@ public class LibraryBuilder implements ModelResolver {
         throw new IllegalArgumentException(String.format("Invalid context reference from %s context to %s context.", currentExpressionContext(), expressionDef.getContext()));
     }
 
-    // LUKETODO:  move up
-    private final Deque<String> identifiersDeque = new ArrayDeque<>();
-
-    // LUKETODO:  how to handle overloads?
-    // LUKETODO:  handle function definitions and overloads
-    // LUKETODO:  what to do about all the callers that do not have an expression?
-    // LUKETODO:  replicate the pattern in ResolvedIdentifierList and ensure all callers have a relevant Expression passed
-    public void pushIdentifier(String identifier, Expression expression, boolean shouldPush, boolean onlyOnce) {
-        final MatchType matchType = identifiersDeque.stream()
+    /**
+     * Add an identifier to the deque to indicate that we are considering it for consideration for identifier hiding and
+     * adding a compiler warning if this is the case.
+     * <p/>
+     * For example, if an alias within an expression body has the same name as a parameter, execution would have
+     * added the parameter identifier and the next execution would consider an alias with the same name, thus resulting
+     * in a warning.
+     * <p/>
+     * Exact case matching as well as case-insensitive matching are considered.  If known, the type of the structure
+     * in question will be considered in crafting the warning message, as per the {@link Element} parameter.
+     *
+     * @param identifier The identifier belonging to the parameter, expression, function, alias, etc, to be evaluated.
+     * @param onlyOnce Special case to deal with overloaded functions, which are out scope for hiding.
+     * @param element The consturct element, for {@link ExpressionRef}.
+     * @param nullableExpression Use strictly to comply with the signature for {@link #reportWarning(String, Expression)}.
+     *                           If the caller could not obtain an Element, it simply passes null and this is safe to do.
+     */
+    void pushIdentifierForHiding(String identifier, boolean onlyOnce, Element element, Expression nullableExpression) {
+        final MatchType matchType = identifiersToCheckForHiding.stream()
                 .map(innerIdentifier -> {
                     if (innerIdentifier.equals(identifier)) {
                         return MatchType.EXACT;
@@ -3080,28 +3077,24 @@ public class LibraryBuilder implements ModelResolver {
                 .findFirst()
                 .orElse(MatchType.NONE);
 
-        // LUKETODO:  this Stack seems to get purged after we've dealt with the imported libraries
-
         if (MatchType.NONE != matchType && ! onlyOnce) {
-            final String lookedUp = lookupElementWarning(expression);
-            final String matchedMessage = formatMatchedMessage(matchType);
-
-            final boolean isPlural = false;
-
-            final String message = "Identifier hiding detected: Identifier" + (isPlural ? "s" : "") + " for identifiers: " +
-                    String.format(lookedUp, identifier) +
-                    matchedMessage + "\n";
-
-            reportWarning(message, expression);
+            final String message = String.format("Identifier hiding detected: Identifier for identifiers: %s%s",
+                    String.format(lookupElementWarning(element), identifier),
+                    formatMatchedMessage(matchType)+ "\n");
+            reportWarning(message, nullableExpression);
         }
 
-        if (shouldPush) {
-            identifiersDeque.push(identifier);
+        if (! onlyOnce || MatchType.NONE == matchType) {
+            identifiersToCheckForHiding.push(identifier);
         }
     }
 
-    public void popIdentifier() {
-        identifiersDeque.pop();
+    /**
+     * Pop the last resolved identifier off the deque.  This is needed in case of a context in which an identifier
+     * falls out of scope, for an example, an alias within an expression or function body
+     */
+    void popIdentifierForHiding() {
+        identifiersToCheckForHiding.pop();
     }
 
     private class Scope {

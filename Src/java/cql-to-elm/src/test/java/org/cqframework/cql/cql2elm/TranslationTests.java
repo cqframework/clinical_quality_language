@@ -292,15 +292,15 @@ public class TranslationTests {
 
         assertThat(warningMessages.toString(), distinct.size(), is(11));
 
-        final String hidingDefinition = "Identifier hiding detected: Identifier for identifiers: [Definition] resolved as a context accessor with exact case matching.\n";
+        final String hidingDefinition = "Identifier hiding detected: Identifier for identifiers: [Definition] resolved as an alias of a query with exact case matching.\n";
         final String hidingVarLet = "Identifier hiding detected: Identifier for identifiers: [var] resolved as a let of a query with exact case matching.\n";
-        final String hidingContextValueSet = "Identifier hiding detected: Identifier for identifiers: [ValueSet] resolved as a context accessor with exact case matching.\n";
+        final String hidingContextValueSet = "Identifier hiding detected: Identifier for identifiers: [ValueSet] resolved as an alias of a query with exact case matching.\n";
         final String hidingLetValueSet = "Identifier hiding detected: Identifier for identifiers: [ValueSet] resolved as a let of a query with exact case matching.\n";
-        final String hidingContextCode = "Identifier hiding detected: Identifier for identifiers: [Code] resolved as a context accessor with exact case matching.\n";
+        final String hidingContextCode = "Identifier hiding detected: Identifier for identifiers: [Code] resolved as an alias of a query with exact case matching.\n";
         final String hidingLetCode = "Identifier hiding detected: Identifier for identifiers: [Code] resolved as a let of a query with exact case matching.\n";
-        final String hidingContextCodeSystem = "Identifier hiding detected: Identifier for identifiers: [CodeSystem] resolved as a context accessor with exact case matching.\n";
+        final String hidingContextCodeSystem = "Identifier hiding detected: Identifier for identifiers: [CodeSystem] resolved as an alias of a query with exact case matching.\n";
         final String hidingLetCodeSystem = "Identifier hiding detected: Identifier for identifiers: [CodeSystem] resolved as a let of a query with exact case matching.\n";
-        final String hidingContextFhir = "Identifier hiding detected: Identifier for identifiers: [FHIR] resolved as a context accessor with exact case matching.\n";
+        final String hidingContextFhir = "Identifier hiding detected: Identifier for identifiers: [FHIR] resolved as an alias of a query with exact case matching.\n";
         final String hidingLetFhir = "Identifier hiding detected: Identifier for identifiers: [FHIR] resolved as a let of a query with exact case matching.\n";
         final String hidingAliasLet = "Identifier hiding detected: Identifier for identifiers: [Alias] resolved as a let of a query with exact case matching.\n";
 
