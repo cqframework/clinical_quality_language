@@ -4,22 +4,27 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.EnumSet;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.CqlCompilerOptions;
 import org.cqframework.cql.cql2elm.CompilerOptions;
+import org.cqframework.cql.cql2elm.LibraryBuilder;
+import org.hl7.cql_annotations.r1.CqlToElmInfo;
 import org.hl7.elm.r1.*;
-import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import static org.testng.Assert.*;
 
 public class ElmDeserializeTests {
 
     @Test
     public void testElmTests() {
         try {
-            new org.cqframework.cql.elm.serializing.jaxb.ElmXmlLibraryReader().read(ElmDeserializeTests.class.getResourceAsStream("ElmDeserialize/ElmTests.xml"));
+            deserializeXmlLibrary("ElmDeserialize/ElmTests.xml");
         } catch (IOException e) {
             e.printStackTrace();
             throw new IllegalArgumentException("Error reading ELM: " + e.getMessage());
@@ -30,8 +35,8 @@ public class ElmDeserializeTests {
     @Test
     public void testJsonANCFHIRDummyLibraryLoad() {
         try {
-            Library library = new org.cqframework.cql.elm.serializing.jaxb.ElmJsonLibraryReader().read(new InputStreamReader(ElmDeserializeTests.class.getResourceAsStream("ElmDeserialize/ANCFHIRDummy.json")));
-            Assert.assertTrue(library != null);
+            final Library library = deserializeJsonLibrary("ElmDeserialize/ANCFHIRDummy.json");
+            assertNotNull(library);
 
             EnumSet<CqlCompilerOptions.Options> translatorOptions = EnumSet.of(
                     CqlCompilerOptions.Options.EnableDateRangeOptimization,
@@ -43,16 +48,18 @@ public class ElmDeserializeTests {
                     CqlCompilerOptions.Options.DisableMethodInvocation
             );
 
-            Assert.assertEquals(CompilerOptions.getCompilerOptions(library), translatorOptions);
+            assertEquals(CompilerOptions.getCompilerOptions(library), translatorOptions);
 
-            Assert.assertTrue(library.getStatements() != null);
-            Assert.assertTrue(library.getStatements().getDef() != null);
-            Assert.assertTrue(library.getStatements().getDef().size() >= 2);
-            Assert.assertTrue(library.getStatements().getDef().get(0) instanceof ExpressionDef);
-            Assert.assertTrue(library.getStatements().getDef().get(0).getExpression() instanceof SingletonFrom);
-            Assert.assertTrue(((SingletonFrom)library.getStatements().getDef().get(0).getExpression()).getOperand() instanceof Retrieve);
-            Assert.assertTrue(library.getStatements().getDef().get(1) instanceof ExpressionDef);
-            Assert.assertTrue(library.getStatements().getDef().get(1).getExpression() instanceof Retrieve);
+            assertNotNull(library.getStatements());
+            assertNotNull(library.getStatements().getDef());
+            assertTrue(library.getStatements().getDef().size() >= 2);
+            assertNotNull(library.getStatements().getDef().get(0));
+            assertTrue(library.getStatements().getDef().get(0).getExpression() instanceof SingletonFrom);
+            assertTrue(((SingletonFrom)library.getStatements().getDef().get(0).getExpression()).getOperand() instanceof Retrieve);
+            assertNotNull(library.getStatements().getDef().get(1));
+            assertTrue(library.getStatements().getDef().get(1).getExpression() instanceof Retrieve);
+
+            verifySigLevels(library, LibraryBuilder.SignatureLevel.All);
         } catch (IOException e) {
             throw new IllegalArgumentException("Error reading ELM: " + e.getMessage());
         }
@@ -61,26 +68,28 @@ public class ElmDeserializeTests {
     @Test
     public void testJsonAdultOutpatientEncounters_FHIR4LibraryLoad() {
         try {
-            Library library = new org.cqframework.cql.elm.serializing.jaxb.ElmJsonLibraryReader().read(new InputStreamReader(ElmDeserializeTests.class.getResourceAsStream("ElmDeserialize/fhir/AdultOutpatientEncounters_FHIR4-2.0.000.json")));
-            Assert.assertTrue(library != null);
+            final Library library = deserializeJsonLibrary("ElmDeserialize/fhir/AdultOutpatientEncounters_FHIR4-2.0.000.json");
+            assertNotNull(library);
 
             EnumSet<CqlCompilerOptions.Options> translatorOptions = EnumSet.of(
                     CqlCompilerOptions.Options.EnableAnnotations
             );
-            Assert.assertEquals(CompilerOptions.getCompilerOptions(library), translatorOptions);
-            Assert.assertEquals(library.getIdentifier().getId(), "AdultOutpatientEncounters_FHIR4");
-            Assert.assertEquals(library.getIdentifier().getVersion(), "2.0.000");
-            Assert.assertTrue(library.getUsings() != null);
-            Assert.assertTrue(library.getUsings().getDef() != null);
-            Assert.assertTrue(library.getUsings().getDef().size() >= 2);
-            Assert.assertTrue(library.getStatements() != null);
-            Assert.assertTrue(library.getStatements().getDef() != null);
-            Assert.assertTrue(library.getStatements().getDef().get(0) instanceof ExpressionDef);
-            Assert.assertTrue(library.getStatements().getDef().get(0).getExpression() instanceof SingletonFrom);
-            Assert.assertTrue(((SingletonFrom)library.getStatements().getDef().get(0).getExpression()).getOperand() instanceof Retrieve);
-            Assert.assertEquals(library.getStatements().getDef().get(1).getName(), "Qualifying Encounters");
-            Assert.assertTrue(library.getStatements().getDef().get(1) instanceof ExpressionDef);
-            Assert.assertTrue(library.getStatements().getDef().get(1).getExpression() instanceof Query);
+            assertEquals(CompilerOptions.getCompilerOptions(library), translatorOptions);
+            assertEquals(library.getIdentifier().getId(), "AdultOutpatientEncounters_FHIR4");
+            assertEquals(library.getIdentifier().getVersion(), "2.0.000");
+            assertNotNull(library.getUsings());
+            assertNotNull(library.getUsings().getDef());
+            assertTrue(library.getUsings().getDef().size() >= 2);
+            assertNotNull(library.getStatements());
+            assertNotNull(library.getStatements().getDef());
+            assertNotNull(library.getStatements().getDef().get(0));
+            assertTrue(library.getStatements().getDef().get(0).getExpression() instanceof SingletonFrom);
+            assertTrue(((SingletonFrom)library.getStatements().getDef().get(0).getExpression()).getOperand() instanceof Retrieve);
+            assertEquals(library.getStatements().getDef().get(1).getName(), "Qualifying Encounters");
+            assertNotNull(library.getStatements().getDef().get(1));
+            assertTrue(library.getStatements().getDef().get(1).getExpression() instanceof Query);
+
+            verifySigLevels(library, LibraryBuilder.SignatureLevel.Differing);
         } catch (IOException e) {
             throw new IllegalArgumentException("Error reading ELM: " + e.getMessage());
         }
@@ -89,10 +98,10 @@ public class ElmDeserializeTests {
     @Test
     public void testXmlLibraryLoad() {
         try {
-            Library library = new org.cqframework.cql.elm.serializing.jaxb.ElmXmlLibraryReader().read(new InputStreamReader(ElmDeserializeTests.class.getResourceAsStream("ElmDeserialize/fhir/AdultOutpatientEncounters_FHIR4-2.0.000.xml")));
-            Assert.assertTrue(library != null);
-            Assert.assertEquals(library.getIdentifier().getId(), "AdultOutpatientEncounters_FHIR4");
-            Assert.assertEquals(library.getIdentifier().getVersion(), "2.0.000");
+            final Library library = deserializeXmlLibrary("ElmDeserialize/fhir/AdultOutpatientEncounters_FHIR4-2.0.000.xml");
+            assertNotNull(library);
+            assertEquals(library.getIdentifier().getId(), "AdultOutpatientEncounters_FHIR4");
+            assertEquals(library.getIdentifier().getVersion(), "2.0.000");
 
             EnumSet<CqlCompilerOptions.Options> translatorOptions = EnumSet.of(
                     CqlCompilerOptions.Options.EnableDateRangeOptimization,
@@ -103,19 +112,21 @@ public class ElmDeserializeTests {
                     CqlCompilerOptions.Options.DisableListPromotion,
                     CqlCompilerOptions.Options.DisableMethodInvocation
             );
-            Assert.assertEquals(CompilerOptions.getCompilerOptions(library), translatorOptions);
+            assertEquals(CompilerOptions.getCompilerOptions(library), translatorOptions);
 
-            Assert.assertTrue(library.getUsings() != null);
-            Assert.assertTrue(library.getUsings().getDef() != null);
-            Assert.assertTrue(library.getUsings().getDef().size() >= 2);
-            Assert.assertTrue(library.getStatements() != null);
-            Assert.assertTrue(library.getStatements().getDef() != null);
-            Assert.assertTrue(library.getStatements().getDef().get(0) instanceof ExpressionDef);
-            Assert.assertTrue(library.getStatements().getDef().get(0).getExpression() instanceof SingletonFrom);
-            Assert.assertTrue(((SingletonFrom)library.getStatements().getDef().get(0).getExpression()).getOperand() instanceof Retrieve);
-            Assert.assertEquals(library.getStatements().getDef().get(1).getName(), "Qualifying Encounters");
-            Assert.assertTrue(library.getStatements().getDef().get(1) instanceof ExpressionDef);
-            Assert.assertTrue(library.getStatements().getDef().get(1).getExpression() instanceof Query);
+            assertNotNull(library.getUsings());
+            assertNotNull(library.getUsings().getDef());
+            assertTrue(library.getUsings().getDef().size() >= 2);
+            assertNotNull(library.getStatements());
+            assertNotNull(library.getStatements().getDef());
+            assertNotNull(library.getStatements().getDef().get(0));
+            assertTrue(library.getStatements().getDef().get(0).getExpression() instanceof SingletonFrom);
+            assertTrue(((SingletonFrom)library.getStatements().getDef().get(0).getExpression()).getOperand() instanceof Retrieve);
+            assertEquals(library.getStatements().getDef().get(1).getName(), "Qualifying Encounters");
+            assertNotNull(library.getStatements().getDef().get(1));
+            assertTrue(library.getStatements().getDef().get(1).getExpression() instanceof Query);
+
+            verifySigLevels(library, LibraryBuilder.SignatureLevel.Overloads);
         } catch (IOException e) {
             e.printStackTrace();
             throw new IllegalArgumentException("Error reading ELM: " + e.getMessage());
@@ -125,8 +136,10 @@ public class ElmDeserializeTests {
     @Test
     public void testJsonTerminologyLibraryLoad() {
         try {
-            Library library = new org.cqframework.cql.elm.serializing.jaxb.ElmJsonLibraryReader().read(new InputStreamReader(ElmDeserializeTests.class.getResourceAsStream("ElmDeserialize/ANCFHIRTerminologyDummy.json")));
-            Assert.assertTrue(library != null);
+            final Library library = deserializeJsonLibrary("ElmDeserialize/ANCFHIRTerminologyDummy.json");
+            assertNotNull(library);
+
+            verifySigLevels(library, LibraryBuilder.SignatureLevel.None);
         } catch (IOException e) {
             throw new IllegalArgumentException("Error reading ELM: " + e.getMessage());
         }
@@ -153,7 +166,7 @@ public class ElmDeserializeTests {
             if (!equivalent(xmlLibrary, jsonLibrary)) {
                 System.out.println(xmlFileName);
             }
-            Assert.assertTrue(equivalent(xmlLibrary, jsonLibrary));
+            assertTrue(equivalent(xmlLibrary, jsonLibrary));
         }
     }
 
@@ -238,20 +251,20 @@ public class ElmDeserializeTests {
         // Space
         for (ExpressionDef ed : library.getStatements().getDef()) {
             switch (ed.getName()) {
-                case "Null": Assert.assertTrue(ed.getExpression() instanceof Null);
+                case "Null": assertTrue(ed.getExpression() instanceof Null);
                 break;
 
                 case "Empty": {
-                    Assert.assertTrue(ed.getExpression() instanceof Literal);
+                    assertTrue(ed.getExpression() instanceof Literal);
                     Literal l = (Literal)ed.getExpression();
-                    Assert.assertTrue(l.getValue() != null && l.getValue().equals(""));
+                    assertTrue(l.getValue() != null && l.getValue().equals(""));
                 }
                 break;
 
                 case "Space": {
-                    Assert.assertTrue(ed.getExpression() instanceof Literal);
+                    assertTrue(ed.getExpression() instanceof Literal);
                     Literal l = (Literal)ed.getExpression();
-                    Assert.assertTrue(l.getValue() != null && l.getValue().equals(" "));
+                    assertTrue(l.getValue() != null && l.getValue().equals(" "));
                 }
                 break;
             }
@@ -278,7 +291,7 @@ public class ElmDeserializeTests {
     public void emptyStringsTest() throws IOException {
         InputStream inputStream = ElmDeserializeTests.class.getResourceAsStream("ElmDeserialize/EmptyStringsTest.cql");
         CqlTranslator translator = TestUtils.createTranslatorFromStream(inputStream);
-        Assert.assertTrue(translator.getErrors().size() == 0);
+        assertEquals(translator.getErrors().size(), 0);
 
         String jaxbXml = toJaxbXml(translator.toELM());
         String jaxbJson = toJaxbJson(translator.toELM());
@@ -319,4 +332,26 @@ public class ElmDeserializeTests {
         }
     }
 
+    private static Library deserializeJsonLibrary(String filePath) throws IOException {
+        final InputStream resourceAsStream = ElmDeserializeTests.class.getResourceAsStream(filePath);
+        assertNotNull(resourceAsStream);
+        return new org.cqframework.cql.elm.serializing.jaxb.ElmJsonLibraryReader().read(new InputStreamReader(resourceAsStream));
+    }
+
+    private static Library deserializeXmlLibrary(String filePath) throws IOException {
+        final InputStream resourceAsStream = ElmDeserializeTests.class.getResourceAsStream(filePath);
+        assertNotNull(resourceAsStream);
+        return new org.cqframework.cql.elm.serializing.jaxb.ElmXmlLibraryReader().read(resourceAsStream);
+    }
+
+    private static void verifySigLevels(Library theLibrary, LibraryBuilder.SignatureLevel expectedSignatureLevel) {
+        final List<String> sigLevels = theLibrary.getAnnotation().stream()
+                .filter(CqlToElmInfo.class::isInstance)
+                .map(CqlToElmInfo.class::cast)
+                .map(CqlToElmInfo::getSignatureLevel)
+                .collect(Collectors.toList());
+
+        assertEquals(sigLevels.size(), 1);
+        assertEquals(sigLevels.get(0), expectedSignatureLevel.name());
+    }
 }

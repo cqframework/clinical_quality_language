@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
-import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
+import com.fasterxml.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationModule;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 import org.hl7.elm_modelinfo.r1.TypeInfo;
 import org.hl7.elm_modelinfo.r1.TypeSpecifier;
@@ -33,7 +33,7 @@ public class XmlModelInfoReader implements ModelInfoReader {
             .enable(SerializationFeature.INDENT_OUTPUT)
             .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
             .enable(MapperFeature.USE_BASE_TYPE_AS_DEFAULT_IMPL)
-            .addModule(new JaxbAnnotationModule())
+            .addModule(new JakartaXmlBindAnnotationModule())
             .addMixIn(TypeInfo.class, TypeInfoMixIn.class)
             .addMixIn(TypeSpecifier.class, TypeSpecifierMixIn.class)
             .build();

@@ -79,7 +79,11 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
     private static ElmDataRequirement inferFrom(ElmDataRequirement requirement) {
         Retrieve inferredRetrieve = ElmCloner.clone(requirement.getRetrieve());
         ElmDataRequirement result = new ElmDataRequirement(requirement.libraryIdentifier, inferredRetrieve, requirement.getRetrieve());
-        result.propertySet = requirement.propertySet;
+        if (requirement.hasProperties()) {
+            for (Property p : requirement.getProperties()) {
+                result.addProperty(p);
+            }
+        }
         return result;
     }
 
@@ -127,11 +131,21 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
         return propertySet;
     }
 
+    public boolean hasProperties() {
+        return propertySet != null;
+    }
+
     public void addProperty(Property property) {
         if (propertySet == null) {
             propertySet = new LinkedHashSet<Property>();
         }
         propertySet.add(property);
+    }
+
+    public void removeProperty(Property property) {
+        if (propertySet != null) {
+            propertySet.remove(property);
+        }
     }
 
     public void reportProperty(ElmPropertyRequirement propertyRequirement) {

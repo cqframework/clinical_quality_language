@@ -1,31 +1,23 @@
 package org.cqframework.cql.cql2elm;
 
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.cqframework.cql.cql2elm.model.invocation.*;
 import org.cqframework.cql.cql2elm.preprocessor.*;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.cqframework.cql.elm.tracking.Trackable;
-import org.cqframework.cql.gen.cqlBaseVisitor;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 import org.cqframework.cql.cql2elm.model.*;
 import org.hl7.cql.model.*;
-import org.hl7.cql_annotations.r1.Annotation;
-import org.hl7.cql_annotations.r1.Narrative;
-import org.hl7.cql_annotations.r1.Tag;
 import org.hl7.elm.r1.*;
 import org.hl7.elm.r1.Element;
 import org.hl7.elm.r1.Interval;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.xml.bind.*;
-import javax.xml.namespace.QName;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.List;
@@ -33,23 +25,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class Cql2ElmVisitor extends cqlBaseVisitor {
-    private final ObjectFactory of = new ObjectFactory();
-    private final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
-    private boolean annotate = false;
-    private boolean locate = false;
-    private boolean resultTypes = false;
-    private boolean dateRangeOptimization = false;
-    private boolean detailedErrors = false;
-    private boolean methodInvocation = true;
-    private boolean includeDeprecatedElements = false;
-    private boolean fromKeywordRequired = false;
-    private TokenStream tokenStream;
-
-    private final LibraryBuilder libraryBuilder;
+public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
+    static final Logger logger = LoggerFactory.getLogger(Cql2ElmVisitor.class);
     private final SystemMethodResolver systemMethodResolver;
 
-    private LibraryInfo libraryInfo = null;
     public void setLibraryInfo(LibraryInfo libraryInfo) {
         if (libraryInfo == null) {
             throw new IllegalArgumentException("libraryInfo is null");
@@ -57,129 +36,25 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         this.libraryInfo = libraryInfo;
     }
 
-    //Put them here for now, but eventually somewhere else?
     private final Set<String> definedExpressionDefinitions = new HashSet<>();
     private final Stack<ExpressionDefinitionInfo> forwards = new Stack<>();
-    private final Map<String, Set<Signature>> definedFunctionDefinitions = new HashMap<>();
-    private final Stack<FunctionDefinitionInfo> forwardFunctions = new Stack<>();
+    private final Map<cqlParser.FunctionDefinitionContext, FunctionHeader> functionHeaders = new HashMap<>();
+
+    private final Map<FunctionDef, FunctionHeader> functionHeadersByDef = new HashMap<>();
+    private final Map<FunctionHeader, cqlParser.FunctionDefinitionContext> functionDefinitions = new HashMap<>();
     private final Stack<TimingOperatorContext> timingOperators = new Stack<>();
-    private Stack<Chunk> chunks = new Stack<>();
-    private String currentContext = "Patient"; // default context to patient
-    private int nextLocalId = 1;
     private final List<Retrieve> retrieves = new ArrayList<>();
     private final List<Expression> expressions = new ArrayList<>();
     private final Map<String, Element> contextDefinitions = new HashMap<>();
 
     public Cql2ElmVisitor(LibraryBuilder libraryBuilder) {
-        super();
+        super(libraryBuilder);
 
         if (libraryBuilder == null) {
             throw new IllegalArgumentException("libraryBuilder is null");
         }
 
-        this.libraryBuilder = libraryBuilder;
         this.systemMethodResolver = new SystemMethodResolver(this, libraryBuilder);
-    }
-
-    public void enableAnnotations() {
-        annotate = true;
-    }
-
-    public void disableAnnotations() {
-        annotate = false;
-    }
-
-    public void enableLocators() {
-        locate = true;
-    }
-
-    public void disableLocators() {
-        locate = false;
-    }
-
-    public void enableResultTypes() {
-        resultTypes = true;
-    }
-
-    public void disableResultTypes() {
-        resultTypes = false;
-    }
-
-    public void enableDateRangeOptimization() {
-        dateRangeOptimization = true;
-    }
-
-    public void disableDateRangeOptimization() {
-        dateRangeOptimization = false;
-    }
-
-    public boolean getDateRangeOptimization() {
-        return dateRangeOptimization;
-    }
-
-    public void enableDetailedErrors() {
-        detailedErrors = true;
-    }
-
-    public void disableDetailedErrors() {
-        detailedErrors = false;
-    }
-
-    public boolean isDetailedErrorsEnabled() {
-        return detailedErrors;
-    }
-
-    public void enableMethodInvocation() {
-        methodInvocation = true;
-    }
-
-    public void disableMethodInvocation() {
-        methodInvocation = false;
-    }
-
-    public boolean isFromKeywordRequired() {
-        return fromKeywordRequired;
-    }
-
-    public void enableFromKeywordRequired() {
-        fromKeywordRequired = true;
-    }
-
-    public void disableFromKeywordRequired() {
-        fromKeywordRequired = false;
-    }
-
-    public void setTranslatorOptions(CqlCompilerOptions options) {
-        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableDateRangeOptimization)) {
-            this.enableDateRangeOptimization();
-        }
-        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableAnnotations)) {
-            this.enableAnnotations();
-        }
-        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableLocators)) {
-            this.enableLocators();
-        }
-        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableResultTypes)) {
-            this.enableResultTypes();
-        }
-        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableDetailedErrors)) {
-            this.enableDetailedErrors();
-        }
-        if (options.getOptions().contains(CqlCompilerOptions.Options.DisableMethodInvocation)) {
-            this.disableMethodInvocation();
-        }
-        if (options.getOptions().contains(CqlCompilerOptions.Options.RequireFromKeyword)) {
-            this.enableFromKeywordRequired();
-        }
-        libraryBuilder.setCompatibilityLevel(options.getCompatibilityLevel());
-    }
-
-    public TokenStream getTokenStream() {
-        return tokenStream;
-    }
-
-    public void setTokenStream(TokenStream value) {
-        tokenStream = value;
     }
 
     public List<Retrieve> getRetrieves() {
@@ -190,553 +65,27 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return expressions;
     }
 
-    public int getNextLocalId() {
-        return nextLocalId++;
-    }
+    @Override
+    public Object visitLibrary(cqlParser.LibraryContext ctx) {
+        Object lastResult = null;
 
-    public boolean isAnnotationEnabled(){
-        return annotate;
-    }
-
-    private boolean pushChunk(ParseTree tree) {
-        if (!isAnnotationEnabled()) {
-            return false;
-        }
-
-        org.antlr.v4.runtime.misc.Interval sourceInterval = tree.getSourceInterval();
-
-        // An interval of i..i-1 indicates an empty interval at position i in the input stream,
-        if (sourceInterval.b < sourceInterval.a) {
-            return false;
-        }
-
-        Chunk chunk = new Chunk().withInterval(sourceInterval);
-        chunks.push(chunk);
-        return true;
-    }
-
-    private void popChunk(ParseTree tree, Object o, boolean pushedChunk) {
-        if (!pushedChunk) {
-            return;
-        }
-
-        Chunk chunk = chunks.pop();
-        if (o instanceof Element) {
-            Element element = (Element)o;
-            if (element.getLocalId() == null) {
-                element.setLocalId(Integer.toString(getNextLocalId()));
-            }
-            chunk.setElement(element);
-
-            if (!(tree instanceof cqlParser.LibraryContext)) {
-                if (element instanceof UsingDef || element instanceof IncludeDef || element instanceof CodeSystemDef
-                        || element instanceof ValueSetDef || element instanceof CodeDef || element instanceof ConceptDef
-                        || element instanceof ParameterDef || element instanceof ContextDef || element instanceof ExpressionDef) {
-                    Annotation a = getAnnotation(element);
-                    if (a == null || a.getS() == null) {
-                        // Add header information (comments prior to the definition)
-                        BaseInfo definitionInfo = libraryInfo.resolveDefinition(tree);
-                        if (definitionInfo != null && definitionInfo.getHeaderInterval() != null) {
-                            Chunk headerChunk = new Chunk().withInterval(definitionInfo.getHeaderInterval()).withIsHeaderChunk(true);
-                            Chunk newChunk = new Chunk().withInterval(new org.antlr.v4.runtime.misc.Interval(headerChunk.getInterval().a, chunk.getInterval().b));
-                            newChunk.addChunk(headerChunk);
-                            newChunk.setElement(chunk.getElement());
-                            for (Chunk c : chunk.getChunks()) {
-                                newChunk.addChunk(c);
-                            }
-                            chunk = newChunk;
-                        }
-                        if (a == null) {
-                            element.getAnnotation().add(buildAnnotation(chunk));
-                        }
-                        else {
-                            addNarrativeToAnnotation(a, chunk);
-                        }
-                    }
-                }
-            }
-            else {
-                if (libraryInfo.getDefinition() != null && libraryInfo.getHeaderInterval() != null) {
-                    Chunk headerChunk = new Chunk().withInterval(libraryInfo.getHeaderInterval()).withIsHeaderChunk(true);
-                    Chunk definitionChunk = new Chunk().withInterval(libraryInfo.getDefinition().getSourceInterval());
-                    Chunk newChunk = new Chunk().withInterval(new org.antlr.v4.runtime.misc.Interval(headerChunk.getInterval().a, definitionChunk.getInterval().b));
-                    newChunk.addChunk(headerChunk);
-                    newChunk.addChunk(definitionChunk);
-                    newChunk.setElement(chunk.getElement());
-                    chunk = newChunk;
-                    Annotation a = getAnnotation(libraryBuilder.getLibrary());
-                    if (a == null) {
-                        libraryBuilder.getLibrary().getAnnotation().add(buildAnnotation(chunk));
-                    }
-                    else {
-                        addNarrativeToAnnotation(a, chunk);
-                    }
-                }
-            }
-        }
-
-        if (!chunks.isEmpty()) {
-            chunks.peek().addChunk(chunk);
-        }
-    }
-
-    private void processTags(ParseTree tree, Object o) {
-        if (libraryBuilder.isCompatibleWith("1.5")) {
-            if (o instanceof Element) {
-                Element element = (Element)o;
-                if (!(tree instanceof cqlParser.LibraryContext)) {
-                    if (element instanceof UsingDef || element instanceof IncludeDef || element instanceof CodeSystemDef
-                            || element instanceof ValueSetDef || element instanceof CodeDef || element instanceof ConceptDef
-                            || element instanceof ParameterDef || element instanceof ContextDef || element instanceof ExpressionDef) {
-                        List<Tag> tags = getTags(tree);
-                        if (tags != null && tags.size() > 0) {
-                            Annotation a = getAnnotation(element);
-                            if (a == null) {
-                                a = buildAnnotation();
-                                element.getAnnotation().add(a);
-                            }
-                            // If the definition was processed as a forward declaration, the tag processing will already have occurred
-                            // and just adding tags would duplicate them here. This doesn't account for the possibility that
-                            // tags would be added for some other reason, but I didn't want the overhead of checking for existing
-                            // tags, and there is currently nothing that would add tags other than being processed from comments
-                            if (a.getT().size() == 0) {
-                                a.getT().addAll(tags);
-                            }
-                        }
-                    }
-                }
-                else {
-                    if (libraryInfo.getDefinition() != null && libraryInfo.getHeaderInterval() != null) {
-                        List<Tag> tags = getTags(libraryInfo.getHeader());
-                        if (tags != null && tags.size() > 0) {
-                            Annotation a = getAnnotation(libraryBuilder.getLibrary());
-                            if (a == null) {
-                                a = buildAnnotation();
-                                libraryBuilder.getLibrary().getAnnotation().add(a);
-                            }
-                            a.getT().addAll(tags);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private List<Tag> getTags(ParseTree tree) {
-        BaseInfo bi = libraryInfo.resolveDefinition(tree);
-        if (bi != null) {
-            return getTags(bi.getHeader());
-        }
-
-        return null;
-    }
-
-    private boolean isValidIdentifier(String tagName) {
-        for (int i = 0; i < tagName.length(); i++) {
-            if (tagName.charAt(i) == '_') {
+        // Loop through and call visit on each child (to ensure they are tracked)
+        for (int i = 0; i < ctx.getChildCount(); i++) {
+            ParseTree tree = ctx.getChild(i);
+            TerminalNode terminalNode = tree instanceof TerminalNode ? (TerminalNode)tree : null;
+            if (terminalNode != null && terminalNode.getSymbol().getType() == cqlLexer.EOF) {
                 continue;
             }
 
-            if (i == 0) {
-                if (!Character.isLetter(tagName.charAt(i))) {
-                    return false;
-                }
-            }
-            else {
-                if (!Character.isLetterOrDigit(tagName.charAt(i))) {
-                    return false;
-                }
+            Object childResult = visit(tree);
+            // Only set the last result if we received something useful
+            if (childResult != null) {
+                lastResult = childResult;
             }
         }
 
-        return true;
-    }
-
-    // this method returns Pair<tag value, next tag name lookup index> starting from startFrom
-    // can return null in cases.
-    // for @1980-12-01, it will potentially check to be treated as value date
-    // it looks for parameter in double quotes, e.g. @parameter: "Measurement Interval" [@2019,@2020]
-    private Pair<String, Integer> lookForTagValue(String header, int startFrom) {
-
-        if(startFrom>= header.length()) {
-            return null;
-        }
-        int nextTag = header.indexOf('@', startFrom);
-        int nextStartDoubleQuote = header.indexOf("\"", startFrom);
-        if ((nextTag < 0 || nextTag > nextStartDoubleQuote) && nextStartDoubleQuote > 0 &&
-                (header.length() > (nextStartDoubleQuote + 1))) {
-            int nextEndDoubleQuote = header.indexOf("\"", nextStartDoubleQuote + 1);
-            if (nextEndDoubleQuote > 0) {
-                int parameterEnd = header.indexOf("\n", (nextStartDoubleQuote + 1));
-                if (parameterEnd < 0) {
-                    return Pair.of(header.substring(nextStartDoubleQuote), header.length());
-                } else {
-                    return Pair.of(header.substring(nextStartDoubleQuote, parameterEnd), parameterEnd);
-                }
-            } else {  //branch where the 2nd double quote is missing
-                return Pair.of(header.substring(nextStartDoubleQuote), header.length());
-            }
-        }
-        if(nextTag == startFrom && !isStartingWithDigit(header, nextTag +1)) {  //starts with `@` and not potential date value
-            return Pair.of("",startFrom);
-        } else if (nextTag > 0) {   // has some text before tag
-            String interimText = header.substring(startFrom, nextTag).trim();
-            if (isStartingWithDigit(header, nextTag + 1)) {  // next `@` is a date value
-                if (interimText.length() > 0 && !interimText.equals(":")) {  // interim text has value, regards interim text
-                    return Pair.of(interimText, nextTag);
-                } else {
-                    int nextSpace = header.indexOf(' ', nextTag);
-                    int nextLine = header.indexOf("\n", nextTag);
-                    int mul = nextSpace * nextLine;
-                    int nextDelimeterIndex = header.length();
-
-                    if (mul < 0) {
-                        nextDelimeterIndex = Math.max(nextLine, nextSpace);
-                    } else if(mul > 1) {
-                        nextDelimeterIndex = Math.min(nextLine, nextSpace);
-                    }
-
-                    return Pair.of(header.substring(nextTag, nextDelimeterIndex), nextDelimeterIndex );
-                }
-            } else {   //next `@` is not date
-                return Pair.of(interimText, nextTag);
-            }
-        }
-
-        return Pair.of(header.substring(startFrom).trim(), header.length());
-    }
-
-    private boolean isStartingWithDigit(String header, int index) {
-        return (index < header.length()) && Character.isDigit(header.charAt(index));
-    }
-
-    // this method returns Pair<tag name, next value lookup index> starting from startFrom
-    // can return null in cases.
-    // if a tag has a value, it needs the colon to separate it
-    // supports `:` for delimiter
-    private Pair<String, Integer> lookForTagName(String header, int startFrom) {
-
-        if(startFrom>= header.length()){
-            return null;
-        }
-        int start = header.indexOf("@", startFrom);
-        if (start < 0) {
-            return null;
-        }
-        int nextTagStart = header.indexOf("@", start + 1);
-        int nextColon = header.indexOf(":", start + 1);
-
-        if (nextTagStart < 0) {  // no next tag , no next colon
-            if (nextColon < 0) {
-                return Pair.of(header.substring(start + 1, header.length()).trim(), header.length());
-            }
-        } else {
-            if (nextColon < 0 || nextColon > nextTagStart) {  //(has next tag and no colon) or (has next tag and next colon belongs to next tag)
-                return Pair.of(header.substring(start + 1, nextTagStart).trim(), nextTagStart);
-            }
-        }
-        return Pair.of(header.substring(start + 1, nextColon).trim(), nextColon + 1);
-    }
-
-    private List<Tag> parseTags(String header) {
-        header = String.join("\n", Arrays.asList(header.trim().split("\n[ \t]*\\*[ \t\\*]*")));
-        List<Tag> tags = new ArrayList<>();
-
-        int startFrom = 0;
-        while (startFrom < header.length()) {
-            Pair<String, Integer> tagNamePair = lookForTagName(header, startFrom);
-            if (tagNamePair != null) {
-                if (tagNamePair.getLeft().length() > 0 && isValidIdentifier(tagNamePair.getLeft())) {
-                    Tag t = af.createTag().withName(tagNamePair.getLeft());
-                    startFrom = tagNamePair.getRight();
-                    Pair<String, Integer> tagValuePair = lookForTagValue(header, startFrom);
-                    if (tagValuePair != null) {
-                        if (tagValuePair.getLeft().length() > 0) {
-                            t = t.withValue(tagValuePair.getLeft());
-                            startFrom = tagValuePair.getRight();
-                        }
-                    }
-                    tags.add(t);
-                } else {
-                    startFrom = tagNamePair.getRight();
-                }
-            } else {  // no name tag found, no need to traverse more
-                break;
-            }
-        }
-        return tags;
-    }
-
-    private String parseComments(String header) {
-        List<String> result = new ArrayList<>();
-        if (header != null) {
-            header = header.replace("\r\n", "\n");
-            String[] lines = header.split("\n");
-            boolean inMultiline = false;
-            for (String line : lines) {
-                if (!inMultiline) {
-                    int start = line.indexOf("/*");
-                    if (start >= 0) {
-                        if (line.endsWith("*/")) {
-                            result.add(line.substring(start + 2, line.length() - 2));
-                        } else {
-                            result.add(line.substring(start + 2));
-                        }
-                        inMultiline = true;
-                    }
-                    else start = line.indexOf("//");
-                    if (start >= 0 && !inMultiline ) {
-                        result.add(line.substring(start + 2));
-                    }
-                }
-                else {
-                    int end = line.indexOf("*/");
-                    if (end >= 0) {
-                        inMultiline = false;
-                        if (end > 0) {
-                            result.add(line.substring(0, end));
-                        }
-                    }
-                    else {
-                        result.add(line);
-                    }
-                }
-            }
-        }
-        return String.join("\n", result);
-    }
-
-    private List<Tag> getTags(String header) {
-        if (header != null) {
-            header = parseComments(header);
-            return parseTags(header);
-        }
-
-        return null;
-    }
-
-    private Annotation getAnnotation(Element element) {
-        for (Object o : element.getAnnotation()) {
-            if (o instanceof Annotation) {
-                return (Annotation)o;
-            }
-        }
-
-        return null;
-    }
-
-    private Annotation buildAnnotation() {
-        Annotation annotation = af.createAnnotation();
-        return annotation;
-    }
-
-    private Annotation buildAnnotation(Chunk chunk) {
-        Annotation annotation = af.createAnnotation();
-        annotation.setS(buildNarrative(chunk));
-        return annotation;
-    }
-
-    private void addNarrativeToAnnotation(Annotation annotation, Chunk chunk) {
-        annotation.setS(buildNarrative(chunk));
-    }
-
-    private Narrative buildNarrative(Chunk chunk) {
-        Narrative narrative = af.createNarrative();
-        if (chunk.getElement() != null) {
-            narrative.setR(chunk.getElement().getLocalId());
-        }
-
-        if (chunk.hasChunks()) {
-            Narrative currentNarrative = null;
-            for (Chunk childChunk : chunk.getChunks()) {
-                Narrative chunkNarrative = buildNarrative(childChunk);
-                if (hasChunks(chunkNarrative)) {
-                    if (currentNarrative != null) {
-                        narrative.getContent().add(wrapNarrative(currentNarrative));
-                        currentNarrative = null;
-                    }
-                    narrative.getContent().add(wrapNarrative(chunkNarrative));
-                }
-                else {
-                    if (currentNarrative == null) {
-                        currentNarrative = chunkNarrative;
-                    }
-                    else {
-                        currentNarrative.getContent().addAll(chunkNarrative.getContent());
-                        if (currentNarrative.getR() == null) {
-                            currentNarrative.setR(chunkNarrative.getR());
-                        }
-                    }
-                }
-            }
-            if (currentNarrative != null) {
-                narrative.getContent().add(wrapNarrative(currentNarrative));
-            }
-        }
-        else {
-            String chunkContent = tokenStream.getText(chunk.getInterval());
-            if (chunk.isHeaderChunk()) {
-                chunkContent = stripLeading(chunkContent);
-            }
-            chunkContent = normalizeWhitespace(chunkContent);
-            narrative.getContent().add(chunkContent);
-        }
-
-        return narrative;
-    }
-
-    // TODO: Should just use String.stripLeading() but that is only available in 11+
-    private String stripLeading(String s) {
-        int index = 0;
-        while (index < s.length()) {
-            if (!Character.isWhitespace(s.charAt(index))) {
-                break;
-            }
-            index++;
-        }
-        if (index == s.length()) {
-            return "";
-        }
-        return s.substring(index);
-    }
-
-    private String normalizeWhitespace(String input) {
-        return input.replace("\r\n", "\n");
-    }
-
-    private boolean hasChunks(Narrative narrative) {
-        for (Serializable c : narrative.getContent()) {
-            if (!(c instanceof String)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private Serializable wrapNarrative(Narrative narrative) {
-        /*
-        TODO: Should be able to collapse narrative if the span doesn't have an attribute
-        That's what this code is doing, but it doesn't work and I don't have time to debug it
-        if (narrative.getR() == null) {
-            StringBuilder content = new StringBuilder();
-            boolean onlyStrings = true;
-            for (Serializable s : narrative.getContent()) {
-                if (s instanceof String) {
-                    content.append((String)s);
-                }
-                else {
-                    onlyStrings = false;
-                }
-            }
-            if (onlyStrings) {
-                return content.toString();
-            }
-        }
-        */
-        return new JAXBElement<>(
-                new QName("urn:hl7-org:cql-annotations:r1", "s"),
-                Narrative.class,
-                narrative);
-    }
-
-    @Override
-    public Object visit(ParseTree tree) {
-        boolean pushedChunk = pushChunk(tree);
-        Object o = null;
-        try {
-            // ERROR:
-            try {
-                o = super.visit(tree);
-            } catch (CqlIncludeException e) {
-                CqlCompilerException translatorException = new CqlCompilerException(e.getMessage(), getTrackBack(tree), e);
-                if (translatorException.getLocator() == null) {
-                    throw translatorException;
-                }
-                libraryBuilder.recordParsingException(translatorException);
-            } catch (CqlCompilerException e) {
-                if (e.getLocator() == null) {
-                    if (tree == null) {
-                        throw e;
-                    }
-                    e.setLocator(getTrackBack(tree));
-                }
-                libraryBuilder.recordParsingException(e);
-            } catch (Exception e) {
-                CqlCompilerException ex = null;
-                if (e.getMessage() == null) {
-                    ex = new CqlInternalException("Internal translator error.", getTrackBack(tree), e);
-                    if (tree == null) {
-                        throw ex;
-                    }
-                }
-                else {
-                    ex = new CqlSemanticException(e.getMessage(), getTrackBack(tree), e);
-                }
-
-                Exception rootCause = libraryBuilder.determineRootCause();
-                if (rootCause == null) {
-                    rootCause = ex;
-                    libraryBuilder.recordParsingException(ex);
-                    libraryBuilder.setRootCause(rootCause);
-                }
-                else {
-                    if (detailedErrors) {
-                        libraryBuilder.recordParsingException(ex);
-                    }
-                }
-                o = of.createNull();
-            }
-
-            if (o instanceof Trackable && !(tree instanceof cqlParser.LibraryContext)) {
-                this.track((Trackable) o, tree);
-        }
-        if (o instanceof Expression) {
-            addExpression((Expression) o);
-        }
-
-        return o;
-        } finally {
-            popChunk(tree, o, pushedChunk);
-            processTags(tree, o);
-        }
-    }
-
-    @Override
-    public Object visitLibrary(cqlParser.LibraryContext ctx) {
-
-        Object lastResult = null;
-        // NOTE: Need to set the library identifier here so the builder can begin the translation appropriately
-        VersionedIdentifier identifier = new VersionedIdentifier().withId(libraryInfo.getLibraryName()).withVersion(libraryInfo.getVersion());
-        if (libraryInfo.getNamespaceName() != null) {
-            identifier.setSystem(libraryBuilder.resolveNamespaceUri(libraryInfo.getNamespaceName(), true));
-        }
-        else if (libraryBuilder.getNamespaceInfo() != null) {
-            identifier.setSystem(libraryBuilder.getNamespaceInfo().getUri());
-        }
-        libraryBuilder.setLibraryIdentifier(identifier);
-        libraryBuilder.beginTranslation();
-        try {
-            // Loop through and call visit on each child (to ensure they are tracked)
-            for (int i = 0; i < ctx.getChildCount(); i++) {
-                ParseTree tree = ctx.getChild(i);
-                TerminalNode terminalNode = tree instanceof TerminalNode ? (TerminalNode)tree : null;
-                if (terminalNode != null && terminalNode.getSymbol().getType() == cqlLexer.EOF) {
-                    continue;
-                }
-
-                Object childResult = visit(tree);
-                // Only set the last result if we received something useful
-                if (childResult != null) {
-                    lastResult = childResult;
-                }
-            }
-
-            // Return last result (consistent with super implementation and helps w/ testing)
-            return lastResult;
-        }
-        finally {
-            libraryBuilder.endTranslation();
-        }
+        // Return last result (consistent with super implementation and helps w/ testing)
+        return lastResult;
     }
 
     @Override
@@ -784,7 +133,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                             unqualifiedIdentifier, localIdentifier));
         }
 
-        Model model = getModel(modelNamespace, unqualifiedIdentifier, parseString(ctx.versionSpecifier()), localIdentifier);
+        // The model was already calculated by CqlPreprocessorVisitor
         return libraryBuilder.resolveUsingRef(localIdentifier);
     }
 
@@ -887,108 +236,16 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return param;
     }
 
-    private List<String> parseQualifiers(cqlParser.NamedTypeSpecifierContext ctx) {
-        List<String> qualifiers = new ArrayList<>();
-        if (ctx.qualifier() != null) {
-            for (cqlParser.QualifierContext qualifierContext : ctx.qualifier()) {
-                String qualifier = parseString(qualifierContext);
-                qualifiers.add(qualifier);
-            }
-        }
-        return qualifiers;
-    }
-
-    private String getModelIdentifier(List<String> qualifiers) {
-        return qualifiers.size() > 0 ? qualifiers.get(0) : null;
-    }
-
-    private String getTypeIdentifier(List<String> qualifiers, String identifier) {
-        if (qualifiers.size() > 1) {
-            String result = null;
-            for (int i = 1; i < qualifiers.size(); i++) {
-                result = result == null ? qualifiers.get(i) : (result + "." + qualifiers.get(i));
-            }
-            return result + "." + identifier;
-        }
-
-        return identifier;
-    }
-
-    @Override
-    public NamedTypeSpecifier visitNamedTypeSpecifier(cqlParser.NamedTypeSpecifierContext ctx) {
-        List<String> qualifiers = parseQualifiers(ctx);
-        String modelIdentifier = getModelIdentifier(qualifiers);
-        String identifier = getTypeIdentifier(qualifiers, parseString(ctx.referentialOrTypeNameIdentifier()));
-
-        DataType resultType = libraryBuilder.resolveTypeName(modelIdentifier, identifier);
-        NamedTypeSpecifier result = of.createNamedTypeSpecifier()
-                .withName(libraryBuilder.dataTypeToQName(resultType));
-
-        // Fluent API would be nice here, but resultType isn't part of the model so...
-        result.setResultType(resultType);
-
-        return result;
-    }
-
     @Override
     public TupleElementDefinition visitTupleElementDefinition(cqlParser.TupleElementDefinitionContext ctx) {
         TupleElementDefinition result = of.createTupleElementDefinition()
                 .withName(parseString(ctx.referentialIdentifier()))
                 .withElementType(parseTypeSpecifier(ctx.typeSpecifier()));
 
-        if (includeDeprecatedElements) {
+        if (getIncludeDeprecatedElements()) {
             result.setType(result.getElementType());
         }
 
-        return result;
-    }
-
-    @Override
-    public Object visitTupleTypeSpecifier(cqlParser.TupleTypeSpecifierContext ctx) {
-        TupleType resultType = new TupleType();
-        TupleTypeSpecifier typeSpecifier = of.createTupleTypeSpecifier();
-        for (cqlParser.TupleElementDefinitionContext definitionContext : ctx.tupleElementDefinition()) {
-            TupleElementDefinition element = (TupleElementDefinition)visit(definitionContext);
-            resultType.addElement(new TupleTypeElement(element.getName(), element.getElementType().getResultType()));
-            typeSpecifier.getElement().add(element);
-        }
-
-        typeSpecifier.setResultType(resultType);
-
-        return typeSpecifier;
-    }
-
-    @Override
-    public ChoiceTypeSpecifier visitChoiceTypeSpecifier(cqlParser.ChoiceTypeSpecifierContext ctx) {
-        ArrayList<TypeSpecifier> typeSpecifiers = new ArrayList<TypeSpecifier>();
-        ArrayList<DataType> types = new ArrayList<DataType>();
-        for (cqlParser.TypeSpecifierContext typeSpecifierContext : ctx.typeSpecifier()) {
-            TypeSpecifier typeSpecifier = parseTypeSpecifier(typeSpecifierContext);
-            typeSpecifiers.add(typeSpecifier);
-            types.add(typeSpecifier.getResultType());
-        }
-        ChoiceTypeSpecifier result = of.createChoiceTypeSpecifier().withChoice(typeSpecifiers);
-        if (includeDeprecatedElements) {
-            result.getType().addAll(typeSpecifiers);
-        }
-        ChoiceType choiceType = new ChoiceType(types);
-        result.setResultType(choiceType);
-        return result;
-    }
-
-    @Override
-    public IntervalTypeSpecifier visitIntervalTypeSpecifier(cqlParser.IntervalTypeSpecifierContext ctx) {
-        IntervalTypeSpecifier result = of.createIntervalTypeSpecifier().withPointType(parseTypeSpecifier(ctx.typeSpecifier()));
-        IntervalType intervalType = new IntervalType(result.getPointType().getResultType());
-        result.setResultType(intervalType);
-        return result;
-    }
-
-    @Override
-    public ListTypeSpecifier visitListTypeSpecifier(cqlParser.ListTypeSpecifierContext ctx) {
-        ListTypeSpecifier result = of.createListTypeSpecifier().withElementType(parseTypeSpecifier(ctx.typeSpecifier()));
-        ListType listType = new ListType(result.getElementType().getResultType());
-        result.setResultType(listType);
         return result;
     }
 
@@ -1135,6 +392,34 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return cd;
     }
 
+    @Override
+    public NamedTypeSpecifier visitNamedTypeSpecifier(cqlParser.NamedTypeSpecifierContext ctx) {
+        List<String> qualifiers = parseQualifiers(ctx);
+        String modelIdentifier = getModelIdentifier(qualifiers);
+        String identifier = getTypeIdentifier(qualifiers, parseString(ctx.referentialOrTypeNameIdentifier()));
+
+        final ResultWithPossibleError<NamedTypeSpecifier > retrievedResult = libraryBuilder.getNamedTypeSpecifierResult(String.format("%s:%s", modelIdentifier, identifier));
+
+        if (retrievedResult != null) {
+            if (retrievedResult.hasError()) {
+                return null;
+            }
+            return retrievedResult.getUnderlyingResultIfExists();
+        }
+
+        DataType resultType = libraryBuilder.resolveTypeName(modelIdentifier, identifier);
+        if (null == resultType) {
+            throw new CqlCompilerException(String.format("Could not find type for model: %s and name: %s", modelIdentifier, identifier));
+        }
+        NamedTypeSpecifier result = of.createNamedTypeSpecifier()
+                .withName(libraryBuilder.dataTypeToQName(resultType));
+
+        // Fluent API would be nice here, but resultType isn't part of the model so...
+        result.setResultType(resultType);
+
+        return result;
+    }
+
     private boolean isUnfilteredContext(String contextName) {
         return contextName.equals("Unfiltered") || (libraryBuilder.isCompatibilityLevel3() && contextName.equals("Population"));
     }
@@ -1144,7 +429,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         String modelIdentifier = parseString(ctx.modelIdentifier());
         String unqualifiedIdentifier = parseString(ctx.identifier());
 
-        currentContext = modelIdentifier != null ? modelIdentifier + "." + unqualifiedIdentifier : unqualifiedIdentifier;
+        setCurrentContext(modelIdentifier != null ? modelIdentifier + "." + unqualifiedIdentifier : unqualifiedIdentifier);
 
         if (!isUnfilteredContext(unqualifiedIdentifier)) {
             ModelContext modelContext = libraryBuilder.resolveContextName(modelIdentifier, unqualifiedIdentifier);
@@ -1175,7 +460,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
                         modelContextDefinition = of.createExpressionDef()
                                 .withName(unqualifiedIdentifier)
-                                .withContext(currentContext)
+                                .withContext(getCurrentContext())
                                 .withExpression(of.createSingletonFrom().withOperand(contextRetrieve));
                         track(modelContextDefinition, ctx);
                         ((ExpressionDef)modelContextDefinition).getExpression().setResultType(contextType);
@@ -1187,7 +472,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 else {
                     modelContextDefinition = of.createExpressionDef()
                             .withName(unqualifiedIdentifier)
-                            .withContext(currentContext)
+                            .withContext(getCurrentContext())
                             .withExpression(of.createNull());
                     track(modelContextDefinition, ctx);
                     ((ExpressionDef)modelContextDefinition).getExpression().setResultType(libraryBuilder.resolveTypeName("System", "Any"));
@@ -1198,13 +483,13 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             }
         }
 
-        ContextDef contextDef = of.createContextDef().withName(currentContext);
+        ContextDef contextDef = of.createContextDef().withName(getCurrentContext());
         track(contextDef, ctx);
         if (libraryBuilder.isCompatibleWith("1.5")) {
             libraryBuilder.addContext(contextDef);
         }
 
-        return currentContext;
+        return getCurrentContext();
     }
 
     private boolean isImplicitContextExpressionDef(ExpressionDef def) {
@@ -1235,14 +520,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 removeImplicitContextExpressionDef(def);
                 def = null;
             }
-            libraryBuilder.pushExpressionContext(currentContext);
+            libraryBuilder.pushExpressionContext(getCurrentContext());
             try {
                 libraryBuilder.pushExpressionDefinition(identifier);
                 try {
                     def = of.createExpressionDef()
                             .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
                             .withName(identifier)
-                            .withContext(currentContext)
+                            .withContext(getCurrentContext())
                             .withExpression((Expression) visit(ctx.expression()));
                     if (def.getExpression() != null) {
                         def.setResultType(def.getExpression().getResultType());
@@ -1330,7 +615,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public Object visitInstanceSelector(cqlParser.InstanceSelectorContext ctx) {
         Instance instance = of.createInstance();
-        NamedTypeSpecifier classTypeSpecifier = visitNamedTypeSpecifier(ctx.namedTypeSpecifier());
+        NamedTypeSpecifier classTypeSpecifier = (NamedTypeSpecifier)visitNamedTypeSpecifier(ctx.namedTypeSpecifier());
         instance.setClassType(classTypeSpecifier.getName());
         instance.setResultType(classTypeSpecifier.getResultType());
 
@@ -3472,23 +2757,96 @@ DATETIME
 
         // Only expand a choice-valued code path if no comparator is specified
         // Otherwise, a code comparator will always choose a specific representation
+        boolean hasFHIRHelpers = libraryInfo.resolveLibraryName("FHIRHelpers") != null;
         if (property != null && property.getResultType() instanceof ChoiceType && codeComparator == null) {
             for (DataType propertyType : ((ChoiceType)property.getResultType()).getTypes()) {
-                Retrieve retrieve = buildRetrieve(ctx, useStrictRetrieveTyping, namedType, classType, codePath,
-                        codeComparator, property, propertyType, propertyException, terminology);
-                retrieves.add(retrieve);
-                retrieve.setResultType(new ListType((DataType) namedType));
+                if (hasFHIRHelpers && propertyType instanceof NamedType && ((NamedType)propertyType).getSimpleName().equals("Reference") && namedType.getSimpleName().equals("MedicationRequest")) {
+                    // TODO: This is a model-specific special case to support QICore
+                    // This functionality needs to be generalized to a retrieve mapping in the model info
+                    // But that requires a model info change (to represent references, right now the model info only includes context relationships)
+                    // The reference expands to [MedicationRequest] MR with [Medication] M such that M.id = Last(Split(MR.medication.reference, '/')) and M.code in <valueset>
+                    Retrieve mrRetrieve = buildRetrieve(ctx, useStrictRetrieveTyping, namedType, classType, null, null, null, null, null, null);
+                    retrieves.add(mrRetrieve);
+                    mrRetrieve.setResultType(new ListType((DataType) namedType));
+                    DataType mDataType = libraryBuilder.resolveTypeName(model, "Medication");
+                    ClassType mClassType = (ClassType)mDataType;
+                    NamedType mNamedType = mClassType;
+                    Retrieve mRetrieve = buildRetrieve(ctx, useStrictRetrieveTyping, mNamedType, mClassType, null, null, null, null, null, null);
+                    retrieves.add(mRetrieve);
+                    mRetrieve.setResultType(new ListType((DataType) namedType));
+                    Query q = of.createQuery();
+                    AliasedQuerySource aqs = of.createAliasedQuerySource().withExpression(mrRetrieve).withAlias("MR");
+                    track(aqs, ctx);
+                    aqs.setResultType(aqs.getExpression().getResultType());
+                    q.getSource().add(aqs);
+                    track(q, ctx);
+                    q.setResultType(aqs.getResultType());
+                    With w = of.createWith().withExpression(mRetrieve).withAlias("M");
+                    track(w, ctx);
+                    w.setResultType(w.getExpression().getResultType());
+                    q.getRelationship().add(w);
+                    String idPath = "id";
+                    DataType idType = libraryBuilder.resolvePath(mDataType, idPath);
+                    Property idProperty = libraryBuilder.buildProperty("M", idPath, false, idType);
+                    String refPath = "medication.reference";
+                    DataType refType = libraryBuilder.resolvePath(dataType, refPath);
+                    Property refProperty = libraryBuilder.buildProperty("MR", refPath, false, refType);
+                    Split split = of.createSplit().withStringToSplit(refProperty).withSeparator(libraryBuilder.createLiteral("/"));
+                    libraryBuilder.resolveCall("System", "Split", new SplitInvocation(split));
+                    Last last = of.createLast().withSource(split);
+                    libraryBuilder.resolveCall("System", "Last", new LastInvocation(last));
+                    Equal e = of.createEqual().withOperand(idProperty, last);
+                    libraryBuilder.resolveBinaryCall("System", "Equal", e);
 
-                if (result == null) {
-                    result = retrieve;
+                    DataType mCodeType = libraryBuilder.resolvePath((DataType)mNamedType, "code");
+                    Property mProperty = of.createProperty().withPath("code");
+                    mProperty.setResultType(mCodeType);
+                    String mCodeComparator = "~";
+                    if (terminology.getResultType() instanceof ListType) {
+                        mCodeComparator = "in";
+
+                    }
+                    else if (libraryBuilder.isCompatibleWith("1.5")) {
+                        mCodeComparator = terminology.getResultType().isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary")) ? "in" : "~";
+                    }
+
+                    Expression terminologyComparison = null;
+                    if (mCodeComparator.equals("in")) {
+                        terminologyComparison = libraryBuilder.resolveIn(mProperty, terminology);
+                    }
+                    else {
+                        BinaryExpression equivalent = of.createEquivalent().withOperand(mProperty, terminology);
+                        libraryBuilder.resolveBinaryCall("System", "Equivalent", equivalent);
+                        terminologyComparison = equivalent;
+                    }
+                    And a = of.createAnd().withOperand(e, terminologyComparison);
+                    libraryBuilder.resolveBinaryCall("System", "And", a);
+                    w.withSuchThat(a);
+
+                    if (result == null) {
+                        result = q;
+                    }
+                    else {
+                        track(q, ctx);
+                        result = libraryBuilder.resolveUnion(result, q);
+                    }
                 }
                 else {
-                    // Should only include the result if it resolved appropriately with the codeComparator
-                    // Allowing it to go through for now
-                    //if (retrieve.getCodeProperty() != null && retrieve.getCodeComparator() != null && retrieve.getCodes() != null) {
+                    Retrieve retrieve = buildRetrieve(ctx, useStrictRetrieveTyping, namedType, classType, codePath,
+                            codeComparator, property, propertyType, propertyException, terminology);
+                    retrieves.add(retrieve);
+                    retrieve.setResultType(new ListType((DataType) namedType));
+
+                    if (result == null) {
+                        result = retrieve;
+                    } else {
+                        // Should only include the result if it resolved appropriately with the codeComparator
+                        // Allowing it to go through for now
+                        //if (retrieve.getCodeProperty() != null && retrieve.getCodeComparator() != null && retrieve.getCodes() != null) {
                         track(retrieve, ctx);
                         result = libraryBuilder.resolveUnion(result, retrieve);
-                    //}
+                        //}
+                    }
                 }
             }
         }
@@ -3520,7 +2878,7 @@ DATETIME
             retrieve.setContext(contextExpression);
         }
 
-        if (ctx.terminology() != null) {
+        if (terminology != null) {
             // Resolve the terminology target using an in or ~ operator
             try {
                 if (codeComparator == null) {
@@ -3672,7 +3030,7 @@ DATETIME
     @Override
     public Object visitSourceClause(cqlParser.SourceClauseContext ctx) {
         boolean hasFrom = "from".equals(ctx.getChild(0).getText());
-        if (!hasFrom && fromKeywordRequired) {
+        if (!hasFrom && isFromKeywordRequired()) {
             throw new IllegalArgumentException("The from keyword is required for queries.");
         }
 
@@ -3726,7 +3084,7 @@ DATETIME
                 }
 
                 Expression where = ctx.whereClause() != null ? (Expression) visit(ctx.whereClause()) : null;
-                if (dateRangeOptimization && where != null) {
+                if (getDateRangeOptimization() && where != null) {
                     for (AliasedQuerySource aqs : sources) {
                         where = optimizeDateRangeInQuery(where, aqs);
                     }
@@ -4361,8 +3719,7 @@ DATETIME
         if (result == null) {
             ExpressionDefinitionInfo expressionInfo = libraryInfo.resolveExpressionReference(identifier);
             if (expressionInfo != null) {
-                String saveContext = currentContext;
-                currentContext = expressionInfo.getContext();
+                String saveContext = saveCurrentContext(expressionInfo.getContext());
                 try {
                     Stack<Chunk> saveChunks = chunks;
                     chunks = new Stack<Chunk>();
@@ -4382,7 +3739,7 @@ DATETIME
                         forwards.pop();
                     }
                 } finally {
-                    currentContext = saveContext;
+                    setCurrentContext(saveContext);
                 }
             }
 
@@ -4430,37 +3787,73 @@ DATETIME
 
         functionName = ensureSystemFunctionName(libraryName, functionName);
 
-        // If the function cannot be resolved in the builder and the call is to a function in the current library,
-        // check for forward declarations of functions
-        boolean checkForward = libraryName == null || libraryName.equals("") || libraryName.equals(this.libraryInfo.getLibraryName());
-        Expression result = libraryBuilder.resolveFunction(libraryName, functionName, expressions, !checkForward, allowPromotionAndDemotion, allowFluent);
-        if (result == null) {
-            Iterable<FunctionDefinitionInfo> functionInfos = libraryInfo.resolveFunctionReference(functionName);
-            if (functionInfos != null) {
-                for (FunctionDefinitionInfo functionInfo : functionInfos) {
-                    String saveContext = currentContext;
-                    currentContext = functionInfo.getContext();
+        // 1. Ensure all overloads of the function are registered with the operator map
+        // 2. Resolve the function, allowing for the case that operator map is a skeleton
+        // 3. If the resolution from the operator map is a skeleton, compile the function body to determine the result type
+
+        // Find all functionDefinitionInfo instances with the given name
+        // register each functionDefinitionInfo
+        if (libraryName == null || libraryName.equals("") || libraryName.equals(this.libraryInfo.getLibraryName())) {
+            Iterable<FunctionDefinitionInfo> fdis = libraryInfo.resolveFunctionReference(functionName);
+            if (fdis != null) {
+                for (FunctionDefinitionInfo fdi : fdis) {
+                    String saveContext = saveCurrentContext(fdi.getContext());
                     try {
-                        Stack<Chunk> saveChunks = chunks;
-                        chunks = new Stack<Chunk>();
-                        forwardFunctions.push(functionInfo);
-                        try {
-                            // Have to call the visit to allow the outer processing to occur
-                            visit(functionInfo.getDefinition());
-                        }
-                        finally {
-                            forwardFunctions.pop();
-                            chunks = saveChunks;
-                        }
+                        registerFunctionDefinition(fdi.getDefinition());
                     } finally {
-                        currentContext = saveContext;
+                        this.setCurrentContext(saveContext);
                     }
                 }
             }
-            result = libraryBuilder.resolveFunction(libraryName, functionName, expressions, mustResolve, allowPromotionAndDemotion, allowFluent);
         }
 
-        return result;
+        Invocation result = libraryBuilder.resolveFunction(libraryName, functionName, expressions, mustResolve, allowPromotionAndDemotion, allowFluent);
+
+        if (result instanceof FunctionRefInvocation) {
+            FunctionRefInvocation invocation = (FunctionRefInvocation)result;
+            if (invocation.getResolution() != null
+                    && invocation.getResolution().getOperator() != null
+                    && (invocation.getResolution().getOperator().getLibraryName() == null
+                        || invocation.getResolution().getOperator().getLibraryName().equals(libraryBuilder.getCompiledLibrary().getIdentifier().getId()))) {
+                Operator op = invocation.getResolution().getOperator();
+                FunctionHeader fh = getFunctionHeader(op);
+                if (!fh.getIsCompiled()) {
+                    cqlParser.FunctionDefinitionContext ctx = getFunctionDefinitionContext(fh);
+                    String saveContext = saveCurrentContext(fh.getFunctionDef().getContext());
+                    Stack<Chunk> saveChunks = chunks;
+                    chunks = new Stack<Chunk>();
+                    try {
+                        FunctionDef fd = compileFunctionDefinition(ctx);
+                        op.setResultType(fd.getResultType());
+                        invocation.setResultType(op.getResultType());
+                    }
+                    finally {
+                        setCurrentContext(saveContext);
+                        this.chunks = saveChunks;
+                    }
+                }
+            }
+        }
+
+        if (mustResolve) {
+            // Extra internal error handling, these should never be hit if the two-phase operator compile is working as expected
+            if (result == null) {
+                throw new IllegalArgumentException("Internal error: could not resolve function");
+            }
+
+            if (result.getExpression() == null) {
+                throw new IllegalArgumentException("Internal error: could not resolve invocation expression");
+            }
+
+            if (result.getExpression().getResultType() == null) {
+                throw new IllegalArgumentException("Internal error: could not determine result type");
+            }
+        }
+
+        if (result == null) {
+            return null;
+        }
+        return result.getExpression();
     }
 
     public Expression resolveFunctionOrQualifiedFunction(String identifier, cqlParser.ParamListContext paramListCtx) {
@@ -4474,10 +3867,13 @@ DATETIME
 
                 // NOTE: FHIRPath method invocation
                 // If the target is an expression, resolve as a method invocation
-                if (target instanceof Expression && methodInvocation) {
+                if (target instanceof Expression && isMethodInvocationEnabled()) {
                     return systemMethodResolver.resolveMethod((Expression)target, identifier, paramListCtx, true);
                 }
 
+                if (!isMethodInvocationEnabled()) {
+                    throw new CqlCompilerException(String.format("The identifier %s could not be resolved as an invocation because method-style invocation is disabled.", identifier), CqlCompilerException.ErrorSeverity.Error);
+                }
                 throw new IllegalArgumentException(String.format("Invalid invocation target: %s", target.getClass().getName()));
             }
             finally {
@@ -4522,107 +3918,156 @@ DATETIME
         return visit(ctx.expression());
     }
 
-    public Object internalVisitFunctionDefinition(cqlParser.FunctionDefinitionContext ctx) {
-        FunctionDef fun = of.createFunctionDef()
-                .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
-                .withName(parseString(ctx.identifierOrFunctionIdentifier()));
+    private FunctionHeader getFunctionHeader(cqlParser.FunctionDefinitionContext ctx) {
+        FunctionHeader fh = functionHeaders.get(ctx);
+        if (fh == null) {
 
-        if (ctx.fluentModifier() != null) {
-            libraryBuilder.checkCompatibilityLevel("Fluent functions", "1.5");
-            fun.setFluent(true);
+            final Stack<Chunk> saveChunks = chunks;
+            chunks = new Stack<>();
+            try {
+                // Have to call the visit to allow the outer processing to occur
+                fh = parseFunctionHeader(ctx);
+            } finally {
+                chunks = saveChunks;
+            }
+
+            functionHeaders.put(ctx, fh);
+            functionDefinitions.put(fh, ctx);
+            functionHeadersByDef.put(fh.getFunctionDef(), fh);
         }
+        return fh;
+    }
 
-        if (ctx.operandDefinition() != null) {
-            for (cqlParser.OperandDefinitionContext opdef : ctx.operandDefinition()) {
-                TypeSpecifier typeSpecifier = parseTypeSpecifier(opdef.typeSpecifier());
-                fun.getOperand().add(
-                        (OperandDef)of.createOperandDef()
-                                .withName(parseString(opdef.referentialIdentifier()))
-                                .withOperandTypeSpecifier(typeSpecifier)
-                                .withResultType(typeSpecifier.getResultType())
-                );
+    private FunctionDef getFunctionDef(Operator op) {
+        FunctionDef target = null;
+        List<DataType> st = new ArrayList<>();
+        for (DataType dt : op.getSignature().getOperandTypes()) {
+            st.add(dt);
+        }
+        Iterable<FunctionDef> fds = libraryBuilder.getCompiledLibrary().resolveFunctionRef(op.getName(), st);
+        for (FunctionDef fd : fds) {
+            if (fd.getOperand().size() == op.getSignature().getSize()) {
+                Iterator<DataType> signatureTypes = op.getSignature().getOperandTypes().iterator();
+                boolean signaturesMatch = true;
+                for (int i = 0; i < fd.getOperand().size(); i++) {
+                    if (!DataTypes.equal(fd.getOperand().get(i).getResultType(), signatureTypes.next())) {
+                        signaturesMatch = false;
+                    }
+                }
+                if (signaturesMatch) {
+                    if (target == null) {
+                        target = fd;
+                    }
+                    else {
+                        throw new IllegalArgumentException(String.format("Internal error attempting to resolve function header for %s", op.getName()));
+                    }
+                }
             }
         }
 
-        TypeSpecifier resultType = null;
-        if (ctx.typeSpecifier() != null) {
-            resultType = parseTypeSpecifier(ctx.typeSpecifier());
+        return target;
+    }
+
+    private FunctionHeader getFunctionHeaderByDef(FunctionDef fd) {
+        // Shouldn't need to do this, something about the hashCode implementation of FunctionDef is throwing this off,
+        // Don't have time to investigate right now, this should work fine, could potentially be improved
+        for (Map.Entry<FunctionDef, FunctionHeader> entry : functionHeadersByDef.entrySet()) {
+            if (entry.getKey() == fd) {
+                return entry.getValue();
+            }
         }
 
-        if (!libraryBuilder.getCompiledLibrary().contains(fun)) {
-            if (ctx.functionBody() != null) {
-                libraryBuilder.beginFunctionDef(fun);
+        return null;
+    }
+
+    private FunctionHeader getFunctionHeader(Operator op) {
+        FunctionDef fd = getFunctionDef(op);
+        if (fd == null) {
+            throw new IllegalArgumentException(String.format("Could not resolve function header for operator %s", op.getName()));
+        }
+        FunctionHeader result = getFunctionHeaderByDef(fd);
+        //FunctionHeader result = functionHeadersByDef.get(fd);
+        if (result == null) {
+            throw new IllegalArgumentException(String.format("Could not resolve function header for operator %s", op.getName()));
+        }
+        return result;
+    }
+
+    private cqlParser.FunctionDefinitionContext getFunctionDefinitionContext(FunctionHeader fh) {
+        cqlParser.FunctionDefinitionContext ctx = functionDefinitions.get(fh);
+        if (ctx == null) {
+            throw new IllegalArgumentException(String.format("Could not resolve function definition context for function header %s", fh.getFunctionDef().getName()));
+        }
+        return ctx;
+    }
+
+    public void registerFunctionDefinition(cqlParser.FunctionDefinitionContext ctx) {
+        FunctionHeader fh = getFunctionHeader(ctx);
+        if (!libraryBuilder.getCompiledLibrary().contains(fh.getFunctionDef())) {
+            libraryBuilder.addExpression(fh.getFunctionDef());
+        }
+    }
+
+    public FunctionDef compileFunctionDefinition(cqlParser.FunctionDefinitionContext ctx) {
+        FunctionHeader fh = getFunctionHeader(ctx);
+
+        final FunctionDef fun = fh.getFunctionDef();
+        final TypeSpecifier resultType = fh.getResultType();
+        final Operator op = libraryBuilder.resolveFunctionDefinition(fh.getFunctionDef());
+        if (op == null) {
+            throw new IllegalArgumentException(String.format("Internal error: Could not resolve operator map entry for function header %s", fh.getMangledName()));
+        }
+
+        if (ctx.functionBody() != null) {
+            libraryBuilder.beginFunctionDef(fun);
+            try {
+                libraryBuilder.pushExpressionContext(getCurrentContext());
                 try {
-                    libraryBuilder.pushExpressionContext(currentContext);
+                    libraryBuilder.pushExpressionDefinition(fh.getMangledName());
                     try {
-                        libraryBuilder.pushExpressionDefinition(String.format("%s()", fun.getName()));
-                        try {
-                            fun.setExpression(parseExpression(ctx.functionBody()));
-                        } finally {
-                            libraryBuilder.popExpressionDefinition();
-                        }
+                        fun.setExpression(parseExpression(ctx.functionBody()));
                     } finally {
-                        libraryBuilder.popExpressionContext();
+                        libraryBuilder.popExpressionDefinition();
                     }
                 } finally {
-                    libraryBuilder.endFunctionDef();
+                    libraryBuilder.popExpressionContext();
                 }
-
-                if (resultType != null && fun.getExpression() != null && fun.getExpression().getResultType() != null) {
-                    if (!DataTypes.subTypeOf(fun.getExpression().getResultType(), resultType.getResultType())) {
-                        // ERROR:
-                        throw new IllegalArgumentException(String.format("Function %s has declared return type %s but the function body returns incompatible type %s.",
-                                fun.getName(), resultType.getResultType(), fun.getExpression().getResultType()));
-                    }
-                }
-
-                fun.setResultType(fun.getExpression().getResultType());
+            } finally {
+                libraryBuilder.endFunctionDef();
             }
-            else {
-                fun.setExternal(true);
-                if (resultType == null) {
+
+            if (resultType != null && fun.getExpression() != null && fun.getExpression().getResultType() != null) {
+                if (!DataTypes.subTypeOf(fun.getExpression().getResultType(), resultType.getResultType())) {
                     // ERROR:
-                    throw new IllegalArgumentException(String.format("Function %s is marked external but does not declare a return type.", fun.getName()));
+                    throw new IllegalArgumentException(String.format("Function %s has declared return type %s but the function body returns incompatible type %s.",
+                            fun.getName(), resultType.getResultType(), fun.getExpression().getResultType()));
                 }
-                fun.setResultType(resultType.getResultType());
             }
 
-            fun.setContext(currentContext);
-            if (fun.getResultType() != null) {
-                libraryBuilder.addExpression(fun);
-            }
+            fun.setResultType(fun.getExpression().getResultType());
+            op.setResultType(fun.getResultType());
         }
+        else {
+            fun.setExternal(true);
+            if (resultType == null) {
+                // ERROR:
+                throw new IllegalArgumentException(String.format("Function %s is marked external but does not declare a return type.", fun.getName()));
+            }
+            fun.setResultType(resultType.getResultType());
+            op.setResultType(fun.getResultType());
+        }
+
+        fun.setContext(getCurrentContext());
+        fh.setIsCompiled();
 
         return fun;
     }
 
     @Override
     public Object visitFunctionDefinition(cqlParser.FunctionDefinitionContext ctx) {
-        FunctionDef result = (FunctionDef)internalVisitFunctionDefinition(ctx);
-        Operator operator = Operator.fromFunctionDef(result);
-        if (forwardFunctions.isEmpty() || !forwardFunctions.peek().getName().equals(operator.getName())) {
-            Set<Signature> definedSignatures = definedFunctionDefinitions.get(operator.getName());
-            if (definedSignatures == null) {
-                definedSignatures = new HashSet<>();
-                definedFunctionDefinitions.put(operator.getName(), definedSignatures);
-            }
-
-            if (definedSignatures.contains(operator.getSignature())) {
-                throw new IllegalArgumentException(String.format("A function named %s with the same type of arguments is already defined in this library.", operator.getName()));
-            }
-
-            definedSignatures.add(operator.getSignature());
-        }
-
-        return result;
-    }
-
-    private AccessModifier parseAccessModifier(ParseTree pt) {
-        return pt == null ? AccessModifier.PUBLIC : (AccessModifier)visit(pt);
-    }
-
-    public String parseString(ParseTree pt) {
-        return StringEscapeUtils.unescapeCql(pt == null ? null : (String) visit(pt));
+        registerFunctionDefinition(ctx);
+        FunctionDef fun = compileFunctionDefinition(ctx);
+        return fun;
     }
 
     private Expression parseLiteralExpression(ParseTree pt) {
@@ -4639,10 +4084,6 @@ DATETIME
         return pt == null ? null : (Expression) visit(pt);
     }
 
-    private TypeSpecifier parseTypeSpecifier(ParseTree pt) {
-        return pt == null ? null : (TypeSpecifier) visit(pt);
-    }
-
     private boolean isBooleanLiteral(Expression expression, Boolean bool) {
         boolean ret = false;
         if (expression instanceof Literal) {
@@ -4653,10 +4094,6 @@ DATETIME
             }
         }
         return ret;
-    }
-
-    private void addExpression(Expression expression) {
-        expressions.add(expression);
     }
 
     private TrackBack getTrackBack(ParseTree tree) {
@@ -4692,11 +4129,11 @@ DATETIME
     }
 
     private void decorate(Element element, TrackBack tb) {
-        if (locate && tb != null) {
+        if (locatorsEnabled() && tb != null) {
             element.setLocator(tb.toLocator());
         }
 
-        if (resultTypes && element.getResultType() != null) {
+        if (resultTypesEnabled() && element.getResultType() != null) {
             if (element.getResultType() instanceof NamedType) {
                 element.setResultTypeName(libraryBuilder.dataTypeToQName(element.getResultType()));
             }

@@ -5,9 +5,7 @@ plugins {
 dependencies {
     api project(':model')
     api project(':elm')
-    implementation 'org.apache.commons:commons-text:1.9'
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.13.2'
-    implementation 'com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.13.2'
-    // needs javax.json.JsonException when using SAXUnmarshaller.getNewXMLReader
-    implementation 'org.glassfish:javax.json:1.0.4'
+    implementation 'org.apache.commons:commons-text:1.10.0'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.15.2'
+    implementation 'com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations:2.15.2'
 }

@@ -88,7 +88,7 @@ public class CachingModelResolverDecorator implements ModelResolver {
           .computeIfAbsent(pn, p -> new ConcurrentHashMap<>());
 
       var result = packageTypeResolutions
-          .computeIfAbsent(valueClass, t -> Optional.ofNullable(this.innerResolver.resolveType(t)));
+          .computeIfAbsent(valueClass, t -> Optional.ofNullable(this.innerResolver.resolveType(value)));
 
       if (result.isPresent()) {
         return result.get();
@@ -116,6 +116,11 @@ public class CachingModelResolverDecorator implements ModelResolver {
   @Override
   public Boolean objectEquivalent(Object left, Object right) {
     return this.innerResolver.objectEquivalent(left, right);
+  }
+
+  @Override
+  public String resolveId(Object target) {
+    return innerResolver.resolveId(target);
   }
 
   @Override

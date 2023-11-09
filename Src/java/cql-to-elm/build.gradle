@@ -1,27 +1,20 @@
 plugins {
     id 'cql.library-conventions'
+    id 'cql.xjc-conventions'
 }
 
 dependencies {
     api project(':cql')
     api project(':model')
     api project(':elm')
+    api 'org.fhir:ucum:1.0.8'
+    api 'org.apache.commons:commons-text:1.10.0'
 
-    // The FHIR ucum service depends on an
-    // XML pull-parser being present on the classpath, and have a compile-time reference to xpp3.
-    // However, some platfoms such as Android provide their own pull-parser implementations.
-    // Additionally, The xpp3.xpp3 dependency includes the javax.xml packagename, which is invalid in
-    // Java 9+ because split packages (i.e. the same packagename being available in multipe jar) are
-    // disallowed. For those reasons xpp3 is excluded here, and included as a runtime dependency for
-    // tests. Users of the CQL translator will need to supply their own implementation or add xpp3
-    // at runtime.
-    api ('org.fhir:ucum:1.0.3') {
-        exclude group: 'xpp3'
-    }
-
-    implementation 'org.apache.commons:commons-text:1.9'
-    implementation 'com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.13.2'
-
+    // TODO: This dependencies are required due the the fact that the CqlTranslatorOptionsMapper lives
+    // in the cql-to-elm project. Ideally, we'd factor out all serialization depedencies into common
+    // libraries such that we could swap out jackson for something else. In the meantime, these are
+    // "implementation" dependencies so that they are not exported downstream.
+    implementation 'com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations:2.15.2'
     testImplementation project(':elm-jackson')
     testImplementation project(':model-jackson')
     testImplementation project(':quick')

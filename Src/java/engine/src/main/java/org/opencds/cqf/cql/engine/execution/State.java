@@ -216,16 +216,25 @@ public class State {
     }
 
     public void setContextValue(String context, Object contextValue) {
-        contextValues.put(context, contextValue);
-        this.cache.getExpressions().clear();
+        if (! contextValues.containsKey(context) || ! contextValues.get(context).equals(contextValue)) {
+            contextValues.put(context, contextValue);
+            cache.getExpressions().clear();
+        }
     }
 
-    public void enterContext(String context) {
-        currentContext.push(context);
+    public boolean enterContext(String context) {
+        if (context != null) {
+            currentContext.push(context);
+            return true;
+        }
+
+        return false;
     }
 
-    public void exitContext() {
-        currentContext.pop();
+    public void exitContext(boolean isEnteredContext) {
+        if (isEnteredContext) {
+            currentContext.pop();
+        }
     }
 
     public String getCurrentContext() {

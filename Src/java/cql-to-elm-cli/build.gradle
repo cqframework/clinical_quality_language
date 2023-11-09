@@ -14,8 +14,6 @@ dependencies {
     implementation project(':model-jaxb')
     implementation project(':elm-jaxb')
     implementation 'net.sf.jopt-simple:jopt-simple:4.7'
-    runtimeOnly 'org.eclipse.persistence:org.eclipse.persistence.moxy:2.7.7'
-
     testImplementation project(':model-jaxb')
     testImplementation project(':model-jackson')
     testImplementation project(':elm-jaxb')
