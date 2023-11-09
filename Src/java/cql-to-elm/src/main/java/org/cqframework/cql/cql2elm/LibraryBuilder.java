@@ -1427,7 +1427,7 @@ public class LibraryBuilder implements ModelResolver {
         return query;
     }
 
-    private void reportWarning(String message, Expression expression) {
+    private void reportWarning(String message, Element expression) {
         TrackBack trackback = expression != null && expression.getTrackbacks() != null && !expression.getTrackbacks().isEmpty() ? expression.getTrackbacks().get(0) : null;
         CqlSemanticException warning = new CqlSemanticException(message, CqlCompilerException.ErrorSeverity.Warning, trackback);
         recordParsingException(warning);
@@ -2344,64 +2344,6 @@ public class LibraryBuilder implements ModelResolver {
         return null;
     }
 
-    public QueryLetRef getQueryLetRef(LetClause let) {
-        QueryLetRef result = of.createQueryLetRef().withName(let.getIdentifier());
-        result.setResultType(let.getResultType());
-        return result;
-    }
-
-    public ValueSetRef getValueSetRef(ValueSetDef valueSetDef) {
-        checkLiteralContext();
-        ValueSetRef valuesetRef = of.createValueSetRef().withName(valueSetDef.getName());
-        valuesetRef.setResultType(valueSetDef.getResultType());
-        if (valuesetRef.getResultType() == null) {
-            // ERROR:
-            throw new IllegalArgumentException(String.format("Could not validate reference to valueset %s because its definition contains errors.",
-                    valuesetRef.getName()));
-        }
-        if (isCompatibleWith("1.5")) {
-            valuesetRef.setPreserve(true);
-        }
-
-        return valuesetRef;
-    }
-
-    public Expression getCodeRef(CodeDef codeDef) {
-        checkLiteralContext();
-        CodeRef codeRef = of.createCodeRef().withName((codeDef).getName());
-        codeRef.setResultType(codeDef.getResultType());
-        if (codeRef.getResultType() == null) {
-            // ERROR:
-            throw new IllegalArgumentException(String.format("Could not validate reference to code %s because its definition contains errors.",
-                    codeRef.getName()));
-        }
-        return codeRef;
-    }
-
-    public Expression getCodeSystemRef(CodeSystemDef codeSystemDef) {
-        checkLiteralContext();
-        CodeSystemRef codesystemRef = of.createCodeSystemRef().withName(codeSystemDef.getName());
-        codesystemRef.setResultType(codeSystemDef.getResultType());
-        if (codesystemRef.getResultType() == null) {
-            // ERROR:
-            throw new IllegalArgumentException(String.format("Could not validate reference to codesystem %s because its definition contains errors.",
-                    codesystemRef.getName()));
-        }
-        return null;
-    }
-
-    public ParameterRef resolveParameterRef(ParameterDef theParameterDef) {
-        final ParameterRef parameterRef = of.createParameterRef().withName(theParameterDef.getName());
-        parameterRef.setResultType(parameterRef.getResultType());
-        return parameterRef;
-    }
-
-    public OperandRef resolveOperandRef(OperandDef operandDef) {
-        return (OperandRef)of.createOperandRef()
-                .withName(operandDef.getName())
-                .withResultType(operandDef.getResultType());
-    }
-
     private static String formatMatchedMessage(MatchType matchType) {
         switch (matchType) {
             case EXACT:
@@ -3055,12 +2997,10 @@ public class LibraryBuilder implements ModelResolver {
      * in question will be considered in crafting the warning message, as per the {@link Element} parameter.
      *
      * @param identifier The identifier belonging to the parameter, expression, function, alias, etc, to be evaluated.
-     * @param onlyOnce Special case to deal with overloaded functions, which are out scope for hiding.
-     * @param element The consturct element, for {@link ExpressionRef}.
-     * @param nullableExpression Use strictly to comply with the signature for {@link #reportWarning(String, Expression)}.
-     *                           If the caller could not obtain an Element, it simply passes null and this is safe to do.
+     * @param onlyOnce   Special case to deal with overloaded functions, which are out scope for hiding.
+     * @param element    The construct element, for {@link ExpressionRef}.
      */
-    void pushIdentifierForHiding(String identifier, boolean onlyOnce, Element element, Expression nullableExpression) {
+    void pushIdentifierForHiding(String identifier, boolean onlyOnce, Element element) {
         final MatchType matchType = identifiersToCheckForHiding.stream()
                 .map(innerIdentifier -> {
                     if (innerIdentifier.equals(identifier)) {
@@ -3081,7 +3021,7 @@ public class LibraryBuilder implements ModelResolver {
             final String message = String.format("Identifier hiding detected: Identifier for identifiers: %s%s",
                     String.format(lookupElementWarning(element), identifier),
                     formatMatchedMessage(matchType)+ "\n");
-            reportWarning(message, nullableExpression);
+            reportWarning(message, element);
         }
 
         if (! onlyOnce || MatchType.NONE == matchType) {
