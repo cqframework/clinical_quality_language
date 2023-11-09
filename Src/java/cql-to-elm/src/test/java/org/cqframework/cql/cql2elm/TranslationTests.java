@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -264,21 +265,45 @@ public class TranslationTests {
     public void multiThreadedTranslation() throws IOException {
         List<CompletableFuture<Void>> futures = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            futures.add(CompletableFuture.runAsync(this::createTranslator));
+            futures.add(CompletableFuture.runAsync(() -> {
+                try {
+                    TestUtils.createTranslator("CMS146v2_Test_CQM.cql");
+                }
+                catch(IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }));
         }
 
-        @SuppressWarnings("rawtypes")
-        CompletableFuture[] cfs = futures.toArray(new CompletableFuture[futures.size()]);
+        CompletableFuture<?>[] cfs = futures.toArray(new CompletableFuture[0]);
 
         CompletableFuture.allOf(cfs).join();
     }
 
-    private CqlTranslator createTranslator() {
-        try {
-            return TestUtils.createTranslator("CMS146v2_Test_CQM.cql");
-        }
-        catch(IOException e) {
-            throw new RuntimeException(e);
-        }
+    @Test
+    public void testHidingVariousUseCases() throws IOException {
+        final CqlTranslator translator = TestUtils.runSemanticTest("HidingTests/TestHidingVariousUseCases.cql", 0);
+        final List<CqlCompilerException> warnings = translator.getWarnings();
+        final List<String> warningMessages = warnings.stream().map(Throwable::getMessage).collect(Collectors.toList());
+
+        assertThat(warningMessages.toString(), translator.getWarnings().size(), is(13));
+
+        final List<String> distinct = warningMessages.stream().distinct().collect(Collectors.toList());
+
+        assertThat(warningMessages.toString(), distinct.size(), is(11));
+
+        final String hidingDefinition = "Identifier hiding detected: Identifier for identifiers: [Definition] resolved as an alias of a query with exact case matching.\n";
+        final String hidingVarLet = "Identifier hiding detected: Identifier for identifiers: [var] resolved as a let of a query with exact case matching.\n";
+        final String hidingContextValueSet = "Identifier hiding detected: Identifier for identifiers: [ValueSet] resolved as an alias of a query with exact case matching.\n";
+        final String hidingLetValueSet = "Identifier hiding detected: Identifier for identifiers: [ValueSet] resolved as a let of a query with exact case matching.\n";
+        final String hidingContextCode = "Identifier hiding detected: Identifier for identifiers: [Code] resolved as an alias of a query with exact case matching.\n";
+        final String hidingLetCode = "Identifier hiding detected: Identifier for identifiers: [Code] resolved as a let of a query with exact case matching.\n";
+        final String hidingContextCodeSystem = "Identifier hiding detected: Identifier for identifiers: [CodeSystem] resolved as an alias of a query with exact case matching.\n";
+        final String hidingLetCodeSystem = "Identifier hiding detected: Identifier for identifiers: [CodeSystem] resolved as a let of a query with exact case matching.\n";
+        final String hidingContextFhir = "Identifier hiding detected: Identifier for identifiers: [FHIR] resolved as an alias of a query with exact case matching.\n";
+        final String hidingLetFhir = "Identifier hiding detected: Identifier for identifiers: [FHIR] resolved as a let of a query with exact case matching.\n";
+        final String hidingAliasLet = "Identifier hiding detected: Identifier for identifiers: [Alias] resolved as a let of a query with exact case matching.\n";
+
+        assertThat(distinct, containsInAnyOrder(hidingDefinition, hidingVarLet, hidingContextValueSet, hidingLetValueSet, hidingContextCode, hidingLetCode, hidingContextCodeSystem, hidingLetCodeSystem, hidingContextFhir, hidingLetFhir, hidingAliasLet));
     }
 }

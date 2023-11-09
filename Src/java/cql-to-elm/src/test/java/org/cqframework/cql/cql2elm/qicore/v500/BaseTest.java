@@ -8,13 +8,14 @@ import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 public class BaseTest {
     @Test
@@ -29,9 +30,18 @@ public class BaseTest {
 
     @Test
     public void testAuthoringPatterns() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("qicore/v500/AuthoringPatterns.cql", 0, LibraryBuilder.SignatureLevel.Overloads);
+        final CqlTranslator translator = TestUtils.runSemanticTest("qicore/v500/AuthoringPatterns.cql", 0, LibraryBuilder.SignatureLevel.Overloads);
 
-        assertThat(translator.getWarnings().size(), is(0));
+        assertThat(translator.getWarnings().toString(), translator.getWarnings().size(), is(2));
+
+        final List<String> distinct = translator.getWarnings().stream().map(Throwable::getMessage).distinct().collect(Collectors.toList());
+
+        assertThat(distinct.size(), is(2));
+
+        final String first = "Identifier hiding detected: Identifier for identifiers: [Diabetes] resolved as an alias of a query with exact case matching.\n";
+        final String second = "Identifier hiding detected: Identifier for identifiers: [Application of Intermittent Pneumatic Compression Devices (IPC)] resolved as a value set with case insensitive matching.\n";
+
+        assertThat(distinct, containsInAnyOrder(first, second));
     }
 
     @Test
