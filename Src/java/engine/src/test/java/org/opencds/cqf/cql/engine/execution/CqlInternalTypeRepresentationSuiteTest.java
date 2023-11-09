@@ -68,7 +68,9 @@ public class CqlInternalTypeRepresentationSuiteTest extends CqlTestBase {
 
         result = evaluationResult.expressionResults.get("DateTime_Hour").value();
         Assert.assertTrue(result instanceof DateTime);
-        Assert.assertTrue(((DateTime) result).equal(new DateTime(null, 2012, 2, 15, 12)));
+        // LUKETODO:  this fails because expected has an offset of -04:00 but actual has an offset of -05:00
+        final DateTime expected = new DateTime(null, 2012, 2, 15, 12);
+        Assert.assertTrue(((DateTime) result).equal(expected));
 
         result = evaluationResult.expressionResults.get("DateTime_Minute").value();
         Assert.assertTrue(result instanceof DateTime);
