@@ -3071,7 +3071,6 @@ DATETIME
         return retrieve;
     }
 
-
     @Override
     public Object visitSourceClause(cqlParser.SourceClauseContext ctx) {
         boolean hasFrom = "from".equals(ctx.getChild(0).getText());
@@ -3084,28 +3083,7 @@ DATETIME
             if (sources.size() > 0 && !hasFrom) {
                 throw new IllegalArgumentException("The from keyword is required for multi-source queries.");
             }
-            final AliasedQuerySource sourceToAdd = (AliasedQuerySource) visit(source);
-            sources.add(sourceToAdd);
-
-            final String identifier = sourceToAdd.getAlias();
-
-            // LUKETODO:  this solves one alias use case
-//            libraryBuilder.pushIdentifier(identifier, sourceToAdd.getExpression(), false);
-
-            final ExpressionDefinitionInfo expressionDefinitionInfo = libraryInfo.resolveExpressionReference(identifier);
-
-            if (expressionDefinitionInfo != null && expressionDefinitionInfo.getDefinition() != null) {
-                // LUKETODO:  mulitiple dupes
-                // LUKETODO:  case insensitive
-                // LUKETODO:  unit test case insensitive
-                final ResolvedIdentifier firstCase = new ResolvedIdentifier(identifier, MatchType.EXACT, sourceToAdd.getExpression());
-                final ResolvedIdentifier secondCase = new ResolvedIdentifier(identifier, MatchType.EXACT, sourceToAdd.getExpression());
-                libraryBuilder.warnOnHiding(firstCase, Collections.singletonList(secondCase));
-                // LUKETODO:  do we need to traverse the parse tree to prove the relationship?
-//                libraryBuilder.reportWarning(String.format("X: Identifier hiding detected: Identifier in a broader scope hidden: [%s]", identifier),
-//                        sourceToAdd.getExpression());
-
-            }
+            sources.add((AliasedQuerySource) visit(source));
         }
         return sources;
     }
@@ -3515,36 +3493,12 @@ DATETIME
         return e.getResultType().equals(libraryBuilder.resolveTypeName("System", "DateTime"));
     }
 
-    // LUKETODO:  try to find a better solution
-    // LUKETODO:  enhance with the actual expression
-    private final Set<String> outerLets = new HashSet<>();
-
-    // LUKETODO:  this is where we find "let var : varalias + 2"
     @Override
     public Object visitLetClause(cqlParser.LetClauseContext ctx) {
-//        logger.info("lets START");
         List<LetClause> letClauseItems = new ArrayList<>();
-        final List<cqlParser.LetClauseItemContext> lets = ctx.letClauseItem();
-//        logger.info("lets: {}", lets);
-        for (cqlParser.LetClauseItemContext letClauseItem : lets) {
-//            logger.info("letClauseItem: {}", letClauseItem);
-            final String[] split = letClauseItem.getText().split(":");
-            final String letName = split[0];
-            final LetClause visitedLet = (LetClause)visit(letClauseItem);
-            // LUKETODO:  case insensitive
-            // LUKETODO:  unit test case insensitive
-            if (outerLets.contains(letName)) {
-                // LUKETODO:  first case must be the expression
-                final ResolvedIdentifier firstCase = new ResolvedIdentifier(letName, MatchType.EXACT, visitedLet.getExpression());
-                final ResolvedIdentifier secondCase = new ResolvedIdentifier(letName, MatchType.EXACT, visitedLet.getExpression());
-                libraryBuilder.warnOnHiding(firstCase, Collections.singletonList(secondCase));
-//                libraryBuilder.reportWarning(String.format("X: Identifier hiding: %s", letName), visitedLet.getExpression());
-            }
-//            logger.info("visitedLet: {}", visitedLet);
-            letClauseItems.add(visitedLet);
-            outerLets.add(visitedLet.getIdentifier());
+        for (cqlParser.LetClauseItemContext letClauseItem : ctx.letClauseItem()) {
+            letClauseItems.add((LetClause) visit(letClauseItem));
         }
-//        logger.info("lets END");
         return letClauseItems;
     }
 
@@ -3562,8 +3516,6 @@ DATETIME
         AliasedQuerySource source = of.createAliasedQuerySource().withExpression(parseExpression(ctx.querySource()))
                 .withAlias(parseString(ctx.alias()));
         source.setResultType(source.getExpression().getResultType());
-        // LUKETDOO: do we need this at all?
-//        libraryBuilder.pushIdentifier(source.getAlias(), source.getExpression(), false);
         return source;
     }
 
@@ -3742,7 +3694,6 @@ DATETIME
         return of.createSortClause().withBy(sortItems);
     }
 
-    // LUKETODO: the first "var" comes from here
     @Override
     @SuppressWarnings("unchecked")
     public Object visitQuerySource(cqlParser.QuerySourceContext ctx) {
@@ -3789,8 +3740,6 @@ DATETIME
         return libraryBuilder.resolveIdentifier(ctx.getText(), true);
     }
 
-    // LUKETODO:  this is where the first varalias comes from
-    // LUKETODO:  this is where the second varalias comes from as well
     @Override
     public Expression visitMemberInvocation(cqlParser.MemberInvocationContext ctx) {
         String identifier = parseString(ctx.referentialIdentifier());
@@ -3828,57 +3777,6 @@ DATETIME
         }
 
         return resolveIdentifier(identifier);
-    }
-
-    // 1) pushIdentifier always, or for the ones we know about
-    // 2) popIdentifier selectively
-    // 3) if we have, say, conflicting aliases, this is already a compile error so don't bother checking
-    // 4) Need try/finally on processing the alias, but can pop it right away
-
-
-    @Override
-    protected boolean pushIdentifier(ParseTree tree) {
-        // 1) Figure out the identifier (ex ctx.getText())
-        // 2) This is the candidate for push and possibly pop
-
-        final String parentClass = tree.getParent() != null ? tree.getParent().getClass().getSimpleName() : null;
-//        logger.info("pushIdentifier class: [{}], parent class: [{}], name: [{}]", tree.getClass().getSimpleName(), parentClass, tree.getText());
-
-        // LUKETODO only return true if there are no Exceptions
-        // LUKETODO:  try narrow the use case to push the identifier:  for instance, check for ParserRuleContext
-        if (tree instanceof ParserRuleContext) {
-            final ParserRuleContext parserRuleContext = (ParserRuleContext) tree;
-
-            if (tree instanceof cqlParser.TermExpressionContext) {
-                final cqlParser.TermExpressionContext expressionContext = (cqlParser.TermExpressionContext) parserRuleContext;
-
-                // LUKETODO:  can we find the parent here and decide whether or not to pop?
-                final ParserRuleContext parent = expressionContext.getParent();
-
-                // LUKETODO:  how can we get the identifier reliably by getting these ParseTree objects?
-
-                final List<ParseTree> children = expressionContext.children;
-
-//            logger.info("parent: {}, children: {}", parent.getClass(), children);
-            }
-        }
-
-        return true;
-    }
-
-    @Override
-    protected void popIdentifier(ParseTree tree, boolean pushedIdentifier) {
-        // 1) Figure out the identifier (ex ctx.getText())
-        final Class<?> parentClass = tree.getParent() != null ? tree.getParent().getClass() : null;
-        final String parentClassName = parentClass != null ? parentClass.getSimpleName() : null;
-//        logger.info("pushIdentifier class: [{}], parent class: [{}], name: [{}]", tree.getClass().getSimpleName(), parentClassName, tree.getText());
-
-        if (pushedIdentifier) {
-            if (tree instanceof cqlParser.TermExpressionContext && parentClass != null && tree.getParent() instanceof cqlParser.InFixSetExpressionContext) {
-//                logger.info("WILL POP");
-            }
-            // LUKETODO only pop here
-        }
     }
 
     private Expression resolveIdentifier(String identifier) {
@@ -4103,8 +4001,6 @@ DATETIME
             functionDefinitions.put(fh, ctx);
             functionHeadersByDef.put(fh.getFunctionDef(), fh);
         }
-        // LUKETODO:  watch this
-//        libraryBuilder.pushIdentifier(fh.getFunctionDef().getName(), fh.getFunctionDef().getExpression(), true);
         return fh;
     }
 

@@ -69,30 +69,8 @@ public class QueryContext {
         return sources.get(identifier);
     }
 
-    public ResolvedIdentifierList resolveCaseIgnoredAliases(String identifier) {
-        final ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
-
-        sources.entrySet()
-                .stream()
-                .filter(k -> k.getKey().equalsIgnoreCase(identifier) && !k.getKey().equals(identifier))
-                .forEach(entry -> resolvedIdentifierList.addResolvedIdentifier(new ResolvedIdentifier(entry.getKey(), MatchType.CASE_IGNORED, entry.getValue())));
-
-        return resolvedIdentifierList;
-    }
-
     public LetClause resolveLet(String identifier) {
         return lets.get(identifier);
-    }
-
-    public ResolvedIdentifierList resolveCaseIgnoredLets(String identifier) {
-        final ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
-
-        lets.entrySet()
-                .stream()
-                .filter(k -> k.getKey().equalsIgnoreCase(identifier) && !k.getKey().equals(identifier))
-                .forEach(entry -> resolvedIdentifierList.addResolvedIdentifier(new ResolvedIdentifier(entry.getKey(), MatchType.CASE_IGNORED, entry.getValue())));
-
-        return resolvedIdentifierList;
     }
 
     private boolean isSingularValue = true;

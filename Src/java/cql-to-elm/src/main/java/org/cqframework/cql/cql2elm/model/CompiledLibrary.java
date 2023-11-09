@@ -5,14 +5,11 @@ import org.hl7.cql.model.DataType;
 import org.hl7.cql_annotations.r1.Annotation;
 import org.hl7.cql_annotations.r1.Tag;
 import org.hl7.elm.r1.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.List;
 
 public class CompiledLibrary {
-    private static final Logger logger = LoggerFactory.getLogger(CompiledLibrary.class);
     private VersionedIdentifier identifier;
     private Library library;
     private final Map<String, Element> namespace = new HashMap<>();
@@ -141,17 +138,6 @@ public class CompiledLibrary {
 
     public Element resolve(String identifier) {
         return namespace.get(identifier);
-    }
-
-    public ResolvedIdentifierList resolveCaseIgnored(String identifier) {
-        ResolvedIdentifierList ret = new ResolvedIdentifierList();
-
-        namespace.entrySet()
-                .stream()
-                .filter(k -> k.getKey().equalsIgnoreCase(identifier) && !k.getKey().equals(identifier))
-                .forEach(entry -> ret.addResolvedIdentifier(new ResolvedIdentifier(entry.getKey(), MatchType.CASE_IGNORED, entry.getValue())));
-
-        return ret;
     }
 
     public UsingDef resolveUsingRef(String identifier) {

@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Supplier;
 
 
 /**
@@ -38,8 +37,7 @@ public class SystemMethodResolver {
         params.add(target);
         if (ctx != null && ctx.expression() != null) {
             for (cqlParser.ExpressionContext param : ctx.expression()) {
-                final Expression visit = (Expression) visitor.visit(param);
-                params.add(visit);
+                params.add((Expression)visitor.visit(param));
             }
         }
 
@@ -265,10 +263,9 @@ public class SystemMethodResolver {
     }
 
     public Expression resolveMethod(Expression target, String functionName, cqlParser.ParamListContext ctx, boolean mustResolve) {
-        final Supplier<List<Expression>> getParams = () -> getParams(target, ctx);
         switch (functionName) {
-            case "aggregate": return builder.resolveFunction(null, "Aggregate", getParams.get());
-            case "abs": return builder.resolveFunction(null, "Abs", getParams.get());
+            case "aggregate": return builder.resolveFunction(null, "Aggregate", getParams(target, ctx));
+            case "abs": return builder.resolveFunction(null, "Abs", getParams(target, ctx));
             case "all": {
                 // .all(criteria) resolves as .where(criteria).select(true).allTrue()
                 Query query = createWhere(target, functionName, ctx);
@@ -287,11 +284,11 @@ public class SystemMethodResolver {
                 params.add(query);
                 return builder.resolveFunction(null, "AllTrue", params);
             }
-            case "allTrue": return builder.resolveFunction(null, "AllTrue", getParams.get());
-            case "anyTrue": return builder.resolveFunction(null, "AnyTrue", getParams.get());
-            case "allFalse": return builder.resolveFunction(null, "AllFalse", getParams.get());
-            case "anyFalse": return builder.resolveFunction(null, "AnyFalse", getParams.get());
-            case "ceiling": return builder.resolveFunction(null, "Ceiling", getParams.get());
+            case "allTrue": return builder.resolveFunction(null, "AllTrue", getParams(target, ctx));
+            case "anyTrue": return builder.resolveFunction(null, "AnyTrue", getParams(target, ctx));
+            case "allFalse": return builder.resolveFunction(null, "AllFalse", getParams(target, ctx));
+            case "anyFalse": return builder.resolveFunction(null, "AnyFalse", getParams(target, ctx));
+            case "ceiling": return builder.resolveFunction(null, "Ceiling", getParams(target, ctx));
             case "children": {
                 checkArgumentCount(ctx, functionName, 0);
                 Children children = of.createChildren();
@@ -333,15 +330,15 @@ public class SystemMethodResolver {
                 params.add(builder.createLiteral(0));
                 return builder.resolveFunction(null, "GreaterOrEqual", params);
             }
-            case "convertsToBoolean": return builder.resolveFunction(null, "ConvertsToBoolean", getParams.get());
-            case "convertsToDate": return builder.resolveFunction(null, "ConvertsToDate", getParams.get());
-            case "convertsToDateTime": return builder.resolveFunction(null, "ConvertsToDateTime", getParams.get());
-            case "convertsToDecimal": return builder.resolveFunction(null, "ConvertsToDecimal", getParams.get());
-            case "convertsToInteger": return builder.resolveFunction(null, "ConvertsToInteger", getParams.get());
-            case "convertsToQuantity": return builder.resolveFunction(null, "ConvertsToQuantity", getParams.get());
-            case "convertsToString": return builder.resolveFunction(null, "ConvertsToString", getParams.get());
-            case "convertsToTime": return builder.resolveFunction(null, "ConvertsToTime", getParams.get());
-            case "count": return builder.resolveFunction(null, "Count", getParams.get());
+            case "convertsToBoolean": return builder.resolveFunction(null, "ConvertsToBoolean", getParams(target, ctx));
+            case "convertsToDate": return builder.resolveFunction(null, "ConvertsToDate", getParams(target, ctx));
+            case "convertsToDateTime": return builder.resolveFunction(null, "ConvertsToDateTime", getParams(target, ctx));
+            case "convertsToDecimal": return builder.resolveFunction(null, "ConvertsToDecimal", getParams(target, ctx));
+            case "convertsToInteger": return builder.resolveFunction(null, "ConvertsToInteger", getParams(target, ctx));
+            case "convertsToQuantity": return builder.resolveFunction(null, "ConvertsToQuantity", getParams(target, ctx));
+            case "convertsToString": return builder.resolveFunction(null, "ConvertsToString", getParams(target, ctx));
+            case "convertsToTime": return builder.resolveFunction(null, "ConvertsToTime", getParams(target, ctx));
+            case "count": return builder.resolveFunction(null, "Count", getParams(target, ctx));
             case "descendents": {
                 checkArgumentCount(ctx, functionName, 0);
                 Descendents descendents = of.createDescendents();
@@ -356,19 +353,19 @@ public class SystemMethodResolver {
                 }
                 return descendents;
             }
-            case "distinct": return builder.resolveFunction(null, "Distinct", getParams.get());
+            case "distinct": return builder.resolveFunction(null, "Distinct", getParams(target, ctx));
             case "empty": {
-                List<Expression> params = getParams.get();
+                List<Expression> params = getParams(target, ctx);
                 Expression exists = builder.resolveFunction(null, "Exists", params);
                 params = new ArrayList<>();
                 params.add(exists);
                 return builder.resolveFunction(null, "Not", params);
             }
-            case "endsWith": return builder.resolveFunction(null, "EndsWith", getParams.get());
-            case "exclude": return builder.resolveFunction(null, "Except", getParams.get());
+            case "endsWith": return builder.resolveFunction(null, "EndsWith", getParams(target, ctx));
+            case "exclude": return builder.resolveFunction(null, "Except", getParams(target, ctx));
             case "exists": {
                 if (ctx == null || ctx.expression() == null || ctx.expression().isEmpty()) {
-                    List<Expression> params = getParams.get();
+                    List<Expression> params = getParams(target, ctx);
                     return builder.resolveFunction(null, "Exists", params);
                 }
                 else {
@@ -379,11 +376,11 @@ public class SystemMethodResolver {
                     return builder.resolveFunction(null, "Exists", params);
                 }
             }
-            case "exp": return builder.resolveFunction(null, "Exp", getParams.get());
-            case "first": return builder.resolveFunction(null, "First", getParams.get());
-            case "floor": return builder.resolveFunction(null, "Floor", getParams.get());
+            case "exp": return builder.resolveFunction(null, "Exp", getParams(target, ctx));
+            case "first": return builder.resolveFunction(null, "First", getParams(target, ctx));
+            case "floor": return builder.resolveFunction(null, "Floor", getParams(target, ctx));
             case "hasValue": {
-                List<Expression> params = getParams.get();
+                List<Expression> params = getParams(target, ctx);
                 Expression isNull = builder.resolveFunction(null, "IsNull", params);
                 params = new ArrayList<>();
                 params.add(isNull);
@@ -410,7 +407,7 @@ public class SystemMethodResolver {
                 params.add(target);
                 return builder.resolveFunction(null, "PositionOf", params);
             }
-            case "intersect": return builder.resolveFunction(null, "Intersect", getParams.get());
+            case "intersect": return builder.resolveFunction(null, "Intersect", getParams(target, ctx));
             case "is":
             case "as": {
                 checkArgumentCount(ctx, functionName, 1);
@@ -438,7 +435,7 @@ public class SystemMethodResolver {
                 return functionName.equals("is") ? builder.buildIs(target, isType) : builder.buildAs(target, isType);
             }
             // TODO: isDistinct // resolves as .count() = .distinct().count() // somewhat tricky in that it needs to duplicate the target expression...
-            case "last": return builder.resolveFunction(null, "Last", getParams.get());
+            case "last": return builder.resolveFunction(null, "Last", getParams(target, ctx));
             case "lastIndexOf": {
                 checkArgumentCount(ctx, functionName, 1);
                 List<Expression> params = new ArrayList<Expression>();
@@ -447,26 +444,26 @@ public class SystemMethodResolver {
                 params.add(target);
                 return builder.resolveFunction(null, "LastPositionOf", params);
             }
-            case "length": return builder.resolveFunction(null, "Length", getParams.get());
-            case "ln": return builder.resolveFunction(null, "Ln", getParams.get());
-            case "log": return builder.resolveFunction(null, "Log", getParams.get());
-            case "lower": return builder.resolveFunction(null, "Lower", getParams.get());
-            case "matches": return builder.resolveFunction(null, "Matches", getParams.get());
-            case "memberOf": return builder.resolveFunction(null, "InValueSet", getParams.get());
-            case "not": return builder.resolveFunction(null, "Not", getParams.get());
+            case "length": return builder.resolveFunction(null, "Length", getParams(target, ctx));
+            case "ln": return builder.resolveFunction(null, "Ln", getParams(target, ctx));
+            case "log": return builder.resolveFunction(null, "Log", getParams(target, ctx));
+            case "lower": return builder.resolveFunction(null, "Lower", getParams(target, ctx));
+            case "matches": return builder.resolveFunction(null, "Matches", getParams(target, ctx));
+            case "memberOf": return builder.resolveFunction(null, "InValueSet", getParams(target, ctx));
+            case "not": return builder.resolveFunction(null, "Not", getParams(target, ctx));
             //now could never resolve as a method because it has no arguments
-            //case "now": return builder.resolveFunction(null, "Now", getParams.get());
+            //case "now": return builder.resolveFunction(null, "Now", getParams(target, ctx));
             case "ofType": return createOfType(target, functionName, ctx);
-            case "power": return builder.resolveFunction(null, "Power", getParams.get());
+            case "power": return builder.resolveFunction(null, "Power", getParams(target, ctx));
             case "repeat": return createRepeat(target, functionName, ctx);
-            case "replace": return builder.resolveFunction(null, "Replace", getParams.get());
-            case "replaceMatches": return builder.resolveFunction(null, "ReplaceMatches", getParams.get());
-            case "round": return builder.resolveFunction(null, "Round", getParams.get());
+            case "replace": return builder.resolveFunction(null, "Replace", getParams(target, ctx));
+            case "replaceMatches": return builder.resolveFunction(null, "ReplaceMatches", getParams(target, ctx));
+            case "round": return builder.resolveFunction(null, "Round", getParams(target, ctx));
             case "select": {
                 return createSelect(target, functionName, ctx);
             }
-            case "single": return builder.resolveFunction(null, "SingletonFrom", getParams.get());
-            case "skip": return builder.resolveFunction(null, "Skip", getParams.get());
+            case "single": return builder.resolveFunction(null, "SingletonFrom", getParams(target, ctx));
+            case "skip": return builder.resolveFunction(null, "Skip", getParams(target, ctx));
             case "sqrt": {
                 checkArgumentCount(ctx, functionName, 0);
                 List<Expression> params = new ArrayList<Expression>();
@@ -474,27 +471,27 @@ public class SystemMethodResolver {
                 params.add(builder.createLiteral(0.5));
                 return builder.resolveFunction(null, "Power", params);
             }
-            case "startsWith": return builder.resolveFunction(null, "StartsWith", getParams.get());
-            case "subsetOf": return builder.resolveFunction(null, "IncludedIn", getParams.get());
-            case "substring": return builder.resolveFunction(null, "Substring", getParams.get());
-            case "subsumes": return builder.resolveFunction(null, "Subsumes", getParams.get());
-            case "subsumedBy": return builder.resolveFunction(null, "SubsumedBy", getParams.get());
-            case "supersetOf": return builder.resolveFunction(null, "Includes", getParams.get());
-            case "tail": return builder.resolveFunction(null, "Tail", getParams.get());
-            case "take": return builder.resolveFunction(null, "Take", getParams.get());
+            case "startsWith": return builder.resolveFunction(null, "StartsWith", getParams(target, ctx));
+            case "subsetOf": return builder.resolveFunction(null, "IncludedIn", getParams(target, ctx));
+            case "substring": return builder.resolveFunction(null, "Substring", getParams(target, ctx));
+            case "subsumes": return builder.resolveFunction(null, "Subsumes", getParams(target, ctx));
+            case "subsumedBy": return builder.resolveFunction(null, "SubsumedBy", getParams(target, ctx));
+            case "supersetOf": return builder.resolveFunction(null, "Includes", getParams(target, ctx));
+            case "tail": return builder.resolveFunction(null, "Tail", getParams(target, ctx));
+            case "take": return builder.resolveFunction(null, "Take", getParams(target, ctx));
             //timeOfDay could never resolve as a method because it has no arguments
-            //case "timeOfDay": return builder.resolveFunction(null, "TimeOfDay", getParams.get());
-            case "toBoolean": return builder.resolveFunction(null, "ToBoolean", getParams.get());
-            case "toChars": return builder.resolveFunction(null, "ToChars", getParams.get());
-            case "toDate": return builder.resolveFunction(null, "ToDate", getParams.get());
-            case "toDateTime": return builder.resolveFunction(null, "ToDateTime", getParams.get());
+            //case "timeOfDay": return builder.resolveFunction(null, "TimeOfDay", getParams(target, ctx));
+            case "toBoolean": return builder.resolveFunction(null, "ToBoolean", getParams(target, ctx));
+            case "toChars": return builder.resolveFunction(null, "ToChars", getParams(target, ctx));
+            case "toDate": return builder.resolveFunction(null, "ToDate", getParams(target, ctx));
+            case "toDateTime": return builder.resolveFunction(null, "ToDateTime", getParams(target, ctx));
             //today could never resolve as a method because it has no arguments
-            //case "today": return builder.resolveFunction(null, "Today", getParams.get());
-            case "toDecimal": return builder.resolveFunction(null, "ToDecimal", getParams.get());
-            case "toInteger": return builder.resolveFunction(null, "ToInteger", getParams.get());
-            case "toQuantity": return builder.resolveFunction(null, "ToQuantity", getParams.get());
-            case "toString": return builder.resolveFunction(null, "ToString", getParams.get());
-            case "toTime": return builder.resolveFunction(null, "ToTime", getParams.get());
+            //case "today": return builder.resolveFunction(null, "Today", getParams(target, ctx));
+            case "toDecimal": return builder.resolveFunction(null, "ToDecimal", getParams(target, ctx));
+            case "toInteger": return builder.resolveFunction(null, "ToInteger", getParams(target, ctx));
+            case "toQuantity": return builder.resolveFunction(null, "ToQuantity", getParams(target, ctx));
+            case "toString": return builder.resolveFunction(null, "ToString", getParams(target, ctx));
+            case "toTime": return builder.resolveFunction(null, "ToTime", getParams(target, ctx));
             case "trace": {
                 checkArgumentCount(ctx, functionName, 1);
                 List<Expression> params = new ArrayList<Expression>();
@@ -505,14 +502,14 @@ public class SystemMethodResolver {
                 params.add((Expression)visitor.visit(ctx.expression(0)));
                 return builder.resolveFunction(null, "Message", params);
             }
-            case "truncate": return builder.resolveFunction(null, "Truncate", getParams.get());
-            case "upper": return builder.resolveFunction(null, "Upper", getParams.get());
+            case "truncate": return builder.resolveFunction(null, "Truncate", getParams(target, ctx));
+            case "upper": return builder.resolveFunction(null, "Upper", getParams(target, ctx));
             case "where": {
                 return createWhere(target, functionName, ctx);
             }
 
             default: {
-                return visitor.resolveFunction(null, functionName, getParams.get(), mustResolve, false, true);
+                return visitor.resolveFunction(null, functionName, getParams(target, ctx), mustResolve, false, true);
             }
         }
     }
