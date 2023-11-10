@@ -19,14 +19,13 @@ import org.hl7.cql_annotations.r1.Narrative;
 import org.hl7.cql_annotations.r1.Tag;
 import org.hl7.elm.r1.*;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
-import java.util.stream.Collectors;
 
 /**
  * Common functionality used by {@link CqlPreprocessorVisitor} and {@link Cql2ElmVisitor}

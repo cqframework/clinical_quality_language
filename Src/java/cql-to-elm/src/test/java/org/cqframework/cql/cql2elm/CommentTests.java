@@ -10,7 +10,7 @@ import org.hl7.elm.r1.FunctionDef;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;

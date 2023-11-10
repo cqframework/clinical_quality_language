@@ -3,7 +3,7 @@ package org.hl7.cql.model;
 import org.hl7.elm_modelinfo.r1.*;
 import org.testng.annotations.Test;
 
-import javax.xml.bind.JAXB;
+import jakarta.xml.bind.JAXB;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;

@@ -1,18 +1,18 @@
 package org.cqframework.cql.elm.serializing.jaxb;
 
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.PropertyException;
+import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.ValidationEvent;
+import jakarta.xml.bind.ValidationEventHandler;
 import org.cqframework.cql.elm.serializing.ElmLibraryReader;
 import org.hl7.elm.r1.Library;
 
-import javax.xml.bind.*;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 public class ElmJsonLibraryReader implements ElmLibraryReader {

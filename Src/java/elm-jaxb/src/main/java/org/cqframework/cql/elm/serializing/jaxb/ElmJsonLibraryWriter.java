@@ -4,9 +4,9 @@ import org.cqframework.cql.elm.serializing.ElmLibraryWriter;
 import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.ObjectFactory;
 
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.PropertyException;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.PropertyException;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
