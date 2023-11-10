@@ -2344,54 +2344,43 @@ public class LibraryBuilder implements ModelResolver {
         return null;
     }
 
-    private static String formatMatchedMessage(MatchType matchType) {
-        switch (matchType) {
-            case EXACT:
-                return " with exact case matching.";
-            case CASE_IGNORED:
-                return " with case insensitive matching.";
-            default:
-                return " with invalid MatchType.";
-        }
-    }
-
     private static String lookupElementWarning(Object element) {
         // TODO:  this list is not exhaustive and may need to be updated
         if (element instanceof ExpressionDef) {
-            return "[%s] resolved as an expression definition";
+            return "An expression";
         }
         else if (element instanceof ParameterDef) {
-            return "[%s] resolved as a parameter";
+            return "A parameter";
         }
         else if (element instanceof ValueSetDef) {
-            return "[%s] resolved as a value set";
+            return "A valueset";
         }
         else if (element instanceof CodeSystemDef) {
-            return "[%s] resolved as a code system";
+            return "A codesystem";
         }
         else if (element instanceof CodeDef) {
-            return "[%s] resolved as a code";
+            return "A code";
         }
         else if (element instanceof ConceptDef) {
-            return "[%s] resolved as a concept";
+            return "A concept";
         }
         else if (element instanceof IncludeDef) {
-            return "[%s] resolved as a library";
+            return "An include";
         }
         else if (element instanceof AliasedQuerySource) {
-            return "[%s] resolved as an alias of a query";
+            return "An alias";
         }
         else if (element instanceof LetClause) {
-            return "[%s] resolved as a let of a query";
+            return "A let";
         }
         else if (element instanceof OperandDef) {
-            return "[%s] resolved as an operand to a function";
+            return "An operand";
         }
         else if (element instanceof UsingDef) {
-            return "[%s] resolved as a using definition";
+            return "A using";
         }
         //default message if no match is made:
-        return "[%s] resolved more than once: " + ((element != null) ? element.getClass() : "[null]");
+        return "An [unknown structure]";
     }
 
     /**
@@ -2998,33 +2987,26 @@ public class LibraryBuilder implements ModelResolver {
      *
      * @param identifier The identifier belonging to the parameter, expression, function, alias, etc, to be evaluated.
      * @param onlyOnce   Special case to deal with overloaded functions, which are out scope for hiding.
-     * @param element    The construct element, for {@link ExpressionRef}.
+     * @param element    The construct element, for example {@link ExpressionRef}.
      */
     void pushIdentifierForHiding(String identifier, boolean onlyOnce, Element element) {
-        final MatchType matchType = identifiersToCheckForHiding.stream()
-                .map(innerIdentifier -> {
-                    if (innerIdentifier.equals(identifier)) {
-                        return MatchType.EXACT;
+        final boolean hasRelevantMatch = identifiersToCheckForHiding.stream()
+                .filter(innerIdentifier -> innerIdentifier.equalsIgnoreCase(identifier))
+                .peek(matchedIdentifier -> {
+                    if (onlyOnce) {
+                        return;
                     }
 
-                    if (innerIdentifier.equalsIgnoreCase(identifier)) {
-                        return MatchType.CASE_IGNORED;
-                    }
+                    final boolean isExactMatch = matchedIdentifier.equals(identifier);
+                    final String elementString = lookupElementWarning(element);
+                    final String message= isExactMatch
+                            ? String.format("%s identifier [%s] is hiding another identifier of the same name. %n", elementString, identifier)
+                            : String.format("Are you sure you mean to use %s identifier [%s], instead of [%s]? %n", elementString.toLowerCase(), identifier, matchedIdentifier) ;
 
-                    return MatchType.NONE;
-                })
-                .filter(innerMatchType -> MatchType.NONE != innerMatchType)
-                .findFirst()
-                .orElse(MatchType.NONE);
-
-        if (MatchType.NONE != matchType && ! onlyOnce) {
-            final String message = String.format("Identifier hiding detected: Identifier for identifiers: %s%s",
-                    String.format(lookupElementWarning(element), identifier),
-                    formatMatchedMessage(matchType)+ "\n");
-            reportWarning(message, element);
-        }
-
-        if (! onlyOnce || MatchType.NONE == matchType) {
+                    reportWarning(message, element);
+                }).findAny()
+                .isPresent();
+        if (! onlyOnce || ! hasRelevantMatch) {
             identifiersToCheckForHiding.push(identifier);
         }
     }

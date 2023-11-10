@@ -292,17 +292,17 @@ public class TranslationTests {
 
         assertThat(warningMessages.toString(), distinct.size(), is(11));
 
-        final String hidingDefinition = "Identifier hiding detected: Identifier for identifiers: [Definition] resolved as an alias of a query with exact case matching.\n";
-        final String hidingVarLet = "Identifier hiding detected: Identifier for identifiers: [var] resolved as a let of a query with exact case matching.\n";
-        final String hidingContextValueSet = "Identifier hiding detected: Identifier for identifiers: [ValueSet] resolved as an alias of a query with exact case matching.\n";
-        final String hidingLetValueSet = "Identifier hiding detected: Identifier for identifiers: [ValueSet] resolved as a let of a query with exact case matching.\n";
-        final String hidingContextCode = "Identifier hiding detected: Identifier for identifiers: [Code] resolved as an alias of a query with exact case matching.\n";
-        final String hidingLetCode = "Identifier hiding detected: Identifier for identifiers: [Code] resolved as a let of a query with exact case matching.\n";
-        final String hidingContextCodeSystem = "Identifier hiding detected: Identifier for identifiers: [CodeSystem] resolved as an alias of a query with exact case matching.\n";
-        final String hidingLetCodeSystem = "Identifier hiding detected: Identifier for identifiers: [CodeSystem] resolved as a let of a query with exact case matching.\n";
-        final String hidingContextFhir = "Identifier hiding detected: Identifier for identifiers: [FHIR] resolved as an alias of a query with exact case matching.\n";
-        final String hidingLetFhir = "Identifier hiding detected: Identifier for identifiers: [FHIR] resolved as a let of a query with exact case matching.\n";
-        final String hidingAliasLet = "Identifier hiding detected: Identifier for identifiers: [Alias] resolved as a let of a query with exact case matching.\n";
+        final String hidingDefinition = "An alias identifier [Definition] is hiding another identifier of the same name. \n";
+        final String hidingVarLet = "A let identifier [var] is hiding another identifier of the same name. \n";
+        final String hidingContextValueSet = "An alias identifier [ValueSet] is hiding another identifier of the same name. \n";
+        final String hidingLetValueSet = "A let identifier [ValueSet] is hiding another identifier of the same name. \n";
+        final String hidingContextCode = "An alias identifier [Code] is hiding another identifier of the same name. \n";
+        final String hidingLetCode = "A let identifier [Code] is hiding another identifier of the same name. \n";
+        final String hidingContextCodeSystem = "An alias identifier [CodeSystem] is hiding another identifier of the same name. \n";
+        final String hidingLetCodeSystem = "A let identifier [CodeSystem] is hiding another identifier of the same name. \n";
+        final String hidingContextFhir = "An alias identifier [FHIR] is hiding another identifier of the same name. \n";
+        final String hidingLetFhir = "A let identifier [FHIR] is hiding another identifier of the same name. \n";
+        final String hidingAliasLet = "A let identifier [Alias] is hiding another identifier of the same name. \n";
 
         assertThat(distinct, containsInAnyOrder(hidingDefinition, hidingVarLet, hidingContextValueSet, hidingLetValueSet, hidingContextCode, hidingLetCode, hidingContextCodeSystem, hidingLetCodeSystem, hidingContextFhir, hidingLetFhir, hidingAliasLet));
     }

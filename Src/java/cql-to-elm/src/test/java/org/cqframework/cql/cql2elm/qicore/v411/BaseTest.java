@@ -29,8 +29,8 @@ public class BaseTest {
 
         assertThat(distinct.size(), is(2));
 
-        final String first = "Identifier hiding detected: Identifier for identifiers: [Diabetes] resolved as an alias of a query with exact case matching.\n";
-        final String second = "Identifier hiding detected: Identifier for identifiers: [Application of Intermittent Pneumatic Compression Devices (IPC)] resolved as a value set with case insensitive matching.\n";
+        final String first = "An alias identifier [Diabetes] is hiding another identifier of the same name. \n";
+        final String second = "Are you sure you mean to use a valueset identifier [Application of Intermittent Pneumatic Compression Devices (IPC)], instead of [Application of intermittent pneumatic compression devices (IPC)]? \n";
 
         assertThat(distinct, containsInAnyOrder(first, second));
     }

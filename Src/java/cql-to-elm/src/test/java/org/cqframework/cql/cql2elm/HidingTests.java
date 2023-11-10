@@ -18,7 +18,7 @@ public class HidingTests {
         final List<CqlCompilerException> warnings = translator.getWarnings();
         assertThat(warnings.toString(), translator.getWarnings().size(), is(1));
         final Set<String> warningMessages = warnings.stream().map(Throwable::getMessage).collect(Collectors.toSet());
-        assertThat(warningMessages, contains("Identifier hiding detected: Identifier for identifiers: [patients] resolved as an expression definition with case insensitive matching.\n"));
+        assertThat(warningMessages, contains("Are you sure you mean to use an expression identifier [patients], instead of [Patients]? \n"));
     }
 
     @Test
@@ -28,7 +28,7 @@ public class HidingTests {
 
         assertThat(warnings.toString(), translator.getWarnings().size(), is(1));
         final Set<String> warningMessages = warnings.stream().map(Throwable::getMessage).collect(Collectors.toSet());
-        assertThat(warningMessages, contains("Identifier hiding detected: Identifier for identifiers: [var] resolved as a let of a query with exact case matching.\n"));
+        assertThat(warningMessages, contains("A let identifier [var] is hiding another identifier of the same name. \n"));
     }
 
     @Test
@@ -49,10 +49,7 @@ public class HidingTests {
         final List<String> distinct = translator.getWarnings().stream().map(Throwable::getMessage).distinct().collect(Collectors.toList());
 
         assertThat(distinct.size(), is(1));
-
-        final String first = "Identifier hiding detected: Identifier for identifiers: [IWantToBeHidden] resolved as an alias of a query with exact case matching.\n";
-
-        assertThat(distinct, containsInAnyOrder(first));
+        assertThat(distinct, contains("An alias identifier [IWantToBeHidden] is hiding another identifier of the same name. \n"));
     }
 
     @Test
@@ -69,7 +66,7 @@ public class HidingTests {
         final List<CqlCompilerException> warnings = translator.getWarnings();
 
         assertThat(warnings.toString(), translator.getWarnings().size(), is(1));
-        assertThat(warnings.stream().map(Throwable::getMessage).collect(Collectors.toList()), containsInAnyOrder("Identifier hiding detected: Identifier for identifiers: [SoMuchNesting] resolved as an alias of a query with exact case matching.\n"));
+        assertThat(warnings.stream().map(Throwable::getMessage).collect(Collectors.toList()), containsInAnyOrder("An alias identifier [SoMuchNesting] is hiding another identifier of the same name. \n"));
     }
 
     @Test
@@ -84,8 +81,8 @@ public class HidingTests {
 
         assertThat(distinct.size(), is(2));
 
-        final String first = "Identifier hiding detected: Identifier for identifiers: [SoMuchNesting] resolved as an alias of a query with exact case matching.\n";
-        final String second = "Identifier hiding detected: Identifier for identifiers: [SoMuchNesting] resolved as a let of a query with exact case matching.\n";
+        final String first = "An alias identifier [SoMuchNesting] is hiding another identifier of the same name. \n";
+        final String second = "A let identifier [SoMuchNesting] is hiding another identifier of the same name. \n";
 
         assertThat(distinct, containsInAnyOrder(first, second));
     }
@@ -97,7 +94,7 @@ public class HidingTests {
 
         final List<String> warningMessages = warnings.stream().map(Throwable::getMessage).collect(Collectors.toList());
         assertThat(warningMessages.toString(), translator.getWarnings().size(), is(1));
-        assertThat(warningMessages, contains("Identifier hiding detected: Identifier for identifiers: [Alias] resolved as a let of a query with exact case matching.\n"));
+        assertThat(warnings.stream().map(Throwable::getMessage).collect(Collectors.toList()), containsInAnyOrder("A let identifier [Alias] is hiding another identifier of the same name. \n"));
     }
 
     @Test
@@ -109,7 +106,7 @@ public class HidingTests {
                         .stream()
                         .map(Throwable::getMessage)
                         .collect(Collectors.toList()),
-                    contains("Identifier hiding detected: Identifier for identifiers: [testOperand] resolved as an alias of a query with exact case matching.\n"));
+                    contains("An alias identifier [testOperand] is hiding another identifier of the same name. \n"));
     }
 
     @Test
@@ -124,7 +121,7 @@ public class HidingTests {
         final List<CqlCompilerException> warnings = translator.getWarnings();
         final List<String> warningMessages = warnings.stream().map(Throwable::getMessage).collect(Collectors.toList());
         assertThat(warningMessages.toString(), warnings.size(), is(1));
-        assertThat(warningMessages, contains("Identifier hiding detected: Identifier for identifiers: [IWantToBeHidden] resolved as an alias of a query with exact case matching.\n"));
+        assertThat(warningMessages, contains("An alias identifier [IWantToBeHidden] is hiding another identifier of the same name. \n"));
     }
 
     @Test
@@ -133,7 +130,7 @@ public class HidingTests {
         final List<CqlCompilerException> warnings = translator.getWarnings();
         final List<String> warningMessages = warnings.stream().map(Throwable::getMessage).collect(Collectors.toList());
         assertThat(warningMessages.toString(), warnings.size(), is(1));
-        assertThat(warningMessages, contains("Identifier hiding detected: Identifier for identifiers: [Measurement Period] resolved as an alias of a query with exact case matching.\n"));
+        assertThat(warningMessages, contains("An alias identifier [Measurement Period] is hiding another identifier of the same name. \n"));
     }
 
     @Test
@@ -142,7 +139,7 @@ public class HidingTests {
         final List<CqlCompilerException> warnings = translator.getWarnings();
         final List<String> warningMessages = warnings.stream().map(Throwable::getMessage).collect(Collectors.toList());
         assertThat(warningMessages.toString(), warnings.size(), is(1));
-        assertThat(warningMessages, contains("Identifier hiding detected: Identifier for identifiers: [FHIRHelpers] resolved as an alias of a query with exact case matching.\n"));
+        assertThat(warningMessages, contains("An alias identifier [FHIRHelpers] is hiding another identifier of the same name. \n"));
     }
 
     @Test
@@ -153,6 +150,6 @@ public class HidingTests {
         assertThat(warningMessages.toString(), warnings.size(), is(2));
         final List<String> distinctWarningMessages = warningMessages.stream().distinct().collect(Collectors.toList());
         assertThat(distinctWarningMessages.toString(), distinctWarningMessages.size(), is(1));
-        assertThat(distinctWarningMessages, contains("Identifier hiding detected: Identifier for identifiers: [5] resolved as an alias of a query with exact case matching.\n"));
+        assertThat(distinctWarningMessages, contains("An alias identifier [5] is hiding another identifier of the same name. \n"));
     }
 }
