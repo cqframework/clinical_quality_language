@@ -4,12 +4,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.cqframework.cql.cql2elm.model.*;
 import org.cqframework.cql.cql2elm.model.invocation.*;
 import org.cqframework.cql.elm.tracking.TrackBack;
+import org.cqframework.cql.elm.tracking.Trackable;
 import org.hl7.cql.model.*;
 import org.hl7.cql_annotations.r1.CqlToElmError;
 import org.hl7.cql_annotations.r1.CqlToElmInfo;
 import org.hl7.cql_annotations.r1.ErrorSeverity;
 import org.hl7.cql_annotations.r1.ErrorType;
 import org.hl7.elm.r1.*;
+
 import javax.xml.namespace.QName;
 import java.math.BigDecimal;
 import java.util.*;
@@ -100,7 +102,7 @@ public class LibraryBuilder implements ModelResolver {
     private final Stack<String> expressionContext = new Stack<>();
     private final ExpressionDefinitionContextStack expressionDefinitions = new ExpressionDefinitionContextStack();
     private final Stack<FunctionDef> functionDefs = new Stack<>();
-    private final Deque<String> identifiersToCheckForHiding = new ArrayDeque<>();
+    private final Deque<HidingIdentifierContext> hidingIdentifiersContexts = new ArrayDeque<>();
     private int literalContext = 0;
     private int typeSpecifierContext = 0;
     private NamespaceInfo namespaceInfo = null;
@@ -1427,7 +1429,7 @@ public class LibraryBuilder implements ModelResolver {
         return query;
     }
 
-    private void reportWarning(String message, Element expression) {
+    private void reportWarning(String message, Trackable expression) {
         TrackBack trackback = expression != null && expression.getTrackbacks() != null && !expression.getTrackbacks().isEmpty() ? expression.getTrackbacks().get(0) : null;
         CqlSemanticException warning = new CqlSemanticException(message, CqlCompilerException.ErrorSeverity.Warning, trackback);
         recordParsingException(warning);
@@ -2379,6 +2381,9 @@ public class LibraryBuilder implements ModelResolver {
         else if (element instanceof UsingDef) {
             return "A using";
         }
+        else if (element instanceof Literal) {
+            return "A literal";
+        }
         //default message if no match is made:
         return "An [unknown structure]";
     }
@@ -2984,31 +2989,47 @@ public class LibraryBuilder implements ModelResolver {
      * <p/>
      * Exact case matching as well as case-insensitive matching are considered.  If known, the type of the structure
      * in question will be considered in crafting the warning message, as per the {@link Element} parameter.
+     * <p/>
+     * Also, special case function overloads so that only a single overloaded function name is taken into account.
      *
      * @param identifier The identifier belonging to the parameter, expression, function, alias, etc, to be evaluated.
-     * @param onlyOnce   Special case to deal with overloaded functions, which are out scope for hiding.
-     * @param element    The construct element, for example {@link ExpressionRef}.
+     * @param trackable  The construct trackable, for example {@link ExpressionRef}.
      */
-    void pushIdentifierForHiding(String identifier, boolean onlyOnce, Element element) {
-        final boolean hasRelevantMatch = identifiersToCheckForHiding.stream()
-                .filter(innerIdentifier -> innerIdentifier.equalsIgnoreCase(identifier))
-                .peek(matchedIdentifier -> {
-                    if (onlyOnce) {
+    void pushIdentifierForHiding(String identifier, Trackable trackable) {
+        final boolean hasRelevantMatch = hidingIdentifiersContexts.stream()
+                .filter(innerContext -> innerContext.getIdentifier().equalsIgnoreCase(identifier))
+                .peek(matchedContext -> {
+                    // If we are passing an overloaded function definition, do not issue a warning
+                    if (trackable instanceof FunctionDef &&
+                            FunctionDef.class == matchedContext.getTrackableSubclass()) {
                         return;
                     }
 
-                    final boolean isExactMatch = matchedIdentifier.equals(identifier);
-                    final String elementString = lookupElementWarning(element);
-                    final String message= isExactMatch
-                            ? String.format("%s identifier [%s] is hiding another identifier of the same name. %n", elementString, identifier)
-                            : String.format("Are you sure you mean to use %s identifier [%s], instead of [%s]? %n", elementString.toLowerCase(), identifier, matchedIdentifier) ;
-
-                    reportWarning(message, element);
+                    reportWarning(resolveWarningMessage(matchedContext.getIdentifier(), identifier, trackable), trackable);
                 }).findAny()
                 .isPresent();
-        if (! onlyOnce || ! hasRelevantMatch) {
-            identifiersToCheckForHiding.push(identifier);
+
+        // We will only add function definitions once
+        if (! (trackable instanceof FunctionDef) || ! hasRelevantMatch) {
+            // Sometimes the underlying Trackable doesn't resolve in the calling code
+            final Class<? extends Trackable> trackableOrNull = trackable != null ? trackable.getClass() : null;
+            if (! (trackable instanceof Literal)) {
+                hidingIdentifiersContexts.push(new HidingIdentifierContext(identifier, trackableOrNull));
+            }
         }
+    }
+
+    private String resolveWarningMessage(String matchedIdentifier, String identifierParam, Trackable trackable) {
+        final boolean isExactMatch = matchedIdentifier.equals(identifierParam);
+        final String elementString = lookupElementWarning(trackable);
+
+        if (trackable instanceof Literal) {
+            return String.format("You used a string literal: [%s] here that matches an identifier in scope: [%s]. Did you mean to use the identifier instead? %n", identifierParam, matchedIdentifier);
+        }
+
+        return isExactMatch
+                ? String.format("%s identifier [%s] is hiding another identifier of the same name. %n", elementString, identifierParam)
+                : String.format("Are you sure you mean to use %s identifier [%s], instead of [%s]? %n", elementString.toLowerCase(), identifierParam, matchedIdentifier);
     }
 
     /**
@@ -3016,7 +3037,7 @@ public class LibraryBuilder implements ModelResolver {
      * falls out of scope, for an example, an alias within an expression or function body
      */
     void popIdentifierForHiding() {
-        identifiersToCheckForHiding.pop();
+        hidingIdentifiersContexts.pop();
     }
 
     private class Scope {

@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm;
 
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -36,7 +37,17 @@ public class HidingTests {
         final CqlTranslator translator = TestUtils.runSemanticTestNoErrors("HidingTests/TestHidingUnionSameAlias.cql");
         final List<CqlCompilerException> warnings = translator.getWarnings();
 
-        assertThat(warnings.toString(), translator.getWarnings().size(), is(0));
+        final List<String> warningMessages = warnings.stream().map(Throwable::getMessage).collect(Collectors.toList());
+        assertThat(warningMessages.toString(), translator.getWarnings().size(), is(2));
+
+        final List<String> distinct = translator.getWarnings().stream().map(Throwable::getMessage).distinct().collect(Collectors.toList());
+
+        assertThat(distinct.size(), is(2));
+
+        final String first = "You used a string literal: [X] here that matches an identifier in scope: [X]. Did you mean to use the identifier instead? \n";
+        final String second = "You used a string literal: [Y] here that matches an identifier in scope: [Y]. Did you mean to use the identifier instead? \n";
+
+        assertThat(distinct.toString(), distinct, containsInAnyOrder(first, second));
     }
 
     @Test
@@ -44,12 +55,18 @@ public class HidingTests {
         final CqlTranslator translator = TestUtils.runSemanticTestNoErrors("HidingTests/TestHidingUnionSameAliasEachHides.cql");
         final List<CqlCompilerException> warnings = translator.getWarnings();
 
-        assertThat(warnings.toString(), translator.getWarnings().size(), is(2));
+        final List<String> warningMessages = warnings.stream().map(Throwable::getMessage).collect(Collectors.toList());
+        assertThat(warningMessages.toString(), translator.getWarnings().size(), is(4));
 
         final List<String> distinct = translator.getWarnings().stream().map(Throwable::getMessage).distinct().collect(Collectors.toList());
 
-        assertThat(distinct.size(), is(1));
-        assertThat(distinct, contains("An alias identifier [IWantToBeHidden] is hiding another identifier of the same name. \n"));
+        assertThat(distinct.size(), is(3));
+
+        final String first = "You used a string literal: [X] here that matches an identifier in scope: [X]. Did you mean to use the identifier instead? \n";
+        final String second = "You used a string literal: [Y] here that matches an identifier in scope: [Y]. Did you mean to use the identifier instead? \n";
+        final String third = "An alias identifier [IWantToBeHidden] is hiding another identifier of the same name. \n";
+
+        assertThat(distinct.toString(), distinct, containsInAnyOrder(first, second, third));
     }
 
     @Test
@@ -151,5 +168,17 @@ public class HidingTests {
         final List<String> distinctWarningMessages = warningMessages.stream().distinct().collect(Collectors.toList());
         assertThat(distinctWarningMessages.toString(), distinctWarningMessages.size(), is(1));
         assertThat(distinctWarningMessages, contains("An alias identifier [5] is hiding another identifier of the same name. \n"));
+    }
+
+    @Test
+    @Ignore
+    public void testHidingStringLiteral() throws IOException {
+        final CqlTranslator translator = TestUtils.runSemanticTestNoErrors("HidingTests/TestHidingStringLiteral.cql");
+        final List<CqlCompilerException> warnings = translator.getWarnings();
+        final List<String> warningMessages = warnings.stream().map(Throwable::getMessage).collect(Collectors.toList());
+        assertThat(warningMessages.toString(), warnings.size(), is(4));
+        final String caseInsensitive = "Are you sure you mean to use an expression identifier [iWantToHide], instead of [IWantToHide]? \n";
+        final String stringLiteral = "A literal identifier [IWantToBeHidden] is hiding another identifier of the same name. \n";
+        assertThat(warningMessages, containsInAnyOrder(caseInsensitive, stringLiteral));
     }
 }
