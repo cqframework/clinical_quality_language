@@ -109,7 +109,19 @@ public class DateTime extends BaseTemporal {
             setDateTime(OffsetDateTime.parse(dateString));
         }
         else {
-            setDateTime(TemporalHelper.toOffsetDateTime(LocalDateTime.parse(dateString)));
+            // This is the default behaviour if the caller passes a null BigDecimal offset
+            final LocalDateTime parse = LocalDateTime.parse(dateString);
+
+            // LUKETODO:  this isn't strictly correct at it should come from State, but let's go with it
+            final ZoneOffset offsetFromCurrentTimezone = nowOffsetDateTime.getOffset();
+
+            final OffsetDateTime atOffset = parse.atOffset(offsetFromCurrentTimezone);
+
+            logger.warn("default timezone: {}, field zoneOffset: {}, offsetFromCurrentTimezone: {}, localDateTime: {} now at timezone: {}", defaultTimezone.getDisplayName(), zoneOffset, offsetFromCurrentTimezone, parse, atOffset);
+
+            setDateTime(atOffset);
+            // OLD
+//            setDateTime(TemporalHelper.toOffsetDateTime(LocalDateTime.parse(dateString)));
         }
     }
 
@@ -258,12 +270,15 @@ public class DateTime extends BaseTemporal {
                 return dateTime.withOffsetSameInstant(nullableZoneOffset);
             }
 
+            final OffsetDateTime newOffsetDateTime  = dateTime.withOffsetSameInstant(nowOffsetDateTime.getOffset());
+
             final ZoneId zoneId = defaultTimezone.toZoneId();
             final ZonedDateTime zonedDateTime = dateTime.atZoneSameInstant(zoneId);
             final OffsetDateTime offsetDateTime = zonedDateTime.toOffsetDateTime();
             logger.warn("zoneId: {}, dateTime: {}, dateTime.offset: {}, zonedDateTime: {}, offsetDateTime: {}", zoneId, dateTime, dateTime.getOffset(), zonedDateTime, offsetDateTime);
 
-            return offsetDateTime;
+//            return offsetDateTime;
+            return newOffsetDateTime;
         }
 
         return dateTime;

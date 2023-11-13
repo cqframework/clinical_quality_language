@@ -86,15 +86,6 @@ public class TemporalHelper {
         return new BigDecimal(Double.toString(seconds/60f/60f));
     }
 
-    // LUKETODO:  We never pass a non-null state here.  This is effectively dead code
-    public static ZonedDateTime toZonedDateTime(LocalDateTime localDateTime) {
-        return localDateTime.atZone(TimeZone.getDefault().toZoneId());
-    }
-
-    public static OffsetDateTime toOffsetDateTime(LocalDateTime localDateTime) {
-        return toZonedDateTime(localDateTime).toOffsetDateTime();
-    }
-
     public static int weeksToDays(int weeks) {
         int years = 0;
         if (weeks >= 52) {

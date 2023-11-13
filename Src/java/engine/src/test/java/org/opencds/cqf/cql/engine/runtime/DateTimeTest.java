@@ -205,14 +205,14 @@ public class DateTimeTest {
 
     private static final ZoneId UTC = ZoneId.of("UTC");
     private static final ZoneId MONTREAL = ZoneId.of("America/Montreal");
-    private static final ZoneId REGINA = ZoneId.of("America/Regina");
-    private static final LocalDateTime _2023_11_01 = LocalDateTime.of(2023, Month.NOVEMBER, 1, 0, 0, 0);
-    private static final LocalDateTime _2023_11_13 = LocalDateTime.of(2023, Month.NOVEMBER, 13, 0, 0, 0);
+    private static final ZoneId REGINA = ZoneId.of("America/Regina"); // Saskatchewan does not have standard time (non-DST) all year round
+    private static final LocalDateTime DST_2023_11_01 = LocalDateTime.of(2023, Month.NOVEMBER, 1, 0, 0, 0);
+    private static final LocalDateTime NON_DST_2023_11_13 = LocalDateTime.of(2023, Month.NOVEMBER, 13, 0, 0, 0);
     @DataProvider
     private static Object[][] timeZones() {
         return new Object[][]{
-                {UTC, _2023_11_01}, {MONTREAL, _2023_11_01}, {REGINA, _2023_11_01},
-                {UTC, _2023_11_13}, {MONTREAL, _2023_11_13}, {REGINA, _2023_11_13}
+                {UTC, DST_2023_11_01}, {MONTREAL, DST_2023_11_01}, {REGINA, DST_2023_11_01},
+                {UTC, NON_DST_2023_11_13}, {MONTREAL, NON_DST_2023_11_13}, {REGINA, NON_DST_2023_11_13}
         };
     }
 
@@ -229,8 +229,6 @@ public class DateTimeTest {
 
         final int[] dateElementsArray = dateElements.stream().mapToInt(anInt -> anInt).toArray();
         final DateTime dateTime = new DateTime(offset, timeZone, offsetDateTime, dateElementsArray);
-
-        // LUKETODO:  how do I pass this down before I call the DateTime constructor?
 
         final OffsetDateTime normalizedDateTime = dateTime.getNormalized(precision);
 
