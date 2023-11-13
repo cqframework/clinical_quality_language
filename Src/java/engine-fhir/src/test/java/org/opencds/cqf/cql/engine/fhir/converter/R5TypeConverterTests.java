@@ -8,7 +8,7 @@ import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.math.BigDecimal;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -346,6 +346,26 @@ public class R5TypeConverterTests {
 
         actual = (Period) this.typeConverter.toFhirPeriod(null);
         assertNull(null);
+    }
+
+    private static final ZoneId UTC = ZoneId.of("UTC");
+    private static final ZoneId MONTREAL = ZoneId.of("America/Montreal");
+    private static final ZoneId REGINA = ZoneId.of("America/Regina"); // Saskatchewan does not have standard time (non-DST) all year round
+    private static final LocalDateTime DST_2023_11_01 = LocalDateTime.of(2023, Month.NOVEMBER, 1, 0, 0, 0);
+    private static final LocalDateTime NON_DST_2023_11_13 = LocalDateTime.of(2023, Month.NOVEMBER, 13, 0, 0, 0);
+    @Test
+    public void TestIntervalToFhirPeriod2() {
+        final ZoneId zoneId = MONTREAL;
+        final LocalDateTime now = DST_2023_11_01;
+        final Instant instant = Instant.now(); //can be LocalDateTime
+        final TimeZone timeZone = TimeZone.getTimeZone(zoneId);
+        final ZoneOffset currentOffsetForMyZone = zoneId.getRules().getOffset(instant);
+        final OffsetDateTime offsetDateTime = OffsetDateTime.of(now, currentOffsetForMyZone);
+
+        var expected = new Period().setStartElement(new DateTimeType("2019")).setEndElement(new DateTimeType("2020"));
+        var actual = (Period) this.typeConverter.toFhirPeriod(
+                new Interval(new DateTime("2019", null, offsetDateTime), true, new DateTime("2020", null, offsetDateTime), true));
+        assertTrue(expected.equalsDeep(actual));
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)

@@ -64,6 +64,9 @@ public class DateTime extends BaseTemporal {
     }
 
     public DateTime(String dateString, ZoneOffset offset) {
+        this(dateString, offset, OffsetDateTime.now());
+    }
+    public DateTime(String dateString, ZoneOffset offset, OffsetDateTime nowOffsetDateTime) {
         zoneOffset = offset;
         this.defaultTimezone = TimeZone.getDefault();
         this.nowOffsetDateTime = OffsetDateTime.now();
