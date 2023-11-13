@@ -245,7 +245,7 @@ public class DateTime extends BaseTemporal {
             final ZoneId zoneId = timeZoneDefault.toZoneId();
             final ZonedDateTime zonedDateTime = dateTime.atZoneSameInstant(zoneId);
             final OffsetDateTime offsetDateTime = zonedDateTime.toOffsetDateTime();
-            logger.warn("zoneId: {}, zonedDateTime: {}, offsetDateTime: {}", zoneId, zonedDateTime, offsetDateTime);
+            logger.warn("zoneId: {}, dateTime: {}, dateTime.offset: {}, zonedDateTime: {}, offsetDateTime: {}", zoneId, dateTime, dateTime.getOffset(), zonedDateTime, offsetDateTime);
 
             return dateTime.atZoneSameInstant(TimeZone.getDefault().toZoneId()).toOffsetDateTime();
         }
