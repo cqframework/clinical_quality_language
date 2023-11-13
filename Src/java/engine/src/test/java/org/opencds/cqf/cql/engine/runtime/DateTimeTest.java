@@ -1,5 +1,7 @@
 package org.opencds.cqf.cql.engine.runtime;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -16,6 +18,8 @@ import java.util.List;
 import static org.testng.Assert.*;
 
 public class DateTimeTest {
+    private static final Logger logger = LoggerFactory.getLogger(DateTimeTest.class);
+
     private static final LocalDateTime DST_2023_10_26_22_12_0 = LocalDateTime.of(2023, Month.OCTOBER, 26, 22, 12, 0);
     private static final LocalDateTime DST_2023_11_03_02_52_0 = LocalDateTime.of(2023, Month.NOVEMBER, 3, 2, 52, 0);
     // This is OUTSIDE of Daylight Savings Time
@@ -195,6 +199,8 @@ public class DateTimeTest {
         final DateTime dateTime = new DateTime(offset, dateElementsArray);
 
         final OffsetDateTime normalizedDateTime = dateTime.getNormalized(precision);
+
+        logger.warn("TEST: {}, offset: {}, precision: {}, dateElements: {}, actualDateTime: {}, expectedDateTime: {}", dateTime.getDateTime().equals(normalizedDateTime), offset, precision, dateElements, normalizedDateTime, dateTime.getDateTime());
 
         assertEquals(normalizedDateTime, dateTime.getDateTime());
     }

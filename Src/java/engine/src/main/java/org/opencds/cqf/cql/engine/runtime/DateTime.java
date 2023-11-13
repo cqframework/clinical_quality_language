@@ -1,9 +1,11 @@
 package org.opencds.cqf.cql.engine.runtime;
 
+import org.cqframework.cql.cql2elm.Cql2ElmVisitor;
 import org.opencds.cqf.cql.engine.exception.InvalidDateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -12,6 +14,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 public class DateTime extends BaseTemporal {
+    private static final Logger logger = LoggerFactory.getLogger(DateTime.class);
     private ZoneOffset zoneOffset;
 
     private OffsetDateTime dateTime;
@@ -144,14 +147,17 @@ public class DateTime extends BaseTemporal {
             setDateTime(OffsetDateTime.parse(dateString.toString()));
         }
         else {
-//            setDateTime(TemporalHelper.toOffsetDateTime(LocalDateTime.parse(dateString.toString())));
+            // This is the default behaviour if the caller passes a null BigDecimal offset
             final LocalDateTime parse = LocalDateTime.parse(dateString.toString());
             final TimeZone defaultTimezone = TimeZone.getDefault();
 
             // LUKETODO:  this isn't strictly correct at it should come from State, but let's go with it
             final ZoneOffset offsetFromCurrentTimezone = OffsetDateTime.now().getOffset();
 
+            logger.warn("default timezone: {}, offset: {}, localDateTime: {} now at timezone: {}", defaultTimezone.getDisplayName(), offsetFromCurrentTimezone, parse, parse.atOffset(offsetFromCurrentTimezone));
+
             setDateTime(parse.atOffset(offsetFromCurrentTimezone));
+            // LUKETODO:  OLD
 //            setDateTime(TemporalHelper.toOffsetDateTime(LocalDateTime.parse(dateString.toString())));
         }
     }
