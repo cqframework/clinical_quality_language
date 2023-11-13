@@ -6,9 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -154,7 +152,7 @@ public class DateTime extends BaseTemporal {
             // LUKETODO:  this isn't strictly correct at it should come from State, but let's go with it
             final ZoneOffset offsetFromCurrentTimezone = OffsetDateTime.now().getOffset();
 
-            logger.warn("default timezone: {}, offset: {}, localDateTime: {} now at timezone: {}", defaultTimezone.getDisplayName(), offsetFromCurrentTimezone, parse, parse.atOffset(offsetFromCurrentTimezone));
+            logger.warn("default timezone: {}, field zoneOffset: {}, offsetFromCurrentTimezone: {}, localDateTime: {} now at timezone: {}", defaultTimezone.getDisplayName(), zoneOffset, offsetFromCurrentTimezone, parse, parse.atOffset(offsetFromCurrentTimezone));
 
             setDateTime(parse.atOffset(offsetFromCurrentTimezone));
             // LUKETODO:  OLD
@@ -242,6 +240,12 @@ public class DateTime extends BaseTemporal {
             if (nullableZoneOffset != null) {
                 return dateTime.withOffsetSameInstant(nullableZoneOffset);
             }
+
+            final TimeZone timeZoneDefault = TimeZone.getDefault();
+            final ZoneId zoneId = timeZoneDefault.toZoneId();
+            final ZonedDateTime zonedDateTime = dateTime.atZoneSameInstant(zoneId);
+            final OffsetDateTime offsetDateTime = zonedDateTime.toOffsetDateTime();
+            logger.warn("zoneId: {}, zonedDateTime: {}, offsetDateTime: {}", zoneId, zonedDateTime, offsetDateTime);
 
             return dateTime.atZoneSameInstant(TimeZone.getDefault().toZoneId()).toOffsetDateTime();
         }
