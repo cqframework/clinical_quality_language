@@ -32,16 +32,11 @@ public class BaseTest {
     public void testAuthoringPatterns() throws IOException {
         final CqlTranslator translator = TestUtils.runSemanticTest("qicore/v500/AuthoringPatterns.cql", 0, LibraryBuilder.SignatureLevel.Overloads);
 
-        assertThat(translator.getWarnings().toString(), translator.getWarnings().size(), is(2));
-
-        final List<String> distinct = translator.getWarnings().stream().map(Throwable::getMessage).distinct().collect(Collectors.toList());
-
-        assertThat(distinct.size(), is(2));
+        assertThat(translator.getWarnings().toString(), translator.getWarnings().size(), is(1));
 
         final String first = "An alias identifier [Diabetes] is hiding another identifier of the same name. \n";
-        final String second = "Are you sure you mean to use a valueset identifier [Application of Intermittent Pneumatic Compression Devices (IPC)], instead of [Application of intermittent pneumatic compression devices (IPC)]? \n";
 
-        assertThat(distinct, containsInAnyOrder(first, second));
+        assertThat(translator.getWarnings().stream().map(Throwable::getMessage).collect(Collectors.toList()), contains(first));
     }
 
     @Test

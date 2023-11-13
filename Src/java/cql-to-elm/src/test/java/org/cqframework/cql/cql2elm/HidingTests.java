@@ -16,9 +16,7 @@ public class HidingTests {
     public void testCaseInsensitiveWarning() throws IOException {
         final CqlTranslator translator = TestUtils.runSemanticTest("HidingTests/TestHidingCaseInsensitiveWarning.cql", 0, LibraryBuilder.SignatureLevel.All);
         final List<CqlCompilerException> warnings = translator.getWarnings();
-        assertThat(warnings.toString(), translator.getWarnings().size(), is(1));
-        final Set<String> warningMessages = warnings.stream().map(Throwable::getMessage).collect(Collectors.toSet());
-        assertThat(warningMessages, contains("Are you sure you mean to use an expression identifier [patients], instead of [Patients]? \n"));
+        assertThat(warnings.toString(), translator.getWarnings().size(), is(0));
     }
 
     @Test

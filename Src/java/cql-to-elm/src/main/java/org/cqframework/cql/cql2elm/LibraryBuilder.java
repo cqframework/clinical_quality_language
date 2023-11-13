@@ -2991,18 +2991,14 @@ public class LibraryBuilder implements ModelResolver {
      */
     void pushIdentifierForHiding(String identifier, boolean onlyOnce, Element element) {
         final boolean hasRelevantMatch = identifiersToCheckForHiding.stream()
-                .filter(innerIdentifier -> innerIdentifier.equalsIgnoreCase(identifier))
+                .filter(innerIdentifier -> innerIdentifier.equals(identifier))
                 .peek(matchedIdentifier -> {
                     if (onlyOnce) {
                         return;
                     }
 
-                    final boolean isExactMatch = matchedIdentifier.equals(identifier);
                     final String elementString = lookupElementWarning(element);
-                    final String message= isExactMatch
-                            ? String.format("%s identifier [%s] is hiding another identifier of the same name. %n", elementString, identifier)
-                            : String.format("Are you sure you mean to use %s identifier [%s], instead of [%s]? %n", elementString.toLowerCase(), identifier, matchedIdentifier) ;
-
+                    final String message = String.format("%s identifier [%s] is hiding another identifier of the same name. %n", elementString, identifier);
                     reportWarning(message, element);
                 }).findAny()
                 .isPresent();
