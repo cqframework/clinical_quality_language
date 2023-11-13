@@ -14,6 +14,9 @@ import java.util.TimeZone;
 public class DateTime extends BaseTemporal {
     private static final Logger logger = LoggerFactory.getLogger(DateTime.class);
     private ZoneOffset zoneOffset;
+    // To be overridden by unit tests
+    private final TimeZone defaultTimezone;
+    private final OffsetDateTime nowOffsetDateTime;
 
     private OffsetDateTime dateTime;
     public OffsetDateTime getDateTime() {
@@ -48,16 +51,22 @@ public class DateTime extends BaseTemporal {
         setDateTime(dateTime);
         this.precision = Precision.MILLISECOND;
         zoneOffset = toZoneOffset(dateTime);
+        this.defaultTimezone = TimeZone.getDefault();
+        this.nowOffsetDateTime = OffsetDateTime.now();
     }
 
     public DateTime(OffsetDateTime dateTime, Precision precision) {
         setDateTime(dateTime);
         this.precision = precision;
         zoneOffset = toZoneOffset(dateTime);
+        this.defaultTimezone = TimeZone.getDefault();
+        this.nowOffsetDateTime = OffsetDateTime.now();
     }
 
     public DateTime(String dateString, ZoneOffset offset) {
         zoneOffset = offset;
+        this.defaultTimezone = TimeZone.getDefault();
+        this.nowOffsetDateTime = OffsetDateTime.now();
 
         // Handles case when Tz is not complete (T02:04:59.123+01)
         if (dateString.matches("T[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d{3}(\\+|-)\\d{2}$")) {
@@ -105,11 +114,18 @@ public class DateTime extends BaseTemporal {
     }
 
     public DateTime(BigDecimal offset, int ... dateElements) {
+        this(offset, TimeZone.getDefault(), OffsetDateTime.now(), dateElements);
+    }
+
+    // For unit testing only
+    DateTime(BigDecimal offset, TimeZone defaultTimezone, OffsetDateTime nowOffsetDateTime, int ... dateElements) {
         if (dateElements.length == 0) {
             throw new InvalidDateTime("DateTime must include a year");
         }
 
         zoneOffset = toZoneOffset(offset);
+        this.defaultTimezone = defaultTimezone;
+        this.nowOffsetDateTime = nowOffsetDateTime;
 
         StringBuilder dateString = new StringBuilder();
         String[] stringElements = TemporalHelper.normalizeDateTimeElements(dateElements);
@@ -147,14 +163,15 @@ public class DateTime extends BaseTemporal {
         else {
             // This is the default behaviour if the caller passes a null BigDecimal offset
             final LocalDateTime parse = LocalDateTime.parse(dateString.toString());
-            final TimeZone defaultTimezone = TimeZone.getDefault();
 
             // LUKETODO:  this isn't strictly correct at it should come from State, but let's go with it
-            final ZoneOffset offsetFromCurrentTimezone = OffsetDateTime.now().getOffset();
+            final ZoneOffset offsetFromCurrentTimezone = nowOffsetDateTime.getOffset();
 
-            logger.warn("default timezone: {}, field zoneOffset: {}, offsetFromCurrentTimezone: {}, localDateTime: {} now at timezone: {}", defaultTimezone.getDisplayName(), zoneOffset, offsetFromCurrentTimezone, parse, parse.atOffset(offsetFromCurrentTimezone));
+            final OffsetDateTime atOffset = parse.atOffset(offsetFromCurrentTimezone);
 
-            setDateTime(parse.atOffset(offsetFromCurrentTimezone));
+            logger.warn("default timezone: {}, field zoneOffset: {}, offsetFromCurrentTimezone: {}, localDateTime: {} now at timezone: {}", defaultTimezone.getDisplayName(), zoneOffset, offsetFromCurrentTimezone, parse, atOffset);
+
+            setDateTime(atOffset);
             // LUKETODO:  OLD
 //            setDateTime(TemporalHelper.toOffsetDateTime(LocalDateTime.parse(dateString.toString())));
         }
@@ -241,13 +258,12 @@ public class DateTime extends BaseTemporal {
                 return dateTime.withOffsetSameInstant(nullableZoneOffset);
             }
 
-            final TimeZone timeZoneDefault = TimeZone.getDefault();
-            final ZoneId zoneId = timeZoneDefault.toZoneId();
+            final ZoneId zoneId = defaultTimezone.toZoneId();
             final ZonedDateTime zonedDateTime = dateTime.atZoneSameInstant(zoneId);
             final OffsetDateTime offsetDateTime = zonedDateTime.toOffsetDateTime();
             logger.warn("zoneId: {}, dateTime: {}, dateTime.offset: {}, zonedDateTime: {}, offsetDateTime: {}", zoneId, dateTime, dateTime.getOffset(), zonedDateTime, offsetDateTime);
 
-            return dateTime.atZoneSameInstant(TimeZone.getDefault().toZoneId()).toOffsetDateTime();
+            return offsetDateTime;
         }
 
         return dateTime;

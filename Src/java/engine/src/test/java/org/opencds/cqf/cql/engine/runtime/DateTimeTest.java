@@ -7,13 +7,11 @@ import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.util.List;
+import java.util.TimeZone;
 
 import static org.testng.Assert.*;
 
@@ -58,7 +56,7 @@ public class DateTimeTest {
         final long offsetSeconds = zoneOffset.getLong(ChronoField.OFFSET_SECONDS);
         final BigDecimal offsetMinutes = BigDecimal.valueOf(offsetSeconds)
                 .divide(BigDecimal.valueOf(60), 2, RoundingMode.CEILING);
-        return offsetMinutes .divide(BigDecimal.valueOf(60), 2, RoundingMode.CEILING);
+        return offsetMinutes.divide(BigDecimal.valueOf(60), 2, RoundingMode.CEILING);
     }
 
     private static List<Integer> toList(LocalDateTime localDateTime) {
@@ -67,7 +65,7 @@ public class DateTimeTest {
 
     @DataProvider
     private static Object[][] dateStrings() {
-        return new Object[][] {
+        return new Object[][]{
                 {DST_2023_10_26_22_12_0_STRING, null, Precision.HOUR},
                 {DST_2023_10_26_22_12_0_STRING, ZoneOffset.UTC, Precision.HOUR},
                 {DST_2023_10_26_22_12_0_STRING, DST_OFFSET_NORTH_AMERICA_EASTERN, Precision.HOUR},
@@ -134,7 +132,7 @@ public class DateTimeTest {
 
     @DataProvider
     private static Object[][] offsetPrecisions() {
-        return new Object[][] {
+        return new Object[][]{
                 {DST_2023_10_26_22_12_0, ZoneOffset.UTC, Precision.HOUR},
                 {DST_2023_10_26_22_12_0, NON_DST_OFFSET_NORTH_AMERICA_EASTERN, Precision.HOUR},
                 {DST_2023_10_26_22_12_0, DST_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.HOUR},
@@ -169,7 +167,7 @@ public class DateTimeTest {
 
     @DataProvider
     private static Object[][] bigDecimals() {
-        return new Object[][] {
+        return new Object[][]{
                 {null, Precision.HOUR, DST_2023_10_26_22_12_0_INTS},
                 {BigDecimal.ZERO, Precision.HOUR, DST_2023_10_26_22_12_0_INTS},
                 {DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_EASTERN, Precision.HOUR, DST_2023_10_26_22_12_0_INTS},
@@ -197,6 +195,42 @@ public class DateTimeTest {
     void testBigDecimal(BigDecimal offset, Precision precision, List<Integer> dateElements) {
         final int[] dateElementsArray = dateElements.stream().mapToInt(anInt -> anInt).toArray();
         final DateTime dateTime = new DateTime(offset, dateElementsArray);
+
+        final OffsetDateTime normalizedDateTime = dateTime.getNormalized(precision);
+
+        logger.warn("TEST: {}, offset: {}, precision: {}, dateElements: {}, actualDateTime: {}, expectedDateTime: {}", dateTime.getDateTime().equals(normalizedDateTime), offset, precision, dateElements, normalizedDateTime, dateTime.getDateTime());
+
+        assertEquals(normalizedDateTime, dateTime.getDateTime());
+    }
+
+    private static final ZoneId UTC = ZoneId.of("UTC");
+    private static final ZoneId MONTREAL = ZoneId.of("America/Montreal");
+    private static final ZoneId REGINA = ZoneId.of("America/Regina");
+    private static final LocalDateTime _2023_11_01 = LocalDateTime.of(2023, Month.NOVEMBER, 1, 0, 0, 0);
+    private static final LocalDateTime _2023_11_13 = LocalDateTime.of(2023, Month.NOVEMBER, 13, 0, 0, 0);
+    @DataProvider
+    private static Object[][] timeZones() {
+        return new Object[][]{
+                {UTC, _2023_11_01}, {MONTREAL, _2023_11_01}, {REGINA, _2023_11_01},
+                {UTC, _2023_11_13}, {MONTREAL, _2023_11_13}, {REGINA, _2023_11_13}
+        };
+    }
+
+    @Test(dataProvider = "timeZones")
+    void testBigDecimalWithCustomTimezoneAndNow(ZoneId zoneId, LocalDateTime now) {
+        final Instant instant = Instant.now(); //can be LocalDateTime
+        final TimeZone timeZone = TimeZone.getTimeZone(zoneId);
+        final ZoneOffset currentOffsetForMyZone = zoneId.getRules().getOffset(instant);
+        final OffsetDateTime offsetDateTime = OffsetDateTime.of(now, currentOffsetForMyZone);
+
+        final BigDecimal offset = null;
+        final Precision precision = Precision.HOUR;
+        final List<Integer> dateElements = DST_2023_10_26_22_12_0_INTS;
+
+        final int[] dateElementsArray = dateElements.stream().mapToInt(anInt -> anInt).toArray();
+        final DateTime dateTime = new DateTime(offset, timeZone, offsetDateTime, dateElementsArray);
+
+        // LUKETODO:  how do I pass this down before I call the DateTime constructor?
 
         final OffsetDateTime normalizedDateTime = dateTime.getNormalized(precision);
 
