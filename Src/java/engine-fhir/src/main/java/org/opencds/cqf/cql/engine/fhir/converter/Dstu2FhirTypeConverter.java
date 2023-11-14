@@ -1,7 +1,7 @@
 package org.opencds.cqf.cql.engine.fhir.converter;
 
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -74,8 +74,12 @@ class Dstu2FhirTypeConverter extends BaseFhirTypeConverter {
             return null;
         }
 
-        var result = new DateTimeType(value.getDateTime().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-        result.setPrecision(toFhirPrecision(value.getPrecision()));
+        final OffsetDateTime dateTime = value.getDateTime();
+        final String format = dateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        final DateTimeType result = new DateTimeType(format);
+        final TemporalPrecisionEnum fhirPrecision = toFhirPrecision(value.getPrecision());
+        // LUKETODO:  this is what moves us from 2019 to 2018 and 2020 to 2019  this works when the
+        result.setPrecision(fhirPrecision);
         return result;
     }
 

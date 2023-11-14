@@ -334,7 +334,8 @@ public class R5TypeConverterTests {
 
     @Test(dataProvider = "dateTimes")
     public void TestIntervalToFhirPeriod(LocalDateTime now) {
-        final ZonedDateTime zonedDateTime = ZonedDateTime.of(now, ZoneId.systemDefault());
+        final ZonedDateTime zonedDateTime = ZonedDateTime.of(LocalDateTime.of(2019, Month.JANUARY, 1, 0, 0,0), ZoneId.systemDefault());
+//        final ZonedDateTime zonedDateTime = ZonedDateTime.of(now, ZoneId.systemDefault());
         final ZoneOffset defaultOffset = zonedDateTime.getOffset();
 
         Period expected = new Period().setStartElement(new DateTimeType("2019-02-03"))

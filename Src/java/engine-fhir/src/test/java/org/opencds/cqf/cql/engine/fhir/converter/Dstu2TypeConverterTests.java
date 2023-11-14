@@ -346,7 +346,8 @@ public class Dstu2TypeConverterTests {
 
     @Test(dataProvider = "dateTimes")
     public void TestIntervalToFhirPeriod(LocalDateTime now) {
-        final ZonedDateTime zonedDateTime = ZonedDateTime.of(now, ZoneId.systemDefault());
+        // LUKETODO:  is this correct?  should we be basing the offset on the current time or the time being evaluated for a period?  how would this work in production?
+        final ZonedDateTime zonedDateTime = ZonedDateTime.of(LocalDateTime.of(2019, Month.JANUARY, 1, 0, 0,0), ZoneId.systemDefault());
         final ZoneOffset defaultOffset = zonedDateTime.getOffset();
 
         Period expected = new Period().setStartElement(new DateTimeType("2019-02-03"))
@@ -355,9 +356,26 @@ public class Dstu2TypeConverterTests {
                 .toFhirPeriod(new Interval(new Date("2019-02-03"), true, new Date("2019-02-05"), true));
         assertTrue(expected.equalsDeep(actual));
 
-        expected = new Period().setStartElement(new DateTimeType("2019")).setEndElement(new DateTimeType("2020"));
-        actual = (Period) this.typeConverter.toFhirPeriod(
-                new Interval(new DateTime("2019", defaultOffset), true, new DateTime("2020", defaultOffset), true));
+        final DateTimeType dateTimeType2019_1 = new DateTimeType("2019-01-01T00:00:00");
+        final DateTimeType dateTimeType2020_1 = new DateTimeType("2020-01-01T00:00:00");
+        expected = new Period().setStartElement(dateTimeType2019_1).setEndElement(dateTimeType2020_1);
+
+        final DateTime dateTime2019_1 = new DateTime("2019-01-01T00:00:00", defaultOffset);
+        final DateTime dateTime2020_1 = new DateTime("2020-01-01T00:00:00", defaultOffset);
+        final Interval interval_2019_2020_1 = new Interval(dateTime2019_1, true, dateTime2020_1, true);
+        actual = (Period) this.typeConverter.toFhirPeriod(interval_2019_2020_1);
+
+//        assertTrue(expected.equalsDeep(actual));
+
+        final DateTimeType dateTimeType2019 = new DateTimeType("2019");
+        final DateTimeType dateTimeType2020 = new DateTimeType("2020");
+        expected = new Period().setStartElement(dateTimeType2019).setEndElement(dateTimeType2020);
+
+        final DateTime dateTime2019 = new DateTime("2019", defaultOffset);
+        final DateTime dateTime2020 = new DateTime("2020", defaultOffset);
+        final Interval interval_2019_2020 = new Interval(dateTime2019, true, dateTime2020, true);
+        actual = (Period) this.typeConverter.toFhirPeriod(interval_2019_2020);
+
         assertTrue(expected.equalsDeep(actual));
 
         actual = (Period) this.typeConverter.toFhirPeriod(null);
