@@ -20,6 +20,8 @@ public class CqlAggregateFunctionsTest extends CqlTestBase {
 
     @Test
     public void test_all_aggregate_function_tests() {
+        final BigDecimal bigDecimalZoneOffset = getBigDecimalZoneOffset();
+
         var evaluationResult = engine.evaluate(toElmIdentifier("CqlAggregateFunctionsTest"));
         Object result = evaluationResult.forExpression("AllTrueAllTrue").value();
         assertThat(result, is(true));
@@ -114,7 +116,7 @@ public class CqlAggregateFunctionsTest extends CqlTestBase {
         assertThat(result, is("zebra"));
 
         result = evaluationResult.forExpression("MaxTestDateTime").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2012, 10, 6)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2012, 10, 6)));
 
         result = evaluationResult.forExpression("MaxTestTime").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(20, 59, 59, 999)));
@@ -133,7 +135,7 @@ public class CqlAggregateFunctionsTest extends CqlTestBase {
         assertThat(result, is("bye"));
 
         result = evaluationResult.forExpression("MinTestDateTime").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2012, 9, 5)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2012, 9, 5)));
 
         result = evaluationResult.forExpression("MinTestTime").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(5, 59, 59, 999)));
@@ -142,13 +144,13 @@ public class CqlAggregateFunctionsTest extends CqlTestBase {
         result = evaluationResult.forExpression("ModeTestInteger").value();
         assertThat(result, is(9));
         result = evaluationResult.forExpression("ModeTestDateTime2").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2012, 10, 5)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2012, 10, 5)));
 
         result = evaluationResult.forExpression("ModeTestTime").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(5, 59, 59, 999)));
 
         result = evaluationResult.forExpression("ModeTestDateTime").value();
-        Assert.assertTrue(((DateTime)result).equal(new DateTime(null, 2012, 9, 5)));
+        Assert.assertTrue(((DateTime)result).equal(new DateTime(bigDecimalZoneOffset, 2012, 9, 5)));
 
         result = evaluationResult.forExpression("PopStdDevTest1").value();
         Assert.assertTrue(((BigDecimal) result).compareTo(new BigDecimal("1.41421356")) == 0); //23730951454746218587388284504413604736328125

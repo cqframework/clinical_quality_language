@@ -7,14 +7,19 @@ import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator;
 import org.testng.asserts.SoftAssert;
 
 import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 public class CqlTypesOperatorsTest extends CqlTestBase {
+
     @Test(dataProvider = "timezones")
     public void test_all_types_operators(String timezone) {
         final String oldTz = System.getProperty("user.timezone");
         // This is the ONLY thing that will work.  System.setProperty() and -Duser.timezone do NOT work
         TimeZone.setDefault(TimeZone.getTimeZone(timezone));
+
+        // TODO:  figure out how to set the timezone before the engine is initialized
+        engine.getState().setEvaluationDateTime(ZonedDateTime.now());
 
         try {
             final BigDecimal bigDecimalZoneOffset = getBigDecimalZoneOffset();

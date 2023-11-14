@@ -1,6 +1,8 @@
 package org.opencds.cqf.cql.engine.execution;
 
 import org.opencds.cqf.cql.engine.runtime.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -16,6 +18,7 @@ import java.util.LinkedHashMap;
 
 
 public class CqlInternalTypeRepresentationSuiteTest extends CqlTestBase {
+    private static final Logger logger = LoggerFactory.getLogger(CqlInternalTypeRepresentationSuiteTest.class);
 
     private static final ZoneId UTC = ZoneId.of("UTC");
     private static final ZoneId MONTREAL = ZoneId.of("America/Montreal");
@@ -34,11 +37,11 @@ public class CqlInternalTypeRepresentationSuiteTest extends CqlTestBase {
 
     @Test(dataProvider = "timeZones")
     public void test_all_internal_type_representation(ZoneId zoneId, LocalDateTime now) {
-        final BigDecimal bigDecimalZoneOffset = getBigDecimalZoneOffset();
-
         EvaluationResult evaluationResult;
 
         evaluationResult = engine.evaluate(toElmIdentifier("CqlInternalTypeRepresentationSuite"), ZonedDateTime.of(now, zoneId));
+
+        final BigDecimal bigDecimalZoneOffset = getBigDecimalZoneOffset();
 
         Object result;
 
@@ -90,7 +93,9 @@ public class CqlInternalTypeRepresentationSuiteTest extends CqlTestBase {
         Assert.assertTrue(result instanceof DateTime);
         // LUKETODO:  this fails because expected has an offset of -05:00 but actual has an offset of Z
         final DateTime expected = new DateTime(bigDecimalZoneOffset, 2012, 2, 15, 12);
-        Assert.assertEquals(((DateTime) result), expected);
+        logger.warn("actual: {}, expected: {}", ((DateTime)result).getDateTime(), expected.getDateTime());
+        Assert.assertEquals(result, expected);
+//        Assert.assertEquals(((DateTime)result).getDateTime(), expected.getDateTime());
 
         result = evaluationResult.expressionResults.get("DateTime_Minute").value();
         Assert.assertTrue(result instanceof DateTime);
@@ -156,7 +161,7 @@ public class CqlInternalTypeRepresentationSuiteTest extends CqlTestBase {
         elements.clear();
         elements.put("class", "Portable CQL Test Suite");
         elements.put("versionNum", new BigDecimal("1.0"));
-        elements.put("date", new DateTime(null, 2018, 7, 18));
+        elements.put("date", new DateTime(bigDecimalZoneOffset, 2018, 7, 18));
         elements.put("developer", "Christopher Schuler");
 
         result = evaluationResult.expressionResults.get("Structured_TupleA").value();
@@ -168,8 +173,8 @@ public class CqlInternalTypeRepresentationSuiteTest extends CqlTestBase {
         Assert.assertTrue(
                 ((Interval) result).equal(
                         new Interval(
-                                new DateTime(null, 2012, 1, 1), false,
-                                new DateTime(null, 2013, 1, 1), false
+                                new DateTime(bigDecimalZoneOffset, 2012, 1, 1), false,
+                                new DateTime(bigDecimalZoneOffset, 2013, 1, 1), false
                         )
                 )
         );
@@ -179,8 +184,8 @@ public class CqlInternalTypeRepresentationSuiteTest extends CqlTestBase {
         Assert.assertTrue(
                 ((Interval) result).equal(
                         new Interval(
-                                new DateTime(null, 2012, 1, 1), false,
-                                new DateTime(null, 2013, 1, 1), true
+                                new DateTime(bigDecimalZoneOffset, 2012, 1, 1), false,
+                                new DateTime(bigDecimalZoneOffset, 2013, 1, 1), true
                         )
                 )
         );
@@ -190,8 +195,8 @@ public class CqlInternalTypeRepresentationSuiteTest extends CqlTestBase {
         Assert.assertTrue(
                 ((Interval) result).equal(
                         new Interval(
-                                new DateTime(null, 2012, 1, 1), true,
-                                new DateTime(null, 2013, 1, 1), false
+                                new DateTime(bigDecimalZoneOffset, 2012, 1, 1), true,
+                                new DateTime(bigDecimalZoneOffset, 2013, 1, 1), false
                         )
                 )
         );
@@ -201,8 +206,8 @@ public class CqlInternalTypeRepresentationSuiteTest extends CqlTestBase {
         Assert.assertTrue(
                 ((Interval) result).equal(
                         new Interval(
-                                new DateTime(null, 2012, 1, 1), true,
-                                new DateTime(null, 2013, 1, 1), true
+                                new DateTime(bigDecimalZoneOffset, 2012, 1, 1), true,
+                                new DateTime(bigDecimalZoneOffset, 2013, 1, 1), true
                         )
                 )
         );

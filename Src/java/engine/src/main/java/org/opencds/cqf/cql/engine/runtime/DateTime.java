@@ -1,7 +1,5 @@
 package org.opencds.cqf.cql.engine.runtime;
 
-import org.cqframework.cql.cql2elm.Cql2ElmVisitor;
-import org.cqframework.cql.cql2elm.CqlCompilerException;
 import org.opencds.cqf.cql.engine.exception.CqlException;
 import org.opencds.cqf.cql.engine.exception.InvalidDateTime;
 import org.slf4j.Logger;
@@ -11,14 +9,12 @@ import java.math.BigDecimal;
 import java.time.*;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 import java.util.TimeZone;
 
 public class DateTime extends BaseTemporal {
     private static final Logger logger = LoggerFactory.getLogger(DateTime.class);
     private ZoneOffset zoneOffset;
-    // To be overridden by unit tests
-    private final TimeZone defaultTimezone;
-    private final OffsetDateTime nowOffsetDateTime;
 
     private OffsetDateTime dateTime;
     public OffsetDateTime getDateTime() {
@@ -53,16 +49,12 @@ public class DateTime extends BaseTemporal {
         setDateTime(dateTime);
         this.precision = Precision.MILLISECOND;
         zoneOffset = toZoneOffset(dateTime);
-        this.defaultTimezone = TimeZone.getDefault();
-        this.nowOffsetDateTime = OffsetDateTime.now();
     }
 
     public DateTime(OffsetDateTime dateTime, Precision precision) {
         setDateTime(dateTime);
         this.precision = precision;
         zoneOffset = toZoneOffset(dateTime);
-        this.defaultTimezone = TimeZone.getDefault();
-        this.nowOffsetDateTime = OffsetDateTime.now();
     }
 
     public DateTime(String dateString, ZoneOffset offset) {
@@ -77,8 +69,6 @@ public class DateTime extends BaseTemporal {
         }
 
         zoneOffset = offset;
-        this.defaultTimezone = TimeZone.getDefault();
-        this.nowOffsetDateTime = OffsetDateTime.now();
 
         // Handles case when Tz is not complete (T02:04:59.123+01)
         if (dateString.matches("T[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d{3}(\\+|-)\\d{2}$")) {
@@ -129,8 +119,6 @@ public class DateTime extends BaseTemporal {
 
             final OffsetDateTime atOffset = parse.atOffset(offsetFromCurrentTimezone);
 
-            logger.warn("default timezone: {}, field zoneOffset: {}, offsetFromCurrentTimezone: {}, localDateTime: {} now at timezone: {}", defaultTimezone.getDisplayName(), zoneOffset, offsetFromCurrentTimezone, parse, atOffset);
-
             setDateTime(atOffset);
             // OLD
 //            setDateTime(TemporalHelper.toOffsetDateTime(LocalDateTime.parse(dateString)));
@@ -153,8 +141,6 @@ public class DateTime extends BaseTemporal {
         }
 
         zoneOffset = toZoneOffset(offset);
-        this.defaultTimezone = defaultTimezone;
-        this.nowOffsetDateTime = nowOffsetDateTime;
 
         StringBuilder dateString = new StringBuilder();
         String[] stringElements = TemporalHelper.normalizeDateTimeElements(dateElements);
@@ -287,15 +273,15 @@ public class DateTime extends BaseTemporal {
                 return dateTime.withOffsetSameInstant(nullableZoneOffset);
             }
 
-            final OffsetDateTime newOffsetDateTime  = dateTime.withOffsetSameInstant(nowOffsetDateTime.getOffset());
-
-            final ZoneId zoneId = defaultTimezone.toZoneId();
-            final ZonedDateTime zonedDateTime = dateTime.atZoneSameInstant(zoneId);
-            final OffsetDateTime offsetDateTime = zonedDateTime.toOffsetDateTime();
-            logger.warn("zoneId: {}, dateTime: {}, dateTime.offset: {}, zonedDateTime: {}, offsetDateTime: {}", zoneId, dateTime, dateTime.getOffset(), zonedDateTime, offsetDateTime);
-
-//            return offsetDateTime;
-            return newOffsetDateTime;
+//            final OffsetDateTime newOffsetDateTime  = dateTime.withOffsetSameInstant(nowOffsetDateTime.getOffset());
+//
+//            final ZoneId zoneId = defaultTimezone.toZoneId();
+//            final ZonedDateTime zonedDateTime = dateTime.atZoneSameInstant(zoneId);
+//            final OffsetDateTime offsetDateTime = zonedDateTime.toOffsetDateTime();
+//            logger.warn("zoneId: {}, dateTime: {}, dateTime.offset: {}, zonedDateTime: {}, offsetDateTime: {}", zoneId, dateTime, dateTime.getOffset(), zonedDateTime, offsetDateTime);
+//
+////            return offsetDateTime;
+//            return newOffsetDateTime;
         }
 
         return dateTime;
@@ -347,6 +333,28 @@ public class DateTime extends BaseTemporal {
     public Boolean equal(Object other) {
         Integer comparison = compare((BaseTemporal) other, false);
         return comparison == null ? null : comparison == 0;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+
+        final DateTime otherDateTime = (DateTime) other;
+
+        return Objects.equals(zoneOffset, otherDateTime.zoneOffset) &&
+               Objects.equals(getPrecision(), otherDateTime.getPrecision()) &&
+               Objects.equals(getEvaluationOffset(), otherDateTime.getEvaluationOffset()) &&
+               Objects.equals(dateTime, otherDateTime.dateTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(zoneOffset, dateTime);
     }
 
     @Override

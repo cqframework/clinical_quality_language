@@ -6,6 +6,7 @@ import java.util.List;
 import org.cqframework.cql.cql2elm.*;
 import org.hl7.elm.r1.Library;
 import org.opencds.cqf.cql.engine.runtime.TemporalHelper;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 
@@ -85,8 +86,22 @@ public class CqlTestBase {
     CqlEngine engine;
     @BeforeMethod
     protected void beforeEachMethod(){
+        beforeTimezoneHooks();
         environment = new Environment(getLibraryManager());
         engine = new CqlEngine(environment);
+    }
+
+    @AfterMethod
+    protected void afterEachMethod() {
+
+    }
+
+    protected void beforeTimezoneHooks() {
+        // do nothing
+    }
+
+    protected void afterTimezoneHooks() {
+        // do nothing
     }
 
     public static CqlCompilerOptions createOptionsMin() {
