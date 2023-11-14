@@ -1,6 +1,8 @@
 package org.opencds.cqf.cql.engine.runtime;
 
 import org.cqframework.cql.cql2elm.Cql2ElmVisitor;
+import org.cqframework.cql.cql2elm.CqlCompilerException;
+import org.opencds.cqf.cql.engine.exception.CqlException;
 import org.opencds.cqf.cql.engine.exception.InvalidDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +68,14 @@ public class DateTime extends BaseTemporal {
     public DateTime(String dateString, ZoneOffset offset) {
         this(dateString, offset, OffsetDateTime.now());
     }
+
+    // For unit testing only, in particular, to test DST/non-DST
+    // LUKETODO:  do we need nowOffsetDateTime anymore?
     public DateTime(String dateString, ZoneOffset offset, OffsetDateTime nowOffsetDateTime) {
+        if (offset == null) {
+            throw new CqlException("Cannot pass a null offset");
+        }
+
         zoneOffset = offset;
         this.defaultTimezone = TimeZone.getDefault();
         this.nowOffsetDateTime = OffsetDateTime.now();
@@ -133,7 +142,12 @@ public class DateTime extends BaseTemporal {
     }
 
     // For unit testing only
+    // LUKETODO:  do we need nowOffsetDateTime anymore?
     DateTime(BigDecimal offset, TimeZone defaultTimezone, OffsetDateTime nowOffsetDateTime, int ... dateElements) {
+        if (offset == null) {
+            throw new CqlException("BigDecimal offset must be non-null");
+        }
+
         if (dateElements.length == 0) {
             throw new InvalidDateTime("DateTime must include a year");
         }

@@ -36,17 +36,7 @@ import org.hl7.fhir.r5.model.Period;
 import org.hl7.fhir.r5.model.Range;
 import org.hl7.fhir.r5.model.StringType;
 import org.hl7.fhir.r5.model.TimeType;
-import org.opencds.cqf.cql.engine.runtime.Code;
-import org.opencds.cqf.cql.engine.runtime.Concept;
-import org.opencds.cqf.cql.engine.runtime.CqlType;
-import org.opencds.cqf.cql.engine.runtime.Date;
-import org.opencds.cqf.cql.engine.runtime.DateTime;
-import org.opencds.cqf.cql.engine.runtime.Interval;
-import org.opencds.cqf.cql.engine.runtime.Precision;
-import org.opencds.cqf.cql.engine.runtime.Quantity;
-import org.opencds.cqf.cql.engine.runtime.Ratio;
-import org.opencds.cqf.cql.engine.runtime.Time;
-import org.opencds.cqf.cql.engine.runtime.Tuple;
+import org.opencds.cqf.cql.engine.runtime.*;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -244,17 +234,19 @@ public class R5TypeConverterTests {
 
     @Test
     public void TestDateTimeToFhirDateTime() {
+        final ZoneOffset defaultOffset = OffsetDateTime.now().getOffset();
+
         IPrimitiveType<java.util.Date> expectedDate = new DateTimeType("2019-02-03");
         IPrimitiveType<java.util.Date> actualDate = this.typeConverter
-                .toFhirDateTime(new DateTime("2019-02-03", null));
+                .toFhirDateTime(new DateTime("2019-02-03", defaultOffset));
         assertEquals(expectedDate.getValueAsString(), actualDate.getValueAsString());
 
         expectedDate = new DateTimeType("2019");
-        actualDate = this.typeConverter.toFhirDateTime(new DateTime("2019", null));
+        actualDate = this.typeConverter.toFhirDateTime(new DateTime("2019", defaultOffset));
         assertEquals(expectedDate.getValueAsString(), actualDate.getValueAsString());
 
         expectedDate = new DateTimeType("2019");
-        actualDate = this.typeConverter.toFhirDateTime(new DateTime("2019", null));
+        actualDate = this.typeConverter.toFhirDateTime(new DateTime("2019", defaultOffset));
         assertEquals(expectedDate.getValueAsString(), actualDate.getValueAsString());
 
         expectedDate = new DateTimeType("2019-10-10T00:00:00-07:00");
@@ -333,6 +325,8 @@ public class R5TypeConverterTests {
 
     @Test
     public void TestIntervalToFhirPeriod() {
+        final ZoneOffset defaultOffset = OffsetDateTime.now().getOffset();
+
         Period expected = new Period().setStartElement(new DateTimeType("2019-02-03"))
                 .setEndElement(new DateTimeType("2019-02-05"));
         Period actual = (Period) this.typeConverter
@@ -341,7 +335,7 @@ public class R5TypeConverterTests {
 
         expected = new Period().setStartElement(new DateTimeType("2019")).setEndElement(new DateTimeType("2020"));
         actual = (Period) this.typeConverter.toFhirPeriod(
-                new Interval(new DateTime("2019", null), true, new DateTime("2020", null), true));
+                new Interval(new DateTime("2019", defaultOffset), true, new DateTime("2020", defaultOffset), true));
         assertTrue(expected.equalsDeep(actual));
 
         actual = (Period) this.typeConverter.toFhirPeriod(null);
@@ -353,8 +347,11 @@ public class R5TypeConverterTests {
     private static final ZoneId REGINA = ZoneId.of("America/Regina"); // Saskatchewan does not have standard time (non-DST) all year round
     private static final LocalDateTime DST_2023_11_01 = LocalDateTime.of(2023, Month.NOVEMBER, 1, 0, 0, 0);
     private static final LocalDateTime NON_DST_2023_11_13 = LocalDateTime.of(2023, Month.NOVEMBER, 13, 0, 0, 0);
+    // LUKETODO:  rename
     @Test
     public void TestIntervalToFhirPeriod2() {
+        final ZoneOffset defaultOffset = OffsetDateTime.now().getOffset();
+
         final ZoneId zoneId = MONTREAL;
         final LocalDateTime now = DST_2023_11_01;
         final Instant instant = Instant.now(); //can be LocalDateTime
@@ -364,7 +361,7 @@ public class R5TypeConverterTests {
 
         var expected = new Period().setStartElement(new DateTimeType("2019")).setEndElement(new DateTimeType("2020"));
         var actual = (Period) this.typeConverter.toFhirPeriod(
-                new Interval(new DateTime("2019", null, offsetDateTime), true, new DateTime("2020", null, offsetDateTime), true));
+                new Interval(new DateTime("2019", defaultOffset, offsetDateTime), true, new DateTime("2020", defaultOffset, offsetDateTime), true));
         assertTrue(expected.equalsDeep(actual));
     }
 
@@ -714,4 +711,8 @@ public class R5TypeConverterTests {
 
         this.typeConverter.toCqlTuple(new Patient());
     }
+
+//    public BigDecimal getBigDecimalZoneOffset() {
+//        return TemporalHelper.zoneToOffset(engine.getState().getEvaluationZonedDateTime().getOffset());
+//    }
 }

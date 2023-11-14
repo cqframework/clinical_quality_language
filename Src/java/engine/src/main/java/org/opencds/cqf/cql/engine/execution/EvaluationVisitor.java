@@ -681,7 +681,7 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
     @Override
     public Object visitConvertsToDateTime(ConvertsToDateTime elm, State state) {
         Object operand = visitExpression(elm.getOperand(), state);
-        return ConvertsToDateTimeEvaluator.convertsToDateTime(operand, null);
+        return ConvertsToDateTimeEvaluator.convertsToDateTime(operand, state.getEvaluationDateTime().getZoneOffset());
     }
 
     @Override

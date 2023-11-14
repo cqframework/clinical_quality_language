@@ -1,5 +1,6 @@
 package org.opencds.cqf.cql.engine.runtime;
 
+import org.opencds.cqf.cql.engine.exception.CqlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.DataProvider;
@@ -11,6 +12,7 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.util.List;
+import java.util.Optional;
 import java.util.TimeZone;
 
 import static org.testng.Assert.*;
@@ -66,22 +68,18 @@ public class DateTimeTest {
     @DataProvider
     private static Object[][] dateStrings() {
         return new Object[][]{
-                {DST_2023_10_26_22_12_0_STRING, null, Precision.HOUR},
                 {DST_2023_10_26_22_12_0_STRING, ZoneOffset.UTC, Precision.HOUR},
                 {DST_2023_10_26_22_12_0_STRING, DST_OFFSET_NORTH_AMERICA_EASTERN, Precision.HOUR},
                 {DST_2023_10_26_22_12_0_STRING, DST_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.HOUR},
                 {DST_2023_10_26_22_12_0_STRING, DST_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.HOUR},
-                {DST_2023_10_26_22_12_0_STRING, null, Precision.MILLISECOND},
                 {DST_2023_11_03_02_52_0_STRING, ZoneOffset.UTC, Precision.MILLISECOND},
                 {DST_2023_11_03_02_52_0_STRING, DST_OFFSET_NORTH_AMERICA_EASTERN, Precision.MILLISECOND},
                 {DST_2023_11_03_02_52_0_STRING, DST_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.MILLISECOND},
                 {DST_2023_11_03_02_52_0_STRING, DST_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.MILLISECOND},
-                {NON_DST_2024_02_27_07_28_0_STRING, null, Precision.HOUR},
                 {NON_DST_2024_02_27_07_28_0_STRING, ZoneOffset.UTC, Precision.HOUR},
                 {NON_DST_2024_02_27_07_28_0_STRING, NON_DST_OFFSET_NORTH_AMERICA_EASTERN, Precision.HOUR},
                 {NON_DST_2024_02_27_07_28_0_STRING, NON_DST_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.HOUR},
                 {NON_DST_2024_02_27_07_28_0_STRING, NON_DST_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.HOUR},
-                {DST_2024_06_15_23_32_0_STRING, null, Precision.MILLISECOND},
                 {DST_2024_06_15_23_32_0_STRING, ZoneOffset.UTC, Precision.MILLISECOND},
                 {DST_2024_06_15_23_32_0_STRING, DST_OFFSET_NORTH_AMERICA_EASTERN, Precision.MILLISECOND},
                 {DST_2024_06_15_23_32_0_STRING, DST_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.MILLISECOND},
@@ -96,6 +94,11 @@ public class DateTimeTest {
         final OffsetDateTime normalizedDateTime = dateTime.getNormalized(precision);
 
         assertEquals(normalizedDateTime, dateTime.getDateTime());
+    }
+
+    @Test(expectedExceptions = CqlException.class)
+    void testDateStringsNullOffsets() {
+        new DateTime(DST_2023_10_26_22_12_0_STRING, null);
     }
 
     @DataProvider
@@ -168,22 +171,18 @@ public class DateTimeTest {
     @DataProvider
     private static Object[][] bigDecimals() {
         return new Object[][]{
-                {null, Precision.HOUR, DST_2023_10_26_22_12_0_INTS},
                 {BigDecimal.ZERO, Precision.HOUR, DST_2023_10_26_22_12_0_INTS},
                 {DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_EASTERN, Precision.HOUR, DST_2023_10_26_22_12_0_INTS},
                 {DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.HOUR, DST_2023_10_26_22_12_0_INTS},
                 {DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.HOUR, DST_2023_10_26_22_12_0_INTS},
-                {null, Precision.MILLISECOND, DST_2023_11_03_02_52_0_INTS},
                 {BigDecimal.ZERO, Precision.MILLISECOND, DST_2023_11_03_02_52_0_INTS},
                 {DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_EASTERN, Precision.MILLISECOND, DST_2023_11_03_02_52_0_INTS},
                 {DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.MILLISECOND, DST_2023_11_03_02_52_0_INTS},
                 {DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.MILLISECOND, DST_2023_11_03_02_52_0_INTS},
-                {null, Precision.HOUR, NON_DST_2024_02_27_07_28_0_INTS},
                 {BigDecimal.ZERO, Precision.HOUR, NON_DST_2024_02_27_07_28_0_INTS},
                 {NON_DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_EASTERN, Precision.HOUR, NON_DST_2024_02_27_07_28_0_INTS},
                 {NON_DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.HOUR, NON_DST_2024_02_27_07_28_0_INTS},
                 {NON_DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_NEWFOUNDLAND, Precision.HOUR, NON_DST_2024_02_27_07_28_0_INTS},
-                {null, Precision.MILLISECOND, DST_2024_06_15_23_32_0_INTS},
                 {BigDecimal.ZERO, Precision.MILLISECOND, DST_2024_06_15_23_32_0_INTS},
                 {DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_EASTERN, Precision.MILLISECOND, DST_2024_06_15_23_32_0_INTS},
                 {DST_BIG_DECIMAL_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.HOUR, DST_2024_06_15_23_32_0_INTS},
@@ -201,6 +200,11 @@ public class DateTimeTest {
         logger.warn("TEST: {}, offset: {}, precision: {}, dateElements: {}, actualDateTime: {}, expectedDateTime: {}", dateTime.getDateTime().equals(normalizedDateTime), offset, precision, dateElements, normalizedDateTime, dateTime.getDateTime());
 
         assertEquals(normalizedDateTime, dateTime.getDateTime());
+    }
+
+    @Test(expectedExceptions = CqlException.class)
+    void testNullBigDecimalOffset() {
+        new DateTime(null, DST_2023_10_26_22_12_0_INTS.stream().mapToInt(anInt -> anInt).toArray());
     }
 
     private static final ZoneId UTC = ZoneId.of("UTC");
@@ -223,7 +227,7 @@ public class DateTimeTest {
         final ZoneOffset currentOffsetForMyZone = zoneId.getRules().getOffset(instant);
         final OffsetDateTime offsetDateTime = OffsetDateTime.of(now, currentOffsetForMyZone);
 
-        final BigDecimal offset = null;
+        final BigDecimal offset = TemporalHelper.zoneToOffset(currentOffsetForMyZone);
         final Precision precision = Precision.HOUR;
         final List<Integer> dateElements = DST_2023_10_26_22_12_0_INTS;
 

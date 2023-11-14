@@ -27,16 +27,18 @@ public class CqlInternalTypeRepresentationSuiteTest extends CqlTestBase {
     private static Object[][] timeZones() {
         return new Object[][]{
                 {UTC, DST_2023_11_01}, {MONTREAL, DST_2023_11_01}, {REGINA, DST_2023_11_01},
-                {UTC, NON_DST_2023_11_13}, {MONTREAL, NON_DST_2023_11_13}, {REGINA, NON_DST_2023_11_13}
+                {UTC, NON_DST_2023_11_13}, {MONTREAL, NON_DST_2023_11_13}, {REGINA, NON_DST_2023_11_13},
+                {UTC, NON_DST_2018_01_01}, {MONTREAL, NON_DST_2018_01_01}, {REGINA, NON_DST_2018_01_01}
         };
     }
 
     @Test(dataProvider = "timeZones")
     public void test_all_internal_type_representation(ZoneId zoneId, LocalDateTime now) {
+        final BigDecimal bigDecimalZoneOffset = getBigDecimalZoneOffset();
+
         EvaluationResult evaluationResult;
 
         evaluationResult = engine.evaluate(toElmIdentifier("CqlInternalTypeRepresentationSuite"), ZonedDateTime.of(now, zoneId));
-//        evaluationResult = engine.evaluate(toElmIdentifier("CqlInternalTypeRepresentationSuite"), ZonedDateTime.of(2018, 1, 1, 7, 0, 0, 0, zoneId));
 
         Object result;
 
@@ -74,33 +76,33 @@ public class CqlInternalTypeRepresentationSuiteTest extends CqlTestBase {
 
         result = evaluationResult.expressionResults.get("DateTime_Year").value();
         Assert.assertTrue(result instanceof DateTime);
-        Assert.assertTrue(((DateTime) result).equal(new DateTime(null, 2012)));
+        Assert.assertTrue(((DateTime) result).equal(new DateTime(bigDecimalZoneOffset, 2012)));
 
         result = evaluationResult.expressionResults.get("DateTime_Month").value();
         Assert.assertTrue(result instanceof DateTime);
-        Assert.assertTrue(((DateTime) result).equal(new DateTime(null, 2012, 2)));
+        Assert.assertTrue(((DateTime) result).equal(new DateTime(bigDecimalZoneOffset, 2012, 2)));
 
         result = evaluationResult.expressionResults.get("DateTime_Day").value();
         Assert.assertTrue(result instanceof DateTime);
-        Assert.assertTrue(((DateTime) result).equal(new DateTime(null, 2012, 2, 15)));
+        Assert.assertTrue(((DateTime) result).equal(new DateTime(bigDecimalZoneOffset, 2012, 2, 15)));
 
         result = evaluationResult.expressionResults.get("DateTime_Hour").value();
         Assert.assertTrue(result instanceof DateTime);
-        // LUKETODO:  this fails because expected has an offset of -04:00 but actual has an offset of -05:00
-        final DateTime expected = new DateTime(null, 2012, 2, 15, 12);
-        Assert.assertTrue(((DateTime) result).equal(expected));
+        // LUKETODO:  this fails because expected has an offset of -05:00 but actual has an offset of Z
+        final DateTime expected = new DateTime(bigDecimalZoneOffset, 2012, 2, 15, 12);
+        Assert.assertEquals(((DateTime) result), expected);
 
         result = evaluationResult.expressionResults.get("DateTime_Minute").value();
         Assert.assertTrue(result instanceof DateTime);
-        Assert.assertTrue(((DateTime) result).equal(new DateTime(null, 2012, 2, 15, 12, 10)));
+        Assert.assertTrue(((DateTime) result).equal(new DateTime(bigDecimalZoneOffset, 2012, 2, 15, 12, 10)));
 
         result = evaluationResult.expressionResults.get("DateTime_Second").value();
         Assert.assertTrue(result instanceof DateTime);
-        Assert.assertTrue(((DateTime) result).equal(new DateTime(null, 2012, 2, 15, 12, 10, 59)));
+        Assert.assertTrue(((DateTime) result).equal(new DateTime(bigDecimalZoneOffset, 2012, 2, 15, 12, 10, 59)));
 
         result = evaluationResult.expressionResults.get("DateTime_Millisecond").value();
         Assert.assertTrue(result instanceof DateTime);
-        Assert.assertTrue(((DateTime) result).equal(new DateTime(null, 2012, 2, 15, 12, 10, 59, 456)));
+        Assert.assertTrue(((DateTime) result).equal(new DateTime(bigDecimalZoneOffset, 2012, 2, 15, 12, 10, 59, 456)));
 
         result = evaluationResult.expressionResults.get("DateTime_TimezoneOffset").value();
         Assert.assertTrue(result instanceof DateTime);

@@ -16,10 +16,12 @@ import java.util.Set;
 //import static org.hamcrest.Matchers.is;
 //import static org.hamcrest.Matchers.nullValue;
 
+// LUKETODO:  rename and cleanup
 public class CqlTypesTest2 extends CqlTestBase {
 
     @Test
     public void test_all_types() {
+        final BigDecimal bigDecimalZoneOffset = getBigDecimalZoneOffset();
         final SoftAssert softAssert = new SoftAssert();
 
         EvaluationResult evaluationResult;
@@ -29,7 +31,7 @@ public class CqlTypesTest2 extends CqlTestBase {
 
         result = evaluationResult.forExpression("DateTimeMin").value();
         final DateTime actualDateTimeMin = (DateTime)result;
-        final DateTime expectedDateTimeMin1 = new DateTime(null, 1, 1, 1, 0, 0, 0, 0);
+        final DateTime expectedDateTimeMin1 = new DateTime(bigDecimalZoneOffset, 1, 1, 1, 0, 0, 0, 0);
         final DateTime expectedDateTimeMin = new DateTime(OffsetDateTime.of(1, 1, 1, 0, 0, 0, 0, OffsetDateTime.now().getOffset()));
         final boolean minEquivalent = EquivalentEvaluator.equivalent(result, expectedDateTimeMin);
         // LUKETODO:  this fails because we have a nonsensical timezone mismatch  do we care?  -05:17 vs -05:17:32
@@ -38,7 +40,7 @@ public class CqlTypesTest2 extends CqlTestBase {
         softAssert.assertTrue(EquivalentEvaluator.equivalent(result, expectedDateTimeMin), "DateTimeMin");
 
         result = evaluationResult.forExpression("DateTimeMax").value();
-        final DateTime expectedDateTimeMax = new DateTime(null, 9999, 12, 31, 23, 59, 59, 999);
+        final DateTime expectedDateTimeMax = new DateTime(bigDecimalZoneOffset, 9999, 12, 31, 23, 59, 59, 999);
         final DateTime actualDateTimeMax = (DateTime)result;
         final boolean maxEquivalent = EquivalentEvaluator.equivalent(result, expectedDateTimeMax);
         // LUKETODO:  under the non-DST offsert, this is -04:00 vs. -05:00:00

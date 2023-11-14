@@ -17,6 +17,8 @@ public class CqlTypesOperatorsTest extends CqlTestBase {
         TimeZone.setDefault(TimeZone.getTimeZone(timezone));
 
         try {
+            final BigDecimal bigDecimalZoneOffset = getBigDecimalZoneOffset();
+
             final SoftAssert softAssert = new SoftAssert();
 
             EvaluationResult evaluationResult;
@@ -31,7 +33,7 @@ public class CqlTypesOperatorsTest extends CqlTestBase {
             softAssert.assertTrue(((Quantity) result).equal(new Quantity().withValue(new BigDecimal("45.5")).withUnit("g")));
 
             result = evaluationResult.forExpression("AsDateTime").value();
-            softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2014, 1, 1)));
+            softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2014, 1, 1)));
 
             result = evaluationResult.forExpression("IntegerToDecimal").value();
             softAssert.assertEquals(result, new BigDecimal(5));
@@ -40,7 +42,7 @@ public class CqlTypesOperatorsTest extends CqlTestBase {
             softAssert.assertEquals(result, "5");
 
             result = evaluationResult.forExpression("StringToDateTime").value();
-            softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2014, 1, 1)));
+            softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2014, 1, 1)));
 
             result = evaluationResult.forExpression("StringToTime").value();
             softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(14, 30, 0, 0)));
@@ -181,19 +183,21 @@ public class CqlTypesOperatorsTest extends CqlTestBase {
             softAssert.assertTrue(((Concept) result).equivalent(new Concept().withCode(new Code().withCode("8480-6"))));
 
             result = evaluationResult.forExpression("ToDateTime0").value();
-            softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2014, 1)));
+            softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2014, 1)));
 
             result = evaluationResult.forExpression("ToDateTime1").value();
-            softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2014, 1, 1)));
+            softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2014, 1, 1)));
 
+            // LUKETODO:  this fails:  fix it
             result = evaluationResult.forExpression("ToDateTime2").value();
             // result OLD code:  2014-01-01T12:05-07:00
             // expected OLD code: 2014-01-01T12:05-07:00
-            final DateTime expectedResult = new DateTime(null, 2014, 1, 1, 12, 5);
+            final DateTime expectedResult = new DateTime(bigDecimalZoneOffset, 2014, 1, 1, 12, 5);
             softAssert.assertTrue(EquivalentEvaluator.equivalent(result, expectedResult));
 
+            // LUKETODO:  this fails:  fix it
             result = evaluationResult.forExpression("ToDateTime3").value();
-            softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2014, 1, 1, 12, 5, 5, 955)));
+            softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2014, 1, 1, 12, 5, 5, 955)));
 
             result = evaluationResult.forExpression("ToDateTime4").value();
             softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(new BigDecimal("1.5"), 2014, 1, 1, 12, 5, 5, 955)), "ToDateTime4 vs. new DateTime(-1.5)");
@@ -202,6 +206,7 @@ public class CqlTypesOperatorsTest extends CqlTestBase {
             softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(new BigDecimal("-1.25"), 2014, 1, 1, 12, 5, 5, 955)), "ToDateTime5 vs. new DateTime(-1.25)");
 
             result = evaluationResult.forExpression("ToDateTime6").value();
+            // LUKEOTODO:  add an assertion for the above
 
             result = evaluationResult.forExpression("ToDateTimeMalformed").value();
             softAssert.assertNull(result);

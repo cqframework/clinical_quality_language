@@ -7,6 +7,7 @@ import org.testng.annotations.Test;
 
 import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,6 +20,7 @@ public class CqlNulLogicalOperatorsTest extends CqlTestBase {
 
     @Test
     public void test_all_null_logical_operators() {
+        final BigDecimal bigDecimalZoneOffset = getBigDecimalZoneOffset();
 
         Set<String> set = new HashSet<>();
         EvaluationResult evaluationResult;
@@ -48,10 +50,10 @@ public class CqlNulLogicalOperatorsTest extends CqlTestBase {
         assertThat(result, is(Collections.singletonList("a")));
 
         result = evaluationResult.forExpression("DateTimeCoalesce").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2012, 5, 18)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2012, 5, 18)));
 
         result = evaluationResult.forExpression("DateTimeListCoalesce").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2012, 5, 18)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2012, 5, 18)));
 
         result = evaluationResult.forExpression("TimeCoalesce").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(5, 15, 33, 556)));

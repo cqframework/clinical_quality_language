@@ -8,6 +8,7 @@ import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -245,17 +246,19 @@ public class Dstu2TypeConverterTests {
 
     @Test
     public void TestDateTimeToFhirDateTime() {
+        final ZoneOffset defaultOffset = OffsetDateTime.now().getOffset();
+
         IPrimitiveType<java.util.Date> expectedDate = new DateTimeType("2019-02-03");
         IPrimitiveType<java.util.Date> actualDate = this.typeConverter
-                .toFhirDateTime(new DateTime("2019-02-03", null));
+                .toFhirDateTime(new DateTime("2019-02-03", defaultOffset));
         assertEquals(expectedDate.getValue(), actualDate.getValue());
 
         expectedDate = new DateTimeType("2019");
-        actualDate = this.typeConverter.toFhirDateTime(new DateTime("2019", null));
+        actualDate = this.typeConverter.toFhirDateTime(new DateTime("2019", defaultOffset));
         assertEquals(expectedDate.getValue(), actualDate.getValue());
 
         expectedDate = new DateTimeType("2019");
-        actualDate = this.typeConverter.toFhirDateTime(new DateTime("2019", null));
+        actualDate = this.typeConverter.toFhirDateTime(new DateTime("2019", defaultOffset));
         assertEquals(expectedDate.getValueAsString(), actualDate.getValueAsString());
 
         expectedDate = new DateTimeType("2019-10-10T01:00:00-06:00");
@@ -335,6 +338,8 @@ public class Dstu2TypeConverterTests {
 
     @Test
     public void TestIntervalToFhirPeriod() {
+        final ZoneOffset defaultOffset = OffsetDateTime.now().getOffset();
+
         Period expected = new Period().setStartElement(new DateTimeType("2019-02-03"))
                 .setEndElement(new DateTimeType("2019-02-05"));
         Period actual = (Period) this.typeConverter
@@ -343,7 +348,7 @@ public class Dstu2TypeConverterTests {
 
         expected = new Period().setStartElement(new DateTimeType("2019")).setEndElement(new DateTimeType("2020"));
         actual = (Period) this.typeConverter.toFhirPeriod(
-                new Interval(new DateTime("2019", null), true, new DateTime("2020", null), true));
+                new Interval(new DateTime("2019", defaultOffset), true, new DateTime("2020", defaultOffset), true));
         assertTrue(expected.equalsDeep(actual));
 
         actual = (Period) this.typeConverter.toFhirPeriod(null);

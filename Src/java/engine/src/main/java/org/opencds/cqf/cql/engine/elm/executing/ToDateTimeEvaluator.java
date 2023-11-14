@@ -54,7 +54,7 @@ public class ToDateTimeEvaluator {
 
         if (operand instanceof String) {
             try {
-                return new DateTime((String) operand, null);
+                return new DateTime((String) operand, state.getEvaluationDateTime().getZoneOffset());
             } catch (DateTimeParseException dtpe) {
                 return null;
             }

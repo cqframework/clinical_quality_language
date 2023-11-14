@@ -21,6 +21,7 @@ public class CqlTypesTest extends CqlTestBase {
 
     @Test
     public void test_all_types() {
+        final BigDecimal bigDecimalZoneOffset = getBigDecimalZoneOffset();
         final SoftAssert softAssert = new SoftAssert();
 
         Set<String> set = new HashSet<>();
@@ -28,7 +29,6 @@ public class CqlTypesTest extends CqlTestBase {
 
         evaluationResult = engine.evaluate(toElmIdentifier("CqlTypesTest"));
         Object result;
-
 
         result = evaluationResult.forExpression("AnyInteger").value();
         softAssert.assertEquals(result, 5, "AnyInteger");
@@ -43,7 +43,7 @@ public class CqlTypesTest extends CqlTestBase {
         softAssert.assertTrue(((Quantity) result).equal(new Quantity().withValue(new BigDecimal("5.0")).withUnit("g")), "AnyQuantity");
 
         result = evaluationResult.forExpression("AnyDateTime").value();
-        softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2012, 4, 4)), "AnyDateTime");
+        softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2012, 4, 4)), "AnyDateTime");
 
         result = evaluationResult.forExpression("AnyTime").value();
         softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(9, 0, 0, 0)), "AnyTime");
@@ -78,10 +78,10 @@ public class CqlTypesTest extends CqlTestBase {
         softAssert.assertNull(result, "DateTimeNull");
 
         result = evaluationResult.forExpression("DateTimeProper").value();
-        softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2016, 7, 7, 6, 25, 33, 910)), "DateTimeProper");
+        softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2016, 7, 7, 6, 25, 33, 910)), "DateTimeProper");
 
         result = evaluationResult.forExpression("DateTimeIncomplete").value();
-        softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2015, 2, 10)), "DateTimeIncomplete");
+        softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2015, 2, 10)), "DateTimeIncomplete");
 
         result = evaluationResult.forExpression("DateTimeUncertain").value();
         softAssert.assertEquals(((Interval) result).getStart(), 19, "DateTimeUncertain");
@@ -89,19 +89,17 @@ public class CqlTypesTest extends CqlTestBase {
 
         result = evaluationResult.forExpression("DateTimeMin").value();
         final DateTime actualDateTimeMin = (DateTime)result;
-        final DateTime expectedDateTimeMin1 = new DateTime(null, 1, 1, 1, 0, 0, 0, 0);
+        final DateTime expectedDateTimeMin1 = new DateTime(bigDecimalZoneOffset, 1, 1, 1, 0, 0, 0, 0);
         final DateTime expectedDateTimeMin = new DateTime(OffsetDateTime.of(1, 1, 1, 0, 0, 0, 0, OffsetDateTime.now().getOffset()));
         final boolean minEquivalent = EquivalentEvaluator.equivalent(result, expectedDateTimeMin);
-        // LUKETODO:  this fails because we have a nonsensical timezone mismatch  do we care?  -05:17 vs -05:17:32
-        // LUKETODO:  in case the code is unmodified from master, both timezones are -05:17:32 so they are considered equivalent
-        // LUKETODO:  under the non-DST offsert, this is -04:00 vs. -05:17:32
+        // LUKETODO:  clean up all variables
         softAssert.assertTrue(EquivalentEvaluator.equivalent(result, expectedDateTimeMin), "DateTimeMin");
 
         result = evaluationResult.forExpression("DateTimeMax").value();
-        final DateTime expectedDateTimeMax = new DateTime(null, 9999, 12, 31, 23, 59, 59, 999);
+        final DateTime expectedDateTimeMax = new DateTime(bigDecimalZoneOffset, 9999, 12, 31, 23, 59, 59, 999);
         final DateTime actualDateTimeMax = (DateTime)result;
         final boolean maxEquivalent = EquivalentEvaluator.equivalent(result, expectedDateTimeMax);
-        // LUKETODO:  under the non-DST offsert, this is -04:00 vs. -05:00:00
+        // LUKETODO:  clean up all variables
         softAssert.assertTrue(EquivalentEvaluator.equivalent(result, expectedDateTimeMax),"DateTimeMax");
 
         result = evaluationResult.forExpression("DecimalUpperBoundExcept").value();
