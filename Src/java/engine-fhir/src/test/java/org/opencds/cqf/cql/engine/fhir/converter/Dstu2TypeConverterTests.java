@@ -8,8 +8,7 @@ import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -50,6 +49,7 @@ import org.opencds.cqf.cql.engine.runtime.Ratio;
 import org.opencds.cqf.cql.engine.runtime.Time;
 import org.opencds.cqf.cql.engine.runtime.Tuple;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
@@ -336,9 +336,18 @@ public class Dstu2TypeConverterTests {
         assertNull(expected);
     }
 
-    @Test
-    public void TestIntervalToFhirPeriod() {
-        final ZoneOffset defaultOffset = OffsetDateTime.now().getOffset();
+    private static final LocalDateTime DST_2023_11_01 = LocalDateTime.of(2023, Month.NOVEMBER, 1, 0, 0, 0);
+    private static final LocalDateTime NON_DST_2023_11_14 = LocalDateTime.of(2023, Month.NOVEMBER, 14, 0, 0, 0);
+
+    @DataProvider
+    private static Object[][] dateTimes() {
+        return new Object[][] {{DST_2023_11_01}, {NON_DST_2023_11_14}};
+    }
+
+    @Test(dataProvider = "dateTimes")
+    public void TestIntervalToFhirPeriod(LocalDateTime now) {
+        final ZonedDateTime zonedDateTime = ZonedDateTime.of(now, ZoneId.systemDefault());
+        final ZoneOffset defaultOffset = zonedDateTime.getOffset();
 
         Period expected = new Period().setStartElement(new DateTimeType("2019-02-03"))
                 .setEndElement(new DateTimeType("2019-02-05"));

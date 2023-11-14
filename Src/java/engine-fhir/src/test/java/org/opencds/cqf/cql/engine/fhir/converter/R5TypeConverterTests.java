@@ -38,6 +38,7 @@ import org.hl7.fhir.r5.model.StringType;
 import org.hl7.fhir.r5.model.TimeType;
 import org.opencds.cqf.cql.engine.runtime.*;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
@@ -323,9 +324,18 @@ public class R5TypeConverterTests {
         assertNull(expected);
     }
 
-    @Test
-    public void TestIntervalToFhirPeriod() {
-        final ZoneOffset defaultOffset = OffsetDateTime.now().getOffset();
+    private static final LocalDateTime DST_2023_11_01 = LocalDateTime.of(2023, Month.NOVEMBER, 1, 0, 0, 0);
+    private static final LocalDateTime NON_DST_2023_11_14 = LocalDateTime.of(2023, Month.NOVEMBER, 14, 0, 0, 0);
+
+    @DataProvider
+    private static Object[][] dateTimes() {
+        return new Object[][] {{DST_2023_11_01}, {NON_DST_2023_11_14}};
+    }
+
+    @Test(dataProvider = "dateTimes")
+    public void TestIntervalToFhirPeriod(LocalDateTime now) {
+        final ZonedDateTime zonedDateTime = ZonedDateTime.of(now, ZoneId.systemDefault());
+        final ZoneOffset defaultOffset = zonedDateTime.getOffset();
 
         Period expected = new Period().setStartElement(new DateTimeType("2019-02-03"))
                 .setEndElement(new DateTimeType("2019-02-05"));
@@ -340,29 +350,6 @@ public class R5TypeConverterTests {
 
         actual = (Period) this.typeConverter.toFhirPeriod(null);
         assertNull(null);
-    }
-
-    private static final ZoneId UTC = ZoneId.of("UTC");
-    private static final ZoneId MONTREAL = ZoneId.of("America/Montreal");
-    private static final ZoneId REGINA = ZoneId.of("America/Regina"); // Saskatchewan does not have standard time (non-DST) all year round
-    private static final LocalDateTime DST_2023_11_01 = LocalDateTime.of(2023, Month.NOVEMBER, 1, 0, 0, 0);
-    private static final LocalDateTime NON_DST_2023_11_13 = LocalDateTime.of(2023, Month.NOVEMBER, 13, 0, 0, 0);
-    // LUKETODO:  rename
-    @Test
-    public void TestIntervalToFhirPeriod2() {
-        final ZoneOffset defaultOffset = OffsetDateTime.now().getOffset();
-
-        final ZoneId zoneId = MONTREAL;
-        final LocalDateTime now = DST_2023_11_01;
-        final Instant instant = Instant.now(); //can be LocalDateTime
-        final TimeZone timeZone = TimeZone.getTimeZone(zoneId);
-        final ZoneOffset currentOffsetForMyZone = zoneId.getRules().getOffset(instant);
-        final OffsetDateTime offsetDateTime = OffsetDateTime.of(now, currentOffsetForMyZone);
-
-        var expected = new Period().setStartElement(new DateTimeType("2019")).setEndElement(new DateTimeType("2020"));
-        var actual = (Period) this.typeConverter.toFhirPeriod(
-                new Interval(new DateTime("2019", defaultOffset, offsetDateTime), true, new DateTime("2020", defaultOffset, offsetDateTime), true));
-        assertTrue(expected.equalsDeep(actual));
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
