@@ -4,36 +4,28 @@ import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.cqframework.cql.cql2elm.StringEscapeUtils;
-import org.cqframework.cql.gen.cqlBaseVisitor;
+import org.cqframework.cql.cql2elm.*;
+import org.cqframework.cql.cql2elm.model.Model;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
+import org.hl7.cql.model.*;
+import org.hl7.elm.r1.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CqlPreprocessorVisitor extends cqlBaseVisitor {
-    private LibraryInfo libraryInfo = new LibraryInfo();
-    private boolean implicitContextCreated = false;
-    private String currentContext = "Unfiltered";
+public class CqlPreprocessorVisitor extends CqlPreprocessorElmCommonVisitor {
+    static final Logger logger = LoggerFactory.getLogger(CqlPreprocessorVisitor.class);
     private int lastSourceIndex = -1;
-    private TokenStream tokenStream;
+
+    public CqlPreprocessorVisitor(LibraryBuilder libraryBuilder, TokenStream tokenStream) {
+        super(libraryBuilder, tokenStream);
+    }
 
     public LibraryInfo getLibraryInfo() {
         return libraryInfo;
-    }
-
-    public TokenStream getTokenStream() {
-        return tokenStream;
-    }
-
-    public void setTokenStream(TokenStream value) {
-        tokenStream = value;
-    }
-
-    @Override
-    public Object visit(ParseTree tree) {
-        return super.visit(tree);
     }
 
     private void processHeader(ParseTree ctx, BaseInfo info) {
@@ -49,8 +41,39 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
         }
     }
 
-    private String parseString(ParseTree pt) {
-        return StringEscapeUtils.unescapeCql(pt == null ? null : (String)visit(pt));
+    @Override
+    public Object visitLibrary(cqlParser.LibraryContext ctx) {
+        Object lastResult = null;
+        // NOTE: Need to set the library identifier here so the builder can begin the translation appropriately
+        VersionedIdentifier identifier = new VersionedIdentifier().withId(libraryInfo.getLibraryName()).withVersion(libraryInfo.getVersion());
+        if (libraryInfo.getNamespaceName() != null) {
+            identifier.setSystem(libraryBuilder.resolveNamespaceUri(libraryInfo.getNamespaceName(), true));
+        } else if (libraryBuilder.getNamespaceInfo() != null) {
+            identifier.setSystem(libraryBuilder.getNamespaceInfo().getUri());
+        }
+        libraryBuilder.setLibraryIdentifier(identifier);
+        libraryBuilder.beginTranslation();
+        try {
+            // Loop through and call visit on each child (to ensure they are tracked)
+            for (int i = 0; i < ctx.getChildCount(); i++) {
+                ParseTree tree = ctx.getChild(i);
+                TerminalNode terminalNode = tree instanceof TerminalNode ? (TerminalNode) tree : null;
+                if (terminalNode != null && terminalNode.getSymbol().getType() == cqlLexer.EOF) {
+                    continue;
+                }
+
+                Object childResult = visit(tree);
+                // Only set the last result if we received something useful
+                if (childResult != null) {
+                    lastResult = childResult;
+                }
+            }
+
+            // Return last result (consistent with super implementation and helps w/ testing)
+            return lastResult;
+        } finally {
+            libraryBuilder.endTranslation();
+        }
     }
 
     @Override
@@ -98,7 +121,8 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     public Object visitUsingDefinition(cqlParser.UsingDefinitionContext ctx) {
         UsingDefinitionInfo usingDefinition = new UsingDefinitionInfo();
         List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
-        usingDefinition.setName(identifiers.remove(identifiers.size() - 1));
+        final String unqualifiedIdentifier = identifiers.remove(identifiers.size() - 1);
+        usingDefinition.setName(unqualifiedIdentifier);
         if (identifiers.size() > 0) {
             usingDefinition.setNamespaceName(String.join(".", identifiers));
         }
@@ -114,6 +138,27 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
         usingDefinition.setDefinition(ctx);
         processHeader(ctx, usingDefinition);
         libraryInfo.addUsingDefinition(usingDefinition);
+
+        final String namespaceName = !identifiers.isEmpty() ? String.join(".", identifiers) :
+                libraryBuilder.isWellKnownModelName(unqualifiedIdentifier) ? null :
+                        (libraryBuilder.getNamespaceInfo() != null ? libraryBuilder.getNamespaceInfo().getName() : null);
+
+        NamespaceInfo modelNamespace = null;
+        if (namespaceName != null) {
+            String namespaceUri = libraryBuilder.resolveNamespaceUri(namespaceName, true);
+            modelNamespace = new NamespaceInfo(namespaceName, namespaceUri);
+        }
+
+        String localIdentifier = ctx.localIdentifier() == null ? unqualifiedIdentifier : parseString(ctx.localIdentifier());
+        if (!localIdentifier.equals(unqualifiedIdentifier)) {
+            throw new IllegalArgumentException(
+                    String.format("Local identifiers for models must be the same as the name of the model in this release of the translator (Model %s, Called %s)",
+                            unqualifiedIdentifier, localIdentifier));
+        }
+
+        // This should only be called once, from this class, and not from Cql2ElmVisitor otherwise there will be duplicate errors sometimes
+        Model model = getModel(modelNamespace, unqualifiedIdentifier, parseString(ctx.versionSpecifier()), localIdentifier);
+
         return usingDefinition;
     }
 
@@ -173,10 +218,10 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
         String modelIdentifier = ctx.modelIdentifier() != null ? parseString(ctx.modelIdentifier()) : null;
         String unqualifiedContext = parseString(ctx.identifier());
         if (modelIdentifier != null && !modelIdentifier.equals("")) {
-            currentContext = modelIdentifier + "." + unqualifiedContext;
+            setCurrentContext(modelIdentifier + "." + unqualifiedContext);
         }
         else {
-            currentContext = unqualifiedContext;
+            setCurrentContext(unqualifiedContext);
         }
 
         ContextDefinitionInfo contextDefinition = new ContextDefinitionInfo();
@@ -184,21 +229,21 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
         processHeader(ctx, contextDefinition);
         libraryInfo.addContextDefinition(contextDefinition);
 
-        if (!implicitContextCreated && !unqualifiedContext.equals("Unfiltered")) {
+        if (!getImplicitContextCreated() && !unqualifiedContext.equals("Unfiltered")) {
             ExpressionDefinitionInfo expressionDefinition = new ExpressionDefinitionInfo();
             expressionDefinition.setName(unqualifiedContext);
-            expressionDefinition.setContext(currentContext);
+            expressionDefinition.setContext(getCurrentContext());
             libraryInfo.addExpressionDefinition(expressionDefinition);
-            implicitContextCreated = true;
+            setImplicitContextCreated(true);
         }
-        return currentContext;
+        return getCurrentContext();
     }
 
     @Override
     public Object visitExpressionDefinition(cqlParser.ExpressionDefinitionContext ctx) {
         ExpressionDefinitionInfo expressionDefinition = new ExpressionDefinitionInfo();
         expressionDefinition.setName(parseString(ctx.identifier()));
-        expressionDefinition.setContext(currentContext);
+        expressionDefinition.setContext(getCurrentContext());
         expressionDefinition.setDefinition(ctx);
         processHeader(ctx, expressionDefinition);
         libraryInfo.addExpressionDefinition(expressionDefinition);
@@ -209,11 +254,34 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     public Object visitFunctionDefinition(cqlParser.FunctionDefinitionContext ctx) {
         FunctionDefinitionInfo functionDefinition = new FunctionDefinitionInfo();
         functionDefinition.setName(parseString(ctx.identifierOrFunctionIdentifier()));
-        functionDefinition.setContext(currentContext);
+        functionDefinition.setContext(getCurrentContext());
         functionDefinition.setDefinition(ctx);
         processHeader(ctx, functionDefinition);
         libraryInfo.addFunctionDefinition(functionDefinition);
         return functionDefinition;
+    }
+
+    @Override
+    public NamedTypeSpecifier visitNamedTypeSpecifier(cqlParser.NamedTypeSpecifierContext ctx) {
+        List<String> qualifiers = parseQualifiers(ctx);
+        String modelIdentifier = getModelIdentifier(qualifiers);
+        String identifier = getTypeIdentifier(qualifiers, parseString(ctx.referentialOrTypeNameIdentifier()));
+        final String typeSpecifierKey = String.format("%s:%s", modelIdentifier, identifier);
+
+        DataType resultType = libraryBuilder.resolveTypeName(modelIdentifier, identifier);
+        if (null == resultType) {
+            libraryBuilder.addNamedTypeSpecifierResult(typeSpecifierKey, ResultWithPossibleError.withError());
+            throw new CqlCompilerException(String.format("Could not find type for model: %s and name: %s", modelIdentifier, identifier));
+        }
+        NamedTypeSpecifier result = of.createNamedTypeSpecifier()
+                .withName(libraryBuilder.dataTypeToQName(resultType));
+
+        // Fluent API would be nice here, but resultType isn't part of the model so...
+        result.setResultType(resultType);
+
+        libraryBuilder.addNamedTypeSpecifierResult(typeSpecifierKey, ResultWithPossibleError.withTypeSpecifier(result));
+
+        return result;
     }
 
     @Override

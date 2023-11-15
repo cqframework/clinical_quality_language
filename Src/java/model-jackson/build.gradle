@@ -4,8 +4,8 @@ plugins {
 
 dependencies {
     api project(':model')
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.13.2'
-    implementation 'com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.13.2'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.15.2'
+    implementation 'com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations:2.15.2'
 
     testImplementation project(":quick")
     testImplementation project(":qdm")

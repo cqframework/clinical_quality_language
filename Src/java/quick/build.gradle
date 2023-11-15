@@ -4,8 +4,8 @@ plugins {
 }
 
 dependencies {
-    implementation project(':elm')
-    implementation project(':model')
+    api project(':elm')
+    api project(':model')
 }
 
 generateSources{

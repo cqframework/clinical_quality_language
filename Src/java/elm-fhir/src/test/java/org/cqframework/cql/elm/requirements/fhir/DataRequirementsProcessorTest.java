@@ -521,17 +521,52 @@ public class DataRequirementsProcessorTest {
         return new CqlCompilerOptions();
     }
 
+    private Setup setupUncollapsedDataRequirementsGather(String fileName, CqlCompilerOptions cqlTranslatorOptions) throws IOException {
+        cqlTranslatorOptions.setCollapseDataRequirements(false);
+        cqlTranslatorOptions.setAnalyzeDataRequirements(false);
+        return setup(fileName, cqlTranslatorOptions);
+    }
+
+    private Setup setupUncollapsedDataRequirementsGather(NamespaceInfo namespace, String fileName, CqlCompilerOptions cqlTranslatorOptions) throws IOException {
+        cqlTranslatorOptions.setCollapseDataRequirements(false);
+        cqlTranslatorOptions.setAnalyzeDataRequirements(false);
+        return setup(namespace, fileName, cqlTranslatorOptions);
+    }
+
+    private Setup setupUncollapsedDataRequirementsAnalysis(String fileName, CqlCompilerOptions cqlTranslatorOptions) throws IOException {
+        cqlTranslatorOptions.setCollapseDataRequirements(false);
+        cqlTranslatorOptions.setAnalyzeDataRequirements(true);
+        return setup(fileName, cqlTranslatorOptions);
+    }
+
+    private Setup setupUncollapsedDataRequirementsAnalysis(NamespaceInfo namespace, String fileName, CqlCompilerOptions cqlTranslatorOptions) throws IOException {
+        cqlTranslatorOptions.setCollapseDataRequirements(false);
+        cqlTranslatorOptions.setAnalyzeDataRequirements(true);
+        return setup(namespace, fileName, cqlTranslatorOptions);
+    }
+
     private Setup setupDataRequirementsGather(String fileName, CqlCompilerOptions cqlTranslatorOptions) throws IOException {
         cqlTranslatorOptions.setCollapseDataRequirements(true);
         cqlTranslatorOptions.setAnalyzeDataRequirements(false);
         return setup(fileName, cqlTranslatorOptions);
+    }
 
+    private Setup setupDataRequirementsGather(NamespaceInfo namespace, String fileName, CqlCompilerOptions cqlTranslatorOptions) throws IOException {
+        cqlTranslatorOptions.setCollapseDataRequirements(true);
+        cqlTranslatorOptions.setAnalyzeDataRequirements(false);
+        return setup(namespace, fileName, cqlTranslatorOptions);
     }
 
     private Setup setupDataRequirementsAnalysis(String fileName, CqlCompilerOptions cqlTranslatorOptions) throws IOException {
         cqlTranslatorOptions.setCollapseDataRequirements(true);
         cqlTranslatorOptions.setAnalyzeDataRequirements(true);
         return setup(fileName, cqlTranslatorOptions);
+    }
+
+    private Setup setupDataRequirementsAnalysis(NamespaceInfo namespace, String fileName, CqlCompilerOptions cqlTranslatorOptions) throws IOException {
+        cqlTranslatorOptions.setCollapseDataRequirements(true);
+        cqlTranslatorOptions.setAnalyzeDataRequirements(true);
+        return setup(namespace, fileName, cqlTranslatorOptions);
     }
 
     private org.hl7.fhir.r5.model.Library getModuleDefinitionLibrary(Setup setup, CqlCompilerOptions cqlTranslatorOptions, Map<String, Object> parameters) {
@@ -545,6 +580,13 @@ public class DataRequirementsProcessorTest {
         DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(setup.manager(), setup.library(), cqlTranslatorOptions, null, parameters, evaluationDateTime, false,false);
         assertEquals(moduleDefinitionLibrary.getName(), "EffectiveDataRequirements");
+        assertTrue(moduleDefinitionLibrary.getType().getCode("http://terminology.hl7.org/CodeSystem/library-type").equalsIgnoreCase("module-definition"));
+        return moduleDefinitionLibrary;
+    }
+
+    private org.hl7.fhir.r5.model.Library getModuleDefinitionLibrary(Setup setup, CqlCompilerOptions cqlTranslatorOptions, Map<String, Object> parameters, ZonedDateTime evaluationDateTime, boolean includeLogicDefinitions) {
+        DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(setup.manager(), setup.library(), cqlTranslatorOptions, null, parameters, evaluationDateTime, includeLogicDefinitions,false);
         assertTrue(moduleDefinitionLibrary.getType().getCode("http://terminology.hl7.org/CodeSystem/library-type").equalsIgnoreCase("module-definition"));
         return moduleDefinitionLibrary;
     }
@@ -1671,13 +1713,131 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestCMS143() throws IOException {
-        CqlCompilerOptions compilerOptions = getCompilerOptions();
-        compilerOptions.setAnalyzeDataRequirements(false);
-        var manager =  setupDataRequirementsAnalysis("CMS143/cql/POAGOpticNerveEvaluationFHIR-0.0.003.cql", compilerOptions);
+    public void TestPCSBMI() throws IOException {
+        CqlCompilerOptions compilerOptions = CqlCompilerOptions.defaultOptions();
+        var manager = setupDataRequirementsAnalysis("PCSBMI/PCSBMIScreenAndFollowUpFHIR.cql", compilerOptions);
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions, new HashMap<String, Object>(), ZonedDateTime.of(2023, 1, 16, 0, 0, 0, 0, ZoneId.of("UTC")));
         assertNotNull(moduleDefinitionLibrary);
+        assertEqualToExpectedModuleDefinitionLibrary(moduleDefinitionLibrary, "PCSBMI/PCSBMI-ModuleDefinitionLibrary.json");
+
+        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+    }
+
+    @Test
+    public void TestCMS143() throws IOException {
+        CqlCompilerOptions compilerOptions = CqlCompilerOptions.defaultOptions();
+        compilerOptions.getOptions().add(CqlCompilerOptions.Options.EnableResultTypes);
+        Set<String> expressions = new HashSet<>();
+        //expressions.add("Qualifying Encounter");
+        //expressions.add("Qualifying Encounter During Measurement Period");
+        //expressions.add("Qualifying Encounter During Measurement Period Expanded");
+        expressions.add("Initial Population");
+        expressions.add("Denominator");
+        expressions.add("Denominator Exception");
+        expressions.add("Numerator");
+        expressions.add("SDE Ethnicity");
+        expressions.add("SDE Race");
+        expressions.add("SDE Sex");
+        expressions.add("SDE Payer");
+        //var manager = setupUncollapsedDataRequirementsAnalysis(new NamespaceInfo("gov.healthit.ecqi.ecqms", "http://ecqi.healthit.gov/ecqms"), "CMS143/cql/TestUnion.cql", compilerOptions);
+        var manager = setupDataRequirementsAnalysis(new NamespaceInfo("gov.healthit.ecqi.ecqms", "http://ecqi.healthit.gov/ecqms"), "CMS143/cql/POAGOpticNerveEvaluationFHIR-0.0.003.cql", compilerOptions);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions, expressions);
+        assertNotNull(moduleDefinitionLibrary);
         assertEqualToExpectedModuleDefinitionLibrary(moduleDefinitionLibrary, "CMS143/resources/Library-EffectiveDataRequirements.json");
+
+        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+    }
+
+    @Test
+    public void TestSDESex() throws IOException {
+        CqlCompilerOptions compilerOptions = CqlCompilerOptions.defaultOptions();
+        compilerOptions.getOptions().add(CqlCompilerOptions.Options.EnableResultTypes);
+        Set<String> expressions = new HashSet<>();
+        expressions.add("SDE Sex");
+        var manager = setupDataRequirementsAnalysis(new NamespaceInfo("gov.healthit.ecqi.ecqms", "http://ecqi.healthit.gov/ecqms"), "CMS143/cql/POAGOpticNerveEvaluationFHIR-0.0.003.cql", compilerOptions);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions, expressions);
+        assertNotNull(moduleDefinitionLibrary);
+        assertEqualToExpectedModuleDefinitionLibrary(moduleDefinitionLibrary, "CMS143/resources/Library-SDESex-EffectiveDataRequirements.json");
+
+        // Has direct reference codes to M#http://hl7.org/fhir/v3/AdministrativeGender and F#http://hl7.org/fhir/v3/AdministrativeGender
+        // Has relatedArtifact to code system http://hl7.org/fhir/v3/AdministrativeGender
+        // Has relatedArtifact to Library SDE
+        // Has one and only one DataRequirement for Patient with profile QICore Patient and mustSupport gender
+
+        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+    }
+
+    @Test
+    public void TestSDEPayer() throws IOException {
+        CqlCompilerOptions compilerOptions = CqlCompilerOptions.defaultOptions();
+        compilerOptions.getOptions().add(CqlCompilerOptions.Options.EnableResultTypes);
+        Set<String> expressions = new HashSet<>();
+        expressions.add("SDE Payer");
+        var manager = setupDataRequirementsAnalysis(new NamespaceInfo("gov.healthit.ecqi.ecqms", "http://ecqi.healthit.gov/ecqms"), "CMS143/cql/POAGOpticNerveEvaluationFHIR-0.0.003.cql", compilerOptions);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions, expressions);
+        assertNotNull(moduleDefinitionLibrary);
+        assertEqualToExpectedModuleDefinitionLibrary(moduleDefinitionLibrary, "CMS143/resources/Library-SDEPayer-EffectiveDataRequirements.json");
+
+        // Has relatedArtifact to Library SDE
+        // Has relatedArtifact to Value Set Payer
+        // Has one and only one DatRequirement for Coverage with the Payer Type value set and mustSupport type and period
+
+        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+    }
+
+    @Test
+    public void TestSDEEthnicity() throws IOException {
+        CqlCompilerOptions compilerOptions = CqlCompilerOptions.defaultOptions();
+        compilerOptions.getOptions().add(CqlCompilerOptions.Options.EnableResultTypes);
+        Set<String> expressions = new HashSet<>();
+        expressions.add("SDE Ethnicity");
+        var manager = setupDataRequirementsAnalysis(new NamespaceInfo("gov.healthit.ecqi.ecqms", "http://ecqi.healthit.gov/ecqms"), "CMS143/cql/POAGOpticNerveEvaluationFHIR-0.0.003.cql", compilerOptions);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions, expressions);
+        assertNotNull(moduleDefinitionLibrary);
+        assertEqualToExpectedModuleDefinitionLibrary(moduleDefinitionLibrary, "CMS143/resources/Library-SDEEthnicity-EffectiveDataRequirements.json");
+
+        // Has relatedArtifact to Library SDE
+        // Has one and only one DatRequirement for Patient with the QICore Profile and mustSupport ethnicity
+
+        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+    }
+
+    @Test
+    public void TestSDERace() throws IOException {
+        CqlCompilerOptions compilerOptions = CqlCompilerOptions.defaultOptions();
+        compilerOptions.getOptions().add(CqlCompilerOptions.Options.EnableResultTypes);
+        Set<String> expressions = new HashSet<>();
+        expressions.add("SDE Race");
+        var manager = setupDataRequirementsAnalysis(new NamespaceInfo("gov.healthit.ecqi.ecqms", "http://ecqi.healthit.gov/ecqms"), "CMS143/cql/POAGOpticNerveEvaluationFHIR-0.0.003.cql", compilerOptions);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions, expressions);
+        assertNotNull(moduleDefinitionLibrary);
+        assertEqualToExpectedModuleDefinitionLibrary(moduleDefinitionLibrary, "CMS143/resources/Library-SDERace-EffectiveDataRequirements.json");
+
+        // Has relatedArtifact to Library SDE
+        // Has one and only one DatRequirement for Patient with the QICore Profile and mustSupport race
+
+        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+    }
+
+    @Test
+    public void TestQualifyingEncounterMP() throws IOException {
+        CqlCompilerOptions compilerOptions = CqlCompilerOptions.defaultOptions();
+        compilerOptions.getOptions().add(CqlCompilerOptions.Options.EnableResultTypes);
+        Set<String> expressions = new HashSet<>();
+        expressions.add("Qualifying Encounter During Measurement Period");
+        var manager = setupDataRequirementsAnalysis(new NamespaceInfo("gov.healthit.ecqi.ecqms", "http://ecqi.healthit.gov/ecqms"), "CMS143/cql/POAGOpticNerveEvaluationFHIR-0.0.003.cql", compilerOptions);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions, expressions);
+        assertNotNull(moduleDefinitionLibrary);
+        assertEqualToExpectedModuleDefinitionLibrary(moduleDefinitionLibrary, "CMS143/resources/Library-QualifyingEncounterMP-EffectiveDataRequirements.json");
+
+        // Has direct reference codes to VR and AMB
+        // Has relatedArtifact to ActCode code system
+        // Has relatedArtifact to Office Visit ValueSet
+        // Has relatedArtifact to Opthalmological Services ValueSet
+        // Has relatedArtifact to Outpatient Consultation ValueSet
+        // Has relatedArtifact to Nursing Facility Visit ValueSet
+        // Has relatedArtifact to Care Services in Long-Term Residentail Facility ValueSet
+        // Has 5 DataRequirements for Encounter with the QICore Encounter Profile and mustSupport type, period, and class, one for each ValueSet
 
         //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
@@ -1692,6 +1852,35 @@ public class DataRequirementsProcessorTest {
         assertEqualToExpectedModuleDefinitionLibrary(moduleDefinitionLibrary, "CMS149/resources/Library-EffectiveDataRequirements.json");
 
         //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+    }
+    
+    private Extension getLogicDefinitionByName(List<Extension> logicDefinitions, String libraryName, String name) {
+        for (Extension ld : logicDefinitions) {
+            Extension ln = ld.getExtensionByUrl("libraryName");
+            assertTrue(ln != null && ln.hasValue());
+            Extension n = ld.getExtensionByUrl("name");
+            assertTrue(n != null && n.hasValue());
+            if (ln.getValueStringType().getValue().equals(libraryName) && n.getValueStringType().getValue().equals(name)) {
+                return ld;
+            }
+        }
+        return null;
+    }
+
+    @Test
+    public void TestDeviceOrder() throws IOException {
+        CqlCompilerOptions compilerOptions = CqlCompilerOptions.defaultOptions();
+        var manager = setupDataRequirementsGather("DeviceOrder/TestDeviceOrder.cql", compilerOptions);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions, new HashMap<String, Object>(), ZonedDateTime.of(2023, 1, 16, 0, 0, 0, 0, ZoneId.of("UTC")), true);
+        assertNotNull(moduleDefinitionLibrary);
+        assertEqualToExpectedModuleDefinitionLibrary(moduleDefinitionLibrary, "DeviceOrder/Library-TestDeviceOrder-EffectiveDataRequirements.json");
+        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+
+        List<Extension> logicDefinitions = moduleDefinitionLibrary.getExtensionsByUrl("http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition");
+        assertTrue(logicDefinitions != null);
+        assertTrue(logicDefinitions.size() > 0);
+        Extension logicDefinition = getLogicDefinitionByName(logicDefinitions, "TestDeviceOrder", "isDeviceOrder");
+        assertTrue(logicDefinition != null);
     }
 
     @Test

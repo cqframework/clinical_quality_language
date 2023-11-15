@@ -14,13 +14,12 @@ import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorVisitor;
 import org.hl7.cql.model.NamespaceInfo;
 import org.hl7.elm.r1.Library;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.net.URL;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
+import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -29,18 +28,6 @@ public class TestUtils {
 
     private static ModelManager getModelManager() {
         return new ModelManager();
-    }
-
-    private static LibraryManager getLibraryManager() {
-        return getLibraryManager(new CqlCompilerOptions(ErrorSeverity.Warning, SignatureLevel.None));
-
-    }
-
-    private static LibraryManager getLibraryManager(CqlCompilerOptions options) {
-        var libraryManager = new LibraryManager(getModelManager(), options);
-        libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
-
-        return libraryManager;
     }
 
     public static Cql2ElmVisitor visitFile(String fileName, boolean inClassPath) throws IOException {
@@ -53,15 +40,23 @@ public class TestUtils {
     }
 
     public static Object visitFile(String fileName) throws IOException {
-        File file = new File(URLDecoder.decode(TestUtils.class.getResource(fileName).getFile(), "UTF-8"));
-        CqlTranslator translator = CqlTranslator.fromFile(file, getLibraryManager());
+        return visitFile(fileName, null);
+    }
+
+    public static Object visitFile(String fileName, SignatureLevel nullableSignatureLevel) throws IOException {
+        final File file = getFileOrThrow(fileName);
+        CqlTranslator translator = CqlTranslator.fromFile(file, getLibraryManager(nullableSignatureLevel));
         ensureValid(translator);
         return translator.toObject();
     }
 
     public static CompiledLibrary visitFileLibrary(String fileName) throws IOException {
-        File file = new File(URLDecoder.decode(TestUtils.class.getResource(fileName).getFile(), "UTF-8"));
-        CqlTranslator translator = CqlTranslator.fromFile(file, getLibraryManager());
+        return visitFileLibrary(fileName, null);
+    }
+
+    public static CompiledLibrary visitFileLibrary(String fileName, SignatureLevel nullableSignatureLevel) throws IOException {
+        final File file = getFileOrThrow(fileName);
+        CqlTranslator translator = CqlTranslator.fromFile(file, getLibraryManager(nullableSignatureLevel));
         ensureValid(translator);
         return translator.getTranslatedLibrary();
     }
@@ -103,13 +98,12 @@ public class TestUtils {
     }
 
     private static Cql2ElmVisitor createElmTranslatorVisitor(TokenStream tokens, ParseTree tree) {
-        CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor();
-        preprocessor.visit(tree);
         ModelManager modelManager = new ModelManager();
-        LibraryManager libraryManager = new LibraryManager(modelManager);
+        LibraryManager libraryManager = getLibraryManager(modelManager, null);
         LibraryBuilder libraryBuilder = new LibraryBuilder(libraryManager);
+        CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor(libraryBuilder, tokens);
+        preprocessor.visit(tree);
         Cql2ElmVisitor visitor = new Cql2ElmVisitor(libraryBuilder);
-        visitor.setTokenStream(tokens);
         visitor.setLibraryInfo(preprocessor.getLibraryInfo());
         return visitor;
     }
@@ -129,52 +123,86 @@ public class TestUtils {
         return runSemanticTest(null, testFileName, expectedErrors, options);
     }
 
+    public static CqlTranslator runSemanticTestNoErrors(String testFileName, CqlCompilerOptions.Options... options) throws IOException {
+        return runSemanticTest(null, testFileName, 0, options);
+    }
+
+    public static CqlTranslator runSemanticTest(String testFileName, int expectedErrors, SignatureLevel nullableSignatureLevel, CqlCompilerOptions.Options... options) throws IOException {
+        final CqlCompilerOptions cqlCompilerOptions = new CqlCompilerOptions(options);
+        Optional.ofNullable(nullableSignatureLevel).ifPresent(cqlCompilerOptions::setSignatureLevel);
+        return runSemanticTest(testFileName, expectedErrors, cqlCompilerOptions);
+    }
+
     public static CqlTranslator runSemanticTest(String testFileName, int expectedErrors, CqlCompilerOptions options) throws IOException {
         return runSemanticTest(null, testFileName, expectedErrors, options);
     }
 
     public static CqlTranslator runSemanticTest(NamespaceInfo namespaceInfo, String testFileName, int expectedErrors, CqlCompilerOptions.Options... options) throws IOException {
-        return runSemanticTest(namespaceInfo, testFileName, expectedErrors, new CqlCompilerOptions(options));
+        final CqlCompilerOptions cqlCompilerOptions = new CqlCompilerOptions(options);
+        return runSemanticTest(namespaceInfo, testFileName, expectedErrors, cqlCompilerOptions);
+    }
+
+    public static CqlTranslator runSemanticTest(NamespaceInfo namespaceInfo, String testFileName, int expectedErrors, SignatureLevel nullableSignatureLevel, CqlCompilerOptions.Options... options) throws IOException {
+        final CqlCompilerOptions cqlCompilerOptions = new CqlCompilerOptions(options);
+        Optional.ofNullable(nullableSignatureLevel).ifPresent(cqlCompilerOptions::setSignatureLevel);
+        return runSemanticTest(namespaceInfo, testFileName, expectedErrors, cqlCompilerOptions);
     }
 
     public static CqlTranslator runSemanticTest(NamespaceInfo namespaceInfo, String testFileName, int expectedErrors, CqlCompilerOptions options) throws IOException {
-        CqlTranslator translator = TestUtils.createTranslator(namespaceInfo, testFileName, options);
+        CqlTranslator translator = createTranslator(namespaceInfo, testFileName, options);
         for (CqlCompilerException error : translator.getErrors()) {
-            System.err.println(String.format("(%d,%d): %s",
-                    error.getLocator().getStartLine(), error.getLocator().getStartChar(), error.getMessage()));
+            System.err.printf("(%d,%d): %s%n",
+                    error.getLocator().getStartLine(), error.getLocator().getStartChar(), error.getMessage());
         }
-        assertThat(translator.getErrors().size(), is(expectedErrors));
+        // We want to defer asserting on errors to the unit test by passing -1
+        if (expectedErrors != -1) {
+            assertThat(translator.getErrors().toString(), translator.getErrors().size(), is(expectedErrors));
+        }
+        return translator;
+    }
+
+    public static CqlTranslator runSemanticTestWithOrWithoutErrors(NamespaceInfo namespaceInfo, String testFileName, CqlCompilerOptions.Options... options) throws IOException {
+        CqlTranslator translator = createTranslator(namespaceInfo, testFileName, new CqlCompilerOptions(options));
+        for (CqlCompilerException error : translator.getErrors()) {
+            System.err.printf("(%d,%d): %s%n",
+                    error.getLocator().getStartLine(), error.getLocator().getStartChar(), error.getMessage());
+        }
         return translator;
     }
 
     public static CqlTranslator createTranslatorFromText(String cqlText, CqlCompilerOptions.Options... options) {
-        ModelManager modelManager = new ModelManager();
-        var compilerOptions = new CqlCompilerOptions(options);
-        LibraryManager libraryManager = new LibraryManager(modelManager, compilerOptions);
-        CqlTranslator translator = CqlTranslator.fromText(cqlText,  libraryManager);
-        return translator;
+        final LibraryManager libraryManager = getLibraryManager(options);
+        return CqlTranslator.fromText(cqlText,  libraryManager);
     }
 
     public static CqlTranslator createTranslatorFromStream(String testFileName, CqlCompilerOptions.Options... options) throws IOException {
-        return createTranslatorFromStream(null, testFileName, options);
+        return createTranslatorFromStream(null, testFileName, null, options);
     }
 
-    public static CqlTranslator createTranslatorFromStream(NamespaceInfo namespaceInfo, String testFileName, CqlCompilerOptions.Options... options) throws IOException {
+    public static CqlTranslator createTranslatorFromStream(String testFileName, SignatureLevel signatureLevel, CqlCompilerOptions.Options... options) throws IOException {
+        return createTranslatorFromStream(null, testFileName, signatureLevel, options);
+    }
+
+    public static CqlTranslator createTranslatorFromStream(NamespaceInfo namespaceInfo, String testFileName, SignatureLevel nullableSignatureLevel, CqlCompilerOptions.Options... options) throws IOException {
         InputStream inputStream = Cql2ElmVisitorTest.class.getResourceAsStream(testFileName);
-        return createTranslatorFromStream(null, inputStream, options);
+        if (inputStream == null) {
+            throw new FileNotFoundException("cannot find file with path: " + testFileName);
+        }
+        return createTranslatorFromStream(null, inputStream, nullableSignatureLevel, options);
     }
 
-    public static CqlTranslator createTranslatorFromStream(InputStream inputStream, CqlCompilerOptions.Options... options) throws IOException {
-        return createTranslatorFromStream(null, inputStream, options);
-    }
-
-    public static CqlTranslator createTranslatorFromStream(NamespaceInfo namespaceInfo, InputStream inputStream, CqlCompilerOptions.Options... options) throws IOException {
+    public static CqlTranslator createTranslatorFromStream(NamespaceInfo namespaceInfo, InputStream inputStream, SignatureLevel nullableSignatureLevel, CqlCompilerOptions.Options... options) throws IOException {
         ModelManager modelManager = new ModelManager();
         var compilerOptions = new CqlCompilerOptions(options);
-        LibraryManager libraryManager = new LibraryManager(modelManager, compilerOptions);
+        Optional.ofNullable(nullableSignatureLevel).ifPresent(compilerOptions::setSignatureLevel);
+        final LibraryManager libraryManager = getLibraryManager(modelManager, compilerOptions);
+        return CqlTranslator.fromStream(namespaceInfo, inputStream,  libraryManager);
+    }
+
+    private static LibraryManager getLibraryManager(ModelManager theModelManager, CqlCompilerOptions theCompilerOptions) {
+        LibraryManager libraryManager = new LibraryManager(theModelManager, theCompilerOptions);
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
-        CqlTranslator translator = CqlTranslator.fromStream(namespaceInfo, inputStream,  libraryManager);
-        return translator;
+        return libraryManager;
     }
 
     public static CqlTranslator createTranslator(String testFileName, CqlCompilerOptions.Options... options) throws IOException {
@@ -185,8 +213,14 @@ public class TestUtils {
         return createTranslator(null, testFileName, options);
     }
 
-    public static CqlTranslator createTranslator(NamespaceInfo namespaceInfo, String testFileName, CqlCompilerOptions.Options... options) throws IOException {
-        return createTranslator(namespaceInfo, testFileName, new CqlCompilerOptions(options));
+    public static CqlTranslator getTranslator(String cqlTestFile, String nullableLibrarySourceProvider, LibraryBuilder.SignatureLevel signatureLevel) throws IOException {
+        final File testFile = getFileOrThrow(cqlTestFile);
+        final ModelManager modelManager = new ModelManager();
+
+        final CqlCompilerOptions compilerOptions = new CqlCompilerOptions(CqlCompilerException.ErrorSeverity.Info, signatureLevel);
+
+        final LibraryManager libraryManager = getLibraryManager(compilerOptions, modelManager, nullableLibrarySourceProvider);
+        return CqlTranslator.fromFile(testFile,  libraryManager);
     }
 
     public static CqlTranslator createTranslator(NamespaceInfo namespaceInfo, String testFileName, CqlCompilerOptions options) throws IOException {
@@ -202,13 +236,43 @@ public class TestUtils {
                 }
             }
         }
-        String fileName = segments[segments.length - 1];
 
-        File translationTestFile = new File(URLDecoder.decode(Cql2ElmVisitorTest.class.getResource(testFileName).getFile(), "UTF-8"));
+        final File translationTestFile = getFileOrThrow(testFileName);
         ModelManager modelManager = new ModelManager();
-        LibraryManager libraryManager = new LibraryManager(modelManager, options);
+        final LibraryManager libraryManager = getLibraryManager(options, modelManager, path);
+        return CqlTranslator.fromFile(namespaceInfo, translationTestFile,  libraryManager);
+    }
+
+    public static File getFileOrThrow(String fileName) throws FileNotFoundException {
+        final URL resource = Optional.ofNullable(Cql2ElmVisitorTest.class.getResource(fileName))
+                .orElseThrow(() -> new FileNotFoundException("cannot find file with path: " + fileName));
+        return new File(URLDecoder.decode(resource.getFile(), StandardCharsets.UTF_8));
+    }
+
+    private static LibraryManager getLibraryManager() {
+        final SignatureLevel sig = null;
+        return getLibraryManager(sig);
+    }
+
+    private static LibraryManager getLibraryManager(SignatureLevel nullableSignatureLevel) {
+        return getLibraryManager(new CqlCompilerOptions(ErrorSeverity.Warning,
+                Objects.requireNonNullElse(nullableSignatureLevel, SignatureLevel.All)));
+
+    }
+
+    private static LibraryManager getLibraryManager(CqlCompilerOptions options) {
+        return getLibraryManager(getModelManager(), options);
+    }
+
+    private static LibraryManager getLibraryManager(CqlCompilerOptions.Options... options) {
+        final ModelManager modelManager = new ModelManager();
+        final CqlCompilerOptions compilerOptions = new CqlCompilerOptions(options);
+        return getLibraryManager(compilerOptions, modelManager, null);
+    }
+
+    private static LibraryManager getLibraryManager(CqlCompilerOptions options, ModelManager modelManager, String path) {
+        final LibraryManager libraryManager = new LibraryManager(modelManager, options);
         libraryManager.getLibrarySourceLoader().registerProvider(path == null ? new TestLibrarySourceProvider() : new TestLibrarySourceProvider(path));
-        CqlTranslator translator = CqlTranslator.fromFile(namespaceInfo, translationTestFile,  libraryManager);
-        return translator;
+        return libraryManager;
     }
 }

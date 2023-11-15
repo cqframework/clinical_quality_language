@@ -1,5 +1,7 @@
 package org.opencds.cqf.cql.engine.runtime;
 
+import org.opencds.cqf.cql.engine.exception.InvalidDateTime;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -8,10 +10,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.opencds.cqf.cql.engine.exception.InvalidDateTime;
-import org.opencds.cqf.cql.engine.execution.State;
-
 public class DateTime extends BaseTemporal {
+    private final ZoneOffset zoneOffset;
 
     private OffsetDateTime dateTime;
     public OffsetDateTime getDateTime() {
@@ -40,14 +40,18 @@ public class DateTime extends BaseTemporal {
     public DateTime(OffsetDateTime dateTime) {
         setDateTime(dateTime);
         this.precision = Precision.MILLISECOND;
+        zoneOffset = toZoneOffset(dateTime);
     }
 
     public DateTime(OffsetDateTime dateTime, Precision precision) {
         setDateTime(dateTime);
         this.precision = precision;
+        zoneOffset = toZoneOffset(dateTime);
     }
 
     public DateTime(String dateString, ZoneOffset offset) {
+        zoneOffset = offset;
+
         // Handles case when Tz is not complete (T02:04:59.123+01)
         if (dateString.matches("T[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d{3}(\\+|-)\\d{2}$")) {
             dateString += ":00";
@@ -98,6 +102,8 @@ public class DateTime extends BaseTemporal {
             throw new InvalidDateTime("DateTime must include a year");
         }
 
+        zoneOffset = toZoneOffset(offset);
+
         StringBuilder dateString = new StringBuilder();
         String[] stringElements = TemporalHelper.normalizeDateTimeElements(dateElements);
 
@@ -128,13 +134,16 @@ public class DateTime extends BaseTemporal {
         // Otherwise, parse as a LocalDateTime and then interpret that in the evaluation timezone
 
         if (offset != null) {
-            dateString.append(ZoneOffset.ofHoursMinutes(offset.intValue(), new BigDecimal("60").multiply(offset.remainder(BigDecimal.ONE)).intValue()).getId());
+            dateString.append(toZoneOffset(offset).getId());
             setDateTime(OffsetDateTime.parse(dateString.toString()));
         }
         else {
             setDateTime(TemporalHelper.toOffsetDateTime(LocalDateTime.parse(dateString.toString())));
         }
+    }
 
+    public ZoneOffset getZoneOffset() {
+        return zoneOffset;
     }
 
     public DateTime expandPartialMinFromPrecision(Precision thePrecision) {
@@ -204,20 +213,20 @@ public class DateTime extends BaseTemporal {
         }
     }
 
-    public OffsetDateTime getNormalized(Precision precision, State c) {
+    public OffsetDateTime getNormalized(Precision precision) {
+        return getNormalized(precision, zoneOffset);
+    }
+
+    public OffsetDateTime getNormalized(Precision precision, ZoneOffset nullableZoneOffset) {
         if (precision.toDateTimeIndex() > Precision.DAY.toDateTimeIndex()) {
-            if (c != null) {
-                return dateTime.atZoneSameInstant(c.getEvaluationZonedDateTime().getZone()).toOffsetDateTime();
+            if (nullableZoneOffset != null) {
+                return dateTime.withOffsetSameInstant(nullableZoneOffset);
             }
 
             return dateTime.atZoneSameInstant(TimeZone.getDefault().toZoneId()).toOffsetDateTime();
         }
 
         return dateTime;
-    }
-
-    public OffsetDateTime getNormalized(Precision precision) {
-        return getNormalized(precision, null);
     }
 
     @Override
@@ -227,7 +236,7 @@ public class DateTime extends BaseTemporal {
 
         // adjust dates to evaluation offset
         OffsetDateTime leftDateTime = this.getNormalized(thePrecision);
-        OffsetDateTime rightDateTime = ((DateTime) other).getNormalized(thePrecision);
+        OffsetDateTime rightDateTime = ((DateTime) other).getNormalized(thePrecision, getZoneOffset());
 
         if (!leftMeetsPrecisionRequirements || !rightMeetsPrecisionRequirements) {
             thePrecision = Precision.getLowestDateTimePrecision(this.precision, other.precision);
@@ -291,5 +300,20 @@ public class DateTime extends BaseTemporal {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         return new DateTime(OffsetDateTime.ofInstant(calendar.toInstant(), calendar.getTimeZone().toZoneId()), Precision.MILLISECOND);
+    }
+
+    private ZoneOffset toZoneOffset(OffsetDateTime offsetDateTime) {
+        return offsetDateTime.getOffset();
+    }
+
+    private ZoneOffset toZoneOffset(BigDecimal offsetAsBigDecimal) {
+        if (offsetAsBigDecimal == null) {
+            return null;
+        }
+
+        return ZoneOffset.ofHoursMinutes(offsetAsBigDecimal.intValue(),
+                new BigDecimal(60)
+                .multiply(offsetAsBigDecimal.remainder(BigDecimal.ONE))
+                        .intValue());
     }
 }

@@ -4,7 +4,7 @@ import org.apache.ws.commons.schema.*;
 import org.hl7.cql.model.*;
 import org.hl7.elm_modelinfo.r1.*;
 
-import javax.xml.bind.JAXB;
+import jakarta.xml.bind.JAXB;
 import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.io.InputStream;

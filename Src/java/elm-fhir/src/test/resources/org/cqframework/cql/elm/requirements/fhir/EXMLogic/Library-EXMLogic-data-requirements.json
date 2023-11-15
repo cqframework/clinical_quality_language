@@ -142,31 +142,12 @@
   } ],
   "dataRequirement": [ {
     "type": "Patient",
-    "profile": [ "http://hl7.org/fhir/StructureDefinition/Patient" ]
-  }, {
-    "type": "Patient",
     "profile": [ "http://hl7.org/fhir/StructureDefinition/Patient" ],
-    "mustSupport": [ "url", "extension", "value" ],
-    "codeFilter": [ {
-      "path": "url",
-      "code": [ {
-        "code": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity"
-      } ]
-    } ]
-  }, {
-    "type": "Patient",
-    "profile": [ "http://hl7.org/fhir/StructureDefinition/Patient" ],
-    "mustSupport": [ "url", "extension", "value" ],
-    "codeFilter": [ {
-      "path": "url",
-      "code": [ {
-        "code": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-race"
-      } ]
-    } ]
+    "mustSupport": [ "ethnicity", "url", "value", "race" ]
   }, {
     "type": "Encounter",
     "profile": [ "http://hl7.org/fhir/StructureDefinition/Encounter" ],
-    "mustSupport": [ "type", "status", "period" ],
+    "mustSupport": [ "type", "status", "period", "use", "rank", "rank.value", "condition", "condition.reference" ],
     "codeFilter": [ {
       "path": "type",
       "valueSet": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.117.1.7.1.292"
@@ -179,7 +160,7 @@
   }, {
     "type": "Encounter",
     "profile": [ "http://hl7.org/fhir/StructureDefinition/Encounter" ],
-    "mustSupport": [ "period" ],
+    "mustSupport": [ "period", "use", "rank", "rank.value", "condition", "condition.reference" ],
     "dateFilter": [ {
       "path": "period",
       "valuePeriod": {

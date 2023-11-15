@@ -6,6 +6,5 @@ dependencies {
     implementation project(':cql-to-elm')
     implementation project(':cqf-fhir')
     implementation 'com.google.code.gson:gson:2.9.1'
-    implementation 'org.apache.commons:commons-compress:1.20'
-    implementation 'org.eclipse.persistence:org.eclipse.persistence.moxy:2.7.7'
+    implementation 'org.apache.commons:commons-compress:1.24.0'
 }

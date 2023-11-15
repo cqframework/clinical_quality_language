@@ -13,10 +13,15 @@ using QICore version '4.1.1'
 
 include FHIRHelpers version '4.1.000' called FHIRHelpers
 
+codesystem "AdministrativeGender": 'http://hl7.org/fhir/v3/AdministrativeGender'
+
 valueset "Ethnicity": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.114222.4.11.837'
 valueset "ONC Administrative Sex": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1'
 valueset "Payer": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.114222.4.11.3591'
 valueset "Race": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.114222.4.11.836'
+
+code "M": 'M' from "AdministrativeGender" display 'Male'
+code "F": 'F' from "AdministrativeGender" display 'Female'
 
 context Patient
 
@@ -43,7 +48,7 @@ define "SDE Race":
 
 define "SDE Sex":
   case
-      when Patient.gender = 'male' then Code { code: 'M', system: 'http://hl7.org/fhir/v3/AdministrativeGender', display: 'Male' }
-      when Patient.gender = 'female' then Code { code: 'F', system: 'http://hl7.org/fhir/v3/AdministrativeGender', display: 'Female' }
+      when Patient.gender = 'male' then "M"
+      when Patient.gender = 'female' then "F"
       else null
     end

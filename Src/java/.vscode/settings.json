@@ -1,7 +1,8 @@
 {
     "java.configuration.updateBuildConfiguration": "automatic",
+    "java.debug.settings.onBuildFailureProceed": true,
     "java.compile.nullAnalysis.mode": "automatic",
-    "java.jdt.ls.vmargs": "-noverify -Xmx4G -XX:+UseG1GC -XX:+UseStringDeduplication",
+    "java.jdt.ls.vmargs": "-noverify -Xmx8G -XX:+UseG1GC -XX:+UseStringDeduplication",
     "cSpell.words": [
         "bools",
         "datumedge",
@@ -11,5 +12,17 @@
         "qicore",
         "testng",
         "trackback"
+    ],
+    "cSpell.enabledLanguageIds": [
+        "java",
+        "json",
+        "xml",
+        "markdown",
+        "cql"
+    ],
+    "cSpell.ignorePaths": [
+        ".git",
+        "**/*.gradle",
+        "**/test/resources/**"
     ]
 }

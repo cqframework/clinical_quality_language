@@ -10,6 +10,7 @@ ext {
 dependencies {
     api platform("ca.uhn.hapi.fhir:hapi-fhir-bom:${hapiVersion}") {
         exclude group: 'org.eclipse.jetty'
+        exclude group: 'xpp3'
     }
 
     implementation "ca.uhn.hapi.fhir:org.hl7.fhir.r5:${coreVersion}"
@@ -23,4 +24,12 @@ dependencies {
     implementation "ca.uhn.hapi.fhir:hapi-fhir-structures-dstu3"
     implementation "ca.uhn.hapi.fhir:hapi-fhir-structures-r4"
     implementation "ca.uhn.hapi.fhir:hapi-fhir-structures-r5"
+
+    // This is to align with the FHIR core dependencies
+    // Note that this dependency hasn't been updated since 2013
+    // we probably need to standardize on a fork up the dependency chain
+    implementation ('org.ogce:xpp3:1.1.6') {
+        exclude group: 'junit'
+        exclude group: 'org.hamcrest'
+    }
 }

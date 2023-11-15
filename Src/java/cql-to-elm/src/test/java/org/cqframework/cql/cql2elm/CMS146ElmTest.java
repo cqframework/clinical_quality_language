@@ -3,8 +3,11 @@ package org.cqframework.cql.cql2elm;
 import org.cqframework.cql.cql2elm.CqlCompilerException.ErrorSeverity;
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
 import org.cqframework.cql.elm.tracking.TrackBack;
+import org.hl7.cql_annotations.r1.CqlToElmBase;
+import org.hl7.cql_annotations.r1.CqlToElmInfo;
 import org.hl7.elm.r1.*;
 import org.testng.annotations.BeforeTest;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import javax.xml.namespace.QName;
@@ -13,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -31,6 +35,30 @@ public class CMS146ElmTest {
         assertThat(translator.getErrors().size(), is(0));
         library = translator.toELM();
         of = new ObjectFactory();
+    }
+
+    @DataProvider(name = "sigLevels")
+    public static Object[][] primeNumbers() {
+        return new Object[][] {{SignatureLevel.None}, {SignatureLevel.Differing}, {SignatureLevel.Overloads}, {SignatureLevel.All}};
+    }
+
+    @Test(dataProvider = "sigLevels")
+    public void testSignatureLevels(SignatureLevel signatureLevel) throws IOException {
+        final ModelManager modelManager = new ModelManager();
+        final CqlTranslator translator = CqlTranslator.fromStream(CMS146ElmTest.class.getResourceAsStream("CMS146v2_Test_CQM.cql"), new LibraryManager(modelManager, new CqlCompilerOptions(ErrorSeverity.Warning, signatureLevel)));
+        final Library library = translator.toELM();
+
+        final List<CqlToElmBase> annotations = library.getAnnotation();
+        assertThat(annotations.size(), equalTo(3));
+
+        final List<CqlToElmInfo> casts =
+                annotations.stream()
+                        .filter(CqlToElmInfo.class::isInstance)
+                        .map(CqlToElmInfo.class::cast)
+                        .collect(Collectors.toList());
+
+        assertThat(casts.size(), equalTo(1));
+        assertThat(casts.get(0).getSignatureLevel(), equalTo(signatureLevel.name()));
     }
 
     @Test

@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
-import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
+import com.fasterxml.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationModule;
 import org.cqframework.cql.elm.serializing.jackson.mixins.CqlToElmBaseMixIn;
 import org.cqframework.cql.elm.serializing.jackson.mixins.TrackableMixIn;
 import org.cqframework.cql.elm.serializing.jackson.mixins.TypeSpecifierMixIn;
@@ -31,7 +31,7 @@ public class ElmXmlMapper {
             .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
             .enable(MapperFeature.USE_BASE_TYPE_AS_DEFAULT_IMPL)
             .defaultPropertyInclusion(JsonInclude.Value.construct(JsonInclude.Include.NON_NULL, JsonInclude.Include.NON_NULL))
-            .addModule(new JaxbAnnotationModule())
+            .addModule(new JakartaXmlBindAnnotationModule())
             .addMixIn(Trackable.class, TrackableMixIn.class)
             .addMixIn(TypeSpecifier.class, TypeSpecifierMixIn.class)
             .addMixIn(CqlToElmBase.class, CqlToElmBaseMixIn.class)

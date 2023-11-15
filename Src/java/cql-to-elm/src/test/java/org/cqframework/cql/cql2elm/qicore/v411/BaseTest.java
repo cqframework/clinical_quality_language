@@ -1,6 +1,7 @@
 package org.cqframework.cql.cql2elm.qicore.v411;
 
 import org.cqframework.cql.cql2elm.CqlTranslator;
+import org.cqframework.cql.cql2elm.LibraryBuilder;
 import org.cqframework.cql.cql2elm.TestUtils;
 import org.hl7.elm.r1.*;
 import org.testng.annotations.Test;
@@ -8,20 +9,25 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertNotNull;
 
 public class BaseTest {
     @Test
     public void testAuthoringPatterns() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("qicore/v411/AuthoringPatterns.cql", 0);
+        final CqlTranslator translator = TestUtils.runSemanticTest("qicore/v411/AuthoringPatterns.cql", 0, LibraryBuilder.SignatureLevel.Overloads);
 
-        assertThat(translator.getWarnings().size(), is(0));
+        assertThat(translator.getWarnings().toString(), translator.getWarnings().size(), is(1));
+
+        final String first = "An alias identifier [Diabetes] is hiding another identifier of the same name. \n";
+
+        assertThat(translator.getWarnings().stream().map(Throwable::getMessage).collect(Collectors.toList()), contains(first));
     }
 
     @Test
@@ -310,6 +316,44 @@ public class BaseTest {
         assertThat(r.getCodes(), instanceOf(ValueSetRef.class));
         ValueSetRef vsr = (ValueSetRef)r.getCodes();
         assertThat(vsr.getName(), is("Antithrombotic Therapy"));
+
+        def = defs.get("Antithrombotic Therapy at Discharge (2)");
+        assertThat(def, notNullValue());
+        assertThat(def.getExpression(), instanceOf(Union.class));
+        Union u = (Union)def.getExpression();
+        assertThat(u.getOperand().size(), is(2));
+        assertThat(u.getOperand().get(0), instanceOf(Retrieve.class));
+        r = (Retrieve)u.getOperand().get(0);
+        assertThat(r.getTemplateId(), is("http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationrequest"));
+        assertThat(r.getCodeProperty(), is("medication"));
+        assertThat(r.getCodeComparator(), is("in"));
+        assertThat(r.getCodes(), instanceOf(ValueSetRef.class));
+        vsr = (ValueSetRef)r.getCodes();
+        assertThat(vsr.getName(), is("Antithrombotic Therapy"));
+
+        assertThat(u.getOperand().get(1), instanceOf(Query.class));
+        q = (Query)u.getOperand().get(1);
+        assertThat(q.getSource().size(), is(1));
+        assertThat(q.getSource().get(0).getExpression(), instanceOf(Retrieve.class));
+        r = (Retrieve)q.getSource().get(0).getExpression();
+        assertThat(r.getTemplateId(), is("http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationrequest"));
+        assertThat(r.getCodeProperty() == null, is(true));
+        assertThat(r.getCodes() == null, is(true));
+        assertThat(q.getRelationship(), notNullValue());
+        assertThat(q.getRelationship().size(), is(1));
+        assertThat(q.getRelationship().get(0), instanceOf(With.class));
+        With w = (With)q.getRelationship().get(0);
+        assertThat(w.getExpression(), instanceOf(Retrieve.class));
+        r = (Retrieve)w.getExpression();
+        assertThat(r.getTemplateId(), is("http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medication"));
+        assertThat(r.getCodeProperty() == null, is(true));
+        assertThat(r.getCodes() == null, is(true));
+        assertThat(w.getSuchThat(), instanceOf(And.class));
+        And a = (And)w.getSuchThat();
+        assertThat(a.getOperand().get(0), instanceOf(Equal.class));
+        assertThat(a.getOperand().get(1), instanceOf(InValueSet.class));
+        InValueSet ivs = (InValueSet)a.getOperand().get(1);
+        assertThat(ivs.getValueset().getName(), is("Antithrombotic Therapy"));
     }
 
     @Test

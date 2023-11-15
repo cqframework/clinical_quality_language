@@ -1,23 +1,24 @@
 package org.cqframework.cql.cql2elm;
 
 import org.cqframework.cql.elm.tracking.TrackBack;
+import org.hamcrest.Matchers;
 import org.hl7.cql_annotations.r1.CqlToElmInfo;
 import org.hl7.elm.r1.*;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class TranslationTests {
     // TODO: sameXMLAs? Couldn't find such a thing in hamcrest, but I don't want this to run on the JSON, I want it to verify the actual XML.
@@ -145,27 +146,164 @@ public class TranslationTests {
         assertThat(as.getAsTypeSpecifier(), is(instanceOf(ChoiceTypeSpecifier.class)));
     }
 
+    @Test
+    public void tenDividedByTwo() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslator("TenDividedByTwo.cql");
+        assertEquals("Errors: " + translator.getErrors(), 0, translator.getErrors().size());
+    }
+
+    @Test
+    public void divideMultiple() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslator("DivideMultiple.cql");
+        assertEquals("Errors: " + translator.getErrors(), 0, translator.getErrors().size());
+    }
+
+    @Test
+    public void divideVariables() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslator("DivideVariables.cql");
+        assertEquals("Errors: " + translator.getErrors(), 0, translator.getErrors().size());
+    }
+
+    @Test
+    public void arithmetic_Mixed() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslator("Arithmetic_Mixed.cql");
+        assertEquals("Errors: " + translator.getErrors(), 0, translator.getErrors().size());
+    }
+
+    @Test
+    public void arithmetic_Parenthetical() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslator("Arithmetic_Parenthetical.cql");
+        assertEquals("Errors: " + translator.getErrors(), 0, translator.getErrors().size());
+    }
+
+    @Test
+    public void roundUp() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslator("RoundUp.cql");
+        assertEquals("Errors: " + translator.getErrors(), 0, translator.getErrors().size());
+    }
+
+    @Test
+    public void roundDown() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslator("RoundDown.cql");
+        assertEquals("Errors: " + translator.getErrors(), 0, translator.getErrors().size());
+    }
+
+    @Test
+    public void log_BaseTen() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslator("Log_BaseTen.cql");
+        assertEquals("Errors: " + translator.getErrors(), 0, translator.getErrors().size());
+    }
+
+    @Test
+    public void median_odd() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslator("Median_odd.cql");
+        assertEquals("Errors: " + translator.getErrors(), 0, translator.getErrors().size());
+    }
+
+    @Test
+    public void median_dup_vals_odd() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslator("Median_dup_vals_odd.cql");
+        assertEquals("Errors: " + translator.getErrors(), 0, translator.getErrors().size());
+    }
+
+    @Test
+    public void geometricMean_Zero() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslator("GeometricMean_Zero.cql");
+        assertEquals("Errors: " + translator.getErrors(), 0, translator.getErrors().size());
+    }
+
+    @Test
+    @Ignore("Could not resolve call to operator Equal with signature (tuple{Foo:System.Any},tuple{Bar:System.Any}")
+    public void tupleDifferentKeys() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslator("TupleDifferentKeys.cql");
+        assertEquals("Errors: " + translator.getErrors(), 0, translator.getErrors().size());
+    }
+
+    @Test
+    @Ignore("Could not resolve call to operator Equal with signature (tuple{a:System.String,b:System.Any},tuple{a:System.String,c:System.Any})")
+    public void uncertTuplesWithDiffNullFields() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslator("UncertTuplesWithDiffNullFields.cql");
+        assertEquals("Errors: " + translator.getErrors(), 0, translator.getErrors().size());
+    }
+
+    @Test
+    @Ignore("Could not resolve call to operator Collapse with signature (System.Any,System.Quantity)")
+    public void nullIvlCollapse_NullCollapse() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslator("NullIvlCollapse_NullCollapse.cql");
+        assertEquals("Errors: " + translator.getErrors(), 0, translator.getErrors().size());
+    }
+
+    @Test
+    public void median_q_diff_units() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslator("Median_q_diff_units.cql");
+        assertEquals("Errors: " + translator.getErrors(), 0, translator.getErrors().size());
+    }
+
+    @Test
+    public void testForwardDeclarationSameTypeDifferentNamespaceNormalTypes() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslator("TestForwardDeclarationSameTypeDifferentNamespaceNormalTypes.cql");
+        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), Matchers.equalTo(0));
+
+        Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
+        List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
+        assertThat(statements.size(), Matchers.equalTo(3));
+    }
+
+    @Test
+    public void testForwardDeclarationSameTypeDifferentNamespaceGenericTypes() throws IOException {
+        final CqlTranslator translator = TestUtils.createTranslator("TestForwardDeclarationSameTypeDifferentNamespaceGenericTypes.cql");
+        assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), Matchers.equalTo(0));
+
+        Library compileLibrary = translator.getTranslatedLibrary().getLibrary();
+        List<ExpressionDef> statements = compileLibrary.getStatements().getDef();
+        assertThat(statements.size(), Matchers.equalTo(3));
+    }
+
     // This test creates a bunch of translators on the common pool to suss out any race conditions.
     // It's not fool-proof, but is reasonably consistent on my local machine.
     @Test
     public void multiThreadedTranslation() throws IOException {
         List<CompletableFuture<Void>> futures = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            futures.add(CompletableFuture.runAsync(this::createTranslator));
+            futures.add(CompletableFuture.runAsync(() -> {
+                try {
+                    TestUtils.createTranslator("CMS146v2_Test_CQM.cql");
+                }
+                catch(IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }));
         }
 
-        @SuppressWarnings("rawtypes")
-        CompletableFuture[] cfs = futures.toArray(new CompletableFuture[futures.size()]);
+        CompletableFuture<?>[] cfs = futures.toArray(new CompletableFuture[0]);
 
         CompletableFuture.allOf(cfs).join();
     }
 
-    private CqlTranslator createTranslator() {
-        try {
-            return TestUtils.createTranslator("CMS146v2_Test_CQM.cql");
-        }
-        catch(IOException e) {
-            throw new RuntimeException(e);
-        }
+    @Test
+    public void testHidingVariousUseCases() throws IOException {
+        final CqlTranslator translator = TestUtils.runSemanticTest("HidingTests/TestHidingVariousUseCases.cql", 0);
+        final List<CqlCompilerException> warnings = translator.getWarnings();
+        final List<String> warningMessages = warnings.stream().map(Throwable::getMessage).collect(Collectors.toList());
+
+        assertThat(warningMessages.toString(), translator.getWarnings().size(), is(13));
+
+        final List<String> distinct = warningMessages.stream().distinct().collect(Collectors.toList());
+
+        assertThat(warningMessages.toString(), distinct.size(), is(11));
+
+        final String hidingDefinition = "An alias identifier [Definition] is hiding another identifier of the same name. \n";
+        final String hidingVarLet = "A let identifier [var] is hiding another identifier of the same name. \n";
+        final String hidingContextValueSet = "An alias identifier [ValueSet] is hiding another identifier of the same name. \n";
+        final String hidingLetValueSet = "A let identifier [ValueSet] is hiding another identifier of the same name. \n";
+        final String hidingContextCode = "An alias identifier [Code] is hiding another identifier of the same name. \n";
+        final String hidingLetCode = "A let identifier [Code] is hiding another identifier of the same name. \n";
+        final String hidingContextCodeSystem = "An alias identifier [CodeSystem] is hiding another identifier of the same name. \n";
+        final String hidingLetCodeSystem = "A let identifier [CodeSystem] is hiding another identifier of the same name. \n";
+        final String hidingContextFhir = "An alias identifier [FHIR] is hiding another identifier of the same name. \n";
+        final String hidingLetFhir = "A let identifier [FHIR] is hiding another identifier of the same name. \n";
+        final String hidingAliasLet = "A let identifier [Alias] is hiding another identifier of the same name. \n";
+
+        assertThat(distinct, containsInAnyOrder(hidingDefinition, hidingVarLet, hidingContextValueSet, hidingLetValueSet, hidingContextCode, hidingLetCode, hidingContextCodeSystem, hidingLetCodeSystem, hidingContextFhir, hidingLetFhir, hidingAliasLet));
     }
 }

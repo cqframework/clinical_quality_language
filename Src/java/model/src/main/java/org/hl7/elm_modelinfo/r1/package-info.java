@@ -5,11 +5,11 @@
 // Generated on: 2015.01.05 at 11:42:59 AM MST 
 //
 
-@javax.xml.bind.annotation.XmlSchema(namespace = "urn:hl7-org:elm-modelinfo:r1", xmlns = {
+@jakarta.xml.bind.annotation.XmlSchema(namespace = "urn:hl7-org:elm-modelinfo:r1", xmlns = {
         @XmlNs(prefix = "", namespaceURI = "urn:hl7-org:elm-modelinfo:r1"),
         @XmlNs(prefix = "xsi", namespaceURI = "http://www.w3.org/2001/XMLSchema-instance"),
         @XmlNs(prefix = "xsd", namespaceURI = "http://www.w3.org/2001/XMLSchema")},
-        elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
+        elementFormDefault = jakarta.xml.bind.annotation.XmlNsForm.QUALIFIED)
 package org.hl7.elm_modelinfo.r1;
 
-import javax.xml.bind.annotation.XmlNs;
+import jakarta.xml.bind.annotation.XmlNs;

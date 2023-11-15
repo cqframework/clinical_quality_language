@@ -4,16 +4,21 @@ import org.hl7.cql.model.ChoiceType;
 import org.hl7.cql.model.DataType;
 import org.hl7.cql.model.NamedType;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.testng.Assert.assertThrows;
 
 public class SemanticTests {
 
@@ -499,6 +504,12 @@ public class SemanticTests {
         assertThat(ivs.getValuesetExpression(), instanceOf(OperandRef.class));
     }
 
+    @Test
+    public void testIssue827() throws IOException {
+        // https://github.com/cqframework/clinical_quality_language/issues/827
+        TestUtils.runSemanticTest("Issue827.cql", 0);
+    }
+
 
     @Test
     public void testIssueEmptySourceInterval() throws IOException {
@@ -634,6 +645,88 @@ public class SemanticTests {
     @Test
     public void TestQuotedForwards() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("TestQuotedForwards.cql", 0);
+    }
+
+    @Test
+    public void testIncorrectParameterType1204() throws IOException {
+        final CqlTranslator translator = runSemanticTest("TestIncorrectParameterType1204.cql", 2);
+
+        final List<CqlCompilerException> errors = translator.getErrors();
+
+        assertTrue(errors.stream().map(Throwable::getMessage).collect(Collectors.toSet()).toString(), errors.stream().map(Throwable::getMessage).anyMatch("Could not find type for model: null and name: ThisTypeDoesNotExist"::equals));
+    }
+
+    @Test
+    public void testIdentifierCaseMismatch() throws IOException {
+        final CqlTranslator translator = runSemanticTest("TestIdentifierCaseMismatch.cql", 2);
+
+        final List<CqlCompilerException> errors = translator.getErrors();
+
+        // Make it clear we treat a Library type with a mismatched case the same as a non-existent type
+        assertTrue(errors.stream().map(Throwable::getMessage).collect(Collectors.toSet()).toString(), errors.stream().map(Throwable::getMessage).anyMatch("Could not find type for model: FHIR and name: Code"::equals));
+    }
+
+    @Test
+    public void testNonExistentFileName() {
+        assertThrows(IOException.class, () -> TestUtils.runSemanticTest("ThisFileDoesNotExist.cql", 0));
+    }
+
+    @Test
+    public void testCaseConditionalReturnTypes() throws IOException {
+        CqlTranslator translator = runSemanticTest("Issue648.cql", 0);
+        org.hl7.elm.r1.Library library = translator.toELM();
+        Map<String, ExpressionDef> defs = new HashMap<>();
+
+        if (library.getStatements() != null) {
+            for (ExpressionDef def : library.getStatements().getDef()) {
+                defs.put(def.getName(), def);
+            }
+        }
+
+        ExpressionDef caseDef = defs.get("Cases");
+
+        assertThat(caseDef.getResultType(), instanceOf(ChoiceType.class));
+
+        ChoiceType choiceType = (ChoiceType)caseDef.getResultType();
+
+        Set<String> expectedChoiceTypes = new HashSet<>();
+        expectedChoiceTypes.add("System.String");
+        expectedChoiceTypes.add("System.Boolean");
+        expectedChoiceTypes.add("System.Integer");
+
+        Set<String> actualChoiceTypes = new HashSet<>();
+        for (DataType dt : choiceType.getTypes()) {
+            actualChoiceTypes.add(((NamedType)dt).getName());
+        }
+        assertTrue("Expected types are String, Boolean, and Integer: ", actualChoiceTypes.equals(expectedChoiceTypes));
+    }
+
+    @Test
+    public void testIfConditionalReturnTypes() throws IOException {
+        CqlTranslator translator = runSemanticTest("Issue648.cql", 0);
+        org.hl7.elm.r1.Library library = translator.toELM();
+        Map<String, ExpressionDef> defs = new HashMap<>();
+
+        if (library.getStatements() != null) {
+            for (ExpressionDef def : library.getStatements().getDef()) {
+                defs.put(def.getName(), def);
+            }
+        }
+
+        ExpressionDef ifDef = defs.get("If");
+        assertThat(ifDef.getResultType(), instanceOf(ChoiceType.class));
+
+        ChoiceType choiceType = (ChoiceType)ifDef.getResultType();
+
+        Set<String> expectedChoiceTypes = new HashSet<>();
+        expectedChoiceTypes.add("System.String");
+        expectedChoiceTypes.add("System.Boolean");
+
+        Set<String> actualChoiceTypes = new HashSet<>();
+        for (DataType dt : choiceType.getTypes()) {
+                actualChoiceTypes.add(((NamedType)dt).getName());
+        }
+        assertTrue("Expected return types are String and Boolean: ", actualChoiceTypes.equals(expectedChoiceTypes));
     }
 
     private CqlTranslator runSemanticTest(String testFileName) throws IOException {

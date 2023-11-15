@@ -8,10 +8,9 @@ ext {
 }
 
 dependencies {
-    implementation project(':cql-to-elm')
-    implementation project(':engine')
-    implementation project(":engine-fhir")
-    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+    api project(':cql-to-elm')
+    api project(':engine')
+    api project(":engine-fhir")
 
     testImplementation project(':quick')
     testImplementation "org.reflections:reflections:0.10.2"
