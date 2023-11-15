@@ -8,13 +8,14 @@ import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 public class BaseTest {
     @Test
@@ -29,9 +30,13 @@ public class BaseTest {
 
     @Test
     public void testAuthoringPatterns() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("qicore/v500/AuthoringPatterns.cql", 0, LibraryBuilder.SignatureLevel.Overloads);
+        final CqlTranslator translator = TestUtils.runSemanticTest("qicore/v500/AuthoringPatterns.cql", 0, LibraryBuilder.SignatureLevel.Overloads);
 
-        assertThat(translator.getWarnings().size(), is(0));
+        assertThat(translator.getWarnings().toString(), translator.getWarnings().size(), is(1));
+
+        final String first = "An alias identifier [Diabetes] is hiding another identifier of the same name. \n";
+
+        assertThat(translator.getWarnings().stream().map(Throwable::getMessage).collect(Collectors.toList()), contains(first));
     }
 
     @Test
