@@ -135,7 +135,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
         // The model was already calculated by CqlPreprocessorVisitor
         final UsingDef usingDef = libraryBuilder.resolveUsingRef(localIdentifier);
-        libraryBuilder.pushIdentifierForHiding(localIdentifier, false, usingDef);
+        libraryBuilder.pushIdentifierForHiding(localIdentifier, usingDef);
         return usingDef;
     }
 
@@ -198,7 +198,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         }
 
         libraryBuilder.addInclude(library);
-        libraryBuilder.pushIdentifierForHiding(library.getLocalIdentifier(), false, library);
+        libraryBuilder.pushIdentifierForHiding(library.getLocalIdentifier(), library);
 
         return library;
     }
@@ -235,7 +235,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         }
 
         libraryBuilder.addParameter(param);
-        libraryBuilder.pushIdentifierForHiding(param.getName(), false, param);
+        libraryBuilder.pushIdentifierForHiding(param.getName(), param);
 
         return param;
     }
@@ -278,7 +278,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         }
 
         libraryBuilder.addCodeSystem(cs);
-        libraryBuilder.pushIdentifierForHiding(cs.getName(), false, cs);
+        libraryBuilder.pushIdentifierForHiding(cs.getName(), cs);
         return cs;
     }
 
@@ -350,7 +350,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
             vs.setResultType(new ListType(libraryBuilder.resolveTypeName("System", "Code")));
         }
         libraryBuilder.addValueSet(vs);
-        libraryBuilder.pushIdentifierForHiding(vs.getName(), false, vs);
+        libraryBuilder.pushIdentifierForHiding(vs.getName(), vs);
 
         return vs;
     }
@@ -372,7 +372,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
         cd.setResultType(libraryBuilder.resolveTypeName("Code"));
         libraryBuilder.addCode(cd);
-        libraryBuilder.pushIdentifierForHiding(cd.getName(), false, cd);
+        libraryBuilder.pushIdentifierForHiding(cd.getName(), cd);
 
         return cd;
     }
@@ -526,7 +526,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         final ExpressionDef hollowExpressionDef = of.createExpressionDef()
                 .withName(identifier)
                 .withContext(getCurrentContext());
-        libraryBuilder.pushIdentifierForHiding(identifier, false, hollowExpressionDef);
+        libraryBuilder.pushIdentifierForHiding(identifier, hollowExpressionDef);
         if (def == null || isImplicitContextExpressionDef(def)) {
             if (def != null && isImplicitContextExpressionDef(def)) {
                 libraryBuilder.removeExpression(def);
@@ -575,7 +575,9 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
     @Override
     public Literal visitStringLiteral(cqlParser.StringLiteralContext ctx) {
-        return libraryBuilder.createLiteral(parseString(ctx.STRING()));
+        final Literal stringLiteral = libraryBuilder.createLiteral(parseString(ctx.STRING()));
+        libraryBuilder.pushIdentifierForHiding(stringLiteral.getValue(), stringLiteral);
+        return stringLiteral;
     }
 
     @Override
@@ -3076,7 +3078,7 @@ DATETIME
             queryContext.addPrimaryQuerySources(sources);
 
             for (AliasedQuerySource source : sources) {
-                libraryBuilder.pushIdentifierForHiding(source.getAlias(), false, source);
+                libraryBuilder.pushIdentifierForHiding(source.getAlias(), source);
             }
 
             // If we are evaluating a population-level query whose source ranges over any patient-context expressions,
@@ -3095,7 +3097,7 @@ DATETIME
 
                 if (dfcx != null) {
                     for (LetClause letClause : dfcx) {
-                        libraryBuilder.pushIdentifierForHiding(letClause.getIdentifier(), false, letClause);
+                        libraryBuilder.pushIdentifierForHiding(letClause.getIdentifier(), letClause);
                     }
                 }
 
@@ -4051,10 +4053,10 @@ DATETIME
         if (op == null) {
             throw new IllegalArgumentException(String.format("Internal error: Could not resolve operator map entry for function header %s", fh.getMangledName()));
         }
-        libraryBuilder.pushIdentifierForHiding(fun.getName(), true, fun);
+        libraryBuilder.pushIdentifierForHiding(fun.getName(), fun);
         final List<OperandDef> operand = op.getFunctionDef().getOperand();
         for (OperandDef operandDef : operand) {
-            libraryBuilder.pushIdentifierForHiding(operandDef.getName(), false, operandDef);
+            libraryBuilder.pushIdentifierForHiding(operandDef.getName(), operandDef);
         }
 
         if (ctx.functionBody() != null) {
