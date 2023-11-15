@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
@@ -374,6 +375,10 @@ public class DateTime extends BaseTemporal {
 
     public Date toJavaDate() {
         return java.util.Date.from(dateTime.toInstant());
+    }
+
+    public String toDateString() {
+        return DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(dateTime);
     }
 
     public static DateTime fromJavaDate(Date date) {
