@@ -248,16 +248,17 @@ public class Dstu3TypeConverterTests {
     public void TestDateTimeToFhirDateTime() {
         final ZoneOffset defaultOffset = OffsetDateTime.now().getOffset();
 
-        IPrimitiveType<java.util.Date> expectedDate = new DateTimeType("2019-02-03");
+        var expectedDate = new DateTimeType("2019-02-03T00:00:00"+defaultOffset);
         IPrimitiveType<java.util.Date> actualDate = this.typeConverter
                 .toFhirDateTime(new DateTime("2019-02-03", defaultOffset));
         assertEquals(expectedDate.getValue(), actualDate.getValue());
 
-        expectedDate = new DateTimeType("2019");
+        expectedDate = new DateTimeType("2019-01-01T00:00:00"+defaultOffset);
         actualDate = this.typeConverter.toFhirDateTime(new DateTime("2019", defaultOffset));
         assertEquals(expectedDate.getValue(), actualDate.getValue());
 
-        expectedDate = new DateTimeType("2019");
+        expectedDate = new DateTimeType("2019-01-01T00:00:00"+defaultOffset);
+        expectedDate.setPrecision(TemporalPrecisionEnum.YEAR);
         actualDate = this.typeConverter.toFhirDateTime(new DateTime("2019", defaultOffset));
         assertEquals(expectedDate.getValueAsString(), actualDate.getValueAsString());
 
