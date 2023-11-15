@@ -74,9 +74,13 @@ class Dstu2FhirTypeConverter extends BaseFhirTypeConverter {
             return null;
         }
 
-        final OffsetDateTime dateTime = value.getDateTime();
-        final String format = dateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-        final DateTimeType result = new DateTimeType(format);
+//        final OffsetDateTime dateTime = value.getDateTime();
+//        final String format = dateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        final String dateString = value.toDateString();
+        final DateTimeType result = new DateTimeType(dateString);
+//        final DateTimeType result = new DateTimeType(value.toJavaDate());
+        final DateTimeType dateTimeType = new DateTimeType();
+        dateTimeType.setValueAsString(dateString);
         final TemporalPrecisionEnum fhirPrecision = toFhirPrecision(value.getPrecision());
         // LUKETODO:  this is what moves us from 2019 to 2018 and 2020 to 2019  this works when the
         result.setPrecision(fhirPrecision);

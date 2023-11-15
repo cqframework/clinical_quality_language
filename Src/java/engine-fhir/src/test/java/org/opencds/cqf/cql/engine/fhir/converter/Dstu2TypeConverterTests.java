@@ -37,17 +37,7 @@ import org.hl7.fhir.instance.model.api.IBase;
 import org.hl7.fhir.instance.model.api.ICompositeType;
 import org.hl7.fhir.instance.model.api.IIdType;
 import org.hl7.fhir.instance.model.api.IPrimitiveType;
-import org.opencds.cqf.cql.engine.runtime.Code;
-import org.opencds.cqf.cql.engine.runtime.Concept;
-import org.opencds.cqf.cql.engine.runtime.CqlType;
-import org.opencds.cqf.cql.engine.runtime.Date;
-import org.opencds.cqf.cql.engine.runtime.DateTime;
-import org.opencds.cqf.cql.engine.runtime.Interval;
-import org.opencds.cqf.cql.engine.runtime.Precision;
-import org.opencds.cqf.cql.engine.runtime.Quantity;
-import org.opencds.cqf.cql.engine.runtime.Ratio;
-import org.opencds.cqf.cql.engine.runtime.Time;
-import org.opencds.cqf.cql.engine.runtime.Tuple;
+import org.opencds.cqf.cql.engine.runtime.*;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -273,6 +263,46 @@ public class Dstu2TypeConverterTests {
     }
 
     @Test
+    public void TestDateTimeToFhirDateTime2() {
+        final ZoneOffset defaultOffset = OffsetDateTime.now().getOffset();
+
+        IPrimitiveType<java.util.Date> expectedDate = new DateTimeType("2019-02-03T00:00:00" + defaultOffset);
+        IPrimitiveType<java.util.Date> actualDate = this.typeConverter
+                .toFhirDateTime(new DateTime("2019-02-03", defaultOffset));
+        assertEquals(expectedDate.getValue(), actualDate.getValue());
+    }
+
+    @Test
+    public void TestDateTimeToFhirDateTime3() {
+        final ZoneOffset defaultOffset = OffsetDateTime.now().getOffset();
+
+        IPrimitiveType<java.util.Date> expectedDate = new DateTimeType("2019-04-03T00:00:00" + defaultOffset);
+        IPrimitiveType<java.util.Date> actualDate = this.typeConverter
+                .toFhirDateTime(new DateTime("2019-04-03", defaultOffset));
+        assertEquals(expectedDate.getValue(), actualDate.getValue());
+    }
+
+    @Test
+    public void TestDateTimeToFhirDateTime4() {
+        final ZoneOffset defaultOffset = ZonedDateTime.of(DST_2023_11_01, ZoneId.systemDefault()).getOffset();
+
+        IPrimitiveType<java.util.Date> expectedDate = new DateTimeType("2019-02-03T00:00:00" + defaultOffset);
+        IPrimitiveType<java.util.Date> actualDate = this.typeConverter
+                .toFhirDateTime(new DateTime("2019-02-03", defaultOffset));
+        assertEquals(expectedDate.getValue(), actualDate.getValue());
+    }
+
+    @Test
+    public void TestDateTimeToFhirDateTime5() {
+        final ZoneOffset defaultOffset = ZonedDateTime.of(DST_2023_11_01, ZoneId.systemDefault()).getOffset();
+
+        IPrimitiveType<java.util.Date> expectedDate = new DateTimeType("2019-04-03T00:00:00" + defaultOffset);
+        IPrimitiveType<java.util.Date> actualDate = this.typeConverter
+                .toFhirDateTime(new DateTime("2019-04-03", defaultOffset));
+        assertEquals(expectedDate.getValue(), actualDate.getValue());
+    }
+
+    @Test
     public void TestQuantityToFhirQuantity() {
         org.hl7.fhir.dstu2.model.Quantity expected = new org.hl7.fhir.dstu2.model.Quantity().setValue(new BigDecimal("2.0")).setCode("ml")
                 .setSystem("http://unitsofmeasure.org").setUnit("ml");
@@ -341,13 +371,13 @@ public class Dstu2TypeConverterTests {
 
     @DataProvider
     private static Object[][] dateTimes() {
-        return new Object[][] {{DST_2023_11_01}, {NON_DST_2023_11_14}};
+        return new Object[][] {{DST_2023_11_01, DST_2023_11_01}, {NON_DST_2023_11_14, NON_DST_2023_11_14}, {NON_DST_2023_11_14, DST_2023_11_01}, {DST_2023_11_01, NON_DST_2023_11_14}};
     }
 
     @Test(dataProvider = "dateTimes")
-    public void TestIntervalToFhirPeriod(LocalDateTime now) {
-        // LUKETODO:  is this correct?  should we be basing the offset on the current time or the time being evaluated for a period?  how would this work in production?
-        final ZonedDateTime zonedDateTime = ZonedDateTime.of(LocalDateTime.of(2019, Month.JANUARY, 1, 0, 0,0), ZoneId.systemDefault());
+    public void TestIntervalToFhirPeriod(LocalDateTime now, LocalDateTime evaluatedTime) {
+        // LUKETODO:  integrate evaluatedTime
+        final ZonedDateTime zonedDateTime = ZonedDateTime.of(now, ZoneId.systemDefault());
         final ZoneOffset defaultOffset = zonedDateTime.getOffset();
 
         Period expected = new Period().setStartElement(new DateTimeType("2019-02-03"))
@@ -356,8 +386,8 @@ public class Dstu2TypeConverterTests {
                 .toFhirPeriod(new Interval(new Date("2019-02-03"), true, new Date("2019-02-05"), true));
         assertTrue(expected.equalsDeep(actual));
 
-        final DateTimeType dateTimeType2019_1 = new DateTimeType("2019-01-01T00:00:00");
-        final DateTimeType dateTimeType2020_1 = new DateTimeType("2020-01-01T00:00:00");
+        final DateTimeType dateTimeType2019_1 = new DateTimeType("2019-01-01T00:00:00"+defaultOffset);
+        final DateTimeType dateTimeType2020_1 = new DateTimeType("2020-01-01T00:00:00"+defaultOffset);
         expected = new Period().setStartElement(dateTimeType2019_1).setEndElement(dateTimeType2020_1);
 
         final DateTime dateTime2019_1 = new DateTime("2019-01-01T00:00:00", defaultOffset);
@@ -365,10 +395,10 @@ public class Dstu2TypeConverterTests {
         final Interval interval_2019_2020_1 = new Interval(dateTime2019_1, true, dateTime2020_1, true);
         actual = (Period) this.typeConverter.toFhirPeriod(interval_2019_2020_1);
 
-//        assertTrue(expected.equalsDeep(actual));
+        assertTrue(expected.equalsDeep(actual));
 
-        final DateTimeType dateTimeType2019 = new DateTimeType("2019");
-        final DateTimeType dateTimeType2020 = new DateTimeType("2020");
+        final DateTimeType dateTimeType2019 = new DateTimeType("2019-01-01T00:00:00"+defaultOffset);
+        final DateTimeType dateTimeType2020 = new DateTimeType("2020-01-01T00:00:00"+defaultOffset);
         expected = new Period().setStartElement(dateTimeType2019).setEndElement(dateTimeType2020);
 
         final DateTime dateTime2019 = new DateTime("2019", defaultOffset);
