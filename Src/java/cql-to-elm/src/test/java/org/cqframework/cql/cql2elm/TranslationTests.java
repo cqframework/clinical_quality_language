@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -264,21 +265,45 @@ public class TranslationTests {
     public void multiThreadedTranslation() throws IOException {
         List<CompletableFuture<Void>> futures = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            futures.add(CompletableFuture.runAsync(this::createTranslator));
+            futures.add(CompletableFuture.runAsync(() -> {
+                try {
+                    TestUtils.createTranslator("CMS146v2_Test_CQM.cql");
+                }
+                catch(IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }));
         }
 
-        @SuppressWarnings("rawtypes")
-        CompletableFuture[] cfs = futures.toArray(new CompletableFuture[futures.size()]);
+        CompletableFuture<?>[] cfs = futures.toArray(new CompletableFuture[0]);
 
         CompletableFuture.allOf(cfs).join();
     }
 
-    private CqlTranslator createTranslator() {
-        try {
-            return TestUtils.createTranslator("CMS146v2_Test_CQM.cql");
-        }
-        catch(IOException e) {
-            throw new RuntimeException(e);
-        }
+    @Test
+    public void testHidingVariousUseCases() throws IOException {
+        final CqlTranslator translator = TestUtils.runSemanticTest("HidingTests/TestHidingVariousUseCases.cql", 0);
+        final List<CqlCompilerException> warnings = translator.getWarnings();
+        final List<String> warningMessages = warnings.stream().map(Throwable::getMessage).collect(Collectors.toList());
+
+        assertThat(warningMessages.toString(), translator.getWarnings().size(), is(13));
+
+        final List<String> distinct = warningMessages.stream().distinct().collect(Collectors.toList());
+
+        assertThat(warningMessages.toString(), distinct.size(), is(11));
+
+        final String hidingDefinition = "An alias identifier [Definition] is hiding another identifier of the same name. \n";
+        final String hidingVarLet = "A let identifier [var] is hiding another identifier of the same name. \n";
+        final String hidingContextValueSet = "An alias identifier [ValueSet] is hiding another identifier of the same name. \n";
+        final String hidingLetValueSet = "A let identifier [ValueSet] is hiding another identifier of the same name. \n";
+        final String hidingContextCode = "An alias identifier [Code] is hiding another identifier of the same name. \n";
+        final String hidingLetCode = "A let identifier [Code] is hiding another identifier of the same name. \n";
+        final String hidingContextCodeSystem = "An alias identifier [CodeSystem] is hiding another identifier of the same name. \n";
+        final String hidingLetCodeSystem = "A let identifier [CodeSystem] is hiding another identifier of the same name. \n";
+        final String hidingContextFhir = "An alias identifier [FHIR] is hiding another identifier of the same name. \n";
+        final String hidingLetFhir = "A let identifier [FHIR] is hiding another identifier of the same name. \n";
+        final String hidingAliasLet = "A let identifier [Alias] is hiding another identifier of the same name. \n";
+
+        assertThat(distinct, containsInAnyOrder(hidingDefinition, hidingVarLet, hidingContextValueSet, hidingLetValueSet, hidingContextCode, hidingLetCode, hidingContextCodeSystem, hidingLetCodeSystem, hidingContextFhir, hidingLetFhir, hidingAliasLet));
     }
 }
