@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -652,7 +653,17 @@ public class SemanticTests {
 
         final List<CqlCompilerException> errors = translator.getErrors();
 
-        assertTrue(errors.stream().map(Throwable::getMessage).anyMatch("Could not find type for model: FHIR and name: Code"::equals));
+        assertTrue(errors.stream().map(Throwable::getMessage).collect(Collectors.toSet()).toString(), errors.stream().map(Throwable::getMessage).anyMatch("Could not find type for model: null and name: ThisTypeDoesNotExist"::equals));
+    }
+
+    @Test
+    public void testIdentifierCaseMismatch() throws IOException {
+        final CqlTranslator translator = runSemanticTest("TestIdentifierCaseMismatch.cql", 2);
+
+        final List<CqlCompilerException> errors = translator.getErrors();
+
+        // Make it clear we treat a Library type with a mismatched case the same as a non-existent type
+        assertTrue(errors.stream().map(Throwable::getMessage).collect(Collectors.toSet()).toString(), errors.stream().map(Throwable::getMessage).anyMatch("Could not find type for model: FHIR and name: Code"::equals));
     }
 
     @Test

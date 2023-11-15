@@ -14,7 +14,6 @@ import javax.xml.namespace.QName;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by Bryn on 12/29/2016.
@@ -101,6 +100,7 @@ public class LibraryBuilder implements ModelResolver {
     private final Stack<String> expressionContext = new Stack<>();
     private final ExpressionDefinitionContextStack expressionDefinitions = new ExpressionDefinitionContextStack();
     private final Stack<FunctionDef> functionDefs = new Stack<>();
+    private final Deque<String> identifiersToCheckForHiding = new ArrayDeque<>();
     private int literalContext = 0;
     private int typeSpecifierContext = 0;
     private NamespaceInfo namespaceInfo = null;
@@ -1427,8 +1427,8 @@ public class LibraryBuilder implements ModelResolver {
         return query;
     }
 
-    private void reportWarning(String message, Expression expression) {
-        TrackBack trackback = expression.getTrackbacks() != null && expression.getTrackbacks().size() > 0 ? expression.getTrackbacks().get(0) : null;
+    private void reportWarning(String message, Element expression) {
+        TrackBack trackback = expression != null && expression.getTrackbacks() != null && !expression.getTrackbacks().isEmpty() ? expression.getTrackbacks().get(0) : null;
         CqlSemanticException warning = new CqlSemanticException(message, CqlCompilerException.ErrorSeverity.Warning, trackback);
         recordParsingException(warning);
     }
@@ -2344,6 +2344,45 @@ public class LibraryBuilder implements ModelResolver {
         return null;
     }
 
+    private static String lookupElementWarning(Object element) {
+        // TODO:  this list is not exhaustive and may need to be updated
+        if (element instanceof ExpressionDef) {
+            return "An expression";
+        }
+        else if (element instanceof ParameterDef) {
+            return "A parameter";
+        }
+        else if (element instanceof ValueSetDef) {
+            return "A valueset";
+        }
+        else if (element instanceof CodeSystemDef) {
+            return "A codesystem";
+        }
+        else if (element instanceof CodeDef) {
+            return "A code";
+        }
+        else if (element instanceof ConceptDef) {
+            return "A concept";
+        }
+        else if (element instanceof IncludeDef) {
+            return "An include";
+        }
+        else if (element instanceof AliasedQuerySource) {
+            return "An alias";
+        }
+        else if (element instanceof LetClause) {
+            return "A let";
+        }
+        else if (element instanceof OperandDef) {
+            return "An operand";
+        }
+        else if (element instanceof UsingDef) {
+            return "A using";
+        }
+        //default message if no match is made:
+        return "An [unknown structure]";
+    }
+
     /**
      * An implicit context is one where the context has the same name as a parameter. Implicit contexts are used to
      * allow FHIRPath expressions to resolve on the implicit context of the expression
@@ -2933,6 +2972,47 @@ public class LibraryBuilder implements ModelResolver {
         }
 
         throw new IllegalArgumentException(String.format("Invalid context reference from %s context to %s context.", currentExpressionContext(), expressionDef.getContext()));
+    }
+
+    /**
+     * Add an identifier to the deque to indicate that we are considering it for consideration for identifier hiding and
+     * adding a compiler warning if this is the case.
+     * <p/>
+     * For example, if an alias within an expression body has the same name as a parameter, execution would have
+     * added the parameter identifier and the next execution would consider an alias with the same name, thus resulting
+     * in a warning.
+     * <p/>
+     * Exact case matching as well as case-insensitive matching are considered.  If known, the type of the structure
+     * in question will be considered in crafting the warning message, as per the {@link Element} parameter.
+     *
+     * @param identifier The identifier belonging to the parameter, expression, function, alias, etc, to be evaluated.
+     * @param onlyOnce   Special case to deal with overloaded functions, which are out scope for hiding.
+     * @param element    The construct element, for example {@link ExpressionRef}.
+     */
+    void pushIdentifierForHiding(String identifier, boolean onlyOnce, Element element) {
+        final boolean hasRelevantMatch = identifiersToCheckForHiding.stream()
+                .filter(innerIdentifier -> innerIdentifier.equals(identifier))
+                .peek(matchedIdentifier -> {
+                    if (onlyOnce) {
+                        return;
+                    }
+
+                    final String elementString = lookupElementWarning(element);
+                    final String message = String.format("%s identifier [%s] is hiding another identifier of the same name. %n", elementString, identifier);
+                    reportWarning(message, element);
+                }).findAny()
+                .isPresent();
+        if (! onlyOnce || ! hasRelevantMatch) {
+            identifiersToCheckForHiding.push(identifier);
+        }
+    }
+
+    /**
+     * Pop the last resolved identifier off the deque.  This is needed in case of a context in which an identifier
+     * falls out of scope, for an example, an alias within an expression or function body
+     */
+    void popIdentifierForHiding() {
+        identifiersToCheckForHiding.pop();
     }
 
     private class Scope {
