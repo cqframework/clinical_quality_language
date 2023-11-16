@@ -222,17 +222,14 @@ public class DateTimeTest {
 
     @Test(dataProvider = "timeZones")
     void testBigDecimalWithCustomTimezoneAndNow(ZoneId zoneId, LocalDateTime now) {
-        final Instant instant = Instant.now(); //can be LocalDateTime
-        final TimeZone timeZone = TimeZone.getTimeZone(zoneId);
-        final ZoneOffset currentOffsetForMyZone = zoneId.getRules().getOffset(instant);
-        final OffsetDateTime offsetDateTime = OffsetDateTime.of(now, currentOffsetForMyZone);
+        final ZoneOffset currentOffsetForMyZone = zoneId.getRules().getOffset(now);
 
         final BigDecimal offset = TemporalHelper.zoneToOffset(currentOffsetForMyZone);
         final Precision precision = Precision.HOUR;
         final List<Integer> dateElements = DST_2023_10_26_22_12_0_INTS;
 
         final int[] dateElementsArray = dateElements.stream().mapToInt(anInt -> anInt).toArray();
-        final DateTime dateTime = new DateTime(offset, timeZone, offsetDateTime, dateElementsArray);
+        final DateTime dateTime = new DateTime(offset, dateElementsArray);
 
         final OffsetDateTime normalizedDateTime = dateTime.getNormalized(precision);
 

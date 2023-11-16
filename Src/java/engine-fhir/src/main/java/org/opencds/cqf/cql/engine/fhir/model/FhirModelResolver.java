@@ -600,10 +600,7 @@ public abstract class FhirModelResolver<BaseType, BaseDateTimeType, TimeType, Si
         switch (simpleName) {
             case "DateTimeType":
             case "InstantType":
-                // LUKETODO:  this is where we take an empty DateTimeType and set its DateTime
-                // Also, at this point the timezone is null, so we set the default from TimeZone.getDefault()
-//                target.setValue(((DateTime) value).toJavaDate());
-                // LUKETODO:  explain why we're doing this:
+                // Ensure offset is taken into account from the ISO datetime String instead of the default timezone
                 target.setValueAsString(((DateTime) value).toDateString());
                 setCalendarConstant((BaseDateTimeType) target, (BaseTemporal) value);
                 break;

@@ -3,7 +3,6 @@ package org.opencds.cqf.cql.engine.execution;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -758,11 +757,8 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
         Integer milliSecond = elm.getMillisecond() == null ? null : (Integer) visitExpression(elm.getMillisecond(), state);
         BigDecimal timeZoneOffset = elm.getTimezoneOffset() == null ? null : (BigDecimal) visitExpression(elm.getTimezoneOffset(), state);
 
-        final ZonedDateTime evaluationZonedDateTime = state.getEvaluationZonedDateTime();
-
         try {
             final BigDecimal bigDecimalOffset = processOffset(year, month, day, hour, minute, second, milliSecond, state);
-            // LUKETODO: CqlTypesTest DateTimeMin and DateTimeMin fail if I don't comment this out
             timeZoneOffset = timeZoneOffset == null ? bigDecimalOffset : timeZoneOffset;
             return DateTimeEvaluator.internalEvaluate(year, month, day, hour, minute, second, milliSecond, timeZoneOffset);
         } catch (Exception theException) {
@@ -771,40 +767,20 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
         }
     }
 
-    // LUKETODO:  Adjust this, somehow
-
     private static BigDecimal processOffset(Integer year, Integer month, Integer day, Integer hour, Integer minute, Integer second, Integer milliSecond, State state) {
         // This is meant to replicate the pattern used in org.opencds.cqf.cql.engine.runtime.DateTime(BigDecimal, int[])
         final LocalDateTime localDateTime = LocalDateTime.of(valueOrZero(year), valueOrOne(month), valueOrOne(day), valueOrZero(hour), valueOrZero(minute), valueOrZero(second), valueOrZero(milliSecond));
 
         final ZoneOffset zoneOffset = state.getEvaluationZonedDateTime().getOffset();
         final ZonedDateTime zonedDateTime = localDateTime.atZone(state.getEvaluationZonedDateTime().getZone());
-        final ZoneOffset zoneOffsetConsidersDst = zonedDateTime.getOffset();
 
         final BigDecimal sixty = BigDecimal.valueOf(60);
-        // LUKETODO: the 863 tests pass here
-        // LUKETODO:  testHighBoundary, testLowBoundary, , testDateTime, testInterval, test_all_interval_operators, ToDateTime2, ToDateTime3 fail here
         final BigDecimal totalSeconds = BigDecimal.valueOf(zoneOffset.getTotalSeconds());
-        // LUKETODO: the 863 tests FAIL here
-//        final BigDecimal totalSeconds = BigDecimal.valueOf(zoneOffsetConsidersDst.getTotalSeconds());
         final BigDecimal totalMinutes = totalSeconds.divide(sixty, RoundingMode.HALF_EVEN);
         final BigDecimal totalHours = totalMinutes.divide(sixty, 2, RoundingMode.HALF_EVEN);
 
         return totalHours;
     }
-
-    private static int valueOrZero(Integer value) {
-        return valueOrDefault(value, 0);
-    }
-
-    private static int valueOrOne(Integer value) {
-        return valueOrDefault(value, 1);
-    }
-
-    private static int valueOrDefault(Integer value, int defaultValue) {
-        return value == null ? defaultValue : value;
-    }
-
 
     @Override
     public Object visitDescendents(Descendents elm, State state) {
@@ -1375,5 +1351,15 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
         return QueryEvaluator.internalEvaluate(elm, state, this) ;
     }
 
+    private static int valueOrZero(Integer value) {
+        return valueOrDefault(value, 0);
+    }
 
+    private static int valueOrOne(Integer value) {
+        return valueOrDefault(value, 1);
+    }
+
+    private static int valueOrDefault(Integer value, int defaultValue) {
+        return value == null ? defaultValue : value;
+    }
 }

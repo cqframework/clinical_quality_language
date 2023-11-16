@@ -61,12 +61,7 @@ public class ToDateTimeEvaluator {
         }
 
         if (operand instanceof Date) {
-            final Date operandAsDate = (Date) operand;
-            final ZonedDateTime evaluationZonedDateTime = state.getEvaluationZonedDateTime();
-
-            // LUKETODO: we need to construct a Date object here, then use it to derive the offset according to the State or default tiemzone
-            final BigDecimal offset = TemporalHelper.zoneToOffset(evaluationZonedDateTime.getOffset());
-            return new DateTime(offset,
+            return new DateTime(TemporalHelper.zoneToOffset(state.getEvaluationZonedDateTime().getOffset()),
                     ((Date) operand).getDate().getYear(),
                     ((Date) operand).getDate().getMonthValue(),
                     ((Date) operand).getDate().getDayOfMonth(),

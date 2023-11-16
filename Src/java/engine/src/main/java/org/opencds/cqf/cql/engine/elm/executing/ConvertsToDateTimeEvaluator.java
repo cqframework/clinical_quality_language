@@ -47,7 +47,6 @@ public class ConvertsToDateTimeEvaluator {
 
         else if (argument instanceof Date) {
             try {
-                // LUKETODO:  convert offset to a BigDecimal
                 new DateTime(
                         TemporalHelper.zoneToOffset(offset),
                         ((Date) argument).getDate().getYear(),

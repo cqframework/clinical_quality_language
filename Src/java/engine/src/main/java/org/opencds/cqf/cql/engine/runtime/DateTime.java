@@ -29,16 +29,7 @@ public class DateTime extends BaseTemporal {
         if (dateTime.getYear() > 9999) {
             throw new InvalidDateTime(String.format("The year: %d falls above the accepted bounds of 0001-9999.", dateTime.getYear()));
         }
-        // LUKETODO:  should we now consider setting the zoneOffset here?
         this.dateTime = dateTime;
-//        if (zoneOffset != null) {
-//            throw new IllegalArgumentException("something");
-//        }
-//        zoneOffset = dateTime.getOffset();
-    }
-    public DateTime withDateTime(OffsetDateTime dateTime) {
-        setDateTime(dateTime);
-        return this;
     }
 
     public DateTime withPrecision(Precision precision) {
@@ -59,12 +50,6 @@ public class DateTime extends BaseTemporal {
     }
 
     public DateTime(String dateString, ZoneOffset offset) {
-        this(dateString, offset, OffsetDateTime.now());
-    }
-
-    // For unit testing only, in particular, to test DST/non-DST
-    // LUKETODO:  do we need nowOffsetDateTime anymore?
-    public DateTime(String dateString, ZoneOffset offset, OffsetDateTime nowOffsetDateTime) {
         if (offset == null) {
             throw new CqlException("Cannot pass a null offset");
         }
@@ -88,51 +73,20 @@ public class DateTime extends BaseTemporal {
             precision = Precision.fromDateTimeIndex(size - 1);
             if (tzSplit.length == 1 && !dateString.contains("Z")) {
                 dateString = TemporalHelper.autoCompleteDateTimeString(dateString, precision);
-                if (offset != null) {
-                    dateString += offset.getId();
-                }
-                else {
-                    hasOffset = false;
-                }
+                dateString += offset.getId();
             }
         }
         else {
             size += dateString.split("-").length;
             precision = Precision.fromDateTimeIndex(size - 1);
             dateString = TemporalHelper.autoCompleteDateTimeString(dateString, precision);
-            if (offset != null) {
-                dateString += offset.getId();
-            }
-            else {
-                hasOffset = false;
-            }
+            dateString += offset.getId();
         }
 
-        if (hasOffset) {
-            setDateTime(OffsetDateTime.parse(dateString));
-        }
-        else {
-            // This is the default behaviour if the caller passes a null BigDecimal offset
-            final LocalDateTime parse = LocalDateTime.parse(dateString);
-
-            // LUKETODO:  this isn't strictly correct at it should come from State, but let's go with it
-            final ZoneOffset offsetFromCurrentTimezone = nowOffsetDateTime.getOffset();
-
-            final OffsetDateTime atOffset = parse.atOffset(offsetFromCurrentTimezone);
-
-            setDateTime(atOffset);
-            // OLD
-//            setDateTime(TemporalHelper.toOffsetDateTime(LocalDateTime.parse(dateString)));
-        }
+        setDateTime(OffsetDateTime.parse(dateString));
     }
 
     public DateTime(BigDecimal offset, int ... dateElements) {
-        this(offset, TimeZone.getDefault(), OffsetDateTime.now(), dateElements);
-    }
-
-    // For unit testing only
-    // LUKETODO:  do we need nowOffsetDateTime anymore?
-    DateTime(BigDecimal offset, TimeZone defaultTimezone, OffsetDateTime nowOffsetDateTime, int ... dateElements) {
         if (offset == null) {
             throw new CqlException("BigDecimal offset must be non-null");
         }
@@ -168,29 +122,8 @@ public class DateTime extends BaseTemporal {
 
         precision = Precision.fromDateTimeIndex(stringElements.length - 1);
         dateString = new StringBuilder().append(TemporalHelper.autoCompleteDateTimeString(dateString.toString(), precision));
-
-        // If the incoming string has an offset specified, use that offset
-        // Otherwise, parse as a LocalDateTime and then interpret that in the evaluation timezone
-
-        if (offset != null) {
-            dateString.append(zoneOffset.getId());
-            setDateTime(OffsetDateTime.parse(dateString.toString()));
-        }
-        else {
-            // This is the default behaviour if the caller passes a null BigDecimal offset
-            final LocalDateTime parse = LocalDateTime.parse(dateString.toString());
-
-            // LUKETODO:  this isn't strictly correct at it should come from State, but let's go with it
-            final ZoneOffset offsetFromCurrentTimezone = nowOffsetDateTime.getOffset();
-
-            final OffsetDateTime atOffset = parse.atOffset(offsetFromCurrentTimezone);
-
-            logger.warn("default timezone: {}, field zoneOffset: {}, offsetFromCurrentTimezone: {}, localDateTime: {} now at timezone: {}", defaultTimezone.getDisplayName(), zoneOffset, offsetFromCurrentTimezone, parse, atOffset);
-
-            setDateTime(atOffset);
-            // LUKETODO:  OLD
-//            setDateTime(TemporalHelper.toOffsetDateTime(LocalDateTime.parse(dateString.toString())));
-        }
+        dateString.append(zoneOffset.getId());
+        setDateTime(OffsetDateTime.parse(dateString.toString()));
     }
 
     public ZoneOffset getZoneOffset() {
@@ -274,15 +207,7 @@ public class DateTime extends BaseTemporal {
                 return dateTime.withOffsetSameInstant(nullableZoneOffset);
             }
 
-//            final OffsetDateTime newOffsetDateTime  = dateTime.withOffsetSameInstant(nowOffsetDateTime.getOffset());
-//
-//            final ZoneId zoneId = defaultTimezone.toZoneId();
-//            final ZonedDateTime zonedDateTime = dateTime.atZoneSameInstant(zoneId);
-//            final OffsetDateTime offsetDateTime = zonedDateTime.toOffsetDateTime();
-//            logger.warn("zoneId: {}, dateTime: {}, dateTime.offset: {}, zonedDateTime: {}, offsetDateTime: {}", zoneId, dateTime, dateTime.getOffset(), zonedDateTime, offsetDateTime);
-//
-////            return offsetDateTime;
-//            return newOffsetDateTime;
+            throw new IllegalStateException("There must be a non-null offset!");
         }
 
         return dateTime;
@@ -379,12 +304,6 @@ public class DateTime extends BaseTemporal {
 
     public String toDateString() {
         return DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(dateTime);
-    }
-
-    public static DateTime fromJavaDate(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        return new DateTime(OffsetDateTime.ofInstant(calendar.toInstant(), calendar.getTimeZone().toZoneId()), Precision.MILLISECOND);
     }
 
     private ZoneOffset toZoneOffset(OffsetDateTime offsetDateTime) {
