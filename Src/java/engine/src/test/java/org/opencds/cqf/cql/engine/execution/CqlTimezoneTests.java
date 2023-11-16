@@ -46,7 +46,6 @@ public class CqlTimezoneTests extends CqlTestBase {
 
     private void evaluateExpression(String functionName, boolean expectedResult, SoftAssert softAssert) {
         Object result = engine.expression(library, functionName).value();
-        logger.info("result: timezone: [{}], functionName: [{}], type: {}, value: {}", TimeZone.getDefault().getDisplayName(), functionName, result.getClass(), result);
         softAssert.assertEquals(result, expectedResult, functionName);
     }
 
