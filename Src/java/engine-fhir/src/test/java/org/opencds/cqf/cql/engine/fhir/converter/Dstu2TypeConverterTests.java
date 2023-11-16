@@ -239,18 +239,16 @@ public class Dstu2TypeConverterTests {
 
 
     @DataProvider
-    private static Object[][] nows() {
-        return new Object[][] {{NON_DST_2022_01_01, NON_DST_2023_01_01}, {DST_2022_11_01, NON_DST_2023_01_01}, {NON_DST_2022_11_10, NON_DST_2023_01_01}};
+    private static Object[][] nowsAndEvaluationTimes() {
+        return ConverterTestUtils.nowsAndEvaluationTimes();
     }
 
-    // LUKETODO:  pass in timestamps
-    @Test(dataProvider = "nows")
+    @Test(dataProvider = "nowsAndEvaluationTimes")
     public void TestDateTimeToFhirDateTime(LocalDateTime now, LocalDateTime evaluationTime) {
         final ZonedDateTime zonedDateTime = ZonedDateTime.of(now, ZoneId.systemDefault());
         final ZoneOffset defaultOffset = zonedDateTime.getOffset();
 
         final String evalTimeWithOffset = DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(evaluationTime.atOffset(defaultOffset));
-        final String evalTimeNoOffset = DateTimeFormatter.ISO_DATE_TIME.format(evaluationTime);
         final String evalDate = DateTimeFormatter.ISO_DATE.format(evaluationTime);
 
         var expectedDate = new DateTimeType(evalTimeWithOffset);
@@ -263,7 +261,6 @@ public class Dstu2TypeConverterTests {
         expectedDate.setPrecision(TemporalPrecisionEnum.YEAR);
         assertEquals(expectedDate.getValue(), actualDate.getValue());
         assertEquals(expectedDate.getValueAsString(), actualDate.getValueAsString());
-
     }
 
     @Test
@@ -348,11 +345,6 @@ public class Dstu2TypeConverterTests {
         return ConverterTestUtils.startAndEndTimes();
     }
 
-    @DataProvider
-    private static Object[][] dateTimes() {
-        return ConverterTestUtils.dateTimes();
-    }
-
     @Test(dataProvider = "startAndEndTimes")
     public void TestIntervalToFhirPeriod_yyyyMMdd(LocalDateTime startTime, LocalDateTime endTime) {
         final String startTime_yyyyMMdd = YYYY_MM_DD.format(startTime);
@@ -365,8 +357,12 @@ public class Dstu2TypeConverterTests {
         assertTrue(expected.equalsDeep(actual));
     }
 
+    @DataProvider
+    private static Object[][] dateTimes() {
+        return ConverterTestUtils.dateTimes();
+    }
+
     @Test(dataProvider = "dateTimes")
-    @Ignore
     public void TestIntervalToFhirPeriod_timestampWithOffsets(LocalDateTime now, LocalDateTime startTime, LocalDateTime endTime) {
         final ZonedDateTime zonedDateTime = ZonedDateTime.of(now, ZoneId.systemDefault());
         final ZoneOffset defaultOffset = zonedDateTime.getOffset();

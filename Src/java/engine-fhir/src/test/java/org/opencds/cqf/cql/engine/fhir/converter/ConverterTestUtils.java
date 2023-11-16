@@ -31,4 +31,8 @@ public class ConverterTestUtils {
     static Object[][] startAndEndYears() {
         return new Object[][] {{DST_2022_11_01, 2019, 2020}, {NON_DST_2023_11_14, 2019, 2020},{DST_2022_11_01, 2018, 2022}, {NON_DST_2023_11_14, 2018, 2022}};
     }
+    @DataProvider
+    static Object[][] nowsAndEvaluationTimes() {
+        return new Object[][] {{NON_DST_2022_01_01, NON_DST_2023_01_01}, {DST_2022_11_01, NON_DST_2023_01_01}, {NON_DST_2022_11_10, NON_DST_2023_01_01}};
+    }
 }
