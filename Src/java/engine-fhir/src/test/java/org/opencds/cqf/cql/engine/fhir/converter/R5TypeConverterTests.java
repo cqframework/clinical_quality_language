@@ -2,6 +2,7 @@ package org.opencds.cqf.cql.engine.fhir.converter;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
+import static org.opencds.cqf.cql.engine.fhir.converter.ConverterTestUtils.YYYY_MM_DD;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
@@ -9,6 +10,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -233,32 +235,43 @@ public class R5TypeConverterTests {
         assertEquals(expectedDate.getValue(), actualDate.getValue());
     }
 
-    @Test
-    public void TestDateTimeToFhirDateTime() {
-        final ZoneOffset defaultOffset = OffsetDateTime.now().getOffset();
+    @DataProvider
+    private static Object[][] nowsAndEvaluationTimes() {
+        return ConverterTestUtils.nowsAndEvaluationTimes();
+    }
 
-        IPrimitiveType<java.util.Date> expectedDate = new DateTimeType("2019-02-03");
+    @Test(dataProvider = "nowsAndEvaluationTimes")
+    public void TestDateTimeToFhirDateTime(LocalDateTime now, LocalDateTime evaluationTime) {
+        final ZonedDateTime zonedDateTime = ZonedDateTime.of(now, ZoneId.systemDefault());
+        final ZoneOffset defaultOffset = zonedDateTime.getOffset();
+
+        final String evalTimeWithOffset = DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(evaluationTime.atOffset(defaultOffset));
+        final String evalDate = DateTimeFormatter.ISO_DATE.format(evaluationTime);
+
+        var expectedDate = new DateTimeType(evalTimeWithOffset);
         IPrimitiveType<java.util.Date> actualDate = this.typeConverter
-                .toFhirDateTime(new DateTime("2019-02-03", defaultOffset));
-        assertEquals(expectedDate.getValueAsString(), actualDate.getValueAsString());
+                .toFhirDateTime(new DateTime(evalDate, defaultOffset));
+        assertEquals(expectedDate.getValue(), actualDate.getValue());
 
-        expectedDate = new DateTimeType("2019");
-        actualDate = this.typeConverter.toFhirDateTime(new DateTime("2019", defaultOffset));
+        expectedDate = new DateTimeType(evalTimeWithOffset);
+        actualDate = this.typeConverter.toFhirDateTime(new DateTime(""+evaluationTime.getYear(), defaultOffset));
+        expectedDate.setPrecision(TemporalPrecisionEnum.YEAR);
+        assertEquals(expectedDate.getValue(), actualDate.getValue());
         assertEquals(expectedDate.getValueAsString(), actualDate.getValueAsString());
+    }
 
-        expectedDate = new DateTimeType("2019");
-        actualDate = this.typeConverter.toFhirDateTime(new DateTime("2019", defaultOffset));
-        assertEquals(expectedDate.getValueAsString(), actualDate.getValueAsString());
-
-        expectedDate = new DateTimeType("2019-10-10T00:00:00-07:00");
-        actualDate = this.typeConverter.toFhirDateTime(new DateTime("2019-10-10T00:00:00", ZoneOffset.ofHours(-7)));
+    @Test
+    public void TestDateTimeToFhirDateTime_Timezones() {
+        var expectedDate = new DateTimeType("2019-10-10T01:00:00-06:00");
+        ((DateTimeType) expectedDate).setTimeZone(TimeZone.getTimeZone("MST"));
+        var actualDate = this.typeConverter.toFhirDateTime(new DateTime("2019-10-10T00:00:00", ZoneOffset.ofHours(-7)));
         assertEquals(expectedDate.getValueAsString(), actualDate.getValueAsString());
 
         expectedDate = new DateTimeType("2019-10-10T19:35:53.000Z");
         ((DateTimeType) expectedDate).setPrecision(TemporalPrecisionEnum.MILLI);
         actualDate = this.typeConverter.toFhirDateTime(new DateTime("2019-10-10T19:35:53", ZoneOffset.UTC).withPrecision(Precision.MILLISECOND));
         assertEquals(expectedDate.getValueAsString(), actualDate.getValueAsString());
-      }
+    }
 
     @Test
     public void TestQuantityToFhirQuantity() {
@@ -324,33 +337,70 @@ public class R5TypeConverterTests {
         assertNull(expected);
     }
 
-    private static final LocalDateTime DST_2023_11_01 = LocalDateTime.of(2023, Month.NOVEMBER, 1, 0, 0, 0);
-    private static final LocalDateTime NON_DST_2023_11_14 = LocalDateTime.of(2023, Month.NOVEMBER, 14, 0, 0, 0);
+
+    @DataProvider
+    private static Object[][] startAndEndTimes() {
+        return ConverterTestUtils.startAndEndTimes();
+    }
+
+    @Test(dataProvider = "startAndEndTimes")
+    public void TestIntervalToFhirPeriod_yyyyMMdd(LocalDateTime startTime, LocalDateTime endTime) {
+        final String startTime_yyyyMMdd = YYYY_MM_DD.format(startTime);
+        final String endTime_yyyyMMdd = YYYY_MM_DD.format(endTime);
+
+        final Period expected = new Period().setStartElement(new DateTimeType(startTime_yyyyMMdd))
+                .setEndElement(new DateTimeType(endTime_yyyyMMdd));
+        final Period actual = (Period) this.typeConverter
+                .toFhirPeriod(new Interval(new Date(startTime_yyyyMMdd), true, new Date(endTime_yyyyMMdd), true));
+        assertTrue(expected.equalsDeep(actual));
+    }
 
     @DataProvider
     private static Object[][] dateTimes() {
-        return new Object[][] {{DST_2023_11_01}, {NON_DST_2023_11_14}};
+        return ConverterTestUtils.dateTimes();
     }
 
     @Test(dataProvider = "dateTimes")
-    public void TestIntervalToFhirPeriod(LocalDateTime now) {
-        final ZonedDateTime zonedDateTime = ZonedDateTime.of(LocalDateTime.of(2019, Month.JANUARY, 1, 0, 0,0), ZoneId.systemDefault());
-//        final ZonedDateTime zonedDateTime = ZonedDateTime.of(now, ZoneId.systemDefault());
+    public void TestIntervalToFhirPeriod_timestampWithOffsets(LocalDateTime now, LocalDateTime startTime, LocalDateTime endTime) {
+        final ZonedDateTime zonedDateTime = ZonedDateTime.of(now, ZoneId.systemDefault());
         final ZoneOffset defaultOffset = zonedDateTime.getOffset();
 
-        Period expected = new Period().setStartElement(new DateTimeType("2019-02-03"))
-                .setEndElement(new DateTimeType("2019-02-05"));
-        Period actual = (Period) this.typeConverter
-                .toFhirPeriod(new Interval(new Date("2019-02-03"), true, new Date("2019-02-05"), true));
-        assertTrue(expected.equalsDeep(actual));
+        final String startTimeWithOffset = DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(startTime.atOffset(defaultOffset));
+        final String endTimeWithOffset = DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(endTime.atOffset(defaultOffset));
+        final String startTimeNoOffset = DateTimeFormatter.ISO_DATE_TIME.format(startTime.atOffset(defaultOffset));
+        final String endTimeNoOffset = DateTimeFormatter.ISO_DATE_TIME.format(endTime.atOffset(defaultOffset));
 
-        expected = new Period().setStartElement(new DateTimeType("2019")).setEndElement(new DateTimeType("2020"));
-        actual = (Period) this.typeConverter.toFhirPeriod(
-                new Interval(new DateTime("2019", defaultOffset), true, new DateTime("2020", defaultOffset), true));
-        assertTrue(expected.equalsDeep(actual));
+        final DateTimeType dateTimeTypeStart = new DateTimeType(startTimeWithOffset);
+        final DateTimeType dateTimeTypeEnd = new DateTimeType(endTimeWithOffset);
+        var expected = new Period().setStartElement(dateTimeTypeStart).setEndElement(dateTimeTypeEnd);
 
-        actual = (Period) this.typeConverter.toFhirPeriod(null);
-        assertNull(null);
+        final DateTime dateTimeStart = new DateTime(startTimeNoOffset, defaultOffset);
+        final DateTime dateTimeEnd = new DateTime(endTimeNoOffset, defaultOffset);
+        final Interval intervalStartEnd = new Interval(dateTimeStart, true, dateTimeEnd, true);
+        var actual = (Period) this.typeConverter.toFhirPeriod(intervalStartEnd);
+
+        assertTrue(expected.equalsDeep(actual));
+    }
+
+    @DataProvider
+    private static Object[][] startAndEndYears() {
+        return ConverterTestUtils.startAndEndYears();
+    }
+
+    @Test(dataProvider = "startAndEndYears")
+    public void TestIntervalToFhirPeriod_startAndEndYears(LocalDateTime now, int startYear, int endYear) {
+        final ZonedDateTime zonedDateTime = ZonedDateTime.of(now, ZoneId.systemDefault());
+        final ZoneOffset defaultOffset = zonedDateTime.getOffset();
+
+        final Period expected = new Period().setStartElement(new DateTimeType(startYear+"-01-01T00:00:00"+defaultOffset)).setEndElement(new DateTimeType(endYear+"-01-01T00:00:00"+defaultOffset));
+        final Period actual = (Period) this.typeConverter.toFhirPeriod(
+                new Interval(new DateTime(""+startYear, defaultOffset), true, new DateTime(""+endYear, defaultOffset), true));
+        assertTrue(expected.equalsDeep(actual));
+    }
+
+    @Test
+    public void TestIntervalToFhirPeriod_null() {
+        assertNull(this.typeConverter.toFhirPeriod(null));
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
