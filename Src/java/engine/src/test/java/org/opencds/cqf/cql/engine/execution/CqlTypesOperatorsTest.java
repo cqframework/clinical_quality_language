@@ -208,12 +208,7 @@ public class CqlTypesOperatorsTest extends CqlTestBase {
             softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(new BigDecimal("-1.25"), 2014, 1, 1, 12, 5, 5, 955)), "ToDateTime5 vs. new DateTime(-1.25)");
 
             result = evaluationResult.forExpression("ToDateTime6").value();
-            // LUKETODO:  cleanup and refactor
-            Instant instant = Instant.now(); //can be LocalDateTime
-            ZoneId systemZone = ZoneId.of("UTC");
-            ZoneOffset currentOffsetForMyZone = systemZone.getRules().getOffset(instant);
-            final BigDecimal bigDecimalOffsetForUtc = TemporalHelper.zoneToOffset(currentOffsetForMyZone);
-//            define ToDateTime6: ToDateTime('2014-01-01T12:05:05.955Z')
+            final BigDecimal bigDecimalOffsetForUtc = getBigDecimalZoneOffset(ZoneId.of("UTC"));
             softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalOffsetForUtc, 2014, 1, 1, 12, 5, 5, 955)));
 
             result = evaluationResult.forExpression("ToDateTimeMalformed").value();

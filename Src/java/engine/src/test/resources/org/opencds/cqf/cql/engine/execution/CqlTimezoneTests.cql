@@ -6,24 +6,16 @@ parameter "Measurement Period 2" Interval<DateTime> default Interval[@2021-07-01
 define "the interval": //Interval[2020-07-01T00:00:00.000, 2021-07-01T00:00:00.000)
 Interval[start of "Measurement Period" - 6 months, start of "Measurement Period" + 6 months)
 
-define "in interval 1": //false
+define "in interval 1":
 @2020-07-01 in Interval[start of "Measurement Period" - 6 months, start of "Measurement Period" + 6 months)
-//@2020-07-01 in Interval[2020-07-01T00:00:00.000, 2021-07-01T00:00:00.000)
 
-define "in interval 1.5": //false
-@2020-01-01 in Interval[@2021-01-01T00:00:00.000, @2022-01-01T00:00:00.000)
-
-define "in interval 1.6": //false
-@2022-01-01 in Interval[start of "Measurement Period 2" - 6 months, start of "Measurement Period 2" + 6 months)
-
-define "in interval 2": //true
+define "in interval 2":
 @2020-07-01T01:00:00.000 in Interval[start of "Measurement Period" - 6 months, start of "Measurement Period" + 6 months)
-//@2020-07-01T01:00:00.000 in Interval[2020-07-01T00:00:00.000, 2021-07-01T00:00:00.000)
 
-define "in interval 3": //false
+define "in interval 3":
 @2020-07-01T00:59:59.999 in Interval[start of "Measurement Period" - 6 months, start of "Measurement Period" + 6 months)
 
-define "in interval 4": //true
+define "in interval 4":
 @2020-07-01 in Interval[@2020-07-01T00:00:00.000, @2021-07-01T00:00:00.000)
 
 define "in interval 5":

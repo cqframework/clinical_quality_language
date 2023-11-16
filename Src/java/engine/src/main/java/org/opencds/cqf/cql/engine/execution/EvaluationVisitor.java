@@ -2,9 +2,7 @@ package org.opencds.cqf.cql.engine.execution;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -14,9 +12,10 @@ import org.hl7.cql.model.IntervalType;
 import org.hl7.cql.model.ListType;
 import org.hl7.elm.r1.*;
 import org.opencds.cqf.cql.engine.elm.executing.*;
-import org.opencds.cqf.cql.engine.runtime.TemporalHelper;
 
 public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
+
+    private static final BigDecimal SIXTY = BigDecimal.valueOf(60);
 
     @Override
     public Object visitExpressionDef(ExpressionDef expressionDef, State state) {
@@ -758,28 +757,12 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
         BigDecimal timeZoneOffset = elm.getTimezoneOffset() == null ? null : (BigDecimal) visitExpression(elm.getTimezoneOffset(), state);
 
         try {
-            final BigDecimal bigDecimalOffset = processOffset(year, month, day, hour, minute, second, milliSecond, state);
-            timeZoneOffset = timeZoneOffset == null ? bigDecimalOffset : timeZoneOffset;
+            timeZoneOffset = timeZoneOffset == null ? processOffset(state): timeZoneOffset;
             return DateTimeEvaluator.internalEvaluate(year, month, day, hour, minute, second, milliSecond, timeZoneOffset);
         } catch (Exception theException) {
             System.out.println("theException = " + theException);
             throw theException;
         }
-    }
-
-    private static BigDecimal processOffset(Integer year, Integer month, Integer day, Integer hour, Integer minute, Integer second, Integer milliSecond, State state) {
-        // This is meant to replicate the pattern used in org.opencds.cqf.cql.engine.runtime.DateTime(BigDecimal, int[])
-        final LocalDateTime localDateTime = LocalDateTime.of(valueOrZero(year), valueOrOne(month), valueOrOne(day), valueOrZero(hour), valueOrZero(minute), valueOrZero(second), valueOrZero(milliSecond));
-
-        final ZoneOffset zoneOffset = state.getEvaluationZonedDateTime().getOffset();
-        final ZonedDateTime zonedDateTime = localDateTime.atZone(state.getEvaluationZonedDateTime().getZone());
-
-        final BigDecimal sixty = BigDecimal.valueOf(60);
-        final BigDecimal totalSeconds = BigDecimal.valueOf(zoneOffset.getTotalSeconds());
-        final BigDecimal totalMinutes = totalSeconds.divide(sixty, RoundingMode.HALF_EVEN);
-        final BigDecimal totalHours = totalMinutes.divide(sixty, 2, RoundingMode.HALF_EVEN);
-
-        return totalHours;
     }
 
     @Override
@@ -1351,15 +1334,11 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
         return QueryEvaluator.internalEvaluate(elm, state, this) ;
     }
 
-    private static int valueOrZero(Integer value) {
-        return valueOrDefault(value, 0);
-    }
+    private static BigDecimal processOffset(State state) {
+        final ZoneOffset zoneOffset = state.getEvaluationZonedDateTime().getOffset();
+        final BigDecimal totalSeconds = BigDecimal.valueOf(zoneOffset.getTotalSeconds());
+        final BigDecimal totalMinutes = totalSeconds.divide(SIXTY, RoundingMode.HALF_EVEN);
 
-    private static int valueOrOne(Integer value) {
-        return valueOrDefault(value, 1);
-    }
-
-    private static int valueOrDefault(Integer value, int defaultValue) {
-        return value == null ? defaultValue : value;
+        return totalMinutes.divide(SIXTY, 2, RoundingMode.HALF_EVEN);
     }
 }

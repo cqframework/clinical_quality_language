@@ -88,19 +88,10 @@ public class CqlTypesTest extends CqlTestBase {
         softAssert.assertEquals(((Interval) result).getEnd(), 49, "DateTimeUncertain");
 
         result = evaluationResult.forExpression("DateTimeMin").value();
-        final DateTime actualDateTimeMin = (DateTime)result;
-        final DateTime expectedDateTimeMin1 = new DateTime(bigDecimalZoneOffset, 1, 1, 1, 0, 0, 0, 0);
-        final DateTime expectedDateTimeMin = new DateTime(OffsetDateTime.of(1, 1, 1, 0, 0, 0, 0, OffsetDateTime.now().getOffset()));
-        final boolean minEquivalent = EquivalentEvaluator.equivalent(result, expectedDateTimeMin);
-        // LUKETODO:  clean up all variables
-        softAssert.assertTrue(EquivalentEvaluator.equivalent(result, expectedDateTimeMin), "DateTimeMin");
+        softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(OffsetDateTime.of(1, 1, 1, 0, 0, 0, 0, OffsetDateTime.now().getOffset()))));
 
         result = evaluationResult.forExpression("DateTimeMax").value();
-        final DateTime expectedDateTimeMax = new DateTime(bigDecimalZoneOffset, 9999, 12, 31, 23, 59, 59, 999);
-        final DateTime actualDateTimeMax = (DateTime)result;
-        final boolean maxEquivalent = EquivalentEvaluator.equivalent(result, expectedDateTimeMax);
-        // LUKETODO:  clean up all variables
-        softAssert.assertTrue(EquivalentEvaluator.equivalent(result, expectedDateTimeMax),"DateTimeMax");
+        softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 9999, 12, 31, 23, 59, 59, 999)));
 
         result = evaluationResult.forExpression("DecimalUpperBoundExcept").value();
         softAssert.assertEquals(result, new BigDecimal("10000000000000000000000000000000000.00000000"), "DecimalUpperBoundExcept");
