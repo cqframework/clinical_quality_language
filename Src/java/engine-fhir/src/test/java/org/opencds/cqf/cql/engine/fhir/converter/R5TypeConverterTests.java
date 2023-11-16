@@ -749,8 +749,4 @@ public class R5TypeConverterTests {
 
         this.typeConverter.toCqlTuple(new Patient());
     }
-
-//    public BigDecimal getBigDecimalZoneOffset() {
-//        return TemporalHelper.zoneToOffset(engine.getState().getEvaluationZonedDateTime().getOffset());
-//    }
 }

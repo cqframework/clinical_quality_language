@@ -12,8 +12,6 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.util.List;
-import java.util.Optional;
-import java.util.TimeZone;
 
 import static org.testng.Assert.*;
 
@@ -223,17 +221,12 @@ public class DateTimeTest {
     @Test(dataProvider = "timeZones")
     void testBigDecimalWithCustomTimezoneAndNow(ZoneId zoneId, LocalDateTime now) {
         final ZoneOffset currentOffsetForMyZone = zoneId.getRules().getOffset(now);
-
         final BigDecimal offset = TemporalHelper.zoneToOffset(currentOffsetForMyZone);
-        final Precision precision = Precision.HOUR;
-        final List<Integer> dateElements = DST_2023_10_26_22_12_0_INTS;
 
-        final int[] dateElementsArray = dateElements.stream().mapToInt(anInt -> anInt).toArray();
+        final int[] dateElementsArray = DST_2023_10_26_22_12_0_INTS.stream().mapToInt(anInt -> anInt).toArray();
         final DateTime dateTime = new DateTime(offset, dateElementsArray);
 
-        final OffsetDateTime normalizedDateTime = dateTime.getNormalized(precision);
-
-        logger.warn("TEST: {}, offset: {}, precision: {}, dateElements: {}, actualDateTime: {}, expectedDateTime: {}", dateTime.getDateTime().equals(normalizedDateTime), offset, precision, dateElements, normalizedDateTime, dateTime.getDateTime());
+        final OffsetDateTime normalizedDateTime = dateTime.getNormalized(Precision.HOUR);
 
         assertEquals(normalizedDateTime, dateTime.getDateTime());
     }

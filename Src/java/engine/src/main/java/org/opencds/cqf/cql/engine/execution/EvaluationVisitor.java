@@ -754,15 +754,8 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
         Integer minute = elm.getMinute() == null ? null : (Integer) visitExpression(elm.getMinute(), state);
         Integer second = elm.getSecond() == null ? null : (Integer) visitExpression(elm.getSecond(), state);
         Integer milliSecond = elm.getMillisecond() == null ? null : (Integer) visitExpression(elm.getMillisecond(), state);
-        BigDecimal timeZoneOffset = elm.getTimezoneOffset() == null ? null : (BigDecimal) visitExpression(elm.getTimezoneOffset(), state);
-
-        try {
-            timeZoneOffset = timeZoneOffset == null ? processOffset(state): timeZoneOffset;
-            return DateTimeEvaluator.internalEvaluate(year, month, day, hour, minute, second, milliSecond, timeZoneOffset);
-        } catch (Exception theException) {
-            System.out.println("theException = " + theException);
-            throw theException;
-        }
+        final BigDecimal timeZoneOffset = getTimeZoneOffset(elm, state);
+        return DateTimeEvaluator.internalEvaluate(year, month, day, hour, minute, second, milliSecond, timeZoneOffset);
     }
 
     @Override
@@ -1334,11 +1327,16 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
         return QueryEvaluator.internalEvaluate(elm, state, this) ;
     }
 
-    private static BigDecimal processOffset(State state) {
+    private BigDecimal getTimeZoneOffset(DateTime elm, State state) {
+        if (elm.getTimezoneOffset() != null) {
+            return (BigDecimal) visitExpression(elm.getTimezoneOffset(), state);
+        }
+
         final ZoneOffset zoneOffset = state.getEvaluationZonedDateTime().getOffset();
         final BigDecimal totalSeconds = BigDecimal.valueOf(zoneOffset.getTotalSeconds());
         final BigDecimal totalMinutes = totalSeconds.divide(SIXTY, RoundingMode.HALF_EVEN);
 
         return totalMinutes.divide(SIXTY, 2, RoundingMode.HALF_EVEN);
     }
+
 }

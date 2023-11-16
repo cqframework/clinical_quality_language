@@ -89,22 +89,8 @@ public class CqlTestBase {
     CqlEngine engine;
     @BeforeMethod
     protected void beforeEachMethod(){
-        beforeTimezoneHooks();
         environment = new Environment(getLibraryManager());
         engine = new CqlEngine(environment);
-    }
-
-    @AfterMethod
-    protected void afterEachMethod() {
-
-    }
-
-    protected void beforeTimezoneHooks() {
-        // do nothing
-    }
-
-    protected void afterTimezoneHooks() {
-        // do nothing
     }
 
     public static CqlCompilerOptions createOptionsMin() {
