@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm.model;
 
+import org.cqframework.cql.cql2elm.LibraryBuilder;
 import org.hl7.cql.model.NamespaceManager;
 import org.hl7.cql.model.DataType;
 import org.hl7.cql_annotations.r1.Annotation;
@@ -137,19 +138,21 @@ public class CompiledLibrary {
     }
 
     public static class ResolvedIdentifierContext {
-        private final Element element;
+        private final String identifier;
+        private final Element nullableElement ;
 
-        // LUKETODO:  enum instead
+        // TODO:  enum instead?
         private final boolean isExactMatch;
 
-        public ResolvedIdentifierContext(Element element, boolean isExactMatch) {
-            this.element = element;
+        public ResolvedIdentifierContext(String identifier, Element nullableElement, boolean isExactMatch) {
+            this.identifier = identifier;
+            this.nullableElement = nullableElement;
             this.isExactMatch = isExactMatch;
         }
 
         public Element getExactMatchElement() {
             if (isExactMatch) {
-                return element;
+                return nullableElement;
             }
 
             return null;
@@ -157,27 +160,37 @@ public class CompiledLibrary {
 
         public Element getCaseInsensitiveMatchElement() {
             if (! isExactMatch) {
-                return element;
+                return nullableElement;
             }
 
             return null;
         }
 
-        // LUKETODO:  equals/hashCode/toString()
+        // TODO:  figure out where to call this from
+        public void warnCaseInsensitiveIfApplicable(LibraryBuilder libraryBuilder) {
+            if (nullableElement != null && ! isExactMatch)
+                if (nullableElement instanceof ExpressionDef) {
+                    final ExpressionDef caseInsensitiveExpressionDef  = (ExpressionDef) nullableElement;
+                    libraryBuilder.reportWarning(String.format("Could not find identifier: [%s].  Did you mean [%s]?", identifier, caseInsensitiveExpressionDef.getName()), nullableElement);
+                }
+            // TODO:  what about other Element types?
+        }
+
+        // TODO:  equals/hashCode/toString()
     }
 
     public ResolvedIdentifierContext resolve(String identifier) {
         if (namespace.containsKey(identifier)) {
-            return new ResolvedIdentifierContext(namespace.get(identifier), true);
+            return new ResolvedIdentifierContext(identifier, namespace.get(identifier), true);
         }
 
         return namespace.entrySet()
                 .stream()
                 .filter(entry -> entry.getKey().equalsIgnoreCase(identifier))
                 .map(Map.Entry::getValue)
-                .map(element -> new ResolvedIdentifierContext(element, false))
+                .map(element -> new ResolvedIdentifierContext(identifier, element, false))
                 .findFirst()
-                .orElse(new ResolvedIdentifierContext(null, false));
+                .orElse(new ResolvedIdentifierContext(identifier, null, false));
     }
 
     public UsingDef resolveUsingRef(String identifier) {

@@ -1428,7 +1428,8 @@ public class LibraryBuilder implements ModelResolver {
         return query;
     }
 
-    private void reportWarning(String message, Trackable expression) {
+    // TODO:  should this really be public?
+    public void reportWarning(String message, Trackable expression) {
         TrackBack trackback = expression != null && expression.getTrackbacks() != null && !expression.getTrackbacks().isEmpty() ? expression.getTrackbacks().get(0) : null;
         CqlSemanticException warning = new CqlSemanticException(message, CqlCompilerException.ErrorSeverity.Warning, trackback);
         recordParsingException(warning);
@@ -2339,7 +2340,7 @@ public class LibraryBuilder implements ModelResolver {
         }
 
         if (mustResolve) {
-            // LUKETODO:  detect the case mismatching here
+            // TODO:  do we still to do this here, or closer to the point where we retrieve the identifier?
             final Element caseInsensitiveMatchElement = resolvedIdentifierContext.getCaseInsensitiveMatchElement();
             if (caseInsensitiveMatchElement != null) {
                 if (caseInsensitiveMatchElement instanceof ExpressionDef) {
@@ -2347,7 +2348,7 @@ public class LibraryBuilder implements ModelResolver {
                     reportWarning(String.format("Could not find identifier: [%s].  Did you mean [%s]?", identifier, caseInsensitiveExpressionDef.getName()), element);
                 }
 
-                // LUKETODO:  how to handle other Elements?
+                // TODO:  how to handle other Elements?
             }
             // ERROR:
             throw new IllegalArgumentException(String.format("Could not resolve identifier %s in the current library.", identifier));
