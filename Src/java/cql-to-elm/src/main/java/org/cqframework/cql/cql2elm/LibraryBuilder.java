@@ -763,7 +763,7 @@ public class LibraryBuilder implements ModelResolver {
         }
     }
 
-    public Element resolve(String identifier) {
+    public CompiledLibrary.ResolvedIdentifierContext resolve(String identifier) {
         return compiledLibrary.resolve(identifier);
     }
 
@@ -2240,7 +2240,8 @@ public class LibraryBuilder implements ModelResolver {
             return operandRef;
         }
 
-        Element element = resolve(identifier);
+        CompiledLibrary.ResolvedIdentifierContext resolvedIdentifierContext = resolve(identifier);
+        final Element element = resolvedIdentifierContext.getExactMatchElement();
 
         if (element instanceof ExpressionDef) {
             checkLiteralContext();
@@ -2338,6 +2339,16 @@ public class LibraryBuilder implements ModelResolver {
         }
 
         if (mustResolve) {
+            // LUKETODO:  detect the case mismatching here
+            final Element caseInsensitiveMatchElement = resolvedIdentifierContext.getCaseInsensitiveMatchElement();
+            if (caseInsensitiveMatchElement != null) {
+                if (caseInsensitiveMatchElement instanceof ExpressionDef) {
+                    final ExpressionDef caseInsensitiveExpressionDef  = (ExpressionDef) caseInsensitiveMatchElement;
+                    reportWarning(String.format("Could not find identifier: [%s].  Did you mean [%s]?", identifier, caseInsensitiveExpressionDef.getName()), element);
+                }
+
+                // LUKETODO:  how to handle other Elements?
+            }
             // ERROR:
             throw new IllegalArgumentException(String.format("Could not resolve identifier %s in the current library.", identifier));
         }
@@ -2396,7 +2407,8 @@ public class LibraryBuilder implements ModelResolver {
      */
     public ParameterRef resolveImplicitContext() {
         if (!inLiteralContext() && inSpecificContext()) {
-            Element contextElement = resolve(currentExpressionContext());
+            CompiledLibrary.ResolvedIdentifierContext resolvedIdentifierContext = resolve(currentExpressionContext());
+            final Element contextElement = resolvedIdentifierContext.getExactMatchElement();
             if (contextElement instanceof ParameterDef) {
                 ParameterDef contextParameter = (ParameterDef)contextElement;
 
@@ -2754,7 +2766,9 @@ public class LibraryBuilder implements ModelResolver {
             String libraryName = ((LibraryRef)left).getLibraryName();
             CompiledLibrary referencedLibrary = resolveLibrary(libraryName);
 
-            Element element = referencedLibrary.resolve(memberIdentifier);
+            CompiledLibrary.ResolvedIdentifierContext resolvedIdentifierContext = referencedLibrary.resolve(memberIdentifier);
+
+            final Element element = resolvedIdentifierContext.getExactMatchElement();
 
             if (element instanceof ExpressionDef) {
                 checkAccessLevel(libraryName, memberIdentifier, ((ExpressionDef)element).getAccessLevel());

@@ -32,8 +32,8 @@ public class CompiledLibrary {
     }
 
     private void checkNamespace(String identifier) {
-        Element existingElement = resolve(identifier);
-        if (existingElement != null) {
+        ResolvedIdentifierContext existingResolvedIdentifierContext = resolve(identifier);
+        if (existingResolvedIdentifierContext.getExactMatchElement() != null) {
             throw new IllegalArgumentException(String.format("Identifier %s is already in use in this library.", identifier));
         }
     }
@@ -136,23 +136,63 @@ public class CompiledLibrary {
         conversions.add(conversion);
     }
 
-    public Element resolve(String identifier) {
-        return namespace.get(identifier);
+    public static class ResolvedIdentifierContext {
+        private final Element element;
+
+        // LUKETODO:  enum instead
+        private final boolean isExactMatch;
+
+        public ResolvedIdentifierContext(Element element, boolean isExactMatch) {
+            this.element = element;
+            this.isExactMatch = isExactMatch;
+        }
+
+        public Element getExactMatchElement() {
+            if (isExactMatch) {
+                return element;
+            }
+
+            return null;
+        }
+
+        public Element getCaseInsensitiveMatchElement() {
+            if (! isExactMatch) {
+                return element;
+            }
+
+            return null;
+        }
+
+        // LUKETODO:  equals/hashCode/toString()
+    }
+
+    public ResolvedIdentifierContext resolve(String identifier) {
+        if (namespace.containsKey(identifier)) {
+            return new ResolvedIdentifierContext(namespace.get(identifier), true);
+        }
+
+        return namespace.entrySet()
+                .stream()
+                .filter(entry -> entry.getKey().equalsIgnoreCase(identifier))
+                .map(Map.Entry::getValue)
+                .map(element -> new ResolvedIdentifierContext(element, false))
+                .findFirst()
+                .orElse(new ResolvedIdentifierContext(null, false));
     }
 
     public UsingDef resolveUsingRef(String identifier) {
-        Element element = resolve(identifier);
-        if (element instanceof UsingDef) {
-            return (UsingDef)element;
+        ResolvedIdentifierContext element = resolve(identifier);
+        if (element.getExactMatchElement() instanceof UsingDef) {
+            return (UsingDef)element.getExactMatchElement();
         }
 
         return null;
     }
 
     public IncludeDef resolveIncludeRef(String identifier) {
-        Element element = resolve(identifier);
-        if (element instanceof IncludeDef) {
-            return (IncludeDef)element;
+        ResolvedIdentifierContext element = resolve(identifier);
+        if (element.getExactMatchElement() instanceof IncludeDef) {
+            return (IncludeDef)element.getExactMatchElement();
         }
 
         return null;
@@ -172,54 +212,54 @@ public class CompiledLibrary {
     }
 
     public CodeSystemDef resolveCodeSystemRef(String identifier) {
-        Element element = resolve(identifier);
-        if (element instanceof CodeSystemDef) {
-            return (CodeSystemDef)element;
+        ResolvedIdentifierContext element = resolve(identifier);
+        if (element.getExactMatchElement() instanceof CodeSystemDef) {
+            return (CodeSystemDef)element.getExactMatchElement();
         }
 
         return null;
     }
 
     public ValueSetDef resolveValueSetRef(String identifier) {
-        Element element = resolve(identifier);
-        if (element instanceof ValueSetDef) {
-            return (ValueSetDef)element;
+        ResolvedIdentifierContext element = resolve(identifier);
+        if (element.getExactMatchElement() instanceof ValueSetDef) {
+            return (ValueSetDef)element.getExactMatchElement();
         }
 
         return null;
     }
 
     public CodeDef resolveCodeRef(String identifier) {
-        Element element = resolve(identifier);
-        if (element instanceof CodeDef) {
-            return (CodeDef)element;
+        ResolvedIdentifierContext element = resolve(identifier);
+        if (element.getExactMatchElement() instanceof CodeDef) {
+            return (CodeDef)element.getExactMatchElement();
         }
 
         return null;
     }
 
     public ConceptDef resolveConceptRef(String identifier) {
-        Element element = resolve(identifier);
-        if (element instanceof ConceptDef) {
-            return (ConceptDef)element;
+        ResolvedIdentifierContext element = resolve(identifier);
+        if (element.getExactMatchElement() instanceof ConceptDef) {
+            return (ConceptDef)element.getExactMatchElement();
         }
 
         return null;
     }
 
     public ParameterDef resolveParameterRef(String identifier) {
-        Element element = resolve(identifier);
-        if (element instanceof ParameterDef) {
-            return (ParameterDef)element;
+        ResolvedIdentifierContext element = resolve(identifier);
+        if (element.getExactMatchElement() instanceof ParameterDef) {
+            return (ParameterDef)element.getExactMatchElement();
         }
 
         return null;
     }
 
     public ExpressionDef resolveExpressionRef(String identifier) {
-        Element element = resolve(identifier);
-        if (element instanceof ExpressionDef) {
-            return (ExpressionDef)element;
+        ResolvedIdentifierContext element = resolve(identifier);
+        if (element.getExactMatchElement() instanceof ExpressionDef) {
+            return (ExpressionDef)element.getExactMatchElement();
         }
 
         return null;
