@@ -1,7 +1,9 @@
 package org.opencds.cqf.cql.engine.execution;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.cqframework.cql.cql2elm.CqlCompiler;
 import org.cqframework.cql.cql2elm.CqlCompilerException;
+import org.cqframework.cql.cql2elm.LibraryManager;
 import org.hl7.cql.model.NamespaceManager;
 import org.hl7.elm.r1.*;
 import org.opencds.cqf.cql.engine.debug.DebugAction;
@@ -12,6 +14,8 @@ import org.opencds.cqf.cql.engine.exception.CqlException;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.requireNonNull;
 
 
 /**
@@ -27,33 +31,20 @@ public class CqlEngine {
     }
 
     private final Environment environment;
-    private final State state;
+    private State state;
     private final Set<Options> engineOptions;
     private final EvaluationVisitor evaluationVisitor = new EvaluationVisitor();
-
+    private final LibraryManager libraryManager;
 
     public CqlEngine(Environment environment) {
         this(environment, null);
     }
 
     public CqlEngine(Environment environment, Set<Options> engineOptions) {
-        if (environment.getLibraryManager() == null) {
-            throw new IllegalArgumentException("Environment LibraryManager can not be null.");
-        }
-
-        this.environment = environment;
-        this.state = new State(environment);
-
-        if (engineOptions == null) {
-            this.engineOptions = EnumSet.of(CqlEngine.Options.EnableExpressionCaching);
-        }
-        else {
-            this.engineOptions = engineOptions;
-        }
-
-        if (this.engineOptions.contains(CqlEngine.Options.EnableExpressionCaching)) {
-            this.getCache().setExpressionCaching(true);
-        }
+        this.environment = requireNonNull(environment, "environment can not be null.");
+        this.libraryManager = requireNonNull(environment.getLibraryManager(), "environment libraryManager can not be null.");
+        this.engineOptions = Optional.ofNullable(engineOptions)
+            .orElse(EnumSet.of(CqlEngine.Options.EnableExpressionCaching));
     }
 
     public Environment getEnvironment() {
@@ -104,6 +95,42 @@ public class CqlEngine {
     @Deprecated(forRemoval = true)
     public ExpressionResult expression(VersionedIdentifier libraryIdentifier, String expressionName) {
         return this.expression(libraryIdentifier, expressionName, null);
+    }
+
+    public static class ExpressionText {
+        private final String text;
+
+        public ExpressionText(String text) {
+            this.text = text;
+        }
+
+        public String text() {
+            return this.text;
+        }
+
+        public static ExpressionText text(String text) {
+            return new ExpressionText(text);
+        }
+    }
+
+    public EvaluationResult evaluate(ExpressionText expressionText) {
+        var compiler = new CqlCompiler(libraryManager);
+        var lib = compiler.run(expressionText.text());
+
+        if (compiler.getErrors().size() > 0) {
+            throw new IllegalArgumentException("Errors encountered compiling library: " + compiler.getErrors().stream().map(e -> e.getMessage()).collect(Collectors.joining(", ")));
+        }
+        this.initializeState(lib, null, null);
+
+        if (lib.getStatements() == null || lib.getStatements().getDef() == null || lib.getStatements().getDef().isEmpty()) {
+            throw new IllegalArgumentException("No expressions found in library.");
+        }
+
+        // TODO: The LibraryManager typically does the sorting of the statements.
+        // Maybe we should move that to the CqlCompiler?
+        lib.getStatements().getDef().sort((a, b) -> a.getName().compareTo(b.getName()));
+
+        return this.evaluateExpressions(getExpressionSet(lib));
     }
 
     // TODO: Add debugging info as a parameter.
@@ -193,6 +220,11 @@ public class CqlEngine {
     }
 
     private void initializeState(Library library, DebugMap debugMap, ZonedDateTime evaluationDateTime) {
+        this.state = new State(this.environment);
+        if (this.engineOptions.contains(CqlEngine.Options.EnableExpressionCaching)) {
+            this.getCache().setExpressionCaching(true);
+        }
+
         if (evaluationDateTime != null) {
             this.state.setEvaluationDateTime(evaluationDateTime);
         } else {
@@ -247,7 +279,7 @@ public class CqlEngine {
     private Library loadAndValidate(VersionedIdentifier libraryIdentifier) {
 
         var errors = new ArrayList<CqlCompilerException>();
-        var library = this.environment.getLibraryManager().resolveLibrary(libraryIdentifier, errors).getLibrary();
+        var library = this.libraryManager.resolveLibrary(libraryIdentifier, errors).getLibrary();
 
         if (library == null) {
             throw new CqlException(String.format("Unable to load library %s", libraryIdentifier.getId() + (libraryIdentifier.getVersion() != null ? "-" + libraryIdentifier.getVersion() : "")));
