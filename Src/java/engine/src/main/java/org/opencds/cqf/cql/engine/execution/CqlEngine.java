@@ -60,6 +60,10 @@ public class CqlEngine {
         return environment;
     }
 
+    public static void tweakExistingClass() {
+        System.out.println("tweakExistingClass");
+    }
+
     public State getState() {
         return state;
     }
