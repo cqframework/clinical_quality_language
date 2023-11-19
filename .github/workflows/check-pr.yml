@@ -13,11 +13,11 @@ jobs:
     - uses: actions/setup-java@v3
       with:
         distribution: temurin
-        java-version: 11
+        java-version: 19
     - name: Setup and execute Gradle 'check' task
       uses: gradle/gradle-build-action@v2
       with:
-        arguments: check -i
+        arguments: check
         build-root-directory: Src/java
     - name: Publish Test Report
       uses: mikepenz/action-junit-report@v3

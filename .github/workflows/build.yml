@@ -7,6 +7,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
   gradle:
     runs-on: ubuntu-latest
@@ -15,11 +19,11 @@ jobs:
     - uses: actions/setup-java@v3
       with:
         distribution: temurin
-        java-version: 11
+        java-version: 19
     - name: Setup and execute Gradle 'publish' task
       uses: gradle/gradle-build-action@v2
       with:
-        arguments: publish
+        arguments: check publish
         build-root-directory: Src/java
       env:
         OSSRH_USERNAME: ${{ vars.OSSRH_USERNAME }}
