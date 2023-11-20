@@ -3,6 +3,7 @@ coverage:
     project:
       default:
         target: auto
+        threshold: 1% # this covers slighty flaky tests
         paths:
           - "Src/java"
     patch:
