@@ -13,7 +13,6 @@ public class CqlTranslatorOptionsMapper {
             fr = new FileReader(fileName);
             return fromReader(fr);
         } catch (IOException e) {
-            e.printStackTrace();
             throw new RuntimeException(String.format("Errors occurred reading options: %s", e.getMessage()));
         }
     }
@@ -22,7 +21,6 @@ public class CqlTranslatorOptionsMapper {
         try {
             return om.readValue(reader, CqlTranslatorOptions.class);
         } catch (IOException e) {
-            e.printStackTrace();
             throw new RuntimeException(String.format("Errors occurred reading options: %s", e.getMessage()));
         }
     }
@@ -33,7 +31,6 @@ public class CqlTranslatorOptionsMapper {
             fw = new FileWriter(fileName);
             toWriter(fw, options);
         } catch (IOException e) {
-            e.printStackTrace();
             throw new RuntimeException(String.format("Errors occurred writing options: %s", e.getMessage()));
         }
     }
@@ -43,7 +40,6 @@ public class CqlTranslatorOptionsMapper {
         try {
             om.writeValue(writer, options);
         } catch (IOException e) {
-            e.printStackTrace();
             throw new RuntimeException(String.format("Errors occurred writing options: %s", e.getMessage()));
         }
     }

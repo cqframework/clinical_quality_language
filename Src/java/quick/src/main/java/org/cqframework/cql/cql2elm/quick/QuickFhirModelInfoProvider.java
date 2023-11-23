@@ -37,9 +37,7 @@ public class QuickFhirModelInfoProvider implements ModelInfoProvider {
                         return ModelInfoReaderFactory.getReader("application/xml").read(QuickFhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/quickfhir-modelinfo-3.0.1.xml"));
                 }
             } catch (IOException e) {
-                e.printStackTrace();
                 // Do not throw, allow other providers to resolve
-                //    throw new IllegalArgumentException(String.format("Unknown version %s of the QUICKFHIR model.", localVersion));
             }
 
         }

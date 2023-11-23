@@ -56,9 +56,7 @@ public class QdmModelInfoProvider implements ModelInfoProvider, NamespaceAware {
                         return ModelInfoReaderFactory.getReader("application/xml").read(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.6.xml"));
                 }
             } catch (IOException e) {
-                e.printStackTrace();
-            // Do not throw, allow other providers to resolve
-            //    throw new IllegalArgumentException(String.format("Unknown version %s of the QDM model.", localVersion));
+                // Do not throw, allow other providers to resolve
             }
         }
 

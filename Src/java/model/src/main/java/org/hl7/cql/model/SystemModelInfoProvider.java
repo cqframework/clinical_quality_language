@@ -26,9 +26,7 @@ public class SystemModelInfoProvider implements ModelInfoProvider {
             try {
                 return ModelInfoReaderFactory.getReader("application/xml").read(SystemModelInfoProvider.class.getResourceAsStream("/org/hl7/elm/r1/system-modelinfo.xml"));
             } catch (IOException e) {
-                e.printStackTrace();
                 // Do not throw, allow other providers to resolve
-                //    throw new IllegalArgumentException(String.format("Unknown version %s of the System model.", localVersion));
             }
         }
 
