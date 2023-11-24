@@ -15,7 +15,7 @@ import java.util.Set;
  * Created by Bryn on 12/27/2016.
  */
 public class SystemMethodResolver {
-    private final ObjectFactory of = new ObjectFactory();
+    private final ObjectFactoryEx of;
     private final Cql2ElmVisitor visitor;
     private final LibraryBuilder builder;
 
@@ -30,6 +30,7 @@ public class SystemMethodResolver {
 
         this.visitor = visitor;
         this.builder = builder;
+        this.of = new ObjectFactoryEx(visitor::decorate);
     }
 
     private List<Expression> getParams(Expression target, cqlParser.ParamListContext ctx) {

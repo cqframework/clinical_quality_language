@@ -100,10 +100,12 @@ public class TestUtils {
     private static Cql2ElmVisitor createElmTranslatorVisitor(TokenStream tokens, ParseTree tree) {
         ModelManager modelManager = new ModelManager();
         LibraryManager libraryManager = getLibraryManager(modelManager, null);
-        LibraryBuilder libraryBuilder = new LibraryBuilder(libraryManager);
-        CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor(libraryBuilder, tokens);
+        CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor(tokens);
+        LibraryBuilder libraryBuilder = new LibraryBuilder(libraryManager, preprocessor.getObjectFactory());
+        preprocessor.setBuilder(libraryBuilder);
         preprocessor.visit(tree);
-        Cql2ElmVisitor visitor = new Cql2ElmVisitor(libraryBuilder);
+        Cql2ElmVisitor visitor = new Cql2ElmVisitor();
+        visitor.setBuilder(libraryBuilder);
         visitor.setLibraryInfo(preprocessor.getLibraryInfo());
         return visitor;
     }

@@ -166,12 +166,12 @@ public class CqlCompiler {
         errors = new ArrayList<>();
         warnings = new ArrayList<>();
         messages = new ArrayList<>();
-
-        LibraryBuilder builder = new LibraryBuilder(namespaceInfo, libraryManager);
+        Cql2ElmVisitor visitor = new Cql2ElmVisitor();
+        LibraryBuilder builder = new LibraryBuilder(namespaceInfo, libraryManager, visitor.getObjectFactory());
         builder.setCompilerOptions(libraryManager.getCqlCompilerOptions());
-        Cql2ElmVisitor visitor = new Cql2ElmVisitor(builder);
-        builder.setVisitor(visitor);
+        visitor.setBuilder(builder);
         visitor.setTranslatorOptions(libraryManager.getCqlCompilerOptions());
+
 
         CqlCompiler.CqlErrorListener errorListener = new CqlCompiler.CqlErrorListener(builder, visitor.isDetailedErrorsEnabled());
 
@@ -186,7 +186,8 @@ public class CqlCompiler {
         parser.addErrorListener(errorListener);
         ParseTree tree = parser.library();
 
-        CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor(builder, tokens);
+        CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor(tokens);
+        preprocessor.setBuilder(builder);
         preprocessor.visit(tree);
 
         visitor.setTokenStream(tokens);

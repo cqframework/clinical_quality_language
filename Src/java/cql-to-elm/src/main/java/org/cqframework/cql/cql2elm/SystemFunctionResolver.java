@@ -12,11 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SystemFunctionResolver {
-    private final ObjectFactory of = new ObjectFactory();
+    private final ObjectFactory of;
     private final LibraryBuilder builder;
 
-    public SystemFunctionResolver(LibraryBuilder builder) {
+    public SystemFunctionResolver(LibraryBuilder builder, ObjectFactory objectFactory) {
         this.builder = builder;
+        this.of = objectFactory;
     }
 
     public Invocation resolveSystemFunction(FunctionRef fun) {

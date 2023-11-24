@@ -4,7 +4,6 @@ import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.ModelManager;
 import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.Expression;
-import org.hl7.elm.r1.VersionedIdentifier;
 import org.opencds.cqf.cql.engine.execution.*;
 
 import java.time.ZonedDateTime;

@@ -12,8 +12,6 @@ import org.cqframework.cql.gen.cqlParser;
 import org.cqframework.cql.cql2elm.model.*;
 import org.hl7.cql.model.*;
 import org.hl7.elm.r1.*;
-import org.hl7.elm.r1.Element;
-import org.hl7.elm.r1.Interval;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,14 +25,7 @@ import java.util.regex.Pattern;
 
 public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     private static final Logger logger = LoggerFactory.getLogger(Cql2ElmVisitor.class);
-    private final SystemMethodResolver systemMethodResolver;
-
-    public void setLibraryInfo(LibraryInfo libraryInfo) {
-        if (libraryInfo == null) {
-            throw new IllegalArgumentException("libraryInfo is null");
-        }
-        this.libraryInfo = libraryInfo;
-    }
+    private SystemMethodResolver systemMethodResolver;
 
     private final Set<String> definedExpressionDefinitions = new HashSet<>();
     private final Stack<ExpressionDefinitionInfo> forwards = new Stack<>();
@@ -47,13 +38,9 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     private final List<Expression> expressions = new ArrayList<>();
     private final Map<String, Element> contextDefinitions = new HashMap<>();
 
-    public Cql2ElmVisitor(LibraryBuilder libraryBuilder) {
-        super(libraryBuilder);
-
-        if (libraryBuilder == null) {
-            throw new IllegalArgumentException("libraryBuilder is null");
-        }
-
+    @Override
+    public void setBuilder(LibraryBuilder builder) {
+        super.setBuilder(builder);
         this.systemMethodResolver = new SystemMethodResolver(this, libraryBuilder);
     }
 
@@ -63,6 +50,13 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
     public List<Expression> getExpressions() {
         return expressions;
+    }
+
+    public void setLibraryInfo(LibraryInfo libraryInfo) {
+        if (libraryInfo == null) {
+            throw new IllegalArgumentException("libraryInfo is null");
+        }
+        this.libraryInfo = libraryInfo;
     }
 
     @Override

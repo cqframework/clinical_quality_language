@@ -2,7 +2,7 @@ package org.cqframework.cql.cql2elm;
 
 import org.cqframework.cql.cql2elm.model.Model;
 import org.hl7.cql.model.*;
-import org.hl7.elm.r1.ObjectFactory;
+import org.hl7.elm.r1.ObjectFactoryEx;
 import org.hl7.elm.r1.ParameterTypeSpecifier;
 import org.hl7.elm.r1.TupleElementDefinition;
 import org.hl7.elm.r1.TypeSpecifier;
@@ -14,7 +14,7 @@ import java.util.List;
 
 public class TypeBuilder {
 
-    private ObjectFactory of;
+    private ObjectFactoryEx of;
     private ModelResolver mr;
 
     public class InternalModelResolver implements ModelResolver {
@@ -29,13 +29,13 @@ public class TypeBuilder {
         }
     }
 
-    public TypeBuilder(ObjectFactory of, ModelResolver mr) {
+    public TypeBuilder(ObjectFactoryEx of, ModelResolver mr) {
         this.of = of;
         this.mr = mr;
     }
 
-    public TypeBuilder(ModelManager modelManager) {
-        this.of = new ObjectFactory();
+    public TypeBuilder(ObjectFactoryEx of, ModelManager modelManager) {
+        this.of = of;
         this.mr = new InternalModelResolver(modelManager);
     }
 

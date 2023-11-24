@@ -42,19 +42,21 @@ public class LibraryBuilder implements ModelResolver {
         All
     }
 
-    public LibraryBuilder(LibraryManager libraryManager) {
-        this(null, libraryManager);
+    public LibraryBuilder(LibraryManager libraryManager, ObjectFactoryEx objectFactory) {
+        this(null, libraryManager, objectFactory);
     }
 
-    public LibraryBuilder(NamespaceInfo namespaceInfo, LibraryManager libraryManager) {
+    public LibraryBuilder(NamespaceInfo namespaceInfo, LibraryManager libraryManager, ObjectFactoryEx objectFactory) {
         if (libraryManager == null) {
             throw new IllegalArgumentException("libraryManager is null");
         }
 
+        this.of = objectFactory;;
         this.namespaceInfo = namespaceInfo; // Note: allowed to be null, implies global namespace
         this.modelManager = libraryManager.getModelManager();
         this.libraryManager = libraryManager;
         this.typeBuilder = new TypeBuilder(of, this);
+        this.systemFunctionResolver = new SystemFunctionResolver(this, of);
 
         this.library = of.createLibrary()
                 .withSchemaIdentifier(of.createVersionedIdentifier()
@@ -94,10 +96,10 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     private final Map<String, Model> models = new LinkedHashMap<>();
-
+    private final ObjectFactoryEx of;
     private final Map<String, ResultWithPossibleError<NamedTypeSpecifier>> nameTypeSpecifiers = new HashMap<>();
     private final Map<String, CompiledLibrary> libraries = new LinkedHashMap<>();
-    private final SystemFunctionResolver systemFunctionResolver = new SystemFunctionResolver(this);
+    private final SystemFunctionResolver systemFunctionResolver;
     private final Stack<String> expressionContext = new Stack<>();
     private final ExpressionDefinitionContextStack expressionDefinitions = new ExpressionDefinitionContextStack();
     private final Stack<FunctionDef> functionDefs = new Stack<>();
@@ -120,7 +122,6 @@ public class LibraryBuilder implements ModelResolver {
     public ConversionMap getConversionMap() {
         return conversionMap;
     }
-    private final ObjectFactory of = new ObjectFactory();
     private final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
     private boolean listTraversal = true;
     private CqlCompilerOptions options;

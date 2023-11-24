@@ -20,8 +20,8 @@ public class CqlPreprocessorVisitor extends CqlPreprocessorElmCommonVisitor {
     static final Logger logger = LoggerFactory.getLogger(CqlPreprocessorVisitor.class);
     private int lastSourceIndex = -1;
 
-    public CqlPreprocessorVisitor(LibraryBuilder libraryBuilder, TokenStream tokenStream) {
-        super(libraryBuilder, tokenStream);
+    public CqlPreprocessorVisitor(TokenStream tokenStream) {
+        super(tokenStream);
     }
 
     public LibraryInfo getLibraryInfo() {

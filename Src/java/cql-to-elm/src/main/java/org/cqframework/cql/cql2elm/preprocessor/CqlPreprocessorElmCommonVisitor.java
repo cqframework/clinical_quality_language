@@ -31,12 +31,12 @@ import java.util.Stack;
  * Common functionality used by {@link CqlPreprocessorVisitor} and {@link Cql2ElmVisitor}
  */
 public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
-    protected final ObjectFactory of = new ObjectFactory();
+    protected final ObjectFactoryEx of;
     protected final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
     private boolean implicitContextCreated = false;
     private String currentContext = "Unfiltered";
     protected Stack<Chunk> chunks = new Stack<>();
-    protected final LibraryBuilder libraryBuilder;
+    protected LibraryBuilder libraryBuilder;
     protected TokenStream tokenStream;
     protected LibraryInfo libraryInfo = new LibraryInfo();
     private boolean annotate = false;
@@ -51,13 +51,17 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
     private final List<Expression> expressions = new ArrayList<>();
     private boolean includeDeprecatedElements = false;
 
-    public CqlPreprocessorElmCommonVisitor(LibraryBuilder libraryBuilder) {
-        this.libraryBuilder = libraryBuilder;
+    public CqlPreprocessorElmCommonVisitor() {
+        this(null);
     }
 
-    public CqlPreprocessorElmCommonVisitor(LibraryBuilder libraryBuilder, TokenStream tokenStream) {
-        this.libraryBuilder = libraryBuilder;
+    public CqlPreprocessorElmCommonVisitor(TokenStream tokenStream) {
         this.tokenStream = tokenStream;
+        this.of = new ObjectFactoryEx(this::decorate);
+    }
+
+    public Element decorate(Element e) {
+        return e.withLocalId(Integer.toString(getNextLocalId()));
     }
 
     protected boolean getImplicitContextCreated() {
@@ -82,8 +86,16 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
         return saveContext;
     }
 
-    public void setTokenStream(TokenStream theTokenStream) {
-        tokenStream = theTokenStream;
+    public void setTokenStream(TokenStream tokenStream) {
+        this.tokenStream = tokenStream;
+    }
+
+    public void setBuilder(LibraryBuilder builder) {
+        this.libraryBuilder = builder;
+    }
+
+    public ObjectFactoryEx getObjectFactory() {
+        return of;
     }
 
     @Override
