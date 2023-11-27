@@ -729,6 +729,19 @@ public class SemanticTests {
         assertTrue("Expected return types are String and Boolean: ", actualChoiceTypes.equals(expectedChoiceTypes));
     }
 
+    @Test
+    public void testIdentifierDoesNotResolveCaseMismatchExistIdentifier() throws IOException {
+        final CqlTranslator translator = runSemanticTest("Issue598.cql", 1);
+
+        final List<String> errorMessages = translator.getErrors().stream().map(Throwable::getMessage).collect(Collectors.toList());
+        assertThat(errorMessages, contains("Could not resolve identifier IaMaDiFeReNtCaSe in the current library."));
+
+        final List<String> warnings = translator.getWarnings().stream().map(Throwable::getMessage).collect(Collectors.toList());
+        assertThat(warnings, hasSize(1));
+        assertThat(warnings, contains("Could not find identifier: [IaMaDiFeReNtCaSe].  Did you mean [iAmAdIfErEnTcAsE]?"));
+
+    }
+
     private CqlTranslator runSemanticTest(String testFileName) throws IOException {
         return runSemanticTest(testFileName, 0);
     }
