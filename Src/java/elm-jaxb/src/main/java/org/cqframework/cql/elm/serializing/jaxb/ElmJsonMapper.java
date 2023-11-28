@@ -15,7 +15,6 @@ public class ElmJsonMapper {
             try {
                 jaxbContext = JAXBContext.newInstance(Library.class, CqlToElmBase.class);
             } catch (JAXBException e) {
-                e.printStackTrace();
                 throw new RuntimeException("Error creating JAXBContext - " + e.getMessage());
             }
         }

@@ -102,7 +102,6 @@ public class DefaultModelInfoProvider implements ModelInfoProvider, PathAware {
                     return ModelInfoReaderFactory.getReader("application/xml").read(is);
                 }
             } catch (IOException e) {
-                e.printStackTrace();
                 throw new IllegalArgumentException(String.format("Could not load definition for model info %s.", modelIdentifier.getId()), e);
             }
         }

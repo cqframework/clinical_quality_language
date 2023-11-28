@@ -1,5 +1,13 @@
 name: Check PR
 on: pull_request
+
+permissions:
+  checks: write
+
+concurrency:
+  group: ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
   gradle:
     runs-on: ubuntu-latest
@@ -7,12 +15,13 @@ jobs:
     - uses: actions/checkout@v3
     - uses: actions/setup-java@v3
       with:
-        distribution: temurin
-        java-version: 11
+        distribution: 'adopt'
+        java-version: '19'
+        cache: gradle
     - name: Setup and execute Gradle 'check' task
       uses: gradle/gradle-build-action@v2
       with:
-        arguments: check -i
+        arguments: check
         build-root-directory: Src/java
     - name: Publish Test Report
       uses: mikepenz/action-junit-report@v3
