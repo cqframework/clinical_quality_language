@@ -40,9 +40,7 @@ public class QICoreModelInfoProvider implements ModelInfoProvider {
                         return ModelInfoReaderFactory.getReader("application/xml").read(QICoreModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/qicore-modelinfo-5.0.0.xml"));
                 }
             } catch (IOException e) {
-                e.printStackTrace();
                 // Do not throw, allow other providers to resolve
-                //    throw new IllegalArgumentException(String.format("Unknown version %s of the QI model.", localVersion));
             }
         }
 

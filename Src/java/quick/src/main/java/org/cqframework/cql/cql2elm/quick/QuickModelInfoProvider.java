@@ -27,7 +27,7 @@ public class QuickModelInfoProvider implements ModelInfoProvider {
     public ModelInfo load(ModelIdentifier modelIdentifier) {
         if (isQuickModelIdentifier(modelIdentifier)) {
             String localVersion = modelIdentifier.getVersion() == null ? "" : modelIdentifier.getVersion();
-            
+
             try {
                 switch (localVersion) {
                     case "3.3.0":
@@ -38,11 +38,9 @@ public class QuickModelInfoProvider implements ModelInfoProvider {
                         return ModelInfoReaderFactory.getReader("application/xml").read(QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/quick-modelinfo.xml"));
                 }
             } catch (IOException e) {
-                e.printStackTrace();
                 // Do not throw, allow other providers to resolve
-                //    throw new IllegalArgumentException(String.format("Unknown version %s of the Fhir model.", localVersion));
             }
-            
+
         }
 
         return null;

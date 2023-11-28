@@ -600,7 +600,8 @@ public abstract class FhirModelResolver<BaseType, BaseDateTimeType, TimeType, Si
         switch (simpleName) {
             case "DateTimeType":
             case "InstantType":
-                target.setValue(((DateTime) value).toJavaDate());
+                // Ensure offset is taken into account from the ISO datetime String instead of the default timezone
+                target.setValueAsString(((DateTime) value).toDateString());
                 setCalendarConstant((BaseDateTimeType) target, (BaseTemporal) value);
                 break;
             case "DateType":

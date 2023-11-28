@@ -1,17 +1,11 @@
 package org.opencds.cqf.cql.engine.runtime;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.time.temporal.ChronoField;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.TimeZone;
-
 import org.apache.commons.lang3.StringUtils;
-import org.opencds.cqf.cql.engine.execution.State;
 
 public class TemporalHelper {
 
@@ -84,23 +78,6 @@ public class TemporalHelper {
     public static BigDecimal zoneToOffset(ZoneOffset zone) {
         int seconds = zone.get(ChronoField.OFFSET_SECONDS);
         return new BigDecimal(Double.toString(seconds/60f/60f));
-    }
-
-    public static ZonedDateTime toZonedDateTime(LocalDateTime localDateTime, State c) {
-        if (c != null) {
-            return localDateTime.atZone(c.getEvaluationZonedDateTime().getZone());
-        }
-        else {
-            return localDateTime.atZone(TimeZone.getDefault().toZoneId());
-        }
-    }
-
-    public static ZonedDateTime toZonedDateTime(LocalDateTime localDateTime) {
-        return toZonedDateTime(localDateTime, null);
-    }
-
-    public static OffsetDateTime toOffsetDateTime(LocalDateTime localDateTime) {
-        return toZonedDateTime(localDateTime).toOffsetDateTime();
     }
 
     public static int weeksToDays(int weeks) {

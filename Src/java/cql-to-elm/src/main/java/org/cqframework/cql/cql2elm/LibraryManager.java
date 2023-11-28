@@ -279,7 +279,7 @@ public class LibraryManager {
         try {
             library = ElmLibraryReaderFactory.getReader(type.mimeType()).read(new InputStreamReader(librarySource));
         } catch (IOException e) {
-            e.printStackTrace();
+            // intentionally ignored
         }
 
         if (library != null && checkBinaryCompatibility(library)) {

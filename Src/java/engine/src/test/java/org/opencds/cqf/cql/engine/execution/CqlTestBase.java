@@ -1,9 +1,15 @@
 package org.opencds.cqf.cql.engine.execution;
 
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import org.cqframework.cql.cql2elm.*;
 import org.hl7.elm.r1.Library;
+import org.opencds.cqf.cql.engine.runtime.TemporalHelper;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 
@@ -97,5 +103,17 @@ public class CqlTestBase {
                 CqlCompilerOptions.Options.DisableMethodInvocation);
 
         return result;
+    }
+
+    public BigDecimal getBigDecimalZoneOffset() {
+        return getBigDecimalZoneOffset(engine.getState().getEvaluationZonedDateTime().getOffset());
+    }
+
+    public BigDecimal getBigDecimalZoneOffset(ZoneId zoneId) {
+        return getBigDecimalZoneOffset(zoneId.getRules().getOffset(Instant.now()));
+    }
+
+    private BigDecimal getBigDecimalZoneOffset(ZoneOffset zoneOffset) {
+        return TemporalHelper.zoneToOffset(zoneOffset);
     }
 }

@@ -25,8 +25,10 @@ public class CqlDateTimeOperatorsTest extends CqlTestBase {
      */
     @Test
     public void testAdd() {
+        final BigDecimal bigDecimalZoneOffset = getBigDecimalZoneOffset();
+
         Object result = engine.expression(library, "DateTimeAdd5Years").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2010, 10, 10)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2010, 10, 10)));
 
         try {
             engine.expression(library, "DateTimeAddInvalidYears").value();
@@ -37,34 +39,34 @@ public class CqlDateTimeOperatorsTest extends CqlTestBase {
         }
 
         result = engine.expression(library, "DateTimeAdd5Months").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2005, 10, 10)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2005, 10, 10)));
 
         result = engine.expression(library, "DateTimeAddMonthsOverflow").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2006, 3, 10)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2006, 3, 10)));
 
         result = engine.expression(library, "DateTimeAddThreeWeeks").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2018, 5, 23)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2018, 5, 23)));
 
         result = engine.expression(library, "DateTimeAddYearInWeeks").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2019, 5, 23)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2019, 5, 23)));
 
         result = engine.expression(library, "DateTimeAdd5Days").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2005, 5, 15)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2005, 5, 15)));
 
         result = engine.expression(library, "DateTimeAddDaysOverflow").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2016, 7, 1)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2016, 7, 1)));
 
         result = engine.expression(library, "DateTimeAdd5Hours").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2005, 5, 10, 10)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2005, 5, 10, 10)));
 
         result = engine.expression(library, "DateTimeAdd5HoursWithLeftMinPrecisionSecond").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2005, 5, 10, 10, 20, 30)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2005, 5, 10, 10, 20, 30)));
 
         result = engine.expression(library, "DateTimeAdd5HoursWithLeftMinPrecisionDay").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2005, 5, 10)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2005, 5, 10)));
 
         result = engine.expression(library, "DateTimeAdd5HoursWithLeftMinPrecisionDayOverflow").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2005, 5, 11)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2005, 5, 11)));
 
         result = engine.expression(library, "DateAdd2YearsAsMonths").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Date(2016)));
@@ -79,37 +81,37 @@ public class CqlDateTimeOperatorsTest extends CqlTestBase {
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Date(2015,6)));
 
         result = engine.expression(library, "DateTimeAddHoursOverflow").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2016, 6, 11, 0)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2016, 6, 11, 0)));
 
         result = engine.expression(library, "DateTimeAdd5Minutes").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2005, 5, 10, 5, 10)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2005, 5, 10, 5, 10)));
 
         result = engine.expression(library, "DateTimeAddMinutesOverflow").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2016, 6, 10, 6, 0)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2016, 6, 10, 6, 0)));
 
         result = engine.expression(library, "DateTimeAdd5Seconds").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2005, 5, 10, 5, 5, 10)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2005, 5, 10, 5, 5, 10)));
 
         result = engine.expression(library, "DateTimeAddSecondsOverflow").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2016, 6, 10, 5, 6, 0)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2016, 6, 10, 5, 6, 0)));
 
         result = engine.expression(library, "DateTimeAdd5Milliseconds").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2005, 5, 10, 5, 5, 5, 10)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2005, 5, 10, 5, 5, 5, 10)));
 
         result = engine.expression(library, "DateTimeAddMillisecondsOverflow").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2016, 6, 10, 5, 5, 6, 0)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2016, 6, 10, 5, 5, 6, 0)));
 
         result = engine.expression(library, "DateTimeAddLeapYear").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2013, 2, 28)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2013, 2, 28)));
 
         result = engine.expression(library, "DateTimeAdd2YearsByMonths").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2016)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2016)));
 
         result = engine.expression(library, "DateTimeAdd2YearsByDays").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2016)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2016)));
 
         result = engine.expression(library, "DateTimeAdd2YearsByDaysRem5Days").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2016)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2016)));
 
         result = engine.expression(library, "TimeAdd5Hours").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(20, 59, 59, 999)));
@@ -139,6 +141,7 @@ public class CqlDateTimeOperatorsTest extends CqlTestBase {
      */
     @Test
     public void testAfter() {
+        final BigDecimal bigDecimalZoneOffset = getBigDecimalZoneOffset();
 
         Object result = engine.expression(library, "DateTimeAfterYearTrue").value();
         assertThat(result, is(true));
@@ -310,27 +313,28 @@ public class CqlDateTimeOperatorsTest extends CqlTestBase {
      */
     @Test
     public void testDateTime() {
+        final BigDecimal bigDecimalZoneOffset = getBigDecimalZoneOffset();
 
         Object result = engine.expression(library, "DateTimeYear").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2003)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2003)));
 
         result = engine.expression(library, "DateTimeMonth").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2003, 10)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2003, 10)));
 
         result = engine.expression(library, "DateTimeDay").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2003, 10, 29)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2003, 10, 29)));
 
         result = engine.expression(library, "DateTimeHour").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2003, 10, 29, 20)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2003, 10, 29, 20)));
 
         result = engine.expression(library, "DateTimeMinute").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2003, 10, 29, 20, 50)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2003, 10, 29, 20, 50)));
 
         result = engine.expression(library, "DateTimeSecond").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2003, 10, 29, 20, 50, 33)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2003, 10, 29, 20, 50, 33)));
 
         result = engine.expression(library, "DateTimeMillisecond").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2003, 10, 29, 20, 50, 33, 955)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2003, 10, 29, 20, 50, 33, 955)));
     }
 
     /**
@@ -573,11 +577,10 @@ public class CqlDateTimeOperatorsTest extends CqlTestBase {
      */
     @Test
     public void testNow() {
-
         Object result = engine.expression(library, "DateTimeNow").value();
         assertThat(result, is(true));
 
-        DateTime evaluationDateTime = new DateTime(null, 2016, 6, 10, 5, 5, 4, 999);
+        DateTime evaluationDateTime = new DateTime(getBigDecimalZoneOffset(), 2016, 6, 10, 5, 5, 4, 999);
         result = engine.expression(library, "Issue34A", evaluationDateTime.getDateTime().toZonedDateTime()).value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, evaluationDateTime));
         Assert.assertTrue(((DateTime) result).getDateTime().getOffset().equals(evaluationDateTime.getDateTime().getOffset()));
@@ -904,9 +907,10 @@ public class CqlDateTimeOperatorsTest extends CqlTestBase {
      */
     @Test
     public void testSubtract() {
+        final BigDecimal bigDecimalZoneOffset = getBigDecimalZoneOffset();
 
         Object result = engine.expression(library, "DateTimeSubtract5Years").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2000, 10, 10)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2000, 10, 10)));
 
         try {
             engine.expression(library, "DateTimeSubtractInvalidYears").value();
@@ -916,59 +920,59 @@ public class CqlDateTimeOperatorsTest extends CqlTestBase {
         }
 
         result = engine.expression(library, "DateTimeSubtract5Months").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2005, 1, 10)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2005, 1, 10)));
 
         result = engine.expression(library, "DateTimeSubtractMonthsUnderflow").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2004, 11, 10)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2004, 11, 10)));
 
         result = engine.expression(library, "DateTimeSubtractThreeWeeks").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2018, 5, 2)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2018, 5, 2)));
 
         result = engine.expression(library, "DateTimeSubtractYearInWeeks").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2017, 5, 23)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2017, 5, 23)));
 
         result = engine.expression(library, "DateTimeSubtract5Days").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2005, 5, 5)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2005, 5, 5)));
 
         result = engine.expression(library, "DateTimeSubtractDaysUnderflow").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2016, 5, 30)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2016, 5, 30)));
 
         result = engine.expression(library, "DateTimeSubtract5Hours").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2005, 5, 10, 5)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2005, 5, 10, 5)));
 
         result = engine.expression(library, "DateTimeSubtractHoursUnderflow").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2016, 6, 9, 23)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2016, 6, 9, 23)));
 
         result = engine.expression(library, "DateTimeSubtract5Minutes").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2005, 5, 10, 5, 5)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2005, 5, 10, 5, 5)));
 
         result = engine.expression(library, "DateTimeSubtractMinutesUnderflow").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2016, 6, 10, 4, 59)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2016, 6, 10, 4, 59)));
 
         result = engine.expression(library, "DateTimeSubtract5Seconds").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2005, 5, 10, 5, 5, 5)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2005, 5, 10, 5, 5, 5)));
 
         result = engine.expression(library, "DateTimeSubtract1YearInSeconds").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2015, 5)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2015, 5)));
 
         result = engine.expression(library, "DateTimeSubtract15HourPrecisionSecond").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2016, 9, 30, 19, 20, 30)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2016, 9, 30, 19, 20, 30)));
 
 
         result = engine.expression(library, "DateTimeSubtractSecondsUnderflow").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2016, 6, 10, 5, 4, 59)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2016, 6, 10, 5, 4, 59)));
 
         result = engine.expression(library, "DateTimeSubtract5Milliseconds").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2005, 5, 10, 5, 5, 5, 5)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2005, 5, 10, 5, 5, 5, 5)));
 
         result = engine.expression(library, "DateTimeSubtractMillisecondsUnderflow").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2016, 6, 10, 5, 5, 4, 999)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2016, 6, 10, 5, 5, 4, 999)));
 
         result = engine.expression(library, "DateTimeSubtract2YearsAsMonths").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2012)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2012)));
 
         result = engine.expression(library, "DateTimeSubtract2YearsAsMonthsRem1").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2012)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2012)));
 
         result = engine.expression(library, "DateSubtract2YearsAsMonthsRem1").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Date(2012)));

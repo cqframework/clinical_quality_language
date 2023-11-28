@@ -11,6 +11,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.assertFalse;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,6 +28,8 @@ public class ListOperatorsTest extends CqlTestBase {
 
     @Test
     public void test_all_interval_operators() {
+        final BigDecimal bigDecimalZoneOffset = getBigDecimalZoneOffset();
+
         var eng = getEngine(testCompilerOptions());
 
         var evaluationResult = eng.evaluate(toElmIdentifier("CqlListOperatorsTest"));
@@ -48,16 +51,16 @@ public class ListOperatorsTest extends CqlTestBase {
         assertThat(result, is(Arrays.asList("zebra", "iguana", "back", "alligator", "aardvark", "Wolf", "Armadillo")));
 
         result = evaluationResult.forExpression("SortDatesAsc").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) result).get(0), new DateTime(null, 2012, 1, 1)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) result).get(1), new DateTime(null, 2012, 1, 1, 12)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) result).get(2), new DateTime(null, 2012, 10, 5)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) result).get(3), new DateTime(null, 2012, 10, 5, 10)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) result).get(0), new DateTime(bigDecimalZoneOffset, 2012, 1, 1)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) result).get(1), new DateTime(bigDecimalZoneOffset, 2012, 1, 1, 12)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) result).get(2), new DateTime(bigDecimalZoneOffset, 2012, 10, 5)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) result).get(3), new DateTime(bigDecimalZoneOffset, 2012, 10, 5, 10)));
 
         result = evaluationResult.forExpression("SortDatesDesc").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) result).get(0), new DateTime(null, 2012, 10, 5, 10)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) result).get(1), new DateTime(null, 2012, 10, 5)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) result).get(2), new DateTime(null, 2012, 1, 1, 12)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) result).get(3), new DateTime(null, 2012, 1, 1)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) result).get(0), new DateTime(bigDecimalZoneOffset, 2012, 10, 5, 10)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) result).get(1), new DateTime(bigDecimalZoneOffset, 2012, 10, 5)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) result).get(2), new DateTime(bigDecimalZoneOffset, 2012, 1, 1, 12)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) result).get(3), new DateTime(bigDecimalZoneOffset, 2012, 1, 1)));
 
         result = evaluationResult.forExpression("SortIntWithNullAsc1").value();
         assertThat(result, is(Arrays.asList(null, 1, 2, 3)));
@@ -82,9 +85,9 @@ public class ListOperatorsTest extends CqlTestBase {
 
         result = evaluationResult.forExpression("dateTimeList").value();
         List<DateTime> arrListDateTime = new ArrayList<>();
-        arrListDateTime.add(new DateTime(null, 2016));
-        arrListDateTime.add(new DateTime(null, 2015));
-        arrListDateTime.add(new DateTime(null, 2010));
+        arrListDateTime.add(new DateTime(bigDecimalZoneOffset, 2016));
+        arrListDateTime.add(new DateTime(bigDecimalZoneOffset, 2015));
+        arrListDateTime.add(new DateTime(bigDecimalZoneOffset, 2010));
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, arrListDateTime));
 
 
@@ -143,8 +146,8 @@ public class ListOperatorsTest extends CqlTestBase {
         assertThat(result, is(Arrays.asList("a", "b", "c")));
 
         result = evaluationResult.forExpression("DistinctDateTime").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(0), new DateTime(null, 2012, 10, 5)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(1), new DateTime(null, 2012, 1, 1)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(0), new DateTime(bigDecimalZoneOffset, 2012, 10, 5)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(1), new DateTime(bigDecimalZoneOffset, 2012, 1, 1)));
         assertThat(((List<?>)result).size(), is(2));
 
         result = evaluationResult.forExpression("DistinctTime").value();
@@ -195,7 +198,7 @@ public class ListOperatorsTest extends CqlTestBase {
         assertThat(result, is(Collections.emptyList()));
 
         result = evaluationResult.forExpression("ExceptDateTimeList").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(0), new DateTime(null, 2012, 5, 10)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(0), new DateTime(bigDecimalZoneOffset, 2012, 5, 10)));
         assertThat(((List<?>)result).size(), is(1));
 
         result = evaluationResult.forExpression("ExceptTimeList").value();
@@ -239,8 +242,8 @@ public class ListOperatorsTest extends CqlTestBase {
         assertThat(result, is(Arrays.asList(1, 2, 3, 4)));
 
         result = evaluationResult.forExpression("FlattenDateTime").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(0), new DateTime(null, 2012, 5, 10)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(1), new DateTime(null, 2014, 12, 10)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(0), new DateTime(bigDecimalZoneOffset, 2012, 5, 10)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(1), new DateTime(bigDecimalZoneOffset, 2014, 12, 10)));
         assertThat(((List<?>)result).size(), is(2));
 
         result = evaluationResult.forExpression("FlattenTime").value();
@@ -261,7 +264,7 @@ public class ListOperatorsTest extends CqlTestBase {
         assertThat(result, is(1));
 
         result = evaluationResult.forExpression("FirstDateTime").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2012, 5, 10)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2012, 5, 10)));
 
         result = evaluationResult.forExpression("FirstTime").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(15, 59, 59, 999)));
@@ -377,7 +380,7 @@ public class ListOperatorsTest extends CqlTestBase {
         assertThat(result, is(nullValue()));
 
         result = evaluationResult.forExpression("IndexerDateTime").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2012, 5, 10)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2012, 5, 10)));
 
         result = evaluationResult.forExpression("IndexerTime").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(15, 59, 59, 999)));
@@ -416,8 +419,8 @@ public class ListOperatorsTest extends CqlTestBase {
         assertThat(result, is(Arrays.asList(2, 3)));
 
         result = evaluationResult.forExpression("IntersectDateTime").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(0), new DateTime(null, 2012, 5, 10)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(1), new DateTime(null, 2014, 12, 10)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(0), new DateTime(bigDecimalZoneOffset, 2012, 5, 10)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(1), new DateTime(bigDecimalZoneOffset, 2014, 12, 10)));
         assertThat(((List<?>)result).size(), is(2));
 
         result = evaluationResult.forExpression("IntersectTime").value();
@@ -438,7 +441,7 @@ public class ListOperatorsTest extends CqlTestBase {
         assertThat(result, is(2));
 
         result = evaluationResult.forExpression("LastDateTime").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2014, 12, 10)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2014, 12, 10)));
 
         result = evaluationResult.forExpression("LastTime").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(20, 59, 59, 999)));
@@ -630,7 +633,7 @@ public class ListOperatorsTest extends CqlTestBase {
         assertThat(result, is(1));
 
         result = evaluationResult.forExpression("SingletonFromDateTime").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2012, 5, 10)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2012, 5, 10)));
 
         result = evaluationResult.forExpression("SingletonFromTime").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(15, 59, 59, 999)));
@@ -699,9 +702,9 @@ public class ListOperatorsTest extends CqlTestBase {
         assertThat(result, is(Arrays.asList(1, 2, 3, 4)));
 
         result = evaluationResult.forExpression("UnionDateTime").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(0), new DateTime(null, 2001, 9, 11)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(1), new DateTime(null, 2012, 5, 10)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(2), new DateTime(null, 2014, 12, 10)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(0), new DateTime(bigDecimalZoneOffset, 2001, 9, 11)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(1), new DateTime(bigDecimalZoneOffset, 2012, 5, 10)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>)result).get(2), new DateTime(bigDecimalZoneOffset, 2014, 12, 10)));
         assertThat(((List<?>)result).size(), is(3));
 
         result = evaluationResult.forExpression("UnionTime").value();

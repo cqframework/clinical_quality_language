@@ -1,7 +1,5 @@
 package org.opencds.cqf.cql.engine.runtime;
 
-import java.time.ZoneOffset;
-
 public abstract class BaseTemporal implements CqlType, Comparable<BaseTemporal> {
 
     Precision precision;
@@ -11,15 +9,6 @@ public abstract class BaseTemporal implements CqlType, Comparable<BaseTemporal> 
     public BaseTemporal setPrecision(Precision precision) {
         this.precision = precision;
         return this;
-    }
-
-    ZoneOffset evaluationOffset; // = Context.getContext().getEvaluationDateTime().getEvaluationOffset();
-
-    public ZoneOffset getEvaluationOffset() {
-        return evaluationOffset;
-    }
-    public void setEvaluationOffset(ZoneOffset evaluationOffset) {
-        this.evaluationOffset = evaluationOffset;
     }
 
     public static String getHighestPrecision(BaseTemporal ... values) {

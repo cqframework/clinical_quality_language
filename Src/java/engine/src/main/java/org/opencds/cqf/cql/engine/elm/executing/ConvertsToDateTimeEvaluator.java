@@ -3,6 +3,7 @@ package org.opencds.cqf.cql.engine.elm.executing;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.runtime.Date;
 import org.opencds.cqf.cql.engine.runtime.DateTime;
+import org.opencds.cqf.cql.engine.runtime.TemporalHelper;
 
 import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
@@ -47,7 +48,7 @@ public class ConvertsToDateTimeEvaluator {
         else if (argument instanceof Date) {
             try {
                 new DateTime(
-                        null,
+                        TemporalHelper.zoneToOffset(offset),
                         ((Date) argument).getDate().getYear(),
                         ((Date) argument).getDate().getMonthValue(),
                         ((Date) argument).getDate().getDayOfMonth(),

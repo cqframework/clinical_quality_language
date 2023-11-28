@@ -37,11 +37,9 @@ public class UsCoreModelInfoProvider implements ModelInfoProvider {
                         return ModelInfoReaderFactory.getReader("application/xml").read(QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/uscore-modelinfo-3.1.1.xml"));
                 }
             } catch (IOException e) {
-                e.printStackTrace();
                 // Do not throw, allow other providers to resolve
-                //    throw new IllegalArgumentException(String.format("Unknown version %s of the Fhir model.", localVersion));
             }
-            
+
         }
 
         return null;

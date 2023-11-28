@@ -6,6 +6,8 @@ import org.opencds.cqf.cql.engine.runtime.Date;
 import org.opencds.cqf.cql.engine.runtime.DateTime;
 import org.opencds.cqf.cql.engine.runtime.TemporalHelper;
 
+import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 
 /*
@@ -52,7 +54,7 @@ public class ToDateTimeEvaluator {
 
         if (operand instanceof String) {
             try {
-                return new DateTime((String) operand, null);
+                return new DateTime((String) operand, state.getEvaluationDateTime().getZoneOffset());
             } catch (DateTimeParseException dtpe) {
                 return null;
             }
