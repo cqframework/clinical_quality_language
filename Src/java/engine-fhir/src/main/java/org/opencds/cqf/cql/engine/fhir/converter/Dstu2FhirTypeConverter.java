@@ -1,8 +1,6 @@
 package org.opencds.cqf.cql.engine.fhir.converter;
 
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.stream.Collectors;
@@ -11,8 +9,6 @@ import org.hl7.fhir.dstu2.model.*;
 import org.opencds.cqf.cql.engine.runtime.*;
 import org.opencds.cqf.cql.engine.runtime.Quantity;
 import org.opencds.cqf.cql.engine.runtime.Ratio;
-
-import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.hl7.fhir.instance.model.api.IBase;
@@ -74,7 +70,7 @@ class Dstu2FhirTypeConverter extends BaseFhirTypeConverter {
             return null;
         }
 
-        var result = new DateTimeType(value.getDateTime().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+        final DateTimeType result = new DateTimeType(value.toDateString());
         result.setPrecision(toFhirPrecision(value.getPrecision()));
         return result;
     }

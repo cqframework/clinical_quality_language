@@ -246,7 +246,8 @@ public class CqlArithmeticFunctionsTest extends CqlTestBase {
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Date(2014, 12)));
 
         result = engine.expression(library, "HighBoundaryDateTime").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2014, 1, 1, 8, 59, 59, 999)));
+        final DateTime expectedDateTime = new DateTime(getBigDecimalZoneOffset(), 2014, 1, 1, 8, 59, 59, 999);
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, expectedDateTime));
 
         result = engine.expression(library, "HighBoundaryTime").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(10, 30, 59, 999)));
@@ -345,7 +346,8 @@ public class CqlArithmeticFunctionsTest extends CqlTestBase {
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Date(2014, 1)));
 
         result = engine.expression(library, "LowBoundaryDateTime").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2014, 1, 1, 8, 0, 0, 0)));
+        final DateTime expectedDateTime = new DateTime(getBigDecimalZoneOffset(), 2014, 1, 1, 8, 0, 0, 0);
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, expectedDateTime));
 
         result = engine.expression(library, "LowBoundaryTime").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(10, 30, 0, 0)));
@@ -546,7 +548,8 @@ public class CqlArithmeticFunctionsTest extends CqlTestBase {
 //        Assert.assertEquals("cm", ((Quantity) result).getUnit());
 
         result = engine.expression(library, "PredecessorOfJan12000").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 1999, 12, 31)));
+        final DateTime expectedDateTime = new DateTime(getBigDecimalZoneOffset(), 1999, 12, 31);
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, expectedDateTime));
 
         result = engine.expression(library, "PredecessorOfNoon").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(11, 59, 59, 999)));
@@ -739,7 +742,8 @@ public class CqlArithmeticFunctionsTest extends CqlTestBase {
         assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal("1.01000001")));
 
         result = engine.expression(library, "SuccessorOfJan12000").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(null, 2000, 1, 2)));
+        final DateTime expectedDateTime = new DateTime(getBigDecimalZoneOffset(), 2000, 1, 2);
+        Assert.assertTrue(EquivalentEvaluator.equivalent(result, expectedDateTime));
 
         result = engine.expression(library, "SuccessorOfNoon").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(12, 0, 0, 1)));

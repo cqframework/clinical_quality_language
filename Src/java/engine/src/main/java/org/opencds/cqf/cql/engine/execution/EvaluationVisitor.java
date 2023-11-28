@@ -10,6 +10,7 @@ import org.hl7.cql.model.IntervalType;
 import org.hl7.cql.model.ListType;
 import org.hl7.elm.r1.*;
 import org.opencds.cqf.cql.engine.elm.executing.*;
+import org.opencds.cqf.cql.engine.runtime.TemporalHelper;
 
 public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
@@ -675,7 +676,7 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
     @Override
     public Object visitConvertsToDateTime(ConvertsToDateTime elm, State state) {
         Object operand = visitExpression(elm.getOperand(), state);
-        return ConvertsToDateTimeEvaluator.convertsToDateTime(operand, null);
+        return ConvertsToDateTimeEvaluator.convertsToDateTime(operand, state.getEvaluationDateTime().getZoneOffset());
     }
 
     @Override
@@ -750,7 +751,11 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
         Integer minute = elm.getMinute() == null ? null : (Integer) visitExpression(elm.getMinute(), state);
         Integer second = elm.getSecond() == null ? null : (Integer) visitExpression(elm.getSecond(), state);
         Integer milliSecond = elm.getMillisecond() == null ? null : (Integer) visitExpression(elm.getMillisecond(), state);
-        BigDecimal timeZoneOffset = elm.getTimezoneOffset() == null ? null : (BigDecimal) visitExpression(elm.getTimezoneOffset(), state);
+        BigDecimal timeZoneOffset = elm.getTimezoneOffset() == null
+                ? TemporalHelper.zoneToOffset(state.getEvaluationDateTime().getZoneOffset())
+                // Previously, we relied on null to trigger DateTime instantiation off the default TimeZone
+                // Now, we compute the Offset explicitly from the State evaluation time.
+                : (BigDecimal) visitExpression(elm.getTimezoneOffset(), state);
         return DateTimeEvaluator.internalEvaluate(year, month, day, hour, minute, second, milliSecond, timeZoneOffset);
     }
 
@@ -1322,6 +1327,4 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
     public Object visitQuery(Query elm, State state) {
         return QueryEvaluator.internalEvaluate(elm, state, this) ;
     }
-
-
 }

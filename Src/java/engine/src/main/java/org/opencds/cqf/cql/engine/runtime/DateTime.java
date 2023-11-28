@@ -1,17 +1,15 @@
 package org.opencds.cqf.cql.engine.runtime;
 
+import org.opencds.cqf.cql.engine.exception.CqlException;
 import org.opencds.cqf.cql.engine.exception.InvalidDateTime;
-
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.util.Calendar;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.TimeZone;
+import java.util.Objects;
 
 public class DateTime extends BaseTemporal {
-    private final ZoneOffset zoneOffset;
+    private ZoneOffset zoneOffset;
 
     private OffsetDateTime dateTime;
     public OffsetDateTime getDateTime() {
@@ -26,10 +24,6 @@ public class DateTime extends BaseTemporal {
             throw new InvalidDateTime(String.format("The year: %d falls above the accepted bounds of 0001-9999.", dateTime.getYear()));
         }
         this.dateTime = dateTime;
-    }
-    public DateTime withDateTime(OffsetDateTime dateTime) {
-        setDateTime(dateTime);
-        return this;
     }
 
     public DateTime withPrecision(Precision precision) {
@@ -50,6 +44,10 @@ public class DateTime extends BaseTemporal {
     }
 
     public DateTime(String dateString, ZoneOffset offset) {
+        if (offset == null) {
+            throw new CqlException("Cannot pass a null offset");
+        }
+
         zoneOffset = offset;
 
         // Handles case when Tz is not complete (T02:04:59.123+01)
@@ -57,7 +55,6 @@ public class DateTime extends BaseTemporal {
             dateString += ":00";
         }
         int size = 0;
-        boolean hasOffset = true;
         if (dateString.contains("T")) {
             String[] datetimeSplit = dateString.split("T");
             size += datetimeSplit[0].split("-").length;
@@ -69,35 +66,24 @@ public class DateTime extends BaseTemporal {
             precision = Precision.fromDateTimeIndex(size - 1);
             if (tzSplit.length == 1 && !dateString.contains("Z")) {
                 dateString = TemporalHelper.autoCompleteDateTimeString(dateString, precision);
-                if (offset != null) {
-                    dateString += offset.getId();
-                }
-                else {
-                    hasOffset = false;
-                }
+                dateString += offset.getId();
             }
         }
         else {
             size += dateString.split("-").length;
             precision = Precision.fromDateTimeIndex(size - 1);
             dateString = TemporalHelper.autoCompleteDateTimeString(dateString, precision);
-            if (offset != null) {
-                dateString += offset.getId();
-            }
-            else {
-                hasOffset = false;
-            }
+            dateString += offset.getId();
         }
 
-        if (hasOffset) {
-            setDateTime(OffsetDateTime.parse(dateString));
-        }
-        else {
-            setDateTime(TemporalHelper.toOffsetDateTime(LocalDateTime.parse(dateString)));
-        }
+        setDateTime(OffsetDateTime.parse(dateString));
     }
 
     public DateTime(BigDecimal offset, int ... dateElements) {
+        if (offset == null) {
+            throw new CqlException("BigDecimal offset must be non-null");
+        }
+
         if (dateElements.length == 0) {
             throw new InvalidDateTime("DateTime must include a year");
         }
@@ -129,17 +115,8 @@ public class DateTime extends BaseTemporal {
 
         precision = Precision.fromDateTimeIndex(stringElements.length - 1);
         dateString = new StringBuilder().append(TemporalHelper.autoCompleteDateTimeString(dateString.toString(), precision));
-
-        // If the incoming string has an offset specified, use that offset
-        // Otherwise, parse as a LocalDateTime and then interpret that in the evaluation timezone
-
-        if (offset != null) {
-            dateString.append(toZoneOffset(offset).getId());
-            setDateTime(OffsetDateTime.parse(dateString.toString()));
-        }
-        else {
-            setDateTime(TemporalHelper.toOffsetDateTime(LocalDateTime.parse(dateString.toString())));
-        }
+        dateString.append(zoneOffset.getId());
+        setDateTime(OffsetDateTime.parse(dateString.toString()));
     }
 
     public ZoneOffset getZoneOffset() {
@@ -223,7 +200,7 @@ public class DateTime extends BaseTemporal {
                 return dateTime.withOffsetSameInstant(nullableZoneOffset);
             }
 
-            return dateTime.atZoneSameInstant(TimeZone.getDefault().toZoneId()).toOffsetDateTime();
+            throw new IllegalStateException("There must be a non-null offset!");
         }
 
         return dateTime;
@@ -278,6 +255,27 @@ public class DateTime extends BaseTemporal {
     }
 
     @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+
+        final DateTime otherDateTime = (DateTime) other;
+
+        return Objects.equals(zoneOffset, otherDateTime.zoneOffset) &&
+               Objects.equals(precision, otherDateTime.precision) &&
+               Objects.equals(dateTime, otherDateTime.dateTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(zoneOffset, dateTime);
+    }
+
+    @Override
     public String toString() {
         switch (precision) {
             case YEAR: return String.format("%04d", dateTime.getYear());
@@ -296,10 +294,8 @@ public class DateTime extends BaseTemporal {
         return java.util.Date.from(dateTime.toInstant());
     }
 
-    public static DateTime fromJavaDate(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        return new DateTime(OffsetDateTime.ofInstant(calendar.toInstant(), calendar.getTimeZone().toZoneId()), Precision.MILLISECOND);
+    public String toDateString() {
+        return DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(dateTime);
     }
 
     private ZoneOffset toZoneOffset(OffsetDateTime offsetDateTime) {

@@ -1,24 +1,47 @@
 package org.opencds.cqf.cql.engine.execution;
 
 import org.opencds.cqf.cql.engine.runtime.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.Assert;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.TimeZone;
 
 
 public class CqlInternalTypeRepresentationSuiteTest extends CqlTestBase {
+    private static final Logger logger = LoggerFactory.getLogger(CqlInternalTypeRepresentationSuiteTest.class);
 
-    @Test
-    public void test_all_internal_type_representation() {
+    private static final ZoneId UTC = ZoneId.of("UTC");
+    private static final ZoneId MONTREAL = ZoneId.of("America/Montreal");
+    private static final ZoneId REGINA = ZoneId.of("America/Regina"); // Saskatchewan does not have standard time (non-DST) all year round
+    private static final LocalDateTime DST_2023_11_01 = LocalDateTime.of(2023, Month.NOVEMBER, 1, 0, 0, 0);
+    private static final LocalDateTime NON_DST_2023_11_13 = LocalDateTime.of(2023, Month.NOVEMBER, 13, 0, 0, 0);
+    private static final LocalDateTime NON_DST_2018_01_01= LocalDateTime.of(2018, Month.JANUARY, 1, 7, 0, 0);
+    @DataProvider
+    private static Object[][] timeZones() {
+        return new Object[][]{
+                {UTC, DST_2023_11_01}, {MONTREAL, DST_2023_11_01}, {REGINA, DST_2023_11_01},
+                {UTC, NON_DST_2023_11_13}, {MONTREAL, NON_DST_2023_11_13}, {REGINA, NON_DST_2023_11_13},
+                {UTC, NON_DST_2018_01_01}, {MONTREAL, NON_DST_2018_01_01}, {REGINA, NON_DST_2018_01_01}
+        };
+    }
+
+    @Test(dataProvider = "timeZones")
+    public void test_all_internal_type_representation(ZoneId zoneId, LocalDateTime now) {
         EvaluationResult evaluationResult;
 
-        evaluationResult = engine.evaluate(toElmIdentifier("CqlInternalTypeRepresentationSuite"), ZonedDateTime.of(2018, 1, 1, 7, 0, 0, 0, TimeZone.getDefault().toZoneId()));
+        evaluationResult = engine.evaluate(toElmIdentifier("CqlInternalTypeRepresentationSuite"), ZonedDateTime.of(now, zoneId));
+
+        final BigDecimal bigDecimalZoneOffset = getBigDecimalZoneOffset();
 
         Object result;
 
@@ -56,31 +79,31 @@ public class CqlInternalTypeRepresentationSuiteTest extends CqlTestBase {
 
         result = evaluationResult.expressionResults.get("DateTime_Year").value();
         Assert.assertTrue(result instanceof DateTime);
-        Assert.assertTrue(((DateTime) result).equal(new DateTime(null, 2012)));
+        Assert.assertTrue(((DateTime) result).equal(new DateTime(bigDecimalZoneOffset, 2012)));
 
         result = evaluationResult.expressionResults.get("DateTime_Month").value();
         Assert.assertTrue(result instanceof DateTime);
-        Assert.assertTrue(((DateTime) result).equal(new DateTime(null, 2012, 2)));
+        Assert.assertTrue(((DateTime) result).equal(new DateTime(bigDecimalZoneOffset, 2012, 2)));
 
         result = evaluationResult.expressionResults.get("DateTime_Day").value();
         Assert.assertTrue(result instanceof DateTime);
-        Assert.assertTrue(((DateTime) result).equal(new DateTime(null, 2012, 2, 15)));
+        Assert.assertTrue(((DateTime) result).equal(new DateTime(bigDecimalZoneOffset, 2012, 2, 15)));
 
         result = evaluationResult.expressionResults.get("DateTime_Hour").value();
         Assert.assertTrue(result instanceof DateTime);
-        Assert.assertTrue(((DateTime) result).equal(new DateTime(null, 2012, 2, 15, 12)));
+        Assert.assertTrue(((DateTime) result).equal(new DateTime(bigDecimalZoneOffset, 2012, 2, 15, 12)));
 
         result = evaluationResult.expressionResults.get("DateTime_Minute").value();
         Assert.assertTrue(result instanceof DateTime);
-        Assert.assertTrue(((DateTime) result).equal(new DateTime(null, 2012, 2, 15, 12, 10)));
+        Assert.assertTrue(((DateTime) result).equal(new DateTime(bigDecimalZoneOffset, 2012, 2, 15, 12, 10)));
 
         result = evaluationResult.expressionResults.get("DateTime_Second").value();
         Assert.assertTrue(result instanceof DateTime);
-        Assert.assertTrue(((DateTime) result).equal(new DateTime(null, 2012, 2, 15, 12, 10, 59)));
+        Assert.assertTrue(((DateTime) result).equal(new DateTime(bigDecimalZoneOffset, 2012, 2, 15, 12, 10, 59)));
 
         result = evaluationResult.expressionResults.get("DateTime_Millisecond").value();
         Assert.assertTrue(result instanceof DateTime);
-        Assert.assertTrue(((DateTime) result).equal(new DateTime(null, 2012, 2, 15, 12, 10, 59, 456)));
+        Assert.assertTrue(((DateTime) result).equal(new DateTime(bigDecimalZoneOffset, 2012, 2, 15, 12, 10, 59, 456)));
 
         result = evaluationResult.expressionResults.get("DateTime_TimezoneOffset").value();
         Assert.assertTrue(result instanceof DateTime);
@@ -134,7 +157,7 @@ public class CqlInternalTypeRepresentationSuiteTest extends CqlTestBase {
         elements.clear();
         elements.put("class", "Portable CQL Test Suite");
         elements.put("versionNum", new BigDecimal("1.0"));
-        elements.put("date", new DateTime(null, 2018, 7, 18));
+        elements.put("date", new DateTime(bigDecimalZoneOffset, 2018, 7, 18));
         elements.put("developer", "Christopher Schuler");
 
         result = evaluationResult.expressionResults.get("Structured_TupleA").value();
@@ -146,8 +169,8 @@ public class CqlInternalTypeRepresentationSuiteTest extends CqlTestBase {
         Assert.assertTrue(
                 ((Interval) result).equal(
                         new Interval(
-                                new DateTime(null, 2012, 1, 1), false,
-                                new DateTime(null, 2013, 1, 1), false
+                                new DateTime(bigDecimalZoneOffset, 2012, 1, 1), false,
+                                new DateTime(bigDecimalZoneOffset, 2013, 1, 1), false
                         )
                 )
         );
@@ -157,8 +180,8 @@ public class CqlInternalTypeRepresentationSuiteTest extends CqlTestBase {
         Assert.assertTrue(
                 ((Interval) result).equal(
                         new Interval(
-                                new DateTime(null, 2012, 1, 1), false,
-                                new DateTime(null, 2013, 1, 1), true
+                                new DateTime(bigDecimalZoneOffset, 2012, 1, 1), false,
+                                new DateTime(bigDecimalZoneOffset, 2013, 1, 1), true
                         )
                 )
         );
@@ -168,8 +191,8 @@ public class CqlInternalTypeRepresentationSuiteTest extends CqlTestBase {
         Assert.assertTrue(
                 ((Interval) result).equal(
                         new Interval(
-                                new DateTime(null, 2012, 1, 1), true,
-                                new DateTime(null, 2013, 1, 1), false
+                                new DateTime(bigDecimalZoneOffset, 2012, 1, 1), true,
+                                new DateTime(bigDecimalZoneOffset, 2013, 1, 1), false
                         )
                 )
         );
@@ -179,8 +202,8 @@ public class CqlInternalTypeRepresentationSuiteTest extends CqlTestBase {
         Assert.assertTrue(
                 ((Interval) result).equal(
                         new Interval(
-                                new DateTime(null, 2012, 1, 1), true,
-                                new DateTime(null, 2013, 1, 1), true
+                                new DateTime(bigDecimalZoneOffset, 2012, 1, 1), true,
+                                new DateTime(bigDecimalZoneOffset, 2013, 1, 1), true
                         )
                 )
         );
