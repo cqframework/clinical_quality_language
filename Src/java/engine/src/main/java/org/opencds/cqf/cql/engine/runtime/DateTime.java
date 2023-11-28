@@ -2,19 +2,13 @@ package org.opencds.cqf.cql.engine.runtime;
 
 import org.opencds.cqf.cql.engine.exception.CqlException;
 import org.opencds.cqf.cql.engine.exception.InvalidDateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.math.BigDecimal;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
-import java.util.TimeZone;
 
 public class DateTime extends BaseTemporal {
-    private static final Logger logger = LoggerFactory.getLogger(DateTime.class);
     private ZoneOffset zoneOffset;
 
     private OffsetDateTime dateTime;
@@ -61,7 +55,6 @@ public class DateTime extends BaseTemporal {
             dateString += ":00";
         }
         int size = 0;
-        boolean hasOffset = true;
         if (dateString.contains("T")) {
             String[] datetimeSplit = dateString.split("T");
             size += datetimeSplit[0].split("-").length;
@@ -273,8 +266,7 @@ public class DateTime extends BaseTemporal {
         final DateTime otherDateTime = (DateTime) other;
 
         return Objects.equals(zoneOffset, otherDateTime.zoneOffset) &&
-               Objects.equals(getPrecision(), otherDateTime.getPrecision()) &&
-               Objects.equals(getEvaluationOffset(), otherDateTime.getEvaluationOffset()) &&
+               Objects.equals(precision, otherDateTime.precision) &&
                Objects.equals(dateTime, otherDateTime.dateTime);
     }
 

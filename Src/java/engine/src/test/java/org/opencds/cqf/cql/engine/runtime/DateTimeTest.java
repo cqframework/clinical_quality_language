@@ -230,4 +230,32 @@ public class DateTimeTest {
 
         assertEquals(normalizedDateTime, dateTime.getDateTime());
     }
+
+    @Test
+    void testDateTimeEquals() {
+        var dateTime = new DateTime(BigDecimal.ONE, 2020);
+
+        assertTrue(dateTime.equals(dateTime));
+        assertFalse(dateTime.equals(null));
+        assertFalse(dateTime.equals(1));
+
+        var dateTime2 = new DateTime(BigDecimal.ONE, 2020);
+
+        // identical constructors
+        assertEquals(dateTime, dateTime2);
+
+        // varying offset
+        dateTime2 = new DateTime(BigDecimal.TWO, 2020);
+        assertNotEquals(dateTime, dateTime2);
+
+        // varying year
+        dateTime2 = new DateTime(BigDecimal.ONE, 2021);
+        assertNotEquals(dateTime, dateTime2);
+
+        // varying precision
+        dateTime2 = new DateTime(BigDecimal.ONE, 2020, 03);
+        assertNotEquals(dateTime, dateTime2);
+
+        // TODO: It'd be good to extend these across different types of constructors, for example, from a string
+    }
 }
