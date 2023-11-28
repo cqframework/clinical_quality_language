@@ -1,5 +1,6 @@
 {
   "resourceType": "Library",
+  "name": "EffectiveDataRequirements",
   "extension": [ {
     "url": "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition",
     "extension": [ {

@@ -579,6 +579,7 @@ public class DataRequirementsProcessorTest {
     private org.hl7.fhir.r5.model.Library getModuleDefinitionLibrary(Setup setup, CqlCompilerOptions cqlTranslatorOptions, Map<String, Object> parameters, ZonedDateTime evaluationDateTime) {
         DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(setup.manager(), setup.library(), cqlTranslatorOptions, null, parameters, evaluationDateTime, false,false);
+        assertEquals(moduleDefinitionLibrary.getName(), "EffectiveDataRequirements");
         assertTrue(moduleDefinitionLibrary.getType().getCode("http://terminology.hl7.org/CodeSystem/library-type").equalsIgnoreCase("module-definition"));
         return moduleDefinitionLibrary;
     }

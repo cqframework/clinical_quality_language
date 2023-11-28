@@ -259,6 +259,7 @@ public class DataRequirementsProcessor {
         Coding typeCoding = new Coding().setCode("module-definition");
         typeCoding.setSystem("http://terminology.hl7.org/CodeSystem/library-type");
         libraryType.addCoding(typeCoding);
+        returnLibrary.setName("EffectiveDataRequirements");
         returnLibrary.setType(libraryType);
         returnLibrary.setSubject(extractSubject(context));
         returnLibrary.getExtension().addAll(extractDirectReferenceCodes(context, requirements));
