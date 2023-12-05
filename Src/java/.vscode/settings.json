@@ -4,6 +4,7 @@
     "java.compile.nullAnalysis.mode": "automatic",
     "java.jdt.ls.vmargs": "-noverify -Xmx8G -XX:+UseG1GC -XX:+UseStringDeduplication",
     "cSpell.words": [
+        "archunit",
         "bools",
         "datumedge",
         "fhirpath",
@@ -11,6 +12,7 @@
         "Inferencing",
         "qicore",
         "testng",
+        "tngtech",
         "trackback"
     ],
     "cSpell.enabledLanguageIds": [
