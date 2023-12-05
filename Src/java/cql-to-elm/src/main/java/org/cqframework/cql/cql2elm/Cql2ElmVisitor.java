@@ -1,6 +1,7 @@
 package org.cqframework.cql.cql2elm;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.cqframework.cql.cql2elm.model.invocation.*;
@@ -12,8 +13,6 @@ import org.cqframework.cql.gen.cqlParser;
 import org.cqframework.cql.cql2elm.model.*;
 import org.hl7.cql.model.*;
 import org.hl7.elm.r1.*;
-import org.hl7.elm.r1.Element;
-import org.hl7.elm.r1.Interval;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,13 +46,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     private final List<Expression> expressions = new ArrayList<>();
     private final Map<String, Element> contextDefinitions = new HashMap<>();
 
-    public Cql2ElmVisitor(LibraryBuilder libraryBuilder) {
-        super(libraryBuilder);
-
-        if (libraryBuilder == null) {
-            throw new IllegalArgumentException("libraryBuilder is null");
-        }
-
+    public Cql2ElmVisitor(LibraryBuilder libraryBuilder, TokenStream tokenStream) {
+        super(libraryBuilder, tokenStream);
         this.systemMethodResolver = new SystemMethodResolver(this, libraryBuilder);
     }
 
@@ -1590,10 +1584,6 @@ DATETIME
                     parseExpression(ctx.expression(1)));
 
             libraryBuilder.resolveBinaryCall("System", "Equivalent", equivalent);
-
-            if (isAnnotationEnabled()) {
-                equivalent.setLocalId(Integer.toString(getNextLocalId()));
-            }
 
             if (!"~".equals(parseString(ctx.getChild(1)))) {
                 track(equivalent, ctx);

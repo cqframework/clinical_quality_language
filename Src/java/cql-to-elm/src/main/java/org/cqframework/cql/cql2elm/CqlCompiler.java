@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorVisitor;
+import org.cqframework.cql.elm.IdObjectFactory;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
@@ -44,14 +45,13 @@ public class CqlCompiler {
     }
 
     public CqlCompiler(NamespaceInfo namespaceInfo, VersionedIdentifier sourceInfo,
-                        LibraryManager libraryManager) {
+            LibraryManager libraryManager) {
         this.namespaceInfo = namespaceInfo;
         this.libraryManager = libraryManager;
 
         if (sourceInfo == null) {
             this.sourceInfo = new VersionedIdentifier().withId("Anonymous").withSystem("text/cql");
-        }
-        else {
+        } else {
             this.sourceInfo = sourceInfo;
         }
 
@@ -59,23 +59,29 @@ public class CqlCompiler {
             libraryManager.getNamespaceManager().ensureNamespaceRegistered(this.namespaceInfo);
         }
 
-        if (libraryManager.getNamespaceManager().hasNamespaces() && libraryManager.getLibrarySourceLoader() instanceof NamespaceAware) {
-            ((NamespaceAware)libraryManager.getLibrarySourceLoader()).setNamespaceManager(libraryManager.getNamespaceManager());
+        if (libraryManager.getNamespaceManager().hasNamespaces()
+                && libraryManager.getLibrarySourceLoader() instanceof NamespaceAware) {
+            ((NamespaceAware) libraryManager.getLibrarySourceLoader())
+                    .setNamespaceManager(libraryManager.getNamespaceManager());
         }
     }
 
     public Library getLibrary() {
         return library;
     }
+
     public CompiledLibrary getCompiledLibrary() {
         return compiledLibrary;
     }
+
     public Object toObject() {
         return visitResult;
     }
+
     public List<Retrieve> toRetrieves() {
         return retrieves;
     }
+
     public Map<VersionedIdentifier, CompiledLibrary> getCompiledLibraries() {
         return libraryManager.getCompiledLibraries();
     }
@@ -88,10 +94,21 @@ public class CqlCompiler {
         return result;
     }
 
-    public List<CqlCompilerException> getExceptions() { return exceptions; }
-    public List<CqlCompilerException> getErrors() { return errors; }
-    public List<CqlCompilerException> getWarnings() { return warnings; }
-    public List<CqlCompilerException> getMessages() { return messages; }
+    public List<CqlCompilerException> getExceptions() {
+        return exceptions;
+    }
+
+    public List<CqlCompilerException> getErrors() {
+        return errors;
+    }
+
+    public List<CqlCompilerException> getWarnings() {
+        return warnings;
+    }
+
+    public List<CqlCompilerException> getMessages() {
+        return messages;
+    }
 
     private class CqlErrorListener extends BaseErrorListener {
 
@@ -110,9 +127,11 @@ public class CqlCompiler {
             }
 
             if (context instanceof cqlParser.LibraryContext) {
-                cqlParser.LibraryDefinitionContext ldc = ((cqlParser.LibraryContext)context).libraryDefinition();
-                if (ldc != null && ldc.qualifiedIdentifier() != null && ldc.qualifiedIdentifier().identifier() != null) {
-                    return new VersionedIdentifier().withId(StringEscapeUtils.unescapeCql(ldc.qualifiedIdentifier().identifier().getText()));
+                cqlParser.LibraryDefinitionContext ldc = ((cqlParser.LibraryContext) context).libraryDefinition();
+                if (ldc != null && ldc.qualifiedIdentifier() != null
+                        && ldc.qualifiedIdentifier().identifier() != null) {
+                    return new VersionedIdentifier()
+                            .withId(StringEscapeUtils.unescapeCql(ldc.qualifiedIdentifier().identifier().getText()));
                 }
             }
 
@@ -120,12 +139,13 @@ public class CqlCompiler {
         }
 
         @Override
-        public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
+        public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine,
+                String msg, RecognitionException e) {
             var libraryIdentifier = builder.getLibraryIdentifier();
             if (libraryIdentifier == null) {
                 // Attempt to extract a libraryIdentifier from the currently parsed content
                 if (recognizer instanceof cqlParser) {
-                    libraryIdentifier = extractLibraryIdentifier((cqlParser)recognizer);
+                    libraryIdentifier = extractLibraryIdentifier((cqlParser) recognizer);
                 }
                 if (libraryIdentifier == null) {
                     libraryIdentifier = sourceInfo;
@@ -136,11 +156,11 @@ public class CqlCompiler {
             if (detailedErrors) {
                 builder.recordParsingException(new CqlSyntaxException(msg, trackback, e));
                 builder.recordParsingException(new CqlCompilerException(msg, trackback, e));
-            }
-            else {
+            } else {
                 if (offendingSymbol instanceof CommonToken) {
                     CommonToken token = (CommonToken) offendingSymbol;
-                    builder.recordParsingException(new CqlSyntaxException(String.format("Syntax error at %s", token.getText()), trackback, e));
+                    builder.recordParsingException(
+                            new CqlSyntaxException(String.format("Syntax error at %s", token.getText()), trackback, e));
                 } else {
                     builder.recordParsingException(new CqlSyntaxException("Syntax error", trackback, e));
                 }
@@ -156,7 +176,6 @@ public class CqlCompiler {
         return run(CharStreams.fromString(cqlText));
     }
 
-
     public Library run(InputStream is) throws IOException {
         return run(CharStreams.fromStream(is));
     }
@@ -167,14 +186,16 @@ public class CqlCompiler {
         warnings = new ArrayList<>();
         messages = new ArrayList<>();
 
-        LibraryBuilder builder = new LibraryBuilder(namespaceInfo, libraryManager);
+        LibraryBuilder builder = new LibraryBuilder(namespaceInfo, libraryManager, new IdObjectFactory());
         builder.setCompilerOptions(libraryManager.getCqlCompilerOptions());
-        Cql2ElmVisitor visitor = new Cql2ElmVisitor(builder);
-        builder.setVisitor(visitor);
-        visitor.setTranslatorOptions(libraryManager.getCqlCompilerOptions());
 
-        CqlCompiler.CqlErrorListener errorListener = new CqlCompiler.CqlErrorListener(builder, visitor.isDetailedErrorsEnabled());
+        CqlCompiler.CqlErrorListener errorListener = new CqlCompiler.CqlErrorListener(
+                builder,
+                libraryManager.getCqlCompilerOptions()
+                        .getOptions()
+                        .contains(CqlCompilerOptions.Options.EnableDetailedErrors));
 
+        // Phase 1, lex and parse the CQL
         cqlLexer lexer = new cqlLexer(is);
         lexer.removeErrorListeners();
         lexer.addErrorListener(errorListener);
@@ -186,8 +207,13 @@ public class CqlCompiler {
         parser.addErrorListener(errorListener);
         ParseTree tree = parser.library();
 
+        // Phase 2, preprocess the parse tree
         CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor(builder, tokens);
         preprocessor.visit(tree);
+
+        // Phase 3, generate the ELM
+        Cql2ElmVisitor visitor = new Cql2ElmVisitor(builder, tokens);
+        visitor.setTranslatorOptions(libraryManager.getCqlCompilerOptions());
 
         visitor.setTokenStream(tokens);
         visitor.setLibraryInfo(preprocessor.getLibraryInfo());

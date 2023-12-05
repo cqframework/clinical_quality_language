@@ -17,7 +17,7 @@ public class TypeBuilder {
     private ObjectFactory of;
     private ModelResolver mr;
 
-    public class InternalModelResolver implements ModelResolver {
+    public static class InternalModelResolver implements ModelResolver {
         private ModelManager modelManager;
 
         public InternalModelResolver(ModelManager modelManager) {
@@ -34,9 +34,8 @@ public class TypeBuilder {
         this.mr = mr;
     }
 
-    public TypeBuilder(ModelManager modelManager) {
-        this.of = new ObjectFactory();
-        this.mr = new InternalModelResolver(modelManager);
+    public TypeBuilder(ObjectFactory of, ModelManager modelManager) {
+        this(of, new InternalModelResolver(modelManager));
     }
 
     public QName dataTypeToQName(DataType type) {

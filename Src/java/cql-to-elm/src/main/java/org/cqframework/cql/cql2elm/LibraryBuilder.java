@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Created by Bryn on 12/29/2016.
  */
-public class LibraryBuilder implements ModelResolver {
+public class LibraryBuilder {
     public static enum SignatureLevel {
         /*
         Indicates signatures will never be included in operator invocations
@@ -42,19 +42,17 @@ public class LibraryBuilder implements ModelResolver {
         All
     }
 
-    public LibraryBuilder(LibraryManager libraryManager) {
-        this(null, libraryManager);
+    public LibraryBuilder(LibraryManager libraryManager, ObjectFactory objectFactory) {
+        this(null, libraryManager, objectFactory);
     }
 
-    public LibraryBuilder(NamespaceInfo namespaceInfo, LibraryManager libraryManager) {
-        if (libraryManager == null) {
-            throw new IllegalArgumentException("libraryManager is null");
-        }
+    public LibraryBuilder(NamespaceInfo namespaceInfo, LibraryManager libraryManager, ObjectFactory objectFactory) {
+        this.libraryManager = Objects.requireNonNull(libraryManager);
+        this.of = Objects.requireNonNull(objectFactory);
 
         this.namespaceInfo = namespaceInfo; // Note: allowed to be null, implies global namespace
         this.modelManager = libraryManager.getModelManager();
-        this.libraryManager = libraryManager;
-        this.typeBuilder = new TypeBuilder(of, this);
+        this.typeBuilder = new TypeBuilder(of, this.modelManager);
 
         this.library = of.createLibrary()
                 .withSchemaIdentifier(of.createVersionedIdentifier()
@@ -93,6 +91,10 @@ public class LibraryBuilder implements ModelResolver {
         return exceptions;
     }
 
+    public ObjectFactory getObjectFactory() {
+        return of;
+    }
+
     private final Map<String, Model> models = new LinkedHashMap<>();
 
     private final Map<String, ResultWithPossibleError<NamedTypeSpecifier>> nameTypeSpecifiers = new HashMap<>();
@@ -120,13 +122,12 @@ public class LibraryBuilder implements ModelResolver {
     public ConversionMap getConversionMap() {
         return conversionMap;
     }
-    private final ObjectFactory of = new ObjectFactory();
+    private final ObjectFactory of;
     private final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
     private boolean listTraversal = true;
     private CqlCompilerOptions options;
     private CqlToElmInfo cqlToElmInfo = null;
     private TypeBuilder typeBuilder = null;
-    private Cql2ElmVisitor visitor = null;
 
     public void enableListTraversal() {
         listTraversal = true;
@@ -156,10 +157,6 @@ public class LibraryBuilder implements ModelResolver {
         setCompatibilityLevel(options.getCompatibilityLevel());
         this.cqlToElmInfo.setTranslatorOptions(options.toString());
         this.cqlToElmInfo.setSignatureLevel(options.getSignatureLevel().name());
-    }
-
-    public void setVisitor(Cql2ElmVisitor visitor) {
-        this.visitor = visitor;
     }
 
     private String compatibilityLevel = null;
@@ -918,11 +915,6 @@ public class LibraryBuilder implements ModelResolver {
         // TODO: Take advantage of nary unions
         BinaryWrapper wrapper = normalizeListTypes(left, right);
         Union union = of.createUnion().withOperand(wrapper.left, wrapper.right);
-
-        if (visitor != null && visitor.isAnnotationEnabled()) {
-            union.setLocalId(Integer.toString(visitor.getNextLocalId()));
-        }
-
         resolveNaryCall("System", "Union", union);
         return union;
     }

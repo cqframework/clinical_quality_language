@@ -25,13 +25,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Stack;
 
 /**
  * Common functionality used by {@link CqlPreprocessorVisitor} and {@link Cql2ElmVisitor}
  */
 public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
-    protected final ObjectFactory of = new ObjectFactory();
+    protected final ObjectFactory of;
     protected final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
     private boolean implicitContextCreated = false;
     private String currentContext = "Unfiltered";
@@ -51,13 +52,10 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
     private final List<Expression> expressions = new ArrayList<>();
     private boolean includeDeprecatedElements = false;
 
-    public CqlPreprocessorElmCommonVisitor(LibraryBuilder libraryBuilder) {
-        this.libraryBuilder = libraryBuilder;
-    }
-
     public CqlPreprocessorElmCommonVisitor(LibraryBuilder libraryBuilder, TokenStream tokenStream) {
-        this.libraryBuilder = libraryBuilder;
-        this.tokenStream = tokenStream;
+        this.libraryBuilder = Objects.requireNonNull(libraryBuilder, "libraryBuilder required");
+        this.tokenStream = Objects.requireNonNull(tokenStream, "tokenStream required");
+        this.of = Objects.requireNonNull(libraryBuilder.getObjectFactory(), "libraryBuilder.objectFactory required");
     }
 
     protected boolean getImplicitContextCreated() {

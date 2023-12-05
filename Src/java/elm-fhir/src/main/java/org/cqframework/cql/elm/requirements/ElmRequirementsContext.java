@@ -2,6 +2,7 @@ package org.cqframework.cql.elm.requirements;
 
 import org.cqframework.cql.cql2elm.*;
 import org.cqframework.cql.cql2elm.model.LibraryRef;
+import org.cqframework.cql.elm.IdObjectFactory;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.hl7.cql.model.ClassType;
 import org.hl7.cql.model.DataType;
@@ -23,7 +24,7 @@ public class ElmRequirementsContext {
         this.libraryManager = libraryManager;
         this.options = options;
         this.typeResolver = new TypeResolver(libraryManager);
-        this.typeBuilder = new TypeBuilder(this.libraryManager.getModelManager());
+        this.typeBuilder = new TypeBuilder(new IdObjectFactory(), this.libraryManager.getModelManager());
 
         if (visitor == null) {
             throw new IllegalArgumentException("visitor required");
