@@ -2747,7 +2747,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
             result = aggregateResult(result, childResult);
         }
         for (SortByItem sbi : elm.getBy()) {
-            T childResult = visitElement(elm, context);
+            T childResult = visitElement(sbi, context);
             result = aggregateResult(result, childResult);
         }
         return result;
