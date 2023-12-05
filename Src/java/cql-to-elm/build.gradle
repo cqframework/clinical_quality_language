@@ -20,4 +20,5 @@ dependencies {
     testImplementation project(':quick')
     testImplementation project(':qdm')
     testImplementation 'com.github.reinert:jjschema:1.16'
+    testImplementation 'com.tngtech.archunit:archunit:1.2.1'
 }
