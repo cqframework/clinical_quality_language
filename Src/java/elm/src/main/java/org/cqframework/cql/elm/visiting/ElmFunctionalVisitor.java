@@ -34,4 +34,8 @@ public class ElmFunctionalVisitor<T, C> extends ElmBaseLibraryVisitor<T, C> {
     public T aggregateResult(T aggregate, T nextResult) {
         return this.aggregateResult.apply(aggregate, nextResult);
     }
+
+    public static <C, T> ElmFunctionalVisitor<T, C> from(BiFunction<Trackable, C, T> defaultResult, BiFunction<T, T, T> aggregateResult) {
+        return new ElmFunctionalVisitor<>(defaultResult, aggregateResult);
+    }
 }
