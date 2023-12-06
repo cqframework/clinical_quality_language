@@ -22,7 +22,8 @@ public enum ElmEdit {
     REMOVE_RESULT_TYPE {
         @Override
         public void edit(Element element) {
-            element.setResultType(null);
+            element.setResultTypeName(null);
+            element.setResultTypeSpecifier(null);
         }
     };
 

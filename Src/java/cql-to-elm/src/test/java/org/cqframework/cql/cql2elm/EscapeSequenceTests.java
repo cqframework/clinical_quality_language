@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 import org.cqframework.cql.cql2elm.LibraryManager;
 
-import static org.cqframework.cql.cql2elm.CqlCompilerOptions.Options.EnableResultTypes;
 import static org.cqframework.cql.cql2elm.matchers.ConvertsToDecimalFrom.convertsToDecimalFrom;
 import static org.cqframework.cql.cql2elm.matchers.HasTypeAndResult.hasTypeAndResult;
 import static org.cqframework.cql.cql2elm.matchers.LiteralFor.literalFor;
@@ -25,7 +24,7 @@ public class EscapeSequenceTests {
     @BeforeTest
     public void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
-        LibraryManager libraryManager = new LibraryManager(modelManager, new CqlCompilerOptions(EnableResultTypes));
+        LibraryManager libraryManager = new LibraryManager(modelManager, new CqlCompilerOptions());
         CqlTranslator translator = CqlTranslator.fromStream(org.cqframework.cql.cql2elm.EscapeSequenceTests.class.getResourceAsStream("EscapeSequenceTests.cql"),  libraryManager);
         assertThat(translator.getErrors().size(), is(0));
         Library library = translator.toELM();
