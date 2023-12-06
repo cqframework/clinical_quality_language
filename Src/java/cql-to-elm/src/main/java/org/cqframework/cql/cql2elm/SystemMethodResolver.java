@@ -21,8 +21,8 @@ public class SystemMethodResolver {
     private final LibraryBuilder builder;
 
     public SystemMethodResolver(Cql2ElmVisitor visitor, LibraryBuilder builder) {
-        this.visitor = Objects.requireNonNull(visitor, "visitor can not be null");
-        this.builder = Objects.requireNonNull(builder, "builder can not be null");
+        this.visitor = Objects.requireNonNull(visitor, "visitor required");
+        this.builder = Objects.requireNonNull(builder, "builder required");
         this.of = Objects.requireNonNull(builder.getObjectFactory(), "builder must have an object factory");
     }
 

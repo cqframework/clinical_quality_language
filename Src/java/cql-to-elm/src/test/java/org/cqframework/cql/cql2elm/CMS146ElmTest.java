@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.cqframework.cql.cql2elm.CqlCompilerOptions.Options.EnableAnnotations;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.*;
@@ -45,7 +46,7 @@ public class CMS146ElmTest {
     @Test(dataProvider = "sigLevels")
     public void testSignatureLevels(SignatureLevel signatureLevel) throws IOException {
         final ModelManager modelManager = new ModelManager();
-        final CqlTranslator translator = CqlTranslator.fromStream(CMS146ElmTest.class.getResourceAsStream("CMS146v2_Test_CQM.cql"), new LibraryManager(modelManager, new CqlCompilerOptions(ErrorSeverity.Warning, signatureLevel)));
+        final CqlTranslator translator = CqlTranslator.fromStream(CMS146ElmTest.class.getResourceAsStream("CMS146v2_Test_CQM.cql"), new LibraryManager(modelManager, new CqlCompilerOptions(ErrorSeverity.Warning, signatureLevel).withOptions(EnableAnnotations)));
         final Library library = translator.toELM();
 
         final List<CqlToElmBase> annotations = library.getAnnotation();

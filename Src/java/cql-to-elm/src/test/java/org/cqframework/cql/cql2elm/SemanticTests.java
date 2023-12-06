@@ -731,7 +731,7 @@ public class SemanticTests {
 
     @Test
     public void testIssue863() throws IOException {
-        final CqlTranslator translator = TestUtils.runSemanticTest("Issue863.cql", 0);
+        TestUtils.runSemanticTest("Issue863.cql", 0);
     }
 
     private CqlTranslator runSemanticTest(String testFileName) throws IOException {

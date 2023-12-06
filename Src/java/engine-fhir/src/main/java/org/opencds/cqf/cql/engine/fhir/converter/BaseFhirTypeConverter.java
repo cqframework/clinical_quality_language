@@ -34,7 +34,7 @@ abstract class BaseFhirTypeConverter implements FhirTypeConverter {
 
     @Override
     public boolean isFhirType(Object value) {
-        Objects.requireNonNull(value, "value can not be null");
+        Objects.requireNonNull(value, "value required");
 
         if (value instanceof Iterable<?>) {
             throw new IllegalArgumentException("isFhirType can not be used for Iterables");
@@ -215,7 +215,7 @@ abstract class BaseFhirTypeConverter implements FhirTypeConverter {
 
     @Override
     public Boolean isCqlType(Object value) {
-        Objects.requireNonNull(value, "value can not be null");
+        Objects.requireNonNull(value, "value required");
 
         if (value instanceof Iterable<?>) {
             throw new IllegalArgumentException("isCqlType can not be used for Iterables");

@@ -28,12 +28,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     private static final Logger logger = LoggerFactory.getLogger(Cql2ElmVisitor.class);
     private final SystemMethodResolver systemMethodResolver;
 
-    public void setLibraryInfo(LibraryInfo libraryInfo) {
-        if (libraryInfo == null) {
-            throw new IllegalArgumentException("libraryInfo is null");
-        }
-        this.libraryInfo = libraryInfo;
-    }
+    private final LibraryInfo libraryInfo;
 
     private final Set<String> definedExpressionDefinitions = new HashSet<>();
     private final Stack<ExpressionDefinitionInfo> forwards = new Stack<>();
@@ -46,8 +41,9 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     private final List<Expression> expressions = new ArrayList<>();
     private final Map<String, Element> contextDefinitions = new HashMap<>();
 
-    public Cql2ElmVisitor(LibraryBuilder libraryBuilder, TokenStream tokenStream) {
+    public Cql2ElmVisitor(LibraryBuilder libraryBuilder, TokenStream tokenStream, LibraryInfo libraryInfo) {
         super(libraryBuilder, tokenStream);
+        this.libraryInfo = Objects.requireNonNull(libraryInfo, "libraryInfo required");
         this.systemMethodResolver = new SystemMethodResolver(this, libraryBuilder);
     }
 

@@ -15,7 +15,7 @@ import org.opencds.cqf.cql.engine.runtime.Quantity;
     }
 
     The Ratio type represents a relationship between two quantities, such as a titre (e.g. 1:128), or a concentration
-        (e.g. 5 'mg':10’mL'). The numerator and denominator elements must be present (i.e. can not be null).
+        (e.g. 5 'mg':10’mL'). The numerator and denominator elements must be present (i.e. required).
 
 */
 

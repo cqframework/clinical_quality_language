@@ -38,7 +38,7 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
     private String currentContext = "Unfiltered";
     protected Stack<Chunk> chunks = new Stack<>();
     protected final LibraryBuilder libraryBuilder;
-    protected TokenStream tokenStream;
+    protected final TokenStream tokenStream;
     protected LibraryInfo libraryInfo = new LibraryInfo();
     private boolean annotate = false;
     private boolean detailedErrors = false;
@@ -56,6 +56,9 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
         this.libraryBuilder = Objects.requireNonNull(libraryBuilder, "libraryBuilder required");
         this.tokenStream = Objects.requireNonNull(tokenStream, "tokenStream required");
         this.of = Objects.requireNonNull(libraryBuilder.getObjectFactory(), "libraryBuilder.objectFactory required");
+
+        // Don't talk to strangers. Except when you have to.
+        this.setCompilerOptions(libraryBuilder.getLibraryManager().getCqlCompilerOptions());
     }
 
     protected boolean getImplicitContextCreated() {
@@ -78,10 +81,6 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
         String saveContext = this.currentContext;
         this.currentContext = currentContext;
         return saveContext;
-    }
-
-    public void setTokenStream(TokenStream theTokenStream) {
-        tokenStream = theTokenStream;
     }
 
     @Override
@@ -866,7 +865,7 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
         this.includeDeprecatedElements = includeDeprecatedElements;
     }
 
-    public void setTranslatorOptions(CqlCompilerOptions options) {
+    private void setCompilerOptions(CqlCompilerOptions options) {
         if (options.getOptions().contains(CqlCompilerOptions.Options.EnableDateRangeOptimization)) {
             this.enableDateRangeOptimization();
         }

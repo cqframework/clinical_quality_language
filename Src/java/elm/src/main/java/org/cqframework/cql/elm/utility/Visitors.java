@@ -12,13 +12,13 @@ public class Visitors {
     }
 
     public static <C, T> ElmFunctionalVisitor<T, C> from(BiFunction<Trackable, C, T> defaultResult, BiFunction<T, T, T> aggregateResult) {
-        Objects.requireNonNull(defaultResult, "defaultResult can not be null");
-        Objects.requireNonNull(aggregateResult, "aggregateResult can not be null");
+        Objects.requireNonNull(defaultResult, "defaultResult required");
+        Objects.requireNonNull(aggregateResult, "aggregateResult required");
         return new ElmFunctionalVisitor<>(defaultResult, aggregateResult);
     }
 
     public static <C, T> ElmFunctionalVisitor<T, C> from(BiFunction<Trackable, C, T> defaultResult) {
-        Objects.requireNonNull(defaultResult, "defaultResult can not be null");
+        Objects.requireNonNull(defaultResult, "defaultResult required");
         return from(defaultResult, (a, b) -> b);
     }
 }

@@ -23,10 +23,10 @@ https://cql.hl7.org/03-developersguide.html#aggregate-queries
 public class AggregateClauseEvaluator {
 
     public static Object aggregate(AggregateClause elm, State state, ElmLibraryVisitor<Object, State> visitor, List<Object> elements) {
-        Objects.requireNonNull(elm, "elm can not be null");
-        Objects.requireNonNull(visitor, "visitor can not be null");
-        Objects.requireNonNull(elements, "elements can not be null");
-        Objects.requireNonNull(state, "state can not be null");
+        Objects.requireNonNull(elm, "elm required");
+        Objects.requireNonNull(visitor, "visitor required");
+        Objects.requireNonNull(elements, "elements required");
+        Objects.requireNonNull(state, "state required");
 
         if (elm.isDistinct()) {
             elements = DistinctEvaluator.distinct(elements, state);

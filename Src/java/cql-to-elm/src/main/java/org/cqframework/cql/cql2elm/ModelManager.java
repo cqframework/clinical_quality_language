@@ -38,7 +38,7 @@ public class ModelManager {
      * @param globalCache cache for Models by ModelIdentifier. Expected to be thread-safe.
      */
     public ModelManager(Map<ModelIdentifier, Model> globalCache) {
-        requireNonNull(globalCache, "globalCache can not be null.");
+        requireNonNull(globalCache, "globalCache required.");
 
         this.namespaceManager = new NamespaceManager();
         this.globalCache = globalCache;
@@ -53,7 +53,7 @@ public class ModelManager {
     }
 
     public ModelManager(Path path, Map<ModelIdentifier, Model> globalCache) {
-        requireNonNull(globalCache, "globalCache can not be null.");
+        requireNonNull(globalCache, "globalCache required.");
 
         this.namespaceManager = new NamespaceManager();
         this.globalCache = globalCache;
@@ -69,7 +69,7 @@ public class ModelManager {
     }
 
     public ModelManager(boolean enableDefaultModelInfoLoading, Map<ModelIdentifier, Model> globalCache) {
-        requireNonNull(globalCache, "globalCache can not be null.");
+        requireNonNull(globalCache, "globalCache required.");
         this.namespaceManager = new NamespaceManager();
         this.globalCache = globalCache;
         this.enableDefaultModelInfoLoading = enableDefaultModelInfoLoading;
@@ -85,7 +85,7 @@ public class ModelManager {
     }
 
     public ModelManager(boolean enableDefaultModelInfoLoading, Path path, Map<ModelIdentifier, Model> globalCache) {
-        requireNonNull(globalCache, "globalCache can not be null.");
+        requireNonNull(globalCache, "globalCache required.");
         this.namespaceManager = new NamespaceManager();
         this.globalCache = globalCache;
         this.path = path;
@@ -100,7 +100,7 @@ public class ModelManager {
     }
 
     public ModelManager(NamespaceManager namespaceManager, Map<ModelIdentifier, Model> globalCache) {
-        requireNonNull(globalCache, "globalCache can not be null.");
+        requireNonNull(globalCache, "globalCache required.");
         this.namespaceManager = namespaceManager;
         this.globalCache = globalCache;
         initialize();
@@ -114,7 +114,7 @@ public class ModelManager {
     }
 
     public ModelManager(NamespaceManager namespaceManager, Path path, Map<ModelIdentifier, Model> globalCache) {
-        requireNonNull(globalCache, "globalCache can not be null.");
+        requireNonNull(globalCache, "globalCache required.");
         this.namespaceManager = namespaceManager;
         this.globalCache = globalCache;
         this.path = path;
@@ -129,7 +129,7 @@ public class ModelManager {
     }
 
     public ModelManager(NamespaceManager namespaceManager, boolean enableDefaultModelInfoLoading, Map<ModelIdentifier, Model> globalCache) {
-        requireNonNull(globalCache, "globalCache can not be null.");
+        requireNonNull(globalCache, "globalCache required.");
         this.namespaceManager = namespaceManager;
         this.globalCache = globalCache;
         this.enableDefaultModelInfoLoading = enableDefaultModelInfoLoading;
@@ -145,7 +145,7 @@ public class ModelManager {
     }
 
     public ModelManager(NamespaceManager namespaceManager, boolean enableDefaultModelInfoLoading, Path path, Map<ModelIdentifier, Model> globalCache) {
-        requireNonNull(globalCache, "globalCache can not be null.");
+        requireNonNull(globalCache, "globalCache required.");
         this.namespaceManager = namespaceManager;
         this.globalCache = globalCache;
         this.path = path;

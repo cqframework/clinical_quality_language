@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.cqframework.cql.cql2elm.CqlCompilerOptions.Options.EnableResultTypes;
 import static org.cqframework.cql.cql2elm.matchers.HasTypeAndResult.hasTypeAndResult;
 import static org.cqframework.cql.cql2elm.matchers.ListOfLiterals.listOfLiterals;
 import static org.cqframework.cql.cql2elm.matchers.LiteralFor.literalFor;
@@ -24,7 +25,7 @@ public class LiteralTests {
 
     @Test
     public void dateTimeLiteralTests() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("DateTimeLiteralTest.cql", 0);
+        CqlTranslator translator = TestUtils.runSemanticTest("DateTimeLiteralTest.cql", 0, EnableResultTypes);
         Library library = translator.toELM();
         defs = new HashMap<>();
         if (library.getStatements() != null) {
@@ -73,7 +74,7 @@ public class LiteralTests {
 
     @Test
     public void quantityLiteralTests() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("QuantityLiteralTest.cql", 1);
+        CqlTranslator translator = TestUtils.runSemanticTest("QuantityLiteralTest.cql", 1, EnableResultTypes);
         Library library = translator.toELM();
         defs = new HashMap<>();
         if (library.getStatements() != null) {
@@ -138,7 +139,7 @@ public class LiteralTests {
 
     @Test
     public void RatioLiteralTests() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("RatioLiteralTest.cql", 0);
+        CqlTranslator translator = TestUtils.runSemanticTest("RatioLiteralTest.cql", 0,  EnableResultTypes);
         Library library = translator.toELM();
         defs = getDefs(library);
 
@@ -159,7 +160,7 @@ public class LiteralTests {
 
     @Test
     public void testDecimal() throws IOException {
-        CqlTranslator translator = TestUtils.createTranslatorFromText("define TestDecimal: 1.5");
+        CqlTranslator translator = TestUtils.createTranslatorFromText("define TestDecimal: 1.5", EnableResultTypes);
         Library library = translator.toELM();
         defs = getDefs(library);
 
@@ -172,7 +173,7 @@ public class LiteralTests {
 
     @Test
     public void testString() throws IOException {
-        CqlTranslator translator = TestUtils.createTranslatorFromText("define TestString: '12345''");
+        CqlTranslator translator = TestUtils.createTranslatorFromText("define TestString: '12345''",  EnableResultTypes);
         Library library = translator.toELM();
         defs = getDefs(library);
 
@@ -185,7 +186,7 @@ public class LiteralTests {
 
     @Test
     public void testInteger() throws IOException {
-        CqlTranslator translator = TestUtils.createTranslatorFromText("define TestInteger: 12345");
+        CqlTranslator translator = TestUtils.createTranslatorFromText("define TestInteger: 12345", EnableResultTypes);
         Library library = translator.toELM();
         defs = getDefs(library);
 
@@ -198,7 +199,7 @@ public class LiteralTests {
 
     @Test
     public void testLongInteger() throws IOException {
-        CqlTranslator translator = TestUtils.createTranslatorFromText("define TestLongInteger: 12345L");
+        CqlTranslator translator = TestUtils.createTranslatorFromText("define TestLongInteger: 12345L", EnableResultTypes);
         Library library = translator.toELM();
         defs = getDefs(library);
 

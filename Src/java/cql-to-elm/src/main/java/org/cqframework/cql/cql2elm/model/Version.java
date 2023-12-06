@@ -73,7 +73,7 @@ public class Version implements Comparable<Version> {
 
     public Version(String version) {
         if (version == null)
-            throw new IllegalArgumentException("Version can not be null");
+            throw new IllegalArgumentException("Version required");
         setVersion(version);
     }
 

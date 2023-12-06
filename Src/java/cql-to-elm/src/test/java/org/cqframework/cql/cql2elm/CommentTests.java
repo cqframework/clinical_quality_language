@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.cqframework.cql.cql2elm.CqlCompilerOptions.Options.EnableAnnotations;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertTrue;
@@ -82,7 +83,7 @@ public class CommentTests {
 
     @Test
     public void testTags() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("TestTags.cql", 0);
+        CqlTranslator translator = TestUtils.runSemanticTest("TestTags.cql", 0, EnableAnnotations);
         CompiledLibrary library = translator.getTranslatedLibrary();
         assertThat(library.getLibrary().getAnnotation(), notNullValue());
         Annotation a = null;

@@ -104,8 +104,7 @@ public class TestUtils {
         LibraryBuilder libraryBuilder = new LibraryBuilder(libraryManager, new IdObjectFactory());
         CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor(libraryBuilder, tokens);
         preprocessor.visit(tree);
-        Cql2ElmVisitor visitor = new Cql2ElmVisitor(libraryBuilder, tokens);
-        visitor.setLibraryInfo(preprocessor.getLibraryInfo());
+        Cql2ElmVisitor visitor = new Cql2ElmVisitor(libraryBuilder, tokens, preprocessor.getLibraryInfo());
         return visitor;
     }
 

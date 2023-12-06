@@ -2,6 +2,9 @@ package org.cqframework.cql.cql2elm;
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.apache.commons.text.diff.EditCommand;
+import org.cqframework.cql.cql2elm.elm.ElmEdit;
+import org.cqframework.cql.cql2elm.elm.ElmEditor;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorVisitor;
 import org.cqframework.cql.elm.IdObjectFactory;
@@ -19,9 +22,18 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.cqframework.cql.cql2elm.CqlCompilerOptions.Options.EnableAnnotations;
+import static org.cqframework.cql.cql2elm.CqlCompilerOptions.Options.EnableLocators;
+import static org.cqframework.cql.cql2elm.CqlCompilerOptions.Options.EnableResultTypes;
 
 public class CqlCompiler {
     private Library library = null;
@@ -186,40 +198,51 @@ public class CqlCompiler {
         warnings = new ArrayList<>();
         messages = new ArrayList<>();
 
-        LibraryBuilder builder = new LibraryBuilder(namespaceInfo, libraryManager, new IdObjectFactory());
-        builder.setCompilerOptions(libraryManager.getCqlCompilerOptions());
+        var options = libraryManager.getCqlCompilerOptions().getOptions();;
 
+
+        LibraryBuilder builder = new LibraryBuilder(namespaceInfo, libraryManager, new IdObjectFactory());
         CqlCompiler.CqlErrorListener errorListener = new CqlCompiler.CqlErrorListener(
                 builder,
-                libraryManager.getCqlCompilerOptions()
-                        .getOptions()
-                        .contains(CqlCompilerOptions.Options.EnableDetailedErrors));
+                options.contains(CqlCompilerOptions.Options.EnableDetailedErrors));
 
-        // Phase 1, lex and parse the CQL
+
+        // Phase 1: Lexing
         cqlLexer lexer = new cqlLexer(is);
         lexer.removeErrorListeners();
         lexer.addErrorListener(errorListener);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
+
+        // Phase 2: Parsing (the lexer is actually streaming, so Phase 1 and 2 happen together)
         cqlParser parser = new cqlParser(tokens);
         parser.setBuildParseTree(true);
-
         parser.removeErrorListeners(); // Clear the default console listener
         parser.addErrorListener(errorListener);
         ParseTree tree = parser.library();
 
-        // Phase 2, preprocess the parse tree
+        // Phase 3: preprocess the parse tree (generates the LibraryInfo with
+        // header information for definitions)
         CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor(builder, tokens);
         preprocessor.visit(tree);
 
-        // Phase 3, generate the ELM
-        Cql2ElmVisitor visitor = new Cql2ElmVisitor(builder, tokens);
-        visitor.setTranslatorOptions(libraryManager.getCqlCompilerOptions());
-
-        visitor.setTokenStream(tokens);
-        visitor.setLibraryInfo(preprocessor.getLibraryInfo());
-
+        // Phase 4: generate the ELM (the ELM is generated with full type information that can be used
+        // for validation, optimization, rewriting, debugging, etc.)
+        Cql2ElmVisitor visitor = new Cql2ElmVisitor(builder, tokens, preprocessor.getLibraryInfo());
         visitResult = visitor.visit(tree);
         library = builder.getLibrary();
+
+        // Phase 5: ELM optimization/reduction (this is where result types, annotations, etc. are removed
+        // and there will probably be a lot of other optimizations that happen here in the future)
+        var edits = coalesceAll(
+            nullIfFalse(options.contains(EnableAnnotations), ElmEdit.REMOVE_ANNOTATION),
+            nullIfFalse(options.contains(EnableResultTypes), ElmEdit.REMOVE_RESULT_TYPE),
+            nullIfFalse(options.contains(EnableLocators), ElmEdit.REMOVE_LOCATOR)
+            );
+
+
+        var elmEditor = new ElmEditor();
+        elmEditor.visitLibrary(library, edits);
+
         compiledLibrary = builder.getCompiledLibrary();
         retrieves = visitor.getRetrieves();
         exceptions.addAll(builder.getExceptions());
@@ -229,4 +252,13 @@ public class CqlCompiler {
 
         return library;
     }
+
+    private static <T> T nullIfFalse(boolean b, T t) {
+        return !b ? t : null;
+    }
+
+    private static <T> List<T> coalesceAll(T... ts) {
+        return Arrays.stream(ts).filter(t -> t != null).collect(Collectors.toList());
+    }
+
 }

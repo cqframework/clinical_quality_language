@@ -61,8 +61,12 @@ public class LibraryBuilder {
 
         this.cqlToElmInfo = af.createCqlToElmInfo();
         this.cqlToElmInfo.setTranslatorVersion(LibraryBuilder.class.getPackage().getImplementationVersion());
+
         this.library.getAnnotation().add(this.cqlToElmInfo);
 
+        this.options = Objects.requireNonNull(libraryManager.getCqlCompilerOptions(), "libraryManager compilerOptions required.");
+
+        this.setCompilerOptions(this.options);
         compiledLibrary = new CompiledLibrary();
         compiledLibrary.setLibrary(library);
     }
@@ -95,6 +99,10 @@ public class LibraryBuilder {
         return of;
     }
 
+    public LibraryManager getLibraryManager() {
+        return libraryManager;
+    }
+
     private final Map<String, Model> models = new LinkedHashMap<>();
 
     private final Map<String, ResultWithPossibleError<NamedTypeSpecifier>> nameTypeSpecifiers = new HashMap<>();
@@ -106,10 +114,10 @@ public class LibraryBuilder {
     private final Deque<HidingIdentifierContext> hidingIdentifiersContexts = new ArrayDeque<>();
     private int literalContext = 0;
     private int typeSpecifierContext = 0;
-    private NamespaceInfo namespaceInfo = null;
-    private ModelManager modelManager = null;
+    private final NamespaceInfo namespaceInfo;
+    private final ModelManager modelManager;
     private Model defaultModel = null;
-    private LibraryManager libraryManager = null;
+    private final LibraryManager libraryManager;
     private Library library = null;
     public Library getLibrary() {
         return library;
@@ -125,20 +133,15 @@ public class LibraryBuilder {
     private final ObjectFactory of;
     private final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
     private boolean listTraversal = true;
-    private CqlCompilerOptions options;
-    private CqlToElmInfo cqlToElmInfo = null;
-    private TypeBuilder typeBuilder = null;
+    private final CqlCompilerOptions options;
+    private final CqlToElmInfo cqlToElmInfo;
+    private final TypeBuilder typeBuilder ;
 
     public void enableListTraversal() {
         listTraversal = true;
     }
 
-    public void setCompilerOptions(CqlCompilerOptions options) {
-        if (options == null) {
-            throw new IllegalArgumentException("Options cannot be null");
-        }
-
-        this.options = options;
+    private void setCompilerOptions(CqlCompilerOptions options) {
         if (options.getOptions().contains(CqlCompilerOptions.Options.DisableListTraversal)) {
             this.listTraversal = false;
         }
