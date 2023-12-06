@@ -78,7 +78,7 @@ public class ModelImporter {
 
     public ModelInfo importXsd() {
         if (options.getModel() == null || options.getModel().isEmpty()) {
-            throw new IllegalArgumentException("Model name is can not be null.");
+            throw new IllegalArgumentException("Model name is required.");
         }
         namespaces.put(schema.getTargetNamespace(), options.getModel());
 
