@@ -64,7 +64,7 @@ public class LibraryBuilder {
 
         this.library.getAnnotation().add(this.cqlToElmInfo);
 
-        this.options = Objects.requireNonNull(libraryManager.getCqlCompilerOptions(), "libraryManager compilerOptions required.");
+        this.options = Objects.requireNonNull(libraryManager.getCqlCompilerOptions(), "libraryManager compilerOptions can not be null.");
 
         this.setCompilerOptions(this.options);
         compiledLibrary = new CompiledLibrary();

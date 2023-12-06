@@ -25,7 +25,7 @@ public class CommentTests {
 
     @Test
     public void testComments() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("TestComments.cql", 0, CqlCompilerOptions.Options.EnableAnnotations);
+        CqlTranslator translator = TestUtils.runSemanticTest("TestComments.cql", 0);
         CompiledLibrary library = translator.getTranslatedLibrary();
         assertThat(library.getLibrary().getAnnotation(), notNullValue());
 
@@ -83,7 +83,7 @@ public class CommentTests {
 
     @Test
     public void testTags() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("TestTags.cql", 0, EnableAnnotations);
+        CqlTranslator translator = TestUtils.runSemanticTest("TestTags.cql", 0);
         CompiledLibrary library = translator.getTranslatedLibrary();
         assertThat(library.getLibrary().getAnnotation(), notNullValue());
         Annotation a = null;

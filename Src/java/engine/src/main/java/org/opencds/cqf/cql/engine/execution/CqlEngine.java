@@ -38,7 +38,7 @@ public class CqlEngine {
 
     public CqlEngine(Environment environment, Set<Options> engineOptions) {
         if (environment.getLibraryManager() == null) {
-            throw new IllegalArgumentException("Environment LibraryManager required.");
+            throw new IllegalArgumentException("Environment LibraryManager can not be null.");
         }
 
         this.environment = environment;
@@ -177,7 +177,7 @@ public class CqlEngine {
 
     public EvaluationResult evaluate(VersionedIdentifier libraryIdentifier, Set<String> expressions, Pair<String, Object> contextParameter, Map<String, Object> parameters, DebugMap debugMap, ZonedDateTime evaluationDateTime) {
         if (libraryIdentifier == null) {
-            throw new IllegalArgumentException("libraryIdentifier required.");
+            throw new IllegalArgumentException("libraryIdentifier can not be null.");
         }
 
         Library library = this.loadAndValidate(libraryIdentifier);
