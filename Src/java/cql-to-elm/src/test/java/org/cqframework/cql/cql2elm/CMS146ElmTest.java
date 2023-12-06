@@ -46,7 +46,7 @@ public class CMS146ElmTest {
     @Test(dataProvider = "sigLevels")
     public void testSignatureLevels(SignatureLevel signatureLevel) throws IOException {
         final ModelManager modelManager = new ModelManager();
-        final CqlTranslator translator = CqlTranslator.fromStream(CMS146ElmTest.class.getResourceAsStream("CMS146v2_Test_CQM.cql"), new LibraryManager(modelManager, new CqlCompilerOptions(ErrorSeverity.Warning, signatureLevel).withOptions(EnableAnnotations)));
+        final CqlTranslator translator = CqlTranslator.fromStream(CMS146ElmTest.class.getResourceAsStream("CMS146v2_Test_CQM.cql"), new LibraryManager(modelManager, new CqlCompilerOptions(ErrorSeverity.Warning, signatureLevel)));
         final Library library = translator.toELM();
 
         final List<CqlToElmBase> annotations = library.getAnnotation();
