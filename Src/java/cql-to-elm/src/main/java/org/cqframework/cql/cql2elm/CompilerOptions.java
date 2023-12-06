@@ -31,7 +31,7 @@ public class CompilerOptions {
      * @return The set of options used to translate the library.
      */
     public static Set<CqlCompilerOptions.Options> getCompilerOptions(Library library) {
-        requireNonNull(library, "library required");
+        requireNonNull(library, "library can not be null");
         if (library.getAnnotation() == null || library.getAnnotation().isEmpty()) {
             return null;
         }
@@ -88,7 +88,7 @@ public class CompilerOptions {
      * @return The version of compiler used to compiler the library.
      */
     public static String getCompilerVersion(Library library) {
-        requireNonNull(library, "library required");
+        requireNonNull(library, "library can not be null");
         if (library.getAnnotation() == null || library.getAnnotation().isEmpty()) {
             return null;
         }
