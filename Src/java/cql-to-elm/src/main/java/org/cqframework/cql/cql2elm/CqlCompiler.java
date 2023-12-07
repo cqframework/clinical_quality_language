@@ -2,7 +2,6 @@ package org.cqframework.cql.cql2elm;
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.apache.commons.text.diff.EditCommand;
 import org.cqframework.cql.cql2elm.elm.ElmEdit;
 import org.cqframework.cql.cql2elm.elm.ElmEditor;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
@@ -23,12 +22,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.cqframework.cql.cql2elm.CqlCompilerOptions.Options.EnableAnnotations;
@@ -257,7 +253,7 @@ public class CqlCompiler {
         return !b ? t : null;
     }
 
-    private static <T> List<T> coalesceAll(T... ts) {
+    private static List<ElmEdit> coalesceAll(ElmEdit... ts) {
         return Arrays.stream(ts).filter(t -> t != null).collect(Collectors.toList());
     }
 
