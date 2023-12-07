@@ -24,7 +24,7 @@ dependencies {
 
 ext.xjc = [
     destDir: "${buildDir}/generated/sources/$name/main/java",
-    args: '-disableXmlSecurity -Xfluent-api -Xequals -XhashCode -XtoString'
+    args: '-disableXmlSecurity -Xfluent-api -Xequals -XhashCode -XtoString -Xsetters -Xsetters-mode=direct'
 ]
 
 

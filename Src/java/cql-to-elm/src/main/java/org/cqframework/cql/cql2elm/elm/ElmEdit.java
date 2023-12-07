@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm.elm;
 
+import org.hl7.cql_annotations.r1.Annotation;
 import org.hl7.elm.r1.Element;
 
 public enum ElmEdit {
@@ -15,7 +16,13 @@ public enum ElmEdit {
         public void edit(Element element) {
             element.setLocalId(null);
             if (element.getAnnotation() != null) {
-                element.getAnnotation().clear();
+                for (int i = 0; i < element.getAnnotation().size(); i++) {
+                    var a = element.getAnnotation().get(i);
+                    if (a instanceof Annotation) {
+                        element.getAnnotation().remove(i);
+                        i--;
+                    }
+                }
             }
         }
     },

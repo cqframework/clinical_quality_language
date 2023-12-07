@@ -1,7 +1,6 @@
 package org.cqframework.cql.elm.visiting;
 
 import org.hl7.elm.r1.*;
-import org.hl7.elm.r1.Library.Statements;
 
 /**
  * Created by Bryn on 4/14/2016.

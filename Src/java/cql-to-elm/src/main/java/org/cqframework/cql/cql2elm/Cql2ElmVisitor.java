@@ -28,8 +28,6 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     private static final Logger logger = LoggerFactory.getLogger(Cql2ElmVisitor.class);
     private final SystemMethodResolver systemMethodResolver;
 
-    private final LibraryInfo libraryInfo;
-
     private final Set<String> definedExpressionDefinitions = new HashSet<>();
     private final Stack<ExpressionDefinitionInfo> forwards = new Stack<>();
     private final Map<cqlParser.FunctionDefinitionContext, FunctionHeader> functionHeaders = new HashMap<>();
@@ -77,6 +75,20 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         // Return last result (consistent with super implementation and helps w/ testing)
         return lastResult;
     }
+
+
+    // @Override
+    // public Object visit(ParseTree tree) {
+    //     boolean pushedChunk = pushChunk(tree);
+    //     Object o = null;
+    //     try {
+    //         o = super.visit(tree);
+    //         return o;
+    //     } finally {
+    //         popChunk(tree, o, pushedChunk);
+    //         processTags(tree, o);
+    //     }
+    // }
 
     @Override
     @SuppressWarnings("unchecked")

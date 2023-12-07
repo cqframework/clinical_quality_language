@@ -13,8 +13,7 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
 
     @Override
     public T visitElement(Element elm, C context) {
-        if (elm instanceof ExpressionDef) return visitExpressionDef((ExpressionDef)elm, context);
-        else if (elm instanceof CodeDef) return visitCodeDef((CodeDef)elm, context);
+        if (elm instanceof CodeDef) return visitCodeDef((CodeDef)elm, context);
         else if (elm instanceof CodeSystemDef) return visitCodeSystemDef((CodeSystemDef)elm, context);
         else if (elm instanceof ValueSetDef) return visitValueSetDef((ValueSetDef)elm, context);
         else if (elm instanceof ConceptDef) return visitConceptDef((ConceptDef)elm, context);
@@ -35,9 +34,7 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      */
     @Override
     public T visitExpression(Expression elm, C context) {
-        if (elm instanceof FunctionRef) return visitFunctionRef((FunctionRef)elm, context);
-        else if (elm instanceof ExpressionRef) return visitExpressionRef((ExpressionRef)elm, context);
-        else if (elm instanceof CodeSystemRef) return visitCodeSystemRef((CodeSystemRef)elm, context);
+        if (elm instanceof CodeSystemRef) return visitCodeSystemRef((CodeSystemRef)elm, context);
         else if (elm instanceof ValueSetRef) return visitValueSetRef((ValueSetRef)elm, context);
         else if (elm instanceof CodeRef) return visitCodeRef((CodeRef)elm, context);
         else if (elm instanceof ConceptRef) return visitConceptRef((ConceptRef)elm, context);

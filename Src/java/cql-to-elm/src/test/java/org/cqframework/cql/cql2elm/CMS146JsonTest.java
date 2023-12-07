@@ -2,6 +2,8 @@ package org.cqframework.cql.cql2elm;
 
 import org.cqframework.cql.cql2elm.CqlCompilerException.ErrorSeverity;
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
+import org.json.JSONException;
+import org.skyscreamer.jsonassert.JSONAssert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -28,14 +30,14 @@ public class CMS146JsonTest {
     }
 
     @Test(dataProvider = "sigFileAndSigLevel")
-    public void testCms146_SignatureLevels(String fileName, SignatureLevel expectedSignatureLevel) throws IOException {
+    public void testCms146_SignatureLevels(String fileName, SignatureLevel expectedSignatureLevel) throws IOException, JSONException {
         final String expectedJson = getJson(fileName);
 
         final File cms146 = getFile("CMS146v2_Test_CQM.cql");
         final ModelManager modelManager = new ModelManager();
         final CqlTranslator translator = CqlTranslator.fromFile(cms146, new LibraryManager(modelManager, new CqlCompilerOptions(ErrorSeverity.Warning, expectedSignatureLevel)));
         final String actualJson = translator.toJson();
-        assertThat(actualJson, sameJSONAs(expectedJson));
+        JSONAssert.assertEquals(expectedJson, actualJson, true);
     }
 
     private static String getJson(String name) throws IOException {

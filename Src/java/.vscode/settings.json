@@ -10,6 +10,7 @@
         "fhirpath",
         "hamcrest",
         "Inferencing",
+        "opdef",
         "qicore",
         "testng",
         "tngtech",

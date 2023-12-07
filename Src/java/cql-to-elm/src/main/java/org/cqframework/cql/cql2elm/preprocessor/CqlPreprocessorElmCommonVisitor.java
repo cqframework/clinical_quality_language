@@ -52,6 +52,13 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
     private final List<Expression> expressions = new ArrayList<>();
     private boolean includeDeprecatedElements = false;
 
+    /**
+     * TODO: refactor away!
+     */
+    public void setLibraryInfo(LibraryInfo libraryInfo) {
+        this.libraryInfo = libraryInfo;
+    }
+
     public CqlPreprocessorElmCommonVisitor(LibraryBuilder libraryBuilder, TokenStream tokenStream) {
         this.libraryBuilder = Objects.requireNonNull(libraryBuilder, "libraryBuilder required");
         this.tokenStream = Objects.requireNonNull(tokenStream, "tokenStream required");
