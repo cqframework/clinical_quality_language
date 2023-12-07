@@ -76,20 +76,6 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         return lastResult;
     }
 
-
-    // @Override
-    // public Object visit(ParseTree tree) {
-    //     boolean pushedChunk = pushChunk(tree);
-    //     Object o = null;
-    //     try {
-    //         o = super.visit(tree);
-    //         return o;
-    //     } finally {
-    //         popChunk(tree, o, pushedChunk);
-    //         processTags(tree, o);
-    //     }
-    // }
-
     @Override
     @SuppressWarnings("unchecked")
     public VersionedIdentifier visitLibraryDefinition(cqlParser.LibraryDefinitionContext ctx) {
