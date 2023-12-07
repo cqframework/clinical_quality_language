@@ -29,7 +29,7 @@ import java.util.Objects;
 import java.util.Stack;
 
 /**
- * Common functionality used by {@link CqlPreprocessorVisitor} and {@link Cql2ElmVisitor}
+ * Common functionality used by {@link CqlPreprocessor} and {@link ElmGenerator}
  */
 public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
     protected final ObjectFactory of;

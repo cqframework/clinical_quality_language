@@ -24,8 +24,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
-    private static final Logger logger = LoggerFactory.getLogger(Cql2ElmVisitor.class);
+public class ElmGenerator extends CqlPreprocessorElmCommonVisitor {
+    private static final Logger logger = LoggerFactory.getLogger(ElmGenerator.class);
     private final SystemMethodResolver systemMethodResolver;
 
     private final Set<String> definedExpressionDefinitions = new HashSet<>();
@@ -39,7 +39,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     private final List<Expression> expressions = new ArrayList<>();
     private final Map<String, Element> contextDefinitions = new HashMap<>();
 
-    public Cql2ElmVisitor(LibraryBuilder libraryBuilder, TokenStream tokenStream, LibraryInfo libraryInfo) {
+    public ElmGenerator(LibraryBuilder libraryBuilder, TokenStream tokenStream, LibraryInfo libraryInfo) {
         super(libraryBuilder, tokenStream);
         this.libraryInfo = Objects.requireNonNull(libraryInfo, "libraryInfo required");
         this.systemMethodResolver = new SystemMethodResolver(this, libraryBuilder);

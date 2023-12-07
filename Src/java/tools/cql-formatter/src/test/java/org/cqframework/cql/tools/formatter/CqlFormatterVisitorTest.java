@@ -1,6 +1,6 @@
 package org.cqframework.cql.tools.formatter;
 
-import org.cqframework.cql.cql2elm.Cql2ElmVisitor;
+import org.cqframework.cql.cql2elm.ElmGenerator;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -162,13 +162,13 @@ public class CqlFormatterVisitorTest {
     }
 
     private InputStream getInput(String fileName) {
-        InputStream is = Cql2ElmVisitor.class.getResourceAsStream(fileName);
+        InputStream is = ElmGenerator.class.getResourceAsStream(fileName);
 
         if (is == null) {
             is = CqlFormatterVisitorTest.class.getResourceAsStream(fileName);
 
             if (is == null) {
-                throw new IllegalArgumentException(String.format("Invalid test resource: %s not in %s or %s", fileName, Cql2ElmVisitor.class.getSimpleName(), CqlFormatterVisitor.class.getSimpleName()));
+                throw new IllegalArgumentException(String.format("Invalid test resource: %s not in %s or %s", fileName, ElmGenerator.class.getSimpleName(), CqlFormatterVisitor.class.getSimpleName()));
             }
         }
 

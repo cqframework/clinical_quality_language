@@ -17,10 +17,10 @@ import java.util.Set;
  */
 public class SystemMethodResolver {
     private final ObjectFactory of;
-    private final Cql2ElmVisitor visitor;
+    private final ElmGenerator visitor;
     private final LibraryBuilder builder;
 
-    public SystemMethodResolver(Cql2ElmVisitor visitor, LibraryBuilder builder) {
+    public SystemMethodResolver(ElmGenerator visitor, LibraryBuilder builder) {
         this.visitor = Objects.requireNonNull(visitor, "visitor required");
         this.builder = Objects.requireNonNull(builder, "builder required");
         this.of = Objects.requireNonNull(builder.getObjectFactory(), "builder must have an object factory");

@@ -10,7 +10,7 @@ import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
-import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorVisitor;
+import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessor;
 import org.cqframework.cql.elm.IdObjectFactory;
 import org.hl7.cql.model.NamespaceInfo;
 import org.hl7.elm.r1.Library;
@@ -31,11 +31,11 @@ public class TestUtils {
         return new ModelManager();
     }
 
-    public static Cql2ElmVisitor visitFile(String fileName, boolean inClassPath) throws IOException {
+    public static ElmGenerator visitFile(String fileName, boolean inClassPath) throws IOException {
         InputStream is = inClassPath ? TestUtils.class.getResourceAsStream(fileName) : new FileInputStream(fileName);
         TokenStream tokens = parseCharStream(CharStreams.fromStream(is));
         ParseTree tree = parseTokenStream(tokens);
-        Cql2ElmVisitor visitor = createElmTranslatorVisitor(tokens, tree);
+        ElmGenerator visitor = createElmTranslatorVisitor(tokens, tree);
         visitor.visit(tree);
         return visitor;
     }
@@ -98,13 +98,13 @@ public class TestUtils {
         }
     }
 
-    private static Cql2ElmVisitor createElmTranslatorVisitor(TokenStream tokens, ParseTree tree) {
+    private static ElmGenerator createElmTranslatorVisitor(TokenStream tokens, ParseTree tree) {
         ModelManager modelManager = new ModelManager();
         LibraryManager libraryManager = getLibraryManager(modelManager, null);
         LibraryBuilder libraryBuilder = new LibraryBuilder(libraryManager, new IdObjectFactory());
-        CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor(libraryBuilder, tokens);
+        CqlPreprocessor preprocessor = new CqlPreprocessor(libraryBuilder, tokens);
         preprocessor.visit(tree);
-        Cql2ElmVisitor visitor = new Cql2ElmVisitor(libraryBuilder, tokens, preprocessor.getLibraryInfo());
+        ElmGenerator visitor = new ElmGenerator(libraryBuilder, tokens, preprocessor.getLibraryInfo());
         return visitor;
     }
 

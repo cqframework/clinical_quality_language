@@ -5,7 +5,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.cqframework.cql.cql2elm.elm.ElmEdit;
 import org.cqframework.cql.cql2elm.elm.ElmEditor;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
-import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorVisitor;
+import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessor;
 import org.cqframework.cql.elm.IdObjectFactory;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.cqframework.cql.gen.cqlLexer;
@@ -218,12 +218,12 @@ public class CqlCompiler {
 
         // Phase 3: preprocess the parse tree (generates the LibraryInfo with
         // header information for definitions)
-        CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor(builder, tokens);
+        CqlPreprocessor preprocessor = new CqlPreprocessor(builder, tokens);
         preprocessor.visit(tree);
 
         // Phase 4: generate the ELM (the ELM is generated with full type information that can be used
         // for validation, optimization, rewriting, debugging, etc.)
-        Cql2ElmVisitor visitor = new Cql2ElmVisitor(builder, tokens, preprocessor.getLibraryInfo());
+        ElmGenerator visitor = new ElmGenerator(builder, tokens, preprocessor.getLibraryInfo());
         visitResult = visitor.visit(tree);
         library = builder.getLibrary();
 
@@ -235,9 +235,8 @@ public class CqlCompiler {
             nullIfFalse(options.contains(EnableLocators), ElmEdit.REMOVE_LOCATOR)
             );
 
-
-        var elmEditor = new ElmEditor();
-        elmEditor.visitLibrary(library, edits);
+        var elmEditor = new ElmEditor(edits);
+        elmEditor.edit(library);
 
         compiledLibrary = builder.getCompiledLibrary();
         retrieves = visitor.getRetrieves();
