@@ -235,8 +235,7 @@ public class CqlCompiler {
             nullIfFalse(options.contains(EnableLocators), ElmEdit.REMOVE_LOCATOR)
             );
 
-        var elmEditor = new ElmEditor(edits);
-        elmEditor.edit(library);
+        new ElmEditor(edits).edit(library);
 
         compiledLibrary = builder.getCompiledLibrary();
         retrieves = visitor.getRetrieves();
