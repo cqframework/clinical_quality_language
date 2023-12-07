@@ -19,6 +19,7 @@ import static org.cqframework.cql.cql2elm.CqlCompilerOptions.Options.EnableAnnot
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeThat;
 
 public class CommentTests {
 
@@ -368,6 +369,11 @@ public class CommentTests {
                 aInvalid = (Annotation)o;
             }
         }
-        assertThat(aInvalid, nullValue());
+
+        // Narrative still applies in the event of an invalid, it'll just
+        // be a comment instead of a tag
+        assertThat(aInvalid, notNullValue());
+        assertThat(aInvalid.getS(), notNullValue());
+        assertThat(aInvalid.getT().size(), equalTo(0));
     }
 }
