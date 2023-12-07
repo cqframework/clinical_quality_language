@@ -17,10 +17,17 @@ public enum ElmEdit {
             element.setLocalId(null);
             if (element.getAnnotation() != null) {
                 for (int i = 0; i < element.getAnnotation().size(); i++) {
-                    var a = element.getAnnotation().get(i);
-                    if (a instanceof Annotation) {
-                        element.getAnnotation().remove(i);
-                        i--;
+                    var x = element.getAnnotation().get(i);
+                    if (x instanceof Annotation) {
+                        var a = (Annotation) x;
+                        // TODO: Remove narrative but _not_ tags
+                        // Tags are necessary for `allowFluent` compiler resolution
+                        // to work correctly
+                        a.setS(null);
+                        if (a.getT().isEmpty()) {
+                            element.getAnnotation().remove(i);
+                            i--;
+                        }
                     }
                 }
             }
