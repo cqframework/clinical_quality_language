@@ -83,8 +83,10 @@ public class ElmBaseVisitorTest {
         var randomElmGenerator = new EasyRandom(randomParams);
         var randomElm = randomElmGenerator.nextObject(Library.class);
 
+        // 70 is the count I get with the current seed and max depth settings.
+        // This will change based on the random generation settings.
         var elementsGeneratedCount = elementsGenerated.size();
-        assertTrue(elementsGeneratedCount > 0); // Sanity check that the elm generator ran
+        assertEquals(70, elementsGeneratedCount);
 
         var elementsVisited = new ArrayList<Element>();
         var elementsDuplicated = new ArrayList<Element>();
@@ -105,25 +107,18 @@ public class ElmBaseVisitorTest {
 
         var visitorCount = countingVisitor.visitLibrary(randomElm, elementsVisited);
 
+        // Check that we visited every node we generated
         elementsGenerated.removeAll(elementsVisited);
-        // This should be a no-op if all the elements were visited correctly.
-        // Otherwise, it helps with debugging.
-        elementsGenerated.forEach(x -> System.err.println(x.getClass().getSimpleName()));
+        elementsGenerated.forEach(x -> System.err.println(x.getClass().getSimpleName())); // No-op if working as intended
+        assertEquals(0, elementsGenerated.size()); // 0 if we visited every node we generated (working as intended)
 
-        // If we didn't visit all the elements the size won't be zero.
-        assertEquals(0, elementsGenerated.size());
+        // Check that we didn't double-visit any nodes
+        elementsGenerated.forEach(x -> System.err.println(x.getClass().getSimpleName()));  // No-op if working as intended
+        assertEquals(0, elementsDuplicated.size()); // 0 if we didn't double-visit a node (working as intended)
 
-        // This ensures we didn't double visit any elements
-        assertEquals(0, elementsDuplicated.size());
-
-        // If _did_ visit all the elements and _didn't_ double count any nodes
-        // and the counts here are different that indicates that we missed a call
-        // to aggregateResult somewhere.
+        // Check that aggregateResult ran for every node
+        // if these are equal, then aggregateResult ran once for every node in the graph (working as intended)
         assertEquals(elementsGeneratedCount, visitorCount.intValue());
-
-        // 70 is the count I get with the current seed and max depth settings.
-        // This will change based on the random generation settings.
-        assertEquals(70, elementsGeneratedCount);
     }
 
     class NoTypeSpecifierRecursionPolicy implements ExclusionPolicy {
