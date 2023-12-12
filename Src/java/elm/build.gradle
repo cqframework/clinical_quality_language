@@ -5,6 +5,7 @@ plugins {
 
 dependencies {
     api project(':model')
+    testImplementation 'org.jeasy:easy-random-core:5.0.0'
 }
 
 generateSources {
