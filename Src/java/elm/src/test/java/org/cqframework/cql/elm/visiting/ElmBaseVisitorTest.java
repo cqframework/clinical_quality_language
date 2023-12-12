@@ -70,19 +70,21 @@ public class ElmBaseVisitorTest {
             }
         };
 
-        var params = new EasyRandomParameters()
+        var randomParams = new EasyRandomParameters()
                 .objectFactory(countingObjectFactory)
                 .seed(123L)
                 .randomizationDepth(10)
                 .charset(Charset.forName("UTF-8"))
                 .stringLengthRange(5, 50)
                 .collectionSizeRange(1, 3)
-                .exclusionPolicy(new TypeSpecifierExclusionPolicy())
+                .exclusionPolicy(new NoTypeSpecifierRecursionPolicy())
                 .scanClasspathForConcreteTypes(true);
 
-        var random = new EasyRandom(params);
+        var randomElmGenerator = new EasyRandom(randomParams);
+        var randomElm = randomElmGenerator.nextObject(Library.class);
 
-        var lib = random.nextObject(Library.class);
+        var elementsGeneratedCount = elementsGenerated.size();
+        assertTrue(elementsGeneratedCount > 0); // Sanity check that the elm generator ran
 
         var elementsVisited = new ArrayList<Element>();
         var elementsDuplicated = new ArrayList<Element>();
@@ -101,11 +103,11 @@ public class ElmBaseVisitorTest {
                 },
                 (a, b) -> a + b);
 
-        var visitCount = countingVisitor.visitLibrary(lib, elementsVisited);
-        var generatedCount = elementsGenerated.size();
-        assertTrue(generatedCount > 0);
+        var visitorCount = countingVisitor.visitLibrary(randomElm, elementsVisited);
 
         elementsGenerated.removeAll(elementsVisited);
+        // This should be a no-op if all the elements were visited correctly.
+        // Otherwise, it helps with debugging.
         elementsGenerated.forEach(x -> System.err.println(x.getClass().getSimpleName()));
 
         // If we didn't visit all the elements the size won't be zero.
@@ -117,16 +119,14 @@ public class ElmBaseVisitorTest {
         // If _did_ visit all the elements and _didn't_ double count any nodes
         // and the counts here are different that indicates that we missed a call
         // to aggregateResult somewhere.
-        assertEquals(generatedCount, visitCount.intValue());
+        assertEquals(elementsGeneratedCount, visitorCount.intValue());
 
-        // 70 is the count I get with the current seed and max depth settings
-        // this will change based on the generation settings. This is just here
-        // to make sure that the test doesn't pass if the generation settings
-        // are changed.
-        assertEquals(70, generatedCount);
+        // 70 is the count I get with the current seed and max depth settings.
+        // This will change based on the random generation settings.
+        assertEquals(70, elementsGeneratedCount);
     }
 
-    class TypeSpecifierExclusionPolicy implements ExclusionPolicy {
+    class NoTypeSpecifierRecursionPolicy implements ExclusionPolicy {
 
         // Don't recurse into TypeSpecifier.resultTypeSpecifier
         @Override
