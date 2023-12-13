@@ -1,6 +1,6 @@
 package org.cqframework.cql.elm.requirements;
 
-import org.cqframework.cql.elm.visiting.ElmBaseLibraryVisitor;
+import org.cqframework.cql.elm.visiting.BaseElmLibraryVisitor;
 import org.hl7.cql.model.ListType;
 import org.hl7.elm.r1.*;
 
@@ -48,7 +48,7 @@ At a binary comparison expression, return ElmConditionRequirement if possible
 At a logical expression, return ElmConjunctiveRequirement or ElmDisjunctiveRequirement
 
  */
-public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequirement, ElmRequirementsContext>{
+public class ElmRequirementsVisitor extends BaseElmLibraryVisitor <ElmRequirement, ElmRequirementsContext>{
 
     public ElmRequirementsVisitor() {
         super();
@@ -1261,9 +1261,7 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
     }
 
     @Override
-    public ElmRequirement visitChildren(AliasedQuerySource elm, ElmRequirementsContext context) {
-        // Override visit behavior because we need to exit the definition context prior to traversing the such that condition
-        // Such that traversal happens in the visitChildren relationship
+    public ElmRequirement visitAliasedQuerySource(AliasedQuerySource elm, ElmRequirementsContext context) {
         ElmRequirement result = defaultResult(elm, context);
         ElmQueryAliasContext aliasContext = null;
         context.getCurrentQueryContext().enterAliasDefinitionContext(elm);
@@ -1282,11 +1280,6 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
             context.reportRequirements(result, null);
         }
         return aliasContext.getRequirements();
-    }
-
-    @Override
-    public ElmRequirement visitAliasedQuerySource(AliasedQuerySource elm, ElmRequirementsContext context) {
-        return super.visitAliasedQuerySource(elm, context);
     }
 
     @Override
@@ -1311,7 +1304,12 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
         ElmRequirement result = visitChildren((AliasedQuerySource)elm, context);
 
         if (elm.getSuchThat() != null) {
-            ElmRequirement childResult = visitSuchThatClause(elm.getSuchThat(), elm instanceof With, context);
+            ElmRequirement childResult = visitExpression(elm.getSuchThat(), context);
+
+            if (elm instanceof With) {
+                context.getCurrentQueryContext().reportQueryRequirements(childResult);
+            }
+
             result = aggregateResult(result, childResult);
         }
 
@@ -1369,16 +1367,6 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
     public ElmRequirement visitWhereClause(Expression elm, ElmRequirementsContext context) {
         ElmRequirement childResult = super.visitWhereClause(elm, context);
         context.getCurrentQueryContext().reportQueryRequirements(childResult);
-        return childResult;
-    }
-
-    @Override
-    public ElmRequirement visitSuchThatClause(Expression elm, boolean isWith, ElmRequirementsContext context) {
-        ElmRequirement childResult = super.visitSuchThatClause(elm, isWith, context);
-        if (isWith) {
-            context.getCurrentQueryContext().reportQueryRequirements(childResult);
-        }
-        // TODO: Determine how to incorporate requirements from a without clause
         return childResult;
     }
 

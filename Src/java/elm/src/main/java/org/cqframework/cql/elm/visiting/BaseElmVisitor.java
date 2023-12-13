@@ -10,7 +10,7 @@ import org.hl7.elm.r1.*;
  * @param <C> The type of context passed to each visit method
  *            operations with no return type.
  */
-public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
+public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
 
     /**
      * Provides the default result of a visit
@@ -43,22 +43,16 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitElement(Element elm, C context) {
-        if (elm instanceof AliasedQuerySource)
-            return visitAliasedQuerySource((AliasedQuerySource) elm, context);
+        if (elm instanceof Expression)
+            return visitExpression((Expression) elm, context);
         else if (elm instanceof CaseItem)
             return visitCaseItem((CaseItem) elm, context);
-        else if (elm instanceof Expression)
-            return visitExpression((Expression) elm, context);
         else if (elm instanceof LetClause)
             return visitLetClause((LetClause) elm, context);
         else if (elm instanceof OperandDef)
             return visitOperandDef((OperandDef) elm, context);
         else if (elm instanceof ParameterDef)
             return visitParameterDef((ParameterDef) elm, context);
-        else if (elm instanceof ReturnClause)
-            return visitReturnClause((ReturnClause) elm, context);
-        else if (elm instanceof AggregateClause)
-            return visitAggregateClause((AggregateClause) elm, context);
         else if (elm instanceof SortByItem)
             return visitSortByItem((SortByItem) elm, context);
         else if (elm instanceof SortClause)
@@ -68,7 +62,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         else if (elm instanceof TypeSpecifier)
             return visitTypeSpecifier((TypeSpecifier) elm, context);
         else
-            return defaultResult(elm, context);
+            throw new IllegalArgumentException("Unknown Element type: " + elm.getClass().getName());
     }
 
     /**
@@ -90,8 +84,22 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
             return visitTupleTypeSpecifier((TupleTypeSpecifier) elm, context);
         else if (elm instanceof ChoiceTypeSpecifier)
             return visitChoiceTypeSpecifier((ChoiceTypeSpecifier) elm, context);
+        else if (elm instanceof ParameterTypeSpecifier)
+            return visitParameterTypeSpecifier((ParameterTypeSpecifier) elm, context);
         else
-            return defaultResult(elm, context);
+            throw new IllegalArgumentException("Unknown TypeSpecifier type: " + elm.getClass().getName());
+    }
+
+    /**
+     * Visit a ParameterTypeSpecifier. This method will be called for
+     * every node in the tree that is a ParameterTypeSpecifier.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitParameterTypeSpecifier(ParameterTypeSpecifier elm, C context) {
+        return defaultResult(elm, context);
     }
 
     /**
@@ -116,8 +124,13 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      */
     public T visitIntervalTypeSpecifier(IntervalTypeSpecifier elm, C context) {
         T result = defaultResult(elm, context);
-        T childResult = visitTypeSpecifier(elm.getPointType(), context);
-        return aggregateResult(result, childResult);
+
+        if (elm.getPointType() != null) {
+            T childResult = visitTypeSpecifier(elm.getPointType(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        return result;
     }
 
     /**
@@ -130,8 +143,12 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      */
     public T visitListTypeSpecifier(ListTypeSpecifier elm, C context) {
         T result = defaultResult(elm, context);
-        T childResult = visitTypeSpecifier(elm.getElementType(), context);
-        return aggregateResult(result, childResult);
+        if (elm.getElementType() != null) {
+            T childResult = visitTypeSpecifier(elm.getElementType(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        return result;
     }
 
     /**
@@ -144,12 +161,23 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      */
     public T visitTupleElementDefinition(TupleElementDefinition elm, C context) {
         T result = defaultResult(elm, context);
-        T childResult = visitTypeSpecifier(elm.getElementType(), context);
-        result = aggregateResult(result, childResult);
 
-        childResult = visitTypeSpecifier(elm.getType(), context);
-        result = aggregateResult(result, childResult);
-        return aggregateResult(result, childResult);
+        if (elm.getElementType() != null) {
+            T childResult = visitTypeSpecifier(elm.getElementType(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getType() != null) {
+            T childResult = visitTypeSpecifier(elm.getType(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        return result;
     }
 
     /**
@@ -179,13 +207,13 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      */
     public T visitChoiceTypeSpecifier(ChoiceTypeSpecifier elm, C context) {
         T result = defaultResult(elm, context);
-        for (TypeSpecifier choice : elm.getChoice()) {
-            T childResult = visitElement(choice, context);
+        for (var choice : elm.getChoice()) {
+            T childResult = visitTypeSpecifier(choice, context);
             result = aggregateResult(result, childResult);
         }
 
-        for (var t : elm.getType()) {
-            T childResult = visitElement(t, context);
+        for (var type : elm.getType()) {
+            T childResult = visitTypeSpecifier(type, context);
             result = aggregateResult(result, childResult);
         }
 
@@ -201,11 +229,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitExpression(Expression elm, C context) {
-        if (elm instanceof AggregateExpression)
-            return visitAggregateExpression((AggregateExpression) elm, context);
-        else if (elm instanceof OperatorExpression)
-            return visitOperatorExpression((OperatorExpression) elm, context);
-        else if (elm instanceof AliasRef)
+        if (elm instanceof AliasRef)
             return visitAliasRef((AliasRef) elm, context);
         else if (elm instanceof Case)
             return visitCase((Case) elm, context);
@@ -255,8 +279,12 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
             return visitTotal((Total) elm, context);
         else if (elm instanceof Tuple)
             return visitTuple((Tuple) elm, context);
+        else if (elm instanceof AggregateExpression)
+            return visitAggregateExpression((AggregateExpression) elm, context);
+        else if (elm instanceof OperatorExpression)
+            return visitOperatorExpression((OperatorExpression) elm, context);
         else
-            return defaultResult(elm, context);
+            throw new IllegalArgumentException("Unknown Expression type: " + elm.getClass().getName());
     }
 
     /**
@@ -268,15 +296,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitOperatorExpression(OperatorExpression elm, C context) {
-        if (elm instanceof UnaryExpression)
-            return visitUnaryExpression((UnaryExpression) elm, context);
-        else if (elm instanceof BinaryExpression)
-            return visitBinaryExpression((BinaryExpression) elm, context);
-        else if (elm instanceof TernaryExpression)
-            return visitTernaryExpression((TernaryExpression) elm, context);
-        else if (elm instanceof NaryExpression)
-            return visitNaryExpression((NaryExpression) elm, context);
-        else if (elm instanceof Round)
+        if (elm instanceof Round)
             return visitRound((Round) elm, context);
         else if (elm instanceof Combine)
             return visitCombine((Combine) elm, context);
@@ -316,7 +336,16 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
             return visitDescendents((Descendents) elm, context);
         else if (elm instanceof Message)
             return visitMessage((Message) elm, context);
-        return defaultResult(elm, context);
+        else if (elm instanceof UnaryExpression)
+            return visitUnaryExpression((UnaryExpression) elm, context);
+        else if (elm instanceof BinaryExpression)
+            return visitBinaryExpression((BinaryExpression) elm, context);
+        else if (elm instanceof TernaryExpression)
+            return visitTernaryExpression((TernaryExpression) elm, context);
+        else if (elm instanceof NaryExpression)
+            return visitNaryExpression((NaryExpression) elm, context);
+        else
+            throw new IllegalArgumentException("Unknown OperatorExpression type: " + elm.getClass().getName());
     }
 
     /**
@@ -329,7 +358,17 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     public T visitChildren(UnaryExpression elm, C context) {
         T result = defaultResult(elm, context);
         if (elm.getOperand() != null) {
-            T childResult = visitElement(elm.getOperand(), context);
+            T childResult = visitExpression(elm.getOperand(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        for (var s : elm.getSignature()) {
+            T childResult = visitTypeSpecifier(s, context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -461,7 +500,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         else if (elm instanceof Width)
             return visitWidth((Width) elm, context);
         else
-            return visitChildren(elm, context);
+            throw new IllegalArgumentException("Unknown UnaryExpression type: " + elm.getClass().getName());
     }
 
     /**
@@ -474,9 +513,20 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     public T visitChildren(BinaryExpression elm, C context) {
         T result = defaultResult(elm, context);
         for (Expression e : elm.getOperand()) {
-            T childResult = visitElement(e, context);
+            T childResult = visitExpression(e, context);
             result = aggregateResult(result, childResult);
         }
+
+        for (var s : elm.getSignature()) {
+            T childResult = visitTypeSpecifier(s, context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
+            result = aggregateResult(result, childResult);
+        }
+
         return result;
     }
 
@@ -596,7 +646,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         else if (elm instanceof Xor)
             return visitXor((Xor) elm, context);
         else
-            return visitChildren(elm, context);
+            throw new IllegalArgumentException("Unknown BinaryExpression type: " + elm.getClass().getName());
     }
 
     /**
@@ -609,9 +659,20 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     public T visitChildren(TernaryExpression elm, C context) {
         T result = defaultResult(elm, context);
         for (Expression e : elm.getOperand()) {
-            T childResult = visitElement(e, context);
+            T childResult = visitExpression(e, context);
             result = aggregateResult(result, childResult);
         }
+
+        for (var s : elm.getSignature()) {
+            T childResult = visitTypeSpecifier(s, context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
+            result = aggregateResult(result, childResult);
+        }
+
         return result;
     }
 
@@ -624,12 +685,10 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitTernaryExpression(TernaryExpression elm, C context) {
-        for (Expression element : elm.getOperand()) {
-            visitElement(element, context);
-        }
         if (elm instanceof ReplaceMatches)
             return visitReplaceMatches((ReplaceMatches) elm, context);
-        return visitChildren(elm, context);
+        else
+            throw new IllegalArgumentException("Unknown TernaryExpression type: " + elm.getClass().getName());
     }
 
     /**
@@ -642,9 +701,20 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     public T visitChildren(NaryExpression elm, C context) {
         T result = defaultResult(elm, context);
         for (Expression e : elm.getOperand()) {
-            T childResult = visitElement(e, context);
+            T childResult = visitExpression(e, context);
             result = aggregateResult(result, childResult);
         }
+
+        for (var s : elm.getSignature()) {
+            T childResult = visitTypeSpecifier(s, context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
+            result = aggregateResult(result, childResult);
+        }
+
         return result;
     }
 
@@ -668,27 +738,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         else if (elm instanceof Union)
             return visitUnion((Union) elm, context);
         else
-            return visitChildren(elm, context);
-    }
-
-    /**
-     * Visits the children of an ExpressionDef
-     *
-     * @param elm
-     * @param context
-     * @return
-     */
-    public T visitChildren(ExpressionDef elm, C context) {
-        T result = defaultResult(elm, context);
-        if (elm.getAccessLevel() != null) {
-            T childResult = visitAccessModifier(elm.getAccessLevel(), context);
-            result = aggregateResult(result, childResult);
-        }
-        if (elm.getExpression() != null) {
-            T childResult = visitElement(elm.getExpression(), context);
-            result = aggregateResult(result, childResult);
-        }
-        return result;
+            throw new IllegalArgumentException("Unknown NaryExpression type: " + elm.getClass().getName());
     }
 
     /**
@@ -703,7 +753,23 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         if (elm instanceof FunctionDef) {
             return visitFunctionDef((FunctionDef) elm, context);
         }
-        return visitChildren(elm, context);
+
+        T result = defaultResult(elm, context);
+        if (elm.getAccessLevel() != null) {
+            T childResult = visitAccessModifier(elm.getAccessLevel(), context);
+            result = aggregateResult(result, childResult);
+        }
+        if (elm.getExpression() != null) {
+            T childResult = visitExpression(elm.getExpression(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        return result;
     }
 
     /**
@@ -716,12 +782,13 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      */
     public T visitFunctionDef(FunctionDef elm, C context) {
         T result = visitChildren(elm, context);
-        for (Element operand : elm.getOperand()) {
-            T childResult = visitElement(operand, context);
+        for (var operand : elm.getOperand()) {
+            T childResult = visitOperandDef(operand, context);
             result = aggregateResult(result, childResult);
         }
+
         if (elm.getResultTypeSpecifier() != null) {
-            T childResult = visitElement(elm.getResultTypeSpecifier(), context);
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -752,7 +819,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         if (elm instanceof FunctionRef) {
             return visitFunctionRef((FunctionRef) elm, context);
         }
-        return defaultResult(elm, context);
+        return visitChildren(elm, context);
     }
 
     /**
@@ -765,15 +832,21 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      */
     public T visitFunctionRef(FunctionRef elm, C context) {
         T result = defaultResult(elm, context);
-        for (Expression element : elm.getOperand()) {
-            T childResult = visitElement(element, context);
+        for (var element : elm.getOperand()) {
+            T childResult = visitExpression(element, context);
             result = aggregateResult(result, childResult);
         }
 
         for (var s : elm.getSignature()) {
-            T childResult = visitElement(s, context);
+            T childResult = visitTypeSpecifier(s, context);
             result = aggregateResult(result, childResult);
         }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
+            result = aggregateResult(result, childResult);
+        }
+
         return result;
     }
 
@@ -788,12 +861,17 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     public T visitParameterDef(ParameterDef elm, C context) {
         T result = defaultResult(elm, context);
         if (elm.getParameterTypeSpecifier() != null) {
-            T childResult = visitElement(elm.getParameterTypeSpecifier(), context);
+            T childResult = visitTypeSpecifier(elm.getParameterTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
 
         if (elm.getDefault() != null) {
-            T childResult = visitElement(elm.getDefault(), context);
+            T childResult = visitExpression(elm.getDefault(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
 
@@ -809,7 +887,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitParameterRef(ParameterRef elm, C context) {
-        return defaultResult(elm, context);
+        return visitChildren(elm, context);
     }
 
     /**
@@ -823,9 +901,15 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     public T visitOperandDef(OperandDef elm, C context) {
         T result = defaultResult(elm, context);
         if (elm.getOperandTypeSpecifier() != null) {
-            T childResult = visitElement(elm.getOperandTypeSpecifier(), context);
+            T childResult = visitTypeSpecifier(elm.getOperandTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
+            result = aggregateResult(result, childResult);
+        }
+
         return result;
     }
 
@@ -838,7 +922,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitOperandRef(OperandRef elm, C context) {
-        return defaultResult(elm, context);
+        return visitChildren(elm, context);
     }
 
     /**
@@ -850,7 +934,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitIdentifierRef(IdentifierRef elm, C context) {
-        return defaultResult(elm, context);
+        return visitChildren(elm, context);
     }
 
     /**
@@ -862,7 +946,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitLiteral(Literal elm, C context) {
-        return defaultResult(elm, context);
+        return visitChildren(elm, context);
     }
 
     /**
@@ -879,6 +963,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
             T childResult = visitExpression(elm.getValue(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -894,6 +979,11 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         T result = defaultResult(elm, context);
         for (TupleElement element : elm.getElement()) {
             T childResult = visitTupleElement(element, context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -913,6 +1003,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
             T childResult = visitExpression(elm.getValue(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -930,6 +1021,12 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
             T childResult = visitInstanceElement(element, context);
             result = aggregateResult(result, childResult);
         }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
+            result = aggregateResult(result, childResult);
+        }
+
         return result;
     }
 
@@ -944,19 +1041,24 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     public T visitInterval(Interval elm, C context) {
         T result = defaultResult(elm, context);
         if (elm.getLow() != null) {
-            T childResult = visitElement(elm.getLow(), context);
+            T childResult = visitExpression(elm.getLow(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getLowClosedExpression() != null) {
-            T childResult = visitElement(elm.getLowClosedExpression(), context);
+            T childResult = visitExpression(elm.getLowClosedExpression(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getHigh() != null) {
-            T childResult = visitElement(elm.getHigh(), context);
+            T childResult = visitExpression(elm.getHigh(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getHighClosedExpression() != null) {
-            T childResult = visitElement(elm.getHighClosedExpression(), context);
+            T childResult = visitExpression(elm.getHighClosedExpression(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -973,11 +1075,16 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     public T visitList(List elm, C context) {
         T result = defaultResult(elm, context);
         if (elm.getTypeSpecifier() != null) {
-            T childResult = visitElement(elm.getTypeSpecifier(), context);
+            T childResult = visitTypeSpecifier(elm.getTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         for (Expression element : elm.getElement()) {
-            T childResult = visitElement(element, context);
+            T childResult = visitExpression(element, context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -1054,15 +1161,20 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     public T visitIf(If elm, C context) {
         T result = defaultResult(elm, context);
         if (elm.getCondition() != null) {
-            T childResult = visitElement(elm.getCondition(), context);
+            T childResult = visitExpression(elm.getCondition(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getThen() != null) {
-            T childResult = visitElement(elm.getThen(), context);
+            T childResult = visitExpression(elm.getThen(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getElse() != null) {
-            T childResult = visitElement(elm.getElse(), context);
+            T childResult = visitExpression(elm.getElse(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -1079,11 +1191,16 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     public T visitCaseItem(CaseItem elm, C context) {
         T result = defaultResult(elm, context);
         if (elm.getWhen() != null) {
-            T childResult = visitElement(elm.getWhen(), context);
+            T childResult = visitExpression(elm.getWhen(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getThen() != null) {
-            T childResult = visitElement(elm.getThen(), context);
+            T childResult = visitExpression(elm.getThen(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -1100,15 +1217,20 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     public T visitCase(Case elm, C context) {
         T result = defaultResult(elm, context);
         if (elm.getComparand() != null) {
-            T childResult = visitElement(elm.getComparand(), context);
+            T childResult = visitExpression(elm.getComparand(), context);
             result = aggregateResult(result, childResult);
         }
         for (CaseItem ci : elm.getCaseItem()) {
-            T childResult = visitElement(ci, context);
+            T childResult = visitCaseItem(ci, context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getElse() != null) {
-            T childResult = visitElement(elm.getElse(), context);
+            T childResult = visitExpression(elm.getElse(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -1123,7 +1245,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitNull(Null elm, C context) {
-        return defaultResult(elm, context);
+        return visitChildren(elm, context);
     }
 
     /**
@@ -1183,9 +1305,24 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitIs(Is elm, C context) {
-        T result = visitChildren(elm, context);
+        T result = defaultResult(elm, context);
         if (elm.getIsTypeSpecifier() != null) {
-            T childResult = visitElement(elm.getIsTypeSpecifier(), context);
+            T childResult = visitTypeSpecifier(elm.getIsTypeSpecifier(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getOperand() != null) {
+            T childResult = visitExpression(elm.getOperand(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        for (var s : elm.getSignature()) {
+            T childResult = visitTypeSpecifier(s, context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -1200,11 +1337,27 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitAs(As elm, C context) {
-        T result = visitChildren(elm, context);
+        T result = defaultResult(elm, context);
         if (elm.getAsTypeSpecifier() != null) {
-            T childResult = visitElement(elm.getAsTypeSpecifier(), context);
+            T childResult = visitTypeSpecifier(elm.getAsTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
+
+        if (elm.getOperand() != null) {
+            T childResult = visitExpression(elm.getOperand(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        for (var s : elm.getSignature()) {
+            T childResult = visitTypeSpecifier(s, context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
+            result = aggregateResult(result, childResult);
+        }
+
         return result;
     }
 
@@ -1217,9 +1370,24 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitConvert(Convert elm, C context) {
-        T result = visitChildren(elm, context);
+        T result = defaultResult(elm, context);
         if (elm.getToTypeSpecifier() != null) {
-            T childResult = visitElement(elm.getToTypeSpecifier(), context);
+            T childResult = visitTypeSpecifier(elm.getToTypeSpecifier(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getOperand() != null) {
+            T childResult = visitExpression(elm.getOperand(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        for (var s : elm.getSignature()) {
+            T childResult = visitTypeSpecifier(s, context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -1234,9 +1402,24 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitCanConvert(CanConvert elm, C context) {
-        T result = visitChildren(elm, context);
+        T result = defaultResult(elm, context);
         if (elm.getToTypeSpecifier() != null) {
-            T childResult = visitElement(elm.getToTypeSpecifier(), context);
+            T childResult = visitTypeSpecifier(elm.getToTypeSpecifier(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getOperand() != null) {
+            T childResult = visitExpression(elm.getOperand(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        for (var s : elm.getSignature()) {
+            T childResult = visitTypeSpecifier(s, context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -1769,11 +1952,22 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     public T visitRound(Round elm, C context) {
         T result = defaultResult(elm, context);
         if (elm.getOperand() != null) {
-            T childResult = visitElement(elm.getOperand(), context);
+            T childResult = visitExpression(elm.getOperand(), context);
             result = aggregateResult(result, childResult);
         }
+
         if (elm.getPrecision() != null) {
-            T childResult = visitElement(elm.getPrecision(), context);
+            T childResult = visitExpression(elm.getPrecision(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        for (var s : elm.getSignature()) {
+            T childResult = visitTypeSpecifier(s, context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -1860,7 +2054,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitMinValue(MinValue elm, C context) {
-        return defaultResult(elm, context);
+        return visitChildren(elm, context);
     }
 
     /**
@@ -1872,7 +2066,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitMaxValue(MaxValue elm, C context) {
-        return defaultResult(elm, context);
+        return visitChildren(elm, context);
     }
 
     /**
@@ -1934,11 +2128,21 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     public T visitCombine(Combine elm, C context) {
         T result = defaultResult(elm, context);
         if (elm.getSource() != null) {
-            T childResult = visitElement(elm.getSource(), context);
+            T childResult = visitExpression(elm.getSource(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getSeparator() != null) {
-            T childResult = visitElement(elm.getSeparator(), context);
+            T childResult = visitExpression(elm.getSeparator(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        for (var s : elm.getSignature()) {
+            T childResult = visitTypeSpecifier(s, context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -1962,6 +2166,16 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
             T childResult = visitExpression(elm.getSeparator(), context);
             result = aggregateResult(result, childResult);
         }
+
+        for (var s : elm.getSignature()) {
+            T childResult = visitTypeSpecifier(s, context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
+            result = aggregateResult(result, childResult);
+        }
         return result;
     }
 
@@ -1981,6 +2195,16 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         }
         if (elm.getSeparatorPattern() != null) {
             T childResult = visitExpression(elm.getSeparatorPattern(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        for (var s : elm.getSignature()) {
+            T childResult = visitTypeSpecifier(s, context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -2052,6 +2276,16 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
             T childResult = visitExpression(elm.getString(), context);
             result = aggregateResult(result, childResult);
         }
+
+        for (var s : elm.getSignature()) {
+            T childResult = visitTypeSpecifier(s, context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
+            result = aggregateResult(result, childResult);
+        }
         return result;
     }
 
@@ -2071,6 +2305,16 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         }
         if (elm.getString() != null) {
             T childResult = visitExpression(elm.getString(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        for (var s : elm.getSignature()) {
+            T childResult = visitTypeSpecifier(s, context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -2096,6 +2340,16 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         }
         if (elm.getLength() != null) {
             T childResult = visitExpression(elm.getLength(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        for (var s : elm.getSignature()) {
+            T childResult = visitTypeSpecifier(s, context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -2242,7 +2496,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitTimeOfDay(TimeOfDay elm, C context) {
-        return defaultResult(elm, context);
+        return visitChildren(elm, context);
     }
 
     /**
@@ -2254,7 +2508,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitToday(Today elm, C context) {
-        return defaultResult(elm, context);
+        return visitChildren(elm, context);
     }
 
     /**
@@ -2266,7 +2520,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitNow(Now elm, C context) {
-        return defaultResult(elm, context);
+        return visitChildren(elm, context);
     }
 
     /**
@@ -2311,6 +2565,16 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
             T childResult = visitExpression(elm.getTimezoneOffset(), context);
             result = aggregateResult(result, childResult);
         }
+
+        for (var s : elm.getSignature()) {
+            T childResult = visitTypeSpecifier(s, context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
+            result = aggregateResult(result, childResult);
+        }
         return result;
     }
 
@@ -2334,6 +2598,16 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         }
         if (elm.getDay() != null) {
             T childResult = visitExpression(elm.getDay(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        for (var s : elm.getSignature()) {
+            T childResult = visitTypeSpecifier(s, context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -2363,6 +2637,16 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         }
         if (elm.getMillisecond() != null) {
             T childResult = visitExpression(elm.getMillisecond(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        for (var s : elm.getSignature()) {
+            T childResult = visitTypeSpecifier(s, context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -2775,11 +3059,16 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     public T visitFilter(Filter elm, C context) {
         T result = defaultResult(elm, context);
         if (elm.getSource() != null) {
-            T childResult = visitElement(elm.getSource(), context);
+            T childResult = visitExpression(elm.getSource(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getCondition() != null) {
-            T childResult = visitElement(elm.getCondition(), context);
+            T childResult = visitExpression(elm.getCondition(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -2796,7 +3085,17 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     public T visitFirst(First elm, C context) {
         T result = defaultResult(elm, context);
         if (elm.getSource() != null) {
-            T childResult = visitElement(elm.getSource(), context);
+            T childResult = visitExpression(elm.getSource(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        for (var s : elm.getSignature()) {
+            T childResult = visitTypeSpecifier(s, context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -2813,7 +3112,17 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     public T visitLast(Last elm, C context) {
         T result = defaultResult(elm, context);
         if (elm.getSource() != null) {
-            T childResult = visitElement(elm.getSource(), context);
+            T childResult = visitExpression(elm.getSource(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        for (var s : elm.getSignature()) {
+            T childResult = visitTypeSpecifier(s, context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -2830,15 +3139,25 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     public T visitSlice(Slice elm, C context) {
         T result = defaultResult(elm, context);
         if (elm.getSource() != null) {
-            T childResult = visitElement(elm.getSource(), context);
+            T childResult = visitExpression(elm.getSource(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getStartIndex() != null) {
-            T childResult = visitElement(elm.getStartIndex(), context);
+            T childResult = visitExpression(elm.getStartIndex(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getEndIndex() != null) {
-            T childResult = visitElement(elm.getEndIndex(), context);
+            T childResult = visitExpression(elm.getEndIndex(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        for (var s : elm.getSignature()) {
+            T childResult = visitTypeSpecifier(s, context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -2855,7 +3174,12 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     public T visitChildren(Children elm, C context) {
         T result = defaultResult(elm, context);
         if (elm.getSource() != null) {
-            T childResult = visitElement(elm.getSource(), context);
+            T childResult = visitExpression(elm.getSource(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -2872,7 +3196,17 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     public T visitDescendents(Descendents elm, C context) {
         T result = defaultResult(elm, context);
         if (elm.getSource() != null) {
-            T childResult = visitElement(elm.getSource(), context);
+            T childResult = visitExpression(elm.getSource(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        for (var s : elm.getSignature()) {
+            T childResult = visitTypeSpecifier(s, context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -2889,23 +3223,33 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     public T visitMessage(Message elm, C context) {
         T result = defaultResult(elm, context);
         if (elm.getSource() != null) {
-            T childResult = visitElement(elm.getSource(), context);
+            T childResult = visitExpression(elm.getSource(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getCondition() != null) {
-            T childResult = visitElement(elm.getCondition(), context);
+            T childResult = visitExpression(elm.getCondition(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getCode() != null) {
-            T childResult = visitElement(elm.getCode(), context);
+            T childResult = visitExpression(elm.getCode(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getSeverity() != null) {
-            T childResult = visitElement(elm.getSeverity(), context);
+            T childResult = visitExpression(elm.getSeverity(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getMessage() != null) {
-            T childResult = visitElement(elm.getMessage(), context);
+            T childResult = visitExpression(elm.getMessage(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        for (var s : elm.getSignature()) {
+            T childResult = visitTypeSpecifier(s, context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -2922,11 +3266,21 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     public T visitIndexOf(IndexOf elm, C context) {
         T result = defaultResult(elm, context);
         if (elm.getSource() != null) {
-            T childResult = visitElement(elm.getSource(), context);
+            T childResult = visitExpression(elm.getSource(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getElement() != null) {
-            T childResult = visitElement(elm.getElement(), context);
+            T childResult = visitExpression(elm.getElement(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        for (var s : elm.getSignature()) {
+            T childResult = visitTypeSpecifier(s, context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -2955,11 +3309,16 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     public T visitSort(Sort elm, C context) {
         T result = defaultResult(elm, context);
         if (elm.getSource() != null) {
-            T childResult = visitElement(elm.getSource(), context);
+            T childResult = visitExpression(elm.getSource(), context);
             result = aggregateResult(result, childResult);
         }
         for (SortByItem sbi : elm.getBy()) {
-            T childResult = visitElement(sbi, context);
+            T childResult = visitSortByItem(sbi, context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -2976,11 +3335,16 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     public T visitForEach(ForEach elm, C context) {
         T result = defaultResult(elm, context);
         if (elm.getSource() != null) {
-            T childResult = visitElement(elm.getSource(), context);
+            T childResult = visitExpression(elm.getSource(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getElement() != null) {
-            T childResult = visitElement(elm.getElement(), context);
+            T childResult = visitExpression(elm.getElement(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -2997,11 +3361,16 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     public T visitRepeat(Repeat elm, C context) {
         T result = defaultResult(elm, context);
         if (elm.getSource() != null) {
-            T childResult = visitElement(elm.getSource(), context);
+            T childResult = visitExpression(elm.getSource(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getElement() != null) {
-            T childResult = visitElement(elm.getElement(), context);
+            T childResult = visitExpression(elm.getElement(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -3028,7 +3397,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitCurrent(Current elm, C context) {
-        return defaultResult(elm, context);
+        return visitChildren(elm, context);
     }
 
     /**
@@ -3040,7 +3409,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitIteration(Iteration elm, C context) {
-        return defaultResult(elm, context);
+        return visitChildren(elm, context);
     }
 
     /**
@@ -3052,7 +3421,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitTotal(Total elm, C context) {
-        return defaultResult(elm, context);
+        return visitChildren(elm, context);
     }
 
     /**
@@ -3077,12 +3446,17 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     public T visitChildren(AggregateExpression elm, C context) {
         T result = defaultResult(elm, context);
         if (elm.getSource() != null) {
-            T childResult = visitElement(elm.getSource(), context);
+            T childResult = visitExpression(elm.getSource(), context);
             result = aggregateResult(result, childResult);
         }
 
         for (var s : elm.getSignature()) {
-            T childResult = visitElement(s, context);
+            T childResult = visitTypeSpecifier(s, context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
 
@@ -3130,7 +3504,8 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
             return visitAllTrue((AllTrue) elm, context);
         else if (elm instanceof AnyTrue)
             return visitAnyTrue((AnyTrue) elm, context);
-        return visitChildren(elm, context);
+        else
+            throw new IllegalArgumentException("Unsupported aggregate expression type: " + elm.getClass().getName());
     }
 
     /**
@@ -3149,6 +3524,21 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         }
         if (elm.getIteration() != null) {
             T childResult = visitExpression(elm.getIteration(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getSource() != null) {
+            T childResult = visitExpression(elm.getSource(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        for (var s : elm.getSignature()) {
+            T childResult = visitTypeSpecifier(s, context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -3335,22 +3725,6 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visits the children of a Property
-     *
-     * @param elm
-     * @param context
-     * @return
-     */
-    public T visitChildren(Property elm, C context) {
-        T result = defaultResult(elm, context);
-        if (elm.getSource() != null) {
-            T childResult = visitExpression(elm.getSource(), context);
-            result = aggregateResult(result, childResult);
-        }
-        return result;
-    }
-
-    /**
      * Visit a Property. This method will be called for
      * every node in the tree that is a Property.
      *
@@ -3359,20 +3733,14 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitProperty(Property elm, C context) {
-        return visitChildren(elm, context);
-    }
-
-    /**
-     * Visits the children of an AliasedQuerySource
-     *
-     * @param elm
-     * @param context
-     * @return
-     */
-    public T visitChildren(AliasedQuerySource elm, C context) {
         T result = defaultResult(elm, context);
-        if (elm.getExpression() != null) {
-            T childResult = visitExpression(elm.getExpression(), context);
+        if (elm.getSource() != null) {
+            T childResult = visitExpression(elm.getSource(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -3390,7 +3758,18 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         if (elm instanceof RelationshipClause) {
             return visitRelationshipClause((RelationshipClause) elm, context);
         }
-        return visitChildren(elm, context);
+
+        T result = defaultResult(elm, context);
+        if (elm.getExpression() != null) {
+            T childResult = visitExpression(elm.getExpression(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
+            result = aggregateResult(result, childResult);
+        }
+        return result;
     }
 
     /**
@@ -3402,24 +3781,17 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitLetClause(LetClause elm, C context) {
+        T result = defaultResult(elm, context);
         if (elm.getExpression() != null) {
-            return visitElement(elm.getExpression(), context);
+            T childResult = visitExpression(elm.getExpression(), context);
+            result = aggregateResult(result, childResult);
         }
-        return null;
-    }
 
-    /**
-     * Visits an expression that is the condition of a such that clause in a
-     * with or without clause. The isWith parameter indicates whether the clause
-     * is a with or a without.
-     *
-     * @param elm
-     * @param isWith
-     * @param context
-     * @return
-     */
-    public T visitSuchThatClause(Expression elm, boolean isWith, C context) {
-        return visitElement(elm, context);
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
+            result = aggregateResult(result, childResult);
+        }
+        return result;
     }
 
     /**
@@ -3432,11 +3804,16 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     public T visitChildren(RelationshipClause elm, C context) {
         T result = defaultResult(elm, context);
         if (elm.getExpression() != null) {
-            T childResult = visitElement(elm.getExpression(), context);
+            T childResult = visitExpression(elm.getExpression(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getSuchThat() != null) {
-            T childResult = visitSuchThatClause(elm.getSuchThat(), elm instanceof With, context);
+            T childResult = visitExpression(elm.getSuchThat(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -3455,8 +3832,9 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
             return visitWith((With) elm, context);
         } else if (elm instanceof Without) {
             return visitWithout((Without) elm, context);
+        } else {
+            throw new IllegalArgumentException("Unknown RelationshipClause type: " + elm.getClass().getName());
         }
-        return visitChildren(elm, context);
     }
 
     /**
@@ -3492,18 +3870,14 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitSortByItem(SortByItem elm, C context) {
-        T result = defaultResult(elm, context);
         if (elm instanceof ByDirection) {
-            T childResult = visitByDirection((ByDirection) elm, context);
-            result = aggregateResult(result, childResult);
+            return visitByDirection((ByDirection) elm, context);
         } else if (elm instanceof ByColumn) {
-            T childResult = visitByColumn((ByColumn) elm, context);
-            result = aggregateResult(result, childResult);
+            return visitByColumn((ByColumn) elm, context);
         } else if (elm instanceof ByExpression) {
-            T childResult = visitByExpression((ByExpression) elm, context);
-            result = aggregateResult(result, childResult);
-        }
-        return result;
+            return visitByExpression((ByExpression) elm, context);
+        } else
+            throw new IllegalArgumentException("Unknown SortByItem type: " + elm.getClass().getName());
     }
 
     /**
@@ -3515,7 +3889,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitByDirection(ByDirection elm, C context) {
-        return defaultResult(elm, context);
+        return visitChildren(elm, context);
     }
 
     /**
@@ -3527,7 +3901,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitByColumn(ByColumn elm, C context) {
-        return defaultResult(elm, context);
+        return visitChildren(elm, context);
     }
 
     /**
@@ -3541,9 +3915,15 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     public T visitByExpression(ByExpression elm, C context) {
         T result = defaultResult(elm, context);
         if (elm.getExpression() != null) {
-            T childResult = visitElement(elm.getExpression(), context);
+            T childResult = visitExpression(elm.getExpression(), context);
             result = aggregateResult(result, childResult);
         }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
+            result = aggregateResult(result, childResult);
+        }
+
         return result;
     }
 
@@ -3558,9 +3938,15 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     public T visitSortClause(SortClause elm, C context) {
         T result = defaultResult(elm, context);
         for (SortByItem sbi : elm.getBy()) {
-            T childResult = visitElement(sbi, context);
+            T childResult = visitSortByItem(sbi, context);
             result = aggregateResult(result, childResult);
         }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
+            result = aggregateResult(result, childResult);
+        }
+
         return result;
     }
 
@@ -3575,11 +3961,16 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     public T visitAggregateClause(AggregateClause elm, C context) {
         T result = defaultResult(elm, context);
         if (elm.getExpression() != null) {
-            T childResult = visitElement(elm.getExpression(), context);
+            T childResult = visitExpression(elm.getExpression(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getStarting() != null) {
-            T childResult = visitElement(elm.getStarting(), context);
+            T childResult = visitExpression(elm.getStarting(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -3599,6 +3990,11 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
             T childResult = visitExpression(elm.getExpression(), context);
             result = aggregateResult(result, childResult);
         }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
+            result = aggregateResult(result, childResult);
+        }
         return result;
     }
 
@@ -3611,7 +4007,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return
      */
     public T visitWhereClause(Expression elm, C context) {
-        return visitElement(elm, context);
+        return visitExpression(elm, context);
     }
 
     /**
@@ -3624,36 +4020,41 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      */
     public T visitQuery(Query elm, C context) {
         T result = defaultResult(elm, context);
-        for (AliasedQuerySource source : elm.getSource()) {
-            T childResult = visitElement(source, context);
+        for (var source : elm.getSource()) {
+            T childResult = visitAliasedQuerySource(source, context);
             result = aggregateResult(result, childResult);
         }
-        if (elm.getLet() != null && !elm.getLet().isEmpty()) {
-            for (Element let : elm.getLet()) {
-                T childResult = visitElement(let, context);
-                result = aggregateResult(result, childResult);
-            }
+        for (var let : elm.getLet()) {
+            T childResult = visitLetClause(let, context);
+            result = aggregateResult(result, childResult);
         }
-        if (elm.getRelationship() != null && !elm.getRelationship().isEmpty()) {
-            for (Element relationship : elm.getRelationship()) {
-                T childResult = visitElement(relationship, context);
-                result = aggregateResult(result, childResult);
-            }
+
+        for (var r : elm.getRelationship()) {
+            T childResult = visitRelationshipClause(r, context);
+            result = aggregateResult(result, childResult);
         }
+
         if (elm.getWhere() != null) {
-            T childResult = visitWhereClause(elm.getWhere(), context);
+            T childResult = visitExpression(elm.getWhere(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getReturn() != null) {
-            T childResult = visitElement(elm.getReturn(), context);
+            T childResult = visitReturnClause(elm.getReturn(), context);
             result = aggregateResult(result, childResult);
         }
+
         if (elm.getAggregate() != null) {
-            T childResult = visitElement(elm.getAggregate(), context);
+            T childResult = visitAggregateClause(elm.getAggregate(), context);
             result = aggregateResult(result, childResult);
         }
+
         if (elm.getSort() != null) {
-            T childResult = visitElement(elm.getSort(), context);
+            T childResult = visitSortClause(elm.getSort(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -3668,7 +4069,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitAliasRef(AliasRef elm, C context) {
-        return defaultResult(elm, context);
+        return visitChildren(elm, context);
     }
 
     /**
@@ -3680,6 +4081,28 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitQueryLetRef(QueryLetRef elm, C context) {
-        return defaultResult(elm, context);
+        return visitChildren(elm, context);
+    }
+
+    public T visitChildren(Expression elm, C context) {
+        T result = defaultResult(elm, context);
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        return result;
+    }
+
+    public T visitChildren(Element elm, C context) {
+        T result = defaultResult(elm, context);
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        return result;
     }
 }

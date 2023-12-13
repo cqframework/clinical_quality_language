@@ -5,14 +5,14 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.cqframework.cql.elm.visiting.ElmBaseLibraryVisitor;
+import org.cqframework.cql.elm.visiting.BaseElmLibraryVisitor;
 import org.hl7.cql.model.IntervalType;
 import org.hl7.cql.model.ListType;
 import org.hl7.elm.r1.*;
 import org.opencds.cqf.cql.engine.elm.executing.*;
 import org.opencds.cqf.cql.engine.runtime.TemporalHelper;
 
-public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
+public class EvaluationVisitor extends BaseElmLibraryVisitor<Object, State> {
 
     @Override
     public Object visitExpressionDef(ExpressionDef expressionDef, State state) {

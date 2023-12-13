@@ -6,6 +6,7 @@ plugins {
 dependencies {
     api project(':model')
     testImplementation 'org.jeasy:easy-random-core:5.0.0'
+    testImplementation 'com.tngtech.archunit:archunit:1.2.1'
 }
 
 generateSources {
