@@ -1,22 +1,23 @@
 package org.cqframework.cql.elm.visiting;
 
+import static com.tngtech.archunit.base.DescribedPredicate.and;
+import static com.tngtech.archunit.base.DescribedPredicate.anyElementThat;
+import static com.tngtech.archunit.base.DescribedPredicate.not;
+import static com.tngtech.archunit.core.domain.JavaClass.Predicates.assignableTo;
+import static com.tngtech.archunit.core.domain.properties.HasModifiers.Predicates.modifier;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.methods;
+import static java.util.stream.Collectors.toSet;
+
+import java.util.function.Predicate;
 
 import org.hl7.elm.r1.Element;
 import org.hl7.elm.r1.OperatorExpression;
 import org.hl7.elm.r1.TypeSpecifier;
 import org.junit.Test;
 
-import static java.util.stream.Collectors.toSet;
-import java.util.stream.Stream;
-import java.util.function.Predicate;
-
-import com.tngtech.archunit.base.DescribedPredicate;
-import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.domain.JavaMethod;
 import com.tngtech.archunit.core.domain.JavaModifier;
-import com.tngtech.archunit.core.domain.properties.HasModifiers;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.lang.ArchCondition;
 import com.tngtech.archunit.lang.ConditionEvents;
@@ -44,9 +45,7 @@ public class DesignTests {
     @Test
     public void ensureVisitAbstractDoesNotCallDefaultResult() {
 
-        var isAbstractElementType = DescribedPredicate.and(
-                HasModifiers.Predicates.modifier(JavaModifier.ABSTRACT),
-                JavaClass.Predicates.assignableTo(Element.class));
+        var isAbstractElementType = and(modifier(JavaModifier.ABSTRACT), assignableTo(Element.class));
 
         methods()
                 .that()
@@ -54,11 +53,11 @@ public class DesignTests {
                 .areAssignableTo(BaseElmVisitor.class)
                 .and().haveNameStartingWith("visit")
                 .and().doNotHaveName("visitChildren")
-                .and().haveRawParameterTypes(DescribedPredicate.anyElementThat(isAbstractElementType))
+                .and().haveRawParameterTypes(anyElementThat(isAbstractElementType))
                 .should(new NotCallDefaultResult())
                 .because(
-                        "The visitXYZ (where XYZ is an Element type) methods for abstract classes should not call defaultResult, "
-                                +
+                        "The visitXYZ (where XYZ is an Element type) methods " +
+                                "for abstract classes should not call defaultResult, " +
                                 "since that means the subtypes properties are probably missed. " +
                                 "Instead, those methods should forward to the subtype visit method")
                 .check(importedClasses);
@@ -67,12 +66,12 @@ public class DesignTests {
     @Test
     public void ensureVisitElementUsesResultType() {
 
-        var isConcreteElement = DescribedPredicate.and(DescribedPredicate.not(
-                HasModifiers.Predicates.modifier(JavaModifier.ABSTRACT)),
-                JavaClass.Predicates.assignableTo(Element.class),
-                // TypeSpecifiers are excluded because the are also Elements with a resultType
-                // and rather than recurse we consider them terminal nodes.
-                DescribedPredicate.not(JavaClass.Predicates.assignableTo(TypeSpecifier.class)));
+        // TypeSpecifiers are excluded because the are also Elements with a resultType
+        // and rather than recurse we consider them terminal nodes.
+        var isConcreteElement = and(
+                not(modifier(JavaModifier.ABSTRACT)),
+                assignableTo(Element.class),
+                not(assignableTo(TypeSpecifier.class)));
 
         methods()
                 .that()
@@ -82,7 +81,7 @@ public class DesignTests {
                 .and().doNotHaveName("visitChildren")
                 .and().doNotHaveName("visitProperty") // Special exclusion for Property. See the implementation of
                                                       // visitProperty.
-                .and().haveRawParameterTypes(DescribedPredicate.anyElementThat(isConcreteElement))
+                .and().haveRawParameterTypes(anyElementThat(isConcreteElement))
                 .should(new UseResultTypeIfTheyDoNotForwardToVisitChildren())
                 .because(
                         "visits to concrete Element type should visit the resultType of the of the element")
@@ -92,9 +91,9 @@ public class DesignTests {
     @Test
     public void ensureVisitOperatorExpressionUsesSignature() {
 
-        var isConcreteOperatorExpression = DescribedPredicate.and(
-            DescribedPredicate.not(HasModifiers.Predicates.modifier(JavaModifier.ABSTRACT)),
-            JavaClass.Predicates.assignableTo(OperatorExpression.class));
+        var isConcreteOperatorExpression = and(
+                not(modifier(JavaModifier.ABSTRACT)),
+                assignableTo(OperatorExpression.class));
 
         methods()
                 .that()
@@ -102,7 +101,7 @@ public class DesignTests {
                 .areAssignableTo(BaseElmVisitor.class)
                 .and().haveNameStartingWith("visit")
                 .and().doNotHaveName("visitChildren")
-                .and().haveRawParameterTypes(DescribedPredicate.anyElementThat(isConcreteOperatorExpression))
+                .and().haveRawParameterTypes(anyElementThat(isConcreteOperatorExpression))
                 .should(new UseSignatureOrForwardToVisitChildren())
                 .because(
                         "visits to concrete OperatorExpression types should visit the signature of the OperatorExpression")
@@ -111,12 +110,13 @@ public class DesignTests {
 
     @Test
     public void ensureConcreteElementsVisitSubclassFields() {
-        // TypeSpecifiers are excluded because they are terminal modes. They have a result type which would
+        // TypeSpecifiers are excluded because they are terminal modes. They have a
+        // result type which would
         // infinitely recurse if we didn't exclude them.
-        var isConcreteElement = DescribedPredicate.and(
-                JavaClass.Predicates.assignableTo(Element.class),
-                DescribedPredicate.not(JavaClass.Predicates.assignableTo(TypeSpecifier.class)),
-                DescribedPredicate.not(HasModifiers.Predicates.modifier(JavaModifier.ABSTRACT)));
+        var isConcreteElement = and(
+                assignableTo(Element.class),
+                not(assignableTo(TypeSpecifier.class)),
+                not(modifier(JavaModifier.ABSTRACT)));
 
         methods()
                 .that()
@@ -124,8 +124,9 @@ public class DesignTests {
                 .areAssignableTo(BaseElmVisitor.class)
                 .and().haveNameStartingWith("visit")
                 .and().doNotHaveName("visitChildren")
-                .and().doNotHaveName("visitProperty") // Special exclusion for Property. See the implementation of visitProperty.
-                .and().haveRawParameterTypes(DescribedPredicate.anyElementThat(isConcreteElement))
+                .and().doNotHaveName("visitProperty") // Special exclusion for Property. See the implementation of
+                                                      // visitProperty.
+                .and().haveRawParameterTypes(anyElementThat(isConcreteElement))
                 .should(new UseAllFieldsOrForwardToVisitChildren())
                 .because(
                         "visits to concrete OperatorExpression types should visit all the Element-type properties of the class")
@@ -172,12 +173,11 @@ public class DesignTests {
                 }
             }
 
-
-            // Collect all the methods from the superclasses that return Element or collections of Element.
+            // Collect all the methods from the superclasses that return Element or
+            // collections of Element.
             elementParameter.getAllRawSuperclasses().stream()
-                .flatMap(x -> x.getMethods().stream().filter(isElementProperty))
-                .forEach(elementMethods::add);
-
+                    .flatMap(x -> x.getMethods().stream().filter(isElementProperty))
+                    .forEach(elementMethods::add);
 
             var calls = item.getMethodCallsFromSelf();
 
