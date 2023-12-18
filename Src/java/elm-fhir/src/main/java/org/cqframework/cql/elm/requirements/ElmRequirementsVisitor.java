@@ -317,7 +317,7 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor <ElmRequiremen
     public ElmRequirement visitChildren(BinaryExpression elm, ElmRequirementsContext context) {
         // Override visit children behavior to determine whether to create an ElmConditionRequirement
         if (elm.getOperand().size() != 2) {
-            return super.visitChildren(elm, context);
+            throw new IllegalArgumentException("BinaryExpression must have two operands.");
         }
 
         switch (elm.getClass().getSimpleName()) {

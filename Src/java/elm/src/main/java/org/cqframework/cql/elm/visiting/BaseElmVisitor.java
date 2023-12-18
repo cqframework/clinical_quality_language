@@ -781,7 +781,16 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitFunctionDef(FunctionDef elm, C context) {
-        T result = visitChildren(elm, context);
+        T result = defaultResult(elm, context);
+        if (elm.getAccessLevel() != null) {
+            T childResult = visitAccessModifier(elm.getAccessLevel(), context);
+            result = aggregateResult(result, childResult);
+        }
+        if (elm.getExpression() != null) {
+            T childResult = visitElement(elm.getExpression(), context);
+            result = aggregateResult(result, childResult);
+        }
+
         for (var operand : elm.getOperand()) {
             T childResult = visitOperandDef(operand, context);
             result = aggregateResult(result, childResult);
@@ -791,6 +800,7 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
             T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
