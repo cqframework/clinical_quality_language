@@ -25,7 +25,7 @@ public class ListType extends DataType {
     @Override
     public boolean equals(Object o) {
         if (o instanceof ListType) {
-            ListType that = (ListType)o;
+            ListType that = (ListType) o;
             return this.elementType.equals(that.elementType);
         }
 
@@ -35,7 +35,7 @@ public class ListType extends DataType {
     @Override
     public boolean isSubTypeOf(DataType other) {
         if (other instanceof ListType) {
-            ListType that = (ListType)other;
+            ListType that = (ListType) other;
             return this.elementType.isSubTypeOf(that.elementType);
         }
 
@@ -45,7 +45,7 @@ public class ListType extends DataType {
     @Override
     public boolean isSuperTypeOf(DataType other) {
         if (other instanceof ListType) {
-            ListType that = (ListType)other;
+            ListType that = (ListType) other;
             return this.elementType.isSuperTypeOf(that.elementType);
         }
 
@@ -70,7 +70,7 @@ public class ListType extends DataType {
     @Override
     public boolean isInstantiable(DataType callType, InstantiationContext context) {
         if (callType instanceof ListType) {
-            ListType listType = (ListType)callType;
+            ListType listType = (ListType) callType;
             return elementType.isInstantiable(listType.elementType, context);
         }
 
@@ -79,7 +79,8 @@ public class ListType extends DataType {
             boolean isInstantiable = elementType.isInstantiable(targetListType.elementType, context);
             if (isInstantiable) {
                 if (isAlreadyInstantiable) {
-                    throw new IllegalArgumentException(String.format("Ambiguous generic instantiation involving %s to %s.",
+                    throw new IllegalArgumentException(String.format(
+                            "Ambiguous generic instantiation involving %s to %s.",
                             callType.toString(), targetListType.toString()));
                 }
                 isAlreadyInstantiable = true;

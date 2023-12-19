@@ -1,12 +1,11 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import org.hl7.elm.r1.VersionedIdentifier;
-import org.testng.annotations.Test;
-
-import java.io.IOException;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+
+import java.io.IOException;
+import org.hl7.elm.r1.VersionedIdentifier;
+import org.testng.annotations.Test;
 
 @SuppressWarnings("removal")
 public class CqlConditionalOperatorsTest extends CqlTestBase {
@@ -31,6 +30,5 @@ public class CqlConditionalOperatorsTest extends CqlTestBase {
 
         result = engine.expression(library, "StandardCase3").value();
         assertThat(result, is(15));
-
     }
 }

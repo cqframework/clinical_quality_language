@@ -129,8 +129,9 @@ public class SameOrBeforeEvaluator {
 
         throw new InvalidOperatorArgument(
                 "OnOrBefore(Date, Date), OnOrBefore(DateTime, DateTime), OnOrBefore(Time, Time), OnOrBefore(Interval<T>, Interval<T>), OnOrBefore(T, Interval<T>) or OnOrBefore(Interval<T>, T)",
-                String.format("OnOrBefore(%s, %s)", left.getClass().getName(), right.getClass().getName())
-        );
+                String.format(
+                        "OnOrBefore(%s, %s)",
+                        left.getClass().getName(), right.getClass().getName()));
     }
 
     public static Boolean sameOrBefore(Object left, Object right, String precision, State state) {
@@ -148,13 +149,15 @@ public class SameOrBeforeEvaluator {
         }
 
         if (left instanceof BaseTemporal && right instanceof BaseTemporal) {
-            Integer result = ((BaseTemporal) left).compareToPrecision((BaseTemporal) right, Precision.fromString(precision));
+            Integer result =
+                    ((BaseTemporal) left).compareToPrecision((BaseTemporal) right, Precision.fromString(precision));
             return result == null ? null : result == 0 || result < 0;
         }
 
         throw new InvalidOperatorArgument(
                 "SameOrBefore(Date, Date), SameOrBefore(DateTime, DateTime), SameOrBefore(Time, Time), SameOrBefore(Interval<T>, Interval<T>), SameOrBefore(T, Interval<T>) or SameOrBefore(Interval<T>, T)",
-                String.format("SameOrBefore(%s, %s)", left.getClass().getName(), right.getClass().getName())
-        );
+                String.format(
+                        "SameOrBefore(%s, %s)",
+                        left.getClass().getName(), right.getClass().getName()));
     }
 }

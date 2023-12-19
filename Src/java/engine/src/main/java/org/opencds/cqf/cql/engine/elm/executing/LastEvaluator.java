@@ -22,5 +22,4 @@ public class LastEvaluator {
 
         return result;
     }
-
 }

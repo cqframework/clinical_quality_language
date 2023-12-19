@@ -1,13 +1,12 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Iterator;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.CqlList;
 import org.opencds.cqf.cql.engine.runtime.Quantity;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 /*
 Median(argument List<Decimal>) Decimal
@@ -52,20 +51,20 @@ public class MedianEvaluator {
             } else {
                 if (values.get(0) instanceof Integer) { // size of list is even
                     return TruncatedDivideEvaluator.div(
-                            AddEvaluator.add(values.get(values.size() / 2), values.get((values.size() / 2) - 1)), 2, state
-                    );
+                            AddEvaluator.add(values.get(values.size() / 2), values.get((values.size() / 2) - 1)),
+                            2,
+                            state);
                 } else if (values.get(0) instanceof BigDecimal || values.get(0) instanceof Quantity) {
                     return DivideEvaluator.divide(
-                            AddEvaluator.add(values.get(values.size() / 2), values.get((values.size() / 2) - 1)), new BigDecimal("2.0"), state
-                    );
+                            AddEvaluator.add(values.get(values.size() / 2), values.get((values.size() / 2) - 1)),
+                            new BigDecimal("2.0"),
+                            state);
                 }
             }
         }
 
         throw new InvalidOperatorArgument(
                 "Median(List<Decimal>) or Median(List<Quantity>)",
-                String.format("Median(%s)", source.getClass().getName())
-        );
+                String.format("Median(%s)", source.getClass().getName()));
     }
-
 }

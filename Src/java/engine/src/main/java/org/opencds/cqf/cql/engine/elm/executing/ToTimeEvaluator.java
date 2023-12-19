@@ -1,9 +1,8 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.time.format.DateTimeParseException;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.runtime.Time;
-
-import java.time.format.DateTimeParseException;
 
 /*
 
@@ -48,8 +47,6 @@ public class ToTimeEvaluator {
         }
 
         throw new InvalidOperatorArgument(
-                "ToTime(String)",
-                "ToTime(%s)" + operand.getClass().getName()
-        );
+                "ToTime(String)", "ToTime(%s)" + operand.getClass().getName());
     }
 }

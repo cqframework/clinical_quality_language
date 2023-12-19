@@ -28,24 +28,22 @@ public class InValueSetEvaluator {
         }
 
         if (valueset instanceof ValueSet) {
-            ValueSetInfo vsi = ValueSetInfo.fromValueSet((ValueSet)valueset);
+            ValueSetInfo vsi = ValueSetInfo.fromValueSet((ValueSet) valueset);
             TerminologyProvider provider = state.getEnvironment().getTerminologyProvider();
 
             // perform operation
             if (code instanceof String) {
-                if (provider.in(new Code().withCode((String)code), vsi)) {
+                if (provider.in(new Code().withCode((String) code), vsi)) {
                     return true;
                 }
                 return false;
-            }
-            else if (code instanceof Code) {
-                if (provider.in((Code)code, vsi)) {
+            } else if (code instanceof Code) {
+                if (provider.in((Code) code, vsi)) {
                     return true;
                 }
                 return false;
-            }
-            else if (code instanceof Concept) {
-                for (Code codes : ((Concept)code).getCodes()) {
+            } else if (code instanceof Concept) {
+                for (Code codes : ((Concept) code).getCodes()) {
                     if (codes == null) return null;
                     if (provider.in(codes, vsi)) return true;
                 }
@@ -54,8 +52,9 @@ public class InValueSetEvaluator {
         }
 
         throw new InvalidOperatorArgument(
-            "In(String, ValueSetRef), In(Code, ValueSetRef) or In(Concept, ValueSetRef)",
-            String.format("In(%s, %s)", code.getClass().getName(), valueset.getClass().getName())
-        );
+                "In(String, ValueSetRef), In(Code, ValueSetRef) or In(Concept, ValueSetRef)",
+                String.format(
+                        "In(%s, %s)",
+                        code.getClass().getName(), valueset.getClass().getName()));
     }
 }

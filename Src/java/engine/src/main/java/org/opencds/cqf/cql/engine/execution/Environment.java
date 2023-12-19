@@ -1,5 +1,9 @@
 package org.opencds.cqf.cql.engine.execution;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.xml.namespace.QName;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.hl7.elm.r1.ChoiceTypeSpecifier;
 import org.hl7.elm.r1.FunctionDef;
@@ -16,12 +20,6 @@ import org.opencds.cqf.cql.engine.data.SystemDataProvider;
 import org.opencds.cqf.cql.engine.exception.CqlException;
 import org.opencds.cqf.cql.engine.runtime.Tuple;
 import org.opencds.cqf.cql.engine.terminology.TerminologyProvider;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.xml.namespace.QName;
-
 
 /**
  * The Environment class represents the current CQL execution environment.
@@ -42,7 +40,9 @@ public class Environment {
         this(libraryManager, null, null);
     }
 
-    public Environment(LibraryManager libraryManager, Map<String, DataProvider> dataProviders,
+    public Environment(
+            LibraryManager libraryManager,
+            Map<String, DataProvider> dataProviders,
             TerminologyProvider terminologyProvider) {
         this.libraryManager = libraryManager;
         this.terminologyProvider = terminologyProvider;
@@ -83,8 +83,8 @@ public class Environment {
     public ExternalFunctionProvider getExternalFunctionProvider(VersionedIdentifier identifier) {
         ExternalFunctionProvider provider = externalFunctionProviders.get(identifier);
         if (provider == null) {
-            throw new CqlException(String.format(
-                    "Could not resolve external function provider for library '%s'.", identifier));
+            throw new CqlException(
+                    String.format("Could not resolve external function provider for library '%s'.", identifier));
         }
         return provider;
     }
@@ -102,9 +102,9 @@ public class Environment {
         Class<?> clazz = target.getClass();
 
         if (clazz.getPackage().getName().startsWith("java.lang")) {
-            throw new CqlException(
-                    String.format("Invalid path: %s for type: %s - this is likely an issue with the data model.", path,
-                            clazz.getName()));
+            throw new CqlException(String.format(
+                    "Invalid path: %s for type: %s - this is likely an issue with the data model.",
+                    path, clazz.getName()));
         }
 
         DataProvider dataProvider = resolveDataProvider(clazz.getPackage().getName());
@@ -281,7 +281,8 @@ public class Environment {
             return value.getClass();
         }
 
-        DataProvider dataProvider = resolveDataProvider(value.getClass().getPackage().getName());
+        DataProvider dataProvider =
+                resolveDataProvider(value.getClass().getPackage().getName());
         return dataProvider.resolveType(value);
     }
 
@@ -323,7 +324,8 @@ public class Environment {
             if (typeName.getLocalPart() != null && typeName.getLocalPart().startsWith("{")) {
                 int closeIndex = typeName.getLocalPart().indexOf('}');
                 if (closeIndex > 0 && typeName.getLocalPart().length() > closeIndex) {
-                    return new QName(typeName.getLocalPart().substring(1, closeIndex),
+                    return new QName(
+                            typeName.getLocalPart().substring(1, closeIndex),
                             typeName.getLocalPart().substring(closeIndex + 1));
                 }
             }

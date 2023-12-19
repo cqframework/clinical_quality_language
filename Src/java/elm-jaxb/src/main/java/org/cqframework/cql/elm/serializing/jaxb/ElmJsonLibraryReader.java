@@ -5,20 +5,18 @@ import jakarta.xml.bind.PropertyException;
 import jakarta.xml.bind.Unmarshaller;
 import jakarta.xml.bind.ValidationEvent;
 import jakarta.xml.bind.ValidationEventHandler;
-import org.cqframework.cql.elm.serializing.ElmLibraryReader;
-import org.hl7.elm.r1.Library;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.net.URI;
 import java.net.URL;
+import org.cqframework.cql.elm.serializing.ElmLibraryReader;
+import org.hl7.elm.r1.Library;
 
 public class ElmJsonLibraryReader implements ElmLibraryReader {
 
-    public ElmJsonLibraryReader() {
-    }
+    public ElmJsonLibraryReader() {}
 
     private Unmarshaller getUnmarshaller() {
         Unmarshaller unmarshaller = null;
@@ -48,7 +46,9 @@ public class ElmJsonLibraryReader implements ElmLibraryReader {
     private Library read(Object source) throws IOException {
         Library library = null;
         try {
-            library = getUnmarshaller().unmarshal(LibraryReaderUtil.toSource(source), Library.class).getValue();
+            library = getUnmarshaller()
+                    .unmarshal(LibraryReaderUtil.toSource(source), Library.class)
+                    .getValue();
         } catch (JAXBException e) {
             throw new RuntimeException(e);
         }

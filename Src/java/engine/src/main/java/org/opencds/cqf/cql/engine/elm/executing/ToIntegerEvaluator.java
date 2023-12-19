@@ -23,7 +23,7 @@ public class ToIntegerEvaluator {
         }
 
         if (operand instanceof Boolean) {
-            return ((Boolean)operand) ? 1 : 0;
+            return ((Boolean) operand) ? 1 : 0;
         }
 
         if (operand instanceof Integer) {
@@ -33,8 +33,7 @@ public class ToIntegerEvaluator {
         if (operand instanceof String) {
             try {
                 return Integer.parseInt((String) operand);
-            }
-            catch (NumberFormatException nfe) {
+            } catch (NumberFormatException nfe) {
                 try {
                     Double ret = Double.parseDouble((String) operand);
                     if (Value.validateInteger(ret) == null) {
@@ -49,8 +48,6 @@ public class ToIntegerEvaluator {
 
         throw new InvalidOperatorArgument(
                 "ToInteger(String)",
-                String.format("ToInteger(%s)", operand.getClass().getName())
-        );
+                String.format("ToInteger(%s)", operand.getClass().getName()));
     }
-
 }

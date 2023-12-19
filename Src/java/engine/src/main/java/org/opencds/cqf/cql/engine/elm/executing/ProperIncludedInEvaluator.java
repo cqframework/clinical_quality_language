@@ -47,13 +47,13 @@ public class ProperIncludedInEvaluator {
                         : ProperIncludesEvaluator.listProperlyIncludes(null, (Iterable<?>) left, state);
             }
 
-            return ProperIncludesEvaluator.properlyIncludes(right, left, precision,state);
-        }
-        catch (InvalidOperatorArgument e) {
+            return ProperIncludesEvaluator.properlyIncludes(right, left, precision, state);
+        } catch (InvalidOperatorArgument e) {
             throw new InvalidOperatorArgument(
                     "ProperIncludedIn(Interval<T>, Interval<T>) or ProperIncludedIn(List<T>, List<T>)",
-                    String.format("ProperlyIncludedIn(%s, %s)", left.getClass().getName(), right.getClass().getName())
-            );
+                    String.format(
+                            "ProperlyIncludedIn(%s, %s)",
+                            left.getClass().getName(), right.getClass().getName()));
         }
     }
 }

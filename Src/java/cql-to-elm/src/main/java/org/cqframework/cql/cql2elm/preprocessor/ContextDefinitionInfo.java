@@ -15,7 +15,7 @@ public class ContextDefinitionInfo extends BaseInfo {
 
     @Override
     public cqlParser.ContextDefinitionContext getDefinition() {
-        return (cqlParser.ContextDefinitionContext)super.getDefinition();
+        return (cqlParser.ContextDefinitionContext) super.getDefinition();
     }
 
     public void setDefinition(cqlParser.ContextDefinitionContext definition) {

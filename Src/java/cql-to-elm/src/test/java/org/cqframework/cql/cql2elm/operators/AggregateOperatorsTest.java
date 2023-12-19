@@ -1,26 +1,24 @@
 package org.cqframework.cql.cql2elm.operators;
 
-import org.cqframework.cql.cql2elm.CqlCompilerOptions;
-import org.cqframework.cql.cql2elm.CqlTranslator;
-import org.cqframework.cql.cql2elm.ModelManager;
-import org.cqframework.cql.cql2elm.CqlCompilerException.ErrorSeverity;
-import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
-import org.hl7.elm.r1.*;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import org.cqframework.cql.cql2elm.LibraryManager;
-
-
 import static org.cqframework.cql.cql2elm.matchers.ConvertsToDecimalFrom.convertsToDecimalFromAlias;
 import static org.cqframework.cql.cql2elm.matchers.HasTypeAndResult.hasTypeAndResult;
 import static org.cqframework.cql.cql2elm.matchers.ListOfLiterals.listOfLiterals;
 import static org.cqframework.cql.cql2elm.matchers.LiteralFor.literalFor;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import org.cqframework.cql.cql2elm.CqlCompilerException.ErrorSeverity;
+import org.cqframework.cql.cql2elm.CqlCompilerOptions;
+import org.cqframework.cql.cql2elm.CqlTranslator;
+import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
+import org.cqframework.cql.cql2elm.LibraryManager;
+import org.cqframework.cql.cql2elm.ModelManager;
+import org.hl7.elm.r1.*;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 
 public class AggregateOperatorsTest {
 
@@ -29,7 +27,9 @@ public class AggregateOperatorsTest {
     @BeforeTest
     public void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
-        CqlTranslator translator = CqlTranslator.fromStream(AggregateOperatorsTest.class.getResourceAsStream("../OperatorTests/AggregateOperators.cql"), new LibraryManager(modelManager, new CqlCompilerOptions(ErrorSeverity.Warning, SignatureLevel.None)));
+        CqlTranslator translator = CqlTranslator.fromStream(
+                AggregateOperatorsTest.class.getResourceAsStream("../OperatorTests/AggregateOperators.cql"),
+                new LibraryManager(modelManager, new CqlCompilerOptions(ErrorSeverity.Warning, SignatureLevel.None)));
         assertThat(translator.getErrors().size(), is(0));
         Library library = translator.toELM();
         defs = new HashMap<>();
@@ -84,7 +84,7 @@ public class AggregateOperatorsTest {
     public void testGeometricMean() {
         ExpressionDef def = defs.get("GeometricMeanExpression");
         assertThat(def, hasTypeAndResult(GeometricMean.class, "System.Decimal"));
-        assertThat(((GeometricMean)def.getExpression()).getSource(), listOfLiterals(1.0, 2.0, 3.0, 4.0, 5.0));
+        assertThat(((GeometricMean) def.getExpression()).getSource(), listOfLiterals(1.0, 2.0, 3.0, 4.0, 5.0));
     }
 
     @Test

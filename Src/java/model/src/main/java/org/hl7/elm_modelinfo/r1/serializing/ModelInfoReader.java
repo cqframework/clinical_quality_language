@@ -1,10 +1,9 @@
 package org.hl7.elm_modelinfo.r1.serializing;
 
-import org.hl7.elm_modelinfo.r1.ModelInfo;
-
 import java.io.*;
 import java.net.URI;
 import java.net.URL;
+import org.hl7.elm_modelinfo.r1.ModelInfo;
 
 public interface ModelInfoReader {
     public ModelInfo read(File src) throws IOException;

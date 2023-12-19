@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-
 import org.cqframework.cql.elm.visiting.ElmBaseLibraryVisitor;
 import org.hl7.cql.model.IntervalType;
 import org.hl7.cql.model.ListType;
@@ -47,7 +46,8 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
     public Object visitAfter(After after, State state) {
         Object left = visitExpression(after.getOperand().get(0), state);
         Object right = visitExpression(after.getOperand().get(1), state);
-        String precision = after.getPrecision() == null ? null : after.getPrecision().value();
+        String precision =
+                after.getPrecision() == null ? null : after.getPrecision().value();
 
         return AfterEvaluator.after(left, right, precision, state);
     }
@@ -62,7 +62,6 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
         Object src = visitExpression(allTrue.getSource(), state);
         return AllTrueEvaluator.allTrue(src);
     }
-
 
     @Override
     public Object visitAnd(And and, State state) {
@@ -125,7 +124,6 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
         return XorEvaluator.xor(left, right);
     }
 
-
     @Override
     public Object visitWidth(Width elm, State state) {
         Object operand = visitExpression(elm.getOperand(), state);
@@ -151,7 +149,6 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
         return DivideEvaluator.divide(left, right, state);
     }
 
-
     @Override
     public Object visitUpper(Upper elm, State state) {
         Object operand = visitExpression(elm.getOperand(), state);
@@ -165,16 +162,20 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
         Object leftResult = visitExpression(left, state);
         Object rightResult = visitExpression(right, state);
 
-
         // This will attempt to use the declared result types from the ELM to determine which type of Union
         // to perform. If the types are not declared, it will fall back to checking the values of the result.
-        if (left.getResultType() instanceof ListType || right.getResultType() instanceof ListType || elm.getResultType() instanceof ListType) {
-            return UnionEvaluator.unionIterable((Iterable<?>)leftResult, (Iterable<?>)rightResult, state);
-        }
-        else if (left.getResultType() instanceof IntervalType || right.getResultType() instanceof IntervalType || elm.getResultType() instanceof IntervalType) {
-            return UnionEvaluator.unionInterval((org.opencds.cqf.cql.engine.runtime.Interval)leftResult, (org.opencds.cqf.cql.engine.runtime.Interval)rightResult, state);
-        }
-        else {
+        if (left.getResultType() instanceof ListType
+                || right.getResultType() instanceof ListType
+                || elm.getResultType() instanceof ListType) {
+            return UnionEvaluator.unionIterable((Iterable<?>) leftResult, (Iterable<?>) rightResult, state);
+        } else if (left.getResultType() instanceof IntervalType
+                || right.getResultType() instanceof IntervalType
+                || elm.getResultType() instanceof IntervalType) {
+            return UnionEvaluator.unionInterval(
+                    (org.opencds.cqf.cql.engine.runtime.Interval) leftResult,
+                    (org.opencds.cqf.cql.engine.runtime.Interval) rightResult,
+                    state);
+        } else {
             return UnionEvaluator.union(left, right, state);
         }
     }
@@ -191,7 +192,8 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
     public Object visitMeets(Meets elm, State state) {
         Object left = visitExpression(elm.getOperand().get(0), state);
         Object right = visitExpression(elm.getOperand().get(1), state);
-        String precision = elm.getPrecision() == null ? null : elm.getPrecision().value();
+        String precision =
+                elm.getPrecision() == null ? null : elm.getPrecision().value();
 
         return MeetsEvaluator.meets(left, right, precision, state);
     }
@@ -206,18 +208,20 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
     public Object visitMeetsAfter(MeetsAfter elm, State state) {
         Object left = visitExpression(elm.getOperand().get(0), state);
         Object right = visitExpression(elm.getOperand().get(1), state);
-        String precision = elm.getPrecision() == null ? null : elm.getPrecision().value();
+        String precision =
+                elm.getPrecision() == null ? null : elm.getPrecision().value();
 
         return MeetsAfterEvaluator.meetsAfter(left, right, precision, state);
     }
 
-    //SameAs
+    // SameAs
 
     @Override
     public Object visitMeetsBefore(MeetsBefore elm, State state) {
         Object left = visitExpression(elm.getOperand().get(0), state);
         Object right = visitExpression(elm.getOperand().get(1), state);
-        String precision = elm.getPrecision() == null ? null : elm.getPrecision().value();
+        String precision =
+                elm.getPrecision() == null ? null : elm.getPrecision().value();
 
         return MeetsBeforeEvaluator.meetsBefore(left, right, precision, state);
     }
@@ -226,17 +230,18 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
     public Object visitSameAs(SameAs elm, State state) {
         Object left = visitExpression(elm.getOperand().get(0), state);
         Object right = visitExpression(elm.getOperand().get(1), state);
-        String precision = elm.getPrecision() == null ? null : elm.getPrecision().value();
+        String precision =
+                elm.getPrecision() == null ? null : elm.getPrecision().value();
 
         return SameAsEvaluator.sameAs(left, right, precision, state);
     }
-
 
     @Override
     public Object visitSameOrAfter(SameOrAfter elm, State state) {
         Object left = visitExpression(elm.getOperand().get(0), state);
         Object right = visitExpression(elm.getOperand().get(1), state);
-        String precision = elm.getPrecision() == null ? null : elm.getPrecision().value();
+        String precision =
+                elm.getPrecision() == null ? null : elm.getPrecision().value();
 
         return SameOrAfterEvaluator.sameOrAfter(left, right, precision, state);
     }
@@ -245,7 +250,8 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
     public Object visitSameOrBefore(SameOrBefore elm, State state) {
         Object left = visitExpression(elm.getOperand().get(0), state);
         Object right = visitExpression(elm.getOperand().get(1), state);
-        String precision = elm.getPrecision() == null ? null : elm.getPrecision().value();
+        String precision =
+                elm.getPrecision() == null ? null : elm.getPrecision().value();
 
         return SameOrBeforeEvaluator.sameOrBefore(left, right, precision, state);
     }
@@ -305,7 +311,8 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
     public Object visitStarts(Starts elm, State state) {
         Object left = visitExpression(elm.getOperand().get(0), state);
         Object right = visitExpression(elm.getOperand().get(1), state);
-        String precision = elm.getPrecision() == null ? null : elm.getPrecision().value();
+        String precision =
+                elm.getPrecision() == null ? null : elm.getPrecision().value();
 
         return StartsEvaluator.starts(left, right, precision, state);
     }
@@ -361,7 +368,8 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
         Integer hour = elm.getHour() == null ? null : (Integer) visitExpression(elm.getHour(), state);
         Integer minute = elm.getMinute() == null ? null : (Integer) visitExpression(elm.getMinute(), state);
         Integer second = elm.getSecond() == null ? null : (Integer) visitExpression(elm.getSecond(), state);
-        Integer miliSecond = elm.getMillisecond() == null ? null : (Integer) visitExpression(elm.getMillisecond(), state);
+        Integer miliSecond =
+                elm.getMillisecond() == null ? null : (Integer) visitExpression(elm.getMillisecond(), state);
 
         return TimeEvaluator.time(hour, minute, second, miliSecond);
     }
@@ -494,7 +502,6 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
         return TupleEvaluator.internalEvaluate(ret, state);
     }
 
-
     @Override
     public Object visitAnyTrue(AnyTrue elm, State state) {
         Object source = visitExpression(elm.getSource(), state);
@@ -511,7 +518,8 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
     public Object visitBefore(Before elm, State state) {
         Object left = visitExpression(elm.getOperand().get(0), state);
         Object right = visitExpression(elm.getOperand().get(1), state);
-        String precision = elm.getPrecision() == null ? null : elm.getPrecision().value();
+        String precision =
+                elm.getPrecision() == null ? null : elm.getPrecision().value();
 
         return BeforeEvaluator.before(left, right, precision, state);
     }
@@ -601,7 +609,8 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
     public Object visitConcept(Concept elm, State state) {
         ArrayList<org.opencds.cqf.cql.engine.runtime.Code> codes = new ArrayList<>();
         for (int i = 0; i < elm.getCode().size(); ++i) {
-            codes.add((org.opencds.cqf.cql.engine.runtime.Code) visitExpression(elm.getCode().get(i), state));
+            codes.add((org.opencds.cqf.cql.engine.runtime.Code)
+                    visitExpression(elm.getCode().get(i), state));
         }
 
         return ConceptEvaluator.internalEvaluate(codes, elm.getDisplay());
@@ -618,7 +627,8 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
         Object left = visitExpression(elm.getOperand().get(0), state);
         Object right = visitExpression(elm.getOperand().get(1), state);
 
-        Iterable<org.opencds.cqf.cql.engine.runtime.Interval> list = (Iterable<org.opencds.cqf.cql.engine.runtime.Interval>) left;
+        Iterable<org.opencds.cqf.cql.engine.runtime.Interval> list =
+                (Iterable<org.opencds.cqf.cql.engine.runtime.Interval>) left;
         org.opencds.cqf.cql.engine.runtime.Quantity per = (org.opencds.cqf.cql.engine.runtime.Quantity) right;
 
         return CollapseEvaluator.collapse(list, per, state);
@@ -644,7 +654,8 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
     public Object visitContains(Contains elm, State state) {
         Object left = visitExpression(elm.getOperand().get(0), state);
         Object right = visitExpression(elm.getOperand().get(1), state);
-        String precision = elm.getPrecision() == null ? null : elm.getPrecision().value();
+        String precision =
+                elm.getPrecision() == null ? null : elm.getPrecision().value();
         return ContainsEvaluator.internalEvaluate(left, right, elm.getOperand().get(0), precision, state);
     }
 
@@ -658,7 +669,8 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
     public Object visitConvertQuantity(ConvertQuantity elm, State state) {
         Object argument = visitExpression(elm.getOperand().get(0), state);
         Object unit = visitExpression(elm.getOperand().get(1), state);
-        return ConvertQuantityEvaluator.convertQuantity(argument, unit, state.getEnvironment().getLibraryManager().getUcumService());
+        return ConvertQuantityEvaluator.convertQuantity(
+                argument, unit, state.getEnvironment().getLibraryManager().getUcumService());
     }
 
     @Override
@@ -676,7 +688,8 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
     @Override
     public Object visitConvertsToDateTime(ConvertsToDateTime elm, State state) {
         Object operand = visitExpression(elm.getOperand(), state);
-        return ConvertsToDateTimeEvaluator.convertsToDateTime(operand, state.getEvaluationDateTime().getZoneOffset());
+        return ConvertsToDateTimeEvaluator.convertsToDateTime(
+                operand, state.getEvaluationDateTime().getZoneOffset());
     }
 
     @Override
@@ -750,7 +763,8 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
         Integer hour = elm.getHour() == null ? null : (Integer) visitExpression(elm.getHour(), state);
         Integer minute = elm.getMinute() == null ? null : (Integer) visitExpression(elm.getMinute(), state);
         Integer second = elm.getSecond() == null ? null : (Integer) visitExpression(elm.getSecond(), state);
-        Integer milliSecond = elm.getMillisecond() == null ? null : (Integer) visitExpression(elm.getMillisecond(), state);
+        Integer milliSecond =
+                elm.getMillisecond() == null ? null : (Integer) visitExpression(elm.getMillisecond(), state);
         BigDecimal timeZoneOffset = elm.getTimezoneOffset() == null
                 ? TemporalHelper.zoneToOffset(state.getEvaluationDateTime().getZoneOffset())
                 // Previously, we relied on null to trigger DateTime instantiation off the default TimeZone
@@ -771,7 +785,8 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
         Object right = visitExpression(elm.getOperand().get(1), state);
 
         String precision = elm.getPrecision().value();
-        return DifferenceBetweenEvaluator.difference(left, right, org.opencds.cqf.cql.engine.runtime.Precision.fromString(precision));
+        return DifferenceBetweenEvaluator.difference(
+                left, right, org.opencds.cqf.cql.engine.runtime.Precision.fromString(precision));
     }
 
     @Override
@@ -780,7 +795,8 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
         Object right = visitExpression(elm.getOperand().get(1), state);
 
         String precision = elm.getPrecision().value();
-        return DurationBetweenEvaluator.duration(left, right, org.opencds.cqf.cql.engine.runtime.Precision.fromString(precision));
+        return DurationBetweenEvaluator.duration(
+                left, right, org.opencds.cqf.cql.engine.runtime.Precision.fromString(precision));
     }
 
     @Override
@@ -794,7 +810,8 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
         Object left = visitExpression(elm.getOperand().get(0), state);
         Object right = visitExpression(elm.getOperand().get(1), state);
 
-        String precision = elm.getPrecision() == null ? null : elm.getPrecision().value();
+        String precision =
+                elm.getPrecision() == null ? null : elm.getPrecision().value();
         return EndsEvaluator.ends(left, right, precision, state);
     }
 
@@ -837,8 +854,11 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
     @Override
     @SuppressWarnings("unchecked")
     public Object visitExpand(Expand elm, State state) {
-        Iterable<org.opencds.cqf.cql.engine.runtime.Interval> list = (Iterable<org.opencds.cqf.cql.engine.runtime.Interval>) visitExpression(elm.getOperand().get(0), state);
-        org.opencds.cqf.cql.engine.runtime.Quantity per = (org.opencds.cqf.cql.engine.runtime.Quantity) visitExpression(elm.getOperand().get(1), state);
+        Iterable<org.opencds.cqf.cql.engine.runtime.Interval> list =
+                (Iterable<org.opencds.cqf.cql.engine.runtime.Interval>)
+                        visitExpression(elm.getOperand().get(0), state);
+        org.opencds.cqf.cql.engine.runtime.Quantity per = (org.opencds.cqf.cql.engine.runtime.Quantity)
+                visitExpression(elm.getOperand().get(1), state);
         return ExpandEvaluator.expand(list, per, state);
     }
 
@@ -886,13 +906,11 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
         return ForEachEvaluator.forEach(source, element, state);
     }
 
-
     @Override
     public Object visitGeometricMean(GeometricMean elm, State state) {
         Iterable<?> source = (Iterable<?>) visitExpression(elm.getSource(), state);
         return GeometricMeanEvaluator.geometricMean(source, state);
     }
-
 
     @Override
     public Object visitHighBoundary(HighBoundary elm, State state) {
@@ -960,7 +978,6 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
     public Object visitInstance(Instance elm, State state) {
         return InstanceEvaluator.internalEvaluate(elm, state, this);
     }
-
 
     @Override
     public Object visitIntersect(Intersect elm, State state) {
@@ -1167,7 +1184,8 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
     public Object visitOverlapsAfter(OverlapsAfter elm, State state) {
         Object left = visitExpression(elm.getOperand().get(0), state);
         Object right = visitExpression(elm.getOperand().get(1), state);
-        String precision = elm.getPrecision() == null ? null : elm.getPrecision().value();
+        String precision =
+                elm.getPrecision() == null ? null : elm.getPrecision().value();
         return OverlapsAfterEvaluator.overlapsAfter(left, right, precision, state);
     }
 
@@ -1175,7 +1193,8 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
     public Object visitOverlapsBefore(OverlapsBefore elm, State state) {
         Object left = visitExpression(elm.getOperand().get(0), state);
         Object right = visitExpression(elm.getOperand().get(1), state);
-        String precision = elm.getPrecision() == null ? null : elm.getPrecision().value();
+        String precision =
+                elm.getPrecision() == null ? null : elm.getPrecision().value();
         return OverlapsBeforeEvaluator.overlapsBefore(left, right, precision, state);
     }
 
@@ -1183,7 +1202,8 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
     public Object visitOverlaps(Overlaps elm, State state) {
         Object left = visitExpression(elm.getOperand().get(0), state);
         Object right = visitExpression(elm.getOperand().get(1), state);
-        String precision = elm.getPrecision() == null ? null : elm.getPrecision().value();
+        String precision =
+                elm.getPrecision() == null ? null : elm.getPrecision().value();
         return OverlapsEvaluator.overlaps(left, right, precision, state);
     }
 
@@ -1280,7 +1300,6 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
     }
 
     @Override
-
     public Object visitQuantity(Quantity elm, State state) {
         return QuantityEvaluator.internalEvaluate(elm, state);
     }
@@ -1325,6 +1344,6 @@ public class EvaluationVisitor extends ElmBaseLibraryVisitor<Object, State> {
 
     @Override
     public Object visitQuery(Query elm, State state) {
-        return QueryEvaluator.internalEvaluate(elm, state, this) ;
+        return QueryEvaluator.internalEvaluate(elm, state, this);
     }
 }

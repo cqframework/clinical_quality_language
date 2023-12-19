@@ -5,7 +5,7 @@ import org.hl7.elm.r1.If;
 import org.opencds.cqf.cql.engine.execution.State;
 
 public class IfEvaluator {
-    public static Object internalEvaluate(If elm, State state, ElmLibraryVisitor<Object,State> visitor) {
+    public static Object internalEvaluate(If elm, State state, ElmLibraryVisitor<Object, State> visitor) {
 
         Object condition = visitor.visitExpression(elm.getCondition(), state);
 
@@ -13,7 +13,8 @@ public class IfEvaluator {
             condition = false;
         }
 
-        return (Boolean) condition ? visitor.visitExpression(elm.getThen(), state) :
-                visitor.visitExpression(elm.getElse(), state);
+        return (Boolean) condition
+                ? visitor.visitExpression(elm.getThen(), state)
+                : visitor.visitExpression(elm.getElse(), state);
     }
 }

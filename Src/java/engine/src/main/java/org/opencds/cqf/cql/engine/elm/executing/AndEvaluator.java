@@ -39,7 +39,6 @@ public class AndEvaluator {
                 String.format(
                         "And(%s, %s)",
                         left == null ? "Null" : left.getClass().getName(),
-                        right == null ? "Null" : right.getClass().getName())
-        );
+                        right == null ? "Null" : right.getClass().getName()));
     }
 }

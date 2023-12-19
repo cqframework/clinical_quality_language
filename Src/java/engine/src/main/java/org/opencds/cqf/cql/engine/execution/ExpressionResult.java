@@ -16,6 +16,6 @@ public class ExpressionResult {
     }
 
     public Set<Object> evaluatedResources() {
-        return  this.evaluatedResources;
+        return this.evaluatedResources;
     }
 }

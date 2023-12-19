@@ -62,7 +62,7 @@ public class UsingDefinitionInfo extends BaseInfo {
 
     @Override
     public cqlParser.UsingDefinitionContext getDefinition() {
-        return (cqlParser.UsingDefinitionContext)super.getDefinition();
+        return (cqlParser.UsingDefinitionContext) super.getDefinition();
     }
 
     public void setDefinition(cqlParser.UsingDefinitionContext value) {

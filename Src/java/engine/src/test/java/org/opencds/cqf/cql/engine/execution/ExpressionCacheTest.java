@@ -1,14 +1,12 @@
 package org.opencds.cqf.cql.engine.execution;
 
-
-import org.hl7.elm.r1.VersionedIdentifier;
-import org.testng.annotations.Test;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
+import org.hl7.elm.r1.VersionedIdentifier;
+import org.testng.annotations.Test;
 
 @SuppressWarnings("removal")
 public class ExpressionCacheTest extends CqlTestBase {
@@ -33,7 +31,11 @@ public class ExpressionCacheTest extends CqlTestBase {
         Boolean enteredLibrary = engine.getState().enterLibrary("Common");
         VersionedIdentifier commonId = engine.getState().getCurrentLibrary().getIdentifier();
 
-        result = engine.getEvaluationVisitor().visitExpressionDef(Libraries.resolveExpressionRef("Expression", engine.getState().getCurrentLibrary()), engine.getState());
+        result = engine.getEvaluationVisitor()
+                .visitExpressionDef(
+                        Libraries.resolveExpressionRef(
+                                "Expression", engine.getState().getCurrentLibrary()),
+                        engine.getState());
         assertNotNull(result);
         assertThat(result, is(3));
 

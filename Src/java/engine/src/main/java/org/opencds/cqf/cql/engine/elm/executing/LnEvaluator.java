@@ -1,10 +1,9 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.math.BigDecimal;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.exception.UndefinedResult;
 import org.opencds.cqf.cql.engine.runtime.Value;
-
-import java.math.BigDecimal;
 
 /*
 Ln(argument Decimal) Decimal
@@ -25,16 +24,12 @@ public class LnEvaluator {
             BigDecimal retVal;
             try {
                 retVal = new BigDecimal(Math.log(((BigDecimal) operand).doubleValue()));
-            }
-            catch (NumberFormatException nfe) {
+            } catch (NumberFormatException nfe) {
                 if (((BigDecimal) operand).compareTo(new BigDecimal(0)) < 0) {
                     return null;
-                }
-
-                else if (((BigDecimal) operand).compareTo(new BigDecimal(0)) == 0) {
+                } else if (((BigDecimal) operand).compareTo(new BigDecimal(0)) == 0) {
                     throw new UndefinedResult("Results in negative infinity");
-                }
-                else {
+                } else {
                     throw new UndefinedResult(nfe.getMessage());
                 }
             }
@@ -42,8 +37,6 @@ public class LnEvaluator {
         }
 
         throw new InvalidOperatorArgument(
-                "Ln(Decimal)",
-                String.format("Ln(%s)", operand.getClass().getName())
-        );
+                "Ln(Decimal)", String.format("Ln(%s)", operand.getClass().getName()));
     }
 }

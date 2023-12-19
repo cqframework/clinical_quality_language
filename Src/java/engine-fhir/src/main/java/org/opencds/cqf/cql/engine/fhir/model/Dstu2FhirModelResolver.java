@@ -1,7 +1,8 @@
 package org.opencds.cqf.cql.engine.fhir.model;
 
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.context.FhirVersionEnum;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,7 +10,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
 import org.hl7.fhir.dstu2.model.Age;
 import org.hl7.fhir.dstu2.model.AnnotatedUuidType;
 import org.hl7.fhir.dstu2.model.Base;
@@ -36,20 +36,20 @@ import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.opencds.cqf.cql.engine.exception.InvalidCast;
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal;
 
-import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.context.FhirVersionEnum;
+public class Dstu2FhirModelResolver
+        extends FhirModelResolver<
+                Base, BaseDateTimeType, TimeType, SimpleQuantity, IdType, Resource, Enumeration<?>, EnumFactory<?>> {
 
-public class Dstu2FhirModelResolver extends  FhirModelResolver<Base, BaseDateTimeType, TimeType, SimpleQuantity, IdType, Resource, Enumeration<?>, EnumFactory<?>> {
-
-	public Dstu2FhirModelResolver() {
+    public Dstu2FhirModelResolver() {
         // This ModelResolver makes specific alterations to the FhirContext,
         // so it's unable to use a cached version.
-		this(FhirContext.forDstu2());
-	}
+        this(FhirContext.forDstu2());
+    }
 
     protected Dstu2FhirModelResolver(FhirContext fhirContext) {
         super(fhirContext);
-        this.setPackageNames(Arrays.asList("ca.uhn.fhir.model.dstu2", "org.hl7.fhir.dstu2.model", "ca.uhn.fhir.model.primitive"));
+        this.setPackageNames(
+                Arrays.asList("ca.uhn.fhir.model.dstu2", "org.hl7.fhir.dstu2.model", "ca.uhn.fhir.model.primitive"));
         if (fhirContext.getVersion().getVersion() != FhirVersionEnum.DSTU2) {
             throw new IllegalArgumentException("The supplied context is not configured for DSTU2");
         }
@@ -141,16 +141,13 @@ public class Dstu2FhirModelResolver extends  FhirModelResolver<Base, BaseDateTim
         if (value != null) {
             String enumSimpleName = value.getClass().getSimpleName();
             return this.resolveType(enumSimpleName + "EnumFactory");
-        }
-        else {
-            try
-            {
+        } else {
+            try {
                 Field myEnumFactoryField = enumeration.getClass().getDeclaredField("myEnumFactory");
                 myEnumFactoryField.setAccessible(true);
-                EnumFactory<?> factory = (EnumFactory<?>)myEnumFactoryField.get(enumeration);
+                EnumFactory<?> factory = (EnumFactory<?>) myEnumFactoryField.get(enumeration);
                 return factory.getClass();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 return null;
             }
         }
@@ -185,26 +182,35 @@ public class Dstu2FhirModelResolver extends  FhirModelResolver<Base, BaseDateTim
         // TODO: These should really be using profile validation
         if (value instanceof UriType) {
             switch (type.getSimpleName()) {
-                case "UrlType": return true;
-                case "CanonicalType": return true;
+                case "UrlType":
+                    return true;
+                case "CanonicalType":
+                    return true;
                 case "AnnotatedUuidType":
-                case "UuidType": return true;
-                case "OidType": return true;
+                case "UuidType":
+                    return true;
+                case "OidType":
+                    return true;
             }
         }
 
         if (value instanceof IntegerType) {
             switch (type.getSimpleName()) {
-                case "PositiveIntType": return true;
-                case "UnsignedIntType": return true;
+                case "PositiveIntType":
+                    return true;
+                case "UnsignedIntType":
+                    return true;
             }
         }
 
         if (value instanceof StringType) {
             switch (type.getSimpleName()) {
-                case "CodeType": return true;
-                case "MarkdownType": return true;
-                case "IdType": return true;
+                case "CodeType":
+                    return true;
+                case "MarkdownType":
+                    return true;
+                case "IdType":
+                    return true;
             }
         }
 
@@ -214,7 +220,8 @@ public class Dstu2FhirModelResolver extends  FhirModelResolver<Base, BaseDateTim
                 case "Distance":
                 case "Duration":
                 case "Count":
-                case "SimpleQuantity": return true;
+                case "SimpleQuantity":
+                    return true;
             }
         }
 
@@ -232,33 +239,50 @@ public class Dstu2FhirModelResolver extends  FhirModelResolver<Base, BaseDateTim
         }
 
         if (value instanceof UriType) {
-            UriType uriType = (UriType)value;
+            UriType uriType = (UriType) value;
             switch (type.getSimpleName()) {
                 case "AnnotatedUuidType":
-                case "UuidType": return uriType.hasValue() && uriType.getValue().startsWith("urn:uuid:") ? new UuidType(uriType.primitiveValue()) : null;
-                case "OidType": return uriType.hasValue() && uriType.getValue().startsWith("urn:oid:") ? new OidType(uriType.primitiveValue()) : null; // castToOid(uriType); Throws an exception, not implemented
+                case "UuidType":
+                    return uriType.hasValue() && uriType.getValue().startsWith("urn:uuid:")
+                            ? new UuidType(uriType.primitiveValue())
+                            : null;
+                case "OidType":
+                    return uriType.hasValue() && uriType.getValue().startsWith("urn:oid:")
+                            ? new OidType(uriType.primitiveValue())
+                            : null; // castToOid(uriType); Throws an exception, not implemented
             }
         }
 
         if (value instanceof IntegerType) {
-            IntegerType integerType = (IntegerType)value;
+            IntegerType integerType = (IntegerType) value;
             switch (type.getSimpleName()) {
-                case "PositiveIntType": return integerType.hasValue() && integerType.getValue() > 0 ? new PositiveIntType(integerType.primitiveValue()) : null; // integerType.castToPositiveInt(integerType); Throws an exception, not implemented
-                case "UnsignedIntType": return integerType.hasValue() && integerType.getValue() >= 0 ? new UnsignedIntType(integerType.primitiveValue()) : null; // castToUnsignedInt(integerType); Throws an exception, not implemented
+                case "PositiveIntType":
+                    return integerType.hasValue() && integerType.getValue() > 0
+                            ? new PositiveIntType(integerType.primitiveValue())
+                            : null; // integerType.castToPositiveInt(integerType); Throws an exception, not implemented
+                case "UnsignedIntType":
+                    return integerType.hasValue() && integerType.getValue() >= 0
+                            ? new UnsignedIntType(integerType.primitiveValue())
+                            : null; // castToUnsignedInt(integerType); Throws an exception, not implemented
             }
         }
 
         if (value instanceof StringType) {
-            StringType stringType = (StringType)value;
+            StringType stringType = (StringType) value;
             switch (type.getSimpleName()) {
-                case "CodeType": return stringType.castToCode(stringType);
-                case "MarkdownType": return stringType.castToMarkdown(stringType);
-                case "IdType": return stringType.hasValue() ? new IdType(stringType.primitiveValue()) : null; // stringType.castToId(stringType); Throws an exception, not implemented
+                case "CodeType":
+                    return stringType.castToCode(stringType);
+                case "MarkdownType":
+                    return stringType.castToMarkdown(stringType);
+                case "IdType":
+                    return stringType.hasValue()
+                            ? new IdType(stringType.primitiveValue())
+                            : null; // stringType.castToId(stringType); Throws an exception, not implemented
             }
         }
 
         if (value instanceof Quantity) {
-            Quantity quantity = (Quantity)value;
+            Quantity quantity = (Quantity) value;
             switch (type.getSimpleName()) {
                 case "Age":
                     Age age = new Age();
@@ -284,12 +308,16 @@ public class Dstu2FhirModelResolver extends  FhirModelResolver<Base, BaseDateTim
                     count.setCode(quantity.getCode());
                     // TODO: Ensure count constraints are met, else return null
                     return count;
-                case "SimpleQuantity": return quantity.castToSimpleQuantity(quantity); // NOTE: This is wrong in that it is copying the comparator, it should be ensuring comparator is not set...
+                case "SimpleQuantity":
+                    return quantity.castToSimpleQuantity(
+                            quantity); // NOTE: This is wrong in that it is copying the comparator, it should be
+                    // ensuring comparator is not set...
             }
         }
 
         if (isStrict) {
-            throw new InvalidCast(String.format("Cannot cast a value of type %s as %s.", value.getClass().getName(), type.getName()));
+            throw new InvalidCast(String.format(
+                    "Cannot cast a value of type %s as %s.", value.getClass().getName(), type.getName()));
         }
 
         return null;
@@ -297,7 +325,7 @@ public class Dstu2FhirModelResolver extends  FhirModelResolver<Base, BaseDateTim
 
     @Override
     public Object getContextPath(String contextType, String targetType) {
-        if (targetType == null || contextType == null ) {
+        if (targetType == null || contextType == null) {
             return null;
         }
 

@@ -17,15 +17,19 @@ public class DebugLocator {
     }
 
     private final DebugLocatorType type;
+
     public DebugLocatorType getLocatorType() {
         return type;
     }
+
     private final String locator;
+
     public String getLocator() {
         return locator;
     }
 
     private final Location location;
+
     public Location getLocation() {
         return location;
     }
@@ -50,25 +54,25 @@ public class DebugLocator {
                 guardLocator(locator);
                 this.locator = locator;
                 this.location = null;
-            break;
+                break;
 
             case NODE_TYPE:
                 guardLocator(locator);
                 if (!locator.endsWith("Evaluator")) {
                     this.locator = locator + "Evaluator";
-                }
-                else {
+                } else {
                     this.locator = locator;
                 }
                 this.location = null;
-            break;
+                break;
 
             case LOCATION:
                 this.location = Location.fromLocator(locator);
                 this.locator = locator;
-            break;
+                break;
 
-            default: throw new IllegalArgumentException(String.format("Unknown debug locator type: %s", type.toString()));
+            default:
+                throw new IllegalArgumentException(String.format("Unknown debug locator type: %s", type.toString()));
         }
     }
 
@@ -81,7 +85,7 @@ public class DebugLocator {
             return false;
         }
 
-        DebugLocator other = (DebugLocator)o;
+        DebugLocator other = (DebugLocator) o;
 
         if (type != other.type) {
             return false;
@@ -103,9 +107,6 @@ public class DebugLocator {
 
     @Override
     public String toString() {
-        return "DebugLocator{" +
-                " type=" + type.toString() +
-                ", locator=" + locator +
-                '}';
+        return "DebugLocator{" + " type=" + type.toString() + ", locator=" + locator + '}';
     }
 }

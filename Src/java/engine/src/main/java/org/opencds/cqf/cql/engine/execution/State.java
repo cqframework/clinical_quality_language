@@ -1,5 +1,7 @@
 package org.opencds.cqf.cql.engine.execution;
 
+import java.time.ZonedDateTime;
+import java.util.*;
 import org.hl7.elm.r1.*;
 import org.opencds.cqf.cql.engine.debug.DebugAction;
 import org.opencds.cqf.cql.engine.debug.DebugMap;
@@ -9,8 +11,6 @@ import org.opencds.cqf.cql.engine.exception.CqlException;
 import org.opencds.cqf.cql.engine.exception.Severity;
 import org.opencds.cqf.cql.engine.runtime.DateTime;
 
-import java.time.ZonedDateTime;
-import java.util.*;
 /**
  * State represents the internal state of the CqlEngine.
  */
@@ -19,7 +19,6 @@ public class State {
     public State(Environment environment) {
         this.environment = environment;
         this.setEvaluationDateTime(ZonedDateTime.now());
-
     }
 
     private final Cache cache = new Cache();
@@ -28,7 +27,7 @@ public class State {
 
     private Deque<String> currentContext = new ArrayDeque<>();
 
-    private Deque<Deque<Variable> > windows = new ArrayDeque<>();
+    private Deque<Deque<Variable>> windows = new ArrayDeque<>();
     private Deque<Library> currentLibrary = new ArrayDeque<>();
 
     private Deque<HashSet<Object>> evaluatedResourceStack = new ArrayDeque<>();
@@ -38,7 +37,6 @@ public class State {
 
     private ZonedDateTime evaluationZonedDateTime;
     private DateTime evaluationDateTime;
-
 
     private DebugMap debugMap;
 
@@ -69,10 +67,11 @@ public class State {
     public void setParameter(String libraryName, String name, Object value) {
         boolean enteredLibrary = enterLibrary(libraryName);
         try {
-            String fullName = libraryName != null ? String.format("%s.%s", getCurrentLibrary().getIdentifier().getId(), name) : name;
+            String fullName = libraryName != null
+                    ? String.format("%s.%s", getCurrentLibrary().getIdentifier().getId(), name)
+                    : name;
             parameters.put(fullName, value);
-        }
-        finally {
+        } finally {
             exitLibrary(enteredLibrary);
         }
     }
@@ -124,8 +123,8 @@ public class State {
         this.debugMap = debugMap;
     }
 
-
     private DebugResult debugResult;
+
     public DebugResult getDebugResult() {
         return this.debugResult;
     }
@@ -174,8 +173,7 @@ public class State {
     }
 
     public void pop() {
-        if (!windows.peek().isEmpty())
-            getStack().pop();
+        if (!windows.peek().isEmpty()) getStack().pop();
     }
 
     public void push(Variable variable) {
@@ -216,7 +214,7 @@ public class State {
     }
 
     public void setContextValue(String context, Object contextValue) {
-        if (! contextValues.containsKey(context) || ! contextValues.get(context).equals(contextValue)) {
+        if (!contextValues.containsKey(context) || !contextValues.get(context).equals(contextValue)) {
             contextValues.put(context, contextValue);
             cache.getExpressions().clear();
         }
@@ -271,7 +269,7 @@ public class State {
         evaluatedResourceStack.push(new HashSet<>());
     }
 
-    //serves pop and merge to the down
+    // serves pop and merge to the down
     public void popEvaluatedResourceStack() {
         if (evaluatedResourceStack.isEmpty()) {
             throw new IllegalStateException("Attempted to pop the evaluatedResource stack when it's empty");
@@ -292,8 +290,7 @@ public class State {
         boolean isList = false;
         for (Variable v : getStack()) {
             if (v.getName().equals(name)) {
-                if (v.isList())
-                    isList = true;
+                if (v.isList()) isList = true;
                 ret.add(v.getValue());
             }
         }
@@ -305,9 +302,13 @@ public class State {
             for (var v : window) {
                 var value = v.getValue();
                 if (value instanceof org.opencds.cqf.cql.engine.runtime.Tuple) {
-                    for (String key : ((org.opencds.cqf.cql.engine.runtime.Tuple) value).getElements().keySet()) {
+                    for (String key : ((org.opencds.cqf.cql.engine.runtime.Tuple) value)
+                            .getElements()
+                            .keySet()) {
                         if (key.equals(name)) {
-                            return ((org.opencds.cqf.cql.engine.runtime.Tuple) value).getElements().get(key);
+                            return ((org.opencds.cqf.cql.engine.runtime.Tuple) value)
+                                    .getElements()
+                                    .get(key);
                         }
                     }
                 }

@@ -1,11 +1,5 @@
 package org.cqframework.cql.tools.formatter;
 
-import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.tree.*;
-import org.cqframework.cql.gen.cqlBaseVisitor;
-import org.cqframework.cql.gen.cqlLexer;
-import org.cqframework.cql.gen.cqlParser;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 import java.util.stream.Collectors;
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.tree.*;
+import org.cqframework.cql.gen.cqlBaseVisitor;
+import org.cqframework.cql.gen.cqlLexer;
+import org.cqframework.cql.gen.cqlParser;
 
 /**
  * Created by Bryn on 7/5/2017.
@@ -34,11 +33,12 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
         ParserRuleContext tree = parser.library();
 
         if (((SyntaxErrorListener) parser.getErrorListeners().get(1)).errors.size() > 0) {
-            return new FormatResult(((SyntaxErrorListener) parser.getErrorListeners().get(1)).errors, in.toString());
+            return new FormatResult(
+                    ((SyntaxErrorListener) parser.getErrorListeners().get(1)).errors, in.toString());
         }
 
         CqlFormatterVisitor formatter = new CqlFormatterVisitor();
-        String output = (String)formatter.visit(tree);
+        String output = (String) formatter.visit(tree);
 
         if (comments.size() > 0) {
             StringBuilder eofComments = new StringBuilder();
@@ -59,18 +59,22 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
     public static void populateComments(CommonTokenStream tokens) {
         for (Token token : tokens.getTokens()) {
             if (token.getText().startsWith("//") || token.getText().startsWith("/*")) {
-                String whitespace = token.getTokenIndex() < 1 ? "" : tokens.get(token.getTokenIndex() - 1).getText();
+                String whitespace = token.getTokenIndex() < 1
+                        ? ""
+                        : tokens.get(token.getTokenIndex() - 1).getText();
                 comments.add(new CommentToken(token, whitespace.matches("\\s+") ? whitespace : ""));
             }
         }
     }
 
     private boolean useSpaces = true;
+
     public boolean getUseSpaces() {
         return useSpaces;
     }
 
     private int indentSize = 2;
+
     public int getIndentSize() {
         return indentSize;
     }
@@ -91,6 +95,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
 
     private String currentSection;
     private int sectionCount = 0;
+
     private void newSection(String section) {
         if (hasSectionContent()) {
             resetIndentLevel();
@@ -102,8 +107,10 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
 
     private boolean needsSectionSeparator(String section) {
         switch (section) {
-            case "statement": return true;
-            default: return false;
+            case "statement":
+                return true;
+            default:
+                return false;
         }
     }
 
@@ -129,6 +136,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
     }
 
     private int typeSpecifierLevel = 0;
+
     private void enterTypeSpecifier() {
         typeSpecifierLevel++;
     }
@@ -142,6 +150,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
     }
 
     private int functionDefinitionLevel = 0;
+
     private void enterFunctionDefinition() {
         functionDefinitionLevel++;
     }
@@ -155,6 +164,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
     }
 
     private int functionInvocationLevel = 0;
+
     private void enterFunctionInvocation() {
         functionInvocationLevel++;
     }
@@ -168,6 +178,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
     }
 
     private int retrieveLevel = 0;
+
     private void enterRetrieve() {
         retrieveLevel++;
     }
@@ -210,30 +221,49 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
         }
 
         switch (terminal) {
-            case ":": return false;
-            case ".": return false;
-            case ",": return false;
-            case "<": return !inTypeSpecifier();
-            case ">": return !inTypeSpecifier();
-            case "(": return !inFunctionDefinition() && !inFunctionInvocation();
-            case ")": return !inFunctionDefinition() && !inFunctionInvocation();
-            case "[": return inRetrieve();
-            case "]": return false;
-            case "starts": return !inFunctionDefinition() || !inFunctionInvocation();
-            default: return true;
+            case ":":
+                return false;
+            case ".":
+                return false;
+            case ",":
+                return false;
+            case "<":
+                return !inTypeSpecifier();
+            case ">":
+                return !inTypeSpecifier();
+            case "(":
+                return !inFunctionDefinition() && !inFunctionInvocation();
+            case ")":
+                return !inFunctionDefinition() && !inFunctionInvocation();
+            case "[":
+                return inRetrieve();
+            case "]":
+                return false;
+            case "starts":
+                return !inFunctionDefinition() || !inFunctionInvocation();
+            default:
+                return true;
         }
     }
 
     private boolean needsWhitespaceAfter(String terminal) {
         switch (terminal) {
-            case ".": return false;
-            case "<": return !inTypeSpecifier();
-            case ">": return !inTypeSpecifier();
-            case "(": return !inFunctionDefinition() && !inFunctionInvocation();
-            case ")": return !inFunctionDefinition() || !inFunctionInvocation();
-            case "[": return false;
-            case "]": return inRetrieve();
-            default: return true;
+            case ".":
+                return false;
+            case "<":
+                return !inTypeSpecifier();
+            case ">":
+                return !inTypeSpecifier();
+            case "(":
+                return !inFunctionDefinition() && !inFunctionInvocation();
+            case ")":
+                return !inFunctionDefinition() || !inFunctionInvocation();
+            case "[":
+                return false;
+            case "]":
+                return inRetrieve();
+            default:
+                return true;
         }
     }
 
@@ -260,7 +290,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
             newLine();
             decreaseIndentLevel();
         }
-        if (terminal.equals("end") && (inFunctionInvocation() || inFunctionDefinition()) ) {
+        if (terminal.equals("end") && (inFunctionInvocation() || inFunctionDefinition())) {
             newLine();
         }
         output.append(terminal);
@@ -322,7 +352,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
         reset();
         super.visitLibrary(ctx);
         resetIndentLevel();
-//        newLine();
+        //        newLine();
         return output.toString();
     }
 
@@ -330,17 +360,15 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
     public Object visitChildren(RuleNode node) {
         Object result = defaultResult();
         int n = node.getChildCount();
-        for (int i=0; i<n; i++) {
+        for (int i = 0; i < n; i++) {
             if (!shouldVisitNextChild(node, result)) {
                 break;
             }
 
             ParseTree c = node.getChild(i);
 
-            if ((node instanceof cqlParser.TupleSelectorContext
-                    || node instanceof cqlParser.TupleTypeSpecifierContext)
-                    && c instanceof TerminalNodeImpl)
-            {
+            if ((node instanceof cqlParser.TupleSelectorContext || node instanceof cqlParser.TupleTypeSpecifierContext)
+                    && c instanceof TerminalNodeImpl) {
                 if (((TerminalNodeImpl) c).getSymbol().getText().equals("}")) {
                     decreaseIndentLevel();
                     newLine();
@@ -457,8 +485,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
         enterTypeSpecifier();
         try {
             return super.visitTypeSpecifier(ctx);
-        }
-        finally {
+        } finally {
             exitTypeSpecifier();
         }
     }
@@ -514,7 +541,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
         newConstruct("statement");
         Object result = defaultResult();
         int n = ctx.getChildCount();
-        for (int i=0; i<n; i++) {
+        for (int i = 0; i < n; i++) {
             if (!shouldVisitNextChild(ctx, result)) {
                 break;
             }
@@ -526,8 +553,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
             try {
                 Object childResult = c.accept(this);
                 result = aggregateResult(result, childResult);
-            }
-            finally {
+            } finally {
                 if (c == ctx.expression()) {
                     exitClause();
                 }
@@ -573,10 +599,8 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
                     enterClause();
                     clauseEntered = true;
                 }
-
             }
-        }
-        finally {
+        } finally {
             if (clauseEntered) {
                 exitClause();
             }
@@ -615,8 +639,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
         enterClause();
         try {
             return super.visitQueryInclusionClause(ctx);
-        }
-        finally {
+        } finally {
             exitClause();
         }
     }
@@ -639,8 +662,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
                 Object childResult = c.accept(this);
                 result = aggregateResult(result, childResult);
             }
-        }
-        finally {
+        } finally {
             if (clauseEntered) {
                 exitClause();
             }
@@ -664,8 +686,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
         enterRetrieve();
         try {
             return super.visitRetrieve(ctx);
-        }
-        finally {
+        } finally {
             exitRetrieve();
         }
     }
@@ -716,53 +737,52 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
                 result = aggregateResult(result, childResult);
             }
             return result;
-        }
-        finally {
+        } finally {
             if (clauseEntered) {
                 exitClause();
             }
         }
     }
 
-//    @Override
-//    public Object visitSingleSourceClause(cqlParser.SingleSourceClauseContext ctx) {
-//        return super.visitSingleSourceClause(ctx);
-//    }
-//
-//    @Override
-//    public Object visitMultipleSourceClause(cqlParser.MultipleSourceClauseContext ctx) {
-//        Object result = defaultResult();
-//        int n = ctx.getChildCount();
-//        boolean clauseEntered = false;
-//        try {
-//            for (int i = 0; i < n; i++) {
-//                if (!shouldVisitNextChild(ctx, result)) {
-//                    break;
-//                }
-//
-//                ParseTree c = ctx.getChild(i);
-//
-//                if (i == 1) {
-//                    enterClause();
-//                    clauseEntered = true;
-//                }
-//
-//                if (i > 1 && !c.getText().equals(",")) {
-//                    newLine();
-//                }
-//
-//                Object childResult = c.accept(this);
-//                result = aggregateResult(result, childResult);
-//            }
-//            return result;
-//        }
-//        finally {
-//            if (clauseEntered) {
-//                exitClause();
-//            }
-//        }
-//    }
-//
+    //    @Override
+    //    public Object visitSingleSourceClause(cqlParser.SingleSourceClauseContext ctx) {
+    //        return super.visitSingleSourceClause(ctx);
+    //    }
+    //
+    //    @Override
+    //    public Object visitMultipleSourceClause(cqlParser.MultipleSourceClauseContext ctx) {
+    //        Object result = defaultResult();
+    //        int n = ctx.getChildCount();
+    //        boolean clauseEntered = false;
+    //        try {
+    //            for (int i = 0; i < n; i++) {
+    //                if (!shouldVisitNextChild(ctx, result)) {
+    //                    break;
+    //                }
+    //
+    //                ParseTree c = ctx.getChild(i);
+    //
+    //                if (i == 1) {
+    //                    enterClause();
+    //                    clauseEntered = true;
+    //                }
+    //
+    //                if (i > 1 && !c.getText().equals(",")) {
+    //                    newLine();
+    //                }
+    //
+    //                Object childResult = c.accept(this);
+    //                result = aggregateResult(result, childResult);
+    //            }
+    //            return result;
+    //        }
+    //        finally {
+    //            if (clauseEntered) {
+    //                exitClause();
+    //            }
+    //        }
+    //    }
+    //
     @Override
     public Object visitLetClause(cqlParser.LetClauseContext ctx) {
         enterClause();
@@ -784,8 +804,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
                 result = aggregateResult(result, childResult);
             }
             return result;
-        }
-        finally {
+        } finally {
             exitClause();
         }
     }
@@ -800,8 +819,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
         enterClause();
         try {
             return super.visitWhereClause(ctx);
-        }
-        finally {
+        } finally {
             exitClause();
         }
     }
@@ -811,8 +829,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
         enterClause();
         try {
             return super.visitReturnClause(ctx);
-        }
-        finally {
+        } finally {
             exitClause();
         }
     }
@@ -822,8 +839,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
         enterClause();
         try {
             return super.visitSortClause(ctx);
-        }
-        finally {
+        } finally {
             exitClause();
         }
     }
@@ -909,8 +925,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
                 result = aggregateResult(result, childResult);
             }
             return result;
-        }
-        finally {
+        } finally {
             if (clauseEntered) {
                 exitClause();
             }
@@ -1247,8 +1262,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
             try {
                 Object childResult = c.accept(this);
                 result = aggregateResult(result, childResult);
-            }
-            finally {
+            } finally {
                 if (c == ctx.expression()) {
                     exitGroup();
                 }
@@ -1363,8 +1377,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
         enterFunctionInvocation();
         try {
             return super.visitFunctionInvocation(ctx);
-        }
-        finally {
+        } finally {
             exitFunctionInvocation();
         }
     }
@@ -1391,8 +1404,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
             try {
                 Object childResult = c.accept(this);
                 result = aggregateResult(result, childResult);
-            }
-            finally {
+            } finally {
                 if (c == ctx.paramList()) {
                     exitGroup();
                 }
@@ -1453,11 +1465,13 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
         private List<Exception> errors = new ArrayList<>();
 
         @Override
-        public void syntaxError(Recognizer<?, ?> recognizer,
-                                Object offendingSymbol,
-                                int line, int charPositionInLine,
-                                String msg, RecognitionException e)
-        {
+        public void syntaxError(
+                Recognizer<?, ?> recognizer,
+                Object offendingSymbol,
+                int line,
+                int charPositionInLine,
+                String msg,
+                RecognitionException e) {
             if (!((Token) offendingSymbol).getText().trim().isEmpty()) {
                 errors.add(new Exception(String.format("[%d:%d]: %s", line, charPositionInLine, msg)));
             }

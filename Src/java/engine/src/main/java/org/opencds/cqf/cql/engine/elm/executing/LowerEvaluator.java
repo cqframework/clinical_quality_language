@@ -21,8 +21,6 @@ public class LowerEvaluator {
         }
 
         throw new InvalidOperatorArgument(
-                "Lower(String)",
-                String.format("Lower(%s)", operand.getClass().getName())
-        );
+                "Lower(String)", String.format("Lower(%s)", operand.getClass().getName()));
     }
 }

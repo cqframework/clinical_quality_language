@@ -1,8 +1,9 @@
 package org.opencds.cqf.cql.engine.fhir.terminology;
 
+import ca.uhn.fhir.rest.client.api.IGenericClient;
+import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.hl7.fhir.r4.model.BooleanType;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.CodeSystem;
@@ -18,9 +19,6 @@ import org.opencds.cqf.cql.engine.terminology.CodeSystemInfo;
 import org.opencds.cqf.cql.engine.terminology.TerminologyProvider;
 import org.opencds.cqf.cql.engine.terminology.ValueSetInfo;
 
-import ca.uhn.fhir.rest.client.api.IGenericClient;
-import ca.uhn.fhir.rest.server.exceptions.ResourceNotFoundException;
-
 public class R4FhirTerminologyProvider implements TerminologyProvider {
 
     private static final String URN_UUID = "urn:uuid:";
@@ -29,8 +27,7 @@ public class R4FhirTerminologyProvider implements TerminologyProvider {
 
     private IGenericClient fhirClient;
 
-    public R4FhirTerminologyProvider() {
-    }
+    public R4FhirTerminologyProvider() {}
 
     /**
      *
@@ -74,11 +71,11 @@ public class R4FhirTerminologyProvider implements TerminologyProvider {
 
         } catch (Exception e) {
             throw new TerminologyProviderException(
-                    String.format("Error performing membership check of Code: %s in ValueSet: %s", code.toString(),
-                            valueSet.getId()),
+                    String.format(
+                            "Error performing membership check of Code: %s in ValueSet: %s",
+                            code.toString(), valueSet.getId()),
                     e);
         }
-
     }
 
     @Override
@@ -95,7 +92,8 @@ public class R4FhirTerminologyProvider implements TerminologyProvider {
 
             ValueSet expanded = (ValueSet) respParam.getParameter().get(0).getResource();
             List<Code> codes = new ArrayList<>();
-            for (ValueSet.ValueSetExpansionContainsComponent codeInfo : expanded.getExpansion().getContains()) {
+            for (ValueSet.ValueSetExpansionContainsComponent codeInfo :
+                    expanded.getExpansion().getContains()) {
                 Code nextCode = new Code()
                         .withCode(codeInfo.getCode())
                         .withSystem(codeInfo.getSystem())
@@ -130,19 +128,30 @@ public class R4FhirTerminologyProvider implements TerminologyProvider {
             return code.withSystem(codeSystem.getId());
 
         } catch (Exception e) {
-            throw new TerminologyProviderException(String.format(
-                    "Error performing lookup of Code: %s in CodeSystem: %s", code.toString(), codeSystem.getId()), e);
+            throw new TerminologyProviderException(
+                    String.format(
+                            "Error performing lookup of Code: %s in CodeSystem: %s",
+                            code.toString(), codeSystem.getId()),
+                    e);
         }
     }
 
     protected Bundle searchByUrl(String url) {
-        return fhirClient.search().forResource(ValueSet.class)
-        .where(ValueSet.URL.matches().value(url)).returnBundle(Bundle.class).execute();
+        return fhirClient
+                .search()
+                .forResource(ValueSet.class)
+                .where(ValueSet.URL.matches().value(url))
+                .returnBundle(Bundle.class)
+                .execute();
     }
 
     protected Bundle searchByIdentifier(String identifier) {
-        return fhirClient.search().forResource(ValueSet.class)
-        .where(ValueSet.IDENTIFIER.exactly().code(identifier)).returnBundle(Bundle.class).execute();
+        return fhirClient
+                .search()
+                .forResource(ValueSet.class)
+                .where(ValueSet.IDENTIFIER.exactly().code(identifier))
+                .returnBundle(Bundle.class)
+                .execute();
     }
 
     protected Bundle searchById(String id) {
@@ -157,7 +166,8 @@ public class R4FhirTerminologyProvider implements TerminologyProvider {
         // See https://www.hl7.org/fhir/datatypes.html#id
         if (id.matches("[A-Za-z0-9\\-\\.]{1,64}")) {
             try {
-                ValueSet vs = fhirClient.read().resource(ValueSet.class).withId(id).execute();
+                ValueSet vs =
+                        fhirClient.read().resource(ValueSet.class).withId(id).execute();
                 searchResults.addEntry().setResource(vs);
             } catch (ResourceNotFoundException rnfe) {
                 // intentionally empty
@@ -169,7 +179,8 @@ public class R4FhirTerminologyProvider implements TerminologyProvider {
 
     public String resolveValueSetId(ValueSetInfo valueSet) {
         if (valueSet.getVersion() != null
-                || (valueSet.getCodeSystems() != null && !valueSet.getCodeSystems().isEmpty())) {
+                || (valueSet.getCodeSystems() != null
+                        && !valueSet.getCodeSystems().isEmpty())) {
             throw new UnsupportedOperationException(String.format(
                     "Could not expand value set %s; version and code system bindings are not supported at this time.",
                     valueSet.getId()));

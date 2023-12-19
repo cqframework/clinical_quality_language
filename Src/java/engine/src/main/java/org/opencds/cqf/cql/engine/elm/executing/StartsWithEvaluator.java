@@ -3,14 +3,14 @@ package org.opencds.cqf.cql.engine.elm.executing;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 
 /*
-* StartsWith(argument String, prefix String) Boolean
-*
-* The StartsWith operator returns true if the given string starts with the given prefix.
-*
-* If the prefix is the empty string, the result is true.
-*
-* If either argument is null, the result is null.
-*/
+ * StartsWith(argument String, prefix String) Boolean
+ *
+ * The StartsWith operator returns true if the given string starts with the given prefix.
+ *
+ * If the prefix is the empty string, the result is true.
+ *
+ * If either argument is null, the result is null.
+ */
 
 public class StartsWithEvaluator {
 
@@ -25,8 +25,8 @@ public class StartsWithEvaluator {
 
         throw new InvalidOperatorArgument(
                 "StartsWith(String, String)",
-                String.format("StartsWith(%s, %s)", argument.getClass().getName(), prefix.getClass().getName())
-        );
+                String.format(
+                        "StartsWith(%s, %s)",
+                        argument.getClass().getName(), prefix.getClass().getName()));
     }
-
 }

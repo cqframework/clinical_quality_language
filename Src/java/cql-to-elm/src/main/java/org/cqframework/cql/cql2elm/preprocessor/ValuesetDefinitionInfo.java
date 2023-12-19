@@ -18,7 +18,7 @@ public class ValuesetDefinitionInfo extends BaseInfo {
 
     @Override
     public cqlParser.ValuesetDefinitionContext getDefinition() {
-        return (cqlParser.ValuesetDefinitionContext)super.getDefinition();
+        return (cqlParser.ValuesetDefinitionContext) super.getDefinition();
     }
 
     public void setDefinition(cqlParser.ValuesetDefinitionContext value) {

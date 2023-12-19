@@ -17,19 +17,22 @@ public class TestFhirDataProviderDstu2 extends FhirExecutionTestBase {
     public void before() {
         CqlEngine engine = getEngine();
         engine.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", dstu2Provider);
-        evaluationResult = engine.evaluate(library.getIdentifier(),
-                null, null, null, null, null);
-        //BaseFhirDataProvider provider = new FhirDataProviderDstu2().setEndpoint("http://fhirtest.uhn.ca/baseDstu2");
-//        FhirDataProviderDstu2 primitiveProvider = new FhirDataProviderDstu2().withEndpoint("http://fhirtest.uhn.ca/baseDstu2").withPackageName("ca.uhn.fhir.model.primitive");
-//        context.registerDataProvider("http://hl7.org/fhir", primitiveProvider);
-//        FhirDataProviderDstu2 compositeProvider = new FhirDataProviderDstu2().withEndpoint("http://fhirtest.uhn.ca/baseDstu2").withPackageName("ca.uhn.fhir.model.dstu2.composite");
-//        context.registerDataProvider("http://hl7.org/fhir", compositeProvider);
+        evaluationResult = engine.evaluate(library.getIdentifier(), null, null, null, null, null);
+        // BaseFhirDataProvider provider = new FhirDataProviderDstu2().setEndpoint("http://fhirtest.uhn.ca/baseDstu2");
+        //        FhirDataProviderDstu2 primitiveProvider = new
+        // FhirDataProviderDstu2().withEndpoint("http://fhirtest.uhn.ca/baseDstu2").withPackageName("ca.uhn.fhir.model.primitive");
+        //        context.registerDataProvider("http://hl7.org/fhir", primitiveProvider);
+        //        FhirDataProviderDstu2 compositeProvider = new
+        // FhirDataProviderDstu2().withEndpoint("http://fhirtest.uhn.ca/baseDstu2").withPackageName("ca.uhn.fhir.model.dstu2.composite");
+        //        context.registerDataProvider("http://hl7.org/fhir", compositeProvider);
     }
 
-    //@Test
+    // @Test
     public void testDstu2ProviderRetrieve() {
-		String contextPath = dstu2ModelResolver.getContextPath("Patient", "Encounter").toString();
-        FhirBundleCursor results = (FhirBundleCursor) dstu2Provider.retrieve("Patient", contextPath, "2822", "Encounter", null, "code", null, null, null, null, null, null);
+        String contextPath =
+                dstu2ModelResolver.getContextPath("Patient", "Encounter").toString();
+        FhirBundleCursor results = (FhirBundleCursor) dstu2Provider.retrieve(
+                "Patient", contextPath, "2822", "Encounter", null, "code", null, null, null, null, null, null);
 
         for (Object result : results) {
             Encounter e = (Encounter) result;

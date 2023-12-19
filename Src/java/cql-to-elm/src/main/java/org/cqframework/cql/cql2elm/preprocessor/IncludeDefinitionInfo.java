@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm.preprocessor;
 
-import org.antlr.v4.runtime.misc.Interval;
 import org.cqframework.cql.gen.cqlParser;
 
 public class IncludeDefinitionInfo extends BaseInfo {
@@ -58,7 +57,7 @@ public class IncludeDefinitionInfo extends BaseInfo {
 
     @Override
     public cqlParser.IncludeDefinitionContext getDefinition() {
-        return (cqlParser.IncludeDefinitionContext)super.getDefinition();
+        return (cqlParser.IncludeDefinitionContext) super.getDefinition();
     }
 
     public void setDefinition(cqlParser.IncludeDefinitionContext value) {

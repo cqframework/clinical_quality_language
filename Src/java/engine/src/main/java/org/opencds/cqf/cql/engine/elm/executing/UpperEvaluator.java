@@ -21,8 +21,6 @@ public class UpperEvaluator {
         }
 
         throw new InvalidOperatorArgument(
-                "Upper(String)",
-                String.format("Upper(%s)", operand.getClass().getName())
-        );
+                "Upper(String)", String.format("Upper(%s)", operand.getClass().getName()));
     }
 }

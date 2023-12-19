@@ -1,11 +1,10 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
-import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
-import org.opencds.cqf.cql.engine.execution.State;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
+import org.opencds.cqf.cql.engine.execution.State;
 
 /*
 
@@ -35,18 +34,17 @@ public class GeometricMeanEvaluator {
             if (element != null) {
                 if (element instanceof BigDecimal) {
                     cleanSource.add((BigDecimal) element);
-                }
-                else {
+                } else {
                     throw new InvalidOperatorArgument(
                             "GeometricMean(List<Decimal>)",
-                            String.format("GeometricMean(%s)", element.getClass().getName()));
+                            String.format(
+                                    "GeometricMean(%s)", element.getClass().getName()));
                 }
             }
         }
         return (BigDecimal) PowerEvaluator.power(
                 ProductEvaluator.product(cleanSource),
-                DivideEvaluator.divide(new BigDecimal(1), ToDecimalEvaluator.toDecimal(CountEvaluator.count(cleanSource)), state)
-        );
+                DivideEvaluator.divide(
+                        new BigDecimal(1), ToDecimalEvaluator.toDecimal(CountEvaluator.count(cleanSource)), state));
     }
-
 }

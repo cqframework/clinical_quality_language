@@ -5,7 +5,6 @@ import static org.testng.Assert.assertNull;
 
 import java.util.HashMap;
 import java.util.HashSet;
-
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.testng.annotations.Test;
 
@@ -75,5 +74,4 @@ public class IncludedParameterTest extends CqlTestBase {
         assertEquals(result.forExpression("Local Parameter").value(), 2);
         assertEquals(result.forExpression("Included Parameter").value(), 1);
     }
-
 }

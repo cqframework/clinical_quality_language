@@ -99,12 +99,12 @@ public class ClassTypeElement {
 
     @Override
     public String toString() {
-        return String.format("%s:%s%s%s%s",
+        return String.format(
+                "%s:%s%s%s%s",
                 this.name,
                 this.type.toString(),
                 this.prohibited ? " (prohibited)" : "",
                 this.oneBased ? " (one-based)" : "",
-                this.target != null ? " (target: " + this.target + ")" : ""
-        );
+                this.target != null ? " (target: " + this.target + ")" : "");
     }
 }

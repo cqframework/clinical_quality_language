@@ -1,6 +1,5 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
-
 import java.util.List;
 
 /*
@@ -36,5 +35,4 @@ public class CoalesceEvaluator {
         }
         return null;
     }
-
 }

@@ -1,0 +1,28 @@
+name: gradle spotlessCheck (Formatting)
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  format-check:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+      - name: spotless:check
+        run: ./gradlew spotlessCheck
+      - uses: mshick/add-pr-comment@v2
+        if: always()
+        with:
+          message-success: |
+            Formatting check succeeded!
+          message-failure: |
+            **This Pull Request has failed the formatting check**
+
+            Please run `gradlew spotlessApply` to fix the formatting issues.

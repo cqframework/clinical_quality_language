@@ -1,5 +1,16 @@
 package org.cqframework.cql.cql2elm;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.testng.Assert.*;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.xml.namespace.QName;
 import org.cqframework.cql.cql2elm.CqlCompilerException.ErrorSeverity;
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
 import org.cqframework.cql.elm.tracking.TrackBack;
@@ -10,18 +21,6 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import javax.xml.namespace.QName;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.testng.Assert.*;
-
 public class CMS146ElmTest {
 
     private CqlTranslator translator;
@@ -31,7 +30,9 @@ public class CMS146ElmTest {
     @BeforeTest
     public void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
-        translator = CqlTranslator.fromStream(CMS146ElmTest.class.getResourceAsStream("CMS146v2_Test_CQM.cql"), new LibraryManager(modelManager, new CqlCompilerOptions(ErrorSeverity.Warning, SignatureLevel.None)));
+        translator = CqlTranslator.fromStream(
+                CMS146ElmTest.class.getResourceAsStream("CMS146v2_Test_CQM.cql"),
+                new LibraryManager(modelManager, new CqlCompilerOptions(ErrorSeverity.Warning, SignatureLevel.None)));
         assertThat(translator.getErrors().size(), is(0));
         library = translator.toELM();
         of = new ObjectFactory();
@@ -39,23 +40,26 @@ public class CMS146ElmTest {
 
     @DataProvider(name = "sigLevels")
     public static Object[][] primeNumbers() {
-        return new Object[][] {{SignatureLevel.None}, {SignatureLevel.Differing}, {SignatureLevel.Overloads}, {SignatureLevel.All}};
+        return new Object[][] {
+            {SignatureLevel.None}, {SignatureLevel.Differing}, {SignatureLevel.Overloads}, {SignatureLevel.All}
+        };
     }
 
     @Test(dataProvider = "sigLevels")
     public void testSignatureLevels(SignatureLevel signatureLevel) throws IOException {
         final ModelManager modelManager = new ModelManager();
-        final CqlTranslator translator = CqlTranslator.fromStream(CMS146ElmTest.class.getResourceAsStream("CMS146v2_Test_CQM.cql"), new LibraryManager(modelManager, new CqlCompilerOptions(ErrorSeverity.Warning, signatureLevel)));
+        final CqlTranslator translator = CqlTranslator.fromStream(
+                CMS146ElmTest.class.getResourceAsStream("CMS146v2_Test_CQM.cql"),
+                new LibraryManager(modelManager, new CqlCompilerOptions(ErrorSeverity.Warning, signatureLevel)));
         final Library library = translator.toELM();
 
         final List<CqlToElmBase> annotations = library.getAnnotation();
         assertThat(annotations.size(), equalTo(3));
 
-        final List<CqlToElmInfo> casts =
-                annotations.stream()
-                        .filter(CqlToElmInfo.class::isInstance)
-                        .map(CqlToElmInfo.class::cast)
-                        .collect(Collectors.toList());
+        final List<CqlToElmInfo> casts = annotations.stream()
+                .filter(CqlToElmInfo.class::isInstance)
+                .map(CqlToElmInfo.class::cast)
+                .collect(Collectors.toList());
 
         assertThat(casts.size(), equalTo(1));
         assertThat(casts.get(0).getSignatureLevel(), equalTo(signatureLevel.name()));
@@ -63,7 +67,9 @@ public class CMS146ElmTest {
 
     @Test
     public void testLibraryAndVersion() {
-        assertThat(library.getIdentifier(), is(of.createVersionedIdentifier().withId("CMS146").withVersion("2")));
+        assertThat(
+                library.getIdentifier(),
+                is(of.createVersionedIdentifier().withId("CMS146").withVersion("2")));
     }
 
     @Test
@@ -83,49 +89,54 @@ public class CMS146ElmTest {
                         .withTemplateId("condition-qicore-qicore-condition")
                         .withCodeProperty("code")
                         .withCodeComparator("in")
-                        .withCodes(of.createValueSetRef().withName("Acute Pharyngitis").withPreserve(true)),
+                        .withCodes(of.createValueSetRef()
+                                .withName("Acute Pharyngitis")
+                                .withPreserve(true)),
                 of.createRetrieve()
                         .withDataType(quickDataType("Condition"))
                         .withTemplateId("condition-qicore-qicore-condition")
                         .withCodeProperty("code")
                         .withCodeComparator("in")
-                        .withCodes(of.createValueSetRef().withName("Acute Tonsillitis").withPreserve(true)),
+                        .withCodes(of.createValueSetRef()
+                                .withName("Acute Tonsillitis")
+                                .withPreserve(true)),
                 of.createRetrieve()
                         .withDataType(quickDataType("MedicationPrescription"))
                         .withTemplateId("medicationprescription-qicore-qicore-medicationprescription")
                         .withCodeProperty("medication.code")
                         .withCodeComparator("in")
-                        .withCodes(of.createValueSetRef().withName("Antibiotic Medications").withPreserve(true)),
+                        .withCodes(of.createValueSetRef()
+                                .withName("Antibiotic Medications")
+                                .withPreserve(true)),
                 of.createRetrieve()
                         .withDataType(quickDataType("Encounter"))
                         .withTemplateId("encounter-qicore-qicore-encounter")
                         .withCodeProperty("type")
                         .withCodeComparator("in")
-                        .withCodes(of.createValueSetRef().withName("Ambulatory/ED Visit").withPreserve(true)),
+                        .withCodes(of.createValueSetRef()
+                                .withName("Ambulatory/ED Visit")
+                                .withPreserve(true)),
                 of.createRetrieve()
                         .withDataType(quickDataType("Observation"))
                         .withTemplateId("observation-qicore-qicore-observation")
                         .withCodeProperty("code")
                         .withCodeComparator("in")
-                        .withCodes(of.createValueSetRef().withName("Group A Streptococcus Test").withPreserve(true))
-        );
+                        .withCodes(of.createValueSetRef()
+                                .withName("Group A Streptococcus Test")
+                                .withPreserve(true)));
 
         assertThat(actualCR, is(expectedCR));
     }
 
     // TODO: Disabled the test for now, valuesets have been moved to expression definitions. These are being checked in
     // the testVariables() test, but not as completely as this.
-    @Test(enabled=false)
+    @Test(enabled = false)
     public void testValueSets() {
         Collection<ValueSetDef> actualVS = library.getValueSets().getDef();
 
         Collection<ValueSetDef> expectedVS = Arrays.asList(
-                of.createValueSetDef()
-                        .withName("Acute Pharyngitis")
-                        .withId("2.16.840.1.113883.3.464.1003.102.12.1011"),
-                of.createValueSetDef()
-                        .withName("Acute Tonsillitis")
-                        .withId("2.16.840.1.113883.3.464.1003.102.12.1012"),
+                of.createValueSetDef().withName("Acute Pharyngitis").withId("2.16.840.1.113883.3.464.1003.102.12.1011"),
+                of.createValueSetDef().withName("Acute Tonsillitis").withId("2.16.840.1.113883.3.464.1003.102.12.1012"),
                 of.createValueSetDef()
                         .withName("Ambulatory/ED Visit")
                         .withId("2.16.840.1.113883.3.464.1003.101.12.1061"),
@@ -134,8 +145,7 @@ public class CMS146ElmTest {
                         .withId("2.16.840.1.113883.3.464.1003.196.12.1001"),
                 of.createValueSetDef()
                         .withName("Group A Streptococcus Test")
-                        .withId("2.16.840.1.113883.3.464.1003.198.12.1012")
-        );
+                        .withId("2.16.840.1.113883.3.464.1003.198.12.1012"));
 
         assertThat(actualVS, is(expectedVS));
     }
@@ -147,15 +157,25 @@ public class CMS146ElmTest {
             actualVars.add(def.getName());
         }
 
-        Collection<String> expectedVars = Arrays.asList("Patient", "InDemographic", "Pharyngitis", "Antibiotics", "TargetEncounters",
-                "TargetDiagnoses", "HasPriorAntibiotics", "HasTargetEncounter", "InInitialPopulation", "InDenominator",
-                "InDenominatorExclusions", "InNumerator");
+        Collection<String> expectedVars = Arrays.asList(
+                "Patient",
+                "InDemographic",
+                "Pharyngitis",
+                "Antibiotics",
+                "TargetEncounters",
+                "TargetDiagnoses",
+                "HasPriorAntibiotics",
+                "HasTargetEncounter",
+                "InInitialPopulation",
+                "InDenominator",
+                "InDenominatorExclusions",
+                "InNumerator");
 
         assertThat(actualVars, is(expectedVars));
     }
 
     // TODO: Disabled the test for now, needs to be updated to use annotations, will update after all syntax changes.
-    @Test(enabled=false)
+    @Test(enabled = false)
     public void testTrackBacks() {
         for (Retrieve dc : translator.toRetrieves()) {
             int expectedNumbers[] = new int[4];
@@ -183,7 +203,9 @@ public class CMS146ElmTest {
             // assertThat(dc.getTrackbacks().size(), is(1));
 
             TrackBack tb = dc.getTrackbacks().iterator().next();
-            assertThat(tb.getLibrary(), is(of.createVersionedIdentifier().withId("CMS146").withVersion("2")));
+            assertThat(
+                    tb.getLibrary(),
+                    is(of.createVersionedIdentifier().withId("CMS146").withVersion("2")));
             assertThat(tb.getStartLine(), is(expectedNumbers[0]));
             assertThat(tb.getStartChar(), is(expectedNumbers[1]));
             assertThat(tb.getEndLine(), is(expectedNumbers[2]));
@@ -215,7 +237,9 @@ public class CMS146ElmTest {
             assertThat(vs.getTrackbacks().size(), is(1));
 
             TrackBack tb = vs.getTrackbacks().iterator().next();
-            assertThat(tb.getLibrary(), is(of.createVersionedIdentifier().withId("CMS146").withVersion("2")));
+            assertThat(
+                    tb.getLibrary(),
+                    is(of.createVersionedIdentifier().withId("CMS146").withVersion("2")));
             assertThat(tb.getStartLine(), is(expectedNumbers[0]));
             assertThat(tb.getStartChar(), is(expectedNumbers[1]));
             assertThat(tb.getEndLine(), is(expectedNumbers[2]));
@@ -265,7 +289,9 @@ public class CMS146ElmTest {
             assertThat(ls.getTrackbacks().size(), is(1));
 
             TrackBack tb = ls.getTrackbacks().iterator().next();
-            assertThat(tb.getLibrary(), is(of.createVersionedIdentifier().withId("CMS146").withVersion("2")));
+            assertThat(
+                    tb.getLibrary(),
+                    is(of.createVersionedIdentifier().withId("CMS146").withVersion("2")));
             assertThat(tb.getStartLine(), is(expectedNumbers[0]));
             assertThat(tb.getStartChar(), is(expectedNumbers[1]));
             assertThat(tb.getEndLine(), is(expectedNumbers[2]));

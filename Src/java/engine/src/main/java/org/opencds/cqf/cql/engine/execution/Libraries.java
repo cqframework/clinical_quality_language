@@ -3,7 +3,6 @@ package org.opencds.cqf.cql.engine.execution;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.hl7.cql.model.NamespaceManager;
 import org.hl7.elm.r1.CodeDef;
 import org.hl7.elm.r1.CodeSystemDef;
@@ -39,7 +38,8 @@ public class Libraries {
     public static List<ExpressionDef> resolveAllExpressionRef(final String name, final Library relativeTo) {
         // Assumption: List of defs is sorted.
         var defs = relativeTo.getStatements().getDef();
-        int index = Collections.binarySearch(defs, name, (x, k) -> ((ExpressionDef)x).getName().compareTo((String)k));
+        int index = Collections.binarySearch(
+                defs, name, (x, k) -> ((ExpressionDef) x).getName().compareTo((String) k));
 
         if (index == -1) {
             return Collections.emptyList();
@@ -61,12 +61,15 @@ public class Libraries {
 
     public static ExpressionDef resolveExpressionRef(final String name, final Library relativeTo) {
         // Assumption: List of defs is sorted.
-        var result = Collections.binarySearch(relativeTo.getStatements().getDef(), name, (x, k) -> ((ExpressionDef)x).getName().compareTo((String)k));
+        var result = Collections.binarySearch(relativeTo.getStatements().getDef(), name, (x, k) -> ((ExpressionDef) x)
+                .getName()
+                .compareTo((String) k));
         if (result >= 0) {
             return relativeTo.getStatements().getDef().get(result);
         }
 
-        throw new CqlException(String.format("Could not resolve expression reference '%s' in library '%s'.",
+        throw new CqlException(String.format(
+                "Could not resolve expression reference '%s' in library '%s'.",
                 name, relativeTo.getIdentifier().getId()));
     }
 
@@ -77,7 +80,8 @@ public class Libraries {
             }
         }
 
-        throw new CqlException(String.format("Could not resolve code system reference '%s' in library '%s'.",
+        throw new CqlException(String.format(
+                "Could not resolve code system reference '%s' in library '%s'.",
                 name, relativeTo.getIdentifier().getId()));
     }
 
@@ -88,7 +92,8 @@ public class Libraries {
             }
         }
 
-        throw new CqlException(String.format("Could not resolve value set reference '%s' in library '%s'.",
+        throw new CqlException(String.format(
+                "Could not resolve value set reference '%s' in library '%s'.",
                 name, relativeTo.getIdentifier().getId()));
     }
 
@@ -99,7 +104,8 @@ public class Libraries {
             }
         }
 
-        throw new CqlException(String.format("Could not resolve code reference '%s' in library '%s'.",
+        throw new CqlException(String.format(
+                "Could not resolve code reference '%s' in library '%s'.",
                 name, relativeTo.getIdentifier().getId()));
     }
 
@@ -110,7 +116,8 @@ public class Libraries {
             }
         }
 
-        throw new CqlException(String.format("Could not resolve parameter reference '%s' in library '%s'.",
+        throw new CqlException(String.format(
+                "Could not resolve parameter reference '%s' in library '%s'.",
                 name, relativeTo.getIdentifier().getId()));
     }
 
@@ -135,8 +142,8 @@ public class Libraries {
 
     public static VersionedIdentifier toVersionedIdentifier(IncludeDef includeDef) {
         return new VersionedIdentifier()
-        .withSystem(NamespaceManager.getUriPart(includeDef.getPath()))
-        .withId(NamespaceManager.getNamePart(includeDef.getPath()))
-        .withVersion(includeDef.getVersion());
+                .withSystem(NamespaceManager.getUriPart(includeDef.getPath()))
+                .withId(NamespaceManager.getNamePart(includeDef.getPath()))
+                .withVersion(includeDef.getVersion());
     }
 }

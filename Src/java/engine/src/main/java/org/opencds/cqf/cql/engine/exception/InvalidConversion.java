@@ -8,6 +8,8 @@ public class InvalidConversion extends CqlException {
     }
 
     public InvalidConversion(Object from, Object to) {
-        super(String.format("Cannot Convert a value of type %s as %s.", from.getClass().getName(), to.getClass().getName()));
+        super(String.format(
+                "Cannot Convert a value of type %s as %s.",
+                from.getClass().getName(), to.getClass().getName()));
     }
 }

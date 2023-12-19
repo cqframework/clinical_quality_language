@@ -25,7 +25,8 @@ public abstract class BaseModelResolver implements ModelResolver {
         }
 
         if (isStrict) {
-            throw new InvalidCast(String.format("Cannot cast a value of type %s as %s.", value.getClass().getName(), type.getName()));
+            throw new InvalidCast(String.format(
+                    "Cannot cast a value of type %s as %s.", value.getClass().getName(), type.getName()));
         }
 
         return null;

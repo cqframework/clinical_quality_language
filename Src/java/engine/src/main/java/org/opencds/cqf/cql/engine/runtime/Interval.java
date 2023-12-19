@@ -2,7 +2,6 @@ package org.opencds.cqf.cql.engine.runtime;
 
 import java.math.BigDecimal;
 import java.util.Date;
-
 import org.opencds.cqf.cql.engine.elm.executing.*;
 import org.opencds.cqf.cql.engine.exception.InvalidInterval;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
@@ -23,8 +22,7 @@ public class Interval implements CqlType, Comparable<Interval> {
 
         if (this.low != null) {
             pointType = this.low.getClass();
-        }
-        else if (this.high != null) {
+        } else if (this.high != null) {
             pointType = this.high.getClass();
         }
 
@@ -32,7 +30,8 @@ public class Interval implements CqlType, Comparable<Interval> {
             throw new InvalidInterval("Low or high boundary of an interval must be present.");
         }
 
-        if (!(CqlType.class.isAssignableFrom(pointType) || pointType.getName().startsWith("java"))  && this.getState() == null) {
+        if (!(CqlType.class.isAssignableFrom(pointType) || pointType.getName().startsWith("java"))
+                && this.getState() == null) {
             throw new InvalidInterval("Boundary values that are not CQL Types require Context to evaluate.");
         }
 
@@ -43,14 +42,14 @@ public class Interval implements CqlType, Comparable<Interval> {
         // Special case for measure processing - MeasurementPeriod is a java date
         if (low instanceof Date && high instanceof Date) {
             if (((Date) low).after((Date) high)) {
-                throw new InvalidInterval("Invalid Interval - the ending boundary must be greater than or equal to the starting boundary.");
+                throw new InvalidInterval(
+                        "Invalid Interval - the ending boundary must be greater than or equal to the starting boundary.");
             }
-        }
-
-        else if (low != null && high != null ) {
+        } else if (low != null && high != null) {
             Boolean isStartGreater = GreaterEvaluator.greater(getStart(), getEnd(), this.getState());
-            if( isStartGreater == null || isStartGreater.equals(Boolean.TRUE) ) {
-                throw new InvalidInterval("Invalid Interval - the ending boundary must be greater than or equal to the starting boundary.");
+            if (isStartGreater == null || isStartGreater.equals(Boolean.TRUE)) {
+                throw new InvalidInterval(
+                        "Invalid Interval - the ending boundary must be greater than or equal to the starting boundary.");
             }
         }
     }
@@ -64,43 +63,53 @@ public class Interval implements CqlType, Comparable<Interval> {
             return SubtractEvaluator.subtract(end, start);
         }
 
-        throw new InvalidOperatorArgument(String.format("Cannot perform width operator with argument of type '%s'.", start.getClass().getName()));
+        throw new InvalidOperatorArgument(String.format(
+                "Cannot perform width operator with argument of type '%s'.",
+                start.getClass().getName()));
     }
 
     private State state;
+
     public State getState() {
         return state;
     }
 
     private Object low;
+
     public Object getLow() {
         return low;
     }
 
     private boolean lowClosed;
+
     public boolean getLowClosed() {
         return lowClosed;
     }
 
     private Object high;
+
     public Object getHigh() {
         return high;
     }
 
     private boolean highClosed;
+
     public boolean getHighClosed() {
         return highClosed;
     }
 
     private Class<?> pointType;
+
     public Class<?> getPointType() {
         return pointType;
     }
 
     private boolean uncertain = false;
+
     public boolean isUncertain() {
         return uncertain;
     }
+
     public Interval setUncertain(boolean uncertain) {
         this.uncertain = uncertain;
         return this;
@@ -119,8 +128,7 @@ public class Interval implements CqlType, Comparable<Interval> {
     public Object getStart() {
         if (!lowClosed) {
             return SuccessorEvaluator.successor(low);
-        }
-        else {
+        } else {
             return low == null ? MinValueEvaluator.minValue(pointType.getTypeName()) : low;
         }
     }
@@ -138,8 +146,7 @@ public class Interval implements CqlType, Comparable<Interval> {
     public Object getEnd() {
         if (!highClosed) {
             return PredecessorEvaluator.predecessor(high);
-        }
-        else {
+        } else {
             return high == null ? MaxValueEvaluator.maxValue(pointType.getTypeName()) : high;
         }
     }
@@ -171,16 +178,16 @@ public class Interval implements CqlType, Comparable<Interval> {
             Interval otherInterval = (Interval) other;
             return AndEvaluator.and(
                     EqualEvaluator.equal(this.getStart(), otherInterval.getStart(), this.getState()),
-                    EqualEvaluator.equal(this.getEnd(), otherInterval.getEnd(), this.getState())
-            );
-
+                    EqualEvaluator.equal(this.getEnd(), otherInterval.getEnd(), this.getState()));
         }
 
         if (other instanceof Integer) {
             return equal(new Interval(other, true, other, true, this.getState()));
         }
 
-        throw new InvalidOperatorArgument(String.format("Cannot perform equal operation on types: '%s' and '%s'", this.getClass().getName(), other.getClass().getName()));
+        throw new InvalidOperatorArgument(String.format(
+                "Cannot perform equal operation on types: '%s' and '%s'",
+                this.getClass().getName(), other.getClass().getName()));
     }
 
     @Override
@@ -191,18 +198,18 @@ public class Interval implements CqlType, Comparable<Interval> {
     @Override
     public int hashCode() {
         return (31 * (lowClosed ? 1 : 0))
-            + (47 * (highClosed ? 1 : 0))
-            + (13 * (low != null ? low.hashCode() : 0))
-            + (89 * (high != null ? high.hashCode() : 0));
+                + (47 * (highClosed ? 1 : 0))
+                + (13 * (low != null ? low.hashCode() : 0))
+                + (89 * (high != null ? high.hashCode() : 0));
     }
 
     @Override
     public String toString() {
-        return String.format("Interval%s%s, %s%s",
+        return String.format(
+                "Interval%s%s, %s%s",
                 getLowClosed() ? "[" : "(",
                 getLow() == null ? "null" : getLow().toString(),
                 getHigh() == null ? "null" : getHigh().toString(),
-                getHighClosed() ? "]" : ")"
-        );
+                getHighClosed() ? "]" : ")");
     }
 }

@@ -59,27 +59,21 @@ public class BeforeEvaluator {
         }
 
         if (left instanceof Interval && right instanceof Interval) {
-            return before(((Interval)left).getEnd(), ((Interval)right).getStart(), precision, state);
-        }
-
-        else if (left instanceof Interval) {
-            return before(((Interval)left).getEnd(), right, precision, state);
-        }
-
-        else if (right instanceof Interval) {
-            return before(left, ((Interval)right).getStart(), precision, state);
-        }
-
-        else if (left instanceof BaseTemporal && right instanceof BaseTemporal) {
+            return before(((Interval) left).getEnd(), ((Interval) right).getStart(), precision, state);
+        } else if (left instanceof Interval) {
+            return before(((Interval) left).getEnd(), right, precision, state);
+        } else if (right instanceof Interval) {
+            return before(left, ((Interval) right).getStart(), precision, state);
+        } else if (left instanceof BaseTemporal && right instanceof BaseTemporal) {
             if (precision == null) {
                 precision = BaseTemporal.getHighestPrecision((BaseTemporal) left, (BaseTemporal) right);
             }
 
-            Integer result = ((BaseTemporal) left).compareToPrecision((BaseTemporal) right, Precision.fromString(precision));
+            Integer result =
+                    ((BaseTemporal) left).compareToPrecision((BaseTemporal) right, Precision.fromString(precision));
             return result == null ? null : result < 0;
         }
 
         return LessEvaluator.less(left, right, state);
     }
-
 }

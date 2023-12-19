@@ -1,19 +1,17 @@
 package org.cqframework.cql.elm.serializing.jackson;
 
-import org.cqframework.cql.elm.serializing.ElmLibraryReader;
-import org.hl7.elm.r1.Library;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.net.URI;
 import java.net.URL;
+import org.cqframework.cql.elm.serializing.ElmLibraryReader;
+import org.hl7.elm.r1.Library;
 
 public class ElmXmlLibraryReader implements ElmLibraryReader {
 
-    public ElmXmlLibraryReader() {
-    }
+    public ElmXmlLibraryReader() {}
 
     public Library read(File file) throws IOException {
         return ElmXmlMapper.getMapper().readValue(file, Library.class);

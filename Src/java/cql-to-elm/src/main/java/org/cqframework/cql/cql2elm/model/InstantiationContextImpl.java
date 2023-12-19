@@ -1,12 +1,15 @@
 package org.cqframework.cql.cql2elm.model;
 
-import org.hl7.cql.model.*;
-
 import java.util.ArrayList;
 import java.util.Map;
+import org.hl7.cql.model.*;
 
 public class InstantiationContextImpl implements InstantiationContext {
-    public InstantiationContextImpl(Map<TypeParameter, DataType> typeMap, OperatorMap operatorMap, ConversionMap conversionMap, boolean allowPromotionAndDemotion) {
+    public InstantiationContextImpl(
+            Map<TypeParameter, DataType> typeMap,
+            OperatorMap operatorMap,
+            ConversionMap conversionMap,
+            boolean allowPromotionAndDemotion) {
         if (typeMap == null) {
             throw new IllegalArgumentException("typeMap is null");
         }
@@ -30,6 +33,7 @@ public class InstantiationContextImpl implements InstantiationContext {
     private ConversionMap conversionMap;
     private boolean allowPromotionAndDemotion;
     private int conversionScore;
+
     public int getConversionScore() {
         return conversionScore;
     }
@@ -42,40 +46,39 @@ public class InstantiationContextImpl implements InstantiationContext {
             if (parameter.canBind(callType)) {
                 typeMap.put(parameter, callType);
                 return true;
-            }
-            else {
+            } else {
                 return false;
             }
-        }
-        else {
+        } else {
             // If the type is bound, and is a super type of the call type, return true;
             if (boundType.isSuperTypeOf(callType) || callType.isCompatibleWith(boundType)) {
                 return true;
-            }
-            else if (callType.isSuperTypeOf(boundType) || boundType.isCompatibleWith(callType)) {
-                // If the call type is a super type of the bound type, switch the bound type for this parameter to the call type
+            } else if (callType.isSuperTypeOf(boundType) || boundType.isCompatibleWith(callType)) {
+                // If the call type is a super type of the bound type, switch the bound type for this parameter to the
+                // call type
                 if (parameter.canBind(callType)) {
                     typeMap.put(parameter, callType);
                     return true;
-                }
-                else {
+                } else {
                     return false;
                 }
-            }
-            else {
+            } else {
                 // If there is an implicit conversion path from the call type to the bound type, return true
-                Conversion conversion = conversionMap.findConversion(callType, boundType, true, allowPromotionAndDemotion, operatorMap);
+                Conversion conversion =
+                        conversionMap.findConversion(callType, boundType, true, allowPromotionAndDemotion, operatorMap);
                 if (conversion != null) {
                     // if the conversion is a list promotion, switch the bound type to the call type
                     if (boundType instanceof ListType) {
-                        ListType boundListType = (ListType)boundType;
-                        if (boundListType.getElementType().isSuperTypeOf(callType) || callType.isCompatibleWith(boundListType.getElementType())) {
+                        ListType boundListType = (ListType) boundType;
+                        if (boundListType.getElementType().isSuperTypeOf(callType)
+                                || callType.isCompatibleWith(boundListType.getElementType())) {
                             if (parameter.canBind(callType)) {
                                 typeMap.put(parameter, callType);
-                                conversionScore -= ConversionMap.ConversionScore.ListPromotion.score(); // This removes the list promotion
+                                conversionScore -=
+                                        ConversionMap.ConversionScore.ListPromotion
+                                                .score(); // This removes the list promotion
                                 return true;
-                            }
-                            else {
+                            } else {
                                 return false;
                             }
                         }
@@ -84,17 +87,18 @@ public class InstantiationContextImpl implements InstantiationContext {
                 }
 
                 // If there is an implicit conversion path from the bound type to the call type
-                conversion = conversionMap.findConversion(boundType, callType, true, allowPromotionAndDemotion, operatorMap);
+                conversion =
+                        conversionMap.findConversion(boundType, callType, true, allowPromotionAndDemotion, operatorMap);
                 if (conversion != null) {
                     // switch the bound type to the call type and return true
                     if (parameter.canBind(callType)) {
                         typeMap.put(parameter, callType);
                         conversionScore -= ((conversion.getToType() instanceof SimpleType)
                                 ? ConversionMap.ConversionScore.SimpleConversion.score()
-                                : ConversionMap.ConversionScore.ComplexConversion.score()); // This removes the conversion from the instantiation
+                                : ConversionMap.ConversionScore.ComplexConversion
+                                        .score()); // This removes the conversion from the instantiation
                         return true;
-                    }
-                    else {
+                    } else {
                         return false;
                     }
                 }
@@ -135,7 +139,8 @@ public class InstantiationContextImpl implements InstantiationContext {
     public DataType instantiate(TypeParameter parameter) {
         DataType result = typeMap.get(parameter);
         if (result == null) {
-            throw new IllegalArgumentException(String.format("Could not resolve type parameter %s.", parameter.getIdentifier()));
+            throw new IllegalArgumentException(
+                    String.format("Could not resolve type parameter %s.", parameter.getIdentifier()));
         }
 
         return result;
@@ -146,7 +151,7 @@ public class InstantiationContextImpl implements InstantiationContext {
         ArrayList<IntervalType> results = new ArrayList<IntervalType>();
         for (Conversion c : conversionMap.getConversions(callType)) {
             if (c.getToType() instanceof IntervalType) {
-                results.add((IntervalType)c.getToType());
+                results.add((IntervalType) c.getToType());
                 conversionScore += ConversionMap.ConversionScore.ComplexConversion.score();
             }
         }
@@ -156,14 +161,16 @@ public class InstantiationContextImpl implements InstantiationContext {
                 if (c.getOperator() != null) {
                     if (c.getToType() instanceof IntervalType) {
                         // instantiate the generic...
-                        InstantiationResult instantiationResult = ((GenericOperator)c.getOperator()).instantiate(new Signature(callType), operatorMap, conversionMap, false);
+                        InstantiationResult instantiationResult = ((GenericOperator) c.getOperator())
+                                .instantiate(new Signature(callType), operatorMap, conversionMap, false);
                         Operator operator = instantiationResult.getOperator();
-                        // TODO: Consider impact of conversion score of the generic instantiation on this conversion score
+                        // TODO: Consider impact of conversion score of the generic instantiation on this conversion
+                        // score
                         if (operator != null) {
                             operatorMap.addOperator(operator);
                             Conversion conversion = new Conversion(operator, true);
                             conversionMap.add(conversion);
-                            results.add((IntervalType)conversion.getToType());
+                            results.add((IntervalType) conversion.getToType());
                         }
                     }
                 }
@@ -172,7 +179,9 @@ public class InstantiationContextImpl implements InstantiationContext {
 
         // Add interval promotion if no other conversion is found
         if (results.isEmpty()) {
-            if (!(callType instanceof IntervalType) && operatorMap.isPointType(callType) && (allowPromotionAndDemotion || conversionMap.isIntervalPromotionEnabled())) {
+            if (!(callType instanceof IntervalType)
+                    && operatorMap.isPointType(callType)
+                    && (allowPromotionAndDemotion || conversionMap.isIntervalPromotionEnabled())) {
                 results.add(new IntervalType(callType));
                 conversionScore += ConversionMap.ConversionScore.IntervalPromotion.score();
             }
@@ -186,7 +195,7 @@ public class InstantiationContextImpl implements InstantiationContext {
         ArrayList<ListType> results = new ArrayList<ListType>();
         for (Conversion c : conversionMap.getConversions(callType)) {
             if (c.getToType() instanceof ListType) {
-                results.add((ListType)c.getToType());
+                results.add((ListType) c.getToType());
                 conversionScore += ConversionMap.ConversionScore.ComplexConversion.score();
             }
         }
@@ -196,14 +205,16 @@ public class InstantiationContextImpl implements InstantiationContext {
                 if (c.getOperator() != null) {
                     if (c.getToType() instanceof ListType) {
                         // instantiate the generic...
-                        InstantiationResult instantiationResult = ((GenericOperator)c.getOperator()).instantiate(new Signature(callType), operatorMap, conversionMap, false);
+                        InstantiationResult instantiationResult = ((GenericOperator) c.getOperator())
+                                .instantiate(new Signature(callType), operatorMap, conversionMap, false);
                         Operator operator = instantiationResult.getOperator();
-                        // TODO: Consider impact of conversion score of the generic instantiation on this conversion score
+                        // TODO: Consider impact of conversion score of the generic instantiation on this conversion
+                        // score
                         if (operator != null) {
                             operatorMap.addOperator(operator);
                             Conversion conversion = new Conversion(operator, true);
                             conversionMap.add(conversion);
-                            results.add((ListType)conversion.getToType());
+                            results.add((ListType) conversion.getToType());
                         }
                     }
                 }
@@ -213,7 +224,8 @@ public class InstantiationContextImpl implements InstantiationContext {
         // NOTE: FHIRPath support
         // Add list promotion if no other conversion is found
         if (results.isEmpty()) {
-            if (!(callType instanceof ListType) && (allowPromotionAndDemotion || conversionMap.isListPromotionEnabled())) {
+            if (!(callType instanceof ListType)
+                    && (allowPromotionAndDemotion || conversionMap.isListPromotionEnabled())) {
                 results.add(new ListType(callType));
                 conversionScore += ConversionMap.ConversionScore.ListPromotion.score();
             }
@@ -227,7 +239,7 @@ public class InstantiationContextImpl implements InstantiationContext {
         ArrayList<SimpleType> results = new ArrayList<SimpleType>();
         for (Conversion c : conversionMap.getConversions(callType)) {
             if (c.getToType() instanceof SimpleType) {
-                results.add((SimpleType)c.getToType());
+                results.add((SimpleType) c.getToType());
                 conversionScore += ConversionMap.ConversionScore.SimpleConversion.score();
             }
         }
@@ -236,14 +248,16 @@ public class InstantiationContextImpl implements InstantiationContext {
             for (Conversion c : conversionMap.getGenericConversions()) {
                 if (c.getOperator() != null) {
                     if (c.getToType() instanceof SimpleType) {
-                        InstantiationResult instantiationResult = ((GenericOperator)c.getOperator()).instantiate(new Signature(callType), operatorMap, conversionMap, false);
+                        InstantiationResult instantiationResult = ((GenericOperator) c.getOperator())
+                                .instantiate(new Signature(callType), operatorMap, conversionMap, false);
                         Operator operator = instantiationResult.getOperator();
-                        // TODO: Consider impact of conversion score of the generic instantiation on this conversion score
+                        // TODO: Consider impact of conversion score of the generic instantiation on this conversion
+                        // score
                         if (operator != null) {
                             operatorMap.addOperator(operator);
                             Conversion conversion = new Conversion(operator, true);
                             conversionMap.add(conversion);
-                            results.add((SimpleType)conversion.getToType());
+                            results.add((SimpleType) conversion.getToType());
                         }
                     }
                 }
@@ -253,9 +267,10 @@ public class InstantiationContextImpl implements InstantiationContext {
         // Add interval demotion if no other conversion is found
         if (results.isEmpty()) {
             if (callType instanceof IntervalType) {
-                IntervalType callIntervalType = (IntervalType)callType;
-                if (callIntervalType.getPointType() instanceof SimpleType && (allowPromotionAndDemotion || conversionMap.isIntervalDemotionEnabled())) {
-                    results.add((SimpleType)callIntervalType.getPointType());
+                IntervalType callIntervalType = (IntervalType) callType;
+                if (callIntervalType.getPointType() instanceof SimpleType
+                        && (allowPromotionAndDemotion || conversionMap.isIntervalDemotionEnabled())) {
+                    results.add((SimpleType) callIntervalType.getPointType());
                     conversionScore += ConversionMap.ConversionScore.IntervalDemotion.score();
                 }
             }
@@ -265,9 +280,10 @@ public class InstantiationContextImpl implements InstantiationContext {
         // Add list demotion if no other conversion is found
         if (results.isEmpty()) {
             if (callType instanceof ListType) {
-                ListType callListType = (ListType)callType;
-                if (callListType.getElementType() instanceof SimpleType && (allowPromotionAndDemotion || conversionMap.isListDemotionEnabled())) {
-                    results.add((SimpleType)callListType.getElementType());
+                ListType callListType = (ListType) callType;
+                if (callListType.getElementType() instanceof SimpleType
+                        && (allowPromotionAndDemotion || conversionMap.isListDemotionEnabled())) {
+                    results.add((SimpleType) callListType.getElementType());
                     conversionScore += ConversionMap.ConversionScore.ListDemotion.score();
                 }
             }

@@ -2,17 +2,16 @@ package org.hl7.fhirpath;
 
 import static org.opencds.cqf.cql.engine.elm.executing.ToQuantityEvaluator.toQuantity;
 
+import ca.uhn.fhir.context.FhirContext;
+import jakarta.xml.bind.JAXB;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.*;
-
-import jakarta.xml.bind.JAXB;
-
-import org.hl7.elm.r1.Library;
 import org.fhir.ucum.UcumException;
+import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhirpath.tests.InvalidType;
@@ -27,8 +26,6 @@ import org.opencds.cqf.cql.engine.runtime.Date;
 import org.opencds.cqf.cql.engine.runtime.DateTime;
 import org.opencds.cqf.cql.engine.runtime.Time;
 
-import ca.uhn.fhir.context.FhirContext;
-
 public abstract class TestFhirPath {
 
     public static Tests loadTestsFile(String testsFilePath) {
@@ -36,22 +33,21 @@ public abstract class TestFhirPath {
             InputStream testsFileRaw = TestFhirPath.class.getResourceAsStream(testsFilePath);
             return JAXB.unmarshal(testsFileRaw, Tests.class);
         } catch (Exception e) {
-            //e.printStackTrace();
+            // e.printStackTrace();
             throw new IllegalArgumentException("Couldn't load tests file [" + testsFilePath + "]: " + e.toString());
         }
     }
 
     private IBaseResource loadResourceFile(String resourceFilePath, FhirContext context) {
         return context.newXmlParser()
-            .parseResource(new InputStreamReader(TestFhirPath.class.getResourceAsStream(resourceFilePath)));
+                .parseResource(new InputStreamReader(TestFhirPath.class.getResourceAsStream(resourceFilePath)));
     }
 
     private Iterable<Object> loadExpectedResults(org.hl7.fhirpath.tests.Test test, boolean isExpressionOutputTest) {
         List<Object> results = new ArrayList<>();
         if (isExpressionOutputTest) {
             results.add(true);
-        }
-        else {
+        } else {
             if (test.getOutput() != null) {
                 for (org.hl7.fhirpath.tests.Output output : test.getOutput()) {
                     if (output.getType() != null) {
@@ -66,8 +62,9 @@ public abstract class TestFhirPath {
                                 results.add(new Date(output.getValue()));
                                 break;
                             case DATE_TIME:
-                                results.add(new DateTime(output.getValue(),
-                                    ZoneOffset.systemDefault().getRules().getOffset(Instant.now())));
+                                results.add(new DateTime(
+                                        output.getValue(),
+                                        ZoneOffset.systemDefault().getRules().getOffset(Instant.now())));
                                 break;
                             case TIME:
                                 results.add(new Time(output.getValue()));
@@ -85,11 +82,12 @@ public abstract class TestFhirPath {
                                 results.add(toQuantity(output.getValue()));
                                 break;
                             default:
-                                throw new IllegalArgumentException(String.format("Unknown output type: %s", output.getType()));
+                                throw new IllegalArgumentException(
+                                        String.format("Unknown output type: %s", output.getType()));
                         }
-                    }
-                    else {
-                        throw new IllegalArgumentException("Output type is not specified and the test is not expressed as an expression-output test");
+                    } else {
+                        throw new IllegalArgumentException(
+                                "Output type is not specified and the test is not expressed as an expression-output test");
                     }
                 }
             }
@@ -98,7 +96,11 @@ public abstract class TestFhirPath {
         return results;
     }
 
-    abstract Boolean compareResults(Object expectedResult, Object actualResult, State state, FhirModelResolver<?,?,?,?,?,?,?,?> resolver);
+    abstract Boolean compareResults(
+            Object expectedResult,
+            Object actualResult,
+            State state,
+            FhirModelResolver<?, ?, ?, ?, ?, ?, ?, ?> resolver);
 
     @SuppressWarnings("unchecked")
     private Iterable<Object> ensureIterable(Object result) {
@@ -113,28 +115,34 @@ public abstract class TestFhirPath {
         return actualResults;
     }
 
-    protected void runTest(org.hl7.fhirpath.tests.Test test, String basePathInput, FhirContext fhirContext, CompositeDataProvider provider, FhirModelResolver<?,?,?,?,?,?,?,?> resolver) throws UcumException {
+    protected void runTest(
+            org.hl7.fhirpath.tests.Test test,
+            String basePathInput,
+            FhirContext fhirContext,
+            CompositeDataProvider provider,
+            FhirModelResolver<?, ?, ?, ?, ?, ?, ?, ?> resolver)
+            throws UcumException {
         String cql = null;
         IBaseResource resource = null;
         if (test.getInputfile() != null) {
             String resourceFilePath = basePathInput + test.getInputfile();
             resource = loadResourceFile(resourceFilePath, fhirContext);
             cql = String.format(
-                "library TestFHIRPath using FHIR version '4.0.1' include FHIRHelpers version '4.0.1' called FHIRHelpers parameter %s %s context %s define Test:",
-                resource.fhirType(), resource.fhirType(), resource.fhirType());
-        }
-        else {
-            cql = "library TestFHIRPath using FHIR version '4.0.1' include FHIRHelpers version '4.0.1' called FHIRHelpers define Test:";
+                    "library TestFHIRPath using FHIR version '4.0.1' include FHIRHelpers version '4.0.1' called FHIRHelpers parameter %s %s context %s define Test:",
+                    resource.fhirType(), resource.fhirType(), resource.fhirType());
+        } else {
+            cql =
+                    "library TestFHIRPath using FHIR version '4.0.1' include FHIRHelpers version '4.0.1' called FHIRHelpers define Test:";
         }
 
         String testExpression = test.getExpression().getValue();
-        boolean isExpressionOutputTest = test.getOutput().size() == 1 && test.getOutput().get(0).getType() == null;
+        boolean isExpressionOutputTest =
+                test.getOutput().size() == 1 && test.getOutput().get(0).getType() == null;
         if (isExpressionOutputTest) {
             String outputExpression = test.getOutput().get(0).getValue();
             if ("null".equals(outputExpression)) {
                 cql = String.format("%s (%s) is %s", cql, testExpression, outputExpression);
-            }
-            else {
+            } else {
                 cql = String.format("%s (%s) = %s", cql, testExpression, outputExpression);
             }
         } else {
@@ -171,7 +179,8 @@ public abstract class TestFhirPath {
                     return;
                 } else {
                     e.printStackTrace();
-                    throw new RuntimeException(String.format("Couldn't translate library and was expecting a result. %s.", test.getName()));
+                    throw new RuntimeException(String.format(
+                            "Couldn't translate library and was expecting a result. %s.", test.getName()));
                 }
             }
 
@@ -189,8 +198,7 @@ public abstract class TestFhirPath {
                 VersionedIdentifier libraryId = TranslatorHelper.toElmIdentifier("TestFHIRPath");
                 Map<VersionedIdentifier, Library> map = new HashMap<>();
                 map.put(libraryId, library);
-                EvaluationResult evaluationResult = engine.evaluate(libraryId,
-                        Set.of("Test"), null, null, null, null);
+                EvaluationResult evaluationResult = engine.evaluate(libraryId, Set.of("Test"), null, null, null, null);
 
                 result = evaluationResult.forExpression("Test").value();
                 testPassed = invalidType.equals(InvalidType.FALSE);
@@ -201,9 +209,11 @@ public abstract class TestFhirPath {
 
             if (!testPassed) {
                 if (invalidType.equals(InvalidType.TRUE)) {
-                    throw new RuntimeException(String.format("Expected exception not thrown for test %s.", test.getName()));
+                    throw new RuntimeException(
+                            String.format("Expected exception not thrown for test %s.", test.getName()));
                 } else {
-                    throw new RuntimeException(String.format("Unexpected exception thrown for test %s: %s.", test.getName(), message));
+                    throw new RuntimeException(
+                            String.format("Unexpected exception thrown for test %s: %s.", test.getName(), message));
                 }
             }
 
@@ -220,8 +230,9 @@ public abstract class TestFhirPath {
                     Boolean comparison = compareResults(expectedResult, actualResult, engine.getState(), resolver);
                     if (comparison == null || !comparison) {
                         System.out.println("Failing Test: " + test.getName());
-                        System.out.println("- Expected Result: " + expectedResult + " (" + expectedResult.getClass() +")");
-                        System.out.println("- Actual Result: " + actualResult + " (" + expectedResult.getClass() +")");
+                        System.out.println(
+                                "- Expected Result: " + expectedResult + " (" + expectedResult.getClass() + ")");
+                        System.out.println("- Actual Result: " + actualResult + " (" + expectedResult.getClass() + ")");
                         throw new RuntimeException("Actual result is not equal to expected result.");
                     }
                 } else {

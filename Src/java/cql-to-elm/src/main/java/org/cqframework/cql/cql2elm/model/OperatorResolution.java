@@ -1,31 +1,32 @@
 package org.cqframework.cql.cql2elm.model;
 
-import org.hl7.elm.r1.VersionedIdentifier;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.hl7.elm.r1.VersionedIdentifier;
 
 public class OperatorResolution {
-    public OperatorResolution() {
-
-    }
+    public OperatorResolution() {}
 
     public OperatorResolution(Operator operator) {
         this.operator = operator;
     }
 
     private Operator operator;
+
     public Operator getOperator() {
         return operator;
     }
+
     public void setOperator(Operator operator) {
         this.operator = operator;
     }
 
     private boolean allowFluent = false;
+
     public boolean getAllowFluent() {
         return allowFluent;
     }
+
     public void setAllowFluent(boolean allowFluent) {
         this.allowFluent = allowFluent;
     }
@@ -36,9 +37,11 @@ public class OperatorResolution {
     of the resolved operator.
      */
     private VersionedIdentifier libraryIdentifier;
+
     public VersionedIdentifier getLibraryIdentifier() {
         return libraryIdentifier;
     }
+
     public void setLibraryIdentifier(VersionedIdentifier libraryIdentifier) {
         this.libraryIdentifier = libraryIdentifier;
     }
@@ -48,9 +51,11 @@ public class OperatorResolution {
     to set the library alias if necessary.
      */
     private String libraryName;
+
     public String getLibraryName() {
         return libraryName;
     }
+
     public void setLibraryName(String libraryName) {
         this.libraryName = libraryName;
     }
@@ -58,16 +63,17 @@ public class OperatorResolution {
     private void ensureConversions() {
         if (this.conversions == null) {
             this.conversions = new ArrayList<>();
-        }
-        else {
+        } else {
             this.conversions.clear();
         }
     }
 
     private List<Conversion> conversions;
+
     public Iterable<Conversion> getConversions() {
         return conversions;
     }
+
     public void setConversions(Iterable<Conversion> conversions) {
         ensureConversions();
         for (Conversion conversion : conversions) {
@@ -87,6 +93,7 @@ public class OperatorResolution {
     }
 
     private boolean operatorHasOverloads = false;
+
     public boolean getOperatorHasOverloads() {
         return operatorHasOverloads;
     }
@@ -96,6 +103,7 @@ public class OperatorResolution {
     }
 
     private int score;
+
     public int getScore() {
         return score;
     }

@@ -59,17 +59,17 @@ public class AfterEvaluator {
 
         // (Interval, Interval)
         if (left instanceof Interval && right instanceof Interval) {
-            return after(((Interval)left).getStart(), ((Interval)right).getEnd(), precision, state);
+            return after(((Interval) left).getStart(), ((Interval) right).getEnd(), precision, state);
         }
 
         // (Interval, Point)
         else if (left instanceof Interval) {
-            return after(((Interval)left).getStart(), right, precision, state);
+            return after(((Interval) left).getStart(), right, precision, state);
         }
 
         // (Point, Interval)
         else if (right instanceof Interval) {
-            return after(left, ((Interval)right).getEnd(), precision, state);
+            return after(left, ((Interval) right).getEnd(), precision, state);
         }
 
         // (Date, Date), (DateTime, DateTime) or (Time, Time)
@@ -78,11 +78,11 @@ public class AfterEvaluator {
                 precision = BaseTemporal.getHighestPrecision((BaseTemporal) left, (BaseTemporal) right);
             }
 
-            Integer result = ((BaseTemporal) left).compareToPrecision((BaseTemporal) right, Precision.fromString(precision));
+            Integer result =
+                    ((BaseTemporal) left).compareToPrecision((BaseTemporal) right, Precision.fromString(precision));
             return result == null ? null : result > 0;
         }
 
         return GreaterEvaluator.greater(left, right, state);
     }
-
 }

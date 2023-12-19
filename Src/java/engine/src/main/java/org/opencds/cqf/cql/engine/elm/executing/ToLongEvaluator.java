@@ -23,18 +23,17 @@ public class ToLongEvaluator {
         }
 
         if (operand instanceof Boolean) {
-            return ((Boolean)operand) ? 1 : 0;
+            return ((Boolean) operand) ? 1 : 0;
         }
 
         if (operand instanceof Integer) {
-            return Long.valueOf((Integer)operand);
+            return Long.valueOf((Integer) operand);
         }
 
         if (operand instanceof String) {
             try {
                 return Long.parseLong((String) operand);
-            }
-            catch (NumberFormatException nfe) {
+            } catch (NumberFormatException nfe) {
                 try {
                     Double ret = Double.parseDouble((String) operand);
                     if (Value.validateLong(ret) == null) {
@@ -48,8 +47,6 @@ public class ToLongEvaluator {
         }
 
         throw new InvalidOperatorArgument(
-                "ToLong(String)",
-                String.format("ToLong(%s)", operand.getClass().getName())
-        );
+                "ToLong(String)", String.format("ToLong(%s)", operand.getClass().getName()));
     }
 }

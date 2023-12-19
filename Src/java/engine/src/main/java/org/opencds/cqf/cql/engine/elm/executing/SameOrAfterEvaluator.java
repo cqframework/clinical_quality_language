@@ -109,7 +109,8 @@ public class SameOrAfterEvaluator {
             if (((Interval) left).getStart() instanceof BaseTemporal) {
                 return sameOrAfter(((Interval) left).getStart(), ((Interval) right).getEnd(), precision, state);
             }
-            return GreaterOrEqualEvaluator.greaterOrEqual(((Interval) left).getStart(), ((Interval) right).getEnd(), state);
+            return GreaterOrEqualEvaluator.greaterOrEqual(
+                    ((Interval) left).getStart(), ((Interval) right).getEnd(), state);
         }
 
         // Interval, Point
@@ -130,7 +131,9 @@ public class SameOrAfterEvaluator {
 
         throw new InvalidOperatorArgument(
                 "OnOrAfter(Date, Date), OnOrAfter(DateTime, DateTime), OnOrAfter(Time, Time), OnOrAfter(Interval<T>, Interval<T>), OnOrAfter(T, Interval<T>) or OnOrAfter(Interval<T>, T)",
-                String.format("OnOrAfter(%s, %s)", left.getClass().getName(), right.getClass().getName()));
+                String.format(
+                        "OnOrAfter(%s, %s)",
+                        left.getClass().getName(), right.getClass().getName()));
     }
 
     public static Boolean sameOrAfter(Object left, Object right, String precision, State state) {
@@ -148,14 +151,15 @@ public class SameOrAfterEvaluator {
         }
 
         if (left instanceof BaseTemporal && right instanceof BaseTemporal) {
-            Integer result = ((BaseTemporal) left).compareToPrecision((BaseTemporal) right, Precision.fromString(precision));
+            Integer result =
+                    ((BaseTemporal) left).compareToPrecision((BaseTemporal) right, Precision.fromString(precision));
             return result == null ? null : result == 0 || result > 0;
         }
 
         throw new InvalidOperatorArgument(
                 "SameOrAfter(Date, Date), SameOrAfter(DateTime, DateTime), SameOrAfter(Time, Time), SameOrAfter(Interval<T>, Interval<T>), SameOrAfter(T, Interval<T>) or SameOrAfter(Interval<T>, T)",
-                String.format("SameOrAfter(%s, %s)", left.getClass().getName(), right.getClass().getName())
-        );
+                String.format(
+                        "SameOrAfter(%s, %s)",
+                        left.getClass().getName(), right.getClass().getName()));
     }
-
 }

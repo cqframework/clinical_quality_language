@@ -20,8 +20,10 @@ public class HasTypeAndResult extends TypeSafeDiagnosingMatcher<ExpressionDef> {
 
     @Override
     protected boolean matchesSafely(ExpressionDef item, Description mismatchDescription) {
-        if (! (expectedType.isInstance(item.getExpression()))) {
-            mismatchDescription.appendText("had wrong type: ").appendText(item.getExpression().getClass().getName());
+        if (!(expectedType.isInstance(item.getExpression()))) {
+            mismatchDescription
+                    .appendText("had wrong type: ")
+                    .appendText(item.getExpression().getClass().getName());
             return false;
         }
 
@@ -39,14 +41,13 @@ public class HasTypeAndResult extends TypeSafeDiagnosingMatcher<ExpressionDef> {
 
     @Override
     public void describeTo(Description description) {
-        description.appendText("ExpressionDef w/ type: <")
+        description
+                .appendText("ExpressionDef w/ type: <")
                 .appendText(expectedType.getName())
                 .appendText("> and result: <")
                 .appendText(expectedResult)
                 .appendText(">");
     }
-
-
 
     @Factory
     public static <T> Matcher<ExpressionDef> hasTypeAndResult(Class t, Class r) {

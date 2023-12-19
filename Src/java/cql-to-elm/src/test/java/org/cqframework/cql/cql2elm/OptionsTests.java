@@ -1,12 +1,11 @@
 package org.cqframework.cql.cql2elm;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 public class OptionsTests {
 

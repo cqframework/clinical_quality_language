@@ -12,7 +12,8 @@ public class CqlIncludeException extends RuntimeException {
         this.versionId = versionId;
     }
 
-    public CqlIncludeException(String message, String librarySystem, String libraryId, String versionId, Throwable cause) {
+    public CqlIncludeException(
+            String message, String librarySystem, String libraryId, String versionId, Throwable cause) {
         super(message, cause);
         this.librarySystem = librarySystem;
         this.libraryId = libraryId;

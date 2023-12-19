@@ -11,21 +11,25 @@ public class DateFilter {
     }
 
     private String datePath;
+
     public String getDatePath() {
         return datePath;
     }
 
     private String dateLowPath;
+
     public String getDateLowPath() {
         return dateLowPath;
     }
 
     private String dateHighPath;
+
     public String getDateHighPath() {
         return dateHighPath;
     }
 
     private Interval dateRange;
+
     public Interval getDateRange() {
         return dateRange;
     }

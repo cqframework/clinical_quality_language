@@ -1,9 +1,8 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.math.BigDecimal;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.runtime.Value;
-
-import java.math.BigDecimal;
 
 /*
 Log(argument Decimal, base Decimal) Decimal
@@ -21,8 +20,8 @@ public class LogEvaluator {
         }
 
         if (left instanceof BigDecimal) {
-            Double base = Math.log(((BigDecimal)right).doubleValue());
-            Double value = Math.log(((BigDecimal)left).doubleValue());
+            Double base = Math.log(((BigDecimal) right).doubleValue());
+            Double value = Math.log(((BigDecimal) left).doubleValue());
 
             if (base == 0) {
                 return Value.verifyPrecision(new BigDecimal(value), null);
@@ -33,8 +32,8 @@ public class LogEvaluator {
 
         throw new InvalidOperatorArgument(
                 "Log(Decimal, Decimal)",
-                String.format("Log(%s, %s)", left.getClass().getName(), right.getClass().getName())
-        );
+                String.format(
+                        "Log(%s, %s)",
+                        left.getClass().getName(), right.getClass().getName()));
     }
-
 }

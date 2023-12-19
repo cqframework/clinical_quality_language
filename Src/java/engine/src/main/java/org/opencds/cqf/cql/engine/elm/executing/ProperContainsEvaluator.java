@@ -1,11 +1,10 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.util.List;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal;
 import org.opencds.cqf.cql.engine.runtime.Interval;
-
-import java.util.List;
 
 /*
     There are two overloads of this operator:
@@ -28,10 +27,10 @@ public class ProperContainsEvaluator {
             Boolean startProperContains = GreaterEvaluator.greater(right, ((Interval) left).getStart(), state);
             Boolean endProperContains = LessEvaluator.less(right, ((Interval) left).getEnd(), state);
 
-            return startProperContains == null ? null : endProperContains == null ? null : startProperContains && endProperContains;
-        }
-
-        else if (left instanceof Iterable) {
+            return startProperContains == null
+                    ? null
+                    : endProperContains == null ? null : startProperContains && endProperContains;
+        } else if (left instanceof Iterable) {
             List<?> leftList = (List<?>) left;
 
             for (Object element : leftList) {
@@ -50,8 +49,9 @@ public class ProperContainsEvaluator {
 
         throw new InvalidOperatorArgument(
                 "ProperContains(List<T>, T) or ProperContains(Interval<T>, T)",
-                String.format("ProperContains(%s, %s)", left.getClass().getName(), right.getClass().getName())
-        );
+                String.format(
+                        "ProperContains(%s, %s)",
+                        left.getClass().getName(), right.getClass().getName()));
     }
 
     public static Boolean properContains(Object left, Object right, String precision, State state) {
@@ -59,10 +59,11 @@ public class ProperContainsEvaluator {
             Boolean startProperContains = AfterEvaluator.after(right, ((Interval) left).getStart(), precision, state);
             Boolean endProperContains = BeforeEvaluator.before(right, ((Interval) left).getEnd(), precision, state);
 
-            return startProperContains == null ? null : endProperContains == null ? null : startProperContains && endProperContains;
+            return startProperContains == null
+                    ? null
+                    : endProperContains == null ? null : startProperContains && endProperContains;
         }
 
         return properContains(left, right, state);
     }
-
 }

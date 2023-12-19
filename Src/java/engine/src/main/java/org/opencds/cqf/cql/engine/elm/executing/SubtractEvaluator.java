@@ -1,9 +1,8 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.math.BigDecimal;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.runtime.*;
-
-import java.math.BigDecimal;
 
 /*
 
@@ -61,21 +60,23 @@ public class SubtractEvaluator {
 
         // -(Integer, Integer)
         if (left instanceof Integer) {
-            return (Integer)left - (Integer)right;
+            return (Integer) left - (Integer) right;
         }
 
         if (left instanceof Long) {
-            return (Long)left - (Long)right;
+            return (Long) left - (Long) right;
         }
 
         // -(Decimal, Decimal)
         else if (left instanceof BigDecimal) {
-            return ((BigDecimal)left).subtract((BigDecimal)right);
+            return ((BigDecimal) left).subtract((BigDecimal) right);
         }
 
         // -(Quantity, Quantity)
         else if (left instanceof Quantity) {
-            return new Quantity().withValue((((Quantity)left).getValue()).subtract(((Quantity)right).getValue())).withUnit(((Quantity)left).getUnit());
+            return new Quantity()
+                    .withValue((((Quantity) left).getValue()).subtract(((Quantity) right).getValue()))
+                    .withUnit(((Quantity) left).getUnit());
         }
 
         // -(DateTime, Quantity)
@@ -93,28 +94,43 @@ public class SubtractEvaluator {
 
             long convertedValueToSubtract = valueToSubtract;
             if (precision.toDateTimeIndex() < valueToSubtractPrecision.toDateTimeIndex()) {
-                convertedValueToSubtract = TemporalHelper.truncateValueToTargetPrecision(valueToSubtract, valueToSubtractPrecision, precision);
+                convertedValueToSubtract = TemporalHelper.truncateValueToTargetPrecision(
+                        valueToSubtract, valueToSubtractPrecision, precision);
                 valueToSubtractPrecision = precision;
             }
 
             if (left instanceof DateTime) {
-                return new DateTime(((DateTime) left).getDateTime().minus(convertedValueToSubtract, valueToSubtractPrecision.toChronoUnit()), precision);
+                return new DateTime(
+                        ((DateTime) left)
+                                .getDateTime()
+                                .minus(convertedValueToSubtract, valueToSubtractPrecision.toChronoUnit()),
+                        precision);
             } else if (left instanceof Date) {
-                return new Date(((Date) left).getDate().minus(convertedValueToSubtract, valueToSubtractPrecision.toChronoUnit())).setPrecision(precision);
+                return new Date(((Date) left)
+                                .getDate()
+                                .minus(convertedValueToSubtract, valueToSubtractPrecision.toChronoUnit()))
+                        .setPrecision(precision);
             } else {
-                return new Time(((Time) left).getTime().minus(convertedValueToSubtract, valueToSubtractPrecision.toChronoUnit()), precision);
+                return new Time(
+                        ((Time) left)
+                                .getTime()
+                                .minus(convertedValueToSubtract, valueToSubtractPrecision.toChronoUnit()),
+                        precision);
             }
-        }
-
-        else if (left instanceof Interval && right instanceof Interval) {
-            Interval leftInterval = (Interval)left;
-            Interval rightInterval = (Interval)right;
-            return new Interval(subtract(leftInterval.getStart(), rightInterval.getStart()), true, subtract(leftInterval.getEnd(), rightInterval.getEnd()), true);
+        } else if (left instanceof Interval && right instanceof Interval) {
+            Interval leftInterval = (Interval) left;
+            Interval rightInterval = (Interval) right;
+            return new Interval(
+                    subtract(leftInterval.getStart(), rightInterval.getStart()),
+                    true,
+                    subtract(leftInterval.getEnd(), rightInterval.getEnd()),
+                    true);
         }
 
         throw new InvalidOperatorArgument(
-            "Subtract(Integer, Integer), Subtract(Long, Long) Subtract(Decimal, Decimal), Subtract(Quantity, Quantity), Subtract(Date, Quantity), Subtract(DateTime, Quantity), Subtract(Time, Quantity)",
-            String.format("Subtract(%s, %s)", left.getClass().getName(), right.getClass().getName())
-        );
+                "Subtract(Integer, Integer), Subtract(Long, Long) Subtract(Decimal, Decimal), Subtract(Quantity, Quantity), Subtract(Date, Quantity), Subtract(DateTime, Quantity), Subtract(Time, Quantity)",
+                String.format(
+                        "Subtract(%s, %s)",
+                        left.getClass().getName(), right.getClass().getName()));
     }
 }

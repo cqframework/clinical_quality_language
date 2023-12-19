@@ -1,6 +1,5 @@
 package org.cqframework.cql.tools.xsd2modelinfo;
 
-import javax.xml.namespace.QName;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -11,12 +10,31 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import javax.xml.namespace.QName;
 
 public class ModelImporterOptions {
-    public enum SimpleTypeRestrictionPolicy {USE_BASETYPE, EXTEND_BASETYPE, IGNORE}
-    public enum ChoiceTypePolicy {USE_CHOICE, EXPAND}
-    public enum ElementRedeclarationPolicy {DISCARD_INVALID_REDECLARATIONS, RENAME_INVALID_REDECLARATIONS, FAIL_INVALID_REDECLARATIONS }
-    public enum VersionPolicy {CURRENT, INCLUDE_DEPRECATED}
+    public enum SimpleTypeRestrictionPolicy {
+        USE_BASETYPE,
+        EXTEND_BASETYPE,
+        IGNORE
+    }
+
+    public enum ChoiceTypePolicy {
+        USE_CHOICE,
+        EXPAND
+    }
+
+    public enum ElementRedeclarationPolicy {
+        DISCARD_INVALID_REDECLARATIONS,
+        RENAME_INVALID_REDECLARATIONS,
+        FAIL_INVALID_REDECLARATIONS
+    }
+
+    public enum VersionPolicy {
+        CURRENT,
+        INCLUDE_DEPRECATED
+    }
+
     private static final Pattern RETYPE_PATTERN = Pattern.compile("\\s*retype\\.(.+)\\s*");
     private static final Pattern EXTEND_PATTERN = Pattern.compile("\\s*extend\\.([^\\[]+)\\s*");
     private static final Pattern EXTEND_EL_PATTERN = Pattern.compile("\\s*extend\\.([^\\[]+)\\[([^\\]]+)\\]\\s*");
@@ -125,20 +143,25 @@ public class ModelImporterOptions {
     }
 
     public SimpleTypeRestrictionPolicy getSimpleTypeRestrictionPolicy() {
-        return simpleTypeRestrictionPolicy != null ? simpleTypeRestrictionPolicy : SimpleTypeRestrictionPolicy.USE_BASETYPE;
+        return simpleTypeRestrictionPolicy != null
+                ? simpleTypeRestrictionPolicy
+                : SimpleTypeRestrictionPolicy.USE_BASETYPE;
     }
 
     public void setSimpleTypeRestrictionPolicy(SimpleTypeRestrictionPolicy simpleTypeRestrictionPolicy) {
         this.simpleTypeRestrictionPolicy = simpleTypeRestrictionPolicy;
     }
 
-    public ModelImporterOptions withSimpleTypeRestrictionPolicy(SimpleTypeRestrictionPolicy simpleTypeRestrictionPolicy) {
+    public ModelImporterOptions withSimpleTypeRestrictionPolicy(
+            SimpleTypeRestrictionPolicy simpleTypeRestrictionPolicy) {
         this.simpleTypeRestrictionPolicy = simpleTypeRestrictionPolicy;
         return this;
     }
 
     public ElementRedeclarationPolicy getElementRedeclarationPolicy() {
-        return elementRedeclarationPolicy != null ? elementRedeclarationPolicy : ElementRedeclarationPolicy.FAIL_INVALID_REDECLARATIONS;
+        return elementRedeclarationPolicy != null
+                ? elementRedeclarationPolicy
+                : ElementRedeclarationPolicy.FAIL_INVALID_REDECLARATIONS;
     }
 
     public void setElementRedeclarationPolicy(ElementRedeclarationPolicy elementRedeclarationPolicy) {
@@ -215,13 +238,15 @@ public class ModelImporterOptions {
         for (String p : properties.stringPropertyNames().stream().sorted().collect(Collectors.toList())) {
             Matcher matcher = RETYPE_PATTERN.matcher(p);
             if (matcher.matches()) {
-                typeMap.put(QName.valueOf(matcher.group(1)), ModelImporterMapperValue.newRetype(properties.getProperty(p)));
+                typeMap.put(
+                        QName.valueOf(matcher.group(1)), ModelImporterMapperValue.newRetype(properties.getProperty(p)));
                 continue;
             }
 
             matcher = EXTEND_PATTERN.matcher(p);
             if (matcher.matches()) {
-                typeMap.put(QName.valueOf(matcher.group(1)), ModelImporterMapperValue.newExtend(properties.getProperty(p)));
+                typeMap.put(
+                        QName.valueOf(matcher.group(1)), ModelImporterMapperValue.newExtend(properties.getProperty(p)));
                 continue;
             }
 
@@ -229,9 +254,11 @@ public class ModelImporterOptions {
             if (matcher.matches()) {
                 ModelImporterMapperValue value = typeMap.get(QName.valueOf(matcher.group(1)));
                 if (value == null) {
-                    throw new IllegalArgumentException(String.format("Class element mapping declared before class mapping: %s", p));
+                    throw new IllegalArgumentException(
+                            String.format("Class element mapping declared before class mapping: %s", p));
                 } else if (value.getRelationship() == ModelImporterMapperValue.Relationship.RETYPE) {
-                    throw new IllegalArgumentException(String.format("Cannot map class elements for retyped classes: %s", p));
+                    throw new IllegalArgumentException(
+                            String.format("Cannot map class elements for retyped classes: %s", p));
                 }
                 value.addClassElementMapping(matcher.group(2), properties.getProperty(p));
             }
@@ -258,7 +285,7 @@ public class ModelImporterOptions {
         if (versionPolicy != null) {
             properties.setProperty("version-policy", versionPolicy.name());
         }
-        if (! typeMap.isEmpty()) {
+        if (!typeMap.isEmpty()) {
             for (Map.Entry<QName, ModelImporterMapperValue> entry : typeMap.entrySet()) {
                 QName key = entry.getKey();
                 ModelImporterMapperValue value = entry.getValue();
@@ -271,7 +298,6 @@ public class ModelImporterOptions {
                         properties.setProperty(String.format("extend.%s[%s]", key.toString(), el), elValue);
                     }
                 }
-
             }
         }
 

@@ -1,11 +1,10 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.math.BigDecimal;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.runtime.Interval;
 import org.opencds.cqf.cql.engine.runtime.Quantity;
 import org.opencds.cqf.cql.engine.runtime.Value;
-
-import java.math.BigDecimal;
 
 /*
 *(left Integer, right Integer) Integer
@@ -26,56 +25,63 @@ If either argument is null, the result is null.
 
 public class MultiplyEvaluator {
 
-  public static Object multiply(Object left, Object right) {
-    if (left == null || right == null) {
-        return null;
+    public static Object multiply(Object left, Object right) {
+        if (left == null || right == null) {
+            return null;
+        }
+
+        // *(Integer, Integer)
+        if (left instanceof Integer) {
+            return (Integer) left * (Integer) right;
+        }
+
+        if (left instanceof Long) {
+            return (Long) left * (Long) right;
+        }
+
+        // *(Decimal, Decimal)
+        else if (left instanceof BigDecimal && right instanceof BigDecimal) {
+            return Value.verifyPrecision(((BigDecimal) left).multiply((BigDecimal) right), null);
+        }
+
+        // *(Quantity, Quantity)
+        else if (left instanceof Quantity && right instanceof Quantity) {
+            // TODO: unit multiplication i.e. cm*cm = cm^2
+            String unit = ((Quantity) left).getUnit().equals("1")
+                    ? ((Quantity) right).getUnit()
+                    : ((Quantity) left).getUnit();
+            BigDecimal value =
+                    Value.verifyPrecision((((Quantity) left).getValue()).multiply(((Quantity) right).getValue()), null);
+            return new Quantity().withValue(value).withUnit(unit);
+        }
+
+        // *(Decimal, Quantity)
+        else if (left instanceof BigDecimal && right instanceof Quantity) {
+            BigDecimal value = Value.verifyPrecision(((BigDecimal) left).multiply(((Quantity) right).getValue()), null);
+            return ((Quantity) right).withValue(value);
+        }
+
+        // *(Quantity, Decimal)
+        else if (left instanceof Quantity && right instanceof BigDecimal) {
+            BigDecimal value = Value.verifyPrecision((((Quantity) left).getValue()).multiply((BigDecimal) right), null);
+            return ((Quantity) left).withValue(value);
+        }
+
+        // *(Uncertainty, Uncertainty)
+        else if (left instanceof Interval && right instanceof Interval) {
+            Interval leftInterval = (Interval) left;
+            Interval rightInterval = (Interval) right;
+            return new Interval(
+                    multiply(leftInterval.getStart(), rightInterval.getStart()),
+                    true,
+                    multiply(leftInterval.getEnd(), rightInterval.getEnd()),
+                    true);
+        }
+
+        throw new InvalidOperatorArgument(
+                "Multiply(Integer, Integer), Multiply(Long, Long), Multiply(Decimal, Decimal), Multiply(Decimal, Quantity), Multiply(Quantity, Decimal) or Multiply(Quantity, Quantity)",
+                String.format(
+                        "Multiply(%s, %s)",
+                        left.getClass().getName(), right.getClass().getName()));
     }
-
-    // *(Integer, Integer)
-    if (left instanceof Integer) {
-        return (Integer)left * (Integer)right;
-    }
-
-    if (left instanceof Long) {
-        return (Long) left * (Long) right;
-    }
-
-      // *(Decimal, Decimal)
-    else if (left instanceof BigDecimal && right instanceof BigDecimal) {
-        return Value.verifyPrecision(((BigDecimal)left).multiply((BigDecimal)right), null);
-    }
-
-    // *(Quantity, Quantity)
-    else if (left instanceof Quantity && right instanceof Quantity) {
-      // TODO: unit multiplication i.e. cm*cm = cm^2
-      String unit = ((Quantity) left).getUnit().equals("1") ? ((Quantity) right).getUnit() : ((Quantity) left).getUnit();
-      BigDecimal value = Value.verifyPrecision((((Quantity)left).getValue()).multiply(((Quantity)right).getValue()), null);
-      return new Quantity().withValue(value).withUnit(unit);
-    }
-
-    // *(Decimal, Quantity)
-    else if (left instanceof BigDecimal && right instanceof Quantity) {
-      BigDecimal value = Value.verifyPrecision(((BigDecimal)left).multiply(((Quantity)right).getValue()), null);
-      return ((Quantity) right).withValue(value);
-    }
-
-    // *(Quantity, Decimal)
-    else if (left instanceof Quantity && right instanceof BigDecimal) {
-      BigDecimal value = Value.verifyPrecision((((Quantity)left).getValue()).multiply((BigDecimal)right), null);
-      return ((Quantity) left).withValue(value);
-    }
-
-    // *(Uncertainty, Uncertainty)
-    else if (left instanceof Interval && right instanceof Interval) {
-      Interval leftInterval = (Interval)left;
-      Interval rightInterval = (Interval)right;
-      return new Interval(multiply(leftInterval.getStart(), rightInterval.getStart()), true, multiply(leftInterval.getEnd(), rightInterval.getEnd()), true);
-    }
-
-      throw new InvalidOperatorArgument(
-          "Multiply(Integer, Integer), Multiply(Long, Long), Multiply(Decimal, Decimal), Multiply(Decimal, Quantity), Multiply(Quantity, Decimal) or Multiply(Quantity, Quantity)",
-          String.format("Multiply(%s, %s)", left.getClass().getName(), right.getClass().getName())
-      );
-  }
-
 }

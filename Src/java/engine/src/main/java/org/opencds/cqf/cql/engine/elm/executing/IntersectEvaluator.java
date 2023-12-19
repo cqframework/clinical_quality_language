@@ -1,12 +1,11 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal;
 import org.opencds.cqf.cql.engine.runtime.Interval;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /*
 *** NOTES FOR INTERVAL ***
@@ -28,41 +27,34 @@ The operator is defined with set semantics, meaning that each element will appea
 If either argument is null, the result is null.
 */
 
-public class IntersectEvaluator
-{
-    public static Object intersect(Object left, Object right, State state)
-    {
-        if (left == null || right == null)
-        {
+public class IntersectEvaluator {
+    public static Object intersect(Object left, Object right, State state) {
+        if (left == null || right == null) {
             return null;
         }
 
-        if (left instanceof Interval)
-        {
-            Interval leftInterval = (Interval)left;
-            Interval rightInterval = (Interval)right;
+        if (left instanceof Interval) {
+            Interval leftInterval = (Interval) left;
+            Interval rightInterval = (Interval) right;
 
             Object leftStart = leftInterval.getStart();
             Object leftEnd = leftInterval.getEnd();
             Object rightStart = rightInterval.getStart();
             Object rightEnd = rightInterval.getEnd();
 
-            if (leftStart == null || leftEnd == null
-                    || rightStart == null || rightEnd == null)
-            {
+            if (leftStart == null || leftEnd == null || rightStart == null || rightEnd == null) {
                 return null;
             }
 
             String precision = null;
-            if (leftStart instanceof BaseTemporal
-                    && rightStart instanceof BaseTemporal)
-            {
-                precision = BaseTemporal.getHighestPrecision((BaseTemporal) leftStart, (BaseTemporal) leftEnd, (BaseTemporal) rightStart, (BaseTemporal) rightEnd);
+            if (leftStart instanceof BaseTemporal && rightStart instanceof BaseTemporal) {
+                precision = BaseTemporal.getHighestPrecision(
+                        (BaseTemporal) leftStart, (BaseTemporal) leftEnd, (BaseTemporal) rightStart, (BaseTemporal)
+                                rightEnd);
             }
 
             Boolean overlaps = OverlapsEvaluator.overlaps(leftInterval, rightInterval, precision, state);
-            if (overlaps == null || !overlaps)
-            {
+            if (overlaps == null || !overlaps) {
                 return null;
             }
 
@@ -70,40 +62,29 @@ public class IntersectEvaluator
             Boolean leftEndLtRightEnd = LessEvaluator.less(leftEnd, rightEnd, state);
 
             Object max;
-            if (leftStartGtRightStart == null && precision != null)
-            {
+            if (leftStartGtRightStart == null && precision != null) {
                 max = ((BaseTemporal) leftStart).getPrecision().toString().equals(precision) ? leftStart : rightStart;
-            }
-            else
-            {
+            } else {
                 max = leftStartGtRightStart == null ? null : leftStartGtRightStart ? leftStart : rightStart;
             }
 
             Object min;
-            if (leftEndLtRightEnd == null && precision != null)
-            {
+            if (leftEndLtRightEnd == null && precision != null) {
                 min = ((BaseTemporal) leftEnd).getPrecision().toString().equals(precision) ? leftEnd : rightEnd;
-            }
-            else
-            {
+            } else {
                 min = leftEndLtRightEnd == null ? null : leftEndLtRightEnd ? leftEnd : rightEnd;
             }
 
             return new Interval(max, max != null, min, min != null);
-        }
-
-        else if (left instanceof Iterable)
-        {
-            Iterable<?> leftArr = (Iterable<?>)left;
-            Iterable<?> rightArr = (Iterable<?>)right;
+        } else if (left instanceof Iterable) {
+            Iterable<?> leftArr = (Iterable<?>) left;
+            Iterable<?> rightArr = (Iterable<?>) right;
 
             List<Object> result = new ArrayList<>();
             Boolean in;
-            for (Object leftItem : leftArr)
-            {
+            for (Object leftItem : leftArr) {
                 in = InEvaluator.in(leftItem, rightArr, null, state);
-                if (in != null && in)
-                {
+                if (in != null && in) {
                     result.add(leftItem);
                 }
             }
@@ -113,8 +94,8 @@ public class IntersectEvaluator
 
         throw new InvalidOperatorArgument(
                 "Intersect(Interval<T>, Interval<T>) or Intersect(List<T>, List<T>)",
-                String.format("Intersect(%s, %s)", left.getClass().getName(), right.getClass().getName())
-        );
+                String.format(
+                        "Intersect(%s, %s)",
+                        left.getClass().getName(), right.getClass().getName()));
     }
-
 }

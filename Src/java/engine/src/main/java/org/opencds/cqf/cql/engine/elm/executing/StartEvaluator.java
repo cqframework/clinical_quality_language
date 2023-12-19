@@ -27,8 +27,6 @@ public class StartEvaluator {
 
         throw new InvalidOperatorArgument(
                 "Start(Interval<T>)",
-                String.format("Start(%s)", operand.getClass().getName())
-        );
+                String.format("Start(%s)", operand.getClass().getName()));
     }
-
 }

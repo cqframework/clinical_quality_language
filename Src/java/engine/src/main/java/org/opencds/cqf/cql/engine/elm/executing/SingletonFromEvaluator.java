@@ -26,9 +26,9 @@ public class SingletonFromEvaluator {
                 if (first) {
                     result = element;
                     first = false;
-                }
-                else {
-                    throw new InvalidOperatorArgument("Expected a list with at most one element, but found a list with multiple elements.");
+                } else {
+                    throw new InvalidOperatorArgument(
+                            "Expected a list with at most one element, but found a list with multiple elements.");
                 }
             }
             return result;
@@ -36,8 +36,6 @@ public class SingletonFromEvaluator {
 
         throw new InvalidOperatorArgument(
                 "SingletonFrom(List<T>)",
-                String.format("SingletonFrom(%s)", operand.getClass().getName())
-        );
+                String.format("SingletonFrom(%s)", operand.getClass().getName()));
     }
-
 }

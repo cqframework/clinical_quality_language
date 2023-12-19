@@ -4,7 +4,11 @@ import java.util.*;
 
 public class ClassType extends DataType implements NamedType {
 
-    public ClassType(String name, DataType baseType, Collection<ClassTypeElement> elements, Collection<TypeParameter> parameters) {
+    public ClassType(
+            String name,
+            DataType baseType,
+            Collection<ClassTypeElement> elements,
+            Collection<TypeParameter> parameters) {
         super(baseType);
 
         if (name == null || name.equals("")) {
@@ -39,13 +43,15 @@ public class ClassType extends DataType implements NamedType {
     }
 
     private String name;
+
     public String getName() {
         return this.name;
     }
 
     public String getNamespace() {
         if (this.name != null) {
-            int qualifierIndex = this.name.indexOf('.');//TODO Should this not be the last occurrence rather than the first occurrence?
+            int qualifierIndex = this.name.indexOf(
+                    '.'); // TODO Should this not be the last occurrence rather than the first occurrence?
             if (qualifierIndex > 0) {
                 return this.name.substring(0, qualifierIndex);
             }
@@ -56,7 +62,8 @@ public class ClassType extends DataType implements NamedType {
 
     public String getSimpleName() {
         if (this.name != null) {
-            int qualifierIndex = this.name.indexOf('.');//TODO Should this not be the last occurrence rather than the first occurrence?
+            int qualifierIndex = this.name.indexOf(
+                    '.'); // TODO Should this not be the last occurrence rather than the first occurrence?
             if (qualifierIndex > 0) {
                 return this.name.substring(qualifierIndex + 1);
             }
@@ -66,40 +73,67 @@ public class ClassType extends DataType implements NamedType {
     }
 
     private String identifier;
-    public String getIdentifier() { return identifier; }
-    public void setIdentifier(String identifier) { this.identifier = identifier; }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
 
     private String label;
-    public String getLabel() { return label; }
-    public void setLabel(String label) { this.label = label; }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
 
     private String target;
-    public String getTarget() { return target; }
-    public void setTarget(String target) { this.target = target; }
+
+    public String getTarget() {
+        return target;
+    }
+
+    public void setTarget(String target) {
+        this.target = target;
+    }
 
     private boolean retrievable;
+
     public boolean isRetrievable() {
         return retrievable;
     }
+
     public void setRetrievable(boolean retrievable) {
         this.retrievable = retrievable;
     }
 
     private String primaryCodePath;
+
     public String getPrimaryCodePath() {
         return primaryCodePath;
     }
+
     public void setPrimaryCodePath(String primaryCodePath) {
         this.primaryCodePath = primaryCodePath;
     }
 
     private String primaryValueSetPath;
-    public String getPrimaryValueSetPath() { return primaryValueSetPath; }
+
+    public String getPrimaryValueSetPath() {
+        return primaryValueSetPath;
+    }
+
     public void setPrimaryValueSetPath(String primaryValueSetPath) {
         this.primaryValueSetPath = primaryValueSetPath;
     }
 
     private List<Relationship> relationships = new ArrayList<>();
+
     public Iterable<Relationship> getRelationships() {
         return relationships;
     }
@@ -109,6 +143,7 @@ public class ClassType extends DataType implements NamedType {
     }
 
     private List<Relationship> targetRelationships = new ArrayList<>();
+
     public Iterable<Relationship> getTargetRelationships() {
         return targetRelationships;
     }
@@ -118,6 +153,7 @@ public class ClassType extends DataType implements NamedType {
     }
 
     private List<SearchType> searches = new ArrayList<>();
+
     public Iterable<SearchType> getSearches() {
         return searches;
     }
@@ -211,13 +247,13 @@ public class ClassType extends DataType implements NamedType {
      */
     public TypeParameter getGenericParameterByIdentifier(String identifier, boolean inCurrentClassOnly) {
         TypeParameter param = null;
-        for(TypeParameter genericParameter: genericParameters) {
-            if(identifier.equalsIgnoreCase(genericParameter.getIdentifier())) {
+        for (TypeParameter genericParameter : genericParameters) {
+            if (identifier.equalsIgnoreCase(genericParameter.getIdentifier())) {
                 param = genericParameter;
                 break;
             }
         }
-        if(!inCurrentClassOnly && param == null) {
+        if (!inCurrentClassOnly && param == null) {
             if (param == null && getBaseType() instanceof ClassType) {
                 param = ((ClassType) getBaseType()).getGenericParameterByIdentifier(identifier);
             }
@@ -237,7 +273,7 @@ public class ClassType extends DataType implements NamedType {
         if (baseElementMap == null) {
             baseElementMap = new LinkedHashMap<>();
             if (getBaseType() instanceof ClassType) {
-                ((ClassType)getBaseType()).gatherElements(baseElementMap);
+                ((ClassType) getBaseType()).gatherElements(baseElementMap);
             }
         }
 
@@ -246,7 +282,7 @@ public class ClassType extends DataType implements NamedType {
 
     private void gatherElements(LinkedHashMap<String, ClassTypeElement> elementMap) {
         if (getBaseType() instanceof ClassType) {
-            ((ClassType)getBaseType()).gatherElements(elementMap);
+            ((ClassType) getBaseType()).gatherElements(elementMap);
         }
 
         for (ClassTypeElement element : elements) {
@@ -268,26 +304,17 @@ public class ClassType extends DataType implements NamedType {
 
     private void internalAddElement(ClassTypeElement element) {
         ClassTypeElement existingElement = getBaseElementMap().get(element.getName());
-        if (
-            existingElement != null && !(existingElement.getType() instanceof TypeParameter)
-            && (
-                !(
-                    element.getType().isSubTypeOf(existingElement.getType())
-                    || (
-                        existingElement.getType() instanceof ListType
-                        && element.getType().isSubTypeOf(((ListType)existingElement.getType()).getElementType())
-                    )
-                    || (
-                            existingElement.getType() instanceof IntervalType
-                        && element.getType().isSubTypeOf(((IntervalType)existingElement.getType()).getPointType())
-                    )
-                    || (
-                            existingElement.getType() instanceof ChoiceType
-                        && element.getType().isCompatibleWith(existingElement.getType())
-                    )
-                )
-            )
-        ) {
+        if (existingElement != null
+                && !(existingElement.getType() instanceof TypeParameter)
+                && (!(element.getType().isSubTypeOf(existingElement.getType())
+                        || (existingElement.getType() instanceof ListType
+                                && element.getType()
+                                        .isSubTypeOf(((ListType) existingElement.getType()).getElementType()))
+                        || (existingElement.getType() instanceof IntervalType
+                                && element.getType()
+                                        .isSubTypeOf(((IntervalType) existingElement.getType()).getPointType()))
+                        || (existingElement.getType() instanceof ChoiceType
+                                && element.getType().isCompatibleWith(existingElement.getType()))))) {
             throw new InvalidRedeclarationException(this, existingElement, element);
         }
 
@@ -295,13 +322,12 @@ public class ClassType extends DataType implements NamedType {
     }
 
     private void internalAddParameter(TypeParameter parameter) {
-        //TODO Flesh out and retain method only if needed.
+        // TODO Flesh out and retain method only if needed.
 
         this.genericParameters.add(parameter);
     }
 
-    public void addElement(ClassTypeElement element)
-    {
+    public void addElement(ClassTypeElement element) {
         internalAddElement(element);
         sortedElements = null;
         tupleType = null;
@@ -333,7 +359,7 @@ public class ClassType extends DataType implements NamedType {
     @Override
     public boolean equals(Object o) {
         if (o instanceof ClassType) {
-            ClassType that = (ClassType)o;
+            ClassType that = (ClassType) o;
             return this.name.equals(that.name);
         }
 
@@ -351,6 +377,7 @@ public class ClassType extends DataType implements NamedType {
     }
 
     private TupleType tupleType;
+
     public TupleType getTupleType() {
         if (tupleType == null) {
             tupleType = buildTupleType();
@@ -363,7 +390,7 @@ public class ClassType extends DataType implements NamedType {
         // Add base elements first
         DataType baseType = classType.getBaseType();
         if (baseType instanceof ClassType) {
-            addTupleElements((ClassType)baseType, elements);
+            addTupleElements((ClassType) baseType, elements);
         }
 
         for (ClassTypeElement element : classType.getElements()) {
@@ -385,12 +412,13 @@ public class ClassType extends DataType implements NamedType {
     @Override
     public boolean isCompatibleWith(DataType other) {
         if (other instanceof TupleType) {
-            TupleType tupleType = (TupleType)other;
+            TupleType tupleType = (TupleType) other;
             return getTupleType().equals(tupleType);
-        // Github #115: It's incorrect for a class type to be considered compatible with another class type on the basis of the inferred tuple type alone.
-        //} else if (other instanceof ClassType) {
-        //    ClassType classType = (ClassType)other;
-        //    return getTupleType().equals(classType.getTupleType());
+            // Github #115: It's incorrect for a class type to be considered compatible with another class type on the
+            // basis of the inferred tuple type alone.
+            // } else if (other instanceof ClassType) {
+            //    ClassType classType = (ClassType)other;
+            //    return getTupleType().equals(classType.getTupleType());
         }
 
         return super.isCompatibleWith(other);
@@ -404,13 +432,19 @@ public class ClassType extends DataType implements NamedType {
     @Override
     public boolean isInstantiable(DataType callType, InstantiationContext context) {
         if (callType instanceof ClassType) {
-            ClassType classType = (ClassType)callType;
+            ClassType classType = (ClassType) callType;
             if (elements.size() == classType.elements.size()) {
                 List<ClassTypeElement> theseElements = getSortedElements();
                 List<ClassTypeElement> thoseElements = classType.getSortedElements();
                 for (int i = 0; i < theseElements.size(); i++) {
-                    if (!(theseElements.get(i).getName().equals(thoseElements.get(i).getName())
-                            && theseElements.get(i).getType().isInstantiable(thoseElements.get(i).getType(), context))) {
+                    if (!(theseElements
+                                    .get(i)
+                                    .getName()
+                                    .equals(thoseElements.get(i).getName())
+                            && theseElements
+                                    .get(i)
+                                    .getType()
+                                    .isInstantiable(thoseElements.get(i).getType(), context))) {
                         return false;
                     }
                 }
@@ -430,7 +464,8 @@ public class ClassType extends DataType implements NamedType {
 
         ClassType result = new ClassType(getName(), getBaseType());
         for (int i = 0; i < elements.size(); i++) {
-            result.addElement(new ClassTypeElement(elements.get(i).getName(), elements.get(i).getType().instantiate(context)));
+            result.addElement(new ClassTypeElement(
+                    elements.get(i).getName(), elements.get(i).getType().instantiate(context)));
         }
 
         return result;

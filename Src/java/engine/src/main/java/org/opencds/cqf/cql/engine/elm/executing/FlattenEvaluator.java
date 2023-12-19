@@ -1,9 +1,8 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
-import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 
 /*
 flatten(argument List<List<T>>) List<T>
@@ -35,8 +34,6 @@ public class FlattenEvaluator {
 
         throw new InvalidOperatorArgument(
                 "Flatten(List<List<T>>)",
-                String.format("Flatten(%s)", operand.getClass().getName())
-        );
+                String.format("Flatten(%s)", operand.getClass().getName()));
     }
-
 }

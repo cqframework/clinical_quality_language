@@ -1,14 +1,11 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.time.format.DateTimeParseException;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.Date;
 import org.opencds.cqf.cql.engine.runtime.DateTime;
 import org.opencds.cqf.cql.engine.runtime.TemporalHelper;
-
-import java.math.BigDecimal;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeParseException;
 
 /*
 
@@ -54,23 +51,28 @@ public class ToDateTimeEvaluator {
 
         if (operand instanceof String) {
             try {
-                return new DateTime((String) operand, state.getEvaluationDateTime().getZoneOffset());
+                return new DateTime(
+                        (String) operand, state.getEvaluationDateTime().getZoneOffset());
             } catch (DateTimeParseException dtpe) {
                 return null;
             }
         }
 
         if (operand instanceof Date) {
-            return new DateTime(TemporalHelper.zoneToOffset(state.getEvaluationZonedDateTime().getOffset()),
+            return new DateTime(
+                    TemporalHelper.zoneToOffset(
+                            state.getEvaluationZonedDateTime().getOffset()),
                     ((Date) operand).getDate().getYear(),
                     ((Date) operand).getDate().getMonthValue(),
                     ((Date) operand).getDate().getDayOfMonth(),
-                    0, 0, 0, 0);
+                    0,
+                    0,
+                    0,
+                    0);
         }
 
         throw new InvalidOperatorArgument(
                 "ToDateTime(String) or ToDateTime(Date)",
-                String.format("ToDateTime(%s)", operand.getClass().getName())
-        );
+                String.format("ToDateTime(%s)", operand.getClass().getName()));
     }
 }

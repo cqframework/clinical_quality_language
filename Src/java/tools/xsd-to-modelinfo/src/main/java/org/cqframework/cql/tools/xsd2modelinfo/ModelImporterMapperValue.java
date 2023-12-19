@@ -4,7 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ModelImporterMapperValue {
-    public enum Relationship { RETYPE, EXTEND }
+    public enum Relationship {
+        RETYPE,
+        EXTEND
+    }
 
     private final String targetSystemClass;
     private final Relationship relationship;

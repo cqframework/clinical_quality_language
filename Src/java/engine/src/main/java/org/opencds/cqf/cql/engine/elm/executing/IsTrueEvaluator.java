@@ -11,5 +11,4 @@ public class IsTrueEvaluator {
     public static Object isTrue(Boolean operand) {
         return Boolean.TRUE == operand;
     }
-
 }

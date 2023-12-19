@@ -1,9 +1,8 @@
 package org.cqframework.cql.cql2elm.model;
 
-import org.hl7.cql.model.*;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.hl7.cql.model.*;
 
 public class Conversion {
     public Conversion(Operator operator, boolean isImplicit) {
@@ -115,7 +114,6 @@ public class Conversion {
             throw new IllegalArgumentException("fromType is null");
         }
 
-
         setIsImplicit(true);
         this.fromType = fromType;
         this.toType = toType;
@@ -160,26 +158,30 @@ public class Conversion {
     }
 
     private boolean implicit;
+
     public boolean isImplicit() {
         return implicit;
     }
+
     public void setIsImplicit(boolean implicit) {
         this.implicit = implicit;
     }
 
     private Operator operator;
+
     public Operator getOperator() {
         return operator;
     }
+
     public void setOperator(Operator operator) {
         if (operator == null) {
             throw new IllegalArgumentException("operator is null");
         }
 
         // NOTE: FHIRPath Support, need to allow generic conversion operators
-//        if (operator instanceof GenericOperator) {
-//            throw new IllegalArgumentException("Generic conversion operators are not supported.");
-//        }
+        //        if (operator instanceof GenericOperator) {
+        //            throw new IllegalArgumentException("Generic conversion operators are not supported.");
+        //        }
 
         fromType = null;
         for (DataType dataType : operator.getSignature().getOperandTypes()) {
@@ -200,11 +202,13 @@ public class Conversion {
     }
 
     private Conversion conversionField;
+
     public Conversion getConversion() {
         return conversionField;
     }
 
     private List<Conversion> alternativeConversions;
+
     public List<Conversion> getAlternativeConversions() {
         if (alternativeConversions == null) {
             alternativeConversions = new ArrayList<Conversion>();
@@ -232,39 +236,29 @@ public class Conversion {
         int nestedScore = conversionField != null ? conversionField.getScore() : 0;
         if (isCast()) {
             return ConversionMap.ConversionScore.Cast.score() + nestedScore;
-        }
-        else if (isIntervalDemotion()) {
+        } else if (isIntervalDemotion()) {
             return ConversionMap.ConversionScore.IntervalDemotion.score() + nestedScore;
-        }
-        else if (isListDemotion()) {
+        } else if (isListDemotion()) {
             return ConversionMap.ConversionScore.ListDemotion.score() + nestedScore;
-        }
-        else if (isIntervalPromotion()) {
+        } else if (isIntervalPromotion()) {
             return ConversionMap.ConversionScore.IntervalPromotion.score() + nestedScore;
-        }
-        else if (isListPromotion()) {
+        } else if (isListPromotion()) {
             return ConversionMap.ConversionScore.ListPromotion.score() + nestedScore;
-        }
-        else if (isListConversion()) {
-            if (((ListType)getToType()).getElementType() instanceof SimpleType) {
+        } else if (isListConversion()) {
+            if (((ListType) getToType()).getElementType() instanceof SimpleType) {
                 return ConversionMap.ConversionScore.SimpleConversion.score() + nestedScore;
-            }
-            else {
+            } else {
                 return ConversionMap.ConversionScore.ComplexConversion.score() + nestedScore;
             }
-        }
-        else if (isIntervalConversion()) {
-            if (((IntervalType)getToType()).getPointType() instanceof SimpleType) {
+        } else if (isIntervalConversion()) {
+            if (((IntervalType) getToType()).getPointType() instanceof SimpleType) {
                 return ConversionMap.ConversionScore.SimpleConversion.score() + nestedScore;
-            }
-            else {
+            } else {
                 return ConversionMap.ConversionScore.ComplexConversion.score() + nestedScore;
             }
-        }
-        else if (getToType() instanceof ClassType) {
+        } else if (getToType() instanceof ClassType) {
             return ConversionMap.ConversionScore.ComplexConversion.score() + nestedScore;
-        }
-        else {
+        } else {
             return ConversionMap.ConversionScore.SimpleConversion.score() + nestedScore;
         }
     }
@@ -274,46 +268,55 @@ public class Conversion {
     }
 
     private boolean isCastFlag;
+
     public boolean isCast() {
         return isCastFlag;
     }
 
     private boolean isListConversionFlag;
+
     public boolean isListConversion() {
         return isListConversionFlag;
     }
 
     private boolean isListPromotionFlag;
+
     public boolean isListPromotion() {
         return isListPromotionFlag;
     }
 
     private boolean isListDemotionFlag;
+
     public boolean isListDemotion() {
         return isListDemotionFlag;
     }
 
     private boolean isIntervalConversionFlag;
+
     public boolean isIntervalConversion() {
         return isIntervalConversionFlag;
     }
 
     private boolean isIntervalPromotionFlag;
+
     public boolean isIntervalPromotion() {
         return isIntervalPromotionFlag;
     }
 
     private boolean isIntervalDemotionFlag;
+
     public boolean isIntervalDemotion() {
         return isIntervalDemotionFlag;
     }
 
     private DataType fromType;
+
     public DataType getFromType() {
         return fromType;
     }
 
     private DataType toType;
+
     public DataType getToType() {
         return toType;
     }

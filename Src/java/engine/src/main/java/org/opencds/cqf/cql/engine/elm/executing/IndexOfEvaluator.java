@@ -22,15 +22,13 @@ public class IndexOfEvaluator {
         int index = -1;
         boolean nullSwitch = false;
 
-        for (Object element : (Iterable<?>)source) {
+        for (Object element : (Iterable<?>) source) {
             index++;
             Boolean equiv = EquivalentEvaluator.equivalent(element, elementToFind, state);
 
             if (equiv == null) {
                 nullSwitch = true;
-            }
-
-            else if (equiv) {
+            } else if (equiv) {
                 return index;
             }
         }
@@ -41,5 +39,4 @@ public class IndexOfEvaluator {
 
         return -1;
     }
-
 }

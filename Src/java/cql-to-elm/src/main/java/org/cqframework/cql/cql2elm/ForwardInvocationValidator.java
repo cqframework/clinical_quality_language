@@ -1,5 +1,9 @@
 package org.cqframework.cql.cql2elm;
 
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import org.cqframework.cql.cql2elm.model.*;
 import org.cqframework.cql.cql2elm.preprocessor.FunctionDefinitionInfo;
 import org.cqframework.cql.elm.tracking.Trackable;
@@ -7,11 +11,6 @@ import org.hl7.cql.model.DataType;
 import org.hl7.elm.r1.FunctionDef;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * Compares the function for which we want to resolve a forward reference with one of the candidates by leveraging preCompile/function headers.
@@ -25,30 +24,41 @@ import java.util.stream.StreamSupport;
 public class ForwardInvocationValidator {
     private static final Logger logger = LoggerFactory.getLogger(ForwardInvocationValidator.class);
 
-    public static FunctionDefinitionInfo resolveOnSignature(CallContext callContextFromCaller, Iterable<FunctionDefinitionInfo> candidateFunctionDefinitions, ConversionMap conversionMap) {
+    public static FunctionDefinitionInfo resolveOnSignature(
+            CallContext callContextFromCaller,
+            Iterable<FunctionDefinitionInfo> candidateFunctionDefinitions,
+            ConversionMap conversionMap) {
         if (candidateFunctionDefinitions != null) {
-            final List<DataType> paramTypesFromCaller = StreamSupport.stream(callContextFromCaller.getSignature().getOperandTypes().spliterator(), false)
-                    .collect(Collectors.toList());;
+            final List<DataType> paramTypesFromCaller = StreamSupport.stream(
+                            callContextFromCaller
+                                    .getSignature()
+                                    .getOperandTypes()
+                                    .spliterator(),
+                            false)
+                    .collect(Collectors.toList());
+            ;
 
             final Map<DataType, List<Conversion>> implicitConversionsPerParamType = paramTypesFromCaller.stream()
                     .distinct()
-                    .collect(Collectors.toMap(Function.identity(), entry -> conversionMap.getConversions(entry)
-                            .stream()
+                    .collect(Collectors.toMap(Function.identity(), entry -> conversionMap.getConversions(entry).stream()
                             .filter(Conversion::isImplicit)
                             .collect(Collectors.toList())));
 
             final List<ForwardInvocationResult> resolvedFunctionDefinitionInfos = new ArrayList<>();
 
             for (FunctionDefinitionInfo candidateFunctionDefinition : candidateFunctionDefinitions) {
-                final ForwardInvocationResult currentResult = scoreFunctionHeaderOrNothing(callContextFromCaller, candidateFunctionDefinition, implicitConversionsPerParamType);
+                final ForwardInvocationResult currentResult = scoreFunctionHeaderOrNothing(
+                        callContextFromCaller, candidateFunctionDefinition, implicitConversionsPerParamType);
 
                 evaluateCandidateParamScores(currentResult, resolvedFunctionDefinitionInfos);
             }
             if (resolvedFunctionDefinitionInfos.size() == 0) {
-                throw new CqlCompilerException("forward declaration resolution found NO functions for name:" + callContextFromCaller.getOperatorName());
+                throw new CqlCompilerException("forward declaration resolution found NO functions for name:"
+                        + callContextFromCaller.getOperatorName());
             }
             if (resolvedFunctionDefinitionInfos.size() > 1) {
-                throw new CqlCompilerException("forward declaration resolution found more than one functions for name:" + callContextFromCaller.getOperatorName());
+                throw new CqlCompilerException("forward declaration resolution found more than one functions for name:"
+                        + callContextFromCaller.getOperatorName());
             }
             return resolvedFunctionDefinitionInfos.get(0).getFunctionDefinitionInfo();
         }
@@ -56,7 +66,8 @@ public class ForwardInvocationValidator {
         return null;
     }
 
-    private static void evaluateCandidateParamScores(ForwardInvocationResult currentResult, List<ForwardInvocationResult> previousForwardInvocationResults) {
+    private static void evaluateCandidateParamScores(
+            ForwardInvocationResult currentResult, List<ForwardInvocationResult> previousForwardInvocationResults) {
         if (currentResult.isNoMatch()) {
             return;
         }
@@ -93,9 +104,11 @@ public class ForwardInvocationValidator {
                 }
 
                 if (isPrevMatchScoreLessThanOrEqual != null) {
-                    // Previous candidate has scores of [4,5] but the current candidate has scores [5,4] so we cannot resolve
+                    // Previous candidate has scores of [4,5] but the current candidate has scores [5,4] so we cannot
+                    // resolve
                     if (isPrevMatchScoreLessThanOrEqual != isScoreLessThanOrEqual) {
-                        throw new CqlCompilerException("Cannot resolve forward declaration for function call:" + currentResult.getFunctionDefinitionInfo().getName());
+                        throw new CqlCompilerException("Cannot resolve forward declaration for function call:"
+                                + currentResult.getFunctionDefinitionInfo().getName());
                     }
                 }
 
@@ -109,18 +122,23 @@ public class ForwardInvocationValidator {
         }
     }
 
-    public static ForwardInvocationResult scoreFunctionHeaderOrNothing(CallContext callContextFromCaller, FunctionDefinitionInfo candidateFunctionDefinition, Map<DataType, List<Conversion>> implicitConversionsPerParamType) {
-        final FunctionDef functionDefFromCandidate = candidateFunctionDefinition.getPreCompileOutput().getFunctionDef();
+    public static ForwardInvocationResult scoreFunctionHeaderOrNothing(
+            CallContext callContextFromCaller,
+            FunctionDefinitionInfo candidateFunctionDefinition,
+            Map<DataType, List<Conversion>> implicitConversionsPerParamType) {
+        final FunctionDef functionDefFromCandidate =
+                candidateFunctionDefinition.getPreCompileOutput().getFunctionDef();
 
-        if (! callContextFromCaller.getOperatorName().equals(functionDefFromCandidate.getName())) {
+        if (!callContextFromCaller.getOperatorName().equals(functionDefFromCandidate.getName())) {
             return ForwardInvocationResult.noMatch(candidateFunctionDefinition);
         }
 
-        final List<DataType> paramTypesFromCaller = StreamSupport.stream(callContextFromCaller.getSignature().getOperandTypes().spliterator(), false)
-                .collect(Collectors.toList());;
+        final List<DataType> paramTypesFromCaller = StreamSupport.stream(
+                        callContextFromCaller.getSignature().getOperandTypes().spliterator(), false)
+                .collect(Collectors.toList());
+        ;
 
-        final List<DataType> paramTypesFromCandidate = functionDefFromCandidate.getOperand()
-                .stream()
+        final List<DataType> paramTypesFromCandidate = functionDefFromCandidate.getOperand().stream()
                 .map(Trackable::getResultType)
                 .collect(Collectors.toList());
 
@@ -134,7 +152,8 @@ public class ForwardInvocationValidator {
             final DataType dataTypeFromCaller = paramTypesFromCaller.get(index);
             final DataType dataTypeFromCandidate = paramTypesFromCandidate.get(index);
 
-            final int score = compareEachMethodParam(dataTypeFromCaller, dataTypeFromCandidate, implicitConversionsPerParamType);
+            final int score =
+                    compareEachMethodParam(dataTypeFromCaller, dataTypeFromCandidate, implicitConversionsPerParamType);
 
             scores[index] = score;
         }
@@ -142,7 +161,10 @@ public class ForwardInvocationValidator {
         return new ForwardInvocationResult(candidateFunctionDefinition, scores);
     }
 
-    private static int compareEachMethodParam(DataType dataTypeFromCaller, DataType dataTypeFromCandidate, Map<DataType, List<Conversion>> implicitConversionsPerParamType) {
+    private static int compareEachMethodParam(
+            DataType dataTypeFromCaller,
+            DataType dataTypeFromCandidate,
+            Map<DataType, List<Conversion>> implicitConversionsPerParamType) {
         if (dataTypeFromCaller.isCompatibleWith(dataTypeFromCandidate)) {
             return Integer.MIN_VALUE;
         }
@@ -150,11 +172,13 @@ public class ForwardInvocationValidator {
         return handleImplicitConversion(dataTypeFromCaller, dataTypeFromCandidate, implicitConversionsPerParamType);
     }
 
-    private static int handleImplicitConversion(DataType dataTypeFromCaller, DataType dataTypeFromCandidate, Map<DataType, List<Conversion>> implicitConversionsPerParamType) {
+    private static int handleImplicitConversion(
+            DataType dataTypeFromCaller,
+            DataType dataTypeFromCandidate,
+            Map<DataType, List<Conversion>> implicitConversionsPerParamType) {
         final List<Conversion> conversions = implicitConversionsPerParamType.get(dataTypeFromCaller);
 
-        final List<Conversion> conversionsMatchingToType = conversions
-                .stream()
+        final List<Conversion> conversionsMatchingToType = conversions.stream()
                 .filter(conv -> conv.getToType().equals(dataTypeFromCandidate))
                 .collect(Collectors.toList());
 

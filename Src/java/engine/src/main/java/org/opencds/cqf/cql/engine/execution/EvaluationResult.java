@@ -2,7 +2,6 @@ package org.opencds.cqf.cql.engine.execution;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 import org.opencds.cqf.cql.engine.debug.DebugResult;
 
 public class EvaluationResult {
@@ -17,11 +16,12 @@ public class EvaluationResult {
     }
 
     private DebugResult debugResult;
+
     public DebugResult getDebugResult() {
         return debugResult;
     }
+
     public void setDebugResult(DebugResult debugResult) {
         this.debugResult = debugResult;
     }
-
 }

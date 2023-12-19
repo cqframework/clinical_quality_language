@@ -2,10 +2,9 @@ package org.opencds.cqf.cql.engine.data;
 
 import static org.testng.Assert.assertNull;
 
+import java.time.Month;
 import org.opencds.cqf.cql.engine.runtime.Date;
 import org.testng.annotations.Test;
-
-import java.time.Month;
 
 public class SystemDataProviderTest {
 

@@ -21,5 +21,4 @@ public class ExistsEvaluator {
 
         return !CqlList.toList(value, false).isEmpty();
     }
-
 }
