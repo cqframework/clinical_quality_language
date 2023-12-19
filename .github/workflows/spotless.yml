@@ -15,8 +15,11 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'
-      - name: spotless:check
-        run: ./gradlew spotlessCheck
+      - name: Run gradle spotlessCheck
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: spotlessCheck
+          build-root-directory: Src/java
       - uses: mshick/add-pr-comment@v2
         if: always()
         with:
