@@ -6,7 +6,7 @@ import org.hl7.fhir.convertors.advisors.impl.BaseAdvisor_40_50;
 import org.hl7.fhir.convertors.conv30_50.VersionConvertor_30_50;
 import org.hl7.fhir.convertors.conv40_50.VersionConvertor_40_50;
 import org.hl7.fhir.exceptions.FHIRException;
-import org.hl7.fhir.r5.context.IWorkerContext;
+import org.hl7.fhir.r5.context.ILoggingService;
 import org.hl7.fhir.r5.elementmodel.Manager;
 import org.hl7.fhir.r5.model.ImplementationGuide;
 import org.hl7.fhir.utilities.IniFile;
@@ -20,8 +20,8 @@ import java.util.List;
 
 public class IGContext {
 
-    private IWorkerContext.ILoggingService logger;
-    public IWorkerContext.ILoggingService getLogger() {
+    private ILoggingService logger;
+    public ILoggingService getLogger() {
         return logger;
     }
 
@@ -58,7 +58,7 @@ public class IGContext {
         this.binaryPaths = binaryPaths;
     }
 
-    public IGContext(IWorkerContext.ILoggingService logger) {
+    public IGContext(ILoggingService logger) {
         this.logger = logger;
     }
 

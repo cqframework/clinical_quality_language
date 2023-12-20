@@ -1,9 +1,9 @@
 package org.cqframework.fhir.utilities;
 
-import org.hl7.fhir.r5.context.IWorkerContext;
+import org.hl7.fhir.r5.context.ILoggingService;
 import org.slf4j.Logger;
 
-public class LoggerAdapter implements IWorkerContext.ILoggingService {
+public class LoggerAdapter implements ILoggingService {
   private Logger innerLogger;
 
   public LoggerAdapter(Logger innerLogger) {

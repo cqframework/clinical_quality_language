@@ -7,13 +7,14 @@ import static org.testng.Assert.assertTrue;
 import java.io.InputStream;
 
 import ca.uhn.fhir.context.FhirContext;
+
+import org.cqframework.fhir.utilities.LoggerAdapter;
 import org.hl7.cql.model.ModelIdentifier;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 import org.hl7.fhir.convertors.advisors.impl.BaseAdvisor_40_50;
 import org.hl7.fhir.convertors.conv40_50.VersionConvertor_40_50;
 import org.hl7.fhir.r4.model.Resource;
-import org.hl7.fhir.r5.context.IWorkerContext;
 import org.hl7.fhir.r5.model.ImplementationGuide;
 import org.hl7.fhir.utilities.npm.NpmPackage;
 import org.slf4j.Logger;
@@ -21,7 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
-public class NpmPackageManagerTests implements IWorkerContext.ILoggingService {
+public class NpmPackageManagerTests  {
 
     private final Logger logger = LoggerFactory.getLogger(NpmPackageManagerTests.class);
     private final VersionConvertor_40_50 convertor = new VersionConvertor_40_50(new BaseAdvisor_40_50());
@@ -85,7 +86,7 @@ public class NpmPackageManagerTests implements IWorkerContext.ILoggingService {
         NpmPackageManager pm = new NpmPackageManager(ig);
 
         LibraryLoader reader = new LibraryLoader("4.0.1");
-        NpmLibrarySourceProvider sp = new NpmLibrarySourceProvider(pm.getNpmList(), reader, this);
+        NpmLibrarySourceProvider sp = new NpmLibrarySourceProvider(pm.getNpmList(), reader, new LoggerAdapter(logger));
         InputStream is = sp.getLibrarySource(new VersionedIdentifier().withSystem("http://somewhere.org/fhir/uv/myig").withId("example"));
         //assertNotNull(is);
         is = sp.getLibrarySource(new VersionedIdentifier().withSystem("http://somewhere.org/fhir/uv/myig").withId("example").withVersion("0.2.0"));
@@ -101,25 +102,9 @@ public class NpmPackageManagerTests implements IWorkerContext.ILoggingService {
         assertTrue(pm.getNpmList().size() >= 1);
 
         LibraryLoader reader = new LibraryLoader("5.0");
-        NpmModelInfoProvider mp = new NpmModelInfoProvider(pm.getNpmList(), reader, this);
+        NpmModelInfoProvider mp = new NpmModelInfoProvider(pm.getNpmList(), reader, new LoggerAdapter(logger));
         ModelInfo mi = mp.load(new ModelIdentifier().withSystem("http://hl7.org/fhir/us/qicore").withId("QICore"));
         assertNotNull(mi);
         assertEquals(mi.getName(), "QICore");
     }
-
-    @Override
-    public void logMessage(String msg) {
-        logger.info(msg);
-    }
-
-    @Override
-    public void logDebugMessage(IWorkerContext.ILoggingService.LogCategory category, String msg) {
-        logMessage(msg);
-    }
-
-    @Override
-    public boolean isDebugLogging() {
-        return logger.isDebugEnabled();
-    }
-
 }

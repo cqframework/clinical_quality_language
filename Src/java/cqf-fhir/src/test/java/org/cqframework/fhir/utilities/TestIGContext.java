@@ -1,6 +1,6 @@
 package org.cqframework.fhir.utilities;
 
-import org.hl7.fhir.r5.context.IWorkerContext;
+import org.hl7.fhir.r5.context.ILoggingService;
 import org.testng.annotations.Test;
 
 import java.net.URI;
@@ -9,7 +9,7 @@ import java.net.URL;
 
 import static org.testng.Assert.*;
 
-public class TestIGContext implements IWorkerContext.ILoggingService {
+public class TestIGContext implements ILoggingService {
 
     @Test
     public void TestTypesAndValuesIG() throws URISyntaxException {
