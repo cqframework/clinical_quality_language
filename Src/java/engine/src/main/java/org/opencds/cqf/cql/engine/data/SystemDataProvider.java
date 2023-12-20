@@ -4,7 +4,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
-
 import org.opencds.cqf.cql.engine.model.BaseModelResolver;
 import org.opencds.cqf.cql.engine.runtime.Code;
 import org.opencds.cqf.cql.engine.runtime.CqlType;
@@ -18,9 +17,19 @@ import org.opencds.cqf.cql.engine.runtime.Tuple;
 public class SystemDataProvider extends BaseModelResolver implements DataProvider {
 
     @Override
-    public Iterable<Object> retrieve(String context, String contextPath, Object contextValue, String dataType,
-            String templateId, String codePath, Iterable<Code> codes, String valueSet, String datePath,
-            String dateLowPath, String dateHighPath, Interval dateRange) {
+    public Iterable<Object> retrieve(
+            String context,
+            String contextPath,
+            Object contextValue,
+            String dataType,
+            String templateId,
+            String codePath,
+            Iterable<Code> codes,
+            String valueSet,
+            String datePath,
+            String dateLowPath,
+            String dateHighPath,
+            Interval dateRange) {
         throw new IllegalArgumentException("SystemDataProvider does not support retrieval.");
     }
 
@@ -32,9 +41,7 @@ public class SystemDataProvider extends BaseModelResolver implements DataProvide
 
     @SuppressWarnings("deprecation")
     @Override
-    public void setPackageName(String packageName) {
-
-    }
+    public void setPackageName(String packageName) {}
 
     private Field getProperty(Class<?> clazz, String path) {
         try {
@@ -45,13 +52,15 @@ public class SystemDataProvider extends BaseModelResolver implements DataProvide
                 Field field = getProperty(clazz.getSuperclass(), path);
                 return field;
             }
-            throw new IllegalArgumentException(String.format("Could not determine field for path %s of type %s", path, clazz.getSimpleName()));
+            throw new IllegalArgumentException(
+                    String.format("Could not determine field for path %s of type %s", path, clazz.getSimpleName()));
         }
     }
 
     private Method getReadAccessor(Class<?> clazz, String path) {
         // Field field = getProperty(clazz, path);
-        String accessorMethodName = String.format("%s%s%s", "get", path.substring(0, 1).toUpperCase(), path.substring(1));
+        String accessorMethodName =
+                String.format("%s%s%s", "get", path.substring(0, 1).toUpperCase(), path.substring(1));
         Method accessor = null;
         try {
             accessor = clazz.getMethod(accessorMethodName);
@@ -63,13 +72,15 @@ public class SystemDataProvider extends BaseModelResolver implements DataProvide
 
     private Method getWriteAccessor(Class<?> clazz, String path) {
         Field field = getProperty(clazz, path);
-        String accessorMethodName = String.format("%s%s%s", "set", path.substring(0, 1).toUpperCase(), path.substring(1));
+        String accessorMethodName =
+                String.format("%s%s%s", "set", path.substring(0, 1).toUpperCase(), path.substring(1));
         Method accessor = null;
         try {
             accessor = clazz.getMethod(accessorMethodName, field.getType());
             return accessor;
         } catch (NoSuchMethodException e) {
-            // If there is no setMethod with the exact signature, look for a signature that would accept a value of the type of the backing field
+            // If there is no setMethod with the exact signature, look for a signature that would accept a value of the
+            // type of the backing field
             for (Method method : clazz.getMethods()) {
                 if (method.getName().equals(accessorMethodName) && method.getParameterCount() == 1) {
                     Class<?>[] parameterTypes = method.getParameterTypes();
@@ -78,7 +89,8 @@ public class SystemDataProvider extends BaseModelResolver implements DataProvide
                     }
                 }
             }
-            throw new IllegalArgumentException(String.format("Could not determine accessor function for property %s of type %s", path, clazz.getSimpleName()));
+            throw new IllegalArgumentException(String.format(
+                    "Could not determine accessor function for property %s of type %s", path, clazz.getSimpleName()));
         }
     }
 
@@ -89,7 +101,7 @@ public class SystemDataProvider extends BaseModelResolver implements DataProvide
         }
 
         if (target instanceof Tuple) {
-            return ((Tuple)target).getElement(path);
+            return ((Tuple) target).getElement(path);
         }
 
         Class<? extends Object> clazz = target.getClass();
@@ -101,9 +113,12 @@ public class SystemDataProvider extends BaseModelResolver implements DataProvide
         try {
             return accessor.invoke(target);
         } catch (InvocationTargetException e) {
-            throw new IllegalArgumentException(String.format("Errors occurred attempting to invoke the accessor function for property %s of type %s", path, clazz.getSimpleName()));
+            throw new IllegalArgumentException(String.format(
+                    "Errors occurred attempting to invoke the accessor function for property %s of type %s",
+                    path, clazz.getSimpleName()));
         } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException(String.format("Could not invoke the accessor function for property %s of type %s", path, clazz.getSimpleName()));
+            throw new IllegalArgumentException(String.format(
+                    "Could not invoke the accessor function for property %s of type %s", path, clazz.getSimpleName()));
         }
     }
 
@@ -117,9 +132,12 @@ public class SystemDataProvider extends BaseModelResolver implements DataProvide
         try {
             accessor.invoke(target, value);
         } catch (InvocationTargetException e) {
-            throw new IllegalArgumentException(String.format("Errors occurred attempting to invoke the accessor function for property %s of type %s", path, clazz.getSimpleName()));
+            throw new IllegalArgumentException(String.format(
+                    "Errors occurred attempting to invoke the accessor function for property %s of type %s",
+                    path, clazz.getSimpleName()));
         } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException(String.format("Could not invoke the accessor function for property %s of type %s", path, clazz.getSimpleName()));
+            throw new IllegalArgumentException(String.format(
+                    "Could not invoke the accessor function for property %s of type %s", path, clazz.getSimpleName()));
         }
     }
 
@@ -135,34 +153,51 @@ public class SystemDataProvider extends BaseModelResolver implements DataProvide
     @Override
     public Class<?> resolveType(String typeName) {
         switch (typeName) {
-            case "Boolean": return Boolean.class;
-            case "Integer": return Integer.class;
-            case "Decimal": return BigDecimal.class;
-            case "String": return String.class;
-            case "Quantity": return Quantity.class;
-            case "Interval": return Interval.class;
-            case "Long": return Long.class;
-            case "Tuple": return Tuple.class;
-            case "DateTime": return DateTime.class;
-            case "Date": return Date.class;
-            case "Time": return Time.class;
+            case "Boolean":
+                return Boolean.class;
+            case "Integer":
+                return Integer.class;
+            case "Decimal":
+                return BigDecimal.class;
+            case "String":
+                return String.class;
+            case "Quantity":
+                return Quantity.class;
+            case "Interval":
+                return Interval.class;
+            case "Long":
+                return Long.class;
+            case "Tuple":
+                return Tuple.class;
+            case "DateTime":
+                return DateTime.class;
+            case "Date":
+                return Date.class;
+            case "Time":
+                return Time.class;
             default:
                 try {
                     return Class.forName(String.format("%s.%s", getPackageName(), typeName));
                 } catch (ClassNotFoundException e) {
-                    throw new IllegalArgumentException(String.format("Could not resolve type %s.%s.", getPackageName(), typeName));
+                    throw new IllegalArgumentException(
+                            String.format("Could not resolve type %s.%s.", getPackageName(), typeName));
                 }
         }
     }
 
-	@Override
+    @Override
     public Object createInstance(String typeName) {
         Class<?> clazz = resolveType(typeName);
         try {
             return clazz.getDeclaredConstructor().newInstance();
-        } catch (InstantiationException | InvocationTargetException |
-            ExceptionInInitializerError | IllegalAccessException | SecurityException | NoSuchMethodException e) {
-            throw new IllegalArgumentException(String.format("Could not create an instance of class %s.", clazz.getName()));
+        } catch (InstantiationException
+                | InvocationTargetException
+                | ExceptionInInitializerError
+                | IllegalAccessException
+                | SecurityException
+                | NoSuchMethodException e) {
+            throw new IllegalArgumentException(
+                    String.format("Could not create an instance of class %s.", clazz.getName()));
         }
     }
 
@@ -190,7 +225,7 @@ public class SystemDataProvider extends BaseModelResolver implements DataProvide
         }
 
         if (left instanceof CqlType) {
-            return ((CqlType)left).equivalent(right);
+            return ((CqlType) left).equivalent(right);
         }
 
         return left.equals(right);

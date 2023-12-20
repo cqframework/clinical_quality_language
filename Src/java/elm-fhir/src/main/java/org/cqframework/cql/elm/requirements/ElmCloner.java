@@ -58,7 +58,7 @@ public class ElmCloner {
     }
 
     public static Expression clone(Expression elm) {
-        return (Expression)clone((Element)elm);
+        return (Expression) clone((Element) elm);
     }
 
     private static void cloneElement(Element elm, Element clonedElm) {
@@ -112,16 +112,17 @@ public class ElmCloner {
 
     public static Element clone(Element elm) {
         if (elm == null) return null;
-        if (elm instanceof Retrieve) return clone((Retrieve)elm);
-        else if (elm instanceof CodeFilterElement) return clone((CodeFilterElement)elm);
-        else if (elm instanceof DateFilterElement) return clone((DateFilterElement)elm);
-        else if (elm instanceof OtherFilterElement) return clone((OtherFilterElement)elm);
+        if (elm instanceof Retrieve) return clone((Retrieve) elm);
+        else if (elm instanceof CodeFilterElement) return clone((CodeFilterElement) elm);
+        else if (elm instanceof DateFilterElement) return clone((DateFilterElement) elm);
+        else if (elm instanceof OtherFilterElement) return clone((OtherFilterElement) elm);
         // TODO: Cloning of expressions is not necessary at this point because there would be no impact
         // If that assumption changes, this will need to be built out
-        else if (elm instanceof Property) return clone((Property)elm);
+        else if (elm instanceof Property) return clone((Property) elm);
         else if (elm instanceof Expression) return elm;
         else {
-            throw new IllegalArgumentException(String.format("clone of %s not implemented", elm.getClass().getSimpleName()));
+            throw new IllegalArgumentException(
+                    String.format("clone of %s not implemented", elm.getClass().getSimpleName()));
         }
     }
 }

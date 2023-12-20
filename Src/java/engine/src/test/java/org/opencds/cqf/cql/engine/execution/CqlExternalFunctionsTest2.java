@@ -1,14 +1,13 @@
 package org.opencds.cqf.cql.engine.execution;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
+import java.util.Arrays;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.opencds.cqf.cql.engine.data.SystemExternalFunctionProvider;
 import org.opencds.cqf.cql.engine.execution.external.MyMath2;
 import org.testng.annotations.Test;
-
-import java.util.Arrays;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 
 public class CqlExternalFunctionsTest2 extends CqlTestBase {
 
@@ -16,10 +15,11 @@ public class CqlExternalFunctionsTest2 extends CqlTestBase {
     public void testExternalFunctions() {
         VersionedIdentifier identifier = toElmIdentifier("CqlExternalFunctionsTest2");
 
-         engine.getState().getEnvironment().registerExternalFunctionProvider(
-                identifier,
-                new SystemExternalFunctionProvider(Arrays.asList(MyMath2.class.getDeclaredMethods()))
-        );
+        engine.getState()
+                .getEnvironment()
+                .registerExternalFunctionProvider(
+                        identifier,
+                        new SystemExternalFunctionProvider(Arrays.asList(MyMath2.class.getDeclaredMethods())));
 
         EvaluationResult evaluationResult;
         evaluationResult = engine.evaluate(identifier);

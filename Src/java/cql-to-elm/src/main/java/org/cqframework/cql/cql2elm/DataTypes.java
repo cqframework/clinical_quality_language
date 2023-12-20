@@ -9,19 +9,20 @@ public class DataTypes {
             throw new IllegalArgumentException(String.format(
                     "Expected an expression of type '%s', but found an expression of type '%s'.",
                     expectedType != null ? expectedType.toLabel() : "<unknown>",
-                    actualType != null ? actualType.toLabel() : "<unknown>"
-            ));
+                    actualType != null ? actualType.toLabel() : "<unknown>"));
         }
     }
 
     public static void verifyCast(DataType targetType, DataType sourceType) {
         // Casting can be used for compatible types as well as subtypes and supertypes
-        if (!(subTypeOf(targetType, sourceType) || superTypeOf(targetType, sourceType) || compatibleWith(sourceType, targetType))) {
+        if (!(subTypeOf(targetType, sourceType)
+                || superTypeOf(targetType, sourceType)
+                || compatibleWith(sourceType, targetType))) {
             // ERROR:
-            throw new IllegalArgumentException(String.format("Expression of type '%s' cannot be cast as a value of type '%s'.",
+            throw new IllegalArgumentException(String.format(
+                    "Expression of type '%s' cannot be cast as a value of type '%s'.",
                     sourceType != null ? sourceType.toLabel() : "<unknown>",
-                    targetType != null ? targetType.toLabel() : "<unknown>"
-            ));
+                    targetType != null ? targetType.toLabel() : "<unknown>"));
         }
     }
 

@@ -1,25 +1,24 @@
 package org.cqframework.cql.cql2elm.operators;
 
-import org.cqframework.cql.cql2elm.CqlCompilerOptions;
-import org.cqframework.cql.cql2elm.CqlTranslator;
-import org.cqframework.cql.cql2elm.ModelManager;
-import org.cqframework.cql.cql2elm.CqlCompilerException.ErrorSeverity;
-import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
-import org.hl7.elm.r1.*;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import org.cqframework.cql.cql2elm.LibraryManager;
-
 import static org.cqframework.cql.cql2elm.matchers.HasTypeAndResult.hasTypeAndResult;
 import static org.cqframework.cql.cql2elm.matchers.ListOfLiterals.listOfLiterals;
 import static org.cqframework.cql.cql2elm.matchers.LiteralFor.literalFor;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import org.cqframework.cql.cql2elm.CqlCompilerException.ErrorSeverity;
+import org.cqframework.cql.cql2elm.CqlCompilerOptions;
+import org.cqframework.cql.cql2elm.CqlTranslator;
+import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
+import org.cqframework.cql.cql2elm.LibraryManager;
+import org.cqframework.cql.cql2elm.ModelManager;
+import org.hl7.elm.r1.*;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 
 public class StringOperatorsTest {
 
@@ -28,11 +27,13 @@ public class StringOperatorsTest {
     @BeforeTest
     public void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
-        CqlTranslator translator = CqlTranslator.fromStream(StringOperatorsTest.class.getResourceAsStream("../OperatorTests/StringOperators.cql"), new LibraryManager(modelManager, new CqlCompilerOptions(ErrorSeverity.Warning, SignatureLevel.None)));
+        CqlTranslator translator = CqlTranslator.fromStream(
+                StringOperatorsTest.class.getResourceAsStream("../OperatorTests/StringOperators.cql"),
+                new LibraryManager(modelManager, new CqlCompilerOptions(ErrorSeverity.Warning, SignatureLevel.None)));
         assertThat(translator.getErrors().size(), is(0));
         Library library = translator.toELM();
         defs = new HashMap<>();
-        for (ExpressionDef def: library.getStatements().getDef()) {
+        for (ExpressionDef def : library.getStatements().getDef()) {
             defs.put(def.getName(), def);
         }
     }
@@ -54,7 +55,7 @@ public class StringOperatorsTest {
         ExpressionDef def = defs.get("StringConcatenateWithAmpersand");
         assertThat(def, hasTypeAndResult(Concatenate.class, "System.String"));
 
-        Concatenate concatenate = (Concatenate)def.getExpression();
+        Concatenate concatenate = (Concatenate) def.getExpression();
         for (Expression operand : concatenate.getOperand()) {
             assertThat(operand.getClass() == Coalesce.class, is(true));
         }
@@ -88,7 +89,7 @@ public class StringOperatorsTest {
     public void testSplitOnMatches() {
         ExpressionDef def = defs.get("StringSplitOnMatches");
         assertThat(def, hasTypeAndResult(SplitOnMatches.class, "list<System.String>"));
-        SplitOnMatches splitOnMatches = (SplitOnMatches)def.getExpression();
+        SplitOnMatches splitOnMatches = (SplitOnMatches) def.getExpression();
         assertThat(splitOnMatches.getStringToSplit(), literalFor("First,Second,Third,Fourth"));
         assertThat(splitOnMatches.getSeparatorPattern(), literalFor(","));
     }

@@ -1,15 +1,13 @@
 package org.cqframework.cql.cql2elm;
 
-
+import java.util.ArrayList;
+import java.util.List;
 import org.cqframework.cql.cql2elm.model.Conversion;
 import org.cqframework.cql.cql2elm.model.Invocation;
 import org.cqframework.cql.cql2elm.model.PropertyResolution;
 import org.cqframework.cql.cql2elm.model.SystemModel;
 import org.cqframework.cql.cql2elm.model.invocation.*;
 import org.hl7.elm.r1.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class SystemFunctionResolver {
     private final ObjectFactory of = new ObjectFactory();
@@ -22,7 +20,7 @@ public class SystemFunctionResolver {
     public Invocation resolveSystemFunction(FunctionRef fun) {
         if (fun.getLibraryName() == null || "System".equals(fun.getLibraryName())) {
             switch (fun.getName()) {
-                // Aggregate Functions
+                    // Aggregate Functions
                 case "AllTrue":
                 case "AnyTrue":
                 case "Avg":
@@ -41,7 +39,7 @@ public class SystemFunctionResolver {
                     return resolveAggregate(fun);
                 }
 
-                // Arithmetic Functions
+                    // Arithmetic Functions
                 case "Abs":
                 case "Ceiling":
                 case "Exp":
@@ -68,12 +66,13 @@ public class SystemFunctionResolver {
                     return resolveRound(fun);
                 }
 
-                // Clinical Functions
+                    // Clinical Functions
                 case "AgeInYears":
                 case "AgeInMonths": {
                     checkNumberOfOperands(fun, 0);
                     return resolveCalculateAge(
-                            builder.enforceCompatible(getPatientBirthDateProperty(), builder.resolveTypeName("System", "Date")),
+                            builder.enforceCompatible(
+                                    getPatientBirthDateProperty(), builder.resolveTypeName("System", "Date")),
                             resolveAgeRelatedFunctionPrecision(fun));
                 }
 
@@ -85,7 +84,8 @@ public class SystemFunctionResolver {
                 case "AgeInMilliseconds": {
                     checkNumberOfOperands(fun, 0);
                     return resolveCalculateAge(
-                            builder.ensureCompatible(getPatientBirthDateProperty(), builder.resolveTypeName("System", "DateTime")),
+                            builder.ensureCompatible(
+                                    getPatientBirthDateProperty(), builder.resolveTypeName("System", "DateTime")),
                             resolveAgeRelatedFunctionPrecision(fun));
                 }
 
@@ -99,31 +99,32 @@ public class SystemFunctionResolver {
                     // If the op is not a Date or DateTime, attempt to get it to convert it to a Date or DateTime
                     // If the op can be converted to both a Date and a DateTime, throw an ambiguous error
                     if (!(op.getResultType().isSubTypeOf(builder.resolveTypeName("System", "Date"))
-                        || op.getResultType().isSubTypeOf(builder.resolveTypeName("System", "DateTime")))) {
-                        Conversion dateConversion = builder.findConversion(op.getResultType(), builder.resolveTypeName("System", "Date"), true, false);
-                        Conversion dateTimeConversion = builder.findConversion(op.getResultType(), builder.resolveTypeName("System", "DateTime"), true, false);
+                            || op.getResultType().isSubTypeOf(builder.resolveTypeName("System", "DateTime")))) {
+                        Conversion dateConversion = builder.findConversion(
+                                op.getResultType(), builder.resolveTypeName("System", "Date"), true, false);
+                        Conversion dateTimeConversion = builder.findConversion(
+                                op.getResultType(), builder.resolveTypeName("System", "DateTime"), true, false);
                         if (dateConversion != null && dateTimeConversion != null) {
                             if (dateConversion.getScore() == dateTimeConversion.getScore()) {
                                 // ERROR
-                                throw new IllegalArgumentException(String.format("Ambiguous implicit conversion from %s to %s or %s.",
-                                        op.getResultType().toString(), dateConversion.getToType().toString(), dateTimeConversion.getToType().toString()));
-                            }
-                            else if (dateConversion.getScore() < dateTimeConversion.getScore()) {
+                                throw new IllegalArgumentException(String.format(
+                                        "Ambiguous implicit conversion from %s to %s or %s.",
+                                        op.getResultType().toString(),
+                                        dateConversion.getToType().toString(),
+                                        dateTimeConversion.getToType().toString()));
+                            } else if (dateConversion.getScore() < dateTimeConversion.getScore()) {
                                 op = builder.convertExpression(op, dateConversion);
-                            }
-                            else {
+                            } else {
                                 op = builder.convertExpression(op, dateTimeConversion);
                             }
-                        }
-                        else if (dateConversion != null) {
+                        } else if (dateConversion != null) {
                             op = builder.convertExpression(op, dateConversion);
-                        }
-                        else if (dateTimeConversion != null) {
+                        } else if (dateTimeConversion != null) {
                             op = builder.convertExpression(op, dateTimeConversion);
-                        }
-                        else {
+                        } else {
                             // ERROR
-                            throw new IllegalArgumentException(String.format("Could not resolve call to operator %s with argument of type %s.",
+                            throw new IllegalArgumentException(String.format(
+                                    "Could not resolve call to operator %s with argument of type %s.",
                                     fun.getName(), op.getResultType().toString()));
                         }
                     }
@@ -165,7 +166,7 @@ public class SystemFunctionResolver {
                     return resolveCalculateAgeAt(fun.getOperand(), resolveAgeRelatedFunctionPrecision(fun));
                 }
 
-                // DateTime Functions
+                    // DateTime Functions
                 case "DateTime": {
                     return resolveDateTime(fun);
                 }
@@ -193,7 +194,7 @@ public class SystemFunctionResolver {
                     return resolveTimeOfDay(fun);
                 }
 
-                // List Functions
+                    // List Functions
                 case "IndexOf": {
                     return resolveIndexOf(fun);
                 }
@@ -240,7 +241,7 @@ public class SystemFunctionResolver {
                     return resolveUnary(fun);
                 }
 
-                // Nullological Functions
+                    // Nullological Functions
                 case "Coalesce": {
                     return resolveNary(fun);
                 }
@@ -251,14 +252,14 @@ public class SystemFunctionResolver {
                     return resolveUnary(fun);
                 }
 
-                // Overloaded Functions
+                    // Overloaded Functions
                 case "Length":
                 case "Width":
                 case "Size": {
                     return resolveUnary(fun);
                 }
 
-                // String Functions
+                    // String Functions
                 case "Indexer":
                 case "StartsWith":
                 case "EndsWith":
@@ -303,7 +304,7 @@ public class SystemFunctionResolver {
                     return resolveSubstring(fun);
                 }
 
-                // Logical Functions
+                    // Logical Functions
                 case "Not": {
                     return resolveUnary(fun);
                 }
@@ -315,7 +316,7 @@ public class SystemFunctionResolver {
                     return resolveBinary(fun);
                 }
 
-                // Type Functions
+                    // Type Functions
                 case "ConvertsToString":
                 case "ConvertsToBoolean":
                 case "ConvertsToInteger":
@@ -340,13 +341,13 @@ public class SystemFunctionResolver {
                     return resolveUnary(fun);
                 }
 
-                // Quantity Conversion
+                    // Quantity Conversion
                 case "CanConvertQuantity":
                 case "ConvertQuantity": {
                     return resolveBinary(fun);
                 }
 
-                // Comparison Functions
+                    // Comparison Functions
                 case "Equal":
                 case "NotEqual":
                 case "Greater":
@@ -357,7 +358,7 @@ public class SystemFunctionResolver {
                     return resolveBinary(fun);
                 }
 
-                // Error Functions
+                    // Error Functions
                 case "Message":
                     return resolveMessage(fun);
             }
@@ -369,9 +370,7 @@ public class SystemFunctionResolver {
     // Age-Related Function Support
 
     private UnaryExpressionInvocation resolveCalculateAge(Expression e, DateTimePrecision p) {
-        CalculateAge operator = of.createCalculateAge()
-                .withPrecision(p)
-                .withOperand(e);
+        CalculateAge operator = of.createCalculateAge().withPrecision(p).withOperand(e);
 
         UnaryExpressionInvocation invocation = new UnaryExpressionInvocation(operator);
         builder.resolveInvocation("System", "CalculateAge", invocation);
@@ -379,9 +378,7 @@ public class SystemFunctionResolver {
     }
 
     private BinaryExpressionInvocation resolveCalculateAgeAt(List<Expression> e, DateTimePrecision p) {
-        CalculateAgeAt operator = of.createCalculateAgeAt()
-                .withPrecision(p)
-                .withOperand(e);
+        CalculateAgeAt operator = of.createCalculateAgeAt().withPrecision(p).withOperand(e);
 
         BinaryExpressionInvocation invocation = new BinaryExpressionInvocation(operator);
         builder.resolveInvocation("System", "CalculateAgeAt", invocation);
@@ -419,10 +416,10 @@ public class SystemFunctionResolver {
             Property property = of.createProperty().withSource(source).withPath(birthDateProperty);
             property.setResultType(builder.resolvePath(source.getResultType(), property.getPath()));
             return property;
-        }
-        else {
+        } else {
             PropertyResolution resolution = builder.resolveProperty(source.getResultType(), birthDateProperty);
-            Expression result = builder.buildProperty(source, resolution.getName(), resolution.isSearch(), resolution.getType());
+            Expression result =
+                    builder.buildProperty(source, resolution.getName(), resolution.isSearch(), resolution.getType());
             result = builder.applyTargetMap(result, resolution.getTargetMap());
             return result;
         }
@@ -432,7 +429,8 @@ public class SystemFunctionResolver {
 
     private RoundInvocation resolveRound(FunctionRef fun) {
         if (fun.getOperand().isEmpty() || fun.getOperand().size() > 2) {
-            throw new IllegalArgumentException("Could not resolve call to system operator Round.  Expected 1 or 2 arguments.");
+            throw new IllegalArgumentException(
+                    "Could not resolve call to system operator Round.  Expected 1 or 2 arguments.");
         }
         final Round round = of.createRound().withOperand(fun.getOperand().get(0));
         if (fun.getOperand().size() == 2) {
@@ -563,7 +561,8 @@ public class SystemFunctionResolver {
 
     private CombineInvocation resolveCombine(FunctionRef fun) {
         if (fun.getOperand().isEmpty() || fun.getOperand().size() > 2) {
-            throw new IllegalArgumentException("Could not resolve call to system operator Combine.  Expected 1 or 2 arguments.");
+            throw new IllegalArgumentException(
+                    "Could not resolve call to system operator Combine.  Expected 1 or 2 arguments.");
         }
         final Combine combine = of.createCombine().withSource(fun.getOperand().get(0));
         if (fun.getOperand().size() == 2) {
@@ -616,7 +615,8 @@ public class SystemFunctionResolver {
 
     private SubstringInvocation resolveSubstring(FunctionRef fun) {
         if (fun.getOperand().size() < 2 || fun.getOperand().size() > 3) {
-            throw new IllegalArgumentException("Could not resolve call to system operator Substring.  Expected 2 or 3 arguments.");
+            throw new IllegalArgumentException(
+                    "Could not resolve call to system operator Substring.  Expected 2 or 3 arguments.");
         }
         final Substring substring = of.createSubstring()
                 .withStringToSub(fun.getOperand().get(0))
@@ -632,7 +632,8 @@ public class SystemFunctionResolver {
     // Error Functions
     private MessageInvocation resolveMessage(FunctionRef fun) {
         if (fun.getOperand().size() != 5) {
-            throw new IllegalArgumentException("Could not resolve call to system operator Message. Expected 5 arguments.");
+            throw new IllegalArgumentException(
+                    "Could not resolve call to system operator Message. Expected 5 arguments.");
         }
 
         Message message = of.createMessage()
@@ -688,8 +689,8 @@ public class SystemFunctionResolver {
                 convert.setToType(builder.dataTypeToQName(sm.getConcept()));
                 break;
             default:
-                throw new IllegalArgumentException(
-                        String.format("Could not resolve call to system operator %s. Unknown conversion type.", fun.getName()));
+                throw new IllegalArgumentException(String.format(
+                        "Could not resolve call to system operator %s. Unknown conversion type.", fun.getName()));
         }
         ConvertInvocation invocation = new ConvertInvocation(convert);
         builder.resolveInvocation("System", fun.getName(), invocation);
@@ -739,15 +740,14 @@ public class SystemFunctionResolver {
         try {
             Class<?> clazz = Class.forName("org.hl7.elm.r1." + fun.getName());
             if (TernaryExpression.class.isAssignableFrom(clazz)) {
-                operator = (TernaryExpression)clazz.getConstructor().newInstance();
+                operator = (TernaryExpression) clazz.getConstructor().newInstance();
                 checkNumberOfOperands(fun, 3);
                 operator.getOperand().addAll(fun.getOperand());
                 TernaryExpressionInvocation invocation = new TernaryExpressionInvocation(operator);
                 builder.resolveInvocation("System", fun.getName(), invocation);
                 return invocation;
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             // Do nothing but fall through
         }
         return null;
@@ -790,7 +790,8 @@ public class SystemFunctionResolver {
 
     private void checkNumberOfOperands(FunctionRef fun, int expectedOperands) {
         if (fun.getOperand().size() != expectedOperands) {
-            throw new IllegalArgumentException(String.format("Could not resolve call to system operator %s.  Expected %d arguments.",
+            throw new IllegalArgumentException(String.format(
+                    "Could not resolve call to system operator %s.  Expected %d arguments.",
                     fun.getName(), expectedOperands));
         }
     }

@@ -1,11 +1,10 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
-import org.hl7.elm.r1.DateTime;
-import org.hl7.elm.r1.Expression;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.hl7.elm.r1.DateTime;
+import org.hl7.elm.r1.Expression;
 
 public class DateTimeInvocation extends OperatorExpressionInvocation {
     public DateTimeInvocation(DateTime expression) {
@@ -15,10 +14,19 @@ public class DateTimeInvocation extends OperatorExpressionInvocation {
     @Override
     public Iterable<Expression> getOperands() {
         DateTime dt = (DateTime) expression;
-        List<Expression> opList = Arrays.asList(dt.getYear(), dt.getMonth(), dt.getDay(), dt.getHour(), dt.getMinute(), dt.getSecond(), dt.getMillisecond(), dt.getTimezoneOffset());
+        List<Expression> opList = Arrays.asList(
+                dt.getYear(),
+                dt.getMonth(),
+                dt.getDay(),
+                dt.getHour(),
+                dt.getMinute(),
+                dt.getSecond(),
+                dt.getMillisecond(),
+                dt.getTimezoneOffset());
         // If the last expression is null, we should trim this down
         int i;
-        for (i = 7; i > 0 && opList.get(i) == null; i--);
+        for (i = 7; i > 0 && opList.get(i) == null; i--)
+            ;
         return opList.subList(0, i + 1);
     }
 

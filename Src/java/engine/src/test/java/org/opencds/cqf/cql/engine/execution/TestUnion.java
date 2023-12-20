@@ -1,13 +1,11 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import org.testng.annotations.Test;
-
-import static org.testng.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.List;
-
+import org.testng.annotations.Test;
 
 public class TestUnion extends CqlTestBase {
 
@@ -19,24 +17,24 @@ public class TestUnion extends CqlTestBase {
         evaluationResult = engine.evaluate(toElmIdentifier("TestUnion"));
         Object result = evaluationResult.forExpression("NullAndNull").value();
         assertNotNull(result);
-        assertTrue(((List<?>)result).isEmpty());
+        assertTrue(((List<?>) result).isEmpty());
 
         result = evaluationResult.forExpression("NullAndEmpty").value();
         assertNotNull(result);
-        assertTrue(((List<?>)result).isEmpty());
+        assertTrue(((List<?>) result).isEmpty());
 
         result = evaluationResult.forExpression("EmptyAndNull").value();
         assertNotNull(result);
-        assertTrue(((List<?>)result).isEmpty());
+        assertTrue(((List<?>) result).isEmpty());
 
         result = evaluationResult.forExpression("NullAndSingle").value();
         assertNotNull(result);
-        assertEquals(1, ((List<?>)result).size());
-        assertEquals(1, ((List<?>)result).get(0));
+        assertEquals(1, ((List<?>) result).size());
+        assertEquals(1, ((List<?>) result).get(0));
 
         result = evaluationResult.forExpression("SingleAndNull").value();
         assertNotNull(result);
-        assertEquals(1, ((List<?>)result).size());
-        assertEquals(1, ((List<?>)result).get(0));
+        assertEquals(1, ((List<?>) result).size());
+        assertEquals(1, ((List<?>) result).get(0));
     }
 }

@@ -1,11 +1,10 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.math.BigDecimal;
+import java.util.List;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.Quantity;
-
-import java.math.BigDecimal;
-import java.util.List;
 
 /*
 PopulationStdDev(argument List<Decimal>) Decimal
@@ -33,16 +32,16 @@ public class PopulationStdDevEvaluator {
 
             Object variance = PopulationVarianceEvaluator.popVariance(source, state);
 
-            return variance instanceof BigDecimal ?
-                    PowerEvaluator.power(variance, new BigDecimal("0.5")) :
-                    new Quantity().withValue((BigDecimal) PowerEvaluator.power(((Quantity) variance).getValue(),
-                            new BigDecimal("0.5"))).withUnit(((Quantity) variance).getUnit());
+            return variance instanceof BigDecimal
+                    ? PowerEvaluator.power(variance, new BigDecimal("0.5"))
+                    : new Quantity()
+                            .withValue((BigDecimal)
+                                    PowerEvaluator.power(((Quantity) variance).getValue(), new BigDecimal("0.5")))
+                            .withUnit(((Quantity) variance).getUnit());
         }
 
         throw new InvalidOperatorArgument(
                 "PopulationStdDev(List<Decimal>) or PopulationStdDev(List<Quantity>)",
-                String.format("PopulationStdDev(%s)", source.getClass().getName())
-        );
+                String.format("PopulationStdDev(%s)", source.getClass().getName()));
     }
-
 }

@@ -1,10 +1,8 @@
 package org.hl7.cql.model;
 
-import org.apache.commons.lang3.StringUtils;
-import org.hl7.elm_modelinfo.r1.ParameterTypeSpecifier;
-
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * The GenericClassSignatureParser is a convenience class for the parsing of generic signature
@@ -22,7 +20,7 @@ public class GenericClassSignatureParser {
     private int endPos = 0;
     private int bracketCount = 0;
     private int currentBracketPosition = 0;
-    private Map<String,DataType> resolvedTypes;
+    private Map<String, DataType> resolvedTypes;
 
     /**
      * A generic signature such as List&lt;T&gt; or a bound signature
@@ -40,14 +38,18 @@ public class GenericClassSignatureParser {
      */
     private String boundGenericTypeName;
 
-    public GenericClassSignatureParser(String genericSignature, String baseType, String boundGenericTypeName, Map<String,DataType> resolvedTypes) {
+    public GenericClassSignatureParser(
+            String genericSignature,
+            String baseType,
+            String boundGenericTypeName,
+            Map<String, DataType> resolvedTypes) {
         this.genericSignature = genericSignature;
         this.resolvedTypes = resolvedTypes;
         this.baseType = baseType;
         this.boundGenericTypeName = boundGenericTypeName;
     }
 
-    public GenericClassSignatureParser(String genericSignature, Map<String,DataType> resolvedTypes) {
+    public GenericClassSignatureParser(String genericSignature, Map<String, DataType> resolvedTypes) {
         this(genericSignature, null, null, resolvedTypes);
     }
 
@@ -83,36 +85,39 @@ public class GenericClassSignatureParser {
     public ClassType parseGenericSignature() {
         String genericTypeName = genericSignature;
         String[] params = new String[0];
-        if(isValidGenericSignature()) {
+        if (isValidGenericSignature()) {
             genericTypeName = genericSignature.substring(0, genericSignature.indexOf('<'));
-            String parameters = genericSignature.substring(genericSignature.indexOf('<') + 1, genericSignature.lastIndexOf('>'));
+            String parameters =
+                    genericSignature.substring(genericSignature.indexOf('<') + 1, genericSignature.lastIndexOf('>'));
             params = escapeNestedCommas(parameters).split(",");
         }
         String baseTypeName = baseType;
         String[] baseTypeParameters = null;
-        if(baseType != null && baseType.contains("<")) {
+        if (baseType != null && baseType.contains("<")) {
             baseTypeName = baseType.substring(0, baseType.indexOf('<'));
             String baseTypeParameterString = baseType.substring(baseType.indexOf('<') + 1, baseType.lastIndexOf('>'));
             baseTypeParameters = escapeNestedCommas(baseTypeParameterString).split(",");
         }
         DataType baseDataType = resolveTypeName(baseTypeName);
         ClassType genericClassType = new ClassType(genericTypeName, baseDataType);
-        for(String param: params) {
+        for (String param : params) {
             TypeParameter paramType = handleParameterDeclaration(unescapeNestedCommas(param));
             genericClassType.addGenericParameter(paramType);
         }
-        if(baseTypeParameters != null) {
+        if (baseTypeParameters != null) {
             int index = 0;
-            for(String baseTypeParameter: baseTypeParameters) {
-                if(baseTypeParameter.length() == 1 && genericClassType.getGenericParameterByIdentifier(baseTypeParameter) == null) {
-                        throw new RuntimeException("Cannot resolve symbol " + baseTypeParameter);
-                } else{
+            for (String baseTypeParameter : baseTypeParameters) {
+                if (baseTypeParameter.length() == 1
+                        && genericClassType.getGenericParameterByIdentifier(baseTypeParameter) == null) {
+                    throw new RuntimeException("Cannot resolve symbol " + baseTypeParameter);
+                } else {
                     DataType boundType = resolveTypeName(unescapeNestedCommas(baseTypeParameter));
-                    ClassType baseTypeClass = (ClassType)baseDataType;
+                    ClassType baseTypeClass = (ClassType) baseDataType;
                     List<ClassTypeElement> baseClassFields = baseTypeClass.getElements();
-                    String myParam = baseTypeClass.getGenericParameters().get(index).getIdentifier();
+                    String myParam =
+                            baseTypeClass.getGenericParameters().get(index).getIdentifier();
                     System.out.println(boundType + " replaces param " + myParam);
-                    for(ClassTypeElement baseClassField : baseClassFields) {
+                    for (ClassTypeElement baseClassField : baseClassFields) {
                         ClassTypeElement myElement = new ClassTypeElement(baseClassField.getName(), boundType);
                         genericClassType.addElement(myElement);
                     }
@@ -131,11 +136,15 @@ public class GenericClassSignatureParser {
      */
     protected TypeParameter handleParameterDeclaration(String parameterString) {
         String[] paramComponents = parameterString.split("\\s+");
-        if(paramComponents.length == 1) {
-            return new TypeParameter(StringUtils.trim(parameterString), TypeParameter.TypeParameterConstraint.NONE, null);
-        } else if(paramComponents.length == 3) {
-            if(paramComponents[1].equalsIgnoreCase(EXTENDS)) {
-                return new TypeParameter(paramComponents[0], TypeParameter.TypeParameterConstraint.TYPE, resolveTypeName(paramComponents[2]));
+        if (paramComponents.length == 1) {
+            return new TypeParameter(
+                    StringUtils.trim(parameterString), TypeParameter.TypeParameterConstraint.NONE, null);
+        } else if (paramComponents.length == 3) {
+            if (paramComponents[1].equalsIgnoreCase(EXTENDS)) {
+                return new TypeParameter(
+                        paramComponents[0],
+                        TypeParameter.TypeParameterConstraint.TYPE,
+                        resolveTypeName(paramComponents[2]));
             } else {
                 throw new RuntimeException("Invalid parameter syntax: " + parameterString);
             }
@@ -152,10 +161,10 @@ public class GenericClassSignatureParser {
      * @return The parameter's type
      */
     protected DataType resolveTypeName(String parameterType) {
-        if(isValidGenericSignature(parameterType)) {
+        if (isValidGenericSignature(parameterType)) {
             return handleBoundType(parameterType);
         } else {
-            if(parameterType == null) {
+            if (parameterType == null) {
                 return null;
             } else {
                 return resolveType(parameterType);
@@ -171,31 +180,35 @@ public class GenericClassSignatureParser {
      * @return The bound type created or resolved
      */
     protected DataType handleBoundType(String boundGenericSignature) {
-        ClassType resolvedType = (ClassType)resolvedTypes.get(escapeNestedAngleBrackets(boundGenericSignature));
-        if(resolvedType != null) {
+        ClassType resolvedType = (ClassType) resolvedTypes.get(escapeNestedAngleBrackets(boundGenericSignature));
+        if (resolvedType != null) {
             return resolvedType;
         } else {
             String genericTypeName = boundGenericSignature.substring(0, boundGenericSignature.indexOf('<'));
-            resolvedType = (ClassType)resolveType(genericTypeName);
-            if(resolvedType == null) {
+            resolvedType = (ClassType) resolveType(genericTypeName);
+            if (resolvedType == null) {
                 throw new RuntimeException("Unknown type " + genericTypeName);
             }
             ClassType newType = new ClassType(escapeNestedAngleBrackets(boundGenericSignature), resolvedType);
-            String parameters = boundGenericSignature.substring(boundGenericSignature.indexOf('<') + 1, boundGenericSignature.lastIndexOf('>'));
+            String parameters = boundGenericSignature.substring(
+                    boundGenericSignature.indexOf('<') + 1, boundGenericSignature.lastIndexOf('>'));
             String[] params = escapeNestedCommas(parameters).split(",");
             int index = 0;
-            for(String param : params) {
+            for (String param : params) {
                 DataType boundParam = null;
                 param = unescapeNestedCommas(param);
-                if(isValidGenericSignature(param)) {
+                if (isValidGenericSignature(param)) {
                     boundParam = handleBoundType(param);
                 } else {
                     boundParam = resolveType(param);
                 }
-                TypeParameter typeParameter = resolvedType.getGenericParameters().get(index);
-                for(ClassTypeElement classTypeElement : resolvedType.getElements()) {
-                    if(classTypeElement.getType() instanceof TypeParameter) {
-                        if(((TypeParameter)classTypeElement.getType()).getIdentifier().equalsIgnoreCase(typeParameter.getIdentifier())) {
+                TypeParameter typeParameter =
+                        resolvedType.getGenericParameters().get(index);
+                for (ClassTypeElement classTypeElement : resolvedType.getElements()) {
+                    if (classTypeElement.getType() instanceof TypeParameter) {
+                        if (((TypeParameter) classTypeElement.getType())
+                                .getIdentifier()
+                                .equalsIgnoreCase(typeParameter.getIdentifier())) {
                             ClassTypeElement newElement = new ClassTypeElement(classTypeElement.getName(), boundParam);
                             newType.addElement(newElement);
                         }
@@ -253,7 +266,7 @@ public class GenericClassSignatureParser {
      */
     private int openBracketCount(String signatureString) {
         int matchCount = 0;
-        if(signatureString != null) {
+        if (signatureString != null) {
             matchCount = StringUtils.countMatches(signatureString, OPEN_BRACKET);
         }
         return matchCount;
@@ -276,7 +289,7 @@ public class GenericClassSignatureParser {
      */
     private int closeBracketCount(String signatureString) {
         int matchCount = 0;
-        if(signatureString != null) {
+        if (signatureString != null) {
             matchCount = StringUtils.countMatches(signatureString, CLOSE_BRACKET);
         }
         return matchCount;
@@ -288,7 +301,7 @@ public class GenericClassSignatureParser {
      * @return
      */
     private boolean areBracketsPaired() {
-       return areBracketsPaired(genericSignature);
+        return areBracketsPaired(genericSignature);
     }
 
     /**
@@ -299,7 +312,7 @@ public class GenericClassSignatureParser {
      */
     private boolean areBracketsPaired(String signatureString) {
         boolean paired = false;
-        if(signatureString != null) {
+        if (signatureString != null) {
             int openCount = openBracketCount(signatureString);
             int closeCount = closeBracketCount(signatureString);
             paired = (openCount == closeCount) && (openCount > 0);
@@ -336,13 +349,13 @@ public class GenericClassSignatureParser {
     private String escapeNestedCommas(String signature) {
         char[] signatureCharArray = signature.toCharArray();
         int openBracketCount = 0;
-        for(int index = 0; index < signatureCharArray.length; index++) {
+        for (int index = 0; index < signatureCharArray.length; index++) {
             char c = signatureCharArray[index];
-            if(c == '<') {
+            if (c == '<') {
                 openBracketCount++;
-            } else if(c == '>') {
+            } else if (c == '>') {
                 openBracketCount--;
-            } else if(c == ',' && openBracketCount > 0) {
+            } else if (c == ',' && openBracketCount > 0) {
                 signatureCharArray[index] = '|';
             }
         }
@@ -368,7 +381,7 @@ public class GenericClassSignatureParser {
      */
     private DataType resolveType(String typeName) {
         DataType type = resolvedTypes.get(typeName);
-        if(type == null) {
+        if (type == null) {
             throw new RuntimeException("Unable to resolve " + typeName);
         }
         return type;

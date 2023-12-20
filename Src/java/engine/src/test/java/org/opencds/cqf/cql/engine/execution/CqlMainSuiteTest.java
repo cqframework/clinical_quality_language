@@ -1,24 +1,26 @@
 package org.opencds.cqf.cql.engine.execution;
 
+import static org.testng.Assert.assertFalse;
+
+import java.time.ZonedDateTime;
+import java.util.*;
 import org.cqframework.cql.cql2elm.CqlCompilerException;
 import org.cqframework.cql.cql2elm.CqlCompilerOptions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.assertFalse;
-
-import java.time.ZonedDateTime;
-import java.util.*;
-
 public class CqlMainSuiteTest extends CqlTestBase {
 
-    private static final ZonedDateTime evalTime = ZonedDateTime.of(2018, 1, 1, 7, 0, 0, 0, TimeZone.getDefault().toZoneId());
+    private static final ZonedDateTime evalTime =
+            ZonedDateTime.of(2018, 1, 1, 7, 0, 0, 0, TimeZone.getDefault().toZoneId());
 
     @Test
     public void test_cql_main_test_suite_compiles() {
         var errors = new ArrayList<CqlCompilerException>();
         this.getLibrary(toElmIdentifier("CqlTestSuite"), errors, testCompilerOptions());
-        assertFalse(CqlCompilerException.hasErrors(errors), String.format("Test library compiled with the following errors : %s", this.toString(errors)));
+        assertFalse(
+                CqlCompilerException.hasErrors(errors),
+                String.format("Test library compiled with the following errors : %s", this.toString(errors)));
     }
 
     @Test
@@ -30,16 +32,14 @@ public class CqlMainSuiteTest extends CqlTestBase {
         var result = e.evaluate(toElmIdentifier("CqlTestSuite"), evalTime);
 
         for (var entry : result.expressionResults.entrySet()) {
-            if(entry.getKey().toString().startsWith("test")) {
-                if(((ExpressionResult)entry.getValue()).value() != null) {
-                Assert.assertEquals(
-                        (String) ((ExpressionResult) entry.getValue()).value(),
-                        entry.getKey().toString().replaceAll("test_", "") + " TEST PASSED"
-                );
+            if (entry.getKey().toString().startsWith("test")) {
+                if (((ExpressionResult) entry.getValue()).value() != null) {
+                    Assert.assertEquals(
+                            (String) ((ExpressionResult) entry.getValue()).value(),
+                            entry.getKey().toString().replaceAll("test_", "") + " TEST PASSED");
                 }
             }
         }
-
     }
 
     @Test
@@ -52,18 +52,17 @@ public class CqlMainSuiteTest extends CqlTestBase {
         var result = e.evaluate(toElmIdentifier("CqlTimeZoneTestSuite"), evalTime);
 
         for (var entry : result.expressionResults.entrySet()) {
-            if(entry.getKey().toString().startsWith("test")) {
-                if(((ExpressionResult)entry.getValue()).value() != null) {
+            if (entry.getKey().toString().startsWith("test")) {
+                if (((ExpressionResult) entry.getValue()).value() != null) {
                     Assert.assertEquals(
                             (String) ((ExpressionResult) entry.getValue()).value(),
-                            entry.getKey().toString().replaceAll("test_", "") + " TEST PASSED"
-                    );
+                            entry.getKey().toString().replaceAll("test_", "") + " TEST PASSED");
                 }
             }
         }
     }
 
-   protected CqlCompilerOptions testCompilerOptions() {
+    protected CqlCompilerOptions testCompilerOptions() {
         var options = CqlCompilerOptions.defaultOptions();
         // This test suite contains some definitions that use features that are usually
         // turned off for CQL.
@@ -72,7 +71,6 @@ public class CqlMainSuiteTest extends CqlTestBase {
 
         return options;
     }
-
 
     String toString(List<CqlCompilerException> errors) {
         StringBuilder builder = new StringBuilder();

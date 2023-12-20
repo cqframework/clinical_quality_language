@@ -1,10 +1,8 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
+import java.util.List;
 import org.hl7.elm.r1.Expression;
 import org.hl7.elm.r1.NaryExpression;
-
-import java.util.List;
-
 
 public class NaryExpressionInvocation extends OperatorExpressionInvocation {
     public NaryExpressionInvocation(NaryExpression expression) {

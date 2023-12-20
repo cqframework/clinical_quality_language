@@ -9,9 +9,11 @@ public class ElmLibraryWriterProvider implements org.cqframework.cql.elm.seriali
             contentType = "application/elm+json";
         }
         switch (contentType) {
-            case "application/elm+xml": return new ElmXmlLibraryWriter();
+            case "application/elm+xml":
+                return new ElmXmlLibraryWriter();
             case "application/elm+json":
-            default: return new ElmJsonLibraryWriter();
+            default:
+                return new ElmJsonLibraryWriter();
         }
     }
 }

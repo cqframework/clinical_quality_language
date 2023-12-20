@@ -1,12 +1,11 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.time.ZoneOffset;
+import java.time.format.DateTimeParseException;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.runtime.Date;
 import org.opencds.cqf.cql.engine.runtime.DateTime;
 import org.opencds.cqf.cql.engine.runtime.TemporalHelper;
-
-import java.time.ZoneOffset;
-import java.time.format.DateTimeParseException;
 
 /*
 
@@ -43,17 +42,17 @@ public class ConvertsToDateTimeEvaluator {
                 return false;
             }
             return true;
-        }
-
-        else if (argument instanceof Date) {
+        } else if (argument instanceof Date) {
             try {
                 new DateTime(
                         TemporalHelper.zoneToOffset(offset),
                         ((Date) argument).getDate().getYear(),
                         ((Date) argument).getDate().getMonthValue(),
                         ((Date) argument).getDate().getDayOfMonth(),
-                        0, 0, 0, 0
-                );
+                        0,
+                        0,
+                        0,
+                        0);
             } catch (Exception e) {
                 return false;
             }
@@ -62,7 +61,6 @@ public class ConvertsToDateTimeEvaluator {
 
         throw new InvalidOperatorArgument(
                 "ConvertsToDateTime(String) or ConvertsToDateTime(Date)",
-                String.format("ConvertsToDateTime(%s)", argument.getClass().getName())
-        );
+                String.format("ConvertsToDateTime(%s)", argument.getClass().getName()));
     }
 }

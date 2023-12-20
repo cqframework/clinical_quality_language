@@ -20,8 +20,6 @@ public class NotEvaluator {
         }
 
         throw new InvalidOperatorArgument(
-                "Not(Boolean)",
-                String.format("Not(%s)", operand.getClass().getName())
-        );
+                "Not(Boolean)", String.format("Not(%s)", operand.getClass().getName()));
     }
 }

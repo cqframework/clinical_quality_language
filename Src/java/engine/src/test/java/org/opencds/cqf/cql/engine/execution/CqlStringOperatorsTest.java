@@ -1,13 +1,12 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
-import java.util.*;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+
+import java.util.*;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 public class CqlStringOperatorsTest extends CqlTestBase {
 

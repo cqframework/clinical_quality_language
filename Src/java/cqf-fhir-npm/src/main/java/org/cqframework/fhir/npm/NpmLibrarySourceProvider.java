@@ -4,11 +4,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-
 import org.cqframework.cql.cql2elm.LibrarySourceProvider;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.fhir.r5.context.ILoggingService;
-import org.hl7.fhir.r5.context.IWorkerContext;
 import org.hl7.fhir.r5.model.Library;
 import org.hl7.fhir.utilities.npm.NpmPackage;
 
@@ -44,7 +42,9 @@ public class NpmLibrarySourceProvider implements LibrarySourceProvider {
                     libraryIdentifier.setSystem(p.canonical());
                 }
 
-                InputStream s = p.loadByCanonicalVersion(libraryIdentifier.getSystem()+"/Library/"+libraryIdentifier.getId(), libraryIdentifier.getVersion());
+                InputStream s = p.loadByCanonicalVersion(
+                        libraryIdentifier.getSystem() + "/Library/" + libraryIdentifier.getId(),
+                        libraryIdentifier.getVersion());
                 if (s != null) {
                     Library l = reader.readLibrary(s);
                     for (org.hl7.fhir.r5.model.Attachment a : l.getContent()) {
@@ -57,11 +57,14 @@ public class NpmLibrarySourceProvider implements LibrarySourceProvider {
                     }
                 }
             } catch (IOException e) {
-                logger.logDebugMessage(ILoggingService.LogCategory.PROGRESS, String.format("Exceptions occurred attempting to load npm library source for %s", identifier.toString()));
+                logger.logDebugMessage(
+                        ILoggingService.LogCategory.PROGRESS,
+                        String.format(
+                                "Exceptions occurred attempting to load npm library source for %s",
+                                identifier.toString()));
             }
         }
 
         return null;
     }
 }
-

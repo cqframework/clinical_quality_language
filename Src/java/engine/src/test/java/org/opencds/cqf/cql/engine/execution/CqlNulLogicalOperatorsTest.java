@@ -1,20 +1,18 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import org.opencds.cqf.cql.engine.runtime.DateTime;
-import org.opencds.cqf.cql.engine.runtime.Time;
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
-import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator;
+import org.opencds.cqf.cql.engine.runtime.DateTime;
+import org.opencds.cqf.cql.engine.runtime.Time;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 public class CqlNulLogicalOperatorsTest extends CqlTestBase {
 
@@ -93,6 +91,5 @@ public class CqlNulLogicalOperatorsTest extends CqlTestBase {
 
         result = evaluationResult.forExpression("IsTrueNull").value();
         assertThat(result, is(false));
-
     }
 }

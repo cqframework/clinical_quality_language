@@ -7,7 +7,8 @@ import org.opencds.cqf.cql.engine.execution.ExpressionResult;
 import org.opencds.cqf.cql.engine.execution.State;
 
 public class ExpressionDefEvaluator {
-    public  static Object internalEvaluate(ExpressionDef expressionDef, State state, ElmLibraryVisitor<Object,State> visitor) {
+    public static Object internalEvaluate(
+            ExpressionDef expressionDef, State state, ElmLibraryVisitor<Object, State> visitor) {
         boolean isEnteredContext = false;
         if (expressionDef.getContext() != null) {
             isEnteredContext = state.enterContext(expressionDef.getContext());
@@ -15,7 +16,8 @@ public class ExpressionDefEvaluator {
         try {
             state.pushEvaluatedResourceStack();
             VersionedIdentifier libraryId = state.getCurrentLibrary().getIdentifier();
-            if (state.getCache().isExpressionCachingEnabled() && state.getCache().isExpressionCached(libraryId, expressionDef.getName())) {
+            if (state.getCache().isExpressionCachingEnabled()
+                    && state.getCache().isExpressionCached(libraryId, expressionDef.getName())) {
                 var er = state.getCache().getCachedExpression(libraryId, expressionDef.getName());
                 state.getEvaluatedResources().addAll(er.evaluatedResources());
                 return er.value();
@@ -29,10 +31,10 @@ public class ExpressionDefEvaluator {
             }
 
             return value;
-        }
-        finally {
+        } finally {
             state.popEvaluatedResourceStack();
-            // state.enterContext.getContext() == null will result in isEnteredContext = false, which means pop() won't be called
+            // state.enterContext.getContext() == null will result in isEnteredContext = false, which means pop() won't
+            // be called
             state.exitContext(isEnteredContext);
         }
     }

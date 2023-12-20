@@ -1,9 +1,8 @@
 package org.cqframework.cql.elm.evaluating;
 
-import org.hl7.elm.r1.*;
-
-import javax.xml.namespace.QName;
 import java.math.BigDecimal;
+import javax.xml.namespace.QName;
+import org.hl7.elm.r1.*;
 
 /*
 A simple ELM engine that is capable of limited evaluation of ELM
@@ -12,12 +11,14 @@ constant folding, data requirements analysis, limited constraint validation,
 etc.)
  */
 public class SimpleElmEngine {
-    public SimpleElmEngine() {
-    }
+    public SimpleElmEngine() {}
 
     private boolean literalsEqual(Literal left, Literal right) {
         return (left == null && right == null)
-                || (left != null && left.getValueType() != null && left.getValueType().equals(right.getValueType()) && stringsEqual(left.getValue(), right.getValue()));
+                || (left != null
+                        && left.getValueType() != null
+                        && left.getValueType().equals(right.getValueType())
+                        && stringsEqual(left.getValue(), right.getValue()));
     }
 
     public boolean booleansEqual(Expression left, Expression right) {
@@ -53,8 +54,7 @@ public class SimpleElmEngine {
             return true;
         }
 
-        return decimalsEqual(left.getValue(), right.getValue())
-                && stringsEqual(left.getUnit(), right.getUnit());
+        return decimalsEqual(left.getValue(), right.getValue()) && stringsEqual(left.getUnit(), right.getUnit());
     }
 
     public boolean stringsEqual(Expression left, Expression right) {
@@ -76,13 +76,17 @@ public class SimpleElmEngine {
     public boolean systemsEqual(CodeSystemRef left, CodeSystemRef right) {
         // TODO: Needs to do the comparison on the URI, but I don't want to have to resolve here
         return (left == null && right == null)
-                || (left != null && stringsEqual(left.getLibraryName(), right.getLibraryName()) && stringsEqual(left.getName(), right.getName()));
+                || (left != null
+                        && stringsEqual(left.getLibraryName(), right.getLibraryName())
+                        && stringsEqual(left.getName(), right.getName()));
     }
 
     public boolean valueSetsEqual(ValueSetRef left, ValueSetRef right) {
         // TODO: Needs to do the comparison on the URI, but I don't want to have to resolve here
         return (left == null && right == null)
-                || (left != null && stringsEqual(left.getLibraryName(), right.getLibraryName()) && stringsEqual(left.getName(), right.getName()));
+                || (left != null
+                        && stringsEqual(left.getLibraryName(), right.getLibraryName())
+                        && stringsEqual(left.getName(), right.getName()));
     }
 
     public boolean codesEqual(Expression left, Expression right) {
@@ -113,8 +117,8 @@ public class SimpleElmEngine {
         // NamedTypeSpecifier
         if (left instanceof NamedTypeSpecifier) {
             if (right instanceof NamedTypeSpecifier) {
-                NamedTypeSpecifier leftArg = (NamedTypeSpecifier)left;
-                NamedTypeSpecifier rightArg = (NamedTypeSpecifier)right;
+                NamedTypeSpecifier leftArg = (NamedTypeSpecifier) left;
+                NamedTypeSpecifier rightArg = (NamedTypeSpecifier) right;
                 return qnamesEqual(leftArg.getName(), rightArg.getName());
             }
 
@@ -124,8 +128,8 @@ public class SimpleElmEngine {
         // IntervalTypeSpecifier
         if (left instanceof IntervalTypeSpecifier) {
             if (right instanceof IntervalTypeSpecifier) {
-                IntervalTypeSpecifier leftArg = (IntervalTypeSpecifier)left;
-                IntervalTypeSpecifier rightArg = (IntervalTypeSpecifier)right;
+                IntervalTypeSpecifier leftArg = (IntervalTypeSpecifier) left;
+                IntervalTypeSpecifier rightArg = (IntervalTypeSpecifier) right;
                 return typeSpecifiersEqual(leftArg.getPointType(), rightArg.getPointType());
             }
 
@@ -135,8 +139,8 @@ public class SimpleElmEngine {
         // ListTypeSpecifier
         if (left instanceof ListTypeSpecifier) {
             if (right instanceof ListTypeSpecifier) {
-                ListTypeSpecifier leftArg = (ListTypeSpecifier)left;
-                ListTypeSpecifier rightArg = (ListTypeSpecifier)right;
+                ListTypeSpecifier leftArg = (ListTypeSpecifier) left;
+                ListTypeSpecifier rightArg = (ListTypeSpecifier) right;
                 return typeSpecifiersEqual(leftArg.getElementType(), rightArg.getElementType());
             }
 
@@ -146,12 +150,16 @@ public class SimpleElmEngine {
         // TupleTypeSpecifier
         if (left instanceof TupleTypeSpecifier) {
             if (right instanceof TupleTypeSpecifier) {
-                TupleTypeSpecifier leftArg = (TupleTypeSpecifier)left;
-                TupleTypeSpecifier rightArg = (TupleTypeSpecifier)right;
-                if (leftArg.getElement() != null && rightArg.getElement() != null && leftArg.getElement().size() == rightArg.getElement().size()) {
+                TupleTypeSpecifier leftArg = (TupleTypeSpecifier) left;
+                TupleTypeSpecifier rightArg = (TupleTypeSpecifier) right;
+                if (leftArg.getElement() != null
+                        && rightArg.getElement() != null
+                        && leftArg.getElement().size() == rightArg.getElement().size()) {
                     for (int i = 0; i < leftArg.getElement().size(); i++) {
-                        TupleElementDefinition leftElement = leftArg.getElement().get(i);
-                        TupleElementDefinition rightElement = rightArg.getElement().get(i);
+                        TupleElementDefinition leftElement =
+                                leftArg.getElement().get(i);
+                        TupleElementDefinition rightElement =
+                                rightArg.getElement().get(i);
                         if (!typeSpecifiersEqual(leftElement.getType(), rightElement.getType())
                                 || !typeSpecifiersEqual(leftElement.getElementType(), rightElement.getElementType())
                                 || !stringsEqual(leftElement.getName(), rightElement.getName())) {
@@ -171,9 +179,11 @@ public class SimpleElmEngine {
         // ChoiceTypeSpecifier
         if (left instanceof ChoiceTypeSpecifier) {
             if (right instanceof ChoiceTypeSpecifier) {
-                ChoiceTypeSpecifier leftArg = (ChoiceTypeSpecifier)left;
-                ChoiceTypeSpecifier rightArg = (ChoiceTypeSpecifier)right;
-                if (leftArg.getType() != null && rightArg.getType() != null && leftArg.getType().size() == rightArg.getType().size()) {
+                ChoiceTypeSpecifier leftArg = (ChoiceTypeSpecifier) left;
+                ChoiceTypeSpecifier rightArg = (ChoiceTypeSpecifier) right;
+                if (leftArg.getType() != null
+                        && rightArg.getType() != null
+                        && leftArg.getType().size() == rightArg.getType().size()) {
                     for (int i = 0; i < leftArg.getType().size(); i++) {
                         TypeSpecifier leftType = leftArg.getType().get(i);
                         TypeSpecifier rightType = rightArg.getType().get(i);
@@ -183,7 +193,9 @@ public class SimpleElmEngine {
                     }
                 }
 
-                if (leftArg.getChoice() != null && rightArg.getChoice() != null && leftArg.getChoice().size() == rightArg.getChoice().size()) {
+                if (leftArg.getChoice() != null
+                        && rightArg.getChoice() != null
+                        && leftArg.getChoice().size() == rightArg.getChoice().size()) {
                     for (int i = 0; i < leftArg.getChoice().size(); i++) {
                         TypeSpecifier leftType = leftArg.getChoice().get(i);
                         TypeSpecifier rightType = rightArg.getChoice().get(i);
@@ -216,7 +228,7 @@ public class SimpleElmEngine {
 
         if (left instanceof Literal) {
             if (right instanceof Literal) {
-                return literalsEqual((Literal)left, (Literal)right);
+                return literalsEqual((Literal) left, (Literal) right);
             }
 
             return false;
@@ -224,8 +236,8 @@ public class SimpleElmEngine {
 
         if (left instanceof Date) {
             if (right instanceof Date) {
-                Date leftDate = (Date)left;
-                Date rightDate = (Date)right;
+                Date leftDate = (Date) left;
+                Date rightDate = (Date) right;
 
                 return integersEqual(leftDate.getYear(), rightDate.getYear())
                         && integersEqual(leftDate.getMonth(), rightDate.getMonth())
@@ -237,8 +249,8 @@ public class SimpleElmEngine {
 
         if (left instanceof Time) {
             if (right instanceof Time) {
-                Time leftTime = (Time)left;
-                Time rightTime = (Time)right;
+                Time leftTime = (Time) left;
+                Time rightTime = (Time) right;
 
                 return integersEqual(leftTime.getHour(), rightTime.getHour())
                         && integersEqual(leftTime.getMinute(), rightTime.getMinute())
@@ -251,8 +263,8 @@ public class SimpleElmEngine {
 
         if (left instanceof DateTime) {
             if (right instanceof DateTime) {
-                DateTime leftDateTime = (DateTime)left;
-                DateTime rightDateTime = (DateTime)right;
+                DateTime leftDateTime = (DateTime) left;
+                DateTime rightDateTime = (DateTime) right;
 
                 return integersEqual(leftDateTime.getYear(), rightDateTime.getYear())
                         && integersEqual(leftDateTime.getMonth(), rightDateTime.getMonth())
@@ -269,13 +281,14 @@ public class SimpleElmEngine {
 
         if (left instanceof Interval) {
             if (right instanceof Interval) {
-                Interval leftInterval = (Interval)left;
-                Interval rightInterval = (Interval)right;
+                Interval leftInterval = (Interval) left;
+                Interval rightInterval = (Interval) right;
 
                 return booleansEqual(leftInterval.getLowClosedExpression(), rightInterval.getLowClosedExpression())
                         && dateTimesEqual(leftInterval.getLow(), rightInterval.getLow())
                         && leftInterval.isLowClosed() == rightInterval.isLowClosed()
-                        && booleansEqual(leftInterval.getHighClosedExpression(), rightInterval.getHighClosedExpression())
+                        && booleansEqual(
+                                leftInterval.getHighClosedExpression(), rightInterval.getHighClosedExpression())
                         && dateTimesEqual(leftInterval.getHigh(), rightInterval.getHigh())
                         && leftInterval.isHighClosed() == rightInterval.isHighClosed();
             }
@@ -283,11 +296,12 @@ public class SimpleElmEngine {
             return false;
         }
 
-        // TODO: Strictly speaking this would need to resolve the parameter library since it's not in the ELM if it's a local parameter reference
+        // TODO: Strictly speaking this would need to resolve the parameter library since it's not in the ELM if it's a
+        // local parameter reference
         if (left instanceof ParameterRef) {
             if (right instanceof ParameterRef) {
-                ParameterRef leftParameter = (ParameterRef)left;
-                ParameterRef rightParameter = (ParameterRef)right;
+                ParameterRef leftParameter = (ParameterRef) left;
+                ParameterRef rightParameter = (ParameterRef) right;
                 return stringsEqual(leftParameter.getLibraryName(), rightParameter.getLibraryName())
                         && stringsEqual(leftParameter.getName(), rightParameter.getName());
             }
@@ -297,7 +311,7 @@ public class SimpleElmEngine {
 
         if (left instanceof ValueSetRef) {
             if (right instanceof ValueSetRef) {
-                return valueSetsEqual((ValueSetRef)left, (ValueSetRef)right);
+                return valueSetsEqual((ValueSetRef) left, (ValueSetRef) right);
             }
 
             return false;
@@ -305,7 +319,7 @@ public class SimpleElmEngine {
 
         if (left instanceof CodeSystemRef) {
             if (right instanceof CodeSystemRef) {
-                return systemsEqual((CodeSystemRef)left, (CodeSystemRef)right);
+                return systemsEqual((CodeSystemRef) left, (CodeSystemRef) right);
             }
 
             return false;
@@ -313,8 +327,8 @@ public class SimpleElmEngine {
 
         if (left instanceof ConceptRef) {
             if (right instanceof ConceptRef) {
-                ConceptRef leftConcept = (ConceptRef)left;
-                ConceptRef rightConcept = (ConceptRef)right;
+                ConceptRef leftConcept = (ConceptRef) left;
+                ConceptRef rightConcept = (ConceptRef) right;
                 // TODO: Needs to do the comparison on the URI, but I don't want to resolve here
                 return stringsEqual(leftConcept.getLibraryName(), rightConcept.getLibraryName())
                         && stringsEqual(leftConcept.getName(), rightConcept.getName());
@@ -325,8 +339,8 @@ public class SimpleElmEngine {
 
         if (left instanceof CodeRef) {
             if (right instanceof CodeRef) {
-                CodeRef leftCode = (CodeRef)left;
-                CodeRef rightCode = (CodeRef)right;
+                CodeRef leftCode = (CodeRef) left;
+                CodeRef rightCode = (CodeRef) right;
                 // TODO: Needs to do the comparison on the URI, but I don't want to resolve here
                 return stringsEqual(leftCode.getLibraryName(), rightCode.getLibraryName())
                         && stringsEqual(leftCode.getName(), rightCode.getName());
@@ -337,8 +351,8 @@ public class SimpleElmEngine {
 
         if (left instanceof Code) {
             if (right instanceof Code) {
-                Code leftCode = (Code)left;
-                Code rightCode = (Code)right;
+                Code leftCode = (Code) left;
+                Code rightCode = (Code) right;
                 return stringsEqual(leftCode.getCode(), rightCode.getCode())
                         && systemsEqual(leftCode.getSystem(), rightCode.getSystem());
             }
@@ -348,8 +362,8 @@ public class SimpleElmEngine {
 
         if (left instanceof Concept) {
             if (right instanceof Concept) {
-                Concept leftConcept = (Concept)left;
-                Concept rightConcept = (Concept)right;
+                Concept leftConcept = (Concept) left;
+                Concept rightConcept = (Concept) right;
                 if (leftConcept.getCode() != null && rightConcept.getCode() != null) {
                     for (Code lc : leftConcept.getCode()) {
                         for (Code rc : rightConcept.getCode()) {
@@ -366,12 +380,14 @@ public class SimpleElmEngine {
 
         if (left instanceof List) {
             if (right instanceof List) {
-                List leftList = (List)left;
-                List rightList = (List)right;
+                List leftList = (List) left;
+                List rightList = (List) right;
                 // TODO: Potentially use a hashSet to avoid order-dependence here
                 if (leftList.getElement().size() == rightList.getElement().size()) {
                     for (int i = 0; i < leftList.getElement().size(); i++) {
-                        if (!codesEqual(leftList.getElement().get(i), rightList.getElement().get(i))) {
+                        if (!codesEqual(
+                                leftList.getElement().get(i),
+                                rightList.getElement().get(i))) {
                             return false;
                         }
                     }
@@ -383,8 +399,8 @@ public class SimpleElmEngine {
 
         if (left instanceof ToList) {
             if (right instanceof ToList) {
-                Expression leftSingleton = ((ToList)left).getOperand();
-                Expression rightSingleton = ((ToList)right).getOperand();
+                Expression leftSingleton = ((ToList) left).getOperand();
+                Expression rightSingleton = ((ToList) right).getOperand();
                 return codesEqual(leftSingleton, rightSingleton);
             }
 
@@ -394,7 +410,7 @@ public class SimpleElmEngine {
         // Quantity
         if (left instanceof Quantity) {
             if (right instanceof Quantity) {
-                return quantitiesEqual((Quantity)left, (Quantity)right);
+                return quantitiesEqual((Quantity) left, (Quantity) right);
             }
 
             return false;
@@ -403,8 +419,8 @@ public class SimpleElmEngine {
         // Ratio
         if (left instanceof Ratio) {
             if (right instanceof Ratio) {
-                return quantitiesEqual(((Ratio)left).getDenominator(), ((Ratio)right).getDenominator())
-                        && quantitiesEqual(((Ratio)left).getNumerator(), ((Ratio)right).getNumerator());
+                return quantitiesEqual(((Ratio) left).getDenominator(), ((Ratio) right).getDenominator())
+                        && quantitiesEqual(((Ratio) left).getNumerator(), ((Ratio) right).getNumerator());
             }
 
             return false;
@@ -416,11 +432,13 @@ public class SimpleElmEngine {
         // InCodeSystem
         if (left instanceof InCodeSystem) {
             if (right instanceof InCodeSystem) {
-                InCodeSystem inCodeSystemLeft = (InCodeSystem)left;
-                InCodeSystem inCodeSystemRight = (InCodeSystem)right;
+                InCodeSystem inCodeSystemLeft = (InCodeSystem) left;
+                InCodeSystem inCodeSystemRight = (InCodeSystem) right;
                 return expressionsEqual(inCodeSystemLeft.getCode(), inCodeSystemRight.getCode())
                         && systemsEqual(inCodeSystemLeft.getCodesystem(), inCodeSystemRight.getCodesystem())
-                        && expressionsEqual(inCodeSystemLeft.getCodesystemExpression(), inCodeSystemRight.getCodesystemExpression());
+                        && expressionsEqual(
+                                inCodeSystemLeft.getCodesystemExpression(),
+                                inCodeSystemRight.getCodesystemExpression());
             }
 
             return false;
@@ -429,11 +447,13 @@ public class SimpleElmEngine {
         // AnyInCodeSystem
         if (left instanceof AnyInCodeSystem) {
             if (right instanceof AnyInCodeSystem) {
-                AnyInCodeSystem anyInCodeSystemLeft = (AnyInCodeSystem)left;
-                AnyInCodeSystem anyInCodeSystemRight = (AnyInCodeSystem)right;
+                AnyInCodeSystem anyInCodeSystemLeft = (AnyInCodeSystem) left;
+                AnyInCodeSystem anyInCodeSystemRight = (AnyInCodeSystem) right;
                 return expressionsEqual(anyInCodeSystemLeft.getCodes(), anyInCodeSystemRight.getCodes())
                         && systemsEqual(anyInCodeSystemLeft.getCodesystem(), anyInCodeSystemRight.getCodesystem())
-                        && expressionsEqual(anyInCodeSystemLeft.getCodesystemExpression(), anyInCodeSystemRight.getCodesystemExpression());
+                        && expressionsEqual(
+                                anyInCodeSystemLeft.getCodesystemExpression(),
+                                anyInCodeSystemRight.getCodesystemExpression());
             }
 
             return false;
@@ -442,8 +462,8 @@ public class SimpleElmEngine {
         // InValueSet
         if (left instanceof InValueSet) {
             if (right instanceof InValueSet) {
-                InValueSet inLeft = (InValueSet)left;
-                InValueSet inRight = (InValueSet)right;
+                InValueSet inLeft = (InValueSet) left;
+                InValueSet inRight = (InValueSet) right;
                 return expressionsEqual(inLeft.getCode(), inRight.getCode())
                         && valueSetsEqual(inLeft.getValueset(), inRight.getValueset())
                         && expressionsEqual(inLeft.getValuesetExpression(), inRight.getValuesetExpression());
@@ -455,8 +475,8 @@ public class SimpleElmEngine {
         // AnyInValueSet
         if (left instanceof AnyInValueSet) {
             if (right instanceof AnyInValueSet) {
-                AnyInValueSet inLeft = (AnyInValueSet)left;
-                AnyInValueSet inRight = (AnyInValueSet)right;
+                AnyInValueSet inLeft = (AnyInValueSet) left;
+                AnyInValueSet inRight = (AnyInValueSet) right;
                 return expressionsEqual(inLeft.getCodes(), inRight.getCodes())
                         && valueSetsEqual(inLeft.getValueset(), inRight.getValueset())
                         && expressionsEqual(inLeft.getValuesetExpression(), inRight.getValuesetExpression());
@@ -468,8 +488,8 @@ public class SimpleElmEngine {
         // CalculateAge
         if (left instanceof CalculateAge) {
             if (right instanceof CalculateAge) {
-                CalculateAge leftArg = (CalculateAge)left;
-                CalculateAge rightArg = (CalculateAge)right;
+                CalculateAge leftArg = (CalculateAge) left;
+                CalculateAge rightArg = (CalculateAge) right;
                 return expressionsEqual(leftArg.getOperand(), rightArg.getOperand())
                         && leftArg.getPrecision().equals(rightArg.getPrecision());
             }
@@ -480,8 +500,8 @@ public class SimpleElmEngine {
         // Subsumes
         if (left instanceof Subsumes) {
             if (right instanceof Subsumes) {
-                Subsumes leftArg = (Subsumes)left;
-                Subsumes rightArg = (Subsumes)right;
+                Subsumes leftArg = (Subsumes) left;
+                Subsumes rightArg = (Subsumes) right;
                 if (operandsEqual(leftArg, rightArg)) {
                     return true;
                 }
@@ -495,8 +515,8 @@ public class SimpleElmEngine {
         // SubsumedBy
         if (left instanceof SubsumedBy) {
             if (right instanceof SubsumedBy) {
-                SubsumedBy leftArg = (SubsumedBy)left;
-                SubsumedBy rightArg = (SubsumedBy)right;
+                SubsumedBy leftArg = (SubsumedBy) left;
+                SubsumedBy rightArg = (SubsumedBy) right;
                 if (operandsEqual(leftArg, rightArg)) {
                     return true;
                 }
@@ -510,8 +530,8 @@ public class SimpleElmEngine {
         // AggregateExpression
         if (left instanceof AggregateExpression) {
             if (right instanceof AggregateExpression) {
-                AggregateExpression leftArg = (AggregateExpression)left;
-                AggregateExpression rightArg = (AggregateExpression)right;
+                AggregateExpression leftArg = (AggregateExpression) left;
+                AggregateExpression rightArg = (AggregateExpression) right;
                 return aggregateExpressionsEqual(leftArg, rightArg);
             }
 
@@ -521,8 +541,8 @@ public class SimpleElmEngine {
         // OperatorExpression
         if (left instanceof OperatorExpression) {
             if (right instanceof OperatorExpression) {
-                OperatorExpression leftArg = (OperatorExpression)left;
-                OperatorExpression rightArg = (OperatorExpression)right;
+                OperatorExpression leftArg = (OperatorExpression) left;
+                OperatorExpression rightArg = (OperatorExpression) right;
                 return operatorExpressionsEqual(leftArg, rightArg);
             }
 
@@ -536,8 +556,8 @@ public class SimpleElmEngine {
         // AliasRef
         if (left instanceof AliasRef) {
             if (right instanceof AliasRef) {
-                AliasRef leftArg = (AliasRef)left;
-                AliasRef rightArg = (AliasRef)right;
+                AliasRef leftArg = (AliasRef) left;
+                AliasRef rightArg = (AliasRef) right;
                 return stringsEqual(leftArg.getName(), rightArg.getName());
             }
 
@@ -547,8 +567,8 @@ public class SimpleElmEngine {
         // Case
         if (left instanceof Case) {
             if (right instanceof Case) {
-                Case leftArg = (Case)left;
-                Case rightArg = (Case)right;
+                Case leftArg = (Case) left;
+                Case rightArg = (Case) right;
                 if (!expressionsEqual(leftArg.getComparand(), rightArg.getComparand())) {
                     return false;
                 }
@@ -557,11 +577,15 @@ public class SimpleElmEngine {
                     return false;
                 }
 
-                if (leftArg.getCaseItem() != null && rightArg.getCaseItem() != null && leftArg.getCaseItem().size() == rightArg.getCaseItem().size()) {
+                if (leftArg.getCaseItem() != null
+                        && rightArg.getCaseItem() != null
+                        && leftArg.getCaseItem().size()
+                                == rightArg.getCaseItem().size()) {
                     for (int i = 0; i < leftArg.getCaseItem().size(); i++) {
                         CaseItem leftCaseItem = leftArg.getCaseItem().get(i);
                         CaseItem rightCaseItem = rightArg.getCaseItem().get(i);
-                        if (!expressionsEqual(leftCaseItem.getWhen(), rightCaseItem.getWhen()) || !expressionsEqual(leftCaseItem.getThen(), rightCaseItem.getThen())) {
+                        if (!expressionsEqual(leftCaseItem.getWhen(), rightCaseItem.getWhen())
+                                || !expressionsEqual(leftCaseItem.getThen(), rightCaseItem.getThen())) {
                             return false;
                         }
                     }
@@ -578,8 +602,8 @@ public class SimpleElmEngine {
         // Current
         if (left instanceof Current) {
             if (right instanceof Current) {
-                Current leftArg = (Current)left;
-                Current rightArg = (Current)right;
+                Current leftArg = (Current) left;
+                Current rightArg = (Current) right;
                 return stringsEqual(leftArg.getScope(), rightArg.getScope());
             }
 
@@ -589,8 +613,8 @@ public class SimpleElmEngine {
         // FunctionRef
         if (left instanceof FunctionRef) {
             if (right instanceof FunctionRef) {
-                FunctionRef leftArg = (FunctionRef)left;
-                FunctionRef rightArg = (FunctionRef)right;
+                FunctionRef leftArg = (FunctionRef) left;
+                FunctionRef rightArg = (FunctionRef) right;
                 return stringsEqual(leftArg.getLibraryName(), rightArg.getLibraryName())
                         && stringsEqual(leftArg.getName(), rightArg.getName())
                         && operandsEqual(leftArg, rightArg);
@@ -600,8 +624,8 @@ public class SimpleElmEngine {
         // ExpressionRef
         if (left instanceof ExpressionRef) {
             if (right instanceof ExpressionRef) {
-                ExpressionRef leftArg = (ExpressionRef)left;
-                ExpressionRef rightArg = (ExpressionRef)right;
+                ExpressionRef leftArg = (ExpressionRef) left;
+                ExpressionRef rightArg = (ExpressionRef) right;
                 return stringsEqual(leftArg.getLibraryName(), rightArg.getLibraryName())
                         && stringsEqual(leftArg.getName(), rightArg.getName());
             }
@@ -612,8 +636,8 @@ public class SimpleElmEngine {
         // Filter
         if (left instanceof Filter) {
             if (right instanceof Filter) {
-                Filter leftArg = (Filter)left;
-                Filter rightArg = (Filter)right;
+                Filter leftArg = (Filter) left;
+                Filter rightArg = (Filter) right;
                 return expressionsEqual(leftArg.getSource(), rightArg.getSource())
                         && expressionsEqual(leftArg.getCondition(), rightArg.getCondition())
                         && stringsEqual(leftArg.getScope(), rightArg.getScope());
@@ -625,8 +649,8 @@ public class SimpleElmEngine {
         // ForEach
         if (left instanceof ForEach) {
             if (right instanceof ForEach) {
-                ForEach leftArg = (ForEach)left;
-                ForEach rightArg = (ForEach)right;
+                ForEach leftArg = (ForEach) left;
+                ForEach rightArg = (ForEach) right;
                 return expressionsEqual(leftArg.getSource(), rightArg.getSource())
                         && expressionsEqual(leftArg.getElement(), rightArg.getElement())
                         && stringsEqual(leftArg.getScope(), rightArg.getScope());
@@ -638,8 +662,8 @@ public class SimpleElmEngine {
         // IdentifierRef
         if (left instanceof IdentifierRef) {
             if (right instanceof IdentifierRef) {
-                IdentifierRef leftArg = (IdentifierRef)left;
-                IdentifierRef rightArg = (IdentifierRef)right;
+                IdentifierRef leftArg = (IdentifierRef) left;
+                IdentifierRef rightArg = (IdentifierRef) right;
                 return stringsEqual(leftArg.getLibraryName(), rightArg.getLibraryName())
                         && stringsEqual(leftArg.getName(), rightArg.getName());
             }
@@ -650,8 +674,8 @@ public class SimpleElmEngine {
         // If
         if (left instanceof If) {
             if (right instanceof If) {
-                If leftArg = (If)left;
-                If rightArg = (If)right;
+                If leftArg = (If) left;
+                If rightArg = (If) right;
                 return expressionsEqual(leftArg.getCondition(), rightArg.getCondition())
                         && expressionsEqual(leftArg.getThen(), rightArg.getThen())
                         && expressionsEqual(leftArg.getElse(), rightArg.getElse());
@@ -663,17 +687,20 @@ public class SimpleElmEngine {
         // Instance
         if (left instanceof Instance) {
             if (right instanceof Instance) {
-                Instance leftArg = (Instance)left;
-                Instance rightArg = (Instance)right;
+                Instance leftArg = (Instance) left;
+                Instance rightArg = (Instance) right;
                 if (!qnamesEqual(leftArg.getClassType(), rightArg.getClassType())) {
                     return false;
                 }
 
-                if (leftArg.getElement() != null && rightArg.getElement() != null && leftArg.getElement().size() == rightArg.getElement().size()) {
+                if (leftArg.getElement() != null
+                        && rightArg.getElement() != null
+                        && leftArg.getElement().size() == rightArg.getElement().size()) {
                     for (int i = 0; i < leftArg.getElement().size(); i++) {
                         InstanceElement leftElement = leftArg.getElement().get(i);
                         InstanceElement rightElement = rightArg.getElement().get(i);
-                        if (!stringsEqual(leftElement.getName(), rightElement.getName()) || !expressionsEqual(leftElement.getValue(), rightElement.getValue())) {
+                        if (!stringsEqual(leftElement.getName(), rightElement.getName())
+                                || !expressionsEqual(leftElement.getValue(), rightElement.getValue())) {
                             return false;
                         }
                     }
@@ -690,8 +717,8 @@ public class SimpleElmEngine {
         // Iteration
         if (left instanceof Iteration) {
             if (right instanceof Iteration) {
-                Iteration leftArg = (Iteration)left;
-                Iteration rightArg = (Iteration)right;
+                Iteration leftArg = (Iteration) left;
+                Iteration rightArg = (Iteration) right;
                 return stringsEqual(leftArg.getScope(), rightArg.getScope());
             }
 
@@ -701,8 +728,8 @@ public class SimpleElmEngine {
         // MaxValue
         if (left instanceof MaxValue) {
             if (right instanceof MaxValue) {
-                MaxValue leftArg = (MaxValue)left;
-                MaxValue rightArg = (MaxValue)right;
+                MaxValue leftArg = (MaxValue) left;
+                MaxValue rightArg = (MaxValue) right;
                 return qnamesEqual(leftArg.getValueType(), rightArg.getValueType());
             }
 
@@ -712,8 +739,8 @@ public class SimpleElmEngine {
         // MinValue
         if (left instanceof MinValue) {
             if (right instanceof MinValue) {
-                MinValue leftArg = (MinValue)left;
-                MinValue rightArg = (MinValue)right;
+                MinValue leftArg = (MinValue) left;
+                MinValue rightArg = (MinValue) right;
                 return qnamesEqual(leftArg.getValueType(), rightArg.getValueType());
             }
 
@@ -732,8 +759,8 @@ public class SimpleElmEngine {
         // OperandRef
         if (left instanceof OperandRef) {
             if (right instanceof OperandRef) {
-                OperandRef leftArg = (OperandRef)left;
-                OperandRef rightArg = (OperandRef)right;
+                OperandRef leftArg = (OperandRef) left;
+                OperandRef rightArg = (OperandRef) right;
                 return stringsEqual(leftArg.getName(), rightArg.getName());
             }
 
@@ -743,8 +770,8 @@ public class SimpleElmEngine {
         // Property
         if (left instanceof Property) {
             if (right instanceof Property) {
-                Property leftArg = (Property)left;
-                Property rightArg = (Property)right;
+                Property leftArg = (Property) left;
+                Property rightArg = (Property) right;
                 return stringsEqual(leftArg.getScope(), rightArg.getScope())
                         && stringsEqual(leftArg.getPath(), rightArg.getPath());
             }
@@ -755,8 +782,8 @@ public class SimpleElmEngine {
         // Query
         if (left instanceof Query) {
             if (right instanceof Query) {
-                Query leftArg = (Query)left;
-                Query rightArg = (Query)right;
+                Query leftArg = (Query) left;
+                Query rightArg = (Query) right;
             }
 
             return false;
@@ -765,8 +792,8 @@ public class SimpleElmEngine {
         // QueryLetRef
         if (left instanceof QueryLetRef) {
             if (right instanceof QueryLetRef) {
-                QueryLetRef leftArg = (QueryLetRef)left;
-                QueryLetRef rightArg = (QueryLetRef)right;
+                QueryLetRef leftArg = (QueryLetRef) left;
+                QueryLetRef rightArg = (QueryLetRef) right;
                 return stringsEqual(leftArg.getName(), rightArg.getName());
             }
 
@@ -776,8 +803,8 @@ public class SimpleElmEngine {
         // Repeat
         if (left instanceof Repeat) {
             if (right instanceof Repeat) {
-                Repeat leftArg = (Repeat)left;
-                Repeat rightArg = (Repeat)right;
+                Repeat leftArg = (Repeat) left;
+                Repeat rightArg = (Repeat) right;
             }
 
             return false;
@@ -786,8 +813,8 @@ public class SimpleElmEngine {
         // Sort
         if (left instanceof Sort) {
             if (right instanceof Sort) {
-                Sort leftArg = (Sort)left;
-                Sort rightArg = (Sort)right;
+                Sort leftArg = (Sort) left;
+                Sort rightArg = (Sort) right;
             }
 
             return false;
@@ -796,8 +823,8 @@ public class SimpleElmEngine {
         // Total
         if (left instanceof Total) {
             if (right instanceof Total) {
-                Total leftArg = (Total)left;
-                Total rightArg = (Total)right;
+                Total leftArg = (Total) left;
+                Total rightArg = (Total) right;
             }
 
             return false;
@@ -806,8 +833,8 @@ public class SimpleElmEngine {
         // Tuple
         if (left instanceof Tuple) {
             if (right instanceof Tuple) {
-                Tuple leftArg = (Tuple)left;
-                Tuple rightArg = (Tuple)right;
+                Tuple leftArg = (Tuple) left;
+                Tuple rightArg = (Tuple) right;
             }
 
             return false;
@@ -817,9 +844,12 @@ public class SimpleElmEngine {
     }
 
     public boolean operandsEqual(FunctionRef left, FunctionRef right) {
-        if (left.getOperand() != null && left.getOperand() != null && left.getOperand().size() == left.getOperand().size()) {
+        if (left.getOperand() != null
+                && left.getOperand() != null
+                && left.getOperand().size() == left.getOperand().size()) {
             for (int i = 0; i < left.getOperand().size(); i++) {
-                if (!expressionsEqual(left.getOperand().get(i), right.getOperand().get(i))) {
+                if (!expressionsEqual(
+                        left.getOperand().get(i), right.getOperand().get(i))) {
                     return false;
                 }
             }
@@ -831,9 +861,12 @@ public class SimpleElmEngine {
     }
 
     public boolean operandsEqual(BinaryExpression left, BinaryExpression right) {
-        if (left.getOperand() != null && left.getOperand() != null && left.getOperand().size() == left.getOperand().size()) {
+        if (left.getOperand() != null
+                && left.getOperand() != null
+                && left.getOperand().size() == left.getOperand().size()) {
             for (int i = 0; i < left.getOperand().size(); i++) {
-                if (!expressionsEqual(left.getOperand().get(i), right.getOperand().get(i))) {
+                if (!expressionsEqual(
+                        left.getOperand().get(i), right.getOperand().get(i))) {
                     return false;
                 }
             }
@@ -845,9 +878,12 @@ public class SimpleElmEngine {
     }
 
     public boolean operandsEqual(TernaryExpression left, TernaryExpression right) {
-        if (left.getOperand() != null && left.getOperand() != null && left.getOperand().size() == left.getOperand().size()) {
+        if (left.getOperand() != null
+                && left.getOperand() != null
+                && left.getOperand().size() == left.getOperand().size()) {
             for (int i = 0; i < left.getOperand().size(); i++) {
-                if (!expressionsEqual(left.getOperand().get(i), right.getOperand().get(i))) {
+                if (!expressionsEqual(
+                        left.getOperand().get(i), right.getOperand().get(i))) {
                     return false;
                 }
             }
@@ -859,9 +895,12 @@ public class SimpleElmEngine {
     }
 
     public boolean operandsEqual(NaryExpression left, NaryExpression right) {
-        if (left.getOperand() != null && left.getOperand() != null && left.getOperand().size() == left.getOperand().size()) {
+        if (left.getOperand() != null
+                && left.getOperand() != null
+                && left.getOperand().size() == left.getOperand().size()) {
             for (int i = 0; i < left.getOperand().size(); i++) {
-                if (!expressionsEqual(left.getOperand().get(i), right.getOperand().get(i))) {
+                if (!expressionsEqual(
+                        left.getOperand().get(i), right.getOperand().get(i))) {
                     return false;
                 }
             }
@@ -884,8 +923,8 @@ public class SimpleElmEngine {
         // UnaryExpression
         if (left instanceof UnaryExpression) {
             if (right instanceof UnaryExpression) {
-                UnaryExpression leftArg = (UnaryExpression)left;
-                UnaryExpression rightArg = (UnaryExpression)right;
+                UnaryExpression leftArg = (UnaryExpression) left;
+                UnaryExpression rightArg = (UnaryExpression) right;
                 return unaryExpressionsEqual(leftArg, rightArg);
             }
 
@@ -895,8 +934,8 @@ public class SimpleElmEngine {
         // BinaryExpression
         if (left instanceof BinaryExpression) {
             if (right instanceof BinaryExpression) {
-                BinaryExpression leftArg = (BinaryExpression)left;
-                BinaryExpression rightArg = (BinaryExpression)right;
+                BinaryExpression leftArg = (BinaryExpression) left;
+                BinaryExpression rightArg = (BinaryExpression) right;
                 return binaryExpressionsEqual(leftArg, rightArg);
             }
 
@@ -906,8 +945,8 @@ public class SimpleElmEngine {
         // TernaryExpression
         if (left instanceof TernaryExpression) {
             if (right instanceof TernaryExpression) {
-                TernaryExpression leftArg = (TernaryExpression)left;
-                TernaryExpression rightArg = (TernaryExpression)right;
+                TernaryExpression leftArg = (TernaryExpression) left;
+                TernaryExpression rightArg = (TernaryExpression) right;
                 return ternaryExpressionsEqual(leftArg, rightArg);
             }
 
@@ -917,8 +956,8 @@ public class SimpleElmEngine {
         // NaryExpression
         if (left instanceof NaryExpression) {
             if (right instanceof NaryExpression) {
-                NaryExpression leftArg = (NaryExpression)left;
-                NaryExpression rightArg = (NaryExpression)right;
+                NaryExpression leftArg = (NaryExpression) left;
+                NaryExpression rightArg = (NaryExpression) right;
                 return naryExpressionsEqual(leftArg, rightArg);
             }
 
@@ -932,8 +971,8 @@ public class SimpleElmEngine {
         // Round
         if (left instanceof Round) {
             if (right instanceof Round) {
-                Round leftArg = (Round)left;
-                Round rightArg = (Round)right;
+                Round leftArg = (Round) left;
+                Round rightArg = (Round) right;
                 return expressionsEqual(leftArg.getOperand(), rightArg.getOperand())
                         && expressionsEqual(leftArg.getPrecision(), rightArg.getPrecision());
             }
@@ -944,8 +983,8 @@ public class SimpleElmEngine {
         // Combine
         if (left instanceof Combine) {
             if (right instanceof Combine) {
-                Combine leftArg = (Combine)left;
-                Combine rightArg = (Combine)right;
+                Combine leftArg = (Combine) left;
+                Combine rightArg = (Combine) right;
                 return expressionsEqual(leftArg.getSource(), rightArg.getSource())
                         && expressionsEqual(leftArg.getSeparator(), rightArg.getSeparator());
             }
@@ -956,8 +995,8 @@ public class SimpleElmEngine {
         // Split
         if (left instanceof Split) {
             if (right instanceof Split) {
-                Split leftArg = (Split)left;
-                Split rightArg = (Split)right;
+                Split leftArg = (Split) left;
+                Split rightArg = (Split) right;
                 return expressionsEqual(leftArg.getStringToSplit(), rightArg.getStringToSplit())
                         && expressionsEqual(leftArg.getSeparator(), rightArg.getSeparator());
             }
@@ -968,8 +1007,8 @@ public class SimpleElmEngine {
         // SplitOnMatches
         if (left instanceof SplitOnMatches) {
             if (right instanceof SplitOnMatches) {
-                SplitOnMatches leftArg = (SplitOnMatches)left;
-                SplitOnMatches rightArg = (SplitOnMatches)right;
+                SplitOnMatches leftArg = (SplitOnMatches) left;
+                SplitOnMatches rightArg = (SplitOnMatches) right;
                 return expressionsEqual(leftArg.getStringToSplit(), rightArg.getStringToSplit())
                         && expressionsEqual(leftArg.getSeparatorPattern(), rightArg.getSeparatorPattern());
             }
@@ -980,8 +1019,8 @@ public class SimpleElmEngine {
         // PositionOf
         if (left instanceof PositionOf) {
             if (right instanceof PositionOf) {
-                PositionOf leftArg = (PositionOf)left;
-                PositionOf rightArg = (PositionOf)right;
+                PositionOf leftArg = (PositionOf) left;
+                PositionOf rightArg = (PositionOf) right;
                 return expressionsEqual(leftArg.getString(), rightArg.getString())
                         && expressionsEqual(leftArg.getPattern(), rightArg.getPattern());
             }
@@ -992,8 +1031,8 @@ public class SimpleElmEngine {
         // LastPositionOf
         if (left instanceof LastPositionOf) {
             if (right instanceof LastPositionOf) {
-                LastPositionOf leftArg = (LastPositionOf)left;
-                LastPositionOf rightArg = (LastPositionOf)right;
+                LastPositionOf leftArg = (LastPositionOf) left;
+                LastPositionOf rightArg = (LastPositionOf) right;
                 return expressionsEqual(leftArg.getString(), rightArg.getString())
                         && expressionsEqual(leftArg.getPattern(), rightArg.getPattern());
             }
@@ -1004,8 +1043,8 @@ public class SimpleElmEngine {
         // Substring
         if (left instanceof Substring) {
             if (right instanceof Substring) {
-                Substring leftArg = (Substring)left;
-                Substring rightArg = (Substring)right;
+                Substring leftArg = (Substring) left;
+                Substring rightArg = (Substring) right;
                 return expressionsEqual(leftArg.getStringToSub(), rightArg.getStringToSub())
                         && expressionsEqual(leftArg.getStartIndex(), rightArg.getStartIndex())
                         && expressionsEqual(leftArg.getLength(), rightArg.getLength());
@@ -1021,8 +1060,8 @@ public class SimpleElmEngine {
         // Time
         if (left instanceof Time) {
             if (right instanceof Time) {
-                Time leftArg = (Time)left;
-                Time rightArg = (Time)right;
+                Time leftArg = (Time) left;
+                Time rightArg = (Time) right;
                 return expressionsEqual(leftArg.getHour(), rightArg.getHour())
                         && expressionsEqual(leftArg.getMinute(), rightArg.getMinute())
                         && expressionsEqual(leftArg.getSecond(), rightArg.getSecond())
@@ -1035,8 +1074,8 @@ public class SimpleElmEngine {
         // Date
         if (left instanceof Date) {
             if (right instanceof Date) {
-                Date leftArg = (Date)left;
-                Date rightArg = (Date)right;
+                Date leftArg = (Date) left;
+                Date rightArg = (Date) right;
                 return expressionsEqual(leftArg.getYear(), rightArg.getYear())
                         && expressionsEqual(leftArg.getMonth(), rightArg.getMonth())
                         && expressionsEqual(leftArg.getDay(), rightArg.getDay());
@@ -1048,8 +1087,8 @@ public class SimpleElmEngine {
         // DateTime
         if (left instanceof DateTime) {
             if (right instanceof DateTime) {
-                DateTime leftArg = (DateTime)left;
-                DateTime rightArg = (DateTime)right;
+                DateTime leftArg = (DateTime) left;
+                DateTime rightArg = (DateTime) right;
                 return expressionsEqual(leftArg.getYear(), rightArg.getYear())
                         && expressionsEqual(leftArg.getMonth(), rightArg.getMonth())
                         && expressionsEqual(leftArg.getDay(), rightArg.getDay())
@@ -1066,8 +1105,8 @@ public class SimpleElmEngine {
         // First
         if (left instanceof First) {
             if (right instanceof First) {
-                First leftArg = (First)left;
-                First rightArg = (First)right;
+                First leftArg = (First) left;
+                First rightArg = (First) right;
                 return expressionsEqual(leftArg.getSource(), rightArg.getSource())
                         && stringsEqual(leftArg.getOrderBy(), rightArg.getOrderBy());
             }
@@ -1078,8 +1117,8 @@ public class SimpleElmEngine {
         // Last
         if (left instanceof Last) {
             if (right instanceof Last) {
-                Last leftArg = (Last)left;
-                Last rightArg = (Last)right;
+                Last leftArg = (Last) left;
+                Last rightArg = (Last) right;
                 return expressionsEqual(leftArg.getSource(), rightArg.getSource())
                         && stringsEqual(leftArg.getOrderBy(), rightArg.getOrderBy());
             }
@@ -1090,8 +1129,8 @@ public class SimpleElmEngine {
         // IndexOf
         if (left instanceof IndexOf) {
             if (right instanceof IndexOf) {
-                IndexOf leftArg = (IndexOf)left;
-                IndexOf rightArg = (IndexOf)right;
+                IndexOf leftArg = (IndexOf) left;
+                IndexOf rightArg = (IndexOf) right;
                 return expressionsEqual(leftArg.getSource(), rightArg.getSource())
                         && expressionsEqual(leftArg.getElement(), rightArg.getElement());
             }
@@ -1102,8 +1141,8 @@ public class SimpleElmEngine {
         // Slice
         if (left instanceof Slice) {
             if (right instanceof Slice) {
-                Slice leftArg = (Slice)left;
-                Slice rightArg = (Slice)right;
+                Slice leftArg = (Slice) left;
+                Slice rightArg = (Slice) right;
                 return expressionsEqual(leftArg.getSource(), rightArg.getSource())
                         && expressionsEqual(leftArg.getStartIndex(), rightArg.getStartIndex())
                         && expressionsEqual(leftArg.getEndIndex(), rightArg.getEndIndex());
@@ -1115,8 +1154,8 @@ public class SimpleElmEngine {
         // Children
         if (left instanceof Children) {
             if (right instanceof Children) {
-                Children leftArg = (Children)left;
-                Children rightArg = (Children)right;
+                Children leftArg = (Children) left;
+                Children rightArg = (Children) right;
                 return expressionsEqual(leftArg.getSource(), rightArg.getSource());
             }
 
@@ -1126,8 +1165,8 @@ public class SimpleElmEngine {
         // Descendents
         if (left instanceof Descendents) {
             if (right instanceof Descendents) {
-                Descendents leftArg = (Descendents)left;
-                Descendents rightArg = (Descendents)right;
+                Descendents leftArg = (Descendents) left;
+                Descendents rightArg = (Descendents) right;
                 return expressionsEqual(leftArg.getSource(), rightArg.getSource());
             }
 
@@ -1137,8 +1176,8 @@ public class SimpleElmEngine {
         // Message
         if (left instanceof Message) {
             if (right instanceof Message) {
-                Message leftArg = (Message)left;
-                Message rightArg = (Message)right;
+                Message leftArg = (Message) left;
+                Message rightArg = (Message) right;
                 return expressionsEqual(leftArg.getSource(), rightArg.getSource())
                         && expressionsEqual(leftArg.getCode(), rightArg.getCode())
                         && expressionsEqual(leftArg.getCondition(), rightArg.getCondition())
@@ -1178,8 +1217,8 @@ public class SimpleElmEngine {
         // As
         if (left instanceof As) {
             if (right instanceof As) {
-                As leftArg = (As)left;
-                As rightArg = (As)right;
+                As leftArg = (As) left;
+                As rightArg = (As) right;
                 return qnamesEqual(leftArg.getAsType(), rightArg.getAsType())
                         && typeSpecifiersEqual(leftArg.getAsTypeSpecifier(), rightArg.getAsTypeSpecifier())
                         && leftArg.isStrict() == rightArg.isStrict();
@@ -1189,7 +1228,7 @@ public class SimpleElmEngine {
         // CanConvert
         if (left instanceof CanConvert) {
             if (right instanceof CanConvert) {
-                CanConvert leftArg = (CanConvert)left;
+                CanConvert leftArg = (CanConvert) left;
                 CanConvert rightArg = (CanConvert) right;
                 return qnamesEqual(leftArg.getToType(), rightArg.getToType())
                         && typeSpecifiersEqual(leftArg.getToTypeSpecifier(), rightArg.getToTypeSpecifier());
@@ -1200,7 +1239,7 @@ public class SimpleElmEngine {
         // Convert
         if (left instanceof Convert) {
             if (right instanceof Convert) {
-                Convert leftArg = (Convert)left;
+                Convert leftArg = (Convert) left;
                 Convert rightArg = (Convert) right;
                 return qnamesEqual(leftArg.getToType(), rightArg.getToType())
                         && typeSpecifiersEqual(leftArg.getToTypeSpecifier(), rightArg.getToTypeSpecifier());
@@ -1222,8 +1261,8 @@ public class SimpleElmEngine {
         // DateTimeComponentFrom
         if (left instanceof DateTimeComponentFrom) {
             if (right instanceof DateTimeComponentFrom) {
-                DateTimeComponentFrom leftArg = (DateTimeComponentFrom)left;
-                DateTimeComponentFrom rightArg = (DateTimeComponentFrom)right;
+                DateTimeComponentFrom leftArg = (DateTimeComponentFrom) left;
+                DateTimeComponentFrom rightArg = (DateTimeComponentFrom) right;
                 return leftArg.getPrecision() == rightArg.getPrecision();
             }
             return false;
@@ -1237,8 +1276,8 @@ public class SimpleElmEngine {
         // Is
         if (left instanceof Is) {
             if (right instanceof Is) {
-                Is leftArg = (Is)left;
-                Is rightArg = (Is)right;
+                Is leftArg = (Is) left;
+                Is rightArg = (Is) right;
                 return qnamesEqual(leftArg.getIsType(), rightArg.getIsType())
                         && typeSpecifiersEqual(leftArg.getIsTypeSpecifier(), rightArg.getIsTypeSpecifier());
             }
@@ -1424,8 +1463,8 @@ public class SimpleElmEngine {
         // Aggregate
         if (left instanceof Aggregate) {
             if (right instanceof Aggregate) {
-                Aggregate leftArg = (Aggregate)left;
-                Aggregate rightArg = (Aggregate)right;
+                Aggregate leftArg = (Aggregate) left;
+                Aggregate rightArg = (Aggregate) right;
                 return expressionsEqual(leftArg.getInitialValue(), rightArg.getInitialValue())
                         && expressionsEqual(leftArg.getIteration(), rightArg.getIteration());
             }

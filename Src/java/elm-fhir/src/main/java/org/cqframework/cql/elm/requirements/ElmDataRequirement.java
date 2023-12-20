@@ -1,14 +1,12 @@
 package org.cqframework.cql.elm.requirements;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
 import org.hl7.cql.model.ClassType;
 import org.hl7.cql.model.DataType;
 import org.hl7.cql.model.ListType;
 import org.hl7.cql.model.SearchType;
 import org.hl7.elm.r1.*;
-
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 public class ElmDataRequirement extends ElmExpressionRequirement {
     public ElmDataRequirement(VersionedIdentifier libraryIdentifier, Retrieve element) {
@@ -21,7 +19,7 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
     }
 
     public Retrieve getRetrieve() {
-        return (Retrieve)element;
+        return (Retrieve) element;
     }
 
     public Retrieve getElement() {
@@ -29,6 +27,7 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
     }
 
     private Retrieve inferredFrom;
+
     public Retrieve getInferredFrom() {
         return inferredFrom;
     }
@@ -37,48 +36,51 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
      * May be an AliasedQuerySource or a LetClause
      */
     private Element querySource;
+
     public Element getQuerySource() {
         return querySource;
     }
+
     public void setQuerySource(Element querySource) {
         this.querySource = querySource;
     }
 
     private ElmPertinenceContext pertinenceContext;
+
     public ElmPertinenceContext getPertinenceContext() {
         return pertinenceContext;
     }
+
     public void setPertinenceContext(ElmPertinenceContext pertinenceContext) {
         this.pertinenceContext = pertinenceContext;
     }
 
     public String getAlias() {
         if (querySource instanceof AliasedQuerySource) {
-            return ((AliasedQuerySource)querySource).getAlias();
-        }
-        else if (querySource instanceof LetClause) {
-            return ((LetClause)querySource).getIdentifier();
-        }
-        else {
-            throw new IllegalArgumentException("Cannot determine alias from data requirement because source is not an AliasedQuerySource or LetClause");
+            return ((AliasedQuerySource) querySource).getAlias();
+        } else if (querySource instanceof LetClause) {
+            return ((LetClause) querySource).getIdentifier();
+        } else {
+            throw new IllegalArgumentException(
+                    "Cannot determine alias from data requirement because source is not an AliasedQuerySource or LetClause");
         }
     }
 
     public Expression getExpression() {
         if (querySource instanceof AliasedQuerySource) {
-            return ((AliasedQuerySource)querySource).getExpression();
-        }
-        else if (querySource instanceof LetClause) {
-            return ((LetClause)querySource).getExpression();
-        }
-        else {
-            throw new IllegalArgumentException("Cannot determine expression for data requirement because source is not an AliasedQuerySource or LetClause");
+            return ((AliasedQuerySource) querySource).getExpression();
+        } else if (querySource instanceof LetClause) {
+            return ((LetClause) querySource).getExpression();
+        } else {
+            throw new IllegalArgumentException(
+                    "Cannot determine expression for data requirement because source is not an AliasedQuerySource or LetClause");
         }
     }
 
     private static ElmDataRequirement inferFrom(ElmDataRequirement requirement) {
         Retrieve inferredRetrieve = ElmCloner.clone(requirement.getRetrieve());
-        ElmDataRequirement result = new ElmDataRequirement(requirement.libraryIdentifier, inferredRetrieve, requirement.getRetrieve());
+        ElmDataRequirement result =
+                new ElmDataRequirement(requirement.libraryIdentifier, inferredRetrieve, requirement.getRetrieve());
         if (requirement.hasProperties()) {
             for (Property p : requirement.getProperties()) {
                 result.addProperty(p);
@@ -92,8 +94,7 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
         for (ElmDataRequirement dataRequirement : requirement.getDataRequirements()) {
             if (singleSourceRequirement == null) {
                 singleSourceRequirement = dataRequirement;
-            }
-            else {
+            } else {
                 singleSourceRequirement = null;
                 break;
             }
@@ -107,10 +108,10 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
 
     public static ElmDataRequirement inferFrom(ElmExpressionRequirement requirement) {
         if (requirement instanceof ElmDataRequirement) {
-            return inferFrom((ElmDataRequirement)requirement);
+            return inferFrom((ElmDataRequirement) requirement);
         }
         if (requirement instanceof ElmQueryRequirement) {
-            return inferFrom((ElmQueryRequirement)requirement);
+            return inferFrom((ElmQueryRequirement) requirement);
         }
         return new ElmDataRequirement(requirement.libraryIdentifier, getRetrieve(requirement.getExpression()));
     }
@@ -118,7 +119,7 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
     // This is an "inferred" retrieve but from an expression context and so can't be unambiguously tied to the
     // data layer, and is thus not subject to include optimizations
     private static Retrieve getRetrieve(Expression expression) {
-        return (Retrieve)new Retrieve()
+        return (Retrieve) new Retrieve()
                 .withLocalId(expression.getLocalId())
                 .withLocator(expression.getLocator())
                 .withResultTypeName(expression.getResultTypeName())
@@ -127,6 +128,7 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
     }
 
     private Set<Property> propertySet;
+
     public Iterable<Property> getProperties() {
         return propertySet;
     }
@@ -156,6 +158,7 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
     }
 
     private ElmConjunctiveRequirement conjunctiveRequirement;
+
     public ElmConjunctiveRequirement getConjunctiveRequirement() {
         ensureConjunctiveRequirement();
         return conjunctiveRequirement;
@@ -187,29 +190,34 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
             // Build the left-hand as a Property (or Search) against the alias
             // The right-hand is the retrieve codes
             // Code comparator values are in, =, and ~ (may need to support ~in at some point...)
-            //Property p = new Property().withScope(this.getAlias()).withPath(retrieve.getCodeProperty());
-            //ElmPropertyRequirement pr = new ElmPropertyRequirement(this.libraryIdentifier, p, this.getQuerySource(), true);
-            //reportProperty(pr);
-            //ElmExpressionRequirement vs = new ElmExpressionRequirement(this.libraryIdentifier, retrieve.getCodes());
-            //InValueSet ivs = new InValueSet().withCode(p);
-            //if (retrieve.getCodes() instanceof ValueSetRef) {
+            // Property p = new Property().withScope(this.getAlias()).withPath(retrieve.getCodeProperty());
+            // ElmPropertyRequirement pr = new ElmPropertyRequirement(this.libraryIdentifier, p, this.getQuerySource(),
+            // true);
+            // reportProperty(pr);
+            // ElmExpressionRequirement vs = new ElmExpressionRequirement(this.libraryIdentifier, retrieve.getCodes());
+            // InValueSet ivs = new InValueSet().withCode(p);
+            // if (retrieve.getCodes() instanceof ValueSetRef) {
             //    ivs.setValueset((ValueSetRef)retrieve.getCodes());
-            //}
-            //else {
+            // }
+            // else {
             //    ivs.setValuesetExpression(retrieve.getCodes());
-            //}
-            //ElmConditionRequirement ecr = new ElmConditionRequirement(this.libraryIdentifier, ivs, pr, vs);
-            //addConditionRequirement(ecr);
+            // }
+            // ElmConditionRequirement ecr = new ElmConditionRequirement(this.libraryIdentifier, ivs, pr, vs);
+            // addConditionRequirement(ecr);
         }
 
-        if (retrieve.getDateProperty() != null || retrieve.getDateSearch() != null || retrieve.getDateLowProperty() != null || retrieve.getDateHighProperty() != null) {
+        if (retrieve.getDateProperty() != null
+                || retrieve.getDateSearch() != null
+                || retrieve.getDateLowProperty() != null
+                || retrieve.getDateHighProperty() != null) {
             // Build the left-hand as a Property (or Search) against the alias
             // The right-hand is the date range
             // The comparator is always during (i.e. X >= start and X <= end)
         }
     }
 
-    private void applyConditionRequirementTo(ElmConditionRequirement conditionRequirement, Retrieve retrieve, ElmRequirementsContext context) {
+    private void applyConditionRequirementTo(
+            ElmConditionRequirement conditionRequirement, Retrieve retrieve, ElmRequirementsContext context) {
         if (retrieve.getDataType() == null) {
             // If the retrieve has no data type, it is neither useful nor possible to apply requirements to it
             return;
@@ -224,16 +232,16 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
         // if the column is date-valued, express as a date filter
         // else express as an other filter
         Property property = conditionRequirement.getProperty().getProperty();
-        //DataType propertyType = property.getResultType();
+        // DataType propertyType = property.getResultType();
         // Use the comparison type due to the likelihood of conversion operators along the property
-        DataType comparisonType = conditionRequirement.getComparand().getExpression().getResultType();
+        DataType comparisonType =
+                conditionRequirement.getComparand().getExpression().getResultType();
         if (comparisonType != null) {
             if (context.getTypeResolver().isTerminologyType(comparisonType)) {
                 CodeFilterElement codeFilter = new CodeFilterElement();
                 if (property instanceof Search) {
                     codeFilter.setSearch(property.getPath());
-                }
-                else {
+                } else {
                     codeFilter.setProperty(property.getPath());
                 }
                 switch (conditionRequirement.getElement().getClass().getSimpleName()) {
@@ -255,13 +263,11 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
                         retrieve.getCodeFilter().add(codeFilter);
                     }
                 }
-            }
-            else if (context.getTypeResolver().isDateType(comparisonType)) {
+            } else if (context.getTypeResolver().isDateType(comparisonType)) {
                 DateFilterElement dateFilter = new DateFilterElement();
                 if (property instanceof Search) {
                     dateFilter.setSearch(property.getPath());
-                }
-                else {
+                } else {
                     dateFilter.setProperty(property.getPath());
                 }
                 // Determine operation and appropriate range
@@ -279,16 +285,28 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
                                 dateFilter.setValue(comparand);
                                 break;
                             case "Before":
-                                dateFilter.setValue(new Interval().withLowClosed(true).withHigh(new Start().withOperand(comparand)).withHighClosed(false));
+                                dateFilter.setValue(new Interval()
+                                        .withLowClosed(true)
+                                        .withHigh(new Start().withOperand(comparand))
+                                        .withHighClosed(false));
                                 break;
                             case "SameOrBefore":
-                                dateFilter.setValue(new Interval().withLowClosed(true).withHigh(new Start().withOperand(comparand)).withHighClosed(true));
+                                dateFilter.setValue(new Interval()
+                                        .withLowClosed(true)
+                                        .withHigh(new Start().withOperand(comparand))
+                                        .withHighClosed(true));
                                 break;
                             case "After":
-                                dateFilter.setValue(new Interval().withLow(new End().withOperand(comparand)).withLowClosed(false).withHighClosed(true));
+                                dateFilter.setValue(new Interval()
+                                        .withLow(new End().withOperand(comparand))
+                                        .withLowClosed(false)
+                                        .withHighClosed(true));
                                 break;
                             case "SameOrAfter":
-                                dateFilter.setValue(new Interval().withLow(new End().withOperand(comparand)).withLowClosed(true).withHighClosed(true));
+                                dateFilter.setValue(new Interval()
+                                        .withLow(new End().withOperand(comparand))
+                                        .withLowClosed(true)
+                                        .withHighClosed(true));
                                 break;
                             case "Includes":
                             case "Meets":
@@ -299,7 +317,8 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
                             case "OverlapsAfter":
                             case "Starts":
                             case "Ends":
-                                // TODO: Might be better to turn these into date-based conjunctive requirements as part of condition requirement inference
+                                // TODO: Might be better to turn these into date-based conjunctive requirements as part
+                                // of condition requirement inference
                                 break;
                         }
                     } else {
@@ -307,23 +326,39 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
                             case "Equal":
                             case "Equivalent":
                             case "SameAs":
-                                dateFilter.setValue(new Interval().withLow(comparand).withLowClosed(true).withHigh(comparand).withHighClosed(true));
+                                dateFilter.setValue(new Interval()
+                                        .withLow(comparand)
+                                        .withLowClosed(true)
+                                        .withHigh(comparand)
+                                        .withHighClosed(true));
                                 break;
                             case "Less":
                             case "Before":
-                                dateFilter.setValue(new Interval().withLowClosed(true).withHigh(comparand).withHighClosed(false));
+                                dateFilter.setValue(new Interval()
+                                        .withLowClosed(true)
+                                        .withHigh(comparand)
+                                        .withHighClosed(false));
                                 break;
                             case "LessOrEqual":
                             case "SameOrBefore":
-                                dateFilter.setValue(new Interval().withLowClosed(true).withHigh(comparand).withHighClosed(true));
+                                dateFilter.setValue(new Interval()
+                                        .withLowClosed(true)
+                                        .withHigh(comparand)
+                                        .withHighClosed(true));
                                 break;
                             case "Greater":
                             case "After":
-                                dateFilter.setValue(new Interval().withLow(comparand).withLowClosed(false).withHighClosed(true));
+                                dateFilter.setValue(new Interval()
+                                        .withLow(comparand)
+                                        .withLowClosed(false)
+                                        .withHighClosed(true));
                                 break;
                             case "GreaterOrEqual":
                             case "SameOrAfter":
-                                dateFilter.setValue(new Interval().withLow(comparand).withLowClosed(true).withHighClosed(true));
+                                dateFilter.setValue(new Interval()
+                                        .withLow(comparand)
+                                        .withLowClosed(true)
+                                        .withHighClosed(true));
                                 break;
                         }
                     }
@@ -334,8 +369,7 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
                         retrieve.getDateFilter().add(dateFilter);
                     }
                 }
-            }
-            else {
+            } else {
 
             }
         }
@@ -343,17 +377,23 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
 
     private ClassType getRetrieveType(ElmRequirementsContext context, Retrieve retrieve) {
         DataType elementType = retrieve.getResultType() instanceof ListType
-                ? ((ListType)retrieve.getResultType()).getElementType()
+                ? ((ListType) retrieve.getResultType()).getElementType()
                 : retrieve.getResultType();
         if (elementType instanceof ClassType) {
-            return (ClassType)elementType;
+            return (ClassType) elementType;
         }
         return null;
     }
 
-    private void applyJoinRequirementTo(ElmJoinRequirement joinRequirement, Retrieve retrieve, ElmRequirementsContext context, ElmQueryRequirement queryRequirements) {
-        ElmDataRequirement leftRequirement = queryRequirements.getDataRequirement(joinRequirement.getLeftProperty().getSource());
-        ElmDataRequirement rightRequirement = queryRequirements.getDataRequirement(joinRequirement.getRightProperty().getSource());
+    private void applyJoinRequirementTo(
+            ElmJoinRequirement joinRequirement,
+            Retrieve retrieve,
+            ElmRequirementsContext context,
+            ElmQueryRequirement queryRequirements) {
+        ElmDataRequirement leftRequirement = queryRequirements.getDataRequirement(
+                joinRequirement.getLeftProperty().getSource());
+        ElmDataRequirement rightRequirement = queryRequirements.getDataRequirement(
+                joinRequirement.getRightProperty().getSource());
         if (leftRequirement != null && rightRequirement != null) {
             Retrieve leftRetrieve = leftRequirement.getRetrieve();
             Retrieve rightRetrieve = rightRequirement.getRetrieve();
@@ -365,7 +405,11 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
                     SearchType leftSearch;
                     SearchType rightSearch;
                     for (SearchType search : leftRetrieveType.getSearches()) {
-                        if (joinRequirement.getLeftProperty().getProperty().getPath().startsWith(search.getPath())) {
+                        if (joinRequirement
+                                .getLeftProperty()
+                                .getProperty()
+                                .getPath()
+                                .startsWith(search.getPath())) {
                             if (search.getType().isCompatibleWith(rightRetrieveType)) {
                                 leftSearch = search;
                                 break;
@@ -373,7 +417,11 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
                         }
                     }
                     for (SearchType search : rightRetrieveType.getSearches()) {
-                        if (joinRequirement.getRightProperty().getProperty().getPath().startsWith(search.getPath())) {
+                        if (joinRequirement
+                                .getRightProperty()
+                                .getProperty()
+                                .getPath()
+                                .startsWith(search.getPath())) {
                             if (search.getType().isCompatibleWith(leftRetrieveType)) {
                                 rightSearch = search;
                                 break;
@@ -381,11 +429,13 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
                         }
                     }
 
-                    // Search from the model info should be used to inform the selection, but will in general resolve to multiple choices
+                    // Search from the model info should be used to inform the selection, but will in general resolve to
+                    // multiple choices
                     // May be a choice better left to the capabilityStatement-informed planning phase anyway
                 }
 
-                // In the absence of search information, either of these formulations is correct, favor primary query sources over withs
+                // In the absence of search information, either of these formulations is correct, favor primary query
+                // sources over withs
                 if (leftRetrieve.getLocalId() == null) {
                     leftRetrieve.setLocalId(context.generateLocalId());
                 }
@@ -393,20 +443,27 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
                     rightRetrieve.setLocalId(context.generateLocalId());
                 }
                 if (rightRequirement.getQuerySource() instanceof With) {
-                    leftRetrieve.getInclude().add(
-                            new IncludeElement()
+                    leftRetrieve
+                            .getInclude()
+                            .add(new IncludeElement()
                                     .withIncludeFrom(rightRetrieve.getLocalId())
                                     .withRelatedDataType(rightRetrieve.getDataType())
-                                    .withRelatedProperty(joinRequirement.getLeftProperty().getProperty().getPath())
+                                    .withRelatedProperty(joinRequirement
+                                            .getLeftProperty()
+                                            .getProperty()
+                                            .getPath())
                                     .withIsReverse(false));
                     rightRetrieve.setIncludedIn(leftRetrieve.getLocalId());
-                }
-                else {
-                    rightRetrieve.getInclude().add(
-                            new IncludeElement()
+                } else {
+                    rightRetrieve
+                            .getInclude()
+                            .add(new IncludeElement()
                                     .withIncludeFrom(leftRetrieve.getLocalId())
                                     .withRelatedDataType(leftRetrieve.getDataType())
-                                    .withRelatedProperty(joinRequirement.getRightProperty().getProperty().getPath())
+                                    .withRelatedProperty(joinRequirement
+                                            .getRightProperty()
+                                            .getProperty()
+                                            .getPath())
                                     .withIsReverse(false));
                     leftRetrieve.setIncludedIn(rightRetrieve.getLocalId());
                 }
@@ -417,12 +474,13 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
     private void applyTo(Retrieve retrieve, ElmRequirementsContext context, ElmQueryRequirement queryRequirements) {
         // for each ConditionRequirement
         // apply to the retrieve
-        for (ElmExpressionRequirement conditionRequirement : getConjunctiveRequirement().getArguments()) {
+        for (ElmExpressionRequirement conditionRequirement :
+                getConjunctiveRequirement().getArguments()) {
             if (conditionRequirement instanceof ElmConditionRequirement) {
-                applyConditionRequirementTo((ElmConditionRequirement)conditionRequirement, retrieve, context);
-            }
-            else if (conditionRequirement instanceof ElmJoinRequirement) {
-                applyJoinRequirementTo(((ElmJoinRequirement)conditionRequirement), retrieve, context, queryRequirements);
+                applyConditionRequirementTo((ElmConditionRequirement) conditionRequirement, retrieve, context);
+            } else if (conditionRequirement instanceof ElmJoinRequirement) {
+                applyJoinRequirementTo(
+                        ((ElmJoinRequirement) conditionRequirement), retrieve, context, queryRequirements);
             }
         }
     }

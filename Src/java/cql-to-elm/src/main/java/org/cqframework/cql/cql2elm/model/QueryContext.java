@@ -1,12 +1,11 @@
 package org.cqframework.cql.cql2elm.model;
 
+import java.util.Collection;
+import java.util.HashMap;
 import org.hl7.cql.model.DataType;
 import org.hl7.cql.model.ListType;
 import org.hl7.elm.r1.AliasedQuerySource;
 import org.hl7.elm.r1.LetClause;
-
-import java.util.Collection;
-import java.util.HashMap;
 
 public class QueryContext {
     private final HashMap<String, AliasedQuerySource> sources = new HashMap<>();
@@ -74,11 +73,13 @@ public class QueryContext {
     }
 
     private boolean isSingularValue = true;
+
     public boolean isSingular() {
         return isSingularValue;
     }
 
     private boolean inSourceClauseValue;
+
     public void enterSourceClause() {
         inSourceClauseValue = true;
     }
@@ -92,6 +93,7 @@ public class QueryContext {
     }
 
     private boolean inSortClauseValue;
+
     public void enterSortClause() {
         inSortClauseValue = true;
     }
@@ -105,12 +107,17 @@ public class QueryContext {
     }
 
     private boolean isImplicitValue;
-    public boolean isImplicit() { return isImplicitValue; }
+
+    public boolean isImplicit() {
+        return isImplicitValue;
+    }
+
     public void setIsImplicit(boolean isImplicitValue) {
         this.isImplicitValue = isImplicitValue;
     }
 
     private DataType resultElementType;
+
     public DataType getResultElementType() {
         return resultElementType;
     }
@@ -120,6 +127,7 @@ public class QueryContext {
     }
 
     private boolean referencesSpecificContextValue;
+
     public boolean referencesSpecificContext() {
         return referencesSpecificContextValue;
     }

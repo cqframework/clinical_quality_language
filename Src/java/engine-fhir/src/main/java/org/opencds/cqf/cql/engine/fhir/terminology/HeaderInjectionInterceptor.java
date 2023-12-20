@@ -1,22 +1,20 @@
 /*
-*
-*   This code is derived from work done by Barry Cassidy from Motive Medical Intelligence
-*   Thank you!
-*
-* */
+ *
+ *   This code is derived from work done by Barry Cassidy from Motive Medical Intelligence
+ *   Thank you!
+ *
+ * */
 
 package org.opencds.cqf.cql.engine.fhir.terminology;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import ca.uhn.fhir.rest.client.api.IClientInterceptor;
 import ca.uhn.fhir.rest.client.api.IHttpRequest;
 import ca.uhn.fhir.rest.client.api.IHttpResponse;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class HeaderInjectionInterceptor implements IClientInterceptor {
-
 
     private HashMap<String, String> myHeaders;
 
@@ -45,7 +43,7 @@ public class HeaderInjectionInterceptor implements IClientInterceptor {
     @Override
     public void interceptRequest(IHttpRequest theRequest) {
 
-        for(Map.Entry<String, String> entry : this.myHeaders.entrySet()) {
+        for (Map.Entry<String, String> entry : this.myHeaders.entrySet()) {
             theRequest.addHeader(entry.getKey(), entry.getValue());
         }
     }

@@ -1,15 +1,13 @@
 package org.cqframework.cql.cql2elm;
 
-import org.hl7.elm.r1.*;
-import org.testng.annotations.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import org.hl7.elm.r1.*;
+import org.testng.annotations.Test;
 
 /**
  * Created by Bryn on 4/12/2018.
@@ -32,7 +30,6 @@ public class SignatureOutputTests {
         return library;
     }
 
-
     private static CqlTranslator getTranslator(LibraryBuilder.SignatureLevel signatureLevel) throws IOException {
         return TestUtils.getTranslator(CQL_TEST_FILE, null, signatureLevel);
     }
@@ -41,7 +38,10 @@ public class SignatureOutputTests {
     public void TestNone() throws IOException {
         final CqlTranslator translator = getTranslator(LibraryBuilder.SignatureLevel.None);
         assertThat(translator.getWarnings().size(), greaterThan(1));
-        assertThat(translator.getWarnings().get(0).getMessage(), equalTo("The function SignatureOutputTests.MultipleOverloadTest has multiple overloads and due to the SignatureLevel setting (None), the overload signature is not being included in the output. This may result in ambiguous function resolution at runtime, consider setting the SignatureLevel to Overloads or All to ensure that the output includes sufficient information to support correct overload selection at runtime."));
+        assertThat(
+                translator.getWarnings().get(0).getMessage(),
+                equalTo(
+                        "The function SignatureOutputTests.MultipleOverloadTest has multiple overloads and due to the SignatureLevel setting (None), the overload signature is not being included in the output. This may result in ambiguous function resolution at runtime, consider setting the SignatureLevel to Overloads or All to ensure that the output includes sufficient information to support correct overload selection at runtime."));
     }
 
     @Test
@@ -51,37 +51,37 @@ public class SignatureOutputTests {
         // TestDivide->Divide->signature(2)
         // TestIntegerOverload->OverloadTest->signature(1)
         ExpressionDef def = defs.get("TestAdd");
-        assertThat(((OperatorExpression)def.getExpression()).getSignature().size(), is(0));
+        assertThat(((OperatorExpression) def.getExpression()).getSignature().size(), is(0));
 
         def = defs.get("TestDateAdd");
-        assertThat(((OperatorExpression)def.getExpression()).getSignature().size(), is(0));
+        assertThat(((OperatorExpression) def.getExpression()).getSignature().size(), is(0));
 
         def = defs.get("TestDateTime");
-        assertThat(((OperatorExpression)def.getExpression()).getSignature().size(), is(0));
+        assertThat(((OperatorExpression) def.getExpression()).getSignature().size(), is(0));
 
         def = defs.get("TestAvg");
-        assertThat(((AggregateExpression)def.getExpression()).getSignature().size(), is(1));
+        assertThat(((AggregateExpression) def.getExpression()).getSignature().size(), is(1));
 
         def = defs.get("TestDivide");
-        assertThat(((OperatorExpression)def.getExpression()).getSignature().size(), is(2));
+        assertThat(((OperatorExpression) def.getExpression()).getSignature().size(), is(2));
 
         def = defs.get("TestIntegerOverload");
-        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(1));
+        assertThat(((FunctionRef) def.getExpression()).getSignature().size(), is(1));
 
         def = defs.get("TestDecimalOverload");
-        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
+        assertThat(((FunctionRef) def.getExpression()).getSignature().size(), is(0));
 
         def = defs.get("TestMultipleOverload");
-        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
+        assertThat(((FunctionRef) def.getExpression()).getSignature().size(), is(0));
 
         def = defs.get("TestIntegerMultipleOverload");
-        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
+        assertThat(((FunctionRef) def.getExpression()).getSignature().size(), is(0));
 
         def = defs.get("TestDecimalMultipleOverload");
-        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
+        assertThat(((FunctionRef) def.getExpression()).getSignature().size(), is(0));
 
         def = defs.get("TestIntegerAndDecimalMultipleOverload");
-        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
+        assertThat(((FunctionRef) def.getExpression()).getSignature().size(), is(0));
     }
 
     @Test
@@ -94,37 +94,37 @@ public class SignatureOutputTests {
         // TestIntegerMultipleOverload->MultipleOverloadTest->signature(1)
         // TestDecimalMultipleOverload->MultipleOverloadTest->signature(2)
         ExpressionDef def = defs.get("TestAdd");
-        assertThat(((OperatorExpression)def.getExpression()).getSignature().size(), is(2));
+        assertThat(((OperatorExpression) def.getExpression()).getSignature().size(), is(2));
 
         def = defs.get("TestDateAdd");
-        assertThat(((OperatorExpression)def.getExpression()).getSignature().size(), is(2));
+        assertThat(((OperatorExpression) def.getExpression()).getSignature().size(), is(2));
 
         def = defs.get("TestDateTime");
-        assertThat(((OperatorExpression)def.getExpression()).getSignature().size(), is(0));
+        assertThat(((OperatorExpression) def.getExpression()).getSignature().size(), is(0));
 
         def = defs.get("TestAvg");
-        assertThat(((AggregateExpression)def.getExpression()).getSignature().size(), is(1));
+        assertThat(((AggregateExpression) def.getExpression()).getSignature().size(), is(1));
 
         def = defs.get("TestDivide");
-        assertThat(((OperatorExpression)def.getExpression()).getSignature().size(), is(2));
+        assertThat(((OperatorExpression) def.getExpression()).getSignature().size(), is(2));
 
         def = defs.get("TestIntegerOverload");
-        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
+        assertThat(((FunctionRef) def.getExpression()).getSignature().size(), is(0));
 
         def = defs.get("TestDecimalOverload");
-        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
+        assertThat(((FunctionRef) def.getExpression()).getSignature().size(), is(0));
 
         def = defs.get("TestMultipleOverload");
-        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
+        assertThat(((FunctionRef) def.getExpression()).getSignature().size(), is(0));
 
         def = defs.get("TestIntegerMultipleOverload");
-        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(1));
+        assertThat(((FunctionRef) def.getExpression()).getSignature().size(), is(1));
 
         def = defs.get("TestDecimalMultipleOverload");
-        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(2));
+        assertThat(((FunctionRef) def.getExpression()).getSignature().size(), is(2));
 
         def = defs.get("TestIntegerAndDecimalMultipleOverload");
-        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
+        assertThat(((FunctionRef) def.getExpression()).getSignature().size(), is(0));
     }
 
     @Test
@@ -140,37 +140,36 @@ public class SignatureOutputTests {
         // TestIntegerMultipleOverload->MultipleOverloadTest->signature(1)
         // TestDecimalMultipleOverload->MultipleOverloadTest->signature(2)
         ExpressionDef def = defs.get("TestAdd");
-        assertThat(((OperatorExpression)def.getExpression()).getSignature().size(), is(2));
+        assertThat(((OperatorExpression) def.getExpression()).getSignature().size(), is(2));
 
         def = defs.get("TestDateAdd");
-        assertThat(((OperatorExpression)def.getExpression()).getSignature().size(), is(2));
+        assertThat(((OperatorExpression) def.getExpression()).getSignature().size(), is(2));
 
         def = defs.get("TestDateTime");
-        assertThat(((OperatorExpression)def.getExpression()).getSignature().size(), is(3));
+        assertThat(((OperatorExpression) def.getExpression()).getSignature().size(), is(3));
 
         def = defs.get("TestAvg");
-        assertThat(((AggregateExpression)def.getExpression()).getSignature().size(), is(1));
+        assertThat(((AggregateExpression) def.getExpression()).getSignature().size(), is(1));
 
         def = defs.get("TestDivide");
-        assertThat(((OperatorExpression)def.getExpression()).getSignature().size(), is(2));
+        assertThat(((OperatorExpression) def.getExpression()).getSignature().size(), is(2));
 
         def = defs.get("TestIntegerOverload");
-        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(1));
+        assertThat(((FunctionRef) def.getExpression()).getSignature().size(), is(1));
 
         def = defs.get("TestDecimalOverload");
-        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(1));
+        assertThat(((FunctionRef) def.getExpression()).getSignature().size(), is(1));
 
         def = defs.get("TestMultipleOverload");
-        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(0));
+        assertThat(((FunctionRef) def.getExpression()).getSignature().size(), is(0));
 
         def = defs.get("TestIntegerMultipleOverload");
-        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(1));
+        assertThat(((FunctionRef) def.getExpression()).getSignature().size(), is(1));
 
         def = defs.get("TestDecimalMultipleOverload");
-        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(2));
+        assertThat(((FunctionRef) def.getExpression()).getSignature().size(), is(2));
 
         def = defs.get("TestIntegerAndDecimalMultipleOverload");
-        assertThat(((FunctionRef)def.getExpression()).getSignature().size(), is(3));
+        assertThat(((FunctionRef) def.getExpression()).getSignature().size(), is(3));
     }
-
 }

@@ -1,10 +1,9 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import org.testng.annotations.Test;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+import org.testng.annotations.Test;
 
 public class DateComparatorTest extends CqlTestBase {
 
@@ -16,6 +15,5 @@ public class DateComparatorTest extends CqlTestBase {
         evaluationResult = engine.evaluate(toElmIdentifier("DateComparatorTest"));
         Object result = evaluationResult.forExpression("Date Comparator Test").value();
         assertThat(result, is(true));
-
     }
 }

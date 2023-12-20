@@ -2,11 +2,11 @@ package org.opencds.cqf.cql.engine.debug;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.hl7.elm.r1.Element;
 
 public class DebugLibraryMapEntry {
     private String libraryName;
+
     public String getLibraryName() {
         return this.libraryName;
     }
@@ -20,7 +20,6 @@ public class DebugLibraryMapEntry {
         locationEntries = new HashMap<String, DebugMapEntry>();
     }
 
-
     public DebugAction shouldDebug(Element node) {
         if (node != null) {
             DebugMapEntry nodeEntry = nodeEntries.get(node.getLocalId());
@@ -31,7 +30,8 @@ public class DebugLibraryMapEntry {
             for (DebugMapEntry entry : locationEntries.values()) {
                 if (node.getLocator() != null) {
                     Location nodeLocation = Location.fromLocator(node.getLocator());
-                    if (entry.getLocator().getLocation().includes(nodeLocation) && entry.getAction() != DebugAction.NONE) {
+                    if (entry.getLocator().getLocation().includes(nodeLocation)
+                            && entry.getAction() != DebugAction.NONE) {
                         return entry.getAction();
                     }
                 }
@@ -47,17 +47,29 @@ public class DebugLibraryMapEntry {
 
     public void addEntry(DebugMapEntry entry) {
         switch (entry.getLocator().getLocatorType()) {
-            case NODE_ID: nodeEntries.put(entry.getLocator().getLocator(), entry); break;
-            case LOCATION: locationEntries.put(entry.getLocator().getLocator(), entry); break;
-            default: throw new IllegalArgumentException("Library debug map entry can only contain node id or location debug entries");
+            case NODE_ID:
+                nodeEntries.put(entry.getLocator().getLocator(), entry);
+                break;
+            case LOCATION:
+                locationEntries.put(entry.getLocator().getLocator(), entry);
+                break;
+            default:
+                throw new IllegalArgumentException(
+                        "Library debug map entry can only contain node id or location debug entries");
         }
     }
 
     public void removeEntry(DebugLocator debugLocator) {
         switch (debugLocator.getLocatorType()) {
-            case NODE_ID: nodeEntries.remove(debugLocator.getLocator()); break;
-            case LOCATION: locationEntries.remove(debugLocator.getLocator()); break;
-            default: throw new IllegalArgumentException("Library debug map entry only contains node id or location debug entries");
+            case NODE_ID:
+                nodeEntries.remove(debugLocator.getLocator());
+                break;
+            case LOCATION:
+                locationEntries.remove(debugLocator.getLocator());
+                break;
+            default:
+                throw new IllegalArgumentException(
+                        "Library debug map entry only contains node id or location debug entries");
         }
     }
 }

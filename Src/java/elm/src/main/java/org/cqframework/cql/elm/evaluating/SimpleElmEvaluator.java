@@ -5,6 +5,7 @@ import org.hl7.elm.r1.Expression;
 public class SimpleElmEvaluator {
 
     private static final SimpleElmEngine engine = new SimpleElmEngine();
+
     public static SimpleElmEngine simpleElmEngine() {
         return engine;
     }

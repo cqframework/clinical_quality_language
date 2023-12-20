@@ -4,13 +4,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import org.opencds.cqf.cql.engine.execution.State;
 
 /**
  * Created by Bryn on 8/11/2019.
  */
-
 public class QueryIterator implements Iterator<Object> {
 
     private Iterator<Object> sourceIterator;
@@ -22,8 +20,7 @@ public class QueryIterator implements Iterator<Object> {
         for (int i = sources.size() - 1; i >= 0; i--) {
             if (sourceIterator == null) {
                 sourceIterator = sources.get(i);
-            }
-            else {
+            } else {
                 sourceIterator = new TimesIterator(sources.get(i), sourceIterator);
             }
             result.add(null);
@@ -47,12 +44,10 @@ public class QueryIterator implements Iterator<Object> {
 
     private void unpair(Object element, List<Object> target, int index) {
         if (element instanceof Map.Entry) {
-            unpair(((Map.Entry<?,?>)element).getKey(), target, index);
-            unpair(((Map.Entry<?,?>)element).getValue(), target, index + 1);
-        }
-        else {
+            unpair(((Map.Entry<?, ?>) element).getKey(), target, index);
+            unpair(((Map.Entry<?, ?>) element).getValue(), target, index + 1);
+        } else {
             target.set(index, element);
         }
     }
 }
-

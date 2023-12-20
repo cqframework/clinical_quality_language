@@ -1,15 +1,13 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import org.opencds.cqf.cql.engine.runtime.*;
-import org.testng.annotations.Test;
-
-import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator;
-import org.testng.asserts.SoftAssert;
-
 import java.math.BigDecimal;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
+import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator;
+import org.opencds.cqf.cql.engine.runtime.*;
+import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 
 public class CqlTypesOperatorsTest extends CqlTestBase {
     @Test(dataProvider = "timezones")
@@ -30,13 +28,16 @@ public class CqlTypesOperatorsTest extends CqlTestBase {
             Object result;
 
             result = evaluationResult.forExpression("AsQuantity").value();
-            softAssert.assertTrue(((Quantity) result).equal(new Quantity().withValue(new BigDecimal("45.5")).withUnit("g")));
+            softAssert.assertTrue(((Quantity) result)
+                    .equal(new Quantity().withValue(new BigDecimal("45.5")).withUnit("g")));
 
             result = evaluationResult.forExpression("CastAsQuantity").value();
-            softAssert.assertTrue(((Quantity) result).equal(new Quantity().withValue(new BigDecimal("45.5")).withUnit("g")));
+            softAssert.assertTrue(((Quantity) result)
+                    .equal(new Quantity().withValue(new BigDecimal("45.5")).withUnit("g")));
 
             result = evaluationResult.forExpression("AsDateTime").value();
-            softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2014, 1, 1)));
+            softAssert.assertTrue(
+                    EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2014, 1, 1)));
 
             result = evaluationResult.forExpression("IntegerToDecimal").value();
             softAssert.assertEquals(result, new BigDecimal(5));
@@ -45,16 +46,19 @@ public class CqlTypesOperatorsTest extends CqlTestBase {
             softAssert.assertEquals(result, "5");
 
             result = evaluationResult.forExpression("StringToDateTime").value();
-            softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2014, 1, 1)));
+            softAssert.assertTrue(
+                    EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2014, 1, 1)));
 
             result = evaluationResult.forExpression("StringToTime").value();
             softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(14, 30, 0, 0)));
 
             result = evaluationResult.forExpression("ConvertQuantity").value();
-            softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new Quantity().withValue(new BigDecimal("0.005")).withUnit("g")));
+            softAssert.assertTrue(EquivalentEvaluator.equivalent(
+                    result, new Quantity().withValue(new BigDecimal("0.005")).withUnit("g")));
 
             result = evaluationResult.forExpression("ConvertSyntax").value();
-            softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new Quantity().withValue(new BigDecimal("0.005")).withUnit("g")));
+            softAssert.assertTrue(EquivalentEvaluator.equivalent(
+                    result, new Quantity().withValue(new BigDecimal("0.005")).withUnit("g")));
 
             result = evaluationResult.forExpression("ConvertsToBooleanTrue").value();
             softAssert.assertTrue((Boolean) result);
@@ -74,10 +78,13 @@ public class CqlTypesOperatorsTest extends CqlTestBase {
             result = evaluationResult.forExpression("ConvertsToDateNull").value();
             softAssert.assertNull(result);
 
-            result = evaluationResult.forExpression("ConvertsToDateTimeStringTrue").value();
+            result = evaluationResult
+                    .forExpression("ConvertsToDateTimeStringTrue")
+                    .value();
             softAssert.assertTrue((Boolean) result);
 
-            result = evaluationResult.forExpression("ConvertsToDateTimeDateTrue").value();
+            result =
+                    evaluationResult.forExpression("ConvertsToDateTimeDateTrue").value();
             softAssert.assertTrue((Boolean) result);
 
             result = evaluationResult.forExpression("ConvertsToDateTimeFalse").value();
@@ -116,19 +123,29 @@ public class CqlTypesOperatorsTest extends CqlTestBase {
             result = evaluationResult.forExpression("ConvertsToLongNull").value();
             softAssert.assertNull(result);
 
-            result = evaluationResult.forExpression("ConvertsToQuantityStringTrue").value();
+            result = evaluationResult
+                    .forExpression("ConvertsToQuantityStringTrue")
+                    .value();
             softAssert.assertTrue((Boolean) result);
 
-            result = evaluationResult.forExpression("ConvertsToQuantityStringFalse").value();
+            result = evaluationResult
+                    .forExpression("ConvertsToQuantityStringFalse")
+                    .value();
             softAssert.assertFalse((Boolean) result);
 
-            result = evaluationResult.forExpression("ConvertsToQuantityIntegerTrue").value();
+            result = evaluationResult
+                    .forExpression("ConvertsToQuantityIntegerTrue")
+                    .value();
             softAssert.assertTrue((Boolean) result);
 
-            result = evaluationResult.forExpression("ConvertsToQuantityDecimalTrue").value();
+            result = evaluationResult
+                    .forExpression("ConvertsToQuantityDecimalTrue")
+                    .value();
             softAssert.assertTrue((Boolean) result);
 
-            result = evaluationResult.forExpression("ConvertsToQuantityRatioTrue").value();
+            result = evaluationResult
+                    .forExpression("ConvertsToQuantityRatioTrue")
+                    .value();
             softAssert.assertTrue((Boolean) result);
 
             result = evaluationResult.forExpression("ConvertsToQuantityNull").value();
@@ -189,23 +206,33 @@ public class CqlTypesOperatorsTest extends CqlTestBase {
             softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2014, 1)));
 
             result = evaluationResult.forExpression("ToDateTime1").value();
-            softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2014, 1, 1)));
+            softAssert.assertTrue(
+                    EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2014, 1, 1)));
 
             result = evaluationResult.forExpression("ToDateTime2").value();
-            softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2014, 1, 1, 12, 5)));
+            softAssert.assertTrue(
+                    EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2014, 1, 1, 12, 5)));
 
             result = evaluationResult.forExpression("ToDateTime3").value();
-            softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2014, 1, 1, 12, 5, 5, 955)));
+            softAssert.assertTrue(EquivalentEvaluator.equivalent(
+                    result, new DateTime(bigDecimalZoneOffset, 2014, 1, 1, 12, 5, 5, 955)));
 
             result = evaluationResult.forExpression("ToDateTime4").value();
-            softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(new BigDecimal("1.5"), 2014, 1, 1, 12, 5, 5, 955)), "ToDateTime4 vs. new DateTime(-1.5)");
+            softAssert.assertTrue(
+                    EquivalentEvaluator.equivalent(
+                            result, new DateTime(new BigDecimal("1.5"), 2014, 1, 1, 12, 5, 5, 955)),
+                    "ToDateTime4 vs. new DateTime(-1.5)");
 
             result = evaluationResult.forExpression("ToDateTime5").value();
-            softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(new BigDecimal("-1.25"), 2014, 1, 1, 12, 5, 5, 955)), "ToDateTime5 vs. new DateTime(-1.25)");
+            softAssert.assertTrue(
+                    EquivalentEvaluator.equivalent(
+                            result, new DateTime(new BigDecimal("-1.25"), 2014, 1, 1, 12, 5, 5, 955)),
+                    "ToDateTime5 vs. new DateTime(-1.25)");
 
             result = evaluationResult.forExpression("ToDateTime6").value();
             final BigDecimal bigDecimalOffsetForUtc = getBigDecimalZoneOffset(ZoneId.of("UTC"));
-            softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalOffsetForUtc, 2014, 1, 1, 12, 5, 5, 955)));
+            softAssert.assertTrue(EquivalentEvaluator.equivalent(
+                    result, new DateTime(bigDecimalOffsetForUtc, 2014, 1, 1, 12, 5, 5, 955)));
 
             result = evaluationResult.forExpression("ToDateTimeMalformed").value();
             softAssert.assertNull(result);
@@ -220,44 +247,79 @@ public class CqlTypesOperatorsTest extends CqlTestBase {
             softAssert.assertEquals(result, 123L);
 
             result = evaluationResult.forExpression("String5D5CMToQuantity").value();
-            softAssert.assertTrue(((Quantity) result).equal(new Quantity().withValue(new BigDecimal("5.5")).withUnit("cm")));
+            softAssert.assertTrue(((Quantity) result)
+                    .equal(new Quantity().withValue(new BigDecimal("5.5")).withUnit("cm")));
 
-            result = evaluationResult.forExpression("StringInvalidToQuantityNull").value();
+            result = evaluationResult
+                    .forExpression("StringInvalidToQuantityNull")
+                    .value();
             softAssert.assertNull(result);
 
-            result = evaluationResult.forExpression("String100PerMinPerSqMeterToQuantity").value();
-            softAssert.assertTrue(((Quantity) result).equal(new Quantity().withValue(new BigDecimal("100")).withUnit("daL/min/m2")));
+            result = evaluationResult
+                    .forExpression("String100PerMinPerSqMeterToQuantity")
+                    .value();
+            softAssert.assertTrue(((Quantity) result)
+                    .equal(new Quantity().withValue(new BigDecimal("100")).withUnit("daL/min/m2")));
 
-            result = evaluationResult.forExpression("String100UnitPer10BillionToQuantity").value();
-            softAssert.assertTrue(((Quantity) result).equal(new Quantity().withValue(new BigDecimal("100")).withUnit("U/10*10{cells}")));
+            result = evaluationResult
+                    .forExpression("String100UnitPer10BillionToQuantity")
+                    .value();
+            softAssert.assertTrue(((Quantity) result)
+                    .equal(new Quantity().withValue(new BigDecimal("100")).withUnit("U/10*10{cells}")));
 
-            result = evaluationResult.forExpression("String60DayPer7DayToQuantity").value();
-            softAssert.assertTrue(((Quantity) result).equal(new Quantity().withValue(new BigDecimal("60")).withUnit("d/(7.d)")));
+            result = evaluationResult
+                    .forExpression("String60DayPer7DayToQuantity")
+                    .value();
+            softAssert.assertTrue(((Quantity) result)
+                    .equal(new Quantity().withValue(new BigDecimal("60")).withUnit("d/(7.d)")));
 
-            result = evaluationResult.forExpression("String60EhrlichPer100gmToQuantity").value();
-            softAssert.assertTrue(((Quantity) result).equal(new Quantity().withValue(new BigDecimal("60")).withUnit("{EhrlichU}/100.g")));
+            result = evaluationResult
+                    .forExpression("String60EhrlichPer100gmToQuantity")
+                    .value();
+            softAssert.assertTrue(((Quantity) result)
+                    .equal(new Quantity().withValue(new BigDecimal("60")).withUnit("{EhrlichU}/100.g")));
 
             result = evaluationResult.forExpression("StringPercentToQuantity").value();
-            softAssert.assertTrue(((Quantity) result).equal(new Quantity().withValue(new BigDecimal("60")).withUnit("%")));
+            softAssert.assertTrue(((Quantity) result)
+                    .equal(new Quantity().withValue(new BigDecimal("60")).withUnit("%")));
 
-            result = evaluationResult.forExpression("StringPercentWithoutQuoteToQuantity").value();
-            softAssert.assertTrue(((Quantity) result).equal(new Quantity().withValue(new BigDecimal("70")).withUnit("%")));
+            result = evaluationResult
+                    .forExpression("StringPercentWithoutQuoteToQuantity")
+                    .value();
+            softAssert.assertTrue(((Quantity) result)
+                    .equal(new Quantity().withValue(new BigDecimal("70")).withUnit("%")));
 
-            result = evaluationResult.forExpression("StringPercentWithTabToQuantity").value();
-            softAssert.assertTrue(((Quantity) result).equal(new Quantity().withValue(new BigDecimal("80")).withUnit("%")));
+            result = evaluationResult
+                    .forExpression("StringPercentWithTabToQuantity")
+                    .value();
+            softAssert.assertTrue(((Quantity) result)
+                    .equal(new Quantity().withValue(new BigDecimal("80")).withUnit("%")));
 
-            result = evaluationResult.forExpression("StringPercentWithMultiSpacesToQuantity").value();
-            softAssert.assertTrue(((Quantity) result).equal(new Quantity().withValue(new BigDecimal("90")).withUnit("%")));
+            result = evaluationResult
+                    .forExpression("StringPercentWithMultiSpacesToQuantity")
+                    .value();
+            softAssert.assertTrue(((Quantity) result)
+                    .equal(new Quantity().withValue(new BigDecimal("90")).withUnit("%")));
 
-            result = evaluationResult.forExpression("StringPercentWithSpacesUnitToQuantity").value();
-            softAssert.assertTrue(((Quantity) result).equal(new Quantity().withValue(new BigDecimal("10")).withUnit("ml")));
+            result = evaluationResult
+                    .forExpression("StringPercentWithSpacesUnitToQuantity")
+                    .value();
+            softAssert.assertTrue(((Quantity) result)
+                    .equal(new Quantity().withValue(new BigDecimal("10")).withUnit("ml")));
 
-            result = evaluationResult.forExpression("StringPercentWithQuoteUnitToQuantity").value();
-            softAssert.assertTrue(((Quantity) result).equal(new Quantity().withValue(new BigDecimal("20")).withUnit("ml")));
+            result = evaluationResult
+                    .forExpression("StringPercentWithQuoteUnitToQuantity")
+                    .value();
+            softAssert.assertTrue(((Quantity) result)
+                    .equal(new Quantity().withValue(new BigDecimal("20")).withUnit("ml")));
 
             result = evaluationResult.forExpression("ToRatioIsValid").value();
-            softAssert.assertTrue(((Ratio) result).getNumerator().equal(new Quantity().withValue(new BigDecimal("1.0")).withUnit("mg")));
-            softAssert.assertTrue(((Ratio) result).getDenominator().equal(new Quantity().withValue(new BigDecimal("2.0")).withUnit("mg")));
+            softAssert.assertTrue(((Ratio) result)
+                    .getNumerator()
+                    .equal(new Quantity().withValue(new BigDecimal("1.0")).withUnit("mg")));
+            softAssert.assertTrue(((Ratio) result)
+                    .getDenominator()
+                    .equal(new Quantity().withValue(new BigDecimal("2.0")).withUnit("mg")));
 
             result = evaluationResult.forExpression("ToRatioIsNull").value();
             softAssert.assertNull(result);

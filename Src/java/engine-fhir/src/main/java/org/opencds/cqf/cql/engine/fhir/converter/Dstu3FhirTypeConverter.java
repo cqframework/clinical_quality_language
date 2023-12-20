@@ -1,23 +1,18 @@
 package org.opencds.cqf.cql.engine.fhir.converter;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
-
-import org.hl7.fhir.dstu3.model.*;
-import org.opencds.cqf.cql.engine.runtime.*;
-import org.opencds.cqf.cql.engine.runtime.Quantity;
-import org.opencds.cqf.cql.engine.runtime.Ratio;
-
-import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
-
 import org.apache.commons.lang3.NotImplementedException;
+import org.hl7.fhir.dstu3.model.*;
 import org.hl7.fhir.instance.model.api.IBase;
 import org.hl7.fhir.instance.model.api.IBaseCoding;
 import org.hl7.fhir.instance.model.api.ICompositeType;
 import org.hl7.fhir.instance.model.api.IIdType;
 import org.hl7.fhir.instance.model.api.IPrimitiveType;
+import org.opencds.cqf.cql.engine.runtime.*;
+import org.opencds.cqf.cql.engine.runtime.Quantity;
+import org.opencds.cqf.cql.engine.runtime.Ratio;
 
 class Dstu3FhirTypeConverter extends BaseFhirTypeConverter {
 
@@ -102,11 +97,16 @@ class Dstu3FhirTypeConverter extends BaseFhirTypeConverter {
         }
 
         String unit = value.getUnit();
-        String system = isCqlCalendarUnit(unit) ? "http://hl7.org/fhirpath/CodeSystem/calendar-units" : "http://unitsofmeasure.org";
+        String system = isCqlCalendarUnit(unit)
+                ? "http://hl7.org/fhirpath/CodeSystem/calendar-units"
+                : "http://unitsofmeasure.org";
         String ucumUnit = toUcumUnit(unit);
 
         return new org.hl7.fhir.dstu3.model.Quantity()
-                .setSystem(system).setCode(ucumUnit).setValue(value.getValue()).setUnit(unit);
+                .setSystem(system)
+                .setCode(ucumUnit)
+                .setValue(value.getValue())
+                .setUnit(unit);
     }
 
     @Override
@@ -169,11 +169,11 @@ class Dstu3FhirTypeConverter extends BaseFhirTypeConverter {
         Period period = new Period();
         if (getSimpleName(value.getPointType().getTypeName()).equals("DateTime")) {
             if (value.getStart() != null) {
-                period.setStartElement((DateTimeType)toFhirDateTime((DateTime)value.getStart()));
+                period.setStartElement((DateTimeType) toFhirDateTime((DateTime) value.getStart()));
             }
 
             if (value.getEnd() != null) {
-                period.setEndElement((DateTimeType)toFhirDateTime((DateTime)value.getEnd()));
+                period.setEndElement((DateTimeType) toFhirDateTime((DateTime) value.getEnd()));
             }
 
             return period;
@@ -205,12 +205,14 @@ class Dstu3FhirTypeConverter extends BaseFhirTypeConverter {
         }
 
         Range range = new Range();
-        org.hl7.fhir.dstu3.model.Quantity start = (org.hl7.fhir.dstu3.model.Quantity)toFhirQuantity((Quantity)value.getStart());
+        org.hl7.fhir.dstu3.model.Quantity start =
+                (org.hl7.fhir.dstu3.model.Quantity) toFhirQuantity((Quantity) value.getStart());
         if (start != null) {
             range.setLow(start.castToSimpleQuantity(start));
         }
 
-        org.hl7.fhir.dstu3.model.Quantity end = (org.hl7.fhir.dstu3.model.Quantity)toFhirQuantity((Quantity)value.getEnd());
+        org.hl7.fhir.dstu3.model.Quantity end =
+                (org.hl7.fhir.dstu3.model.Quantity) toFhirQuantity((Quantity) value.getEnd());
         if (end != null) {
             range.setHigh(end.castToSimpleQuantity(end));
         }
@@ -256,7 +258,8 @@ class Dstu3FhirTypeConverter extends BaseFhirTypeConverter {
 
         org.hl7.fhir.dstu3.model.Ratio ratio = (org.hl7.fhir.dstu3.model.Ratio) value;
 
-        return new Ratio().setNumerator(toCqlQuantity(ratio.getNumerator()))
+        return new Ratio()
+                .setNumerator(toCqlQuantity(ratio.getNumerator()))
                 .setDenominator(toCqlQuantity(ratio.getDenominator()));
     }
 
@@ -277,7 +280,10 @@ class Dstu3FhirTypeConverter extends BaseFhirTypeConverter {
 
         Coding coding = (Coding) value;
 
-        return new Code().withSystem(coding.getSystem()).withCode(coding.getCode()).withVersion(coding.getVersion())
+        return new Code()
+                .withSystem(coding.getSystem())
+                .withCode(coding.getCode())
+                .withVersion(coding.getVersion())
                 .withDisplay(coding.getDisplay());
     }
 
@@ -293,8 +299,11 @@ class Dstu3FhirTypeConverter extends BaseFhirTypeConverter {
 
         CodeableConcept codeableConcept = (CodeableConcept) value;
 
-        return new Concept().withDisplay(codeableConcept.getText())
-                .withCodes(codeableConcept.getCoding().stream().map(x -> toCqlCode(x)).collect(Collectors.toList()));
+        return new Concept()
+                .withDisplay(codeableConcept.getText())
+                .withCodes(codeableConcept.getCoding().stream()
+                        .map(x -> toCqlCode(x))
+                        .collect(Collectors.toList()));
     }
 
     @Override
@@ -307,8 +316,9 @@ class Dstu3FhirTypeConverter extends BaseFhirTypeConverter {
             Range range = (Range) value;
             return new Interval(toCqlQuantity(range.getLow()), true, toCqlQuantity(range.getHigh()), true);
         } else if (value.fhirType().equals("Period")) {
-            Period period = (Period)value;
-            return new Interval(toCqlTemporal(period.getStartElement()), true, toCqlTemporal(period.getEndElement()), true);
+            Period period = (Period) value;
+            return new Interval(
+                    toCqlTemporal(period.getStartElement()), true, toCqlTemporal(period.getEndElement()), true);
         } else {
             throw new IllegalArgumentException("value is not a FHIR Range or Period");
         }
@@ -329,7 +339,9 @@ class Dstu3FhirTypeConverter extends BaseFhirTypeConverter {
             case YEAR:
             case DAY:
             case MONTH:
-                return toDate(baseDateTime.getValueAsCalendar(), baseDateTime.getPrecision().getCalendarConstant());
+                return toDate(
+                        baseDateTime.getValueAsCalendar(),
+                        baseDateTime.getPrecision().getCalendarConstant());
             case SECOND:
             case MILLI:
             case MINUTE:
@@ -346,7 +358,9 @@ class Dstu3FhirTypeConverter extends BaseFhirTypeConverter {
 
         if (value.fhirType().equals("instant") || value.fhirType().equals("dateTime")) {
             BaseDateTimeType baseDateTime = (BaseDateTimeType) value;
-            return toDateTime(baseDateTime.getValueAsCalendar(), baseDateTime.getPrecision().getCalendarConstant());
+            return toDateTime(
+                    baseDateTime.getValueAsCalendar(),
+                    baseDateTime.getPrecision().getCalendarConstant());
         } else {
             throw new IllegalArgumentException("value is not a FHIR Instant or DateTime");
         }
@@ -358,18 +372,24 @@ class Dstu3FhirTypeConverter extends BaseFhirTypeConverter {
             return null;
         }
 
-        if (value.fhirType().equals("instant") || value.fhirType().equals("dateTime") || value.fhirType().equals("date")) {
+        if (value.fhirType().equals("instant")
+                || value.fhirType().equals("dateTime")
+                || value.fhirType().equals("date")) {
             BaseDateTimeType baseDateTime = (BaseDateTimeType) value;
             switch (baseDateTime.getPrecision()) {
                 case YEAR:
                 case DAY:
                 case MONTH:
-                    return toDate(baseDateTime.getValueAsCalendar(), baseDateTime.getPrecision().getCalendarConstant());
+                    return toDate(
+                            baseDateTime.getValueAsCalendar(),
+                            baseDateTime.getPrecision().getCalendarConstant());
                 case SECOND:
                 case MILLI:
                 case MINUTE:
                 default:
-                return toDateTime(baseDateTime.getValueAsCalendar(), baseDateTime.getPrecision().getCalendarConstant());
+                    return toDateTime(
+                            baseDateTime.getValueAsCalendar(),
+                            baseDateTime.getPrecision().getCalendarConstant());
             }
         } else {
             throw new IllegalArgumentException("value is not a FHIR Instant or DateTime");

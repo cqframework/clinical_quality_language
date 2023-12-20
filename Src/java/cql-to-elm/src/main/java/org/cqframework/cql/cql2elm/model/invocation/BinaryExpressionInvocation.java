@@ -1,10 +1,8 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
+import java.util.List;
 import org.hl7.elm.r1.BinaryExpression;
 import org.hl7.elm.r1.Expression;
-
-import java.util.List;
-
 
 public class BinaryExpressionInvocation extends OperatorExpressionInvocation {
     public BinaryExpressionInvocation(BinaryExpression expression) {

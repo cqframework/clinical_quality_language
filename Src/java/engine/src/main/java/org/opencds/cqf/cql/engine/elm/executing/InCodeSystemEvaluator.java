@@ -22,26 +22,22 @@ If the code argument is null, the result is null.
 
 public class InCodeSystemEvaluator {
 
-    public static Object inCodeSystem( Object code, Object codeSystem, State state) {
+    public static Object inCodeSystem(Object code, Object codeSystem, State state) {
         if (code == null || codeSystem == null) {
             return null;
         }
 
         if (codeSystem instanceof CodeSystem) {
-            CodeSystemInfo csi = CodeSystemInfo.fromCodeSystem((CodeSystem)codeSystem);
+            CodeSystemInfo csi = CodeSystemInfo.fromCodeSystem((CodeSystem) codeSystem);
 
             TerminologyProvider provider = state.getEnvironment().getTerminologyProvider();
 
             if (code instanceof String) {
                 return provider.lookup(new Code().withCode((String) code), csi) != null;
-            }
-
-            else if (code instanceof Code) {
+            } else if (code instanceof Code) {
                 return provider.lookup((Code) code, csi) != null;
-            }
-
-            else if (code instanceof Concept) {
-                for (Code codes : ((Concept)code).getCodes()) {
+            } else if (code instanceof Concept) {
+                for (Code codes : ((Concept) code).getCodes()) {
                     if (provider.lookup(codes, csi) != null) {
                         return true;
                     }
@@ -52,8 +48,8 @@ public class InCodeSystemEvaluator {
 
         throw new InvalidOperatorArgument(
                 "In(String, CodeSystemRef), In(Code, CodeSystemRef) or In(Concept, CodeSystemRef)",
-                String.format("In(%s, %s)", code.getClass().getName(), codeSystem.getClass().getName())
-        );
+                String.format(
+                        "In(%s, %s)",
+                        code.getClass().getName(), codeSystem.getClass().getName()));
     }
-
 }

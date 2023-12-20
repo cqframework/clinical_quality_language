@@ -1,10 +1,9 @@
 package org.cqframework.cql.cql2elm.preprocessor;
 
-import org.cqframework.cql.cql2elm.model.FunctionHeader;
-import org.cqframework.cql.gen.cqlParser;
-
 import java.util.Objects;
 import java.util.StringJoiner;
+import org.cqframework.cql.cql2elm.model.FunctionHeader;
+import org.cqframework.cql.gen.cqlParser;
 
 public class FunctionDefinitionInfo extends BaseInfo {
     private String name;
@@ -27,13 +26,17 @@ public class FunctionDefinitionInfo extends BaseInfo {
         return this.functionHeader;
     }
 
-    public String getContext() { return context; }
+    public String getContext() {
+        return context;
+    }
 
-    public void setContext(String value) { context = value; }
+    public void setContext(String value) {
+        context = value;
+    }
 
     @Override
     public cqlParser.FunctionDefinitionContext getDefinition() {
-        return (cqlParser.FunctionDefinitionContext)super.getDefinition();
+        return (cqlParser.FunctionDefinitionContext) super.getDefinition();
     }
 
     public FunctionDefinitionInfo withName(String value) {
@@ -46,7 +49,9 @@ public class FunctionDefinitionInfo extends BaseInfo {
         if (this == other) return true;
         if (other == null || getClass() != other.getClass()) return false;
         FunctionDefinitionInfo that = (FunctionDefinitionInfo) other;
-        return Objects.equals(name, that.name) && Objects.equals(context, that.context) && Objects.equals(functionHeader, that.functionHeader);
+        return Objects.equals(name, that.name)
+                && Objects.equals(context, that.context)
+                && Objects.equals(functionHeader, that.functionHeader);
     }
 
     @Override

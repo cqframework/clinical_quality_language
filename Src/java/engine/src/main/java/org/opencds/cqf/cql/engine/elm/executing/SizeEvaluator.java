@@ -30,15 +30,11 @@ public class SizeEvaluator {
 
         if (argument instanceof Interval) {
             return SubtractEvaluator.subtract(
-                    SuccessorEvaluator.successor(((Interval) argument).getEnd()),
-                    ((Interval) argument).getStart()
-            );
+                    SuccessorEvaluator.successor(((Interval) argument).getEnd()), ((Interval) argument).getStart());
         }
 
         throw new InvalidOperatorArgument(
                 "Size(Interval<T>)",
-                String.format("Size(%s)", argument.getClass().getName())
-        );
+                String.format("Size(%s)", argument.getClass().getName()));
     }
-
 }

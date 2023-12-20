@@ -1,11 +1,10 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.util.ArrayList;
 import org.cqframework.cql.elm.visiting.ElmLibraryVisitor;
 import org.hl7.elm.r1.Expression;
 import org.hl7.elm.r1.List;
 import org.opencds.cqf.cql.engine.execution.State;
-
-import java.util.ArrayList;
 
 public class ListEvaluator {
 

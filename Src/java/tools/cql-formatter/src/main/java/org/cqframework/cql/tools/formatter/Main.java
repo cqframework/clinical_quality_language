@@ -21,16 +21,19 @@ public class Main {
 
         try {
             CqlFormatterVisitor.FormatResult result = CqlFormatterVisitor.getFormattedOutput(is);
-            if( result.getErrors() != null && result.getErrors().size() > 0 ) {
-                for( Exception ex : result.getErrors() ) {
-                    System.out.println( ex.getMessage() );
+            if (result.getErrors() != null && result.getErrors().size() > 0) {
+                for (Exception ex : result.getErrors()) {
+                    System.out.println(ex.getMessage());
                 }
             } else {
-                System.out.print( result.getOutput() );
+                System.out.print(result.getOutput());
             }
         } finally {
-            if( is != System.in ) {
-                try { is.close(); } catch( IOException iex ) { }
+            if (is != System.in) {
+                try {
+                    is.close();
+                } catch (IOException iex) {
+                }
             }
         }
     }

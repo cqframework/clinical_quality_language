@@ -1,9 +1,8 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.math.BigDecimal;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.runtime.Value;
-
-import java.math.BigDecimal;
 
 /*
 
@@ -29,7 +28,7 @@ public class ToDecimalEvaluator {
         }
 
         if (operand instanceof Boolean) {
-            return ((Boolean)operand) ? new BigDecimal("1.0") : new BigDecimal("0.0");
+            return ((Boolean) operand) ? new BigDecimal("1.0") : new BigDecimal("0.0");
         }
 
         if (operand instanceof BigDecimal) {
@@ -37,35 +36,32 @@ public class ToDecimalEvaluator {
         }
 
         if (operand instanceof Integer) {
-            return new BigDecimal((Integer)operand);
+            return new BigDecimal((Integer) operand);
         }
 
         if (operand instanceof Long) {
-            return new BigDecimal((Long)operand);
+            return new BigDecimal((Long) operand);
         }
 
         if (operand instanceof String) {
             try {
                 if (((String) operand).contains(".")) {
                     String[] decimalSplit = ((String) operand).split("\\.");
-                    if ((decimalSplit[0].contains("-") || decimalSplit[0].contains("+")) && decimalSplit[0].length() == 1) {
+                    if ((decimalSplit[0].contains("-") || decimalSplit[0].contains("+"))
+                            && decimalSplit[0].length() == 1) {
                         return null;
-                    }
-                    else if (decimalSplit[0].length() == 0) {
+                    } else if (decimalSplit[0].length() == 0) {
                         return null;
                     }
                 }
-                return Value.validateDecimal(new BigDecimal((String)operand), null);
-            }
-            catch (NumberFormatException nfe) {
+                return Value.validateDecimal(new BigDecimal((String) operand), null);
+            } catch (NumberFormatException nfe) {
                 return null;
             }
         }
 
         throw new InvalidOperatorArgument(
                 "ToDecimal(String)",
-                String.format("ToDecimal(%s)", operand.getClass().getName())
-        );
+                String.format("ToDecimal(%s)", operand.getClass().getName()));
     }
-
 }

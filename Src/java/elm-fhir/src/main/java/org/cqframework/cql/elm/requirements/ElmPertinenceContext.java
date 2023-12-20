@@ -1,8 +1,8 @@
 package org.cqframework.cql.elm.requirements;
 
-import org.hl7.elm.r1.ExpressionDef;
 import org.hl7.cql_annotations.r1.Annotation;
 import org.hl7.cql_annotations.r1.Tag;
+import org.hl7.elm.r1.ExpressionDef;
 
 public class ElmPertinenceContext {
 
@@ -14,11 +14,13 @@ public class ElmPertinenceContext {
     }
 
     private ExpressionDef expressionDef;
+
     public ExpressionDef getExpressionDef() {
         return this.expressionDef;
     }
 
     private String pertinenceValue;
+
     public String getPertinenceValue() {
         return this.pertinenceValue;
     }
@@ -40,5 +42,4 @@ public class ElmPertinenceContext {
         }
         return pertinenceFound;
     }
-
 }

@@ -1,10 +1,9 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
-import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 
 /*
 
@@ -33,8 +32,7 @@ public class SplitOnMatchesEvaluator {
             List<Object> result = new ArrayList<>();
             if (separator == null) {
                 result.add(stringToSplit);
-            }
-            else {
+            } else {
                 Collections.addAll(result, (((String) stringToSplit).split((String) separator)));
             }
             return result;
@@ -42,8 +40,8 @@ public class SplitOnMatchesEvaluator {
 
         throw new InvalidOperatorArgument(
                 "SplitOnMatches(String, String)",
-                String.format("SplitOnMatches(%s, %s)", stringToSplit.getClass().getName(), separator.getClass().getName())
-        );
+                String.format(
+                        "SplitOnMatches(%s, %s)",
+                        stringToSplit.getClass().getName(), separator.getClass().getName()));
     }
-
 }

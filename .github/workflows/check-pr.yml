@@ -21,7 +21,7 @@ jobs:
     - name: Setup and execute Gradle 'check' task
       uses: gradle/gradle-build-action@v2
       with:
-        arguments: check
+        arguments: check -x spotlessCheck # there's a separate action for spotless, this way unit tests can be run in parallel
         build-root-directory: Src/java
     - name: Publish Test Report
       uses: mikepenz/action-junit-report@v3

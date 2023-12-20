@@ -12,5 +12,4 @@ public class IsNullEvaluator {
     public static Object isNull(Object operand) {
         return operand == null;
     }
-
 }

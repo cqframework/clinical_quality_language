@@ -1,19 +1,18 @@
 package org.cqframework.cql.cql2elm.qicore.v410;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.TestUtils;
 import org.hl7.elm.r1.ExpressionDef;
 import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.Retrieve;
 import org.testng.annotations.Test;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
 
 public class BaseTest {
     @Test
@@ -31,8 +30,9 @@ public class BaseTest {
 
         ExpressionDef def = defs.get("TestAdverseEvent");
         assertThat(def.getExpression(), instanceOf(Retrieve.class));
-        Retrieve retrieve = (Retrieve)def.getExpression();
-        assertThat(retrieve.getTemplateId(), is("http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-adverseevent"));
+        Retrieve retrieve = (Retrieve) def.getExpression();
+        assertThat(
+                retrieve.getTemplateId(), is("http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-adverseevent"));
     }
 
     @Test

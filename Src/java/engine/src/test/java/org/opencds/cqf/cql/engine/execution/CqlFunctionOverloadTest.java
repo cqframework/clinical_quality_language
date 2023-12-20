@@ -1,11 +1,10 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import org.testng.annotations.Test;
-
-import java.math.BigDecimal;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+
+import java.math.BigDecimal;
+import org.testng.annotations.Test;
 
 public class CqlFunctionOverloadTest extends CqlTestBase {
 
@@ -28,6 +27,5 @@ public class CqlFunctionOverloadTest extends CqlTestBase {
 
         result = evaluationResult.forExpression("TestAnyFunctionWithNoArgs").value();
         assertThat(result, is("any"));
-
     }
 }

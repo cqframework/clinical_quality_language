@@ -1,8 +1,7 @@
 package org.cqframework.cql.cql2elm.model;
 
-import org.hl7.cql.model.*;
-
 import java.util.*;
+import org.hl7.cql.model.*;
 
 public class OperatorMap {
     private Map<String, OperatorEntry> operators = new HashMap<>();
@@ -38,8 +37,7 @@ public class OperatorMap {
             if (resolution == null) {
                 return false;
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return false;
         }
 
@@ -63,9 +61,16 @@ public class OperatorMap {
             int lowestScore = Integer.MAX_VALUE;
             List<OperatorResolution> lowestScoringResults = new ArrayList<>();
             for (OperatorResolution resolution : results) {
-                Iterator<DataType> operands = resolution.getOperator().getSignature().getOperandTypes().iterator();
-                Iterator<DataType> callOperands = callContext.getSignature().getOperandTypes().iterator();
-                Iterator<Conversion> conversions = resolution.hasConversions() ? resolution.getConversions().iterator() : null;
+                Iterator<DataType> operands = resolution
+                        .getOperator()
+                        .getSignature()
+                        .getOperandTypes()
+                        .iterator();
+                Iterator<DataType> callOperands =
+                        callContext.getSignature().getOperandTypes().iterator();
+                Iterator<Conversion> conversions = resolution.hasConversions()
+                        ? resolution.getConversions().iterator()
+                        : null;
                 int score = ConversionMap.ConversionScore.ExactMatch.score();
                 while (operands.hasNext()) {
                     DataType operand = operands.next();
@@ -80,8 +85,7 @@ public class OperatorMap {
                     lowestScore = score;
                     lowestScoringResults.clear();
                     lowestScoringResults.add(resolution);
-                }
-                else if (score == lowestScore) {
+                } else if (score == lowestScore) {
                     lowestScoringResults.add(resolution);
                 }
             }
@@ -89,18 +93,20 @@ public class OperatorMap {
             if (lowestScoringResults.size() > 1) {
                 if (callContext.getMustResolve()) {
                     // ERROR:
-                    StringBuilder message = new StringBuilder("Call to operator ").append(callContext.getOperatorName())
-                            .append(callContext.getSignature()).append(" is ambiguous with: ");
+                    StringBuilder message = new StringBuilder("Call to operator ")
+                            .append(callContext.getOperatorName())
+                            .append(callContext.getSignature())
+                            .append(" is ambiguous with: ");
                     for (OperatorResolution resolution : lowestScoringResults) {
-                        message.append("\n  - ").append(resolution.getOperator().getName()).append(resolution.getOperator().getSignature());
+                        message.append("\n  - ")
+                                .append(resolution.getOperator().getName())
+                                .append(resolution.getOperator().getSignature());
                     }
                     throw new IllegalArgumentException(message.toString());
-                }
-                else {
+                } else {
                     return null;
                 }
-            }
-            else {
+            } else {
                 result = lowestScoringResults.get(0);
             }
         }

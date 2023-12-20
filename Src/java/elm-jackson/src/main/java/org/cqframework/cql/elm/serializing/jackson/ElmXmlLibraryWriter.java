@@ -1,16 +1,11 @@
 package org.cqframework.cql.elm.serializing.jackson;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import java.io.IOException;
+import java.io.Writer;
 import org.cqframework.cql.elm.serializing.ElmLibraryWriter;
 import org.cqframework.cql.elm.serializing.LibraryWrapper;
 import org.hl7.elm.r1.Library;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Writer;
-import java.net.URI;
-import java.net.URL;
 
 /**
  * Implementation of an ELM XML serializer using the Jackson serialization framework.

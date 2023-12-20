@@ -1,8 +1,7 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
-import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
-
 import java.math.BigDecimal;
+import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 
 /*
 
@@ -47,7 +46,6 @@ public class ConvertsToDecimalEvaluator {
 
         throw new InvalidOperatorArgument(
                 "ConvertsToDecimal(String)",
-                String.format("ConvertsToDecimal(%s)", argument.getClass().getName())
-        );
+                String.format("ConvertsToDecimal(%s)", argument.getClass().getName()));
     }
 }

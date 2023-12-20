@@ -18,7 +18,7 @@ public class FirstEvaluator {
         }
 
         if (source instanceof Iterable) {
-            Iterator<?> iter = ((Iterable<?>)source).iterator();
+            Iterator<?> iter = ((Iterable<?>) source).iterator();
             if (iter.hasNext()) {
                 return iter.next();
             }

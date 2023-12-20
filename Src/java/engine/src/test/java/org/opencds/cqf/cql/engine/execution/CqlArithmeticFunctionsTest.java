@@ -1,5 +1,9 @@
 package org.opencds.cqf.cql.engine.execution;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+
+import java.math.BigDecimal;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.opencds.cqf.cql.engine.elm.executing.*;
 import org.opencds.cqf.cql.engine.exception.CqlException;
@@ -8,17 +12,12 @@ import org.opencds.cqf.cql.engine.runtime.*;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.math.BigDecimal;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-
 @SuppressWarnings("removal")
 public class CqlArithmeticFunctionsTest extends CqlTestBase {
 
     private static final VersionedIdentifier library = new VersionedIdentifier().withId("CqlArithmeticFunctionsTest");
 
-  @Test
+    @Test
     public void testAbs() {
 
         Object result = engine.expression(library, "AbsNull").value();
@@ -34,20 +33,22 @@ public class CqlArithmeticFunctionsTest extends CqlTestBase {
         assertThat(result, is(1L));
 
         result = engine.expression(library, "AbsNeg1Dec").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(1.0)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(1.0)));
 
         result = engine.expression(library, "Abs0Dec").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(0.0)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(0.0)));
 
         result = engine.expression(library, "Abs1cm").value();
-        Assert.assertTrue(((Quantity)result).compareTo(new Quantity().withValue(new BigDecimal("1.0")).withUnit("cm")) == 0);
+        Assert.assertTrue(((Quantity) result)
+                        .compareTo(
+                                new Quantity().withValue(new BigDecimal("1.0")).withUnit("cm"))
+                == 0);
 
         // error testing
         try {
             result = AbsEvaluator.abs("This is an error");
             Assert.fail();
-        }
-        catch (CqlException e) {
+        } catch (CqlException e) {
             // pass
         }
     }
@@ -81,8 +82,7 @@ public class CqlArithmeticFunctionsTest extends CqlTestBase {
         try {
             result = AddEvaluator.add("This is an error", 404);
             Assert.fail();
-        }
-        catch (CqlException e) {
+        } catch (CqlException e) {
             // pass
         }
     }
@@ -128,19 +128,19 @@ public class CqlArithmeticFunctionsTest extends CqlTestBase {
         assertThat(result, is(nullValue()));
 
         result = engine.expression(library, "Divide01").value();
-        assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal("0.0")));
+        assertThat((BigDecimal) result, comparesEqualTo(new BigDecimal("0.0")));
 
         result = engine.expression(library, "Divide11").value();
-        assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal("1.0")));
+        assertThat((BigDecimal) result, comparesEqualTo(new BigDecimal("1.0")));
 
         result = engine.expression(library, "Divide11Long").value();
-        assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal("1.0")));
+        assertThat((BigDecimal) result, comparesEqualTo(new BigDecimal("1.0")));
 
         result = engine.expression(library, "Divide1d1d").value();
-        assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal("1.0")));
+        assertThat((BigDecimal) result, comparesEqualTo(new BigDecimal("1.0")));
 
         result = engine.expression(library, "Divide103").value();
-        assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal("3.33333333")));
+        assertThat((BigDecimal) result, comparesEqualTo(new BigDecimal("3.33333333")));
 
         result = engine.expression(library, "Divide1Q1").value();
         Assert.assertEquals(((Quantity) result).getValue(), new BigDecimal("1"));
@@ -153,10 +153,10 @@ public class CqlArithmeticFunctionsTest extends CqlTestBase {
         // Assert.assertEquals("g/cm3", ((Quantity) result).getUnit());
 
         result = engine.expression(library, "Divide10I5D").value();
-        assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal("2.0")));
+        assertThat((BigDecimal) result, comparesEqualTo(new BigDecimal("2.0")));
 
         result = engine.expression(library, "Divide10I5I").value();
-        assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal("2.0")));
+        assertThat((BigDecimal) result, comparesEqualTo(new BigDecimal("2.0")));
 
         result = engine.expression(library, "Divide10Q5I").value();
         Assert.assertEquals(new BigDecimal("2.0"), ((Quantity) result).getValue());
@@ -204,19 +204,19 @@ public class CqlArithmeticFunctionsTest extends CqlTestBase {
         assertThat(result, is(nullValue()));
 
         result = engine.expression(library, "Exp0").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(1.0)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(1.0)));
 
         result = engine.expression(library, "ExpNeg0").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(1.0)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(1.0)));
 
         result = engine.expression(library, "Exp1").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(Math.exp(1d))));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(Math.exp(1d))));
 
         result = engine.expression(library, "Exp1Long").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(Math.exp(1d))));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(Math.exp(1d))));
 
         result = engine.expression(library, "ExpNeg1").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(Math.exp((double) -1))));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(Math.exp((double) -1))));
 
         try {
             result = engine.expression(library, "Exp1000").value();
@@ -274,22 +274,22 @@ public class CqlArithmeticFunctionsTest extends CqlTestBase {
         assertThat(result, is(nullValue()));
 
         result = engine.expression(library, "Log1Base1").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(0d)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(0d)));
 
         result = engine.expression(library, "Log1Base2").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(0d)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(0d)));
 
         result = engine.expression(library, "Log1Base100").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(0d)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(0d)));
 
         result = engine.expression(library, "Log1Base100Long").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(0d)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(0d)));
 
         result = engine.expression(library, "Log16Base2").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(4d)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(4d)));
 
         result = engine.expression(library, "LogD125Base2").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf((double)-3)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf((double) -3)));
     }
 
     /**
@@ -318,19 +318,19 @@ public class CqlArithmeticFunctionsTest extends CqlTestBase {
         }
 
         result = engine.expression(library, "Ln1").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(0)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(0)));
 
         result = engine.expression(library, "Ln1Long").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(0)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(0)));
 
         result = engine.expression(library, "LnNeg1").value();
         assertThat(result, is(nullValue()));
 
         result = engine.expression(library, "Ln1000").value();
-        assertThat((BigDecimal)result, comparesEqualTo(Value.verifyPrecision(new BigDecimal("6.90775527"), null)));
+        assertThat((BigDecimal) result, comparesEqualTo(Value.verifyPrecision(new BigDecimal("6.90775527"), null)));
 
         result = engine.expression(library, "Ln1000D").value();
-        assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal("6.90775527")));
+        assertThat((BigDecimal) result, comparesEqualTo(new BigDecimal("6.90775527")));
     }
 
     /**
@@ -372,10 +372,12 @@ public class CqlArithmeticFunctionsTest extends CqlTestBase {
         assertThat(result, is(Long.MAX_VALUE));
 
         result = engine.expression(library, "DecimalMaxValue").value();
-        Assert.assertEquals(((BigDecimal) result).compareTo(new BigDecimal("9999999999999999999999999999.99999999")), 0);
+        Assert.assertEquals(
+                ((BigDecimal) result).compareTo(new BigDecimal("9999999999999999999999999999.99999999")), 0);
 
         result = engine.expression(library, "DateTimeMaxValue").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(BigDecimal.ZERO, 9999, 12, 31, 23, 59, 59, 999)));
+        Assert.assertTrue(
+                EquivalentEvaluator.equivalent(result, new DateTime(BigDecimal.ZERO, 9999, 12, 31, 23, 59, 59, 999)));
 
         result = engine.expression(library, "TimeMaxValue").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(23, 59, 59, 999)));
@@ -394,7 +396,8 @@ public class CqlArithmeticFunctionsTest extends CqlTestBase {
         assertThat(result, is(Long.MIN_VALUE));
 
         result = engine.expression(library, "DecimalMinValue").value();
-        Assert.assertTrue(((BigDecimal) result).compareTo(new BigDecimal("-9999999999999999999999999999.99999999")) == 0);
+        Assert.assertTrue(
+                ((BigDecimal) result).compareTo(new BigDecimal("-9999999999999999999999999999.99999999")) == 0);
 
         result = engine.expression(library, "DateTimeMinValue").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(BigDecimal.ZERO, 1, 1, 1, 0, 0, 0, 0)));
@@ -422,23 +425,23 @@ public class CqlArithmeticFunctionsTest extends CqlTestBase {
         assertThat(result, is(0L));
 
         result = engine.expression(library, "Modulo4DBy2D").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(0d)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(0d)));
 
         result = engine.expression(library, "Modulo10By3").value();
         assertThat(result, is((1)));
 
         result = engine.expression(library, "Modulo10DBy3D").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(1.0)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(1.0)));
 
         result = engine.expression(library, "Modulo10IBy3D").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(1.0)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(1.0)));
 
         result = engine.expression(library, "ModuloDResult").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(0.5)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(0.5)));
 
         result = engine.expression(library, "Modulo10By3Quantity").value();
-        assertThat(((Quantity)result).getValue(), comparesEqualTo(BigDecimal.valueOf(1.0)));
-        assertThat(((Quantity)result).getUnit(), is("g"));
+        assertThat(((Quantity) result).getValue(), comparesEqualTo(BigDecimal.valueOf(1.0)));
+        assertThat(((Quantity) result).getUnit(), is("g"));
 
         result = engine.expression(library, "Modulo10By0Quantity").value();
         assertThat(result, is(nullValue()));
@@ -460,10 +463,10 @@ public class CqlArithmeticFunctionsTest extends CqlTestBase {
         assertThat(result, is(6L));
 
         result = engine.expression(library, "Multiply1DBy2D").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(2.0)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(2.0)));
 
         result = engine.expression(library, "Multiply1IBy2D").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(2.0)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(2.0)));
 
         // TODO: should return multiplied units i.e. cm2
         // result = engine.expression(arithmetic, "Multiply1CMBy2CM").value();
@@ -501,16 +504,16 @@ public class CqlArithmeticFunctionsTest extends CqlTestBase {
         assertThat(result, is(1));
 
         result = engine.expression(library, "Negate0D").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(-(0d))));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(-(0d))));
 
         result = engine.expression(library, "NegateNeg0D").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(0d)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(0d)));
 
         result = engine.expression(library, "Negate1D").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf((double) -1)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf((double) -1)));
 
         result = engine.expression(library, "NegateNeg1D").value();
-        assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal("1.0")));
+        assertThat((BigDecimal) result, comparesEqualTo(new BigDecimal("1.0")));
 
         result = engine.expression(library, "Negate1CM").value();
         Assert.assertTrue(new BigDecimal("-1.0").compareTo(((Quantity) result).getValue()) == 0);
@@ -538,14 +541,14 @@ public class CqlArithmeticFunctionsTest extends CqlTestBase {
         assertThat(result, is(0L));
 
         result = engine.expression(library, "PredecessorOf1D").value();
-        assertThat((BigDecimal)result, comparesEqualTo((new BigDecimal("0.99999999"))));
+        assertThat((BigDecimal) result, comparesEqualTo((new BigDecimal("0.99999999"))));
 
         result = engine.expression(library, "PredecessorOf101D").value();
-        assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal("1.00999999")));
+        assertThat((BigDecimal) result, comparesEqualTo(new BigDecimal("1.00999999")));
 
-//        result = engine.expression(arithmetic, "PredecessorOf1QCM").value();
-//        Assert.assertTrue(new BigDecimal("0.99999999").compareTo(((Quantity) result).getValue()) == 0);
-//        Assert.assertEquals("cm", ((Quantity) result).getUnit());
+        //        result = engine.expression(arithmetic, "PredecessorOf1QCM").value();
+        //        Assert.assertTrue(new BigDecimal("0.99999999").compareTo(((Quantity) result).getValue()) == 0);
+        //        Assert.assertEquals("cm", ((Quantity) result).getUnit());
 
         result = engine.expression(library, "PredecessorOfJan12000").value();
         final DateTime expectedDateTime = new DateTime(getBigDecimalZoneOffset(), 1999, 12, 31);
@@ -565,7 +568,9 @@ public class CqlArithmeticFunctionsTest extends CqlTestBase {
             result = engine.expression(library, "PredecessorUnderflowT").value();
             Assert.fail();
         } catch (RuntimeException re) {
-            assertThat(re.getMessage(), is("The result of the successor operation precedes the minimum value allowed for the Time type"));
+            assertThat(
+                    re.getMessage(),
+                    is("The result of the successor operation precedes the minimum value allowed for the Time type"));
         }
     }
 
@@ -615,22 +620,22 @@ public class CqlArithmeticFunctionsTest extends CqlTestBase {
         assertThat(result, is(4));
 
         result = engine.expression(library, "Power2ToNeg2").value();
-        assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal("0.25")));
+        assertThat((BigDecimal) result, comparesEqualTo(new BigDecimal("0.25")));
 
         result = engine.expression(library, "Power2DTo2D").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(4d)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(4d)));
 
         result = engine.expression(library, "PowerNeg2DTo2D").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(4d)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(4d)));
 
         result = engine.expression(library, "Power2DToNeg2D").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(0.25)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(0.25)));
 
         result = engine.expression(library, "Power2DTo2").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(4d)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(4d)));
 
         result = engine.expression(library, "Power2To2D").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(4d)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(4d)));
 
         result = engine.expression(library, "Power2To4").value();
         assertThat(result, is(16));
@@ -639,7 +644,7 @@ public class CqlArithmeticFunctionsTest extends CqlTestBase {
         assertThat(result, is(8L));
 
         result = engine.expression(library, "Power2DTo4D").value();
-        assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal("16.0")));
+        assertThat((BigDecimal) result, comparesEqualTo(new BigDecimal("16.0")));
 
         result = engine.expression(library, "Power2DToNeg2DEquivalence").value();
         assertThat(result, is(true));
@@ -657,34 +662,34 @@ public class CqlArithmeticFunctionsTest extends CqlTestBase {
         assertThat(result, is(nullValue()));
 
         result = engine.expression(library, "Round1").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(1.0)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(1.0)));
 
         result = engine.expression(library, "Round0D5").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(1.0)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(1.0)));
 
         result = engine.expression(library, "Round0D4").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(0.0)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(0.0)));
 
         result = engine.expression(library, "Round3D14159").value();
-        assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal("3.14")));
+        assertThat((BigDecimal) result, comparesEqualTo(new BigDecimal("3.14")));
 
         result = engine.expression(library, "RoundNeg0D5").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(0.0)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(0.0)));
 
         result = engine.expression(library, "RoundNeg0D4").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(0.0)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(0.0)));
 
         result = engine.expression(library, "RoundNeg0D6").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(-1.0)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(-1.0)));
 
         result = engine.expression(library, "RoundNeg1D1").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(-1.0)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(-1.0)));
 
         result = engine.expression(library, "RoundNeg1D5").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(-1.0)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(-1.0)));
 
         result = engine.expression(library, "RoundNeg1D6").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(-2.0)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(-2.0)));
     }
 
     /**
@@ -705,14 +710,14 @@ public class CqlArithmeticFunctionsTest extends CqlTestBase {
         assertThat(result, is(0L));
 
         result = engine.expression(library, "Subtract1DAnd2D").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(-1.0)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(-1.0)));
 
         result = engine.expression(library, "Subtract1CMAnd2CM").value();
         Assert.assertTrue(new BigDecimal("-1.0").compareTo(((Quantity) result).getValue()) == 0);
         Assert.assertEquals(((Quantity) result).getUnit(), "cm");
 
         result = engine.expression(library, "Subtract2And11D").value();
-        assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal("0.9")));
+        assertThat((BigDecimal) result, comparesEqualTo(new BigDecimal("0.9")));
     }
 
     /**
@@ -736,10 +741,10 @@ public class CqlArithmeticFunctionsTest extends CqlTestBase {
         assertThat(result, is(2L));
 
         result = engine.expression(library, "SuccessorOf1D").value();
-        assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal("1.00000001")));
+        assertThat((BigDecimal) result, comparesEqualTo(new BigDecimal("1.00000001")));
 
         result = engine.expression(library, "SuccessorOf101D").value();
-        assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal("1.01000001")));
+        assertThat((BigDecimal) result, comparesEqualTo(new BigDecimal("1.01000001")));
 
         result = engine.expression(library, "SuccessorOfJan12000").value();
         final DateTime expectedDateTime = new DateTime(getBigDecimalZoneOffset(), 2000, 1, 2);
@@ -759,7 +764,9 @@ public class CqlArithmeticFunctionsTest extends CqlTestBase {
             result = engine.expression(library, "SuccessorOverflowT").value();
             Assert.fail();
         } catch (RuntimeException re) {
-            assertThat(re.getMessage(), is("The result of the successor operation exceeds the maximum value allowed for the Time type"));
+            assertThat(
+                    re.getMessage(),
+                    is("The result of the successor operation exceeds the maximum value allowed for the Time type"));
         }
     }
 
@@ -826,7 +833,7 @@ public class CqlArithmeticFunctionsTest extends CqlTestBase {
         assertThat(result, is(3));
 
         result = engine.expression(library, "TruncatedDivide10d1By3D1").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(3.0)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(3.0)));
 
         result = engine.expression(library, "TruncatedDivideNeg2ByNeg1").value();
         assertThat(result, is(2));
@@ -835,7 +842,7 @@ public class CqlArithmeticFunctionsTest extends CqlTestBase {
         assertThat(result, is(3));
 
         result = engine.expression(library, "TruncatedDivideNeg10d1ByNeg3D1").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(3.0)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(3.0)));
 
         result = engine.expression(library, "TruncatedDivideNeg2By1").value();
         assertThat(result, is(-2));
@@ -844,7 +851,7 @@ public class CqlArithmeticFunctionsTest extends CqlTestBase {
         assertThat(result, is(-3));
 
         result = engine.expression(library, "TruncatedDivideNeg10d1By3D1").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(-3.0)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(-3.0)));
 
         result = engine.expression(library, "TruncatedDivide2ByNeg1").value();
         assertThat(result, is((-2)));
@@ -853,18 +860,18 @@ public class CqlArithmeticFunctionsTest extends CqlTestBase {
         assertThat(result, is(-3));
 
         result = engine.expression(library, "TruncatedDivide10d1ByNeg3D1").value();
-        assertThat((BigDecimal)result, comparesEqualTo(BigDecimal.valueOf(-3.0)));
+        assertThat((BigDecimal) result, comparesEqualTo(BigDecimal.valueOf(-3.0)));
 
         result = engine.expression(library, "TruncatedDivide10By5D").value();
-        assertThat((BigDecimal)result, comparesEqualTo(new BigDecimal("2.0")));
+        assertThat((BigDecimal) result, comparesEqualTo(new BigDecimal("2.0")));
 
         result = engine.expression(library, "TruncatedDivide10By5DQuantity").value();
-        assertThat(((Quantity)result).getValue(), comparesEqualTo(new BigDecimal("2.0")));
-        assertThat(((Quantity)result).getUnit(), is("g"));
+        assertThat(((Quantity) result).getValue(), comparesEqualTo(new BigDecimal("2.0")));
+        assertThat(((Quantity) result).getUnit(), is("g"));
 
         result = engine.expression(library, "TruncatedDivide414By206DQuantity").value();
-        assertThat(((Quantity)result).getValue(), comparesEqualTo(new BigDecimal("2.0")));
-        assertThat(((Quantity)result).getUnit(), is("m"));
+        assertThat(((Quantity) result).getValue(), comparesEqualTo(new BigDecimal("2.0")));
+        assertThat(((Quantity) result).getUnit(), is("m"));
 
         result = engine.expression(library, "TruncatedDivide10By0DQuantity").value();
         assertThat(result, nullValue());

@@ -13,8 +13,9 @@ public class IntervalEvaluator {
             lowClosedObj = visitor.visitExpression(interval.getLowClosedExpression(), state);
         }
 
-        Boolean lowClosed = (interval.getLowClosedExpression() != null && lowClosedObj != null) ?
-                (Boolean) lowClosedObj : interval.isLowClosed();
+        Boolean lowClosed = (interval.getLowClosedExpression() != null && lowClosedObj != null)
+                ? (Boolean) lowClosedObj
+                : interval.isLowClosed();
 
         Object high = interval.getHigh() != null ? visitor.visitExpression(interval.getHigh(), state) : null;
 
@@ -23,16 +24,18 @@ public class IntervalEvaluator {
             highClosedObj = visitor.visitExpression(interval.getHighClosedExpression(), state);
         }
 
-        Boolean highClosed = (interval.getHighClosedExpression() != null && highClosedObj != null) ?
-                (Boolean) highClosedObj : interval.isHighClosed();
+        Boolean highClosed = (interval.getHighClosedExpression() != null && highClosedObj != null)
+                ? (Boolean) highClosedObj
+                : interval.isHighClosed();
 
         // An interval with no boundaries is not an interval
-        // TODO: the spec states that it is possible to have an interval with null boundaries, but the ELM is not providing a way to get the Interval type
+        // TODO: the spec states that it is possible to have an interval with null boundaries, but the ELM is not
+        // providing a way to get the Interval type
         if (low == null && high == null) {
             return null;
         }
 
-        return new org.opencds.cqf.cql.engine.runtime.Interval(low, lowClosed == null ? true : lowClosed, high, highClosed == null ?
-                true : highClosed);
+        return new org.opencds.cqf.cql.engine.runtime.Interval(
+                low, lowClosed == null ? true : lowClosed, high, highClosed == null ? true : highClosed);
     }
 }

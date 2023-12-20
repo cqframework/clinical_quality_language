@@ -5,10 +5,11 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.context.FhirVersionEnum;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.cqframework.cql.cql2elm.ModelManager;
 import org.cqframework.cql.cql2elm.model.Model;
 import org.hl7.cql.model.ModelIdentifier;
@@ -41,9 +42,6 @@ import org.hl7.fhir.dstu3.model.SimpleQuantity;
 import org.opencds.cqf.cql.engine.fhir.exception.UnknownType;
 import org.opencds.cqf.cql.engine.model.ModelResolver;
 import org.testng.annotations.Test;
-
-import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.context.FhirVersionEnum;
 
 public class TestDstu3ModelResolver {
 
@@ -125,13 +123,13 @@ public class TestDstu3ModelResolver {
             ClassInfo ci = (ClassInfo) ti;
             if (ci != null) {
                 switch (ci.getBaseType()) {
-                    // Abstract classes
+                        // Abstract classes
                     case "FHIR.Element":
                         continue;
                 }
 
                 switch (ci.getName()) {
-                    // TODO: HAPI Doesn't have a ResourceContainer type for Dstu3
+                        // TODO: HAPI Doesn't have a ResourceContainer type for Dstu3
                     case "ResourceContainer":
                         continue;
                 }
@@ -206,7 +204,10 @@ public class TestDstu3ModelResolver {
             Enumeration<?> instance = (Enumeration<?>) resolver.createInstance(enumType.getSimpleName());
             assertNotNull(instance);
 
-            assertTrue(instance.getEnumFactory().getClass().getSimpleName().replace("EnumFactory", "")
+            assertTrue(instance.getEnumFactory()
+                    .getClass()
+                    .getSimpleName()
+                    .replace("EnumFactory", "")
                     .equals(enumType.getSimpleName()));
         }
 
@@ -258,7 +259,7 @@ public class TestDstu3ModelResolver {
         path = (String) resolver.getContextPath("Patient", "Task");
         assertEquals(path, "for");
 
-        path = (String)resolver.getContextPath("Patient", "Coverage");
+        path = (String) resolver.getContextPath("Patient", "Coverage");
         assertEquals(path, "beneficiary");
 
         // Issue 527 - https://github.com/DBCG/cql_engine/issues/527
@@ -281,7 +282,8 @@ public class TestDstu3ModelResolver {
 
     @Test
     public void resolveNullEnumerationReturnsNull() {
-        FhirModelResolver<Base,?,?,SimpleQuantity,?,?,?,?> resolver = new Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3));
+        FhirModelResolver<Base, ?, ?, SimpleQuantity, ?, ?, ?, ?> resolver =
+                new Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3));
 
         Quantity q = new Quantity();
         q.setValue(new BigDecimal("10.0"));
@@ -294,7 +296,8 @@ public class TestDstu3ModelResolver {
 
     @Test
     public void resolveNullPrimitiveReturnsNull() {
-        FhirModelResolver<Base,BaseDateTimeType,?,?,?,?,?,?> resolver = new Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3));
+        FhirModelResolver<Base, BaseDateTimeType, ?, ?, ?, ?, ?, ?> resolver =
+                new Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3));
 
         DateTimeType dt = new DateTimeType();
 

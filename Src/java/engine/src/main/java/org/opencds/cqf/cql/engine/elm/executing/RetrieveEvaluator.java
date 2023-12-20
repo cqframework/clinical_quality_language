@@ -1,5 +1,9 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import javax.xml.namespace.QName;
 import org.cqframework.cql.elm.visiting.ElmLibraryVisitor;
 import org.hl7.elm.r1.*;
 import org.opencds.cqf.cql.engine.data.DataProvider;
@@ -11,13 +15,8 @@ import org.opencds.cqf.cql.engine.runtime.ValueSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.namespace.QName;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 public class RetrieveEvaluator {
-    private static final Logger logger = LoggerFactory.getLogger(RetrieveEvaluator .class);
+    private static final Logger logger = LoggerFactory.getLogger(RetrieveEvaluator.class);
 
     @SuppressWarnings("unchecked")
     public static Object internalEvaluate(Retrieve elm, State state, ElmLibraryVisitor<Object, State> visitor) {
@@ -28,8 +27,8 @@ public class RetrieveEvaluator {
 
         if (context != null) {
             /*
-                This whole block is a bit a hack in the sense that we need to the context (ex Practitioner) identifies itself in a non-domain specific way3
-             */
+               This whole block is a bit a hack in the sense that we need to the context (ex Practitioner) identifies itself in a non-domain specific way3
+            */
             final Object contextValue = visitor.visitExpression(context, state);
             final String name = contextValue.getClass().getPackage().getName();
             final DataProvider dataProvider = state.getEnvironment().resolveDataProvider(name);
@@ -77,10 +76,18 @@ public class RetrieveEvaluator {
                 dateRange = (Interval) visitor.visitExpression(elm.getDateRange(), state);
             }
 
-            result = dataProvider.retrieve(state.getCurrentContext(),
+            result = dataProvider.retrieve(
+                    state.getCurrentContext(),
                     (String) dataProvider.getContextPath(state.getCurrentContext(), dataType.getLocalPart()),
-                    state.getCurrentContextValue(), dataType.getLocalPart(), elm.getTemplateId(),
-                    elm.getCodeProperty(), codes, valueSet, elm.getDateProperty(), elm.getDateLowProperty(), elm.getDateHighProperty(),
+                    state.getCurrentContextValue(),
+                    dataType.getLocalPart(),
+                    elm.getTemplateId(),
+                    elm.getCodeProperty(),
+                    codes,
+                    valueSet,
+                    elm.getDateProperty(),
+                    elm.getDateLowProperty(),
+                    elm.getDateHighProperty(),
                     dateRange);
 
             // TODO: We probably shouldn't eagerly load this, but we need to track
@@ -114,7 +121,7 @@ public class RetrieveEvaluator {
      * @param <S> The subtype to which we aim to cast.
      * @throws IllegalArgumentException if the first parameter fails the instanceof check
      */
-    private static <T,S> S instanceOfCast(T superType, Class<S> clazz) {
+    private static <T, S> S instanceOfCast(T superType, Class<S> clazz) {
         if (clazz.isInstance(superType)) {
             return clazz.cast(superType);
         }

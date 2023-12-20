@@ -5,5 +5,5 @@ import ca.uhn.fhir.model.primitive.UriDt;
 
 @DatatypeDef(name = "uuid")
 public class AnnotatedUuidType extends UriDt {
-   private static final long serialVersionUID = 3L;
+    private static final long serialVersionUID = 3L;
 }

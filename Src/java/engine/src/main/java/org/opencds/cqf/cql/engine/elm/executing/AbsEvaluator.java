@@ -1,9 +1,8 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.math.BigDecimal;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.runtime.Quantity;
-
-import java.math.BigDecimal;
 
 /*
 Abs(argument Integer) Integer
@@ -24,24 +23,19 @@ public class AbsEvaluator {
         }
 
         if (operand instanceof Integer) {
-            return  Math.abs((Integer)operand);
-        }
-
-        else if (operand instanceof Long) {
+            return Math.abs((Integer) operand);
+        } else if (operand instanceof Long) {
             return Math.abs((Long) operand);
-        }
-
-        else if (operand instanceof BigDecimal) {
-            return ((BigDecimal)operand).abs();
-        }
-
-        else if (operand instanceof Quantity) {
-            return new Quantity().withValue((((Quantity)operand).getValue()).abs()).withUnit(((Quantity)operand).getUnit());
+        } else if (operand instanceof BigDecimal) {
+            return ((BigDecimal) operand).abs();
+        } else if (operand instanceof Quantity) {
+            return new Quantity()
+                    .withValue((((Quantity) operand).getValue()).abs())
+                    .withUnit(((Quantity) operand).getUnit());
         }
 
         throw new InvalidOperatorArgument(
-            "Abs(Integer), Abs(Long), Abs(Decimal) or Abs(Quantity)",
-            String.format("Abs(%s)", operand.getClass().getName())
-        );
+                "Abs(Integer), Abs(Long), Abs(Decimal) or Abs(Quantity)",
+                String.format("Abs(%s)", operand.getClass().getName()));
     }
 }

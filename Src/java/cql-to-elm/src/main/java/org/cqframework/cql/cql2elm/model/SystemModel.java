@@ -45,19 +45,35 @@ public class SystemModel extends Model {
         return this.resolveTypeName("Time");
     }
 
-    public DataType getQuantity() { return this.resolveTypeName("Quantity"); }
+    public DataType getQuantity() {
+        return this.resolveTypeName("Quantity");
+    }
 
-    public DataType getRatio() { return this.resolveTypeName("Ratio"); }
+    public DataType getRatio() {
+        return this.resolveTypeName("Ratio");
+    }
 
-    public DataType getCode() { return this.resolveTypeName("Code"); }
+    public DataType getCode() {
+        return this.resolveTypeName("Code");
+    }
 
-    public DataType getConcept() { return this.resolveTypeName("Concept"); }
+    public DataType getConcept() {
+        return this.resolveTypeName("Concept");
+    }
 
-    public DataType getVocabulary() { return this.resolveTypeName("Vocabulary"); }
+    public DataType getVocabulary() {
+        return this.resolveTypeName("Vocabulary");
+    }
 
-    public DataType getCodeSystem() { return this.resolveTypeName("CodeSystem"); }
+    public DataType getCodeSystem() {
+        return this.resolveTypeName("CodeSystem");
+    }
 
-    public DataType getValueSet() { return this.resolveTypeName("ValueSet"); }
+    public DataType getValueSet() {
+        return this.resolveTypeName("ValueSet");
+    }
 
-    public DataType getVoid() { return new SimpleType("Void"); }
+    public DataType getVoid() {
+        return new SimpleType("Void");
+    }
 }

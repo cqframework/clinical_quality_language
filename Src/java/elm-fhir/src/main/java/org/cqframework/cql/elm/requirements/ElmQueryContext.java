@@ -1,9 +1,8 @@
 package org.cqframework.cql.elm.requirements;
 
-import org.hl7.elm.r1.*;
-
 import java.util.*;
 import java.util.List;
+import org.hl7.elm.r1.*;
 
 public class ElmQueryContext {
     public ElmQueryContext(VersionedIdentifier libraryIdentifier, Query query) {
@@ -113,7 +112,7 @@ public class ElmQueryContext {
 
     public void reportQueryRequirements(ElmRequirement requirements) {
         if (requirements instanceof ElmExpressionRequirement) {
-            queryRequirements = queryRequirements.combine((ElmExpressionRequirement)requirements);
+            queryRequirements = queryRequirements.combine((ElmExpressionRequirement) requirements);
         }
     }
 

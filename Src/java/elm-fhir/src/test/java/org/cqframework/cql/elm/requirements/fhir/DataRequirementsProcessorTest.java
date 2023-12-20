@@ -1,15 +1,9 @@
 package org.cqframework.cql.elm.requirements.fhir;
 
-import ca.uhn.fhir.context.FhirContext;
-import org.cqframework.cql.cql2elm.*;
-import org.cqframework.cql.cql2elm.model.CompiledLibrary;
-import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider;
-import org.hl7.cql.model.NamespaceInfo;
-import org.hl7.elm.r1.*;
-import ca.uhn.fhir.parser.IParser;
-import org.hl7.fhir.r5.model.*;
-import org.testng.annotations.Test;
+import static org.testng.Assert.*;
 
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.IParser;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -21,12 +15,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.Date;
 import java.util.List;
-
+import org.cqframework.cql.cql2elm.*;
+import org.cqframework.cql.cql2elm.model.CompiledLibrary;
+import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider;
+import org.hl7.cql.model.NamespaceInfo;
+import org.hl7.elm.r1.*;
+import org.hl7.fhir.r5.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.testng.Assert.*;
-
+import org.testng.annotations.Test;
 
 public class DataRequirementsProcessorTest {
     private static Logger logger = LoggerFactory.getLogger(DataRequirementsProcessorTest.class);
@@ -41,35 +38,39 @@ public class DataRequirementsProcessorTest {
         cqlTranslatorOptions.getOptions().add(CqlCompilerOptions.Options.EnableAnnotations);
         try {
             /*
-                OpioidCDSCommon.cql
-                DataRequirements.cql
-                AdultOutpatientEncountersFHIR4.xml
-                AdvancedIllnessandFrailtyExclusionECQMFHIR4.xml
-                BCSComponent.xml
-                CCSComponent.xml
-                FHIRHelpers.xml
-                HBPComponent.xml
-                HospiceFHIR4.xml
-                MATGlobalCommonFunctionsFHIR4.xml
-                PVSComponent.xml
-                SupplementalDataElementsFHIR4.xml
-                TSCComponent.xml
-                BCSComponent-v0-0-001-FHIR-4-0-1.xml
-                CCSComponent-v0-0-001-FHIR-4-0-1.xml
-                HBPComponent-v0-0-001-FHIR-4-0-1.xml
-                PVSComponent-v0-0-001-FHIR-4-0-1.xml
-                TSCComponent-v0-0-001-FHIR-4-0-1.xml
-                PreventiveCareandWellness-v0-0-001-FHIR-4-0-1.xml
-             */
-            var setup = setup("CompositeMeasures/cql/EXM124-9.0.000.cql", cqlTranslatorOptions);//"OpioidCDS/cql/OpioidCDSCommon.cql", cqlTranslatorOptions);
-
-
+               OpioidCDSCommon.cql
+               DataRequirements.cql
+               AdultOutpatientEncountersFHIR4.xml
+               AdvancedIllnessandFrailtyExclusionECQMFHIR4.xml
+               BCSComponent.xml
+               CCSComponent.xml
+               FHIRHelpers.xml
+               HBPComponent.xml
+               HospiceFHIR4.xml
+               MATGlobalCommonFunctionsFHIR4.xml
+               PVSComponent.xml
+               SupplementalDataElementsFHIR4.xml
+               TSCComponent.xml
+               BCSComponent-v0-0-001-FHIR-4-0-1.xml
+               CCSComponent-v0-0-001-FHIR-4-0-1.xml
+               HBPComponent-v0-0-001-FHIR-4-0-1.xml
+               PVSComponent-v0-0-001-FHIR-4-0-1.xml
+               TSCComponent-v0-0-001-FHIR-4-0-1.xml
+               PreventiveCareandWellness-v0-0-001-FHIR-4-0-1.xml
+            */
+            var setup = setup(
+                    "CompositeMeasures/cql/EXM124-9.0.000.cql",
+                    cqlTranslatorOptions); // "OpioidCDS/cql/OpioidCDSCommon.cql", cqlTranslatorOptions);
 
             DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
-            org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(setup.manager(), setup.library(), cqlTranslatorOptions, null, false);
-            assertTrue(moduleDefinitionLibrary.getType().getCode("http://terminology.hl7.org/CodeSystem/library-type").equalsIgnoreCase("module-definition"));
+            org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(
+                    setup.manager(), setup.library(), cqlTranslatorOptions, null, false);
+            assertTrue(moduleDefinitionLibrary
+                    .getType()
+                    .getCode("http://terminology.hl7.org/CodeSystem/library-type")
+                    .equalsIgnoreCase("module-definition"));
 
-            FhirContext context =  getFhirContext();
+            FhirContext context = getFhirContext();
             IParser parser = context.newJsonParser();
             String moduleDefString = parser.setPrettyPrint(true).encodeResourceToString(moduleDefinitionLibrary);
             logger.debug(moduleDefString);
@@ -89,7 +90,8 @@ public class DataRequirementsProcessorTest {
         return null;
     }
 
-    private ParameterDefinition getParameter(org.hl7.fhir.r5.model.Library moduleDefinitionLibrary, String parameterName) {
+    private ParameterDefinition getParameter(
+            org.hl7.fhir.r5.model.Library moduleDefinitionLibrary, String parameterName) {
         for (ParameterDefinition pd : moduleDefinitionLibrary.getParameter()) {
             if (pd.hasName() && pd.getName().equals(parameterName)) {
                 return pd;
@@ -111,24 +113,32 @@ public class DataRequirementsProcessorTest {
             DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
             Set<String> expressions = new HashSet<String>();
             expressions.add("Negative PCP Screenings Count Since Last POS");
-            org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(setup.manager(), setup.library(), cqlTranslatorOptions, expressions, false);
+            org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(
+                    setup.manager(), setup.library(), cqlTranslatorOptions, expressions, false);
             assertNotNull(moduleDefinitionLibrary);
 
             RelatedArtifact ra = null;
             // OpioidCDSCommon
-            ra = getDependency(moduleDefinitionLibrary, "http://fhir.org/guides/cdc/opioid-cds/Library/OpioidCDSCommon|1.2.3");
-            assertNotNull(ra, "Expected depends-on http://fhir.org/guides/cdc/opioid-cds/Library/OpioidCDSCommon|1.2.3");
+            ra = getDependency(
+                    moduleDefinitionLibrary, "http://fhir.org/guides/cdc/opioid-cds/Library/OpioidCDSCommon|1.2.3");
+            assertNotNull(
+                    ra, "Expected depends-on http://fhir.org/guides/cdc/opioid-cds/Library/OpioidCDSCommon|1.2.3");
 
             // FHIRHelpers
             ra = getDependency(moduleDefinitionLibrary, "http://hl7.org/fhir/Library/FHIRHelpers|3.0.0");
             assertNotNull(ra, "Expected depends-on http://hl7.org/fhir/Library/FHIRHelpers|3.0.0");
 
             // depends-on http://fhir.org/guides/cdc/opioid-cds/ValueSet/observation-category-laboratory
-            ra = getDependency(moduleDefinitionLibrary, "http://fhir.org/guides/cdc/opioid-cds/ValueSet/observation-category-laboratory");
-            assertNotNull(ra, "Expected depends-on http://fhir.org/guides/cdc/opioid-cds/ValueSet/observation-category-laboratory");
+            ra = getDependency(
+                    moduleDefinitionLibrary,
+                    "http://fhir.org/guides/cdc/opioid-cds/ValueSet/observation-category-laboratory");
+            assertNotNull(
+                    ra,
+                    "Expected depends-on http://fhir.org/guides/cdc/opioid-cds/ValueSet/observation-category-laboratory");
 
             // depends-on http://fhir.org/guides/cdc/opioid-cds/ValueSet/pcp-medications
-            ra = getDependency(moduleDefinitionLibrary, "http://fhir.org/guides/cdc/opioid-cds/ValueSet/pcp-medications");
+            ra = getDependency(
+                    moduleDefinitionLibrary, "http://fhir.org/guides/cdc/opioid-cds/ValueSet/pcp-medications");
             assertNotNull(ra, "Expected depends-on http://fhir.org/guides/cdc/opioid-cds/ValueSet/pcp-medications");
 
             // parameter "Negative PCP Screenings Count Since Last POS": integer
@@ -145,19 +155,40 @@ public class DataRequirementsProcessorTest {
             //   }
             // }
             assertTrue(moduleDefinitionLibrary.getDataRequirement().size() == 1);
-            DataRequirement dr= moduleDefinitionLibrary.getDataRequirement().get(0);
+            DataRequirement dr = moduleDefinitionLibrary.getDataRequirement().get(0);
             assertEquals(dr.getType(), Enumerations.FHIRTypes.OBSERVATION);
             assertTrue(dr.getMustSupport().size() == 6);
-            assertTrue(dr.getMustSupport().stream().filter(x -> x.getValue().equals("code")).count() == 1);
-            assertTrue(dr.getMustSupport().stream().filter(x -> x.getValue().equals("category")).count() == 1);
-            assertTrue(dr.getMustSupport().stream().filter(x -> x.getValue().equals("value")).count() == 1);
-            assertTrue(dr.getMustSupport().stream().filter(x -> x.getValue().equals("status")).count() == 1);
-            assertTrue(dr.getMustSupport().stream().filter(x -> x.getValue().equals("status.value")).count() == 1);
-            assertTrue(dr.getMustSupport().stream().filter(x -> x.getValue().equals("effective")).count() == 1);
+            assertTrue(dr.getMustSupport().stream()
+                            .filter(x -> x.getValue().equals("code"))
+                            .count()
+                    == 1);
+            assertTrue(dr.getMustSupport().stream()
+                            .filter(x -> x.getValue().equals("category"))
+                            .count()
+                    == 1);
+            assertTrue(dr.getMustSupport().stream()
+                            .filter(x -> x.getValue().equals("value"))
+                            .count()
+                    == 1);
+            assertTrue(dr.getMustSupport().stream()
+                            .filter(x -> x.getValue().equals("status"))
+                            .count()
+                    == 1);
+            assertTrue(dr.getMustSupport().stream()
+                            .filter(x -> x.getValue().equals("status.value"))
+                            .count()
+                    == 1);
+            assertTrue(dr.getMustSupport().stream()
+                            .filter(x -> x.getValue().equals("effective"))
+                            .count()
+                    == 1);
             assertTrue(dr.getCodeFilter().size() == 2);
             DataRequirement.DataRequirementCodeFilterComponent cf = null;
             for (DataRequirement.DataRequirementCodeFilterComponent drcf : dr.getCodeFilter()) {
-                if (drcf.getPath().equals("category") && drcf.getValueSet().equals("http://fhir.org/guides/cdc/opioid-cds/ValueSet/observation-category-laboratory")) {
+                if (drcf.getPath().equals("category")
+                        && drcf.getValueSet()
+                                .equals(
+                                        "http://fhir.org/guides/cdc/opioid-cds/ValueSet/observation-category-laboratory")) {
                     cf = drcf;
                     break;
                 }
@@ -166,7 +197,9 @@ public class DataRequirementsProcessorTest {
 
             cf = null;
             for (DataRequirement.DataRequirementCodeFilterComponent drcf : dr.getCodeFilter()) {
-                if (drcf.getPath().equals("code") && drcf.getValueSet().equals("http://fhir.org/guides/cdc/opioid-cds/ValueSet/pcp-medications")) {
+                if (drcf.getPath().equals("code")
+                        && drcf.getValueSet()
+                                .equals("http://fhir.org/guides/cdc/opioid-cds/ValueSet/pcp-medications")) {
                     cf = drcf;
                     break;
                 }
@@ -187,12 +220,14 @@ public class DataRequirementsProcessorTest {
             NamespaceInfo ni = new NamespaceInfo("fhir.cdc.opioid-cds", "http://fhir.org/guides/cdc/opioid-cds");
             var setup = setup(ni, "OpioidCDSSTU3/cql/OpioidCDSREC10.cql", cqlTranslatorOptions);
             DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
-            org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(setup.manager(), setup.library(), cqlTranslatorOptions, null, false);
+            org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(
+                    setup.manager(), setup.library(), cqlTranslatorOptions, null, false);
             assertNotNull(moduleDefinitionLibrary);
 
             RelatedArtifact ra = null;
             // FHIR-ModelInfo
-            ra = getDependency(moduleDefinitionLibrary, "http://fhir.org/guides/cqf/common/Library/FHIR-ModelInfo|3.0.0");
+            ra = getDependency(
+                    moduleDefinitionLibrary, "http://fhir.org/guides/cqf/common/Library/FHIR-ModelInfo|3.0.0");
             assertNotNull(ra, "Expected depends-on http://fhir.org/guides/cqf/common/Library/FHIR-ModelInfo|3.0.0");
 
             // FHIRHelpers
@@ -200,27 +235,41 @@ public class DataRequirementsProcessorTest {
             assertNotNull(ra, "Expected depends-on http://hl7.org/fhir/Library/FHIRHelpers|3.0.0");
 
             // OpioidCDSCommon
-            ra = getDependency(moduleDefinitionLibrary, "http://fhir.org/guides/cdc/opioid-cds/Library/OpioidCDSCommon|1.2.3");
-            assertNotNull(ra, "Expected depends-on http://fhir.org/guides/cdc/opioid-cds/Library/OpioidCDSCommon|1.2.3");
+            ra = getDependency(
+                    moduleDefinitionLibrary, "http://fhir.org/guides/cdc/opioid-cds/Library/OpioidCDSCommon|1.2.3");
+            assertNotNull(
+                    ra, "Expected depends-on http://fhir.org/guides/cdc/opioid-cds/Library/OpioidCDSCommon|1.2.3");
 
             // OpioidCDSRoutines
-            ra = getDependency(moduleDefinitionLibrary, "http://fhir.org/guides/cdc/opioid-cds/Library/OpioidCDSRoutines|1.2.3");
-            assertNotNull(ra, "Expected depends-on http://fhir.org/guides/cdc/opioid-cds/Library/OpioidCDSRoutines|1.2.3");
+            ra = getDependency(
+                    moduleDefinitionLibrary, "http://fhir.org/guides/cdc/opioid-cds/Library/OpioidCDSRoutines|1.2.3");
+            assertNotNull(
+                    ra, "Expected depends-on http://fhir.org/guides/cdc/opioid-cds/Library/OpioidCDSRoutines|1.2.3");
 
             // OpioidCDSCommonConfig
-            ra = getDependency(moduleDefinitionLibrary, "http://fhir.org/guides/cdc/opioid-cds/Library/OpioidCDSCommonConfig|1.2.3");
-            assertNotNull(ra, "Expected depends-on http://fhir.org/guides/cdc/opioid-cds/Library/OpioidCDSCommonConfig|1.2.3");
+            ra = getDependency(
+                    moduleDefinitionLibrary,
+                    "http://fhir.org/guides/cdc/opioid-cds/Library/OpioidCDSCommonConfig|1.2.3");
+            assertNotNull(
+                    ra,
+                    "Expected depends-on http://fhir.org/guides/cdc/opioid-cds/Library/OpioidCDSCommonConfig|1.2.3");
 
             // depends-on http://fhir.org/guides/cdc/opioid-cds/ValueSet/observation-category-laboratory
-            ra = getDependency(moduleDefinitionLibrary, "http://fhir.org/guides/cdc/opioid-cds/ValueSet/observation-category-laboratory");
-            assertNotNull(ra, "Expected depends-on http://fhir.org/guides/cdc/opioid-cds/ValueSet/observation-category-laboratory");
+            ra = getDependency(
+                    moduleDefinitionLibrary,
+                    "http://fhir.org/guides/cdc/opioid-cds/ValueSet/observation-category-laboratory");
+            assertNotNull(
+                    ra,
+                    "Expected depends-on http://fhir.org/guides/cdc/opioid-cds/ValueSet/observation-category-laboratory");
 
             // depends-on http://fhir.org/guides/cdc/opioid-cds/ValueSet/pcp-medications
-            ra = getDependency(moduleDefinitionLibrary, "http://fhir.org/guides/cdc/opioid-cds/ValueSet/pcp-medications");
+            ra = getDependency(
+                    moduleDefinitionLibrary, "http://fhir.org/guides/cdc/opioid-cds/ValueSet/pcp-medications");
             assertNotNull(ra, "Expected depends-on http://fhir.org/guides/cdc/opioid-cds/ValueSet/pcp-medications");
 
             // depends-on http://fhir.org/guides/cdc/opioid-cds/ValueSet/cocaine-medications
-            ra = getDependency(moduleDefinitionLibrary, "http://fhir.org/guides/cdc/opioid-cds/ValueSet/cocaine-medications");
+            ra = getDependency(
+                    moduleDefinitionLibrary, "http://fhir.org/guides/cdc/opioid-cds/ValueSet/cocaine-medications");
             assertNotNull(ra, "Expected depends-on http://fhir.org/guides/cdc/opioid-cds/ValueSet/cocaine-medications");
 
             // parameter "Negative PCP Screenings Count Since Last POS": integer
@@ -304,16 +353,37 @@ public class DataRequirementsProcessorTest {
             assertNotNull(dr);
             assertEquals(dr.getType(), Enumerations.FHIRTypes.OBSERVATION);
             assertTrue(dr.getMustSupport().size() == 6);
-            assertTrue(dr.getMustSupport().stream().filter(x -> x.getValue().equals("code")).count() == 1);
-            assertTrue(dr.getMustSupport().stream().filter(x -> x.getValue().equals("category")).count() == 1);
-            assertTrue(dr.getMustSupport().stream().filter(x -> x.getValue().equals("value")).count() == 1);
-            assertTrue(dr.getMustSupport().stream().filter(x -> x.getValue().equals("status")).count() == 1);
-            assertTrue(dr.getMustSupport().stream().filter(x -> x.getValue().equals("status.value")).count() == 1);
-            assertTrue(dr.getMustSupport().stream().filter(x -> x.getValue().equals("effective")).count() == 1);
+            assertTrue(dr.getMustSupport().stream()
+                            .filter(x -> x.getValue().equals("code"))
+                            .count()
+                    == 1);
+            assertTrue(dr.getMustSupport().stream()
+                            .filter(x -> x.getValue().equals("category"))
+                            .count()
+                    == 1);
+            assertTrue(dr.getMustSupport().stream()
+                            .filter(x -> x.getValue().equals("value"))
+                            .count()
+                    == 1);
+            assertTrue(dr.getMustSupport().stream()
+                            .filter(x -> x.getValue().equals("status"))
+                            .count()
+                    == 1);
+            assertTrue(dr.getMustSupport().stream()
+                            .filter(x -> x.getValue().equals("status.value"))
+                            .count()
+                    == 1);
+            assertTrue(dr.getMustSupport().stream()
+                            .filter(x -> x.getValue().equals("effective"))
+                            .count()
+                    == 1);
             assertTrue(dr.getCodeFilter().size() == 2);
             DataRequirement.DataRequirementCodeFilterComponent cf = null;
             for (DataRequirement.DataRequirementCodeFilterComponent drcf : dr.getCodeFilter()) {
-                if (drcf.getPath().equals("category") && drcf.getValueSet().equals("http://fhir.org/guides/cdc/opioid-cds/ValueSet/observation-category-laboratory")) {
+                if (drcf.getPath().equals("category")
+                        && drcf.getValueSet()
+                                .equals(
+                                        "http://fhir.org/guides/cdc/opioid-cds/ValueSet/observation-category-laboratory")) {
                     cf = drcf;
                     break;
                 }
@@ -322,7 +392,9 @@ public class DataRequirementsProcessorTest {
 
             cf = null;
             for (DataRequirement.DataRequirementCodeFilterComponent drcf : dr.getCodeFilter()) {
-                if (drcf.getPath().equals("code") && drcf.getValueSet().equals("http://fhir.org/guides/cdc/opioid-cds/ValueSet/pcp-medications")) {
+                if (drcf.getPath().equals("code")
+                        && drcf.getValueSet()
+                                .equals("http://fhir.org/guides/cdc/opioid-cds/ValueSet/pcp-medications")) {
                     cf = drcf;
                     break;
                 }
@@ -340,15 +412,21 @@ public class DataRequirementsProcessorTest {
         try {
             Set<String> expressions = new HashSet<>();
             // TODO - add expressions to expressions
-            expressions.add("Conditions Indicating End of Life or With Limited Life Expectancy");//Active Ambulatory Opioid Rx");
+            expressions.add(
+                    "Conditions Indicating End of Life or With Limited Life Expectancy"); // Active Ambulatory Opioid
+            // Rx");
             var setup = setup("OpioidCDS/cql/OpioidCDSCommon.cql", cqlTranslatorOptions);
 
-
             DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
-            org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(setup.manager(), setup.library(), cqlTranslatorOptions, expressions, false);
-            assertTrue(moduleDefinitionLibrary.getType().getCode("http://terminology.hl7.org/CodeSystem/library-type").equalsIgnoreCase("module-definition"));
+            org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(
+                    setup.manager(), setup.library(), cqlTranslatorOptions, expressions, false);
+            assertTrue(moduleDefinitionLibrary
+                    .getType()
+                    .getCode("http://terminology.hl7.org/CodeSystem/library-type")
+                    .equalsIgnoreCase("module-definition"));
 
-            List<Extension> directReferenceCodes = moduleDefinitionLibrary.getExtensionsByUrl("http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-directReferenceCode");
+            List<Extension> directReferenceCodes = moduleDefinitionLibrary.getExtensionsByUrl(
+                    "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-directReferenceCode");
             assertTrue(directReferenceCodes.size() == 4);
             Extension directReferenceCode = directReferenceCodes.get(0);
             Coding coding = directReferenceCode.getValueCoding();
@@ -360,7 +438,8 @@ public class DataRequirementsProcessorTest {
             RelatedArtifact conditionCategoryCodes = null;
             for (RelatedArtifact relatedArtifact : moduleDefinitionLibrary.getRelatedArtifact()) {
                 if (relatedArtifact.getType() == RelatedArtifact.RelatedArtifactType.DEPENDSON
-                    && relatedArtifact.getResource() != null && relatedArtifact.getResource().equals("http://hl7.org/fhir/condition-category")) {
+                        && relatedArtifact.getResource() != null
+                        && relatedArtifact.getResource().equals("http://hl7.org/fhir/condition-category")) {
                     conditionCategoryCodes = relatedArtifact;
                     break;
                 }
@@ -380,9 +459,11 @@ public class DataRequirementsProcessorTest {
             assertTrue(moduleDefinitionLibrary.getDataRequirement().size() == 3);
             DataRequirement diagnosisRequirement = null;
             for (DataRequirement requirement : moduleDefinitionLibrary.getDataRequirement()) {
-                if (requirement.getType() == Enumerations.FHIRTypes.CONDITION && requirement.getCodeFilter().size() == 1) {
+                if (requirement.getType() == Enumerations.FHIRTypes.CONDITION
+                        && requirement.getCodeFilter().size() == 1) {
                     DataRequirement.DataRequirementCodeFilterComponent cfc = requirement.getCodeFilterFirstRep();
-                    if (cfc.hasPath() && cfc.getPath().equals("category")
+                    if (cfc.hasPath()
+                            && cfc.getPath().equals("category")
                             && cfc.getCode().size() == 1
                             && cfc.getCodeFirstRep().hasCode()
                             && cfc.getCodeFirstRep().getCode().equals("encounter-diagnosis")) {
@@ -393,7 +474,7 @@ public class DataRequirementsProcessorTest {
             }
             assertTrue(diagnosisRequirement != null);
 
-            FhirContext context =  getFhirContext();
+            FhirContext context = getFhirContext();
             IParser parser = context.newJsonParser();
             String moduleDefString = parser.setPrettyPrint(true).encodeResourceToString(moduleDefinitionLibrary);
             logger.debug(moduleDefString);
@@ -407,14 +488,20 @@ public class DataRequirementsProcessorTest {
         CqlCompilerOptions cqlTranslatorOptions = new CqlCompilerOptions();
 
         try {
-//            CqlTranslator translator = createTranslator("/ecqm/resources/library-EXM506-2.2.000.json", cqlTranslatorOptions);
+            //            CqlTranslator translator = createTranslator("/ecqm/resources/library-EXM506-2.2.000.json",
+            // cqlTranslatorOptions);
             var setup = setup("CompositeMeasures/cql/BCSComponent.cql", cqlTranslatorOptions);
 
             DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
-            org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(setup.manager(), setup.library(), cqlTranslatorOptions, null, false);
-            assertTrue(moduleDefinitionLibrary.getType().getCode("http://terminology.hl7.org/CodeSystem/library-type").equalsIgnoreCase("module-definition"));
+            org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(
+                    setup.manager(), setup.library(), cqlTranslatorOptions, null, false);
+            assertTrue(moduleDefinitionLibrary
+                    .getType()
+                    .getCode("http://terminology.hl7.org/CodeSystem/library-type")
+                    .equalsIgnoreCase("module-definition"));
 
-            List<Extension> directReferenceCodes = moduleDefinitionLibrary.getExtensionsByUrl("http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-directReferenceCode");
+            List<Extension> directReferenceCodes = moduleDefinitionLibrary.getExtensionsByUrl(
+                    "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-directReferenceCode");
             assertTrue(directReferenceCodes.size() == 5);
             Extension directReferenceCode = directReferenceCodes.get(0);
             Coding coding = directReferenceCode.getValueCoding();
@@ -426,7 +513,8 @@ public class DataRequirementsProcessorTest {
             RelatedArtifact loincCodeSystem = null;
             for (RelatedArtifact relatedArtifact : moduleDefinitionLibrary.getRelatedArtifact()) {
                 if (relatedArtifact.getType() == RelatedArtifact.RelatedArtifactType.DEPENDSON
-                        && relatedArtifact.getResource() != null && relatedArtifact.getResource().equals("http://loinc.org")) {
+                        && relatedArtifact.getResource() != null
+                        && relatedArtifact.getResource().equals("http://loinc.org")) {
                     loincCodeSystem = relatedArtifact;
                     break;
                 }
@@ -446,11 +534,15 @@ public class DataRequirementsProcessorTest {
             assertTrue(moduleDefinitionLibrary.getDataRequirement().size() >= 15);
             DataRequirement diagnosisRequirement = null;
             for (DataRequirement requirement : moduleDefinitionLibrary.getDataRequirement()) {
-                if (requirement.getType() == Enumerations.FHIRTypes.CONDITION && requirement.getCodeFilter().size() == 1) {
+                if (requirement.getType() == Enumerations.FHIRTypes.CONDITION
+                        && requirement.getCodeFilter().size() == 1) {
                     DataRequirement.DataRequirementCodeFilterComponent cfc = requirement.getCodeFilterFirstRep();
-                    if (cfc.hasPath() && cfc.getPath().equals("code")
+                    if (cfc.hasPath()
+                            && cfc.getPath().equals("code")
                             && cfc.hasValueSet()
-                            && cfc.getValueSet().equals("http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.198.12.1071")) {
+                            && cfc.getValueSet()
+                                    .equals(
+                                            "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.198.12.1071")) {
                         diagnosisRequirement = requirement;
                         break;
                     }
@@ -458,7 +550,7 @@ public class DataRequirementsProcessorTest {
             }
             assertTrue(diagnosisRequirement != null);
 
-            FhirContext context =  getFhirContext();
+            FhirContext context = getFhirContext();
             IParser parser = context.newJsonParser();
             String moduleDefString = parser.setPrettyPrint(true).encodeResourceToString(moduleDefinitionLibrary);
             logger.debug(moduleDefString);
@@ -474,10 +566,13 @@ public class DataRequirementsProcessorTest {
         try {
             var setup = setup("DataRequirements/DataRequirementsLibraryTest.cql", cqlTranslatorOptions);
 
-
             DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
-            org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(setup.manager(), setup.library(), cqlTranslatorOptions, null, false);
-            assertTrue(moduleDefinitionLibrary.getType().getCode("http://terminology.hl7.org/CodeSystem/library-type").equalsIgnoreCase("module-definition"));
+            org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(
+                    setup.manager(), setup.library(), cqlTranslatorOptions, null, false);
+            assertTrue(moduleDefinitionLibrary
+                    .getType()
+                    .getCode("http://terminology.hl7.org/CodeSystem/library-type")
+                    .equalsIgnoreCase("module-definition"));
             DataRequirement encounterRequirement = null;
             for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
                 if (dr.getType() == Enumerations.FHIRTypes.ENCOUNTER) {
@@ -487,7 +582,7 @@ public class DataRequirementsProcessorTest {
             }
             assertTrue(encounterRequirement != null);
 
-            FhirContext context =  getFhirContext();
+            FhirContext context = getFhirContext();
             IParser parser = context.newJsonParser();
             String moduleDefString = parser.setPrettyPrint(true).encodeResourceToString(moduleDefinitionLibrary);
             logger.debug(moduleDefString);
@@ -503,11 +598,11 @@ public class DataRequirementsProcessorTest {
         try {
             var setup = setup("FHIRReferencesRevisited.cql", cqlTranslatorOptions);
 
-
             DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
-            org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(setup.manager(), setup.library(), cqlTranslatorOptions, null, false);
+            org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(
+                    setup.manager(), setup.library(), cqlTranslatorOptions, null, false);
 
-            FhirContext context =  getFhirContext();
+            FhirContext context = getFhirContext();
             IParser parser = context.newJsonParser();
             String moduleDefString = parser.setPrettyPrint(true).encodeResourceToString(moduleDefinitionLibrary);
             logger.debug(moduleDefString);
@@ -521,98 +616,153 @@ public class DataRequirementsProcessorTest {
         return new CqlCompilerOptions();
     }
 
-    private Setup setupUncollapsedDataRequirementsGather(String fileName, CqlCompilerOptions cqlTranslatorOptions) throws IOException {
+    private Setup setupUncollapsedDataRequirementsGather(String fileName, CqlCompilerOptions cqlTranslatorOptions)
+            throws IOException {
         cqlTranslatorOptions.setCollapseDataRequirements(false);
         cqlTranslatorOptions.setAnalyzeDataRequirements(false);
         return setup(fileName, cqlTranslatorOptions);
     }
 
-    private Setup setupUncollapsedDataRequirementsGather(NamespaceInfo namespace, String fileName, CqlCompilerOptions cqlTranslatorOptions) throws IOException {
+    private Setup setupUncollapsedDataRequirementsGather(
+            NamespaceInfo namespace, String fileName, CqlCompilerOptions cqlTranslatorOptions) throws IOException {
         cqlTranslatorOptions.setCollapseDataRequirements(false);
         cqlTranslatorOptions.setAnalyzeDataRequirements(false);
         return setup(namespace, fileName, cqlTranslatorOptions);
     }
 
-    private Setup setupUncollapsedDataRequirementsAnalysis(String fileName, CqlCompilerOptions cqlTranslatorOptions) throws IOException {
+    private Setup setupUncollapsedDataRequirementsAnalysis(String fileName, CqlCompilerOptions cqlTranslatorOptions)
+            throws IOException {
         cqlTranslatorOptions.setCollapseDataRequirements(false);
         cqlTranslatorOptions.setAnalyzeDataRequirements(true);
         return setup(fileName, cqlTranslatorOptions);
     }
 
-    private Setup setupUncollapsedDataRequirementsAnalysis(NamespaceInfo namespace, String fileName, CqlCompilerOptions cqlTranslatorOptions) throws IOException {
+    private Setup setupUncollapsedDataRequirementsAnalysis(
+            NamespaceInfo namespace, String fileName, CqlCompilerOptions cqlTranslatorOptions) throws IOException {
         cqlTranslatorOptions.setCollapseDataRequirements(false);
         cqlTranslatorOptions.setAnalyzeDataRequirements(true);
         return setup(namespace, fileName, cqlTranslatorOptions);
     }
 
-    private Setup setupDataRequirementsGather(String fileName, CqlCompilerOptions cqlTranslatorOptions) throws IOException {
+    private Setup setupDataRequirementsGather(String fileName, CqlCompilerOptions cqlTranslatorOptions)
+            throws IOException {
         cqlTranslatorOptions.setCollapseDataRequirements(true);
         cqlTranslatorOptions.setAnalyzeDataRequirements(false);
         return setup(fileName, cqlTranslatorOptions);
     }
 
-    private Setup setupDataRequirementsGather(NamespaceInfo namespace, String fileName, CqlCompilerOptions cqlTranslatorOptions) throws IOException {
+    private Setup setupDataRequirementsGather(
+            NamespaceInfo namespace, String fileName, CqlCompilerOptions cqlTranslatorOptions) throws IOException {
         cqlTranslatorOptions.setCollapseDataRequirements(true);
         cqlTranslatorOptions.setAnalyzeDataRequirements(false);
         return setup(namespace, fileName, cqlTranslatorOptions);
     }
 
-    private Setup setupDataRequirementsAnalysis(String fileName, CqlCompilerOptions cqlTranslatorOptions) throws IOException {
+    private Setup setupDataRequirementsAnalysis(String fileName, CqlCompilerOptions cqlTranslatorOptions)
+            throws IOException {
         cqlTranslatorOptions.setCollapseDataRequirements(true);
         cqlTranslatorOptions.setAnalyzeDataRequirements(true);
         return setup(fileName, cqlTranslatorOptions);
     }
 
-    private Setup setupDataRequirementsAnalysis(NamespaceInfo namespace, String fileName, CqlCompilerOptions cqlTranslatorOptions) throws IOException {
+    private Setup setupDataRequirementsAnalysis(
+            NamespaceInfo namespace, String fileName, CqlCompilerOptions cqlTranslatorOptions) throws IOException {
         cqlTranslatorOptions.setCollapseDataRequirements(true);
         cqlTranslatorOptions.setAnalyzeDataRequirements(true);
         return setup(namespace, fileName, cqlTranslatorOptions);
     }
 
-    private org.hl7.fhir.r5.model.Library getModuleDefinitionLibrary(Setup setup, CqlCompilerOptions cqlTranslatorOptions, Map<String, Object> parameters) {
+    private org.hl7.fhir.r5.model.Library getModuleDefinitionLibrary(
+            Setup setup, CqlCompilerOptions cqlTranslatorOptions, Map<String, Object> parameters) {
         DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
-        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(setup.manager(), setup.library(), cqlTranslatorOptions, null, parameters, false,false);
-        assertTrue(moduleDefinitionLibrary.getType().getCode("http://terminology.hl7.org/CodeSystem/library-type").equalsIgnoreCase("module-definition"));
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(
+                setup.manager(), setup.library(), cqlTranslatorOptions, null, parameters, false, false);
+        assertTrue(moduleDefinitionLibrary
+                .getType()
+                .getCode("http://terminology.hl7.org/CodeSystem/library-type")
+                .equalsIgnoreCase("module-definition"));
         return moduleDefinitionLibrary;
     }
 
-    private org.hl7.fhir.r5.model.Library getModuleDefinitionLibrary(Setup setup, CqlCompilerOptions cqlTranslatorOptions, Map<String, Object> parameters, ZonedDateTime evaluationDateTime) {
+    private org.hl7.fhir.r5.model.Library getModuleDefinitionLibrary(
+            Setup setup,
+            CqlCompilerOptions cqlTranslatorOptions,
+            Map<String, Object> parameters,
+            ZonedDateTime evaluationDateTime) {
         DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
-        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(setup.manager(), setup.library(), cqlTranslatorOptions, null, parameters, evaluationDateTime, false,false);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(
+                setup.manager(),
+                setup.library(),
+                cqlTranslatorOptions,
+                null,
+                parameters,
+                evaluationDateTime,
+                false,
+                false);
         assertEquals(moduleDefinitionLibrary.getName(), "EffectiveDataRequirements");
-        assertTrue(moduleDefinitionLibrary.getType().getCode("http://terminology.hl7.org/CodeSystem/library-type").equalsIgnoreCase("module-definition"));
+        assertTrue(moduleDefinitionLibrary
+                .getType()
+                .getCode("http://terminology.hl7.org/CodeSystem/library-type")
+                .equalsIgnoreCase("module-definition"));
         return moduleDefinitionLibrary;
     }
 
-    private org.hl7.fhir.r5.model.Library getModuleDefinitionLibrary(Setup setup, CqlCompilerOptions cqlTranslatorOptions, Map<String, Object> parameters, ZonedDateTime evaluationDateTime, boolean includeLogicDefinitions) {
+    private org.hl7.fhir.r5.model.Library getModuleDefinitionLibrary(
+            Setup setup,
+            CqlCompilerOptions cqlTranslatorOptions,
+            Map<String, Object> parameters,
+            ZonedDateTime evaluationDateTime,
+            boolean includeLogicDefinitions) {
         DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
-        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(setup.manager(), setup.library(), cqlTranslatorOptions, null, parameters, evaluationDateTime, includeLogicDefinitions,false);
-        assertTrue(moduleDefinitionLibrary.getType().getCode("http://terminology.hl7.org/CodeSystem/library-type").equalsIgnoreCase("module-definition"));
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(
+                setup.manager(),
+                setup.library(),
+                cqlTranslatorOptions,
+                null,
+                parameters,
+                evaluationDateTime,
+                includeLogicDefinitions,
+                false);
+        assertTrue(moduleDefinitionLibrary
+                .getType()
+                .getCode("http://terminology.hl7.org/CodeSystem/library-type")
+                .equalsIgnoreCase("module-definition"));
         return moduleDefinitionLibrary;
     }
 
-    private org.hl7.fhir.r5.model.Library getModuleDefinitionLibrary(Setup setup, CqlCompilerOptions cqlTranslatorOptions) {
+    private org.hl7.fhir.r5.model.Library getModuleDefinitionLibrary(
+            Setup setup, CqlCompilerOptions cqlTranslatorOptions) {
         DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
-        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(setup.manager(), setup.library(), cqlTranslatorOptions, null, false);
-        assertTrue(moduleDefinitionLibrary.getType().getCode("http://terminology.hl7.org/CodeSystem/library-type").equalsIgnoreCase("module-definition"));
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary =
+                dqReqTrans.gatherDataRequirements(setup.manager(), setup.library(), cqlTranslatorOptions, null, false);
+        assertTrue(moduleDefinitionLibrary
+                .getType()
+                .getCode("http://terminology.hl7.org/CodeSystem/library-type")
+                .equalsIgnoreCase("module-definition"));
         return moduleDefinitionLibrary;
     }
 
-    private org.hl7.fhir.r5.model.Library getModuleDefinitionLibrary(Setup setup, CqlCompilerOptions cqlTranslatorOptions, Set<String> expressions) {
+    private org.hl7.fhir.r5.model.Library getModuleDefinitionLibrary(
+            Setup setup, CqlCompilerOptions cqlTranslatorOptions, Set<String> expressions) {
         DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
-        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(setup.manager(), setup.library(), cqlTranslatorOptions, expressions, false);
-        assertTrue(moduleDefinitionLibrary.getType().getCode("http://terminology.hl7.org/CodeSystem/library-type").equalsIgnoreCase("module-definition"));
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(
+                setup.manager(), setup.library(), cqlTranslatorOptions, expressions, false);
+        assertTrue(moduleDefinitionLibrary
+                .getType()
+                .getCode("http://terminology.hl7.org/CodeSystem/library-type")
+                .equalsIgnoreCase("module-definition"));
         return moduleDefinitionLibrary;
     }
 
     private void outputModuleDefinitionLibrary(org.hl7.fhir.r5.model.Library moduleDefinitionLibrary) {
-        FhirContext context =  getFhirContext();
+        FhirContext context = getFhirContext();
         IParser parser = context.newJsonParser();
         String moduleDefString = parser.setPrettyPrint(true).encodeResourceToString(moduleDefinitionLibrary);
         System.out.println(moduleDefString);
     }
 
-    private Iterable<DataRequirement> getDataRequirementsForType(Iterable<DataRequirement> dataRequirements, Enumerations.FHIRTypes type) {
+    private Iterable<DataRequirement> getDataRequirementsForType(
+            Iterable<DataRequirement> dataRequirements, Enumerations.FHIRTypes type) {
         List<DataRequirement> results = new ArrayList<DataRequirement>();
         for (DataRequirement dr : dataRequirements) {
             if (dr.getType() == type) {
@@ -625,79 +775,93 @@ public class DataRequirementsProcessorTest {
     @Test
     public void TestFunctionDataRequirements() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
-        var manager  = setupDataRequirementsGather("CMS104/MATGlobalCommonFunctionsFHIR4.cql", compilerOptions);
-        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions, Collections.singleton("PrincipalDiagnosis"));
+        var manager = setupDataRequirementsGather("CMS104/MATGlobalCommonFunctionsFHIR4.cql", compilerOptions);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary =
+                getModuleDefinitionLibrary(manager, compilerOptions, Collections.singleton("PrincipalDiagnosis"));
 
         // DataRequirements of the PrincipalDiagnosis function:
-            // [Condition]
-        Iterable<DataRequirement> expectedDataRequirements = getDataRequirementsForType(moduleDefinitionLibrary.getDataRequirement(), Enumerations.FHIRTypes.CONDITION);
+        // [Condition]
+        Iterable<DataRequirement> expectedDataRequirements = getDataRequirementsForType(
+                moduleDefinitionLibrary.getDataRequirement(), Enumerations.FHIRTypes.CONDITION);
         assertTrue(expectedDataRequirements.iterator().hasNext());
-        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
     public void TestNonElectiveInpatientEncounterDataRequirements() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
-        var manager  = setupDataRequirementsGather("CMS104/TJCOverallFHIR.cql", compilerOptions);
-        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions, Collections.singleton("Non Elective Inpatient Encounter"));
+        var manager = setupDataRequirementsGather("CMS104/TJCOverallFHIR.cql", compilerOptions);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(
+                manager, compilerOptions, Collections.singleton("Non Elective Inpatient Encounter"));
 
         // DataRequirements of the Non Elective Inpatient Encounter expression:
-            // [Encounter: "Non-Elective Inpatient Encounter"]
-        Iterable<DataRequirement> actualDataRequirements = getDataRequirementsForType(moduleDefinitionLibrary.getDataRequirement(), Enumerations.FHIRTypes.ENCOUNTER);
+        // [Encounter: "Non-Elective Inpatient Encounter"]
+        Iterable<DataRequirement> actualDataRequirements = getDataRequirementsForType(
+                moduleDefinitionLibrary.getDataRequirement(), Enumerations.FHIRTypes.ENCOUNTER);
         assertTrue(actualDataRequirements.iterator().hasNext());
         DataRequirement dr = actualDataRequirements.iterator().next();
         DataRequirement.DataRequirementCodeFilterComponent actualDrcf = null;
         for (DataRequirement.DataRequirementCodeFilterComponent drcf : dr.getCodeFilter()) {
-            if ("type".equals(drcf.getPath()) && "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.117.1.7.1.424".equals(drcf.getValueSet())) {
+            if ("type".equals(drcf.getPath())
+                    && "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.117.1.7.1.424"
+                            .equals(drcf.getValueSet())) {
                 actualDrcf = drcf;
                 break;
             }
         }
         assertTrue(actualDrcf != null);
-        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
     public void TestAllStrokeEncounterDataRequirements() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
-        var manager  = setupDataRequirementsGather("CMS104/TJCOverallFHIR.cql", compilerOptions);
-        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions, Collections.singleton("All Stroke Encounter"));
+        var manager = setupDataRequirementsGather("CMS104/TJCOverallFHIR.cql", compilerOptions);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary =
+                getModuleDefinitionLibrary(manager, compilerOptions, Collections.singleton("All Stroke Encounter"));
 
         // DataRequirements of the All Stroke Encounter expression:
-            // [Encounter: "Non-Elective Inpatient Encounter"]          (from Non Elective Inpatient Encounter)
-            // [Condition]                                              (from PrincipalDiagnosis)
-        Iterable<DataRequirement> encounterDataRequirements = getDataRequirementsForType(moduleDefinitionLibrary.getDataRequirement(), Enumerations.FHIRTypes.ENCOUNTER);
+        // [Encounter: "Non-Elective Inpatient Encounter"]          (from Non Elective Inpatient Encounter)
+        // [Condition]                                              (from PrincipalDiagnosis)
+        Iterable<DataRequirement> encounterDataRequirements = getDataRequirementsForType(
+                moduleDefinitionLibrary.getDataRequirement(), Enumerations.FHIRTypes.ENCOUNTER);
         assertTrue(encounterDataRequirements.iterator().hasNext());
         DataRequirement dr = encounterDataRequirements.iterator().next();
         DataRequirement.DataRequirementCodeFilterComponent actualDrcf = null;
         for (DataRequirement.DataRequirementCodeFilterComponent drcf : dr.getCodeFilter()) {
-            if ("type".equals(drcf.getPath()) && "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.117.1.7.1.424".equals(drcf.getValueSet())) {
+            if ("type".equals(drcf.getPath())
+                    && "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.117.1.7.1.424"
+                            .equals(drcf.getValueSet())) {
                 actualDrcf = drcf;
                 break;
             }
         }
         assertTrue(actualDrcf != null);
 
-        Iterable<DataRequirement> conditionDataRequirements = getDataRequirementsForType(moduleDefinitionLibrary.getDataRequirement(), Enumerations.FHIRTypes.CONDITION);
+        Iterable<DataRequirement> conditionDataRequirements = getDataRequirementsForType(
+                moduleDefinitionLibrary.getDataRequirement(), Enumerations.FHIRTypes.CONDITION);
         assertTrue(conditionDataRequirements.iterator().hasNext());
 
-        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
     public void TestCMS104DataRequirements() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
-        var manager  = setupDataRequirementsGather("CMS104/DischargedonAntithromboticTherapyFHIR.cql", compilerOptions);
+        var manager = setupDataRequirementsGather("CMS104/DischargedonAntithromboticTherapyFHIR.cql", compilerOptions);
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions);
 
         // DataRequirements of the All Stroke Encounter expression:
         // [Encounter: "Non-Elective Inpatient Encounter"]          (from Non Elective Inpatient Encounter)
         // [Condition]                                              (from PrincipalDiagnosis)
-        Iterable<DataRequirement> encounterDataRequirements = getDataRequirementsForType(moduleDefinitionLibrary.getDataRequirement(), Enumerations.FHIRTypes.ENCOUNTER);
+        Iterable<DataRequirement> encounterDataRequirements = getDataRequirementsForType(
+                moduleDefinitionLibrary.getDataRequirement(), Enumerations.FHIRTypes.ENCOUNTER);
         DataRequirement.DataRequirementCodeFilterComponent actualDrcf = null;
         for (DataRequirement dr : encounterDataRequirements) {
             for (DataRequirement.DataRequirementCodeFilterComponent drcf : dr.getCodeFilter()) {
-                if ("type".equals(drcf.getPath()) && "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.117.1.7.1.424".equals(drcf.getValueSet())) {
+                if ("type".equals(drcf.getPath())
+                        && "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.117.1.7.1.424"
+                                .equals(drcf.getValueSet())) {
                     actualDrcf = drcf;
                     break;
                 }
@@ -708,10 +872,11 @@ public class DataRequirementsProcessorTest {
         }
         assertTrue(actualDrcf != null);
 
-        Iterable<DataRequirement> conditionDataRequirements = getDataRequirementsForType(moduleDefinitionLibrary.getDataRequirement(), Enumerations.FHIRTypes.CONDITION);
+        Iterable<DataRequirement> conditionDataRequirements = getDataRequirementsForType(
+                moduleDefinitionLibrary.getDataRequirement(), Enumerations.FHIRTypes.CONDITION);
         assertTrue(conditionDataRequirements.iterator().hasNext());
 
-        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
@@ -730,10 +895,10 @@ public class DataRequirementsProcessorTest {
         // Validate the ELM is correct
         ExpressionDef ed = manager.library().resolveExpressionRef("ESRD Observations");
         assertTrue(ed.getExpression() instanceof Retrieve);
-        Retrieve r = (Retrieve)ed.getExpression();
+        Retrieve r = (Retrieve) ed.getExpression();
         assertEquals(r.getCodeProperty(), "code");
         assertTrue(r.getCodes() instanceof ValueSetRef);
-        assertEquals(((ValueSetRef)r.getCodes()).getName(), "ESRD Diagnosis");
+        assertEquals(((ValueSetRef) r.getCodes()).getName(), "ESRD Diagnosis");
 
         // Validate the data requirement is reported in the module definition library
         DataRequirement expectedDataRequirement = null;
@@ -751,7 +916,7 @@ public class DataRequirementsProcessorTest {
         }
         assertTrue(expectedDataRequirement != null);
 
-        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
@@ -770,11 +935,11 @@ public class DataRequirementsProcessorTest {
         // Validate the ELM is correct
         ExpressionDef ed = manager.library().resolveExpressionRef("Observations");
         assertTrue(ed.getExpression() instanceof Query);
-        Query q = (Query)ed.getExpression();
+        Query q = (Query) ed.getExpression();
         assertTrue(q.getSource() != null && q.getSource().size() == 1);
         AliasedQuerySource source = q.getSource().get(0);
         assertTrue(source.getExpression() instanceof Retrieve);
-        Retrieve r = (Retrieve)source.getExpression();
+        Retrieve r = (Retrieve) source.getExpression();
         assertTrue(r.getCodeProperty() == null);
         assertTrue(r.getCodes() == null);
         assertTrue(r.getCodeFilter() != null);
@@ -783,7 +948,7 @@ public class DataRequirementsProcessorTest {
         assertEquals(cfe.getProperty(), "status");
         assertEquals(cfe.getComparator(), "=");
         assertTrue(cfe.getValue() instanceof Literal);
-        assertEquals(((Literal)cfe.getValue()).getValue(), "final");
+        assertEquals(((Literal) cfe.getValue()).getValue(), "final");
 
         // Validate the data requirement is reported in the module definition library
         DataRequirement expectedDataRequirement = null;
@@ -804,7 +969,7 @@ public class DataRequirementsProcessorTest {
         }
         assertTrue(expectedDataRequirement != null);
 
-        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
@@ -813,7 +978,8 @@ public class DataRequirementsProcessorTest {
         var manager = setupDataRequirementsAnalysis("TestCases/TestCase1c.cql", compilerOptions);
         Set<String> expressions = new HashSet<>();
         expressions.add("TestReferencedDataRequirement");
-        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions, expressions);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary =
+                getModuleDefinitionLibrary(manager, compilerOptions, expressions);
 
         /*
         1c: Referenced data requirement
@@ -834,8 +1000,12 @@ public class DataRequirementsProcessorTest {
         ParameterDefinition expectedParameterDefinition = null;
         assertEquals(moduleDefinitionLibrary.getParameter().size(), 1);
         for (ParameterDefinition pd : moduleDefinitionLibrary.getParameter()) {
-            if ("TestReferencedDataRequirement".equals(pd.getName()) && pd.getUse() == Enumerations.OperationParameterUse.OUT
-            && pd.hasMin() && pd.getMin() == 0 && "*".equals(pd.getMax()) && pd.getType() == Enumerations.FHIRTypes.MEDICATION) {
+            if ("TestReferencedDataRequirement".equals(pd.getName())
+                    && pd.getUse() == Enumerations.OperationParameterUse.OUT
+                    && pd.hasMin()
+                    && pd.getMin() == 0
+                    && "*".equals(pd.getMax())
+                    && pd.getType() == Enumerations.FHIRTypes.MEDICATION) {
                 expectedParameterDefinition = pd;
             }
         }
@@ -844,7 +1014,8 @@ public class DataRequirementsProcessorTest {
         // Validate the data requirement is reported correctly in the module definition library
 
         DataRequirement expectedDataRequirement = null;
-        // TODO: This really should be 1, but we're using the recursive gather, so it reports the [Medication] retrieve in the referenced expression as well
+        // TODO: This really should be 1, but we're using the recursive gather, so it reports the [Medication] retrieve
+        // in the referenced expression as well
         assertEquals(moduleDefinitionLibrary.getDataRequirement().size(), 2);
         for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
             if (dr.getType() == Enumerations.FHIRTypes.MEDICATION) {
@@ -861,7 +1032,7 @@ public class DataRequirementsProcessorTest {
         }
         assertTrue(expectedDataRequirement != null);
 
-        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
@@ -885,11 +1056,11 @@ public class DataRequirementsProcessorTest {
         // Validate the ELM is correct
         ExpressionDef ed = manager.library().resolveExpressionRef("HospiceEncounterClaimsA");
         assertTrue(ed.getExpression() instanceof Query);
-        Query q = (Query)ed.getExpression();
+        Query q = (Query) ed.getExpression();
         assertTrue(q.getSource() != null && q.getSource().size() == 1);
         AliasedQuerySource source = q.getSource().get(0);
         assertTrue(source.getExpression() instanceof Retrieve);
-        Retrieve r = (Retrieve)source.getExpression();
+        Retrieve r = (Retrieve) source.getExpression();
         assertTrue(r.getCodeProperty() == null);
         assertTrue(r.getCodes() == null);
         assertTrue(r.getCodeFilter() != null);
@@ -898,7 +1069,7 @@ public class DataRequirementsProcessorTest {
         assertEquals(cfe.getProperty(), "item.revenue");
         assertEquals(cfe.getComparator(), "in");
         assertTrue(cfe.getValue() instanceof ValueSetRef);
-        assertEquals(((ValueSetRef)cfe.getValue()).getName(), "Hospice Encounter");
+        assertEquals(((ValueSetRef) cfe.getValue()).getName(), "Hospice Encounter");
 
         // Validate the data requirement is reported in the module definition library
         DataRequirement expectedDataRequirement = null;
@@ -916,7 +1087,7 @@ public class DataRequirementsProcessorTest {
         }
         assertTrue(expectedDataRequirement != null);
 
-        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
@@ -941,11 +1112,11 @@ public class DataRequirementsProcessorTest {
         // Validate the ELM is correct
         ExpressionDef ed = manager.library().resolveExpressionRef("HospiceEncounterClaimsBBoundDate");
         assertTrue(ed.getExpression() instanceof Query);
-        Query q = (Query)ed.getExpression();
+        Query q = (Query) ed.getExpression();
         assertTrue(q.getSource() != null && q.getSource().size() == 1);
         AliasedQuerySource source = q.getSource().get(0);
         assertTrue(source.getExpression() instanceof Retrieve);
-        Retrieve r = (Retrieve)source.getExpression();
+        Retrieve r = (Retrieve) source.getExpression();
         assertTrue(r.getDateProperty() == null);
         assertTrue(r.getDateRange() == null);
         assertTrue(r.getDateFilter() != null);
@@ -953,7 +1124,7 @@ public class DataRequirementsProcessorTest {
         DateFilterElement dfe = r.getDateFilter().get(0);
         assertEquals(dfe.getProperty(), "item.serviced.start");
         assertTrue(dfe.getValue() instanceof ParameterRef);
-        assertEquals(((ParameterRef)dfe.getValue()).getName(), "Measurement Period");
+        assertEquals(((ParameterRef) dfe.getValue()).getName(), "Measurement Period");
 
         // Validate the data requirement is reported in the module definition library
         DataRequirement expectedDataRequirement = null;
@@ -962,9 +1133,11 @@ public class DataRequirementsProcessorTest {
                 if (dr.getDateFilter().size() == 1) {
                     DataRequirement.DataRequirementDateFilterComponent dfc = dr.getDateFilterFirstRep();
                     if ("item.serviced.start".equals(dfc.getPath())) {
-                        Extension e = dfc.getValue().getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/cqf-expression");
+                        Extension e = dfc.getValue()
+                                .getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/cqf-expression");
                         if (e != null && e.getValueExpression() != null) {
-                            if ("Measurement Period".equals(e.getValueExpression().getExpression())) {
+                            if ("Measurement Period"
+                                    .equals(e.getValueExpression().getExpression())) {
                                 expectedDataRequirement = dr;
                             }
                         }
@@ -974,7 +1147,7 @@ public class DataRequirementsProcessorTest {
         }
         assertTrue(expectedDataRequirement != null);
 
-        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
@@ -983,7 +1156,8 @@ public class DataRequirementsProcessorTest {
         var manager = setupDataRequirementsAnalysis("TestCases/TestCase2e.cql", compilerOptions);
         // Evaluate this test as of 12/31/2022
         ZonedDateTime evaluationDateTime = ZonedDateTime.of(2022, 12, 31, 0, 0, 0, 0, ZoneId.of("Z"));
-        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions, new HashMap<String, Object>(), evaluationDateTime);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary =
+                getModuleDefinitionLibrary(manager, compilerOptions, new HashMap<String, Object>(), evaluationDateTime);
 
         /*
         2e - Timing phrase 90 days or less before
@@ -998,17 +1172,18 @@ public class DataRequirementsProcessorTest {
 
         ExpressionDef ed = manager.library().resolveExpressionRef("Date Filter Expression");
         assertTrue(ed.getExpression() instanceof Query);
-        Query q = (Query)ed.getExpression();
+        Query q = (Query) ed.getExpression();
         assertTrue(q.getSource() != null && q.getSource().size() == 1);
         AliasedQuerySource source = q.getSource().get(0);
         assertTrue(source.getExpression() instanceof Retrieve);
-        Retrieve r = (Retrieve)source.getExpression();
+        Retrieve r = (Retrieve) source.getExpression();
         assertTrue(r.getDateFilter() != null && r.getDateFilter().size() == 1);
         DateFilterElement dfe = r.getDateFilter().get(0);
         assertEquals(dfe.getProperty(), "onset");
         assertTrue(dfe.getValue() instanceof Interval);
 
-        OffsetDateTime expectedPeriodStart = evaluationDateTime.toOffsetDateTime().minusDays(90);
+        OffsetDateTime expectedPeriodStart =
+                evaluationDateTime.toOffsetDateTime().minusDays(90);
         OffsetDateTime expectedPeriodEnd = evaluationDateTime.toOffsetDateTime().minusNanos(1000000);
         DataRequirement expectedDataRequirement = null;
         boolean hasFilter = false;
@@ -1018,10 +1193,21 @@ public class DataRequirementsProcessorTest {
                     for (DataRequirement.DataRequirementDateFilterComponent dfc : dr.getDateFilter()) {
                         if ("onset".equals(dfc.getPath())) {
                             if (dfc.getValue() instanceof Period) {
-                                String expectedPeriodStartString = expectedPeriodStart.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME).replace(":00Z", ":00.000Z"); //"2022-10-02T00:00:00.000-07:00"
-                                String expectedPeriodEndString = expectedPeriodEnd.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME); //"2022-12-30T23:59:59.999-07:00"
-                                if (((Period)dfc.getValue()).hasStart() && ((Period)dfc.getValue()).getStartElement().asStringValue().equals(expectedPeriodStartString)
-                                        && ((Period)dfc.getValue()).hasEnd() && ((Period)dfc.getValue()).getEndElement().asStringValue().equals(expectedPeriodEndString)) {
+                                String expectedPeriodStartString = expectedPeriodStart
+                                        .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                                        .replace(":00Z", ":00.000Z"); // "2022-10-02T00:00:00.000-07:00"
+                                String expectedPeriodEndString = expectedPeriodEnd.format(
+                                        DateTimeFormatter.ISO_OFFSET_DATE_TIME); // "2022-12-30T23:59:59.999-07:00"
+                                if (((Period) dfc.getValue()).hasStart()
+                                        && ((Period) dfc.getValue())
+                                                .getStartElement()
+                                                .asStringValue()
+                                                .equals(expectedPeriodStartString)
+                                        && ((Period) dfc.getValue()).hasEnd()
+                                        && ((Period) dfc.getValue())
+                                                .getEndElement()
+                                                .asStringValue()
+                                                .equals(expectedPeriodEndString)) {
                                     hasFilter = true;
                                 }
                             }
@@ -1041,7 +1227,8 @@ public class DataRequirementsProcessorTest {
     public void TestDataRequirementsAnalysisCase2g() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         var manager = setupDataRequirementsAnalysis("TestCases/TestCase2g.cql", compilerOptions);
-        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions, new HashMap<String, Object>());
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary =
+                getModuleDefinitionLibrary(manager, compilerOptions, new HashMap<String, Object>());
 
         /*
         2g - Equal to a compile-time literal function
@@ -1056,11 +1243,11 @@ public class DataRequirementsProcessorTest {
 
         ExpressionDef ed = manager.library().resolveExpressionRef("DateTimeEqualToFunction");
         assertTrue(ed.getExpression() instanceof Query);
-        Query q = (Query)ed.getExpression();
+        Query q = (Query) ed.getExpression();
         assertTrue(q.getSource() != null && q.getSource().size() == 1);
         AliasedQuerySource source = q.getSource().get(0);
         assertTrue(source.getExpression() instanceof Retrieve);
-        Retrieve r = (Retrieve)source.getExpression();
+        Retrieve r = (Retrieve) source.getExpression();
         assertTrue(r.getDateFilter() != null && r.getDateFilter().size() == 1);
         DateFilterElement dfe = r.getDateFilter().get(0);
         assertEquals(dfe.getProperty(), "onset");
@@ -1073,7 +1260,7 @@ public class DataRequirementsProcessorTest {
                     DataRequirement.DataRequirementDateFilterComponent dfc = dr.getDateFilterFirstRep();
                     if ("onset".equals(dfc.getPath())) {
                         if (dfc.getValue() instanceof Period) {
-                            if (((Period)dfc.getValue()).hasStart() && ((Period)dfc.getValue()).hasEnd()) {
+                            if (((Period) dfc.getValue()).hasStart() && ((Period) dfc.getValue()).hasEnd()) {
                                 expectedDataRequirement = dr;
                             }
                         }
@@ -1088,7 +1275,8 @@ public class DataRequirementsProcessorTest {
     public void TestDataRequirementsAnalysisCase2i() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         var manager = setupDataRequirementsAnalysis("TestCases/TestCase2i.cql", compilerOptions);
-        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions, new HashMap<String, Object>());
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary =
+                getModuleDefinitionLibrary(manager, compilerOptions, new HashMap<String, Object>());
 
         /*
         2i - In a compile-time literal interval
@@ -1102,14 +1290,15 @@ public class DataRequirementsProcessorTest {
         */
 
         ZonedDateTime evaluationDateTime = ZonedDateTime.of(2022, 12, 31, 0, 0, 0, 0, ZoneId.systemDefault());
-        OffsetDateTime expectedPeriodStart = evaluationDateTime.toOffsetDateTime().minusDays(90);
+        OffsetDateTime expectedPeriodStart =
+                evaluationDateTime.toOffsetDateTime().minusDays(90);
         ExpressionDef ed = manager.library().resolveExpressionRef("Date Filter Expression");
         assertTrue(ed.getExpression() instanceof Query);
-        Query q = (Query)ed.getExpression();
+        Query q = (Query) ed.getExpression();
         assertTrue(q.getSource() != null && q.getSource().size() == 1);
         AliasedQuerySource source = q.getSource().get(0);
         assertTrue(source.getExpression() instanceof Retrieve);
-        Retrieve r = (Retrieve)source.getExpression();
+        Retrieve r = (Retrieve) source.getExpression();
         assertTrue(r.getDateFilter() != null && r.getDateFilter().size() == 1);
         DateFilterElement dfe = r.getDateFilter().get(0);
         assertEquals(dfe.getProperty(), "onset");
@@ -1122,8 +1311,14 @@ public class DataRequirementsProcessorTest {
                     DataRequirement.DataRequirementDateFilterComponent dfc = dr.getDateFilterFirstRep();
                     if ("onset".equals(dfc.getPath())) {
                         if (dfc.getValue() instanceof Period) {
-                            String expectedPeriodStartString = expectedPeriodStart.format(DateTimeFormatter.ISO_LOCAL_DATE); // "2022-10-02"
-                            if (((Period)dfc.getValue()).hasStart() && ((Period)dfc.getValue()).hasEnd() && ((Period)dfc.getValue()).getStartElement().asStringValue().equals(expectedPeriodStartString)) {
+                            String expectedPeriodStartString =
+                                    expectedPeriodStart.format(DateTimeFormatter.ISO_LOCAL_DATE); // "2022-10-02"
+                            if (((Period) dfc.getValue()).hasStart()
+                                    && ((Period) dfc.getValue()).hasEnd()
+                                    && ((Period) dfc.getValue())
+                                            .getStartElement()
+                                            .asStringValue()
+                                            .equals(expectedPeriodStartString)) {
                                 expectedDataRequirement = dr;
                             }
                         }
@@ -1138,7 +1333,8 @@ public class DataRequirementsProcessorTest {
     public void TestDataRequirementsAnalysisCase2j() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         var manager = setupDataRequirementsAnalysis("TestCases/TestCase2j.cql", compilerOptions);
-        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions, new HashMap<String, Object>());
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary =
+                getModuleDefinitionLibrary(manager, compilerOptions, new HashMap<String, Object>());
 
         /*
         2j - Before and after
@@ -1153,17 +1349,20 @@ public class DataRequirementsProcessorTest {
         */
 
         ZonedDateTime evaluationDateTime = ZonedDateTime.of(2022, 12, 31, 0, 0, 0, 0, ZoneId.systemDefault());
-        OffsetDateTime expectedPeriodStart1 = evaluationDateTime.toOffsetDateTime().minusDays(90);
-        OffsetDateTime expectedPeriodEnd1 = ZonedDateTime.of(9999, 12, 31, 23, 59, 59, 999000000, ZoneId.of("UTC")).toOffsetDateTime();
-        OffsetDateTime expectedPeriodStart2 = ZonedDateTime.of(1, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC")).toOffsetDateTime();
+        OffsetDateTime expectedPeriodStart1 =
+                evaluationDateTime.toOffsetDateTime().minusDays(90);
+        OffsetDateTime expectedPeriodEnd1 = ZonedDateTime.of(9999, 12, 31, 23, 59, 59, 999000000, ZoneId.of("UTC"))
+                .toOffsetDateTime();
+        OffsetDateTime expectedPeriodStart2 =
+                ZonedDateTime.of(1, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC")).toOffsetDateTime();
         OffsetDateTime expectedPeriodEnd2 = evaluationDateTime.toOffsetDateTime();
         ExpressionDef ed = manager.library().resolveExpressionRef("Date Filter Expression");
         assertTrue(ed.getExpression() instanceof Query);
-        Query q = (Query)ed.getExpression();
+        Query q = (Query) ed.getExpression();
         assertTrue(q.getSource() != null && q.getSource().size() == 1);
         AliasedQuerySource source = q.getSource().get(0);
         assertTrue(source.getExpression() instanceof Retrieve);
-        Retrieve r = (Retrieve)source.getExpression();
+        Retrieve r = (Retrieve) source.getExpression();
         assertTrue(r.getDateFilter() != null && r.getDateFilter().size() == 2);
         DateFilterElement dfe = r.getDateFilter().get(0);
         assertEquals(dfe.getProperty(), "onset");
@@ -1181,21 +1380,39 @@ public class DataRequirementsProcessorTest {
                     for (DataRequirement.DataRequirementDateFilterComponent dfc : dr.getDateFilter()) {
                         if ("onset".equals(dfc.getPath())) {
                             if (dfc.getValue() instanceof Period) {
-                                String expectedPeriodStart1String = expectedPeriodStart1.format(DateTimeFormatter.ISO_LOCAL_DATE); // "2022-10-02"
-                                String expectedPeriodEnd1String = expectedPeriodEnd1.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME); // "9999-12-31T23:59:59.999Z"
-                                String expectedPeriodStart2String = expectedPeriodStart2.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME).replace(":00Z", ":00.000Z"); // "0001-01-01T00:00:00.000Z"
-                                String expectedPeriodEnd2String = expectedPeriodEnd2.format(DateTimeFormatter.ISO_LOCAL_DATE); // "2022-12-31"
-                                if (((Period)dfc.getValue()).hasStart() && ((Period)dfc.getValue()).getStartElement().asStringValue().equals(expectedPeriodStart1String)
-                                        && ((Period)dfc.getValue()).hasEnd() && ((Period)dfc.getValue()).getEndElement().asStringValue().equals(expectedPeriodEnd1String)) {
+                                String expectedPeriodStart1String =
+                                        expectedPeriodStart1.format(DateTimeFormatter.ISO_LOCAL_DATE); // "2022-10-02"
+                                String expectedPeriodEnd1String = expectedPeriodEnd1.format(
+                                        DateTimeFormatter.ISO_OFFSET_DATE_TIME); // "9999-12-31T23:59:59.999Z"
+                                String expectedPeriodStart2String = expectedPeriodStart2
+                                        .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                                        .replace(":00Z", ":00.000Z"); // "0001-01-01T00:00:00.000Z"
+                                String expectedPeriodEnd2String =
+                                        expectedPeriodEnd2.format(DateTimeFormatter.ISO_LOCAL_DATE); // "2022-12-31"
+                                if (((Period) dfc.getValue()).hasStart()
+                                        && ((Period) dfc.getValue())
+                                                .getStartElement()
+                                                .asStringValue()
+                                                .equals(expectedPeriodStart1String)
+                                        && ((Period) dfc.getValue()).hasEnd()
+                                        && ((Period) dfc.getValue())
+                                                .getEndElement()
+                                                .asStringValue()
+                                                .equals(expectedPeriodEnd1String)) {
                                     hasFilter1 = true;
-                                }
-                                else if (((Period)dfc.getValue()).hasEnd()
-                                        && ((Period)dfc.getValue()).hasStart()) {
-                                    String actualPeriodStart2String = ((Period)dfc.getValue()).getStartElement().asStringValue();
-                                    String actualPeriodEnd2String = ((Period)dfc.getValue()).getEndElement().asStringValue();
-                                    if (actualPeriodStart2String.equals(expectedPeriodStart2String) && actualPeriodEnd2String.equals(expectedPeriodEnd2String)) {
-                                        // && ((Period)dfc.getValue()).getEndElement().asStringValue().equals(expectedPeriodEnd2String)
-                                        // && ((Period)dfc.getValue()).getStartElement().asStringValue().equals(expectedPeriodStart2String)
+                                } else if (((Period) dfc.getValue()).hasEnd() && ((Period) dfc.getValue()).hasStart()) {
+                                    String actualPeriodStart2String = ((Period) dfc.getValue())
+                                            .getStartElement()
+                                            .asStringValue();
+                                    String actualPeriodEnd2String = ((Period) dfc.getValue())
+                                            .getEndElement()
+                                            .asStringValue();
+                                    if (actualPeriodStart2String.equals(expectedPeriodStart2String)
+                                            && actualPeriodEnd2String.equals(expectedPeriodEnd2String)) {
+                                        // &&
+                                        // ((Period)dfc.getValue()).getEndElement().asStringValue().equals(expectedPeriodEnd2String)
+                                        // &&
+                                        // ((Period)dfc.getValue()).getStartElement().asStringValue().equals(expectedPeriodStart2String)
                                         hasFilter2 = true;
                                     }
                                 }
@@ -1232,11 +1449,11 @@ public class DataRequirementsProcessorTest {
         // Validate the ELM is correct
         ExpressionDef ed = manager.library().resolveExpressionRef("MedicationRequestWithEncounter");
         assertTrue(ed.getExpression() instanceof Query);
-        Query q = (Query)ed.getExpression();
+        Query q = (Query) ed.getExpression();
         assertTrue(q.getSource() != null && q.getSource().size() == 1);
         AliasedQuerySource source = q.getSource().get(0);
         assertTrue(source.getExpression() instanceof Retrieve);
-        Retrieve r = (Retrieve)source.getExpression();
+        Retrieve r = (Retrieve) source.getExpression();
         assertTrue(r.getDataType().getLocalPart().equals("MedicationRequest"));
         assertTrue(r.getInclude().size() == 1);
         String primarySourceId = r.getLocalId();
@@ -1246,9 +1463,9 @@ public class DataRequirementsProcessorTest {
         assertTrue(!ie.isIsReverse());
         assertTrue(q.getRelationship().size() == 1);
         assertTrue(q.getRelationship().get(0) instanceof With);
-        With w = (With)q.getRelationship().get(0);
+        With w = (With) q.getRelationship().get(0);
         assertTrue(w.getExpression() instanceof Retrieve);
-        r = (Retrieve)w.getExpression();
+        r = (Retrieve) w.getExpression();
         assertTrue(r.getDataType().getLocalPart().equals("Encounter"));
         assertTrue(r.getIncludedIn().equals(primarySourceId));
 
@@ -1264,11 +1481,14 @@ public class DataRequirementsProcessorTest {
         DataRequirement includedDataRequirement = null;
         for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
             if (dr.getType() == Enumerations.FHIRTypes.ENCOUNTER) {
-                Extension e = dr.getExtensionByUrl("http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-relatedRequirement");
+                Extension e = dr.getExtensionByUrl(
+                        "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-relatedRequirement");
                 if (e != null) {
                     Extension targetId = e.getExtensionByUrl("targetId");
                     Extension targetProperty = e.getExtensionByUrl("targetProperty");
-                    if (targetId != null && targetProperty != null && targetProperty.getValueStringType().getValue().equals("encounter")) {
+                    if (targetId != null
+                            && targetProperty != null
+                            && targetProperty.getValueStringType().getValue().equals("encounter")) {
                         includedDataRequirement = dr;
                     }
                 }
@@ -1276,10 +1496,10 @@ public class DataRequirementsProcessorTest {
         }
         assertTrue(includedDataRequirement != null);
 
-        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
-    //@Test
+    // @Test
     // TODO: Enable include when the reference is in a let
     public void TestDataRequirementsAnalysisCase9d() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
@@ -1304,11 +1524,11 @@ public class DataRequirementsProcessorTest {
         // Validate the ELM is correct
         ExpressionDef ed = manager.library().resolveExpressionRef("MedicationRequestWithAspirinInLet");
         assertTrue(ed.getExpression() instanceof Query);
-        Query q = (Query)ed.getExpression();
+        Query q = (Query) ed.getExpression();
         assertTrue(q.getSource() != null && q.getSource().size() == 1);
         AliasedQuerySource source = q.getSource().get(0);
         assertTrue(source.getExpression() instanceof Retrieve);
-        Retrieve r = (Retrieve)source.getExpression();
+        Retrieve r = (Retrieve) source.getExpression();
         assertTrue(r.getDataType().getLocalPart().equals("MedicationRequest"));
         assertTrue(r.getInclude().size() == 1);
         String primarySourceId = r.getLocalId();
@@ -1320,13 +1540,13 @@ public class DataRequirementsProcessorTest {
         assertTrue(q.getLet().size() == 1);
         LetClause lc = q.getLet().get(0);
         assertTrue(lc.getExpression() instanceof SingletonFrom);
-        SingletonFrom sf = (SingletonFrom)lc.getExpression();
+        SingletonFrom sf = (SingletonFrom) lc.getExpression();
         assertTrue(sf.getOperand() instanceof Query);
-        q = (Query)sf.getOperand();
+        q = (Query) sf.getOperand();
         assertTrue(q.getSource().size() == 1);
         source = q.getSource().get(0);
         assertTrue(source.getExpression() instanceof Retrieve);
-        r = (Retrieve)source.getExpression();
+        r = (Retrieve) source.getExpression();
         assertTrue(r.getDataType().getLocalPart().equals("Medication"));
         assertTrue(r.getIncludedIn().equals(primarySourceId));
         assertTrue(r.getCodeFilter().size() == 2);
@@ -1349,11 +1569,14 @@ public class DataRequirementsProcessorTest {
         DataRequirement includedDataRequirement = null;
         for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
             if (dr.getType() == Enumerations.FHIRTypes.MEDICATION) {
-                Extension e = dr.getExtensionByUrl("http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-relatedRequirement");
+                Extension e = dr.getExtensionByUrl(
+                        "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-relatedRequirement");
                 if (e != null) {
                     Extension targetId = e.getExtensionByUrl("targetId");
                     Extension targetProperty = e.getExtensionByUrl("targetProperty");
-                    if (targetId != null && targetProperty != null && targetProperty.getValueStringType().getValue().equals("medication")) {
+                    if (targetId != null
+                            && targetProperty != null
+                            && targetProperty.getValueStringType().getValue().equals("medication")) {
                         includedDataRequirement = dr;
                     }
                 }
@@ -1361,7 +1584,7 @@ public class DataRequirementsProcessorTest {
         }
         assertTrue(includedDataRequirement != null);
 
-        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
@@ -1388,11 +1611,11 @@ public class DataRequirementsProcessorTest {
         // Validate the ELM is correct
         ExpressionDef ed = manager.library().resolveExpressionRef("MedicationRequestWithAspirinInWhere");
         assertTrue(ed.getExpression() instanceof Query);
-        Query q = (Query)ed.getExpression();
+        Query q = (Query) ed.getExpression();
         assertTrue(q.getSource() != null && q.getSource().size() == 1);
         AliasedQuerySource source = q.getSource().get(0);
         assertTrue(source.getExpression() instanceof Retrieve);
-        Retrieve r = (Retrieve)source.getExpression();
+        Retrieve r = (Retrieve) source.getExpression();
         assertTrue(r.getDataType().getLocalPart().equals("MedicationRequest"));
         assertTrue(r.getInclude().size() == 1);
         String primarySourceId = r.getLocalId();
@@ -1403,13 +1626,13 @@ public class DataRequirementsProcessorTest {
 
         assertTrue(q.getWhere() != null);
         assertTrue(q.getWhere() instanceof Exists);
-        Exists ex = (Exists)q.getWhere();
+        Exists ex = (Exists) q.getWhere();
         assertTrue(ex.getOperand() instanceof Query);
-        q = (Query)ex.getOperand();
+        q = (Query) ex.getOperand();
         assertTrue(q.getSource().size() == 1);
         source = q.getSource().get(0);
         assertTrue(source.getExpression() instanceof Retrieve);
-        r = (Retrieve)source.getExpression();
+        r = (Retrieve) source.getExpression();
         assertTrue(r.getDataType().getLocalPart().equals("Medication"));
         assertTrue(r.getIncludedIn().equals(primarySourceId));
         assertTrue(r.getCodeFilter().size() == 1);
@@ -1429,11 +1652,14 @@ public class DataRequirementsProcessorTest {
         DataRequirement includedDataRequirement = null;
         for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
             if (dr.getType() == Enumerations.FHIRTypes.MEDICATION) {
-                Extension e = dr.getExtensionByUrl("http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-relatedRequirement");
+                Extension e = dr.getExtensionByUrl(
+                        "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-relatedRequirement");
                 if (e != null) {
                     Extension targetId = e.getExtensionByUrl("targetId");
                     Extension targetProperty = e.getExtensionByUrl("targetProperty");
-                    if (targetId != null && targetProperty != null && targetProperty.getValueStringType().getValue().equals("medication")) {
+                    if (targetId != null
+                            && targetProperty != null
+                            && targetProperty.getValueStringType().getValue().equals("medication")) {
                         includedDataRequirement = dr;
                     }
                 }
@@ -1441,7 +1667,7 @@ public class DataRequirementsProcessorTest {
         }
         assertTrue(includedDataRequirement != null);
 
-        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
@@ -1467,11 +1693,11 @@ public class DataRequirementsProcessorTest {
         // Validate the ELM is correct
         ExpressionDef ed = manager.library().resolveExpressionRef("MedicationRequestWithAspirinInFrom");
         assertTrue(ed.getExpression() instanceof Query);
-        Query q = (Query)ed.getExpression();
+        Query q = (Query) ed.getExpression();
         assertTrue(q.getSource() != null && q.getSource().size() == 2);
         AliasedQuerySource source = q.getSource().get(0);
         assertTrue(source.getExpression() instanceof Retrieve);
-        Retrieve r = (Retrieve)source.getExpression();
+        Retrieve r = (Retrieve) source.getExpression();
         assertTrue(r.getDataType().getLocalPart().equals("MedicationRequest"));
         assertTrue(r.getInclude().size() == 1);
         String primarySourceId = r.getLocalId();
@@ -1482,7 +1708,7 @@ public class DataRequirementsProcessorTest {
 
         source = q.getSource().get(1);
         assertTrue(source.getExpression() instanceof Retrieve);
-        r = (Retrieve)source.getExpression();
+        r = (Retrieve) source.getExpression();
         assertTrue(r.getDataType().getLocalPart().equals("Medication"));
         assertTrue(r.getIncludedIn().equals(primarySourceId));
         assertTrue(r.getCodeFilter().size() == 1);
@@ -1502,11 +1728,14 @@ public class DataRequirementsProcessorTest {
         DataRequirement includedDataRequirement = null;
         for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
             if (dr.getType() == Enumerations.FHIRTypes.MEDICATION) {
-                Extension e = dr.getExtensionByUrl("http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-relatedRequirement");
+                Extension e = dr.getExtensionByUrl(
+                        "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-relatedRequirement");
                 if (e != null) {
                     Extension targetId = e.getExtensionByUrl("targetId");
                     Extension targetProperty = e.getExtensionByUrl("targetProperty");
-                    if (targetId != null && targetProperty != null && targetProperty.getValueStringType().getValue().equals("medication")) {
+                    if (targetId != null
+                            && targetProperty != null
+                            && targetProperty.getValueStringType().getValue().equals("medication")) {
                         includedDataRequirement = dr;
                     }
                 }
@@ -1514,7 +1743,7 @@ public class DataRequirementsProcessorTest {
         }
         assertTrue(includedDataRequirement != null);
 
-        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
@@ -1549,11 +1778,11 @@ public class DataRequirementsProcessorTest {
         // Validate the ELM is correct
         ExpressionDef ed = manager.library().resolveExpressionRef("ESRD Observations");
         assertTrue(ed.getExpression() instanceof Query);
-        Query q = (Query)ed.getExpression();
+        Query q = (Query) ed.getExpression();
         assertTrue(q.getSource() != null && q.getSource().size() == 1);
         AliasedQuerySource source = q.getSource().get(0);
         assertTrue(source.getExpression() instanceof Retrieve);
-        Retrieve r = (Retrieve)source.getExpression();
+        Retrieve r = (Retrieve) source.getExpression();
         assertTrue(r.getDataType().getLocalPart().equals("Observation"));
 
         // Validate the data requirement is reported in the module definition library
@@ -1567,20 +1796,32 @@ public class DataRequirementsProcessorTest {
 
         assertTrue(expectedDataRequirement.getMustSupport().size() == 2);
         boolean hasCode = false;
-        assertTrue(expectedDataRequirement.getMustSupport().stream().filter(s -> s.getValue().equals("code")).count() == 1);
-        assertTrue(expectedDataRequirement.getMustSupport().stream().filter(s -> s.getValue().equals("issued")).count() == 1);
+        assertTrue(expectedDataRequirement.getMustSupport().stream()
+                        .filter(s -> s.getValue().equals("code"))
+                        .count()
+                == 1);
+        assertTrue(expectedDataRequirement.getMustSupport().stream()
+                        .filter(s -> s.getValue().equals("issued"))
+                        .count()
+                == 1);
 
         assertTrue(expectedDataRequirement.getCodeFilter().size() == 1);
-        DataRequirement.DataRequirementCodeFilterComponent drcfc = expectedDataRequirement.getCodeFilter().get(0);
+        DataRequirement.DataRequirementCodeFilterComponent drcfc =
+                expectedDataRequirement.getCodeFilter().get(0);
         assertTrue(drcfc.getPath().equals("code"));
         assertTrue(drcfc.getValueSet().equals("http://fakeurl.com/ersd-diagnosis"));
 
         assertTrue(expectedDataRequirement.getDateFilter().size() == 1);
-        DataRequirement.DataRequirementDateFilterComponent drdfc = expectedDataRequirement.getDateFilter().get(0);
+        DataRequirement.DataRequirementDateFilterComponent drdfc =
+                expectedDataRequirement.getDateFilter().get(0);
         LocalDate ld = LocalDate.of(2022, 2, 15);
-        assertTrue(drdfc.getValuePeriod().getStart().compareTo(Date.from(ld.atStartOfDay(ZoneId.systemDefault()).toInstant())) == 0);
+        assertTrue(drdfc.getValuePeriod()
+                        .getStart()
+                        .compareTo(Date.from(
+                                ld.atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                == 0);
 
-        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
@@ -1600,11 +1841,11 @@ public class DataRequirementsProcessorTest {
         // Validate the ELM is correct
         ExpressionDef ed = manager.library().resolveExpressionRef("ESRD Observations");
         assertTrue(ed.getExpression() instanceof Query);
-        Query q = (Query)ed.getExpression();
+        Query q = (Query) ed.getExpression();
         assertTrue(q.getSource() != null && q.getSource().size() == 1);
         AliasedQuerySource source = q.getSource().get(0);
         assertTrue(source.getExpression() instanceof Retrieve);
-        Retrieve r = (Retrieve)source.getExpression();
+        Retrieve r = (Retrieve) source.getExpression();
         assertTrue(r.getDataType().getLocalPart().equals("Observation"));
 
         // Validate the data requirement is reported in the module definition library
@@ -1616,7 +1857,7 @@ public class DataRequirementsProcessorTest {
         }
         assertTrue(expectedDataRequirement != null);
 
-        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
@@ -1637,11 +1878,11 @@ public class DataRequirementsProcessorTest {
         // Validate the ELM is correct
         ExpressionDef ed = manager.library().resolveExpressionRef("ESRD Observations");
         assertTrue(ed.getExpression() instanceof Query);
-        Query q = (Query)ed.getExpression();
+        Query q = (Query) ed.getExpression();
         assertTrue(q.getSource() != null && q.getSource().size() == 1);
         AliasedQuerySource source = q.getSource().get(0);
         assertTrue(source.getExpression() instanceof Retrieve);
-        Retrieve r = (Retrieve)source.getExpression();
+        Retrieve r = (Retrieve) source.getExpression();
         assertTrue(r.getDataType().getLocalPart().equals("Observation"));
 
         // Validate the data requirement is reported in the module definition library
@@ -1653,7 +1894,7 @@ public class DataRequirementsProcessorTest {
         }
         assertTrue(expectedDataRequirement != null);
 
-        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
@@ -1665,12 +1906,15 @@ public class DataRequirementsProcessorTest {
         assertNotNull(moduleDefinitionLibrary);
     }
 
-    private void assertEqualToExpectedModuleDefinitionLibrary(org.hl7.fhir.r5.model.Library actualModuleDefinitionLibrary, String pathToExpectedModuleDefinitionLibrary) {
-        FhirContext context =  getFhirContext();
+    private void assertEqualToExpectedModuleDefinitionLibrary(
+            org.hl7.fhir.r5.model.Library actualModuleDefinitionLibrary, String pathToExpectedModuleDefinitionLibrary) {
+        FhirContext context = getFhirContext();
         IParser parser = context.newJsonParser();
-        org.hl7.fhir.r5.model.Library expectedModuleDefinitionLibrary = (org.hl7.fhir.r5.model.Library)parser.parseResource(DataRequirementsProcessorTest.class.getResourceAsStream(pathToExpectedModuleDefinitionLibrary));
+        org.hl7.fhir.r5.model.Library expectedModuleDefinitionLibrary =
+                (org.hl7.fhir.r5.model.Library) parser.parseResource(
+                        DataRequirementsProcessorTest.class.getResourceAsStream(pathToExpectedModuleDefinitionLibrary));
         assertNotNull(expectedModuleDefinitionLibrary);
-        //outputModuleDefinitionLibrary(actualModuleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(actualModuleDefinitionLibrary);
         actualModuleDefinitionLibrary.setDate(null);
         expectedModuleDefinitionLibrary.setDate(null);
         assertTrue(actualModuleDefinitionLibrary.equalsDeep(expectedModuleDefinitionLibrary));
@@ -1683,9 +1927,10 @@ public class DataRequirementsProcessorTest {
         var manager = setupDataRequirementsAnalysis("EXMLogic/EXMLogic.cql", compilerOptions);
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions);
         assertNotNull(moduleDefinitionLibrary);
-        assertEqualToExpectedModuleDefinitionLibrary(moduleDefinitionLibrary, "EXMLogic/Library-EXMLogic-data-requirements.json");
+        assertEqualToExpectedModuleDefinitionLibrary(
+                moduleDefinitionLibrary, "EXMLogic/Library-EXMLogic-data-requirements.json");
 
-        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
@@ -1693,11 +1938,16 @@ public class DataRequirementsProcessorTest {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         compilerOptions.setAnalyzeDataRequirements(false);
         var manager = setupDataRequirementsAnalysis("WithDependencies/BSElements.cql", compilerOptions);
-        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions, new HashMap<String, Object>(), ZonedDateTime.of(2023, 1, 16, 0, 0, 0, 0, ZoneId.of("UTC")));
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(
+                manager,
+                compilerOptions,
+                new HashMap<String, Object>(),
+                ZonedDateTime.of(2023, 1, 16, 0, 0, 0, 0, ZoneId.of("UTC")));
         assertNotNull(moduleDefinitionLibrary);
-        assertEqualToExpectedModuleDefinitionLibrary(moduleDefinitionLibrary, "WithDependencies/Library-BSElements-data-requirements.json");
+        assertEqualToExpectedModuleDefinitionLibrary(
+                moduleDefinitionLibrary, "WithDependencies/Library-BSElements-data-requirements.json");
 
-        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
@@ -1705,22 +1955,32 @@ public class DataRequirementsProcessorTest {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         compilerOptions.setAnalyzeDataRequirements(false);
         var manager = setupDataRequirementsAnalysis("CMS645/CMS645Test.cql", compilerOptions);
-        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions, new HashMap<String, Object>(), ZonedDateTime.of(2023, 1, 16, 0, 0, 0, 0, ZoneId.of("UTC")));
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(
+                manager,
+                compilerOptions,
+                new HashMap<String, Object>(),
+                ZonedDateTime.of(2023, 1, 16, 0, 0, 0, 0, ZoneId.of("UTC")));
         assertNotNull(moduleDefinitionLibrary);
-        assertEqualToExpectedModuleDefinitionLibrary(moduleDefinitionLibrary, "CMS645/CMS645-ModuleDefinitionLibrary.json");
+        assertEqualToExpectedModuleDefinitionLibrary(
+                moduleDefinitionLibrary, "CMS645/CMS645-ModuleDefinitionLibrary.json");
 
-        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
     public void TestPCSBMI() throws IOException {
         CqlCompilerOptions compilerOptions = CqlCompilerOptions.defaultOptions();
         var manager = setupDataRequirementsAnalysis("PCSBMI/PCSBMIScreenAndFollowUpFHIR.cql", compilerOptions);
-        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions, new HashMap<String, Object>(), ZonedDateTime.of(2023, 1, 16, 0, 0, 0, 0, ZoneId.of("UTC")));
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(
+                manager,
+                compilerOptions,
+                new HashMap<String, Object>(),
+                ZonedDateTime.of(2023, 1, 16, 0, 0, 0, 0, ZoneId.of("UTC")));
         assertNotNull(moduleDefinitionLibrary);
-        assertEqualToExpectedModuleDefinitionLibrary(moduleDefinitionLibrary, "PCSBMI/PCSBMI-ModuleDefinitionLibrary.json");
+        assertEqualToExpectedModuleDefinitionLibrary(
+                moduleDefinitionLibrary, "PCSBMI/PCSBMI-ModuleDefinitionLibrary.json");
 
-        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
@@ -1728,9 +1988,9 @@ public class DataRequirementsProcessorTest {
         CqlCompilerOptions compilerOptions = CqlCompilerOptions.defaultOptions();
         compilerOptions.getOptions().add(CqlCompilerOptions.Options.EnableResultTypes);
         Set<String> expressions = new HashSet<>();
-        //expressions.add("Qualifying Encounter");
-        //expressions.add("Qualifying Encounter During Measurement Period");
-        //expressions.add("Qualifying Encounter During Measurement Period Expanded");
+        // expressions.add("Qualifying Encounter");
+        // expressions.add("Qualifying Encounter During Measurement Period");
+        // expressions.add("Qualifying Encounter During Measurement Period Expanded");
         expressions.add("Initial Population");
         expressions.add("Denominator");
         expressions.add("Denominator Exception");
@@ -1739,13 +1999,19 @@ public class DataRequirementsProcessorTest {
         expressions.add("SDE Race");
         expressions.add("SDE Sex");
         expressions.add("SDE Payer");
-        //var manager = setupUncollapsedDataRequirementsAnalysis(new NamespaceInfo("gov.healthit.ecqi.ecqms", "http://ecqi.healthit.gov/ecqms"), "CMS143/cql/TestUnion.cql", compilerOptions);
-        var manager = setupDataRequirementsAnalysis(new NamespaceInfo("gov.healthit.ecqi.ecqms", "http://ecqi.healthit.gov/ecqms"), "CMS143/cql/POAGOpticNerveEvaluationFHIR-0.0.003.cql", compilerOptions);
-        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions, expressions);
+        // var manager = setupUncollapsedDataRequirementsAnalysis(new NamespaceInfo("gov.healthit.ecqi.ecqms",
+        // "http://ecqi.healthit.gov/ecqms"), "CMS143/cql/TestUnion.cql", compilerOptions);
+        var manager = setupDataRequirementsAnalysis(
+                new NamespaceInfo("gov.healthit.ecqi.ecqms", "http://ecqi.healthit.gov/ecqms"),
+                "CMS143/cql/POAGOpticNerveEvaluationFHIR-0.0.003.cql",
+                compilerOptions);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary =
+                getModuleDefinitionLibrary(manager, compilerOptions, expressions);
         assertNotNull(moduleDefinitionLibrary);
-        assertEqualToExpectedModuleDefinitionLibrary(moduleDefinitionLibrary, "CMS143/resources/Library-EffectiveDataRequirements.json");
+        assertEqualToExpectedModuleDefinitionLibrary(
+                moduleDefinitionLibrary, "CMS143/resources/Library-EffectiveDataRequirements.json");
 
-        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
@@ -1754,17 +2020,23 @@ public class DataRequirementsProcessorTest {
         compilerOptions.getOptions().add(CqlCompilerOptions.Options.EnableResultTypes);
         Set<String> expressions = new HashSet<>();
         expressions.add("SDE Sex");
-        var manager = setupDataRequirementsAnalysis(new NamespaceInfo("gov.healthit.ecqi.ecqms", "http://ecqi.healthit.gov/ecqms"), "CMS143/cql/POAGOpticNerveEvaluationFHIR-0.0.003.cql", compilerOptions);
-        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions, expressions);
+        var manager = setupDataRequirementsAnalysis(
+                new NamespaceInfo("gov.healthit.ecqi.ecqms", "http://ecqi.healthit.gov/ecqms"),
+                "CMS143/cql/POAGOpticNerveEvaluationFHIR-0.0.003.cql",
+                compilerOptions);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary =
+                getModuleDefinitionLibrary(manager, compilerOptions, expressions);
         assertNotNull(moduleDefinitionLibrary);
-        assertEqualToExpectedModuleDefinitionLibrary(moduleDefinitionLibrary, "CMS143/resources/Library-SDESex-EffectiveDataRequirements.json");
+        assertEqualToExpectedModuleDefinitionLibrary(
+                moduleDefinitionLibrary, "CMS143/resources/Library-SDESex-EffectiveDataRequirements.json");
 
-        // Has direct reference codes to M#http://hl7.org/fhir/v3/AdministrativeGender and F#http://hl7.org/fhir/v3/AdministrativeGender
+        // Has direct reference codes to M#http://hl7.org/fhir/v3/AdministrativeGender and
+        // F#http://hl7.org/fhir/v3/AdministrativeGender
         // Has relatedArtifact to code system http://hl7.org/fhir/v3/AdministrativeGender
         // Has relatedArtifact to Library SDE
         // Has one and only one DataRequirement for Patient with profile QICore Patient and mustSupport gender
 
-        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
@@ -1773,16 +2045,22 @@ public class DataRequirementsProcessorTest {
         compilerOptions.getOptions().add(CqlCompilerOptions.Options.EnableResultTypes);
         Set<String> expressions = new HashSet<>();
         expressions.add("SDE Payer");
-        var manager = setupDataRequirementsAnalysis(new NamespaceInfo("gov.healthit.ecqi.ecqms", "http://ecqi.healthit.gov/ecqms"), "CMS143/cql/POAGOpticNerveEvaluationFHIR-0.0.003.cql", compilerOptions);
-        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions, expressions);
+        var manager = setupDataRequirementsAnalysis(
+                new NamespaceInfo("gov.healthit.ecqi.ecqms", "http://ecqi.healthit.gov/ecqms"),
+                "CMS143/cql/POAGOpticNerveEvaluationFHIR-0.0.003.cql",
+                compilerOptions);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary =
+                getModuleDefinitionLibrary(manager, compilerOptions, expressions);
         assertNotNull(moduleDefinitionLibrary);
-        assertEqualToExpectedModuleDefinitionLibrary(moduleDefinitionLibrary, "CMS143/resources/Library-SDEPayer-EffectiveDataRequirements.json");
+        assertEqualToExpectedModuleDefinitionLibrary(
+                moduleDefinitionLibrary, "CMS143/resources/Library-SDEPayer-EffectiveDataRequirements.json");
 
         // Has relatedArtifact to Library SDE
         // Has relatedArtifact to Value Set Payer
-        // Has one and only one DatRequirement for Coverage with the Payer Type value set and mustSupport type and period
+        // Has one and only one DatRequirement for Coverage with the Payer Type value set and mustSupport type and
+        // period
 
-        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
@@ -1791,15 +2069,20 @@ public class DataRequirementsProcessorTest {
         compilerOptions.getOptions().add(CqlCompilerOptions.Options.EnableResultTypes);
         Set<String> expressions = new HashSet<>();
         expressions.add("SDE Ethnicity");
-        var manager = setupDataRequirementsAnalysis(new NamespaceInfo("gov.healthit.ecqi.ecqms", "http://ecqi.healthit.gov/ecqms"), "CMS143/cql/POAGOpticNerveEvaluationFHIR-0.0.003.cql", compilerOptions);
-        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions, expressions);
+        var manager = setupDataRequirementsAnalysis(
+                new NamespaceInfo("gov.healthit.ecqi.ecqms", "http://ecqi.healthit.gov/ecqms"),
+                "CMS143/cql/POAGOpticNerveEvaluationFHIR-0.0.003.cql",
+                compilerOptions);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary =
+                getModuleDefinitionLibrary(manager, compilerOptions, expressions);
         assertNotNull(moduleDefinitionLibrary);
-        assertEqualToExpectedModuleDefinitionLibrary(moduleDefinitionLibrary, "CMS143/resources/Library-SDEEthnicity-EffectiveDataRequirements.json");
+        assertEqualToExpectedModuleDefinitionLibrary(
+                moduleDefinitionLibrary, "CMS143/resources/Library-SDEEthnicity-EffectiveDataRequirements.json");
 
         // Has relatedArtifact to Library SDE
         // Has one and only one DatRequirement for Patient with the QICore Profile and mustSupport ethnicity
 
-        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
@@ -1808,15 +2091,20 @@ public class DataRequirementsProcessorTest {
         compilerOptions.getOptions().add(CqlCompilerOptions.Options.EnableResultTypes);
         Set<String> expressions = new HashSet<>();
         expressions.add("SDE Race");
-        var manager = setupDataRequirementsAnalysis(new NamespaceInfo("gov.healthit.ecqi.ecqms", "http://ecqi.healthit.gov/ecqms"), "CMS143/cql/POAGOpticNerveEvaluationFHIR-0.0.003.cql", compilerOptions);
-        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions, expressions);
+        var manager = setupDataRequirementsAnalysis(
+                new NamespaceInfo("gov.healthit.ecqi.ecqms", "http://ecqi.healthit.gov/ecqms"),
+                "CMS143/cql/POAGOpticNerveEvaluationFHIR-0.0.003.cql",
+                compilerOptions);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary =
+                getModuleDefinitionLibrary(manager, compilerOptions, expressions);
         assertNotNull(moduleDefinitionLibrary);
-        assertEqualToExpectedModuleDefinitionLibrary(moduleDefinitionLibrary, "CMS143/resources/Library-SDERace-EffectiveDataRequirements.json");
+        assertEqualToExpectedModuleDefinitionLibrary(
+                moduleDefinitionLibrary, "CMS143/resources/Library-SDERace-EffectiveDataRequirements.json");
 
         // Has relatedArtifact to Library SDE
         // Has one and only one DatRequirement for Patient with the QICore Profile and mustSupport race
 
-        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
@@ -1825,10 +2113,16 @@ public class DataRequirementsProcessorTest {
         compilerOptions.getOptions().add(CqlCompilerOptions.Options.EnableResultTypes);
         Set<String> expressions = new HashSet<>();
         expressions.add("Qualifying Encounter During Measurement Period");
-        var manager = setupDataRequirementsAnalysis(new NamespaceInfo("gov.healthit.ecqi.ecqms", "http://ecqi.healthit.gov/ecqms"), "CMS143/cql/POAGOpticNerveEvaluationFHIR-0.0.003.cql", compilerOptions);
-        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions, expressions);
+        var manager = setupDataRequirementsAnalysis(
+                new NamespaceInfo("gov.healthit.ecqi.ecqms", "http://ecqi.healthit.gov/ecqms"),
+                "CMS143/cql/POAGOpticNerveEvaluationFHIR-0.0.003.cql",
+                compilerOptions);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary =
+                getModuleDefinitionLibrary(manager, compilerOptions, expressions);
         assertNotNull(moduleDefinitionLibrary);
-        assertEqualToExpectedModuleDefinitionLibrary(moduleDefinitionLibrary, "CMS143/resources/Library-QualifyingEncounterMP-EffectiveDataRequirements.json");
+        assertEqualToExpectedModuleDefinitionLibrary(
+                moduleDefinitionLibrary,
+                "CMS143/resources/Library-QualifyingEncounterMP-EffectiveDataRequirements.json");
 
         // Has direct reference codes to VR and AMB
         // Has relatedArtifact to ActCode code system
@@ -1837,30 +2131,38 @@ public class DataRequirementsProcessorTest {
         // Has relatedArtifact to Outpatient Consultation ValueSet
         // Has relatedArtifact to Nursing Facility Visit ValueSet
         // Has relatedArtifact to Care Services in Long-Term Residentail Facility ValueSet
-        // Has 5 DataRequirements for Encounter with the QICore Encounter Profile and mustSupport type, period, and class, one for each ValueSet
+        // Has 5 DataRequirements for Encounter with the QICore Encounter Profile and mustSupport type, period, and
+        // class, one for each ValueSet
 
-        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
     public void TestCMS149() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         compilerOptions.setAnalyzeDataRequirements(false);
-        var manager = setupDataRequirementsAnalysis("CMS149/cql/DementiaCognitiveAssessmentFHIR-0.0.003.cql", compilerOptions);
-        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions, new HashMap<String, Object>(), ZonedDateTime.of(2023, 1, 16, 0, 0, 0, 0, ZoneId.of("UTC")));
+        var manager = setupDataRequirementsAnalysis(
+                "CMS149/cql/DementiaCognitiveAssessmentFHIR-0.0.003.cql", compilerOptions);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(
+                manager,
+                compilerOptions,
+                new HashMap<String, Object>(),
+                ZonedDateTime.of(2023, 1, 16, 0, 0, 0, 0, ZoneId.of("UTC")));
         assertNotNull(moduleDefinitionLibrary);
-        assertEqualToExpectedModuleDefinitionLibrary(moduleDefinitionLibrary, "CMS149/resources/Library-EffectiveDataRequirements.json");
+        assertEqualToExpectedModuleDefinitionLibrary(
+                moduleDefinitionLibrary, "CMS149/resources/Library-EffectiveDataRequirements.json");
 
-        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
-    
+
     private Extension getLogicDefinitionByName(List<Extension> logicDefinitions, String libraryName, String name) {
         for (Extension ld : logicDefinitions) {
             Extension ln = ld.getExtensionByUrl("libraryName");
             assertTrue(ln != null && ln.hasValue());
             Extension n = ld.getExtensionByUrl("name");
             assertTrue(n != null && n.hasValue());
-            if (ln.getValueStringType().getValue().equals(libraryName) && n.getValueStringType().getValue().equals(name)) {
+            if (ln.getValueStringType().getValue().equals(libraryName)
+                    && n.getValueStringType().getValue().equals(name)) {
                 return ld;
             }
         }
@@ -1871,12 +2173,19 @@ public class DataRequirementsProcessorTest {
     public void TestDeviceOrder() throws IOException {
         CqlCompilerOptions compilerOptions = CqlCompilerOptions.defaultOptions();
         var manager = setupDataRequirementsGather("DeviceOrder/TestDeviceOrder.cql", compilerOptions);
-        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions, new HashMap<String, Object>(), ZonedDateTime.of(2023, 1, 16, 0, 0, 0, 0, ZoneId.of("UTC")), true);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(
+                manager,
+                compilerOptions,
+                new HashMap<String, Object>(),
+                ZonedDateTime.of(2023, 1, 16, 0, 0, 0, 0, ZoneId.of("UTC")),
+                true);
         assertNotNull(moduleDefinitionLibrary);
-        assertEqualToExpectedModuleDefinitionLibrary(moduleDefinitionLibrary, "DeviceOrder/Library-TestDeviceOrder-EffectiveDataRequirements.json");
-        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        assertEqualToExpectedModuleDefinitionLibrary(
+                moduleDefinitionLibrary, "DeviceOrder/Library-TestDeviceOrder-EffectiveDataRequirements.json");
+        // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
 
-        List<Extension> logicDefinitions = moduleDefinitionLibrary.getExtensionsByUrl("http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition");
+        List<Extension> logicDefinitions = moduleDefinitionLibrary.getExtensionsByUrl(
+                "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition");
         assertTrue(logicDefinitions != null);
         assertTrue(logicDefinitions.size() > 0);
         Extension logicDefinition = getLogicDefinitionByName(logicDefinitions, "TestDeviceOrder", "isDeviceOrder");
@@ -1889,19 +2198,21 @@ public class DataRequirementsProcessorTest {
 
         cqlTranslatorOptions.getOptions().add(CqlCompilerOptions.Options.EnableAnnotations);
         try {
-            var setup = setup("CompositeMeasures/cql/pertinence-tag.cql", cqlTranslatorOptions);//"OpioidCDS/cql/OpioidCDSCommon.cql", cqlTranslatorOptions);
-
-
+            var setup = setup(
+                    "CompositeMeasures/cql/pertinence-tag.cql",
+                    cqlTranslatorOptions); // "OpioidCDS/cql/OpioidCDSCommon.cql", cqlTranslatorOptions);
 
             DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
-            org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(setup.manager(), setup.library(), cqlTranslatorOptions, null, false);
+            org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(
+                    setup.manager(), setup.library(), cqlTranslatorOptions, null, false);
 
             assertTrue(moduleDefinitionLibrary.getDataRequirement().size() == 3);
             DataRequirement dr = moduleDefinitionLibrary.getDataRequirement().get(1);
             assertEquals(dr.getType(), Enumerations.FHIRTypes.CONDITION);
-            assertEquals(dr.getExtension().get(0).getUrl(), "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinence");
+            assertEquals(
+                    dr.getExtension().get(0).getUrl(),
+                    "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinence");
             assertEquals(((Coding) dr.getExtension().get(0).getValue()).getCode(), "pathognomonic");
-
 
             FhirContext context = getFhirContext();
             IParser parser = context.newJsonParser();
@@ -1918,26 +2229,33 @@ public class DataRequirementsProcessorTest {
 
         cqlTranslatorOptions.getOptions().add(CqlCompilerOptions.Options.EnableAnnotations);
         try {
-            var setup = setup("CompositeMeasures/cql/pertinence-tag-AdvancedIllnessandFrailtyExclusion_FHIR4-5.0.000.cql", cqlTranslatorOptions);//"OpioidCDS/cql/OpioidCDSCommon.cql", cqlTranslatorOptions);
-
-
+            var setup = setup(
+                    "CompositeMeasures/cql/pertinence-tag-AdvancedIllnessandFrailtyExclusion_FHIR4-5.0.000.cql",
+                    cqlTranslatorOptions); // "OpioidCDS/cql/OpioidCDSCommon.cql", cqlTranslatorOptions);
 
             DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
-            org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(setup.manager(), setup.library(), cqlTranslatorOptions, null, false);
+            org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(
+                    setup.manager(), setup.library(), cqlTranslatorOptions, null, false);
 
             DataRequirement dr = moduleDefinitionLibrary.getDataRequirement().get(1);
             assertEquals(dr.getType(), Enumerations.FHIRTypes.CONDITION);
-            assertEquals(dr.getExtension().get(0).getUrl(), "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinence");
+            assertEquals(
+                    dr.getExtension().get(0).getUrl(),
+                    "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinence");
             assertEquals(((Coding) dr.getExtension().get(0).getValue()).getCode(), "weakly-negative");
 
             DataRequirement dr2 = moduleDefinitionLibrary.getDataRequirement().get(2);
             assertEquals(dr2.getType(), Enumerations.FHIRTypes.ENCOUNTER);
-            assertEquals(dr2.getExtension().get(0).getUrl(), "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinence");
+            assertEquals(
+                    dr2.getExtension().get(0).getUrl(),
+                    "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinence");
             assertEquals(((Coding) dr2.getExtension().get(0).getValue()).getCode(), "pathognomonic");
 
             DataRequirement dr5 = moduleDefinitionLibrary.getDataRequirement().get(5);
             assertEquals(dr5.getType(), Enumerations.FHIRTypes.DEVICEREQUEST);
-            assertEquals(dr5.getExtension().get(0).getUrl(), "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinence");
+            assertEquals(
+                    dr5.getExtension().get(0).getUrl(),
+                    "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinence");
             assertEquals(((Coding) dr5.getExtension().get(0).getValue()).getCode(), "strongly-positive");
 
             FhirContext context = getFhirContext();
@@ -1970,7 +2288,9 @@ public class DataRequirementsProcessorTest {
     private static LibraryManager setup(CqlCompilerOptions options, String relativePath) {
         var modelManager = new ModelManager();
         var libraryManager = new LibraryManager(modelManager, options);
-        libraryManager.getLibrarySourceLoader().registerProvider(new DefaultLibrarySourceProvider(Paths.get(relativePath)));
+        libraryManager
+                .getLibrarySourceLoader()
+                .registerProvider(new DefaultLibrarySourceProvider(Paths.get(relativePath)));
         libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
 
         return libraryManager;
@@ -1980,8 +2300,10 @@ public class DataRequirementsProcessorTest {
         return setup(null, testFileName, options);
     }
 
-    public static Setup setup(NamespaceInfo namespaceInfo, String testFileName, CqlCompilerOptions options) throws IOException {
-        File translationTestFile = new File(DataRequirementsProcessorTest.class.getResource(testFileName).getFile());
+    public static Setup setup(NamespaceInfo namespaceInfo, String testFileName, CqlCompilerOptions options)
+            throws IOException {
+        File translationTestFile = new File(
+                DataRequirementsProcessorTest.class.getResource(testFileName).getFile());
         var manager = setup(options, translationTestFile.getParent());
 
         if (namespaceInfo != null) {

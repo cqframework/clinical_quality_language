@@ -1,9 +1,8 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.math.BigDecimal;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.runtime.Quantity;
-
-import java.math.BigDecimal;
 
 /*
 
@@ -36,30 +35,23 @@ public class ProductEvaluator {
                     continue;
                 }
                 if ((element instanceof Integer && result instanceof Integer)
-                    || (element instanceof Long && result instanceof Long)
-                    || (element instanceof BigDecimal && result instanceof BigDecimal)) {
+                        || (element instanceof Long && result instanceof Long)
+                        || (element instanceof BigDecimal && result instanceof BigDecimal)) {
                     result = MultiplyEvaluator.multiply(result, element);
                 } else if (element instanceof Quantity && result instanceof Quantity) {
                     if (!((Quantity) element).getUnit().equals(((Quantity) result).getUnit())) {
                         // TODO: try to normalize units?
-                        throw new IllegalArgumentException(
-                                String.format(
-                                        "Found different units during Quantity product evaluation: %s and %s",
-                                        ((Quantity) element).getUnit(), ((Quantity) result).getUnit()
-                                )
-                        );
+                        throw new IllegalArgumentException(String.format(
+                                "Found different units during Quantity product evaluation: %s and %s",
+                                ((Quantity) element).getUnit(), ((Quantity) result).getUnit()));
                     }
-                    ((Quantity) result).setValue(
-                            (BigDecimal) MultiplyEvaluator.multiply(
-                                    ((Quantity) result).getValue(),
-                                    ((Quantity) element).getValue()
-                            )
-                    );
+                    ((Quantity) result).setValue((BigDecimal) MultiplyEvaluator.multiply(
+                            ((Quantity) result).getValue(), ((Quantity) element).getValue()));
                 } else {
                     throw new InvalidOperatorArgument(
-                        "Product(List<Integer>), Product(List<Long>), Product(List<Decimal>) or Product(List<Quantity>)",
-                        String.format("Product(List<%s>)", element.getClass().getName())
-                    );
+                            "Product(List<Integer>), Product(List<Long>), Product(List<Decimal>) or Product(List<Quantity>)",
+                            String.format(
+                                    "Product(List<%s>)", element.getClass().getName()));
                 }
             }
 
@@ -67,9 +59,7 @@ public class ProductEvaluator {
         }
 
         throw new InvalidOperatorArgument(
-            "Product(List<Integer>), Product(List<Long>), Product(List<Decimal>) or Product(List<Quantity>)",
-            String.format("Product(%s)", source.getClass().getName())
-        );
+                "Product(List<Integer>), Product(List<Long>), Product(List<Decimal>) or Product(List<Quantity>)",
+                String.format("Product(%s)", source.getClass().getName()));
     }
-
 }

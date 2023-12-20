@@ -1,11 +1,10 @@
 package org.cqframework.cql.elm.tracking;
 
-import org.hl7.cql.model.DataType;
-
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import org.hl7.cql.model.DataType;
 
 public class Trackable {
     private final UUID trackerId;

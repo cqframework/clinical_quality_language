@@ -1,14 +1,13 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.CqlList;
 import org.opencds.cqf.cql.engine.runtime.CqlType;
 import org.opencds.cqf.cql.engine.runtime.Interval;
 import org.opencds.cqf.cql.engine.runtime.Value;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 /*
 https://cql.hl7.org/09-b-cqlreference.html#equivalent
@@ -65,31 +64,26 @@ public class EquivalentEvaluator {
 
         if (!left.getClass().equals(right.getClass())) {
             return false;
-        }
-
-        else if (left instanceof Boolean || left instanceof Integer) {
+        } else if (left instanceof Boolean || left instanceof Integer) {
             return left.equals(right);
-        }
-
-        else if (left instanceof BigDecimal && right instanceof BigDecimal) {
-            BigDecimal leftDecimal = Value.verifyPrecision((BigDecimal)left, 0);
-            BigDecimal rightDecimal = Value.verifyPrecision((BigDecimal)right, 0);
+        } else if (left instanceof BigDecimal && right instanceof BigDecimal) {
+            BigDecimal leftDecimal = Value.verifyPrecision((BigDecimal) left, 0);
+            BigDecimal rightDecimal = Value.verifyPrecision((BigDecimal) right, 0);
             int minScale = Math.min(leftDecimal.scale(), rightDecimal.scale());
             if (minScale >= 0) {
-                return leftDecimal.setScale(minScale, RoundingMode.FLOOR).compareTo(rightDecimal.setScale(minScale, RoundingMode.FLOOR)) == 0;
+                return leftDecimal
+                                .setScale(minScale, RoundingMode.FLOOR)
+                                .compareTo(rightDecimal.setScale(minScale, RoundingMode.FLOOR))
+                        == 0;
             }
             return leftDecimal.compareTo(rightDecimal) == 0;
         }
 
         if (left instanceof Iterable) {
             return CqlList.equivalent((Iterable<?>) left, (Iterable<?>) right, state);
-        }
-
-        else if (left instanceof CqlType) {
+        } else if (left instanceof CqlType) {
             return ((CqlType) left).equivalent(right);
-        }
-
-        else if (left instanceof String && right instanceof String) {
+        } else if (left instanceof String && right instanceof String) {
             return ((String) left).equalsIgnoreCase((String) right);
         }
 
@@ -97,11 +91,12 @@ public class EquivalentEvaluator {
             return state.getEnvironment().objectEquivalent(left, right);
         }
 
-        throw new InvalidOperatorArgument(String.format("Equivalent(%s, %s) requires Context and context was null", left.getClass().getName(), right.getClass().getName()));
+        throw new InvalidOperatorArgument(String.format(
+                "Equivalent(%s, %s) requires Context and context was null",
+                left.getClass().getName(), right.getClass().getName()));
     }
 
     public static Boolean equivalent(Object left, Object right) {
         return equivalent(left, right, null);
     }
-
 }

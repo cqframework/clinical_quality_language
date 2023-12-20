@@ -4,7 +4,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import java.math.BigDecimal;
-
 import org.opencds.cqf.cql.engine.debug.Location;
 import org.opencds.cqf.cql.engine.debug.SourceLocator;
 import org.opencds.cqf.cql.engine.exception.InvalidInterval;
@@ -29,11 +28,11 @@ public class RuntimeTests {
         assertThat(q.toString(), is("0.05 'mg'"));
     }
 
-    @Test(expectedExceptions=InvalidInterval.class)
+    @Test(expectedExceptions = InvalidInterval.class)
     public void testIntervalOfQuantityWithDifferentUOM() {
-        Quantity s= new Quantity().withValue(new BigDecimal(10)).withUnit("mg/mL");
+        Quantity s = new Quantity().withValue(new BigDecimal(10)).withUnit("mg/mL");
         Quantity e = new Quantity().withValue(new BigDecimal(10)).withUnit("kg/m3");
-        new Interval( s, true, e, true );
+        new Interval(s, true, e, true);
     }
 
     @Test
@@ -43,7 +42,8 @@ public class RuntimeTests {
 
         t = new Tuple();
         t.getElements().put("id", 1);
-        t.getElements().put("value", new Quantity().withValue(new BigDecimal("1.0")).withUnit("g"));
+        t.getElements()
+                .put("value", new Quantity().withValue(new BigDecimal("1.0")).withUnit("g"));
         assertThat(t.toString(), is("Tuple {\n\t\"id\": 1\n\t\"value\": 1.0 'g'\n}"));
     }
 
@@ -55,19 +55,11 @@ public class RuntimeTests {
                 "1.0.0",
                 "1",
                 "RetrieveEvaluator",
-                Location.fromLocator("1:1-89:80")
-        );
+                Location.fromLocator("1:1-89:80"));
 
         assertThat(sourceLocator.toString(), is("Example.1:1-89:80(1)"));
 
-        sourceLocator = new SourceLocator(
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
-        );
+        sourceLocator = new SourceLocator(null, null, null, null, null, null);
 
         assertThat(sourceLocator.toString(), is("?.?(?)"));
     }

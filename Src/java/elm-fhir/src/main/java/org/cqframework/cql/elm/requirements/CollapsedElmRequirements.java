@@ -1,8 +1,5 @@
 package org.cqframework.cql.elm.requirements;
 
-import org.hl7.elm.r1.IncludeElement;
-import org.hl7.elm.r1.Retrieve;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +10,7 @@ public class CollapsedElmRequirements {
     private List<ElmRequirement> uniqueRequirements = new ArrayList<ElmRequirement>();
 
     private Map<String, String> requirementIdMap = new HashMap<>();
+
     public Iterable<ElmRequirement> getUniqueRequirements() {
         return uniqueRequirements;
     }
@@ -21,8 +19,7 @@ public class CollapsedElmRequirements {
         ElmRequirement existing = getEquivalent(requirement);
         if (existing == null) {
             uniqueRequirements.add(requirement);
-        }
-        else {
+        } else {
             uniqueRequirements.remove(existing);
             ElmRequirement newRequirement = ComparableElmRequirement.mergeRequirements(existing, requirement);
             mapRequirementId(requirement, newRequirement);
@@ -36,7 +33,9 @@ public class CollapsedElmRequirements {
 
     private void mapRequirementId(ElmRequirement oldRequirement, ElmRequirement newRequirement) {
         if (oldRequirement.getElement().getLocalId() != null) {
-            requirementIdMap.put(oldRequirement.getElement().getLocalId(), newRequirement.getElement().getLocalId());
+            requirementIdMap.put(
+                    oldRequirement.getElement().getLocalId(),
+                    newRequirement.getElement().getLocalId());
         }
     }
 

@@ -3,7 +3,6 @@ package org.opencds.cqf.cql.engine.runtime;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 import org.opencds.cqf.cql.engine.elm.executing.EqualEvaluator;
 import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator;
 import org.opencds.cqf.cql.engine.elm.executing.ToStringEvaluator;
@@ -29,7 +28,9 @@ public class Tuple implements CqlType {
     }
 
     public HashMap<String, Object> getElements() {
-        if (elements == null) { return new HashMap<>(); }
+        if (elements == null) {
+            return new HashMap<>();
+        }
         return elements;
     }
 
@@ -54,12 +55,14 @@ public class Tuple implements CqlType {
 
         for (String key : ((Tuple) other).getElements().keySet()) {
             if (this.getElements().containsKey(key)) {
-                Object areKeyValsSame = EquivalentEvaluator.equivalent(((Tuple) other).getElements().get(key), this.getElements().get(key), state);
+                Object areKeyValsSame = EquivalentEvaluator.equivalent(
+                        ((Tuple) other).getElements().get(key),
+                        this.getElements().get(key),
+                        state);
                 if (!(Boolean) areKeyValsSame) {
                     return false;
                 }
-            }
-            else {
+            } else {
                 return false;
             }
         }
@@ -75,15 +78,21 @@ public class Tuple implements CqlType {
         for (String key : ((Tuple) other).getElements().keySet()) {
             if (this.getElements().containsKey(key)) {
                 if (((Tuple) other).getElements().get(key) == null
-                        && this.getElements().get(key) == null)
-                {
+                        && this.getElements().get(key) == null) {
                     continue;
                 }
-                Boolean equal = EqualEvaluator.equal(((Tuple) other).getElements().get(key), this.getElements().get(key), state);
-                if (equal == null) { return null; }
-                else if (!equal) { return false; }
+                Boolean equal = EqualEvaluator.equal(
+                        ((Tuple) other).getElements().get(key),
+                        this.getElements().get(key),
+                        state);
+                if (equal == null) {
+                    return null;
+                } else if (!equal) {
+                    return false;
+                }
+            } else {
+                return false;
             }
-            else { return false; }
         }
 
         return true;
@@ -97,7 +106,11 @@ public class Tuple implements CqlType {
 
         StringBuilder builder = new StringBuilder("Tuple {\n");
         for (Map.Entry<String, Object> entry : elements.entrySet()) {
-            builder.append("\t\"").append(entry.getKey()).append("\": ").append(ToStringEvaluator.toString(entry.getValue())).append("\n");
+            builder.append("\t\"")
+                    .append(entry.getKey())
+                    .append("\": ")
+                    .append(ToStringEvaluator.toString(entry.getValue()))
+                    .append("\n");
         }
         return builder.append("}").toString();
     }

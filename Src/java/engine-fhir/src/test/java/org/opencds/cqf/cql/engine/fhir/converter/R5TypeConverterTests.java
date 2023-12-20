@@ -8,6 +8,7 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
+import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import java.math.BigDecimal;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -16,7 +17,6 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
-
 import org.apache.commons.lang3.NotImplementedException;
 import org.hl7.fhir.dstu2.model.IdType;
 import org.hl7.fhir.instance.model.api.IBase;
@@ -42,8 +42,6 @@ import org.opencds.cqf.cql.engine.runtime.*;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-
-import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 
 public class R5TypeConverterTests {
 
@@ -245,16 +243,17 @@ public class R5TypeConverterTests {
         final ZonedDateTime zonedDateTime = ZonedDateTime.of(now, ZoneId.systemDefault());
         final ZoneOffset defaultOffset = zonedDateTime.getOffset();
 
-        final String evalTimeWithOffset = DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(evaluationTime.atOffset(defaultOffset));
+        final String evalTimeWithOffset =
+                DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(evaluationTime.atOffset(defaultOffset));
         final String evalDate = DateTimeFormatter.ISO_DATE.format(evaluationTime);
 
         var expectedDate = new DateTimeType(evalTimeWithOffset);
-        IPrimitiveType<java.util.Date> actualDate = this.typeConverter
-                .toFhirDateTime(new DateTime(evalDate, defaultOffset));
+        IPrimitiveType<java.util.Date> actualDate =
+                this.typeConverter.toFhirDateTime(new DateTime(evalDate, defaultOffset));
         assertEquals(expectedDate.getValue(), actualDate.getValue());
 
         expectedDate = new DateTimeType(evalTimeWithOffset);
-        actualDate = this.typeConverter.toFhirDateTime(new DateTime(""+evaluationTime.getYear(), defaultOffset));
+        actualDate = this.typeConverter.toFhirDateTime(new DateTime("" + evaluationTime.getYear(), defaultOffset));
         expectedDate.setPrecision(TemporalPrecisionEnum.YEAR);
         assertEquals(expectedDate.getValue(), actualDate.getValue());
         assertEquals(expectedDate.getValueAsString(), actualDate.getValueAsString());
@@ -269,32 +268,41 @@ public class R5TypeConverterTests {
 
         expectedDate = new DateTimeType("2019-10-10T19:35:53.000Z");
         ((DateTimeType) expectedDate).setPrecision(TemporalPrecisionEnum.MILLI);
-        actualDate = this.typeConverter.toFhirDateTime(new DateTime("2019-10-10T19:35:53", ZoneOffset.UTC).withPrecision(Precision.MILLISECOND));
+        actualDate = this.typeConverter.toFhirDateTime(
+                new DateTime("2019-10-10T19:35:53", ZoneOffset.UTC).withPrecision(Precision.MILLISECOND));
         assertEquals(expectedDate.getValueAsString(), actualDate.getValueAsString());
     }
 
     @Test
     public void TestQuantityToFhirQuantity() {
-        org.hl7.fhir.r5.model.Quantity expected = new org.hl7.fhir.r5.model.Quantity(2.0).setCode("ml")
-                .setSystem("http://unitsofmeasure.org").setUnit("ml");
-        org.hl7.fhir.r5.model.Quantity actual = (org.hl7.fhir.r5.model.Quantity) this.typeConverter
-                .toFhirQuantity(new Quantity().withValue(new BigDecimal("2.0")).withUnit("ml"));
+        org.hl7.fhir.r5.model.Quantity expected = new org.hl7.fhir.r5.model.Quantity(2.0)
+                .setCode("ml")
+                .setSystem("http://unitsofmeasure.org")
+                .setUnit("ml");
+        org.hl7.fhir.r5.model.Quantity actual = (org.hl7.fhir.r5.model.Quantity) this.typeConverter.toFhirQuantity(
+                new Quantity().withValue(new BigDecimal("2.0")).withUnit("ml"));
         assertTrue(expected.equalsDeep(actual));
     }
 
     @Test
     public void TestRatioToFhirRatio() {
-        org.hl7.fhir.r5.model.Quantity expectedNumerator = new org.hl7.fhir.r5.model.Quantity(1.0).setCode("ml")
-                .setSystem("http://unitsofmeasure.org").setUnit("ml");
-        org.hl7.fhir.r5.model.Quantity expectedDenominator = new org.hl7.fhir.r5.model.Quantity(2.0).setCode("ml")
-                .setSystem("http://unitsofmeasure.org").setUnit("ml");
+        org.hl7.fhir.r5.model.Quantity expectedNumerator = new org.hl7.fhir.r5.model.Quantity(1.0)
+                .setCode("ml")
+                .setSystem("http://unitsofmeasure.org")
+                .setUnit("ml");
+        org.hl7.fhir.r5.model.Quantity expectedDenominator = new org.hl7.fhir.r5.model.Quantity(2.0)
+                .setCode("ml")
+                .setSystem("http://unitsofmeasure.org")
+                .setUnit("ml");
 
-        org.hl7.fhir.r5.model.Ratio expected = new org.hl7.fhir.r5.model.Ratio().setNumerator(expectedNumerator)
+        org.hl7.fhir.r5.model.Ratio expected = new org.hl7.fhir.r5.model.Ratio()
+                .setNumerator(expectedNumerator)
                 .setDenominator(expectedDenominator);
 
         Ratio testData = new Ratio();
         testData.setNumerator(new Quantity().withValue(BigDecimal.valueOf(1.0)).withUnit("ml"));
-        testData.setDenominator(new Quantity().withValue(BigDecimal.valueOf(2.0)).withUnit("ml"));
+        testData.setDenominator(
+                new Quantity().withValue(BigDecimal.valueOf(2.0)).withUnit("ml"));
 
         org.hl7.fhir.r5.model.Ratio actual = (org.hl7.fhir.r5.model.Ratio) this.typeConverter.toFhirRatio(testData);
 
@@ -315,8 +323,11 @@ public class R5TypeConverterTests {
     @Test
     public void TestCodeToFhirCoding() {
         Coding expected = new Coding("http://the-system.com", "test", "system-test").setVersion("1.5");
-        Coding actual = (Coding) this.typeConverter.toFhirCoding(new Code().withSystem("http://the-system.com")
-                .withCode("test").withDisplay("system-test").withVersion("1.5"));
+        Coding actual = (Coding) this.typeConverter.toFhirCoding(new Code()
+                .withSystem("http://the-system.com")
+                .withCode("test")
+                .withDisplay("system-test")
+                .withVersion("1.5"));
         assertTrue(expected.equalsDeep(actual));
 
         expected = (Coding) this.typeConverter.toFhirCoding(null);
@@ -326,17 +337,20 @@ public class R5TypeConverterTests {
     @Test
     public void TestConceptToFhirCodeableConcept() {
         CodeableConcept expected = new CodeableConcept(
-                new Coding("http://the-system.com", "test", "system-test").setVersion("1.5"))
-                        .setText("additional-text");
-        CodeableConcept actual = (CodeableConcept) this.typeConverter.toFhirCodeableConcept(
-                new Concept().withCode(new Code().withSystem("http://the-system.com").withCode("test")
-                        .withDisplay("system-test").withVersion("1.5")).withDisplay("additional-text"));
+                        new Coding("http://the-system.com", "test", "system-test").setVersion("1.5"))
+                .setText("additional-text");
+        CodeableConcept actual = (CodeableConcept) this.typeConverter.toFhirCodeableConcept(new Concept()
+                .withCode(new Code()
+                        .withSystem("http://the-system.com")
+                        .withCode("test")
+                        .withDisplay("system-test")
+                        .withVersion("1.5"))
+                .withDisplay("additional-text"));
         assertTrue(expected.equalsDeep(actual));
 
         expected = (CodeableConcept) this.typeConverter.toFhirCodeableConcept(null);
         assertNull(expected);
     }
-
 
     @DataProvider
     private static Object[][] startAndEndTimes() {
@@ -348,10 +362,11 @@ public class R5TypeConverterTests {
         final String startTime_yyyyMMdd = YYYY_MM_DD.format(startTime);
         final String endTime_yyyyMMdd = YYYY_MM_DD.format(endTime);
 
-        final Period expected = new Period().setStartElement(new DateTimeType(startTime_yyyyMMdd))
+        final Period expected = new Period()
+                .setStartElement(new DateTimeType(startTime_yyyyMMdd))
                 .setEndElement(new DateTimeType(endTime_yyyyMMdd));
-        final Period actual = (Period) this.typeConverter
-                .toFhirPeriod(new Interval(new Date(startTime_yyyyMMdd), true, new Date(endTime_yyyyMMdd), true));
+        final Period actual = (Period) this.typeConverter.toFhirPeriod(
+                new Interval(new Date(startTime_yyyyMMdd), true, new Date(endTime_yyyyMMdd), true));
         assertTrue(expected.equalsDeep(actual));
     }
 
@@ -361,11 +376,13 @@ public class R5TypeConverterTests {
     }
 
     @Test(dataProvider = "dateTimes")
-    public void TestIntervalToFhirPeriod_timestampWithOffsets(LocalDateTime now, LocalDateTime startTime, LocalDateTime endTime) {
+    public void TestIntervalToFhirPeriod_timestampWithOffsets(
+            LocalDateTime now, LocalDateTime startTime, LocalDateTime endTime) {
         final ZonedDateTime zonedDateTime = ZonedDateTime.of(now, ZoneId.systemDefault());
         final ZoneOffset defaultOffset = zonedDateTime.getOffset();
 
-        final String startTimeWithOffset = DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(startTime.atOffset(defaultOffset));
+        final String startTimeWithOffset =
+                DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(startTime.atOffset(defaultOffset));
         final String endTimeWithOffset = DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(endTime.atOffset(defaultOffset));
         final String startTimeNoOffset = DateTimeFormatter.ISO_DATE_TIME.format(startTime.atOffset(defaultOffset));
         final String endTimeNoOffset = DateTimeFormatter.ISO_DATE_TIME.format(endTime.atOffset(defaultOffset));
@@ -392,9 +409,11 @@ public class R5TypeConverterTests {
         final ZonedDateTime zonedDateTime = ZonedDateTime.of(now, ZoneId.systemDefault());
         final ZoneOffset defaultOffset = zonedDateTime.getOffset();
 
-        final Period expected = new Period().setStartElement(new DateTimeType(startYear+"-01-01T00:00:00"+defaultOffset)).setEndElement(new DateTimeType(endYear+"-01-01T00:00:00"+defaultOffset));
-        final Period actual = (Period) this.typeConverter.toFhirPeriod(
-                new Interval(new DateTime(""+startYear, defaultOffset), true, new DateTime(""+endYear, defaultOffset), true));
+        final Period expected = new Period()
+                .setStartElement(new DateTimeType(startYear + "-01-01T00:00:00" + defaultOffset))
+                .setEndElement(new DateTimeType(endYear + "-01-01T00:00:00" + defaultOffset));
+        final Period actual = (Period) this.typeConverter.toFhirPeriod(new Interval(
+                new DateTime("" + startYear, defaultOffset), true, new DateTime("" + endYear, defaultOffset), true));
         assertTrue(expected.equalsDeep(actual));
     }
 
@@ -411,11 +430,19 @@ public class R5TypeConverterTests {
     @Test
     public void TestIntervalToFhirRange() {
         Range expected = new Range()
-                .setLow(new org.hl7.fhir.r5.model.Quantity(2.0).setCode("ml").setSystem("http://unitsofmeasure.org").setUnit("ml"))
-                .setHigh(new org.hl7.fhir.r5.model.Quantity(5.0).setCode("ml").setSystem("http://unitsofmeasure.org").setUnit("ml"));
-        Range actual = (Range) this.typeConverter
-                .toFhirRange(new Interval(new Quantity().withValue(new BigDecimal("2.0")).withUnit("ml"), true,
-                        new Quantity().withValue(new BigDecimal("5.0")).withUnit("ml"), true));
+                .setLow(new org.hl7.fhir.r5.model.Quantity(2.0)
+                        .setCode("ml")
+                        .setSystem("http://unitsofmeasure.org")
+                        .setUnit("ml"))
+                .setHigh(new org.hl7.fhir.r5.model.Quantity(5.0)
+                        .setCode("ml")
+                        .setSystem("http://unitsofmeasure.org")
+                        .setUnit("ml"));
+        Range actual = (Range) this.typeConverter.toFhirRange(new Interval(
+                new Quantity().withValue(new BigDecimal("2.0")).withUnit("ml"),
+                true,
+                new Quantity().withValue(new BigDecimal("5.0")).withUnit("ml"),
+                true));
         assertTrue(expected.equalsDeep(actual));
 
         actual = (Range) this.typeConverter.toFhirRange(null);
@@ -429,18 +456,27 @@ public class R5TypeConverterTests {
 
     @Test
     public void TestIntervalToFhirInterval() {
-        Period expectedPeriod = new Period().setStartElement(new DateTimeType("2019-02-03"))
+        Period expectedPeriod = new Period()
+                .setStartElement(new DateTimeType("2019-02-03"))
                 .setEndElement(new DateTimeType("2019-02-05"));
-        Period actualPeriod = (Period) this.typeConverter
-                .toFhirInterval(new Interval(new Date("2019-02-03"), true, new Date("2019-02-05"), true));
+        Period actualPeriod = (Period) this.typeConverter.toFhirInterval(
+                new Interval(new Date("2019-02-03"), true, new Date("2019-02-05"), true));
         assertTrue(expectedPeriod.equalsDeep(actualPeriod));
 
         Range expectedRange = new Range()
-                .setLow(new org.hl7.fhir.r5.model.Quantity(2.0).setCode("ml").setSystem("http://unitsofmeasure.org").setUnit("ml"))
-                .setHigh(new org.hl7.fhir.r5.model.Quantity(5.0).setCode("ml").setSystem("http://unitsofmeasure.org").setUnit("ml"));
-        Range actualRange = (Range) this.typeConverter
-                .toFhirInterval(new Interval(new Quantity().withValue(new BigDecimal("2.0")).withUnit("ml"), true,
-                        new Quantity().withValue(new BigDecimal("5.0")).withUnit("ml"), true));
+                .setLow(new org.hl7.fhir.r5.model.Quantity(2.0)
+                        .setCode("ml")
+                        .setSystem("http://unitsofmeasure.org")
+                        .setUnit("ml"))
+                .setHigh(new org.hl7.fhir.r5.model.Quantity(5.0)
+                        .setCode("ml")
+                        .setSystem("http://unitsofmeasure.org")
+                        .setUnit("ml"));
+        Range actualRange = (Range) this.typeConverter.toFhirInterval(new Interval(
+                new Quantity().withValue(new BigDecimal("2.0")).withUnit("ml"),
+                true,
+                new Quantity().withValue(new BigDecimal("5.0")).withUnit("ml"),
+                true));
         assertTrue(expectedRange.equalsDeep(actualRange));
 
         ICompositeType expected = this.typeConverter.toFhirInterval(null);
@@ -517,7 +553,7 @@ public class R5TypeConverterTests {
         assertThat(actual, instanceOf(String.class));
 
         actual = this.typeConverter.toCqlType(new org.hl7.fhir.r5.model.Quantity());
-        assertThat(actual, instanceOf( Quantity.class));
+        assertThat(actual, instanceOf(Quantity.class));
 
         actual = this.typeConverter.toCqlType(new org.hl7.fhir.r5.model.Ratio());
         assertThat(actual, instanceOf(Ratio.class));
@@ -528,10 +564,14 @@ public class R5TypeConverterTests {
         actual = this.typeConverter.toCqlType(new CodeableConcept());
         assertThat(actual, instanceOf(Concept.class));
 
-        actual = this.typeConverter.toCqlType(new Period().setStart(Calendar.getInstance().getTime()).setEnd(Calendar.getInstance().getTime()));
+        actual = this.typeConverter.toCqlType(new Period()
+                .setStart(Calendar.getInstance().getTime())
+                .setEnd(Calendar.getInstance().getTime()));
         assertThat(actual, instanceOf(Interval.class));
 
-        actual = this.typeConverter.toCqlType(new Range().setLow(org.hl7.fhir.r5.model.Quantity.fromUcum("1", "d")).setHigh(org.hl7.fhir.r5.model.Quantity.fromUcum("5", "d")));
+        actual = this.typeConverter.toCqlType(new Range()
+                .setLow(org.hl7.fhir.r5.model.Quantity.fromUcum("1", "d"))
+                .setHigh(org.hl7.fhir.r5.model.Quantity.fromUcum("5", "d")));
         assertThat(actual, instanceOf(Interval.class));
 
         actual = this.typeConverter.toCqlType(null);
@@ -642,9 +682,8 @@ public class R5TypeConverterTests {
     @Test
     public void TestQuantityToCqlType() {
         Quantity expected = (new Quantity().withValue(new BigDecimal("2.0")).withUnit("ml"));
-        Quantity actual = this.typeConverter
-                .toCqlQuantity(new org.hl7.fhir.r5.model.Quantity(2.0).setUnit("ml")
-                .setSystem("http://unitsofmeasure.org"));
+        Quantity actual = this.typeConverter.toCqlQuantity(
+                new org.hl7.fhir.r5.model.Quantity(2.0).setUnit("ml").setSystem("http://unitsofmeasure.org"));
         assertTrue(expected.equal(actual));
     }
 
@@ -652,15 +691,16 @@ public class R5TypeConverterTests {
     public void TestRatioToCqlType() {
         Ratio expected = new Ratio();
         expected.setNumerator(new Quantity().withValue(BigDecimal.valueOf(1.0)).withUnit("ml"));
-        expected.setDenominator(new Quantity().withValue(BigDecimal.valueOf(2.0)).withUnit("ml"));
+        expected.setDenominator(
+                new Quantity().withValue(BigDecimal.valueOf(2.0)).withUnit("ml"));
 
-        org.hl7.fhir.r5.model.Quantity testNumerator = new org.hl7.fhir.r5.model.Quantity(1.0).setUnit("ml")
-                .setSystem("http://unitsofmeasure.org");
-        org.hl7.fhir.r5.model.Quantity testDenominator = new org.hl7.fhir.r5.model.Quantity(2.0).setUnit("ml")
-                .setSystem("http://unitsofmeasure.org");
+        org.hl7.fhir.r5.model.Quantity testNumerator =
+                new org.hl7.fhir.r5.model.Quantity(1.0).setUnit("ml").setSystem("http://unitsofmeasure.org");
+        org.hl7.fhir.r5.model.Quantity testDenominator =
+                new org.hl7.fhir.r5.model.Quantity(2.0).setUnit("ml").setSystem("http://unitsofmeasure.org");
 
-        org.hl7.fhir.r5.model.Ratio test = new org.hl7.fhir.r5.model.Ratio().setNumerator(testNumerator)
-                .setDenominator(testDenominator);
+        org.hl7.fhir.r5.model.Ratio test =
+                new org.hl7.fhir.r5.model.Ratio().setNumerator(testNumerator).setDenominator(testDenominator);
 
         Ratio actual = this.typeConverter.toCqlRatio(test);
         assertTrue(expected.equal(actual));
@@ -679,9 +719,13 @@ public class R5TypeConverterTests {
 
     @Test
     public void TestCodingToCqlCode() {
-        Code expected = new Code().withSystem("http://the-system.com")
-        .withCode("test").withDisplay("system-test").withVersion("1.5");
-        Code actual = this.typeConverter.toCqlCode(new Coding("http://the-system.com", "test", "system-test").setVersion("1.5"));
+        Code expected = new Code()
+                .withSystem("http://the-system.com")
+                .withCode("test")
+                .withDisplay("system-test")
+                .withVersion("1.5");
+        Code actual = this.typeConverter.toCqlCode(
+                new Coding("http://the-system.com", "test", "system-test").setVersion("1.5"));
         assertTrue(expected.equal(actual));
 
         expected = this.typeConverter.toCqlCode(null);
@@ -690,8 +734,13 @@ public class R5TypeConverterTests {
 
     @Test
     public void TestCodeableConceptToCqlConcept() {
-        Concept expected = new Concept().withCode(new Code().withSystem("http://the-system.com").withCode("test")
-                .withDisplay("system-test").withVersion("1.5")).withDisplay("additional-text");
+        Concept expected = new Concept()
+                .withCode(new Code()
+                        .withSystem("http://the-system.com")
+                        .withCode("test")
+                        .withDisplay("system-test")
+                        .withVersion("1.5"))
+                .withDisplay("additional-text");
         Concept actual = this.typeConverter.toCqlConcept(
                 new CodeableConcept(new Coding("http://the-system.com", "test", "system-test").setVersion("1.5"))
                         .setText("additional-text"));
@@ -705,18 +754,24 @@ public class R5TypeConverterTests {
     @Test
     public void TestPeriodToCqlInterval() {
         Interval expected = new Interval(new Date("2019-02-03"), true, new Date("2019-02-05"), true);
-        Interval actual = this.typeConverter
-                .toCqlInterval(new Period().setStartElement(new DateTimeType("2019-02-03"))
+        Interval actual = this.typeConverter.toCqlInterval(new Period()
+                .setStartElement(new DateTimeType("2019-02-03"))
                 .setEndElement(new DateTimeType("2019-02-05")));
         assertTrue(expected.equal(actual));
 
         expected = new Interval(new Date("2019"), true, new Date("2020"), true);
-        actual = this.typeConverter.toCqlInterval(new Period().setStartElement(new DateTimeType("2019")).setEndElement(new DateTimeType("2020")));
+        actual = this.typeConverter.toCqlInterval(
+                new Period().setStartElement(new DateTimeType("2019")).setEndElement(new DateTimeType("2020")));
         assertTrue(expected.equal(actual));
 
-
-        expected = new Interval(new DateTime("2020-09-18T19:35:53", ZoneOffset.UTC), true, new DateTime("2020-09-18T19:37:00", ZoneOffset.UTC), true);
-        actual = this.typeConverter.toCqlInterval(new Period().setStartElement(new DateTimeType("2020-09-18T19:35:53+00:00")).setEndElement(new DateTimeType("2020-09-18T19:37:00+00:00")));
+        expected = new Interval(
+                new DateTime("2020-09-18T19:35:53", ZoneOffset.UTC),
+                true,
+                new DateTime("2020-09-18T19:37:00", ZoneOffset.UTC),
+                true);
+        actual = this.typeConverter.toCqlInterval(new Period()
+                .setStartElement(new DateTimeType("2020-09-18T19:35:53+00:00"))
+                .setEndElement(new DateTimeType("2020-09-18T19:37:00+00:00")));
         assertTrue(expected.equal(actual));
 
         actual = this.typeConverter.toCqlInterval(null);
@@ -725,10 +780,12 @@ public class R5TypeConverterTests {
 
     @Test
     public void TestRangeToCqlInterval() {
-        Interval expected = new Interval(new Quantity().withValue(new BigDecimal("2.0")).withUnit("ml"), true,
-        new Quantity().withValue(new BigDecimal("5.0")).withUnit("ml"), true);
-        Interval actual = this.typeConverter
-                .toCqlInterval(new Range()
+        Interval expected = new Interval(
+                new Quantity().withValue(new BigDecimal("2.0")).withUnit("ml"),
+                true,
+                new Quantity().withValue(new BigDecimal("5.0")).withUnit("ml"),
+                true);
+        Interval actual = this.typeConverter.toCqlInterval(new Range()
                 .setLow(new org.hl7.fhir.r5.model.Quantity(2.0).setUnit("ml").setSystem("http://unitsofmeasure.org"))
                 .setHigh(new org.hl7.fhir.r5.model.Quantity(5.0).setUnit("ml").setSystem("http://unitsofmeasure.org")));
         assertTrue(expected.equal(actual));

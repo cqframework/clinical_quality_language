@@ -1,11 +1,10 @@
 package org.cqframework.cql.cql2elm.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.hl7.cql.model.ChoiceType;
 import org.hl7.cql.model.DataType;
 import org.hl7.cql.model.InstantiationContext;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Signature {
     public Signature(DataType... operandTypes) {
@@ -23,6 +22,7 @@ public class Signature {
     }
 
     private List<DataType> operandTypes = new ArrayList<>();
+
     public Iterable<DataType> getOperandTypes() {
         return this.operandTypes;
     }
@@ -57,6 +57,7 @@ public class Signature {
 
     private boolean hasChoices;
     private boolean calculatedHasChoices;
+
     public boolean containsChoices() {
         if (!calculatedHasChoices) {
             hasChoices = getHasChoices();
@@ -102,11 +103,21 @@ public class Signature {
         return new Signature(result);
     }
 
-    public boolean isConvertibleTo(Signature other, ConversionMap conversionMap, OperatorMap operatorMap, boolean allowPromotionAndDemotion, Conversion[] conversions) {
+    public boolean isConvertibleTo(
+            Signature other,
+            ConversionMap conversionMap,
+            OperatorMap operatorMap,
+            boolean allowPromotionAndDemotion,
+            Conversion[] conversions) {
         if (operandTypes.size() == other.operandTypes.size()) {
             for (int i = 0; i < operandTypes.size(); i++) {
                 if (!operandTypes.get(i).isSubTypeOf(other.operandTypes.get(i))) {
-                    Conversion conversion = conversionMap.findConversion(operandTypes.get(i), other.operandTypes.get(i), true, allowPromotionAndDemotion, operatorMap);
+                    Conversion conversion = conversionMap.findConversion(
+                            operandTypes.get(i),
+                            other.operandTypes.get(i),
+                            true,
+                            allowPromotionAndDemotion,
+                            operatorMap);
                     if (conversion != null) {
                         conversions[i] = conversion;
                     } else {
@@ -134,7 +145,7 @@ public class Signature {
     @Override
     public boolean equals(Object o) {
         if (o instanceof Signature) {
-            Signature that = (Signature)o;
+            Signature that = (Signature) o;
 
             if (this.operandTypes.size() == that.operandTypes.size()) {
                 for (int i = 0; i < this.operandTypes.size(); i++) {

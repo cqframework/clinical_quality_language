@@ -8,19 +8,23 @@ public class ValueSet extends Vocabulary {
         setId(id);
         return this;
     }
+
     public ValueSet withVersion(String version) {
         setVersion(version);
         return this;
     }
+
     public ValueSet withName(String name) {
         setName(name);
         return this;
     }
 
     private List<CodeSystem> codeSystems = new ArrayList<CodeSystem>();
+
     public Iterable<CodeSystem> getCodeSystems() {
         return codeSystems;
     }
+
     public void setCodeSystems(List<CodeSystem> codeSystems) {
         this.codeSystems = new ArrayList<CodeSystem>();
         if (codeSystems != null) {
@@ -31,20 +35,24 @@ public class ValueSet extends Vocabulary {
             }
         }
     }
+
     public ValueSet withCodeSystems(List<CodeSystem> codeSystems) {
         setCodeSystems(codeSystems);
         return this;
     }
+
     public void addCodeSystem(CodeSystem codeSystem) {
         if (codeSystem == null) {
             throw new IllegalArgumentException("codeSystem is required");
         }
         codeSystems.add(codeSystem);
     }
+
     public ValueSet withCodeSystem(CodeSystem codeSystem) {
         addCodeSystem(codeSystem);
         return this;
     }
+
     public CodeSystem getCodeSystem(String id) {
         if (id == null) {
             return null;
@@ -58,13 +66,16 @@ public class ValueSet extends Vocabulary {
 
         return null;
     }
+
     public CodeSystem getCodeSystem(String id, String version) {
         if (id == null) {
             return null;
         }
 
         for (CodeSystem cs : codeSystems) {
-            if (id.equals(cs.getId()) && ((version == null && cs.getVersion() == null) || (version != null && version.equals(cs.getVersion())))) {
+            if (id.equals(cs.getId())
+                    && ((version == null && cs.getVersion() == null)
+                            || (version != null && version.equals(cs.getVersion())))) {
                 return cs;
             }
         }
@@ -77,7 +88,7 @@ public class ValueSet extends Vocabulary {
         if (!(other instanceof ValueSet)) {
             return false;
         }
-        ValueSet otherV = (ValueSet)other;
+        ValueSet otherV = (ValueSet) other;
         Boolean equivalent = super.equivalent(other) && codeSystems.size() == otherV.codeSystems.size();
         if (equivalent) {
             for (CodeSystem cs : codeSystems) {
@@ -95,7 +106,7 @@ public class ValueSet extends Vocabulary {
         if (!(other instanceof ValueSet)) {
             return false;
         }
-        ValueSet otherV = (ValueSet)other;
+        ValueSet otherV = (ValueSet) other;
         Boolean equal = super.equal(other) && codeSystems.size() == otherV.codeSystems.size();
         if (equal) {
             for (CodeSystem cs : codeSystems) {

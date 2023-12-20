@@ -9,7 +9,7 @@ coverage:
     patch:
       default:
         # basic
-        target: 80
+        target: 80%
         threshold: 0%
         base: auto
         # advanced

@@ -50,26 +50,44 @@ public class DurationBetweenEvaluator {
             if (isLeftUncertain) {
                 Interval leftUncertainInterval = ((BaseTemporal) left).getUncertaintyInterval(precision);
                 return new Interval(
-                        duration(leftUncertainInterval.getEnd(), right, isWeeks ? Precision.WEEK : precision), true,
-                        duration(leftUncertainInterval.getStart(), right, isWeeks ? Precision.WEEK : precision), true
-                ).setUncertain(true);
+                                duration(leftUncertainInterval.getEnd(), right, isWeeks ? Precision.WEEK : precision),
+                                        true,
+                                duration(leftUncertainInterval.getStart(), right, isWeeks ? Precision.WEEK : precision),
+                                        true)
+                        .setUncertain(true);
             }
             if (isRightUncertain) {
                 Interval rightUncertainInterval = ((BaseTemporal) right).getUncertaintyInterval(precision);
                 return new Interval(
-                        duration(left, rightUncertainInterval.getStart(), isWeeks ? Precision.WEEK : precision), true,
-                        duration(left, rightUncertainInterval.getEnd(), isWeeks ? Precision.WEEK : precision), true
-                ).setUncertain(true);
+                                duration(left, rightUncertainInterval.getStart(), isWeeks ? Precision.WEEK : precision),
+                                        true,
+                                duration(left, rightUncertainInterval.getEnd(), isWeeks ? Precision.WEEK : precision),
+                                        true)
+                        .setUncertain(true);
             }
 
             if (left instanceof DateTime && right instanceof DateTime) {
                 if (precision.toDateTimeIndex() <= Precision.DAY.toDateTimeIndex()) {
                     return isWeeks
-                            ? (int) precision.toChronoUnit().between(((DateTime) left).getDateTime().toLocalDateTime(), ((DateTime) right).getDateTime().toLocalDateTime()) / 7
-                            : (int) precision.toChronoUnit().between(((DateTime) left).getDateTime().toLocalDateTime(), ((DateTime) right).getDateTime().toLocalDateTime());
-                }
-                else {
-                    return (int) precision.toChronoUnit().between(((DateTime) left).getDateTime(), ((DateTime) right).getDateTime());
+                            ? (int) precision
+                                            .toChronoUnit()
+                                            .between(
+                                                    ((DateTime) left)
+                                                            .getDateTime()
+                                                            .toLocalDateTime(),
+                                                    ((DateTime) right)
+                                                            .getDateTime()
+                                                            .toLocalDateTime())
+                                    / 7
+                            : (int) precision
+                                    .toChronoUnit()
+                                    .between(
+                                            ((DateTime) left).getDateTime().toLocalDateTime(),
+                                            ((DateTime) right).getDateTime().toLocalDateTime());
+                } else {
+                    return (int) precision
+                            .toChronoUnit()
+                            .between(((DateTime) left).getDateTime(), ((DateTime) right).getDateTime());
                 }
             }
 
@@ -86,8 +104,8 @@ public class DurationBetweenEvaluator {
 
         throw new InvalidOperatorArgument(
                 "DurationBetween(Date, Date), DurationBetween(DateTime, DateTime), DurationBetween(Time, Time)",
-                String.format("DurationBetween(%s, %s)", left.getClass().getName(), right.getClass().getName())
-        );
+                String.format(
+                        "DurationBetween(%s, %s)",
+                        left.getClass().getName(), right.getClass().getName()));
     }
-
 }

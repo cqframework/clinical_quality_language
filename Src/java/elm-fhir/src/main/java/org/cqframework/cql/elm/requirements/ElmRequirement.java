@@ -6,11 +6,13 @@ import org.hl7.elm.r1.VersionedIdentifier;
 public class ElmRequirement {
 
     protected VersionedIdentifier libraryIdentifier;
+
     public VersionedIdentifier getLibraryIdentifier() {
         return this.libraryIdentifier;
     }
 
     protected Element element;
+
     public Element getElement() {
         return this.element;
     }
@@ -40,9 +42,8 @@ public class ElmRequirement {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof ElmRequirement) {
-            ElmRequirement that = (ElmRequirement)obj;
-            return this.libraryIdentifier.equals(that.libraryIdentifier)
-                    && this.element == that.element;
+            ElmRequirement that = (ElmRequirement) obj;
+            return this.libraryIdentifier.equals(that.libraryIdentifier) && this.element == that.element;
         }
 
         return false;

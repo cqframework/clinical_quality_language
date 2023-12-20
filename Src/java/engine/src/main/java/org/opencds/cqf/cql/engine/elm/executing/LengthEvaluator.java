@@ -1,12 +1,11 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
-import org.hl7.elm.r1.NamedTypeSpecifier;
+import java.util.stream.StreamSupport;
 import org.hl7.elm.r1.As;
 import org.hl7.elm.r1.Length;
+import org.hl7.elm.r1.NamedTypeSpecifier;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.execution.State;
-
-import java.util.stream.StreamSupport;
 
 /*
 *** LIST NOTES ***
@@ -35,8 +34,7 @@ public class LengthEvaluator {
 
         throw new InvalidOperatorArgument(
                 "Length(List<T>) or Length(String)",
-                String.format("Length(%s)", operand.getClass().getName())
-        );
+                String.format("Length(%s)", operand.getClass().getName()));
     }
 
     public static Integer stringLength(String operand) {
@@ -52,7 +50,8 @@ public class LengthEvaluator {
             return 0;
         }
 
-        return (int) StreamSupport.stream(((Iterable<?>) operand).spliterator(), false).count();
+        return (int) StreamSupport.stream(((Iterable<?>) operand).spliterator(), false)
+                .count();
     }
 
     public static Object internalEvaluate(Object operand, Length length, State state) {
@@ -61,8 +60,7 @@ public class LengthEvaluator {
         if (length.getOperand() instanceof As) {
             if (((As) length.getOperand()).getAsTypeSpecifier() instanceof NamedTypeSpecifier) {
                 return stringLength((String) operand);
-            }
-            else {
+            } else {
                 return listLength((Iterable<?>) operand);
             }
         }

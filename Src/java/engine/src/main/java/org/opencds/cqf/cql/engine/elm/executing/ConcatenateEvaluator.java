@@ -16,13 +16,14 @@ public class ConcatenateEvaluator {
             return null;
         }
 
-        if(left instanceof String && right instanceof String){
-            return ((String)left).concat((String)right);
+        if (left instanceof String && right instanceof String) {
+            return ((String) left).concat((String) right);
         }
 
         throw new InvalidOperatorArgument(
                 "Concatenate(String, String)",
-                String.format("Concatenate(%s, %s)", left.getClass().getName(), right.getClass().getName())
-        );
+                String.format(
+                        "Concatenate(%s, %s)",
+                        left.getClass().getName(), right.getClass().getName()));
     }
 }

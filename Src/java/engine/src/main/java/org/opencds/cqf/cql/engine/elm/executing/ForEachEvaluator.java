@@ -1,9 +1,8 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
-import org.opencds.cqf.cql.engine.execution.State;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.opencds.cqf.cql.engine.execution.State;
 
 public class ForEachEvaluator {
 
@@ -18,5 +17,4 @@ public class ForEachEvaluator {
         }
         return retVal;
     }
-
 }

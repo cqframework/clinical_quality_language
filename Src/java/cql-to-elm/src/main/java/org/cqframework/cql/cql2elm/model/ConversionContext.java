@@ -15,21 +15,25 @@ public class ConversionContext {
     }
 
     private DataType fromType;
+
     public DataType getFromType() {
         return fromType;
     }
 
     private DataType toType;
+
     public DataType getToType() {
         return toType;
     }
 
     private boolean isImplicit;
+
     public boolean getIsImplicit() {
         return isImplicit;
     }
 
     private OperatorMap operatorMap;
+
     public OperatorMap getOperatorMap() {
         return operatorMap;
     }

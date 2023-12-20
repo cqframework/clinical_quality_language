@@ -1,27 +1,31 @@
 package org.opencds.cqf.cql.engine.runtime;
 
-import org.opencds.cqf.cql.engine.exception.CqlException;
-import org.opencds.cqf.cql.engine.exception.InvalidDateTime;
 import java.math.BigDecimal;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Objects;
+import org.opencds.cqf.cql.engine.exception.CqlException;
+import org.opencds.cqf.cql.engine.exception.InvalidDateTime;
 
 public class DateTime extends BaseTemporal {
     private ZoneOffset zoneOffset;
 
     private OffsetDateTime dateTime;
+
     public OffsetDateTime getDateTime() {
         return dateTime;
     }
+
     public void setDateTime(OffsetDateTime dateTime) {
         if (dateTime.getYear() < 1) {
-            throw new InvalidDateTime(String.format("The year: %d falls below the accepted bounds of 0001-9999.", dateTime.getYear()));
+            throw new InvalidDateTime(
+                    String.format("The year: %d falls below the accepted bounds of 0001-9999.", dateTime.getYear()));
         }
 
         if (dateTime.getYear() > 9999) {
-            throw new InvalidDateTime(String.format("The year: %d falls above the accepted bounds of 0001-9999.", dateTime.getYear()));
+            throw new InvalidDateTime(
+                    String.format("The year: %d falls above the accepted bounds of 0001-9999.", dateTime.getYear()));
         }
         this.dateTime = dateTime;
     }
@@ -68,8 +72,7 @@ public class DateTime extends BaseTemporal {
                 dateString = TemporalHelper.autoCompleteDateTimeString(dateString, precision);
                 dateString += offset.getId();
             }
-        }
-        else {
+        } else {
             size += dateString.split("-").length;
             precision = Precision.fromDateTimeIndex(size - 1);
             dateString = TemporalHelper.autoCompleteDateTimeString(dateString, precision);
@@ -79,7 +82,7 @@ public class DateTime extends BaseTemporal {
         setDateTime(OffsetDateTime.parse(dateString));
     }
 
-    public DateTime(BigDecimal offset, int ... dateElements) {
+    public DateTime(BigDecimal offset, int... dateElements) {
         if (offset == null) {
             throw new CqlException("BigDecimal offset must be non-null");
         }
@@ -97,24 +100,21 @@ public class DateTime extends BaseTemporal {
             if (i == 0) {
                 dateString.append(stringElements[i]);
                 continue;
-            }
-            else if (i < 3) {
+            } else if (i < 3) {
                 dateString.append("-");
-            }
-            else if (i == 3) {
+            } else if (i == 3) {
                 dateString.append("T");
-            }
-            else if (i < 6) {
+            } else if (i < 6) {
                 dateString.append(":");
-            }
-            else if (i == 6) {
+            } else if (i == 6) {
                 dateString.append(".");
             }
             dateString.append(stringElements[i]);
         }
 
         precision = Precision.fromDateTimeIndex(stringElements.length - 1);
-        dateString = new StringBuilder().append(TemporalHelper.autoCompleteDateTimeString(dateString.toString(), precision));
+        dateString =
+                new StringBuilder().append(TemporalHelper.autoCompleteDateTimeString(dateString.toString(), precision));
         dateString.append(zoneOffset.getId());
         setDateTime(OffsetDateTime.parse(dateString.toString()));
     }
@@ -128,8 +128,7 @@ public class DateTime extends BaseTemporal {
         for (int i = thePrecision.toDateTimeIndex() + 1; i < 7; ++i) {
             odt = odt.with(
                     Precision.fromDateTimeIndex(i).toChronoField(),
-                    odt.range(Precision.fromDateTimeIndex(i).toChronoField()).getMinimum()
-            );
+                    odt.range(Precision.fromDateTimeIndex(i).toChronoField()).getMinimum());
         }
         return new DateTime(odt, this.precision);
     }
@@ -145,14 +144,13 @@ public class DateTime extends BaseTemporal {
             if (i <= thePrecision.toDateTimeIndex()) {
                 odt = odt.with(
                         Precision.fromDateTimeIndex(i).toChronoField(),
-                        odt.range(Precision.fromDateTimeIndex(i).toChronoField()).getMaximum()
-                );
-            }
-            else {
+                        odt.range(Precision.fromDateTimeIndex(i).toChronoField())
+                                .getMaximum());
+            } else {
                 odt = odt.with(
                         Precision.fromDateTimeIndex(i).toChronoField(),
-                        odt.range(Precision.fromDateTimeIndex(i).toChronoField()).getMinimum()
-                );
+                        odt.range(Precision.fromDateTimeIndex(i).toChronoField())
+                                .getMinimum());
             }
         }
         return new DateTime(odt, thePrecision == null ? Precision.MILLISECOND : thePrecision);
@@ -179,13 +177,13 @@ public class DateTime extends BaseTemporal {
         boolean differentPrecisions = this.getPrecision() != other.getPrecision();
 
         if (differentPrecisions) {
-            Integer result = this.compareToPrecision(other, Precision.getHighestDateTimePrecision(this.precision, other.precision));
+            Integer result = this.compareToPrecision(
+                    other, Precision.getHighestDateTimePrecision(this.precision, other.precision));
             if (result == null && forSort) {
                 return this.precision.toDateTimeIndex() > other.precision.toDateTimeIndex() ? 1 : -1;
             }
             return result;
-        }
-        else {
+        } else {
             return compareToPrecision(other, this.precision);
         }
     }
@@ -224,8 +222,7 @@ public class DateTime extends BaseTemporal {
             int rightComp = rightDateTime.get(Precision.getDateTimeChronoFieldFromIndex(i));
             if (leftComp > rightComp) {
                 return 1;
-            }
-            else if (leftComp < rightComp) {
+            } else if (leftComp < rightComp) {
                 return -1;
             }
         }
@@ -265,9 +262,9 @@ public class DateTime extends BaseTemporal {
 
         final DateTime otherDateTime = (DateTime) other;
 
-        return Objects.equals(zoneOffset, otherDateTime.zoneOffset) &&
-               Objects.equals(precision, otherDateTime.precision) &&
-               Objects.equals(dateTime, otherDateTime.dateTime);
+        return Objects.equals(zoneOffset, otherDateTime.zoneOffset)
+                && Objects.equals(precision, otherDateTime.precision)
+                && Objects.equals(dateTime, otherDateTime.dateTime);
     }
 
     @Override
@@ -278,13 +275,44 @@ public class DateTime extends BaseTemporal {
     @Override
     public String toString() {
         switch (precision) {
-            case YEAR: return String.format("%04d", dateTime.getYear());
-            case MONTH: return String.format("%04d-%02d", dateTime.getYear(), dateTime.getMonthValue());
-            case DAY: return String.format("%04d-%02d-%02d", dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth());
-            case HOUR: return String.format("%04d-%02d-%02dT%02d", dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth(), dateTime.getHour());
-            case MINUTE: return String.format("%04d-%02d-%02dT%02d:%02d", dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth(), dateTime.getHour(), dateTime.getMinute());
-            case SECOND: return String.format("%04d-%02d-%02dT%02d:%02d:%02d", dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth(), dateTime.getHour(), dateTime.getMinute(), dateTime.getSecond());
-            default: return String.format("%04d-%02d-%02dT%02d:%02d:%02d.%03d", dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth(), dateTime.getHour(), dateTime.getMinute(), dateTime.getSecond(), dateTime.get(precision.toChronoField()));
+            case YEAR:
+                return String.format("%04d", dateTime.getYear());
+            case MONTH:
+                return String.format("%04d-%02d", dateTime.getYear(), dateTime.getMonthValue());
+            case DAY:
+                return String.format(
+                        "%04d-%02d-%02d", dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth());
+            case HOUR:
+                return String.format(
+                        "%04d-%02d-%02dT%02d",
+                        dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth(), dateTime.getHour());
+            case MINUTE:
+                return String.format(
+                        "%04d-%02d-%02dT%02d:%02d",
+                        dateTime.getYear(),
+                        dateTime.getMonthValue(),
+                        dateTime.getDayOfMonth(),
+                        dateTime.getHour(),
+                        dateTime.getMinute());
+            case SECOND:
+                return String.format(
+                        "%04d-%02d-%02dT%02d:%02d:%02d",
+                        dateTime.getYear(),
+                        dateTime.getMonthValue(),
+                        dateTime.getDayOfMonth(),
+                        dateTime.getHour(),
+                        dateTime.getMinute(),
+                        dateTime.getSecond());
+            default:
+                return String.format(
+                        "%04d-%02d-%02dT%02d:%02d:%02d.%03d",
+                        dateTime.getYear(),
+                        dateTime.getMonthValue(),
+                        dateTime.getDayOfMonth(),
+                        dateTime.getHour(),
+                        dateTime.getMinute(),
+                        dateTime.getSecond(),
+                        dateTime.get(precision.toChronoField()));
         }
     }
 
@@ -307,9 +335,10 @@ public class DateTime extends BaseTemporal {
             return null;
         }
 
-        return ZoneOffset.ofHoursMinutes(offsetAsBigDecimal.intValue(),
+        return ZoneOffset.ofHoursMinutes(
+                offsetAsBigDecimal.intValue(),
                 new BigDecimal(60)
-                .multiply(offsetAsBigDecimal.remainder(BigDecimal.ONE))
+                        .multiply(offsetAsBigDecimal.remainder(BigDecimal.ONE))
                         .intValue());
     }
 }

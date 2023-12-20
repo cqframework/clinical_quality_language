@@ -9,25 +9,25 @@ import org.hl7.elm.r1.VersionedIdentifier;
  */
 public interface LibrarySourceLoader {
 
-  void clearProviders();
+    void clearProviders();
 
-  InputStream getLibrarySource(VersionedIdentifier libraryIdentifier);
+    InputStream getLibrarySource(VersionedIdentifier libraryIdentifier);
 
-  void registerProvider(LibrarySourceProvider provider);
+    void registerProvider(LibrarySourceProvider provider);
 
-  default InputStream getLibraryContent(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
-    if (LibraryContentType.CQL == type) {
-      return getLibrarySource(libraryIdentifier);
+    default InputStream getLibraryContent(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
+        if (LibraryContentType.CQL == type) {
+            return getLibrarySource(libraryIdentifier);
+        }
+
+        return null;
     }
 
-    return null;
-  }
+    default boolean isLibraryContentAvailable(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
+        if (LibraryContentType.CQL == type) {
+            return getLibrarySource(libraryIdentifier) != null;
+        }
 
-  default boolean isLibraryContentAvailable(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
-    if (LibraryContentType.CQL == type) {
-      return getLibrarySource(libraryIdentifier) != null;
+        return false;
     }
-
-    return false;
-  }
 }

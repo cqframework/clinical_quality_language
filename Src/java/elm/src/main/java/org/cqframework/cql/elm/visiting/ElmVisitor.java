@@ -23,7 +23,7 @@ public interface ElmVisitor<T, C> {
     /**
      * Visit a TypeSpecifier. This method will be called for every
      * node in the tree that is a descendant of the TypeSpecifier type.
-     * 
+     *
      * @param elm the ELM tree
      * @param context the context passed to the visitor
      * @return the visitor result
@@ -33,7 +33,7 @@ public interface ElmVisitor<T, C> {
     /**
      * Visit a NamedTypeSpecifier. This method will be called for
      * every node in the tree that is a NamedTypeSpecifier.
-     * 
+     *
      * @param elm the ELM tree
      * @param context the context passed to the visitor
      * @return the visitor result

@@ -8,7 +8,7 @@ public class ElmExpressionRequirement extends ElmRequirement {
     }
 
     public Expression getExpression() {
-        return (Expression)this.element;
+        return (Expression) this.element;
     }
 
     public Expression getElement() {

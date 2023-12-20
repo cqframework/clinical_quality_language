@@ -1,10 +1,9 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
-import org.hl7.elm.r1.Expression;
-import org.hl7.elm.r1.LastPositionOf;
-
 import java.util.Arrays;
 import java.util.Iterator;
+import org.hl7.elm.r1.Expression;
+import org.hl7.elm.r1.LastPositionOf;
 
 public class LastPositionOfInvocation extends OperatorExpressionInvocation {
     public LastPositionOfInvocation(LastPositionOf expression) {

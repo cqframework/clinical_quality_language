@@ -31,12 +31,12 @@ public class IncludesEvaluator {
     public static Boolean includes(Object left, Object right, String precision, State state) {
         try {
             return IncludedInEvaluator.includedIn(right, left, precision, state);
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             throw new InvalidOperatorArgument(
                     "Includes(Interval<T>, Interval<T>), Includes(List<T>, List<T>) or Includes(List<T>, T)",
-                    String.format("Includes(%s, %s)", left.getClass().getName(), right.getClass().getName())
-            );
+                    String.format(
+                            "Includes(%s, %s)",
+                            left.getClass().getName(), right.getClass().getName()));
         }
     }
 

@@ -28,22 +28,18 @@ public class OverlapsAfterEvaluator {
             if (leftEnd instanceof BaseTemporal && rightEnd instanceof BaseTemporal) {
                 return AndEvaluator.and(
                         AfterEvaluator.after(leftEnd, rightEnd, precision, state),
-                        OverlapsEvaluator.overlaps(left, right, precision, state)
-                );
-            }
-
-            else {
+                        OverlapsEvaluator.overlaps(left, right, precision, state));
+            } else {
                 return AndEvaluator.and(
                         GreaterEvaluator.greater(leftEnd, rightEnd, state),
-                        OverlapsEvaluator.overlaps(left, right, precision, state)
-                );
+                        OverlapsEvaluator.overlaps(left, right, precision, state));
             }
         }
 
         throw new InvalidOperatorArgument(
                 "OverlapsAfter(Interval<T>, Interval<T>)",
-                String.format("Overlaps(%s, %s)", left.getClass().getName(), right.getClass().getName())
-        );
+                String.format(
+                        "Overlaps(%s, %s)",
+                        left.getClass().getName(), right.getClass().getName()));
     }
-
 }

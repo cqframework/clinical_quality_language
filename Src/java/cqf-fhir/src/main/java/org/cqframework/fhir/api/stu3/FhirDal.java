@@ -1,12 +1,11 @@
 package org.cqframework.fhir.api.stu3;
 
 import ca.uhn.fhir.model.api.IQueryParameterType;
+import java.util.List;
+import java.util.Map;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Resource;
 import org.hl7.fhir.instance.model.api.IIdType;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * This interface is a minimal Fhir CRUD API. It's based on the

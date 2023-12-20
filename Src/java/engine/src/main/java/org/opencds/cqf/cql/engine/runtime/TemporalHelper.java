@@ -9,28 +9,37 @@ import org.apache.commons.lang3.StringUtils;
 
 public class TemporalHelper {
 
-    private TemporalHelper() {
-    }
+    private TemporalHelper() {}
 
     public static String[] normalizeDateTimeElements(int... elements) {
         String[] ret = new String[elements.length];
         for (int i = 0; i < elements.length; ++i) {
             switch (i) {
-                case 0: ret[i] = addLeadingZeroes(elements[i], 4); break;
-                case 6: ret[i] = addLeadingZeroes(elements[i], 3); break;
-                default: ret[i] = addLeadingZeroes(elements[i], 2); break;
+                case 0:
+                    ret[i] = addLeadingZeroes(elements[i], 4);
+                    break;
+                case 6:
+                    ret[i] = addLeadingZeroes(elements[i], 3);
+                    break;
+                default:
+                    ret[i] = addLeadingZeroes(elements[i], 2);
+                    break;
             }
         }
 
         return ret;
     }
 
-    public static String[] normalizeTimeElements(int ... elements) {
+    public static String[] normalizeTimeElements(int... elements) {
         String[] ret = new String[elements.length];
         for (int i = 0; i < elements.length; ++i) {
             switch (i) {
-                case 3: ret[i] = addLeadingZeroes(elements[i], 3); break;
-                default: ret[i] = addLeadingZeroes(elements[i], 2); break;
+                case 3:
+                    ret[i] = addLeadingZeroes(elements[i], 3);
+                    break;
+                default:
+                    ret[i] = addLeadingZeroes(elements[i], 2);
+                    break;
             }
         }
 
@@ -44,47 +53,60 @@ public class TemporalHelper {
 
     public static String autoCompleteDateTimeString(String dateString, Precision precision) {
         switch (precision) {
-            case YEAR: return dateString + "-01-01T00:00:00.000";
-            case MONTH: return dateString + "-01T00:00:00.000";
-            case DAY: return dateString + "T00:00:00.000";
-            case HOUR: return dateString + ":00:00.000";
-            case MINUTE: return dateString + ":00.000";
-            case SECOND: return dateString + ".000";
-            default: return dateString;
+            case YEAR:
+                return dateString + "-01-01T00:00:00.000";
+            case MONTH:
+                return dateString + "-01T00:00:00.000";
+            case DAY:
+                return dateString + "T00:00:00.000";
+            case HOUR:
+                return dateString + ":00:00.000";
+            case MINUTE:
+                return dateString + ":00.000";
+            case SECOND:
+                return dateString + ".000";
+            default:
+                return dateString;
         }
     }
 
     public static String autoCompleteDateString(String dateString, Precision precision) {
         switch (precision) {
-            case YEAR: return dateString + "-01-01";
-            case MONTH: return dateString + "-01";
-            default: return dateString;
+            case YEAR:
+                return dateString + "-01-01";
+            case MONTH:
+                return dateString + "-01";
+            default:
+                return dateString;
         }
     }
 
     public static String autoCompleteTimeString(String timeString, Precision precision) {
         switch (precision) {
             case HOUR:
-            case MINUTE: return timeString + ":00.000";
-            case SECOND: return timeString + ".000";
-            default: return timeString;
+            case MINUTE:
+                return timeString + ":00.000";
+            case SECOND:
+                return timeString + ".000";
+            default:
+                return timeString;
         }
     }
 
-    public static int[] cleanArray(Integer ... elements) {
+    public static int[] cleanArray(Integer... elements) {
         return Arrays.stream(elements).filter(Objects::nonNull).mapToInt(x -> x).toArray();
     }
 
     public static BigDecimal zoneToOffset(ZoneOffset zone) {
         int seconds = zone.get(ChronoField.OFFSET_SECONDS);
-        return new BigDecimal(Double.toString(seconds/60f/60f));
+        return new BigDecimal(Double.toString(seconds / 60f / 60f));
     }
 
     public static int weeksToDays(int weeks) {
         int years = 0;
         if (weeks >= 52) {
             years = (weeks / 52);
-            weeks -= years * 52 ;
+            weeks -= years * 52;
         }
         return weeks * 7 + (years * 365);
     }
