@@ -1,12 +1,11 @@
 package org.cqframework.fhir.utilities;
 
-import org.hl7.fhir.r5.model.ImplementationGuide;
-import org.hl7.fhir.utilities.Utilities;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.hl7.fhir.r5.model.ImplementationGuide;
+import org.hl7.fhir.utilities.Utilities;
 
 public class IGUtils {
 
@@ -20,9 +19,11 @@ public class IGUtils {
         return canonicalBase;
     }
 
-    public static ArrayList<String> extractResourcePaths(String rootDir, ImplementationGuide sourceIg) throws IOException {
+    public static ArrayList<String> extractResourcePaths(String rootDir, ImplementationGuide sourceIg)
+            throws IOException {
         ArrayList<String> result = new ArrayList<>();
-        for (ImplementationGuide.ImplementationGuideDefinitionParameterComponent p : sourceIg.getDefinition().getParameter()) {
+        for (ImplementationGuide.ImplementationGuideDefinitionParameterComponent p :
+                sourceIg.getDefinition().getParameter()) {
             if (p.getCode().equals("path-resource")) {
                 result.add(Utilities.path(rootDir, p.getValue()));
             }
@@ -80,8 +81,7 @@ public class IGUtils {
         String combinedPath = null;
         try {
             combinedPath = Utilities.path(rootDir, path);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             return null;
         }
 

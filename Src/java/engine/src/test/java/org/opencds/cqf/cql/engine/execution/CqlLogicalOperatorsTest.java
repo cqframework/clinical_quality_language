@@ -1,12 +1,11 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import org.testng.annotations.Test;
-
-import java.util.*;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+
+import java.util.*;
+import org.testng.annotations.Test;
 
 public class CqlLogicalOperatorsTest extends CqlTestBase {
 
@@ -108,6 +107,5 @@ public class CqlLogicalOperatorsTest extends CqlTestBase {
 
         result = evaluationResult.forExpression("NullXorNull").value();
         assertThat(result, is(nullValue()));
-
     }
 }

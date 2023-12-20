@@ -9,16 +9,15 @@ import com.fasterxml.jackson.dataformat.xml.XmlFactory;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationModule;
+import java.io.*;
+import java.net.URI;
+import java.net.URL;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 import org.hl7.elm_modelinfo.r1.TypeInfo;
 import org.hl7.elm_modelinfo.r1.TypeSpecifier;
 import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReader;
 import org.hl7.elm_modelinfo.r1.serializing.jackson.mixins.TypeInfoMixIn;
 import org.hl7.elm_modelinfo.r1.serializing.jackson.mixins.TypeSpecifierMixIn;
-
-import java.io.*;
-import java.net.URI;
-import java.net.URL;
 
 public class XmlModelInfoReader implements ModelInfoReader {
     static XmlMapper mapper = XmlMapper

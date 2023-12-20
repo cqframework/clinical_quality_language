@@ -18,13 +18,13 @@ public class PositionOfEvaluator {
         }
 
         if (pattern instanceof String) {
-            return ((String)string).indexOf((String)pattern);
+            return ((String) string).indexOf((String) pattern);
         }
 
         throw new InvalidOperatorArgument(
                 "PositionOf(String, String)",
-                String.format("PositionOf(%s, %s)", pattern.getClass().getName(), string.getClass().getName())
-        );
+                String.format(
+                        "PositionOf(%s, %s)",
+                        pattern.getClass().getName(), string.getClass().getName()));
     }
-
 }

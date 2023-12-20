@@ -21,7 +21,8 @@ public class MeetsBeforeEvaluator {
         }
 
         if (left instanceof Interval && right instanceof Interval) {
-            Boolean isLeftStartGreater = GreaterEvaluator.greater(((Interval) left).getStart(), ((Interval) right).getEnd(), state);
+            Boolean isLeftStartGreater =
+                    GreaterEvaluator.greater(((Interval) left).getStart(), ((Interval) right).getEnd(), state);
             if (isLeftStartGreater != null && isLeftStartGreater) {
                 return false;
             }
@@ -47,8 +48,8 @@ public class MeetsBeforeEvaluator {
 
         throw new InvalidOperatorArgument(
                 "MeetsBefore(Interval<T>, Interval<T>)",
-                String.format("MeetsBefore(%s, %s)", left.getClass().getName(), right.getClass().getName())
-        );
+                String.format(
+                        "MeetsBefore(%s, %s)",
+                        left.getClass().getName(), right.getClass().getName()));
     }
-
 }

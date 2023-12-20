@@ -2,7 +2,6 @@ package org.opencds.cqf.cql.engine.fhir.data;
 
 import java.util.List;
 import java.util.Set;
-
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.EvaluationResult;
 import org.testng.Assert;
@@ -10,15 +9,15 @@ import org.testng.Assert;
 public class TestFhirExecution extends FhirExecutionTestBase {
 
     // TODO: fix this... I think it requires a resource to be loaded - put in init bundle
-    //@Test
+    // @Test
     public void testCoalesce() {
         CqlEngine engine = getEngine();
         engine.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", dstu3Provider);
-        EvaluationResult evaluationResult = engine.evaluate(library.getIdentifier(),
-                Set.of("testCoalesce"), null, null, null, null);
+        EvaluationResult evaluationResult =
+                engine.evaluate(library.getIdentifier(), Set.of("testCoalesce"), null, null, null, null);
 
         Object result = evaluationResult.forExpression("testCoalesce").value();
-        Assert.assertTrue((Integer)((List<?>) result).get(0) == 72);
+        Assert.assertTrue((Integer) ((List<?>) result).get(0) == 72);
     }
 
     // @Test
@@ -26,8 +25,8 @@ public class TestFhirExecution extends FhirExecutionTestBase {
         CqlEngine engine = getEngine();
         engine.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", dstu3Provider);
         engine.getState().setParameter(null, "MAXYEAR", 2014);
-        EvaluationResult evaluationResult = engine.evaluate(library.getIdentifier(),
-                Set.of("testMonthFrom"), null, null, null, null);
+        EvaluationResult evaluationResult =
+                engine.evaluate(library.getIdentifier(), Set.of("testMonthFrom"), null, null, null, null);
         Object result = evaluationResult.forExpression("testMonthFrom").value();
         Assert.assertTrue(result != null);
     }
@@ -36,8 +35,8 @@ public class TestFhirExecution extends FhirExecutionTestBase {
     public void testMultisourceQueryCreatingDatePeriod() {
         CqlEngine engine = getEngine();
         engine.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", dstu3Provider);
-        EvaluationResult evaluationResult = engine.evaluate(library.getIdentifier(),
-                Set.of("Immunizations in range"), null, null, null, null);
+        EvaluationResult evaluationResult =
+                engine.evaluate(library.getIdentifier(), Set.of("Immunizations in range"), null, null, null, null);
         Object result = evaluationResult.forExpression("Immunizations in range").value();
         Assert.assertTrue(result != null);
     }
@@ -46,8 +45,8 @@ public class TestFhirExecution extends FhirExecutionTestBase {
     public void testIdResolution() {
         CqlEngine engine = getEngine();
         engine.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", dstu3Provider);
-        EvaluationResult evaluationResult = engine.evaluate(library.getIdentifier(),
-                Set.of("Resource Id"), null, null, null, null);
+        EvaluationResult evaluationResult =
+                engine.evaluate(library.getIdentifier(), Set.of("Resource Id"), null, null, null, null);
         Object result = evaluationResult.forExpression("Resource Id").value();
         Assert.assertTrue(result != null);
     }

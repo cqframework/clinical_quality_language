@@ -1,11 +1,10 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.util.Arrays;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal;
 import org.opencds.cqf.cql.engine.runtime.Interval;
-
-import java.util.Arrays;
 
 /*
 *** NOTES FOR INTERVAL ***
@@ -42,8 +41,9 @@ public class IncludedInEvaluator {
 
         throw new InvalidOperatorArgument(
                 "IncludedIn(Interval<T>, Interval<T>), IncludedIn(List<T>, List<T>) or IncludedIn(T, List<T>)",
-                String.format("IncludedIn(%s, %s)", left.getClass().getName(), right.getClass().getName())
-        );
+                String.format(
+                        "IncludedIn(%s, %s)",
+                        left.getClass().getName(), right.getClass().getName()));
     }
 
     public static Boolean intervalIncludedIn(Interval left, Interval right, String precision, State state) {
@@ -56,37 +56,35 @@ public class IncludedInEvaluator {
         Object rightStart = right.getStart();
         Object rightEnd = right.getEnd();
 
-        Boolean boundaryCheck =
-                AndEvaluator.and(
-                        InEvaluator.in(leftStart, right, precision, state),
-                        InEvaluator.in(leftEnd, right, precision, state)
-                );
+        Boolean boundaryCheck = AndEvaluator.and(
+                InEvaluator.in(leftStart, right, precision, state), InEvaluator.in(leftEnd, right, precision, state));
 
         if (boundaryCheck != null && boundaryCheck) {
             return true;
         }
 
-        if (leftStart instanceof BaseTemporal || leftEnd instanceof BaseTemporal
-                || rightStart instanceof BaseTemporal || rightEnd instanceof BaseTemporal)
-        {
-            if (AnyTrueEvaluator.anyTrue(Arrays.asList(BeforeEvaluator.before(leftStart, rightStart, precision, state), AfterEvaluator.after(leftEnd, rightEnd, precision, state))))
-            {
+        if (leftStart instanceof BaseTemporal
+                || leftEnd instanceof BaseTemporal
+                || rightStart instanceof BaseTemporal
+                || rightEnd instanceof BaseTemporal) {
+            if (AnyTrueEvaluator.anyTrue(Arrays.asList(
+                    BeforeEvaluator.before(leftStart, rightStart, precision, state),
+                    AfterEvaluator.after(leftEnd, rightEnd, precision, state)))) {
                 return false;
             }
             return AndEvaluator.and(
                     SameOrAfterEvaluator.sameOrAfter(leftStart, rightStart, precision, state),
-                    SameOrBeforeEvaluator.sameOrBefore(leftEnd, rightEnd, precision, state)
-            );
+                    SameOrBeforeEvaluator.sameOrBefore(leftEnd, rightEnd, precision, state));
         }
 
-        if (AnyTrueEvaluator.anyTrue(Arrays.asList(LessEvaluator.less(leftStart, rightStart, state), GreaterEvaluator.greater(leftEnd, rightEnd, state))))
-        {
+        if (AnyTrueEvaluator.anyTrue(Arrays.asList(
+                LessEvaluator.less(leftStart, rightStart, state),
+                GreaterEvaluator.greater(leftEnd, rightEnd, state)))) {
             return false;
         }
         return AndEvaluator.and(
                 GreaterOrEqualEvaluator.greaterOrEqual(leftStart, rightStart, state),
-                LessOrEqualEvaluator.lessOrEqual(leftEnd, rightEnd, state)
-        );
+                LessOrEqualEvaluator.lessOrEqual(leftEnd, rightEnd, state));
     }
 
     public static Boolean listIncludedIn(Iterable<?> left, Iterable<?> right, State state) {

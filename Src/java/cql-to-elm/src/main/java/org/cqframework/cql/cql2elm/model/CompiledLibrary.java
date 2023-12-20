@@ -1,13 +1,12 @@
 package org.cqframework.cql.cql2elm.model;
 
-import org.hl7.cql.model.NamespaceManager;
+import java.util.*;
+import java.util.List;
 import org.hl7.cql.model.DataType;
+import org.hl7.cql.model.NamespaceManager;
 import org.hl7.cql_annotations.r1.Annotation;
 import org.hl7.cql_annotations.r1.Tag;
 import org.hl7.elm.r1.*;
-
-import java.util.*;
-import java.util.List;
 
 public class CompiledLibrary {
     private VersionedIdentifier identifier;
@@ -20,6 +19,7 @@ public class CompiledLibrary {
     public VersionedIdentifier getIdentifier() {
         return identifier;
     }
+
     public void setIdentifier(VersionedIdentifier identifier) {
         this.identifier = identifier;
     }
@@ -27,6 +27,7 @@ public class CompiledLibrary {
     public Library getLibrary() {
         return library;
     }
+
     public void setLibrary(Library library) {
         this.library = library;
     }
@@ -34,7 +35,8 @@ public class CompiledLibrary {
     private void checkNamespace(String identifier) {
         Element existingElement = resolve(identifier);
         if (existingElement != null) {
-            throw new IllegalArgumentException(String.format("Identifier %s is already in use in this library.", identifier));
+            throw new IllegalArgumentException(
+                    String.format("Identifier %s is already in use in this library.", identifier));
         }
     }
 
@@ -76,9 +78,8 @@ public class CompiledLibrary {
     public void add(ExpressionDef expression) {
         if (expression instanceof FunctionDef) {
             // Register the operator signature
-            add((FunctionDef)expression, Operator.fromFunctionDef((FunctionDef)expression));
-        }
-        else {
+            add((FunctionDef) expression, Operator.fromFunctionDef((FunctionDef) expression));
+        } else {
             checkNamespace(expression.getName());
             namespace.put(expression.getName(), expression);
         }
@@ -96,10 +97,10 @@ public class CompiledLibrary {
         if (this.identifier != null && this.identifier.getId() != null) {
             if (operator.getLibraryName() == null) {
                 operator.setLibraryName(this.identifier.getId());
-            }
-            else {
+            } else {
                 if (!operator.getLibraryName().equals(this.identifier.getId())) {
-                    throw new IllegalArgumentException(String.format("Operator %s cannot be registered in library %s because it is defined in library %s.",
+                    throw new IllegalArgumentException(String.format(
+                            "Operator %s cannot be registered in library %s because it is defined in library %s.",
                             operator.getName(), this.identifier.getId(), operator.getLibraryName()));
                 }
             }
@@ -108,14 +109,15 @@ public class CompiledLibrary {
 
     private void ensureResultType(Operator operator) {
         if (operator.getResultType() == null) {
-            throw new IllegalArgumentException(String.format("Operator %s cannot be registered in library %s because it does not have a result type defined.",
+            throw new IllegalArgumentException(String.format(
+                    "Operator %s cannot be registered in library %s because it does not have a result type defined.",
                     operator.getName(), this.identifier.getId()));
         }
     }
 
     public void add(FunctionDef functionDef, Operator operator) {
         ensureLibrary(operator);
-        //ensureResultType(operator);
+        // ensureResultType(operator);
         operators.addOperator(operator);
         functionDefs.put(operator, functionDef);
     }
@@ -143,7 +145,7 @@ public class CompiledLibrary {
     public UsingDef resolveUsingRef(String identifier) {
         Element element = resolve(identifier);
         if (element instanceof UsingDef) {
-            return (UsingDef)element;
+            return (UsingDef) element;
         }
 
         return null;
@@ -152,14 +154,17 @@ public class CompiledLibrary {
     public IncludeDef resolveIncludeRef(String identifier) {
         Element element = resolve(identifier);
         if (element instanceof IncludeDef) {
-            return (IncludeDef)element;
+            return (IncludeDef) element;
         }
 
         return null;
     }
 
     public String resolveIncludeAlias(VersionedIdentifier identifier) {
-        if (identifier != null && library != null && library.getIncludes() != null && library.getIncludes().getDef() != null) {
+        if (identifier != null
+                && library != null
+                && library.getIncludes() != null
+                && library.getIncludes().getDef() != null) {
             String libraryPath = NamespaceManager.getPath(identifier.getSystem(), identifier.getId());
             for (IncludeDef id : library.getIncludes().getDef()) {
                 if (id.getPath().equals(libraryPath)) {
@@ -174,7 +179,7 @@ public class CompiledLibrary {
     public CodeSystemDef resolveCodeSystemRef(String identifier) {
         Element element = resolve(identifier);
         if (element instanceof CodeSystemDef) {
-            return (CodeSystemDef)element;
+            return (CodeSystemDef) element;
         }
 
         return null;
@@ -183,7 +188,7 @@ public class CompiledLibrary {
     public ValueSetDef resolveValueSetRef(String identifier) {
         Element element = resolve(identifier);
         if (element instanceof ValueSetDef) {
-            return (ValueSetDef)element;
+            return (ValueSetDef) element;
         }
 
         return null;
@@ -192,7 +197,7 @@ public class CompiledLibrary {
     public CodeDef resolveCodeRef(String identifier) {
         Element element = resolve(identifier);
         if (element instanceof CodeDef) {
-            return (CodeDef)element;
+            return (CodeDef) element;
         }
 
         return null;
@@ -201,7 +206,7 @@ public class CompiledLibrary {
     public ConceptDef resolveConceptRef(String identifier) {
         Element element = resolve(identifier);
         if (element instanceof ConceptDef) {
-            return (ConceptDef)element;
+            return (ConceptDef) element;
         }
 
         return null;
@@ -210,7 +215,7 @@ public class CompiledLibrary {
     public ParameterDef resolveParameterRef(String identifier) {
         Element element = resolve(identifier);
         if (element instanceof ParameterDef) {
-            return (ParameterDef)element;
+            return (ParameterDef) element;
         }
 
         return null;
@@ -219,7 +224,7 @@ public class CompiledLibrary {
     public ExpressionDef resolveExpressionRef(String identifier) {
         Element element = resolve(identifier);
         if (element instanceof ExpressionDef) {
-            return (ExpressionDef)element;
+            return (ExpressionDef) element;
         }
 
         return null;
@@ -230,7 +235,7 @@ public class CompiledLibrary {
         for (ExpressionDef ed : getLibrary().getStatements().getDef()) {
             if (ed instanceof FunctionDef) {
                 if (ed.getName().equals(identifier)) {
-                    results.add((FunctionDef)ed);
+                    results.add((FunctionDef) ed);
                 }
             }
         }
@@ -241,9 +246,14 @@ public class CompiledLibrary {
     public Iterable<FunctionDef> resolveFunctionRef(String identifier, List<DataType> signature) {
         if (signature == null) {
             return resolveFunctionRef(identifier);
-        }
-        else {
-            CallContext cc = new CallContext(this.getIdentifier().getId(), identifier, false, false, false, signature.toArray(new DataType[signature.size()]));
+        } else {
+            CallContext cc = new CallContext(
+                    this.getIdentifier().getId(),
+                    identifier,
+                    false,
+                    false,
+                    false,
+                    signature.toArray(new DataType[signature.size()]));
             OperatorResolution resolution = resolveCall(cc, null);
             ArrayList<FunctionDef> results = new ArrayList<FunctionDef>();
             if (resolution != null) {
@@ -263,7 +273,8 @@ public class CompiledLibrary {
                 resolution.setAllowFluent(getBooleanTag("allowFluent"));
             }
 
-            // The resolution needs to carry with it the full versioned identifier of the library so that it can be correctly
+            // The resolution needs to carry with it the full versioned identifier of the library so that it can be
+            // correctly
             // reflected via the alias for the library in the calling context.
             resolution.setLibraryIdentifier(this.getIdentifier());
         }
@@ -283,7 +294,7 @@ public class CompiledLibrary {
         if (library != null && library.getAnnotation() != null) {
             for (Object o : library.getAnnotation()) {
                 if (o instanceof Annotation) {
-                    return (Annotation)o;
+                    return (Annotation) o;
                 }
             }
         }
@@ -309,8 +320,7 @@ public class CompiledLibrary {
         if (tagValue != null) {
             try {
                 return Boolean.valueOf(tagValue);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 // Do not throw
                 return false;
             }

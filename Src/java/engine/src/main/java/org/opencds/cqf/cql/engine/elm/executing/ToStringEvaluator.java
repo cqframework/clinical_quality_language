@@ -1,8 +1,7 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
-import org.opencds.cqf.cql.engine.runtime.*;
-
 import java.math.BigDecimal;
+import org.opencds.cqf.cql.engine.runtime.*;
 
 /*
 
@@ -43,30 +42,22 @@ public class ToStringEvaluator {
         }
 
         if (operand instanceof Integer) {
-            return Integer.toString((Integer)operand);
-        }
-        else if (operand instanceof Long) {
+            return Integer.toString((Integer) operand);
+        } else if (operand instanceof Long) {
             return operand.toString();
-        }
-        else if (operand instanceof BigDecimal) {
+        } else if (operand instanceof BigDecimal) {
             return operand.toString();
-        }
-        else if (operand instanceof Quantity) {
+        } else if (operand instanceof Quantity) {
             return operand.toString();
-        }
-        else if (operand instanceof Ratio) {
+        } else if (operand instanceof Ratio) {
             return operand.toString();
-        }
-        else if (operand instanceof Boolean) {
-            return Boolean.toString((Boolean)operand);
-        }
-        else if (operand instanceof Date) {
+        } else if (operand instanceof Boolean) {
+            return Boolean.toString((Boolean) operand);
+        } else if (operand instanceof Date) {
             return operand.toString();
-        }
-        else if (operand instanceof DateTime) {
+        } else if (operand instanceof DateTime) {
             return operand.toString();
-        }
-        else if (operand instanceof Time) {
+        } else if (operand instanceof Time) {
             return operand.toString();
         }
         // This is not standard - adding for test suite
@@ -74,5 +65,4 @@ public class ToStringEvaluator {
             return operand.toString();
         }
     }
-
 }

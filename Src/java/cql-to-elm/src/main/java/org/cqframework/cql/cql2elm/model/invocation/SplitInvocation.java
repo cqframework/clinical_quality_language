@@ -1,10 +1,9 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
-import org.hl7.elm.r1.Expression;
-import org.hl7.elm.r1.Split;
-
 import java.util.Arrays;
 import java.util.Iterator;
+import org.hl7.elm.r1.Expression;
+import org.hl7.elm.r1.Split;
 
 public class SplitInvocation extends OperatorExpressionInvocation {
     public SplitInvocation(Split expression) {

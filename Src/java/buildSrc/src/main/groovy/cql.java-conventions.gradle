@@ -4,6 +4,7 @@ plugins {
     id 'jacoco'
     id 'signing'
     id 'cql.sca-conventions'
+    id 'com.diffplug.spotless'
 }
 
 java {
@@ -75,6 +76,13 @@ tasks.named('test', Test) {
     useTestNG()
 }
 
+spotless {
+  java {
+    targetExclude '**/generated/**'
+    palantirJavaFormat()
+  }
+}
+
 /*
 A few things:
    - You must have an OSSRH Jira account (https://issues.sonatype.org/secure/Signup!default.jspa)
@@ -132,6 +140,9 @@ publishing {
                     }
                     developer {
                         name = 'Marc Hadley'
+                    }
+                    developer {
+                        name = 'Jonathan Percival'
                     }
                 }
             }

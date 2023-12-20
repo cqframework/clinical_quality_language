@@ -39,11 +39,12 @@ public class ToRatioEvaluator {
                 return new Ratio()
                         .setNumerator(ToQuantityEvaluator.toQuantity(quantityStrings[0]))
                         .setDenominator(ToQuantityEvaluator.toQuantity(quantityStrings[1]));
-
             }
             return null;
         }
 
-        throw new IllegalArgumentException(String.format("Cannot cast a value of type %s as Ratio - use String values.", operand.getClass().getName()));
+        throw new IllegalArgumentException(String.format(
+                "Cannot cast a value of type %s as Ratio - use String values.",
+                operand.getClass().getName()));
     }
 }

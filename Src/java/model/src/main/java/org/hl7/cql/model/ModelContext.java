@@ -18,21 +18,25 @@ public class ModelContext {
     }
 
     private String name;
+
     public String getName() {
         return name;
     }
 
     private ClassType type;
+
     public ClassType getType() {
         return type;
     }
 
     private String birthDateElement;
+
     public String getBirthDateElement() {
         return birthDateElement;
     }
 
     private ArrayList<String> keys = new ArrayList<>();
+
     public Iterable<String> getKeys() {
         return keys;
     }

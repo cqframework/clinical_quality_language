@@ -22,15 +22,23 @@ public class DateFromEvaluator {
         if (operand instanceof DateTime) {
             if (((DateTime) operand).getPrecision().toDateTimeIndex() < 1) {
                 return (Date) new Date(((DateTime) operand).getDateTime().getYear(), 1, 1).setPrecision(Precision.YEAR);
-            }
-            else if (((DateTime) operand).getPrecision().toDateTimeIndex() < 2) {
-                return (Date) new Date(((DateTime) operand).getDateTime().getYear(), ((DateTime) operand).getDateTime().getMonthValue(), 1).setPrecision(Precision.MONTH);
-            }
-            else {
-                return (Date) new Date(((DateTime) operand).getDateTime().getYear(), ((DateTime) operand).getDateTime().getMonthValue(), ((DateTime) operand).getDateTime().getDayOfMonth()).setPrecision(Precision.DAY);
+            } else if (((DateTime) operand).getPrecision().toDateTimeIndex() < 2) {
+                return (Date) new Date(
+                                ((DateTime) operand).getDateTime().getYear(),
+                                ((DateTime) operand).getDateTime().getMonthValue(),
+                                1)
+                        .setPrecision(Precision.MONTH);
+            } else {
+                return (Date) new Date(
+                                ((DateTime) operand).getDateTime().getYear(),
+                                ((DateTime) operand).getDateTime().getMonthValue(),
+                                ((DateTime) operand).getDateTime().getDayOfMonth())
+                        .setPrecision(Precision.DAY);
             }
         }
 
-        throw new InvalidOperatorArgument("date from(DateTime)", String.format("date from(%s)", operand.getClass().getName()));
+        throw new InvalidOperatorArgument(
+                "date from(DateTime)",
+                String.format("date from(%s)", operand.getClass().getName()));
     }
 }

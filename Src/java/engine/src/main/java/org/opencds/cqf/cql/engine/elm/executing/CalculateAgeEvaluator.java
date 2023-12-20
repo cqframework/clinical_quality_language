@@ -37,23 +37,21 @@ public class CalculateAgeEvaluator {
             return null;
         }
 
-        if (operand instanceof Date || operand instanceof DateTime)
-        {
+        if (operand instanceof Date || operand instanceof DateTime) {
             return CalculateAgeAtEvaluator.calculateAgeAt(operand, today, precision);
         }
 
         throw new InvalidOperatorArgument(
                 "CalculateAgeInYears(Date), CalculateAgeInYears(DateTime), CalculateAgeInMonths(Date), CalculateAgeInMonths(DateTime), CalculateAgeInWeeks(Date), CalculateAgeInWeeks(DateTime), CalculateAgeInDays(Date), CalculateAgeInDays(DateTime), CalculateAgeInHours(Date), CalculateAgeInHours(DateTime), CalculateAgeInMinutes(Date), CalculateAgeInMinutes(DateTime), CalculateAgeInSeconds(Date), CalculateAgeInSeconds(DateTime)",
-                String.format("CalculateAgeIn%ss(%s)", precision, operand.getClass().getName())
-        );
+                String.format(
+                        "CalculateAgeIn%ss(%s)", precision, operand.getClass().getName()));
     }
 
     public static Object internalEvaluate(Object operand, String precision, State state) {
 
-        Object today =
-                operand instanceof Date
-                        ? DateFromEvaluator.dateFrom(state.getEvaluationDateTime())
-                        : state.getEvaluationDateTime();
+        Object today = operand instanceof Date
+                ? DateFromEvaluator.dateFrom(state.getEvaluationDateTime())
+                : state.getEvaluationDateTime();
 
         return calculateAge(operand, precision, today);
     }

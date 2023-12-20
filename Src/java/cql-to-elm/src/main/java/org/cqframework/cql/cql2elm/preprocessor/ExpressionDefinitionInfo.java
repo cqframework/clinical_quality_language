@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm.preprocessor;
 
-import org.antlr.v4.runtime.misc.Interval;
 import org.cqframework.cql.gen.cqlParser;
 
 public class ExpressionDefinitionInfo extends BaseInfo {
@@ -15,13 +14,17 @@ public class ExpressionDefinitionInfo extends BaseInfo {
         name = value;
     }
 
-    public String getContext() { return context; }
+    public String getContext() {
+        return context;
+    }
 
-    public void setContext(String value) { context = value; }
+    public void setContext(String value) {
+        context = value;
+    }
 
     @Override
     public cqlParser.ExpressionDefinitionContext getDefinition() {
-        return (cqlParser.ExpressionDefinitionContext)super.getDefinition();
+        return (cqlParser.ExpressionDefinitionContext) super.getDefinition();
     }
 
     public void setDefinition(cqlParser.ExpressionDefinitionContext value) {

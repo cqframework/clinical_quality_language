@@ -1,10 +1,9 @@
 package org.cqframework.cql.elm.requirements;
 
+import java.util.Stack;
 import org.hl7.elm.r1.ExpressionDef;
 import org.hl7.elm.r1.Query;
 import org.hl7.elm.r1.VersionedIdentifier;
-
-import java.util.Stack;
 
 public class ElmExpressionDefContext {
     public ElmExpressionDefContext(VersionedIdentifier libraryIdentifier, ExpressionDef expressionDef) {
@@ -21,16 +20,19 @@ public class ElmExpressionDefContext {
     }
 
     private VersionedIdentifier libraryIdentifier;
+
     public VersionedIdentifier getLibraryIdentifier() {
         return this.libraryIdentifier;
     }
 
     private ExpressionDef expressionDef;
+
     public ExpressionDef getExpressionDef() {
         return this.expressionDef;
     }
 
     private ElmRequirements reportedRequirements;
+
     public ElmRequirements getReportedRequirements() {
         return this.reportedRequirements;
     }
@@ -40,13 +42,16 @@ public class ElmExpressionDefContext {
     }
 
     private Stack<ElmQueryContext> queryStack = new Stack<ElmQueryContext>();
+
     public void enterQueryContext(Query query) {
         queryStack.push(new ElmQueryContext(libraryIdentifier, query));
     }
+
     public ElmQueryContext exitQueryContext() {
         ElmQueryContext queryContext = queryStack.pop();
         return queryContext;
     }
+
     public ElmQueryContext getCurrentQueryContext() {
         if (queryStack.empty()) {
             throw new IllegalArgumentException("Not in a query context");
@@ -54,6 +59,7 @@ public class ElmExpressionDefContext {
 
         return queryStack.peek();
     }
+
     public boolean inQueryContext() {
         return !queryStack.empty();
     }

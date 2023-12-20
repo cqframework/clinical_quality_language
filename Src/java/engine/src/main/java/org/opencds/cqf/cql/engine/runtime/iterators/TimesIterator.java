@@ -3,7 +3,6 @@ package org.opencds.cqf.cql.engine.runtime.iterators;
 import java.util.AbstractMap;
 import java.util.Iterator;
 
-
 /**
  * Created by Bryn on 8/11/2019.
  */
@@ -45,4 +44,3 @@ public class TimesIterator implements Iterator<Object> {
         return new AbstractMap.SimpleEntry<Object, Object>(leftElement, right.next());
     }
 }
-

@@ -1,14 +1,13 @@
 package org.cqframework.cql.cql2elm;
 
-import org.hl7.cql.model.NamespaceAware;
-import org.hl7.cql.model.NamespaceManager;
-import org.hl7.elm.r1.VersionedIdentifier;
-
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.hl7.cql.model.NamespaceAware;
+import org.hl7.cql.model.NamespaceManager;
+import org.hl7.elm.r1.VersionedIdentifier;
 
 /**
  * Used by LibraryManager to manage a set of library source providers that
@@ -26,19 +25,20 @@ class DefaultLibrarySourceLoader implements LibrarySourceLoader, NamespaceAware,
         }
 
         if (provider instanceof NamespaceAware) {
-            ((NamespaceAware)provider).setNamespaceManager(namespaceManager);
+            ((NamespaceAware) provider).setNamespaceManager(namespaceManager);
         }
 
         if (provider instanceof PathAware) {
-            ((PathAware)provider).setPath(path);
+            ((PathAware) provider).setPath(path);
         }
 
         PROVIDERS.add(provider);
     }
 
     private Path path;
+
     public void setPath(Path path) {
-        if (path == null || ! path.toFile().isDirectory()) {
+        if (path == null || !path.toFile().isDirectory()) {
             throw new IllegalArgumentException(String.format("path '%s' is not a valid directory", path));
         }
 
@@ -46,7 +46,7 @@ class DefaultLibrarySourceLoader implements LibrarySourceLoader, NamespaceAware,
 
         for (LibrarySourceProvider provider : getProviders()) {
             if (provider instanceof PathAware) {
-                ((PathAware)provider).setPath(path);
+                ((PathAware) provider).setPath(path);
             }
         }
     }
@@ -84,7 +84,8 @@ class DefaultLibrarySourceLoader implements LibrarySourceLoader, NamespaceAware,
             InputStream localSource = provider.getLibrarySource(libraryIdentifier);
             if (localSource != null) {
                 if (source != null) {
-                    throw new IllegalArgumentException(String.format("Multiple sources found for library %s, version %s.",
+                    throw new IllegalArgumentException(String.format(
+                            "Multiple sources found for library %s, version %s.",
                             libraryIdentifier.getId(), libraryIdentifier.getVersion()));
                 }
 
@@ -93,7 +94,8 @@ class DefaultLibrarySourceLoader implements LibrarySourceLoader, NamespaceAware,
         }
 
         if (source == null) {
-            throw new IllegalArgumentException(String.format("Could not load source for library %s, version %s.",
+            throw new IllegalArgumentException(String.format(
+                    "Could not load source for library %s, version %s.",
                     libraryIdentifier.getId(), libraryIdentifier.getVersion()));
         }
 
@@ -108,7 +110,7 @@ class DefaultLibrarySourceLoader implements LibrarySourceLoader, NamespaceAware,
 
         for (LibrarySourceProvider provider : getProviders()) {
             if (provider instanceof NamespaceAware) {
-                ((NamespaceAware)provider).setNamespaceManager(namespaceManager);
+                ((NamespaceAware) provider).setNamespaceManager(namespaceManager);
             }
         }
     }

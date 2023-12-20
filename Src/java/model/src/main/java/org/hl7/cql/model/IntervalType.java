@@ -25,7 +25,7 @@ public class IntervalType extends DataType {
     @Override
     public boolean equals(Object o) {
         if (o instanceof IntervalType) {
-            IntervalType that = (IntervalType)o;
+            IntervalType that = (IntervalType) o;
             return this.pointType.equals(that.pointType);
         }
 
@@ -35,7 +35,7 @@ public class IntervalType extends DataType {
     @Override
     public boolean isSubTypeOf(DataType other) {
         if (other instanceof IntervalType) {
-            IntervalType that = (IntervalType)other;
+            IntervalType that = (IntervalType) other;
             return this.pointType.isSubTypeOf(that.pointType);
         }
 
@@ -45,7 +45,7 @@ public class IntervalType extends DataType {
     @Override
     public boolean isSuperTypeOf(DataType other) {
         if (other instanceof IntervalType) {
-            IntervalType that = (IntervalType)other;
+            IntervalType that = (IntervalType) other;
             return this.pointType.isSuperTypeOf(that.pointType);
         }
 
@@ -70,7 +70,7 @@ public class IntervalType extends DataType {
     @Override
     public boolean isInstantiable(DataType callType, InstantiationContext context) {
         if (callType instanceof IntervalType) {
-            IntervalType intervalType = (IntervalType)callType;
+            IntervalType intervalType = (IntervalType) callType;
             return pointType.isInstantiable(intervalType.pointType, context);
         }
 
@@ -79,7 +79,8 @@ public class IntervalType extends DataType {
             boolean isInstantiable = pointType.isInstantiable(targetIntervalType.pointType, context);
             if (isInstantiable) {
                 if (isAlreadyInstantiable) {
-                    throw new IllegalArgumentException(String.format("Ambiguous generic instantiation involving %s to %s.",
+                    throw new IllegalArgumentException(String.format(
+                            "Ambiguous generic instantiation involving %s to %s.",
                             callType.toString(), targetIntervalType.toString()));
                 }
                 isAlreadyInstantiable = true;

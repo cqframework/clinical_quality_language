@@ -1,11 +1,10 @@
 package org.cqframework.cql.cql2elm.model;
 
+import java.util.Objects;
+import java.util.StringJoiner;
 import org.hl7.elm.r1.FunctionDef;
 import org.hl7.elm.r1.OperandDef;
 import org.hl7.elm.r1.TypeSpecifier;
-
-import java.util.Objects;
-import java.util.StringJoiner;
 
 /**
  * POJO for the result of a pre compile operation (AKA: partial compile of function headers)
@@ -67,7 +66,10 @@ public class FunctionHeader {
         sb.append(functionDef.getName());
         sb.append("_");
         for (OperandDef od : functionDef.getOperand()) {
-            sb.append(od.getOperandTypeSpecifier() != null ? od.getOperandTypeSpecifier().toString() : "void");
+            sb.append(
+                    od.getOperandTypeSpecifier() != null
+                            ? od.getOperandTypeSpecifier().toString()
+                            : "void");
         }
         sb.append("_");
         return sb.toString();

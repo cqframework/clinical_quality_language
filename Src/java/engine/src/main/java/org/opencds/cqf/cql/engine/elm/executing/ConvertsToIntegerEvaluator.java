@@ -42,8 +42,6 @@ public class ConvertsToIntegerEvaluator {
 
         throw new InvalidOperatorArgument(
                 "ConvertsToInteger(String)",
-                String.format("ConvertsToInteger(%s)", argument.getClass().getName())
-        );
+                String.format("ConvertsToInteger(%s)", argument.getClass().getName()));
     }
-
 }

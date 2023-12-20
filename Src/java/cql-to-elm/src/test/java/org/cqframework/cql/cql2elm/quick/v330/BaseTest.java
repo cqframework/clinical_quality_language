@@ -1,24 +1,23 @@
 package org.cqframework.cql.cql2elm.quick.v330;
 
-import org.cqframework.cql.cql2elm.CqlTranslator;
-import org.cqframework.cql.cql2elm.TestUtils;
-import org.cqframework.cql.cql2elm.model.CompiledLibrary;
-import org.hl7.elm.r1.*;
-import org.testng.annotations.Test;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.cqframework.cql.cql2elm.TestUtils.visitFile;
 import static org.cqframework.cql.cql2elm.TestUtils.visitFileLibrary;
 import static org.cqframework.cql.cql2elm.matchers.Quick2DataType.quick2DataType;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import org.cqframework.cql.cql2elm.CqlTranslator;
+import org.cqframework.cql.cql2elm.TestUtils;
+import org.cqframework.cql.cql2elm.model.CompiledLibrary;
+import org.hl7.elm.r1.*;
+import org.testng.annotations.Test;
+
 public class BaseTest {
 
-    //@Test
+    // @Test
     // BTR -> The types in QUICK are collapsed so this doesn't result in a choice between equally viable alternatives
     // The test is not valid for the QUICK Model
     public void testChoiceWithAlternativeConversion() throws IOException {
@@ -34,9 +33,9 @@ public class BaseTest {
         // Then check that the suchThat of the with is a greater with a Case as the left operand
         RelationshipClause relationship = query.getRelationship().get(0);
         assertThat(relationship.getSuchThat(), instanceOf(Greater.class));
-        Greater suchThat = (Greater)relationship.getSuchThat();
+        Greater suchThat = (Greater) relationship.getSuchThat();
         assertThat(suchThat.getOperand().get(0), instanceOf(Case.class));
-        Case caseExpression = (Case)suchThat.getOperand().get(0);
+        Case caseExpression = (Case) suchThat.getOperand().get(0);
         assertThat(caseExpression.getCaseItem(), hasSize(2));
         assertThat(caseExpression.getCaseItem().get(0).getWhen(), instanceOf(Is.class));
         assertThat(caseExpression.getCaseItem().get(0).getThen(), instanceOf(FunctionRef.class));
@@ -44,7 +43,7 @@ public class BaseTest {
         assertThat(caseExpression.getCaseItem().get(1).getThen(), instanceOf(FunctionRef.class));
     }
 
-    //@Test
+    // @Test
     // QUICK types render the conversion under test unnecessary
     public void testURIConversion() throws IOException {
         // If this translates without errors, the test is successful
@@ -72,16 +71,16 @@ public class BaseTest {
         // Then check that the where an IncludedIn with a Case as the left operand
         Expression where = query.getWhere();
         assertThat(where, instanceOf(IncludedIn.class));
-        IncludedIn includedIn = (IncludedIn)where;
+        IncludedIn includedIn = (IncludedIn) where;
         assertThat(includedIn.getOperand().get(0), instanceOf(As.class));
-        As asExpression = (As)includedIn.getOperand().get(0);
+        As asExpression = (As) includedIn.getOperand().get(0);
         assertThat(asExpression.getAsTypeSpecifier(), instanceOf(IntervalTypeSpecifier.class));
-        IntervalTypeSpecifier intervalTypeSpecifier = (IntervalTypeSpecifier)asExpression.getAsTypeSpecifier();
+        IntervalTypeSpecifier intervalTypeSpecifier = (IntervalTypeSpecifier) asExpression.getAsTypeSpecifier();
         assertThat(intervalTypeSpecifier.getPointType(), instanceOf(NamedTypeSpecifier.class));
-        NamedTypeSpecifier namedTypeSpecifier = (NamedTypeSpecifier)intervalTypeSpecifier.getPointType();
+        NamedTypeSpecifier namedTypeSpecifier = (NamedTypeSpecifier) intervalTypeSpecifier.getPointType();
         assertThat(namedTypeSpecifier.getName().getLocalPart(), is("DateTime"));
         assertThat(asExpression.getOperand(), instanceOf(Property.class));
-        Property property = (Property)asExpression.getOperand();
+        Property property = (Property) asExpression.getOperand();
         assertThat(property.getScope(), is("P"));
         assertThat(property.getPath(), is("performed"));
     }
@@ -91,9 +90,9 @@ public class BaseTest {
         CompiledLibrary library = visitFileLibrary("quick/v330/EqualityWithConversions.cql");
         ExpressionDef getGender = library.resolveExpressionRef("GetGender");
         assertThat(getGender.getExpression(), instanceOf(Equal.class));
-        Equal equal = (Equal)getGender.getExpression();
+        Equal equal = (Equal) getGender.getExpression();
         assertThat(equal.getOperand().get(1), instanceOf(Literal.class));
-        Literal literal = (Literal)equal.getOperand().get(1);
+        Literal literal = (Literal) equal.getOperand().get(1);
         assertThat(literal.getValue(), is("female"));
     }
 
@@ -110,12 +109,12 @@ public class BaseTest {
         }
 
         ExpressionDef def = defs.get("Observations");
-        Retrieve retrieve = (Retrieve)def.getExpression();
+        Retrieve retrieve = (Retrieve) def.getExpression();
         Expression codes = retrieve.getCodes();
         assertThat(codes, instanceOf(ToList.class));
-        ToList toList = (ToList)codes;
+        ToList toList = (ToList) codes;
         assertThat(toList.getOperand(), instanceOf(CodeRef.class));
-        CodeRef codeRef = (CodeRef)toList.getOperand();
+        CodeRef codeRef = (CodeRef) toList.getOperand();
         assertThat(codeRef.getName(), is("T0"));
     }
 

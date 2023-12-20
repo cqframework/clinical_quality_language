@@ -1,11 +1,10 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.math.BigDecimal;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.runtime.Date;
 import org.opencds.cqf.cql.engine.runtime.DateTime;
 import org.opencds.cqf.cql.engine.runtime.Time;
-
-import java.math.BigDecimal;
 
 /*
 
@@ -41,24 +40,16 @@ public class PrecisionEvaluator {
             String string = ((BigDecimal) argument).toPlainString();
             int index = string.indexOf(".");
             return index < 0 ? 0 : string.length() - index - 1;
-        }
-
-        else if (argument instanceof Date) {
+        } else if (argument instanceof Date) {
             return argument.toString().replaceAll("-", "").length();
-        }
-
-        else if (argument instanceof DateTime) {
+        } else if (argument instanceof DateTime) {
             return argument.toString().replaceAll("[T.:-]", "").length();
-        }
-
-        else if (argument instanceof Time) {
+        } else if (argument instanceof Time) {
             return argument.toString().replaceAll("[T.:]", "").length();
         }
 
         throw new InvalidOperatorArgument(
                 "Precision(Decimal), Precision(Date), Precision(DateTime) or Precision(Time)",
-                String.format("Precision(%s)", argument.getClass().getName())
-        );
+                String.format("Precision(%s)", argument.getClass().getName()));
     }
-
 }

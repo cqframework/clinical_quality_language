@@ -33,22 +33,18 @@ public class OverlapsEvaluator {
             if (leftStart instanceof BaseTemporal && rightStart instanceof BaseTemporal) {
                 return AndEvaluator.and(
                         SameOrBeforeEvaluator.sameOrBefore(leftStart, rightEnd, precision, state),
-                        SameOrBeforeEvaluator.sameOrBefore(rightStart, leftEnd, precision, state)
-                );
-            }
-
-            else {
+                        SameOrBeforeEvaluator.sameOrBefore(rightStart, leftEnd, precision, state));
+            } else {
                 return AndEvaluator.and(
                         LessOrEqualEvaluator.lessOrEqual(leftStart, rightEnd, state),
-                        LessOrEqualEvaluator.lessOrEqual(rightStart, leftEnd, state)
-                );
+                        LessOrEqualEvaluator.lessOrEqual(rightStart, leftEnd, state));
             }
         }
 
         throw new InvalidOperatorArgument(
                 "Overlaps(Interval<T>, Interval<T>)",
-                String.format("Overlaps(%s, %s)", left.getClass().getName(), right.getClass().getName())
-        );
+                String.format(
+                        "Overlaps(%s, %s)",
+                        left.getClass().getName(), right.getClass().getName()));
     }
-
 }

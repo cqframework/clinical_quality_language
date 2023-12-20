@@ -1,10 +1,5 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import org.opencds.cqf.cql.engine.elm.executing.GreaterEvaluator;
-import org.opencds.cqf.cql.engine.exception.CqlException;
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
@@ -12,9 +7,12 @@ import static org.testng.Assert.assertFalse;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.cqframework.cql.cql2elm.CqlCompilerException;
 import org.cqframework.cql.cql2elm.CqlCompilerOptions;
+import org.opencds.cqf.cql.engine.elm.executing.GreaterEvaluator;
+import org.opencds.cqf.cql.engine.exception.CqlException;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 public class CqlComparisonOperatorsTest extends CqlTestBase {
 
@@ -22,14 +20,15 @@ public class CqlComparisonOperatorsTest extends CqlTestBase {
     public void test_cql_comparison_test_suite_compiles() {
         var errors = new ArrayList<CqlCompilerException>();
         this.getLibrary(toElmIdentifier("CqlComparisonOperatorsTest"), errors, testCompilerOptions());
-        assertFalse(CqlCompilerException.hasErrors(errors), String.format("Test library compiled with the following errors : %s", this.toString(errors)));
+        assertFalse(
+                CqlCompilerException.hasErrors(errors),
+                String.format("Test library compiled with the following errors : %s", this.toString(errors)));
     }
 
     @Test
     public void test_all_comparison_operators_tests() {
         var eng = getEngine(testCompilerOptions());
         var evaluationResult = eng.evaluate(toElmIdentifier("CqlComparisonOperatorsTest"));
-
 
         Object result = evaluationResult.forExpression("BetweenIntTrue").value();
         assertThat(result, is(true));
@@ -76,7 +75,9 @@ public class CqlComparisonOperatorsTest extends CqlTestBase {
         result = evaluationResult.forExpression("SimpleEqFloat1Float1WithZ").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("SimpleEqFloat1Float1WithPrecisionAndZ").value();
+        result = evaluationResult
+                .forExpression("SimpleEqFloat1Float1WithPrecisionAndZ")
+                .value();
         assertThat(result, is(false));
 
         result = evaluationResult.forExpression("SimpleEqFloat1Float2").value();
@@ -107,13 +108,15 @@ public class CqlComparisonOperatorsTest extends CqlTestBase {
         result = evaluationResult.forExpression("TupleEqJohnJohn").value();
         assertThat(result, is(true));
 
-        // TODO - this test should actually throw a translation error, but due to a bug in the translator it isn't - remove once bug is resolved
-//        result = evaluationResult.forExpression("TupleEqJohnJohnFalse").value();
-//        assertThat(result, is(false));
+        // TODO - this test should actually throw a translation error, but due to a bug in the translator it isn't -
+        // remove once bug is resolved
+        //        result = evaluationResult.forExpression("TupleEqJohnJohnFalse").value();
+        //        assertThat(result, is(false));
 
-        // TODO - this test should actually throw a translation error, but due to a bug in the translator it isn't - remove once bug is resolved
-//        result = evaluationResult.forExpression("TupleEqJohnJohnFalse2").value();
-//        assertThat(result, is(false));
+        // TODO - this test should actually throw a translation error, but due to a bug in the translator it isn't -
+        // remove once bug is resolved
+        //        result = evaluationResult.forExpression("TupleEqJohnJohnFalse2").value();
+        //        assertThat(result, is(false));
 
         result = evaluationResult.forExpression("TupleEqJohnJane").value();
         assertThat(result, is(false));
@@ -188,12 +191,12 @@ public class CqlComparisonOperatorsTest extends CqlTestBase {
         assertThat(result, is(true));
 
         // TODO: Quantity unit comparison is not implemented yet
-        //result = evaluationResult.forExpression("GreaterM1CM1").value();
-        //assertThat(result, is(true));
+        // result = evaluationResult.forExpression("GreaterM1CM1").value();
+        // assertThat(result, is(true));
 
         // TODO: Quantity unit comparison is not implemented yet
-        //result = evaluationResult.forExpression("GreaterM1CM10").value();
-        //assertThat(result, is(true));
+        // result = evaluationResult.forExpression("GreaterM1CM10").value();
+        // assertThat(result, is(true));
 
         result = evaluationResult.forExpression("GreaterAA").value();
         assertThat(result, is(false));
@@ -237,8 +240,7 @@ public class CqlComparisonOperatorsTest extends CqlTestBase {
         try {
             GreaterEvaluator.greater(1, "one", engine.getState());
             Assert.fail();
-        }
-        catch (CqlException e) {
+        } catch (CqlException e) {
             // pass
         }
 
@@ -530,10 +532,13 @@ public class CqlComparisonOperatorsTest extends CqlTestBase {
         result = evaluationResult.forExpression("EquivFloat1Float1WithZ").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("EquivFloat1Float1WithPrecision").value();
+        result =
+                evaluationResult.forExpression("EquivFloat1Float1WithPrecision").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("EquivFloat1Float1WithPrecisionAndZ").value();
+        result = evaluationResult
+                .forExpression("EquivFloat1Float1WithPrecisionAndZ")
+                .value();
         assertThat(result, is(true));
 
         result = evaluationResult.forExpression("EquivFloatTrailingZero").value();
@@ -555,8 +560,8 @@ public class CqlComparisonOperatorsTest extends CqlTestBase {
         assertThat(result, is(false));
 
         // TODO: Quantity unit comparison is not implemented yet
-        //result = evaluationResult.forExpression("EquivEqCM1M01").value();
-        //assertThat(result, is(true));
+        // result = evaluationResult.forExpression("EquivEqCM1M01").value();
+        // assertThat(result, is(true));
 
         result = evaluationResult.forExpression("EquivTupleJohnJohn").value();
         assertThat(result, is(true));
@@ -564,13 +569,15 @@ public class CqlComparisonOperatorsTest extends CqlTestBase {
         result = evaluationResult.forExpression("EquivTupleJohnJohnWithNulls").value();
         assertThat(result, is(true));
 
-        // TODO - this test should actually throw a translation error, but due to a bug in the translator it isn't - remove once bug is resolved
-//        result = evaluationResult.forExpression("EquivTupleJohnJohnFalse").value();
-//        assertThat(result, is(false));
+        // TODO - this test should actually throw a translation error, but due to a bug in the translator it isn't -
+        // remove once bug is resolved
+        //        result = evaluationResult.forExpression("EquivTupleJohnJohnFalse").value();
+        //        assertThat(result, is(false));
 
-        // TODO - this test should actually throw a translation error, but due to a bug in the translator it isn't - remove once bug is resolved
-//        result = evaluationResult.forExpression("EquivTupleJohnJohnFalse2").value();
-//        assertThat(result, is(false));
+        // TODO - this test should actually throw a translation error, but due to a bug in the translator it isn't -
+        // remove once bug is resolved
+        //        result = evaluationResult.forExpression("EquivTupleJohnJohnFalse2").value();
+        //        assertThat(result, is(false));
 
         result = evaluationResult.forExpression("EquivTupleJohnJane").value();
         assertThat(result, is(false));
@@ -642,8 +649,8 @@ public class CqlComparisonOperatorsTest extends CqlTestBase {
         assertThat(result, is(false));
 
         // TODO: Quantity unit comparison is not implemented yet
-        //result = evaluationResult.forExpression("QuantityNotEqCM1M01").value();
-        //assertThat(result, is(false));
+        // result = evaluationResult.forExpression("QuantityNotEqCM1M01").value();
+        // assertThat(result, is(false));
 
         result = evaluationResult.forExpression("TupleNotEqJohnJohn").value();
         assertThat(result, is(false));
@@ -665,7 +672,6 @@ public class CqlComparisonOperatorsTest extends CqlTestBase {
 
         result = evaluationResult.forExpression("TimeNotEq10A10P").value();
         assertThat(result, is(true));
-
     }
 
     protected CqlCompilerOptions testCompilerOptions() {
@@ -676,7 +682,6 @@ public class CqlComparisonOperatorsTest extends CqlTestBase {
         options.getOptions().remove(CqlCompilerOptions.Options.DisableListPromotion);
         return options;
     }
-
 
     String toString(List<CqlCompilerException> errors) {
         StringBuilder builder = new StringBuilder();

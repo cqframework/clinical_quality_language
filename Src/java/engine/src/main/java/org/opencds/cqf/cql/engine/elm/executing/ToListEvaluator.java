@@ -4,11 +4,9 @@ import java.util.Collections;
 
 public class ToListEvaluator {
 
-    public static Object toList(Object operand)
-    {
+    public static Object toList(Object operand) {
         // check to see if it is already a list
-        if (operand instanceof Iterable)
-        {
+        if (operand instanceof Iterable) {
             return operand;
         }
 

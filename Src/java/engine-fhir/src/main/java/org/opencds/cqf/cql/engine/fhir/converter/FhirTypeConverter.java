@@ -1,7 +1,6 @@
 package org.opencds.cqf.cql.engine.fhir.converter;
 
 import java.math.BigDecimal;
-
 import org.hl7.fhir.instance.model.api.IBase;
 import org.hl7.fhir.instance.model.api.IBaseCoding;
 import org.hl7.fhir.instance.model.api.ICompositeType;

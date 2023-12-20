@@ -10,9 +10,11 @@ public class ElmLibraryReaderProvider implements org.cqframework.cql.elm.seriali
         }
 
         switch (contentType) {
-            case "application/elm+xml": return new ElmXmlLibraryReader();
+            case "application/elm+xml":
+                return new ElmXmlLibraryReader();
             case "application/elm+json":
-            default: return new ElmJsonLibraryReader();
+            default:
+                return new ElmJsonLibraryReader();
         }
     }
 }

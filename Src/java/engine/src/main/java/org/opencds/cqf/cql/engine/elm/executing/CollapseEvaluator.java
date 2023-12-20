@@ -1,14 +1,13 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal;
 import org.opencds.cqf.cql.engine.runtime.CqlList;
 import org.opencds.cqf.cql.engine.runtime.Interval;
 import org.opencds.cqf.cql.engine.runtime.Quantity;
-
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
 
 /*
 collapse(argument List<Interval<T>>) List<Interval<T>>
@@ -34,79 +33,57 @@ If the per argument is null, the default unit interval for the point type of the
     (i.e. the interval that has a width equal to the result of the successor function for the point type).
 */
 
-public class CollapseEvaluator
-{
-    private static Interval getIntervalWithPerApplied(Interval interval, Quantity per, State state)
-    {
-        if (per.getValue().equals(new BigDecimal("0")))
-        {
+public class CollapseEvaluator {
+    private static Interval getIntervalWithPerApplied(Interval interval, Quantity per, State state) {
+        if (per.getValue().equals(new BigDecimal("0"))) {
             return interval;
         }
 
-        if (interval.getPointType().getTypeName().contains("Integer"))
-        {
+        if (interval.getPointType().getTypeName().contains("Integer")) {
             return new Interval(
                     interval.getStart(),
                     true,
                     AddEvaluator.add(interval.getEnd(), per.getValue().intValue()),
-                    true
-            );
-        }
-        else if (interval.getPointType().getTypeName().contains("BigDecimal"))
-        {
-            return new Interval(
-                    interval.getStart(),
-                    true,
-                    AddEvaluator.add(interval.getEnd(), per.getValue()),
-                    true
-            );
+                    true);
+        } else if (interval.getPointType().getTypeName().contains("BigDecimal")) {
+            return new Interval(interval.getStart(), true, AddEvaluator.add(interval.getEnd(), per.getValue()), true);
         }
         // Quantity, Date, DateTime, and Time
-        else
-        {
-            return new Interval(
-                    interval.getStart(),
-                    true,
-                    AddEvaluator.add(interval.getEnd(), per),
-                    true
-            );
+        else {
+            return new Interval(interval.getStart(), true, AddEvaluator.add(interval.getEnd(), per), true);
         }
     }
 
-    public static List<Interval> collapse(Iterable<Interval> list, Quantity per, State state)
-    {
-        if (list == null)
-        {
+    public static List<Interval> collapse(Iterable<Interval> list, Quantity per, State state) {
+        if (list == null) {
             return null;
         }
 
         List<Interval> intervals = CqlList.toList(list, false);
 
-        if (intervals.size() == 1 || intervals.isEmpty())
-        {
+        if (intervals.size() == 1 || intervals.isEmpty()) {
             return intervals;
         }
 
-        boolean isTemporal =
-                intervals.get(0).getStart() instanceof BaseTemporal
-                        || intervals.get(0).getEnd() instanceof BaseTemporal;
+        boolean isTemporal = intervals.get(0).getStart() instanceof BaseTemporal
+                || intervals.get(0).getEnd() instanceof BaseTemporal;
 
         intervals.sort(new CqlList().valueSort);
 
-        if (per == null)
-        {
+        if (per == null) {
             per = new Quantity().withValue(new BigDecimal(0)).withDefaultUnit();
         }
 
         String precision = per.getUnit().equals("1") ? null : per.getUnit();
 
-        for (int i = 0; i < intervals.size() - 1; ++i)
-        {
+        for (int i = 0; i < intervals.size() - 1; ++i) {
             Interval applyPer = getIntervalWithPerApplied(intervals.get(i), per, state);
 
             if (isTemporal) {
-                if (per.getValue().compareTo(BigDecimal.ONE) == 0 || per.getValue().compareTo(BigDecimal.ZERO) == 0) {
-                    // Temporal DataTypes already receive the precision adjustments at the OverlapsEvaluator and MeetsEvaluator.
+                if (per.getValue().compareTo(BigDecimal.ONE) == 0
+                        || per.getValue().compareTo(BigDecimal.ZERO) == 0) {
+                    // Temporal DataTypes already receive the precision adjustments at the OverlapsEvaluator and
+                    // MeetsEvaluator.
                     // But they can only do full units (ms, seconds, days): They cannot do "4 days" of precision.
                     // The getIntervalWithPerApplied takes that into account.
                     applyPer = intervals.get(i);
@@ -115,38 +92,33 @@ public class CollapseEvaluator
                 }
             }
 
-            Boolean doMerge = AnyTrueEvaluator.anyTrue(
-                    Arrays.asList(
-                            OverlapsEvaluator.overlaps(applyPer, intervals.get(i+1), precision, state),
-                            MeetsEvaluator.meets(applyPer, intervals.get(i+1), precision, state)
-                    )
-            );
+            Boolean doMerge = AnyTrueEvaluator.anyTrue(Arrays.asList(
+                    OverlapsEvaluator.overlaps(applyPer, intervals.get(i + 1), precision, state),
+                    MeetsEvaluator.meets(applyPer, intervals.get(i + 1), precision, state)));
 
-            if (doMerge == null)
-            {
+            if (doMerge == null) {
                 continue;
             }
 
-            if (doMerge)
-            {
-                Boolean isNextEndGreater =
-                        isTemporal
-                                ? AfterEvaluator.after((intervals.get(i+1)).getEnd(), applyPer.getEnd(), precision, state)
-                                : GreaterEvaluator.greater((intervals.get(i+1)).getEnd(), applyPer.getEnd(), state);
+            if (doMerge) {
+                Boolean isNextEndGreater = isTemporal
+                        ? AfterEvaluator.after((intervals.get(i + 1)).getEnd(), applyPer.getEnd(), precision, state)
+                        : GreaterEvaluator.greater((intervals.get(i + 1)).getEnd(), applyPer.getEnd(), state);
 
                 intervals.set(
                         i,
                         new Interval(
-                                applyPer.getStart(), true,
-                                isNextEndGreater != null && isNextEndGreater ? (intervals.get(i+1)).getEnd() : applyPer.getEnd(), true
-                        )
-                );
-                intervals.remove(i+1);
+                                applyPer.getStart(),
+                                true,
+                                isNextEndGreater != null && isNextEndGreater
+                                        ? (intervals.get(i + 1)).getEnd()
+                                        : applyPer.getEnd(),
+                                true));
+                intervals.remove(i + 1);
                 i -= 1;
             }
         }
 
         return intervals;
     }
-
 }

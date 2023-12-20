@@ -21,7 +21,8 @@ public class MeetsAfterEvaluator {
         }
 
         if (left instanceof Interval && right instanceof Interval) {
-            Boolean isRightStartGreater = GreaterEvaluator.greater(((Interval) right).getStart(), ((Interval) left).getEnd(), state);
+            Boolean isRightStartGreater =
+                    GreaterEvaluator.greater(((Interval) right).getStart(), ((Interval) left).getEnd(), state);
             if (isRightStartGreater != null && isRightStartGreater) {
                 return false;
             }
@@ -47,8 +48,8 @@ public class MeetsAfterEvaluator {
 
         throw new InvalidOperatorArgument(
                 "MeetsAfter(Interval<T>, Interval<T>)",
-                String.format("MeetsAfter(%s, %s)", left.getClass().getName(), right.getClass().getName())
-        );
+                String.format(
+                        "MeetsAfter(%s, %s)",
+                        left.getClass().getName(), right.getClass().getName()));
     }
-
 }

@@ -1,5 +1,9 @@
 package org.cqframework.cql.cql2elm.fhir.v18;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
+import java.io.IOException;
 import org.cqframework.cql.cql2elm.*;
 import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider;
 import org.hl7.cql.model.ModelInfoProvider;
@@ -7,11 +11,6 @@ import org.hl7.elm.r1.Library;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import java.io.IOException;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 
 /**
  * Created by Bryn on 12/11/2016.
@@ -42,7 +41,7 @@ public class PathTests {
     public void testPaths() {
         CqlTranslator translator = null;
         try {
-            translator = CqlTranslator.fromStream(PathTests.class.getResourceAsStream("PathTests.cql"),  libraryManager);
+            translator = CqlTranslator.fromStream(PathTests.class.getResourceAsStream("PathTests.cql"), libraryManager);
             Library library = translator.toELM();
             assertThat(translator.getErrors().size(), is(0));
         } catch (IOException e) {

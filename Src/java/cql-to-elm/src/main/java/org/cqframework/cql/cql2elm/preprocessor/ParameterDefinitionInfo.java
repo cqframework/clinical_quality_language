@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm.preprocessor;
 
-import org.antlr.v4.runtime.misc.Interval;
 import org.cqframework.cql.gen.cqlParser;
 
 public class ParameterDefinitionInfo extends BaseInfo {
@@ -16,7 +15,7 @@ public class ParameterDefinitionInfo extends BaseInfo {
 
     @Override
     public cqlParser.ParameterDefinitionContext getDefinition() {
-        return (cqlParser.ParameterDefinitionContext)super.getDefinition();
+        return (cqlParser.ParameterDefinitionContext) super.getDefinition();
     }
 
     public void setDefinition(cqlParser.ParameterDefinitionContext value) {

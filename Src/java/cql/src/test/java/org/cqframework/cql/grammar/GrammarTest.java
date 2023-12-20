@@ -1,5 +1,8 @@
 package org.cqframework.cql.grammar;
 
+import static org.cqframework.cql.gen.cqlParser.*;
+import static org.testng.Assert.assertEquals;
+
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -7,9 +10,6 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 import org.testng.annotations.Test;
-
-import static org.cqframework.cql.gen.cqlParser.*;
-import static org.testng.Assert.assertEquals;
 
 /**
  * GrammarTest ensures that the grammar (and generated parsers) work as expected.  If non-compatible changes are made
@@ -31,12 +31,15 @@ public class GrammarTest {
 
         TermExpressionContext termExpression = (TermExpressionContext) cmpExpr.expression(0);
         TermExpressionTermContext termExpressionTerm = (TermExpressionTermContext) termExpression.expressionTerm();
-        InvocationTermContext invocationTerm = (InvocationTermContext)termExpressionTerm.term();
-        FunctionInvocationContext functionInvocation = (FunctionInvocationContext)invocationTerm.invocation();
-        assertEquals("AgeAt", functionInvocation.function().referentialIdentifier().getText());
+        InvocationTermContext invocationTerm = (InvocationTermContext) termExpressionTerm.term();
+        FunctionInvocationContext functionInvocation = (FunctionInvocationContext) invocationTerm.invocation();
+        assertEquals(
+                "AgeAt", functionInvocation.function().referentialIdentifier().getText());
 
-        TermExpressionContext argExpression = (TermExpressionContext) functionInvocation.function().paramList().expression(0);
-        TimeBoundaryExpressionTermContext argExpressionTerm = (TimeBoundaryExpressionTermContext) argExpression.expressionTerm();
+        TermExpressionContext argExpression = (TermExpressionContext)
+                functionInvocation.function().paramList().expression(0);
+        TimeBoundaryExpressionTermContext argExpressionTerm =
+                (TimeBoundaryExpressionTermContext) argExpression.expressionTerm();
         assertEquals("start", argExpressionTerm.getChild(0).getText());
         assertEquals("MeasurementPeriod", argExpressionTerm.expressionTerm().getText());
 

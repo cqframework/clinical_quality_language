@@ -1,11 +1,10 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.math.BigDecimal;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.Quantity;
 import org.opencds.cqf.cql.engine.runtime.Ratio;
 import org.opencds.cqf.cql.engine.runtime.Value;
-
-import java.math.BigDecimal;
 
 /*
 ToQuantity(argument Decimal) Quantity
@@ -84,31 +83,30 @@ public class ToQuantityEvaluator {
         }
 
         if (operand instanceof Quantity) {
-            return (Quantity)operand;
+            return (Quantity) operand;
         }
 
         if (operand instanceof String) {
             String str = (String) operand;
             return toQuantity(str);
-        }
-        else if (operand instanceof Integer) {
+        } else if (operand instanceof Integer) {
             BigDecimal ret = new BigDecimal((Integer) operand);
             if (Value.validateDecimal(ret, null) == null) {
                 return null;
             }
             return new Quantity().withValue(ret).withDefaultUnit();
-        }
-        else if (operand instanceof BigDecimal) {
+        } else if (operand instanceof BigDecimal) {
             if (Value.validateDecimal((BigDecimal) operand, null) == null) {
                 return null;
             }
             return new Quantity().withValue((BigDecimal) operand).withDefaultUnit();
-        }
-        else if (operand instanceof Ratio) {
-            return (Quantity) DivideEvaluator.divide(((Ratio) operand).getNumerator(), ((Ratio) operand).getDenominator(), state);
+        } else if (operand instanceof Ratio) {
+            return (Quantity)
+                    DivideEvaluator.divide(((Ratio) operand).getNumerator(), ((Ratio) operand).getDenominator(), state);
         }
 
-        throw new IllegalArgumentException(String.format("Cannot cast a value of type %s as Quantity - use String, Integer, Decimal, or Ratio values.", operand.getClass().getName()));
+        throw new IllegalArgumentException(String.format(
+                "Cannot cast a value of type %s as Quantity - use String, Integer, Decimal, or Ratio values.",
+                operand.getClass().getName()));
     }
-
 }

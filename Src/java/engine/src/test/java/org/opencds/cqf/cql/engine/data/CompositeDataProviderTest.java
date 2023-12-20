@@ -1,5 +1,9 @@
 package org.opencds.cqf.cql.engine.data;
 
+import static org.mockito.Mockito.*;
+import static org.testng.Assert.*;
+
+import java.util.Date;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.opencds.cqf.cql.engine.model.ModelResolver;
@@ -8,14 +12,10 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.Date;
-
-import static org.mockito.Mockito.*;
-import static org.testng.Assert.*;
-
 public class CompositeDataProviderTest {
     @Mock
     private ModelResolver mockModelResolver;
+
     @Mock
     private RetrieveProvider mockRetrieveProvider;
 
@@ -38,7 +38,8 @@ public class CompositeDataProviderTest {
 
         when(mockModelResolver.resolveId(object)).thenReturn(id);
 
-        final CompositeDataProvider compositeDataProvider = new CompositeDataProvider(mockModelResolver, mockRetrieveProvider);
+        final CompositeDataProvider compositeDataProvider =
+                new CompositeDataProvider(mockModelResolver, mockRetrieveProvider);
 
         assertEquals(id, compositeDataProvider.resolveId(object));
         verify(mockModelResolver, times(1)).resolveId(object);
@@ -51,7 +52,8 @@ public class CompositeDataProviderTest {
 
         when(mockModelResolver.resolveId(object)).thenReturn(id);
 
-        final CompositeDataProvider compositeDataProvider = new CompositeDataProvider(mockModelResolver, mockRetrieveProvider);
+        final CompositeDataProvider compositeDataProvider =
+                new CompositeDataProvider(mockModelResolver, mockRetrieveProvider);
 
         assertEquals(id, compositeDataProvider.resolveId(object));
         verify(mockModelResolver, times(1)).resolveId(object);
@@ -64,7 +66,8 @@ public class CompositeDataProviderTest {
 
         when(mockModelResolver.resolveId(object)).thenReturn(id);
 
-        final CompositeDataProvider compositeDataProvider = new CompositeDataProvider(mockModelResolver, mockRetrieveProvider);
+        final CompositeDataProvider compositeDataProvider =
+                new CompositeDataProvider(mockModelResolver, mockRetrieveProvider);
 
         assertEquals(id, compositeDataProvider.resolveId(object));
         verify(mockModelResolver, times(1)).resolveId(object);

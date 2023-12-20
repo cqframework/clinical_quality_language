@@ -25,5 +25,4 @@ public class EndEvaluator {
 
         return argument.getEnd();
     }
-
 }

@@ -21,34 +21,30 @@ public class TimeFromEvaluator {
 
         if (operand instanceof DateTime) {
             int hour;
-            if (((DateTime)operand).getPrecision().toDateTimeIndex() > 2) {
-                hour = ((DateTime)operand).getDateTime().getHour();
-            }
-            else {
+            if (((DateTime) operand).getPrecision().toDateTimeIndex() > 2) {
+                hour = ((DateTime) operand).getDateTime().getHour();
+            } else {
                 return null;
             }
 
             int minute;
-            if (((DateTime)operand).getPrecision().toDateTimeIndex() > 3) {
-                minute = ((DateTime)operand).getDateTime().getMinute();
-            }
-            else {
+            if (((DateTime) operand).getPrecision().toDateTimeIndex() > 3) {
+                minute = ((DateTime) operand).getDateTime().getMinute();
+            } else {
                 return new Time(hour);
             }
 
             int second;
-            if (((DateTime)operand).getPrecision().toDateTimeIndex() > 4) {
-                second = ((DateTime)operand).getDateTime().getSecond();
-            }
-            else {
+            if (((DateTime) operand).getPrecision().toDateTimeIndex() > 4) {
+                second = ((DateTime) operand).getDateTime().getSecond();
+            } else {
                 return new Time(hour, minute);
             }
 
             int millisecond;
-            if (((DateTime)operand).getPrecision().toDateTimeIndex() > 5) {
-                millisecond = ((DateTime)operand).getDateTime().get(Precision.MILLISECOND.toChronoField());
-            }
-            else {
+            if (((DateTime) operand).getPrecision().toDateTimeIndex() > 5) {
+                millisecond = ((DateTime) operand).getDateTime().get(Precision.MILLISECOND.toChronoField());
+            } else {
                 return new Time(hour, minute, second);
             }
 
@@ -57,8 +53,6 @@ public class TimeFromEvaluator {
 
         throw new InvalidOperatorArgument(
                 "TimeFrom(DateTime)",
-                String.format("TimeFrom(%s)", operand.getClass().getName())
-        );
+                String.format("TimeFrom(%s)", operand.getClass().getName()));
     }
-
 }

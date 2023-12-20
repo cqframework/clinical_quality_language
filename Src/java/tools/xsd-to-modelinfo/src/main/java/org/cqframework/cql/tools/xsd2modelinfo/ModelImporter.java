@@ -1,24 +1,23 @@
 package org.cqframework.cql.tools.xsd2modelinfo;
 
-import org.apache.ws.commons.schema.*;
-import org.hl7.cql.model.*;
-import org.hl7.elm_modelinfo.r1.*;
+import static org.cqframework.cql.tools.xsd2modelinfo.ModelImporterOptions.ChoiceTypePolicy.USE_CHOICE;
 
 import jakarta.xml.bind.JAXB;
-import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static org.cqframework.cql.tools.xsd2modelinfo.ModelImporterOptions.ChoiceTypePolicy.USE_CHOICE;
+import javax.xml.namespace.QName;
+import org.apache.ws.commons.schema.*;
+import org.hl7.cql.model.*;
+import org.hl7.elm_modelinfo.r1.*;
 
 public class ModelImporter {
     private static final Map<String, DataType> SYSTEM_CATALOG = getSystemCatalog();
+
     private static Map<String, DataType> getSystemCatalog() {
         ModelInfo systemModelInfo = JAXB.unmarshal(
-                ModelImporter.class.getResourceAsStream("/org/hl7/elm/r1/system-modelinfo.xml"),
-                ModelInfo.class);
+                ModelImporter.class.getResourceAsStream("/org/hl7/elm/r1/system-modelinfo.xml"), ModelInfo.class);
 
         final Map<String, DataType> map = new HashMap<>();
         for (TypeInfo info : systemModelInfo.getTypeInfo()) {
@@ -93,9 +92,7 @@ public class ModelImporter {
                 .withPatientClassName(config != null ? config.getPatientClassName() : null)
                 .withPatientClassIdentifier(config != null ? config.getPatientClassIdentifier() : null)
                 .withPatientBirthDatePropertyName(config != null ? config.getPatientBirthDatePropertyName() : null)
-                .withTypeInfo(dataTypes.values().stream()
-                        .map(this::toTypeInfo)
-                        .collect(Collectors.toList()));
+                .withTypeInfo(dataTypes.values().stream().map(this::toTypeInfo).collect(Collectors.toList()));
     }
 
     private TypeInfo toTypeInfo(DataType dataType) {
@@ -114,7 +111,8 @@ public class ModelImporter {
         } else if (dataType instanceof TupleType) {
             return toTupleTypeInfo((TupleType) dataType);
         } else {
-            throw new IllegalArgumentException(String.format("Unknown data type class: %s", dataType.getClass().getName()));
+            throw new IllegalArgumentException(String.format(
+                    "Unknown data type class: %s", dataType.getClass().getName()));
         }
     }
 
@@ -128,9 +126,8 @@ public class ModelImporter {
     private void setBaseType(TypeInfo typeInfo, DataType baseType) {
         TypeSpecifier baseTypeSpecifier = toTypeSpecifier(baseType);
         if (baseTypeSpecifier instanceof NamedTypeSpecifier) {
-            typeInfo.setBaseType(toTypeName((NamedTypeSpecifier)baseTypeSpecifier));
-        }
-        else {
+            typeInfo.setBaseType(toTypeName((NamedTypeSpecifier) baseTypeSpecifier));
+        } else {
             typeInfo.setBaseTypeSpecifier(baseTypeSpecifier);
         }
     }
@@ -153,16 +150,17 @@ public class ModelImporter {
         }
         if (dataType.getLabel() != null) {
             result.setLabel(dataType.getLabel());
-        }
-        else if (options.getNormalizePrefix() != null && dataType.getName().startsWith(options.getNormalizePrefix())) {
-            result.setLabel(dataType.getName().substring(options.getNormalizePrefix().length()));
+        } else if (options.getNormalizePrefix() != null
+                && dataType.getName().startsWith(options.getNormalizePrefix())) {
+            result.setLabel(
+                    dataType.getName().substring(options.getNormalizePrefix().length()));
         }
 
         result.setIdentifier(dataType.getIdentifier());
         result.setRetrievable(dataType.isRetrievable());
         result.setPrimaryCodePath(dataType.getPrimaryCodePath());
 
-        for(TypeParameter genericParameter : dataType.getGenericParameters()) {
+        for (TypeParameter genericParameter : dataType.getGenericParameters()) {
             TypeParameterInfo parameterInfo = new TypeParameterInfo();
             parameterInfo.setName(genericParameter.getIdentifier());
             parameterInfo.setConstraint(genericParameter.getConstraint().name());
@@ -174,12 +172,11 @@ public class ModelImporter {
             ClassInfoElement cie = new ClassInfoElement().withName(element.getName());
             TypeSpecifier elementTypeSpecifier = toTypeSpecifier(element.getType());
             if (elementTypeSpecifier instanceof NamedTypeSpecifier) {
-                cie.setElementType(toTypeName((NamedTypeSpecifier)elementTypeSpecifier));
+                cie.setElementType(toTypeName((NamedTypeSpecifier) elementTypeSpecifier));
                 if (options.getVersionPolicy() == ModelImporterOptions.VersionPolicy.INCLUDE_DEPRECATED) {
                     cie.setType(toTypeName((NamedTypeSpecifier) elementTypeSpecifier));
                 }
-            }
-            else {
+            } else {
                 cie.setElementTypeSpecifier(elementTypeSpecifier);
                 if (options.getVersionPolicy() == ModelImporterOptions.VersionPolicy.INCLUDE_DEPRECATED) {
                     cie.setTypeSpecifier(elementTypeSpecifier);
@@ -198,9 +195,8 @@ public class ModelImporter {
         IntervalTypeInfo result = new IntervalTypeInfo();
         TypeSpecifier pointTypeSpecifier = toTypeSpecifier(dataType.getPointType());
         if (pointTypeSpecifier instanceof NamedTypeSpecifier) {
-            result.setPointType(toTypeName((NamedTypeSpecifier)pointTypeSpecifier));
-        }
-        else {
+            result.setPointType(toTypeName((NamedTypeSpecifier) pointTypeSpecifier));
+        } else {
             result.setPointTypeSpecifier(pointTypeSpecifier);
         }
         return result;
@@ -210,9 +206,8 @@ public class ModelImporter {
         ListTypeInfo result = new ListTypeInfo();
         TypeSpecifier elementTypeSpecifier = toTypeSpecifier(dataType.getElementType());
         if (elementTypeSpecifier instanceof NamedTypeSpecifier) {
-            result.setElementType(toTypeName((NamedTypeSpecifier)elementTypeSpecifier));
-        }
-        else {
+            result.setElementType(toTypeName((NamedTypeSpecifier) elementTypeSpecifier));
+        } else {
             result.setElementTypeSpecifier(elementTypeSpecifier);
         }
         return result;
@@ -225,8 +220,7 @@ public class ModelImporter {
         }
 
         for (TupleTypeElement element : dataType.getElements()) {
-            TupleTypeInfoElement infoElement = new TupleTypeInfoElement()
-                    .withName(element.getName());
+            TupleTypeInfoElement infoElement = new TupleTypeInfoElement().withName(element.getName());
 
             TypeSpecifier elementTypeSpecifier = toTypeSpecifier(element.getType());
             if (elementTypeSpecifier instanceof NamedTypeSpecifier) {
@@ -234,8 +228,7 @@ public class ModelImporter {
                 if (options.getVersionPolicy() == ModelImporterOptions.VersionPolicy.INCLUDE_DEPRECATED) {
                     infoElement.setType(toTypeName((NamedTypeSpecifier) elementTypeSpecifier));
                 }
-            }
-            else {
+            } else {
                 infoElement.setElementTypeSpecifier(elementTypeSpecifier);
                 if (options.getVersionPolicy() == ModelImporterOptions.VersionPolicy.INCLUDE_DEPRECATED) {
                     infoElement.setTypeSpecifier(elementTypeSpecifier);
@@ -266,14 +259,14 @@ public class ModelImporter {
         } else if (dataType instanceof TupleType) {
             throw new IllegalArgumentException("Tuple types cannot be used in type specifiers.");
         } else {
-            throw new IllegalArgumentException(String.format("Unknown data type class: %s", dataType.getClass().getName()));
+            throw new IllegalArgumentException(String.format(
+                    "Unknown data type class: %s", dataType.getClass().getName()));
         }
     }
 
     private TypeSpecifier toNamedTypeSpecifier(NamedType dataType) {
-        NamedTypeSpecifier namedTypeSpecifier = new NamedTypeSpecifier()
-                .withModelName(dataType.getNamespace())
-                .withName(dataType.getSimpleName());
+        NamedTypeSpecifier namedTypeSpecifier =
+                new NamedTypeSpecifier().withModelName(dataType.getNamespace()).withName(dataType.getSimpleName());
         return namedTypeSpecifier;
     }
 
@@ -281,9 +274,8 @@ public class ModelImporter {
         IntervalTypeSpecifier intervalTypeSpecifier = new IntervalTypeSpecifier();
         TypeSpecifier pointTypeSpecifier = toTypeSpecifier(dataType.getPointType());
         if (pointTypeSpecifier instanceof NamedTypeSpecifier) {
-            intervalTypeSpecifier.setPointType(toTypeName((NamedTypeSpecifier)pointTypeSpecifier));
-        }
-        else {
+            intervalTypeSpecifier.setPointType(toTypeName((NamedTypeSpecifier) pointTypeSpecifier));
+        } else {
             intervalTypeSpecifier.setPointTypeSpecifier(pointTypeSpecifier);
         }
         return intervalTypeSpecifier;
@@ -293,9 +285,8 @@ public class ModelImporter {
         ListTypeSpecifier listTypeSpecifier = new ListTypeSpecifier();
         TypeSpecifier elementTypeSpecifier = toTypeSpecifier(dataType.getElementType());
         if (elementTypeSpecifier instanceof NamedTypeSpecifier) {
-            listTypeSpecifier.setElementType(toTypeName((NamedTypeSpecifier)elementTypeSpecifier));
-        }
-        else {
+            listTypeSpecifier.setElementType(toTypeName((NamedTypeSpecifier) elementTypeSpecifier));
+        } else {
             listTypeSpecifier.setElementTypeSpecifier(elementTypeSpecifier);
         }
         return listTypeSpecifier;
@@ -306,8 +297,7 @@ public class ModelImporter {
         for (DataType choice : dataType.getTypes()) {
             choiceTypes.add(toTypeSpecifier(choice));
         }
-        ChoiceTypeSpecifier choiceTypeSpecifier = new ChoiceTypeSpecifier()
-                .withChoice(choiceTypes);
+        ChoiceTypeSpecifier choiceTypeSpecifier = new ChoiceTypeSpecifier().withChoice(choiceTypes);
         return choiceTypeSpecifier;
     }
 
@@ -318,13 +308,14 @@ public class ModelImporter {
 
         String modelName = namespaces.get(schemaTypeName.getNamespaceURI());
         if (modelName == null) {
-            modelName = schemaTypeName.getPrefix(); // Doesn't always work, but should be okay for a fallback position...
-            if (modelName != null && ! modelName.isEmpty()) {
+            modelName =
+                    schemaTypeName.getPrefix(); // Doesn't always work, but should be okay for a fallback position...
+            if (modelName != null && !modelName.isEmpty()) {
                 namespaces.put(schemaTypeName.getNamespaceURI(), modelName);
             }
         }
 
-        if (modelName != null && ! modelName.isEmpty()) {
+        if (modelName != null && !modelName.isEmpty()) {
             return modelName + '.' + schemaTypeName.getLocalPart().replace('-', '_');
         }
 
@@ -356,18 +347,16 @@ public class ModelImporter {
             }
 
             return resultType;
-        }
-        else {
+        } else {
             return resolveType(schemaType);
         }
     }
 
     private DataType resolveType(XmlSchemaType schemaType) {
         if (schemaType instanceof XmlSchemaSimpleType) {
-            return resolveSimpleType((XmlSchemaSimpleType)schemaType);
-        }
-        else if (schemaType instanceof XmlSchemaComplexType) {
-            return resolveComplexType((XmlSchemaComplexType)schemaType);
+            return resolveSimpleType((XmlSchemaSimpleType) schemaType);
+        } else if (schemaType instanceof XmlSchemaComplexType) {
+            return resolveComplexType((XmlSchemaComplexType) schemaType);
         }
 
         return null;
@@ -391,8 +380,7 @@ public class ModelImporter {
 
             if (mapping != null && mapping.getRelationship() == ModelImporterMapperValue.Relationship.EXTEND) {
                 baseType = SYSTEM_CATALOG.get(mapping.getTargetSystemClass());
-            }
-            else if (simpleType.getContent() instanceof XmlSchemaSimpleTypeRestriction) {
+            } else if (simpleType.getContent() instanceof XmlSchemaSimpleTypeRestriction) {
                 baseType = resolveType(((XmlSchemaSimpleTypeRestriction) simpleType.getContent()).getBaseTypeName());
                 switch (options.getSimpleTypeRestrictionPolicy()) {
                     case EXTEND_BASETYPE:
@@ -408,8 +396,7 @@ public class ModelImporter {
 
             if (retypeToBase) {
                 resultType = baseType;
-            }
-            else {
+            } else {
                 resultType = new SimpleType(typeName, baseType);
                 dataTypes.put(typeName, resultType);
             }
@@ -423,7 +410,7 @@ public class ModelImporter {
             for (int i = 0; i < config.getTypeInfo().size(); i++) {
                 TypeInfo typeConfig = config.getTypeInfo().get(i);
                 if (typeConfig instanceof ClassInfo) {
-                    ClassInfo classConfig = (ClassInfo)typeConfig;
+                    ClassInfo classConfig = (ClassInfo) typeConfig;
                     if (classConfig.getName().equals(classType.getName())) {
                         classType.setIdentifier(classConfig.getIdentifier());
                         classType.setLabel(classConfig.getLabel());
@@ -471,18 +458,18 @@ public class ModelImporter {
             if (complexType.getContentModel() != null) {
                 XmlSchemaContent content = complexType.getContentModel().getContent();
                 if (content instanceof XmlSchemaComplexContentRestriction) {
-                    XmlSchemaComplexContentRestriction restrictionContent = (XmlSchemaComplexContentRestriction)content;
+                    XmlSchemaComplexContentRestriction restrictionContent =
+                            (XmlSchemaComplexContentRestriction) content;
                     attributeContent = restrictionContent.getAttributes();
                     particleContent = restrictionContent.getParticle();
-                }
-                else if (content instanceof XmlSchemaComplexContentExtension) {
-                    XmlSchemaComplexContentExtension extensionContent = (XmlSchemaComplexContentExtension)content;
+                } else if (content instanceof XmlSchemaComplexContentExtension) {
+                    XmlSchemaComplexContentExtension extensionContent = (XmlSchemaComplexContentExtension) content;
                     attributeContent = extensionContent.getAttributes();
                     particleContent = extensionContent.getParticle();
                 }
                 // For complex types with simple content, create a new class type with a value element for the content
                 else if (content instanceof XmlSchemaSimpleContentRestriction) {
-                    XmlSchemaSimpleContentRestriction restrictionContent = (XmlSchemaSimpleContentRestriction)content;
+                    XmlSchemaSimpleContentRestriction restrictionContent = (XmlSchemaSimpleContentRestriction) content;
 
                     DataType valueType = resolveType(restrictionContent.getBaseTypeName());
                     ClassTypeElement valueElement = new ClassTypeElement("value", valueType, false, false, null);
@@ -490,21 +477,18 @@ public class ModelImporter {
 
                     attributeContent = restrictionContent.getAttributes();
                     particleContent = null;
-                }
-                else if (content instanceof XmlSchemaSimpleContentExtension) {
-                    XmlSchemaSimpleContentExtension extensionContent = (XmlSchemaSimpleContentExtension)content;
+                } else if (content instanceof XmlSchemaSimpleContentExtension) {
+                    XmlSchemaSimpleContentExtension extensionContent = (XmlSchemaSimpleContentExtension) content;
                     attributeContent = extensionContent.getAttributes();
                     particleContent = null;
 
                     DataType valueType = resolveType(extensionContent.getBaseTypeName());
                     ClassTypeElement valueElement = new ClassTypeElement("value", valueType, false, false, null);
                     elements.add(valueElement);
-                }
-                else {
+                } else {
                     throw new IllegalArgumentException("Unrecognized Schema Content: " + content.toString());
                 }
-            }
-            else {
+            } else {
                 attributeContent = complexType.getAttributes();
                 particleContent = complexType.getParticle();
             }
@@ -533,7 +517,8 @@ public class ModelImporter {
                 } catch (InvalidRedeclarationException e) {
                     switch (options.getElementRedeclarationPolicy()) {
                         case FAIL_INVALID_REDECLARATIONS:
-                            System.err.println("Redeclaration failed.  Either fix the XSD or choose a different element-redeclaration-policy.");
+                            System.err.println(
+                                    "Redeclaration failed.  Either fix the XSD or choose a different element-redeclaration-policy.");
                             throw e;
                         case DISCARD_INVALID_REDECLARATIONS:
                             System.err.printf("%s. Discarding element redeclaration.%n", e.getMessage());
@@ -541,12 +526,18 @@ public class ModelImporter {
                         case RENAME_INVALID_REDECLARATIONS:
                         default:
                             String tName = getTypeName(element.getType());
-                            StringBuilder name = new StringBuilder(element.getName()).append(Character.toUpperCase(tName.charAt(0)));
+                            StringBuilder name =
+                                    new StringBuilder(element.getName()).append(Character.toUpperCase(tName.charAt(0)));
                             if (tName.length() > 1) {
                                 name.append(tName.substring(1));
                             }
                             System.err.printf("%s. Renaming element to %s.%n", e.getMessage(), name.toString());
-                            classType.addElement(new ClassTypeElement(name.toString(), element.getType(), element.isProhibited(), element.isOneBased(), null));
+                            classType.addElement(new ClassTypeElement(
+                                    name.toString(),
+                                    element.getType(),
+                                    element.isProhibited(),
+                                    element.isOneBased(),
+                                    null));
                     }
                 }
             }
@@ -593,7 +584,9 @@ public class ModelImporter {
         do {
             result++;
 
-            if (result >= original.length() || result >= comparison.length() || original.charAt(result) != comparison.charAt(result)) {
+            if (result >= original.length()
+                    || result >= comparison.length()
+                    || original.charAt(result) != comparison.charAt(result)) {
                 break;
             }
         } while (true);
@@ -603,29 +596,26 @@ public class ModelImporter {
 
     private void resolveClassTypeElements(XmlSchemaParticle particle, List<ClassTypeElement> elements) {
         if (particle instanceof XmlSchemaElement) {
-            ClassTypeElement element = resolveClassTypeElement((XmlSchemaElement)particle);
+            ClassTypeElement element = resolveClassTypeElement((XmlSchemaElement) particle);
             if (element != null) {
                 elements.add(element);
             }
-        }
-        else if (particle instanceof XmlSchemaSequence) {
-            XmlSchemaSequence sequence = (XmlSchemaSequence)particle;
+        } else if (particle instanceof XmlSchemaSequence) {
+            XmlSchemaSequence sequence = (XmlSchemaSequence) particle;
             for (XmlSchemaSequenceMember member : sequence.getItems()) {
                 if (member instanceof XmlSchemaParticle) {
                     resolveClassTypeElements((XmlSchemaParticle) member, elements);
                 }
             }
-        }
-        else if (particle instanceof XmlSchemaAll) {
-            XmlSchemaAll all = (XmlSchemaAll)particle;
+        } else if (particle instanceof XmlSchemaAll) {
+            XmlSchemaAll all = (XmlSchemaAll) particle;
             for (XmlSchemaAllMember member : all.getItems()) {
                 if (member instanceof XmlSchemaParticle) {
                     resolveClassTypeElements((XmlSchemaParticle) member, elements);
                 }
             }
-        }
-        else if (particle instanceof XmlSchemaChoice) {
-            XmlSchemaChoice choice = (XmlSchemaChoice)particle;
+        } else if (particle instanceof XmlSchemaChoice) {
+            XmlSchemaChoice choice = (XmlSchemaChoice) particle;
             boolean choiceCreated = false;
             if (options.getChoiceTypePolicy() == USE_CHOICE) {
                 List<DataType> choices = new ArrayList<DataType>();
@@ -635,8 +625,7 @@ public class ModelImporter {
                     if (choiceElement != null) {
                         if (elementName == null) {
                             elementName = choiceElement.getName();
-                        }
-                        else {
+                        } else {
                             int firstDifference = indexOfFirstDifference(elementName, choiceElement.getName());
                             if (firstDifference < elementName.length()) {
                                 elementName = elementName.substring(0, firstDifference);
@@ -666,9 +655,8 @@ public class ModelImporter {
                     }
                 }
             }
-        }
-        else if (particle instanceof XmlSchemaGroupRef) {
-            XmlSchemaGroupRef ref = (XmlSchemaGroupRef)particle;
+        } else if (particle instanceof XmlSchemaGroupRef) {
+            XmlSchemaGroupRef ref = (XmlSchemaGroupRef) particle;
             resolveClassTypeElements(ref.getParticle(), elements);
         }
     }
@@ -684,8 +672,7 @@ public class ModelImporter {
         XmlSchemaType schemaType = element.getSchemaType();
         if (schemaType != null) {
             elementType = resolveType(schemaType);
-        }
-        else {
+        } else {
             QName schemaTypeName = element.getSchemaTypeName();
             if (schemaTypeName != null) {
                 elementType = resolveType(schemaTypeName);
@@ -694,7 +681,8 @@ public class ModelImporter {
 
         if (elementType == null) {
             return null; // The type is anonymous and will not be represented within the imported model
-            //throw new IllegalStateException(String.format("Unable to resolve type %s of element %s.", element.getSchemaType().getName(), element.getName()));
+            // throw new IllegalStateException(String.format("Unable to resolve type %s of element %s.",
+            // element.getSchemaType().getName(), element.getName()));
         }
 
         if (isList) {
@@ -715,8 +703,7 @@ public class ModelImporter {
         XmlSchemaType schemaType = attribute.getSchemaType();
         if (schemaType != null) {
             elementType = resolveType(schemaType);
-        }
-        else {
+        } else {
             QName schemaTypeName = attribute.getSchemaTypeName();
             if (schemaTypeName != null) {
                 elementType = resolveType(schemaTypeName);
@@ -725,37 +712,38 @@ public class ModelImporter {
 
         if (elementType == null) {
             return null; // The type is anonymous and will not be represented in the imported model
-            //throw new IllegalStateException(String.format("Unable to resolve type %s of attribute %s.", attribute.getSchemaTypeName(), attribute.getName()));
+            // throw new IllegalStateException(String.format("Unable to resolve type %s of attribute %s.",
+            // attribute.getSchemaTypeName(), attribute.getName()));
         }
 
-        return new ClassTypeElement(attribute.getName(), elementType, attribute.getUse() == XmlSchemaUse.PROHIBITED, false, null);
+        return new ClassTypeElement(
+                attribute.getName(), elementType, attribute.getUse() == XmlSchemaUse.PROHIBITED, false, null);
     }
 
     private void resolveClassTypeElements(XmlSchemaAttributeOrGroupRef attribute, List<ClassTypeElement> elements) {
         if (attribute instanceof XmlSchemaAttribute) {
-            ClassTypeElement element = resolveClassTypeElement((XmlSchemaAttribute)attribute);
+            ClassTypeElement element = resolveClassTypeElement((XmlSchemaAttribute) attribute);
             if (element != null) {
                 elements.add(element);
             }
-        }
-        else if (attribute instanceof XmlSchemaAttributeGroupRef) {
-            resolveClassTypeElements(((XmlSchemaAttributeGroupRef)attribute).getRef().getTarget(), elements);
+        } else if (attribute instanceof XmlSchemaAttributeGroupRef) {
+            resolveClassTypeElements(
+                    ((XmlSchemaAttributeGroupRef) attribute).getRef().getTarget(), elements);
         }
     }
 
     private void resolveClassTypeElements(XmlSchemaAttributeGroup attributeGroup, List<ClassTypeElement> elements) {
         for (XmlSchemaAttributeGroupMember member : attributeGroup.getAttributes()) {
             if (member instanceof XmlSchemaAttribute) {
-                ClassTypeElement element = resolveClassTypeElement((XmlSchemaAttribute)member);
+                ClassTypeElement element = resolveClassTypeElement((XmlSchemaAttribute) member);
                 if (element != null) {
                     elements.add(element);
                 }
-            }
-            else if (member instanceof XmlSchemaAttributeGroupRef) {
-                resolveClassTypeElements(((XmlSchemaAttributeGroupRef)member).getRef().getTarget(), elements);
-            }
-            else if (member instanceof XmlSchemaAttributeGroup) {
-                resolveClassTypeElements((XmlSchemaAttributeGroup)member, elements);
+            } else if (member instanceof XmlSchemaAttributeGroupRef) {
+                resolveClassTypeElements(
+                        ((XmlSchemaAttributeGroupRef) member).getRef().getTarget(), elements);
+            } else if (member instanceof XmlSchemaAttributeGroup) {
+                resolveClassTypeElements((XmlSchemaAttributeGroup) member, elements);
             }
         }
     }

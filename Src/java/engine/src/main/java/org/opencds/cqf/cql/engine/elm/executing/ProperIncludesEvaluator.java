@@ -1,11 +1,10 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.util.stream.StreamSupport;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal;
 import org.opencds.cqf.cql.engine.runtime.Interval;
-
-import java.util.stream.StreamSupport;
 
 /*
 *** NOTES FOR INTERVAL ***
@@ -57,8 +56,9 @@ public class ProperIncludesEvaluator {
 
         throw new InvalidOperatorArgument(
                 "ProperlyIncludes(Interval<T>, Interval<T>) or ProperlyIncludes(List<T>, List<T>)",
-                String.format("ProperlyIncludes(%s, %s)", left.getClass().getName(), right.getClass().getName())
-        );
+                String.format(
+                        "ProperlyIncludes(%s, %s)",
+                        left.getClass().getName(), right.getClass().getName()));
     }
 
     public static Boolean intervalProperlyIncludes(Interval left, Interval right, String precision, State state) {
@@ -71,21 +71,20 @@ public class ProperIncludesEvaluator {
         Object rightStart = right.getStart();
         Object rightEnd = right.getEnd();
 
-        if (leftStart instanceof BaseTemporal || leftEnd instanceof BaseTemporal
-                || rightStart instanceof BaseTemporal || rightEnd instanceof BaseTemporal) {
+        if (leftStart instanceof BaseTemporal
+                || leftEnd instanceof BaseTemporal
+                || rightStart instanceof BaseTemporal
+                || rightEnd instanceof BaseTemporal) {
             Boolean isSame = AndEvaluator.and(
                     SameAsEvaluator.sameAs(leftStart, rightStart, precision, state),
-                    SameAsEvaluator.sameAs(leftEnd, rightEnd, precision, state)
-            );
+                    SameAsEvaluator.sameAs(leftEnd, rightEnd, precision, state));
             return AndEvaluator.and(
                     IncludedInEvaluator.intervalIncludedIn(right, left, precision, state),
-                    isSame == null ? null : !isSame
-            );
+                    isSame == null ? null : !isSame);
         }
         return AndEvaluator.and(
                 IncludedInEvaluator.intervalIncludedIn(right, left, precision, state),
-                NotEqualEvaluator.notEqual(left, right, state)
-        );
+                NotEqualEvaluator.notEqual(left, right, state));
     }
 
     public static Boolean listProperlyIncludes(Iterable<?> left, Iterable<?> right, State state) {
@@ -93,7 +92,8 @@ public class ProperIncludesEvaluator {
             return false;
         }
 
-        int leftCount = (int) StreamSupport.stream(((Iterable<?>) left).spliterator(), false).count();
+        int leftCount = (int)
+                StreamSupport.stream(((Iterable<?>) left).spliterator(), false).count();
 
         if (right == null) {
             return leftCount > 0;
@@ -103,10 +103,8 @@ public class ProperIncludesEvaluator {
                 IncludedInEvaluator.listIncludedIn(right, left, state),
                 GreaterEvaluator.greater(
                         leftCount,
-                        (int) StreamSupport.stream(((Iterable<?>) right).spliterator(), false).count(),
-                        state
-                )
-        );
+                        (int) StreamSupport.stream(((Iterable<?>) right).spliterator(), false)
+                                .count(),
+                        state));
     }
-
 }

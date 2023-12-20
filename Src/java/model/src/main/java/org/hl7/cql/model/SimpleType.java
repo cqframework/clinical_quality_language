@@ -39,8 +39,14 @@ public class SimpleType extends DataType implements NamedType {
     }
 
     private String target;
-    public String getTarget() { return target; }
-    public void setTarget(String target) { this.target = target; }
+
+    public String getTarget() {
+        return target;
+    }
+
+    public void setTarget(String target) {
+        this.target = target;
+    }
 
     @Override
     public int hashCode() {
@@ -50,7 +56,7 @@ public class SimpleType extends DataType implements NamedType {
     @Override
     public boolean equals(Object o) {
         if (o instanceof SimpleType) {
-            SimpleType that = (SimpleType)o;
+            SimpleType that = (SimpleType) o;
             return this.name.equals(that.name);
         }
 
@@ -84,7 +90,8 @@ public class SimpleType extends DataType implements NamedType {
             boolean isInstantiable = true; // If it came back from this call, we can instantiate it...
             if (isInstantiable) {
                 if (isAlreadyInstantiable) {
-                    throw new IllegalArgumentException(String.format("Ambiguous generic instantiation involving %s to %s.",
+                    throw new IllegalArgumentException(String.format(
+                            "Ambiguous generic instantiation involving %s to %s.",
                             callType.toString(), targetSimpleType.toString()));
                 }
                 isAlreadyInstantiable = true;

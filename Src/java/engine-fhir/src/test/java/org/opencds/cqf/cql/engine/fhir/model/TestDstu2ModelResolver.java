@@ -4,20 +4,17 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.context.FhirVersionEnum;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
-import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.context.FhirVersionEnum;
-
 import org.cqframework.cql.cql2elm.ModelManager;
 import org.cqframework.cql.cql2elm.model.Model;
 import org.hl7.cql.model.ModelIdentifier;
 import org.hl7.elm_modelinfo.r1.ClassInfo;
 import org.hl7.elm_modelinfo.r1.TypeInfo;
-
 import org.hl7.fhir.dstu2.model.*;
 import org.hl7.fhir.dstu2.model.Enumerations.AdministrativeGender;
 import org.hl7.fhir.dstu2.model.Enumerations.AgeUnits;
@@ -75,16 +72,18 @@ public class TestDstu2ModelResolver {
         List<TypeInfo> typeInfos = m.getModelInfo().getTypeInfo();
 
         for (TypeInfo ti : typeInfos) {
-            ClassInfo ci = (ClassInfo)ti;
+            ClassInfo ci = (ClassInfo) ti;
             if (ci != null) {
                 switch (ci.getBaseType()) {
-                    // Abstract classes
-                    case "FHIR.Element": continue;
+                        // Abstract classes
+                    case "FHIR.Element":
+                        continue;
                 }
 
                 switch (ci.getName()) {
-                    // TODO: HAPI Doesn't have a ResourceContainer type
-                    case "FHIR.ResourceContainer": continue;
+                        // TODO: HAPI Doesn't have a ResourceContainer type
+                    case "FHIR.ResourceContainer":
+                        continue;
                 }
 
                 resolver.resolveType(ci.getName());
@@ -172,8 +171,10 @@ public class TestDstu2ModelResolver {
                 enumFactory.setAccessible(true);
                 EnumFactory<?> factory = (EnumFactory<?>) enumFactory.get(instance);
 
-                assertTrue(
-                        factory.getClass().getSimpleName().replace("EnumFactory", "").equals(enumType.getSimpleName()));
+                assertTrue(factory.getClass()
+                        .getSimpleName()
+                        .replace("EnumFactory", "")
+                        .equals(enumType.getSimpleName()));
             } catch (Exception e) {
                 throw new AssertionError("error getting factory type. " + e.getMessage());
             }
@@ -236,10 +237,10 @@ public class TestDstu2ModelResolver {
         assertNull(result);
     }
 
-
-    //@Test
+    // @Test
     public void resolveNullEnumerationReturnsNull() {
-        FhirModelResolver<Base,?,?,SimpleQuantity,?,?,?,?> resolver = new Dstu2FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU2));
+        FhirModelResolver<Base, ?, ?, SimpleQuantity, ?, ?, ?, ?> resolver =
+                new Dstu2FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU2));
 
         Quantity q = new Quantity();
         q.setValue(new BigDecimal("10.0"));
@@ -250,9 +251,10 @@ public class TestDstu2ModelResolver {
         assertNull(result);
     }
 
-    //@Test
+    // @Test
     public void resolveNullPrimitiveReturnsNull() {
-        FhirModelResolver<Base,BaseDateTimeType,?,?,?,?,?,?> resolver = new Dstu2FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU2));
+        FhirModelResolver<Base, BaseDateTimeType, ?, ?, ?, ?, ?, ?> resolver =
+                new Dstu2FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU2));
 
         DateTimeType dt = new DateTimeType();
 

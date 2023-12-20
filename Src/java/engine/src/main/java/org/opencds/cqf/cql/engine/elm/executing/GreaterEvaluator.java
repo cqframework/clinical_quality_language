@@ -1,5 +1,6 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.math.BigDecimal;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal;
@@ -7,8 +8,6 @@ import org.opencds.cqf.cql.engine.runtime.Interval;
 import org.opencds.cqf.cql.engine.runtime.Quantity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.math.BigDecimal;
 
 /*
 
@@ -45,6 +44,7 @@ If either argument is null, the result is null.
 public class GreaterEvaluator {
 
     private static Logger logger = LoggerFactory.getLogger(GreaterEvaluator.class);
+
     public static Boolean greater(Object left, Object right, State state) {
 
         if (left == null || right == null) {
@@ -57,26 +57,18 @@ public class GreaterEvaluator {
 
         if (left instanceof Long && right instanceof Long) {
             return ((Long) left).compareTo((Long) right) > 0;
-        }
-
-        else if (left instanceof BigDecimal && right instanceof BigDecimal) {
+        } else if (left instanceof BigDecimal && right instanceof BigDecimal) {
             return ((BigDecimal) left).compareTo((BigDecimal) right) > 0;
-        }
-
-        else if (left instanceof Quantity && right instanceof Quantity) {
+        } else if (left instanceof Quantity && right instanceof Quantity) {
             if (((Quantity) left).getValue() == null || ((Quantity) right).getValue() == null) {
                 return null;
             }
-            Integer nullableCompareTo = ((Quantity)left).nullableCompareTo((Quantity)right);
+            Integer nullableCompareTo = ((Quantity) left).nullableCompareTo((Quantity) right);
             return nullableCompareTo == null ? null : nullableCompareTo > 0;
-        }
-
-        else if (left instanceof BaseTemporal && right instanceof BaseTemporal) {
+        } else if (left instanceof BaseTemporal && right instanceof BaseTemporal) {
             Integer i = ((BaseTemporal) left).compare((BaseTemporal) right, false);
             return i == null ? null : i > 0;
-        }
-
-        else if (left instanceof String && right instanceof String) {
+        } else if (left instanceof String && right instanceof String) {
             return ((String) left).compareTo((String) right) > 0;
         }
 
@@ -85,20 +77,16 @@ public class GreaterEvaluator {
             if (InEvaluator.in(right, left, null, state)) {
                 return null;
             }
-            return ((Integer)((Interval) left).getStart()).compareTo((Integer) right) > 0;
-        }
-
-        else if (left instanceof Integer && right instanceof Interval) {
+            return ((Integer) ((Interval) left).getStart()).compareTo((Integer) right) > 0;
+        } else if (left instanceof Integer && right instanceof Interval) {
             if (InEvaluator.in(left, right, null, state)) {
                 return null;
             }
-            return ((Integer) left).compareTo((Integer)((Interval) right).getEnd()) > 0;
+            return ((Integer) left).compareTo((Integer) ((Interval) right).getEnd()) > 0;
         }
 
         throw new InvalidOperatorArgument(
-            "Greater(Integer, Integer), Greater(Long, Long), Greater(Decimal, Decimal), Greater(Quantity, Quantity), Greater(Date, Date), Greater(DateTime, DateTime), Greater(Time, Time) or Greater(String, String)",
-            String.format("Greater(%s, %s)", left, right)
-        );
+                "Greater(Integer, Integer), Greater(Long, Long), Greater(Decimal, Decimal), Greater(Quantity, Quantity), Greater(Date, Date), Greater(DateTime, DateTime), Greater(Time, Time) or Greater(String, String)",
+                String.format("Greater(%s, %s)", left, right));
     }
-
 }

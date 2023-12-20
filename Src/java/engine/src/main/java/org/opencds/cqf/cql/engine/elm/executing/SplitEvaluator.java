@@ -1,11 +1,10 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
-import org.apache.commons.lang3.StringUtils;
-import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
+import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 
 /*
 Split(stringToSplit String, separator String) List<String>
@@ -27,8 +26,7 @@ public class SplitEvaluator {
             List<Object> result = new ArrayList<>();
             if (separator == null) {
                 result.add(stringToSplit);
-            }
-            else {
+            } else {
                 Collections.addAll(result, StringUtils.split(((String) stringToSplit), (String) separator));
             }
             return result;
@@ -36,7 +34,8 @@ public class SplitEvaluator {
 
         throw new InvalidOperatorArgument(
                 "Split(String, String)",
-                String.format("Split(%s, %s)", stringToSplit.getClass().getName(), separator.getClass().getName())
-        );
+                String.format(
+                        "Split(%s, %s)",
+                        stringToSplit.getClass().getName(), separator.getClass().getName()));
     }
 }

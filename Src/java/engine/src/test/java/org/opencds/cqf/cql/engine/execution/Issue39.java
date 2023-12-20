@@ -1,10 +1,9 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import org.testng.annotations.Test;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+import org.testng.annotations.Test;
 
 public class Issue39 extends CqlTestBase {
 

@@ -1,11 +1,10 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.time.format.DateTimeParseException;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.runtime.Date;
 import org.opencds.cqf.cql.engine.runtime.DateTime;
 import org.opencds.cqf.cql.engine.runtime.Precision;
-
-import java.time.format.DateTimeParseException;
 
 /*
 
@@ -48,14 +47,12 @@ public class ToDateEvaluator {
         if (operand instanceof DateTime) {
             return new Date(((DateTime) operand).getDateTime().toLocalDate())
                     .setPrecision(
-                            ((DateTime) operand).getPrecision().toDateTimeIndex() > 2 ? Precision.DAY : ((DateTime) operand).getPrecision()
-                    );
+                            ((DateTime) operand).getPrecision().toDateTimeIndex() > 2
+                                    ? Precision.DAY
+                                    : ((DateTime) operand).getPrecision());
         }
 
         throw new InvalidOperatorArgument(
-                "ToDate(String)",
-                String.format("ToDate(%s)", operand.getClass().getName())
-        );
+                "ToDate(String)", String.format("ToDate(%s)", operand.getClass().getName()));
     }
-
 }

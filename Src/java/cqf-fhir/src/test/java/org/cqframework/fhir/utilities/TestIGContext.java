@@ -1,13 +1,12 @@
 package org.cqframework.fhir.utilities;
 
-import org.hl7.fhir.r5.context.IWorkerContext;
-import org.testng.annotations.Test;
+import static org.testng.Assert.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-
-import static org.testng.Assert.*;
+import org.hl7.fhir.r5.context.IWorkerContext;
+import org.testng.annotations.Test;
 
 public class TestIGContext implements IWorkerContext.ILoggingService {
 

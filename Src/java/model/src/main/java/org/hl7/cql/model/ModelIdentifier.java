@@ -1,21 +1,20 @@
 package org.hl7.cql.model;
 
+import jakarta.xml.bind.annotation.*;
 import org.jvnet.jaxb2_commons.lang.*;
 import org.jvnet.jaxb2_commons.locator.ObjectLocator;
 import org.jvnet.jaxb2_commons.locator.util.LocatorUtils;
 
-import jakarta.xml.bind.annotation.*;
-
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ModelIdentifier", namespace = "urn:hl7-org:model")
-public class ModelIdentifier
-    implements Equals2, HashCode2, ToString2
-{
+public class ModelIdentifier implements Equals2, HashCode2, ToString2 {
 
     @XmlAttribute(name = "id")
     protected String id;
+
     @XmlAttribute(name = "system")
     protected String system;
+
     @XmlAttribute(name = "version")
     protected String version;
 
@@ -106,8 +105,9 @@ public class ModelIdentifier
         return this;
     }
 
-    public boolean equals(ObjectLocator thisLocator, ObjectLocator thatLocator, Object object, EqualsStrategy2 strategy) {
-        if ((object == null)||(this.getClass()!= object.getClass())) {
+    public boolean equals(
+            ObjectLocator thisLocator, ObjectLocator thatLocator, Object object, EqualsStrategy2 strategy) {
+        if ((object == null) || (this.getClass() != object.getClass())) {
             return false;
         }
         if (this == object) {
@@ -119,7 +119,13 @@ public class ModelIdentifier
             lhsId = this.getId();
             String rhsId;
             rhsId = that.getId();
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "id", lhsId), LocatorUtils.property(thatLocator, "id", rhsId), lhsId, rhsId, (this.id!= null), (that.id!= null))) {
+            if (!strategy.equals(
+                    LocatorUtils.property(thisLocator, "id", lhsId),
+                    LocatorUtils.property(thatLocator, "id", rhsId),
+                    lhsId,
+                    rhsId,
+                    (this.id != null),
+                    (that.id != null))) {
                 return false;
             }
         }
@@ -128,7 +134,13 @@ public class ModelIdentifier
             lhsSystem = this.getSystem();
             String rhsSystem;
             rhsSystem = that.getSystem();
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "system", lhsSystem), LocatorUtils.property(thatLocator, "system", rhsSystem), lhsSystem, rhsSystem, (this.system!= null), (that.system!= null))) {
+            if (!strategy.equals(
+                    LocatorUtils.property(thisLocator, "system", lhsSystem),
+                    LocatorUtils.property(thatLocator, "system", rhsSystem),
+                    lhsSystem,
+                    rhsSystem,
+                    (this.system != null),
+                    (that.system != null))) {
                 return false;
             }
         }
@@ -137,7 +149,13 @@ public class ModelIdentifier
             lhsVersion = this.getVersion();
             String rhsVersion;
             rhsVersion = that.getVersion();
-            if (!strategy.equals(LocatorUtils.property(thisLocator, "version", lhsVersion), LocatorUtils.property(thatLocator, "version", rhsVersion), lhsVersion, rhsVersion, (this.version!= null), (that.version!= null))) {
+            if (!strategy.equals(
+                    LocatorUtils.property(thisLocator, "version", lhsVersion),
+                    LocatorUtils.property(thatLocator, "version", rhsVersion),
+                    lhsVersion,
+                    rhsVersion,
+                    (this.version != null),
+                    (that.version != null))) {
                 return false;
             }
         }
@@ -154,17 +172,26 @@ public class ModelIdentifier
         {
             String theId;
             theId = this.getId();
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "id", theId), currentHashCode, theId, (this.id!= null));
+            currentHashCode = strategy.hashCode(
+                    LocatorUtils.property(locator, "id", theId), currentHashCode, theId, (this.id != null));
         }
         {
             String theSystem;
             theSystem = this.getSystem();
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "system", theSystem), currentHashCode, theSystem, (this.system!= null));
+            currentHashCode = strategy.hashCode(
+                    LocatorUtils.property(locator, "system", theSystem),
+                    currentHashCode,
+                    theSystem,
+                    (this.system != null));
         }
         {
             String theVersion;
             theVersion = this.getVersion();
-            currentHashCode = strategy.hashCode(LocatorUtils.property(locator, "version", theVersion), currentHashCode, theVersion, (this.version!= null));
+            currentHashCode = strategy.hashCode(
+                    LocatorUtils.property(locator, "version", theVersion),
+                    currentHashCode,
+                    theVersion,
+                    (this.version != null));
         }
         return currentHashCode;
     }
@@ -192,19 +219,18 @@ public class ModelIdentifier
         {
             String theId;
             theId = this.getId();
-            strategy.appendField(locator, this, "id", buffer, theId, (this.id!= null));
+            strategy.appendField(locator, this, "id", buffer, theId, (this.id != null));
         }
         {
             String theSystem;
             theSystem = this.getSystem();
-            strategy.appendField(locator, this, "system", buffer, theSystem, (this.system!= null));
+            strategy.appendField(locator, this, "system", buffer, theSystem, (this.system != null));
         }
         {
             String theVersion;
             theVersion = this.getVersion();
-            strategy.appendField(locator, this, "version", buffer, theVersion, (this.version!= null));
+            strategy.appendField(locator, this, "version", buffer, theVersion, (this.version != null));
         }
         return buffer;
     }
-
 }

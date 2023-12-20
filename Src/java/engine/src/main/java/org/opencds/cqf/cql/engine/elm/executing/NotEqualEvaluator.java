@@ -22,5 +22,4 @@ public class NotEqualEvaluator {
         Boolean result = EqualEvaluator.equal(left, right, state);
         return result == null ? null : !result;
     }
-
 }

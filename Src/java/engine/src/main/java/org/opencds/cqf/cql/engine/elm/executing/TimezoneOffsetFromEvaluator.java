@@ -19,13 +19,12 @@ public class TimezoneOffsetFromEvaluator {
         }
 
         if (operand instanceof DateTime) {
-            return TemporalHelper.zoneToOffset(((DateTime) operand).getDateTime().getOffset());
+            return TemporalHelper.zoneToOffset(
+                    ((DateTime) operand).getDateTime().getOffset());
         }
 
         throw new InvalidOperatorArgument(
                 "TimezoneOffsetFrom(DateTime)",
-                String.format("TimezoneOffsetFrom(%s)", operand.getClass().getName())
-        );
+                String.format("TimezoneOffsetFrom(%s)", operand.getClass().getName()));
     }
-
 }

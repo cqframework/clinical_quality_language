@@ -1,11 +1,10 @@
 package org.cqframework.cql.cql2elm.matchers;
 
+import javax.xml.namespace.QName;
 import org.hamcrest.Description;
 import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
-
-import javax.xml.namespace.QName;
 
 public class Quick2DataType extends TypeSafeDiagnosingMatcher<QName> {
     private QName expectedValue;
@@ -18,17 +17,17 @@ public class Quick2DataType extends TypeSafeDiagnosingMatcher<QName> {
 
     @Override
     protected boolean matchesSafely(QName item, Description mismatchDescription) {
-        if (! expectedValue.getNamespaceURI().equals(item.getNamespaceURI())) {
+        if (!expectedValue.getNamespaceURI().equals(item.getNamespaceURI())) {
             mismatchDescription.appendText("had wrong namespace: ").appendValue(item.getNamespaceURI());
             return false;
         }
 
-        if (! expectedValue.getLocalPart().equals(item.getLocalPart())) {
+        if (!expectedValue.getLocalPart().equals(item.getLocalPart())) {
             mismatchDescription.appendText("had wrong local part: ").appendText(item.getLocalPart());
             return false;
         }
 
-        if (! expectedValue.getPrefix().equals(item.getPrefix())) {
+        if (!expectedValue.getPrefix().equals(item.getPrefix())) {
             mismatchDescription.appendText("had wrong prefix: ").appendText(item.getPrefix());
             return false;
         }

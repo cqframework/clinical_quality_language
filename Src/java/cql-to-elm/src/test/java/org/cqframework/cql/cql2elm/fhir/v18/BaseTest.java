@@ -1,9 +1,8 @@
 package org.cqframework.cql.cql2elm.fhir.v18;
 
+import java.io.IOException;
 import org.cqframework.cql.cql2elm.TestUtils;
 import org.testng.annotations.Test;
-
-import java.io.IOException;
 
 public class BaseTest {
     @Test

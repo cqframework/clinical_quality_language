@@ -3,7 +3,6 @@ package org.opencds.cqf.cql.engine.execution;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Map;
-
 import org.cqframework.cql.cql2elm.LibrarySourceProvider;
 
 /**

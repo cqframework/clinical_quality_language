@@ -1,12 +1,10 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
-import org.hl7.elm.r1.Date;
-import org.hl7.elm.r1.DateTime;
-import org.hl7.elm.r1.Expression;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.hl7.elm.r1.Date;
+import org.hl7.elm.r1.Expression;
 
 public class DateInvocation extends OperatorExpressionInvocation {
     public DateInvocation(Date expression) {
@@ -19,7 +17,8 @@ public class DateInvocation extends OperatorExpressionInvocation {
         List<Expression> opList = Arrays.asList(dt.getYear(), dt.getMonth(), dt.getDay());
         // If the last expression is null, we should trim this down
         int i;
-        for (i = 2; i > 0 && opList.get(i) == null; i--);
+        for (i = 2; i > 0 && opList.get(i) == null; i--)
+            ;
         return opList.subList(0, i + 1);
     }
 

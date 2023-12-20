@@ -64,55 +64,107 @@ public class DifferenceBetweenEvaluator {
             if (isLeftUncertain) {
                 Interval leftUncertainInterval = ((BaseTemporal) left).getUncertaintyInterval(precision);
                 return new Interval(
-                        difference(leftUncertainInterval.getEnd(), right, isWeeks ? Precision.WEEK : precision), true,
-                        difference(leftUncertainInterval.getStart(), right, isWeeks ? Precision.WEEK : precision), true
-                ).setUncertain(true);
+                                difference(leftUncertainInterval.getEnd(), right, isWeeks ? Precision.WEEK : precision),
+                                        true,
+                                difference(
+                                                leftUncertainInterval.getStart(),
+                                                right,
+                                                isWeeks ? Precision.WEEK : precision),
+                                        true)
+                        .setUncertain(true);
             }
             if (isRightUncertain) {
                 Interval rightUncertainInterval = ((BaseTemporal) right).getUncertaintyInterval(precision);
                 return new Interval(
-                        difference(left, rightUncertainInterval.getStart(), isWeeks ? Precision.WEEK : precision), true,
-                        difference(left, rightUncertainInterval.getEnd(), isWeeks ? Precision.WEEK : precision), true
-                ).setUncertain(true);
+                                difference(
+                                                left,
+                                                rightUncertainInterval.getStart(),
+                                                isWeeks ? Precision.WEEK : precision),
+                                        true,
+                                difference(left, rightUncertainInterval.getEnd(), isWeeks ? Precision.WEEK : precision),
+                                        true)
+                        .setUncertain(true);
             }
 
             if (left instanceof DateTime && right instanceof DateTime) {
                 if (precision.toDateTimeIndex() <= Precision.DAY.toDateTimeIndex()) {
                     return isWeeks
-                            ? (int) precision.toChronoUnit().between(
-                                ((DateTime) left).expandPartialMinFromPrecision(precision).getDateTime().toLocalDate(),
-                                ((DateTime) right).expandPartialMinFromPrecision(precision).getDateTime().toLocalDate()) / 7
-                            : (int) precision.toChronoUnit().between(
-                                ((DateTime) left).expandPartialMinFromPrecision(precision).getDateTime().toLocalDate(),
-                                ((DateTime) right).expandPartialMinFromPrecision(precision).getDateTime().toLocalDate());
-                }
-                else {
-                    return (int) precision.toChronoUnit().between(
-                            ((DateTime) left).expandPartialMinFromPrecision(precision).getDateTime(),
-                            ((DateTime) right).expandPartialMinFromPrecision(precision).getDateTime());
+                            ? (int) precision
+                                            .toChronoUnit()
+                                            .between(
+                                                    ((DateTime) left)
+                                                            .expandPartialMinFromPrecision(precision)
+                                                            .getDateTime()
+                                                            .toLocalDate(),
+                                                    ((DateTime) right)
+                                                            .expandPartialMinFromPrecision(precision)
+                                                            .getDateTime()
+                                                            .toLocalDate())
+                                    / 7
+                            : (int) precision
+                                    .toChronoUnit()
+                                    .between(
+                                            ((DateTime) left)
+                                                    .expandPartialMinFromPrecision(precision)
+                                                    .getDateTime()
+                                                    .toLocalDate(),
+                                            ((DateTime) right)
+                                                    .expandPartialMinFromPrecision(precision)
+                                                    .getDateTime()
+                                                    .toLocalDate());
+                } else {
+                    return (int) precision
+                            .toChronoUnit()
+                            .between(
+                                    ((DateTime) left)
+                                            .expandPartialMinFromPrecision(precision)
+                                            .getDateTime(),
+                                    ((DateTime) right)
+                                            .expandPartialMinFromPrecision(precision)
+                                            .getDateTime());
                 }
             }
 
             if (left instanceof Date && right instanceof Date) {
                 return isWeeks
-                        ? (int) precision.toChronoUnit().between(
-                                ((Date) left).expandPartialMinFromPrecision(precision).getDate(),
-                                ((Date) right).expandPartialMinFromPrecision(precision).getDate()) / 7
-                        : (int) precision.toChronoUnit().between(
-                                ((Date) left).expandPartialMinFromPrecision(precision).getDate(),
-                                ((Date) right).expandPartialMinFromPrecision(precision).getDate());
+                        ? (int) precision
+                                        .toChronoUnit()
+                                        .between(
+                                                ((Date) left)
+                                                        .expandPartialMinFromPrecision(precision)
+                                                        .getDate(),
+                                                ((Date) right)
+                                                        .expandPartialMinFromPrecision(precision)
+                                                        .getDate())
+                                / 7
+                        : (int) precision
+                                .toChronoUnit()
+                                .between(
+                                        ((Date) left)
+                                                .expandPartialMinFromPrecision(precision)
+                                                .getDate(),
+                                        ((Date) right)
+                                                .expandPartialMinFromPrecision(precision)
+                                                .getDate());
             }
 
             if (left instanceof Time && right instanceof Time) {
-                return (int) precision.toChronoUnit().between(
-                        ((Time) left).expandPartialMinFromPrecision(precision).getTime(),
-                        ((Time) right).expandPartialMinFromPrecision(precision).getTime()
-                );
+                return (int) precision
+                        .toChronoUnit()
+                        .between(
+                                ((Time) left)
+                                        .expandPartialMinFromPrecision(precision)
+                                        .getTime(),
+                                ((Time) right)
+                                        .expandPartialMinFromPrecision(precision)
+                                        .getTime());
             }
         }
 
         throw new InvalidOperatorArgument(
                 "DifferenceBetween(Date, Date), DifferenceBetween(DateTime, DateTime), DifferenceBetween(Time, Time)",
-                String.format("DifferenceBetween(%s, %s)", left.getClass().getName(), right.getClass().getName()));
+                String.format(
+                        "DifferenceBetween(%s, %s)",
+                        left.getClass().getName(), right.getClass().getName()));
     }
 }

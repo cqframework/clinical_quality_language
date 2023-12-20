@@ -44,36 +44,33 @@ public class Version implements Comparable<Version> {
                     if (isUnsignedInteger.matcher(part).matches()) {
                         majorVersion = Integer.parseInt(part);
                     }
-                break;
+                    break;
                 case 1:
                     if (isUnsignedInteger.matcher(part).matches()) {
                         minorVersion = Integer.parseInt(part);
-                    }
-                    else {
+                    } else {
                         return;
                     }
-                break;
+                    break;
                 case 2:
                     if (isUnsignedInteger.matcher(part).matches()) {
                         patchVersion = Integer.parseInt(part);
-                    }
-                    else {
+                    } else {
                         return;
                     }
-                break;
+                    break;
                 case 3:
                     buildVersion = part;
-                break;
+                    break;
                 default:
                     buildVersion += "-" + part;
-                break;
+                    break;
             }
         }
     }
 
     public Version(String version) {
-        if (version == null)
-            throw new IllegalArgumentException("Version can not be null");
+        if (version == null) throw new IllegalArgumentException("Version can not be null");
         setVersion(version);
     }
 
@@ -94,53 +91,55 @@ public class Version implements Comparable<Version> {
     }
 
     private int compareTo(Version that, int level) {
-        if (that == null)
-            return 1;
+        if (that == null) return 1;
         validateComparability(that);
 
         for (int i = 0; i < Math.max(level, 4); i++) {
             switch (i) {
-                case 0: {
-                    int result = Integer.compare(this.majorVersion, that.majorVersion);
-                    if (result != 0) {
-                        return result;
+                case 0:
+                    {
+                        int result = Integer.compare(this.majorVersion, that.majorVersion);
+                        if (result != 0) {
+                            return result;
+                        }
                     }
-                }
-                break;
+                    break;
 
-                case 1: {
-                    if (this.minorVersion == null && that.minorVersion == null) {
-                        return 0;
+                case 1:
+                    {
+                        if (this.minorVersion == null && that.minorVersion == null) {
+                            return 0;
+                        }
+                        if (this.minorVersion == null) {
+                            return -1;
+                        }
+                        if (that.minorVersion == null) {
+                            return 1;
+                        }
+                        int result = Integer.compare(this.minorVersion, that.minorVersion);
+                        if (result != 0) {
+                            return result;
+                        }
                     }
-                    if (this.minorVersion == null) {
-                        return -1;
-                    }
-                    if (that.minorVersion == null) {
-                        return 1;
-                    }
-                    int result = Integer.compare(this.minorVersion, that.minorVersion);
-                    if (result != 0) {
-                        return result;
-                    }
-                }
-                break;
+                    break;
 
-                case 2: {
-                    if (this.patchVersion == null && that.patchVersion == null) {
-                        return 0;
+                case 2:
+                    {
+                        if (this.patchVersion == null && that.patchVersion == null) {
+                            return 0;
+                        }
+                        if (this.patchVersion == null) {
+                            return -1;
+                        }
+                        if (that.patchVersion == null) {
+                            return 1;
+                        }
+                        int result = Integer.compare(this.patchVersion, that.patchVersion);
+                        if (result != 0) {
+                            return result;
+                        }
                     }
-                    if (this.patchVersion == null) {
-                        return -1;
-                    }
-                    if (that.patchVersion == null) {
-                        return 1;
-                    }
-                    int result = Integer.compare(this.patchVersion, that.patchVersion);
-                    if (result != 0) {
-                        return result;
-                    }
-                }
-                break;
+                    break;
 
                 case 3: {
                     if (this.buildVersion == null && that.buildVersion == null) {
@@ -155,7 +154,6 @@ public class Version implements Comparable<Version> {
                     return this.buildVersion.compareToIgnoreCase(that.buildVersion);
                 }
             }
-
         }
         return 0;
     }
@@ -166,8 +164,7 @@ public class Version implements Comparable<Version> {
     }
 
     public boolean compatibleWith(Version that) {
-        if (that == null)
-            return false;
+        if (that == null) return false;
 
         if (!isComparable() || !that.isComparable()) {
             return matchStrictly(that);
@@ -213,13 +210,10 @@ public class Version implements Comparable<Version> {
 
     @Override
     public boolean equals(Object that) {
-        if (this == that)
-            return true;
-        if (that == null)
-            return false;
-        if (this.getClass() != that.getClass())
-            return false;
-        return this.compareTo((Version)that) == 0;
+        if (this == that) return true;
+        if (that == null) return false;
+        if (this.getClass() != that.getClass()) return false;
+        return this.compareTo((Version) that) == 0;
     }
 
     @Override

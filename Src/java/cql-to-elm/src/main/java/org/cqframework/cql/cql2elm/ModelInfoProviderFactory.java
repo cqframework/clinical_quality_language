@@ -1,9 +1,8 @@
 package org.cqframework.cql.cql2elm;
 
-import org.hl7.cql.model.ModelInfoProvider;
-
 import java.util.Iterator;
 import java.util.ServiceLoader;
+import org.hl7.cql.model.ModelInfoProvider;
 
 public class ModelInfoProviderFactory {
     private ModelInfoProviderFactory() {}

@@ -1,11 +1,10 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.math.BigDecimal;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.Quantity;
 import org.opencds.cqf.cql.engine.runtime.Ratio;
-
-import java.math.BigDecimal;
 
 /*
 
@@ -34,8 +33,10 @@ public class ConvertsToQuantityEvaluator {
             return true;
         }
 
-        if (argument instanceof String || argument instanceof Ratio || argument instanceof BigDecimal || argument instanceof Integer)
-        {
+        if (argument instanceof String
+                || argument instanceof Ratio
+                || argument instanceof BigDecimal
+                || argument instanceof Integer) {
             try {
                 Object response = ToQuantityEvaluator.toQuantity(argument, state);
                 if (response == null) {
@@ -49,8 +50,6 @@ public class ConvertsToQuantityEvaluator {
 
         throw new InvalidOperatorArgument(
                 "ConvertsToQuantity(String) or ConvertsToQuantity(Ratio) or ConvertsToQuantity(Integer) or ConvertsToQuantity(Decimal)",
-                String.format("ConvertsToQuantity(%s)", argument.getClass().getName())
-        );
+                String.format("ConvertsToQuantity(%s)", argument.getClass().getName()));
     }
-
 }

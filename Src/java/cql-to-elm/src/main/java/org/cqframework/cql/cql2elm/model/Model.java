@@ -1,10 +1,9 @@
 package org.cqframework.cql.cql2elm.model;
 
+import java.util.*;
 import org.cqframework.cql.cql2elm.ModelManager;
 import org.hl7.cql.model.*;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
-
-import java.util.*;
 
 public class Model {
     public Model(ModelInfo modelInfo, ModelManager modelManager) throws ClassNotFoundException {
@@ -28,28 +27,34 @@ public class Model {
         defaultContext = importer.getDefaultContextName();
 
         for (DataType t : index.values()) {
-            if (t instanceof ClassType && ((ClassType)t).getLabel() != null) {
-                classIndex.put(casify(((ClassType)t).getLabel()), (ClassType)t);
+            if (t instanceof ClassType && ((ClassType) t).getLabel() != null) {
+                classIndex.put(casify(((ClassType) t).getLabel()), (ClassType) t);
             }
 
             if (t instanceof NamedType) {
-                nameIndex.put(casify(((NamedType)t).getSimpleName()), t);
+                nameIndex.put(casify(((NamedType) t).getSimpleName()), t);
             }
         }
     }
 
     private ModelInfo info;
-    public ModelInfo getModelInfo() { return info; }
+
+    public ModelInfo getModelInfo() {
+        return info;
+    }
 
     private Map<String, DataType> index;
     private Map<String, ClassType> classIndex;
     private Map<String, DataType> nameIndex;
+
     protected Map<String, DataType> getNameIndex() {
         return nameIndex;
     }
+
     private List<Conversion> conversions;
     private List<ModelContext> contexts;
     private String defaultContext;
+
     public String getDefaultContext() {
         return defaultContext;
     }
@@ -82,21 +87,23 @@ public class Model {
         // Resolve to a "default" context definition if the context name matches a type name exactly
         DataType contextType = resolveTypeName(contextName);
         if (contextType != null && contextType instanceof ClassType) {
-            ClassType contextClassType = (ClassType)contextType;
+            ClassType contextClassType = (ClassType) contextType;
             String keyName = null;
-            for (ClassTypeElement cte : ((ClassType)contextType).getElements()) {
+            for (ClassTypeElement cte : ((ClassType) contextType).getElements()) {
                 if (cte.getName().equals("id")) {
                     keyName = cte.getName();
                     break;
                 }
             }
-            ModelContext modelContext = new ModelContext(contextName, (ClassType)contextType, keyName != null ? Arrays.asList(keyName) : null, null);
+            ModelContext modelContext = new ModelContext(
+                    contextName, (ClassType) contextType, keyName != null ? Arrays.asList(keyName) : null, null);
             return modelContext;
         }
 
         if (mustResolve) {
             // ERROR:
-            throw new IllegalArgumentException(String.format("Could not resolve context name %s in model %s.", contextName, this.info.getName()));
+            throw new IllegalArgumentException(
+                    String.format("Could not resolve context name %s in model %s.", contextName, this.info.getName()));
         }
 
         return null;
@@ -107,7 +114,9 @@ public class Model {
     }
 
     private String casify(String typeName) {
-        return (this.info.isCaseSensitive() != null ? this.info.isCaseSensitive() : false) ? typeName.toLowerCase() : typeName;
+        return (this.info.isCaseSensitive() != null ? this.info.isCaseSensitive() : false)
+                ? typeName.toLowerCase()
+                : typeName;
     }
 
     private DataType internalResolveTypeName(String typeName, Model systemModel) {
@@ -116,8 +125,8 @@ public class Model {
             result = systemModel.resolveTypeName(typeName);
             if (result == null) {
                 // ERROR:
-                throw new IllegalArgumentException(String.format("Could not resolve type name %s in model %s.",
-                        typeName, info.getName()));
+                throw new IllegalArgumentException(
+                        String.format("Could not resolve type name %s in model %s.", typeName, info.getName()));
             }
         }
 

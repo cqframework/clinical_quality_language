@@ -1,10 +1,8 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
+import java.util.Collections;
 import org.hl7.elm.r1.Expression;
 import org.hl7.elm.r1.Slice;
-
-import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * Created by Bryn on 5/17/2017.

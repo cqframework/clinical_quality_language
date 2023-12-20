@@ -11,11 +11,13 @@ import org.slf4j.LoggerFactory;
 public class ParameterRefEvaluator {
     private static final Logger log = LoggerFactory.getLogger(ParameterRefEvaluator.class);
 
-    public static Object internalEvaluate(ParameterRef parameterRef, State state, ElmLibraryVisitor<Object, State> visitor) {
+    public static Object internalEvaluate(
+            ParameterRef parameterRef, State state, ElmLibraryVisitor<Object, State> visitor) {
         boolean enteredLibrary = state.enterLibrary(parameterRef.getLibraryName());
         try {
 
-            ParameterDef parameterDef = Libraries.resolveParameterRef(parameterRef.getName(), state.getCurrentLibrary());
+            ParameterDef parameterDef =
+                    Libraries.resolveParameterRef(parameterRef.getName(), state.getCurrentLibrary());
             var name = parameterDef.getName();
             var libraryName = state.getCurrentLibrary().getIdentifier().getId();
 
@@ -26,18 +28,20 @@ public class ParameterRefEvaluator {
             }
 
             if (state.getParameters().containsKey(parameterDef.getName())) {
-                log.debug("Using global value for parameter \"{}\" while evaluating in library \"{}\"",
-                    parameterDef.getName(),
-                    state.getCurrentLibrary().getIdentifier().getId());
+                log.debug(
+                        "Using global value for parameter \"{}\" while evaluating in library \"{}\"",
+                        parameterDef.getName(),
+                        state.getCurrentLibrary().getIdentifier().getId());
                 return state.getParameters().get(parameterDef.getName());
             }
 
-            Object result = parameterDef.getDefault() != null ? visitor.visitExpression(parameterDef.getDefault(), state) : null;
+            Object result = parameterDef.getDefault() != null
+                    ? visitor.visitExpression(parameterDef.getDefault(), state)
+                    : null;
 
             state.getParameters().put(fullName, result);
             return result;
-        }
-        finally {
+        } finally {
             state.exitLibrary(enteredLibrary);
         }
     }

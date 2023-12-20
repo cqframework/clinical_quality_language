@@ -1,4 +1,4 @@
- package org.opencds.cqf.cql.engine.elm.executing;
+package org.opencds.cqf.cql.engine.elm.executing;
 
 /*
 
@@ -18,18 +18,17 @@ NULL	| TRUE	NULL	NULL
 
 */
 
- public class ImpliesEvaluator {
+public class ImpliesEvaluator {
 
-     public static Object implies(Boolean left, Boolean right) {
-         if (left == null) {
-             return right == null || !right ? null : true;
-         }
+    public static Object implies(Boolean left, Boolean right) {
+        if (left == null) {
+            return right == null || !right ? null : true;
+        }
 
-         if (left) {
-             return right;
-         }
+        if (left) {
+            return right;
+        }
 
-         return true;
-     }
-
- }
+        return true;
+    }
+}

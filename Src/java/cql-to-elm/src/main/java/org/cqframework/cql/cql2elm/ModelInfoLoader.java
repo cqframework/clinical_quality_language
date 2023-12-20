@@ -1,15 +1,14 @@
 package org.cqframework.cql.cql2elm;
 
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import org.hl7.cql.model.ModelIdentifier;
 import org.hl7.cql.model.ModelInfoProvider;
 import org.hl7.cql.model.NamespaceAware;
 import org.hl7.cql.model.NamespaceManager;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
-
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public class ModelInfoLoader implements NamespaceAware, PathAware {
 
@@ -21,8 +20,7 @@ public class ModelInfoLoader implements NamespaceAware, PathAware {
 
     private boolean initialized = false;
 
-    public ModelInfoLoader() {
-    }
+    public ModelInfoLoader() {}
 
     private List<ModelInfoProvider> getProviders() {
         if (!initialized) {
@@ -48,8 +46,11 @@ public class ModelInfoLoader implements NamespaceAware, PathAware {
         }
 
         if (modelInfo == null) {
-            throw new IllegalArgumentException(String.format("Could not resolve model info provider for model %s, version %s.",
-                    modelIdentifier.getSystem() == null ? modelIdentifier.getId() : NamespaceManager.getPath(modelIdentifier.getSystem(), modelIdentifier.getId()),
+            throw new IllegalArgumentException(String.format(
+                    "Could not resolve model info provider for model %s, version %s.",
+                    modelIdentifier.getSystem() == null
+                            ? modelIdentifier.getId()
+                            : NamespaceManager.getPath(modelIdentifier.getSystem(), modelIdentifier.getId()),
                     modelIdentifier.getVersion()));
         }
 
@@ -67,20 +68,19 @@ public class ModelInfoLoader implements NamespaceAware, PathAware {
 
         if (namespaceManager != null) {
             if (provider instanceof NamespaceAware) {
-                ((NamespaceAware)provider).setNamespaceManager(namespaceManager);
+                ((NamespaceAware) provider).setNamespaceManager(namespaceManager);
             }
         }
 
         if (path != null) {
             if (provider instanceof PathAware) {
-                ((PathAware)provider).setPath(path);
+                ((PathAware) provider).setPath(path);
             }
         }
 
         if (priority) {
             providers.add(0, provider);
-        }
-        else {
+        } else {
             providers.add(provider);
         }
     }
@@ -110,13 +110,13 @@ public class ModelInfoLoader implements NamespaceAware, PathAware {
 
         for (ModelInfoProvider provider : getProviders()) {
             if (provider instanceof NamespaceAware) {
-                ((NamespaceAware)provider).setNamespaceManager(namespaceManager);
+                ((NamespaceAware) provider).setNamespaceManager(namespaceManager);
             }
         }
     }
 
     public void setPath(Path path) {
-        if (path == null || ! path.toFile().isDirectory()) {
+        if (path == null || !path.toFile().isDirectory()) {
             throw new IllegalArgumentException(String.format("path '%s' is not a valid directory", path));
         }
 
@@ -124,7 +124,7 @@ public class ModelInfoLoader implements NamespaceAware, PathAware {
 
         for (ModelInfoProvider provider : getProviders()) {
             if (provider instanceof PathAware) {
-                ((PathAware)provider).setPath(path);
+                ((PathAware) provider).setPath(path);
             }
         }
     }

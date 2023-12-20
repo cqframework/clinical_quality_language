@@ -7,13 +7,13 @@ import org.opencds.cqf.cql.engine.execution.State;
 
 public class OperandRefEvaluator {
 
-    public static Object internalEvaluate(OperandRef operandRef, State state, ElmLibraryVisitor<Object, State> visitor) {
+    public static Object internalEvaluate(
+            OperandRef operandRef, State state, ElmLibraryVisitor<Object, State> visitor) {
         var variable = state.resolveVariable(operandRef.getName(), true).getValue();
         // We're executing the logic here, so this is valid check in execution context
         if (variable instanceof ExpressionDef) {
-            return visitor.visitExpressionDef((ExpressionDef)variable, state);
-        }
-        else {
+            return visitor.visitExpressionDef((ExpressionDef) variable, state);
+        } else {
             return variable;
         }
     }

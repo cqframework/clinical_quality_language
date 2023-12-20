@@ -1,9 +1,8 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.math.BigDecimal;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.exception.UndefinedResult;
-
-import java.math.BigDecimal;
 
 /*
 Exp(argument Decimal) Decimal
@@ -20,27 +19,21 @@ public class ExpEvaluator {
             return null;
         }
 
-        if (operand instanceof BigDecimal){
+        if (operand instanceof BigDecimal) {
             try {
-                return BigDecimal.valueOf(Math.exp(((BigDecimal)operand).doubleValue()));
-            }
-            catch (NumberFormatException nfe) {
-                if (((BigDecimal)operand).compareTo(new BigDecimal(0)) > 0) {
+                return BigDecimal.valueOf(Math.exp(((BigDecimal) operand).doubleValue()));
+            } catch (NumberFormatException nfe) {
+                if (((BigDecimal) operand).compareTo(new BigDecimal(0)) > 0) {
                     throw new UndefinedResult("Results in positive infinity");
-                }
-                else if (((BigDecimal)operand).compareTo(new BigDecimal(0)) < 0) {
+                } else if (((BigDecimal) operand).compareTo(new BigDecimal(0)) < 0) {
                     throw new UndefinedResult("Results in negative infinity");
-                }
-                else {
+                } else {
                     throw new UndefinedResult(nfe.getMessage());
                 }
             }
         }
 
         throw new InvalidOperatorArgument(
-                "Exp(Decimal)",
-                String.format("Exp(%s)", operand.getClass().getName())
-        );
+                "Exp(Decimal)", String.format("Exp(%s)", operand.getClass().getName()));
     }
-
 }

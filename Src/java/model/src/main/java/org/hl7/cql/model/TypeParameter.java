@@ -53,16 +53,19 @@ public class TypeParameter extends DataType {
     }
 
     private String identifier;
+
     public String getIdentifier() {
         return identifier;
     }
 
     public TypeParameterConstraint constraint = TypeParameterConstraint.NONE;
+
     public TypeParameterConstraint getConstraint() {
         return constraint;
     }
 
     private DataType constraintType;
+
     public DataType getConstraintType() {
         return constraintType;
     }
@@ -97,9 +100,9 @@ public class TypeParameter extends DataType {
     }
 
     @Override
-    public boolean equals(Object o ) {
+    public boolean equals(Object o) {
         if (o instanceof TypeParameter) {
-            TypeParameter that = (TypeParameter)o;
+            TypeParameter that = (TypeParameter) o;
             return this.identifier.equals(that.identifier);
         }
 

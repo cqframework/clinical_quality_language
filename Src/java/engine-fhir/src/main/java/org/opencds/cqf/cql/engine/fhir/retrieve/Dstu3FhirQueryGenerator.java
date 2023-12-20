@@ -1,12 +1,11 @@
 package org.opencds.cqf.cql.engine.fhir.retrieve;
 
+import ca.uhn.fhir.context.FhirVersionEnum;
 import java.net.URLDecoder;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import ca.uhn.fhir.context.FhirVersionEnum;
 import org.hl7.fhir.dstu3.model.CapabilityStatement;
 import org.hl7.fhir.dstu3.model.CodeType;
 import org.hl7.fhir.dstu3.model.CodeableConcept;
@@ -29,9 +28,12 @@ import org.opencds.cqf.cql.engine.runtime.DateTime;
 import org.opencds.cqf.cql.engine.runtime.Interval;
 import org.opencds.cqf.cql.engine.terminology.TerminologyProvider;
 
-
 public class Dstu3FhirQueryGenerator extends BaseFhirQueryGenerator {
-    public Dstu3FhirQueryGenerator(SearchParameterResolver searchParameterResolver, TerminologyProvider terminologyProvider, ModelResolver modelResolver) throws FhirVersionMisMatchException {
+    public Dstu3FhirQueryGenerator(
+            SearchParameterResolver searchParameterResolver,
+            TerminologyProvider terminologyProvider,
+            ModelResolver modelResolver)
+            throws FhirVersionMisMatchException {
         super(searchParameterResolver, terminologyProvider, modelResolver, searchParameterResolver.getFhirContext());
     }
 
@@ -41,7 +43,12 @@ public class Dstu3FhirQueryGenerator extends BaseFhirQueryGenerator {
     }
 
     @Override
-    public List<String> generateFhirQueries(ICompositeType dreq, DateTime evaluationDateTime, Map<String, Object> contextValues, Map<String, Object> parameters, IBaseConformance capStatement) {
+    public List<String> generateFhirQueries(
+            ICompositeType dreq,
+            DateTime evaluationDateTime,
+            Map<String, Object> contextValues,
+            Map<String, Object> parameters,
+            IBaseConformance capStatement) {
         if (!(dreq instanceof DataRequirement)) {
             throw new IllegalArgumentException("dataRequirement argument must be a DataRequirement");
         }
@@ -49,21 +56,21 @@ public class Dstu3FhirQueryGenerator extends BaseFhirQueryGenerator {
             throw new IllegalArgumentException("capabilityStatement argument must be a CapabilityStatement");
         }
 
-        DataRequirement dataRequirement = (DataRequirement)dreq;
+        DataRequirement dataRequirement = (DataRequirement) dreq;
 
         List<String> queries = new ArrayList<>();
 
         List<CodeFilter> codeFilters = new ArrayList<CodeFilter>();
 
         if (dataRequirement.hasCodeFilter()) {
-            for (org.hl7.fhir.dstu3.model.DataRequirement.DataRequirementCodeFilterComponent codeFilterComponent : dataRequirement.getCodeFilter()) {
+            for (org.hl7.fhir.dstu3.model.DataRequirement.DataRequirementCodeFilterComponent codeFilterComponent :
+                    dataRequirement.getCodeFilter()) {
                 if (!codeFilterComponent.hasPath()) {
                     continue;
                 }
                 String codePath = null;
                 List<Code> codes = null;
                 String valueSet = null;
-
 
                 codePath = codeFilterComponent.getPath();
 
@@ -91,9 +98,11 @@ public class Dstu3FhirQueryGenerator extends BaseFhirQueryGenerator {
                     }
                 }
                 if (codeFilterComponent.hasValueCodeableConcept()) {
-                    List<org.hl7.fhir.dstu3.model.CodeableConcept> codeFilterValueCodeableConcepts = codeFilterComponent.getValueCodeableConcept();
+                    List<org.hl7.fhir.dstu3.model.CodeableConcept> codeFilterValueCodeableConcepts =
+                            codeFilterComponent.getValueCodeableConcept();
                     for (CodeableConcept codeableConcept : codeFilterValueCodeableConcepts) {
-                        List<org.hl7.fhir.dstu3.model.Coding> codeFilterValueCodeableConceptCodings = codeableConcept.getCoding();
+                        List<org.hl7.fhir.dstu3.model.Coding> codeFilterValueCodeableConceptCodings =
+                                codeableConcept.getCoding();
                         for (Coding coding : codeFilterValueCodeableConceptCodings) {
                             if (coding.hasCode()) {
                                 Code code = new Code();
@@ -106,7 +115,7 @@ public class Dstu3FhirQueryGenerator extends BaseFhirQueryGenerator {
                 }
                 if (codeFilterComponent.hasValueSet()) {
                     if (codeFilterComponent.getValueSetReference().getReference() instanceof String) {
-                        valueSet = ((Reference)codeFilterComponent.getValueSet()).getReference();
+                        valueSet = ((Reference) codeFilterComponent.getValueSet()).getReference();
                     } else if (codeFilterComponent.getValueSetReference() instanceof Reference) {
                         valueSet = codeFilterComponent.getValueSetReference().getReference();
                     }
@@ -119,7 +128,8 @@ public class Dstu3FhirQueryGenerator extends BaseFhirQueryGenerator {
         List<DateFilter> dateFilters = new ArrayList<DateFilter>();
 
         if (dataRequirement.hasDateFilter()) {
-            for (org.hl7.fhir.dstu3.model.DataRequirement.DataRequirementDateFilterComponent dateFilterComponent : dataRequirement.getDateFilter()) {
+            for (org.hl7.fhir.dstu3.model.DataRequirement.DataRequirementDateFilterComponent dateFilterComponent :
+                    dataRequirement.getDateFilter()) {
                 if (!dateFilterComponent.hasPath()) {
                     throw new UnsupportedOperationException("A path must be provided");
                 }
@@ -137,25 +147,32 @@ public class Dstu3FhirQueryGenerator extends BaseFhirQueryGenerator {
                     if (dateFilterValue instanceof DateTimeType && dateFilterValue.hasPrimitiveValue()) {
                         dateLowPath = "valueDateTime";
                         dateHighPath = "valueDateTime";
-                        String offsetDateTimeString = ((DateTimeType)dateFilterValue).getValueAsString();
+                        String offsetDateTimeString = ((DateTimeType) dateFilterValue).getValueAsString();
                         DateTime dateTime = new DateTime(OffsetDateTime.parse(offsetDateTimeString));
 
                         dateRange = new Interval(dateTime, true, dateTime, true);
 
-                    } else if (dateFilterValue instanceof Duration && ((Duration)dateFilterValue).hasValue()) {
-                        // If a Duration is specified, the filter will return only those data items that fall within Duration before now.
-                        Duration dateFilterAsDuration = (Duration)dateFilterValue;
+                    } else if (dateFilterValue instanceof Duration && ((Duration) dateFilterValue).hasValue()) {
+                        // If a Duration is specified, the filter will return only those data items that fall within
+                        // Duration before now.
+                        Duration dateFilterAsDuration = (Duration) dateFilterValue;
 
                         org.opencds.cqf.cql.engine.runtime.Quantity dateFilterDurationAsCQLQuantity =
-                            new org.opencds.cqf.cql.engine.runtime.Quantity().withValue(dateFilterAsDuration.getValue()).withUnit(dateFilterAsDuration.getUnit());
+                                new org.opencds.cqf.cql.engine.runtime.Quantity()
+                                        .withValue(dateFilterAsDuration.getValue())
+                                        .withUnit(dateFilterAsDuration.getUnit());
 
-                        DateTime diff = ((DateTime) SubtractEvaluator.subtract(evaluationDateTime, dateFilterDurationAsCQLQuantity));
+                        DateTime diff = ((DateTime)
+                                SubtractEvaluator.subtract(evaluationDateTime, dateFilterDurationAsCQLQuantity));
 
                         dateRange = new Interval(diff, true, evaluationDateTime, true);
-                    } else if (dateFilterValue instanceof Period && ((Period)dateFilterValue).hasStart() && ((Period)dateFilterValue).hasEnd()) {
+                    } else if (dateFilterValue instanceof Period
+                            && ((Period) dateFilterValue).hasStart()
+                            && ((Period) dateFilterValue).hasEnd()) {
                         dateLowPath = "valueDateTime";
                         dateHighPath = "valueDateTime";
-                        dateRange = new Interval(((Period)dateFilterValue).getStart(), true, ((Period)dateFilterValue).getEnd(), true);
+                        dateRange = new Interval(
+                                ((Period) dateFilterValue).getStart(), true, ((Period) dateFilterValue).getEnd(), true);
                     }
 
                     dateFilters.add(new DateFilter(datePath, dateLowPath, dateHighPath, dateRange));
@@ -167,12 +184,19 @@ public class Dstu3FhirQueryGenerator extends BaseFhirQueryGenerator {
         String contextType = "Patient";
         Object contextPath = modelResolver.getContextPath(contextType, dataRequirement.getType());
         Object contextValue = contextValues.get(contextType);
-        String templateId = dataRequirement.getProfile() != null && !dataRequirement.getProfile().isEmpty()
-            ? dataRequirement.getProfile().get(0).getValue()
-            : null;
+        String templateId = dataRequirement.getProfile() != null
+                        && !dataRequirement.getProfile().isEmpty()
+                ? dataRequirement.getProfile().get(0).getValue()
+                : null;
 
-            List<SearchParameterMap> maps = setupQueries(contextType, (String)contextPath, contextValue, dataRequirement.getType(), templateId,
-            codeFilters, dateFilters);
+        List<SearchParameterMap> maps = setupQueries(
+                contextType,
+                (String) contextPath,
+                contextValue,
+                dataRequirement.getType(),
+                templateId,
+                codeFilters,
+                dateFilters);
 
         for (SearchParameterMap map : maps) {
             String query = null;

@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm;
 
-
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -45,7 +44,8 @@ public class CqlCompilerOptions {
      * @return
      */
     public static CqlCompilerOptions defaultOptions() {
-        // Default options based on recommended settings: http://build.fhir.org/ig/HL7/cqf-measures/using-cql.html#translation-to-elm
+        // Default options based on recommended settings:
+        // http://build.fhir.org/ig/HL7/cqf-measures/using-cql.html#translation-to-elm
         CqlCompilerOptions result = new CqlCompilerOptions();
         result.options.add(Options.EnableAnnotations);
         result.options.add(Options.EnableLocators);
@@ -54,8 +54,7 @@ public class CqlCompilerOptions {
         return result;
     }
 
-    public CqlCompilerOptions() {
-    }
+    public CqlCompilerOptions() {}
 
     /**
      * Constructor with arbitrary number of options utilizing default ErrorSeverity (Info) and SignatureLevel (None)
@@ -76,7 +75,10 @@ public class CqlCompilerOptions {
      * @param signatureLevel
      * @param options
      */
-    public CqlCompilerOptions(CqlCompilerException.ErrorSeverity errorLevel, LibraryBuilder.SignatureLevel signatureLevel, Options... options) {
+    public CqlCompilerOptions(
+            CqlCompilerException.ErrorSeverity errorLevel,
+            LibraryBuilder.SignatureLevel signatureLevel,
+            Options... options) {
         this.setOptions(options);
         this.errorLevel = errorLevel;
         this.signatureLevel = signatureLevel;
@@ -103,14 +105,25 @@ public class CqlCompilerOptions {
      * @param signatureLevel LibraryBuilder.SignatureLevel
      * @param compatibilityLevel String
      */
-    public CqlCompilerOptions(boolean dateRangeOptimizations,
-                                boolean annotations, boolean locators, boolean resultTypes, boolean verifyOnly,
-                                boolean detailedErrors, CqlCompilerException.ErrorSeverity errorLevel,
-                                boolean disableListTraversal, boolean disableListDemotion, boolean disableListPromotion,
-                                boolean enableIntervalDemotion, boolean enableIntervalPromotion,
-                                boolean disableMethodInvocation, boolean requireFromKeyword, boolean validateUnits,
-                                boolean disableDefaultModelInfoLoad,
-                                LibraryBuilder.SignatureLevel signatureLevel, String compatibilityLevel) {
+    public CqlCompilerOptions(
+            boolean dateRangeOptimizations,
+            boolean annotations,
+            boolean locators,
+            boolean resultTypes,
+            boolean verifyOnly,
+            boolean detailedErrors,
+            CqlCompilerException.ErrorSeverity errorLevel,
+            boolean disableListTraversal,
+            boolean disableListDemotion,
+            boolean disableListPromotion,
+            boolean enableIntervalDemotion,
+            boolean enableIntervalPromotion,
+            boolean disableMethodInvocation,
+            boolean requireFromKeyword,
+            boolean validateUnits,
+            boolean disableDefaultModelInfoLoad,
+            LibraryBuilder.SignatureLevel signatureLevel,
+            String compatibilityLevel) {
         this.verifyOnly = verifyOnly;
         this.errorLevel = errorLevel;
         this.signatureLevel = signatureLevel;
@@ -162,7 +175,6 @@ public class CqlCompilerOptions {
      * Returns instance of CqlTranslatorOptions options
      * @return
      */
-
     public Set<Options> getOptions() {
         return this.options;
     }
@@ -402,4 +414,3 @@ public class CqlCompilerOptions {
         return null;
     }
 }
-

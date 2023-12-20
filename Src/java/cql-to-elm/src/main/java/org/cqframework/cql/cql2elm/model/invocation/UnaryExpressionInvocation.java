@@ -1,9 +1,8 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
+import java.util.Collections;
 import org.hl7.elm.r1.Expression;
 import org.hl7.elm.r1.UnaryExpression;
-
-import java.util.Collections;
 
 public class UnaryExpressionInvocation extends OperatorExpressionInvocation {
     public UnaryExpressionInvocation(UnaryExpression expression) {

@@ -1,13 +1,12 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.runtime.Date;
 import org.opencds.cqf.cql.engine.runtime.DateTime;
 import org.opencds.cqf.cql.engine.runtime.Precision;
 import org.opencds.cqf.cql.engine.runtime.Time;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 /*
 
@@ -51,9 +50,7 @@ public class LowBoundaryEvaluator {
             }
 
             return ((BigDecimal) input).setScale((Integer) precision, RoundingMode.DOWN);
-        }
-
-        else if (input instanceof Date) {
+        } else if (input instanceof Date) {
             if (precision == null) {
                 precision = 8;
             }
@@ -64,18 +61,12 @@ public class LowBoundaryEvaluator {
 
             if ((Integer) precision <= 4) {
                 return ((Date) input).setPrecision(Precision.YEAR);
-            }
-
-            else if ((Integer) precision <= 6) {
+            } else if ((Integer) precision <= 6) {
                 return ((Date) input).setPrecision(Precision.MONTH);
-            }
-
-            else if ((Integer) precision <= 8) {
+            } else if ((Integer) precision <= 8) {
                 return ((Date) input).setPrecision(Precision.DAY);
             }
-        }
-
-        else if (input instanceof DateTime) {
+        } else if (input instanceof DateTime) {
             if (precision == null) {
                 precision = 17;
             }
@@ -86,34 +77,20 @@ public class LowBoundaryEvaluator {
 
             if ((Integer) precision <= 4) {
                 return ((DateTime) input).setPrecision(Precision.YEAR);
-            }
-
-            else if ((Integer) precision <= 6) {
+            } else if ((Integer) precision <= 6) {
                 return ((DateTime) input).setPrecision(Precision.MONTH);
-            }
-
-            else if ((Integer) precision <= 8) {
+            } else if ((Integer) precision <= 8) {
                 return ((DateTime) input).setPrecision(Precision.DAY);
-            }
-
-            else if ((Integer) precision <= 10) {
+            } else if ((Integer) precision <= 10) {
                 return ((DateTime) input).setPrecision(Precision.HOUR);
-            }
-
-            else if ((Integer) precision <= 12) {
+            } else if ((Integer) precision <= 12) {
                 return ((DateTime) input).setPrecision(Precision.MINUTE);
-            }
-
-            else if ((Integer) precision <= 14) {
+            } else if ((Integer) precision <= 14) {
                 return ((DateTime) input).setPrecision(Precision.SECOND);
-            }
-
-            else if ((Integer) precision <= 17) {
+            } else if ((Integer) precision <= 17) {
                 return ((DateTime) input).setPrecision(Precision.MILLISECOND);
             }
-        }
-
-        else if (input instanceof Time) {
+        } else if (input instanceof Time) {
             if (precision == null) {
                 precision = 9;
             }
@@ -124,25 +101,19 @@ public class LowBoundaryEvaluator {
 
             if ((Integer) precision <= 2) {
                 return ((Time) input).setPrecision(Precision.HOUR);
-            }
-
-            else if ((Integer) precision <= 4) {
+            } else if ((Integer) precision <= 4) {
                 return ((Time) input).setPrecision(Precision.MINUTE);
-            }
-
-            else if ((Integer) precision <= 6) {
+            } else if ((Integer) precision <= 6) {
                 return ((Time) input).setPrecision(Precision.SECOND);
-            }
-
-            else if ((Integer) precision <= 9) {
+            } else if ((Integer) precision <= 9) {
                 return ((Time) input).setPrecision(Precision.MILLISECOND);
             }
         }
 
         throw new InvalidOperatorArgument(
                 "LowBoundary(Decimal, Integer) or LowBoundary(Date, Integer) or LowBoundary(DateTime, Integer) or LowBoundary(Time, Integer)",
-                String.format("LowBoundary(%s, %s)", input.getClass().getName(), precision.getClass().getName())
-        );
+                String.format(
+                        "LowBoundary(%s, %s)",
+                        input.getClass().getName(), precision.getClass().getName()));
     }
-
 }

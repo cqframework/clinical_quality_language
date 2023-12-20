@@ -1,10 +1,6 @@
 package org.cqframework.cql.cql2elm;
 
-import org.cqframework.cql.cql2elm.model.Model;
-import org.cqframework.cql.cql2elm.model.SystemModel;
-import org.hl7.cql.model.ModelIdentifier;
-import org.hl7.cql.model.NamespaceManager;
-import org.hl7.elm_modelinfo.r1.ModelInfo;
+import static java.util.Objects.requireNonNull;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -12,8 +8,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
-import static java.util.Objects.requireNonNull;
+import org.cqframework.cql.cql2elm.model.Model;
+import org.cqframework.cql.cql2elm.model.SystemModel;
+import org.hl7.cql.model.ModelIdentifier;
+import org.hl7.cql.model.NamespaceManager;
+import org.hl7.elm_modelinfo.r1.ModelInfo;
 
 /**
  * Created by Bryn on 12/29/2016.
@@ -128,7 +127,10 @@ public class ModelManager {
         initialize();
     }
 
-    public ModelManager(NamespaceManager namespaceManager, boolean enableDefaultModelInfoLoading, Map<ModelIdentifier, Model> globalCache) {
+    public ModelManager(
+            NamespaceManager namespaceManager,
+            boolean enableDefaultModelInfoLoading,
+            Map<ModelIdentifier, Model> globalCache) {
         requireNonNull(globalCache, "globalCache can not be null.");
         this.namespaceManager = namespaceManager;
         this.globalCache = globalCache;
@@ -144,7 +146,11 @@ public class ModelManager {
         initialize();
     }
 
-    public ModelManager(NamespaceManager namespaceManager, boolean enableDefaultModelInfoLoading, Path path, Map<ModelIdentifier, Model> globalCache) {
+    public ModelManager(
+            NamespaceManager namespaceManager,
+            boolean enableDefaultModelInfoLoading,
+            Path path,
+            Map<ModelIdentifier, Model> globalCache) {
         requireNonNull(globalCache, "globalCache can not be null.");
         this.namespaceManager = namespaceManager;
         this.globalCache = globalCache;
@@ -215,16 +221,14 @@ public class ModelManager {
             ModelInfo modelInfo = modelInfoLoader.getModelInfo(identifier);
             if (identifier.getId().equals("System")) {
                 model = new SystemModel(modelInfo);
-            }
-            else {
+            } else {
                 model = new Model(modelInfo, this);
             }
-        }
-        catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException(String.format("Could not load model information for model %s, version %s.",
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException(String.format(
+                    "Could not load model information for model %s, version %s.",
                     identifier.getId(), identifier.getVersion()));
-        }
-        finally {
+        } finally {
             popLoading(modelPath);
         }
 
@@ -279,16 +283,21 @@ public class ModelManager {
     }
 
     private void checkModelVersion(ModelIdentifier modelIdentifier, Model model) {
-        if (modelIdentifier.getVersion() != null && !modelIdentifier.getVersion().equals(model.getModelInfo().getVersion())) {
-            throw new IllegalArgumentException(String.format("Could not load model information for model %s, version %s because version %s is already loaded.",
-                    modelIdentifier.getId(), modelIdentifier.getVersion(), model.getModelInfo().getVersion()));
+        if (modelIdentifier.getVersion() != null
+                && !modelIdentifier.getVersion().equals(model.getModelInfo().getVersion())) {
+            throw new IllegalArgumentException(String.format(
+                    "Could not load model information for model %s, version %s because version %s is already loaded.",
+                    modelIdentifier.getId(),
+                    modelIdentifier.getVersion(),
+                    model.getModelInfo().getVersion()));
         }
     }
 
     public Model resolveModelByUri(String namespaceUri) {
         Model model = modelsByUri.get(namespaceUri);
         if (model == null) {
-            throw new IllegalArgumentException(String.format("Could not resolve model with namespace %s", namespaceUri));
+            throw new IllegalArgumentException(
+                    String.format("Could not resolve model with namespace %s", namespaceUri));
         }
 
         return model;

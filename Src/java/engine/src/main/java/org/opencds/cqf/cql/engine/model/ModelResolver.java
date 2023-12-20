@@ -31,7 +31,7 @@ public interface ModelResolver {
      * support this model.
      */
     default List<String> getPackageNames() {
-        return Collections.singletonList( getPackageName() );
+        return Collections.singletonList(getPackageName());
     }
 
     /**
