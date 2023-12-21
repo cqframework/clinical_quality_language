@@ -99,7 +99,6 @@ public abstract class BaseElmLibraryVisitor<T, C> extends BaseElmClinicalVisitor
                 result = aggregateResult(result, childResult);
             }
         }
-
         if (elm.getStatements() != null
                 && elm.getStatements().getDef() != null
                 && !elm.getStatements().getDef().isEmpty()) {

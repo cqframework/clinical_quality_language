@@ -3331,7 +3331,7 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
         else if (elm instanceof AnyTrue) return visitAnyTrue((AnyTrue) elm, context);
         else
             throw new IllegalArgumentException(
-                    "Unsupported aggregate expression type: " + elm.getClass().getName());
+                    "Unsupported AggregateExpression type: " + elm.getClass().getName());
     }
 
     /**

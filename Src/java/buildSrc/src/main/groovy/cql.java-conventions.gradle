@@ -48,7 +48,7 @@ jar {
 }
 
 jacoco {
-    toolVersion = "0.8.9"
+    toolVersion = "0.8.11"
 }
 
 test {
@@ -140,6 +140,9 @@ publishing {
                     }
                     developer {
                         name = 'Marc Hadley'
+                    }
+                    developer {
+                        name = 'Jonathan Percival'
                     }
                 }
             }
