@@ -1,14 +1,13 @@
 package org.cqframework.cql.cql2elm;
 
-import org.hl7.cql_annotations.r1.CqlToElmBase;
-import org.hl7.cql_annotations.r1.CqlToElmInfo;
-import org.hl7.elm.r1.Library;
+import static java.util.Objects.requireNonNull;
 
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
-
-import static java.util.Objects.requireNonNull;
+import org.hl7.cql_annotations.r1.CqlToElmBase;
+import org.hl7.cql_annotations.r1.CqlToElmInfo;
+import org.hl7.elm.r1.Library;
 
 /**
  * This class provides functions for extracting and parsing CQL Compiler

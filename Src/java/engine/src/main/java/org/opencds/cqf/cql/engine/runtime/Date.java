@@ -6,22 +6,25 @@ import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.TimeZone;
-
 import org.opencds.cqf.cql.engine.exception.InvalidDate;
 import org.opencds.cqf.cql.engine.execution.State;
 
 public class Date extends BaseTemporal {
 
     private LocalDate date;
+
     public LocalDate getDate() {
         return date;
     }
+
     public void setDate(LocalDate date) {
         if (date.getYear() < 1) {
-            throw new InvalidDate(String.format("The year: %d falls below the accepted bounds of 0001-9999.", date.getYear()));
+            throw new InvalidDate(
+                    String.format("The year: %d falls below the accepted bounds of 0001-9999.", date.getYear()));
         }
         if (date.getYear() > 9999) {
-            throw new InvalidDate(String.format("The year: %d falls above the accepted bounds of 0001-9999.", date.getYear()));
+            throw new InvalidDate(
+                    String.format("The year: %d falls above the accepted bounds of 0001-9999.", date.getYear()));
         }
         if (this.precision == null) {
             this.precision = Precision.DAY;
@@ -63,8 +66,7 @@ public class Date extends BaseTemporal {
         for (int i = thePrecision.toDateIndex() + 1; i < 3; ++i) {
             ld = ld.with(
                     Precision.fromDateIndex(i).toChronoField(),
-                    ld.range(Precision.fromDateIndex(i).toChronoField()).getMinimum()
-            );
+                    ld.range(Precision.fromDateIndex(i).toChronoField()).getMinimum());
         }
         return (Date) new Date(ld.getYear(), ld.getMonthValue(), ld.getDayOfMonth()).setPrecision(thePrecision);
     }
@@ -80,14 +82,11 @@ public class Date extends BaseTemporal {
             if (i <= thePrecision.toDateIndex()) {
                 ld = ld.with(
                         Precision.fromDateIndex(i).toChronoField(),
-                        ld.range(Precision.fromDateIndex(i).toChronoField()).getMaximum()
-                );
-            }
-            else {
+                        ld.range(Precision.fromDateIndex(i).toChronoField()).getMaximum());
+            } else {
                 ld = ld.with(
                         Precision.fromDateIndex(i).toChronoField(),
-                        ld.range(Precision.fromDateIndex(i).toChronoField()).getMinimum()
-                );
+                        ld.range(Precision.fromDateIndex(i).toChronoField()).getMinimum());
             }
         }
         return (Date) new Date(ld.getYear(), ld.getMonthValue(), ld.getDayOfMonth()).setPrecision(thePrecision);
@@ -98,13 +97,13 @@ public class Date extends BaseTemporal {
         boolean differentPrecisions = this.getPrecision() != other.getPrecision();
 
         if (differentPrecisions) {
-            Integer result = this.compareToPrecision(other, Precision.getHighestDatePrecision(this.precision, other.precision));
+            Integer result =
+                    this.compareToPrecision(other, Precision.getHighestDatePrecision(this.precision, other.precision));
             if (result == null && forSort) {
                 return this.precision.toDateIndex() > other.precision.toDateIndex() ? 1 : -1;
             }
             return result;
-        }
-        else {
+        } else {
             return compareToPrecision(other, this.precision);
         }
     }
@@ -123,8 +122,7 @@ public class Date extends BaseTemporal {
             int rightComp = ((Date) other).getDate().get(Precision.getDateChronoFieldFromIndex(i));
             if (leftComp > rightComp) {
                 return 1;
-            }
-            else if (leftComp < rightComp) {
+            } else if (leftComp < rightComp) {
                 return -1;
             }
         }
@@ -172,9 +170,12 @@ public class Date extends BaseTemporal {
     @Override
     public String toString() {
         switch (precision) {
-            case YEAR: return String.format("%04d", date.getYear());
-            case MONTH: return String.format("%04d-%02d", date.getYear(), date.getMonthValue());
-            default: return String.format("%04d-%02d-%02d", date.getYear(), date.getMonthValue(), date.getDayOfMonth());
+            case YEAR:
+                return String.format("%04d", date.getYear());
+            case MONTH:
+                return String.format("%04d-%02d", date.getYear(), date.getMonthValue());
+            default:
+                return String.format("%04d-%02d-%02d", date.getYear(), date.getMonthValue(), date.getDayOfMonth());
         }
     }
 
@@ -182,8 +183,7 @@ public class Date extends BaseTemporal {
         ZonedDateTime zonedDateTime = null;
         if (c != null) {
             zonedDateTime = date.atStartOfDay(c.getEvaluationZonedDateTime().getZone());
-        }
-        else {
+        } else {
             zonedDateTime = date.atStartOfDay(TimeZone.getDefault().toZoneId());
         }
         Instant instant = zonedDateTime.toInstant();
@@ -198,6 +198,9 @@ public class Date extends BaseTemporal {
     public static DateTime fromJavaDate(java.util.Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-        return new DateTime(OffsetDateTime.ofInstant(calendar.toInstant(), calendar.getTimeZone().toZoneId()), Precision.MILLISECOND);
+        return new DateTime(
+                OffsetDateTime.ofInstant(
+                        calendar.toInstant(), calendar.getTimeZone().toZoneId()),
+                Precision.MILLISECOND);
     }
 }

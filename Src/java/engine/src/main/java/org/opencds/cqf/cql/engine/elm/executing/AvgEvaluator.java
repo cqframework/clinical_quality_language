@@ -1,10 +1,9 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.math.BigDecimal;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.Quantity;
-
-import java.math.BigDecimal;
 
 /*
 Avg(argument List<Decimal>) Decimal
@@ -41,12 +40,10 @@ public class AvgEvaluator {
                         ++size;
                         avg = AddEvaluator.add(avg, element);
                     }
-                }
-                else {
+                } else {
                     throw new InvalidOperatorArgument(
                             "Avg(List<Decimal>), Avg(List<Quantity>)",
-                            String.format("Avg(List<%s>)", source.getClass().getName())
-                    );
+                            String.format("Avg(List<%s>)", source.getClass().getName()));
                 }
             }
 
@@ -55,7 +52,6 @@ public class AvgEvaluator {
 
         throw new InvalidOperatorArgument(
                 "Avg(List<Decimal>), Avg(List<Quantity>)",
-                String.format("Avg(%s)", source.getClass().getName())
-        );
+                String.format("Avg(%s)", source.getClass().getName()));
     }
 }

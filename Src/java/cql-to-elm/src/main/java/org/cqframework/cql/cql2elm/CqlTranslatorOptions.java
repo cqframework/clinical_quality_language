@@ -1,22 +1,26 @@
 package org.cqframework.cql.cql2elm;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import java.util.EnumSet;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
-
 public class CqlTranslatorOptions {
 
-    public enum Format { XML, JSON, COFFEE }
+    public enum Format {
+        XML,
+        JSON,
+        COFFEE
+    }
 
     @JsonUnwrapped
     private CqlCompilerOptions cqlCompilerOptions;
+
     private Set<Format> formats;
 
-        public static CqlTranslatorOptions defaultOptions() {
+    public static CqlTranslatorOptions defaultOptions() {
         return new CqlTranslatorOptions()
-            .withCqlCompilerOptions(CqlCompilerOptions.defaultOptions())
-            .withFormats(EnumSet.of(Format.XML));
+                .withCqlCompilerOptions(CqlCompilerOptions.defaultOptions())
+                .withFormats(EnumSet.of(Format.XML));
     }
 
     public CqlCompilerOptions getCqlCompilerOptions() {

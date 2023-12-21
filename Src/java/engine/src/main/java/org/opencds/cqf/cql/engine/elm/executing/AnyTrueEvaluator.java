@@ -1,8 +1,7 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
-import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
-
 import java.util.Iterator;
+import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 
 /*
 AnyTrue(argument List<Boolean>) Boolean
@@ -21,7 +20,7 @@ public class AnyTrueEvaluator {
         }
 
         if (src instanceof Iterable) {
-            Iterable<?> element = (Iterable<?>)src;
+            Iterable<?> element = (Iterable<?>) src;
             Iterator<?> elemsItr = element.iterator();
 
             if (!elemsItr.hasNext()) { // empty list
@@ -41,12 +40,10 @@ public class AnyTrueEvaluator {
                     if (Boolean.TRUE == boolVal) {
                         return true;
                     }
-                }
-                else {
+                } else {
                     throw new InvalidOperatorArgument(
                             "AnyTrue(List<Boolean>)",
-                            String.format("AnyTrue(List<%s>)", exp.getClass().getName())
-                    );
+                            String.format("AnyTrue(List<%s>)", exp.getClass().getName()));
                 }
             }
 
@@ -55,7 +52,6 @@ public class AnyTrueEvaluator {
 
         throw new InvalidOperatorArgument(
                 "AnyTrue(List<Boolean>)",
-                String.format("AnyTrue(%s)", src.getClass().getName())
-        );
+                String.format("AnyTrue(%s)", src.getClass().getName()));
     }
 }

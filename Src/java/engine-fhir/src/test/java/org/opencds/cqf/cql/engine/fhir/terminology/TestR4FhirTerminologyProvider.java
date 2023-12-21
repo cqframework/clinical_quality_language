@@ -10,7 +10,6 @@ import java.net.URLEncoder;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
 import org.hl7.fhir.r4.model.BooleanType;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.StringType;
@@ -206,8 +205,10 @@ public class TestR4FhirTerminologyProvider extends R4FhirTest {
         Parameters parameters = new Parameters();
         parameters.getParameterFirstRep().setName("result").setValue(new BooleanType(true));
 
-        mockFhirRead("/ValueSet/Test/$validate-code?code=" + urlencode(code.getCode()) + "&system="
-                + urlencode(code.getSystem()), parameters);
+        mockFhirRead(
+                "/ValueSet/Test/$validate-code?code=" + urlencode(code.getCode()) + "&system="
+                        + urlencode(code.getSystem()),
+                parameters);
 
         boolean result = provider.in(code, info);
         assertTrue(result);
@@ -231,8 +232,10 @@ public class TestR4FhirTerminologyProvider extends R4FhirTest {
         Parameters parameters = new Parameters();
         parameters.getParameterFirstRep().setName("result").setValue(new BooleanType(false));
 
-        mockFhirRead("/ValueSet/Test/$validate-code?code=" + urlencode(code.getCode()) + "&system="
-                + urlencode(code.getSystem()), parameters);
+        mockFhirRead(
+                "/ValueSet/Test/$validate-code?code=" + urlencode(code.getCode()) + "&system="
+                        + urlencode(code.getSystem()),
+                parameters);
 
         boolean result = provider.in(code, info);
         assertFalse(result);

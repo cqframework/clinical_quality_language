@@ -1,10 +1,9 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
-import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
-import org.opencds.cqf.cql.engine.execution.State;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
+import org.opencds.cqf.cql.engine.execution.State;
 
 /*
 PopulationVariance(argument List<Decimal>) Decimal
@@ -34,20 +33,15 @@ public class PopulationVarianceEvaluator {
 
             List<Object> newVals = new ArrayList<>();
 
-            ((List<?>) source).forEach(ae -> newVals.add(
-                    MultiplyEvaluator.multiply(
-                            SubtractEvaluator.subtract(ae, mean),
-                            SubtractEvaluator.subtract(ae, mean))
-                    )
-            );
+            ((List<?>) source)
+                    .forEach(ae -> newVals.add(MultiplyEvaluator.multiply(
+                            SubtractEvaluator.subtract(ae, mean), SubtractEvaluator.subtract(ae, mean))));
 
             return AvgEvaluator.avg(newVals, state);
         }
 
         throw new InvalidOperatorArgument(
                 "PopulationVariance(List<Decimal>) or PopulationVariance(List<Quantity>)",
-                String.format("PopulationVariance(%s)", source.getClass().getName())
-        );
+                String.format("PopulationVariance(%s)", source.getClass().getName()));
     }
-
 }

@@ -1,9 +1,8 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.util.Iterator;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.execution.State;
-
-import java.util.Iterator;
 
 /*
 Min(argument List<Integer>) Integer
@@ -31,7 +30,7 @@ public class MinEvaluator {
         }
 
         if (source instanceof Iterable) {
-            Iterable<?> element = (Iterable<?>)source;
+            Iterable<?> element = (Iterable<?>) source;
             Iterator<?> itr = element.iterator();
 
             if (!itr.hasNext()) { // empty list
@@ -58,9 +57,7 @@ public class MinEvaluator {
         }
 
         throw new InvalidOperatorArgument(
-            "Min(List<Integer>), Min(List<Long>), Min(List<Decimal>), Min(List<Quantity>), Min(List<Date>), Min(List<DateTime>), Min(List<Time>) or Min(List<String>)",
-            String.format("Min(%s)", source.getClass().getName())
-        );
+                "Min(List<Integer>), Min(List<Long>), Min(List<Decimal>), Min(List<Quantity>), Min(List<Date>), Min(List<DateTime>), Min(List<Time>) or Min(List<String>)",
+                String.format("Min(%s)", source.getClass().getName()));
     }
-
 }

@@ -9,7 +9,8 @@ import org.testng.annotations.Test;
 @SuppressWarnings("removal")
 public class CqlListDistinguishedOverloadsTest extends CqlTestBase {
 
-    private static final VersionedIdentifier library = new VersionedIdentifier().withId("CqlListDistinguishedOverloads");
+    private static final VersionedIdentifier library =
+            new VersionedIdentifier().withId("CqlListDistinguishedOverloads");
 
     @Test
     @Ignore("There's a bug in the cql engine that is causing it to select the wrong function overload at runtime")

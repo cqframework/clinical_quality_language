@@ -1,12 +1,5 @@
 package org.opencds.cqf.cql.engine.fhir.searchparam;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.commons.lang3.tuple.Pair;
-
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.RuntimeSearchParam;
 import ca.uhn.fhir.model.api.IQueryParameterType;
@@ -17,6 +10,11 @@ import ca.uhn.fhir.rest.param.ReferenceParam;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.param.UriParam;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class SearchParameterResolver {
 
@@ -31,10 +29,11 @@ public class SearchParameterResolver {
     }
 
     public RuntimeSearchParam getSearchParameterDefinition(String dataType, String path) {
-        return this.getSearchParameterDefinition(dataType, path, (RestSearchParameterTypeEnum)null);
+        return this.getSearchParameterDefinition(dataType, path, (RestSearchParameterTypeEnum) null);
     }
 
-    public RuntimeSearchParam getSearchParameterDefinition(String dataType, String path, RestSearchParameterTypeEnum paramType) {
+    public RuntimeSearchParam getSearchParameterDefinition(
+            String dataType, String path, RestSearchParameterTypeEnum paramType) {
         if (dataType == null || path == null) {
             return null;
         }
@@ -47,12 +46,12 @@ public class SearchParameterResolver {
             path = "";
         }
 
-        List<RuntimeSearchParam> params = this.context.getResourceDefinition(dataType).getSearchParams();
+        List<RuntimeSearchParam> params =
+                this.context.getResourceDefinition(dataType).getSearchParams();
 
         for (RuntimeSearchParam param : params) {
             // If name matches, it's the one we want.
-            if (name != null && param.getName().equals(name))
-            {
+            if (name != null && param.getName().equals(name)) {
                 return param;
             }
 
@@ -70,7 +69,8 @@ public class SearchParameterResolver {
         return null;
     }
 
-    public Pair<String, IQueryParameterType> createSearchParameter(String context, String dataType, String path, String value) {
+    public Pair<String, IQueryParameterType> createSearchParameter(
+            String context, String dataType, String path, String value) {
 
         RuntimeSearchParam searchParam = this.getSearchParameterDefinition(dataType, path);
         if (searchParam == null) {
@@ -80,7 +80,6 @@ public class SearchParameterResolver {
         String name = searchParam.getName();
 
         switch (searchParam.getParamType()) {
-
             case TOKEN:
                 return Pair.of(name, new TokenParam(value));
             case REFERENCE:
@@ -94,7 +93,7 @@ public class SearchParameterResolver {
             case URI:
                 return Pair.of(name, new UriParam(value));
 
-            // Don't know how to handle these yet.
+                // Don't know how to handle these yet.
             case DATE:
             case HAS:
             case COMPOSITE:
@@ -107,12 +106,12 @@ public class SearchParameterResolver {
     // This is actually a lot of processing. We should cache search parameter resolutions.
     private String normalizePath(String path) {
         // TODO: What we really need is FhirPath parsing to just get the path
-        //MedicationAdministration.medication.as(CodeableConcept)
-        //MedicationAdministration.medication.as(Reference)
-        //(MedicationAdministration.medication as CodeableConcept)
-        //(MedicationAdministration.medication as Reference)
-        //Condition.onset.as(Age) | Condition.onset.as(Range)
-        //Observation.code | Observation.component.code
+        // MedicationAdministration.medication.as(CodeableConcept)
+        // MedicationAdministration.medication.as(Reference)
+        // (MedicationAdministration.medication as CodeableConcept)
+        // (MedicationAdministration.medication as Reference)
+        // Condition.onset.as(Age) | Condition.onset.as(Range)
+        // Observation.code | Observation.component.code
 
         // Trim off outer parens
         if (path.equals("(")) {
@@ -120,13 +119,12 @@ public class SearchParameterResolver {
         }
 
         Set<String> normalizedParts = new HashSet<String>();
-        String [] orParts = path.split("\\|");
-        for( String part : orParts ) {
+        String[] orParts = path.split("\\|");
+        for (String part : orParts) {
             path = part.trim();
 
             // Trim off DataType
             path = path.substring(path.indexOf(".") + 1, path.length());
-
 
             // Split into components
             String[] pathSplit = path.split("\\.");
@@ -145,7 +143,7 @@ public class SearchParameterResolver {
 
                 // Filter out spaces and everything after "medication as Reference"
                 String[] ps = p.split(" ");
-                if (ps != null && ps.length > 0){
+                if (ps != null && ps.length > 0) {
                     newPathParts.add(ps[0]);
                 }
             }
@@ -160,7 +158,7 @@ public class SearchParameterResolver {
         // will punt on something like /Observation?combo-code where the underlying
         // representation maps to multiple places in a nested hierarchy (e.g.
         // Observation.code | Observation.component.code ).
-        if( normalizedParts.size() == 1 ) {
+        if (normalizedParts.size() == 1) {
             return normalizedParts.iterator().next();
         } else {
             return null;

@@ -1,11 +1,10 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.CqlList;
-
-import java.util.ArrayList;
-import java.util.Iterator;
 
 /*
 Mode(argument List<T>) T
@@ -23,7 +22,7 @@ public class ModeEvaluator {
         }
 
         if (source instanceof Iterable) {
-            Iterable<?> element = (Iterable<?>)source;
+            Iterable<?> element = (Iterable<?>) source;
             Iterator<?> itr = element.iterator();
 
             if (!itr.hasNext()) { // empty list
@@ -62,9 +61,6 @@ public class ModeEvaluator {
             return mode;
         }
         throw new InvalidOperatorArgument(
-                "Mode(List<T>)",
-                String.format("Mode(%s)", source.getClass().getName())
-        );
+                "Mode(List<T>)", String.format("Mode(%s)", source.getClass().getName()));
     }
-
 }

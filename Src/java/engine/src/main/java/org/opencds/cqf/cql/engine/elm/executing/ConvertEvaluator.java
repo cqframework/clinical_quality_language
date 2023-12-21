@@ -1,11 +1,10 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.lang.reflect.InvocationTargetException;
+import javax.xml.namespace.QName;
 import org.hl7.elm.r1.TypeSpecifier;
 import org.opencds.cqf.cql.engine.exception.InvalidConversion;
 import org.opencds.cqf.cql.engine.execution.State;
-
-import javax.xml.namespace.QName;
-import java.lang.reflect.InvocationTargetException;
 
 /*
 convert to<T>(argument Any) T
@@ -42,7 +41,7 @@ For specific semantics for each conversion, refer to the explicit conversion ope
 
 public class ConvertEvaluator {
 
-    private static Class<?> resolveType(QName toType, TypeSpecifier typeSpecifier,State state) {
+    private static Class<?> resolveType(QName toType, TypeSpecifier typeSpecifier, State state) {
         if (typeSpecifier != null) {
             return state.getEnvironment().resolveType(typeSpecifier);
         }
@@ -59,8 +58,12 @@ public class ConvertEvaluator {
                 Class<?> cls = operand.getClass();
                 return cls.getDeclaredConstructor().newInstance();
             }
-        } catch (InstantiationException | InvocationTargetException |
-            ExceptionInInitializerError | IllegalAccessException | SecurityException | NoSuchMethodException e) {
+        } catch (InstantiationException
+                | InvocationTargetException
+                | ExceptionInInitializerError
+                | IllegalAccessException
+                | SecurityException
+                | NoSuchMethodException e) {
             throw new InvalidConversion("Error during conversion: " + e.getMessage());
         }
 

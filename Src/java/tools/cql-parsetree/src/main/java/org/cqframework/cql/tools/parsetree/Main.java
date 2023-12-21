@@ -1,16 +1,15 @@
 package org.cqframework.cql.tools.parsetree;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import org.antlr.v4.gui.Trees;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.gui.Trees;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
-
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * A simple wrapper around the ANTLR4 testrig.

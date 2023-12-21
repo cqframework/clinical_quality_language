@@ -4,7 +4,11 @@ import org.hl7.elm.r1.Expression;
 import org.hl7.elm.r1.VersionedIdentifier;
 
 public class ElmConstraintRequirement extends ElmExpressionRequirement {
-    public ElmConstraintRequirement(VersionedIdentifier libraryIdentifier, Expression expression, ElmPropertyRequirement leftProperty, ElmPropertyRequirement rightProperty) {
+    public ElmConstraintRequirement(
+            VersionedIdentifier libraryIdentifier,
+            Expression expression,
+            ElmPropertyRequirement leftProperty,
+            ElmPropertyRequirement rightProperty) {
         super(libraryIdentifier, expression);
 
         if (leftProperty == null) {
@@ -19,11 +23,13 @@ public class ElmConstraintRequirement extends ElmExpressionRequirement {
     }
 
     protected ElmPropertyRequirement leftProperty;
+
     public ElmPropertyRequirement getLeftProperty() {
         return this.leftProperty;
     }
 
     protected ElmPropertyRequirement rightProperty;
+
     public ElmPropertyRequirement getRightProperty() {
         return this.rightProperty;
     }

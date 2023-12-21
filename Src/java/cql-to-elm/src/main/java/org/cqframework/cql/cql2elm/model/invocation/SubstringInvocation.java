@@ -1,10 +1,9 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
-import org.hl7.elm.r1.Expression;
-import org.hl7.elm.r1.Substring;
-
 import java.util.ArrayList;
 import java.util.Iterator;
+import org.hl7.elm.r1.Expression;
+import org.hl7.elm.r1.Substring;
 
 public class SubstringInvocation extends OperatorExpressionInvocation {
     public SubstringInvocation(Substring expression) {

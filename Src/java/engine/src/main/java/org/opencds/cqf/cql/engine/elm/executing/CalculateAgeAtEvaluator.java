@@ -34,15 +34,16 @@ public class CalculateAgeAtEvaluator {
         }
 
         if ((birthDate instanceof Date && asOf instanceof Date)
-                || (birthDate instanceof DateTime && asOf instanceof DateTime))
-        {
+                || (birthDate instanceof DateTime && asOf instanceof DateTime)) {
             return DurationBetweenEvaluator.duration(birthDate, asOf, Precision.fromString(precision));
         }
 
         throw new InvalidOperatorArgument(
                 "CalculateAgeInYearsAt(Date, Date), CalculateAgeInYearsAt(DateTime, DateTime), CalculateAgeInMonthsAt(Date, Date), CalculateAgeInMonthsAt(DateTime, DateTime), CalculateAgeInWeeksAt(Date, Date), CalculateAgeInWeeksAt(DateTime, DateTime), CalculateAgeInDaysAt(Date, Date), CalculateAgeInDaysAt(DateTime, DateTime), CalculateAgeInHoursAt(Date, Date), CalculateAgeInHoursAt(DateTime, DateTime), CalculateAgeInMinutesAt(Date, Date), CalculateAgeInMinutesAt(DateTime, DateTime), CalculateAgeInSecondsAt(Date, Date), CalculateAgeInSecondsAt(DateTime, DateTime)",
-                String.format("CalculateAgeIn%ssAt(%s, %s)", precision, birthDate.getClass().getName(), asOf.getClass().getName())
-        );
+                String.format(
+                        "CalculateAgeIn%ssAt(%s, %s)",
+                        precision,
+                        birthDate.getClass().getName(),
+                        asOf.getClass().getName()));
     }
-
 }

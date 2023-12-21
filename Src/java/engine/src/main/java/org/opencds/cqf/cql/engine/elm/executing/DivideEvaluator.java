@@ -1,13 +1,12 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.Interval;
 import org.opencds.cqf.cql.engine.runtime.Quantity;
 import org.opencds.cqf.cql.engine.runtime.Value;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 /*
 /(left Decimal, right Decimal) Decimal
@@ -45,31 +44,25 @@ public class DivideEvaluator {
 
         if (left instanceof BigDecimal && right instanceof BigDecimal) {
             return divideHelper((BigDecimal) left, (BigDecimal) right, state);
-        }
-
-        else if (left instanceof Quantity && right instanceof Quantity) {
+        } else if (left instanceof Quantity && right instanceof Quantity) {
             BigDecimal value = divideHelper(((Quantity) left).getValue(), ((Quantity) right).getValue(), state);
             return new Quantity().withValue(Value.verifyPrecision(value, null)).withUnit(((Quantity) left).getUnit());
-        }
-
-        else if (left instanceof Quantity && right instanceof BigDecimal) {
+        } else if (left instanceof Quantity && right instanceof BigDecimal) {
             BigDecimal value = divideHelper(((Quantity) left).getValue(), (BigDecimal) right, state);
-            return new Quantity().withValue(Value.verifyPrecision(value, null)).withUnit(((Quantity)left).getUnit());
-        }
-
-        else if (left instanceof Interval && right instanceof Interval) {
-            Interval leftInterval = (Interval)left;
-            Interval rightInterval = (Interval)right;
+            return new Quantity().withValue(Value.verifyPrecision(value, null)).withUnit(((Quantity) left).getUnit());
+        } else if (left instanceof Interval && right instanceof Interval) {
+            Interval leftInterval = (Interval) left;
+            Interval rightInterval = (Interval) right;
 
             return new Interval(
                     divide(leftInterval.getStart(), rightInterval.getStart(), state), true,
-                    divide(leftInterval.getEnd(), rightInterval.getEnd(), state), true
-            );
+                    divide(leftInterval.getEnd(), rightInterval.getEnd(), state), true);
         }
 
         throw new InvalidOperatorArgument(
                 "Divide(Decimal, Decimal), Divide(Quantity, Decimal), Divide(Quantity, Quantity)",
-                String.format("Divide(%s, %s)", left.getClass().getName(), right.getClass().getName())
-        );
+                String.format(
+                        "Divide(%s, %s)",
+                        left.getClass().getName(), right.getClass().getName()));
     }
 }

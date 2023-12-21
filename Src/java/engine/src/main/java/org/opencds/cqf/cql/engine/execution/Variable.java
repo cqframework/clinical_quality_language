@@ -6,11 +6,11 @@ public class Variable {
     // for AliasEvaluator
     private boolean isList;
 
-    public void setIsList (boolean isList) {
+    public void setIsList(boolean isList) {
         this.isList = isList;
     }
 
-    public boolean isList () {
+    public boolean isList() {
         return this.isList;
     }
 

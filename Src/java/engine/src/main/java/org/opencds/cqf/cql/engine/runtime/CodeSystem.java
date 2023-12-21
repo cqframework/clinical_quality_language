@@ -6,10 +6,12 @@ public class CodeSystem extends Vocabulary {
         setId(id);
         return this;
     }
+
     public CodeSystem withVersion(String version) {
         setVersion(version);
         return this;
     }
+
     public CodeSystem withName(String name) {
         setName(name);
         return this;

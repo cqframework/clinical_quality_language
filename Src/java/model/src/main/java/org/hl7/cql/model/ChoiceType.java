@@ -1,7 +1,6 @@
 package org.hl7.cql.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -17,18 +16,18 @@ public class ChoiceType extends DataType {
     }
 
     private ArrayList<DataType> types = new ArrayList<>();
+
     public Iterable<DataType> getTypes() {
         return types;
     }
 
     private void addType(DataType type) {
         if (type instanceof ChoiceType) {
-            ChoiceType choiceType = (ChoiceType)type;
+            ChoiceType choiceType = (ChoiceType) type;
             for (DataType choice : choiceType.getTypes()) {
                 addType(choice);
             }
-        }
-        else {
+        } else {
             types.add(type);
         }
     }
@@ -46,7 +45,7 @@ public class ChoiceType extends DataType {
     @Override
     public boolean equals(Object o) {
         if (o instanceof ChoiceType) {
-            ChoiceType that = (ChoiceType)o;
+            ChoiceType that = (ChoiceType) o;
 
             if (this.types.size() == that.types.size()) {
                 List<DataType> theseTypes = this.types;
@@ -66,7 +65,8 @@ public class ChoiceType extends DataType {
 
     @Override
     public boolean isSubTypeOf(DataType other) {
-        // Choice types do not follow the is-a relationship, they use the is-compatible relationship instead, defined using subset/superset
+        // Choice types do not follow the is-a relationship, they use the is-compatible relationship instead, defined
+        // using subset/superset
         return super.isSubTypeOf(other);
     }
 
@@ -79,7 +79,7 @@ public class ChoiceType extends DataType {
                     break;
                 }
             }
-            
+
             if (!currentIsSubType) {
                 return false;
             }
@@ -101,9 +101,10 @@ public class ChoiceType extends DataType {
     public boolean isCompatibleWith(DataType other) {
         // This type is compatible with the other type if
         // The other type is a subtype of one of the choice types
-        // The other type is a choice type and all the components of this choice are a subtype of some component of the other type
+        // The other type is a choice type and all the components of this choice are a subtype of some component of the
+        // other type
         if (other instanceof ChoiceType) {
-            return this.isSubSetOf((ChoiceType)other) || this.isSuperSetOf((ChoiceType)other);
+            return this.isSubSetOf((ChoiceType) other) || this.isSuperSetOf((ChoiceType) other);
         }
 
         for (DataType type : types) {
@@ -123,8 +124,7 @@ public class ChoiceType extends DataType {
         for (DataType type : types) {
             if (first) {
                 first = false;
-            }
-            else {
+            } else {
                 sb.append(",");
             }
             sb.append(type.toString());
@@ -135,7 +135,8 @@ public class ChoiceType extends DataType {
 
     @Override
     public boolean isGeneric() {
-        // TODO: It hardly makes sense for a choice type to have generics.... ignoring in instantiation semantics for now
+        // TODO: It hardly makes sense for a choice type to have generics.... ignoring in instantiation semantics for
+        // now
         for (DataType type : types) {
             if (type.isGeneric()) {
                 return true;

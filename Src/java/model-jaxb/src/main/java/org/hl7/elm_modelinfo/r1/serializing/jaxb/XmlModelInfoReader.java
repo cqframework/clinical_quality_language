@@ -1,12 +1,11 @@
 package org.hl7.elm_modelinfo.r1.serializing.jaxb;
 
-import org.hl7.elm_modelinfo.r1.ModelInfo;
-import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReader;
-
 import jakarta.xml.bind.JAXB;
 import java.io.*;
 import java.net.URI;
 import java.net.URL;
+import org.hl7.elm_modelinfo.r1.ModelInfo;
+import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReader;
 
 public class XmlModelInfoReader implements ModelInfoReader {
 

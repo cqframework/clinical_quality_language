@@ -1,11 +1,10 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.math.BigDecimal;
 import org.fhir.ucum.Decimal;
 import org.fhir.ucum.UcumService;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.runtime.Quantity;
-
-import java.math.BigDecimal;
 
 /*
     convert <quantity> to <unit>
@@ -38,8 +37,13 @@ public class ConvertQuantityEvaluator {
                 return null;
             }
             try {
-                Decimal result = ucumService.convert(new Decimal(String.valueOf(((Quantity) argument).getValue())), ((Quantity) argument).getUnit(), (String) unit);
-                return new Quantity().withValue(new BigDecimal(result.asDecimal())).withUnit((String) unit);
+                Decimal result = ucumService.convert(
+                        new Decimal(String.valueOf(((Quantity) argument).getValue())),
+                        ((Quantity) argument).getUnit(),
+                        (String) unit);
+                return new Quantity()
+                        .withValue(new BigDecimal(result.asDecimal()))
+                        .withUnit((String) unit);
             } catch (Exception e) {
                 return null;
             }
@@ -47,9 +51,8 @@ public class ConvertQuantityEvaluator {
 
         throw new InvalidOperatorArgument(
                 "ConvertQuantity(Quantity, String)",
-                String.format("ConvertQuantity(%s, %s)", argument.getClass().getName(), unit.getClass().getName())
-        );
+                String.format(
+                        "ConvertQuantity(%s, %s)",
+                        argument.getClass().getName(), unit.getClass().getName()));
     }
-
-
 }

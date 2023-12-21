@@ -1,9 +1,8 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.math.BigDecimal;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.runtime.*;
-
-import java.math.BigDecimal;
 
 /*
 
@@ -32,17 +31,21 @@ public class ConvertsToStringEvaluator {
             return null;
         }
 
-        if (argument instanceof Boolean || argument instanceof Integer || argument instanceof Long || argument instanceof BigDecimal
-            || argument instanceof Quantity || argument instanceof Ratio || argument instanceof Date
-            || argument instanceof DateTime || argument instanceof String || argument instanceof Time)
-        {
+        if (argument instanceof Boolean
+                || argument instanceof Integer
+                || argument instanceof Long
+                || argument instanceof BigDecimal
+                || argument instanceof Quantity
+                || argument instanceof Ratio
+                || argument instanceof Date
+                || argument instanceof DateTime
+                || argument instanceof String
+                || argument instanceof Time) {
             return true;
         }
 
         throw new InvalidOperatorArgument(
-            "ConvertsToString(Boolean) or ConvertsToString(Long) or ConvertsToString(Integer) or ConvertsToString(Decimal) or ConvertsToString(Quantity) or ConvertsToString(Ratio) or ConvertsToString(Date) or ConvertsToString(DateTime) or ConvertsToString(Time)",
-            String.format("ConvertsToString(%s)", argument.getClass().getName())
-        );
+                "ConvertsToString(Boolean) or ConvertsToString(Long) or ConvertsToString(Integer) or ConvertsToString(Decimal) or ConvertsToString(Quantity) or ConvertsToString(Ratio) or ConvertsToString(Date) or ConvertsToString(DateTime) or ConvertsToString(Time)",
+                String.format("ConvertsToString(%s)", argument.getClass().getName()));
     }
-
 }

@@ -22,8 +22,6 @@ public class TimeEvaluator {
             return null;
         }
 
-        return new Time(
-                TemporalHelper.cleanArray(hour, minute, second, miliSecond)
-        );
+        return new Time(TemporalHelper.cleanArray(hour, minute, second, miliSecond));
     }
 }

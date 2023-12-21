@@ -1,13 +1,12 @@
 package org.opencds.cqf.cql.engine.execution;
 
+import java.time.ZonedDateTime;
+import java.util.TimeZone;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.*;
 import org.testng.asserts.SoftAssert;
-
-import java.time.ZonedDateTime;
-import java.util.TimeZone;
 
 @SuppressWarnings("removal")
 public class CqlTimezoneTests extends CqlTestBase {
@@ -48,5 +47,4 @@ public class CqlTimezoneTests extends CqlTestBase {
         Object result = engine.expression(library, functionName).value();
         softAssert.assertEquals(result, expectedResult, functionName);
     }
-
 }

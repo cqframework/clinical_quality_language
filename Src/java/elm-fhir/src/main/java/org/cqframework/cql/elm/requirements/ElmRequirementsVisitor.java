@@ -4,8 +4,6 @@ import org.cqframework.cql.elm.visiting.BaseElmLibraryVisitor;
 import org.hl7.cql.model.ListType;
 import org.hl7.elm.r1.*;
 
-import javax.xml.namespace.QName;
-
 /*
 This class implements an ELM Visitor to perform static analysis of data and dependency requirements
 for ELM trees.
@@ -48,7 +46,7 @@ At a binary comparison expression, return ElmConditionRequirement if possible
 At a logical expression, return ElmConjunctiveRequirement or ElmDisjunctiveRequirement
 
  */
-public class ElmRequirementsVisitor extends BaseElmLibraryVisitor <ElmRequirement, ElmRequirementsContext>{
+public class ElmRequirementsVisitor extends BaseElmLibraryVisitor<ElmRequirement, ElmRequirementsContext> {
 
     public ElmRequirementsVisitor() {
         super();
@@ -65,7 +63,7 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor <ElmRequiremen
         }
 
         if (result instanceof ElmRequirements) {
-            ((ElmRequirements)result).reportRequirement(nextResult);
+            ((ElmRequirements) result).reportRequirement(nextResult);
             return result;
         }
 
@@ -83,10 +81,9 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor <ElmRequiremen
 
         try {
             result = super.visitExpressionDef(elm, context);
-        }
-        finally {
+        } finally {
             context.exitExpressionDef(result);
-            if(pertinenceTagFound) {
+            if (pertinenceTagFound) {
                 context.exitPertinenceContext();
             }
         }
@@ -103,24 +100,22 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor <ElmRequiremen
     public ElmRequirement visitExpressionRef(ExpressionRef elm, ElmRequirementsContext context) {
         ElmRequirement result = null;
         if (elm instanceof FunctionRef) {
-            result = visitFunctionRef((FunctionRef)elm, context);
-        }
-        else {
+            result = visitFunctionRef((FunctionRef) elm, context);
+        } else {
             result = context.reportExpressionRef(elm);
         }
         if (result != null) {
             // If the expression ref is to a retrieve or a single-source query, surface it as an "inferred" requirement
             // in the referencing scope
             if (result instanceof ElmDataRequirement) {
-                ElmDataRequirement inferredRequirement = ElmDataRequirement.inferFrom((ElmDataRequirement)result);
+                ElmDataRequirement inferredRequirement = ElmDataRequirement.inferFrom((ElmDataRequirement) result);
                 // Should be being reported as a data requirement...
-                //context.reportRetrieve(inferredRequirement.getRetrieve());
+                // context.reportRetrieve(inferredRequirement.getRetrieve());
                 result = inferredRequirement;
-            }
-            else if (result instanceof ElmQueryRequirement) {
-                ElmDataRequirement inferredRequirement = ElmDataRequirement.inferFrom((ElmQueryRequirement)result);
+            } else if (result instanceof ElmQueryRequirement) {
+                ElmDataRequirement inferredRequirement = ElmDataRequirement.inferFrom((ElmQueryRequirement) result);
                 // Should be being reported as a data requirement...
-                //context.reportRetrieve(inferredRequirement.getRetrieve());
+                // context.reportRetrieve(inferredRequirement.getRetrieve());
                 result = inferredRequirement;
             }
             return result;
@@ -136,9 +131,12 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor <ElmRequiremen
         // If the result is a data requirement and the function is cardinality-reducing,
         // Return as an operator requirement, rather than returning the result
         if (result instanceof ElmDataRequirement) {
-            if (elm.getOperand().size() != 1 || (elm.getOperand().get(0).getResultType() instanceof ListType && !(elm.getResultType() instanceof ListType))) {
+            if (elm.getOperand().size() != 1
+                    || (elm.getOperand().get(0).getResultType() instanceof ListType
+                            && !(elm.getResultType() instanceof ListType))) {
                 // Note that the assumption here is that the data requirement has already been reported to the context
-                return new ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm).combine((ElmDataRequirement)result);
+                return new ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm)
+                        .combine((ElmDataRequirement) result);
             }
         }
 
@@ -168,7 +166,7 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor <ElmRequiremen
         super.visitRetrieve(elm, context);
 
         ElmDataRequirement result = new ElmDataRequirement(context.getCurrentLibraryIdentifier(), elm);
-        if(elmPertinenceContext != null) {
+        if (elmPertinenceContext != null) {
             result.setPertinenceContext(elmPertinenceContext);
         }
         // If not analyzing requirements, or in a query context, report the data requirement
@@ -192,7 +190,7 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor <ElmRequiremen
     }
 
     @Override
-    public ElmRequirement visitCodeSystemRef(CodeSystemRef elm, ElmRequirementsContext context){
+    public ElmRequirement visitCodeSystemRef(CodeSystemRef elm, ElmRequirementsContext context) {
         context.reportCodeSystemRef(elm);
         return new ElmExpressionRequirement(context.getCurrentLibraryIdentifier(), elm);
     }
@@ -208,8 +206,7 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor <ElmRequiremen
         context.enterLibrary(elm.getIdentifier());
         try {
             return super.visitLibrary(elm, context);
-        }
-        finally {
+        } finally {
             context.exitLibrary();
         }
     }
@@ -227,13 +224,13 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor <ElmRequiremen
     }
 
     @Override
-    public ElmRequirement visitCodeRef(CodeRef elm, ElmRequirementsContext context){
+    public ElmRequirement visitCodeRef(CodeRef elm, ElmRequirementsContext context) {
         context.reportCodeRef(elm);
         return new ElmExpressionRequirement(context.getCurrentLibraryIdentifier(), elm);
     }
 
     @Override
-    public ElmRequirement visitCodeDef(CodeDef elm, ElmRequirementsContext context){
+    public ElmRequirement visitCodeDef(CodeDef elm, ElmRequirementsContext context) {
         context.reportCodeDef(elm);
         return super.visitCodeDef(elm, context);
     }
@@ -280,33 +277,44 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor <ElmRequiremen
      * @param right
      * @return
      */
-    protected ElmRequirement inferConditionRequirement(Expression elm, ElmRequirementsContext context, ElmRequirement left, ElmRequirement right) {
-        ElmPropertyRequirement leftProperty = left instanceof ElmPropertyRequirement ? (ElmPropertyRequirement)left : null;
-        ElmPropertyRequirement rightProperty = right instanceof ElmPropertyRequirement ? (ElmPropertyRequirement)right : null;
+    protected ElmRequirement inferConditionRequirement(
+            Expression elm, ElmRequirementsContext context, ElmRequirement left, ElmRequirement right) {
+        ElmPropertyRequirement leftProperty =
+                left instanceof ElmPropertyRequirement ? (ElmPropertyRequirement) left : null;
+        ElmPropertyRequirement rightProperty =
+                right instanceof ElmPropertyRequirement ? (ElmPropertyRequirement) right : null;
         if (leftProperty != null && leftProperty.getInCurrentScope()) {
             if (rightProperty != null && rightProperty.getInCurrentScope()) {
                 if (leftProperty.getSource() == rightProperty.getSource()) {
-                    return new ElmConstraintRequirement(context.getCurrentLibraryIdentifier(), elm, leftProperty, rightProperty);
-                }
-                else if (leftProperty.getSource() instanceof AliasedQuerySource && rightProperty.getSource() instanceof AliasedQuerySource) {
-                    return new ElmJoinRequirement(context.getCurrentLibraryIdentifier(), elm, leftProperty, rightProperty);
+                    return new ElmConstraintRequirement(
+                            context.getCurrentLibraryIdentifier(), elm, leftProperty, rightProperty);
+                } else if (leftProperty.getSource() instanceof AliasedQuerySource
+                        && rightProperty.getSource() instanceof AliasedQuerySource) {
+                    return new ElmJoinRequirement(
+                            context.getCurrentLibraryIdentifier(), elm, leftProperty, rightProperty);
                 }
             }
             if (right instanceof ElmExpressionRequirement) {
-                return new ElmConditionRequirement(context.getCurrentLibraryIdentifier(), elm, leftProperty, (ElmExpressionRequirement)right);
+                return new ElmConditionRequirement(
+                        context.getCurrentLibraryIdentifier(), elm, leftProperty, (ElmExpressionRequirement) right);
             }
-        }
-        else if (rightProperty != null && rightProperty.getInCurrentScope()) {
+        } else if (rightProperty != null && rightProperty.getInCurrentScope()) {
             if (leftProperty != null && leftProperty.getInCurrentScope()) {
                 if (leftProperty.getSource() == rightProperty.getSource()) {
-                    return new ElmConstraintRequirement(context.getCurrentLibraryIdentifier(), elm, leftProperty, rightProperty);
-                }
-                else if (leftProperty.getSource() instanceof AliasedQuerySource && rightProperty.getSource() instanceof AliasedQuerySource) {
-                    return new ElmJoinRequirement(context.getCurrentLibraryIdentifier(), elm, leftProperty, rightProperty);
+                    return new ElmConstraintRequirement(
+                            context.getCurrentLibraryIdentifier(), elm, leftProperty, rightProperty);
+                } else if (leftProperty.getSource() instanceof AliasedQuerySource
+                        && rightProperty.getSource() instanceof AliasedQuerySource) {
+                    return new ElmJoinRequirement(
+                            context.getCurrentLibraryIdentifier(), elm, leftProperty, rightProperty);
                 }
             }
             if (left instanceof ElmExpressionRequirement) {
-                return new ElmConditionRequirement(context.getCurrentLibraryIdentifier(), elm, (ElmPropertyRequirement)right, (ElmExpressionRequirement)left);
+                return new ElmConditionRequirement(
+                        context.getCurrentLibraryIdentifier(),
+                        elm,
+                        (ElmPropertyRequirement) right,
+                        (ElmExpressionRequirement) left);
             }
         }
 
@@ -321,16 +329,16 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor <ElmRequiremen
         }
 
         switch (elm.getClass().getSimpleName()) {
-            /**
-             * Determine whether the condition is sargeable:
-             *
-             *     A op B
-             *
-             * Where:
-             * * A is an order-preserving expression with a single property reference to a property of some source in the current query context
-             * * op is a positive relative comparison operation (=, >, <, >=, <=) or a membership operator (in, contains)
-             * * B is a functional, repeatable, and deterministic context literal expression with respect to the current query context
-             */
+                /**
+                 * Determine whether the condition is sargeable:
+                 *
+                 *     A op B
+                 *
+                 * Where:
+                 * * A is an order-preserving expression with a single property reference to a property of some source in the current query context
+                 * * op is a positive relative comparison operation (=, >, <, >=, <=) or a membership operator (in, contains)
+                 * * B is a functional, repeatable, and deterministic context literal expression with respect to the current query context
+                 */
             case "Equal":
             case "Equivalent":
             case "SameAs":
@@ -349,25 +357,23 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor <ElmRequiremen
                 return inferConditionRequirement(elm, context, left, right);
             }
 
-            /**
-             * Gather sargeable conditions as Lists of conditions. At an AND, combine conditions from sub-nodes.
-             * At an OR, the result is separate lists of condition lists.
-             * At an AND, if there are already lists of lists, the condition is too complex for analysis (i.e. it's not in DNF or CNF)
-             */
-            // TODO: Normalize to DNF
+                /**
+                 * Gather sargeable conditions as Lists of conditions. At an AND, combine conditions from sub-nodes.
+                 * At an OR, the result is separate lists of condition lists.
+                 * At an AND, if there are already lists of lists, the condition is too complex for analysis (i.e. it's not in DNF or CNF)
+                 */
+                // TODO: Normalize to DNF
             case "And": {
                 ElmRequirement left = visitElement(elm.getOperand().get(0), context);
                 ElmRequirement right = visitElement(elm.getOperand().get(1), context);
 
                 if (left instanceof ElmExpressionRequirement && right instanceof ElmExpressionRequirement) {
                     return new ElmConjunctiveRequirement(context.getCurrentLibraryIdentifier(), elm)
-                            .combine((ElmExpressionRequirement)left)
-                            .combine((ElmExpressionRequirement)right);
-                }
-                else if (left instanceof ElmExpressionRequirement && right == null) {
+                            .combine((ElmExpressionRequirement) left)
+                            .combine((ElmExpressionRequirement) right);
+                } else if (left instanceof ElmExpressionRequirement && right == null) {
                     return left;
-                }
-                else if (right instanceof ElmExpressionRequirement && left == null) {
+                } else if (right instanceof ElmExpressionRequirement && left == null) {
                     return right;
                 }
 
@@ -380,24 +386,22 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor <ElmRequiremen
 
                 if (left instanceof ElmExpressionRequirement && right instanceof ElmExpressionRequirement) {
                     return new ElmDisjunctiveRequirement(context.getCurrentLibraryIdentifier(), elm)
-                            .combine((ElmExpressionRequirement)left)
-                            .combine((ElmExpressionRequirement)right);
-                }
-                else if (left instanceof ElmExpressionRequirement && right == null) {
+                            .combine((ElmExpressionRequirement) left)
+                            .combine((ElmExpressionRequirement) right);
+                } else if (left instanceof ElmExpressionRequirement && right == null) {
                     return left;
-                }
-                else if (right instanceof ElmExpressionRequirement && left == null) {
+                } else if (right instanceof ElmExpressionRequirement && left == null) {
                     return right;
                 }
 
                 return aggregateResult(left, right);
             }
 
-            // TODO: Rewrite
+                // TODO: Rewrite
             case "Xor":
             case "Implies":
-            //case "Not":
-            //case "NotEqual":
+                // case "Not":
+                // case "NotEqual":
             case "Starts":
             case "Ends":
             case "Includes":
@@ -526,21 +530,21 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor <ElmRequiremen
         if (elm.getComparand() != null) {
             childResult = this.visitElement(elm.getComparand(), context);
             if (childResult instanceof ElmExpressionRequirement) {
-                result.combine((ElmExpressionRequirement)childResult);
+                result.combine((ElmExpressionRequirement) childResult);
             }
         }
 
         for (CaseItem ci : elm.getCaseItem()) {
             childResult = this.visitElement(ci, context);
             if (childResult instanceof ElmExpressionRequirement) {
-                result.combine((ElmExpressionRequirement)childResult);
+                result.combine((ElmExpressionRequirement) childResult);
             }
         }
 
         if (elm.getElse() != null) {
             childResult = this.visitElement(elm.getElse(), context);
             if (childResult instanceof ElmExpressionRequirement) {
-                result.combine((ElmExpressionRequirement)childResult);
+                result.combine((ElmExpressionRequirement) childResult);
             }
         }
 
@@ -862,49 +866,49 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor <ElmRequiremen
         if (elm.getYear() != null) {
             ElmRequirement childResult = visitExpression(elm.getYear(), context);
             if (childResult instanceof ElmExpressionRequirement) {
-                result.combine((ElmExpressionRequirement)childResult);
+                result.combine((ElmExpressionRequirement) childResult);
             }
         }
         if (elm.getMonth() != null) {
             ElmRequirement childResult = visitExpression(elm.getMonth(), context);
             if (childResult instanceof ElmExpressionRequirement) {
-                result.combine((ElmExpressionRequirement)childResult);
+                result.combine((ElmExpressionRequirement) childResult);
             }
         }
         if (elm.getDay() != null) {
             ElmRequirement childResult = visitExpression(elm.getDay(), context);
             if (childResult instanceof ElmExpressionRequirement) {
-                result.combine((ElmExpressionRequirement)childResult);
+                result.combine((ElmExpressionRequirement) childResult);
             }
         }
         if (elm.getHour() != null) {
             ElmRequirement childResult = visitExpression(elm.getHour(), context);
             if (childResult instanceof ElmExpressionRequirement) {
-                result.combine((ElmExpressionRequirement)childResult);
+                result.combine((ElmExpressionRequirement) childResult);
             }
         }
         if (elm.getMinute() != null) {
             ElmRequirement childResult = visitExpression(elm.getMinute(), context);
             if (childResult instanceof ElmExpressionRequirement) {
-                result.combine((ElmExpressionRequirement)childResult);
+                result.combine((ElmExpressionRequirement) childResult);
             }
         }
         if (elm.getSecond() != null) {
             ElmRequirement childResult = visitExpression(elm.getSecond(), context);
             if (childResult instanceof ElmExpressionRequirement) {
-                result.combine((ElmExpressionRequirement)childResult);
+                result.combine((ElmExpressionRequirement) childResult);
             }
         }
         if (elm.getMillisecond() != null) {
             ElmRequirement childResult = visitExpression(elm.getMillisecond(), context);
             if (childResult instanceof ElmExpressionRequirement) {
-                result.combine((ElmExpressionRequirement)childResult);
+                result.combine((ElmExpressionRequirement) childResult);
             }
         }
         if (elm.getTimezoneOffset() != null) {
             ElmRequirement childResult = visitExpression(elm.getTimezoneOffset(), context);
             if (childResult instanceof ElmExpressionRequirement) {
-                result.combine((ElmExpressionRequirement)childResult);
+                result.combine((ElmExpressionRequirement) childResult);
             }
         }
         return result;
@@ -916,19 +920,19 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor <ElmRequiremen
         if (elm.getYear() != null) {
             ElmRequirement childResult = visitExpression(elm.getYear(), context);
             if (childResult instanceof ElmExpressionRequirement) {
-                result.combine((ElmExpressionRequirement)childResult);
+                result.combine((ElmExpressionRequirement) childResult);
             }
         }
         if (elm.getMonth() != null) {
             ElmRequirement childResult = visitExpression(elm.getMonth(), context);
             if (childResult instanceof ElmExpressionRequirement) {
-                result.combine((ElmExpressionRequirement)childResult);
+                result.combine((ElmExpressionRequirement) childResult);
             }
         }
         if (elm.getDay() != null) {
             ElmRequirement childResult = visitExpression(elm.getDay(), context);
             if (childResult instanceof ElmExpressionRequirement) {
-                result.combine((ElmExpressionRequirement)childResult);
+                result.combine((ElmExpressionRequirement) childResult);
             }
         }
         return result;
@@ -940,25 +944,25 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor <ElmRequiremen
         if (elm.getHour() != null) {
             ElmRequirement childResult = visitExpression(elm.getHour(), context);
             if (childResult instanceof ElmExpressionRequirement) {
-                result.combine((ElmExpressionRequirement)childResult);
+                result.combine((ElmExpressionRequirement) childResult);
             }
         }
         if (elm.getMinute() != null) {
             ElmRequirement childResult = visitExpression(elm.getMinute(), context);
             if (childResult instanceof ElmExpressionRequirement) {
-                result.combine((ElmExpressionRequirement)childResult);
+                result.combine((ElmExpressionRequirement) childResult);
             }
         }
         if (elm.getSecond() != null) {
             ElmRequirement childResult = visitExpression(elm.getSecond(), context);
             if (childResult instanceof ElmExpressionRequirement) {
-                result.combine((ElmExpressionRequirement)childResult);
+                result.combine((ElmExpressionRequirement) childResult);
             }
         }
         if (elm.getMillisecond() != null) {
             ElmRequirement childResult = visitExpression(elm.getMillisecond(), context);
             if (childResult instanceof ElmExpressionRequirement) {
-                result.combine((ElmExpressionRequirement)childResult);
+                result.combine((ElmExpressionRequirement) childResult);
             }
         }
         return result;
@@ -1242,7 +1246,7 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor <ElmRequiremen
         if (visitResult instanceof ElmPropertyRequirement) {
             // The child is a property reference
             // Construct a new qualified property reference to report
-            ElmPropertyRequirement visitPropertyRequirement = (ElmPropertyRequirement)visitResult;
+            ElmPropertyRequirement visitPropertyRequirement = (ElmPropertyRequirement) visitResult;
             Property qualifiedProperty = new Property();
             Property sourceProperty = visitPropertyRequirement.getProperty();
             qualifiedProperty.setSource(sourceProperty.getSource());
@@ -1270,11 +1274,11 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor <ElmRequiremen
                 ElmRequirement childResult = visitElement(elm.getExpression(), context);
                 result = aggregateResult(result, childResult);
             }
-        }
-        finally {
+        } finally {
             aliasContext = context.getCurrentQueryContext().exitAliasDefinitionContext(result);
         }
-        // If this is an operator requirement, report it directly to the context, otherwise the context it contains will not be reported
+        // If this is an operator requirement, report it directly to the context, otherwise the context it contains will
+        // not be reported
         // since query requirements are abstracted to an ElmDataRequirement
         if (result instanceof ElmOperatorRequirement) {
             context.reportRequirements(result, null);
@@ -1292,8 +1296,7 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor <ElmRequiremen
                 ElmRequirement childResult = super.visitLetClause(elm, context);
                 result = aggregateResult(result, childResult);
             }
-        }
-        finally {
+        } finally {
             letContext = context.getCurrentQueryContext().exitLetDefinitionContext(result);
         }
         return letContext.getRequirements();
@@ -1301,7 +1304,7 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor <ElmRequiremen
 
     @Override
     public ElmRequirement visitChildren(RelationshipClause elm, ElmRequirementsContext context) {
-        ElmRequirement result = visitChildren((AliasedQuerySource)elm, context);
+        ElmRequirement result = visitChildren((AliasedQuerySource) elm, context);
 
         if (elm.getSuchThat() != null) {
             ElmRequirement childResult = visitExpression(elm.getSuchThat(), context);
@@ -1377,8 +1380,7 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor <ElmRequiremen
         context.enterQueryContext(elm);
         try {
             childResult = super.visitQuery(elm, context);
-        }
-        finally {
+        } finally {
             queryContext = context.exitQueryContext();
         }
         ElmQueryRequirement result = queryContext.getQueryRequirement(childResult, context);
@@ -1411,10 +1413,9 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor <ElmRequiremen
     public ElmRequirement visitInCodeSystem(InCodeSystem elm, ElmRequirementsContext context) {
         if (elm.getCode() != null && (elm.getCodesystem() != null || elm.getCodesystemExpression() != null)) {
             ElmRequirement left = visitElement(elm.getCode(), context);
-            ElmRequirement right =
-                    elm.getCodesystem() != null
-                        ? visitElement(elm.getCodesystem(), context)
-                        : visitElement(elm.getCodesystemExpression(), context);
+            ElmRequirement right = elm.getCodesystem() != null
+                    ? visitElement(elm.getCodesystem(), context)
+                    : visitElement(elm.getCodesystemExpression(), context);
 
             return inferConditionRequirement(elm, context, left, right);
         }
@@ -1425,10 +1426,9 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor <ElmRequiremen
     public ElmRequirement visitAnyInCodeSystem(AnyInCodeSystem elm, ElmRequirementsContext context) {
         if (elm.getCodes() != null && (elm.getCodesystem() != null || elm.getCodesystemExpression() != null)) {
             ElmRequirement left = visitElement(elm.getCodes(), context);
-            ElmRequirement right =
-                    elm.getCodesystem() != null
-                        ? visitElement(elm.getCodesystem(), context)
-                        : visitElement(elm.getCodesystemExpression(), context);
+            ElmRequirement right = elm.getCodesystem() != null
+                    ? visitElement(elm.getCodesystem(), context)
+                    : visitElement(elm.getCodesystemExpression(), context);
 
             return inferConditionRequirement(elm, context, left, right);
         }
@@ -1439,10 +1439,9 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor <ElmRequiremen
     public ElmRequirement visitInValueSet(InValueSet elm, ElmRequirementsContext context) {
         if (elm.getCode() != null && (elm.getValueset() != null || elm.getValuesetExpression() != null)) {
             ElmRequirement left = visitElement(elm.getCode(), context);
-            ElmRequirement right =
-                    elm.getValueset() != null
-                            ? visitElement(elm.getValueset(), context)
-                            : visitElement(elm.getValuesetExpression(), context);
+            ElmRequirement right = elm.getValueset() != null
+                    ? visitElement(elm.getValueset(), context)
+                    : visitElement(elm.getValuesetExpression(), context);
 
             return inferConditionRequirement(elm, context, left, right);
         }
@@ -1453,10 +1452,9 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor <ElmRequiremen
     public ElmRequirement visitAnyInValueSet(AnyInValueSet elm, ElmRequirementsContext context) {
         if (elm.getCodes() != null && (elm.getValueset() != null || elm.getValuesetExpression() != null)) {
             ElmRequirement left = visitElement(elm.getCodes(), context);
-            ElmRequirement right =
-                    elm.getValueset() != null
-                        ? visitElement(elm.getValueset(), context)
-                        : visitElement(elm.getValuesetExpression(), context);
+            ElmRequirement right = elm.getValueset() != null
+                    ? visitElement(elm.getValueset(), context)
+                    : visitElement(elm.getValuesetExpression(), context);
 
             return inferConditionRequirement(elm, context, left, right);
         }

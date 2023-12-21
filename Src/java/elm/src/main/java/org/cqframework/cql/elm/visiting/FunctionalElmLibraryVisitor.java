@@ -2,7 +2,6 @@ package org.cqframework.cql.elm.visiting;
 
 import java.util.Objects;
 import java.util.function.BiFunction;
-
 import org.cqframework.cql.elm.tracking.Trackable;
 
 /**

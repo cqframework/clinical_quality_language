@@ -1,25 +1,23 @@
 package org.cqframework.cql.elm.serializing.jaxb;
 
-import org.cqframework.cql.elm.serializing.ElmLibraryReader;
-import org.hl7.elm.r1.Library;
-
 import jakarta.xml.bind.JAXBElement;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
-import javax.xml.transform.Source;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.net.URI;
 import java.net.URL;
+import javax.xml.transform.Source;
+import org.cqframework.cql.elm.serializing.ElmLibraryReader;
+import org.hl7.elm.r1.Library;
 
 public class ElmXmlLibraryReader implements ElmLibraryReader {
 
     private static Unmarshaller unmarshaller;
 
-    public ElmXmlLibraryReader() {
-    }
+    public ElmXmlLibraryReader() {}
 
     public static synchronized Unmarshaller getUnmarshaller() throws JAXBException {
         if (unmarshaller == null) {
@@ -56,7 +54,7 @@ public class ElmXmlLibraryReader implements ElmLibraryReader {
     @SuppressWarnings("unchecked")
     public static synchronized Library read(Unmarshaller u, Source source) throws JAXBException {
         Object result = u.unmarshal(source);
-        return ((JAXBElement<Library>)result).getValue();
+        return ((JAXBElement<Library>) result).getValue();
     }
 
     public Library read(File file) throws IOException {

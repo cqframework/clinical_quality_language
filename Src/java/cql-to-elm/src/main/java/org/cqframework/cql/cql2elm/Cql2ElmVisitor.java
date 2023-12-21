@@ -1,15 +1,20 @@
 package org.cqframework.cql.cql2elm;
 
+import java.math.BigDecimal;
+import java.util.*;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.cqframework.cql.cql2elm.model.*;
 import org.cqframework.cql.cql2elm.model.invocation.*;
 import org.cqframework.cql.cql2elm.preprocessor.*;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.cqframework.cql.elm.tracking.Trackable;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
-import org.cqframework.cql.cql2elm.model.*;
 import org.hl7.cql.model.*;
 import org.hl7.elm.r1.*;
 import org.hl7.elm.r1.Element;
@@ -17,13 +22,6 @@ import org.hl7.elm.r1.Interval;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.math.BigDecimal;
-import java.util.*;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 
 public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     private static final Logger logger = LoggerFactory.getLogger(Cql2ElmVisitor.class);
@@ -72,7 +70,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         // Loop through and call visit on each child (to ensure they are tracked)
         for (int i = 0; i < ctx.getChildCount(); i++) {
             ParseTree tree = ctx.getChild(i);
-            TerminalNode terminalNode = tree instanceof TerminalNode ? (TerminalNode)tree : null;
+            TerminalNode terminalNode = tree instanceof TerminalNode ? (TerminalNode) tree : null;
             if (terminalNode != null && terminalNode.getSymbol().getType() == cqlLexer.EOF) {
                 continue;
             }
@@ -91,14 +89,13 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     @Override
     @SuppressWarnings("unchecked")
     public VersionedIdentifier visitLibraryDefinition(cqlParser.LibraryDefinitionContext ctx) {
-        List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
+        List<String> identifiers = (List<String>) visit(ctx.qualifiedIdentifier());
         VersionedIdentifier vid = of.createVersionedIdentifier()
                 .withId(identifiers.remove(identifiers.size() - 1))
                 .withVersion(parseString(ctx.versionSpecifier()));
         if (!identifiers.isEmpty()) {
             vid.setSystem(libraryBuilder.resolveNamespaceUri(String.join(".", identifiers), true));
-        }
-        else if (libraryBuilder.getNamespaceInfo() != null) {
+        } else if (libraryBuilder.getNamespaceInfo() != null) {
             vid.setSystem(libraryBuilder.getNamespaceInfo().getUri());
         }
         libraryBuilder.setLibraryIdentifier(vid);
@@ -109,11 +106,15 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     @Override
     @SuppressWarnings("unchecked")
     public UsingDef visitUsingDefinition(cqlParser.UsingDefinitionContext ctx) {
-        List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
+        List<String> identifiers = (List<String>) visit(ctx.qualifiedIdentifier());
         String unqualifiedIdentifier = identifiers.remove(identifiers.size() - 1);
-        String namespaceName = !identifiers.isEmpty() ? String.join(".", identifiers) :
-                libraryBuilder.isWellKnownModelName(unqualifiedIdentifier) ? null :
-                        (libraryBuilder.getNamespaceInfo() != null ? libraryBuilder.getNamespaceInfo().getName() : null);
+        String namespaceName = !identifiers.isEmpty()
+                ? String.join(".", identifiers)
+                : libraryBuilder.isWellKnownModelName(unqualifiedIdentifier)
+                        ? null
+                        : (libraryBuilder.getNamespaceInfo() != null
+                                ? libraryBuilder.getNamespaceInfo().getName()
+                                : null);
 
         String path = null;
         NamespaceInfo modelNamespace = null;
@@ -121,16 +122,16 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
             String namespaceUri = libraryBuilder.resolveNamespaceUri(namespaceName, true);
             path = NamespaceManager.getPath(namespaceUri, unqualifiedIdentifier);
             modelNamespace = new NamespaceInfo(namespaceName, namespaceUri);
-        }
-        else {
+        } else {
             path = unqualifiedIdentifier;
         }
 
-        String localIdentifier = ctx.localIdentifier() == null ? unqualifiedIdentifier : parseString(ctx.localIdentifier());
+        String localIdentifier =
+                ctx.localIdentifier() == null ? unqualifiedIdentifier : parseString(ctx.localIdentifier());
         if (!localIdentifier.equals(unqualifiedIdentifier)) {
-            throw new IllegalArgumentException(
-                    String.format("Local identifiers for models must be the same as the name of the model in this release of the translator (Model %s, Called %s)",
-                            unqualifiedIdentifier, localIdentifier));
+            throw new IllegalArgumentException(String.format(
+                    "Local identifiers for models must be the same as the name of the model in this release of the translator (Model %s, Called %s)",
+                    unqualifiedIdentifier, localIdentifier));
         }
 
         // The model was already calculated by CqlPreprocessorVisitor
@@ -140,7 +141,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     }
 
     public Model getModel() {
-        return getModel((String)null);
+        return getModel((String) null);
     }
 
     public Model getModel(String modelName) {
@@ -173,26 +174,37 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     @Override
     @SuppressWarnings("unchecked")
     public Object visitIncludeDefinition(cqlParser.IncludeDefinitionContext ctx) {
-        List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
+        List<String> identifiers = (List<String>) visit(ctx.qualifiedIdentifier());
         String unqualifiedIdentifier = identifiers.remove(identifiers.size() - 1);
-        String namespaceName = !identifiers.isEmpty() ? String.join(".", identifiers) :
-                (libraryBuilder.getNamespaceInfo() != null ? libraryBuilder.getNamespaceInfo().getName() : null);
+        String namespaceName = !identifiers.isEmpty()
+                ? String.join(".", identifiers)
+                : (libraryBuilder.getNamespaceInfo() != null
+                        ? libraryBuilder.getNamespaceInfo().getName()
+                        : null);
         String path = getLibraryPath(namespaceName, unqualifiedIdentifier);
         IncludeDef library = of.createIncludeDef()
-                .withLocalIdentifier(ctx.localIdentifier() == null ? unqualifiedIdentifier : parseString(ctx.localIdentifier()))
+                .withLocalIdentifier(
+                        ctx.localIdentifier() == null ? unqualifiedIdentifier : parseString(ctx.localIdentifier()))
                 .withPath(path)
                 .withVersion(parseString(ctx.versionSpecifier()));
 
-        // TODO: This isn't great because it complicates the loading process (and results in the source being loaded twice in the general case)
-        // But the full fix is to introduce source resolution/caching to enable this layer to determine whether the library identifier resolved
+        // TODO: This isn't great because it complicates the loading process (and results in the source being loaded
+        // twice in the general case)
+        // But the full fix is to introduce source resolution/caching to enable this layer to determine whether the
+        // library identifier resolved
         // with the namespace
         if (!libraryBuilder.canResolveLibrary(library)) {
-            namespaceName = identifiers.size() > 0 ? String.join(".", identifiers) :
-                    libraryBuilder.isWellKnownLibraryName(unqualifiedIdentifier) ? null :
-                            (libraryBuilder.getNamespaceInfo() != null ? libraryBuilder.getNamespaceInfo().getName() : null);
+            namespaceName = identifiers.size() > 0
+                    ? String.join(".", identifiers)
+                    : libraryBuilder.isWellKnownLibraryName(unqualifiedIdentifier)
+                            ? null
+                            : (libraryBuilder.getNamespaceInfo() != null
+                                    ? libraryBuilder.getNamespaceInfo().getName()
+                                    : null);
             path = getLibraryPath(namespaceName, unqualifiedIdentifier);
             library = of.createIncludeDef()
-                    .withLocalIdentifier(ctx.localIdentifier() == null ? unqualifiedIdentifier : parseString(ctx.localIdentifier()))
+                    .withLocalIdentifier(
+                            ctx.localIdentifier() == null ? unqualifiedIdentifier : parseString(ctx.localIdentifier()))
                     .withPath(path)
                     .withVersion(parseString(ctx.versionSpecifier()));
         }
@@ -219,14 +231,14 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         if (param.getDefault() != null) {
             if (paramType != null) {
                 libraryBuilder.verifyType(param.getDefault().getResultType(), paramType);
-            }
-            else {
+            } else {
                 paramType = param.getDefault().getResultType();
             }
         }
 
         if (paramType == null) {
-            throw new IllegalArgumentException(String.format("Could not determine parameter type for parameter %s.", param.getName()));
+            throw new IllegalArgumentException(
+                    String.format("Could not determine parameter type for parameter %s.", param.getName()));
         }
 
         param.setResultType(paramType);
@@ -256,15 +268,19 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     @Override
     public AccessModifier visitAccessModifier(cqlParser.AccessModifierContext ctx) {
         switch (ctx.getText().toLowerCase()) {
-            case "public" : return AccessModifier.PUBLIC;
-            case "private" : return AccessModifier.PRIVATE;
-            default: throw new IllegalArgumentException(String.format("Unknown access modifier %s.", ctx.getText().toLowerCase()));
+            case "public":
+                return AccessModifier.PUBLIC;
+            case "private":
+                return AccessModifier.PRIVATE;
+            default:
+                throw new IllegalArgumentException(String.format(
+                        "Unknown access modifier %s.", ctx.getText().toLowerCase()));
         }
     }
 
     @Override
     public CodeSystemDef visitCodesystemDefinition(cqlParser.CodesystemDefinitionContext ctx) {
-        CodeSystemDef cs = (CodeSystemDef)of.createCodeSystemDef()
+        CodeSystemDef cs = (CodeSystemDef) of.createCodeSystemDef()
                 .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
                 .withName(parseString(ctx.identifier()))
                 .withId(parseString(ctx.codesystemId()))
@@ -272,8 +288,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
         if (libraryBuilder.isCompatibleWith("1.5")) {
             cs.setResultType(libraryBuilder.resolveTypeName("System", "CodeSystem"));
-        }
-        else {
+        } else {
             cs.setResultType(new ListType(libraryBuilder.resolveTypeName("System", "Code")));
         }
 
@@ -290,8 +305,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         if (libraryName != null) {
             def = libraryBuilder.resolveLibrary(libraryName).resolveCodeSystemRef(name);
             libraryBuilder.checkAccessLevel(libraryName, name, def.getAccessLevel());
-        }
-        else {
+        } else {
             def = libraryBuilder.resolveCodeSystemRef(name);
         }
 
@@ -300,7 +314,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
             throw new IllegalArgumentException(String.format("Could not resolve reference to code system %s.", name));
         }
 
-        return (CodeSystemRef)of.createCodeSystemRef()
+        return (CodeSystemRef) of.createCodeSystemRef()
                 .withLibraryName(libraryName)
                 .withName(name)
                 .withResultType(def.getResultType());
@@ -314,8 +328,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         if (libraryName != null) {
             def = libraryBuilder.resolveLibrary(libraryName).resolveCodeRef(name);
             libraryBuilder.checkAccessLevel(libraryName, name, def.getAccessLevel());
-        }
-        else {
+        } else {
             def = libraryBuilder.resolveCodeRef(name);
         }
 
@@ -324,10 +337,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
             throw new IllegalArgumentException(String.format("Could not resolve reference to code %s.", name));
         }
 
-        return (CodeRef)of.createCodeRef()
-                .withLibraryName(libraryName)
-                .withName(name)
-                .withResultType(def.getResultType());
+        return (CodeRef)
+                of.createCodeRef().withLibraryName(libraryName).withName(name).withResultType(def.getResultType());
     }
 
     @Override
@@ -339,14 +350,14 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 .withVersion(parseString(ctx.versionSpecifier()));
 
         if (ctx.codesystems() != null) {
-            for (cqlParser.CodesystemIdentifierContext codesystem : ctx.codesystems().codesystemIdentifier()) {
-                vs.getCodeSystem().add((CodeSystemRef)visit(codesystem));
+            for (cqlParser.CodesystemIdentifierContext codesystem :
+                    ctx.codesystems().codesystemIdentifier()) {
+                vs.getCodeSystem().add((CodeSystemRef) visit(codesystem));
             }
         }
         if (libraryBuilder.isCompatibleWith("1.5")) {
             vs.setResultType(libraryBuilder.resolveTypeName("System", "ValueSet"));
-        }
-        else {
+        } else {
             vs.setResultType(new ListType(libraryBuilder.resolveTypeName("System", "Code")));
         }
         libraryBuilder.addValueSet(vs);
@@ -363,7 +374,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 .withId(parseString(ctx.codeId()));
 
         if (ctx.codesystemIdentifier() != null) {
-            cd.setCodeSystem((CodeSystemRef)visit(ctx.codesystemIdentifier()));
+            cd.setCodeSystem((CodeSystemRef) visit(ctx.codesystemIdentifier()));
         }
 
         if (ctx.displayClause() != null) {
@@ -385,7 +396,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
         if (ctx.codeIdentifier() != null) {
             for (cqlParser.CodeIdentifierContext ci : ctx.codeIdentifier()) {
-                cd.getCode().add((CodeRef)visit(ci));
+                cd.getCode().add((CodeRef) visit(ci));
             }
         }
 
@@ -405,7 +416,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         String modelIdentifier = getModelIdentifier(qualifiers);
         String identifier = getTypeIdentifier(qualifiers, parseString(ctx.referentialOrTypeNameIdentifier()));
 
-        final ResultWithPossibleError<NamedTypeSpecifier > retrievedResult = libraryBuilder.getNamedTypeSpecifierResult(String.format("%s:%s", modelIdentifier, identifier));
+        final ResultWithPossibleError<NamedTypeSpecifier> retrievedResult =
+                libraryBuilder.getNamedTypeSpecifierResult(String.format("%s:%s", modelIdentifier, identifier));
 
         if (retrievedResult != null) {
             if (retrievedResult.hasError()) {
@@ -416,10 +428,10 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
         DataType resultType = libraryBuilder.resolveTypeName(modelIdentifier, identifier);
         if (null == resultType) {
-            throw new CqlCompilerException(String.format("Could not find type for model: %s and name: %s", modelIdentifier, identifier));
+            throw new CqlCompilerException(
+                    String.format("Could not find type for model: %s and name: %s", modelIdentifier, identifier));
         }
-        NamedTypeSpecifier result = of.createNamedTypeSpecifier()
-                .withName(libraryBuilder.dataTypeToQName(resultType));
+        NamedTypeSpecifier result = of.createNamedTypeSpecifier().withName(libraryBuilder.dataTypeToQName(resultType));
 
         // Fluent API would be nice here, but resultType isn't part of the model so...
         result.setResultType(resultType);
@@ -428,7 +440,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     }
 
     private boolean isUnfilteredContext(String contextName) {
-        return contextName.equals("Unfiltered") || (libraryBuilder.isCompatibilityLevel3() && contextName.equals("Population"));
+        return contextName.equals("Unfiltered")
+                || (libraryBuilder.isCompatibilityLevel3() && contextName.equals("Population"));
     }
 
     @Override
@@ -436,7 +449,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         String modelIdentifier = parseString(ctx.modelIdentifier());
         String unqualifiedIdentifier = parseString(ctx.identifier());
 
-        setCurrentContext(modelIdentifier != null ? modelIdentifier + "." + unqualifiedIdentifier : unqualifiedIdentifier);
+        setCurrentContext(
+                modelIdentifier != null ? modelIdentifier + "." + unqualifiedIdentifier : unqualifiedIdentifier);
 
         if (!isUnfilteredContext(unqualifiedIdentifier)) {
             ModelContext modelContext = libraryBuilder.resolveContextName(modelIdentifier, unqualifiedIdentifier);
@@ -447,17 +461,19 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
             if (modelContextDefinition == null) {
                 if (libraryBuilder.hasUsings()) {
                     ModelInfo modelInfo = modelIdentifier == null
-                            ? libraryBuilder.getModel(libraryInfo.getDefaultModelName()).getModelInfo()
+                            ? libraryBuilder
+                                    .getModel(libraryInfo.getDefaultModelName())
+                                    .getModelInfo()
                             : libraryBuilder.getModel(modelIdentifier).getModelInfo();
-                    //String contextTypeName = modelContext.getName();
-                    //DataType contextType = libraryBuilder.resolveTypeName(modelInfo.getName(), contextTypeName);
+                    // String contextTypeName = modelContext.getName();
+                    // DataType contextType = libraryBuilder.resolveTypeName(modelInfo.getName(), contextTypeName);
                     DataType contextType = modelContext.getType();
                     modelContextDefinition = libraryBuilder.resolveParameterRef(modelContext.getName());
                     if (modelContextDefinition != null) {
                         contextDefinitions.put(modelContext.getName(), modelContextDefinition);
-                    }
-                    else {
-                        Retrieve contextRetrieve = of.createRetrieve().withDataType(libraryBuilder.dataTypeToQName(contextType));
+                    } else {
+                        Retrieve contextRetrieve =
+                                of.createRetrieve().withDataType(libraryBuilder.dataTypeToQName(contextType));
                         track(contextRetrieve, ctx);
                         contextRetrieve.setResultType(new ListType(contextType));
                         String contextClassIdentifier = ((ClassType) contextType).getIdentifier();
@@ -470,21 +486,24 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                                 .withContext(getCurrentContext())
                                 .withExpression(of.createSingletonFrom().withOperand(contextRetrieve));
                         track(modelContextDefinition, ctx);
-                        ((ExpressionDef)modelContextDefinition).getExpression().setResultType(contextType);
+                        ((ExpressionDef) modelContextDefinition).getExpression().setResultType(contextType);
                         modelContextDefinition.setResultType(contextType);
-                        libraryBuilder.addExpression((ExpressionDef)modelContextDefinition);
+                        libraryBuilder.addExpression((ExpressionDef) modelContextDefinition);
                         contextDefinitions.put(modelContext.getName(), modelContextDefinition);
                     }
-                }
-                else {
+                } else {
                     modelContextDefinition = of.createExpressionDef()
                             .withName(unqualifiedIdentifier)
                             .withContext(getCurrentContext())
                             .withExpression(of.createNull());
                     track(modelContextDefinition, ctx);
-                    ((ExpressionDef)modelContextDefinition).getExpression().setResultType(libraryBuilder.resolveTypeName("System", "Any"));
-                    modelContextDefinition.setResultType(((ExpressionDef)modelContextDefinition).getExpression().getResultType());
-                    libraryBuilder.addExpression((ExpressionDef)modelContextDefinition);
+                    ((ExpressionDef) modelContextDefinition)
+                            .getExpression()
+                            .setResultType(libraryBuilder.resolveTypeName("System", "Any"));
+                    modelContextDefinition.setResultType(((ExpressionDef) modelContextDefinition)
+                            .getExpression()
+                            .getResultType());
+                    libraryBuilder.addExpression((ExpressionDef) modelContextDefinition);
                     contextDefinitions.put(modelContext.getName(), modelContextDefinition);
                 }
             }
@@ -523,9 +542,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         ExpressionDef def = libraryBuilder.resolveExpressionRef(identifier);
 
         // lightweight ExpressionDef to be used to output a hiding warning message
-        final ExpressionDef hollowExpressionDef = of.createExpressionDef()
-                .withName(identifier)
-                .withContext(getCurrentContext());
+        final ExpressionDef hollowExpressionDef =
+                of.createExpressionDef().withName(identifier).withContext(getCurrentContext());
         libraryBuilder.pushIdentifierForHiding(identifier, hollowExpressionDef);
         if (def == null || isImplicitContextExpressionDef(def)) {
             if (def != null && isImplicitContextExpressionDef(def)) {
@@ -563,10 +581,12 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         if (forwards.isEmpty() || !forwards.peek().getName().equals(expressionDef.getName())) {
             if (definedExpressionDefinitions.contains(expressionDef.getName())) {
                 // ERROR:
-                throw new IllegalArgumentException(String.format("Identifier %s is already in use in this library.", expressionDef.getName()));
+                throw new IllegalArgumentException(
+                        String.format("Identifier %s is already in use in this library.", expressionDef.getName()));
             }
 
-            // Track defined expression definitions locally, otherwise duplicate expression definitions will be missed because they are
+            // Track defined expression definitions locally, otherwise duplicate expression definitions will be missed
+            // because they are
             // overwritten by name when they are encountered by the preprocessor.
             definedExpressionDefinitions.add(expressionDef.getName());
         }
@@ -592,8 +612,11 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
     @Override
     public Object visitIntervalSelector(cqlParser.IntervalSelectorContext ctx) {
-        return libraryBuilder.createInterval(parseExpression(ctx.expression(0)), ctx.getChild(1).getText().equals("["),
-                parseExpression(ctx.expression(1)), ctx.getChild(5).getText().equals("]"));
+        return libraryBuilder.createInterval(
+                parseExpression(ctx.expression(0)),
+                ctx.getChild(1).getText().equals("["),
+                parseExpression(ctx.expression(1)),
+                ctx.getChild(5).getText().equals("]"));
     }
 
     @Override
@@ -610,7 +633,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         Tuple tuple = of.createTuple();
         TupleType tupleType = new TupleType();
         for (cqlParser.TupleElementSelectorContext elementContext : ctx.tupleElementSelector()) {
-            TupleElement element = (TupleElement)visit(elementContext);
+            TupleElement element = (TupleElement) visit(elementContext);
             tupleType.addElement(new TupleTypeElement(element.getName(), element.getResultType()));
             tuple.getElement().add(element);
         }
@@ -630,13 +653,14 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     @Override
     public Object visitInstanceSelector(cqlParser.InstanceSelectorContext ctx) {
         Instance instance = of.createInstance();
-        NamedTypeSpecifier classTypeSpecifier = (NamedTypeSpecifier)visitNamedTypeSpecifier(ctx.namedTypeSpecifier());
+        NamedTypeSpecifier classTypeSpecifier = (NamedTypeSpecifier) visitNamedTypeSpecifier(ctx.namedTypeSpecifier());
         instance.setClassType(classTypeSpecifier.getName());
         instance.setResultType(classTypeSpecifier.getResultType());
 
         for (cqlParser.InstanceElementSelectorContext elementContext : ctx.instanceElementSelector()) {
-            InstanceElement element = (InstanceElement)visit(elementContext);
-            PropertyResolution resolution = libraryBuilder.resolveProperty(classTypeSpecifier.getResultType(), element.getName());
+            InstanceElement element = (InstanceElement) visit(elementContext);
+            PropertyResolution resolution =
+                    libraryBuilder.resolveProperty(classTypeSpecifier.getResultType(), element.getName());
             element.setValue(libraryBuilder.ensureCompatible(element.getValue(), resolution.getType()));
             element.setName(resolution.getName());
             if (resolution.getTargetMap() != null) {
@@ -653,7 +677,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     public Object visitCodeSelector(cqlParser.CodeSelectorContext ctx) {
         Code code = of.createCode();
         code.setCode(parseString(ctx.STRING()));
-        code.setSystem((CodeSystemRef)visit(ctx.codesystemIdentifier()));
+        code.setSystem((CodeSystemRef) visit(ctx.codesystemIdentifier()));
         if (ctx.displayClause() != null) {
             code.setDisplay(parseString(ctx.displayClause().STRING()));
         }
@@ -670,7 +694,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         }
 
         for (cqlParser.CodeSelectorContext codeContext : ctx.codeSelector()) {
-            concept.getCode().add((Code)visit(codeContext));
+            concept.getCode().add((Code) visit(codeContext));
         }
 
         concept.setResultType(libraryBuilder.resolveTypeName("System", "Concept"));
@@ -698,17 +722,15 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
             if (elementType != null) {
                 libraryBuilder.verifyType(element.getResultType(), elementType);
-            }
-            else {
+            } else {
                 if (inferredElementType == null) {
                     inferredElementType = element.getResultType();
-                }
-                else {
-                    DataType compatibleType = libraryBuilder.findCompatibleType(inferredElementType, element.getResultType());
+                } else {
+                    DataType compatibleType =
+                            libraryBuilder.findCompatibleType(inferredElementType, element.getResultType());
                     if (compatibleType != null) {
                         inferredElementType = compatibleType;
-                    }
-                    else {
+                    } else {
                         inferredElementType = libraryBuilder.resolveTypeName("System", "Any");
                     }
                 }
@@ -718,20 +740,20 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         }
 
         if (elementType == null) {
-            elementType = inferredElementType == null ? libraryBuilder.resolveTypeName("System", "Any") : inferredElementType;
+            elementType =
+                    inferredElementType == null ? libraryBuilder.resolveTypeName("System", "Any") : inferredElementType;
         }
 
         for (Expression element : elements) {
             if (!elementType.isSuperTypeOf(element.getResultType())) {
-                Conversion conversion = libraryBuilder.findConversion(element.getResultType(), elementType, true, false);
+                Conversion conversion =
+                        libraryBuilder.findConversion(element.getResultType(), elementType, true, false);
                 if (conversion != null) {
                     list.getElement().add(libraryBuilder.convertExpression(element, conversion));
-                }
-                else {
+                } else {
                     list.getElement().add(element);
                 }
-            }
-            else {
+            } else {
                 list.getElement().add(element);
             }
         }
@@ -751,9 +773,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
             input = input.substring(1);
         }
 
-        Pattern timePattern =
-                Pattern.compile("T(\\d{2})(\\:(\\d{2})(\\:(\\d{2})(\\.(\\d+))?)?)?");
-                               //-1-------2---3-------4---5-------6---7-----------
+        Pattern timePattern = Pattern.compile("T(\\d{2})(\\:(\\d{2})(\\:(\\d{2})(\\.(\\d+))?)?)?");
+        // -1-------2---3-------4---5-------6---7-----------
 
         Matcher matcher = timePattern.matcher(input);
         if (matcher.matches()) {
@@ -771,7 +792,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 if (matcher.group(3) != null) {
                     minute = Integer.parseInt(matcher.group(3));
                     if (minute < 0 || minute >= 60 || (hour == 24 && minute > 0)) {
-                        throw new IllegalArgumentException(String.format("Invalid minute in time literal (%s).", input));
+                        throw new IllegalArgumentException(
+                                String.format("Invalid minute in time literal (%s).", input));
                     }
                     result.setMinute(libraryBuilder.createLiteral(minute));
                 }
@@ -779,7 +801,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 if (matcher.group(5) != null) {
                     second = Integer.parseInt(matcher.group(5));
                     if (second < 0 || second >= 60 || (hour == 24 && second > 0)) {
-                        throw new IllegalArgumentException(String.format("Invalid second in time literal (%s).", input));
+                        throw new IllegalArgumentException(
+                                String.format("Invalid second in time literal (%s).", input));
                     }
                     result.setSecond(libraryBuilder.createLiteral(second));
                 }
@@ -787,78 +810,81 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 if (matcher.group(7) != null) {
                     millisecond = Integer.parseInt(matcher.group(7));
                     if (millisecond < 0 || (hour == 24 && millisecond > 0)) {
-                        throw new IllegalArgumentException(String.format("Invalid millisecond in time literal (%s).", input));
+                        throw new IllegalArgumentException(
+                                String.format("Invalid millisecond in time literal (%s).", input));
                     }
                     result.setMillisecond(libraryBuilder.createLiteral(millisecond));
                 }
 
                 result.setResultType(libraryBuilder.resolveTypeName("System", "Time"));
                 return result;
+            } catch (RuntimeException e) {
+                throw new IllegalArgumentException(
+                        String.format(
+                                "Invalid time input (%s). Use ISO 8601 time representation (hh:mm:ss.fff).", input),
+                        e);
             }
-            catch (RuntimeException e) {
-                throw new IllegalArgumentException(String.format("Invalid time input (%s). Use ISO 8601 time representation (hh:mm:ss.fff).", input), e);
-            }
-        }
-        else {
-            throw new IllegalArgumentException(String.format("Invalid time input (%s). Use ISO 8601 time representation (hh:mm:ss.fff).", input));
+        } else {
+            throw new IllegalArgumentException(
+                    String.format("Invalid time input (%s). Use ISO 8601 time representation (hh:mm:ss.fff).", input));
         }
     }
 
     private Expression parseDateTimeLiteral(String input) {
-/*
-DATETIME
-        : '@'
-            [0-9][0-9][0-9][0-9] // year
-            (
-                (
-                    '-'[0-9][0-9] // month
+        /*
+        DATETIME
+                : '@'
+                    [0-9][0-9][0-9][0-9] // year
                     (
                         (
-                            '-'[0-9][0-9] // day
-                            ('T' TIMEFORMAT?)?
+                            '-'[0-9][0-9] // month
+                            (
+                                (
+                                    '-'[0-9][0-9] // day
+                                    ('T' TIMEFORMAT?)?
+                                )
+                                | 'T'
+                            )?
                         )
                         | 'T'
                     )?
-                )
-                | 'T'
-            )?
-            ('Z' | ('+' | '-') [0-9][0-9]':'[0-9][0-9])? // timezone offset
-        ;
-*/
+                    ('Z' | ('+' | '-') [0-9][0-9]':'[0-9][0-9])? // timezone offset
+                ;
+        */
 
-        Pattern dateTimePattern =
-                Pattern.compile("(\\d{4})(((-(\\d{2}))(((-(\\d{2}))((T)((\\d{2})(\\:(\\d{2})(\\:(\\d{2})(\\.(\\d+))?)?)?)?)?)|(T))?)|(T))?((Z)|(([+-])(\\d{2})(\\:(\\d{2}))))?");
-        //1-------234-5--------678-9--------11--11-------1---1-------1---1-------1---1-----------------2------2----22---22-----2-------2---2-----------
-        //----------------------------------01--23-------4---5-------6---7-------8---9-----------------0------1----23---45-----6-------7---8-----------
+        Pattern dateTimePattern = Pattern.compile(
+                "(\\d{4})(((-(\\d{2}))(((-(\\d{2}))((T)((\\d{2})(\\:(\\d{2})(\\:(\\d{2})(\\.(\\d+))?)?)?)?)?)|(T))?)|(T))?((Z)|(([+-])(\\d{2})(\\:(\\d{2}))))?");
+        // 1-------234-5--------678-9--------11--11-------1---1-------1---1-------1---1-----------------2------2----22---22-----2-------2---2-----------
+        // ----------------------------------01--23-------4---5-------6---7-------8---9-----------------0------1----23---45-----6-------7---8-----------
 
         /*
-            year - group 1
-            month - group 5
-            day - group 9
-            day dateTime indicator - group 11
-            hour - group 13
-            minute - group 15
-            second - group 17
-            millisecond - group 19
-            month dateTime indicator - group 20
-            year dateTime indicator - group 21
-            utc indicator - group 23
-            timezone offset polarity - group 25
-            timezone offset hour - group 26
-            timezone offset minute - group 28
-         */
+           year - group 1
+           month - group 5
+           day - group 9
+           day dateTime indicator - group 11
+           hour - group 13
+           minute - group 15
+           second - group 17
+           millisecond - group 19
+           month dateTime indicator - group 20
+           year dateTime indicator - group 21
+           utc indicator - group 23
+           timezone offset polarity - group 25
+           timezone offset hour - group 26
+           timezone offset minute - group 28
+        */
 
-/*
-        Pattern dateTimePattern =
-                Pattern.compile("(\\d{4})(-(\\d{2}))?(-(\\d{2}))?((Z)|(T((\\d{2})(\\:(\\d{2})(\\:(\\d{2})(\\.(\\d+))?)?)?)?((Z)|(([+-])(\\d{2})(\\:?(\\d{2}))?))?))?");
-                               //1-------2-3---------4-5---------67---8-91-------1---1-------1---1-------1---1-------------11---12-----2-------2----2---------------
-                               //----------------------------------------0-------1---2-------3---4-------5---6-------------78---90-----1-------2----3---------------
-*/
+        /*
+                Pattern dateTimePattern =
+                        Pattern.compile("(\\d{4})(-(\\d{2}))?(-(\\d{2}))?((Z)|(T((\\d{2})(\\:(\\d{2})(\\:(\\d{2})(\\.(\\d+))?)?)?)?((Z)|(([+-])(\\d{2})(\\:?(\\d{2}))?))?))?");
+                                       //1-------2-3---------4-5---------67---8-91-------1---1-------1---1-------1---1-------------11---12-----2-------2----2---------------
+                                       //----------------------------------------0-------1---2-------3---4-------5---6-------------78---90-----1-------2----3---------------
+        */
 
         Matcher matcher = dateTimePattern.matcher(input);
         if (matcher.matches()) {
             try {
-                GregorianCalendar calendar = (GregorianCalendar)GregorianCalendar.getInstance();
+                GregorianCalendar calendar = (GregorianCalendar) GregorianCalendar.getInstance();
                 DateTime result = of.createDateTime();
                 int year = Integer.parseInt(matcher.group(1));
                 int month = -1;
@@ -871,7 +897,8 @@ DATETIME
                 if (matcher.group(5) != null) {
                     month = Integer.parseInt(matcher.group(5));
                     if (month < 0 || month > 12) {
-                        throw new IllegalArgumentException(String.format("Invalid month in date/time literal (%s).", input));
+                        throw new IllegalArgumentException(
+                                String.format("Invalid month in date/time literal (%s).", input));
                     }
                     result.setMonth(libraryBuilder.createLiteral(month));
                 }
@@ -880,19 +907,22 @@ DATETIME
                     day = Integer.parseInt(matcher.group(9));
                     int maxDay = 31;
                     switch (month) {
-                        case 2: maxDay = calendar.isLeapYear(year) ? 29 : 28;
+                        case 2:
+                            maxDay = calendar.isLeapYear(year) ? 29 : 28;
                             break;
                         case 4:
                         case 6:
                         case 9:
-                        case 11: maxDay = 30;
+                        case 11:
+                            maxDay = 30;
                             break;
                         default:
                             break;
                     }
 
                     if (day < 0 || day > maxDay) {
-                        throw new IllegalArgumentException(String.format("Invalid day in date/time literal (%s).", input));
+                        throw new IllegalArgumentException(
+                                String.format("Invalid day in date/time literal (%s).", input));
                     }
 
                     result.setDay(libraryBuilder.createLiteral(day));
@@ -901,7 +931,8 @@ DATETIME
                 if (matcher.group(13) != null) {
                     hour = Integer.parseInt(matcher.group(13));
                     if (hour < 0 || hour > 24) {
-                        throw new IllegalArgumentException(String.format("Invalid hour in date/time literal (%s).", input));
+                        throw new IllegalArgumentException(
+                                String.format("Invalid hour in date/time literal (%s).", input));
                     }
                     result.setHour(libraryBuilder.createLiteral(hour));
                 }
@@ -909,7 +940,8 @@ DATETIME
                 if (matcher.group(15) != null) {
                     minute = Integer.parseInt(matcher.group(15));
                     if (minute < 0 || minute >= 60 || (hour == 24 && minute > 0)) {
-                        throw new IllegalArgumentException(String.format("Invalid minute in date/time literal (%s).", input));
+                        throw new IllegalArgumentException(
+                                String.format("Invalid minute in date/time literal (%s).", input));
                     }
                     result.setMinute(libraryBuilder.createLiteral(minute));
                 }
@@ -917,7 +949,8 @@ DATETIME
                 if (matcher.group(17) != null) {
                     second = Integer.parseInt(matcher.group(17));
                     if (second < 0 || second >= 60 || (hour == 24 && second > 0)) {
-                        throw new IllegalArgumentException(String.format("Invalid second in date/time literal (%s).", input));
+                        throw new IllegalArgumentException(
+                                String.format("Invalid second in date/time literal (%s).", input));
                     }
                     result.setSecond(libraryBuilder.createLiteral(second));
                 }
@@ -925,7 +958,8 @@ DATETIME
                 if (matcher.group(19) != null) {
                     millisecond = Integer.parseInt(matcher.group(19));
                     if (millisecond < 0 || (hour == 24 && millisecond > 0)) {
-                        throw new IllegalArgumentException(String.format("Invalid millisecond in date/time literal (%s).", input));
+                        throw new IllegalArgumentException(
+                                String.format("Invalid millisecond in date/time literal (%s).", input));
                     }
                     result.setMillisecond(libraryBuilder.createLiteral(millisecond));
                 }
@@ -940,29 +974,36 @@ DATETIME
                     if (matcher.group(28) != null) {
                         int hourOffset = Integer.parseInt(matcher.group(26));
                         if (hourOffset < 0 || hourOffset > 14) {
-                            throw new IllegalArgumentException(String.format("Timezone hour offset is out of range in date/time literal (%s).", input));
+                            throw new IllegalArgumentException(String.format(
+                                    "Timezone hour offset is out of range in date/time literal (%s).", input));
                         }
 
                         int minuteOffset = Integer.parseInt(matcher.group(28));
                         if (minuteOffset < 0 || minuteOffset >= 60 || (hourOffset == 14 && minuteOffset > 0)) {
-                            throw new IllegalArgumentException(String.format("Timezone minute offset is out of range in date/time literal (%s).", input));
+                            throw new IllegalArgumentException(String.format(
+                                    "Timezone minute offset is out of range in date/time literal (%s).", input));
                         }
 
-                        result.setTimezoneOffset(libraryBuilder.createLiteral((double)(hourOffset + (minuteOffset / 60)) * offsetPolarity));
-                    }
-                    else {
+                        result.setTimezoneOffset(libraryBuilder.createLiteral(
+                                (double) (hourOffset + (minuteOffset / 60)) * offsetPolarity));
+                    } else {
                         if (matcher.group(26) != null) {
                             int hourOffset = Integer.parseInt(matcher.group(26));
                             if (hourOffset < 0 || hourOffset > 14) {
-                                throw new IllegalArgumentException(String.format("Timezone hour offset is out of range in date/time literal (%s).", input));
+                                throw new IllegalArgumentException(String.format(
+                                        "Timezone hour offset is out of range in date/time literal (%s).", input));
                             }
 
-                            result.setTimezoneOffset(libraryBuilder.createLiteral((double)(hourOffset * offsetPolarity)));
+                            result.setTimezoneOffset(
+                                    libraryBuilder.createLiteral((double) (hourOffset * offsetPolarity)));
                         }
                     }
                 }
 
-                if (result.getHour() == null && matcher.group(11) == null && matcher.group(20) == null && matcher.group(21) == null) {
+                if (result.getHour() == null
+                        && matcher.group(11) == null
+                        && matcher.group(20) == null
+                        && matcher.group(21) == null) {
                     org.hl7.elm.r1.Date date = of.createDate();
                     date.setYear(result.getYear());
                     date.setMonth(result.getMonth());
@@ -973,13 +1014,17 @@ DATETIME
 
                 result.setResultType(libraryBuilder.resolveTypeName("System", "DateTime"));
                 return result;
+            } catch (RuntimeException e) {
+                throw new IllegalArgumentException(
+                        String.format(
+                                "Invalid date-time input (%s). Use ISO 8601 date time representation (yyyy-MM-ddThh:mm:ss.fff(Z|(+/-hh:mm)).",
+                                input),
+                        e);
             }
-            catch (RuntimeException e) {
-                throw new IllegalArgumentException(String.format("Invalid date-time input (%s). Use ISO 8601 date time representation (yyyy-MM-ddThh:mm:ss.fff(Z|(+/-hh:mm)).", input), e);
-            }
-        }
-        else {
-            throw new IllegalArgumentException(String.format("Invalid date-time input (%s). Use ISO 8601 date time representation (yyyy-MM-ddThh:mm:ss.fff(Z|+/-hh:mm)).", input));
+        } else {
+            throw new IllegalArgumentException(String.format(
+                    "Invalid date-time input (%s). Use ISO 8601 date time representation (yyyy-MM-ddThh:mm:ss.fff(Z|+/-hh:mm)).",
+                    input));
         }
     }
 
@@ -1041,7 +1086,8 @@ DATETIME
     @Override
     public Expression visitQuantity(cqlParser.QuantityContext ctx) {
         if (ctx.unit() != null) {
-            Quantity result = libraryBuilder.createQuantity(parseDecimal(ctx.NUMBER().getText()), parseString(ctx.unit()));
+            Quantity result =
+                    libraryBuilder.createQuantity(parseDecimal(ctx.NUMBER().getText()), parseString(ctx.unit()));
             return result;
         } else {
             return libraryBuilder.createNumberLiteral(ctx.NUMBER().getText());
@@ -1050,10 +1096,9 @@ DATETIME
 
     private Quantity getQuantity(Expression source) {
         if (source instanceof Literal) {
-            return libraryBuilder.createQuantity(parseDecimal(((Literal)source).getValue()), "1");
-        }
-        else if (source instanceof Quantity) {
-            return (Quantity)source;
+            return libraryBuilder.createQuantity(parseDecimal(((Literal) source).getValue()), "1");
+        } else if (source instanceof Quantity) {
+            return (Quantity) source;
         }
 
         throw new IllegalArgumentException("Could not create quantity from source expression.");
@@ -1061,8 +1106,8 @@ DATETIME
 
     @Override
     public Expression visitRatio(cqlParser.RatioContext ctx) {
-        Quantity numerator = getQuantity((Expression)visit(ctx.quantity(0)));
-        Quantity denominator = getQuantity((Expression)visit(ctx.quantity(1)));
+        Quantity numerator = getQuantity((Expression) visit(ctx.quantity(0)));
+        Quantity denominator = getQuantity((Expression) visit(ctx.quantity(1)));
         return libraryBuilder.createRatio(numerator, denominator);
     }
 
@@ -1102,12 +1147,11 @@ DATETIME
                 operatorName = "Modulo";
                 break;
             default:
-                throw new IllegalArgumentException(String.format("Unsupported operator: %s.", ctx.getChild(1).getText()));
+                throw new IllegalArgumentException(String.format(
+                        "Unsupported operator: %s.", ctx.getChild(1).getText()));
         }
 
-        exp.withOperand(
-                parseExpression(ctx.expressionTerm(0)),
-                parseExpression(ctx.expressionTerm(1)));
+        exp.withOperand(parseExpression(ctx.expressionTerm(0)), parseExpression(ctx.expressionTerm(1)));
 
         libraryBuilder.resolveBinaryCall("System", operatorName, exp);
 
@@ -1116,9 +1160,8 @@ DATETIME
 
     @Override
     public Power visitPowerExpressionTerm(cqlParser.PowerExpressionTermContext ctx) {
-        Power power = of.createPower().withOperand(
-                parseExpression(ctx.expressionTerm(0)),
-                parseExpression(ctx.expressionTerm(1)));
+        Power power = of.createPower()
+                .withOperand(parseExpression(ctx.expressionTerm(0)), parseExpression(ctx.expressionTerm(1)));
 
         libraryBuilder.resolveBinaryCall("System", "Power", power);
 
@@ -1154,28 +1197,25 @@ DATETIME
                 operatorName = "Concatenate";
                 break;
             default:
-                throw new IllegalArgumentException(String.format("Unsupported operator: %s.", ctx.getChild(1).getText()));
+                throw new IllegalArgumentException(String.format(
+                        "Unsupported operator: %s.", ctx.getChild(1).getText()));
         }
 
         if (exp instanceof BinaryExpression) {
-            ((BinaryExpression)exp).withOperand(
-                    parseExpression(ctx.expressionTerm(0)),
-                    parseExpression(ctx.expressionTerm(1)));
+            ((BinaryExpression) exp)
+                    .withOperand(parseExpression(ctx.expressionTerm(0)), parseExpression(ctx.expressionTerm(1)));
 
-            libraryBuilder.resolveBinaryCall("System", operatorName, (BinaryExpression)exp);
+            libraryBuilder.resolveBinaryCall("System", operatorName, (BinaryExpression) exp);
 
             if (exp.getResultType() == libraryBuilder.resolveTypeName("System", "String")) {
                 Concatenate concatenate = of.createConcatenate();
-                concatenate.getOperand().addAll(((BinaryExpression)exp).getOperand());
+                concatenate.getOperand().addAll(((BinaryExpression) exp).getOperand());
                 concatenate.setResultType(exp.getResultType());
                 exp = concatenate;
             }
-        }
-        else {
-            Concatenate concatenate = (Concatenate)exp;
-            concatenate.withOperand(
-                    parseExpression(ctx.expressionTerm(0)),
-                    parseExpression(ctx.expressionTerm(1)));
+        } else {
+            Concatenate concatenate = (Concatenate) exp;
+            concatenate.withOperand(parseExpression(ctx.expressionTerm(0)), parseExpression(ctx.expressionTerm(1)));
 
             for (int i = 0; i < concatenate.getOperand().size(); i++) {
                 Expression operand = concatenate.getOperand().get(i);
@@ -1230,7 +1270,8 @@ DATETIME
                 return libraryBuilder.buildMaximum(targetType.getResultType());
             }
 
-            default: throw new IllegalArgumentException(String.format("Unknown extent: %s", extent));
+            default:
+                throw new IllegalArgumentException(String.format("Unknown extent: %s", extent));
         }
     }
 
@@ -1242,8 +1283,7 @@ DATETIME
         if (ctx.getChild(0).getText().equals("start")) {
             result = of.createStart().withOperand(parseExpression(ctx.expressionTerm()));
             operatorName = "Start";
-        }
-        else {
+        } else {
             result = of.createEnd().withOperand(parseExpression(ctx.expressionTerm()));
             operatorName = "End";
         }
@@ -1264,7 +1304,8 @@ DATETIME
         return parseDateTimePrecision(dateTimePrecision, precisionRequired, false);
     }
 
-    private DateTimePrecision parseDateTimePrecision(String dateTimePrecision, boolean precisionRequired, boolean allowWeeks) {
+    private DateTimePrecision parseDateTimePrecision(
+            String dateTimePrecision, boolean precisionRequired, boolean allowWeeks) {
         if (dateTimePrecision == null) {
             if (precisionRequired) {
                 throw new IllegalArgumentException("dateTimePrecision is null");
@@ -1375,7 +1416,8 @@ DATETIME
         libraryBuilder.resolveUnaryCall("System", "End", end);
 
         DurationBetween result = of.createDurationBetween()
-                .withPrecision(parseDateTimePrecision(ctx.pluralDateTimePrecision().getText()))
+                .withPrecision(
+                        parseDateTimePrecision(ctx.pluralDateTimePrecision().getText()))
                 .withOperand(start, end);
 
         libraryBuilder.resolveBinaryCall("System", "DurationBetween", result);
@@ -1394,7 +1436,8 @@ DATETIME
         libraryBuilder.resolveUnaryCall("System", "End", end);
 
         DifferenceBetween result = of.createDifferenceBetween()
-                .withPrecision(parseDateTimePrecision(ctx.pluralDateTimePrecision().getText()))
+                .withPrecision(
+                        parseDateTimePrecision(ctx.pluralDateTimePrecision().getText()))
                 .withOperand(start, end);
 
         libraryBuilder.resolveBinaryCall("System", "DifferenceBetween", result);
@@ -1410,23 +1453,23 @@ DATETIME
         boolean isProper = ctx.getChild(0).getText().equals("properly");
 
         if (first.getResultType() instanceof IntervalType) {
-            BinaryExpression result = isProper ? of.createProperIncludedIn() : of.createIncludedIn()
-                    .withOperand(first, libraryBuilder.createInterval(second, true, third, true));
+            BinaryExpression result = isProper
+                    ? of.createProperIncludedIn()
+                    : of.createIncludedIn()
+                            .withOperand(first, libraryBuilder.createInterval(second, true, third, true));
 
             libraryBuilder.resolveBinaryCall("System", isProper ? "ProperIncludedIn" : "IncludedIn", result);
             return result;
-        }
-        else {
+        } else {
             BinaryExpression result = of.createAnd()
                     .withOperand(
-                            (isProper ? of.createGreater() : of.createGreaterOrEqual())
-                                    .withOperand(first, second),
-                            (isProper ? of.createLess() : of.createLessOrEqual())
-                                    .withOperand(first, third)
-                    );
+                            (isProper ? of.createGreater() : of.createGreaterOrEqual()).withOperand(first, second),
+                            (isProper ? of.createLess() : of.createLessOrEqual()).withOperand(first, third));
 
-            libraryBuilder.resolveBinaryCall("System", isProper ? "Greater" : "GreaterOrEqual", (BinaryExpression) result.getOperand().get(0));
-            libraryBuilder.resolveBinaryCall("System", isProper ? "Less" : "LessOrEqual", (BinaryExpression) result.getOperand().get(1));
+            libraryBuilder.resolveBinaryCall("System", isProper ? "Greater" : "GreaterOrEqual", (BinaryExpression)
+                    result.getOperand().get(0));
+            libraryBuilder.resolveBinaryCall("System", isProper ? "Less" : "LessOrEqual", (BinaryExpression)
+                    result.getOperand().get(1));
             libraryBuilder.resolveBinaryCall("System", "And", result);
             return result;
         }
@@ -1435,7 +1478,8 @@ DATETIME
     @Override
     public Object visitDurationBetweenExpression(cqlParser.DurationBetweenExpressionContext ctx) {
         BinaryExpression result = of.createDurationBetween()
-                .withPrecision(parseDateTimePrecision(ctx.pluralDateTimePrecision().getText()))
+                .withPrecision(
+                        parseDateTimePrecision(ctx.pluralDateTimePrecision().getText()))
                 .withOperand(parseExpression(ctx.expressionTerm(0)), parseExpression(ctx.expressionTerm(1)));
 
         libraryBuilder.resolveBinaryCall("System", "DurationBetween", result);
@@ -1445,7 +1489,8 @@ DATETIME
     @Override
     public Object visitDifferenceBetweenExpression(cqlParser.DifferenceBetweenExpressionContext ctx) {
         BinaryExpression result = of.createDifferenceBetween()
-                .withPrecision(parseDateTimePrecision(ctx.pluralDateTimePrecision().getText()))
+                .withPrecision(
+                        parseDateTimePrecision(ctx.pluralDateTimePrecision().getText()))
                 .withOperand(parseExpression(ctx.expressionTerm(0)), parseExpression(ctx.expressionTerm(1)));
 
         libraryBuilder.resolveBinaryCall("System", "DifferenceBetween", result);
@@ -1472,11 +1517,10 @@ DATETIME
             case "in":
                 if (ctx.dateTimePrecisionSpecifier() != null) {
                     In in = of.createIn()
-                            .withPrecision(parseComparableDateTimePrecision(ctx.dateTimePrecisionSpecifier().dateTimePrecision().getText()))
-                            .withOperand(
-                                    parseExpression(ctx.expression(0)),
-                                    parseExpression(ctx.expression(1))
-                            );
+                            .withPrecision(parseComparableDateTimePrecision(ctx.dateTimePrecisionSpecifier()
+                                    .dateTimePrecision()
+                                    .getText()))
+                            .withOperand(parseExpression(ctx.expression(0)), parseExpression(ctx.expression(1)));
 
                     libraryBuilder.resolveBinaryCall("System", "In", in);
                     return in;
@@ -1488,11 +1532,10 @@ DATETIME
             case "contains":
                 if (ctx.dateTimePrecisionSpecifier() != null) {
                     Contains contains = of.createContains()
-                            .withPrecision(parseComparableDateTimePrecision(ctx.dateTimePrecisionSpecifier().dateTimePrecision().getText()))
-                            .withOperand(
-                                    parseExpression(ctx.expression(0)),
-                                    parseExpression(ctx.expression(1))
-                            );
+                            .withPrecision(parseComparableDateTimePrecision(ctx.dateTimePrecisionSpecifier()
+                                    .dateTimePrecision()
+                                    .getText()))
+                            .withOperand(parseExpression(ctx.expression(0)), parseExpression(ctx.expression(1)));
 
                     libraryBuilder.resolveBinaryCall("System", "Contains", contains);
                     return contains;
@@ -1500,17 +1543,14 @@ DATETIME
                     Expression left = parseExpression(ctx.expression(0));
                     Expression right = parseExpression(ctx.expression(1));
                     if (left instanceof ValueSetRef) {
-                        InValueSet in = of.createInValueSet()
-                                .withCode(right)
-                                .withValueset((ValueSetRef) left);
+                        InValueSet in = of.createInValueSet().withCode(right).withValueset((ValueSetRef) left);
                         libraryBuilder.resolveCall("System", "InValueSet", new InValueSetInvocation(in));
                         return in;
                     }
 
                     if (left instanceof CodeSystemRef) {
-                        InCodeSystem in = of.createInCodeSystem()
-                                .withCode(right)
-                                .withCodesystem((CodeSystemRef)left);
+                        InCodeSystem in =
+                                of.createInCodeSystem().withCode(right).withCodesystem((CodeSystemRef) left);
                         libraryBuilder.resolveCall("System", "InCodeSystem", new InCodeSystemInvocation(in));
                         return in;
                     }
@@ -1526,9 +1566,7 @@ DATETIME
 
     @Override
     public And visitAndExpression(cqlParser.AndExpressionContext ctx) {
-        And and = of.createAnd().withOperand(
-                parseExpression(ctx.expression(0)),
-                parseExpression(ctx.expression(1)));
+        And and = of.createAnd().withOperand(parseExpression(ctx.expression(0)), parseExpression(ctx.expression(1)));
 
         libraryBuilder.resolveBinaryCall("System", "And", and);
         return and;
@@ -1537,15 +1575,12 @@ DATETIME
     @Override
     public Expression visitOrExpression(cqlParser.OrExpressionContext ctx) {
         if (ctx.getChild(1).getText().equals("xor")) {
-            Xor xor = of.createXor().withOperand(
-                    parseExpression(ctx.expression(0)),
-                    parseExpression(ctx.expression(1)));
+            Xor xor =
+                    of.createXor().withOperand(parseExpression(ctx.expression(0)), parseExpression(ctx.expression(1)));
             libraryBuilder.resolveBinaryCall("System", "Xor", xor);
             return xor;
         } else {
-            Or or = of.createOr().withOperand(
-                    parseExpression(ctx.expression(0)),
-                    parseExpression(ctx.expression(1)));
+            Or or = of.createOr().withOperand(parseExpression(ctx.expression(0)), parseExpression(ctx.expression(1)));
             libraryBuilder.resolveBinaryCall("System", "Or", or);
             return or;
         }
@@ -1553,9 +1588,8 @@ DATETIME
 
     @Override
     public Expression visitImpliesExpression(cqlParser.ImpliesExpressionContext ctx) {
-        Implies implies = of.createImplies().withOperand(
-                parseExpression(ctx.expression(0)),
-                parseExpression(ctx.expression(1)));
+        Implies implies =
+                of.createImplies().withOperand(parseExpression(ctx.expression(0)), parseExpression(ctx.expression(1)));
 
         libraryBuilder.resolveBinaryCall("System", "Implies", implies);
         return implies;
@@ -1585,9 +1619,8 @@ DATETIME
     public Expression visitEqualityExpression(cqlParser.EqualityExpressionContext ctx) {
         String operator = parseString(ctx.getChild(1));
         if (operator.equals("~") || operator.equals("!~")) {
-            BinaryExpression equivalent = of.createEquivalent().withOperand(
-                    parseExpression(ctx.expression(0)),
-                    parseExpression(ctx.expression(1)));
+            BinaryExpression equivalent = of.createEquivalent()
+                    .withOperand(parseExpression(ctx.expression(0)), parseExpression(ctx.expression(1)));
 
             libraryBuilder.resolveBinaryCall("System", "Equivalent", equivalent);
 
@@ -1603,11 +1636,9 @@ DATETIME
             }
 
             return equivalent;
-        }
-        else {
-            BinaryExpression equal = of.createEqual().withOperand(
-                    parseExpression(ctx.expression(0)),
-                    parseExpression(ctx.expression(1)));
+        } else {
+            BinaryExpression equal = of.createEqual()
+                    .withOperand(parseExpression(ctx.expression(0)), parseExpression(ctx.expression(1)));
 
             libraryBuilder.resolveBinaryCall("System", "Equal", equal);
             if (!"=".equals(parseString(ctx.getChild(1)))) {
@@ -1643,11 +1674,10 @@ DATETIME
                 exp = of.createGreaterOrEqual();
                 break;
             default:
-                throw new IllegalArgumentException(String.format("Unknown operator: %s", ctx.getChild(1).getText()));
+                throw new IllegalArgumentException(
+                        String.format("Unknown operator: %s", ctx.getChild(1).getText()));
         }
-        exp.withOperand(
-                parseExpression(ctx.expression(0)),
-                parseExpression(ctx.expression(1)));
+        exp.withOperand(parseExpression(ctx.expression(0)), parseExpression(ctx.expression(1)));
 
         libraryBuilder.resolveBinaryCall("System", operatorName, exp);
         return exp;
@@ -1683,7 +1713,7 @@ DATETIME
 
     @Override
     public String visitSimplePathReferentialIdentifier(cqlParser.SimplePathReferentialIdentifierContext ctx) {
-        return (String)visit(ctx.referentialIdentifier());
+        return (String) visit(ctx.referentialIdentifier());
     }
 
     @Override
@@ -1702,7 +1732,9 @@ DATETIME
 
         if (result instanceof LibraryRef) {
             // ERROR:
-            throw new IllegalArgumentException(String.format("Identifier %s is a library and cannot be used as an expression.", ((LibraryRef)result).getLibraryName()));
+            throw new IllegalArgumentException(String.format(
+                    "Identifier %s is a library and cannot be used as an expression.",
+                    ((LibraryRef) result).getLibraryName()));
         }
 
         return result;
@@ -1717,17 +1749,20 @@ DATETIME
             return null;
         }
 
-        if (cqlLexer.STRING == tokenType || cqlLexer.QUOTEDIDENTIFIER == tokenType || cqlLexer.DELIMITEDIDENTIFIER == tokenType) {
+        if (cqlLexer.STRING == tokenType
+                || cqlLexer.QUOTEDIDENTIFIER == tokenType
+                || cqlLexer.DELIMITEDIDENTIFIER == tokenType) {
             // chop off leading and trailing ', ", or `
             text = text.substring(1, text.length() - 1);
 
-            // This is an alternate style of escaping that was removed when we switched to industry-standard escape sequences
-            //if (cqlLexer.STRING == tokenType) {
+            // This is an alternate style of escaping that was removed when we switched to industry-standard escape
+            // sequences
+            // if (cqlLexer.STRING == tokenType) {
             //    text = text.replace("''", "'");
-            //}
-            //else {
+            // }
+            // else {
             //    text = text.replace("\"\"", "\"");
-            //}
+            // }
         }
 
         return text;
@@ -1739,10 +1774,12 @@ DATETIME
             TypeSpecifier targetType = parseTypeSpecifier(ctx.typeSpecifier());
             Expression operand = parseExpression(ctx.expression());
             if (!DataTypes.equal(operand.getResultType(), targetType.getResultType())) {
-                Conversion conversion = libraryBuilder.findConversion(operand.getResultType(), targetType.getResultType(), false, true);
+                Conversion conversion =
+                        libraryBuilder.findConversion(operand.getResultType(), targetType.getResultType(), false, true);
                 if (conversion == null) {
                     // ERROR:
-                    throw new IllegalArgumentException(String.format("Could not resolve conversion from type %s to type %s.",
+                    throw new IllegalArgumentException(String.format(
+                            "Could not resolve conversion from type %s to type %s.",
                             operand.getResultType(), targetType.getResultType()));
                 }
 
@@ -1750,8 +1787,7 @@ DATETIME
             }
 
             return operand;
-        }
-        else {
+        } else {
             String targetUnit = parseString(ctx.unit());
             targetUnit = libraryBuilder.ensureUcumUnit(targetUnit);
             Expression operand = parseExpression(ctx.expression());
@@ -1804,17 +1840,17 @@ DATETIME
         String lastChild = ctx.getChild(ctx.getChildCount() - 1).getText();
         String nextToLast = ctx.getChild(ctx.getChildCount() - 2).getText();
         switch (lastChild) {
-            case "null" :
+            case "null":
                 exp = of.createIsNull().withOperand(left);
                 libraryBuilder.resolveUnaryCall("System", "IsNull", exp);
                 break;
 
-            case "true" :
+            case "true":
                 exp = of.createIsTrue().withOperand(left);
                 libraryBuilder.resolveUnaryCall("System", "IsTrue", exp);
                 break;
 
-            case "false" :
+            case "false":
                 exp = of.createIsFalse().withOperand(left);
                 libraryBuilder.resolveUnaryCall("System", "IsFalse", exp);
                 break;
@@ -1884,35 +1920,45 @@ DATETIME
         boolean allowPromotionAndDemotion = false;
         if (ctx.relativeQualifier() == null) {
             if (ctx.dateTimePrecision() != null) {
-                operator = of.createSameAs().withPrecision(parseComparableDateTimePrecision(ctx.dateTimePrecision().getText()));
+                operator = of.createSameAs()
+                        .withPrecision(parseComparableDateTimePrecision(
+                                ctx.dateTimePrecision().getText()));
             } else {
                 operator = of.createSameAs();
             }
             operatorName = "SameAs";
         } else {
             switch (ctx.relativeQualifier().getText()) {
-                case "or after": {
-                    if (ctx.dateTimePrecision() != null) {
-                        operator = of.createSameOrAfter().withPrecision(parseComparableDateTimePrecision(ctx.dateTimePrecision().getText()));
-                    } else {
-                        operator = of.createSameOrAfter();
+                case "or after":
+                    {
+                        if (ctx.dateTimePrecision() != null) {
+                            operator = of.createSameOrAfter()
+                                    .withPrecision(parseComparableDateTimePrecision(
+                                            ctx.dateTimePrecision().getText()));
+                        } else {
+                            operator = of.createSameOrAfter();
+                        }
+                        operatorName = "SameOrAfter";
+                        allowPromotionAndDemotion = true;
                     }
-                    operatorName = "SameOrAfter";
-                    allowPromotionAndDemotion = true;
-                }
-                break;
-                case "or before": {
-                    if (ctx.dateTimePrecision() != null) {
-                        operator = of.createSameOrBefore().withPrecision(parseComparableDateTimePrecision(ctx.dateTimePrecision().getText()));
-                    } else {
-                        operator = of.createSameOrBefore();
+                    break;
+                case "or before":
+                    {
+                        if (ctx.dateTimePrecision() != null) {
+                            operator = of.createSameOrBefore()
+                                    .withPrecision(parseComparableDateTimePrecision(
+                                            ctx.dateTimePrecision().getText()));
+                        } else {
+                            operator = of.createSameOrBefore();
+                        }
+                        operatorName = "SameOrBefore";
+                        allowPromotionAndDemotion = true;
                     }
-                    operatorName = "SameOrBefore";
-                    allowPromotionAndDemotion = true;
-                }
-                break;
+                    break;
                 default:
-                    throw new IllegalArgumentException(String.format("Unknown relative qualifier: '%s'.", ctx.relativeQualifier().getText()));
+                    throw new IllegalArgumentException(String.format(
+                            "Unknown relative qualifier: '%s'.",
+                            ctx.relativeQualifier().getText()));
             }
         }
 
@@ -1958,25 +2004,37 @@ DATETIME
                 : null;
 
         // If the right is not convertible to an interval or list
-        //if (!isRightPoint &&
+        // if (!isRightPoint &&
         //        !(timingOperator.getRight().getResultType() instanceof IntervalType
         //                || timingOperator.getRight().getResultType() instanceof ListType)) {
         //    isRightPoint = true;
-        //}
+        // }
 
         if (isRightPoint) {
             if (isProper) {
-                return libraryBuilder.resolveProperContains(timingOperator.getLeft(), timingOperator.getRight(), parseComparableDateTimePrecision(dateTimePrecision, false));
+                return libraryBuilder.resolveProperContains(
+                        timingOperator.getLeft(),
+                        timingOperator.getRight(),
+                        parseComparableDateTimePrecision(dateTimePrecision, false));
             }
 
-            return libraryBuilder.resolveContains(timingOperator.getLeft(), timingOperator.getRight(), parseComparableDateTimePrecision(dateTimePrecision, false));
+            return libraryBuilder.resolveContains(
+                    timingOperator.getLeft(),
+                    timingOperator.getRight(),
+                    parseComparableDateTimePrecision(dateTimePrecision, false));
         }
 
         if (isProper) {
-            return libraryBuilder.resolveProperIncludes(timingOperator.getLeft(), timingOperator.getRight(), parseComparableDateTimePrecision(dateTimePrecision, false));
+            return libraryBuilder.resolveProperIncludes(
+                    timingOperator.getLeft(),
+                    timingOperator.getRight(),
+                    parseComparableDateTimePrecision(dateTimePrecision, false));
         }
 
-        return libraryBuilder.resolveIncludes(timingOperator.getLeft(), timingOperator.getRight(), parseComparableDateTimePrecision(dateTimePrecision, false));
+        return libraryBuilder.resolveIncludes(
+                timingOperator.getLeft(),
+                timingOperator.getRight(),
+                parseComparableDateTimePrecision(dateTimePrecision, false));
     }
 
     @Override
@@ -2015,56 +2073,69 @@ DATETIME
                 : null;
 
         // If the left is not convertible to an interval or list
-        //if (!isLeftPoint &&
+        // if (!isLeftPoint &&
         //        !(timingOperator.getLeft().getResultType() instanceof IntervalType
         //                || timingOperator.getLeft().getResultType() instanceof ListType)) {
         //    isLeftPoint = true;
-        //}
+        // }
 
         if (isLeftPoint) {
             if (isProper) {
-                return libraryBuilder.resolveProperIn(timingOperator.getLeft(), timingOperator.getRight(), parseComparableDateTimePrecision(dateTimePrecision, false));
+                return libraryBuilder.resolveProperIn(
+                        timingOperator.getLeft(),
+                        timingOperator.getRight(),
+                        parseComparableDateTimePrecision(dateTimePrecision, false));
             }
 
-            return libraryBuilder.resolveIn(timingOperator.getLeft(), timingOperator.getRight(), parseComparableDateTimePrecision(dateTimePrecision, false));
+            return libraryBuilder.resolveIn(
+                    timingOperator.getLeft(),
+                    timingOperator.getRight(),
+                    parseComparableDateTimePrecision(dateTimePrecision, false));
         }
 
         if (isProper) {
-            return libraryBuilder.resolveProperIncludedIn(timingOperator.getLeft(), timingOperator.getRight(), parseComparableDateTimePrecision(dateTimePrecision, false));
+            return libraryBuilder.resolveProperIncludedIn(
+                    timingOperator.getLeft(),
+                    timingOperator.getRight(),
+                    parseComparableDateTimePrecision(dateTimePrecision, false));
         }
 
-        return libraryBuilder.resolveIncludedIn(timingOperator.getLeft(), timingOperator.getRight(), parseComparableDateTimePrecision(dateTimePrecision, false));
+        return libraryBuilder.resolveIncludedIn(
+                timingOperator.getLeft(),
+                timingOperator.getRight(),
+                parseComparableDateTimePrecision(dateTimePrecision, false));
     }
 
     @Override
     public Object visitBeforeOrAfterIntervalOperatorPhrase(cqlParser.BeforeOrAfterIntervalOperatorPhraseContext ctx) {
-        // ('starts' | 'ends' | 'occurs')? quantityOffset? ('before' | 'after') dateTimePrecisionSpecifier? ('start' | 'end')?
+        // ('starts' | 'ends' | 'occurs')? quantityOffset? ('before' | 'after') dateTimePrecisionSpecifier? ('start' |
+        // 'end')?
 
         // duration before/after
         // A starts 3 days before start B
-        //* start of A same day as start of B - 3 days
+        // * start of A same day as start of B - 3 days
         // A starts 3 days after start B
-        //* start of A same day as start of B + 3 days
+        // * start of A same day as start of B + 3 days
 
         // or more/less duration before/after
         // A starts 3 days or more before start B
-        //* start of A <= start of B - 3 days
+        // * start of A <= start of B - 3 days
         // A starts 3 days or more after start B
-        //* start of A >= start of B + 3 days
+        // * start of A >= start of B + 3 days
         // A starts 3 days or less before start B
-        //* start of A in [start of B - 3 days, start of B) and B is not null
+        // * start of A in [start of B - 3 days, start of B) and B is not null
         // A starts 3 days or less after start B
-        //* start of A in (start of B, start of B + 3 days] and B is not null
+        // * start of A in (start of B, start of B + 3 days] and B is not null
 
         // less/more than duration before/after
         // A starts more than 3 days before start B
-        //* start of A < start of B - 3 days
+        // * start of A < start of B - 3 days
         // A starts more than 3 days after start B
-        //* start of A > start of B + 3 days
+        // * start of A > start of B + 3 days
         // A starts less than 3 days before start B
-        //* start of A in (start of B - 3 days, start of B)
+        // * start of A in (start of B - 3 days, start of B)
         // A starts less than 3 days after start B
-        //* start of A in (start of B, start of B + 3 days)
+        // * start of A in (start of B, start of B + 3 days)
 
         TimingOperatorContext timingOperator = timingOperators.peek();
         boolean isBefore = false;
@@ -2122,7 +2193,8 @@ DATETIME
         if (ctx.quantityOffset() == null) {
             if (isInclusive) {
                 if (isBefore) {
-                    SameOrBefore sameOrBefore = of.createSameOrBefore().withOperand(timingOperator.getLeft(), timingOperator.getRight());
+                    SameOrBefore sameOrBefore =
+                            of.createSameOrBefore().withOperand(timingOperator.getLeft(), timingOperator.getRight());
                     if (dateTimePrecision != null) {
                         sameOrBefore.setPrecision(parseComparableDateTimePrecision(dateTimePrecision));
                     }
@@ -2130,15 +2202,15 @@ DATETIME
                     return sameOrBefore;
 
                 } else {
-                    SameOrAfter sameOrAfter = of.createSameOrAfter().withOperand(timingOperator.getLeft(), timingOperator.getRight());
+                    SameOrAfter sameOrAfter =
+                            of.createSameOrAfter().withOperand(timingOperator.getLeft(), timingOperator.getRight());
                     if (dateTimePrecision != null) {
                         sameOrAfter.setPrecision(parseComparableDateTimePrecision(dateTimePrecision));
                     }
                     libraryBuilder.resolveBinaryCall("System", "SameOrAfter", sameOrAfter, true, true);
                     return sameOrAfter;
                 }
-            }
-            else {
+            } else {
                 if (isBefore) {
                     Before before = of.createBefore().withOperand(timingOperator.getLeft(), timingOperator.getRight());
                     if (dateTimePrecision != null) {
@@ -2157,7 +2229,7 @@ DATETIME
                 }
             }
         } else {
-            Quantity quantity = (Quantity)visit(ctx.quantityOffset().quantity());
+            Quantity quantity = (Quantity) visit(ctx.quantityOffset().quantity());
 
             if (timingOperator.getLeft().getResultType() instanceof IntervalType) {
                 if (isBefore) {
@@ -2165,8 +2237,7 @@ DATETIME
                     track(end, timingOperator.getLeft());
                     libraryBuilder.resolveUnaryCall("System", "End", end);
                     timingOperator.setLeft(end);
-                }
-                else {
+                } else {
                     Start start = of.createStart().withOperand(timingOperator.getLeft());
                     track(start, timingOperator.getLeft());
                     libraryBuilder.resolveUnaryCall("System", "Start", start);
@@ -2180,8 +2251,7 @@ DATETIME
                     track(start, timingOperator.getRight());
                     libraryBuilder.resolveUnaryCall("System", "Start", start);
                     timingOperator.setRight(start);
-                }
-                else {
+                } else {
                     End end = of.createEnd().withOperand(timingOperator.getRight());
                     track(end, timingOperator.getRight());
                     libraryBuilder.resolveUnaryCall("System", "End", end);
@@ -2189,7 +2259,8 @@ DATETIME
                 }
             }
 
-            if (ctx.quantityOffset().offsetRelativeQualifier() == null && ctx.quantityOffset().exclusiveRelativeQualifier() == null) {
+            if (ctx.quantityOffset().offsetRelativeQualifier() == null
+                    && ctx.quantityOffset().exclusiveRelativeQualifier() == null) {
                 // Use a SameAs
                 // For a Before, subtract the quantity from the right operand
                 // For an After, add the quantity to the right operand
@@ -2198,8 +2269,7 @@ DATETIME
                     track(subtract, timingOperator.getRight());
                     libraryBuilder.resolveBinaryCall("System", "Subtract", subtract);
                     timingOperator.setRight(subtract);
-                }
-                else {
+                } else {
                     Add add = of.createAdd().withOperand(timingOperator.getRight(), quantity);
                     track(add, timingOperator.getRight());
                     libraryBuilder.resolveBinaryCall("System", "Add", add);
@@ -2212,8 +2282,7 @@ DATETIME
                 }
                 libraryBuilder.resolveBinaryCall("System", "SameAs", sameAs);
                 return sameAs;
-            }
-            else {
+            } else {
                 boolean isOffsetInclusive = ctx.quantityOffset().offsetRelativeQualifier() != null;
                 String qualifier = ctx.quantityOffset().offsetRelativeQualifier() != null
                         ? ctx.quantityOffset().offsetRelativeQualifier().getText()
@@ -2232,38 +2301,39 @@ DATETIME
                             timingOperator.setRight(subtract);
 
                             if (!isOffsetInclusive) {
-                                Before before = of.createBefore().withOperand(timingOperator.getLeft(), timingOperator.getRight());
+                                Before before = of.createBefore()
+                                        .withOperand(timingOperator.getLeft(), timingOperator.getRight());
                                 if (dateTimePrecision != null) {
                                     before.setPrecision(parseComparableDateTimePrecision(dateTimePrecision));
                                 }
                                 libraryBuilder.resolveBinaryCall("System", "Before", before, true, true);
                                 return before;
-                            }
-                            else {
-                                SameOrBefore sameOrBefore = of.createSameOrBefore().withOperand(timingOperator.getLeft(), timingOperator.getRight());
+                            } else {
+                                SameOrBefore sameOrBefore = of.createSameOrBefore()
+                                        .withOperand(timingOperator.getLeft(), timingOperator.getRight());
                                 if (dateTimePrecision != null) {
                                     sameOrBefore.setPrecision(parseComparableDateTimePrecision(dateTimePrecision));
                                 }
                                 libraryBuilder.resolveBinaryCall("System", "SameOrBefore", sameOrBefore, true, true);
                                 return sameOrBefore;
                             }
-                        }
-                        else {
+                        } else {
                             Add add = of.createAdd().withOperand(timingOperator.getRight(), quantity);
                             track(add, timingOperator.getRight());
                             libraryBuilder.resolveBinaryCall("System", "Add", add);
                             timingOperator.setRight(add);
 
                             if (!isOffsetInclusive) {
-                                After after = of.createAfter().withOperand(timingOperator.getLeft(), timingOperator.getRight());
+                                After after = of.createAfter()
+                                        .withOperand(timingOperator.getLeft(), timingOperator.getRight());
                                 if (dateTimePrecision != null) {
                                     after.setPrecision(parseComparableDateTimePrecision(dateTimePrecision));
                                 }
                                 libraryBuilder.resolveBinaryCall("System", "After", after, true, true);
                                 return after;
-                            }
-                            else {
-                                SameOrAfter sameOrAfter = of.createSameOrAfter().withOperand(timingOperator.getLeft(), timingOperator.getRight());
+                            } else {
+                                SameOrAfter sameOrAfter = of.createSameOrAfter()
+                                        .withOperand(timingOperator.getLeft(), timingOperator.getRight());
                                 if (dateTimePrecision != null) {
                                     sameOrAfter.setPrecision(parseComparableDateTimePrecision(dateTimePrecision));
                                 }
@@ -2283,22 +2353,20 @@ DATETIME
                         if (isBefore) {
                             lowerBound = of.createSubtract().withOperand(right, quantity);
                             track(lowerBound, right);
-                            libraryBuilder.resolveBinaryCall("System", "Subtract", (BinaryExpression)lowerBound);
+                            libraryBuilder.resolveBinaryCall("System", "Subtract", (BinaryExpression) lowerBound);
                             upperBound = right;
-                        }
-                        else {
+                        } else {
                             lowerBound = right;
                             upperBound = of.createAdd().withOperand(right, quantity);
                             track(upperBound, right);
-                            libraryBuilder.resolveBinaryCall("System", "Add", (BinaryExpression)upperBound);
+                            libraryBuilder.resolveBinaryCall("System", "Add", (BinaryExpression) upperBound);
                         }
 
                         // 3 days or less before -> [B - 3 days, B)
                         // less than 3 days before -> (B - 3 days, B)
                         // 3 days or less after -> (B, B + 3 days]
                         // less than 3 days after -> (B, B + 3 days)
-                        Interval interval =
-                                isBefore
+                        Interval interval = isBefore
                                 ? libraryBuilder.createInterval(lowerBound, isOffsetInclusive, upperBound, isInclusive)
                                 : libraryBuilder.createInterval(lowerBound, isInclusive, upperBound, isOffsetInclusive);
 
@@ -2310,7 +2378,8 @@ DATETIME
                         track(in, ctx.quantityOffset());
                         libraryBuilder.resolveBinaryCall("System", "In", in);
 
-                        // if the offset or comparison is inclusive, add a null check for B to ensure correct interpretation
+                        // if the offset or comparison is inclusive, add a null check for B to ensure correct
+                        // interpretation
                         if (isOffsetInclusive || isInclusive) {
                             IsNull nullTest = of.createIsNull().withOperand(right);
                             track(nullTest, ctx.quantityOffset());
@@ -2335,7 +2404,9 @@ DATETIME
 
     private BinaryExpression resolveBetweenOperator(String unit, Expression left, Expression right) {
         if (unit != null) {
-            DurationBetween between = of.createDurationBetween().withPrecision(parseDateTimePrecision(unit)).withOperand(left, right);
+            DurationBetween between = of.createDurationBetween()
+                    .withPrecision(parseDateTimePrecision(unit))
+                    .withOperand(left, right);
             libraryBuilder.resolveBinaryCall("System", "DurationBetween", between);
             return between;
         }
@@ -2347,9 +2418,9 @@ DATETIME
     public Object visitWithinIntervalOperatorPhrase(cqlParser.WithinIntervalOperatorPhraseContext ctx) {
         // ('starts' | 'ends' | 'occurs')? 'properly'? 'within' quantityLiteral 'of' ('start' | 'end')?
         // A starts within 3 days of start B
-        //* start of A in [start of B - 3 days, start of B + 3 days] and start B is not null
+        // * start of A in [start of B - 3 days, start of B + 3 days] and start B is not null
         // A starts within 3 days of B
-        //* start of A in [start of B - 3 days, end of B + 3 days]
+        // * start of A in [start of B - 3 days, end of B + 3 days]
 
         TimingOperatorContext timingOperator = timingOperators.peek();
         boolean isProper = false;
@@ -2392,19 +2463,18 @@ DATETIME
             }
         }
 
-        Quantity quantity = (Quantity)visit(ctx.quantity());
+        Quantity quantity = (Quantity) visit(ctx.quantity());
         Expression lowerBound = null;
         Expression upperBound = null;
         Expression initialBound = null;
         if (timingOperator.getRight().getResultType() instanceof IntervalType) {
             lowerBound = of.createStart().withOperand(timingOperator.getRight());
             track(lowerBound, ctx.quantity());
-            libraryBuilder.resolveUnaryCall("System", "Start", (Start)lowerBound);
+            libraryBuilder.resolveUnaryCall("System", "Start", (Start) lowerBound);
             upperBound = of.createEnd().withOperand(timingOperator.getRight());
             track(upperBound, ctx.quantity());
-            libraryBuilder.resolveUnaryCall("System", "End", (End)upperBound);
-        }
-        else {
+            libraryBuilder.resolveUnaryCall("System", "End", (End) upperBound);
+        } else {
             lowerBound = timingOperator.getRight();
             upperBound = timingOperator.getRight();
             initialBound = lowerBound;
@@ -2412,11 +2482,11 @@ DATETIME
 
         lowerBound = of.createSubtract().withOperand(lowerBound, quantity);
         track(lowerBound, ctx.quantity());
-        libraryBuilder.resolveBinaryCall("System", "Subtract", (BinaryExpression)lowerBound);
+        libraryBuilder.resolveBinaryCall("System", "Subtract", (BinaryExpression) lowerBound);
 
         upperBound = of.createAdd().withOperand(upperBound, quantity);
         track(upperBound, ctx.quantity());
-        libraryBuilder.resolveBinaryCall("System", "Add", (BinaryExpression)upperBound);
+        libraryBuilder.resolveBinaryCall("System", "Add", (BinaryExpression) upperBound);
 
         Interval interval = libraryBuilder.createInterval(lowerBound, !isProper, upperBound, !isProper);
         track(interval, ctx.quantity());
@@ -2424,7 +2494,8 @@ DATETIME
         In in = of.createIn().withOperand(timingOperator.getLeft(), interval);
         libraryBuilder.resolveBinaryCall("System", "In", in);
 
-        // if the within is not proper and the interval is being constructed from a single point, add a null check for that point to ensure correct interpretation
+        // if the within is not proper and the interval is being constructed from a single point, add a null check for
+        // that point to ensure correct interpretation
         if (!isProper && (initialBound != null)) {
             IsNull nullTest = of.createIsNull().withOperand(initialBound);
             track(nullTest, ctx.quantity());
@@ -2469,7 +2540,8 @@ DATETIME
             }
         }
 
-        operator.withOperand(timingOperators.peek().getLeft(), timingOperators.peek().getRight());
+        operator.withOperand(
+                timingOperators.peek().getLeft(), timingOperators.peek().getRight());
         libraryBuilder.resolveBinaryCall("System", operatorName, operator);
         return operator;
     }
@@ -2501,7 +2573,8 @@ DATETIME
             }
         }
 
-        operator.withOperand(timingOperators.peek().getLeft(), timingOperators.peek().getRight());
+        operator.withOperand(
+                timingOperators.peek().getLeft(), timingOperators.peek().getRight());
         libraryBuilder.resolveBinaryCall("System", operatorName, operator);
         return operator;
     }
@@ -2513,9 +2586,10 @@ DATETIME
                 : null;
 
         Starts starts = (dateTimePrecision != null
-                ? of.createStarts().withPrecision(parseComparableDateTimePrecision(dateTimePrecision))
-                : of.createStarts()
-        ).withOperand(timingOperators.peek().getLeft(), timingOperators.peek().getRight());
+                        ? of.createStarts().withPrecision(parseComparableDateTimePrecision(dateTimePrecision))
+                        : of.createStarts())
+                .withOperand(
+                        timingOperators.peek().getLeft(), timingOperators.peek().getRight());
 
         libraryBuilder.resolveBinaryCall("System", "Starts", starts);
         return starts;
@@ -2528,17 +2602,20 @@ DATETIME
                 : null;
 
         Ends ends = (dateTimePrecision != null
-                ? of.createEnds().withPrecision(parseComparableDateTimePrecision(dateTimePrecision))
-                : of.createEnds()
-        ).withOperand(timingOperators.peek().getLeft(), timingOperators.peek().getRight());
+                        ? of.createEnds().withPrecision(parseComparableDateTimePrecision(dateTimePrecision))
+                        : of.createEnds())
+                .withOperand(
+                        timingOperators.peek().getLeft(), timingOperators.peek().getRight());
 
         libraryBuilder.resolveBinaryCall("System", "Ends", ends);
         return ends;
     }
 
     public Expression resolveIfThenElse(If ifObject) {
-        ifObject.setCondition(libraryBuilder.ensureCompatible(ifObject.getCondition(), libraryBuilder.resolveTypeName("System", "Boolean")));
-        DataType resultType = libraryBuilder.ensureCompatibleTypes(ifObject.getThen().getResultType(), ifObject.getElse().getResultType());
+        ifObject.setCondition(libraryBuilder.ensureCompatible(
+                ifObject.getCondition(), libraryBuilder.resolveTypeName("System", "Boolean")));
+        DataType resultType = libraryBuilder.ensureCompatibleTypes(
+                ifObject.getThen().getResultType(), ifObject.getElse().getResultType());
         ifObject.setResultType(resultType);
         ifObject.setThen(libraryBuilder.ensureCompatible(ifObject.getThen(), resultType));
         ifObject.setElse(libraryBuilder.ensureCompatible(ifObject.getElse(), resultType));
@@ -2569,26 +2646,29 @@ DATETIME
             if (pt instanceof cqlParser.ExpressionContext) {
                 if (hitElse) {
                     result.setElse(parseExpression(pt));
-                    resultType = libraryBuilder.ensureCompatibleTypes(resultType, result.getElse().getResultType());
+                    resultType = libraryBuilder.ensureCompatibleTypes(
+                            resultType, result.getElse().getResultType());
                 } else {
                     result.setComparand(parseExpression(pt));
                 }
             }
 
             if (pt instanceof cqlParser.CaseExpressionItemContext) {
-                CaseItem caseItem = (CaseItem)visit(pt);
+                CaseItem caseItem = (CaseItem) visit(pt);
                 if (result.getComparand() != null) {
-                    libraryBuilder.verifyType(caseItem.getWhen().getResultType(), result.getComparand().getResultType());
-                }
-                else {
-                    DataTypes.verifyType(caseItem.getWhen().getResultType(), libraryBuilder.resolveTypeName("System", "Boolean"));
+                    libraryBuilder.verifyType(
+                            caseItem.getWhen().getResultType(),
+                            result.getComparand().getResultType());
+                } else {
+                    DataTypes.verifyType(
+                            caseItem.getWhen().getResultType(), libraryBuilder.resolveTypeName("System", "Boolean"));
                 }
 
                 if (resultType == null) {
                     resultType = caseItem.getThen().getResultType();
-                }
-                else {
-                    resultType = libraryBuilder.ensureCompatibleTypes(resultType, caseItem.getThen().getResultType());
+                } else {
+                    resultType = libraryBuilder.ensureCompatibleTypes(
+                            resultType, caseItem.getThen().getResultType());
                 }
 
                 result.getCaseItem().add(caseItem);
@@ -2597,7 +2677,8 @@ DATETIME
 
         for (CaseItem caseItem : result.getCaseItem()) {
             if (result.getComparand() != null) {
-                caseItem.setWhen(libraryBuilder.ensureCompatible(caseItem.getWhen(), result.getComparand().getResultType()));
+                caseItem.setWhen(libraryBuilder.ensureCompatible(
+                        caseItem.getWhen(), result.getComparand().getResultType()));
             }
 
             caseItem.setThen(libraryBuilder.ensureCompatible(caseItem.getThen(), resultType));
@@ -2628,7 +2709,8 @@ DATETIME
                 return flatten;
         }
 
-        throw new IllegalArgumentException(String.format("Unknown aggregate operator %s.", ctx.getChild(0).getText()));
+        throw new IllegalArgumentException(
+                String.format("Unknown aggregate operator %s.", ctx.getChild(0).getText()));
     }
 
     @Override
@@ -2637,37 +2719,34 @@ DATETIME
         Expression per = null;
         if (ctx.dateTimePrecision() != null) {
             per = libraryBuilder.createQuantity(BigDecimal.valueOf(1.0), parseString(ctx.dateTimePrecision()));
-        }
-        else if (ctx.expression().size() > 1) {
+        } else if (ctx.expression().size() > 1) {
             per = parseExpression(ctx.expression(1));
-        }
-        else {
+        } else {
             // Determine per quantity based on point type of the intervals involved
             if (source.getResultType() instanceof ListType) {
-                ListType listType = (ListType)source.getResultType();
+                ListType listType = (ListType) source.getResultType();
                 if (listType.getElementType() instanceof IntervalType) {
-                    IntervalType intervalType = (IntervalType)listType.getElementType();
+                    IntervalType intervalType = (IntervalType) listType.getElementType();
                     DataType pointType = intervalType.getPointType();
 
                     per = libraryBuilder.buildNull(libraryBuilder.resolveTypeName("System", "Quantity"));
 
                     // TODO: Test this...
-//                    // Successor(MinValue<T>) - MinValue<T>
-//                    MinValue minimum = libraryBuilder.buildMinimum(pointType);
-//                    track(minimum, ctx);
-//
-//                    Expression successor = libraryBuilder.buildSuccessor(minimum);
-//                    track(successor, ctx);
-//
-//                    minimum = libraryBuilder.buildMinimum(pointType);
-//                    track(minimum, ctx);
-//
-//                    Subtract subtract = of.createSubtract().withOperand(successor, minimum);
-//                    libraryBuilder.resolveBinaryCall("System", "Subtract", subtract);
-//                    per = subtract;
+                    //                    // Successor(MinValue<T>) - MinValue<T>
+                    //                    MinValue minimum = libraryBuilder.buildMinimum(pointType);
+                    //                    track(minimum, ctx);
+                    //
+                    //                    Expression successor = libraryBuilder.buildSuccessor(minimum);
+                    //                    track(successor, ctx);
+                    //
+                    //                    minimum = libraryBuilder.buildMinimum(pointType);
+                    //                    track(minimum, ctx);
+                    //
+                    //                    Subtract subtract = of.createSubtract().withOperand(successor, minimum);
+                    //                    libraryBuilder.resolveBinaryCall("System", "Subtract", subtract);
+                    //                    per = subtract;
                 }
-            }
-            else {
+            } else {
                 per = libraryBuilder.buildNull(libraryBuilder.resolveTypeName("System", "Quantity"));
             }
         }
@@ -2684,7 +2763,8 @@ DATETIME
                 return collapse;
         }
 
-        throw new IllegalArgumentException(String.format("Unknown aggregate set operator %s.", ctx.getChild(0).getText()));
+        throw new IllegalArgumentException(String.format(
+                "Unknown aggregate set operator %s.", ctx.getChild(0).getText()));
     }
 
     @Override
@@ -2693,30 +2773,36 @@ DATETIME
         libraryBuilder.checkLiteralContext();
         List<String> qualifiers = parseQualifiers(ctx.namedTypeSpecifier());
         String model = getModelIdentifier(qualifiers);
-        String label = getTypeIdentifier(qualifiers, parseString(ctx.namedTypeSpecifier().referentialOrTypeNameIdentifier()));
+        String label = getTypeIdentifier(
+                qualifiers, parseString(ctx.namedTypeSpecifier().referentialOrTypeNameIdentifier()));
         DataType dataType = libraryBuilder.resolveTypeName(model, label);
         if (dataType == null) {
             // ERROR:
             throw new IllegalArgumentException(String.format("Could not resolve type name %s.", label));
         }
 
-        if (!(dataType instanceof ClassType) || !((ClassType)dataType).isRetrievable()) {
+        if (!(dataType instanceof ClassType) || !((ClassType) dataType).isRetrievable()) {
             // ERROR:
-            throw new IllegalArgumentException(String.format("Specified data type %s does not support retrieval.", label));
+            throw new IllegalArgumentException(
+                    String.format("Specified data type %s does not support retrieval.", label));
         }
 
-        ClassType classType = (ClassType)dataType;
-        // BTR -> The original intent of this code was to have the retrieve return the base type, and use the "templateId"
+        ClassType classType = (ClassType) dataType;
+        // BTR -> The original intent of this code was to have the retrieve return the base type, and use the
+        // "templateId"
         // element of the retrieve to communicate the "positive" or "negative" profile to the data access layer.
-        // However, because this notion of carrying the "profile" through a type is not general, it causes inconsistencies
+        // However, because this notion of carrying the "profile" through a type is not general, it causes
+        // inconsistencies
         // when using retrieve results with functions defined in terms of the same type (see GitHub Issue #131).
-        // Based on the discussion there, the retrieve will now return the declared type, whether it is a profile or not.
-        //ProfileType profileType = dataType instanceof ProfileType ? (ProfileType)dataType : null;
-        //NamedType namedType = profileType == null ? classType : (NamedType)classType.getBaseType();
+        // Based on the discussion there, the retrieve will now return the declared type, whether it is a profile or
+        // not.
+        // ProfileType profileType = dataType instanceof ProfileType ? (ProfileType)dataType : null;
+        // NamedType namedType = profileType == null ? classType : (NamedType)classType.getBaseType();
         NamedType namedType = classType;
 
         ModelInfo modelInfo = libraryBuilder.getModel(namedType.getNamespace()).getModelInfo();
-        boolean useStrictRetrieveTyping = modelInfo.isStrictRetrieveTyping() != null && modelInfo.isStrictRetrieveTyping();
+        boolean useStrictRetrieveTyping =
+                modelInfo.isStrictRetrieveTyping() != null && modelInfo.isStrictRetrieveTyping();
 
         String codePath = null;
         Property property = null;
@@ -2725,33 +2811,39 @@ DATETIME
         String codeComparator = null;
         if (ctx.terminology() != null) {
             if (ctx.codePath() != null) {
-                String identifiers = (String)visit(ctx.codePath());
+                String identifiers = (String) visit(ctx.codePath());
                 codePath = identifiers;
-            }
-            else if (classType.getPrimaryCodePath() != null) {
+            } else if (classType.getPrimaryCodePath() != null) {
                 codePath = classType.getPrimaryCodePath();
             }
 
             if (codePath == null) {
                 // ERROR:
                 // WARNING:
-                propertyException = new CqlSemanticException("Retrieve has a terminology target but does not specify a code path and the type of the retrieve does not have a primary code path defined.",
-                        useStrictRetrieveTyping ? CqlCompilerException.ErrorSeverity.Error : CqlCompilerException.ErrorSeverity.Warning,
+                propertyException = new CqlSemanticException(
+                        "Retrieve has a terminology target but does not specify a code path and the type of the retrieve does not have a primary code path defined.",
+                        useStrictRetrieveTyping
+                                ? CqlCompilerException.ErrorSeverity.Error
+                                : CqlCompilerException.ErrorSeverity.Warning,
                         getTrackBack(ctx));
                 libraryBuilder.recordParsingException(propertyException);
-            }
-            else {
+            } else {
                 try {
                     DataType codeType = libraryBuilder.resolvePath((DataType) namedType, codePath);
                     property = of.createProperty().withPath(codePath);
                     property.setResultType(codeType);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     // ERROR:
                     // WARNING:
-                    propertyException = new CqlSemanticException(String.format("Could not resolve code path %s for the type of the retrieve %s.",
-                            codePath, namedType.getName()), useStrictRetrieveTyping ? CqlCompilerException.ErrorSeverity.Error : CqlCompilerException.ErrorSeverity.Warning,
-                            getTrackBack(ctx), e);
+                    propertyException = new CqlSemanticException(
+                            String.format(
+                                    "Could not resolve code path %s for the type of the retrieve %s.",
+                                    codePath, namedType.getName()),
+                            useStrictRetrieveTyping
+                                    ? CqlCompilerException.ErrorSeverity.Error
+                                    : CqlCompilerException.ErrorSeverity.Warning,
+                            getTrackBack(ctx),
+                            e);
                     libraryBuilder.recordParsingException(propertyException);
                 }
             }
@@ -2760,12 +2852,11 @@ DATETIME
                 List<String> identifiers = (List<String>) visit(ctx.terminology());
                 terminology = resolveQualifiedIdentifier(identifiers);
                 track(terminology, ctx.terminology().qualifiedIdentifierExpression());
-            }
-            else {
+            } else {
                 terminology = parseExpression(ctx.terminology().expression());
             }
 
-            codeComparator = ctx.codeComparator() != null ? (String)visit(ctx.codeComparator()) : null;
+            codeComparator = ctx.codeComparator() != null ? (String) visit(ctx.codeComparator()) : null;
         }
 
         Expression result = null;
@@ -2774,23 +2865,32 @@ DATETIME
         // Otherwise, a code comparator will always choose a specific representation
         boolean hasFHIRHelpers = libraryInfo.resolveLibraryName("FHIRHelpers") != null;
         if (property != null && property.getResultType() instanceof ChoiceType && codeComparator == null) {
-            for (DataType propertyType : ((ChoiceType)property.getResultType()).getTypes()) {
-                if (hasFHIRHelpers && propertyType instanceof NamedType && ((NamedType)propertyType).getSimpleName().equals("Reference") && namedType.getSimpleName().equals("MedicationRequest")) {
+            for (DataType propertyType : ((ChoiceType) property.getResultType()).getTypes()) {
+                if (hasFHIRHelpers
+                        && propertyType instanceof NamedType
+                        && ((NamedType) propertyType).getSimpleName().equals("Reference")
+                        && namedType.getSimpleName().equals("MedicationRequest")) {
                     // TODO: This is a model-specific special case to support QICore
                     // This functionality needs to be generalized to a retrieve mapping in the model info
-                    // But that requires a model info change (to represent references, right now the model info only includes context relationships)
-                    // The reference expands to [MedicationRequest] MR with [Medication] M such that M.id = Last(Split(MR.medication.reference, '/')) and M.code in <valueset>
-                    Retrieve mrRetrieve = buildRetrieve(ctx, useStrictRetrieveTyping, namedType, classType, null, null, null, null, null, null);
+                    // But that requires a model info change (to represent references, right now the model info only
+                    // includes context relationships)
+                    // The reference expands to [MedicationRequest] MR with [Medication] M such that M.id =
+                    // Last(Split(MR.medication.reference, '/')) and M.code in <valueset>
+                    Retrieve mrRetrieve = buildRetrieve(
+                            ctx, useStrictRetrieveTyping, namedType, classType, null, null, null, null, null, null);
                     retrieves.add(mrRetrieve);
                     mrRetrieve.setResultType(new ListType((DataType) namedType));
                     DataType mDataType = libraryBuilder.resolveTypeName(model, "Medication");
-                    ClassType mClassType = (ClassType)mDataType;
+                    ClassType mClassType = (ClassType) mDataType;
                     NamedType mNamedType = mClassType;
-                    Retrieve mRetrieve = buildRetrieve(ctx, useStrictRetrieveTyping, mNamedType, mClassType, null, null, null, null, null, null);
+                    Retrieve mRetrieve = buildRetrieve(
+                            ctx, useStrictRetrieveTyping, mNamedType, mClassType, null, null, null, null, null, null);
                     retrieves.add(mRetrieve);
                     mRetrieve.setResultType(new ListType((DataType) namedType));
                     Query q = of.createQuery();
-                    AliasedQuerySource aqs = of.createAliasedQuerySource().withExpression(mrRetrieve).withAlias("MR");
+                    AliasedQuerySource aqs = of.createAliasedQuerySource()
+                            .withExpression(mrRetrieve)
+                            .withAlias("MR");
                     track(aqs, ctx);
                     aqs.setResultType(aqs.getExpression().getResultType());
                     q.getSource().add(aqs);
@@ -2806,30 +2906,34 @@ DATETIME
                     String refPath = "medication.reference";
                     DataType refType = libraryBuilder.resolvePath(dataType, refPath);
                     Property refProperty = libraryBuilder.buildProperty("MR", refPath, false, refType);
-                    Split split = of.createSplit().withStringToSplit(refProperty).withSeparator(libraryBuilder.createLiteral("/"));
+                    Split split = of.createSplit()
+                            .withStringToSplit(refProperty)
+                            .withSeparator(libraryBuilder.createLiteral("/"));
                     libraryBuilder.resolveCall("System", "Split", new SplitInvocation(split));
                     Last last = of.createLast().withSource(split);
                     libraryBuilder.resolveCall("System", "Last", new LastInvocation(last));
                     Equal e = of.createEqual().withOperand(idProperty, last);
                     libraryBuilder.resolveBinaryCall("System", "Equal", e);
 
-                    DataType mCodeType = libraryBuilder.resolvePath((DataType)mNamedType, "code");
+                    DataType mCodeType = libraryBuilder.resolvePath((DataType) mNamedType, "code");
                     Property mProperty = of.createProperty().withPath("code");
                     mProperty.setResultType(mCodeType);
                     String mCodeComparator = "~";
                     if (terminology.getResultType() instanceof ListType) {
                         mCodeComparator = "in";
 
-                    }
-                    else if (libraryBuilder.isCompatibleWith("1.5")) {
-                        mCodeComparator = terminology.getResultType().isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary")) ? "in" : "~";
+                    } else if (libraryBuilder.isCompatibleWith("1.5")) {
+                        mCodeComparator = terminology
+                                        .getResultType()
+                                        .isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary"))
+                                ? "in"
+                                : "~";
                     }
 
                     Expression terminologyComparison = null;
                     if (mCodeComparator.equals("in")) {
                         terminologyComparison = libraryBuilder.resolveIn(mProperty, terminology);
-                    }
-                    else {
+                    } else {
                         BinaryExpression equivalent = of.createEquivalent().withOperand(mProperty, terminology);
                         libraryBuilder.resolveBinaryCall("System", "Equivalent", equivalent);
                         terminologyComparison = equivalent;
@@ -2840,15 +2944,22 @@ DATETIME
 
                     if (result == null) {
                         result = q;
-                    }
-                    else {
+                    } else {
                         track(q, ctx);
                         result = libraryBuilder.resolveUnion(result, q);
                     }
-                }
-                else {
-                    Retrieve retrieve = buildRetrieve(ctx, useStrictRetrieveTyping, namedType, classType, codePath,
-                            codeComparator, property, propertyType, propertyException, terminology);
+                } else {
+                    Retrieve retrieve = buildRetrieve(
+                            ctx,
+                            useStrictRetrieveTyping,
+                            namedType,
+                            classType,
+                            codePath,
+                            codeComparator,
+                            property,
+                            propertyType,
+                            propertyException,
+                            terminology);
                     retrieves.add(retrieve);
                     retrieve.setResultType(new ListType((DataType) namedType));
 
@@ -2857,17 +2968,25 @@ DATETIME
                     } else {
                         // Should only include the result if it resolved appropriately with the codeComparator
                         // Allowing it to go through for now
-                        //if (retrieve.getCodeProperty() != null && retrieve.getCodeComparator() != null && retrieve.getCodes() != null) {
+                        // if (retrieve.getCodeProperty() != null && retrieve.getCodeComparator() != null &&
+                        // retrieve.getCodes() != null) {
                         track(retrieve, ctx);
                         result = libraryBuilder.resolveUnion(result, retrieve);
-                        //}
+                        // }
                     }
                 }
             }
-        }
-        else {
-            Retrieve retrieve = buildRetrieve(ctx, useStrictRetrieveTyping, namedType, classType, codePath,
-                    codeComparator, property, property != null ? property.getResultType() : null, propertyException,
+        } else {
+            Retrieve retrieve = buildRetrieve(
+                    ctx,
+                    useStrictRetrieveTyping,
+                    namedType,
+                    classType,
+                    codePath,
+                    codeComparator,
+                    property,
+                    property != null ? property.getResultType() : null,
+                    propertyException,
                     terminology);
             retrieves.add(retrieve);
             retrieve.setResultType(new ListType((DataType) namedType));
@@ -2877,18 +2996,26 @@ DATETIME
         return result;
     }
 
-    private Retrieve buildRetrieve(cqlParser.RetrieveContext ctx, boolean useStrictRetrieveTyping, NamedType namedType,
-                                   ClassType classType, String codePath, String codeComparator, Property property,
-                                   DataType propertyType, Exception propertyException, Expression terminology) {
+    private Retrieve buildRetrieve(
+            cqlParser.RetrieveContext ctx,
+            boolean useStrictRetrieveTyping,
+            NamedType namedType,
+            ClassType classType,
+            String codePath,
+            String codeComparator,
+            Property property,
+            DataType propertyType,
+            Exception propertyException,
+            Expression terminology) {
 
         Retrieve retrieve = of.createRetrieve()
-                .withDataType(libraryBuilder.dataTypeToQName((DataType)namedType))
+                .withDataType(libraryBuilder.dataTypeToQName((DataType) namedType))
                 .withTemplateId(classType.getIdentifier())
                 .withCodeProperty(codePath);
 
         if (ctx.contextIdentifier() != null) {
             @SuppressWarnings("unchecked")
-            List<String> identifiers = (List<String>)visit(ctx.contextIdentifier());
+            List<String> identifiers = (List<String>) visit(ctx.contextIdentifier());
             Expression contextExpression = resolveQualifiedIdentifier(identifiers);
             retrieve.setContext(contextExpression);
         }
@@ -2900,13 +3027,20 @@ DATETIME
                     codeComparator = "~";
                     if (terminology.getResultType() instanceof ListType) {
                         codeComparator = "in";
-                }
-                    else if (libraryBuilder.isCompatibleWith("1.5")) {
-                        if (propertyType != null && propertyType.isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary"))) {
-                            codeComparator = terminology.getResultType().isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary")) ? "~" : "contains";
-                        }
-                        else {
-                            codeComparator = terminology.getResultType().isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary")) ? "in" : "~";
+                    } else if (libraryBuilder.isCompatibleWith("1.5")) {
+                        if (propertyType != null
+                                && propertyType.isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary"))) {
+                            codeComparator = terminology
+                                            .getResultType()
+                                            .isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary"))
+                                    ? "~"
+                                    : "contains";
+                        } else {
+                            codeComparator = terminology
+                                            .getResultType()
+                                            .isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary"))
+                                    ? "in"
+                                    : "~";
                         }
                     }
                 }
@@ -2916,126 +3050,168 @@ DATETIME
                 }
 
                 switch (codeComparator) {
-                    case "in": {
-                        Expression in = libraryBuilder.resolveIn(property, terminology);
-                        if (in instanceof In) {
-                            retrieve.setCodes(((In) in).getOperand().get(1));
-                        } else if (in instanceof InValueSet) {
-                            retrieve.setCodes(((InValueSet) in).getValueset());
-                        } else if (in instanceof InCodeSystem) {
-                            retrieve.setCodes(((InCodeSystem) in).getCodesystem());
-                        } else if (in instanceof AnyInValueSet) {
-                            retrieve.setCodes(((AnyInValueSet) in).getValueset());
-                        } else if (in instanceof AnyInCodeSystem) {
-                            retrieve.setCodes(((AnyInCodeSystem) in).getCodesystem());
-                        } else {
+                    case "in":
+                        {
+                            Expression in = libraryBuilder.resolveIn(property, terminology);
+                            if (in instanceof In) {
+                                retrieve.setCodes(((In) in).getOperand().get(1));
+                            } else if (in instanceof InValueSet) {
+                                retrieve.setCodes(((InValueSet) in).getValueset());
+                            } else if (in instanceof InCodeSystem) {
+                                retrieve.setCodes(((InCodeSystem) in).getCodesystem());
+                            } else if (in instanceof AnyInValueSet) {
+                                retrieve.setCodes(((AnyInValueSet) in).getValueset());
+                            } else if (in instanceof AnyInCodeSystem) {
+                                retrieve.setCodes(((AnyInCodeSystem) in).getCodesystem());
+                            } else {
+                                // ERROR:
+                                // WARNING:
+                                libraryBuilder.recordParsingException(new CqlSemanticException(
+                                        String.format(
+                                                "Unexpected membership operator %s in retrieve",
+                                                in.getClass().getSimpleName()),
+                                        useStrictRetrieveTyping
+                                                ? CqlCompilerException.ErrorSeverity.Error
+                                                : CqlCompilerException.ErrorSeverity.Warning,
+                                        getTrackBack(ctx)));
+                            }
+                        }
+                        break;
+
+                    case "contains":
+                        {
+                            Expression contains = libraryBuilder.resolveContains(property, terminology);
+                            if (contains instanceof Contains) {
+                                retrieve.setCodes(
+                                        ((Contains) contains).getOperand().get(1));
+                            }
+                            // TODO: Introduce support for the contains operator to make this possible to support with a
+                            // retrieve (direct-reference code negation)
                             // ERROR:
-                            // WARNING:
-                            libraryBuilder.recordParsingException(new CqlSemanticException(String.format("Unexpected membership operator %s in retrieve", in.getClass().getSimpleName()),
-                                    useStrictRetrieveTyping ? CqlCompilerException.ErrorSeverity.Error : CqlCompilerException.ErrorSeverity.Warning,
+                            libraryBuilder.recordParsingException(new CqlSemanticException(
+                                    "Terminology resolution using contains is not supported at this time. Use a where clause with an in operator instead.",
+                                    useStrictRetrieveTyping
+                                            ? CqlCompilerException.ErrorSeverity.Error
+                                            : CqlCompilerException.ErrorSeverity.Warning,
                                     getTrackBack(ctx)));
                         }
-                    }
-                    break;
+                        break;
 
-                    case "contains": {
-                        Expression contains = libraryBuilder.resolveContains(property, terminology);
-                        if (contains instanceof Contains) {
-                            retrieve.setCodes(((Contains)contains).getOperand().get(1));
-                        }
-                        // TODO: Introduce support for the contains operator to make this possible to support with a retrieve (direct-reference code negation)
-                        // ERROR:
-                        libraryBuilder.recordParsingException(new CqlSemanticException("Terminology resolution using contains is not supported at this time. Use a where clause with an in operator instead.",
-                                useStrictRetrieveTyping ? CqlCompilerException.ErrorSeverity.Error : CqlCompilerException.ErrorSeverity.Warning,
-                                getTrackBack(ctx)));
-                    }
-                    break;
+                    case "~":
+                        {
+                            // Resolve with equivalent to verify the type of the target
+                            BinaryExpression equivalent = of.createEquivalent().withOperand(property, terminology);
+                            libraryBuilder.resolveBinaryCall("System", "Equivalent", equivalent);
 
-                    case "~": {
-                        // Resolve with equivalent to verify the type of the target
-                        BinaryExpression equivalent = of.createEquivalent().withOperand(property, terminology);
-                        libraryBuilder.resolveBinaryCall("System", "Equivalent", equivalent);
+                            // Automatically promote to a list for use in the retrieve target
+                            if (!(equivalent.getOperand().get(1).getResultType() instanceof ListType
+                                    || (libraryBuilder.isCompatibleWith("1.5")
+                                            && equivalent
+                                                    .getOperand()
+                                                    .get(1)
+                                                    .getResultType()
+                                                    .isSubTypeOf(
+                                                            libraryBuilder.resolveTypeName("System", "Vocabulary"))))) {
+                                retrieve.setCodes(libraryBuilder.resolveToList(
+                                        equivalent.getOperand().get(1)));
+                            } else {
+                                retrieve.setCodes(equivalent.getOperand().get(1));
+                            }
+                        }
+                        break;
 
-                        // Automatically promote to a list for use in the retrieve target
-                        if (!(equivalent.getOperand().get(1).getResultType() instanceof ListType
-                                || (libraryBuilder.isCompatibleWith("1.5")
-                                && equivalent.getOperand().get(1).getResultType().isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary"))))) {
-                            retrieve.setCodes(libraryBuilder.resolveToList(equivalent.getOperand().get(1)));
-                        }
-                        else {
-                            retrieve.setCodes(equivalent.getOperand().get(1));
-                        }
-                    }
-                    break;
+                    case "=":
+                        {
+                            // Resolve with equality to verify the type of the source and target
+                            BinaryExpression equal = of.createEqual().withOperand(property, terminology);
+                            libraryBuilder.resolveBinaryCall("System", "Equal", equal);
 
-                    case "=": {
-                        // Resolve with equality to verify the type of the source and target
-                        BinaryExpression equal = of.createEqual().withOperand(property, terminology);
-                        libraryBuilder.resolveBinaryCall("System", "Equal", equal);
-
-                        // Automatically promote to a list for use in the retrieve target
-                        if (!(equal.getOperand().get(1).getResultType() instanceof ListType
-                                || (libraryBuilder.isCompatibleWith("1.5")
-                                && equal.getOperand().get(1).getResultType().isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary"))))) {
-                            retrieve.setCodes(libraryBuilder.resolveToList(equal.getOperand().get(1)));
+                            // Automatically promote to a list for use in the retrieve target
+                            if (!(equal.getOperand().get(1).getResultType() instanceof ListType
+                                    || (libraryBuilder.isCompatibleWith("1.5")
+                                            && equal.getOperand()
+                                                    .get(1)
+                                                    .getResultType()
+                                                    .isSubTypeOf(
+                                                            libraryBuilder.resolveTypeName("System", "Vocabulary"))))) {
+                                retrieve.setCodes(libraryBuilder.resolveToList(
+                                        equal.getOperand().get(1)));
+                            } else {
+                                retrieve.setCodes(equal.getOperand().get(1));
+                            }
                         }
-                        else {
-                            retrieve.setCodes(equal.getOperand().get(1));
-                        }
-                    }
-                    break;
+                        break;
 
                     default:
                         // ERROR:
                         // WARNING:
-                        libraryBuilder.recordParsingException(new CqlSemanticException(String.format("Unknown code comparator % in retrieve", codeComparator),
-                                useStrictRetrieveTyping ? CqlCompilerException.ErrorSeverity.Error : CqlCompilerException.ErrorSeverity.Warning,
+                        libraryBuilder.recordParsingException(new CqlSemanticException(
+                                String.format("Unknown code comparator % in retrieve", codeComparator),
+                                useStrictRetrieveTyping
+                                        ? CqlCompilerException.ErrorSeverity.Error
+                                        : CqlCompilerException.ErrorSeverity.Warning,
                                 getTrackBack(ctx.codeComparator())));
                 }
 
                 retrieve.setCodeComparator(codeComparator);
 
                 // Verify that the type of the terminology target is a List<Code>
-                // Due to implicit conversion defined by specific models, the resolution path above may result in a List<Concept>
+                // Due to implicit conversion defined by specific models, the resolution path above may result in a
+                // List<Concept>
                 // In that case, convert to a list of code (Union the Code elements of the Concepts in the list)
-                if (retrieve.getCodes() != null && retrieve.getCodes().getResultType() != null && retrieve.getCodes().getResultType() instanceof ListType
-                    && ((ListType)retrieve.getCodes().getResultType()).getElementType().equals(libraryBuilder.resolveTypeName("System", "Concept"))) {
+                if (retrieve.getCodes() != null
+                        && retrieve.getCodes().getResultType() != null
+                        && retrieve.getCodes().getResultType() instanceof ListType
+                        && ((ListType) retrieve.getCodes().getResultType())
+                                .getElementType()
+                                .equals(libraryBuilder.resolveTypeName("System", "Concept"))) {
                     if (retrieve.getCodes() instanceof ToList) {
                         // ToList will always have a single argument
-                        ToList toList = (ToList)retrieve.getCodes();
-                        // If that argument is a ToConcept, replace the ToList argument with the code (skip the implicit conversion, the data access layer is responsible for it)
+                        ToList toList = (ToList) retrieve.getCodes();
+                        // If that argument is a ToConcept, replace the ToList argument with the code (skip the implicit
+                        // conversion, the data access layer is responsible for it)
                         if (toList.getOperand() instanceof ToConcept) {
-                            toList.setOperand(((ToConcept)toList.getOperand()).getOperand());
-                        }
-                        else {
+                            toList.setOperand(((ToConcept) toList.getOperand()).getOperand());
+                        } else {
                             // Otherwise, access the codes property of the resulting Concept
-                            Expression codesAccessor = libraryBuilder.buildProperty(toList.getOperand(), "codes", false, toList.getOperand().getResultType());
+                            Expression codesAccessor = libraryBuilder.buildProperty(
+                                    toList.getOperand(),
+                                    "codes",
+                                    false,
+                                    toList.getOperand().getResultType());
                             retrieve.setCodes(codesAccessor);
                         }
-                    }
-                    else {
+                    } else {
                         // WARNING:
-                        libraryBuilder.recordParsingException(new CqlSemanticException("Terminology target is a list of concepts, but expects a list of codes",
-                                CqlCompilerException.ErrorSeverity.Warning, getTrackBack(ctx)));
+                        libraryBuilder.recordParsingException(new CqlSemanticException(
+                                "Terminology target is a list of concepts, but expects a list of codes",
+                                CqlCompilerException.ErrorSeverity.Warning,
+                                getTrackBack(ctx)));
                     }
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 // If something goes wrong attempting to resolve, just set to the expression and report it as a warning,
                 // it shouldn't prevent translation unless the modelinfo indicates strict retrieve typing
-                if ((libraryBuilder.isCompatibleWith("1.5") && !(terminology.getResultType().isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary"))))
-                    || (!libraryBuilder.isCompatibleWith("1.5") && !(terminology.getResultType() instanceof ListType))) {
+                if ((libraryBuilder.isCompatibleWith("1.5")
+                                && !(terminology
+                                        .getResultType()
+                                        .isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary"))))
+                        || (!libraryBuilder.isCompatibleWith("1.5")
+                                && !(terminology.getResultType() instanceof ListType))) {
                     retrieve.setCodes(libraryBuilder.resolveToList(terminology));
-                }
-                else {
+                } else {
                     retrieve.setCodes(terminology);
                 }
                 retrieve.setCodeComparator(codeComparator);
                 // ERROR:
                 // WARNING:
-                libraryBuilder.recordParsingException(new CqlSemanticException("Could not resolve membership operator for terminology target of the retrieve.",
-                        useStrictRetrieveTyping ? CqlCompilerException.ErrorSeverity.Error : CqlCompilerException.ErrorSeverity.Warning,
-                        getTrackBack(ctx), e));
+                libraryBuilder.recordParsingException(new CqlSemanticException(
+                        "Could not resolve membership operator for terminology target of the retrieve.",
+                        useStrictRetrieveTyping
+                                ? CqlCompilerException.ErrorSeverity.Error
+                                : CqlCompilerException.ErrorSeverity.Warning,
+                        getTrackBack(ctx),
+                        e));
             }
         }
 
@@ -3069,9 +3245,8 @@ DATETIME
 
             queryContext.enterSourceClause();
             try {
-                sources = (List<AliasedQuerySource>)visit(ctx.sourceClause());
-            }
-            finally {
+                sources = (List<AliasedQuerySource>) visit(ctx.sourceClause());
+            } finally {
                 queryContext.exitSourceClause();
             }
 
@@ -3103,7 +3278,8 @@ DATETIME
 
                 List<RelationshipClause> qicx = new ArrayList<>();
                 if (ctx.queryInclusionClause() != null) {
-                    for (cqlParser.QueryInclusionClauseContext queryInclusionClauseContext : ctx.queryInclusionClause()) {
+                    for (cqlParser.QueryInclusionClauseContext queryInclusionClauseContext :
+                            ctx.queryInclusionClause()) {
                         qicx.add((RelationshipClause) visit(queryInclusionClauseContext));
                     }
                 }
@@ -3116,20 +3292,21 @@ DATETIME
                 }
 
                 ReturnClause ret = ctx.returnClause() != null ? (ReturnClause) visit(ctx.returnClause()) : null;
-                AggregateClause agg = ctx.aggregateClause() != null ? (AggregateClause) visit(ctx.aggregateClause()) : null;
+                AggregateClause agg =
+                        ctx.aggregateClause() != null ? (AggregateClause) visit(ctx.aggregateClause()) : null;
 
                 if ((agg == null) && (ret == null) && (sources.size() > 1)) {
-                    ret = of.createReturnClause()
-                            .withDistinct(true);
+                    ret = of.createReturnClause().withDistinct(true);
 
                     Tuple returnExpression = of.createTuple();
                     TupleType returnType = new TupleType();
                     for (AliasedQuerySource aqs : sources) {
-                        TupleElement element =
-                                of.createTupleElement()
-                                        .withName(aqs.getAlias())
-                                        .withValue(of.createAliasRef().withName(aqs.getAlias()));
-                        DataType sourceType = aqs.getResultType() instanceof ListType ? ((ListType)aqs.getResultType()).getElementType() : aqs.getResultType();
+                        TupleElement element = of.createTupleElement()
+                                .withName(aqs.getAlias())
+                                .withValue(of.createAliasRef().withName(aqs.getAlias()));
+                        DataType sourceType = aqs.getResultType() instanceof ListType
+                                ? ((ListType) aqs.getResultType()).getElementType()
+                                : aqs.getResultType();
                         element.getValue().setResultType(sourceType); // Doesn't use the fluent API to avoid casting
                         element.setResultType(element.getValue().getResultType());
                         returnType.addElement(new TupleTypeElement(element.getName(), element.getResultType()));
@@ -3149,17 +3326,16 @@ DATETIME
                 DataType queryResultType = null;
                 if (agg != null) {
                     queryResultType = agg.getResultType();
-                }
-                else if (ret != null) {
+                } else if (ret != null) {
                     queryResultType = ret.getResultType();
-                }
-                else {
+                } else {
                     queryResultType = sources.get(0).getResultType();
                 }
 
                 SortClause sort = null;
                 if (agg == null) {
-                    queryContext.setResultElementType(queryContext.isSingular() ? null : ((ListType) queryResultType).getElementType());
+                    queryContext.setResultElementType(
+                            queryContext.isSingular() ? null : ((ListType) queryResultType).getElementType());
                     if (ctx.sortClause() != null) {
                         if (queryContext.isSingular()) {
                             // ERROR:
@@ -3168,10 +3344,12 @@ DATETIME
                         queryContext.enterSortClause();
                         try {
                             sort = (SortClause) visit(ctx.sortClause());
-                            // Validate that the sort can be performed based on the existence of comparison operators for all types involved
+                            // Validate that the sort can be performed based on the existence of comparison operators
+                            // for all types involved
                             for (SortByItem sortByItem : sort.getBy()) {
                                 if (sortByItem instanceof ByDirection) {
-                                    // validate that there is a comparison operator defined for the result element type of the query context
+                                    // validate that there is a comparison operator defined for the result element type
+                                    // of the query context
                                     libraryBuilder.verifyComparable(queryContext.getResultElementType());
                                 } else {
                                     libraryBuilder.verifyComparable(sortByItem.getResultType());
@@ -3181,8 +3359,7 @@ DATETIME
                             queryContext.exitSortClause();
                         }
                     }
-                }
-                else {
+                } else {
                     if (ctx.sortClause() != null) {
                         // ERROR:
                         throw new IllegalArgumentException("Sort clause cannot be used in an aggregate query.");
@@ -3200,8 +3377,7 @@ DATETIME
 
                 query.setResultType(queryResultType);
                 return query;
-            }
-            finally {
+            } finally {
                 if (expressionContextPushed) {
                     libraryBuilder.popExpressionContext();
                 }
@@ -3210,7 +3386,6 @@ DATETIME
                         libraryBuilder.popIdentifierForHiding();
                     }
                 }
-
             }
 
         } finally {
@@ -3241,10 +3416,10 @@ DATETIME
         if (aqs.getExpression() instanceof Retrieve) {
             Retrieve retrieve = (Retrieve) aqs.getExpression();
             String alias = aqs.getAlias();
-            if ((where instanceof IncludedIn || where instanceof In) && attemptDateRangeOptimization((BinaryExpression) where, retrieve, alias)) {
+            if ((where instanceof IncludedIn || where instanceof In)
+                    && attemptDateRangeOptimization((BinaryExpression) where, retrieve, alias)) {
                 where = null;
-            }
-            else if (where instanceof And && attemptDateRangeOptimization((And) where, retrieve, alias)) {
+            } else if (where instanceof And && attemptDateRangeOptimization((And) where, retrieve, alias)) {
                 // Now optimize out the trues from the Ands
                 where = consolidateAnd((And) where);
             }
@@ -3293,11 +3468,10 @@ DATETIME
         reference = getConversionReference(reference);
         reference = getChoiceSelection(reference);
         if (reference instanceof Property) {
-            Property property = (Property)reference;
+            Property property = (Property) reference;
             if (alias.equals(property.getScope())) {
                 return property.getPath();
-            }
-            else if (property.getSource() != null) {
+            } else if (property.getSource() != null) {
                 String subPath = getPropertyPath(property.getSource(), alias);
                 if (subPath != null) {
                     return String.format("%s.%s", subPath, property.getPath());
@@ -3317,11 +3491,19 @@ DATETIME
      */
     private Expression getConversionReference(Expression reference) {
         if (reference instanceof FunctionRef) {
-            FunctionRef functionRef = (FunctionRef)reference;
-            if (functionRef.getOperand().size() == 1 && functionRef.getResultType() != null && functionRef.getOperand().get(0).getResultType() != null) {
-                Operator o = this.libraryBuilder.getConversionMap().getConversionOperator(functionRef.getOperand().get(0).getResultType(), functionRef.getResultType());
-                if (o != null && o.getLibraryName() != null && o.getLibraryName().equals(functionRef.getLibraryName())
-                        && o.getName() != null && o.getName().equals(functionRef.getName())) {
+            FunctionRef functionRef = (FunctionRef) reference;
+            if (functionRef.getOperand().size() == 1
+                    && functionRef.getResultType() != null
+                    && functionRef.getOperand().get(0).getResultType() != null) {
+                Operator o = this.libraryBuilder
+                        .getConversionMap()
+                        .getConversionOperator(
+                                functionRef.getOperand().get(0).getResultType(), functionRef.getResultType());
+                if (o != null
+                        && o.getLibraryName() != null
+                        && o.getLibraryName().equals(functionRef.getLibraryName())
+                        && o.getName() != null
+                        && o.getName().equals(functionRef.getName())) {
                     return functionRef.getOperand().get(0);
                 }
             }
@@ -3333,13 +3515,13 @@ DATETIME
     /**
      * If this is a choice selection, return the argument of the choice selection, on the grounds that the date range optimization
      * should apply through the cast (i.e. it is an order-preserving cast)
-
+     *
      * @param reference the <code>Expression</code> to examine
      * @return The argument to the choice selection (i.e. As) if there was one, otherwise, the given <code>reference</code>
      */
     private Expression getChoiceSelection(Expression reference) {
         if (reference instanceof As) {
-            As as = (As)reference;
+            As as = (As) reference;
             if (as.getOperand() != null && as.getOperand().getResultType() instanceof ChoiceType) {
                 return as.getOperand();
             }
@@ -3369,7 +3551,8 @@ DATETIME
 
         for (int i = 0; i < and.getOperand().size(); i++) {
             Expression operand = and.getOperand().get(i);
-            if ((operand instanceof IncludedIn || operand instanceof In) && attemptDateRangeOptimization((BinaryExpression) operand, retrieve, alias)) {
+            if ((operand instanceof IncludedIn || operand instanceof In)
+                    && attemptDateRangeOptimization((BinaryExpression) operand, retrieve, alias)) {
                 // Replace optimized part in And with true -- to be optimized out later
                 and.getOperand().set(i, libraryBuilder.createLiteral(true));
                 return true;
@@ -3415,48 +3598,50 @@ DATETIME
      * otherwise.
      */
     private boolean isRHSEligibleForDateRangeOptimization(Expression rhs) {
-        return
-            rhs.getResultType().isSubTypeOf(libraryBuilder.resolveTypeName("System", "DateTime"))
-                || rhs.getResultType().isSubTypeOf(new IntervalType(libraryBuilder.resolveTypeName("System", "DateTime")));
+        return rhs.getResultType().isSubTypeOf(libraryBuilder.resolveTypeName("System", "DateTime"))
+                || rhs.getResultType()
+                        .isSubTypeOf(new IntervalType(libraryBuilder.resolveTypeName("System", "DateTime")));
 
-        // BTR: The only requirement for the optimization is that the expression be of type DateTime or Interval<DateTime>
+        // BTR: The only requirement for the optimization is that the expression be of type DateTime or
+        // Interval<DateTime>
         // Whether or not the expression can be statically evaluated (literal, in the loose sense of the word) is really
         // a function of the engine in determining the "initial" data requirements, versus subsequent data requirements
-//        Element targetElement = rhs;
-//        if (rhs instanceof ParameterRef) {
-//            String paramName = ((ParameterRef) rhs).getName();
-//            for (ParameterDef def : getLibrary().getParameters().getDef()) {
-//                if (paramName.equals(def.getName())) {
-//                    targetElement = def.getParameterTypeSpecifier();
-//                    if (targetElement == null) {
-//                        targetElement = def.getDefault();
-//                    }
-//                    break;
-//                }
-//            }
-//        } else if (rhs instanceof ExpressionRef && !(rhs instanceof FunctionRef)) {
-//            // TODO: Support forward declaration, if necessary
-//            String expName = ((ExpressionRef) rhs).getName();
-//            for (ExpressionDef def : getLibrary().getStatements().getDef()) {
-//                if (expName.equals(def.getName())) {
-//                    targetElement = def.getExpression();
-//                }
-//            }
-//        }
-//
-//        boolean isEligible = false;
-//        if (targetElement instanceof DateTime) {
-//            isEligible = true;
-//        } else if (targetElement instanceof Interval) {
-//            Interval ivl = (Interval) targetElement;
-//            isEligible = (ivl.getLow() != null && ivl.getLow() instanceof DateTime) || (ivl.getHigh() != null && ivl.getHigh() instanceof DateTime);
-//        } else if (targetElement instanceof IntervalTypeSpecifier) {
-//            IntervalTypeSpecifier spec = (IntervalTypeSpecifier) targetElement;
-//            isEligible = isDateTimeTypeSpecifier(spec.getPointType());
-//        } else if (targetElement instanceof NamedTypeSpecifier) {
-//            isEligible = isDateTimeTypeSpecifier(targetElement);
-//        }
-//        return isEligible;
+        //        Element targetElement = rhs;
+        //        if (rhs instanceof ParameterRef) {
+        //            String paramName = ((ParameterRef) rhs).getName();
+        //            for (ParameterDef def : getLibrary().getParameters().getDef()) {
+        //                if (paramName.equals(def.getName())) {
+        //                    targetElement = def.getParameterTypeSpecifier();
+        //                    if (targetElement == null) {
+        //                        targetElement = def.getDefault();
+        //                    }
+        //                    break;
+        //                }
+        //            }
+        //        } else if (rhs instanceof ExpressionRef && !(rhs instanceof FunctionRef)) {
+        //            // TODO: Support forward declaration, if necessary
+        //            String expName = ((ExpressionRef) rhs).getName();
+        //            for (ExpressionDef def : getLibrary().getStatements().getDef()) {
+        //                if (expName.equals(def.getName())) {
+        //                    targetElement = def.getExpression();
+        //                }
+        //            }
+        //        }
+        //
+        //        boolean isEligible = false;
+        //        if (targetElement instanceof DateTime) {
+        //            isEligible = true;
+        //        } else if (targetElement instanceof Interval) {
+        //            Interval ivl = (Interval) targetElement;
+        //            isEligible = (ivl.getLow() != null && ivl.getLow() instanceof DateTime) || (ivl.getHigh() != null
+        // && ivl.getHigh() instanceof DateTime);
+        //        } else if (targetElement instanceof IntervalTypeSpecifier) {
+        //            IntervalTypeSpecifier spec = (IntervalTypeSpecifier) targetElement;
+        //            isEligible = isDateTimeTypeSpecifier(spec.getPointType());
+        //        } else if (targetElement instanceof NamedTypeSpecifier) {
+        //            isEligible = isDateTimeTypeSpecifier(targetElement);
+        //        }
+        //        return isEligible;
     }
 
     private boolean isDateTimeTypeSpecifier(Element e) {
@@ -3474,7 +3659,8 @@ DATETIME
 
     @Override
     public Object visitLetClauseItem(cqlParser.LetClauseItemContext ctx) {
-        LetClause letClause = of.createLetClause().withExpression(parseExpression(ctx.expression()))
+        LetClause letClause = of.createLetClause()
+                .withExpression(parseExpression(ctx.expression()))
                 .withIdentifier(parseString(ctx.identifier()));
         letClause.setResultType(letClause.getExpression().getResultType());
         libraryBuilder.peekQueryContext().addLetClause(letClause);
@@ -3483,7 +3669,8 @@ DATETIME
 
     @Override
     public Object visitAliasedQuerySource(cqlParser.AliasedQuerySourceContext ctx) {
-        AliasedQuerySource source = of.createAliasedQuerySource().withExpression(parseExpression(ctx.querySource()))
+        AliasedQuerySource source = of.createAliasedQuerySource()
+                .withExpression(parseExpression(ctx.querySource()))
                 .withAlias(parseString(ctx.alias()));
         source.setResultType(source.getExpression().getResultType());
         return source;
@@ -3523,7 +3710,7 @@ DATETIME
 
     @Override
     public Object visitWhereClause(cqlParser.WhereClauseContext ctx) {
-        Expression result = (Expression)visit(ctx.expression());
+        Expression result = (Expression) visit(ctx.expression());
         DataTypes.verifyType(result.getResultType(), libraryBuilder.resolveTypeName("System", "Boolean"));
         return result;
     }
@@ -3545,9 +3732,10 @@ DATETIME
         }
 
         returnClause.setExpression(parseExpression(ctx.expression()));
-        returnClause.setResultType(libraryBuilder.peekQueryContext().isSingular()
-                ? returnClause.getExpression().getResultType()
-                : new ListType(returnClause.getExpression().getResultType()));
+        returnClause.setResultType(
+                libraryBuilder.peekQueryContext().isSingular()
+                        ? returnClause.getExpression().getResultType()
+                        : new ListType(returnClause.getExpression().getResultType()));
 
         return returnClause;
     }
@@ -3597,13 +3785,12 @@ DATETIME
         Expression accumulator = null;
         if (aggregateClause.getStarting() != null) {
             accumulator = libraryBuilder.buildNull(aggregateClause.getStarting().getResultType());
-        }
-        else {
+        } else {
             accumulator = libraryBuilder.buildNull(libraryBuilder.resolveTypeName("System", "Any"));
         }
 
-        LetClause letClause = of.createLetClause().withExpression(accumulator)
-                .withIdentifier(aggregateClause.getIdentifier());
+        LetClause letClause =
+                of.createLetClause().withExpression(accumulator).withIdentifier(aggregateClause.getIdentifier());
         letClause.setResultType(letClause.getExpression().getResultType());
         libraryBuilder.peekQueryContext().addLetClause(letClause);
 
@@ -3635,13 +3822,13 @@ DATETIME
     public SortByItem visitSortByItem(cqlParser.SortByItemContext ctx) {
         Expression sortExpression = parseExpression(ctx.expressionTerm());
         if (sortExpression instanceof IdentifierRef) {
-            return (SortByItem)of.createByColumn()
-                    .withPath(((IdentifierRef)sortExpression).getName())
+            return (SortByItem) of.createByColumn()
+                    .withPath(((IdentifierRef) sortExpression).getName())
                     .withDirection(parseSortDirection(ctx.sortDirection()))
                     .withResultType(sortExpression.getResultType());
         }
 
-        return (SortByItem)of.createByExpression()
+        return (SortByItem) of.createByExpression()
                 .withExpression(sortExpression)
                 .withDirection(parseSortDirection(ctx.sortDirection()))
                 .withResultType(sortExpression.getResultType());
@@ -3693,9 +3880,8 @@ DATETIME
         Expression left = parseExpression(ctx.expressionTerm());
         libraryBuilder.pushExpressionTarget(left);
         try {
-            return (Expression)visit(ctx.qualifiedInvocation());
-        }
-        finally {
+            return (Expression) visit(ctx.qualifiedInvocation());
+        } finally {
             libraryBuilder.popExpressionTarget();
         }
     }
@@ -3740,8 +3926,7 @@ DATETIME
             Expression target = libraryBuilder.popExpressionTarget();
             try {
                 return libraryBuilder.resolveAccessor(target, identifier);
-            }
-            finally {
+            } finally {
                 libraryBuilder.pushExpressionTarget(target);
             }
         }
@@ -3750,7 +3935,8 @@ DATETIME
     }
 
     private Expression resolveIdentifier(String identifier) {
-        // If the identifier cannot be resolved in the library builder, check for forward declarations for expressions and parameters
+        // If the identifier cannot be resolved in the library builder, check for forward declarations for expressions
+        // and parameters
         Expression result = libraryBuilder.resolveIdentifier(identifier, false);
         if (result == null) {
             ExpressionDefinitionInfo expressionInfo = libraryInfo.resolveExpressionReference(identifier);
@@ -3763,14 +3949,14 @@ DATETIME
                     try {
                         if (expressionInfo.getDefinition() == null) {
                             // ERROR:
-                            throw new IllegalArgumentException(String.format("Could not validate reference to expression %s because its definition contains errors.",
+                            throw new IllegalArgumentException(String.format(
+                                    "Could not validate reference to expression %s because its definition contains errors.",
                                     expressionInfo.getName()));
                         }
 
                         // Have to call the visit to get the outer processing to occur
                         visit(expressionInfo.getDefinition());
-                    }
-                    finally {
+                    } finally {
                         chunks = saveChunks;
                         forwards.pop();
                     }
@@ -3795,11 +3981,21 @@ DATETIME
             // parser as a function, instead of as the keyword-based parser rule. In this case, the function
             // name needs to be translated to the System function name in order to resolve.
             switch (functionName) {
-                case "contains": functionName = "Contains"; break;
-                case "distinct": functionName = "Distinct"; break;
-                case "exists": functionName = "Exists"; break;
-                case "in": functionName = "In"; break;
-                case "not": functionName = "Not"; break;
+                case "contains":
+                    functionName = "Contains";
+                    break;
+                case "distinct":
+                    functionName = "Distinct";
+                    break;
+                case "exists":
+                    functionName = "Exists";
+                    break;
+                case "in":
+                    functionName = "In";
+                    break;
+                case "not":
+                    functionName = "Not";
+                    break;
             }
         }
 
@@ -3810,13 +4006,19 @@ DATETIME
         List<Expression> expressions = new ArrayList<Expression>();
         if (paramList != null && paramList.expression() != null) {
             for (cqlParser.ExpressionContext expressionContext : paramList.expression()) {
-                expressions.add((Expression)visit(expressionContext));
+                expressions.add((Expression) visit(expressionContext));
             }
         }
         return resolveFunction(libraryName, functionName, expressions, true, false, false);
     }
 
-    public Expression resolveFunction(String libraryName, String functionName, List<Expression> expressions, boolean mustResolve, boolean allowPromotionAndDemotion, boolean allowFluent) {
+    public Expression resolveFunction(
+            String libraryName,
+            String functionName,
+            List<Expression> expressions,
+            boolean mustResolve,
+            boolean allowPromotionAndDemotion,
+            boolean allowFluent) {
         if (allowFluent) {
             libraryBuilder.checkCompatibilityLevel("Fluent functions", "1.5");
         }
@@ -3825,7 +4027,8 @@ DATETIME
 
         // 1. Ensure all overloads of the function are registered with the operator map
         // 2. Resolve the function, allowing for the case that operator map is a skeleton
-        // 3. If the resolution from the operator map is a skeleton, compile the function body to determine the result type
+        // 3. If the resolution from the operator map is a skeleton, compile the function body to determine the result
+        // type
 
         // Find all functionDefinitionInfo instances with the given name
         // register each functionDefinitionInfo
@@ -3843,14 +4046,22 @@ DATETIME
             }
         }
 
-        Invocation result = libraryBuilder.resolveFunction(libraryName, functionName, expressions, mustResolve, allowPromotionAndDemotion, allowFluent);
+        Invocation result = libraryBuilder.resolveFunction(
+                libraryName, functionName, expressions, mustResolve, allowPromotionAndDemotion, allowFluent);
 
         if (result instanceof FunctionRefInvocation) {
-            FunctionRefInvocation invocation = (FunctionRefInvocation)result;
+            FunctionRefInvocation invocation = (FunctionRefInvocation) result;
             if (invocation.getResolution() != null
                     && invocation.getResolution().getOperator() != null
                     && (invocation.getResolution().getOperator().getLibraryName() == null
-                        || invocation.getResolution().getOperator().getLibraryName().equals(libraryBuilder.getCompiledLibrary().getIdentifier().getId()))) {
+                            || invocation
+                                    .getResolution()
+                                    .getOperator()
+                                    .getLibraryName()
+                                    .equals(libraryBuilder
+                                            .getCompiledLibrary()
+                                            .getIdentifier()
+                                            .getId()))) {
                 Operator op = invocation.getResolution().getOperator();
                 FunctionHeader fh = getFunctionHeader(op);
                 if (!fh.getIsCompiled()) {
@@ -3862,8 +4073,7 @@ DATETIME
                         FunctionDef fd = compileFunctionDefinition(ctx);
                         op.setResultType(fd.getResultType());
                         invocation.setResultType(op.getResultType());
-                    }
-                    finally {
+                    } finally {
                         setCurrentContext(saveContext);
                         this.chunks = saveChunks;
                     }
@@ -3872,7 +4082,8 @@ DATETIME
         }
 
         if (mustResolve) {
-            // Extra internal error handling, these should never be hit if the two-phase operator compile is working as expected
+            // Extra internal error handling, these should never be hit if the two-phase operator compile is working as
+            // expected
             if (result == null) {
                 throw new IllegalArgumentException("Internal error: could not resolve function");
             }
@@ -3898,21 +4109,25 @@ DATETIME
             try {
                 // If the target is a library reference, resolve as a standard qualified call
                 if (target instanceof LibraryRef) {
-                    return resolveFunction(((LibraryRef)target).getLibraryName(), identifier, paramListCtx);
+                    return resolveFunction(((LibraryRef) target).getLibraryName(), identifier, paramListCtx);
                 }
 
                 // NOTE: FHIRPath method invocation
                 // If the target is an expression, resolve as a method invocation
                 if (target instanceof Expression && isMethodInvocationEnabled()) {
-                    return systemMethodResolver.resolveMethod((Expression)target, identifier, paramListCtx, true);
+                    return systemMethodResolver.resolveMethod((Expression) target, identifier, paramListCtx, true);
                 }
 
                 if (!isMethodInvocationEnabled()) {
-                    throw new CqlCompilerException(String.format("The identifier %s could not be resolved as an invocation because method-style invocation is disabled.", identifier), CqlCompilerException.ErrorSeverity.Error);
+                    throw new CqlCompilerException(
+                            String.format(
+                                    "The identifier %s could not be resolved as an invocation because method-style invocation is disabled.",
+                                    identifier),
+                            CqlCompilerException.ErrorSeverity.Error);
                 }
-                throw new IllegalArgumentException(String.format("Invalid invocation target: %s", target.getClass().getName()));
-            }
-            finally {
+                throw new IllegalArgumentException(String.format(
+                        "Invalid invocation target: %s", target.getClass().getName()));
+            } finally {
                 libraryBuilder.pushExpressionTarget(target);
             }
         }
@@ -3926,7 +4141,8 @@ DATETIME
             }
         }
 
-        // If we are in an implicit context (i.e. a context named the same as a parameter), the function may be resolved as a method invocation
+        // If we are in an implicit context (i.e. a context named the same as a parameter), the function may be resolved
+        // as a method invocation
         ParameterRef parameterRef = libraryBuilder.resolveImplicitContext();
         if (parameterRef != null) {
             Expression result = systemMethodResolver.resolveMethod(parameterRef, identifier, paramListCtx, false);
@@ -3983,7 +4199,8 @@ DATETIME
         Iterable<FunctionDef> fds = libraryBuilder.getCompiledLibrary().resolveFunctionRef(op.getName(), st);
         for (FunctionDef fd : fds) {
             if (fd.getOperand().size() == op.getSignature().getSize()) {
-                Iterator<DataType> signatureTypes = op.getSignature().getOperandTypes().iterator();
+                Iterator<DataType> signatureTypes =
+                        op.getSignature().getOperandTypes().iterator();
                 boolean signaturesMatch = true;
                 for (int i = 0; i < fd.getOperand().size(); i++) {
                     if (!DataTypes.equal(fd.getOperand().get(i).getResultType(), signatureTypes.next())) {
@@ -3993,9 +4210,9 @@ DATETIME
                 if (signaturesMatch) {
                     if (target == null) {
                         target = fd;
-                    }
-                    else {
-                        throw new IllegalArgumentException(String.format("Internal error attempting to resolve function header for %s", op.getName()));
+                    } else {
+                        throw new IllegalArgumentException(String.format(
+                                "Internal error attempting to resolve function header for %s", op.getName()));
                     }
                 }
             }
@@ -4019,12 +4236,14 @@ DATETIME
     private FunctionHeader getFunctionHeader(Operator op) {
         FunctionDef fd = getFunctionDef(op);
         if (fd == null) {
-            throw new IllegalArgumentException(String.format("Could not resolve function header for operator %s", op.getName()));
+            throw new IllegalArgumentException(
+                    String.format("Could not resolve function header for operator %s", op.getName()));
         }
         FunctionHeader result = getFunctionHeaderByDef(fd);
-        //FunctionHeader result = functionHeadersByDef.get(fd);
+        // FunctionHeader result = functionHeadersByDef.get(fd);
         if (result == null) {
-            throw new IllegalArgumentException(String.format("Could not resolve function header for operator %s", op.getName()));
+            throw new IllegalArgumentException(
+                    String.format("Could not resolve function header for operator %s", op.getName()));
         }
         return result;
     }
@@ -4032,7 +4251,9 @@ DATETIME
     private cqlParser.FunctionDefinitionContext getFunctionDefinitionContext(FunctionHeader fh) {
         cqlParser.FunctionDefinitionContext ctx = functionDefinitions.get(fh);
         if (ctx == null) {
-            throw new IllegalArgumentException(String.format("Could not resolve function definition context for function header %s", fh.getFunctionDef().getName()));
+            throw new IllegalArgumentException(String.format(
+                    "Could not resolve function definition context for function header %s",
+                    fh.getFunctionDef().getName()));
         }
         return ctx;
     }
@@ -4051,7 +4272,9 @@ DATETIME
         final TypeSpecifier resultType = fh.getResultType();
         final Operator op = libraryBuilder.resolveFunctionDefinition(fh.getFunctionDef());
         if (op == null) {
-            throw new IllegalArgumentException(String.format("Internal error: Could not resolve operator map entry for function header %s", fh.getMangledName()));
+            throw new IllegalArgumentException(String.format(
+                    "Internal error: Could not resolve operator map entry for function header %s",
+                    fh.getMangledName()));
         }
         libraryBuilder.pushIdentifierForHiding(fun.getName(), fun);
         final List<OperandDef> operand = op.getFunctionDef().getOperand();
@@ -4080,22 +4303,27 @@ DATETIME
                 libraryBuilder.endFunctionDef();
             }
 
-            if (resultType != null && fun.getExpression() != null && fun.getExpression().getResultType() != null) {
+            if (resultType != null
+                    && fun.getExpression() != null
+                    && fun.getExpression().getResultType() != null) {
                 if (!DataTypes.subTypeOf(fun.getExpression().getResultType(), resultType.getResultType())) {
                     // ERROR:
-                    throw new IllegalArgumentException(String.format("Function %s has declared return type %s but the function body returns incompatible type %s.",
-                            fun.getName(), resultType.getResultType(), fun.getExpression().getResultType()));
+                    throw new IllegalArgumentException(String.format(
+                            "Function %s has declared return type %s but the function body returns incompatible type %s.",
+                            fun.getName(),
+                            resultType.getResultType(),
+                            fun.getExpression().getResultType()));
                 }
             }
 
             fun.setResultType(fun.getExpression().getResultType());
             op.setResultType(fun.getResultType());
-        }
-        else {
+        } else {
             fun.setExternal(true);
             if (resultType == null) {
                 // ERROR:
-                throw new IllegalArgumentException(String.format("Function %s is marked external but does not declare a return type.", fun.getName()));
+                throw new IllegalArgumentException(String.format(
+                        "Function %s is marked external but does not declare a return type.", fun.getName()));
             }
             fun.setResultType(resultType.getResultType());
             op.setResultType(fun.getResultType());
@@ -4118,8 +4346,7 @@ DATETIME
         libraryBuilder.pushLiteralContext();
         try {
             return parseExpression(pt);
-        }
-        finally {
+        } finally {
             libraryBuilder.popLiteralContext();
         }
     }
@@ -4132,7 +4359,8 @@ DATETIME
         boolean ret = false;
         if (expression instanceof Literal) {
             Literal lit = (Literal) expression;
-            ret = lit.getValueType().equals(libraryBuilder.dataTypeToQName(libraryBuilder.resolveTypeName("System", "Boolean")));
+            ret = lit.getValueType()
+                    .equals(libraryBuilder.dataTypeToQName(libraryBuilder.resolveTypeName("System", "Boolean")));
             if (ret && bool != null) {
                 ret = bool.equals(Boolean.valueOf(lit.getValue()));
             }
@@ -4142,10 +4370,10 @@ DATETIME
 
     private TrackBack getTrackBack(ParseTree tree) {
         if (tree instanceof ParserRuleContext) {
-            return getTrackBack((ParserRuleContext)tree);
+            return getTrackBack((ParserRuleContext) tree);
         }
         if (tree instanceof TerminalNode) {
-            return getTrackBack((TerminalNode)tree);
+            return getTrackBack((TerminalNode) tree);
         }
         return null;
     }
@@ -4156,8 +4384,8 @@ DATETIME
                 node.getSymbol().getLine(),
                 node.getSymbol().getCharPositionInLine() + 1, // 1-based instead of 0-based
                 node.getSymbol().getLine(),
-                node.getSymbol().getCharPositionInLine() + node.getSymbol().getText().length()
-        );
+                node.getSymbol().getCharPositionInLine()
+                        + node.getSymbol().getText().length());
         return tb;
     }
 
@@ -4168,7 +4396,7 @@ DATETIME
                 ctx.getStart().getCharPositionInLine() + 1, // 1-based instead of 0-based
                 ctx.getStop().getLine(),
                 ctx.getStop().getCharPositionInLine() + ctx.getStop().getText().length() // 1-based instead of 0-based
-        );
+                );
         return tb;
     }
 
@@ -4180,8 +4408,7 @@ DATETIME
         if (resultTypesEnabled() && element.getResultType() != null) {
             if (element.getResultType() instanceof NamedType) {
                 element.setResultTypeName(libraryBuilder.dataTypeToQName(element.getResultType()));
-            }
-            else {
+            } else {
                 element.setResultTypeSpecifier(libraryBuilder.dataTypeToTypeSpecifier(element.getResultType()));
             }
         }
@@ -4195,7 +4422,7 @@ DATETIME
         }
 
         if (trackable instanceof Element) {
-            decorate((Element)trackable, tb);
+            decorate((Element) trackable, tb);
         }
 
         return tb;
@@ -4209,7 +4436,7 @@ DATETIME
         }
 
         if (trackable instanceof Element) {
-            decorate((Element)trackable, tb);
+            decorate((Element) trackable, tb);
         }
 
         return tb;

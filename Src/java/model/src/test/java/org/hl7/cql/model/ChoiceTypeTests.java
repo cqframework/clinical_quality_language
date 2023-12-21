@@ -1,24 +1,18 @@
 package org.hl7.cql.model;
 
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
-
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import org.testng.annotations.Test;
 
 public class ChoiceTypeTests {
 
     @Test
     public void testChoiceTypeIsCompatible() {
         ChoiceType first = new ChoiceType(
-                Arrays.asList(new SimpleType("Period"), 
-                new SimpleType("Interval"), 
-                new SimpleType("DateTime")));
+                Arrays.asList(new SimpleType("Period"), new SimpleType("Interval"), new SimpleType("DateTime")));
 
-        ChoiceType second = new ChoiceType(
-            Arrays.asList(new SimpleType("Period"), new SimpleType("DateTime")));
+        ChoiceType second = new ChoiceType(Arrays.asList(new SimpleType("Period"), new SimpleType("DateTime")));
 
         assertTrue(first.isCompatibleWith(second));
         assertTrue(second.isCompatibleWith(first));
@@ -32,12 +26,9 @@ public class ChoiceTypeTests {
     @Test
     public void testChoiceTypeIsNotCompatible() {
         ChoiceType first = new ChoiceType(
-                Arrays.asList(new SimpleType("Period"),
-                        new SimpleType("Interval"),
-                        new SimpleType("DateTime")));
+                Arrays.asList(new SimpleType("Period"), new SimpleType("Interval"), new SimpleType("DateTime")));
 
-        ChoiceType second = new ChoiceType(
-                Arrays.asList(new SimpleType("Integer"), new SimpleType("String")));
+        ChoiceType second = new ChoiceType(Arrays.asList(new SimpleType("Integer"), new SimpleType("String")));
 
         assertFalse(first.isCompatibleWith(second));
         assertFalse(second.isCompatibleWith(first));

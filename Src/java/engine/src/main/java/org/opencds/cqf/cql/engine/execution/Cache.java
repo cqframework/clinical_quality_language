@@ -1,12 +1,11 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import org.hl7.elm.r1.FunctionDef;
-import org.hl7.elm.r1.FunctionRef;
-import org.hl7.elm.r1.VersionedIdentifier;
-
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import org.hl7.elm.r1.FunctionDef;
+import org.hl7.elm.r1.FunctionRef;
+import org.hl7.elm.r1.VersionedIdentifier;
 
 /**
  * There are at least two types of data that need to be cached, some that is context dependent, like expression results
@@ -20,12 +19,14 @@ public class Cache {
     private Map<FunctionRef, FunctionDef> functionCache = new HashMap<>();
 
     @SuppressWarnings("serial")
-    private Map<VersionedIdentifier, Map<String, ExpressionResult>> expressions = new LinkedHashMap<VersionedIdentifier, Map<String, ExpressionResult>>(10, 0.9f, true) {
-        @Override
-        protected boolean removeEldestEntry(Map.Entry<VersionedIdentifier, Map<String, ExpressionResult>> eldestEntry) {
-            return size() > 10;
-        }
-    };
+    private Map<VersionedIdentifier, Map<String, ExpressionResult>> expressions =
+            new LinkedHashMap<VersionedIdentifier, Map<String, ExpressionResult>>(10, 0.9f, true) {
+                @Override
+                protected boolean removeEldestEntry(
+                        Map.Entry<VersionedIdentifier, Map<String, ExpressionResult>> eldestEntry) {
+                    return size() > 10;
+                }
+            };
 
     @SuppressWarnings("serial")
     protected Map<String, ExpressionResult> constructLibraryExpressionHashMap() {
@@ -46,8 +47,7 @@ public class Cache {
     }
 
     protected Map<String, ExpressionResult> getExpressionCache(VersionedIdentifier libraryId) {
-        return getExpressions()
-                .computeIfAbsent(libraryId, k-> constructLibraryExpressionHashMap());
+        return getExpressions().computeIfAbsent(libraryId, k -> constructLibraryExpressionHashMap());
     }
 
     public boolean isExpressionCached(VersionedIdentifier libraryId, String name) {

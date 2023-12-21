@@ -1,9 +1,8 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.math.BigDecimal;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.runtime.Quantity;
-
-import java.math.BigDecimal;
 
 /*
 Ceiling(argument Decimal) Integer
@@ -21,14 +20,15 @@ public class CeilingEvaluator {
         }
 
         if (operand instanceof BigDecimal) {
-            return BigDecimal.valueOf(Math.ceil(((BigDecimal)operand).doubleValue())).intValue();
+            return BigDecimal.valueOf(Math.ceil(((BigDecimal) operand).doubleValue()))
+                    .intValue();
+        } else if (operand instanceof Quantity) {
+            return BigDecimal.valueOf(Math.ceil(((Quantity) operand).getValue().doubleValue()))
+                    .intValue();
         }
 
-        else if (operand instanceof Quantity) {
-            return BigDecimal.valueOf(Math.ceil(((Quantity)operand).getValue().doubleValue())).intValue();
-        }
-
-        throw new InvalidOperatorArgument("Ceiling(Decimal)", String.format("Ceiling(%s)", operand.getClass().getName()));
+        throw new InvalidOperatorArgument(
+                "Ceiling(Decimal)",
+                String.format("Ceiling(%s)", operand.getClass().getName()));
     }
-
 }

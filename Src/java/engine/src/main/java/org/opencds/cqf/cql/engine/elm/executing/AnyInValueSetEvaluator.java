@@ -5,26 +5,21 @@ import org.opencds.cqf.cql.engine.execution.State;
 
 public class AnyInValueSetEvaluator {
 
-    public static Object internalEvaluate(Object codes, ValueSetRef valueSetRef,  Object valueset, State state)
-    {
+    public static Object internalEvaluate(Object codes, ValueSetRef valueSetRef, Object valueset, State state) {
         Object vs = null;
         if (valueSetRef != null) {
             vs = ValueSetRefEvaluator.toValueSet(state, valueSetRef);
-        }
-        else if (valueset != null) {
+        } else if (valueset != null) {
             vs = valueset;
         }
 
         if (codes == null || vs == null) return null;
 
-        if (codes instanceof Iterable)
-        {
+        if (codes instanceof Iterable) {
             Object result;
-            for (Object code : (Iterable<?>) codes)
-            {
+            for (Object code : (Iterable<?>) codes) {
                 result = InValueSetEvaluator.inValueSet(code, vs, state);
-                if (result instanceof Boolean && (Boolean) result)
-                {
+                if (result instanceof Boolean && (Boolean) result) {
                     return true;
                 }
             }

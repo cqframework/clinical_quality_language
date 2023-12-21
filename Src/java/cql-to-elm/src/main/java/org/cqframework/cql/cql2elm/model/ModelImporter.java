@@ -1,11 +1,10 @@
 package org.cqframework.cql.cql2elm.model;
 
-import org.cqframework.cql.cql2elm.ModelManager;
-import org.hl7.cql.model.NamespaceManager;
-import org.hl7.cql.model.*;
-import org.hl7.elm_modelinfo.r1.*;
-
 import java.util.*;
+import org.cqframework.cql.cql2elm.ModelManager;
+import org.hl7.cql.model.*;
+import org.hl7.cql.model.NamespaceManager;
+import org.hl7.elm_modelinfo.r1.*;
 
 public class ModelImporter {
 
@@ -57,10 +56,9 @@ public class ModelImporter {
         // Import model types
         for (TypeInfo t : this.modelInfo.getTypeInfo()) {
             if (t instanceof SimpleTypeInfo) {
-                typeInfoIndex.put(ensureUnqualified(((SimpleTypeInfo)t).getName()), t);
-            }
-            else if (t instanceof ClassInfo) {
-                ClassInfo classInfo = (ClassInfo)t;
+                typeInfoIndex.put(ensureUnqualified(((SimpleTypeInfo) t).getName()), t);
+            } else if (t instanceof ClassInfo) {
+                ClassInfo classInfo = (ClassInfo) t;
                 if (classInfo.getName() != null) {
                     typeInfoIndex.put(ensureUnqualified(classInfo.getName()), classInfo);
                 }
@@ -89,36 +87,54 @@ public class ModelImporter {
             DataType contextType = resolveTypeSpecifier(c.getContextType());
             if (!(contextType instanceof ClassType)) {
                 // ERROR:
-                throw new IllegalArgumentException(String.format("Model context %s must be a class type.", c.getName()));
+                throw new IllegalArgumentException(
+                        String.format("Model context %s must be a class type.", c.getName()));
             }
-            ModelContext modelContext = new ModelContext(c.getName(), (ClassType)contextType, Arrays.asList(c.getKeyElement().split(";")), c.getBirthDateElement());
+            ModelContext modelContext = new ModelContext(
+                    c.getName(),
+                    (ClassType) contextType,
+                    Arrays.asList(c.getKeyElement().split(";")),
+                    c.getBirthDateElement());
             // TODO: Validate key elements correspond to attributes of the class type
             contexts.add(modelContext);
         }
 
-        // For backwards compatibility with model info files that don't specify contexts, create a default context based on the patient class information if it's present
+        // For backwards compatibility with model info files that don't specify contexts, create a default context based
+        // on the patient class information if it's present
         if (contexts.size() == 0 && this.modelInfo.getPatientClassName() != null) {
             DataType contextType = resolveTypeName(this.modelInfo.getPatientClassName());
             if (contextType instanceof ClassType) {
-                ModelContext modelContext = new ModelContext(((ClassType)contextType).getSimpleName(), (ClassType)contextType, Arrays.asList("id"), this.modelInfo.getPatientBirthDatePropertyName());
+                ModelContext modelContext = new ModelContext(
+                        ((ClassType) contextType).getSimpleName(),
+                        (ClassType) contextType,
+                        Arrays.asList("id"),
+                        this.modelInfo.getPatientBirthDatePropertyName());
                 contexts.add(modelContext);
                 defaultContext = modelContext;
             }
         }
 
-        for (TypeInfo t: this.modelInfo.getTypeInfo()) {
+        for (TypeInfo t : this.modelInfo.getTypeInfo()) {
             DataType type = resolveTypeInfo(t);
             dataTypes.add(type);
 
             if (t instanceof ClassInfo) {
-                importRelationships((ClassInfo)t, (ClassType)type);
+                importRelationships((ClassInfo) t, (ClassType) type);
             }
         }
     }
 
-    public Map<String, DataType> getTypes() { return resolvedTypes; }
-    public Iterable<Conversion> getConversions() { return conversions; }
-    public Iterable<ModelContext> getContexts() { return contexts; }
+    public Map<String, DataType> getTypes() {
+        return resolvedTypes;
+    }
+
+    public Iterable<Conversion> getConversions() {
+        return conversions;
+    }
+
+    public Iterable<ModelContext> getContexts() {
+        return contexts;
+    }
 
     public String getDefaultContextName() {
         if (this.modelInfo.getDefaultContext() != null) {
@@ -142,22 +158,17 @@ public class ModelImporter {
 
     private DataType resolveTypeInfo(TypeInfo t) {
         if (t instanceof SimpleTypeInfo) {
-            return resolveSimpleType((SimpleTypeInfo)t);
-        }
-        else if (t instanceof ClassInfo) {
-            return resolveClassType((ClassInfo)t);
-        }
-        else if (t instanceof TupleTypeInfo) {
-            return resolveTupleType((TupleTypeInfo)t);
-        }
-        else if (t instanceof IntervalTypeInfo) {
-            return resolveIntervalType((IntervalTypeInfo)t);
-        }
-        else if (t instanceof ListTypeInfo) {
-            return resolveListType((ListTypeInfo)t);
-        }
-        else if (t instanceof ChoiceTypeInfo) {
-            return resolveChoiceType((ChoiceTypeInfo)t);
+            return resolveSimpleType((SimpleTypeInfo) t);
+        } else if (t instanceof ClassInfo) {
+            return resolveClassType((ClassInfo) t);
+        } else if (t instanceof TupleTypeInfo) {
+            return resolveTupleType((TupleTypeInfo) t);
+        } else if (t instanceof IntervalTypeInfo) {
+            return resolveIntervalType((IntervalTypeInfo) t);
+        } else if (t instanceof ListTypeInfo) {
+            return resolveListType((ListTypeInfo) t);
+        } else if (t instanceof ChoiceTypeInfo) {
+            return resolveChoiceType((ChoiceTypeInfo) t);
         }
 
         return null;
@@ -169,10 +180,13 @@ public class ModelImporter {
         }
 
         if (typeSpecifier instanceof NamedTypeSpecifier) {
-            NamedTypeSpecifier namedTypeSpecifier = (NamedTypeSpecifier)typeSpecifier;
+            NamedTypeSpecifier namedTypeSpecifier = (NamedTypeSpecifier) typeSpecifier;
             String qualifier = namedTypeSpecifier.getNamespace();
             if (qualifier == null || qualifier.isEmpty()) {
-                qualifier = namedTypeSpecifier.getModelName(); // For backwards compatibility, modelName is deprecated in favor of namespace
+                qualifier =
+                        namedTypeSpecifier
+                                .getModelName(); // For backwards compatibility, modelName is deprecated in favor of
+                // namespace
             }
             if (qualifier == null || qualifier.isEmpty()) {
                 qualifier = this.modelInfo.getName();
@@ -183,30 +197,33 @@ public class ModelImporter {
         }
 
         if (typeSpecifier instanceof IntervalTypeSpecifier) {
-            IntervalTypeSpecifier intervalTypeSpecifier = (IntervalTypeSpecifier)typeSpecifier;
-            DataType pointType = resolveTypeNameOrSpecifier(intervalTypeSpecifier.getPointType(), intervalTypeSpecifier.getPointTypeSpecifier());
+            IntervalTypeSpecifier intervalTypeSpecifier = (IntervalTypeSpecifier) typeSpecifier;
+            DataType pointType = resolveTypeNameOrSpecifier(
+                    intervalTypeSpecifier.getPointType(), intervalTypeSpecifier.getPointTypeSpecifier());
             return new IntervalType(pointType);
         }
 
         if (typeSpecifier instanceof ListTypeSpecifier) {
-            ListTypeSpecifier listTypeSpecifier = (ListTypeSpecifier)typeSpecifier;
-            DataType elementType = resolveTypeNameOrSpecifier(listTypeSpecifier.getElementType(), listTypeSpecifier.getElementTypeSpecifier());
+            ListTypeSpecifier listTypeSpecifier = (ListTypeSpecifier) typeSpecifier;
+            DataType elementType = resolveTypeNameOrSpecifier(
+                    listTypeSpecifier.getElementType(), listTypeSpecifier.getElementTypeSpecifier());
             if (elementType != null) {
                 return new ListType(elementType);
             }
         }
 
         if (typeSpecifier instanceof TupleTypeSpecifier) {
-            TupleTypeSpecifier tupleTypeSpecifier = (TupleTypeSpecifier)typeSpecifier;
+            TupleTypeSpecifier tupleTypeSpecifier = (TupleTypeSpecifier) typeSpecifier;
             TupleType tupleType = new TupleType();
             for (TupleTypeSpecifierElement specifierElement : tupleTypeSpecifier.getElement()) {
-                TupleTypeElement element = new TupleTypeElement(specifierElement.getName(), resolveTypeSpecifier(specifierElement.getElementType()));
+                TupleTypeElement element = new TupleTypeElement(
+                        specifierElement.getName(), resolveTypeSpecifier(specifierElement.getElementType()));
                 tupleType.addElement(element);
             }
         }
 
         if (typeSpecifier instanceof ChoiceTypeSpecifier) {
-            ChoiceTypeSpecifier choiceTypeSpecifier = (ChoiceTypeSpecifier)typeSpecifier;
+            ChoiceTypeSpecifier choiceTypeSpecifier = (ChoiceTypeSpecifier) typeSpecifier;
             List<DataType> choices = new ArrayList<>();
             for (TypeSpecifier choice : choiceTypeSpecifier.getChoice()) {
                 DataType choiceType = resolveTypeSpecifier(choice);
@@ -229,11 +246,12 @@ public class ModelImporter {
         // intervalTypeSpecifier: 'interval' '<' typeSpecifier '>'
         // listTypeSpecifier: 'list' '<' typeSpecifier '>'
         if (typeName.toLowerCase().startsWith("interval<")) {
-            DataType pointType = resolveTypeName(typeName.substring(typeName.indexOf('<') + 1, typeName.lastIndexOf('>')));
+            DataType pointType =
+                    resolveTypeName(typeName.substring(typeName.indexOf('<') + 1, typeName.lastIndexOf('>')));
             return new IntervalType(pointType);
-        }
-        else if (typeName.toLowerCase().startsWith("list<")) {
-            DataType elementType = resolveTypeName(typeName.substring(typeName.indexOf('<') + 1, typeName.lastIndexOf('>')));
+        } else if (typeName.toLowerCase().startsWith("list<")) {
+            DataType elementType =
+                    resolveTypeName(typeName.substring(typeName.indexOf('<') + 1, typeName.lastIndexOf('>')));
             return new ListType(elementType);
         }
 
@@ -241,7 +259,8 @@ public class ModelImporter {
         if (result == null) {
             TypeInfo typeInfo = lookupTypeInfo(ensureUnqualified(typeName));
             if (typeInfo == null) {
-                throw new IllegalArgumentException(String.format("Could not resolve type info for type name %s.", typeName));
+                throw new IllegalArgumentException(
+                        String.format("Could not resolve type info for type name %s.", typeName));
             }
 
             result = resolveTypeInfo(typeInfo);
@@ -306,7 +325,8 @@ public class ModelImporter {
         return typeInfoIndex.get(typeName);
     }
 
-    // This method is used to ensure backwards compatible loading, type names in model info may be qualified with the model name
+    // This method is used to ensure backwards compatible loading, type names in model info may be qualified with the
+    // model name
     private String ensureQualified(String name) {
         String qualifier = String.format("%s.", this.modelInfo.getName());
         if (!name.startsWith(qualifier)) {
@@ -316,7 +336,8 @@ public class ModelImporter {
         return name;
     }
 
-    // This method is used to ensure backwards compatible loading, type names in model info may be qualified with the model name
+    // This method is used to ensure backwards compatible loading, type names in model info may be qualified with the
+    // model name
     private String ensureUnqualified(String name) {
         if (name.startsWith(String.format("%s.", this.modelInfo.getName()))) {
             return name.substring(name.indexOf('.') + 1);
@@ -329,15 +350,16 @@ public class ModelImporter {
         String qualifiedTypeName = ensureQualified(t.getName());
         DataType lookupType = lookupType(qualifiedTypeName);
         if (lookupType instanceof ClassType) {
-            throw new IllegalArgumentException("Expected instance of SimpleType but found instance of ClassType instead.");
+            throw new IllegalArgumentException(
+                    "Expected instance of SimpleType but found instance of ClassType instead.");
         }
-        SimpleType result = (SimpleType)lookupType(qualifiedTypeName);
+        SimpleType result = (SimpleType) lookupType(qualifiedTypeName);
         if (result == null) {
             if (qualifiedTypeName.equals(DataType.ANY.getName())) {
                 result = DataType.ANY;
-            }
-            else {
-                result = new SimpleType(qualifiedTypeName, resolveTypeNameOrSpecifier(t.getBaseType(), t.getBaseTypeSpecifier()));
+            } else {
+                result = new SimpleType(
+                        qualifiedTypeName, resolveTypeNameOrSpecifier(t.getBaseType(), t.getBaseTypeSpecifier()));
                 result.setTarget(t.getTarget());
             }
             resolvedTypes.put(casify(result.getName()), result);
@@ -388,22 +410,23 @@ public class ModelImporter {
         for (TypeParameterInfo parameterInfo : parameterInfoList) {
             String constraint = parameterInfo.getConstraint();
             TypeParameter.TypeParameterConstraint typeConstraint = null;
-            if(constraint.equalsIgnoreCase(TypeParameter.TypeParameterConstraint.NONE.name())) {
+            if (constraint.equalsIgnoreCase(TypeParameter.TypeParameterConstraint.NONE.name())) {
                 typeConstraint = TypeParameter.TypeParameterConstraint.NONE;
-            } else if(constraint.equalsIgnoreCase(TypeParameter.TypeParameterConstraint.CLASS.name())) {
+            } else if (constraint.equalsIgnoreCase(TypeParameter.TypeParameterConstraint.CLASS.name())) {
                 typeConstraint = TypeParameter.TypeParameterConstraint.CLASS;
-            } else if(constraint.equalsIgnoreCase(TypeParameter.TypeParameterConstraint.TUPLE.name())) {
+            } else if (constraint.equalsIgnoreCase(TypeParameter.TypeParameterConstraint.TUPLE.name())) {
                 typeConstraint = TypeParameter.TypeParameterConstraint.TUPLE;
-            } else if(constraint.equalsIgnoreCase(TypeParameter.TypeParameterConstraint.VALUE.name())) {
+            } else if (constraint.equalsIgnoreCase(TypeParameter.TypeParameterConstraint.VALUE.name())) {
                 typeConstraint = TypeParameter.TypeParameterConstraint.VALUE;
-            } else if(constraint.equalsIgnoreCase(TypeParameter.TypeParameterConstraint.CHOICE.name())) {
+            } else if (constraint.equalsIgnoreCase(TypeParameter.TypeParameterConstraint.CHOICE.name())) {
                 typeConstraint = TypeParameter.TypeParameterConstraint.CHOICE;
-            } else if(constraint.equalsIgnoreCase(TypeParameter.TypeParameterConstraint.INTERVAL.name())) {
+            } else if (constraint.equalsIgnoreCase(TypeParameter.TypeParameterConstraint.INTERVAL.name())) {
                 typeConstraint = TypeParameter.TypeParameterConstraint.INTERVAL;
-            } else if(constraint.equalsIgnoreCase(TypeParameter.TypeParameterConstraint.TYPE.name())) {
+            } else if (constraint.equalsIgnoreCase(TypeParameter.TypeParameterConstraint.TYPE.name())) {
                 typeConstraint = TypeParameter.TypeParameterConstraint.TYPE;
             }
-            genericParameters.add(new TypeParameter(parameterInfo.getName(), typeConstraint, resolveTypeName(parameterInfo.getConstraintType())));
+            genericParameters.add(new TypeParameter(
+                    parameterInfo.getName(), typeConstraint, resolveTypeName(parameterInfo.getConstraintType())));
         }
         return genericParameters;
     }
@@ -416,13 +439,14 @@ public class ModelImporter {
      * @param infoElements
      * @return
      */
-    private Collection<ClassTypeElement> resolveClassTypeElements(ClassType classType, Collection<ClassInfoElement> infoElements) {
+    private Collection<ClassTypeElement> resolveClassTypeElements(
+            ClassType classType, Collection<ClassInfoElement> infoElements) {
         List<ClassTypeElement> elements = new ArrayList<>();
         for (ClassInfoElement e : infoElements) {
             DataType elementType = null;
-            if(isOpenType(e)) {
+            if (isOpenType(e)) {
                 elementType = resolveOpenType(classType, e);
-            } else if(isBoundParameterType(e)) {
+            } else if (isBoundParameterType(e)) {
                 elementType = resolveBoundType(classType, e);
             } else {
                 elementType = resolveTypeNameOrSpecifier(e);
@@ -430,7 +454,8 @@ public class ModelImporter {
             if (elementType == null) {
                 elementType = resolveTypeName("System.Any");
             }
-            elements.add(new ClassTypeElement(e.getName(), elementType, e.isProhibited(), e.isOneBased(), e.getTarget()));
+            elements.add(
+                    new ClassTypeElement(e.getName(), elementType, e.isProhibited(), e.isOneBased(), e.getTarget()));
         }
         return elements;
     }
@@ -462,11 +487,12 @@ public class ModelImporter {
     private DataType resolveBoundType(ClassType classType, ClassInfoElement e) {
         DataType boundType = null;
 
-        BoundParameterTypeSpecifier boundParameterTypeSpecifier = (BoundParameterTypeSpecifier)e.getElementTypeSpecifier();
+        BoundParameterTypeSpecifier boundParameterTypeSpecifier =
+                (BoundParameterTypeSpecifier) e.getElementTypeSpecifier();
         String parameterName = boundParameterTypeSpecifier.getParameterName();
         TypeParameter genericParameter = classType.getGenericParameterByIdentifier(parameterName);
 
-        if(genericParameter == null) {
+        if (genericParameter == null) {
             throw new RuntimeException("Unknown symbol " + parameterName);
         } else {
             boundType = resolveTypeName(boundParameterTypeSpecifier.getBoundType());
@@ -505,10 +531,14 @@ public class ModelImporter {
         DataType elementType;
         ParameterTypeSpecifier parameterTypeSpecifier = (ParameterTypeSpecifier) e.getElementTypeSpecifier();
         String parameterName = parameterTypeSpecifier.getParameterName();
-        if(parameterName == null || parameterName.trim().length() == 0 || classType.getGenericParameterByIdentifier(parameterName) == null) {
-            throw new RuntimeException("Open types must reference a valid generic parameter and cannot be null or blank");
+        if (parameterName == null
+                || parameterName.trim().length() == 0
+                || classType.getGenericParameterByIdentifier(parameterName) == null) {
+            throw new RuntimeException(
+                    "Open types must reference a valid generic parameter and cannot be null or blank");
         }
-        elementType = new TypeParameter(parameterTypeSpecifier.getParameterName(), TypeParameter.TypeParameterConstraint.TYPE, null);
+        elementType = new TypeParameter(
+                parameterTypeSpecifier.getParameterName(), TypeParameter.TypeParameterConstraint.TYPE, null);
         return elementType;
     }
 
@@ -522,32 +552,34 @@ public class ModelImporter {
         }
 
         String qualifiedName = ensureQualified(t.getName());
-        ClassType result = (ClassType)lookupType(qualifiedName);
+        ClassType result = (ClassType) lookupType(qualifiedName);
 
         if (result == null) {
             if (t instanceof ProfileInfo) {
-                result = new ProfileType(qualifiedName, resolveTypeNameOrSpecifier(t.getBaseType(), t.getBaseTypeSpecifier()));
-            }
-            else {
-                //Added to support generic notation in ModelInfo file for class type names (e.g., MyGeneric<T>) and base classes (e.g., Map<String,Person>).
-                if(t.getName().contains("<")) {
+                result = new ProfileType(
+                        qualifiedName, resolveTypeNameOrSpecifier(t.getBaseType(), t.getBaseTypeSpecifier()));
+            } else {
+                // Added to support generic notation in ModelInfo file for class type names (e.g., MyGeneric<T>) and
+                // base classes (e.g., Map<String,Person>).
+                if (t.getName().contains("<")) {
                     result = handleGenericType(t.getName(), t.getBaseType());
                 } else {
-                    if(t.getBaseType() != null && t.getBaseType().contains("<")) {
+                    if (t.getBaseType() != null && t.getBaseType().contains("<")) {
                         result = handleGenericType(t.getName(), t.getBaseType());
                     } else {
-                        result = new ClassType(qualifiedName, resolveTypeNameOrSpecifier(t.getBaseType(), t.getBaseTypeSpecifier()));
+                        result = new ClassType(
+                                qualifiedName, resolveTypeNameOrSpecifier(t.getBaseType(), t.getBaseTypeSpecifier()));
                     }
                 }
             }
 
             resolvedTypes.put(casify(result.getName()), result);
 
-            if(t.getParameter() != null) {
+            if (t.getParameter() != null) {
                 result.addGenericParameter(resolveGenericParameterDeclarations(t.getParameter()));
             }
 
-            if(t.getElement() != null) {
+            if (t.getElement() != null) {
                 result.addElements(resolveClassTypeElements(result, t.getElement()));
             }
 
@@ -557,9 +589,10 @@ public class ModelImporter {
                 }
             }
 
-            //Here we handle the case when a type is not a generic but its base type is a generic type whose parameters
-            //have all been bound to concrete types (no remaining degrees of freedom) and is not expressed in generic notation in the model-info file.
-            if(isParentGeneric(result) && !t.getBaseType().contains("<")) {
+            // Here we handle the case when a type is not a generic but its base type is a generic type whose parameters
+            // have all been bound to concrete types (no remaining degrees of freedom) and is not expressed in generic
+            // notation in the model-info file.
+            if (isParentGeneric(result) && !t.getBaseType().contains("<")) {
                 validateFreeAndBoundParameters(result, t);
             }
 
@@ -585,7 +618,9 @@ public class ModelImporter {
 
     private Relationship resolveRelationship(RelationshipInfo relationshipInfo) {
         ModelContext modelContext = resolveContext(relationshipInfo.getContext());
-        Relationship relationship = new Relationship(modelContext, Arrays.asList(relationshipInfo.getRelatedKeyElement().split(";")));
+        Relationship relationship = new Relationship(
+                modelContext,
+                Arrays.asList(relationshipInfo.getRelatedKeyElement().split(";")));
         // TODO: Validate relatedKeyElements match keyElements of the referenced context
         return relationship;
     }
@@ -616,8 +651,7 @@ public class ModelImporter {
             for (TypeSpecifier typeSpecifier : t.getChoice()) {
                 types.add(resolveTypeSpecifier(typeSpecifier));
             }
-        }
-        else {
+        } else {
             for (TypeSpecifier typeSpecifier : t.getType()) {
                 types.add(resolveTypeSpecifier(typeSpecifier));
             }
@@ -643,27 +677,28 @@ public class ModelImporter {
         List<String> coveredParameters = new ArrayList<>();
         List<String> boundParameters = new ArrayList<>();
 
-        ((ClassType)type.getBaseType()).getGenericParameters().forEach(typeParameter -> {
+        ((ClassType) type.getBaseType()).getGenericParameters().forEach(typeParameter -> {
             String parameterName = typeParameter.getIdentifier();
-            if(type.getGenericParameterByIdentifier(parameterName, true) != null) {
+            if (type.getGenericParameterByIdentifier(parameterName, true) != null) {
                 coveredParameters.add(parameterName);
             } else {
                 boundParameters.add(parameterName);
             }
         });
 
-        if(boundParameters.size() > 0) {
-            if(definition.getElement() != null) {
+        if (boundParameters.size() > 0) {
+            if (definition.getElement() != null) {
                 definition.getElement().forEach(classInfoElement -> {
                     if (classInfoElement.getElementTypeSpecifier() instanceof BoundParameterTypeSpecifier) {
-                        String name = ((BoundParameterTypeSpecifier)classInfoElement.getElementTypeSpecifier()).getParameterName();
+                        String name = ((BoundParameterTypeSpecifier) classInfoElement.getElementTypeSpecifier())
+                                .getParameterName();
                         int paramIndex = boundParameters.indexOf(name);
-                        if(paramIndex >= 0) {
+                        if (paramIndex >= 0) {
                             boundParameters.remove(paramIndex);
                         }
                     }
                 });
-                if(boundParameters.size() > 0) {
+                if (boundParameters.size() > 0) {
                     throw new RuntimeException("Unknown symbols " + boundParameters);
                 }
             } else {
@@ -680,7 +715,7 @@ public class ModelImporter {
      */
     public boolean isParentGeneric(ClassType type) {
         DataType baseType = type.getBaseType();
-        return baseType != null && baseType instanceof ClassType && ((ClassType)baseType).isGeneric();
+        return baseType != null && baseType instanceof ClassType && ((ClassType) baseType).isGeneric();
     }
 
     /**
@@ -696,7 +731,8 @@ public class ModelImporter {
             throw new IllegalArgumentException("genericSignature is null");
         }
 
-        GenericClassSignatureParser parser = new GenericClassSignatureParser(genericSignature, baseType, null, resolvedTypes);
+        GenericClassSignatureParser parser =
+                new GenericClassSignatureParser(genericSignature, baseType, null, resolvedTypes);
         ClassType genericClassType = parser.parseGenericSignature();
 
         return genericClassType;
@@ -711,12 +747,11 @@ public class ModelImporter {
      */
     private boolean conformsTo(DataType descendant, DataType ancestor) {
         boolean conforms = false;
-        if(descendant != null && ancestor != null && descendant.equals(ancestor)) {
+        if (descendant != null && ancestor != null && descendant.equals(ancestor)) {
             conforms = true;
         } else {
             conforms = conformsTo(descendant.getBaseType(), ancestor);
         }
         return conforms;
     }
-
 }

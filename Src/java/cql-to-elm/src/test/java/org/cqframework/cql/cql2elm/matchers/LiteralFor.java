@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm.matchers;
 
+import java.math.BigDecimal;
+import javax.xml.namespace.QName;
 import org.hamcrest.Description;
 import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
@@ -8,16 +10,14 @@ import org.hl7.elm.r1.Expression;
 import org.hl7.elm.r1.Literal;
 import org.hl7.elm.r1.ObjectFactory;
 
-import javax.xml.namespace.QName;
-import java.math.BigDecimal;
-
 public class LiteralFor extends TypeSafeDiagnosingMatcher<Expression> {
     private Literal expectedValue;
 
     public LiteralFor(Boolean b) {
         super();
 
-        expectedValue = new ObjectFactory().createLiteral()
+        expectedValue = new ObjectFactory()
+                .createLiteral()
                 .withValueType(new QName("urn:hl7-org:elm-types:r1", "Boolean"))
                 .withValue(String.valueOf(b));
     }
@@ -25,7 +25,8 @@ public class LiteralFor extends TypeSafeDiagnosingMatcher<Expression> {
     public LiteralFor(String s) {
         super();
 
-        expectedValue = new ObjectFactory().createLiteral()
+        expectedValue = new ObjectFactory()
+                .createLiteral()
                 .withValueType(new QName("urn:hl7-org:elm-types:r1", "String"))
                 .withValue(s);
     }
@@ -33,7 +34,8 @@ public class LiteralFor extends TypeSafeDiagnosingMatcher<Expression> {
     public LiteralFor(Integer i) {
         super();
 
-        expectedValue = new ObjectFactory().createLiteral()
+        expectedValue = new ObjectFactory()
+                .createLiteral()
                 .withValueType(new QName("urn:hl7-org:elm-types:r1", "Integer"))
                 .withValue(String.valueOf(i));
     }
@@ -41,26 +43,32 @@ public class LiteralFor extends TypeSafeDiagnosingMatcher<Expression> {
     public LiteralFor(BigDecimal d) {
         super();
 
-        expectedValue = new ObjectFactory().createLiteral()
+        expectedValue = new ObjectFactory()
+                .createLiteral()
                 .withValueType(new QName("urn:hl7-org:elm-types:r1", "Decimal"))
                 .withValue(String.valueOf(d));
     }
 
     @Override
     protected boolean matchesSafely(Expression item, Description mismatchDescription) {
-        if (! (item instanceof Literal)) {
-            mismatchDescription.appendText("had wrong ELM class type: ").appendText(item.getClass().getName());
+        if (!(item instanceof Literal)) {
+            mismatchDescription
+                    .appendText("had wrong ELM class type: ")
+                    .appendText(item.getClass().getName());
             return false;
         }
 
         Literal literal = (Literal) item;
-        if (! expectedValue.getValueType().equals(literal.getValueType())) {
+        if (!expectedValue.getValueType().equals(literal.getValueType())) {
             mismatchDescription.appendText("had wrong type: ").appendValue(literal.getValueType());
             return false;
         }
 
-        if (! expectedValue.getValue().equals(literal.getValue())) {
-            mismatchDescription.appendText("had wrong value: <").appendText(literal.getValue()).appendText(">");
+        if (!expectedValue.getValue().equals(literal.getValue())) {
+            mismatchDescription
+                    .appendText("had wrong value: <")
+                    .appendText(literal.getValue())
+                    .appendText(">");
             return false;
         }
 
@@ -69,13 +77,12 @@ public class LiteralFor extends TypeSafeDiagnosingMatcher<Expression> {
 
     @Override
     public void describeTo(Description description) {
-        description.appendText("Literal w/ value: <")
+        description
+                .appendText("Literal w/ value: <")
                 .appendText(expectedValue.getValue())
                 .appendText("> and type: ")
                 .appendValue(expectedValue.getValueType());
     }
-
-
 
     @Factory
     public static <T> Matcher<Expression> literalFor(Boolean b) {

@@ -1,8 +1,11 @@
 package org.hl7.fhirpath;
 
 import ca.uhn.fhir.context.FhirContext;
-import org.hl7.elm.r1.Library;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import org.fhir.ucum.UcumException;
+import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
@@ -10,10 +13,6 @@ import org.opencds.cqf.cql.engine.execution.EvaluationResult;
 import org.opencds.cqf.cql.engine.fhir.model.Dstu3FhirModelResolver;
 import org.opencds.cqf.cql.engine.fhir.retrieve.RestFhirRetrieveProvider;
 import org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterResolver;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 
 public class FhirHelpersDstu3Test {
     private String getStringFromResourceStream(String resourceName) {
@@ -36,7 +35,7 @@ public class FhirHelpersDstu3Test {
     // @Test
     // TODO: Resolve Error: Could not load model information for model FHIR, version
     // 3.0.0 because version 1.0.2 is already loaded
-    //@Test
+    // @Test
     public void testFhirHelpersStu3() throws UcumException {
         String cql = getStringFromResourceStream("stu3/TestFHIRHelpers.cql");
         var env = TranslatorHelper.getEnvironment();
@@ -44,18 +43,19 @@ public class FhirHelpersDstu3Test {
 
         CqlEngine engine = TranslatorHelper.getEngine(env);
 
-        VersionedIdentifier libraryId = TranslatorHelper.toElmIdentifier("TestFHIRHelpers",  "0.1.0");
+        VersionedIdentifier libraryId = TranslatorHelper.toElmIdentifier("TestFHIRHelpers", "0.1.0");
 
         Dstu3FhirModelResolver modelResolver = new Dstu3FhirModelResolver();
         FhirContext fhirContext = modelResolver.getFhirContext();
-        RestFhirRetrieveProvider retrieveProvider = new RestFhirRetrieveProvider(new SearchParameterResolver(fhirContext),
-            modelResolver, fhirContext.newRestfulGenericClient("http://fhirtest.uhn.ca/baseDstu3"));
+        RestFhirRetrieveProvider retrieveProvider = new RestFhirRetrieveProvider(
+                new SearchParameterResolver(fhirContext),
+                modelResolver,
+                fhirContext.newRestfulGenericClient("http://fhirtest.uhn.ca/baseDstu3"));
         CompositeDataProvider provider = new CompositeDataProvider(modelResolver, retrieveProvider);
         // BaseFhirDataProvider provider = new
         // FhirDataProviderStu3().setEndpoint("http://fhirtest.uhn.ca/baseDstu3");
         engine.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", provider);
-        EvaluationResult evaluationResult = engine.evaluate(libraryId,
-                null, null, null, null, null);
+        EvaluationResult evaluationResult = engine.evaluate(libraryId, null, null, null, null, null);
 
         // TODO - fix
         Object result = evaluationResult.forExpression("TestPeriodToInterval").value();
@@ -76,6 +76,4 @@ public class FhirHelpersDstu3Test {
         result = evaluationResult.forExpression("TestToDecimal").value();
         result = evaluationResult.forExpression("TestToBoolean").value();
     }
-
-
 }

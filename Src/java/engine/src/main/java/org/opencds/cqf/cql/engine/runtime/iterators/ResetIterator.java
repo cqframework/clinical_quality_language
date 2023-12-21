@@ -47,4 +47,3 @@ public class ResetIterator<E> implements Iterator<E> {
         dataIndex = -1;
     }
 }
-

@@ -1,9 +1,8 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
+import java.util.Collections;
 import org.hl7.elm.r1.Convert;
 import org.hl7.elm.r1.Expression;
-
-import java.util.Collections;
 
 public class ConvertInvocation extends OperatorExpressionInvocation {
     public ConvertInvocation(Convert expression) {

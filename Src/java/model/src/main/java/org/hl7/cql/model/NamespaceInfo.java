@@ -15,11 +15,13 @@ public class NamespaceInfo {
     }
 
     private String name;
+
     public String getName() {
         return name;
     }
 
     private String uri;
+
     public String getUri() {
         return uri;
     }
@@ -32,7 +34,7 @@ public class NamespaceInfo {
     @Override
     public boolean equals(Object that) {
         if (that instanceof NamespaceInfo) {
-            NamespaceInfo thatInfo = (NamespaceInfo)that;
+            NamespaceInfo thatInfo = (NamespaceInfo) that;
             return this.name.equals(thatInfo.getName()) && this.uri.equals(thatInfo.getUri());
         }
 

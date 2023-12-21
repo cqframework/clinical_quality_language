@@ -32,22 +32,18 @@ public class EndsEvaluator {
             if (leftStart instanceof BaseTemporal && rightStart instanceof BaseTemporal) {
                 return AndEvaluator.and(
                         SameOrAfterEvaluator.sameOrAfter(leftStart, rightStart, precision, state),
-                        SameAsEvaluator.sameAs(leftEnd, rightEnd, precision, state)
-                );
-            }
-
-            else {
+                        SameAsEvaluator.sameAs(leftEnd, rightEnd, precision, state));
+            } else {
                 return AndEvaluator.and(
                         GreaterOrEqualEvaluator.greaterOrEqual(leftStart, rightStart, state),
-                        EqualEvaluator.equal(leftEnd, rightEnd, state)
-                );
+                        EqualEvaluator.equal(leftEnd, rightEnd, state));
             }
         }
 
         throw new InvalidOperatorArgument(
                 "Ends(Interval<T>, Interval<T>)",
-                String.format("Ends(%s, %s)", left.getClass().getName(), right.getClass().getName())
-        );
+                String.format(
+                        "Ends(%s, %s)",
+                        left.getClass().getName(), right.getClass().getName()));
     }
-
 }

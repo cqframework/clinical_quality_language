@@ -1,17 +1,5 @@
 package org.cqframework.cql.cql2elm.operators;
 
-import org.cqframework.cql.cql2elm.CqlTranslator;
-import org.cqframework.cql.cql2elm.ModelManager;
-import org.hl7.elm.r1.*;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
-
-import javax.xml.namespace.QName;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import org.cqframework.cql.cql2elm.LibraryManager;
-
 import static org.cqframework.cql.cql2elm.matchers.HasTypeAndResult.hasTypeAndResult;
 import static org.cqframework.cql.cql2elm.matchers.LiteralFor.literalFor;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -20,6 +8,17 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.testng.Assert.assertTrue;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import javax.xml.namespace.QName;
+import org.cqframework.cql.cql2elm.CqlTranslator;
+import org.cqframework.cql.cql2elm.LibraryManager;
+import org.cqframework.cql.cql2elm.ModelManager;
+import org.hl7.elm.r1.*;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+
 public class TypeOperatorsTest {
 
     private Map<String, ExpressionDef> defs;
@@ -27,11 +26,13 @@ public class TypeOperatorsTest {
     @BeforeTest
     public void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
-        CqlTranslator translator = CqlTranslator.fromStream(TypeOperatorsTest.class.getResourceAsStream("../OperatorTests/TypeOperators.cql"), new LibraryManager(modelManager));
+        CqlTranslator translator = CqlTranslator.fromStream(
+                TypeOperatorsTest.class.getResourceAsStream("../OperatorTests/TypeOperators.cql"),
+                new LibraryManager(modelManager));
         assertThat(translator.getErrors().size(), is(0));
         Library library = translator.toELM();
         defs = new HashMap<>();
-        for (ExpressionDef def: library.getStatements().getDef()) {
+        for (ExpressionDef def : library.getStatements().getDef()) {
             defs.put(def.getName(), def);
         }
     }
@@ -46,7 +47,7 @@ public class TypeOperatorsTest {
         NamedTypeSpecifier spec = (NamedTypeSpecifier) as.getAsTypeSpecifier();
         assertThat(spec.getName(), is(new QName("urn:hl7-org:elm-types:r1", "Boolean")));
         assertThat(spec.getResultType().toString(), is("System.Boolean"));
-        //assertThat(as.getAsType(), is(new QName("urn:hl7-org:elm-types:r1", "Boolean")));
+        // assertThat(as.getAsType(), is(new QName("urn:hl7-org:elm-types:r1", "Boolean")));
     }
 
     @Test
@@ -59,7 +60,7 @@ public class TypeOperatorsTest {
         NamedTypeSpecifier spec = (NamedTypeSpecifier) as.getAsTypeSpecifier();
         assertThat(spec.getName(), is(new QName("urn:hl7-org:elm-types:r1", "Boolean")));
         assertThat(spec.getResultType().toString(), is("System.Boolean"));
-        //assertThat(as.getAsType(), is(new QName("urn:hl7-org:elm-types:r1", "Boolean")));
+        // assertThat(as.getAsType(), is(new QName("urn:hl7-org:elm-types:r1", "Boolean")));
     }
 
     @Test
@@ -72,14 +73,14 @@ public class TypeOperatorsTest {
         NamedTypeSpecifier spec = (NamedTypeSpecifier) is.getIsTypeSpecifier();
         assertThat(spec.getName(), is(new QName("urn:hl7-org:elm-types:r1", "Boolean")));
         assertThat(spec.getResultType().toString(), is("System.Boolean"));
-        //assertThat(is.getIsType(), is(new QName("urn:hl7-org:elm-types:r1", "Boolean")));
+        // assertThat(is.getIsType(), is(new QName("urn:hl7-org:elm-types:r1", "Boolean")));
     }
 
     private static void validateTyping(Convert convert, QName typeName) {
         assertThat(convert.getToType(), is(typeName));
         assertTrue(convert.getToTypeSpecifier() != null);
         assertTrue(convert.getToTypeSpecifier() instanceof NamedTypeSpecifier);
-        NamedTypeSpecifier nts = (NamedTypeSpecifier)convert.getToTypeSpecifier();
+        NamedTypeSpecifier nts = (NamedTypeSpecifier) convert.getToTypeSpecifier();
         assertThat(nts.getName(), is(typeName));
     }
 
@@ -89,19 +90,19 @@ public class TypeOperatorsTest {
         assertThat(def, hasTypeAndResult(ToString.class, "System.String"));
         ToString convert = (ToString) def.getExpression();
         assertThat(convert.getOperand(), literalFor(false));
-        //validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "String"));
+        // validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "String"));
 
         def = defs.get("IntegerToString");
         assertThat(def, hasTypeAndResult(ToString.class, "System.String"));
         convert = (ToString) def.getExpression();
         assertThat(convert.getOperand(), literalFor(3));
-        //validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "String"));
+        // validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "String"));
 
         def = defs.get("DecimalToString");
         assertThat(def, hasTypeAndResult(ToString.class, "System.String"));
         convert = (ToString) def.getExpression();
         assertThat(convert.getOperand(), literalFor(3.0));
-        //validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "String"));
+        // validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "String"));
 
         def = defs.get("QuantityToString");
         assertThat(def, hasTypeAndResult(ToString.class, "System.String"));
@@ -110,7 +111,7 @@ public class TypeOperatorsTest {
         Quantity q = (Quantity) convert.getOperand();
         assertThat(q.getValue().doubleValue(), is(3.0));
         assertThat(q.getUnit(), is("m"));
-        //validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "String"));
+        // validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "String"));
 
         def = defs.get("RatioToString");
         assertThat(def, hasTypeAndResult(ToString.class, "System.String"));
@@ -131,7 +132,7 @@ public class TypeOperatorsTest {
         assertThat(d.getMonth(), literalFor(1));
         assertThat(d.getDay(), literalFor(1));
 
-        //validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "String"));
+        // validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "String"));
         def = defs.get("DateTimeToString");
         assertThat(def, hasTypeAndResult(ToString.class, "System.String"));
         convert = (ToString) def.getExpression();
@@ -145,7 +146,7 @@ public class TypeOperatorsTest {
         assertThat(dt.getSecond(), literalFor(0));
         assertThat(dt.getMillisecond(), literalFor(0));
         assertThat(dt.getTimezoneOffset(), nullValue());
-        //validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "String"));
+        // validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "String"));
 
         def = defs.get("TimeToString");
         assertThat(def, hasTypeAndResult(ToString.class, "System.String"));
@@ -156,7 +157,7 @@ public class TypeOperatorsTest {
         assertThat(t.getMinute(), literalFor(0));
         assertThat(t.getSecond(), literalFor(0));
         assertThat(t.getMillisecond(), literalFor(0));
-        //validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "String"));
+        // validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "String"));
     }
 
     @Test
@@ -165,22 +166,22 @@ public class TypeOperatorsTest {
         assertThat(def, hasTypeAndResult(ToString.class, "System.String"));
         ToString convert = (ToString) def.getExpression();
         assertThat(convert.getOperand(), literalFor(false));
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "String")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "String")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
 
         def = defs.get("IntegerToStringFun");
         assertThat(def, hasTypeAndResult(ToString.class, "System.String"));
         convert = (ToString) def.getExpression();
         assertThat(convert.getOperand(), literalFor(3));
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "String")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "String")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
 
         def = defs.get("DecimalToStringFun");
         assertThat(def, hasTypeAndResult(ToString.class, "System.String"));
         convert = (ToString) def.getExpression();
         assertThat(convert.getOperand(), literalFor(3.0));
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "String")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "String")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
 
         def = defs.get("QuantityToStringFun");
         assertThat(def, hasTypeAndResult(ToString.class, "System.String"));
@@ -189,8 +190,8 @@ public class TypeOperatorsTest {
         Quantity q = (Quantity) convert.getOperand();
         assertThat(q.getValue().doubleValue(), is(3.0));
         assertThat(q.getUnit(), is("m"));
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "String")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "String")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
 
         def = defs.get("RatioToStringFun");
         assertThat(def, hasTypeAndResult(ToString.class, "System.String"));
@@ -201,8 +202,8 @@ public class TypeOperatorsTest {
         assertThat(r.getDenominator().getUnit(), is("1"));
         assertThat(r.getNumerator().getValue().doubleValue(), is(1.0));
         assertThat(r.getNumerator().getUnit(), is("1"));
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "String")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "String")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
 
         def = defs.get("DateToStringFun");
         assertThat(def, hasTypeAndResult(ToString.class, "System.String"));
@@ -212,8 +213,8 @@ public class TypeOperatorsTest {
         assertThat(d.getYear(), literalFor(2014));
         assertThat(d.getMonth(), literalFor(1));
         assertThat(d.getDay(), literalFor(1));
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "String")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "String")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
 
         def = defs.get("DateTimeToStringFun");
         assertThat(def, hasTypeAndResult(ToString.class, "System.String"));
@@ -228,8 +229,8 @@ public class TypeOperatorsTest {
         assertThat(dt.getSecond(), literalFor(0));
         assertThat(dt.getMillisecond(), literalFor(0));
         assertThat(dt.getTimezoneOffset(), nullValue());
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "String")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "String")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
 
         def = defs.get("TimeToStringFun");
         assertThat(def, hasTypeAndResult(ToString.class, "System.String"));
@@ -240,8 +241,8 @@ public class TypeOperatorsTest {
         assertThat(t.getMinute(), literalFor(0));
         assertThat(t.getSecond(), literalFor(0));
         assertThat(t.getMillisecond(), literalFor(0));
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "String")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "String")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
     }
 
     @Test
@@ -250,22 +251,22 @@ public class TypeOperatorsTest {
         assertThat(def, hasTypeAndResult(ConvertsToString.class, "System.Boolean"));
         ConvertsToString convert = (ConvertsToString) def.getExpression();
         assertThat(convert.getOperand(), literalFor(false));
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "String")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "String")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
 
         def = defs.get("IntegerConvertsToString");
         assertThat(def, hasTypeAndResult(ConvertsToString.class, "System.Boolean"));
         convert = (ConvertsToString) def.getExpression();
         assertThat(convert.getOperand(), literalFor(3));
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "String")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "String")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
 
         def = defs.get("DecimalConvertsToString");
         assertThat(def, hasTypeAndResult(ConvertsToString.class, "System.Boolean"));
         convert = (ConvertsToString) def.getExpression();
         assertThat(convert.getOperand(), literalFor(3.0));
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "String")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "String")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
 
         def = defs.get("QuantityConvertsToString");
         assertThat(def, hasTypeAndResult(ConvertsToString.class, "System.Boolean"));
@@ -274,8 +275,8 @@ public class TypeOperatorsTest {
         Quantity q = (Quantity) convert.getOperand();
         assertThat(q.getValue().doubleValue(), is(3.0));
         assertThat(q.getUnit(), is("m"));
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "String")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "String")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
 
         def = defs.get("RatioConvertsToString");
         assertThat(def, hasTypeAndResult(ConvertsToString.class, "System.Boolean"));
@@ -286,8 +287,8 @@ public class TypeOperatorsTest {
         assertThat(r.getDenominator().getUnit(), is("1"));
         assertThat(r.getNumerator().getValue().doubleValue(), is(1.0));
         assertThat(r.getNumerator().getUnit(), is("1"));
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "String")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "String")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
 
         def = defs.get("DateConvertsToString");
         assertThat(def, hasTypeAndResult(ConvertsToString.class, "System.Boolean"));
@@ -297,8 +298,8 @@ public class TypeOperatorsTest {
         assertThat(d.getYear(), literalFor(2014));
         assertThat(d.getMonth(), literalFor(1));
         assertThat(d.getDay(), literalFor(1));
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "String")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "String")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
 
         def = defs.get("DateTimeConvertsToString");
         assertThat(def, hasTypeAndResult(ConvertsToString.class, "System.Boolean"));
@@ -313,8 +314,8 @@ public class TypeOperatorsTest {
         assertThat(dt.getSecond(), literalFor(0));
         assertThat(dt.getMillisecond(), literalFor(0));
         assertThat(dt.getTimezoneOffset(), nullValue());
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "String")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "String")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
 
         def = defs.get("TimeConvertsToString");
         assertThat(def, hasTypeAndResult(ConvertsToString.class, "System.Boolean"));
@@ -325,8 +326,8 @@ public class TypeOperatorsTest {
         assertThat(t.getMinute(), literalFor(0));
         assertThat(t.getSecond(), literalFor(0));
         assertThat(t.getMillisecond(), literalFor(0));
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "String")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "String")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
     }
 
     @Test
@@ -335,7 +336,7 @@ public class TypeOperatorsTest {
         assertThat(def, hasTypeAndResult(ToBoolean.class, "System.Boolean"));
         ToBoolean convert = (ToBoolean) def.getExpression();
         assertThat(convert.getOperand(), literalFor("false"));
-        //validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Boolean"));
+        // validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Boolean"));
     }
 
     @Test
@@ -344,8 +345,8 @@ public class TypeOperatorsTest {
         assertThat(def, hasTypeAndResult(ToBoolean.class, "System.Boolean"));
         ToBoolean convert = (ToBoolean) def.getExpression();
         assertThat(convert.getOperand(), literalFor("false"));
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Boolean")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Boolean")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
     }
 
     @Test
@@ -354,8 +355,8 @@ public class TypeOperatorsTest {
         assertThat(def, hasTypeAndResult(ConvertsToBoolean.class, "System.Boolean"));
         ConvertsToBoolean convert = (ConvertsToBoolean) def.getExpression();
         assertThat(convert.getOperand(), literalFor("false"));
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Boolean")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Boolean")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
     }
 
     @Test
@@ -364,7 +365,7 @@ public class TypeOperatorsTest {
         assertThat(def, hasTypeAndResult(ToInteger.class, "System.Integer"));
         ToInteger convert = (ToInteger) def.getExpression();
         assertThat(convert.getOperand(), literalFor("1"));
-        //validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Integer"));
+        // validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Integer"));
     }
 
     @Test
@@ -373,8 +374,8 @@ public class TypeOperatorsTest {
         assertThat(def, hasTypeAndResult(ToInteger.class, "System.Integer"));
         ToInteger convert = (ToInteger) def.getExpression();
         assertThat(convert.getOperand(), literalFor("1"));
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Integer")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Integer")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
     }
 
     @Test
@@ -383,8 +384,8 @@ public class TypeOperatorsTest {
         assertThat(def, hasTypeAndResult(ConvertsToInteger.class, "System.Boolean"));
         ConvertsToInteger convert = (ConvertsToInteger) def.getExpression();
         assertThat(convert.getOperand(), literalFor("1"));
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Integer")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Integer")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
     }
 
     @Test
@@ -393,7 +394,7 @@ public class TypeOperatorsTest {
         assertThat(def, hasTypeAndResult(ToLong.class, "System.Long"));
         ToLong convert = (ToLong) def.getExpression();
         assertThat(convert.getOperand(), literalFor("1"));
-        //validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Long"));
+        // validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Long"));
     }
 
     @Test
@@ -402,8 +403,8 @@ public class TypeOperatorsTest {
         assertThat(def, hasTypeAndResult(ConvertsToLong.class, "System.Boolean"));
         ConvertsToLong convert = (ConvertsToLong) def.getExpression();
         assertThat(convert.getOperand(), literalFor("1"));
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Long")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Long")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
     }
 
     @Test
@@ -412,13 +413,13 @@ public class TypeOperatorsTest {
         assertThat(def, hasTypeAndResult(ToDecimal.class, "System.Decimal"));
         ToDecimal convert = (ToDecimal) def.getExpression();
         assertThat(convert.getOperand(), literalFor("3.0"));
-        //validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Decimal"));
+        // validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Decimal"));
 
         def = defs.get("IntegerToDecimal");
         assertThat(def, hasTypeAndResult(ToDecimal.class, "System.Decimal"));
         convert = (ToDecimal) def.getExpression();
         assertThat(convert.getOperand(), literalFor(1));
-        //validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Decimal"));
+        // validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Decimal"));
     }
 
     @Test
@@ -427,14 +428,14 @@ public class TypeOperatorsTest {
         assertThat(def, hasTypeAndResult(ToDecimal.class, "System.Decimal"));
         ToDecimal convert = (ToDecimal) def.getExpression();
         assertThat(convert.getOperand(), literalFor("3.0"));
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Decimal")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Decimal")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
 
         def = defs.get("IntegerToDecimalFun");
         assertThat(def, hasTypeAndResult(ToDecimal.class, "System.Decimal"));
         convert = (ToDecimal) def.getExpression();
         assertThat(convert.getOperand(), literalFor(1));
-        //validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Decimal"));
+        // validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Decimal"));
     }
 
     @Test
@@ -443,14 +444,14 @@ public class TypeOperatorsTest {
         assertThat(def, hasTypeAndResult(ConvertsToDecimal.class, "System.Boolean"));
         ConvertsToDecimal convert = (ConvertsToDecimal) def.getExpression();
         assertThat(convert.getOperand(), literalFor("3.0"));
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Decimal")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Decimal")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
 
         def = defs.get("IntegerConvertsToDecimal");
         assertThat(def, hasTypeAndResult(ConvertsToDecimal.class, "System.Boolean"));
         convert = (ConvertsToDecimal) def.getExpression();
         assertThat(convert.getOperand(), literalFor(1));
-        //validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Decimal"));
+        // validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Decimal"));
     }
 
     @Test
@@ -459,7 +460,7 @@ public class TypeOperatorsTest {
         assertThat(def, hasTypeAndResult(ToDate.class, "System.Date"));
         ToDate convert = (ToDate) def.getExpression();
         assertThat(convert.getOperand(), literalFor("2014-01-01"));
-        //validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Date"));
+        // validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Date"));
     }
 
     @Test
@@ -468,8 +469,8 @@ public class TypeOperatorsTest {
         assertThat(def, hasTypeAndResult(ToDate.class, "System.Date"));
         ToDate convert = (ToDate) def.getExpression();
         assertThat(convert.getOperand(), literalFor("2014-01-01"));
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Date")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Date")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
     }
 
     @Test
@@ -478,8 +479,8 @@ public class TypeOperatorsTest {
         assertThat(def, hasTypeAndResult(ConvertsToDate.class, "System.Boolean"));
         ConvertsToDate convert = (ConvertsToDate) def.getExpression();
         assertThat(convert.getOperand(), literalFor("2014-01-01"));
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Date")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Date")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
     }
 
     @Test
@@ -488,7 +489,7 @@ public class TypeOperatorsTest {
         assertThat(def, hasTypeAndResult(ToDateTime.class, "System.DateTime"));
         ToDateTime convert = (ToDateTime) def.getExpression();
         assertThat(convert.getOperand(), literalFor("2014-01-01T00:00:00.0000+0700"));
-        //validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "DateTime"));
+        // validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "DateTime"));
     }
 
     @Test
@@ -497,8 +498,8 @@ public class TypeOperatorsTest {
         assertThat(def, hasTypeAndResult(ToDateTime.class, "System.DateTime"));
         ToDateTime convert = (ToDateTime) def.getExpression();
         assertThat(convert.getOperand(), literalFor("2014-01-01T00:00:00.0000+0700"));
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "DateTime")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "DateTime")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
     }
 
     @Test
@@ -507,8 +508,8 @@ public class TypeOperatorsTest {
         assertThat(def, hasTypeAndResult(ConvertsToDateTime.class, "System.Boolean"));
         ConvertsToDateTime convert = (ConvertsToDateTime) def.getExpression();
         assertThat(convert.getOperand(), literalFor("2014-01-01T00:00:00.0000+0700"));
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "DateTime")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "DateTime")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
     }
 
     @Test
@@ -517,7 +518,7 @@ public class TypeOperatorsTest {
         assertThat(def, hasTypeAndResult(ToTime.class, "System.Time"));
         ToTime convert = (ToTime) def.getExpression();
         assertThat(convert.getOperand(), literalFor("T00:00:00.0000+0700"));
-        //validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Time"));
+        // validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Time"));
     }
 
     @Test
@@ -526,8 +527,8 @@ public class TypeOperatorsTest {
         assertThat(def, hasTypeAndResult(ToTime.class, "System.Time"));
         ToTime convert = (ToTime) def.getExpression();
         assertThat(convert.getOperand(), literalFor("T00:00:00.0000+0700"));
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Time")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Time")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
     }
 
     @Test
@@ -536,8 +537,8 @@ public class TypeOperatorsTest {
         assertThat(def, hasTypeAndResult(ConvertsToTime.class, "System.Boolean"));
         ConvertsToTime convert = (ConvertsToTime) def.getExpression();
         assertThat(convert.getOperand(), literalFor("T00:00:00.0000+0700"));
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Time")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Time")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
     }
 
     @Test
@@ -546,19 +547,19 @@ public class TypeOperatorsTest {
         assertThat(def, hasTypeAndResult(ToQuantity.class, "System.Quantity"));
         ToQuantity convert = (ToQuantity) def.getExpression();
         assertThat(convert.getOperand(), literalFor("3.0 'm'"));
-        //validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Quantity"));
+        // validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Quantity"));
 
         def = defs.get("IntegerToQuantity");
         assertThat(def, hasTypeAndResult(ToQuantity.class, "System.Quantity"));
         convert = (ToQuantity) def.getExpression();
         assertThat(convert.getOperand(), literalFor(1));
-        //validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Quantity"));
+        // validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Quantity"));
 
         def = defs.get("DecimalToQuantity");
         assertThat(def, hasTypeAndResult(ToQuantity.class, "System.Quantity"));
         convert = (ToQuantity) def.getExpression();
         assertThat(convert.getOperand(), literalFor(1.0));
-        //validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Quantity"));
+        // validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Quantity"));
     }
 
     @Test
@@ -567,20 +568,20 @@ public class TypeOperatorsTest {
         assertThat(def, hasTypeAndResult(ToQuantity.class, "System.Quantity"));
         ToQuantity convert = (ToQuantity) def.getExpression();
         assertThat(convert.getOperand(), literalFor("3.0 'm'"));
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Quantity")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Quantity")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
 
         def = defs.get("IntegerToQuantityFun");
         assertThat(def, hasTypeAndResult(ToQuantity.class, "System.Quantity"));
         convert = (ToQuantity) def.getExpression();
         assertThat(convert.getOperand(), literalFor(1));
-        //validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Quantity"));
+        // validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Quantity"));
 
         def = defs.get("DecimalToQuantityFun");
         assertThat(def, hasTypeAndResult(ToQuantity.class, "System.Quantity"));
         convert = (ToQuantity) def.getExpression();
         assertThat(convert.getOperand(), literalFor(1.0));
-        //validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Quantity"));
+        // validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Quantity"));
     }
 
     @Test
@@ -589,20 +590,20 @@ public class TypeOperatorsTest {
         assertThat(def, hasTypeAndResult(ConvertsToQuantity.class, "System.Boolean"));
         ConvertsToQuantity convert = (ConvertsToQuantity) def.getExpression();
         assertThat(convert.getOperand(), literalFor("3.0 'm'"));
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Quantity")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Quantity")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
 
         def = defs.get("IntegerConvertsToQuantity");
         assertThat(def, hasTypeAndResult(ConvertsToQuantity.class, "System.Boolean"));
         convert = (ConvertsToQuantity) def.getExpression();
         assertThat(convert.getOperand(), literalFor(1));
-        //validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Quantity"));
+        // validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Quantity"));
 
         def = defs.get("DecimalConvertsToQuantity");
         assertThat(def, hasTypeAndResult(ConvertsToQuantity.class, "System.Boolean"));
         convert = (ConvertsToQuantity) def.getExpression();
         assertThat(convert.getOperand(), literalFor(1.0));
-        //validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Quantity"));
+        // validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Quantity"));
     }
 
     @Test
@@ -611,7 +612,7 @@ public class TypeOperatorsTest {
         assertThat(def, hasTypeAndResult(ToRatio.class, "System.Ratio"));
         ToRatio convert = (ToRatio) def.getExpression();
         assertThat(convert.getOperand(), literalFor("1:180"));
-        //validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Ratio"));
+        // validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Ratio"));
     }
 
     @Test
@@ -620,8 +621,8 @@ public class TypeOperatorsTest {
         assertThat(def, hasTypeAndResult(ToRatio.class, "System.Ratio"));
         ToRatio convert = (ToRatio) def.getExpression();
         assertThat(convert.getOperand(), literalFor("1:180"));
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Ratio")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Ratio")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
     }
 
     @Test
@@ -630,8 +631,8 @@ public class TypeOperatorsTest {
         assertThat(def, hasTypeAndResult(ConvertsToRatio.class, "System.Boolean"));
         ConvertsToRatio convert = (ConvertsToRatio) def.getExpression();
         assertThat(convert.getOperand(), literalFor("1:180"));
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Ratio")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Ratio")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
     }
 
     @Test
@@ -643,7 +644,7 @@ public class TypeOperatorsTest {
         ExpressionRef ref = (ExpressionRef) toConcept.getOperand();
         assertThat(ref.getName(), is("MyCode"));
         assertThat(ref.getResultType().toString(), is("System.Code"));
-        //validateTyping(toConcept, new QName("urn:hl7-org:elm-types:r1", "Concept"));
+        // validateTyping(toConcept, new QName("urn:hl7-org:elm-types:r1", "Concept"));
 
         def = defs.get("CodesToConcept");
         assertThat(def, hasTypeAndResult(ToConcept.class, "System.Concept"));
@@ -652,7 +653,7 @@ public class TypeOperatorsTest {
         ref = (ExpressionRef) toConcept.getOperand();
         assertThat(ref.getName(), is("MyCodes"));
         assertThat(ref.getResultType().toString(), is("list<System.Code>"));
-        //validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Concept"));
+        // validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Concept"));
     }
 
     @Test
@@ -664,8 +665,8 @@ public class TypeOperatorsTest {
         ExpressionRef ref = (ExpressionRef) convert.getOperand();
         assertThat(ref.getName(), is("MyCode"));
         assertThat(ref.getResultType().toString(), is("System.Code"));
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Concept")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Concept")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
 
         def = defs.get("CodesToConceptFun");
         assertThat(def, hasTypeAndResult(ToConcept.class, "System.Concept"));
@@ -674,8 +675,8 @@ public class TypeOperatorsTest {
         ref = (ExpressionRef) convert.getOperand();
         assertThat(ref.getName(), is("MyCodes"));
         assertThat(ref.getResultType().toString(), is("list<System.Code>"));
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Concept")));
-        //assertThat(convert.getToTypeSpecifier(), nullValue());
+        // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Concept")));
+        // assertThat(convert.getToTypeSpecifier(), nullValue());
     }
 
     @Test

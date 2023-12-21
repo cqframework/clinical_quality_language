@@ -1,10 +1,9 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
-import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
-import org.opencds.cqf.cql.engine.runtime.Quantity;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
+import org.opencds.cqf.cql.engine.runtime.Quantity;
 
 /*
 mod(left Integer, right Integer) Integer
@@ -25,24 +24,24 @@ public class ModuloEvaluator {
         }
 
         if (left instanceof Integer) {
-            if ((Integer)right == 0) {
+            if ((Integer) right == 0) {
                 return null;
             }
-            return (Integer)left % (Integer)right;
+            return (Integer) left % (Integer) right;
         }
 
         if (left instanceof Long) {
-            if ((Long)right == 0L) {
+            if ((Long) right == 0L) {
                 return null;
             }
-            return (Long)left % (Long)right;
+            return (Long) left % (Long) right;
         }
 
         if (left instanceof BigDecimal) {
             if (right == new BigDecimal("0.0")) {
                 return null;
             }
-            return ((BigDecimal)left).remainder((BigDecimal)right).setScale(8, RoundingMode.FLOOR);
+            return ((BigDecimal) left).remainder((BigDecimal) right).setScale(8, RoundingMode.FLOOR);
         }
 
         if (left instanceof Quantity) {
@@ -51,14 +50,17 @@ public class ModuloEvaluator {
             }
 
             return new Quantity()
-                .withUnit(((Quantity) left).getUnit())
-                .withValue(((Quantity) left).getValue().
-                    remainder(((Quantity) right).getValue()).setScale(8, RoundingMode.FLOOR));
+                    .withUnit(((Quantity) left).getUnit())
+                    .withValue(((Quantity) left)
+                            .getValue()
+                            .remainder(((Quantity) right).getValue())
+                            .setScale(8, RoundingMode.FLOOR));
         }
 
         throw new InvalidOperatorArgument(
                 "Modulo(Integer, Integer), Modulo(Long, Long) or Modulo(Decimal, Decimal), , Modulo(Quantity, Quantity)",
-                String.format("Modulo(%s, %s)", left.getClass().getName(), right.getClass().getName())
-        );
+                String.format(
+                        "Modulo(%s, %s)",
+                        left.getClass().getName(), right.getClass().getName()));
     }
 }

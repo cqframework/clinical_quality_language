@@ -1,9 +1,8 @@
 package org.cqframework.cql.cql2elm;
 
-import org.cqframework.cql.elm.tracking.Trackable;
-
 import java.util.Objects;
 import java.util.StringJoiner;
+import org.cqframework.cql.elm.tracking.Trackable;
 
 /**
  * Simple POJO using for identifier hider that maintains the identifier and Trackable type of the construct being evaluated.

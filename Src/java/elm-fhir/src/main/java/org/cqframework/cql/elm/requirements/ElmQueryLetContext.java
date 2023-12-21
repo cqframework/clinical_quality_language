@@ -16,25 +16,27 @@ public class ElmQueryLetContext {
 
     private VersionedIdentifier libraryIdentifier;
     private LetClause letClause;
+
     public LetClause getLetClause() {
         return letClause;
     }
+
     public String getIdentifier() {
         return letClause.getIdentifier();
     }
 
     private ElmDataRequirement requirements;
+
     public ElmDataRequirement getRequirements() {
         return requirements;
     }
+
     public void setRequirements(ElmRequirement requirements) {
         if (requirements instanceof ElmDataRequirement) {
-            this.requirements = (ElmDataRequirement)requirements;
-        }
-        else if (requirements instanceof ElmExpressionRequirement) {
-            this.requirements = ElmDataRequirement.inferFrom((ElmExpressionRequirement)requirements);
-        }
-        else {
+            this.requirements = (ElmDataRequirement) requirements;
+        } else if (requirements instanceof ElmExpressionRequirement) {
+            this.requirements = ElmDataRequirement.inferFrom((ElmExpressionRequirement) requirements);
+        } else {
             // Should never land here, but defensively...
             this.requirements = new ElmDataRequirement(this.libraryIdentifier, new Retrieve());
         }

@@ -1,14 +1,11 @@
 package org.cqframework.cql.cql2elm.preprocessor;
 
+import java.util.*;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.cqframework.cql.cql2elm.CqlCompilerException;
 import org.cqframework.cql.cql2elm.ResultWithPossibleError;
 import org.cqframework.cql.gen.cqlParser;
 import org.hl7.elm.r1.OperandDef;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 public class LibraryInfo extends BaseInfo {
     private String namespaceName;
@@ -87,7 +84,7 @@ public class LibraryInfo extends BaseInfo {
 
     @Override
     public cqlParser.LibraryDefinitionContext getDefinition() {
-        return (cqlParser.LibraryDefinitionContext)super.getDefinition();
+        return (cqlParser.LibraryDefinitionContext) super.getDefinition();
     }
 
     public void setDefinition(cqlParser.LibraryDefinitionContext value) {
@@ -120,7 +117,8 @@ public class LibraryInfo extends BaseInfo {
     public String getDefaultModelName() {
         UsingDefinitionInfo usingDefinitionInfo = getDefaultUsingDefinition();
         if (usingDefinitionInfo == null) {
-            throw new IllegalArgumentException("Could not determine a default model because no usings have been defined.");
+            throw new IllegalArgumentException(
+                    "Could not determine a default model because no usings have been defined.");
         }
 
         return usingDefinitionInfo.getName();
@@ -267,12 +265,16 @@ public class LibraryInfo extends BaseInfo {
         return definitions.get(pt.getSourceInterval());
     }
 
-    private static boolean isFunctionDefInfoAlreadyPresent(ResultWithPossibleError<FunctionDefinitionInfo> existingFunctionDefInfo, ResultWithPossibleError<FunctionDefinitionInfo> functionDefinition) {
+    private static boolean isFunctionDefInfoAlreadyPresent(
+            ResultWithPossibleError<FunctionDefinitionInfo> existingFunctionDefInfo,
+            ResultWithPossibleError<FunctionDefinitionInfo> functionDefinition) {
         // equals/hashCode only goes so far because we don't control the entire class hierarchy
         return matchesFunctionDefInfos(existingFunctionDefInfo, functionDefinition);
     }
 
-    private static boolean matchesFunctionDefInfos(ResultWithPossibleError<FunctionDefinitionInfo> existingInfo, ResultWithPossibleError<FunctionDefinitionInfo> newInfo) {
+    private static boolean matchesFunctionDefInfos(
+            ResultWithPossibleError<FunctionDefinitionInfo> existingInfo,
+            ResultWithPossibleError<FunctionDefinitionInfo> newInfo) {
         if (existingInfo == null) {
             return false;
         }
@@ -281,8 +283,15 @@ public class LibraryInfo extends BaseInfo {
             return existingInfo.hasError() && newInfo.hasError();
         }
 
-        final List<OperandDef> existingOperands = existingInfo.getUnderlyingResultIfExists().getPreCompileOutput().getFunctionDef().getOperand();
-        final List<OperandDef> newOperands = newInfo.getUnderlyingResultIfExists().getPreCompileOutput().getFunctionDef().getOperand();
+        final List<OperandDef> existingOperands = existingInfo
+                .getUnderlyingResultIfExists()
+                .getPreCompileOutput()
+                .getFunctionDef()
+                .getOperand();
+        final List<OperandDef> newOperands = newInfo.getUnderlyingResultIfExists()
+                .getPreCompileOutput()
+                .getFunctionDef()
+                .getOperand();
 
         if (existingOperands.size() != newOperands.size()) {
             return false;

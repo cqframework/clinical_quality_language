@@ -2,15 +2,11 @@ package org.hl7.fhirpath;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.FhirVersionEnum;
-import org.hl7.elm.r1.Library;
-import org.fhir.ucum.UcumException;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
-
+import org.fhir.ucum.UcumException;
+import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
@@ -44,22 +40,24 @@ public class FhirHelpersDstu2Test {
         Library library = TranslatorHelper.translate(cql, env.getLibraryManager());
         CqlEngine engine = TranslatorHelper.getEngine(env);
 
-        VersionedIdentifier libraryId = TranslatorHelper.toElmIdentifier("TestFHIRHelpersDstu2",  "0.1.0");
+        VersionedIdentifier libraryId = TranslatorHelper.toElmIdentifier("TestFHIRHelpersDstu2", "0.1.0");
 
         Dstu2FhirModelResolver modelResolver = new Dstu2FhirModelResolver();
         RestFhirRetrieveProvider retrieveProvider = new RestFhirRetrieveProvider(
-            new org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterResolver(modelResolver.getFhirContext()),
-            modelResolver, FhirContext.forCached(FhirVersionEnum.DSTU2).newRestfulGenericClient(""));
+                new org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterResolver(modelResolver.getFhirContext()),
+                modelResolver,
+                FhirContext.forCached(FhirVersionEnum.DSTU2).newRestfulGenericClient(""));
         CompositeDataProvider provider = new CompositeDataProvider(modelResolver, retrieveProvider);
-        //BaseFhirDataProvider provider = new FhirDataProviderDstu2();
+        // BaseFhirDataProvider provider = new FhirDataProviderDstu2();
         engine.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", provider);
-        EvaluationResult evaluationResult = engine.evaluate(libraryId,
-                null, null, null, null, null);
+        EvaluationResult evaluationResult = engine.evaluate(libraryId, null, null, null, null, null);
 
         // TODO - millis shouldn't be populated - issue with DateTime.fromJavaDate(Date date)
         Object result = evaluationResult.forExpression("TestPeriodToInterval").value();
-//        Assert.assertEquals(((DateTime)((Interval) result).getStart()).getPartial(), new Partial(DateTime.getFields(7), new int[] {2017, 5, 6, 18, 8, 0, 0}));
-//        Assert.assertEquals(((DateTime)((Interval) result).getEnd()).getPartial(), new Partial(DateTime.getFields(7), new int[] {2017, 5, 6, 19, 8, 0, 0}));
+        //        Assert.assertEquals(((DateTime)((Interval) result).getStart()).getPartial(), new
+        // Partial(DateTime.getFields(7), new int[] {2017, 5, 6, 18, 8, 0, 0}));
+        //        Assert.assertEquals(((DateTime)((Interval) result).getEnd()).getPartial(), new
+        // Partial(DateTime.getFields(7), new int[] {2017, 5, 6, 19, 8, 0, 0}));
         result = evaluationResult.forExpression("TestToQuantity").value();
         result = evaluationResult.forExpression("TestRangeToInterval").value();
         result = evaluationResult.forExpression("TestToCode").value();
@@ -71,7 +69,5 @@ public class FhirHelpersDstu2Test {
         result = evaluationResult.forExpression("TestToInteger").value();
         result = evaluationResult.forExpression("TestToDecimal").value();
         result = evaluationResult.forExpression("TestToBoolean").value();
-
     }
-
 }

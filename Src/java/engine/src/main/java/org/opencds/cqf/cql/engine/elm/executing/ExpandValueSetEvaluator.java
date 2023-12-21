@@ -21,13 +21,11 @@ public class ExpandValueSetEvaluator {
 
         if (valueset instanceof ValueSet) {
             TerminologyProvider tp = state.getEnvironment().getTerminologyProvider();
-            return tp.expand(ValueSetInfo.fromValueSet((ValueSet)valueset));
+            return tp.expand(ValueSetInfo.fromValueSet((ValueSet) valueset));
         }
 
         throw new InvalidOperatorArgument(
-            "ExpandValueSet(ValueSet)",
-            String.format("ExpandValueSet(%s)", valueset.getClass().getName())
-        );
+                "ExpandValueSet(ValueSet)",
+                String.format("ExpandValueSet(%s)", valueset.getClass().getName()));
     }
-
 }

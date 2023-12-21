@@ -1,8 +1,7 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
-import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
-
 import java.math.BigDecimal;
+import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 
 /*
 ToBoolean(argument String) Boolean
@@ -28,10 +27,10 @@ public class ToBooleanEvaluator {
         }
 
         if (operand instanceof Integer) {
-            if (((Integer)operand) == 1) {
+            if (((Integer) operand) == 1) {
                 return true;
             }
-            if (((Integer)operand) == 0) {
+            if (((Integer) operand) == 0) {
                 return false;
             }
 
@@ -39,11 +38,11 @@ public class ToBooleanEvaluator {
         }
 
         if (operand instanceof BigDecimal) {
-            if (((BigDecimal)operand).compareTo(new BigDecimal("0.0")) == 0) {
+            if (((BigDecimal) operand).compareTo(new BigDecimal("0.0")) == 0) {
                 return false;
             }
 
-            if (((BigDecimal)operand).compareTo(new BigDecimal("1.0")) == 0) {
+            if (((BigDecimal) operand).compareTo(new BigDecimal("1.0")) == 0) {
                 return true;
             }
 
@@ -52,14 +51,17 @@ public class ToBooleanEvaluator {
 
         if (operand instanceof String) {
             String compare = ((String) operand).toLowerCase();
-            if (compare.equals("true") || compare.equals("t")
-                    || compare.equals("yes") || compare.equals("y") || compare.equals("1"))
-            {
+            if (compare.equals("true")
+                    || compare.equals("t")
+                    || compare.equals("yes")
+                    || compare.equals("y")
+                    || compare.equals("1")) {
                 return true;
-            }
-            else if (compare.equals("false") || compare.equals("f")
-                    || compare.equals("no") || compare.equals("n") || compare.equals("0"))
-            {
+            } else if (compare.equals("false")
+                    || compare.equals("f")
+                    || compare.equals("no")
+                    || compare.equals("n")
+                    || compare.equals("0")) {
                 return false;
             }
 
@@ -68,8 +70,6 @@ public class ToBooleanEvaluator {
 
         throw new InvalidOperatorArgument(
                 "ToBoolean(String)",
-                String.format("ToBoolean(%s)", operand.getClass().getName())
-        );
+                String.format("ToBoolean(%s)", operand.getClass().getName()));
     }
-
 }

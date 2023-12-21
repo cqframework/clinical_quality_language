@@ -1,5 +1,10 @@
 package org.opencds.cqf.cql.engine.execution;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
 import org.opencds.cqf.cql.engine.elm.executing.AnyTrueEvaluator;
 import org.opencds.cqf.cql.engine.elm.executing.AvgEvaluator;
 import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator;
@@ -9,12 +14,6 @@ import org.opencds.cqf.cql.engine.runtime.Quantity;
 import org.opencds.cqf.cql.engine.runtime.Time;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import java.math.BigDecimal;
-import java.util.Arrays;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 
 public class CqlAggregateFunctionsTest extends CqlTestBase {
 
@@ -74,19 +73,16 @@ public class CqlAggregateFunctionsTest extends CqlTestBase {
         try {
             result = AnyTrueEvaluator.anyTrue(Arrays.asList("this", "is", "error"));
             Assert.fail();
-        }
-        catch (InvalidOperatorArgument e) {
+        } catch (InvalidOperatorArgument e) {
             // pass
         }
 
         try {
             result = AvgEvaluator.avg(Arrays.asList("this", "is", "error"), engine.getState());
             Assert.fail();
-        }
-        catch (InvalidOperatorArgument e) {
+        } catch (InvalidOperatorArgument e) {
             // pass
         }
-
 
         result = evaluationResult.forExpression("AvgTest1").value();
         assertThat(result, is(new BigDecimal("3.0")));
@@ -121,7 +117,6 @@ public class CqlAggregateFunctionsTest extends CqlTestBase {
         result = evaluationResult.forExpression("MaxTestTime").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(20, 59, 59, 999)));
 
-
         result = evaluationResult.forExpression("MedianTestDecimal").value();
         assertThat(result, is(new BigDecimal("3.5")));
 
@@ -140,7 +135,6 @@ public class CqlAggregateFunctionsTest extends CqlTestBase {
         result = evaluationResult.forExpression("MinTestTime").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(5, 59, 59, 999)));
 
-
         result = evaluationResult.forExpression("ModeTestInteger").value();
         assertThat(result, is(9));
         result = evaluationResult.forExpression("ModeTestDateTime2").value();
@@ -150,16 +144,18 @@ public class CqlAggregateFunctionsTest extends CqlTestBase {
         Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(5, 59, 59, 999)));
 
         result = evaluationResult.forExpression("ModeTestDateTime").value();
-        Assert.assertTrue(((DateTime)result).equal(new DateTime(bigDecimalZoneOffset, 2012, 9, 5)));
+        Assert.assertTrue(((DateTime) result).equal(new DateTime(bigDecimalZoneOffset, 2012, 9, 5)));
 
         result = evaluationResult.forExpression("PopStdDevTest1").value();
-        Assert.assertTrue(((BigDecimal) result).compareTo(new BigDecimal("1.41421356")) == 0); //23730951454746218587388284504413604736328125
+        Assert.assertTrue(((BigDecimal) result).compareTo(new BigDecimal("1.41421356"))
+                == 0); // 23730951454746218587388284504413604736328125
 
         result = evaluationResult.forExpression("PopVarianceTest1").value();
         Assert.assertTrue(((BigDecimal) result).compareTo(new BigDecimal("2.0")) == 0);
 
         result = evaluationResult.forExpression("StdDevTest1").value();
-        Assert.assertTrue(((BigDecimal) result).compareTo(new BigDecimal("1.58113883")) == 0); //00841897613935316257993690669536590576171875
+        Assert.assertTrue(((BigDecimal) result).compareTo(new BigDecimal("1.58113883"))
+                == 0); // 00841897613935316257993690669536590576171875
 
         result = evaluationResult.forExpression("SumTest1").value();
         assertThat(result, is(new BigDecimal("20.0")));
@@ -168,13 +164,13 @@ public class CqlAggregateFunctionsTest extends CqlTestBase {
         assertThat(result, is(20L));
 
         result = evaluationResult.forExpression("SumTestQuantity").value();
-        Assert.assertTrue(((Quantity) result).equal(new Quantity().withValue(new BigDecimal("15.0")).withUnit("ml")));
+        Assert.assertTrue(((Quantity) result)
+                .equal(new Quantity().withValue(new BigDecimal("15.0")).withUnit("ml")));
 
         result = evaluationResult.forExpression("SumTestNull").value();
         assertThat(result, is(1));
 
         result = evaluationResult.forExpression("VarianceTest1").value();
         Assert.assertTrue(((BigDecimal) result).compareTo(new BigDecimal("2.5")) == 0);
-
     }
 }

@@ -14,10 +14,7 @@ public class FunctionalElmLibraryVisitorTest {
     @Test
     public void countTest() {
         // set up visitor that counts all visited elements
-        var trackableCounter = new FunctionalElmLibraryVisitor<Integer, Void>(
-            (elm, context) -> 1,
-            Integer::sum
-        );
+        var trackableCounter = new FunctionalElmLibraryVisitor<Integer, Void>((elm, context) -> 1, Integer::sum);
 
         var library = new Library();
         library.setStatements(new Statements());
@@ -26,22 +23,17 @@ public class FunctionalElmLibraryVisitorTest {
         library.getStatements().getDef().add(new ExpressionDef());
 
         var result = trackableCounter.visitLibrary(library, null);
-        assertEquals(4 + 3, result.intValue());  // ELM elements + implicit access modifiers
-
+        assertEquals(4 + 3, result.intValue()); // ELM elements + implicit access modifiers
 
         // set up visitor that counts all visited ELM elements
         var elmCounter = new FunctionalElmLibraryVisitor<Integer, Void>(
-            (elm, context) -> elm instanceof Element ? 1 : 0,
-            Integer::sum
-        );
+                (elm, context) -> elm instanceof Element ? 1 : 0, Integer::sum);
 
         result = elmCounter.visitLibrary(library, null);
         assertEquals(4, result.intValue());
 
         var maxFiveCounter = new FunctionalElmLibraryVisitor<Integer, Void>(
-            (elm, context) -> 1,
-            (aggregate, nextResult) -> aggregate >= 5 ? aggregate : aggregate + nextResult
-        );
+                (elm, context) -> 1, (aggregate, nextResult) -> aggregate >= 5 ? aggregate : aggregate + nextResult);
 
         result = maxFiveCounter.visitLibrary(library, null);
         assertEquals(5, result.intValue());
@@ -50,7 +42,9 @@ public class FunctionalElmLibraryVisitorTest {
     @Test
     public void nullVisitorTest() {
         assertThrows(NullPointerException.class, () -> new FunctionalElmLibraryVisitor<Integer, Void>(null, null));
-        assertThrows(NullPointerException.class, () -> new FunctionalElmLibraryVisitor<Integer, Void>(null, Integer::sum));
-        assertThrows(NullPointerException.class, () -> new FunctionalElmLibraryVisitor<Integer, Void>((x, y) -> 1, null));
+        assertThrows(
+                NullPointerException.class, () -> new FunctionalElmLibraryVisitor<Integer, Void>(null, Integer::sum));
+        assertThrows(
+                NullPointerException.class, () -> new FunctionalElmLibraryVisitor<Integer, Void>((x, y) -> 1, null));
     }
 }

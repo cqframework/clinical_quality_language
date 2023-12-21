@@ -1,15 +1,14 @@
 package org.cqframework.cql.cql2elm;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
+import java.io.IOException;
 import org.hl7.cql.model.ModelInfoProvider;
 import org.hl7.elm.r1.Library;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import java.io.IOException;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 
 public class ModelTests {
     private ModelManager modelManager;
@@ -31,7 +30,8 @@ public class ModelTests {
     public void testModelInfo() {
         CqlTranslator translator = null;
         try {
-            translator = CqlTranslator.fromStream(ModelTests.class.getResourceAsStream("ModelTests/ModelTest.cql"), new LibraryManager(modelManager));
+            translator = CqlTranslator.fromStream(
+                    ModelTests.class.getResourceAsStream("ModelTests/ModelTest.cql"), new LibraryManager(modelManager));
             Library library = translator.toELM();
             assertThat(translator.getErrors().size(), is(0));
         } catch (IOException e) {

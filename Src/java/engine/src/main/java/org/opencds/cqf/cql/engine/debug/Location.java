@@ -98,19 +98,17 @@ public class Location {
 
     @Override
     public String toString() {
-        return "Location{" +
-                " startLine=" + startLine +
-                ", startChar=" + startChar +
-                ", endLine=" + endLine +
-                ", endChar=" + endChar +
-                '}';
+        return "Location{" + " startLine="
+                + startLine + ", startChar="
+                + startChar + ", endLine="
+                + endLine + ", endChar="
+                + endChar + '}';
     }
 
     public String toLocator() {
-        return
-                startLine == endLine && startChar == endChar
-                        ? String.format("%s:%s", startLine, startChar)
-                        : String.format("%s:%s-%s:%s", startLine, startChar, endLine, endChar);
+        return startLine == endLine && startChar == endChar
+                ? String.format("%s:%s", startLine, startChar)
+                : String.format("%s:%s-%s:%s", startLine, startChar, endLine, endChar);
     }
 
     public static Location fromLocator(String locator) {
@@ -131,8 +129,7 @@ public class Location {
             if (i == 0) {
                 startLine = Integer.parseInt(ranges[0]);
                 startChar = Integer.parseInt(ranges[1]);
-            }
-            else {
+            } else {
                 endLine = Integer.parseInt(ranges[0]);
                 endChar = Integer.parseInt(ranges[1]);
             }

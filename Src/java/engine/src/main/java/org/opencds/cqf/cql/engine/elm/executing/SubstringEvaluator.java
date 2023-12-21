@@ -29,9 +29,7 @@ public class SubstringEvaluator {
 
             if (lengthValue == null) {
                 return string.substring(startIndex);
-            }
-
-            else {
+            } else {
                 int endIndex = startIndex + (Integer) lengthValue;
                 if (endIndex > string.length()) {
                     endIndex = string.length();
@@ -51,8 +49,6 @@ public class SubstringEvaluator {
                         "Substring(%s, %s%s)",
                         stringValue.getClass().getName(),
                         startIndexValue.getClass().getName(),
-                        lengthValue == null ? "" : ", " + lengthValue.getClass().getName()
-                )
-        );
+                        lengthValue == null ? "" : ", " + lengthValue.getClass().getName()));
     }
 }

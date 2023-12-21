@@ -38,8 +38,6 @@ public class ConvertsToLongEvaluator {
 
         throw new InvalidOperatorArgument(
                 "ConvertsToLong(String)",
-                String.format("ConvertsToLong(%s)", argument.getClass().getName())
-        );
+                String.format("ConvertsToLong(%s)", argument.getClass().getName()));
     }
-
 }

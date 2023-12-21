@@ -39,5 +39,4 @@ public class ProfileType extends ClassType {
     public ProfileType(String name, DataType baseType) {
         super(name, baseType);
     }
-
 }

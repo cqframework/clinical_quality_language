@@ -8,13 +8,6 @@ import static com.tngtech.archunit.core.domain.properties.HasModifiers.Predicate
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.methods;
 import static java.util.stream.Collectors.toSet;
 
-import java.util.function.Predicate;
-
-import org.hl7.elm.r1.Element;
-import org.hl7.elm.r1.OperatorExpression;
-import org.hl7.elm.r1.TypeSpecifier;
-import org.junit.Test;
-
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.domain.JavaMethod;
 import com.tngtech.archunit.core.domain.JavaModifier;
@@ -22,11 +15,16 @@ import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.lang.ArchCondition;
 import com.tngtech.archunit.lang.ConditionEvents;
 import com.tngtech.archunit.lang.SimpleConditionEvent;
+import java.util.function.Predicate;
+import org.hl7.elm.r1.Element;
+import org.hl7.elm.r1.OperatorExpression;
+import org.hl7.elm.r1.TypeSpecifier;
+import org.junit.Test;
 
 public class DesignTests {
 
-    private static final JavaClasses importedClasses = new ClassFileImporter()
-            .importPackages("org.cqframework.cql.elm", "org.hl7.elm.r1");
+    private static final JavaClasses importedClasses =
+            new ClassFileImporter().importPackages("org.cqframework.cql.elm", "org.hl7.elm.r1");
 
     @Test
     public void ensureVisitChildrenCallsDefaultResult() {
@@ -34,11 +32,11 @@ public class DesignTests {
                 .that()
                 .areDeclaredInClassesThat()
                 .areAssignableTo(BaseElmVisitor.class)
-                .and().haveName("visitChildren")
+                .and()
+                .haveName("visitChildren")
                 .should(new CallDefaultResult())
-                .because(
-                        "The visitChildren methods are terminal methods in the visitor hierarchy, " +
-                                "they should always call defaultResult")
+                .because("The visitChildren methods are terminal methods in the visitor hierarchy, "
+                        + "they should always call defaultResult")
                 .check(importedClasses);
     }
 
@@ -51,15 +49,17 @@ public class DesignTests {
                 .that()
                 .areDeclaredInClassesThat()
                 .areAssignableTo(BaseElmVisitor.class)
-                .and().haveNameStartingWith("visit")
-                .and().doNotHaveName("visitChildren")
-                .and().haveRawParameterTypes(anyElementThat(isAbstractElementType))
+                .and()
+                .haveNameStartingWith("visit")
+                .and()
+                .doNotHaveName("visitChildren")
+                .and()
+                .haveRawParameterTypes(anyElementThat(isAbstractElementType))
                 .should(new NotCallDefaultResult())
-                .because(
-                        "The visitXYZ (where XYZ is an Element type) methods " +
-                                "for abstract classes should not call defaultResult, " +
-                                "since that means the subtypes properties are probably missed. " +
-                                "Instead, those methods should forward to the subtype visit method")
+                .because("The visitXYZ (where XYZ is an Element type) methods "
+                        + "for abstract classes should not call defaultResult, "
+                        + "since that means the subtypes properties are probably missed. "
+                        + "Instead, those methods should forward to the subtype visit method")
                 .check(importedClasses);
     }
 
@@ -77,31 +77,36 @@ public class DesignTests {
                 .that()
                 .areDeclaredInClassesThat()
                 .areAssignableTo(BaseElmVisitor.class)
-                .and().haveNameStartingWith("visit")
-                .and().doNotHaveName("visitChildren")
-                .and().doNotHaveName("visitProperty") // Special exclusion for Property. See the implementation of
-                                                      // visitProperty.
-                .and().haveRawParameterTypes(anyElementThat(isConcreteElement))
+                .and()
+                .haveNameStartingWith("visit")
+                .and()
+                .doNotHaveName("visitChildren")
+                .and()
+                .doNotHaveName("visitProperty") // Special exclusion for Property. See the implementation of
+                // visitProperty.
+                .and()
+                .haveRawParameterTypes(anyElementThat(isConcreteElement))
                 .should(new UseResultTypeIfTheyDoNotForwardToVisitChildren())
-                .because(
-                        "visits to concrete Element type should visit the resultType of the of the element")
+                .because("visits to concrete Element type should visit the resultType of the of the element")
                 .check(importedClasses);
     }
 
     @Test
     public void ensureVisitOperatorExpressionUsesSignature() {
 
-        var isConcreteOperatorExpression = and(
-                not(modifier(JavaModifier.ABSTRACT)),
-                assignableTo(OperatorExpression.class));
+        var isConcreteOperatorExpression =
+                and(not(modifier(JavaModifier.ABSTRACT)), assignableTo(OperatorExpression.class));
 
         methods()
                 .that()
                 .areDeclaredInClassesThat()
                 .areAssignableTo(BaseElmVisitor.class)
-                .and().haveNameStartingWith("visit")
-                .and().doNotHaveName("visitChildren")
-                .and().haveRawParameterTypes(anyElementThat(isConcreteOperatorExpression))
+                .and()
+                .haveNameStartingWith("visit")
+                .and()
+                .doNotHaveName("visitChildren")
+                .and()
+                .haveRawParameterTypes(anyElementThat(isConcreteOperatorExpression))
                 .should(new UseSignatureOrForwardToVisitChildren())
                 .because(
                         "visits to concrete OperatorExpression types should visit the signature of the OperatorExpression")
@@ -122,11 +127,15 @@ public class DesignTests {
                 .that()
                 .areDeclaredInClassesThat()
                 .areAssignableTo(BaseElmVisitor.class)
-                .and().haveNameStartingWith("visit")
-                .and().doNotHaveName("visitChildren")
-                .and().doNotHaveName("visitProperty") // Special exclusion for Property. See the implementation of
-                                                      // visitProperty.
-                .and().haveRawParameterTypes(anyElementThat(isConcreteElement))
+                .and()
+                .haveNameStartingWith("visit")
+                .and()
+                .doNotHaveName("visitChildren")
+                .and()
+                .doNotHaveName("visitProperty") // Special exclusion for Property. See the implementation of
+                // visitProperty.
+                .and()
+                .haveRawParameterTypes(anyElementThat(isConcreteElement))
                 .should(new UseAllFieldsOrForwardToVisitChildren())
                 .because(
                         "visits to concrete OperatorExpression types should visit all the Element-type properties of the class")
@@ -144,12 +153,11 @@ public class DesignTests {
             var callsVisitChildren = item.getCallsFromSelf().stream()
                     .anyMatch(x -> x.getTarget().getName().equals("visitChildren"));
 
-            var elementParameter = item.getRawParameterTypes()
-                    .get(0);
+            var elementParameter = item.getRawParameterTypes().get(0);
 
-            Predicate<JavaMethod> isElementProperty = x -> x.getName().startsWith("get") &&
-                    (x.getRawReturnType().isAssignableTo(Element.class) ||
-                            x.getTypeParameters().stream()
+            Predicate<JavaMethod> isElementProperty = x -> x.getName().startsWith("get")
+                    && (x.getRawReturnType().isAssignableTo(Element.class)
+                            || x.getTypeParameters().stream()
                                     .anyMatch(y -> y.getClass().isAssignableFrom(Element.class)));
 
             // get all the properties that are Elements or collections of Elements
@@ -159,13 +167,15 @@ public class DesignTests {
 
             if (callsVisitChildren) {
                 if (elementMethods.isEmpty()) {
-                    events.add(SimpleConditionEvent.satisfied(item,
+                    events.add(SimpleConditionEvent.satisfied(
+                            item,
                             String.format(
                                     "Method %s calls visitChildren, Element defines no new properties, no need to visit properties",
                                     item.getFullName())));
                     return;
                 } else {
-                    events.add(SimpleConditionEvent.violated(item,
+                    events.add(SimpleConditionEvent.violated(
+                            item,
                             String.format(
                                     "Method %s calls visitChildren, but Element defines new properties and visitChildren can not be used",
                                     item.getFullName())));
@@ -185,13 +195,15 @@ public class DesignTests {
                     .allMatch(x -> calls.stream().anyMatch(y -> y.getName().equals(x.getName())));
 
             if (allPropertiesCalled) {
-                events.add(SimpleConditionEvent.satisfied(item,
-                        String.format("Method %s visits all Element properties", item.getFullName())));
+                events.add(SimpleConditionEvent.satisfied(
+                        item, String.format("Method %s visits all Element properties", item.getFullName())));
                 return;
             }
 
-            events.add(SimpleConditionEvent.violated(item,
-                    String.format("Method %s does not call visitChildren or does not visit all Element properties",
+            events.add(SimpleConditionEvent.violated(
+                    item,
+                    String.format(
+                            "Method %s does not call visitChildren or does not visit all Element properties",
                             item.getFullName())));
         }
     }
@@ -207,23 +219,26 @@ public class DesignTests {
             var callsVisitChildren = item.getCallsFromSelf().stream()
                     .anyMatch(x -> x.getTarget().getName().equals("visitChildren"));
             if (callsVisitChildren) {
-                events.add(SimpleConditionEvent.satisfied(item,
-                        String.format("Method %s calls visitChildren, no need to call getResultTypeSpecifier",
+                events.add(SimpleConditionEvent.satisfied(
+                        item,
+                        String.format(
+                                "Method %s calls visitChildren, no need to call getResultTypeSpecifier",
                                 item.getFullName())));
                 return;
             }
 
-            var callsGetSignature = item.getMethodCallsFromSelf().stream().anyMatch(x -> x.getTarget().getName()
-                    .equals("getResultTypeSpecifier") && x.getTargetOwner().isAssignableTo(Element.class));
+            var callsGetSignature = item.getMethodCallsFromSelf().stream()
+                    .anyMatch(x -> x.getTarget().getName().equals("getResultTypeSpecifier")
+                            && x.getTargetOwner().isAssignableTo(Element.class));
 
             if (callsGetSignature) {
-                events.add(SimpleConditionEvent.satisfied(item,
-                        String.format("Method %s calls getSignature", item.getFullName())));
+                events.add(SimpleConditionEvent.satisfied(
+                        item, String.format("Method %s calls getSignature", item.getFullName())));
                 return;
             }
 
-            events.add(SimpleConditionEvent.violated(item,
-                    String.format("Method %s does not call visitChildren or getSignature", item.getFullName())));
+            events.add(SimpleConditionEvent.violated(
+                    item, String.format("Method %s does not call visitChildren or getSignature", item.getFullName())));
         }
     }
 
@@ -238,23 +253,25 @@ public class DesignTests {
             var callsVisitChildren = item.getCallsFromSelf().stream()
                     .anyMatch(x -> x.getTarget().getName().equals("visitChildren"));
             if (callsVisitChildren) {
-                events.add(SimpleConditionEvent.satisfied(item,
-                        String.format("Method %s calls visitChildren, no need to call getSignature",
-                                item.getFullName())));
+                events.add(SimpleConditionEvent.satisfied(
+                        item,
+                        String.format(
+                                "Method %s calls visitChildren, no need to call getSignature", item.getFullName())));
                 return;
             }
 
-            var callsGetSignature = item.getMethodCallsFromSelf().stream().anyMatch(x -> x.getTarget().getName()
-                    .equals("getSignature") && x.getTargetOwner().isAssignableTo(OperatorExpression.class));
+            var callsGetSignature = item.getMethodCallsFromSelf().stream()
+                    .anyMatch(x -> x.getTarget().getName().equals("getSignature")
+                            && x.getTargetOwner().isAssignableTo(OperatorExpression.class));
 
             if (callsGetSignature) {
-                events.add(SimpleConditionEvent.satisfied(item,
-                        String.format("Method %s calls getSignature", item.getFullName())));
+                events.add(SimpleConditionEvent.satisfied(
+                        item, String.format("Method %s calls getSignature", item.getFullName())));
                 return;
             }
 
-            events.add(SimpleConditionEvent.violated(item,
-                    String.format("Method %s does not call visitChildren or getSignature", item.getFullName())));
+            events.add(SimpleConditionEvent.violated(
+                    item, String.format("Method %s does not call visitChildren or getSignature", item.getFullName())));
         }
     }
 
@@ -269,11 +286,11 @@ public class DesignTests {
             var doesCallDefault = item.getCallsFromSelf().stream()
                     .anyMatch(x -> x.getTarget().getName().equals("defaultResult"));
             if (!doesCallDefault) {
-                events.add(SimpleConditionEvent.violated(item,
-                        String.format("Method %s does not call defaultResult", item.getFullName())));
+                events.add(SimpleConditionEvent.violated(
+                        item, String.format("Method %s does not call defaultResult", item.getFullName())));
             } else {
-                events.add(SimpleConditionEvent.satisfied(item,
-                        String.format("Method %s calls defaultResult", item.getFullName())));
+                events.add(SimpleConditionEvent.satisfied(
+                        item, String.format("Method %s calls defaultResult", item.getFullName())));
             }
         }
     }
@@ -289,11 +306,11 @@ public class DesignTests {
             var doesCallDefault = item.getCallsFromSelf().stream()
                     .anyMatch(x -> x.getTarget().getName().equals("defaultResult"));
             if (doesCallDefault) {
-                events.add(SimpleConditionEvent.violated(item,
-                        String.format("Method %s does not call defaultResult", item.getFullName())));
+                events.add(SimpleConditionEvent.violated(
+                        item, String.format("Method %s does not call defaultResult", item.getFullName())));
             } else {
-                events.add(SimpleConditionEvent.satisfied(item,
-                        String.format("Method %s calls defaultResult", item.getFullName())));
+                events.add(SimpleConditionEvent.satisfied(
+                        item, String.format("Method %s calls defaultResult", item.getFullName())));
             }
         }
     }

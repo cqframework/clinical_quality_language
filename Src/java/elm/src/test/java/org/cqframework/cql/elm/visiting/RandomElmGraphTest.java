@@ -1,14 +1,13 @@
 package org.cqframework.cql.elm.visiting;
 
 import static org.junit.Assert.assertEquals;
+
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
+import java.util.HashMap;
 import javax.xml.namespace.QName;
-
 import org.hl7.cql_annotations.r1.Narrative;
 import org.hl7.elm.r1.AccessModifier;
-import org.hl7.elm.r1.CaseItem;
 import org.hl7.elm.r1.Element;
 import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.TypeSpecifier;
@@ -22,8 +21,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import java.util.HashMap;
-
 @RunWith(Parameterized.class)
 public class RandomElmGraphTest {
 
@@ -32,7 +29,7 @@ public class RandomElmGraphTest {
         // I randomly picked these seeds until
         // I got 3 in a row that passed without errors.
         // Not perfect, but it's a start.
-        return java.util.Arrays.asList(new Object[][] { { 96874 }, { 15895 }, { 121873 }, { 174617 } });
+        return java.util.Arrays.asList(new Object[][] {{96874}, {15895}, {121873}, {174617}});
     }
 
     public RandomElmGraphTest(int seed) {
@@ -69,7 +66,8 @@ public class RandomElmGraphTest {
             }
 
             private void printContext(Element t, RandomizerContext context) {
-                System.err.println(String.format("Type: %s, Parent: %s, Path: %s, Hash: %s",
+                System.err.println(String.format(
+                        "Type: %s, Parent: %s, Path: %s, Hash: %s",
                         t.getClass().getSimpleName(),
                         context.getCurrentObject().getClass().getSimpleName(),
                         context.getCurrentField(),
@@ -112,22 +110,21 @@ public class RandomElmGraphTest {
 
         var visitorCount = countingVisitor.visitLibrary(randomElm, elementsVisited);
 
-
         elementsGenerated.keySet().removeAll(elementsVisited.keySet());
-        if (!elementsGenerated.isEmpty()){
+        if (!elementsGenerated.isEmpty()) {
             System.err.println("Elements Missed:");
             elementsGenerated.forEach((x, e) -> System.err.println(
-                String.format("Type: %s, Hash: %s", e.getClass().getSimpleName(), x)));
+                    String.format("Type: %s, Hash: %s", e.getClass().getSimpleName(), x)));
         }
 
         // No missed nodes, working as intended
         assertEquals(0, elementsGenerated.size());
 
         // Check that we didn't double-visit any nodes
-        if (!elementsDuplicated.isEmpty()){
+        if (!elementsDuplicated.isEmpty()) {
             System.err.println("Elements Duplicated:");
             elementsDuplicated.forEach((x, e) -> System.err.println(
-                String.format("Type: %s, Hash: %s", e.getClass().getSimpleName(), x)));
+                    String.format("Type: %s, Hash: %s", e.getClass().getSimpleName(), x)));
         }
 
         // No duplicate visits, working as intended
@@ -148,7 +145,8 @@ public class RandomElmGraphTest {
             }
 
             return (field.getName().equals("resultTypeSpecifier")
-                    && TypeSpecifier.class.isAssignableFrom(field.getType())) || field.getName().equals("signature");
+                            && TypeSpecifier.class.isAssignableFrom(field.getType()))
+                    || field.getName().equals("signature");
         }
 
         // These are excluded to simplify the ELM graph while bugs are being worked out.

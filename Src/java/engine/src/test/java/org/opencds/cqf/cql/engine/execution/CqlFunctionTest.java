@@ -1,10 +1,10 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import org.testng.annotations.Test;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+
+import org.testng.annotations.Test;
 
 public class CqlFunctionTest extends CqlTestBase {
 
@@ -44,6 +44,5 @@ public class CqlFunctionTest extends CqlTestBase {
 
         result = evaluationResult.forExpression("FunctionTestNullQuantityArg").value();
         assertThat(result, is(nullValue()));
-
     }
 }

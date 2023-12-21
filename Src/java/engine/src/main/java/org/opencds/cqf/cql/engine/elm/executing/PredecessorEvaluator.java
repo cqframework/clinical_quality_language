@@ -1,10 +1,9 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.math.BigDecimal;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.exception.TypeUnderflow;
 import org.opencds.cqf.cql.engine.runtime.*;
-
-import java.math.BigDecimal;
 
 /*
 predecessor of<T>(argument T) T
@@ -29,61 +28,69 @@ public class PredecessorEvaluator {
 
         if (value instanceof Integer) {
             if ((Integer) value <= Value.MIN_INT) {
-                throw new TypeUnderflow("The result of the predecessor operation precedes the minimum value allowed for the Integer type");
+                throw new TypeUnderflow(
+                        "The result of the predecessor operation precedes the minimum value allowed for the Integer type");
             }
-            return ((Integer)value) - 1;
-        }
-        else if (value instanceof Long) {
+            return ((Integer) value) - 1;
+        } else if (value instanceof Long) {
             if ((Long) value <= Value.MIN_LONG) {
-                throw new TypeUnderflow("The result of the predecessor operation precedes the minimum value allowed for the Long type");
+                throw new TypeUnderflow(
+                        "The result of the predecessor operation precedes the minimum value allowed for the Long type");
             }
             return ((Long) value) - 1;
-        }
-        else if (value instanceof BigDecimal) {
+        } else if (value instanceof BigDecimal) {
             if (((BigDecimal) value).compareTo(Value.MIN_DECIMAL) <= 0) {
-                throw new TypeUnderflow("The result of the predecessor operation precedes the minimum value allowed for the Decimal type");
+                throw new TypeUnderflow(
+                        "The result of the predecessor operation precedes the minimum value allowed for the Decimal type");
             }
-            return ((BigDecimal)value).subtract(new BigDecimal("0.00000001"));
+            return ((BigDecimal) value).subtract(new BigDecimal("0.00000001"));
         }
         // NOTE: Quantity successor is not standard - including it for simplicity
         else if (value instanceof Quantity) {
             if (((Quantity) value).getValue().compareTo(Value.MIN_DECIMAL) <= 0) {
-                throw new TypeUnderflow("The result of the predecessor operation precedes the minimum value allowed for the Decimal type");
+                throw new TypeUnderflow(
+                        "The result of the predecessor operation precedes the minimum value allowed for the Decimal type");
             }
-            Quantity quantity = (Quantity)value;
-            return new Quantity().withValue((BigDecimal)predecessor(quantity.getValue())).withUnit(quantity.getUnit());
-        }
-        else if (value instanceof Date) {
-            Date dt = (Date)value;
+            Quantity quantity = (Quantity) value;
+            return new Quantity()
+                    .withValue((BigDecimal) predecessor(quantity.getValue()))
+                    .withUnit(quantity.getUnit());
+        } else if (value instanceof Date) {
+            Date dt = (Date) value;
             return new Date(dt.getDate().minus(1, dt.getPrecision().toChronoUnit()), dt.getPrecision());
-        }
-        else if (value instanceof DateTime) {
-            DateTime dt = (DateTime)value;
+        } else if (value instanceof DateTime) {
+            DateTime dt = (DateTime) value;
             return new DateTime(dt.getDateTime().minus(1, dt.getPrecision().toChronoUnit()), dt.getPrecision());
-        }
-        else if (value instanceof Time) {
-            Time t = (Time)value;
+        } else if (value instanceof Time) {
+            Time t = (Time) value;
             switch (t.getPrecision()) {
                 case HOUR:
                     if (t.getTime().getHour() == 0) {
-                        throw new TypeUnderflow("The result of the successor operation precedes the minimum value allowed for the Time type");
+                        throw new TypeUnderflow(
+                                "The result of the successor operation precedes the minimum value allowed for the Time type");
                     }
                     break;
                 case MINUTE:
                     if (t.getTime().getHour() == 0 && t.getTime().getMinute() == 0) {
-                        throw new TypeUnderflow("The result of the successor operation precedes the minimum value allowed for the Time type");
+                        throw new TypeUnderflow(
+                                "The result of the successor operation precedes the minimum value allowed for the Time type");
                     }
                     break;
                 case SECOND:
-                    if (t.getTime().getHour() == 0 && t.getTime().getMinute() == 0 && t.getTime().getSecond() == 0) {
-                        throw new TypeUnderflow("The result of the successor operation precedes the minimum value allowed for the Time type");
+                    if (t.getTime().getHour() == 0
+                            && t.getTime().getMinute() == 0
+                            && t.getTime().getSecond() == 0) {
+                        throw new TypeUnderflow(
+                                "The result of the successor operation precedes the minimum value allowed for the Time type");
                     }
                     break;
                 case MILLISECOND:
-                    if (t.getTime().getHour() == 0 && t.getTime().getMinute() == 0
-                            && t.getTime().getSecond() == 0 && t.getTime().get(Precision.MILLISECOND.toChronoField()) == 0)
-                    {
-                        throw new TypeUnderflow("The result of the successor operation precedes the minimum value allowed for the Time type");
+                    if (t.getTime().getHour() == 0
+                            && t.getTime().getMinute() == 0
+                            && t.getTime().getSecond() == 0
+                            && t.getTime().get(Precision.MILLISECOND.toChronoField()) == 0) {
+                        throw new TypeUnderflow(
+                                "The result of the successor operation precedes the minimum value allowed for the Time type");
                     }
                     break;
                 case DAY:
@@ -95,7 +102,8 @@ public class PredecessorEvaluator {
             return new Time(t.getTime().minus(1, t.getPrecision().toChronoUnit()), t.getPrecision());
         }
 
-        throw new InvalidOperatorArgument(String.format("The Predecessor operation is not implemented for type %s", value.getClass().getName()));
+        throw new InvalidOperatorArgument(String.format(
+                "The Predecessor operation is not implemented for type %s",
+                value.getClass().getName()));
     }
-
 }

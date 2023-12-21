@@ -19,7 +19,8 @@ public class ElmJsonMapper {
             .enable(SerializationFeature.INDENT_OUTPUT)
             .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
             .enable(MapperFeature.USE_BASE_TYPE_AS_DEFAULT_IMPL)
-            .defaultPropertyInclusion(JsonInclude.Value.construct(JsonInclude.Include.NON_NULL, JsonInclude.Include.NON_NULL))
+            .defaultPropertyInclusion(
+                    JsonInclude.Value.construct(JsonInclude.Include.NON_NULL, JsonInclude.Include.NON_NULL))
             .addModule(new JakartaXmlBindAnnotationModule())
             .addMixIn(Trackable.class, TrackableMixIn.class)
             .addMixIn(TypeSpecifier.class, TypeSpecifierMixIn.class)

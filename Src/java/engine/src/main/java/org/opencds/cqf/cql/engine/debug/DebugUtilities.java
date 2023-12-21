@@ -10,11 +10,12 @@ public class DebugUtilities {
 
     private static Logger logger = LoggerFactory.getLogger(DebugUtilities.class);
 
-    private DebugUtilities() {
-    }
+    private DebugUtilities() {}
 
     public static void logDebugResult(Element node, Library currentLibrary, Object result) {
-        logger.debug("{}.{}: {}", currentLibrary != null ? currentLibrary.getIdentifier().getId() : "unknown",
+        logger.debug(
+                "{}.{}: {}",
+                currentLibrary != null ? currentLibrary.getIdentifier().getId() : "unknown",
                 toDebugLocation(node),
                 toDebugString(result));
     }
@@ -22,15 +23,14 @@ public class DebugUtilities {
     public static String toDebugLocation(Element node) {
         String result = "";
         if (node instanceof Element) {
-            Element element = (Element)node;
+            Element element = (Element) node;
             if (element.getLocator() != null) {
                 result = element.getLocator();
             }
             if (element.getLocalId() != null) {
                 result += "(" + element.getLocalId() + ")";
             }
-        }
-        else {
+        } else {
             result = node.getClass().toString();
         }
         return result;
@@ -38,19 +38,18 @@ public class DebugUtilities {
 
     public static String toDebugString(Object result) {
         if (result instanceof CqlType) {
-            return ((CqlType)result).toString();
+            return ((CqlType) result).toString();
         }
 
         if (result instanceof Iterable) {
             StringBuilder sb = new StringBuilder();
             sb.append("{");
             boolean first = true;
-            for (Object element : (Iterable<?>)result) {
+            for (Object element : (Iterable<?>) result) {
                 sb.append(toDebugString(element));
                 if (first) {
                     first = false;
-                }
-                else {
+                } else {
                     sb.append(",");
                 }
             }

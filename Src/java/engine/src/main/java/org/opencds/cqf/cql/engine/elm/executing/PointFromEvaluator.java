@@ -32,8 +32,6 @@ public class PointFromEvaluator {
 
         throw new InvalidOperatorArgument(
                 "PointFrom(Interval<T>)",
-                String.format("PointFrom(%s)", operand.getClass().getName())
-        );
+                String.format("PointFrom(%s)", operand.getClass().getName()));
     }
-
 }

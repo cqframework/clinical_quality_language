@@ -22,8 +22,8 @@ public class XorEvaluator {
 
         throw new InvalidOperatorArgument(
                 "Xor(Boolean, Boolean)",
-                String.format("Xor(%s, %s)", left.getClass().getName(), right.getClass().getName())
-        );
+                String.format(
+                        "Xor(%s, %s)",
+                        left.getClass().getName(), right.getClass().getName()));
     }
-
 }

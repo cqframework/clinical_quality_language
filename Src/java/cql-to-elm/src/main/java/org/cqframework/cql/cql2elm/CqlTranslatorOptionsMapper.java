@@ -1,7 +1,6 @@
 package org.cqframework.cql.cql2elm;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.io.*;
 
 public class CqlTranslatorOptionsMapper {

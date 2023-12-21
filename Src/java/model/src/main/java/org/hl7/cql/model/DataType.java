@@ -4,11 +4,13 @@ public abstract class DataType {
     public DataType() {
         this(null);
     }
+
     public DataType(DataType baseType) {
         this.baseType = baseType == null ? DataType.ANY : baseType;
     }
 
     private DataType baseType;
+
     public DataType getBaseType() {
         return baseType;
     }
@@ -62,7 +64,7 @@ public abstract class DataType {
     public boolean isCompatibleWith(DataType other) {
         // A type is compatible with a choice type if it is a subtype of one of the choice types
         if (other instanceof ChoiceType) {
-            for (DataType choice : ((ChoiceType)other).getTypes()) {
+            for (DataType choice : ((ChoiceType) other).getTypes()) {
                 if (this.isSubTypeOf(choice)) {
                     return true;
                 }

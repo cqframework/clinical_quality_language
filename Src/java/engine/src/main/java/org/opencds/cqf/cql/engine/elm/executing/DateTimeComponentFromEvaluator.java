@@ -54,27 +54,23 @@ public class DateTimeComponentFromEvaluator {
         Precision p = Precision.fromString(precision);
 
         if (operand instanceof Date) {
-            Date date = (Date)operand;
+            Date date = (Date) operand;
 
             if (p.toDateIndex() > date.getPrecision().toDateIndex()) {
                 return null;
             }
 
             return date.getDate().get(p.toChronoField());
-        }
-
-        else if (operand instanceof DateTime) {
-            DateTime dateTime = (DateTime)operand;
+        } else if (operand instanceof DateTime) {
+            DateTime dateTime = (DateTime) operand;
 
             if (p.toDateTimeIndex() > dateTime.getPrecision().toDateTimeIndex()) {
                 return null;
             }
 
             return dateTime.getDateTime().get(p.toChronoField());
-        }
-
-        else if (operand instanceof Time) {
-            Time time = (Time)operand;
+        } else if (operand instanceof Time) {
+            Time time = (Time) operand;
 
             if (p.toTimeIndex() > time.getPrecision().toTimeIndex()) {
                 return null;
@@ -85,7 +81,8 @@ public class DateTimeComponentFromEvaluator {
 
         throw new InvalidOperatorArgument(
                 "_precision_ from(Date), _precision_ from(DateTime) or _precision_ from(Time)",
-                String.format("%s from(%s)", precision.toLowerCase(), operand.getClass().getName())
-        );
+                String.format(
+                        "%s from(%s)",
+                        precision.toLowerCase(), operand.getClass().getName()));
     }
 }

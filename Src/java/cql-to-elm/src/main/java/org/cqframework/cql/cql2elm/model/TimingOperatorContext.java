@@ -6,8 +6,7 @@ public class TimingOperatorContext {
     private Expression left;
     private Expression right;
 
-    public TimingOperatorContext() {
-    }
+    public TimingOperatorContext() {}
 
     public TimingOperatorContext(Expression left, Expression right) {
         this.left = left;

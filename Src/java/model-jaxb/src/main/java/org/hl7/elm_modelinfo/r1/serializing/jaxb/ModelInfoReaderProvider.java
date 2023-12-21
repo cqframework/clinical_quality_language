@@ -10,8 +10,11 @@ public class ModelInfoReaderProvider implements org.hl7.elm_modelinfo.r1.seriali
         }
 
         switch (contentType) {
-            case "application/xml": return new XmlModelInfoReader();
-            default: throw new RuntimeException(String.format("ModelInfo reader content type %s not supported", contentType));
+            case "application/xml":
+                return new XmlModelInfoReader();
+            default:
+                throw new RuntimeException(
+                        String.format("ModelInfo reader content type %s not supported", contentType));
         }
     }
 }

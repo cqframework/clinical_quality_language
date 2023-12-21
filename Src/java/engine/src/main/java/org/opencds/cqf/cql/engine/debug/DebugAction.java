@@ -6,4 +6,3 @@ public enum DebugAction {
     TRACE,
     WATCH
 }
-

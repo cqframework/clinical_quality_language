@@ -1,6 +1,5 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
-
 public class MatchesEvaluator {
 
     public static Object matches(String argument, String pattern) {
@@ -10,5 +9,4 @@ public class MatchesEvaluator {
 
         return argument.matches(pattern);
     }
-
 }

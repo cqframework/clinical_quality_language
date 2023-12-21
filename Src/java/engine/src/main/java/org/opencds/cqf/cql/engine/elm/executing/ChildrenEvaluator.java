@@ -1,10 +1,9 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
-import org.opencds.cqf.cql.engine.runtime.*;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import org.opencds.cqf.cql.engine.runtime.*;
 
 /*
 
@@ -67,33 +66,22 @@ public class ChildrenEvaluator {
 
         List<Object> ret = new ArrayList<>();
 
-        if (source instanceof Integer || source instanceof BigDecimal
-                || source instanceof String || source instanceof Boolean)
-        {
+        if (source instanceof Integer
+                || source instanceof BigDecimal
+                || source instanceof String
+                || source instanceof Boolean) {
             ret.add(source);
-        }
-
-        else if (source instanceof Quantity) {
+        } else if (source instanceof Quantity) {
             addQuantity(ret, (Quantity) source);
-        }
-
-        else if (source instanceof Code) {
+        } else if (source instanceof Code) {
             addCode(ret, (Code) source);
-        }
-
-        else if (source instanceof Concept) {
+        } else if (source instanceof Concept) {
             addConcept(ret, (Concept) source);
-        }
-
-        else if (source instanceof DateTime) {
+        } else if (source instanceof DateTime) {
             addDateTime(ret, (DateTime) source);
-        }
-
-        else if (source instanceof Time) {
+        } else if (source instanceof Time) {
             addTime(ret, (Time) source);
-        }
-
-        else if (source instanceof Iterable) {
+        } else if (source instanceof Iterable) {
             addList(ret, (List<Object>) source);
         }
 
@@ -101,5 +89,4 @@ public class ChildrenEvaluator {
 
         return ret;
     }
-
 }

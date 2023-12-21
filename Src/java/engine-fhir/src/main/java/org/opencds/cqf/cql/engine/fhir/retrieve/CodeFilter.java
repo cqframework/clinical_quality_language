@@ -10,16 +10,19 @@ public class CodeFilter {
     }
 
     private String codePath;
+
     public String getCodePath() {
         return codePath;
     }
 
     private Iterable<Code> codes;
+
     public Iterable<Code> getCodes() {
         return codes;
     }
 
     private String valueSet;
+
     public String getValueSet() {
         return valueSet;
     }

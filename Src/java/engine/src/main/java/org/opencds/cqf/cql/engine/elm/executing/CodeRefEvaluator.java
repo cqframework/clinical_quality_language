@@ -10,7 +10,11 @@ import org.opencds.cqf.cql.engine.runtime.CodeSystem;
 public class CodeRefEvaluator {
 
     public static Code toCode(CodeDef cd, CodeSystem cs) {
-        return new Code().withCode(cd.getId()).withSystem(cs.getId()).withDisplay(cd.getDisplay()).withVersion(cs.getVersion());
+        return new Code()
+                .withCode(cd.getId())
+                .withSystem(cs.getId())
+                .withDisplay(cd.getDisplay())
+                .withVersion(cs.getVersion());
     }
 
     public static Code toCode(CodeRef cr, State state) {
@@ -20,10 +24,8 @@ public class CodeRefEvaluator {
             CodeDef cd = Libraries.resolveCodeRef(cr.getName(), state.getCurrentLibrary());
             CodeSystem cs = CodeSystemRefEvaluator.toCodeSystem(cd.getCodeSystem(), state);
             return toCode(cd, cs);
-        }
-        finally {
+        } finally {
             state.exitLibrary(enteredLibrary);
         }
     }
-
 }

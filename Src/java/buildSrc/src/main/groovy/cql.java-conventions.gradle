@@ -4,6 +4,7 @@ plugins {
     id 'jacoco'
     id 'signing'
     id 'cql.sca-conventions'
+    id 'com.diffplug.spotless'
 }
 
 java {
@@ -73,6 +74,13 @@ tasks.withType(JavaCompile) {
 
 tasks.named('test', Test) {
     useTestNG()
+}
+
+spotless {
+  java {
+    targetExclude '**/generated/**'
+    palantirJavaFormat()
+  }
 }
 
 /*

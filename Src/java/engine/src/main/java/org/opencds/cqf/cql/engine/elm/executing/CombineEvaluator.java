@@ -1,8 +1,7 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
-import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
-
 import java.util.Iterator;
+import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 
 /*
 Combine(source List<String>) String
@@ -18,9 +17,7 @@ public class CombineEvaluator {
 
         if (source == null || separator == null) {
             return null;
-        }
-
-        else {
+        } else {
             if (source instanceof Iterable) {
                 StringBuilder buffer = new StringBuilder("");
                 Iterator<?> iterator = ((Iterable<?>) source).iterator();
@@ -40,12 +37,12 @@ public class CombineEvaluator {
                             first = false;
                         }
                         buffer.append((String) item);
-                    }
-                    else {
+                    } else {
                         throw new InvalidOperatorArgument(
                                 "Combine(List<String>) or Combine(List<String>, String)",
-                                String.format("Combine(List<%s>%s)", item.getClass().getName(), separator.equals("") ? "" : ", " + separator)
-                        );
+                                String.format(
+                                        "Combine(List<%s>%s)",
+                                        item.getClass().getName(), separator.equals("") ? "" : ", " + separator));
                     }
                 }
                 return buffer.toString();
@@ -54,8 +51,7 @@ public class CombineEvaluator {
 
         throw new InvalidOperatorArgument(
                 "Combine(List<String>) or Combine(List<String>, String)",
-                String.format("Combine(%s%s)", source.getClass().getName(), separator.equals("") ? "" : ", " + separator)
-        );
+                String.format(
+                        "Combine(%s%s)", source.getClass().getName(), separator.equals("") ? "" : ", " + separator));
     }
-
 }

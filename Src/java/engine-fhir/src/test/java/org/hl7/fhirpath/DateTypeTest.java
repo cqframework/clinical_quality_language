@@ -1,14 +1,13 @@
 package org.hl7.fhirpath;
 
-import org.hl7.fhir.r4.model.DateType;
-import org.testng.annotations.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import org.hl7.fhir.r4.model.DateType;
+import org.testng.annotations.Test;
 
 public class DateTypeTest {
     @Test
