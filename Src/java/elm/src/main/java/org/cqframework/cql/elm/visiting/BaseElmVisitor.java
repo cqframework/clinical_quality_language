@@ -3827,18 +3827,6 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visits an Expression that is the condition for a where clause
-     * in a Query.
-     *
-     * @param elm
-     * @param context
-     * @return
-     */
-    public T visitWhereClause(Expression elm, C context) {
-        return visitExpression(elm, context);
-    }
-
-    /**
      * Visit a Query. This method will be called for
      * every node in the tree that is a Query.
      *
