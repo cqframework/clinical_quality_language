@@ -1,7 +1,7 @@
 package org.opencds.cqf.cql.engine.execution;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertThat;
 
 import org.cqframework.cql.cql2elm.CqlIncludeException;
 import org.hl7.elm.r1.VersionedIdentifier;

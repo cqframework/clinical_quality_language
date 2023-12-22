@@ -29,7 +29,7 @@ dependencies {
     testImplementation 'org.testng:testng:7.4.0'
     testImplementation 'org.hamcrest:hamcrest-all:1.3'
     testImplementation 'uk.co.datumedge:hamcrest-json:0.2'
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.slf4j:slf4j-simple:1.7.36'
 
     // These are JAXB dependencies excluded because the libraries need to work
@@ -48,7 +48,7 @@ jar {
 }
 
 jacoco {
-    toolVersion = "0.8.9"
+    toolVersion = "0.8.11"
 }
 
 test {
@@ -140,6 +140,9 @@ publishing {
                     }
                     developer {
                         name = 'Marc Hadley'
+                    }
+                    developer {
+                        name = 'Jonathan Percival'
                     }
                 }
             }

@@ -11,7 +11,10 @@
         "hamcrest",
         "Inferencing",
         "opdef",
+        "Instancio",
+        "Objenesis",
         "qicore",
+        "Randomizer",
         "testng",
         "tngtech",
         "trackback"

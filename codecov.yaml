@@ -1,3 +1,6 @@
+codecov:
+  max_report_age: off
+
 coverage:
   status:
     project:
@@ -9,7 +12,7 @@ coverage:
     patch:
       default:
         # basic
-        target: 80
+        target: 80%
         threshold: 0%
         base: auto
         # advanced

@@ -2,6 +2,7 @@ apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'application'
 apply plugin: 'eclipse'
+apply plugin: 'antlr'
 
 group = 'org.cqframework.example'
 version = '0.1'
@@ -16,46 +17,30 @@ repositories {
 }
 
 dependencies {
-    compile group: 'org.antlr', name: 'antlr4', version: '4.5'
-    testCompile group: 'org.testng', name: 'testng', version: '6.8.8'
+    antlr group: 'org.antlr', name: 'antlr4', version: '4.10.1'
+    api "org.antlr:antlr4-runtime:4.10.1"
+    testImplementation group: 'org.testng', name: 'testng', version: '6.8.8'
 }
 
 test {
     useTestNG()
 }
 
-// ANTLR4 code generation (loosely based on https://github.com/ae6rt/gradle-antlr4-template)
-
-ext.antlr = [
-    package: 'org.cqframework.cql.gen',
-    srcDir:  'src/main/resources',
-    destDir: 'src/generated/java'
-]
-
-task antlrTool(type: JavaExec) {
-    description = 'Generates Java sources from ANTLR4 grammars.'
-
-    mkdir(antlr.destDir)
-    inputs.dir file(antlr.srcDir)
-    outputs.dir file(antlr.destDir)
-
-    def grammars = fileTree(antlr.srcDir).include('**/*.g4')
-
-    main = 'org.antlr.v4.Tool'
-    classpath = configurations.compile
-    def pkg = antlr.package.replaceAll("\\.", "/")
-    args = ["-o", "${antlr.destDir}/${pkg}", "-visitor", "-package", antlr.package, grammars.files].flatten()
+sourceSets {
+    main {
+        antlr {
+            srcDirs = ["src/main/resources"]
+        }
+        java {
+            srcDir 'build/generated/sources/antlr/main/java'
+        }
+    }
 }
 
-compileJava.dependsOn antlrTool
-sourceSets.main.java.srcDirs += antlr.destDir
-
-clean {
-    delete antlr.destDir
+generateGrammarSource {
+    outputDirectory = file("${project.buildDir}/generated/sources/antlr/main/java/org/cqframework/cql/gen")
+    arguments = ['-visitor', '-package', 'org.cqframework.cql.gen']
 }
-
-// IDEA config to force ANTLR plugin to use same source locations as gradle
-
 idea {
   project {
     languageLevel = JavaVersion.VERSION_11
@@ -64,7 +49,7 @@ idea {
     iws {
       withXml { provider ->
         def props = provider.node.component.find { it.@name == 'PropertiesComponent' }
-        
+
         def propMap = [
           '$PROJECT_DIR$/src/main/resources/cql.g4::/output-dir' : '$PROJECT_DIR$/src/generated/java',
           '$PROJECT_DIR$/src/main/resources/cql.g4::/lib-dir' : '$PROJECT_DIR$/src/main/resources',

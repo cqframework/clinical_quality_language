@@ -1,6 +1,7 @@
 package org.cqframework.cql.quickstart;
 
-import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
@@ -124,14 +125,14 @@ public class QuickstartCqlVisitorTest {
     }
 
     private QuickstartCqlVisitor visitLogic(String logic) {
-        return visitANTLRInputStream(new ANTLRInputStream(logic));
+        return visitCharStream(CharStreams.fromString(logic));
     }
 
     private QuickstartCqlVisitor visitLogicFile(String filename, boolean inClassPath) {
         QuickstartCqlVisitor visitor = null;
         try {
             InputStream is = inClassPath ? this.getClass().getResourceAsStream(filename) : new FileInputStream(filename);
-            visitor = visitANTLRInputStream(new ANTLRInputStream(is));
+            visitor = visitCharStream(CharStreams.fromStream(is));
         } catch (IOException e) {
             fail("Couldn't load file: " + filename);
         }
@@ -139,7 +140,7 @@ public class QuickstartCqlVisitorTest {
         return visitor;
     }
 
-    private QuickstartCqlVisitor visitANTLRInputStream(ANTLRInputStream is) {
+    private QuickstartCqlVisitor visitCharStream(CharStream is) {
         cqlLexer lexer = new cqlLexer(is);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         cqlParser parser = new cqlParser(tokens);

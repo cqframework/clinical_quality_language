@@ -4,14 +4,14 @@ import java.util.List;
 import java.util.Objects;
 import org.cqframework.cql.elm.tracking.Trackable;
 import org.cqframework.cql.elm.utility.Visitors;
-import org.cqframework.cql.elm.visiting.ElmFunctionalVisitor;
+import org.cqframework.cql.elm.visiting.FunctionalElmVisitor;
 import org.hl7.elm.r1.Element;
 import org.hl7.elm.r1.Library;
 
 public class ElmEditor {
 
     private final List<ElmEdit> edits;
-    private final ElmFunctionalVisitor<Void, List<ElmEdit>> visitor;
+    private final FunctionalElmVisitor<Void, List<ElmEdit>> visitor;
 
     public ElmEditor(List<ElmEdit> edits) {
         this.edits = Objects.requireNonNull(edits);

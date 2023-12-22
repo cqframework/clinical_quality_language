@@ -200,7 +200,6 @@ public class CqlCompiler {
         messages = new ArrayList<>();
 
         var options = libraryManager.getCqlCompilerOptions().getOptions();
-        ;
 
         LibraryBuilder builder = new LibraryBuilder(namespaceInfo, libraryManager, new IdObjectFactory());
         CqlCompiler.CqlErrorListener errorListener = new CqlCompiler.CqlErrorListener(

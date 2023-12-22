@@ -1,6 +1,6 @@
 package org.cqframework.cql.elm.requirements;
 
-import org.cqframework.cql.elm.visiting.ElmBaseLibraryVisitor;
+import org.cqframework.cql.elm.visiting.BaseElmLibraryVisitor;
 import org.hl7.cql.model.ListType;
 import org.hl7.elm.r1.*;
 
@@ -46,7 +46,7 @@ At a binary comparison expression, return ElmConditionRequirement if possible
 At a logical expression, return ElmConjunctiveRequirement or ElmDisjunctiveRequirement
 
  */
-public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor<ElmRequirement, ElmRequirementsContext> {
+public class ElmRequirementsVisitor extends BaseElmLibraryVisitor<ElmRequirement, ElmRequirementsContext> {
 
     public ElmRequirementsVisitor() {
         super();
@@ -105,7 +105,8 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor<ElmRequirement
             result = context.reportExpressionRef(elm);
         }
         if (result != null) {
-            // If the expression ref is to a retrieve or a single-source query, surface it as an "inferred" requirement
+            // If the expression ref is to a retrieve or a single-source query, surface it
+            // as an "inferred" requirement
             // in the referencing scope
             if (result instanceof ElmDataRequirement) {
                 ElmDataRequirement inferredRequirement = ElmDataRequirement.inferFrom((ElmDataRequirement) result);
@@ -134,7 +135,8 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor<ElmRequirement
             if (elm.getOperand().size() != 1
                     || (elm.getOperand().get(0).getResultType() instanceof ListType
                             && !(elm.getResultType() instanceof ListType))) {
-                // Note that the assumption here is that the data requirement has already been reported to the context
+                // Note that the assumption here is that the data requirement has already been
+                // reported to the context
                 return new ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm)
                         .combine((ElmDataRequirement) result);
             }
@@ -169,8 +171,10 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor<ElmRequirement
         if (elmPertinenceContext != null) {
             result.setPertinenceContext(elmPertinenceContext);
         }
-        // If not analyzing requirements, or in a query context, report the data requirement
-        // If in a query context, the requirement will be reported as an inferred requirement at the query boundary
+        // If not analyzing requirements, or in a query context, report the data
+        // requirement
+        // If in a query context, the requirement will be reported as an inferred
+        // requirement at the query boundary
         if (!context.getOptions().getAnalyzeDataRequirements() || !context.inQueryContext()) {
             context.reportRequirements(result, null);
         }
@@ -247,30 +251,18 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor<ElmRequirement
         return super.visitConceptDef(elm, context);
     }
 
-    @Override
-    public ElmRequirement visitExpression(Expression elm, ElmRequirementsContext context) {
-        return super.visitExpression(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitOperatorExpression(OperatorExpression elm, ElmRequirementsContext context) {
-        return super.visitOperatorExpression(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitUnaryExpression(UnaryExpression elm, ElmRequirementsContext context) {
-        return super.visitUnaryExpression(elm, context);
-    }
-
     /**
-     * If both sides are column references that point to the same column in the same alias
-     *   the condition is a tautology
-     * If both sides are column references that point to different columns in the same alias
-     *   the condition is a constraint
+     * If both sides are column references that point to the same column in the same
+     * alias
+     * the condition is a tautology
+     * If both sides are column references that point to different columns in the
+     * same alias
+     * the condition is a constraint
      * If both sides are column references that point to different aliases
-     *   the condition is a join
+     * the condition is a join
      * If one side or the other is a column reference
-     *   the condition is a potentially sargeable condition
+     * the condition is a potentially sargeable condition
+     *
      * @param elm
      * @param context
      * @param left
@@ -323,7 +315,8 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor<ElmRequirement
 
     @Override
     public ElmRequirement visitChildren(BinaryExpression elm, ElmRequirementsContext context) {
-        // Override visit children behavior to determine whether to create an ElmConditionRequirement
+        // Override visit children behavior to determine whether to create an
+        // ElmConditionRequirement
         if (elm.getOperand().size() != 2) {
             return super.visitChildren(elm, context);
         }
@@ -332,12 +325,15 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor<ElmRequirement
                 /**
                  * Determine whether the condition is sargeable:
                  *
-                 *     A op B
+                 * A op B
                  *
                  * Where:
-                 * * A is an order-preserving expression with a single property reference to a property of some source in the current query context
-                 * * op is a positive relative comparison operation (=, >, <, >=, <=) or a membership operator (in, contains)
-                 * * B is a functional, repeatable, and deterministic context literal expression with respect to the current query context
+                 * * A is an order-preserving expression with a single property reference to a
+                 * property of some source in the current query context
+                 * * op is a positive relative comparison operation (=, >, <, >=, <=) or a
+                 * membership operator (in, contains)
+                 * * B is a functional, repeatable, and deterministic context literal expression
+                 * with respect to the current query context
                  */
             case "Equal":
             case "Equivalent":
@@ -358,9 +354,11 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor<ElmRequirement
             }
 
                 /**
-                 * Gather sargeable conditions as Lists of conditions. At an AND, combine conditions from sub-nodes.
+                 * Gather sargeable conditions as Lists of conditions. At an AND, combine
+                 * conditions from sub-nodes.
                  * At an OR, the result is separate lists of condition lists.
-                 * At an AND, if there are already lists of lists, the condition is too complex for analysis (i.e. it's not in DNF or CNF)
+                 * At an AND, if there are already lists of lists, the condition is too complex
+                 * for analysis (i.e. it's not in DNF or CNF)
                  */
                 // TODO: Normalize to DNF
             case "And": {
@@ -422,11 +420,6 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor<ElmRequirement
     }
 
     @Override
-    public ElmRequirement visitBinaryExpression(BinaryExpression elm, ElmRequirementsContext context) {
-        return super.visitBinaryExpression(elm, context);
-    }
-
-    @Override
     public ElmRequirement visitTernaryExpression(TernaryExpression elm, ElmRequirementsContext context) {
         ElmRequirement requirements = super.visitTernaryExpression(elm, context);
         return new ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm).combine(requirements);
@@ -436,11 +429,6 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor<ElmRequirement
     public ElmRequirement visitNaryExpression(NaryExpression elm, ElmRequirementsContext context) {
         ElmRequirement requirements = super.visitNaryExpression(elm, context);
         return new ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm).combine(requirements);
-    }
-
-    @Override
-    public ElmRequirement visitOperandDef(OperandDef elm, ElmRequirementsContext context) {
-        return super.visitOperandDef(elm, context);
     }
 
     @Override
@@ -459,26 +447,6 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor<ElmRequirement
     }
 
     @Override
-    public ElmRequirement visitTupleElement(TupleElement elm, ElmRequirementsContext context) {
-        return super.visitTupleElement(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitTuple(Tuple elm, ElmRequirementsContext context) {
-        return super.visitTuple(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitInstanceElement(InstanceElement elm, ElmRequirementsContext context) {
-        return super.visitInstanceElement(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitInstance(Instance elm, ElmRequirementsContext context) {
-        return super.visitInstance(elm, context);
-    }
-
-    @Override
     public ElmRequirement visitInterval(Interval elm, ElmRequirementsContext context) {
         ElmRequirement result = super.visitInterval(elm, context);
         ElmOperatorRequirement finalResult = new ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm);
@@ -487,39 +455,9 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor<ElmRequirement
     }
 
     @Override
-    public ElmRequirement visitList(List elm, ElmRequirementsContext context) {
-        return super.visitList(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitAnd(And elm, ElmRequirementsContext context) {
-        return super.visitAnd(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitOr(Or elm, ElmRequirementsContext context) {
-        return super.visitOr(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitXor(Xor elm, ElmRequirementsContext context) {
-        return super.visitXor(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitNot(Not elm, ElmRequirementsContext context) {
-        return super.visitNot(elm, context);
-    }
-
-    @Override
     public ElmRequirement visitIf(If elm, ElmRequirementsContext context) {
         // TODO: Rewrite the if as equivalent logic
         return new ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm);
-    }
-
-    @Override
-    public ElmRequirement visitCaseItem(CaseItem elm, ElmRequirementsContext context) {
-        return super.visitCaseItem(elm, context);
     }
 
     @Override
@@ -557,292 +495,13 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor<ElmRequirement
     }
 
     @Override
-    public ElmRequirement visitIsNull(IsNull elm, ElmRequirementsContext context) {
-        return super.visitIsNull(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitIsTrue(IsTrue elm, ElmRequirementsContext context) {
-        return super.visitIsTrue(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitIsFalse(IsFalse elm, ElmRequirementsContext context) {
-        return super.visitIsFalse(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitCoalesce(Coalesce elm, ElmRequirementsContext context) {
-        return super.visitCoalesce(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitIs(Is elm, ElmRequirementsContext context) {
-        return super.visitIs(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitAs(As elm, ElmRequirementsContext context) {
-        return super.visitAs(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitConvert(Convert elm, ElmRequirementsContext context) {
-        return super.visitConvert(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitToBoolean(ToBoolean elm, ElmRequirementsContext context) {
-        return super.visitToBoolean(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitToConcept(ToConcept elm, ElmRequirementsContext context) {
-        return super.visitToConcept(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitToDateTime(ToDateTime elm, ElmRequirementsContext context) {
-        return super.visitToDateTime(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitToDecimal(ToDecimal elm, ElmRequirementsContext context) {
-        return super.visitToDecimal(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitToInteger(ToInteger elm, ElmRequirementsContext context) {
-        return super.visitToInteger(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitToQuantity(ToQuantity elm, ElmRequirementsContext context) {
-        return super.visitToQuantity(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitToString(ToString elm, ElmRequirementsContext context) {
-        return super.visitToString(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitToTime(ToTime elm, ElmRequirementsContext context) {
-        return super.visitToTime(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitEqual(Equal elm, ElmRequirementsContext context) {
-        return super.visitEqual(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitEquivalent(Equivalent elm, ElmRequirementsContext context) {
-        return super.visitEquivalent(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitNotEqual(NotEqual elm, ElmRequirementsContext context) {
-        return super.visitNotEqual(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitLess(Less elm, ElmRequirementsContext context) {
-        return super.visitLess(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitGreater(Greater elm, ElmRequirementsContext context) {
-        return super.visitGreater(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitLessOrEqual(LessOrEqual elm, ElmRequirementsContext context) {
-        return super.visitLessOrEqual(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitGreaterOrEqual(GreaterOrEqual elm, ElmRequirementsContext context) {
-        return super.visitGreaterOrEqual(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitAdd(Add elm, ElmRequirementsContext context) {
-        return super.visitAdd(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitSubtract(Subtract elm, ElmRequirementsContext context) {
-        return super.visitSubtract(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitMultiply(Multiply elm, ElmRequirementsContext context) {
-        return super.visitMultiply(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitDivide(Divide elm, ElmRequirementsContext context) {
-        return super.visitDivide(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitTruncatedDivide(TruncatedDivide elm, ElmRequirementsContext context) {
-        return super.visitTruncatedDivide(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitModulo(Modulo elm, ElmRequirementsContext context) {
-        return super.visitModulo(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitCeiling(Ceiling elm, ElmRequirementsContext context) {
-        return super.visitCeiling(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitFloor(Floor elm, ElmRequirementsContext context) {
-        return super.visitFloor(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitTruncate(Truncate elm, ElmRequirementsContext context) {
-        return super.visitTruncate(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitAbs(Abs elm, ElmRequirementsContext context) {
-        return super.visitAbs(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitNegate(Negate elm, ElmRequirementsContext context) {
-        return super.visitNegate(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitRound(Round elm, ElmRequirementsContext context) {
-        return super.visitRound(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitLn(Ln elm, ElmRequirementsContext context) {
-        return super.visitLn(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitExp(Exp elm, ElmRequirementsContext context) {
-        return super.visitExp(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitLog(Log elm, ElmRequirementsContext context) {
-        return super.visitLog(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitPower(Power elm, ElmRequirementsContext context) {
-        return super.visitPower(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitSuccessor(Successor elm, ElmRequirementsContext context) {
-        return super.visitSuccessor(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitPredecessor(Predecessor elm, ElmRequirementsContext context) {
-        return super.visitPredecessor(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitMinValue(MinValue elm, ElmRequirementsContext context) {
-        return super.visitMinValue(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitMaxValue(MaxValue elm, ElmRequirementsContext context) {
-        return super.visitMaxValue(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitConcatenate(Concatenate elm, ElmRequirementsContext context) {
-        return super.visitConcatenate(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitCombine(Combine elm, ElmRequirementsContext context) {
-        return super.visitCombine(elm, context);
-    }
-
-    @Override
     public ElmRequirement visitSplit(Split elm, ElmRequirementsContext context) {
-        // If the separator is a literal, infer based only on the string to split argument
+        // If the separator is a literal, infer based only on the string to split
+        // argument
         if (elm.getSeparator() instanceof Literal) {
             return visitElement(elm.getStringToSplit(), context);
         }
         return super.visitSplit(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitLength(Length elm, ElmRequirementsContext context) {
-        return super.visitLength(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitUpper(Upper elm, ElmRequirementsContext context) {
-        return super.visitUpper(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitLower(Lower elm, ElmRequirementsContext context) {
-        return super.visitLower(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitIndexer(Indexer elm, ElmRequirementsContext context) {
-        return super.visitIndexer(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitPositionOf(PositionOf elm, ElmRequirementsContext context) {
-        return super.visitPositionOf(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitSubstring(Substring elm, ElmRequirementsContext context) {
-        return super.visitSubstring(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitDurationBetween(DurationBetween elm, ElmRequirementsContext context) {
-        return super.visitDurationBetween(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitDifferenceBetween(DifferenceBetween elm, ElmRequirementsContext context) {
-        return super.visitDifferenceBetween(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitDateFrom(DateFrom elm, ElmRequirementsContext context) {
-        return super.visitDateFrom(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitTimeFrom(TimeFrom elm, ElmRequirementsContext context) {
-        return super.visitTimeFrom(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitTimezoneOffsetFrom(TimezoneOffsetFrom elm, ElmRequirementsContext context) {
-        return super.visitTimezoneOffsetFrom(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitDateTimeComponentFrom(DateTimeComponentFrom elm, ElmRequirementsContext context) {
-        return super.visitDateTimeComponentFrom(elm, context);
     }
 
     @Override
@@ -969,276 +628,6 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor<ElmRequirement
     }
 
     @Override
-    public ElmRequirement visitSameAs(SameAs elm, ElmRequirementsContext context) {
-        return super.visitSameAs(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitSameOrBefore(SameOrBefore elm, ElmRequirementsContext context) {
-        return super.visitSameOrBefore(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitSameOrAfter(SameOrAfter elm, ElmRequirementsContext context) {
-        return super.visitSameOrAfter(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitWidth(Width elm, ElmRequirementsContext context) {
-        return super.visitWidth(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitStart(Start elm, ElmRequirementsContext context) {
-        return super.visitStart(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitEnd(End elm, ElmRequirementsContext context) {
-        return super.visitEnd(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitContains(Contains elm, ElmRequirementsContext context) {
-        return super.visitContains(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitProperContains(ProperContains elm, ElmRequirementsContext context) {
-        return super.visitProperContains(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitIn(In elm, ElmRequirementsContext context) {
-        return super.visitIn(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitProperIn(ProperIn elm, ElmRequirementsContext context) {
-        return super.visitProperIn(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitIncludes(Includes elm, ElmRequirementsContext context) {
-        return super.visitIncludes(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitIncludedIn(IncludedIn elm, ElmRequirementsContext context) {
-        return super.visitIncludedIn(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitProperIncludes(ProperIncludes elm, ElmRequirementsContext context) {
-        return super.visitProperIncludes(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitProperIncludedIn(ProperIncludedIn elm, ElmRequirementsContext context) {
-        return super.visitProperIncludedIn(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitBefore(Before elm, ElmRequirementsContext context) {
-        return super.visitBefore(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitAfter(After elm, ElmRequirementsContext context) {
-        return super.visitAfter(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitMeets(Meets elm, ElmRequirementsContext context) {
-        return super.visitMeets(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitMeetsBefore(MeetsBefore elm, ElmRequirementsContext context) {
-        return super.visitMeetsBefore(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitMeetsAfter(MeetsAfter elm, ElmRequirementsContext context) {
-        return super.visitMeetsAfter(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitOverlaps(Overlaps elm, ElmRequirementsContext context) {
-        return super.visitOverlaps(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitOverlapsBefore(OverlapsBefore elm, ElmRequirementsContext context) {
-        return super.visitOverlapsBefore(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitOverlapsAfter(OverlapsAfter elm, ElmRequirementsContext context) {
-        return super.visitOverlapsAfter(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitStarts(Starts elm, ElmRequirementsContext context) {
-        return super.visitStarts(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitEnds(Ends elm, ElmRequirementsContext context) {
-        return super.visitEnds(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitCollapse(Collapse elm, ElmRequirementsContext context) {
-        return super.visitCollapse(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitUnion(Union elm, ElmRequirementsContext context) {
-        return super.visitUnion(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitIntersect(Intersect elm, ElmRequirementsContext context) {
-        return super.visitIntersect(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitExcept(Except elm, ElmRequirementsContext context) {
-        return super.visitExcept(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitExists(Exists elm, ElmRequirementsContext context) {
-        return super.visitExists(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitTimes(Times elm, ElmRequirementsContext context) {
-        return super.visitTimes(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitFilter(Filter elm, ElmRequirementsContext context) {
-        return super.visitFilter(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitFirst(First elm, ElmRequirementsContext context) {
-        return super.visitFirst(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitLast(Last elm, ElmRequirementsContext context) {
-        return super.visitLast(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitIndexOf(IndexOf elm, ElmRequirementsContext context) {
-        return super.visitIndexOf(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitFlatten(Flatten elm, ElmRequirementsContext context) {
-        return super.visitFlatten(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitSort(Sort elm, ElmRequirementsContext context) {
-        return super.visitSort(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitForEach(ForEach elm, ElmRequirementsContext context) {
-        return super.visitForEach(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitDistinct(Distinct elm, ElmRequirementsContext context) {
-        return super.visitDistinct(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitCurrent(Current elm, ElmRequirementsContext context) {
-        return super.visitCurrent(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitSingletonFrom(SingletonFrom elm, ElmRequirementsContext context) {
-        return super.visitSingletonFrom(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitAggregateExpression(AggregateExpression elm, ElmRequirementsContext context) {
-        return super.visitAggregateExpression(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitCount(Count elm, ElmRequirementsContext context) {
-        return super.visitCount(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitSum(Sum elm, ElmRequirementsContext context) {
-        return super.visitSum(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitMin(Min elm, ElmRequirementsContext context) {
-        return super.visitMin(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitMax(Max elm, ElmRequirementsContext context) {
-        return super.visitMax(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitAvg(Avg elm, ElmRequirementsContext context) {
-        return super.visitAvg(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitMedian(Median elm, ElmRequirementsContext context) {
-        return super.visitMedian(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitMode(Mode elm, ElmRequirementsContext context) {
-        return super.visitMode(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitVariance(Variance elm, ElmRequirementsContext context) {
-        return super.visitVariance(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitPopulationVariance(PopulationVariance elm, ElmRequirementsContext context) {
-        return super.visitPopulationVariance(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitStdDev(StdDev elm, ElmRequirementsContext context) {
-        return super.visitStdDev(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitPopulationStdDev(PopulationStdDev elm, ElmRequirementsContext context) {
-        return super.visitPopulationStdDev(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitAllTrue(AllTrue elm, ElmRequirementsContext context) {
-        return super.visitAllTrue(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitAnyTrue(AnyTrue elm, ElmRequirementsContext context) {
-        return super.visitAnyTrue(elm, context);
-    }
-
-    @Override
     public ElmRequirement visitProperty(Property elm, ElmRequirementsContext context) {
         ElmRequirement visitResult = super.visitProperty(elm, context);
 
@@ -1264,9 +653,9 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor<ElmRequirement
         return result;
     }
 
-    @Override
-    public ElmRequirement visitChildren(AliasedQuerySource elm, ElmRequirementsContext context) {
-        // Override visit behavior because we need to exit the definition context prior to traversing the such that
+    public ElmRequirement commonAliasedQuerySource(AliasedQuerySource elm, ElmRequirementsContext context) {
+        // Override visit behavior because we need to exit the definition context prior
+        // to traversing the such that
         // condition
         // Such that traversal happens in the visitChildren relationship
         ElmRequirement result = defaultResult(elm, context);
@@ -1280,7 +669,8 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor<ElmRequirement
         } finally {
             aliasContext = context.getCurrentQueryContext().exitAliasDefinitionContext(result);
         }
-        // If this is an operator requirement, report it directly to the context, otherwise the context it contains will
+        // If this is an operator requirement, report it directly to the context,
+        // otherwise the context it contains will
         // not be reported
         // since query requirements are abstracted to an ElmDataRequirement
         if (result instanceof ElmOperatorRequirement) {
@@ -1290,8 +680,41 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor<ElmRequirement
     }
 
     @Override
+    public ElmRequirement visitWith(With elm, ElmRequirementsContext context) {
+        ElmRequirement result = commonAliasedQuerySource((AliasedQuerySource) elm, context);
+
+        if (elm.getSuchThat() != null) {
+            ElmRequirement childResult = visitExpression(elm.getSuchThat(), context);
+            context.getCurrentQueryContext().reportQueryRequirements(childResult);
+            result = aggregateResult(result, childResult);
+        }
+
+        context.getCurrentQueryContext().descopeAlias(elm);
+
+        return result;
+    }
+
+    @Override
+    public ElmRequirement visitWithout(Without elm, ElmRequirementsContext context) {
+        ElmRequirement result = commonAliasedQuerySource((AliasedQuerySource) elm, context);
+
+        if (elm.getSuchThat() != null) {
+            ElmRequirement childResult = visitExpression(elm.getSuchThat(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        context.getCurrentQueryContext().descopeAlias(elm);
+
+        return result;
+    }
+
+    @Override
     public ElmRequirement visitAliasedQuerySource(AliasedQuerySource elm, ElmRequirementsContext context) {
-        return super.visitAliasedQuerySource(elm, context);
+        if (elm instanceof RelationshipClause) {
+            return visitRelationshipClause((RelationshipClause) elm, context);
+        }
+
+        return commonAliasedQuerySource(elm, context);
     }
 
     @Override
@@ -1310,80 +733,52 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor<ElmRequirement
         return letContext.getRequirements();
     }
 
-    @Override
-    public ElmRequirement visitChildren(RelationshipClause elm, ElmRequirementsContext context) {
-        ElmRequirement result = visitChildren((AliasedQuerySource) elm, context);
-
-        if (elm.getSuchThat() != null) {
-            ElmRequirement childResult = visitSuchThatClause(elm.getSuchThat(), elm instanceof With, context);
+    // This is most a copy of the super-class visitQuery
+    // But it reports the requirements of the where clause to the requirements
+    // context
+    public ElmRequirement innerVisitQuery(Query elm, ElmRequirementsContext context) {
+        ElmRequirement result = defaultResult(elm, context);
+        for (var source : elm.getSource()) {
+            ElmRequirement childResult = visitAliasedQuerySource(source, context);
+            result = aggregateResult(result, childResult);
+        }
+        for (var let : elm.getLet()) {
+            ElmRequirement childResult = visitLetClause(let, context);
             result = aggregateResult(result, childResult);
         }
 
-        context.getCurrentQueryContext().descopeAlias(elm);
-
-        return result;
-    }
-
-    @Override
-    public ElmRequirement visitRelationshipClause(RelationshipClause elm, ElmRequirementsContext context) {
-        return super.visitRelationshipClause(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitWith(With elm, ElmRequirementsContext context) {
-        return super.visitWith(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitWithout(Without elm, ElmRequirementsContext context) {
-        return super.visitWithout(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitSortByItem(SortByItem elm, ElmRequirementsContext context) {
-        return super.visitSortByItem(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitByDirection(ByDirection elm, ElmRequirementsContext context) {
-        return super.visitByDirection(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitByColumn(ByColumn elm, ElmRequirementsContext context) {
-        return super.visitByColumn(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitByExpression(ByExpression elm, ElmRequirementsContext context) {
-        return super.visitByExpression(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitSortClause(SortClause elm, ElmRequirementsContext context) {
-        return super.visitSortClause(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitReturnClause(ReturnClause elm, ElmRequirementsContext context) {
-        return super.visitReturnClause(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitWhereClause(Expression elm, ElmRequirementsContext context) {
-        ElmRequirement childResult = super.visitWhereClause(elm, context);
-        context.getCurrentQueryContext().reportQueryRequirements(childResult);
-        return childResult;
-    }
-
-    @Override
-    public ElmRequirement visitSuchThatClause(Expression elm, boolean isWith, ElmRequirementsContext context) {
-        ElmRequirement childResult = super.visitSuchThatClause(elm, isWith, context);
-        if (isWith) {
-            context.getCurrentQueryContext().reportQueryRequirements(childResult);
+        for (var r : elm.getRelationship()) {
+            ElmRequirement childResult = visitRelationshipClause(r, context);
+            result = aggregateResult(result, childResult);
         }
-        // TODO: Determine how to incorporate requirements from a without clause
-        return childResult;
+
+        if (elm.getWhere() != null) {
+            ElmRequirement childResult = visitExpression(elm.getWhere(), context);
+            // This is the one line that's different between this implementation
+            // and the super implementation
+            context.getCurrentQueryContext().reportQueryRequirements(childResult);
+            result = aggregateResult(result, childResult);
+        }
+        if (elm.getReturn() != null) {
+            ElmRequirement childResult = visitReturnClause(elm.getReturn(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getAggregate() != null) {
+            ElmRequirement childResult = visitAggregateClause(elm.getAggregate(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getSort() != null) {
+            ElmRequirement childResult = visitSortClause(elm.getSort(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getResultTypeSpecifier() != null) {
+            ElmRequirement childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
+            result = aggregateResult(result, childResult);
+        }
+        return result;
     }
 
     @Override
@@ -1392,7 +787,7 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor<ElmRequirement
         ElmQueryContext queryContext = null;
         context.enterQueryContext(elm);
         try {
-            childResult = super.visitQuery(elm, context);
+            childResult = innerVisitQuery(elm, context);
         } finally {
             queryContext = context.exitQueryContext();
         }
@@ -1400,26 +795,6 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor<ElmRequirement
         result.analyzeDataRequirements(context);
         context.reportRequirements(result, null);
         return result;
-    }
-
-    @Override
-    public ElmRequirement visitAliasRef(AliasRef elm, ElmRequirementsContext context) {
-        return super.visitAliasRef(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitQueryLetRef(QueryLetRef elm, ElmRequirementsContext context) {
-        return super.visitQueryLetRef(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitCode(Code elm, ElmRequirementsContext context) {
-        return super.visitCode(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitConcept(Concept elm, ElmRequirementsContext context) {
-        return super.visitConcept(elm, context);
     }
 
     @Override
@@ -1472,56 +847,6 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor<ElmRequirement
             return inferConditionRequirement(elm, context, left, right);
         }
         return super.visitAnyInValueSet(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitQuantity(Quantity elm, ElmRequirementsContext context) {
-        return super.visitQuantity(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitCalculateAge(CalculateAge elm, ElmRequirementsContext context) {
-        return super.visitCalculateAge(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitCalculateAgeAt(CalculateAgeAt elm, ElmRequirementsContext context) {
-        return super.visitCalculateAgeAt(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitElement(Element elm, ElmRequirementsContext context) {
-        return super.visitElement(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitTypeSpecifier(TypeSpecifier elm, ElmRequirementsContext context) {
-        return super.visitTypeSpecifier(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitNamedTypeSpecifier(NamedTypeSpecifier elm, ElmRequirementsContext context) {
-        return super.visitNamedTypeSpecifier(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitIntervalTypeSpecifier(IntervalTypeSpecifier elm, ElmRequirementsContext context) {
-        return super.visitIntervalTypeSpecifier(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitListTypeSpecifier(ListTypeSpecifier elm, ElmRequirementsContext context) {
-        return super.visitListTypeSpecifier(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitTupleElementDefinition(TupleElementDefinition elm, ElmRequirementsContext context) {
-        return super.visitTupleElementDefinition(elm, context);
-    }
-
-    @Override
-    public ElmRequirement visitTupleTypeSpecifier(TupleTypeSpecifier elm, ElmRequirementsContext context) {
-        return super.visitTupleTypeSpecifier(elm, context);
     }
 
     @Override

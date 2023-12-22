@@ -2,8 +2,8 @@ package org.cqframework.cql.cql2elm;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.testng.annotations.AfterClass;

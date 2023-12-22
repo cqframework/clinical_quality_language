@@ -52,6 +52,7 @@ public class CachingModelResolverDecoratorTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void type_resolved_only_once() {
         var m = mock(ModelResolver.class);
         when(m.getPackageName()).thenReturn("test.package");
