@@ -5,7 +5,8 @@ import org.hl7.elm.r1.*;
 /**
  * Created by Bryn on 4/14/2016.
  */
-public class ElmBaseLibraryVisitor<T, C> extends ElmBaseClinicalVisitor<T, C> implements ElmLibraryVisitor<T, C> {
+public abstract class BaseElmLibraryVisitor<T, C> extends BaseElmClinicalVisitor<T, C>
+        implements ElmLibraryVisitor<T, C> {
 
     /**
      * Visit an Element in an ELM tree. This method will be called for
@@ -33,12 +34,12 @@ public class ElmBaseLibraryVisitor<T, C> extends ElmBaseClinicalVisitor<T, C> im
      * @return the visitor result
      */
     public T visitLibrary(Library elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
         if (elm.getUsings() != null
                 && elm.getUsings().getDef() != null
                 && !elm.getUsings().getDef().isEmpty()) {
             for (UsingDef def : elm.getUsings().getDef()) {
-                T childResult = visitElement(def, context);
+                T childResult = visitUsingDef(def, context);
                 result = aggregateResult(result, childResult);
             }
         }
@@ -46,7 +47,7 @@ public class ElmBaseLibraryVisitor<T, C> extends ElmBaseClinicalVisitor<T, C> im
                 && elm.getIncludes().getDef() != null
                 && !elm.getIncludes().getDef().isEmpty()) {
             for (IncludeDef def : elm.getIncludes().getDef()) {
-                T childResult = visitElement(def, context);
+                T childResult = visitIncludeDef(def, context);
                 result = aggregateResult(result, childResult);
             }
         }
@@ -54,7 +55,7 @@ public class ElmBaseLibraryVisitor<T, C> extends ElmBaseClinicalVisitor<T, C> im
                 && elm.getCodeSystems().getDef() != null
                 && !elm.getCodeSystems().getDef().isEmpty()) {
             for (CodeSystemDef def : elm.getCodeSystems().getDef()) {
-                T childResult = visitElement(def, context);
+                T childResult = visitCodeSystemDef(def, context);
                 result = aggregateResult(result, childResult);
             }
         }
@@ -62,7 +63,7 @@ public class ElmBaseLibraryVisitor<T, C> extends ElmBaseClinicalVisitor<T, C> im
                 && elm.getValueSets().getDef() != null
                 && !elm.getValueSets().getDef().isEmpty()) {
             for (ValueSetDef def : elm.getValueSets().getDef()) {
-                T childResult = visitElement(def, context);
+                T childResult = visitValueSetDef(def, context);
                 result = aggregateResult(result, childResult);
             }
         }
@@ -78,7 +79,7 @@ public class ElmBaseLibraryVisitor<T, C> extends ElmBaseClinicalVisitor<T, C> im
                 && elm.getConcepts().getDef() != null
                 && !elm.getConcepts().getDef().isEmpty()) {
             for (ConceptDef def : elm.getConcepts().getDef()) {
-                T childResult = visitElement(def, context);
+                T childResult = visitConceptDef(def, context);
                 result = aggregateResult(result, childResult);
             }
         }
@@ -86,7 +87,7 @@ public class ElmBaseLibraryVisitor<T, C> extends ElmBaseClinicalVisitor<T, C> im
                 && elm.getParameters().getDef() != null
                 && !elm.getParameters().getDef().isEmpty()) {
             for (ParameterDef def : elm.getParameters().getDef()) {
-                T childResult = visitElement(def, context);
+                T childResult = visitParameterDef(def, context);
                 result = aggregateResult(result, childResult);
             }
         }
@@ -94,7 +95,7 @@ public class ElmBaseLibraryVisitor<T, C> extends ElmBaseClinicalVisitor<T, C> im
                 && elm.getContexts().getDef() != null
                 && !elm.getContexts().getDef().isEmpty()) {
             for (ContextDef def : elm.getContexts().getDef()) {
-                T childResult = visitElement(def, context);
+                T childResult = visitContextDef(def, context);
                 result = aggregateResult(result, childResult);
             }
         }
@@ -102,10 +103,11 @@ public class ElmBaseLibraryVisitor<T, C> extends ElmBaseClinicalVisitor<T, C> im
                 && elm.getStatements().getDef() != null
                 && !elm.getStatements().getDef().isEmpty()) {
             for (ExpressionDef def : elm.getStatements().getDef()) {
-                T childResult = visitElement(def, context);
+                T childResult = visitExpressionDef(def, context);
                 result = aggregateResult(result, childResult);
             }
         }
+
         return result;
     }
 
@@ -118,7 +120,7 @@ public class ElmBaseLibraryVisitor<T, C> extends ElmBaseClinicalVisitor<T, C> im
      * @return the visitor result
      */
     public T visitUsingDef(UsingDef elm, C context) {
-        return defaultResult(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -130,7 +132,7 @@ public class ElmBaseLibraryVisitor<T, C> extends ElmBaseClinicalVisitor<T, C> im
      * @return the visitor result
      */
     public T visitIncludeDef(IncludeDef elm, C context) {
-        return defaultResult(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -142,6 +144,6 @@ public class ElmBaseLibraryVisitor<T, C> extends ElmBaseClinicalVisitor<T, C> im
      * @return the visitor result
      */
     public T visitContextDef(ContextDef elm, C context) {
-        return defaultResult(elm, context);
+        return visitFields(elm, context);
     }
 }

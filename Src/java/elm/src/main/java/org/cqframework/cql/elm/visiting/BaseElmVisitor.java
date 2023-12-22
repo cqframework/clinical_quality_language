@@ -3,17 +3,37 @@ package org.cqframework.cql.elm.visiting;
 import org.cqframework.cql.elm.tracking.Trackable;
 import org.hl7.elm.r1.*;
 
+/*
+ Design notes:
+ There are two types of methods in this class:
+
+  1. visitFields
+
+  visitFields visits the fields of an object, traversing up the class hierarchy to visit superclass fields.
+
+  2. visitXYZ, where XYZ is the name of an ELM class
+
+  The visitXYZ methods come in two flavors:
+
+  A. visits on abstract or base classes forward to the correct visit method for the concrete or derived class.
+  B. visits on concrete or derived classes visit the fields of its base class using visitFields, and then visits the fields itself.
+
+  TypeSpecifiers are considered to be terminal nodes in the ELM graph. TypeSpecifiers themselves are Elements and thus
+  have recursive TypeSpecifiers, but these are not visited.
+*/
+
 /**
  * Provides the base implementation for an ElmVisitor.
  *
- * @param <T> The return type of the visit operation. Use {@link Void} for
+ * @param <T> The return type of the visit operation. Use {@link Void} for no return value.
  * @param <C> The type of context passed to each visit method
- * operations with no return type.
+ *            operations with no return type.
  */
-public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
+public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
 
     /**
      * Provides the default result of a visit
+     *
      * @return
      */
     protected T defaultResult(Trackable elm, C context) {
@@ -25,7 +45,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * Default behavior returns the next result, ignoring the current
      * aggregate.
      *
-     * @param aggregate Current aggregate result
+     * @param aggregate  Current aggregate result
      * @param nextResult Next result to be aggregated
      * @return The result of aggregating the nextResult into aggregate
      */
@@ -42,20 +62,19 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitElement(Element elm, C context) {
-        if (elm instanceof AliasedQuerySource) return visitAliasedQuerySource((AliasedQuerySource) elm, context);
+        if (elm instanceof Expression) return visitExpression((Expression) elm, context);
         else if (elm instanceof CaseItem) return visitCaseItem((CaseItem) elm, context);
-        else if (elm instanceof Expression) return visitExpression((Expression) elm, context);
         else if (elm instanceof LetClause) return visitLetClause((LetClause) elm, context);
         else if (elm instanceof OperandDef) return visitOperandDef((OperandDef) elm, context);
         else if (elm instanceof ParameterDef) return visitParameterDef((ParameterDef) elm, context);
-        else if (elm instanceof ReturnClause) return visitReturnClause((ReturnClause) elm, context);
-        else if (elm instanceof AggregateClause) return visitAggregateClause((AggregateClause) elm, context);
         else if (elm instanceof SortByItem) return visitSortByItem((SortByItem) elm, context);
         else if (elm instanceof SortClause) return visitSortClause((SortClause) elm, context);
         else if (elm instanceof TupleElementDefinition)
             return visitTupleElementDefinition((TupleElementDefinition) elm, context);
         else if (elm instanceof TypeSpecifier) return visitTypeSpecifier((TypeSpecifier) elm, context);
-        else return defaultResult(elm, context);
+        else
+            throw new IllegalArgumentException(
+                    "Unknown Element type: " + elm.getClass().getName());
     }
 
     /**
@@ -74,7 +93,23 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         else if (elm instanceof TupleTypeSpecifier) return visitTupleTypeSpecifier((TupleTypeSpecifier) elm, context);
         else if (elm instanceof ChoiceTypeSpecifier)
             return visitChoiceTypeSpecifier((ChoiceTypeSpecifier) elm, context);
-        else return defaultResult(elm, context);
+        else if (elm instanceof ParameterTypeSpecifier)
+            return visitParameterTypeSpecifier((ParameterTypeSpecifier) elm, context);
+        else
+            throw new IllegalArgumentException(
+                    "Unknown TypeSpecifier type: " + elm.getClass().getName());
+    }
+
+    /**
+     * Visit a ParameterTypeSpecifier. This method will be called for
+     * every node in the tree that is a ParameterTypeSpecifier.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitParameterTypeSpecifier(ParameterTypeSpecifier elm, C context) {
+        return defaultResult(elm, context);
     }
 
     /**
@@ -99,8 +134,13 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      */
     public T visitIntervalTypeSpecifier(IntervalTypeSpecifier elm, C context) {
         T result = defaultResult(elm, context);
-        T childResult = visitTypeSpecifier(elm.getPointType(), context);
-        return aggregateResult(result, childResult);
+
+        if (elm.getPointType() != null) {
+            T childResult = visitTypeSpecifier(elm.getPointType(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        return result;
     }
 
     /**
@@ -113,8 +153,13 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      */
     public T visitListTypeSpecifier(ListTypeSpecifier elm, C context) {
         T result = defaultResult(elm, context);
-        T childResult = visitTypeSpecifier(elm.getElementType(), context);
-        return aggregateResult(result, childResult);
+
+        if (elm.getElementType() != null) {
+            T childResult = visitTypeSpecifier(elm.getElementType(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        return result;
     }
 
     /**
@@ -126,9 +171,19 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitTupleElementDefinition(TupleElementDefinition elm, C context) {
-        T result = defaultResult(elm, context);
-        T childResult = visitTypeSpecifier(elm.getElementType(), context);
-        return aggregateResult(result, childResult);
+        T result = visitFields(elm, context);
+
+        if (elm.getElementType() != null) {
+            T childResult = visitTypeSpecifier(elm.getElementType(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        if (elm.getType() != null) {
+            T childResult = visitTypeSpecifier(elm.getType(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        return result;
     }
 
     /**
@@ -141,6 +196,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      */
     public T visitTupleTypeSpecifier(TupleTypeSpecifier elm, C context) {
         T result = defaultResult(elm, context);
+
         for (TupleElementDefinition element : elm.getElement()) {
             T childResult = visitTupleElementDefinition(element, context);
             result = aggregateResult(result, childResult);
@@ -158,10 +214,17 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      */
     public T visitChoiceTypeSpecifier(ChoiceTypeSpecifier elm, C context) {
         T result = defaultResult(elm, context);
-        for (TypeSpecifier choice : elm.getChoice()) {
-            T childResult = visitElement(choice, context);
+
+        for (var choice : elm.getChoice()) {
+            T childResult = visitTypeSpecifier(choice, context);
             result = aggregateResult(result, childResult);
         }
+
+        for (var type : elm.getType()) {
+            T childResult = visitTypeSpecifier(type, context);
+            result = aggregateResult(result, childResult);
+        }
+
         return result;
     }
 
@@ -174,9 +237,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitExpression(Expression elm, C context) {
-        if (elm instanceof AggregateExpression) return visitAggregateExpression((AggregateExpression) elm, context);
-        else if (elm instanceof OperatorExpression) return visitOperatorExpression((OperatorExpression) elm, context);
-        else if (elm instanceof AliasRef) return visitAliasRef((AliasRef) elm, context);
+        if (elm instanceof AliasRef) return visitAliasRef((AliasRef) elm, context);
         else if (elm instanceof Case) return visitCase((Case) elm, context);
         else if (elm instanceof Current) return visitCurrent((Current) elm, context);
         else if (elm instanceof ExpressionRef) return visitExpressionRef((ExpressionRef) elm, context);
@@ -201,7 +262,12 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         else if (elm instanceof Sort) return visitSort((Sort) elm, context);
         else if (elm instanceof Total) return visitTotal((Total) elm, context);
         else if (elm instanceof Tuple) return visitTuple((Tuple) elm, context);
-        else return defaultResult(elm, context);
+        else if (elm instanceof AggregateExpression)
+            return visitAggregateExpression((AggregateExpression) elm, context);
+        else if (elm instanceof OperatorExpression) return visitOperatorExpression((OperatorExpression) elm, context);
+        else
+            throw new IllegalArgumentException(
+                    "Unknown Expression type: " + elm.getClass().getName());
     }
 
     /**
@@ -213,11 +279,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitOperatorExpression(OperatorExpression elm, C context) {
-        if (elm instanceof UnaryExpression) return visitUnaryExpression((UnaryExpression) elm, context);
-        else if (elm instanceof BinaryExpression) return visitBinaryExpression((BinaryExpression) elm, context);
-        else if (elm instanceof TernaryExpression) return visitTernaryExpression((TernaryExpression) elm, context);
-        else if (elm instanceof NaryExpression) return visitNaryExpression((NaryExpression) elm, context);
-        else if (elm instanceof Round) return visitRound((Round) elm, context);
+        if (elm instanceof Round) return visitRound((Round) elm, context);
         else if (elm instanceof Combine) return visitCombine((Combine) elm, context);
         else if (elm instanceof Split) return visitSplit((Split) elm, context);
         else if (elm instanceof SplitOnMatches) return visitSplitOnMatches((SplitOnMatches) elm, context);
@@ -237,22 +299,13 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         else if (elm instanceof Children) return visitChildren((Children) elm, context);
         else if (elm instanceof Descendents) return visitDescendents((Descendents) elm, context);
         else if (elm instanceof Message) return visitMessage((Message) elm, context);
-        return defaultResult(elm, context);
-    }
-
-    /**
-     * Visits the children of a UnaryExpression
-     * @param elm
-     * @param context
-     * @return
-     */
-    public T visitChildren(UnaryExpression elm, C context) {
-        T result = defaultResult(elm, context);
-        if (elm.getOperand() != null) {
-            T childResult = visitElement(elm.getOperand(), context);
-            result = aggregateResult(result, childResult);
-        }
-        return result;
+        else if (elm instanceof UnaryExpression) return visitUnaryExpression((UnaryExpression) elm, context);
+        else if (elm instanceof BinaryExpression) return visitBinaryExpression((BinaryExpression) elm, context);
+        else if (elm instanceof TernaryExpression) return visitTernaryExpression((TernaryExpression) elm, context);
+        else if (elm instanceof NaryExpression) return visitNaryExpression((NaryExpression) elm, context);
+        else
+            throw new IllegalArgumentException(
+                    "Unknown OperatorExpression type: " + elm.getClass().getName());
     }
 
     /**
@@ -323,22 +376,9 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         else if (elm instanceof Truncate) return visitTruncate((Truncate) elm, context);
         else if (elm instanceof Upper) return visitUpper((Upper) elm, context);
         else if (elm instanceof Width) return visitWidth((Width) elm, context);
-        else return visitChildren(elm, context);
-    }
-
-    /**
-     * Visits the children of a BinaryExpression
-     * @param elm
-     * @param context
-     * @return
-     */
-    public T visitChildren(BinaryExpression elm, C context) {
-        T result = defaultResult(elm, context);
-        for (Expression e : elm.getOperand()) {
-            T childResult = visitElement(e, context);
-            result = aggregateResult(result, childResult);
-        }
-        return result;
+        else
+            throw new IllegalArgumentException(
+                    "Unknown UnaryExpression type: " + elm.getClass().getName());
     }
 
     /**
@@ -403,22 +443,9 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         else if (elm instanceof Times) return visitTimes((Times) elm, context);
         else if (elm instanceof TruncatedDivide) return visitTruncatedDivide((TruncatedDivide) elm, context);
         else if (elm instanceof Xor) return visitXor((Xor) elm, context);
-        else return visitChildren(elm, context);
-    }
-
-    /**
-     * Visits the children of a TernaryExpression
-     * @param elm
-     * @param context
-     * @return
-     */
-    public T visitChildren(TernaryExpression elm, C context) {
-        T result = defaultResult(elm, context);
-        for (Expression e : elm.getOperand()) {
-            T childResult = visitElement(e, context);
-            result = aggregateResult(result, childResult);
-        }
-        return result;
+        else
+            throw new IllegalArgumentException(
+                    "Unknown BinaryExpression type: " + elm.getClass().getName());
     }
 
     /**
@@ -430,26 +457,10 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitTernaryExpression(TernaryExpression elm, C context) {
-        for (Expression element : elm.getOperand()) {
-            visitElement(element, context);
-        }
         if (elm instanceof ReplaceMatches) return visitReplaceMatches((ReplaceMatches) elm, context);
-        return visitChildren(elm, context);
-    }
-
-    /**
-     * Visits the children of an NaryExpression
-     * @param elm
-     * @param context
-     * @return
-     */
-    public T visitChildren(NaryExpression elm, C context) {
-        T result = defaultResult(elm, context);
-        for (Expression e : elm.getOperand()) {
-            T childResult = visitElement(e, context);
-            result = aggregateResult(result, childResult);
-        }
-        return result;
+        else
+            throw new IllegalArgumentException(
+                    "Unknown TernaryExpression type: " + elm.getClass().getName());
     }
 
     /**
@@ -466,26 +477,9 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         else if (elm instanceof Except) return visitExcept((Except) elm, context);
         else if (elm instanceof Intersect) return visitIntersect((Intersect) elm, context);
         else if (elm instanceof Union) return visitUnion((Union) elm, context);
-        else return visitChildren(elm, context);
-    }
-
-    /**
-     * Visits the children of an ExpressionDef
-     * @param elm
-     * @param context
-     * @return
-     */
-    public T visitChildren(ExpressionDef elm, C context) {
-        T result = defaultResult(elm, context);
-        if (elm.getAccessLevel() != null) {
-            T childResult = visitAccessModifier(elm.getAccessLevel(), context);
-            result = aggregateResult(result, childResult);
-        }
-        if (elm.getExpression() != null) {
-            T childResult = visitElement(elm.getExpression(), context);
-            result = aggregateResult(result, childResult);
-        }
-        return result;
+        else
+            throw new IllegalArgumentException(
+                    "Unknown NaryExpression type: " + elm.getClass().getName());
     }
 
     /**
@@ -500,7 +494,8 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         if (elm instanceof FunctionDef) {
             return visitFunctionDef((FunctionDef) elm, context);
         }
-        return visitChildren(elm, context);
+
+        return visitFields(elm, context);
     }
 
     /**
@@ -512,15 +507,13 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitFunctionDef(FunctionDef elm, C context) {
-        T result = visitChildren(elm, context);
-        for (Element operand : elm.getOperand()) {
-            T childResult = visitElement(operand, context);
+        T result = visitFields(elm, context);
+
+        for (var operand : elm.getOperand()) {
+            T childResult = visitOperandDef(operand, context);
             result = aggregateResult(result, childResult);
         }
-        if (elm.getResultTypeSpecifier() != null) {
-            T childResult = visitElement(elm.getResultTypeSpecifier(), context);
-            result = aggregateResult(result, childResult);
-        }
+
         return result;
     }
 
@@ -549,7 +542,8 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         if (elm instanceof FunctionRef) {
             return visitFunctionRef((FunctionRef) elm, context);
         }
-        return defaultResult(elm, context);
+
+        return visitFields(elm, context);
     }
 
     /**
@@ -561,11 +555,18 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitFunctionRef(FunctionRef elm, C context) {
-        T result = defaultResult(elm, context);
-        for (Expression element : elm.getOperand()) {
-            T childResult = visitElement(element, context);
+        T result = visitFields(elm, context);
+
+        for (var element : elm.getOperand()) {
+            T childResult = visitExpression(element, context);
             result = aggregateResult(result, childResult);
         }
+
+        for (var s : elm.getSignature()) {
+            T childResult = visitTypeSpecifier(s, context);
+            result = aggregateResult(result, childResult);
+        }
+
         return result;
     }
 
@@ -578,14 +579,15 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitParameterDef(ParameterDef elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getParameterTypeSpecifier() != null) {
-            T childResult = visitElement(elm.getParameterTypeSpecifier(), context);
+            T childResult = visitTypeSpecifier(elm.getParameterTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
 
         if (elm.getDefault() != null) {
-            T childResult = visitElement(elm.getDefault(), context);
+            T childResult = visitExpression(elm.getDefault(), context);
             result = aggregateResult(result, childResult);
         }
 
@@ -601,7 +603,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitParameterRef(ParameterRef elm, C context) {
-        return defaultResult(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -613,11 +615,13 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitOperandDef(OperandDef elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getOperandTypeSpecifier() != null) {
-            T childResult = visitElement(elm.getOperandTypeSpecifier(), context);
+            T childResult = visitTypeSpecifier(elm.getOperandTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -630,7 +634,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitOperandRef(OperandRef elm, C context) {
-        return defaultResult(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -642,7 +646,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitIdentifierRef(IdentifierRef elm, C context) {
-        return defaultResult(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -654,7 +658,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitLiteral(Literal elm, C context) {
-        return defaultResult(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -667,10 +671,12 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      */
     public T visitTupleElement(TupleElement elm, C context) {
         T result = defaultResult(elm, context);
+
         if (elm.getValue() != null) {
             T childResult = visitExpression(elm.getValue(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -683,11 +689,13 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitTuple(Tuple elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         for (TupleElement element : elm.getElement()) {
             T childResult = visitTupleElement(element, context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -701,10 +709,12 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      */
     public T visitInstanceElement(InstanceElement elm, C context) {
         T result = defaultResult(elm, context);
+
         if (elm.getValue() != null) {
             T childResult = visitExpression(elm.getValue(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -717,11 +727,13 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitInstance(Instance elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         for (InstanceElement element : elm.getElement()) {
             T childResult = visitInstanceElement(element, context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -734,23 +746,25 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitInterval(Interval elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getLow() != null) {
-            T childResult = visitElement(elm.getLow(), context);
+            T childResult = visitExpression(elm.getLow(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getLowClosedExpression() != null) {
-            T childResult = visitElement(elm.getLowClosedExpression(), context);
+            T childResult = visitExpression(elm.getLowClosedExpression(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getHigh() != null) {
-            T childResult = visitElement(elm.getHigh(), context);
+            T childResult = visitExpression(elm.getHigh(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getHighClosedExpression() != null) {
-            T childResult = visitElement(elm.getHighClosedExpression(), context);
+            T childResult = visitExpression(elm.getHighClosedExpression(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -763,15 +777,18 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitList(List elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getTypeSpecifier() != null) {
-            T childResult = visitElement(elm.getTypeSpecifier(), context);
+            T childResult = visitTypeSpecifier(elm.getTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
+
         for (Expression element : elm.getElement()) {
-            T childResult = visitElement(element, context);
+            T childResult = visitExpression(element, context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -784,7 +801,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitAnd(And elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -796,7 +813,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitOr(Or elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -808,7 +825,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitXor(Xor elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -820,7 +837,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitImplies(Implies elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -832,7 +849,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitNot(Not elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -844,19 +861,21 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitIf(If elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getCondition() != null) {
-            T childResult = visitElement(elm.getCondition(), context);
+            T childResult = visitExpression(elm.getCondition(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getThen() != null) {
-            T childResult = visitElement(elm.getThen(), context);
+            T childResult = visitExpression(elm.getThen(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getElse() != null) {
-            T childResult = visitElement(elm.getElse(), context);
+            T childResult = visitExpression(elm.getElse(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -869,15 +888,17 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitCaseItem(CaseItem elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getWhen() != null) {
-            T childResult = visitElement(elm.getWhen(), context);
+            T childResult = visitExpression(elm.getWhen(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getThen() != null) {
-            T childResult = visitElement(elm.getThen(), context);
+            T childResult = visitExpression(elm.getThen(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -890,19 +911,23 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitCase(Case elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getComparand() != null) {
-            T childResult = visitElement(elm.getComparand(), context);
+            T childResult = visitExpression(elm.getComparand(), context);
             result = aggregateResult(result, childResult);
         }
+
         for (CaseItem ci : elm.getCaseItem()) {
-            T childResult = visitElement(ci, context);
+            T childResult = visitCaseItem(ci, context);
             result = aggregateResult(result, childResult);
         }
+
         if (elm.getElse() != null) {
-            T childResult = visitElement(elm.getElse(), context);
+            T childResult = visitExpression(elm.getElse(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -915,7 +940,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitNull(Null elm, C context) {
-        return defaultResult(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -927,7 +952,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitIsNull(IsNull elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -939,7 +964,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitIsTrue(IsTrue elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -951,7 +976,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitIsFalse(IsFalse elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -963,7 +988,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitCoalesce(Coalesce elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -975,11 +1000,13 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitIs(Is elm, C context) {
-        T result = visitChildren(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getIsTypeSpecifier() != null) {
-            T childResult = visitElement(elm.getIsTypeSpecifier(), context);
+            T childResult = visitTypeSpecifier(elm.getIsTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -992,11 +1019,13 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitAs(As elm, C context) {
-        T result = visitChildren(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getAsTypeSpecifier() != null) {
-            T childResult = visitElement(elm.getAsTypeSpecifier(), context);
+            T childResult = visitTypeSpecifier(elm.getAsTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -1009,11 +1038,13 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitConvert(Convert elm, C context) {
-        T result = visitChildren(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getToTypeSpecifier() != null) {
-            T childResult = visitElement(elm.getToTypeSpecifier(), context);
+            T childResult = visitTypeSpecifier(elm.getToTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -1026,11 +1057,13 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitCanConvert(CanConvert elm, C context) {
-        T result = visitChildren(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getToTypeSpecifier() != null) {
-            T childResult = visitElement(elm.getToTypeSpecifier(), context);
+            T childResult = visitTypeSpecifier(elm.getToTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -1043,7 +1076,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitConvertsToBoolean(ConvertsToBoolean elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1055,7 +1088,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitToBoolean(ToBoolean elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1067,7 +1100,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitToChars(ToChars elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1079,7 +1112,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitToConcept(ToConcept elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1091,7 +1124,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitConvertsToDate(ConvertsToDate elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1103,7 +1136,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitToDate(ToDate elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1115,7 +1148,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitConvertsToDateTime(ConvertsToDateTime elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1127,7 +1160,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitToDateTime(ToDateTime elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1139,7 +1172,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitConvertsToLong(ConvertsToLong elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1151,7 +1184,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitToLong(ToLong elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1163,7 +1196,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitConvertsToDecimal(ConvertsToDecimal elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1175,7 +1208,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitToDecimal(ToDecimal elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1187,7 +1220,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitConvertsToInteger(ConvertsToInteger elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1199,7 +1232,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitToInteger(ToInteger elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1211,7 +1244,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitToList(ToList elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1223,7 +1256,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitConvertQuantity(ConvertQuantity elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1235,7 +1268,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitCanConvertQuantity(CanConvertQuantity elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1247,7 +1280,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitConvertsToQuantity(ConvertsToQuantity elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1259,7 +1292,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitToQuantity(ToQuantity elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1271,7 +1304,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitConvertsToRatio(ConvertsToRatio elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1283,7 +1316,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitToRatio(ToRatio elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1295,7 +1328,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitConvertsToString(ConvertsToString elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1307,7 +1340,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitToString(ToString elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1319,7 +1352,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitConvertsToTime(ConvertsToTime elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1331,7 +1364,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitToTime(ToTime elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1343,7 +1376,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitEqual(Equal elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1355,7 +1388,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitEquivalent(Equivalent elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1367,7 +1400,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitNotEqual(NotEqual elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1379,7 +1412,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitLess(Less elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1391,7 +1424,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitGreater(Greater elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1403,7 +1436,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitLessOrEqual(LessOrEqual elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1415,7 +1448,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitGreaterOrEqual(GreaterOrEqual elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1427,7 +1460,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitAdd(Add elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1439,7 +1472,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitSubtract(Subtract elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1451,7 +1484,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitMultiply(Multiply elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1463,7 +1496,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitDivide(Divide elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1475,7 +1508,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitTruncatedDivide(TruncatedDivide elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1487,7 +1520,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitModulo(Modulo elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1499,7 +1532,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitCeiling(Ceiling elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1511,7 +1544,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitFloor(Floor elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1523,7 +1556,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitTruncate(Truncate elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1535,7 +1568,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitAbs(Abs elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1547,7 +1580,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitNegate(Negate elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1559,15 +1592,17 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitRound(Round elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
         if (elm.getOperand() != null) {
-            T childResult = visitElement(elm.getOperand(), context);
+            T childResult = visitExpression(elm.getOperand(), context);
             result = aggregateResult(result, childResult);
         }
+
         if (elm.getPrecision() != null) {
-            T childResult = visitElement(elm.getPrecision(), context);
+            T childResult = visitExpression(elm.getPrecision(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -1580,7 +1615,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitLn(Ln elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1592,7 +1627,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitExp(Exp elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1604,7 +1639,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitLog(Log elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1616,7 +1651,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitPower(Power elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1628,7 +1663,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitSuccessor(Successor elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1640,7 +1675,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitPredecessor(Predecessor elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1652,7 +1687,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitMinValue(MinValue elm, C context) {
-        return defaultResult(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1664,7 +1699,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitMaxValue(MaxValue elm, C context) {
-        return defaultResult(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1676,7 +1711,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitPrecision(Precision elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1688,7 +1723,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitLowBoundary(LowBoundary elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1700,7 +1735,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitHighBoundary(HighBoundary elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1712,7 +1747,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitConcatenate(Concatenate elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1724,15 +1759,17 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitCombine(Combine elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getSource() != null) {
-            T childResult = visitElement(elm.getSource(), context);
+            T childResult = visitExpression(elm.getSource(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getSeparator() != null) {
-            T childResult = visitElement(elm.getSeparator(), context);
+            T childResult = visitExpression(elm.getSeparator(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -1745,7 +1782,8 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitSplit(Split elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getStringToSplit() != null) {
             T childResult = visitExpression(elm.getStringToSplit(), context);
             result = aggregateResult(result, childResult);
@@ -1754,6 +1792,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
             T childResult = visitExpression(elm.getSeparator(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -1766,7 +1805,8 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitSplitOnMatches(SplitOnMatches elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getStringToSplit() != null) {
             T childResult = visitExpression(elm.getStringToSplit(), context);
             result = aggregateResult(result, childResult);
@@ -1775,6 +1815,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
             T childResult = visitExpression(elm.getSeparatorPattern(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -1787,7 +1828,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitLength(Length elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1799,7 +1840,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitUpper(Upper elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1811,7 +1852,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitLower(Lower elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1823,7 +1864,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitIndexer(Indexer elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1835,7 +1876,8 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitPositionOf(PositionOf elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getPattern() != null) {
             T childResult = visitExpression(elm.getPattern(), context);
             result = aggregateResult(result, childResult);
@@ -1844,6 +1886,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
             T childResult = visitExpression(elm.getString(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -1856,7 +1899,8 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitLastPositionOf(LastPositionOf elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getPattern() != null) {
             T childResult = visitExpression(elm.getPattern(), context);
             result = aggregateResult(result, childResult);
@@ -1865,6 +1909,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
             T childResult = visitExpression(elm.getString(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -1877,7 +1922,8 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitSubstring(Substring elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getStringToSub() != null) {
             T childResult = visitExpression(elm.getStringToSub(), context);
             result = aggregateResult(result, childResult);
@@ -1890,6 +1936,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
             T childResult = visitExpression(elm.getLength(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -1902,7 +1949,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitStartsWith(StartsWith elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1914,7 +1961,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitEndsWith(EndsWith elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1926,7 +1973,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitMatches(Matches elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1938,7 +1985,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitReplaceMatches(ReplaceMatches elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1950,7 +1997,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitDurationBetween(DurationBetween elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1962,7 +2009,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitDifferenceBetween(DifferenceBetween elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1974,7 +2021,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitDateFrom(DateFrom elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1986,7 +2033,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitTimeFrom(TimeFrom elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -1998,7 +2045,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitTimezoneFrom(TimezoneFrom elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2010,7 +2057,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitTimezoneOffsetFrom(TimezoneOffsetFrom elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2022,7 +2069,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitDateTimeComponentFrom(DateTimeComponentFrom elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2034,7 +2081,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitTimeOfDay(TimeOfDay elm, C context) {
-        return defaultResult(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2046,7 +2093,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitToday(Today elm, C context) {
-        return defaultResult(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2058,7 +2105,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitNow(Now elm, C context) {
-        return defaultResult(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2070,7 +2117,8 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitDateTime(DateTime elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getYear() != null) {
             T childResult = visitExpression(elm.getYear(), context);
             result = aggregateResult(result, childResult);
@@ -2103,6 +2151,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
             T childResult = visitExpression(elm.getTimezoneOffset(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -2115,7 +2164,8 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitDate(Date elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getYear() != null) {
             T childResult = visitExpression(elm.getYear(), context);
             result = aggregateResult(result, childResult);
@@ -2128,6 +2178,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
             T childResult = visitExpression(elm.getDay(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -2140,7 +2191,8 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitTime(Time elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getHour() != null) {
             T childResult = visitExpression(elm.getHour(), context);
             result = aggregateResult(result, childResult);
@@ -2157,6 +2209,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
             T childResult = visitExpression(elm.getMillisecond(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -2169,7 +2222,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitSameAs(SameAs elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2181,7 +2234,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitSameOrBefore(SameOrBefore elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2193,7 +2246,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitSameOrAfter(SameOrAfter elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2205,7 +2258,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitWidth(Width elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2217,7 +2270,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitSize(Size elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2229,7 +2282,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitPointFrom(PointFrom elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2241,7 +2294,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitStart(Start elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2253,7 +2306,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitEnd(End elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2265,7 +2318,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitContains(Contains elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2277,7 +2330,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitProperContains(ProperContains elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2289,7 +2342,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitIn(In elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2301,7 +2354,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitProperIn(ProperIn elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2313,7 +2366,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitIncludes(Includes elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2325,7 +2378,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitIncludedIn(IncludedIn elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2337,7 +2390,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitProperIncludes(ProperIncludes elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2349,7 +2402,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitProperIncludedIn(ProperIncludedIn elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2361,7 +2414,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitBefore(Before elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2373,7 +2426,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitAfter(After elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2385,7 +2438,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitMeets(Meets elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2397,7 +2450,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitMeetsBefore(MeetsBefore elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2409,7 +2462,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitMeetsAfter(MeetsAfter elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2421,7 +2474,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitOverlaps(Overlaps elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2433,7 +2486,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitOverlapsBefore(OverlapsBefore elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2445,7 +2498,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitOverlapsAfter(OverlapsAfter elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2457,7 +2510,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitStarts(Starts elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2469,7 +2522,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitEnds(Ends elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2481,7 +2534,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitCollapse(Collapse elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2493,7 +2546,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitExpand(Expand elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2505,7 +2558,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitUnion(Union elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2517,7 +2570,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitIntersect(Intersect elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2529,7 +2582,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitExcept(Except elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2541,7 +2594,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitExists(Exists elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2553,7 +2606,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitTimes(Times elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2565,15 +2618,17 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitFilter(Filter elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getSource() != null) {
-            T childResult = visitElement(elm.getSource(), context);
+            T childResult = visitExpression(elm.getSource(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getCondition() != null) {
-            T childResult = visitElement(elm.getCondition(), context);
+            T childResult = visitExpression(elm.getCondition(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -2586,11 +2641,13 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitFirst(First elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getSource() != null) {
-            T childResult = visitElement(elm.getSource(), context);
+            T childResult = visitExpression(elm.getSource(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -2603,11 +2660,13 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitLast(Last elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getSource() != null) {
-            T childResult = visitElement(elm.getSource(), context);
+            T childResult = visitExpression(elm.getSource(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -2620,19 +2679,21 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitSlice(Slice elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getSource() != null) {
-            T childResult = visitElement(elm.getSource(), context);
+            T childResult = visitExpression(elm.getSource(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getStartIndex() != null) {
-            T childResult = visitElement(elm.getStartIndex(), context);
+            T childResult = visitExpression(elm.getStartIndex(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getEndIndex() != null) {
-            T childResult = visitElement(elm.getEndIndex(), context);
+            T childResult = visitExpression(elm.getEndIndex(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -2645,11 +2706,13 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitChildren(Children elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getSource() != null) {
-            T childResult = visitElement(elm.getSource(), context);
+            T childResult = visitExpression(elm.getSource(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -2662,11 +2725,13 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitDescendents(Descendents elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getSource() != null) {
-            T childResult = visitElement(elm.getSource(), context);
+            T childResult = visitExpression(elm.getSource(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -2679,27 +2744,29 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitMessage(Message elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getSource() != null) {
-            T childResult = visitElement(elm.getSource(), context);
+            T childResult = visitExpression(elm.getSource(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getCondition() != null) {
-            T childResult = visitElement(elm.getCondition(), context);
+            T childResult = visitExpression(elm.getCondition(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getCode() != null) {
-            T childResult = visitElement(elm.getCode(), context);
+            T childResult = visitExpression(elm.getCode(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getSeverity() != null) {
-            T childResult = visitElement(elm.getSeverity(), context);
+            T childResult = visitExpression(elm.getSeverity(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getMessage() != null) {
-            T childResult = visitElement(elm.getMessage(), context);
+            T childResult = visitExpression(elm.getMessage(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -2712,15 +2779,17 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitIndexOf(IndexOf elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getSource() != null) {
-            T childResult = visitElement(elm.getSource(), context);
+            T childResult = visitExpression(elm.getSource(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getElement() != null) {
-            T childResult = visitElement(elm.getElement(), context);
+            T childResult = visitExpression(elm.getElement(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -2733,7 +2802,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitFlatten(Flatten elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2745,15 +2814,17 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitSort(Sort elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getSource() != null) {
-            T childResult = visitElement(elm.getSource(), context);
+            T childResult = visitExpression(elm.getSource(), context);
             result = aggregateResult(result, childResult);
         }
         for (SortByItem sbi : elm.getBy()) {
-            T childResult = visitElement(sbi, context);
+            T childResult = visitSortByItem(sbi, context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -2766,15 +2837,17 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitForEach(ForEach elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getSource() != null) {
-            T childResult = visitElement(elm.getSource(), context);
+            T childResult = visitExpression(elm.getSource(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getElement() != null) {
-            T childResult = visitElement(elm.getElement(), context);
+            T childResult = visitExpression(elm.getElement(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -2787,15 +2860,17 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitRepeat(Repeat elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getSource() != null) {
-            T childResult = visitElement(elm.getSource(), context);
+            T childResult = visitExpression(elm.getSource(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getElement() != null) {
-            T childResult = visitElement(elm.getElement(), context);
+            T childResult = visitExpression(elm.getElement(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -2808,7 +2883,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitDistinct(Distinct elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2820,7 +2895,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitCurrent(Current elm, C context) {
-        return defaultResult(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2832,7 +2907,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitIteration(Iteration elm, C context) {
-        return defaultResult(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2844,7 +2919,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitTotal(Total elm, C context) {
-        return defaultResult(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2856,22 +2931,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitSingletonFrom(SingletonFrom elm, C context) {
-        return visitChildren(elm, context);
-    }
-
-    /**
-     * Visits the children of an AggregateExpression
-     * @param elm
-     * @param context
-     * @return
-     */
-    public T visitChildren(AggregateExpression elm, C context) {
-        T result = defaultResult(elm, context);
-        if (elm.getSource() != null) {
-            T childResult = visitElement(elm.getSource(), context);
-            result = aggregateResult(result, childResult);
-        }
-        return result;
+        return visitFields(elm, context);
     }
 
     /**
@@ -2899,7 +2959,9 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         else if (elm instanceof PopulationStdDev) return visitPopulationStdDev((PopulationStdDev) elm, context);
         else if (elm instanceof AllTrue) return visitAllTrue((AllTrue) elm, context);
         else if (elm instanceof AnyTrue) return visitAnyTrue((AnyTrue) elm, context);
-        return visitChildren(elm, context);
+        else
+            throw new IllegalArgumentException(
+                    "Unsupported AggregateExpression type: " + elm.getClass().getName());
     }
 
     /**
@@ -2911,7 +2973,8 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitAggregate(Aggregate elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields((AggregateExpression) elm, context);
+
         if (elm.getInitialValue() != null) {
             T childResult = visitExpression(elm.getInitialValue(), context);
             result = aggregateResult(result, childResult);
@@ -2920,6 +2983,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
             T childResult = visitExpression(elm.getIteration(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -2932,7 +2996,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitCount(Count elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2944,7 +3008,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitSum(Sum elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2956,7 +3020,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitProduct(Product elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2968,7 +3032,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitGeometricMean(GeometricMean elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2980,7 +3044,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitMin(Min elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -2992,7 +3056,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitMax(Max elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -3004,7 +3068,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitAvg(Avg elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -3016,7 +3080,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitMedian(Median elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -3028,7 +3092,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitMode(Mode elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -3040,7 +3104,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitVariance(Variance elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -3052,7 +3116,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitPopulationVariance(PopulationVariance elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -3064,7 +3128,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitStdDev(StdDev elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -3076,7 +3140,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitPopulationStdDev(PopulationStdDev elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -3088,7 +3152,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitAllTrue(AllTrue elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -3100,22 +3164,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitAnyTrue(AnyTrue elm, C context) {
-        return visitChildren(elm, context);
-    }
-
-    /**
-     * Visits the children of a Property
-     * @param elm
-     * @param context
-     * @return
-     */
-    public T visitChildren(Property elm, C context) {
-        T result = defaultResult(elm, context);
-        if (elm.getSource() != null) {
-            T childResult = visitExpression(elm.getSource(), context);
-            result = aggregateResult(result, childResult);
-        }
-        return result;
+        return visitFields(elm, context);
     }
 
     /**
@@ -3127,21 +3176,13 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitProperty(Property elm, C context) {
-        return visitChildren(elm, context);
-    }
+        T result = visitFields(elm, context);
 
-    /**
-     * Visits the children of an AliasedQuerySource
-     * @param elm
-     * @param context
-     * @return
-     */
-    public T visitChildren(AliasedQuerySource elm, C context) {
-        T result = defaultResult(elm, context);
-        if (elm.getExpression() != null) {
-            T childResult = visitExpression(elm.getExpression(), context);
+        if (elm.getSource() != null) {
+            T childResult = visitExpression(elm.getSource(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -3157,7 +3198,8 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         if (elm instanceof RelationshipClause) {
             return visitRelationshipClause((RelationshipClause) elm, context);
         }
-        return visitChildren(elm, context);
+
+        return visitFields(elm, context);
     }
 
     /**
@@ -3169,41 +3211,13 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitLetClause(LetClause elm, C context) {
-        if (elm.getExpression() != null) {
-            return visitElement(elm.getExpression(), context);
-        }
-        return null;
-    }
+        T result = visitFields(elm, context);
 
-    /**
-     * Visits an expression that is the condition of a such that clause in a
-     * with or without clause. The isWith parameter indicates whether the clause
-     * is a with or a without.
-     * @param elm
-     * @param isWith
-     * @param context
-     * @return
-     */
-    public T visitSuchThatClause(Expression elm, boolean isWith, C context) {
-        return visitElement(elm, context);
-    }
-
-    /**
-     * Visits the children of a RelationshipClause
-     * @param elm
-     * @param context
-     * @return
-     */
-    public T visitChildren(RelationshipClause elm, C context) {
-        T result = defaultResult(elm, context);
         if (elm.getExpression() != null) {
-            T childResult = visitElement(elm.getExpression(), context);
+            T childResult = visitExpression(elm.getExpression(), context);
             result = aggregateResult(result, childResult);
         }
-        if (elm.getSuchThat() != null) {
-            T childResult = visitSuchThatClause(elm.getSuchThat(), elm instanceof With, context);
-            result = aggregateResult(result, childResult);
-        }
+
         return result;
     }
 
@@ -3220,8 +3234,10 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
             return visitWith((With) elm, context);
         } else if (elm instanceof Without) {
             return visitWithout((Without) elm, context);
+        } else {
+            throw new IllegalArgumentException(
+                    "Unknown RelationshipClause type: " + elm.getClass().getName());
         }
-        return visitChildren(elm, context);
     }
 
     /**
@@ -3233,7 +3249,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitWith(With elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -3245,7 +3261,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitWithout(Without elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -3257,18 +3273,15 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitSortByItem(SortByItem elm, C context) {
-        T result = defaultResult(elm, context);
         if (elm instanceof ByDirection) {
-            T childResult = visitByDirection((ByDirection) elm, context);
-            result = aggregateResult(result, childResult);
+            return visitByDirection((ByDirection) elm, context);
         } else if (elm instanceof ByColumn) {
-            T childResult = visitByColumn((ByColumn) elm, context);
-            result = aggregateResult(result, childResult);
+            return visitByColumn((ByColumn) elm, context);
         } else if (elm instanceof ByExpression) {
-            T childResult = visitByExpression((ByExpression) elm, context);
-            result = aggregateResult(result, childResult);
-        }
-        return result;
+            return visitByExpression((ByExpression) elm, context);
+        } else
+            throw new IllegalArgumentException(
+                    "Unknown SortByItem type: " + elm.getClass().getName());
     }
 
     /**
@@ -3280,7 +3293,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitByDirection(ByDirection elm, C context) {
-        return defaultResult(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -3292,7 +3305,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitByColumn(ByColumn elm, C context) {
-        return defaultResult(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -3304,11 +3317,13 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitByExpression(ByExpression elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getExpression() != null) {
-            T childResult = visitElement(elm.getExpression(), context);
+            T childResult = visitExpression(elm.getExpression(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -3321,11 +3336,13 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitSortClause(SortClause elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         for (SortByItem sbi : elm.getBy()) {
-            T childResult = visitElement(sbi, context);
+            T childResult = visitSortByItem(sbi, context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -3338,15 +3355,17 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitAggregateClause(AggregateClause elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getExpression() != null) {
-            T childResult = visitElement(elm.getExpression(), context);
+            T childResult = visitExpression(elm.getExpression(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getStarting() != null) {
-            T childResult = visitElement(elm.getStarting(), context);
+            T childResult = visitExpression(elm.getStarting(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -3359,23 +3378,14 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitReturnClause(ReturnClause elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getExpression() != null) {
             T childResult = visitExpression(elm.getExpression(), context);
             result = aggregateResult(result, childResult);
         }
-        return result;
-    }
 
-    /**
-     * Visits an Expression that is the condition for a where clause
-     * in a Query.
-     * @param elm
-     * @param context
-     * @return
-     */
-    public T visitWhereClause(Expression elm, C context) {
-        return visitElement(elm, context);
+        return result;
     }
 
     /**
@@ -3387,39 +3397,41 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitQuery(Query elm, C context) {
-        T result = defaultResult(elm, context);
-        for (AliasedQuerySource source : elm.getSource()) {
-            T childResult = visitElement(source, context);
+        T result = visitFields(elm, context);
+
+        for (var source : elm.getSource()) {
+            T childResult = visitAliasedQuerySource(source, context);
             result = aggregateResult(result, childResult);
         }
-        if (elm.getLet() != null && !elm.getLet().isEmpty()) {
-            for (Element let : elm.getLet()) {
-                T childResult = visitElement(let, context);
-                result = aggregateResult(result, childResult);
-            }
+        for (var let : elm.getLet()) {
+            T childResult = visitLetClause(let, context);
+            result = aggregateResult(result, childResult);
         }
-        if (elm.getRelationship() != null && !elm.getRelationship().isEmpty()) {
-            for (Element relationship : elm.getRelationship()) {
-                T childResult = visitElement(relationship, context);
-                result = aggregateResult(result, childResult);
-            }
+
+        for (var r : elm.getRelationship()) {
+            T childResult = visitRelationshipClause(r, context);
+            result = aggregateResult(result, childResult);
         }
+
         if (elm.getWhere() != null) {
-            T childResult = visitWhereClause(elm.getWhere(), context);
+            T childResult = visitExpression(elm.getWhere(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getReturn() != null) {
-            T childResult = visitElement(elm.getReturn(), context);
+            T childResult = visitReturnClause(elm.getReturn(), context);
             result = aggregateResult(result, childResult);
         }
+
         if (elm.getAggregate() != null) {
-            T childResult = visitElement(elm.getAggregate(), context);
+            T childResult = visitAggregateClause(elm.getAggregate(), context);
             result = aggregateResult(result, childResult);
         }
+
         if (elm.getSort() != null) {
-            T childResult = visitElement(elm.getSort(), context);
+            T childResult = visitSortClause(elm.getSort(), context);
             result = aggregateResult(result, childResult);
         }
+
         return result;
     }
 
@@ -3432,7 +3444,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitAliasRef(AliasRef elm, C context) {
-        return defaultResult(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -3444,6 +3456,177 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitQueryLetRef(QueryLetRef elm, C context) {
-        return defaultResult(elm, context);
+        return visitFields(elm, context);
+    }
+
+    protected T visitFields(Element elm, C context) {
+        T result = defaultResult(elm, context);
+
+        if (elm.getResultTypeSpecifier() != null) {
+            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        return result;
+    }
+
+    protected T visitFields(Expression elm, C context) {
+        return visitFields((Element) elm, context);
+    }
+
+    protected T visitFields(RelationshipClause elm, C context) {
+        T result = visitFields((AliasedQuerySource) elm, context);
+
+        if (elm.getSuchThat() != null) {
+            T childResult = visitExpression(elm.getSuchThat(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        return result;
+    }
+
+    /**
+     * visits the fields of an AggregateExpression
+     *
+     * @param elm
+     * @param context
+     * @return
+     */
+    protected T visitFields(AggregateExpression elm, C context) {
+        T result = visitFields((Expression) elm, context);
+
+        if (elm.getSource() != null) {
+            T childResult = visitExpression(elm.getSource(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        for (var s : elm.getSignature()) {
+            T childResult = visitTypeSpecifier(s, context);
+            result = aggregateResult(result, childResult);
+        }
+
+        return result;
+    }
+
+    /**
+     * Visit the fields of an ExpressionDef
+     * @param elm
+     * @param context
+     * @return
+     */
+    protected T visitFields(ExpressionDef elm, C context) {
+        T result = visitFields((Element) elm, context);
+
+        if (elm.getAccessLevel() != null) {
+            T childResult = visitAccessModifier(elm.getAccessLevel(), context);
+            result = aggregateResult(result, childResult);
+        }
+        if (elm.getExpression() != null) {
+            T childResult = visitExpression(elm.getExpression(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        return result;
+    }
+
+    /**
+     * Visits the fields of a UnaryExpression
+     *
+     * @param elm
+     * @param context
+     * @return
+     */
+    protected T visitFields(UnaryExpression elm, C context) {
+        T result = visitFields((OperatorExpression) elm, context);
+
+        if (elm.getOperand() != null) {
+            T childResult = visitExpression(elm.getOperand(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        return result;
+    }
+
+    /**
+     * visits the fields of an NaryExpression
+     *
+     * @param elm
+     * @param context
+     * @return
+     */
+    protected T visitFields(NaryExpression elm, C context) {
+        T result = visitFields((OperatorExpression) elm, context);
+
+        for (Expression e : elm.getOperand()) {
+            T childResult = visitExpression(e, context);
+            result = aggregateResult(result, childResult);
+        }
+
+        return result;
+    }
+
+    /**
+     * Visits the fields of a TernaryExpression
+     *
+     * @param elm
+     * @param context
+     * @return
+     */
+    protected T visitFields(TernaryExpression elm, C context) {
+        T result = visitFields((OperatorExpression) elm, context);
+
+        for (var s : elm.getOperand()) {
+            T childResult = visitExpression(s, context);
+            result = aggregateResult(result, childResult);
+        }
+
+        return result;
+    }
+
+    /**
+     * Visits the fields of an OperatorExpression
+     *
+     * @param elm
+     * @param context
+     * @return
+     */
+    protected T visitFields(OperatorExpression elm, C context) {
+        T result = visitFields((Expression) elm, context);
+
+        for (var s : elm.getSignature()) {
+            T childResult = visitTypeSpecifier(s, context);
+            result = aggregateResult(result, childResult);
+        }
+
+        return result;
+    }
+
+    /**
+     * visits the fields of a BinaryExpression
+     *
+     * @param elm
+     * @param context
+     * @return
+     */
+    protected T visitFields(BinaryExpression elm, C context) {
+        T result = visitFields((OperatorExpression) elm, context);
+
+        for (Expression e : elm.getOperand()) {
+            T childResult = visitExpression(e, context);
+            result = aggregateResult(result, childResult);
+        }
+
+        return result;
+    }
+
+    protected T visitFields(AliasedQuerySource elm, C context) {
+        T result = visitFields((Element) elm, context);
+
+        if (elm.getExpression() != null) {
+            T childResult = visitExpression(elm.getExpression(), context);
+            result = aggregateResult(result, childResult);
+        }
+
+        return result;
     }
 }

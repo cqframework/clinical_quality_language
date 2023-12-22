@@ -10,7 +10,10 @@
         "fhirpath",
         "hamcrest",
         "Inferencing",
+        "Instancio",
+        "Objenesis",
         "qicore",
+        "Randomizer",
         "testng",
         "tngtech",
         "trackback"

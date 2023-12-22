@@ -9,7 +9,7 @@ import org.cqframework.cql.elm.tracking.Trackable;
  * Useful for quick visitor implementations, such as counting all nodes, or finding a specific element
  * type.
  */
-public class ElmFunctionalVisitor<T, C> extends ElmBaseLibraryVisitor<T, C> {
+public class FunctionalElmLibraryVisitor<T, C> extends BaseElmLibraryVisitor<T, C> {
 
     private final BiFunction<Trackable, C, T> defaultResult;
     private final BiFunction<T, T, T> aggregateResult;
@@ -19,7 +19,7 @@ public class ElmFunctionalVisitor<T, C> extends ElmBaseLibraryVisitor<T, C> {
      * @param defaultResult the function for processing a visited element
      * @param aggregateResult the function for aggregating results
      */
-    public ElmFunctionalVisitor(BiFunction<Trackable, C, T> defaultResult, BiFunction<T, T, T> aggregateResult) {
+    public FunctionalElmLibraryVisitor(BiFunction<Trackable, C, T> defaultResult, BiFunction<T, T, T> aggregateResult) {
         this.defaultResult = Objects.requireNonNull(defaultResult);
         this.aggregateResult = Objects.requireNonNull(aggregateResult);
     }
