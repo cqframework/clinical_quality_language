@@ -1,9 +1,8 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.math.BigDecimal;
 import org.apache.commons.lang3.ArrayUtils;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
-
-import java.math.BigDecimal;
 
 /*
 
@@ -20,8 +19,8 @@ import java.math.BigDecimal;
 
 public class ConvertsToBooleanEvaluator {
 
-    private static String[] validTrueValues = new String[]{ "true", "t", "yes", "y", "1" };
-    private static String[] validFalseValues = new String[]{ "false", "f", "no", "n", "0" };
+    private static String[] validTrueValues = new String[] {"true", "t", "yes", "y", "1"};
+    private static String[] validFalseValues = new String[] {"false", "f", "no", "n", "0"};
 
     public static Boolean convertsToBoolean(Object argument) {
         if (argument == null) {
@@ -33,12 +32,12 @@ public class ConvertsToBooleanEvaluator {
         }
 
         if (argument instanceof Integer) {
-            Integer value = (Integer)argument;
+            Integer value = (Integer) argument;
             return (value == 0 || value == 1);
         }
 
         if (argument instanceof BigDecimal) {
-            BigDecimal value = (BigDecimal)argument;
+            BigDecimal value = (BigDecimal) argument;
             return (value.compareTo(new BigDecimal("1.0")) == 0 || value.compareTo(new BigDecimal("0.0")) == 0);
         }
 
@@ -49,8 +48,6 @@ public class ConvertsToBooleanEvaluator {
 
         throw new InvalidOperatorArgument(
                 "ConvertsToBoolean(String)",
-                String.format("ConvertsToBoolean(%s)", argument.getClass().getName())
-        );
+                String.format("ConvertsToBoolean(%s)", argument.getClass().getName()));
     }
-
 }

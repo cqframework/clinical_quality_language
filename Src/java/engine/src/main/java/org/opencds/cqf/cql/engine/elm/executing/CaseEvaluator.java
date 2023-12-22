@@ -22,5 +22,4 @@ end
 
 */
 
-public class CaseEvaluator {
-}
+public class CaseEvaluator {}

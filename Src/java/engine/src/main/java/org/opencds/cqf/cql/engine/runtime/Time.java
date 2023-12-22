@@ -1,14 +1,12 @@
 package org.opencds.cqf.cql.engine.runtime;
 
 import java.time.LocalTime;
-
-
-
 import org.opencds.cqf.cql.engine.exception.InvalidTime;
 
 public class Time extends BaseTemporal {
 
     private LocalTime time;
+
     public LocalTime getTime() {
         return time;
     }
@@ -44,7 +42,7 @@ public class Time extends BaseTemporal {
         time = LocalTime.parse(dateString);
     }
 
-    public Time(int ... timeElements) {
+    public Time(int... timeElements) {
         if (timeElements.length == 0) {
             throw new InvalidTime("Time must include an hour");
         }
@@ -56,18 +54,17 @@ public class Time extends BaseTemporal {
             if (i == 0) {
                 timeString.append(stringElements[i]);
                 continue;
-            }
-            else if (i < 3) {
+            } else if (i < 3) {
                 timeString.append(":");
-            }
-            else if (i == 3) {
+            } else if (i == 3) {
                 timeString.append(".");
             }
             timeString.append(stringElements[i]);
         }
 
         precision = Precision.fromTimeIndex(stringElements.length - 1);
-        timeString = new StringBuilder().append(TemporalHelper.autoCompleteDateTimeString(timeString.toString(), precision));
+        timeString =
+                new StringBuilder().append(TemporalHelper.autoCompleteDateTimeString(timeString.toString(), precision));
 
         time = LocalTime.parse(timeString.toString());
     }
@@ -77,8 +74,7 @@ public class Time extends BaseTemporal {
         for (int i = thePrecision.toTimeIndex() + 1; i < 4; ++i) {
             ot = ot.with(
                     Precision.fromTimeIndex(i).toChronoField(),
-                    ot.range(Precision.fromTimeIndex(i).toChronoField()).getMinimum()
-            );
+                    ot.range(Precision.fromTimeIndex(i).toChronoField()).getMinimum());
         }
         return new Time(ot, this.precision);
     }
@@ -94,14 +90,11 @@ public class Time extends BaseTemporal {
             if (i <= thePrecision.toTimeIndex()) {
                 ot = ot.with(
                         Precision.fromTimeIndex(i).toChronoField(),
-                        ot.range(Precision.fromTimeIndex(i).toChronoField()).getMaximum()
-                );
-            }
-            else {
+                        ot.range(Precision.fromTimeIndex(i).toChronoField()).getMaximum());
+            } else {
                 ot = ot.with(
                         Precision.fromTimeIndex(i).toChronoField(),
-                        ot.range(Precision.fromTimeIndex(i).toChronoField()).getMinimum()
-                );
+                        ot.range(Precision.fromTimeIndex(i).toChronoField()).getMinimum());
             }
         }
         return new Time(ot, thePrecision == null ? Precision.MILLISECOND : thePrecision);
@@ -124,13 +117,13 @@ public class Time extends BaseTemporal {
         boolean differentPrecisions = this.getPrecision() != other.getPrecision();
 
         if (differentPrecisions) {
-            Integer result = this.compareToPrecision(other, Precision.getHighestTimePrecision(this.precision, other.precision));
+            Integer result =
+                    this.compareToPrecision(other, Precision.getHighestTimePrecision(this.precision, other.precision));
             if (result == null && forSort) {
                 return this.precision.toTimeIndex() > other.precision.toTimeIndex() ? 1 : -1;
             }
             return result;
-        }
-        else {
+        } else {
             return compareToPrecision(other, this.precision);
         }
     }
@@ -153,8 +146,7 @@ public class Time extends BaseTemporal {
             int rightComp = rightTime.get(Precision.getTimeChronoFieldFromIndex(i));
             if (leftComp > rightComp) {
                 return 1;
-            }
-            else if (leftComp < rightComp) {
+            } else if (leftComp < rightComp) {
                 return -1;
             }
         }
@@ -186,10 +178,16 @@ public class Time extends BaseTemporal {
     @Override
     public String toString() {
         switch (precision) {
-            case HOUR: return String.format("%02d", time.getHour());
-            case MINUTE: return String.format("%02d:%02d", time.getHour(), time.getMinute());
-            case SECOND: return String.format("%02d:%02d:%02d", time.getHour(), time.getMinute(), time.getSecond());
-            default: return String.format("%02d:%02d:%02d.%03d", time.getHour(), time.getMinute(), time.getSecond(), time.get(precision.toChronoField()));
+            case HOUR:
+                return String.format("%02d", time.getHour());
+            case MINUTE:
+                return String.format("%02d:%02d", time.getHour(), time.getMinute());
+            case SECOND:
+                return String.format("%02d:%02d:%02d", time.getHour(), time.getMinute(), time.getSecond());
+            default:
+                return String.format(
+                        "%02d:%02d:%02d.%03d",
+                        time.getHour(), time.getMinute(), time.getSecond(), time.get(precision.toChronoField()));
         }
     }
 }

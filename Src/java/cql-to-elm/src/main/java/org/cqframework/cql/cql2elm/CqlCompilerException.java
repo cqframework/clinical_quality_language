@@ -1,8 +1,7 @@
 package org.cqframework.cql.cql2elm;
 
-import org.cqframework.cql.elm.tracking.TrackBack;
-
 import java.util.List;
+import org.cqframework.cql.elm.tracking.TrackBack;
 
 public class CqlCompilerException extends RuntimeException {
     public enum ErrorSeverity {
@@ -76,6 +75,7 @@ public class CqlCompilerException extends RuntimeException {
     public TrackBack getLocator() {
         return locator;
     }
+
     public void setLocator(TrackBack locator) {
         this.locator = locator;
     }

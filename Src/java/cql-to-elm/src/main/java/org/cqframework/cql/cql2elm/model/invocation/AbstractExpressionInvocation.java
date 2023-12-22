@@ -4,12 +4,6 @@ import org.cqframework.cql.cql2elm.model.Invocation;
 import org.cqframework.cql.cql2elm.model.OperatorResolution;
 import org.hl7.cql.model.DataType;
 import org.hl7.elm.r1.Expression;
-import org.hl7.elm.r1.Round;
-import org.hl7.elm.r1.TypeSpecifier;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * The AbstractExpressionInvocation can be used to more simply make invocations for classes that only extend
@@ -54,9 +48,11 @@ public abstract class AbstractExpressionInvocation implements Invocation {
     }
 
     private OperatorResolution resolution;
+
     public OperatorResolution getResolution() {
         return resolution;
     }
+
     public void setResolution(OperatorResolution resolution) {
         this.resolution = resolution;
     }

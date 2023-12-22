@@ -1,22 +1,18 @@
 package org.cqframework.cql.cql2elm.operators;
 
-import org.cqframework.cql.cql2elm.CqlTranslator;
-import org.cqframework.cql.cql2elm.ModelManager;
-import org.hl7.elm.r1.*;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import static org.cqframework.cql.cql2elm.matchers.HasTypeAndResult.hasTypeAndResult;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.LibraryManager;
-
-
-import static org.cqframework.cql.cql2elm.matchers.HasTypeAndResult.hasTypeAndResult;
-import static org.cqframework.cql.cql2elm.matchers.ListOfLiterals.listOfLiterals;
-import static org.cqframework.cql.cql2elm.matchers.LiteralFor.literalFor;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import org.cqframework.cql.cql2elm.ModelManager;
+import org.hl7.elm.r1.*;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 
 public class AgeOperatorsTest {
 
@@ -25,7 +21,9 @@ public class AgeOperatorsTest {
     @BeforeTest
     public void setup() throws IOException {
         var modelManager = new ModelManager();
-        var translator = CqlTranslator.fromStream(AgeOperatorsTest.class.getResourceAsStream("../OperatorTests/AgeOperators.cql"), new LibraryManager(modelManager));
+        var translator = CqlTranslator.fromStream(
+                AgeOperatorsTest.class.getResourceAsStream("../OperatorTests/AgeOperators.cql"),
+                new LibraryManager(modelManager));
         assertThat(translator.getErrors().size(), is(0));
         var library = translator.toELM();
         defs = new HashMap<>();
@@ -40,7 +38,7 @@ public class AgeOperatorsTest {
     public void testAgeInYears() {
         ExpressionDef def = defs.get("TestAgeInYears");
         assertThat(def, hasTypeAndResult(CalculateAge.class, "System.Integer"));
-        CalculateAge age = (CalculateAge)def.getExpression();
+        CalculateAge age = (CalculateAge) def.getExpression();
         assertThat(age.getPrecision(), is(DateTimePrecision.YEAR));
         // Verify the datetime is being converted to a date
         assertThat(age.getOperand(), instanceOf(ToDate.class));
@@ -50,7 +48,7 @@ public class AgeOperatorsTest {
     public void testAgeInMonths() {
         ExpressionDef def = defs.get("TestAgeInMonths");
         assertThat(def, hasTypeAndResult(CalculateAge.class, "System.Integer"));
-        CalculateAge age = (CalculateAge)def.getExpression();
+        CalculateAge age = (CalculateAge) def.getExpression();
         assertThat(age.getPrecision(), is(DateTimePrecision.MONTH));
         // Verify the datetime is being converted to a date
         assertThat(age.getOperand(), instanceOf(ToDate.class));
@@ -60,7 +58,7 @@ public class AgeOperatorsTest {
     public void testAgeInWeeks() {
         ExpressionDef def = defs.get("TestAgeInWeeks");
         assertThat(def, hasTypeAndResult(CalculateAge.class, "System.Integer"));
-        CalculateAge age = (CalculateAge)def.getExpression();
+        CalculateAge age = (CalculateAge) def.getExpression();
         assertThat(age.getPrecision(), is(DateTimePrecision.WEEK));
         // Verify the datetime is _not_ being converted to a date
         assertThat(age.getOperand(), instanceOf(Property.class));
@@ -70,7 +68,7 @@ public class AgeOperatorsTest {
     public void testAgeInDays() {
         ExpressionDef def = defs.get("TestAgeInDays");
         assertThat(def, hasTypeAndResult(CalculateAge.class, "System.Integer"));
-        CalculateAge age = (CalculateAge)def.getExpression();
+        CalculateAge age = (CalculateAge) def.getExpression();
         assertThat(age.getPrecision(), is(DateTimePrecision.DAY));
         // Verify the datetime is _not_ being converted to a date
         assertThat(age.getOperand(), instanceOf(Property.class));
@@ -80,7 +78,7 @@ public class AgeOperatorsTest {
     public void testAgeInHours() {
         ExpressionDef def = defs.get("TestAgeInHours");
         assertThat(def, hasTypeAndResult(CalculateAge.class, "System.Integer"));
-        CalculateAge age = (CalculateAge)def.getExpression();
+        CalculateAge age = (CalculateAge) def.getExpression();
         assertThat(age.getPrecision(), is(DateTimePrecision.HOUR));
         // Verify the datetime is _not_ being converted to a date
         assertThat(age.getOperand(), instanceOf(Property.class));
@@ -90,7 +88,7 @@ public class AgeOperatorsTest {
     public void testAgeInMinutes() {
         ExpressionDef def = defs.get("TestAgeInMinutes");
         assertThat(def, hasTypeAndResult(CalculateAge.class, "System.Integer"));
-        CalculateAge age = (CalculateAge)def.getExpression();
+        CalculateAge age = (CalculateAge) def.getExpression();
         assertThat(age.getPrecision(), is(DateTimePrecision.MINUTE));
         // Verify the datetime is _not_ being converted to a date
         assertThat(age.getOperand(), instanceOf(Property.class));
@@ -100,7 +98,7 @@ public class AgeOperatorsTest {
     public void testAgeInSeconds() {
         ExpressionDef def = defs.get("TestAgeInSeconds");
         assertThat(def, hasTypeAndResult(CalculateAge.class, "System.Integer"));
-        CalculateAge age = (CalculateAge)def.getExpression();
+        CalculateAge age = (CalculateAge) def.getExpression();
         assertThat(age.getPrecision(), is(DateTimePrecision.SECOND));
         // Verify the datetime is _not_ being converted to a date
         assertThat(age.getOperand(), instanceOf(Property.class));
@@ -110,7 +108,7 @@ public class AgeOperatorsTest {
     public void testAgeInYearsAtDateTime() {
         ExpressionDef def = defs.get("TestAgeInYearsAtDateTime");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
-        CalculateAgeAt age = (CalculateAgeAt)def.getExpression();
+        CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
         assertThat(age.getPrecision(), is(DateTimePrecision.YEAR));
         // Verify the datetime is _not_ being converted to a date
         assertThat(age.getOperand().get(0), instanceOf(Property.class));
@@ -120,7 +118,7 @@ public class AgeOperatorsTest {
     public void testAgeInMonthsAtDateTime() {
         ExpressionDef def = defs.get("TestAgeInMonthsAtDateTime");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
-        CalculateAgeAt age = (CalculateAgeAt)def.getExpression();
+        CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
         assertThat(age.getPrecision(), is(DateTimePrecision.MONTH));
         // Verify the datetime is _not_ being converted to a date
         assertThat(age.getOperand().get(0), instanceOf(Property.class));
@@ -130,7 +128,7 @@ public class AgeOperatorsTest {
     public void testAgeInWeeksAtDateTime() {
         ExpressionDef def = defs.get("TestAgeInWeeksAtDateTime");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
-        CalculateAgeAt age = (CalculateAgeAt)def.getExpression();
+        CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
         assertThat(age.getPrecision(), is(DateTimePrecision.WEEK));
         // Verify the datetime is _not_ being converted to a date
         assertThat(age.getOperand().get(0), instanceOf(Property.class));
@@ -140,7 +138,7 @@ public class AgeOperatorsTest {
     public void testAgeInDaysAtDateTime() {
         ExpressionDef def = defs.get("TestAgeInDaysAtDateTime");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
-        CalculateAgeAt age = (CalculateAgeAt)def.getExpression();
+        CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
         assertThat(age.getPrecision(), is(DateTimePrecision.DAY));
         // Verify the datetime is _not_ being converted to a date
         assertThat(age.getOperand().get(0), instanceOf(Property.class));
@@ -150,7 +148,7 @@ public class AgeOperatorsTest {
     public void testAgeInYearsAtDate() {
         ExpressionDef def = defs.get("TestAgeInYearsAtDate");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
-        CalculateAgeAt age = (CalculateAgeAt)def.getExpression();
+        CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
         assertThat(age.getPrecision(), is(DateTimePrecision.YEAR));
         // Verify the datetime is being converted to a date
         assertThat(age.getOperand().get(0), instanceOf(ToDate.class));
@@ -160,7 +158,7 @@ public class AgeOperatorsTest {
     public void testAgeInMonthsAtDate() {
         ExpressionDef def = defs.get("TestAgeInMonthsAtDate");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
-        CalculateAgeAt age = (CalculateAgeAt)def.getExpression();
+        CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
         assertThat(age.getPrecision(), is(DateTimePrecision.MONTH));
         // Verify the datetime is being converted to a date
         assertThat(age.getOperand().get(0), instanceOf(ToDate.class));
@@ -170,7 +168,7 @@ public class AgeOperatorsTest {
     public void testAgeInWeeksAtDate() {
         ExpressionDef def = defs.get("TestAgeInWeeksAtDate");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
-        CalculateAgeAt age = (CalculateAgeAt)def.getExpression();
+        CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
         assertThat(age.getPrecision(), is(DateTimePrecision.WEEK));
         // Verify the datetime is being converted to a date
         assertThat(age.getOperand().get(0), instanceOf(ToDate.class));
@@ -180,7 +178,7 @@ public class AgeOperatorsTest {
     public void testAgeInDaysAtDate() {
         ExpressionDef def = defs.get("TestAgeInDaysAtDate");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
-        CalculateAgeAt age = (CalculateAgeAt)def.getExpression();
+        CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
         assertThat(age.getPrecision(), is(DateTimePrecision.DAY));
         // Verify the datetime is being converted to a date
         assertThat(age.getOperand().get(0), instanceOf(ToDate.class));
@@ -190,7 +188,7 @@ public class AgeOperatorsTest {
     public void testAgeInHoursAtDateTime() {
         ExpressionDef def = defs.get("TestAgeInHoursAtDateTime");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
-        CalculateAgeAt age = (CalculateAgeAt)def.getExpression();
+        CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
         assertThat(age.getPrecision(), is(DateTimePrecision.HOUR));
         // Verify the datetime is _not_ being converted to a date
         assertThat(age.getOperand().get(0), instanceOf(Property.class));
@@ -200,7 +198,7 @@ public class AgeOperatorsTest {
     public void testAgeInMinutesAtDateTime() {
         ExpressionDef def = defs.get("TestAgeInMinutesAtDateTime");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
-        CalculateAgeAt age = (CalculateAgeAt)def.getExpression();
+        CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
         assertThat(age.getPrecision(), is(DateTimePrecision.MINUTE));
         // Verify the datetime is _not_ being converted to a date
         assertThat(age.getOperand().get(0), instanceOf(Property.class));
@@ -210,18 +208,17 @@ public class AgeOperatorsTest {
     public void testAgeInSecondsAtDateTime() {
         ExpressionDef def = defs.get("TestAgeInSecondsAtDateTime");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
-        CalculateAgeAt age = (CalculateAgeAt)def.getExpression();
+        CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
         assertThat(age.getPrecision(), is(DateTimePrecision.SECOND));
         // Verify the datetime is _not_ being converted to a date
         assertThat(age.getOperand().get(0), instanceOf(Property.class));
     }
 
-
     @Test
     public void testCalculateAgeInYearsAtDateTime() {
         ExpressionDef def = defs.get("TestCalculateAgeInYearsAtDateTime");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
-        CalculateAgeAt age = (CalculateAgeAt)def.getExpression();
+        CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
         assertThat(age.getPrecision(), is(DateTimePrecision.YEAR));
         // Verify the datetime is _not_ being converted to a date
         assertThat(age.getOperand().get(0), instanceOf(ExpressionRef.class));
@@ -231,7 +228,7 @@ public class AgeOperatorsTest {
     public void testCalculateAgeInMonthsAtDateTime() {
         ExpressionDef def = defs.get("TestCalculateAgeInMonthsAtDateTime");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
-        CalculateAgeAt age = (CalculateAgeAt)def.getExpression();
+        CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
         assertThat(age.getPrecision(), is(DateTimePrecision.MONTH));
         // Verify the datetime is _not_ being converted to a date
         assertThat(age.getOperand().get(0), instanceOf(ExpressionRef.class));
@@ -241,7 +238,7 @@ public class AgeOperatorsTest {
     public void testCalculateAgeInWeeksAtDateTime() {
         ExpressionDef def = defs.get("TestCalculateAgeInWeeksAtDateTime");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
-        CalculateAgeAt age = (CalculateAgeAt)def.getExpression();
+        CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
         assertThat(age.getPrecision(), is(DateTimePrecision.WEEK));
         // Verify the datetime is _not_ being converted to a date
         assertThat(age.getOperand().get(0), instanceOf(ExpressionRef.class));
@@ -251,7 +248,7 @@ public class AgeOperatorsTest {
     public void testCalculateAgeInDaysAtDateTime() {
         ExpressionDef def = defs.get("TestCalculateAgeInDaysAtDateTime");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
-        CalculateAgeAt age = (CalculateAgeAt)def.getExpression();
+        CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
         assertThat(age.getPrecision(), is(DateTimePrecision.DAY));
         // Verify the datetime is _not_ being converted to a date
         assertThat(age.getOperand().get(0), instanceOf(ExpressionRef.class));
@@ -261,7 +258,7 @@ public class AgeOperatorsTest {
     public void testCalculateAgeInYearsAtDate() {
         ExpressionDef def = defs.get("TestCalculateAgeInYearsAtDate");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
-        CalculateAgeAt age = (CalculateAgeAt)def.getExpression();
+        CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
         assertThat(age.getPrecision(), is(DateTimePrecision.YEAR));
         // Verify the date is _not_ being converted to a datetime
         assertThat(age.getOperand().get(0), instanceOf(ExpressionRef.class));
@@ -271,7 +268,7 @@ public class AgeOperatorsTest {
     public void testCalculateAgeInMonthsAtDate() {
         ExpressionDef def = defs.get("TestCalculateAgeInMonthsAtDate");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
-        CalculateAgeAt age = (CalculateAgeAt)def.getExpression();
+        CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
         assertThat(age.getPrecision(), is(DateTimePrecision.MONTH));
         // Verify the date is _not_ being converted to a datetime
         assertThat(age.getOperand().get(0), instanceOf(ExpressionRef.class));
@@ -281,7 +278,7 @@ public class AgeOperatorsTest {
     public void testCalculateAgeInWeeksAtDate() {
         ExpressionDef def = defs.get("TestCalculateAgeInWeeksAtDate");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
-        CalculateAgeAt age = (CalculateAgeAt)def.getExpression();
+        CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
         assertThat(age.getPrecision(), is(DateTimePrecision.WEEK));
         // Verify the date is _not_ being converted to a datetime
         assertThat(age.getOperand().get(0), instanceOf(ExpressionRef.class));
@@ -291,7 +288,7 @@ public class AgeOperatorsTest {
     public void testCalculateAgeInDaysAtDate() {
         ExpressionDef def = defs.get("TestCalculateAgeInDaysAtDate");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
-        CalculateAgeAt age = (CalculateAgeAt)def.getExpression();
+        CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
         assertThat(age.getPrecision(), is(DateTimePrecision.DAY));
         // Verify the date is _not_ being converted to a datetime
         assertThat(age.getOperand().get(0), instanceOf(ExpressionRef.class));
@@ -301,7 +298,7 @@ public class AgeOperatorsTest {
     public void testCalculateAgeInHoursAtDateTime() {
         ExpressionDef def = defs.get("TestCalculateAgeInHoursAtDateTime");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
-        CalculateAgeAt age = (CalculateAgeAt)def.getExpression();
+        CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
         assertThat(age.getPrecision(), is(DateTimePrecision.HOUR));
         // Verify the datetime is _not_ being converted to a date
         assertThat(age.getOperand().get(0), instanceOf(ExpressionRef.class));
@@ -311,7 +308,7 @@ public class AgeOperatorsTest {
     public void testCalculateAgeInMinutesAtDateTime() {
         ExpressionDef def = defs.get("TestCalculateAgeInMinutesAtDateTime");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
-        CalculateAgeAt age = (CalculateAgeAt)def.getExpression();
+        CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
         assertThat(age.getPrecision(), is(DateTimePrecision.MINUTE));
         // Verify the datetime is _not_ being converted to a date
         assertThat(age.getOperand().get(0), instanceOf(ExpressionRef.class));
@@ -321,7 +318,7 @@ public class AgeOperatorsTest {
     public void testCalculateAgeInSecondsAtDateTime() {
         ExpressionDef def = defs.get("TestCalculateAgeInSecondsAtDateTime");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
-        CalculateAgeAt age = (CalculateAgeAt)def.getExpression();
+        CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
         assertThat(age.getPrecision(), is(DateTimePrecision.SECOND));
         // Verify the datetime is _not_ being converted to a date
         assertThat(age.getOperand().get(0), instanceOf(ExpressionRef.class));

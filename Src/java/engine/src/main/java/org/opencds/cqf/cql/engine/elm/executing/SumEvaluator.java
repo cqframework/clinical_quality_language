@@ -22,7 +22,7 @@ public class SumEvaluator {
         }
 
         if (source instanceof Iterable) {
-            Iterable<?> elements = (Iterable<?>)source;
+            Iterable<?> elements = (Iterable<?>) source;
             Object sum = null;
             for (Object element : elements) {
                 if (element == null) {
@@ -31,8 +31,7 @@ public class SumEvaluator {
 
                 if (sum == null) {
                     sum = element;
-                }
-                else {
+                } else {
                     sum = AddEvaluator.add(sum, element);
                 }
             }
@@ -41,8 +40,7 @@ public class SumEvaluator {
         }
 
         throw new InvalidOperatorArgument(
-            "Sum(List<Integer>), Sum(List<Long>), Sum(List<Decimal>) or Sum(List<Quantity>)",
-            String.format("Sum(%s)", source.getClass().getName())
-        );
+                "Sum(List<Integer>), Sum(List<Long>), Sum(List<Decimal>) or Sum(List<Quantity>)",
+                String.format("Sum(%s)", source.getClass().getName()));
     }
 }

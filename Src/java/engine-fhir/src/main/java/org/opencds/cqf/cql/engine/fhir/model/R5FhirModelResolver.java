@@ -1,14 +1,14 @@
 package org.opencds.cqf.cql.engine.fhir.model;
 
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.context.FhirVersionEnum;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Map;
-
 import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r5.model.Age;
@@ -40,11 +40,9 @@ import org.hl7.fhir.r5.model.UuidType;
 import org.opencds.cqf.cql.engine.exception.InvalidCast;
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal;
 
-import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.context.FhirVersionEnum;
-
-public class R5FhirModelResolver extends
-        FhirModelResolver<Base, BaseDateTimeType, TimeType, SimpleQuantity, IdType, Resource, Enumeration<?>, EnumFactory<?>> {
+public class R5FhirModelResolver
+        extends FhirModelResolver<
+                Base, BaseDateTimeType, TimeType, SimpleQuantity, IdType, Resource, Enumeration<?>, EnumFactory<?>> {
 
     public R5FhirModelResolver() {
         // This ModelResolver makes specific alterations to the FhirContext,
@@ -76,8 +74,7 @@ public class R5FhirModelResolver extends
             f.setAccessible(true);
             myNameToResourceType = (Map<String, Class<? extends IBaseResource>>) f.get(this.fhirContext);
 
-            var toLoad = new ArrayList<Class<? extends IBaseResource>>(
-                    myNameToResourceType.size());
+            var toLoad = new ArrayList<Class<? extends IBaseResource>>(myNameToResourceType.size());
 
             for (Enumerations.FHIRTypes type : Enumerations.FHIRTypes.values()) {
                 // These are abstract types that should never be resolved directly.
@@ -99,7 +96,6 @@ public class R5FhirModelResolver extends
         } catch (Exception e) {
             // intentionally ignored
         }
-
     }
 
     @Override
@@ -118,8 +114,7 @@ public class R5FhirModelResolver extends
     }
 
     protected SimpleQuantity castToSimpleQuantity(Base base) {
-        if (base instanceof SimpleQuantity)
-            return (SimpleQuantity) base;
+        if (base instanceof SimpleQuantity) return (SimpleQuantity) base;
         else if (base instanceof Quantity) {
             Quantity q = (Quantity) base;
             SimpleQuantity sq = new SimpleQuantity();
@@ -129,9 +124,7 @@ public class R5FhirModelResolver extends
             sq.setSystemElement(q.getSystemElement());
             sq.setCodeElement(q.getCodeElement());
             return sq;
-        } else
-            throw new FHIRException(
-                    "Unable to convert a " + base.getClass().getName() + " to an SimpleQuantity");
+        } else throw new FHIRException("Unable to convert a " + base.getClass().getName() + " to an SimpleQuantity");
     }
 
     protected Calendar getCalendar(BaseDateTimeType dateTime) {
@@ -200,7 +193,7 @@ public class R5FhirModelResolver extends
             case "ContractResourcePublicationStatusCodes":
                 typeName = "Contract$ContractPublicationStatus";
                 break;
-            // CodeTypes - Bug in HAPI 4.2
+                // CodeTypes - Bug in HAPI 4.2
             case "CurrencyCode":
                 typeName = "CodeType";
                 break;
@@ -343,13 +336,13 @@ public class R5FhirModelResolver extends
                     return integerType.hasPrimitiveValue() && integerType.getValue() > 0
                             ? new PositiveIntType(integerType.primitiveValue())
                             : null; // integerType.castToPositiveInt(integerType); Throws an
-                                    // exception, not
-                                    // implemented
+                    // exception, not
+                    // implemented
                 case "UnsignedIntType":
                     return integerType.hasPrimitiveValue() && integerType.getValue() >= 0
                             ? new UnsignedIntType(integerType.primitiveValue())
                             : null; // castToUnsignedInt(integerType); Throws an exception, not
-                                    // implemented
+                    // implemented
                 default:
                     break;
             }
@@ -361,15 +354,16 @@ public class R5FhirModelResolver extends
                 case "CodeType":
                     return stringType.hasPrimitiveValue() ? new CodeType(stringType.primitiveValue()) : null;
                 case "MarkdownType":
-                    return stringType.hasPrimitiveValue() ? new MarkdownType(stringType.primitiveValue())
-                            : null;
+                    return stringType.hasPrimitiveValue() ? new MarkdownType(stringType.primitiveValue()) : null;
                 case "IdType":
-                    return stringType.hasPrimitiveValue() ? new IdType(stringType.primitiveValue()) : null; // stringType.castToId(stringType);
-                                                                                                            // Throws
-                                                                                                            // an
-                                                                                                            // exception,
-                                                                                                            // not
-                                                                                                            // implemented
+                    return stringType.hasPrimitiveValue()
+                            ? new IdType(stringType.primitiveValue())
+                            : null; // stringType.castToId(stringType);
+                    // Throws
+                    // an
+                    // exception,
+                    // not
+                    // implemented
                 default:
                     break;
             }
@@ -404,9 +398,9 @@ public class R5FhirModelResolver extends
                     return count;
                 case "SimpleQuantity":
                     return castToSimpleQuantity(quantity); // NOTE: This is wrong in that it is
-                                                           // copying the comparator,
-                                                           // it should be ensuring comparator is
-                                                           // not set...
+                    // copying the comparator,
+                    // it should be ensuring comparator is
+                    // not set...
                 case "MoneyQuantity":
                     MoneyQuantity moneyQuantity = new MoneyQuantity();
                     moneyQuantity.setValue(quantity.getValue());
@@ -419,8 +413,8 @@ public class R5FhirModelResolver extends
         }
 
         if (isStrict) {
-            throw new InvalidCast(String.format("Cannot cast a value of type %s as %s.",
-                    value.getClass().getName(), type.getName()));
+            throw new InvalidCast(String.format(
+                    "Cannot cast a value of type %s as %s.", value.getClass().getName(), type.getName()));
         }
 
         return null;

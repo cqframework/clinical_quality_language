@@ -4,7 +4,11 @@ import org.hl7.elm.r1.Expression;
 import org.hl7.elm.r1.VersionedIdentifier;
 
 public class ElmConditionRequirement extends ElmExpressionRequirement {
-    public ElmConditionRequirement(VersionedIdentifier libraryIdentifier, Expression expression, ElmPropertyRequirement property, ElmExpressionRequirement comparand) {
+    public ElmConditionRequirement(
+            VersionedIdentifier libraryIdentifier,
+            Expression expression,
+            ElmPropertyRequirement property,
+            ElmExpressionRequirement comparand) {
         super(libraryIdentifier, expression);
 
         if (property == null) {
@@ -19,17 +23,19 @@ public class ElmConditionRequirement extends ElmExpressionRequirement {
     }
 
     protected ElmPropertyRequirement property;
+
     public ElmPropertyRequirement getProperty() {
         return this.property;
     }
 
     protected ElmExpressionRequirement comparand;
+
     public ElmExpressionRequirement getComparand() {
         return this.comparand;
     }
 
     public boolean isTargetable() {
-        return comparand != null &&
-                (comparand.isLiteral() || comparand.isTerminologyReference() || comparand.isParameterReference());
+        return comparand != null
+                && (comparand.isLiteral() || comparand.isTerminologyReference() || comparand.isParameterReference());
     }
 }

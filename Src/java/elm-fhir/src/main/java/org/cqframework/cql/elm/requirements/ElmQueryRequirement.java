@@ -1,10 +1,8 @@
 package org.cqframework.cql.elm.requirements;
 
-import org.hl7.elm.r1.*;
-
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import org.hl7.elm.r1.*;
 
 public class ElmQueryRequirement extends ElmExpressionRequirement {
     public ElmQueryRequirement(VersionedIdentifier libraryIdentifier, Query query) {
@@ -12,7 +10,7 @@ public class ElmQueryRequirement extends ElmExpressionRequirement {
     }
 
     public Query getQuery() {
-        return (Query)element;
+        return (Query) element;
     }
 
     public Query getElement() {
@@ -20,6 +18,7 @@ public class ElmQueryRequirement extends ElmExpressionRequirement {
     }
 
     private Set<ElmDataRequirement> dataRequirements = new LinkedHashSet<ElmDataRequirement>();
+
     public Iterable<ElmDataRequirement> getDataRequirements() {
         return dataRequirements;
     }
@@ -29,18 +28,19 @@ public class ElmQueryRequirement extends ElmExpressionRequirement {
             throw new IllegalArgumentException("dataRequirement must be provided");
         }
         if (dataRequirement.getQuerySource() == null) {
-            throw new IllegalArgumentException("Data requirement must be associated with an alias to be added to a query requirements");
+            throw new IllegalArgumentException(
+                    "Data requirement must be associated with an alias to be added to a query requirements");
         }
         dataRequirements.add(dataRequirement);
     }
 
     public ElmDataRequirement getDataRequirement(Element querySource) {
         if (querySource instanceof AliasedQuerySource) {
-            return getDataRequirement(((AliasedQuerySource)querySource).getAlias());
+            return getDataRequirement(((AliasedQuerySource) querySource).getAlias());
         }
 
         if (querySource instanceof LetClause) {
-            return getDataRequirement(((LetClause)querySource).getIdentifier());
+            return getDataRequirement(((LetClause) querySource).getIdentifier());
         }
 
         return null;
@@ -70,7 +70,8 @@ public class ElmQueryRequirement extends ElmExpressionRequirement {
     }
 
     private void distributeConditionRequirement(ElmConditionRequirement requirement) {
-        ElmDataRequirement dataRequirement = getDataRequirement(requirement.getProperty().getSource());
+        ElmDataRequirement dataRequirement =
+                getDataRequirement(requirement.getProperty().getSource());
         if (dataRequirement != null) {
             dataRequirement.addConditionRequirement(requirement);
         }
@@ -83,14 +84,17 @@ public class ElmQueryRequirement extends ElmExpressionRequirement {
      * @param requirement
      */
     private void distributeJoinRequirement(ElmJoinRequirement requirement) {
-        ElmDataRequirement leftDataRequirement = getDataRequirement(requirement.getLeftProperty().getSource());
-        ElmDataRequirement rightDataRequirement = getDataRequirement(requirement.getRightProperty().getSource());
+        ElmDataRequirement leftDataRequirement =
+                getDataRequirement(requirement.getLeftProperty().getSource());
+        ElmDataRequirement rightDataRequirement =
+                getDataRequirement(requirement.getRightProperty().getSource());
         if (leftDataRequirement != null && rightDataRequirement != null) {
             leftDataRequirement.addJoinRequirement(requirement);
         }
     }
 
-    private void distributeNestedConditionRequirement(ElmDataRequirement dataRequirement, String path, ElmConditionRequirement requirement) {
+    private void distributeNestedConditionRequirement(
+            ElmDataRequirement dataRequirement, String path, ElmConditionRequirement requirement) {
         Property qualifiedProperty = new Property();
         Property nestedProperty = requirement.getProperty().getProperty();
         qualifiedProperty.setPath(String.format("%s.%s", path, nestedProperty.getPath()));
@@ -98,9 +102,14 @@ public class ElmQueryRequirement extends ElmExpressionRequirement {
         qualifiedProperty.setResultType(nestedProperty.getResultType());
         qualifiedProperty.setResultTypeName(nestedProperty.getResultTypeName());
         qualifiedProperty.setResultTypeSpecifier(nestedProperty.getResultTypeSpecifier());
-        ElmPropertyRequirement qualifiedPropertyRequirement = new ElmPropertyRequirement(libraryIdentifier, qualifiedProperty, dataRequirement.getQuerySource(), true);
+        ElmPropertyRequirement qualifiedPropertyRequirement = new ElmPropertyRequirement(
+                libraryIdentifier, qualifiedProperty, dataRequirement.getQuerySource(), true);
         // TODO: Validate that the comparand is context literal and scope stable
-        ElmConditionRequirement qualifiedCondition = new ElmConditionRequirement(libraryIdentifier, requirement.getExpression(), qualifiedPropertyRequirement, requirement.getComparand());
+        ElmConditionRequirement qualifiedCondition = new ElmConditionRequirement(
+                libraryIdentifier,
+                requirement.getExpression(),
+                qualifiedPropertyRequirement,
+                requirement.getComparand());
         dataRequirement.addConditionRequirement(qualifiedCondition);
     }
 
@@ -121,33 +130,43 @@ public class ElmQueryRequirement extends ElmExpressionRequirement {
         if (requirement.dataRequirements.size() == 1) {
             for (ElmDataRequirement nestedAlias : requirement.dataRequirements) {
                 if (nestedAlias.getExpression() instanceof Property) {
-                    Property sourceProperty = (Property)nestedAlias.getExpression();
+                    Property sourceProperty = (Property) nestedAlias.getExpression();
                     if (sourceProperty.getScope() != null) {
                         ElmDataRequirement aliasDataRequirement = getDataRequirement(sourceProperty.getScope());
                         if (aliasDataRequirement != null && nestedAlias.getConjunctiveRequirement() != null) {
-                            for (ElmExpressionRequirement nestedRequirement : nestedAlias.getConjunctiveRequirement().getArguments()) {
-                                // A conjunctive requirement against a nested query that is based on a property of the current query
-                                // can be inferred as a conjunctive requirement against the qualified property in the current query
+                            for (ElmExpressionRequirement nestedRequirement :
+                                    nestedAlias.getConjunctiveRequirement().getArguments()) {
+                                // A conjunctive requirement against a nested query that is based on a property of the
+                                // current query
+                                // can be inferred as a conjunctive requirement against the qualified property in the
+                                // current query
                                 if (nestedRequirement instanceof ElmConditionRequirement) {
-                                    distributeNestedConditionRequirement(aliasDataRequirement, sourceProperty.getPath(), (ElmConditionRequirement)nestedRequirement);
+                                    distributeNestedConditionRequirement(
+                                            aliasDataRequirement, sourceProperty.getPath(), (ElmConditionRequirement)
+                                                    nestedRequirement);
                                     return true;
                                 }
                             }
                         }
                     }
                 }
-                // If the query is a single source and is a retrieve that has a condition requirement relating to a property in the current
+                // If the query is a single source and is a retrieve that has a condition requirement relating to a
+                // property in the current
                 // query, the nested requirement can be distributed to this query context as a join requirement
                 else if (nestedAlias.getExpression() instanceof Retrieve) {
-                    for (ElmExpressionRequirement nestedRequirement : nestedAlias.getConjunctiveRequirement().getArguments()) {
+                    for (ElmExpressionRequirement nestedRequirement :
+                            nestedAlias.getConjunctiveRequirement().getArguments()) {
                         if (nestedRequirement instanceof ElmConditionRequirement) {
-                            ElmConditionRequirement nestedConditionRequirement = (ElmConditionRequirement)nestedRequirement;
+                            ElmConditionRequirement nestedConditionRequirement =
+                                    (ElmConditionRequirement) nestedRequirement;
                             if (nestedConditionRequirement.getComparand() instanceof ElmPropertyRequirement) {
-                                ElmPropertyRequirement comparand = (ElmPropertyRequirement)nestedConditionRequirement.getComparand();
+                                ElmPropertyRequirement comparand =
+                                        (ElmPropertyRequirement) nestedConditionRequirement.getComparand();
                                 ElmDataRequirement relatedRequirement = this.getDataRequirement(comparand.getSource());
                                 if (relatedRequirement != null) {
                                     // Create a new data requirement referencing the retrieve
-                                    ElmDataRequirement newRequirement = new ElmDataRequirement(libraryIdentifier, nestedAlias.getRetrieve());
+                                    ElmDataRequirement newRequirement =
+                                            new ElmDataRequirement(libraryIdentifier, nestedAlias.getRetrieve());
                                     // Create a new and unique alias for this data requirement
                                     String localId = context.generateLocalId();
                                     AliasedQuerySource aqs = new AliasedQuerySource()
@@ -156,11 +175,18 @@ public class ElmQueryRequirement extends ElmExpressionRequirement {
                                             .withAlias(localId);
                                     newRequirement.setQuerySource(aqs);
                                     // Infer the condition requirement as a join requirement
-                                    Property leftProperty = ElmCloner.clone(nestedConditionRequirement.getProperty().getProperty());
+                                    Property leftProperty = ElmCloner.clone(nestedConditionRequirement
+                                            .getProperty()
+                                            .getProperty());
                                     leftProperty.setSource(null);
                                     leftProperty.setScope(localId);
-                                    ElmPropertyRequirement leftPropertyRequirement = new ElmPropertyRequirement(libraryIdentifier, leftProperty, aqs, true);
-                                    ElmJoinRequirement joinRequirement = new ElmJoinRequirement(libraryIdentifier, nestedConditionRequirement.getExpression(), leftPropertyRequirement, comparand);
+                                    ElmPropertyRequirement leftPropertyRequirement =
+                                            new ElmPropertyRequirement(libraryIdentifier, leftProperty, aqs, true);
+                                    ElmJoinRequirement joinRequirement = new ElmJoinRequirement(
+                                            libraryIdentifier,
+                                            nestedConditionRequirement.getExpression(),
+                                            leftPropertyRequirement,
+                                            comparand);
                                     newRequirement.getConjunctiveRequirement().combine(joinRequirement);
                                     // Report the new data requirement to this query
                                     addDataRequirements(newRequirement);
@@ -182,27 +208,25 @@ public class ElmQueryRequirement extends ElmExpressionRequirement {
         // The property requirements have already been reported and processed, so this is currently unnecessary
     }
 
-    public boolean distributeExpressionRequirement(ElmExpressionRequirement requirement, ElmRequirementsContext context) {
+    public boolean distributeExpressionRequirement(
+            ElmExpressionRequirement requirement, ElmRequirementsContext context) {
         if (requirement instanceof ElmConjunctiveRequirement) {
-            for (ElmExpressionRequirement expressionRequirement : ((ElmConjunctiveRequirement)requirement).getArguments()) {
+            for (ElmExpressionRequirement expressionRequirement :
+                    ((ElmConjunctiveRequirement) requirement).getArguments()) {
                 distributeExpressionRequirement(expressionRequirement, context);
             }
             return true;
-        }
-        else if (requirement instanceof ElmDisjunctiveRequirement) {
+        } else if (requirement instanceof ElmDisjunctiveRequirement) {
             // TODO: Distribute disjunctive requirements (requires union rewrite)
             return true;
-        }
-        else if (requirement instanceof ElmConditionRequirement) {
-            distributeConditionRequirement((ElmConditionRequirement)requirement);
+        } else if (requirement instanceof ElmConditionRequirement) {
+            distributeConditionRequirement((ElmConditionRequirement) requirement);
             return true;
-        }
-        else if (requirement instanceof ElmJoinRequirement) {
-            distributeJoinRequirement((ElmJoinRequirement)requirement);
+        } else if (requirement instanceof ElmJoinRequirement) {
+            distributeJoinRequirement((ElmJoinRequirement) requirement);
             return true;
-        }
-        else if (requirement instanceof ElmQueryRequirement) {
-            return distributeQueryRequirement((ElmQueryRequirement)requirement, context);
+        } else if (requirement instanceof ElmQueryRequirement) {
+            return distributeQueryRequirement((ElmQueryRequirement) requirement, context);
         }
 
         return false;

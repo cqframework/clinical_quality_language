@@ -1,22 +1,24 @@
 package org.cqframework.cql.cql2elm.model;
 
-import org.antlr.v4.runtime.misc.Interval;
-import org.hl7.elm.r1.Element;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.antlr.v4.runtime.misc.Interval;
+import org.hl7.elm.r1.Element;
 
 /**
  * Created by Bryn on 6/14/2017.
  */
 public class Chunk {
     private Interval interval;
+
     public Interval getInterval() {
         return interval;
     }
+
     public void setInterval(Interval interval) {
         this.interval = interval;
     }
+
     public Chunk withInterval(Interval interval) {
         setInterval(interval);
         return this;
@@ -30,24 +32,30 @@ public class Chunk {
     we're focusing on providing minimal required narrative per definition.
      */
     private boolean headerChunk = false;
+
     public boolean isHeaderChunk() {
         return this.headerChunk;
     }
+
     public void setHeaderChunk(boolean isHeaderChunk) {
         this.headerChunk = isHeaderChunk;
     }
+
     public Chunk withIsHeaderChunk(boolean isHeaderChunk) {
         setHeaderChunk(isHeaderChunk);
         return this;
     }
 
     private Element element;
+
     public Element getElement() {
         return element;
     }
+
     public void setElement(Element element) {
         this.element = element;
     }
+
     public Chunk withElement(Element element) {
         setElement(element);
         return this;
@@ -61,24 +69,28 @@ public class Chunk {
     }
 
     private List<Chunk> chunks;
+
     public Iterable<Chunk> getChunks() {
         ensureChunks();
         return chunks;
     }
+
     public boolean hasChunks() {
         return chunks != null;
     }
 
     public void addChunk(Chunk chunk) {
         if (chunk.getInterval().a < interval.a || chunk.getInterval().b > interval.b) {
-            throw new IllegalArgumentException("Child chunk cannot be added because it is not contained within the parent chunk.");
+            throw new IllegalArgumentException(
+                    "Child chunk cannot be added because it is not contained within the parent chunk.");
         }
 
         ensureChunks();
         int chunkIndex = -1;
         Chunk targetChunk = null;
         for (int i = 0; i < chunks.size(); i++) {
-            if (chunk.getInterval().a >= chunks.get(i).getInterval().a && chunk.getInterval().a <= chunks.get(i).getInterval().b) {
+            if (chunk.getInterval().a >= chunks.get(i).getInterval().a
+                    && chunk.getInterval().a <= chunks.get(i).getInterval().b) {
                 chunkIndex = i;
                 targetChunk = chunks.get(chunkIndex);
                 break;
@@ -99,10 +111,10 @@ public class Chunk {
                 }
             }
             if (chunkIndex < chunks.size()) {
-                chunks.get(chunkIndex).setInterval(new Interval(newA, chunks.get(chunkIndex).getInterval().b));
+                chunks.get(chunkIndex)
+                        .setInterval(new Interval(newA, chunks.get(chunkIndex).getInterval().b));
             }
-        }
-        else {
+        } else {
             int newB = chunk.getInterval().a - 1;
             int newA = chunk.getInterval().b + 1;
             int oldA = chunks.get(chunkIndex).getInterval().a;

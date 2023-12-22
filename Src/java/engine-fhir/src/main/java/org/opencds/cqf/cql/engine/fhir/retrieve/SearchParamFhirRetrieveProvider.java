@@ -1,8 +1,8 @@
 package org.opencds.cqf.cql.engine.fhir.retrieve;
 
-import java.util.List;
-
+import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.FhirVersionEnum;
+import java.util.List;
 import org.opencds.cqf.cql.engine.fhir.exception.FhirVersionMisMatchException;
 import org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterMap;
 import org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterResolver;
@@ -10,8 +10,6 @@ import org.opencds.cqf.cql.engine.model.ModelResolver;
 import org.opencds.cqf.cql.engine.retrieve.TerminologyAwareRetrieveProvider;
 import org.opencds.cqf.cql.engine.runtime.Code;
 import org.opencds.cqf.cql.engine.runtime.Interval;
-
-import ca.uhn.fhir.context.FhirContext;
 
 public abstract class SearchParamFhirRetrieveProvider extends TerminologyAwareRetrieveProvider {
     protected FhirContext fhirContext;
@@ -27,7 +25,8 @@ public abstract class SearchParamFhirRetrieveProvider extends TerminologyAwareRe
         this.fhirContext = searchParameterResolver.getFhirContext();
     }
 
-    protected SearchParamFhirRetrieveProvider(SearchParameterResolver searchParameterResolver, ModelResolver modelResolver) {
+    protected SearchParamFhirRetrieveProvider(
+            SearchParameterResolver searchParameterResolver, ModelResolver modelResolver) {
         this(searchParameterResolver);
         this.modelResolver = modelResolver;
     }
@@ -87,18 +86,30 @@ public abstract class SearchParamFhirRetrieveProvider extends TerminologyAwareRe
     protected abstract Iterable<Object> executeQueries(String dataType, List<SearchParameterMap> queries);
 
     @Override
-    public Iterable<Object> retrieve(String context, String contextPath, Object contextValue, String dataType,
-                                     String templateId, String codePath, Iterable<Code> codes, String valueSet, String datePath,
-                                     String dateLowPath, String dateHighPath, Interval dateRange) {
+    public Iterable<Object> retrieve(
+            String context,
+            String contextPath,
+            Object contextValue,
+            String dataType,
+            String templateId,
+            String codePath,
+            Iterable<Code> codes,
+            String valueSet,
+            String datePath,
+            String dateLowPath,
+            String dateHighPath,
+            Interval dateRange) {
 
         List<SearchParameterMap> queries = null;
 
         if (this.fhirContext != null && modelResolver != null) {
             try {
                 if (this.fhirContext.getVersion().getVersion().equals(FhirVersionEnum.DSTU3)) {
-                    fhirQueryGenerator = new Dstu3FhirQueryGenerator(searchParameterResolver, terminologyProvider, this.modelResolver);
+                    fhirQueryGenerator = new Dstu3FhirQueryGenerator(
+                            searchParameterResolver, terminologyProvider, this.modelResolver);
                 } else if (this.fhirContext.getVersion().getVersion().equals(FhirVersionEnum.R4)) {
-                    fhirQueryGenerator = new R4FhirQueryGenerator(searchParameterResolver, terminologyProvider, this.modelResolver);
+                    fhirQueryGenerator =
+                            new R4FhirQueryGenerator(searchParameterResolver, terminologyProvider, this.modelResolver);
                 }
             } catch (FhirVersionMisMatchException exception) {
                 throw new RuntimeException(exception.getMessage());
@@ -116,8 +127,19 @@ public abstract class SearchParamFhirRetrieveProvider extends TerminologyAwareRe
                 fhirQueryGenerator.setPageSize(getPageSize());
             }
 
-            queries = fhirQueryGenerator.setupQueries(context, contextPath, contextValue, dataType,
-                templateId, codePath, codes, valueSet, datePath, dateLowPath, dateHighPath, dateRange);
+            queries = fhirQueryGenerator.setupQueries(
+                    context,
+                    contextPath,
+                    contextValue,
+                    dataType,
+                    templateId,
+                    codePath,
+                    codes,
+                    valueSet,
+                    datePath,
+                    dateLowPath,
+                    dateHighPath,
+                    dateRange);
         }
 
         return this.executeQueries(dataType, queries);

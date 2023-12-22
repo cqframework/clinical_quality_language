@@ -4,7 +4,6 @@ import org.hl7.cql_annotations.r1.Annotation;
 import org.hl7.elm.r1.Element;
 
 public enum ElmEdit {
-
     REMOVE_LOCATOR {
         @Override
         public void edit(Element element) {

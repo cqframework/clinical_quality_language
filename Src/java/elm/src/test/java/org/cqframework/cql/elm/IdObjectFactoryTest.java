@@ -12,17 +12,16 @@ public class IdObjectFactoryTest {
         var factory = new IdObjectFactory();
         var methods = Arrays.asList(IdObjectFactory.class.getMethods()).stream()
                 .filter(x -> Element.class.isAssignableFrom(x.getReturnType()));
-        methods.forEach(
-                x -> {
-                    try {
-                        Element e = (Element) x.invoke(factory);
-                        if (e.getLocalId() == null) {
-                            throw new RuntimeException(
-                                    String.format("%s missing localId", e.getClass().getSimpleName()));
-                        }
-                    } catch (InvocationTargetException | IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
+        methods.forEach(x -> {
+            try {
+                Element e = (Element) x.invoke(factory);
+                if (e.getLocalId() == null) {
+                    throw new RuntimeException(
+                            String.format("%s missing localId", e.getClass().getSimpleName()));
+                }
+            } catch (InvocationTargetException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 }

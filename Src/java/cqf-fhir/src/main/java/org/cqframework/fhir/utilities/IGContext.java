@@ -1,5 +1,8 @@
 package org.cqframework.fhir.utilities;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 import org.cqframework.fhir.utilities.exception.IGInitializationException;
 import org.hl7.fhir.convertors.advisors.impl.BaseAdvisor_30_50;
 import org.hl7.fhir.convertors.advisors.impl.BaseAdvisor_40_50;
@@ -14,46 +17,50 @@ import org.hl7.fhir.utilities.TextFile;
 import org.hl7.fhir.utilities.Utilities;
 import org.hl7.fhir.utilities.VersionUtilities;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-
 public class IGContext {
 
     private IWorkerContext.ILoggingService logger;
+
     public IWorkerContext.ILoggingService getLogger() {
         return logger;
     }
 
     protected String rootDir;
+
     public String getRootDir() {
         return rootDir;
     }
 
     protected ImplementationGuide sourceIg;
+
     public ImplementationGuide getSourceIg() {
         return sourceIg;
     }
 
     protected String fhirVersion;
+
     public String getFhirVersion() {
         return fhirVersion;
     }
 
     protected String packageId;
+
     public String getPackageId() {
         return packageId;
     }
 
     protected String canonicalBase;
+
     public String getCanonicalBase() {
         return canonicalBase;
     }
 
     private List<String> binaryPaths;
+
     public List<String> getBinaryPaths() {
         return binaryPaths;
     }
+
     protected void setBinaryPaths(List<String> binaryPaths) {
         this.binaryPaths = binaryPaths;
     }
@@ -117,12 +124,13 @@ public class IGContext {
         try {
             initializeFromIg(rootDir, igPath, specifiedFhirVersion);
         } catch (Exception e) {
-            String message = String.format("Exceptions occurred initializing refresh from ini file '%s':%s", iniFile,
-                    e.getMessage());
+            String message = String.format(
+                    "Exceptions occurred initializing refresh from ini file '%s':%s", iniFile, e.getMessage());
             logMessage(message);
             throw new IGInitializationException(message, e);
         }
     }
+
     private ImplementationGuide loadSourceIG(String igPath) {
         try {
             try {
@@ -130,14 +138,14 @@ public class IGContext {
             } catch (IOException | FHIRException e) {
                 try {
                     VersionConvertor_40_50 versionConvertor_40_50 = new VersionConvertor_40_50(new BaseAdvisor_40_50());
-                    sourceIg = (ImplementationGuide) versionConvertor_40_50
-                            .convertResource(org.hl7.fhir.r4.formats.FormatUtilities.loadFile(igPath));
+                    sourceIg = (ImplementationGuide) versionConvertor_40_50.convertResource(
+                            org.hl7.fhir.r4.formats.FormatUtilities.loadFile(igPath));
                 } catch (IOException | FHIRException ex) {
                     byte[] src = TextFile.fileToBytes(igPath);
                     Manager.FhirFormat fmt = org.hl7.fhir.r5.formats.FormatUtilities.determineFormat(src);
 
-                    org.hl7.fhir.dstu3.formats.ParserBase parser = org.hl7.fhir.dstu3.formats.FormatUtilities
-                            .makeParser(fmt.toString());
+                    org.hl7.fhir.dstu3.formats.ParserBase parser =
+                            org.hl7.fhir.dstu3.formats.FormatUtilities.makeParser(fmt.toString());
                     VersionConvertor_30_50 versionConvertor_30_50 = new VersionConvertor_30_50(new BaseAdvisor_30_50());
                     sourceIg = (ImplementationGuide) versionConvertor_30_50.convertResource(parser.parse(src));
                 }
@@ -154,8 +162,8 @@ public class IGContext {
             if (VersionUtilities.isR3Ver(specifiedFhirVersion)) {
                 byte[] src = TextFile.fileToBytes(igPath);
                 Manager.FhirFormat fmt = org.hl7.fhir.r5.formats.FormatUtilities.determineFormat(src);
-                org.hl7.fhir.dstu3.formats.ParserBase parser = org.hl7.fhir.dstu3.formats.FormatUtilities
-                        .makeParser(fmt.toString());
+                org.hl7.fhir.dstu3.formats.ParserBase parser =
+                        org.hl7.fhir.dstu3.formats.FormatUtilities.makeParser(fmt.toString());
                 VersionConvertor_30_50 versionConvertor_30_50 = new VersionConvertor_30_50(new BaseAdvisor_30_50());
                 sourceIg = (ImplementationGuide) versionConvertor_30_50.convertResource(parser.parse(src));
             } else if (VersionUtilities.isR4Ver(specifiedFhirVersion)) {

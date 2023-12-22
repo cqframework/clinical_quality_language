@@ -4,24 +4,24 @@ import org.hl7.fhir.r5.context.IWorkerContext;
 import org.slf4j.Logger;
 
 public class LoggerAdapter implements IWorkerContext.ILoggingService {
-  private Logger innerLogger;
+    private Logger innerLogger;
 
-  public LoggerAdapter(Logger innerLogger) {
-    this.innerLogger = innerLogger;
-  }
+    public LoggerAdapter(Logger innerLogger) {
+        this.innerLogger = innerLogger;
+    }
 
-  @Override
-  public void logMessage(String s) {
-    innerLogger.info(s);
-  }
+    @Override
+    public void logMessage(String s) {
+        innerLogger.info(s);
+    }
 
-  @Override
-  public void logDebugMessage(LogCategory logCategory, String s) {
-    innerLogger.debug("{}: {}", logCategory, s);
-  }
+    @Override
+    public void logDebugMessage(LogCategory logCategory, String s) {
+        innerLogger.debug("{}: {}", logCategory, s);
+    }
 
-  @Override
-  public boolean isDebugLogging() {
-    return this.innerLogger.isDebugEnabled();
-  }
+    @Override
+    public boolean isDebugLogging() {
+        return this.innerLogger.isDebugEnabled();
+    }
 }

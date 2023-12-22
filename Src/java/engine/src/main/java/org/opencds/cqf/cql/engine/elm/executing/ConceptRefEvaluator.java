@@ -1,5 +1,6 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.util.ArrayList;
 import org.hl7.elm.r1.CodeDef;
 import org.hl7.elm.r1.CodeRef;
 import org.hl7.elm.r1.ConceptDef;
@@ -9,8 +10,6 @@ import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.Code;
 import org.opencds.cqf.cql.engine.runtime.CodeSystem;
 import org.opencds.cqf.cql.engine.runtime.Concept;
-
-import java.util.ArrayList;
 
 public class ConceptRefEvaluator {
 
@@ -32,5 +31,4 @@ public class ConceptRefEvaluator {
             state.exitLibrary(enteredLibrary);
         }
     }
-
 }

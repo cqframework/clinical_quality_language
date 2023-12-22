@@ -11,7 +11,7 @@ See the Now operator for more information on the rationale for defining the Toda
 
 public class TodayEvaluator {
 
-  public static Object today(State state) {
-    return DateFromEvaluator.dateFrom(state.getEvaluationDateTime());
-  }
+    public static Object today(State state) {
+        return DateFromEvaluator.dateFrom(state.getEvaluationDateTime());
+    }
 }

@@ -1,16 +1,15 @@
 package org.hl7.fhirpath;
 
+import java.util.ArrayList;
 import org.cqframework.cql.cql2elm.*;
 import org.cqframework.cql.cql2elm.CqlCompilerOptions.Options;
 import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider;
-import org.hl7.elm.r1.Library;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.fhir.ucum.UcumException;
+import org.hl7.elm.r1.Library;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.Environment;
 import org.opencds.cqf.cql.engine.terminology.TerminologyProvider;
-
-import java.util.ArrayList;
 
 public class TranslatorHelper {
 
@@ -53,7 +52,7 @@ public class TranslatorHelper {
         return new CqlEngine(environment);
     }
 
-    public static  org.hl7.elm.r1.VersionedIdentifier toElmIdentifier(String name) {
+    public static org.hl7.elm.r1.VersionedIdentifier toElmIdentifier(String name) {
         return new org.hl7.elm.r1.VersionedIdentifier().withId(name);
     }
 
@@ -71,9 +70,11 @@ public class TranslatorHelper {
             ArrayList<String> errors = new ArrayList<>();
             for (CqlCompilerException error : compiler.getErrors()) {
                 TrackBack tb = error.getLocator();
-                String lines = tb == null ? "[n/a]"
-                    : String.format("[%d:%d, %d:%d]", tb.getStartLine(), tb.getStartChar(), tb.getEndLine(),
-                    tb.getEndChar());
+                String lines = tb == null
+                        ? "[n/a]"
+                        : String.format(
+                                "[%d:%d, %d:%d]",
+                                tb.getStartLine(), tb.getStartChar(), tb.getEndLine(), tb.getEndChar());
                 errors.add(lines + error.getMessage());
             }
             throw new IllegalArgumentException(errors.toString());

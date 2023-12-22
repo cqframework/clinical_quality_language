@@ -29,17 +29,18 @@ public class ContainsEvaluator {
         } catch (InvalidOperatorArgument e) {
             throw new InvalidOperatorArgument(
                     "Contains(List<T>, T)",
-                    String.format("Contains(%s, %s)", left.getClass().getName(), right.getClass().getName())
-            );
+                    String.format(
+                            "Contains(%s, %s)",
+                            left.getClass().getName(), right.getClass().getName()));
         }
     }
 
     public static Object internalEvaluate(Object left, Object right, Object expression, String precision, State state) {
 
-        if(left == null && right != null){
+        if (left == null && right != null) {
             return false;
         }
-        if ( right == null) {
+        if (right == null) {
             return null;
         }
 
@@ -47,8 +48,7 @@ public class ContainsEvaluator {
         if (expression instanceof As) {
             if (((As) expression).getAsTypeSpecifier() instanceof IntervalTypeSpecifier) {
                 return InEvaluator.in(right, left, precision, state);
-            }
-            else {
+            } else {
                 return InEvaluator.in(right, left, null, state);
             }
         }

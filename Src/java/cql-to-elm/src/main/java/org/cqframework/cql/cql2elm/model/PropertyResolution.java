@@ -1,11 +1,10 @@
 package org.cqframework.cql.cql2elm.model;
 
+import java.util.Map;
 import org.hl7.cql.model.ClassTypeElement;
 import org.hl7.cql.model.DataType;
 import org.hl7.cql.model.SearchType;
 import org.hl7.cql.model.TupleTypeElement;
-
-import java.util.Map;
 
 /**
  * Created by Bryn on 4/19/2019.

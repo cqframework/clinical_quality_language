@@ -1,10 +1,9 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
+import java.util.Collections;
 import org.hl7.elm.r1.AggregateExpression;
 import org.hl7.elm.r1.Expression;
 import org.hl7.elm.r1.TypeSpecifier;
-
-import java.util.Collections;
 
 public class AggregateExpressionInvocation extends AbstractExpressionInvocation {
     public AggregateExpressionInvocation(AggregateExpression expression) {
@@ -23,13 +22,13 @@ public class AggregateExpressionInvocation extends AbstractExpressionInvocation 
 
     @Override
     public Iterable<TypeSpecifier> getSignature() {
-        return ((AggregateExpression)expression).getSignature();
+        return ((AggregateExpression) expression).getSignature();
     }
 
     @Override
     public void setSignature(Iterable<TypeSpecifier> signature) {
         for (TypeSpecifier typeSpecifier : signature) {
-            ((AggregateExpression)expression).getSignature().add(typeSpecifier);
+            ((AggregateExpression) expression).getSignature().add(typeSpecifier);
         }
     }
 }

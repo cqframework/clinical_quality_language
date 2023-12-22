@@ -14,17 +14,21 @@ public class SearchType {
         this.path = path;
         this.type = type;
     }
+
     private String name;
+
     public String getName() {
         return name;
     }
 
     private String path;
+
     public String getPath() {
         return path;
     }
 
     private DataType type;
+
     public DataType getType() {
         return type;
     }

@@ -1,5 +1,10 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
 import org.cqframework.cql.elm.visiting.ElmLibraryVisitor;
 import org.hl7.elm.r1.*;
 import org.opencds.cqf.cql.engine.exception.CqlException;
@@ -9,12 +14,6 @@ import org.opencds.cqf.cql.engine.runtime.CqlList;
 import org.opencds.cqf.cql.engine.runtime.Tuple;
 import org.opencds.cqf.cql.engine.runtime.iterators.QueryIterator;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-
 public class QueryEvaluator {
 
     @SuppressWarnings("unchecked")
@@ -23,16 +22,17 @@ public class QueryEvaluator {
             return (Iterable<Object>) source;
         } else {
             ArrayList<Object> sourceList = new ArrayList<>();
-            if (source != null)
-                sourceList.add(source);
+            if (source != null) sourceList.add(source);
             return sourceList;
         }
     }
 
-    private static void evaluateLets(Query elm, State state, List<Variable> letVariables,
-            ElmLibraryVisitor<Object, State> visitor) {
+    private static void evaluateLets(
+            Query elm, State state, List<Variable> letVariables, ElmLibraryVisitor<Object, State> visitor) {
         for (int i = 0; i < elm.getLet().size(); i++) {
-            letVariables.get(i).setValue(visitor.visitExpression(elm.getLet().get(i).getExpression(), state));
+            letVariables
+                    .get(i)
+                    .setValue(visitor.visitExpression(elm.getLet().get(i).getExpression(), state));
         }
     }
 
@@ -42,14 +42,13 @@ public class QueryEvaluator {
         boolean shouldInclude = true;
         for (org.hl7.elm.r1.RelationshipClause relationship : elm.getRelationship()) {
             boolean hasSatisfyingData = false;
-            Iterable<Object> relatedSourceData = ensureIterable(
-                    visitor.visitExpression(relationship.getExpression(), state));
+            Iterable<Object> relatedSourceData =
+                    ensureIterable(visitor.visitExpression(relationship.getExpression(), state));
             for (Object relatedElement : relatedSourceData) {
                 state.push(new Variable().withName(relationship.getAlias()).withValue(relatedElement));
                 try {
                     Object satisfiesRelatedCondition = visitor.visitExpression(relationship.getSuchThat(), state);
-                    if ((relationship instanceof org.hl7.elm.r1.With
-                            || relationship instanceof org.hl7.elm.r1.Without)
+                    if ((relationship instanceof org.hl7.elm.r1.With || relationship instanceof org.hl7.elm.r1.Without)
                             && Boolean.TRUE.equals(satisfiesRelatedCondition)) {
                         hasSatisfyingData = true;
                         break; // Once we have detected satisfying data, no need to continue testing
@@ -63,7 +62,7 @@ public class QueryEvaluator {
                     || (relationship instanceof org.hl7.elm.r1.Without && hasSatisfyingData)) {
                 shouldInclude = false;
                 break; // Once we have determined the row should not be included, no need to continue
-                       // testing other related information
+                // testing other related information
             }
         }
 
@@ -81,7 +80,8 @@ public class QueryEvaluator {
         return true;
     }
 
-    private static List<Object> evaluateAggregate(AggregateClause elm, State state, ElmLibraryVisitor<Object, State> visitor, List<Object> elements) {
+    private static List<Object> evaluateAggregate(
+            AggregateClause elm, State state, ElmLibraryVisitor<Object, State> visitor, List<Object> elements) {
         return Collections.singletonList(AggregateClauseEvaluator.aggregate(elm, state, visitor, elements));
     }
 
@@ -94,8 +94,8 @@ public class QueryEvaluator {
         return new Tuple(state).withElements(elementMap);
     }
 
-    public static void sortResult(Query elm, List<Object> result, State state, String alias,
-            ElmLibraryVisitor<Object, State> visitor) {
+    public static void sortResult(
+            Query elm, List<Object> result, State state, String alias, ElmLibraryVisitor<Object, State> visitor) {
 
         SortClause sortClause = elm.getSort();
 

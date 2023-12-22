@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.Element;
+import org.hl7.elm.r1.Library;
 import org.opencds.cqf.cql.engine.exception.CqlException;
 
 public class DebugResult {
@@ -20,9 +19,11 @@ public class DebugResult {
 
     public void logDebugResult(Element node, Library currentLibrary, Object result, DebugAction action) {
         try {
-            DebugLibraryResultEntry libraryResultEntry = libraryResults.get(currentLibrary.getIdentifier().getId());
+            DebugLibraryResultEntry libraryResultEntry =
+                    libraryResults.get(currentLibrary.getIdentifier().getId());
             if (libraryResultEntry == null) {
-                libraryResultEntry = new DebugLibraryResultEntry(currentLibrary.getIdentifier().getId());
+                libraryResultEntry = new DebugLibraryResultEntry(
+                        currentLibrary.getIdentifier().getId());
                 libraryResults.put(libraryResultEntry.getLibraryName(), libraryResultEntry);
             }
             if (libraryResultEntry != null) {
@@ -32,8 +33,7 @@ public class DebugResult {
             if (action == DebugAction.LOG) {
                 DebugUtilities.logDebugResult(node, currentLibrary, result);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             // do nothing, an exception logging debug helps no one
         }
     }

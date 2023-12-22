@@ -44,11 +44,13 @@ public class NamespaceManager {
         }
 
         if (namespaces.containsKey(namespaceName)) {
-            throw new IllegalArgumentException(String.format("A namespace named %s is already defined.", namespaceName));
+            throw new IllegalArgumentException(
+                    String.format("A namespace named %s is already defined.", namespaceName));
         }
 
         if (reverseNamespaces.containsKey(namespaceUri)) {
-            throw new IllegalArgumentException(String.format("A namespace name for uri %s is already defined.", namespaceUri));
+            throw new IllegalArgumentException(
+                    String.format("A namespace name for uri %s is already defined.", namespaceUri));
         }
 
         namespaces.put(namespaceName, namespaceUri);

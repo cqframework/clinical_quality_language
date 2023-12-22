@@ -1,25 +1,25 @@
 package org.cqframework.cql.elm.evaluation;
 
-import org.cqframework.cql.cql2elm.LibraryManager;
-import org.cqframework.cql.cql2elm.ModelManager;
-import org.hl7.elm.r1.Library;
-import org.hl7.elm.r1.Expression;
-import org.hl7.elm.r1.VersionedIdentifier;
-import org.opencds.cqf.cql.engine.execution.*;
-
 import java.time.ZonedDateTime;
 import java.util.Map;
+import org.cqframework.cql.cql2elm.LibraryManager;
+import org.cqframework.cql.cql2elm.ModelManager;
+import org.hl7.elm.r1.Expression;
+import org.hl7.elm.r1.Library;
+import org.opencds.cqf.cql.engine.execution.*;
 
 public class ElmEvaluationHelper {
 
-    public static Object evaluate(Library library, Expression value, Map<String, Object> parameters, ZonedDateTime evaluationDateTime) {
+    public static Object evaluate(
+            Library library, Expression value, Map<String, Object> parameters, ZonedDateTime evaluationDateTime) {
         // TODO: Cache for libraries?
 
         CqlEngine engine = getEngine(library, parameters, evaluationDateTime);
         return engine.getEvaluationVisitor().visitExpression(value, engine.getState());
     }
 
-    private static CqlEngine getEngine(Library library, Map<String, Object> parameters, ZonedDateTime evaluationDateTime) {
+    private static CqlEngine getEngine(
+            Library library, Map<String, Object> parameters, ZonedDateTime evaluationDateTime) {
         Environment environment = new Environment(getLibraryManager());
         CqlEngine engine = new CqlEngine(environment);
         if (evaluationDateTime != null) {

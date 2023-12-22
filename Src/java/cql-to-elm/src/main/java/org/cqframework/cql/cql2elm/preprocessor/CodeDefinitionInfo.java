@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm.preprocessor;
 
-import org.antlr.v4.runtime.misc.Interval;
 import org.cqframework.cql.gen.cqlParser;
 
 /**
@@ -24,7 +23,7 @@ public class CodeDefinitionInfo extends BaseInfo {
 
     @Override
     public cqlParser.CodeDefinitionContext getDefinition() {
-        return (cqlParser.CodeDefinitionContext)super.getDefinition();
+        return (cqlParser.CodeDefinitionContext) super.getDefinition();
     }
 
     public void setDefinition(cqlParser.CodeDefinitionContext value) {

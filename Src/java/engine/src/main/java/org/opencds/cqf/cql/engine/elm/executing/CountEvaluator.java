@@ -1,8 +1,7 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
-import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
-
 import java.util.Iterator;
+import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 
 /*
 Count(argument List<T>) Integer
@@ -23,7 +22,7 @@ public class CountEvaluator {
         Integer size = 0;
 
         if (source instanceof Iterable) {
-            Iterable<?> element = (Iterable<?>)source;
+            Iterable<?> element = (Iterable<?>) source;
             Iterator<?> itr = element.iterator();
 
             if (!itr.hasNext()) { // empty list
@@ -43,7 +42,7 @@ public class CountEvaluator {
             return size;
         }
 
-        throw new InvalidOperatorArgument("Count(List<T>)", String.format("Count(%s)", source.getClass().getName()));
+        throw new InvalidOperatorArgument(
+                "Count(List<T>)", String.format("Count(%s)", source.getClass().getName()));
     }
-
 }

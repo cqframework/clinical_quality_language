@@ -1,9 +1,8 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
-import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 
 /*
 Round(argument Decimal) Decimal
@@ -26,24 +25,23 @@ public class RoundEvaluator {
             return null;
         }
 
-        if (operand instanceof BigDecimal){
+        if (operand instanceof BigDecimal) {
             if (((BigDecimal) operand).compareTo(new BigDecimal(0)) < 0) {
                 rm = RoundingMode.HALF_DOWN;
             }
 
             if (precision == null || ((Integer) precision == 0)) {
                 return ((BigDecimal) operand).setScale(0, rm);
-            }
-
-            else {
-                return ((BigDecimal) operand).setScale((Integer)precision, rm);
+            } else {
+                return ((BigDecimal) operand).setScale((Integer) precision, rm);
             }
         }
 
         throw new InvalidOperatorArgument(
                 "Round(Decimal) or Round(Decimal, Integer)",
-                String.format("Round(%s%s)", operand.getClass().getName(), precision == null ? "" : ", " + precision.getClass().getName())
-        );
+                String.format(
+                        "Round(%s%s)",
+                        operand.getClass().getName(),
+                        precision == null ? "" : ", " + precision.getClass().getName()));
     }
-
 }

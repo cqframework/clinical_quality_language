@@ -1,5 +1,8 @@
 package org.cqframework.cql.cql2elm;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.xml.namespace.QName;
 import org.cqframework.cql.cql2elm.model.Model;
 import org.hl7.cql.model.*;
 import org.hl7.elm.r1.ObjectFactory;
@@ -7,10 +10,6 @@ import org.hl7.elm.r1.ParameterTypeSpecifier;
 import org.hl7.elm.r1.TupleElementDefinition;
 import org.hl7.elm.r1.TypeSpecifier;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
-
-import javax.xml.namespace.QName;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TypeBuilder {
 
@@ -40,9 +39,10 @@ public class TypeBuilder {
 
     public QName dataTypeToQName(DataType type) {
         if (type instanceof NamedType) {
-            NamedType namedType = (NamedType)type;
+            NamedType namedType = (NamedType) type;
             ModelInfo modelInfo = mr.getModel(namedType.getNamespace()).getModelInfo();
-            return new QName(modelInfo.getTargetUrl() != null ? modelInfo.getTargetUrl() : modelInfo.getUrl(),
+            return new QName(
+                    modelInfo.getTargetUrl() != null ? modelInfo.getTargetUrl() : modelInfo.getUrl(),
                     namedType.getTarget() != null ? namedType.getTarget() : namedType.getSimpleName());
         }
 
@@ -61,42 +61,38 @@ public class TypeBuilder {
     public TypeSpecifier dataTypeToTypeSpecifier(DataType type) {
         // Convert the given type into an ELM TypeSpecifier representation.
         if (type instanceof NamedType) {
-            return (TypeSpecifier)of.createNamedTypeSpecifier().withName(dataTypeToQName(type)).withResultType(type);
-        }
-        else if (type instanceof ListType) {
-            return listTypeToTypeSpecifier((ListType)type);
-        }
-        else if (type instanceof IntervalType) {
-            return intervalTypeToTypeSpecifier((IntervalType)type);
-        }
-        else if (type instanceof TupleType) {
-            return tupleTypeToTypeSpecifier((TupleType)type);
-        }
-        else if (type instanceof ChoiceType) {
-            return choiceTypeToTypeSpecifier((ChoiceType)type);
-        }
-        else if (type instanceof TypeParameter) {
-            return typeParameterToTypeSpecifier((TypeParameter)type);
-        }
-        else {
+            return (TypeSpecifier) of.createNamedTypeSpecifier()
+                    .withName(dataTypeToQName(type))
+                    .withResultType(type);
+        } else if (type instanceof ListType) {
+            return listTypeToTypeSpecifier((ListType) type);
+        } else if (type instanceof IntervalType) {
+            return intervalTypeToTypeSpecifier((IntervalType) type);
+        } else if (type instanceof TupleType) {
+            return tupleTypeToTypeSpecifier((TupleType) type);
+        } else if (type instanceof ChoiceType) {
+            return choiceTypeToTypeSpecifier((ChoiceType) type);
+        } else if (type instanceof TypeParameter) {
+            return typeParameterToTypeSpecifier((TypeParameter) type);
+        } else {
             throw new IllegalArgumentException(String.format("Could not convert type %s to a type specifier.", type));
         }
     }
 
     private TypeSpecifier listTypeToTypeSpecifier(ListType type) {
-        return (TypeSpecifier)of.createListTypeSpecifier()
+        return (TypeSpecifier) of.createListTypeSpecifier()
                 .withElementType(dataTypeToTypeSpecifier(type.getElementType()))
                 .withResultType(type);
     }
 
     private TypeSpecifier intervalTypeToTypeSpecifier(IntervalType type) {
-        return (TypeSpecifier)of.createIntervalTypeSpecifier()
+        return (TypeSpecifier) of.createIntervalTypeSpecifier()
                 .withPointType(dataTypeToTypeSpecifier(type.getPointType()))
                 .withResultType(type);
     }
 
     private TypeSpecifier tupleTypeToTypeSpecifier(TupleType type) {
-        return (TypeSpecifier)of.createTupleTypeSpecifier()
+        return (TypeSpecifier) of.createTupleTypeSpecifier()
                 .withElement(tupleTypeElementsToTupleElementDefinitions(type.getElements()))
                 .withResultType(type);
     }
@@ -114,7 +110,7 @@ public class TypeBuilder {
     }
 
     private TypeSpecifier choiceTypeToTypeSpecifier(ChoiceType type) {
-        return (TypeSpecifier)of.createChoiceTypeSpecifier()
+        return (TypeSpecifier) of.createChoiceTypeSpecifier()
                 .withChoice(choiceTypeTypesToTypeSpecifiers(type))
                 .withResultType(type);
     }

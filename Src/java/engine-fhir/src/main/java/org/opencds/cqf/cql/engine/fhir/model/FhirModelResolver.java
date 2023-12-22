@@ -1,5 +1,15 @@
 package org.opencds.cqf.cql.engine.fhir.model;
 
+import ca.uhn.fhir.context.BaseRuntimeChildDefinition;
+import ca.uhn.fhir.context.BaseRuntimeElementCompositeDefinition;
+import ca.uhn.fhir.context.BaseRuntimeElementDefinition;
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.context.RuntimeChildChoiceDefinition;
+import ca.uhn.fhir.context.RuntimeChildPrimitiveDatatypeDefinition;
+import ca.uhn.fhir.context.RuntimeChildResourceBlockDefinition;
+import ca.uhn.fhir.context.RuntimeChildResourceDefinition;
+import ca.uhn.fhir.context.RuntimeResourceDefinition;
+import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import java.lang.reflect.InvocationTargetException;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -9,7 +19,6 @@ import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.hl7.fhir.exceptions.FHIRException;
 import org.hl7.fhir.instance.model.api.*;
 import org.opencds.cqf.cql.engine.exception.DataProviderException;
@@ -23,17 +32,6 @@ import org.opencds.cqf.cql.engine.runtime.Precision;
 import org.opencds.cqf.cql.engine.runtime.TemporalHelper;
 import org.opencds.cqf.cql.engine.runtime.Time;
 
-import ca.uhn.fhir.context.BaseRuntimeChildDefinition;
-import ca.uhn.fhir.context.BaseRuntimeElementCompositeDefinition;
-import ca.uhn.fhir.context.BaseRuntimeElementDefinition;
-import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.context.RuntimeChildChoiceDefinition;
-import ca.uhn.fhir.context.RuntimeChildPrimitiveDatatypeDefinition;
-import ca.uhn.fhir.context.RuntimeChildResourceBlockDefinition;
-import ca.uhn.fhir.context.RuntimeChildResourceDefinition;
-import ca.uhn.fhir.context.RuntimeResourceDefinition;
-import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
-
 // TODO: Probably quite a bit of redundancy here. Probably only really need the BaseType and the PrimitiveType
 
 /*
@@ -43,8 +41,16 @@ import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
  * See <a href="https://github.com/DBCG/cql-evaluator/blob/master/evaluator.engine/src/main/java/org/opencds/cqf/cql/evaluator/engine/model/CachingModelResolverDecorator.java"/>
  * for a decorator that adds caching logic for ModelResolvers.
  */
-@SuppressWarnings({ "unchecked", "rawtypes" })
-public abstract class FhirModelResolver<BaseType, BaseDateTimeType, TimeType, SimpleQuantityType, IdType, ResourceType, EnumerationType, EnumFactoryType>
+@SuppressWarnings({"unchecked", "rawtypes"})
+public abstract class FhirModelResolver<
+                BaseType,
+                BaseDateTimeType,
+                TimeType,
+                SimpleQuantityType,
+                IdType,
+                ResourceType,
+                EnumerationType,
+                EnumFactoryType>
         implements ModelResolver {
     public FhirModelResolver(FhirContext fhirContext) {
         this.fhirContext = fhirContext;
@@ -80,11 +86,10 @@ public abstract class FhirModelResolver<BaseType, BaseDateTimeType, TimeType, Si
 
     protected List<String> packageNames;
 
-
     @Override
     public String resolveId(Object target) {
         if (target instanceof IBaseResource) {
-            return ((IBaseResource)target).getIdElement().getIdPart();
+            return ((IBaseResource) target).getIdElement().getIdPart();
         }
         return null;
     }
@@ -118,8 +123,8 @@ public abstract class FhirModelResolver<BaseType, BaseDateTimeType, TimeType, Si
         return null;
     }
 
-    protected String innerGetContextPath(Set<String> visitedElements, BaseRuntimeChildDefinition child,
-            Class<? extends IBase> type) {
+    protected String innerGetContextPath(
+            Set<String> visitedElements, BaseRuntimeChildDefinition child, Class<? extends IBase> type) {
 
         visitedElements.add(child.getElementName());
 
@@ -250,8 +255,10 @@ public abstract class FhirModelResolver<BaseType, BaseDateTimeType, TimeType, Si
         try {
             if (typeName.contains(".")) {
                 String[] path = typeName.split("\\.");
-                BaseRuntimeElementDefinition resourceDefinition = this.fhirContext.getResourceTypes().contains(path[0])
-                        ? this.fhirContext.getResourceDefinition(path[0]) : this.fhirContext.getElementDefinition(path[0]);
+                BaseRuntimeElementDefinition resourceDefinition =
+                        this.fhirContext.getResourceTypes().contains(path[0])
+                                ? this.fhirContext.getResourceDefinition(path[0])
+                                : this.fhirContext.getElementDefinition(path[0]);
                 String childName = Character.toLowerCase(path[1].charAt(0)) + path[1].substring(1);
                 BaseRuntimeChildDefinition childDefinition = resourceDefinition.getChildByName(childName);
                 if (childDefinition == null) {
@@ -295,7 +302,8 @@ public abstract class FhirModelResolver<BaseType, BaseDateTimeType, TimeType, Si
             // Just give me SOMETHING.
             return Class.forName(typeName);
         } catch (ClassNotFoundException e) {
-            throw new UnknownType(String.format("Could not resolve type %s. Primary package(s) for this resolver are %s",
+            throw new UnknownType(String.format(
+                    "Could not resolve type %s. Primary package(s) for this resolver are %s",
                     typeName, String.join(",", this.packageNames)));
         }
     }
@@ -325,7 +333,8 @@ public abstract class FhirModelResolver<BaseType, BaseDateTimeType, TimeType, Si
 
         // For FHIR enumerations, return the type of the backing Enum
         if (this.enumChecker(value)) {
-            String factoryName = this.enumFactoryTypeGetter((EnumerationType) value).getSimpleName();
+            String factoryName =
+                    this.enumFactoryTypeGetter((EnumerationType) value).getSimpleName();
             return this.resolveType(factoryName.substring(0, factoryName.indexOf("EnumFactory")));
         }
 
@@ -399,7 +408,8 @@ public abstract class FhirModelResolver<BaseType, BaseDateTimeType, TimeType, Si
         }
 
         // TODO: Consider using getResourceType everywhere?
-        if (target instanceof IAnyResource && this.getResourceType((ResourceType) target).equals(path)) {
+        if (target instanceof IAnyResource
+                && this.getResourceType((ResourceType) target).equals(path)) {
             return target;
         }
 
@@ -426,19 +436,24 @@ public abstract class FhirModelResolver<BaseType, BaseDateTimeType, TimeType, Si
             return null;
         }
 
-        // If the instance is a primitive (including (or even especially an enumeration), and it has no value, return null
+        // If the instance is a primitive (including (or even especially an enumeration), and it has no value, return
+        // null
         if (child instanceof RuntimeChildPrimitiveDatatypeDefinition) {
             IBase value = values.get(0);
             if (value instanceof IPrimitiveType) {
-                if (!((IPrimitiveType<?>)value).hasValue()) {
+                if (!((IPrimitiveType<?>) value).hasValue()) {
                     return null;
                 }
             }
         }
 
-        if (child instanceof RuntimeChildChoiceDefinition && !child.getElementName().equalsIgnoreCase(path)) {
-            if (!values.get(0).getClass().getSimpleName()
-                    .equalsIgnoreCase(child.getChildByName(path).getImplementingClass().getSimpleName())) {
+        if (child instanceof RuntimeChildChoiceDefinition
+                && !child.getElementName().equalsIgnoreCase(path)) {
+            if (!values.get(0)
+                    .getClass()
+                    .getSimpleName()
+                    .equalsIgnoreCase(
+                            child.getChildByName(path).getImplementingClass().getSimpleName())) {
                 return null;
             }
         }
@@ -449,23 +464,20 @@ public abstract class FhirModelResolver<BaseType, BaseDateTimeType, TimeType, Si
     protected BaseRuntimeElementCompositeDefinition<?> resolveRuntimeDefinition(IBase base) {
         if (base instanceof IAnyResource) {
             return getFhirContext().getResourceDefinition((IAnyResource) base);
-        }
-
-        else if (base instanceof IBaseBackboneElement || base instanceof IBaseElement) {
+        } else if (base instanceof IBaseBackboneElement || base instanceof IBaseElement) {
             return (BaseRuntimeElementCompositeDefinition<?>) getFhirContext().getElementDefinition(base.getClass());
+        } else if (base instanceof ICompositeType) {
+            return (BaseRuntimeElementCompositeDefinition<ICompositeType>)
+                    getFhirContext().getElementDefinition(base.getClass());
         }
 
-        else if (base instanceof ICompositeType) {
-            return (BaseRuntimeElementCompositeDefinition<ICompositeType>) getFhirContext()
-                    .getElementDefinition(base.getClass());
-        }
-
-        throw new UnknownType(
-                String.format("Unable to resolve the runtime definition for %s", base.getClass().getName()));
+        throw new UnknownType(String.format(
+                "Unable to resolve the runtime definition for %s",
+                base.getClass().getName()));
     }
 
-    protected BaseRuntimeChildDefinition resolveChoiceProperty(BaseRuntimeElementCompositeDefinition<?> definition,
-            String path) {
+    protected BaseRuntimeChildDefinition resolveChoiceProperty(
+            BaseRuntimeElementCompositeDefinition<?> definition, String path) {
         for (Object child : definition.getChildren()) {
             if (child instanceof RuntimeChildChoiceDefinition) {
                 RuntimeChildChoiceDefinition choiceDefinition = (RuntimeChildChoiceDefinition) child;
@@ -508,10 +520,12 @@ public abstract class FhirModelResolver<BaseType, BaseDateTimeType, TimeType, Si
             }
 
             return clazz.getDeclaredConstructor().newInstance();
-        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException
+        } catch (NoSuchMethodException
+                | InvocationTargetException
+                | InstantiationException
                 | IllegalAccessException e) {
-            throw new UnknownType(String.format("Could not create an instance of class %s.\nRoot cause: %s",
-                    clazz.getName(), e.getMessage()));
+            throw new UnknownType(String.format(
+                    "Could not create an instance of class %s.\nRoot cause: %s", clazz.getName(), e.getMessage()));
         }
     }
 
@@ -540,29 +554,50 @@ public abstract class FhirModelResolver<BaseType, BaseDateTimeType, TimeType, Si
             case Calendar.YEAR:
                 return new DateTime(TemporalHelper.zoneToOffset(zoneOffset), calendar.get(Calendar.YEAR));
             case Calendar.MONTH:
-                return new DateTime(TemporalHelper.zoneToOffset(zoneOffset), calendar.get(Calendar.YEAR),
+                return new DateTime(
+                        TemporalHelper.zoneToOffset(zoneOffset),
+                        calendar.get(Calendar.YEAR),
                         calendar.get(Calendar.MONTH) + 1);
             case Calendar.DAY_OF_MONTH:
-                return new DateTime(TemporalHelper.zoneToOffset(zoneOffset), calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
+                return new DateTime(
+                        TemporalHelper.zoneToOffset(zoneOffset),
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH) + 1,
+                        calendar.get(Calendar.DAY_OF_MONTH));
             case Calendar.HOUR_OF_DAY:
-                return new DateTime(TemporalHelper.zoneToOffset(zoneOffset), calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH),
+                return new DateTime(
+                        TemporalHelper.zoneToOffset(zoneOffset),
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH) + 1,
+                        calendar.get(Calendar.DAY_OF_MONTH),
                         calendar.get(Calendar.HOUR_OF_DAY));
             case Calendar.MINUTE:
-                return new DateTime(TemporalHelper.zoneToOffset(zoneOffset), calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH),
-                        calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+                return new DateTime(
+                        TemporalHelper.zoneToOffset(zoneOffset),
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH) + 1,
+                        calendar.get(Calendar.DAY_OF_MONTH),
+                        calendar.get(Calendar.HOUR_OF_DAY),
+                        calendar.get(Calendar.MINUTE));
             case Calendar.SECOND:
-                return new DateTime(TemporalHelper.zoneToOffset(zoneOffset), calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH),
-                        calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
+                return new DateTime(
+                        TemporalHelper.zoneToOffset(zoneOffset),
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH) + 1,
+                        calendar.get(Calendar.DAY_OF_MONTH),
+                        calendar.get(Calendar.HOUR_OF_DAY),
+                        calendar.get(Calendar.MINUTE),
                         calendar.get(Calendar.SECOND));
             case Calendar.MILLISECOND:
-                return new DateTime(TemporalHelper.zoneToOffset(zoneOffset), calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH),
-                        calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
-                        calendar.get(Calendar.SECOND), calendar.get(Calendar.MILLISECOND));
+                return new DateTime(
+                        TemporalHelper.zoneToOffset(zoneOffset),
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH) + 1,
+                        calendar.get(Calendar.DAY_OF_MONTH),
+                        calendar.get(Calendar.HOUR_OF_DAY),
+                        calendar.get(Calendar.MINUTE),
+                        calendar.get(Calendar.SECOND),
+                        calendar.get(Calendar.MILLISECOND));
             default:
                 throw new InvalidPrecision(String.format("Invalid temporal precision %s", calendarConstant));
         }
@@ -578,11 +613,13 @@ public abstract class FhirModelResolver<BaseType, BaseDateTimeType, TimeType, Si
             case Calendar.YEAR:
                 return new org.opencds.cqf.cql.engine.runtime.Date(calendar.get(Calendar.YEAR));
             case Calendar.MONTH:
-                return new org.opencds.cqf.cql.engine.runtime.Date(calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH) + 1);
+                return new org.opencds.cqf.cql.engine.runtime.Date(
+                        calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1);
             case Calendar.DAY_OF_MONTH:
-                return new org.opencds.cqf.cql.engine.runtime.Date(calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
+                return new org.opencds.cqf.cql.engine.runtime.Date(
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH) + 1,
+                        calendar.get(Calendar.DAY_OF_MONTH));
             default:
                 throw new InvalidPrecision(String.format("Invalid temporal precision %s", calendarConstant));
         }
@@ -652,7 +689,7 @@ public abstract class FhirModelResolver<BaseType, BaseDateTimeType, TimeType, Si
      */
 
     public Object toJavaPrimitive(Object result, Object source) {
-        if (source instanceof IPrimitiveType<?> && !((IPrimitiveType<?>)source).hasValue()) {
+        if (source instanceof IPrimitiveType<?> && !((IPrimitiveType<?>) source).hasValue()) {
             return null;
         }
 
@@ -674,4 +711,3 @@ public abstract class FhirModelResolver<BaseType, BaseDateTimeType, TimeType, Si
         }
     }
 }
-

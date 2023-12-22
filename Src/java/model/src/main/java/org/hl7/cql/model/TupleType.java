@@ -22,8 +22,7 @@ public class TupleType extends DataType {
         return elements;
     }
 
-    public void addElement(TupleTypeElement element)
-    {
+    public void addElement(TupleTypeElement element) {
         this.elements.add(element);
         sortedElements = null;
     }
@@ -55,7 +54,7 @@ public class TupleType extends DataType {
     @Override
     public boolean equals(Object o) {
         if (o instanceof TupleType) {
-            TupleType that = (TupleType)o;
+            TupleType that = (TupleType) o;
 
             if (this.elements.size() == that.elements.size()) {
                 List<TupleTypeElement> theseElements = this.getSortedElements();
@@ -76,7 +75,7 @@ public class TupleType extends DataType {
     @Override
     public boolean isSubTypeOf(DataType other) {
         if (other instanceof TupleType) {
-            TupleType that = (TupleType)other;
+            TupleType that = (TupleType) other;
 
             if (this.elements.size() == that.elements.size()) {
                 List<TupleTypeElement> theseElements = this.getSortedElements();
@@ -97,7 +96,7 @@ public class TupleType extends DataType {
     @Override
     public boolean isSuperTypeOf(DataType other) {
         if (other instanceof TupleType) {
-            TupleType that = (TupleType)other;
+            TupleType that = (TupleType) other;
 
             if (this.elements.size() == that.elements.size()) {
                 List<TupleTypeElement> theseElements = this.getSortedElements();
@@ -145,7 +144,7 @@ public class TupleType extends DataType {
     @Override
     public boolean isCompatibleWith(DataType other) {
         if (other instanceof ClassType) {
-            ClassType classType = (ClassType)other;
+            ClassType classType = (ClassType) other;
             return this.equals(classType.getTupleType());
         }
 
@@ -166,13 +165,19 @@ public class TupleType extends DataType {
     @Override
     public boolean isInstantiable(DataType callType, InstantiationContext context) {
         if (callType instanceof TupleType) {
-            TupleType tupleType = (TupleType)callType;
+            TupleType tupleType = (TupleType) callType;
             if (elements.size() == tupleType.elements.size()) {
                 List<TupleTypeElement> theseElements = getSortedElements();
                 List<TupleTypeElement> thoseElements = tupleType.getSortedElements();
                 for (int i = 0; i < theseElements.size(); i++) {
-                    if (!(theseElements.get(i).getName().equals(thoseElements.get(i).getName())
-                        && theseElements.get(i).getType().isInstantiable(thoseElements.get(i).getType(), context))) {
+                    if (!(theseElements
+                                    .get(i)
+                                    .getName()
+                                    .equals(thoseElements.get(i).getName())
+                            && theseElements
+                                    .get(i)
+                                    .getType()
+                                    .isInstantiable(thoseElements.get(i).getType(), context))) {
                         return false;
                     }
                 }
@@ -192,7 +197,8 @@ public class TupleType extends DataType {
 
         TupleType result = new TupleType();
         for (int i = 0; i < elements.size(); i++) {
-            result.addElement(new TupleTypeElement(elements.get(i).getName(), elements.get(i).getType().instantiate(context)));
+            result.addElement(new TupleTypeElement(
+                    elements.get(i).getName(), elements.get(i).getType().instantiate(context)));
         }
 
         return result;

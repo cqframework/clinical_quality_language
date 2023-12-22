@@ -1,5 +1,19 @@
 package org.cqframework.cql.cql2elm;
 
+import static org.cqframework.cql.cql2elm.CqlCompilerOptions.Options.EnableAnnotations;
+import static org.cqframework.cql.cql2elm.CqlCompilerOptions.Options.EnableLocators;
+import static org.cqframework.cql.cql2elm.CqlCompilerOptions.Options.EnableResultTypes;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.cqframework.cql.cql2elm.elm.ElmEdit;
@@ -15,21 +29,6 @@ import org.hl7.cql.model.NamespaceInfo;
 import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.Retrieve;
 import org.hl7.elm.r1.VersionedIdentifier;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static org.cqframework.cql.cql2elm.CqlCompilerOptions.Options.EnableAnnotations;
-import static org.cqframework.cql.cql2elm.CqlCompilerOptions.Options.EnableLocators;
-import static org.cqframework.cql.cql2elm.CqlCompilerOptions.Options.EnableResultTypes;
 
 public class CqlCompiler {
     private Library library = null;
@@ -52,8 +51,7 @@ public class CqlCompiler {
         this(namespaceInfo, null, libraryManager);
     }
 
-    public CqlCompiler(NamespaceInfo namespaceInfo, VersionedIdentifier sourceInfo,
-            LibraryManager libraryManager) {
+    public CqlCompiler(NamespaceInfo namespaceInfo, VersionedIdentifier sourceInfo, LibraryManager libraryManager) {
         this.namespaceInfo = namespaceInfo;
         this.libraryManager = libraryManager;
 
@@ -136,10 +134,12 @@ public class CqlCompiler {
 
             if (context instanceof cqlParser.LibraryContext) {
                 cqlParser.LibraryDefinitionContext ldc = ((cqlParser.LibraryContext) context).libraryDefinition();
-                if (ldc != null && ldc.qualifiedIdentifier() != null
+                if (ldc != null
+                        && ldc.qualifiedIdentifier() != null
                         && ldc.qualifiedIdentifier().identifier() != null) {
                     return new VersionedIdentifier()
-                            .withId(StringEscapeUtils.unescapeCql(ldc.qualifiedIdentifier().identifier().getText()));
+                            .withId(StringEscapeUtils.unescapeCql(
+                                    ldc.qualifiedIdentifier().identifier().getText()));
                 }
             }
 
@@ -147,8 +147,13 @@ public class CqlCompiler {
         }
 
         @Override
-        public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine,
-                String msg, RecognitionException e) {
+        public void syntaxError(
+                Recognizer<?, ?> recognizer,
+                Object offendingSymbol,
+                int line,
+                int charPositionInLine,
+                String msg,
+                RecognitionException e) {
             var libraryIdentifier = builder.getLibraryIdentifier();
             if (libraryIdentifier == null) {
                 // Attempt to extract a libraryIdentifier from the currently parsed content
@@ -194,14 +199,12 @@ public class CqlCompiler {
         warnings = new ArrayList<>();
         messages = new ArrayList<>();
 
-        var options = libraryManager.getCqlCompilerOptions().getOptions();;
-
+        var options = libraryManager.getCqlCompilerOptions().getOptions();
+        ;
 
         LibraryBuilder builder = new LibraryBuilder(namespaceInfo, libraryManager, new IdObjectFactory());
         CqlCompiler.CqlErrorListener errorListener = new CqlCompiler.CqlErrorListener(
-                builder,
-                options.contains(CqlCompilerOptions.Options.EnableDetailedErrors));
-
+                builder, options.contains(CqlCompilerOptions.Options.EnableDetailedErrors));
 
         // Phase 1: Lexing
         cqlLexer lexer = new cqlLexer(is);
@@ -230,10 +233,9 @@ public class CqlCompiler {
         // Phase 5: ELM optimization/reduction (this is where result types, annotations, etc. are removed
         // and there will probably be a lot of other optimizations that happen here in the future)
         var edits = coalesceAll(
-            nullIfFalse(options.contains(EnableAnnotations), ElmEdit.REMOVE_ANNOTATION),
-            nullIfFalse(options.contains(EnableResultTypes), ElmEdit.REMOVE_RESULT_TYPE),
-            nullIfFalse(options.contains(EnableLocators), ElmEdit.REMOVE_LOCATOR)
-            );
+                nullIfFalse(options.contains(EnableAnnotations), ElmEdit.REMOVE_ANNOTATION),
+                nullIfFalse(options.contains(EnableResultTypes), ElmEdit.REMOVE_RESULT_TYPE),
+                nullIfFalse(options.contains(EnableLocators), ElmEdit.REMOVE_LOCATOR));
 
         new ElmEditor(edits).edit(library);
 
@@ -254,5 +256,4 @@ public class CqlCompiler {
     private static List<ElmEdit> coalesceAll(ElmEdit... ts) {
         return Arrays.stream(ts).filter(t -> t != null).collect(Collectors.toList());
     }
-
 }

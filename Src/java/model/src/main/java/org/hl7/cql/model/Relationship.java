@@ -14,11 +14,13 @@ public class Relationship {
     }
 
     private ModelContext context;
+
     public ModelContext getContext() {
         return context;
     }
 
     private ArrayList<String> relatedKeys = new ArrayList<>();
+
     public Iterable<String> getRelatedKeys() {
         return relatedKeys;
     }

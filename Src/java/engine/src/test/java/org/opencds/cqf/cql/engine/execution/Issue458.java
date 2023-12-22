@@ -1,10 +1,9 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import org.opencds.cqf.cql.engine.runtime.Interval;
-import org.testng.annotations.Test;
-
 import static org.testng.Assert.assertEquals;
 
+import org.opencds.cqf.cql.engine.runtime.Interval;
+import org.testng.annotations.Test;
 
 public class Issue458 extends CqlTestBase {
 
@@ -14,9 +13,9 @@ public class Issue458 extends CqlTestBase {
         EvaluationResult evaluationResult;
 
         evaluationResult = engine.evaluate(toElmIdentifier("Issue458"));
-        Object result = evaluationResult.expressionResults.get("Closed-Open Interval").value();
-        Interval interval = (Interval)result;
+        Object result =
+                evaluationResult.expressionResults.get("Closed-Open Interval").value();
+        Interval interval = (Interval) result;
         assertEquals(interval.toString(), "Interval[3, 5)");
-
     }
 }

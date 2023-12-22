@@ -1,13 +1,12 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal;
 import org.opencds.cqf.cql.engine.runtime.Interval;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /*
 *** NOTES FOR INTERVAL ***
@@ -41,15 +40,15 @@ public class UnionEvaluator {
         Object rightStart = right.getStart();
         Object rightEnd = right.getEnd();
 
-        if (leftStart == null || leftEnd == null
-                || rightStart == null || rightEnd == null) {
+        if (leftStart == null || leftEnd == null || rightStart == null || rightEnd == null) {
             return null;
         }
 
         String precision = null;
         if (leftStart instanceof BaseTemporal && rightStart instanceof BaseTemporal) {
-            precision = BaseTemporal.getHighestPrecision((BaseTemporal) leftStart, (BaseTemporal) leftEnd,
-                    (BaseTemporal) rightStart, (BaseTemporal) rightEnd);
+            precision = BaseTemporal.getHighestPrecision(
+                    (BaseTemporal) leftStart, (BaseTemporal) leftEnd, (BaseTemporal) rightStart, (BaseTemporal)
+                            rightEnd);
         }
 
         Boolean overlapsOrMeets = OrEvaluator.or(

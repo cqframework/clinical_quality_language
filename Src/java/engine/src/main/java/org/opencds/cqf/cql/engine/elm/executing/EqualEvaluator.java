@@ -1,12 +1,11 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.math.BigDecimal;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.CqlList;
 import org.opencds.cqf.cql.engine.runtime.CqlType;
 import org.opencds.cqf.cql.engine.runtime.Interval;
-
-import java.math.BigDecimal;
 
 /*
 *** NOTES FOR CLINICAL OPERATORS ***
@@ -49,21 +48,16 @@ public class EqualEvaluator {
 
         if (!left.getClass().equals(right.getClass())) {
             return false;
-        }
-
-        else if (left instanceof Boolean || left instanceof Integer || left instanceof Long || left instanceof String) {
+        } else if (left instanceof Boolean
+                || left instanceof Integer
+                || left instanceof Long
+                || left instanceof String) {
             return left.equals(right);
-        }
-
-        else if (left instanceof BigDecimal && right instanceof BigDecimal) {
+        } else if (left instanceof BigDecimal && right instanceof BigDecimal) {
             return ((BigDecimal) left).compareTo((BigDecimal) right) == 0;
-        }
-
-        else if (left instanceof Iterable && right instanceof Iterable) {
+        } else if (left instanceof Iterable && right instanceof Iterable) {
             return CqlList.equal((Iterable<?>) left, (Iterable<?>) right, state);
-        }
-
-        else if (left instanceof CqlType && right instanceof CqlType) {
+        } else if (left instanceof CqlType && right instanceof CqlType) {
             return ((CqlType) left).equal(right);
         }
 
@@ -71,11 +65,12 @@ public class EqualEvaluator {
             return state.getEnvironment().objectEqual(left, right);
         }
 
-        throw new InvalidOperatorArgument(String.format("Equal(%s, %s) requires Context and state was null", left.getClass().getName(), right.getClass().getName()));
+        throw new InvalidOperatorArgument(String.format(
+                "Equal(%s, %s) requires Context and state was null",
+                left.getClass().getName(), right.getClass().getName()));
     }
 
     public static Boolean equal(Object left, Object right) {
         return equal(left, right, null);
     }
-
 }

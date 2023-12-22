@@ -18,7 +18,8 @@ The Code type represents single terminology codes within CQL.
 
 public class CodeEvaluator {
     public static Object internalEvaluate(CodeSystemRef codeSystemRef, String c, String display, State state) {
-        org.opencds.cqf.cql.engine.runtime.Code code = new org.opencds.cqf.cql.engine.runtime.Code().withCode(c).withDisplay(display);
+        org.opencds.cqf.cql.engine.runtime.Code code =
+                new org.opencds.cqf.cql.engine.runtime.Code().withCode(c).withDisplay(display);
         if (codeSystemRef != null) {
             boolean enteredLibrary = state.enterLibrary(codeSystemRef.getLibraryName());
             try {

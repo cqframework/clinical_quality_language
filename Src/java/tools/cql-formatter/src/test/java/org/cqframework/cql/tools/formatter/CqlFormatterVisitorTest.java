@@ -1,13 +1,12 @@
 package org.cqframework.cql.tools.formatter;
 
-import org.cqframework.cql.cql2elm.ElmGenerator;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import static org.cqframework.cql.tools.formatter.CqlFormatterVisitor.*;
 
 import java.io.IOException;
 import java.io.InputStream;
-
-import static org.cqframework.cql.tools.formatter.CqlFormatterVisitor.*;
+import org.cqframework.cql.cql2elm.ElmGenerator;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 /**
  * Created by Christopher on 7/20/2017.
@@ -26,22 +25,25 @@ public class CqlFormatterVisitorTest {
     @Test
     public void TestFormatterSpecific() throws IOException {
         runTest("comments.cql");
-        // I commented these catches out because it seems to me that the formatter should not clobber input when these errors occur...
-        // I don't understand why this first one ever ran, it should have reported an error, and should not have clobbered input
+        // I commented these catches out because it seems to me that the formatter should not clobber input when these
+        // errors occur...
+        // I don't understand why this first one ever ran, it should have reported an error, and should not have
+        // clobbered input
         // And the second one correctly reported an error, but why was it allowed to clobber the input?
-        // At any rate, they both work correctly now (I had to add null to the characters to ignore for comparison though)
-        //try {
-            // this test has an extra "`", which is not ignored - causing a syntax error.
-            runTest("git-issue-206-a.cql");
-        //} catch (AssertionError ae) {
+        // At any rate, they both work correctly now (I had to add null to the characters to ignore for comparison
+        // though)
+        // try {
+        // this test has an extra "`", which is not ignored - causing a syntax error.
+        runTest("git-issue-206-a.cql");
+        // } catch (AssertionError ae) {
         //    Assert.assertFalse(inError);
-        //}
-        //try {
-            // this test has an extra """, which is not ignored - causing a syntax error.
-            runTest("git-issue-206-b.cql");
-        //} catch (AssertionError ae) {
+        // }
+        // try {
+        // this test has an extra """, which is not ignored - causing a syntax error.
+        runTest("git-issue-206-b.cql");
+        // } catch (AssertionError ae) {
         //    Assert.assertTrue(inError);
-        //}
+        // }
         runTest("git-issue-210-a.cql");
         Assert.assertFalse(inError);
         runTest("git-issue-210-b.cql");
@@ -87,7 +89,7 @@ public class CqlFormatterVisitorTest {
         runTest("LocalFunctionResolutionTest.cql");
         runTest("ParameterTest.cql");
         runTest("ParameterTestInvalid.cql");
-        //runTest("ParserPerformance.cql");
+        // runTest("ParserPerformance.cql");
         runTest("PropertyTest.cql");
         runTest("QuantityLiteralTest.cql");
         runTest("RatioLiteralTest.cql");
@@ -168,7 +170,9 @@ public class CqlFormatterVisitorTest {
             is = CqlFormatterVisitorTest.class.getResourceAsStream(fileName);
 
             if (is == null) {
-                throw new IllegalArgumentException(String.format("Invalid test resource: %s not in %s or %s", fileName, ElmGenerator.class.getSimpleName(), CqlFormatterVisitor.class.getSimpleName()));
+                throw new IllegalArgumentException(String.format(
+                        "Invalid test resource: %s not in %s or %s",
+                        fileName, ElmGenerator.class.getSimpleName(), CqlFormatterVisitor.class.getSimpleName()));
             }
         }
 

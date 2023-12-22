@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-
 import org.cqframework.cql.elm.visiting.ElmLibraryVisitor;
 import org.hl7.elm.r1.Expression;
 import org.opencds.cqf.cql.engine.elm.executing.EqualEvaluator;
@@ -20,7 +19,7 @@ public class CqlList {
     private ElmLibraryVisitor<Object, State> visitor;
     private String path;
 
-    public CqlList() { }
+    public CqlList() {}
 
     public CqlList(State state, ElmLibraryVisitor<Object, State> visitor, String alias, Expression expression) {
         this.state = state;
@@ -42,16 +41,14 @@ public class CqlList {
             try {
                 state.push(new Variable().withName(alias).withValue(left));
                 left = visitor.visitExpression(expression, state);
-            }
-            finally {
+            } finally {
                 state.pop();
             }
 
             try {
                 state.push(new Variable().withName(alias).withValue(right));
                 right = visitor.visitExpression(expression, state);
-            }
-            finally {
+            } finally {
                 state.pop();
             }
 
@@ -93,8 +90,9 @@ public class CqlList {
                 if (!elementEquivalent) {
                     return false;
                 }
+            } else {
+                return false;
             }
-            else { return false; }
         }
 
         return !rightIterator.hasNext();
@@ -115,11 +113,9 @@ public class CqlList {
                 if (elementEquals == null || !elementEquals) {
                     return elementEquals;
                 }
-            }
-            else if (leftObject == null) {
+            } else if (leftObject == null) {
                 return null;
-            }
-            else {
+            } else {
                 return false;
             }
         }

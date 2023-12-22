@@ -1,6 +1,5 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
-
 public class ReplaceMatchesEvaluator {
 
     public static Object replaceMatches(String argument, String pattern, String substitution) {
@@ -10,5 +9,4 @@ public class ReplaceMatchesEvaluator {
 
         return argument.replaceAll(pattern, substitution);
     }
-
 }

@@ -1,15 +1,14 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import org.opencds.cqf.cql.engine.runtime.Interval;
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
-import java.time.ZonedDateTime;
-import java.util.TimeZone;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+
+import java.time.ZonedDateTime;
+import java.util.TimeZone;
+import org.opencds.cqf.cql.engine.runtime.Interval;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 public class CqlClinicalOperatorsTest extends CqlTestBase {
 
@@ -17,8 +16,9 @@ public class CqlClinicalOperatorsTest extends CqlTestBase {
     public void test_all_clinical_operators_tests() {
         EvaluationResult evaluationResult;
 
-        evaluationResult = engine.evaluate(toElmIdentifier("CqlClinicalOperatorsTest"), ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, TimeZone.getDefault().toZoneId()));
-
+        evaluationResult = engine.evaluate(
+                toElmIdentifier("CqlClinicalOperatorsTest"),
+                ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, TimeZone.getDefault().toZoneId()));
 
         Object result = evaluationResult.forExpression("CalculateAgeYears").value();
         assertThat(result, is(6));
@@ -53,7 +53,8 @@ public class CqlClinicalOperatorsTest extends CqlTestBase {
         // BTR -> 2020-10-09
         // Was 144912, but that doesn't account for time zones.
         // Microsoft SQL Server also returns 144912, but this is a pretty absurd test case, changed to 144911
-        // After committing to the build site, the test fails because it happens to be running somewhere that the timezone behavior is different
+        // After committing to the build site, the test fails because it happens to be running somewhere that the
+        // timezone behavior is different
         // So, changing this test to be a more reasonable test of hours calculation
         result = evaluationResult.forExpression("CalculateAgeAtHours").value();
         assertThat(result, is(27));
@@ -69,8 +70,8 @@ public class CqlClinicalOperatorsTest extends CqlTestBase {
         assertThat(result, is((27 * 60 + 10) * 60 + 15));
 
         result = evaluationResult.forExpression("CalculateAgeAtUncertain").value();
-        Assert.assertTrue(((Interval)result).getStart().equals(187));
-        Assert.assertTrue(((Interval)result).getEnd().equals(198));
+        Assert.assertTrue(((Interval) result).getStart().equals(187));
+        Assert.assertTrue(((Interval) result).getEnd().equals(198));
 
         result = evaluationResult.forExpression("Issue70A").value();
         assertThat(result, is(false));
@@ -111,13 +112,19 @@ public class CqlClinicalOperatorsTest extends CqlTestBase {
         result = evaluationResult.forExpression("ConceptEquivalentTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("ConceptEquivalentTrueDisplayMismatch").value();
+        result = evaluationResult
+                .forExpression("ConceptEquivalentTrueDisplayMismatch")
+                .value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("ConceptEquivalentTrueIntersection1And4").value();
+        result = evaluationResult
+                .forExpression("ConceptEquivalentTrueIntersection1And4")
+                .value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("ConceptEquivalentTrueIntersection2And4").value();
+        result = evaluationResult
+                .forExpression("ConceptEquivalentTrueIntersection2And4")
+                .value();
         assertThat(result, is(true));
 
         result = evaluationResult.forExpression("ConceptEquivalentFalse").value();
@@ -135,9 +142,9 @@ public class CqlClinicalOperatorsTest extends CqlTestBase {
         result = evaluationResult.forExpression("CodeToConceptEquivalentTrue").value();
         assertThat(result, is(true));
 
-        result = evaluationResult.forExpression("ConceptToConceptMismatchedDisplayTrue").value();
+        result = evaluationResult
+                .forExpression("ConceptToConceptMismatchedDisplayTrue")
+                .value();
         assertThat(result, is(true));
-
-
     }
 }

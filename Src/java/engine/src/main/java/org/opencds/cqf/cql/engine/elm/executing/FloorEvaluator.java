@@ -1,9 +1,8 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.math.BigDecimal;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.runtime.Quantity;
-
-import java.math.BigDecimal;
 
 /*
 Floor(argument Decimal) Integer
@@ -21,17 +20,14 @@ public class FloorEvaluator {
         }
 
         if (operand instanceof BigDecimal) {
-            return BigDecimal.valueOf(Math.floor(((BigDecimal) operand).doubleValue())).intValue();
-        }
-
-        else if (operand instanceof Quantity) {
-            return BigDecimal.valueOf(Math.floor(((Quantity) operand).getValue().doubleValue())).intValue();
+            return BigDecimal.valueOf(Math.floor(((BigDecimal) operand).doubleValue()))
+                    .intValue();
+        } else if (operand instanceof Quantity) {
+            return BigDecimal.valueOf(Math.floor(((Quantity) operand).getValue().doubleValue()))
+                    .intValue();
         }
 
         throw new InvalidOperatorArgument(
-                "Floor(Decimal)",
-                String.format("Floor(%s)", operand.getClass().getName())
-        );
+                "Floor(Decimal)", String.format("Floor(%s)", operand.getClass().getName()));
     }
-
 }

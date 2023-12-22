@@ -1,14 +1,14 @@
 package org.cqframework.cql.cql2elm;
 
+import java.io.*;
+import java.nio.file.Path;
 import org.cqframework.cql.cql2elm.model.Version;
 import org.hl7.elm.r1.VersionedIdentifier;
 
-import java.io.*;
-import java.nio.file.Path;
-
 // NOTE: This implementation is naive and assumes library file names will always take the form:
 // <filename>[-<version>].cql
-// And further that <filename> will never contain dashes, and that <version> will always be of the form <major>[.<minor>[.<patch>]]
+// And further that <filename> will never contain dashes, and that <version> will always be of the form
+// <major>[.<minor>[.<patch>]]
 // Usage outside these boundaries will result in errors or incorrect behavior.
 public class DefaultLibrarySourceProvider implements LibrarySourceProvider, PathAware {
 
@@ -19,7 +19,7 @@ public class DefaultLibrarySourceProvider implements LibrarySourceProvider, Path
     private Path path;
 
     public void setPath(Path path) {
-        if (path == null || ! path.toFile().isDirectory()) {
+        if (path == null || !path.toFile().isDirectory()) {
             throw new IllegalArgumentException(String.format("path '%s' is not a valid directory", path));
         }
 
@@ -36,8 +36,9 @@ public class DefaultLibrarySourceProvider implements LibrarySourceProvider, Path
     public InputStream getLibrarySource(VersionedIdentifier libraryIdentifier) {
         if (path != null) {
             String libraryName = libraryIdentifier.getId();
-            Path libraryPath = this.path.resolve(String.format("%s%s.cql", libraryName,
-                    libraryIdentifier.getVersion() != null ? ("-" + libraryIdentifier.getVersion()) : ""));
+            Path libraryPath = this.path.resolve(String.format(
+                    "%s%s.cql",
+                    libraryName, libraryIdentifier.getVersion() != null ? ("-" + libraryIdentifier.getVersion()) : ""));
             File libraryFile = libraryPath.toFile();
             if (!libraryFile.exists()) {
                 FilenameFilter filter = new FilenameFilter() {
@@ -49,7 +50,8 @@ public class DefaultLibrarySourceProvider implements LibrarySourceProvider, Path
 
                 File mostRecentFile = null;
                 Version mostRecent = null;
-                Version requestedVersion = libraryIdentifier.getVersion() == null ? null : new Version(libraryIdentifier.getVersion());
+                Version requestedVersion =
+                        libraryIdentifier.getVersion() == null ? null : new Version(libraryIdentifier.getVersion());
                 for (File file : path.toFile().listFiles(filter)) {
                     String fileName = file.getName();
                     int indexOfExtension = fileName.lastIndexOf(".");
@@ -61,11 +63,12 @@ public class DefaultLibrarySourceProvider implements LibrarySourceProvider, Path
                     if (indexOfVersionSeparator >= 0) {
                         Version version = new Version(fileName.substring(indexOfVersionSeparator + 1));
                         // If the file has a version, make sure it is compatible with the version we are looking for
-                        if (indexOfVersionSeparator == libraryName.length() && requestedVersion == null || version.compatibleWith(requestedVersion)) {
-                            if (mostRecent == null ||
-                                    ((version != null && version.isComparable()) &&
-                                            (mostRecent != null && mostRecent.isComparable()) &&
-                                            version.compareTo(mostRecent) > 0)) {
+                        if (indexOfVersionSeparator == libraryName.length() && requestedVersion == null
+                                || version.compatibleWith(requestedVersion)) {
+                            if (mostRecent == null
+                                    || ((version != null && version.isComparable())
+                                            && (mostRecent != null && mostRecent.isComparable())
+                                            && version.compareTo(mostRecent) > 0)) {
                                 mostRecent = version;
                                 mostRecentFile = file;
                             } else if (version != null && version.matchStrictly(mostRecent)) {
@@ -73,8 +76,7 @@ public class DefaultLibrarySourceProvider implements LibrarySourceProvider, Path
                                 mostRecentFile = file;
                             }
                         }
-                    }
-                    else {
+                    } else {
                         // If the file is named correctly, but has no version, consider it the most recent version
                         if (fileName.equals(libraryName) && mostRecent == null) {
                             mostRecentFile = file;
@@ -83,9 +85,10 @@ public class DefaultLibrarySourceProvider implements LibrarySourceProvider, Path
                 }
 
                 // Do not throw, allow the loader to throw, just report null
-                //if (mostRecentFile == null) {
-                //    throw new IllegalArgumentException(String.format("Could not resolve most recent source library for library %s.", libraryIdentifier.getId()));
-                //}
+                // if (mostRecentFile == null) {
+                //    throw new IllegalArgumentException(String.format("Could not resolve most recent source library for
+                // library %s.", libraryIdentifier.getId()));
+                // }
 
                 libraryFile = mostRecentFile;
             }
@@ -94,7 +97,8 @@ public class DefaultLibrarySourceProvider implements LibrarySourceProvider, Path
                     return new FileInputStream(libraryFile);
                 }
             } catch (FileNotFoundException e) {
-                throw new IllegalArgumentException(String.format("Could not load source for library %s.", libraryIdentifier.getId()), e);
+                throw new IllegalArgumentException(
+                        String.format("Could not load source for library %s.", libraryIdentifier.getId()), e);
             }
         }
 

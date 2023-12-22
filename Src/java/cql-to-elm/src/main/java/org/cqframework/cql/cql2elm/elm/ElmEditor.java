@@ -2,7 +2,6 @@ package org.cqframework.cql.cql2elm.elm;
 
 import java.util.List;
 import java.util.Objects;
-
 import org.cqframework.cql.elm.tracking.Trackable;
 import org.cqframework.cql.elm.utility.Visitors;
 import org.cqframework.cql.elm.visiting.ElmFunctionalVisitor;

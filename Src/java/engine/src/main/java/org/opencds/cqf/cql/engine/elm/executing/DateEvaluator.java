@@ -13,15 +13,13 @@ public class DateEvaluator {
 
         if (month == null) {
             month = 1;
-        }
-        else {
+        } else {
             precision = Precision.MONTH;
         }
 
         if (day == null) {
             day = 1;
-        }
-        else {
+        } else {
             precision = Precision.DAY;
         }
 

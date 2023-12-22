@@ -21,8 +21,8 @@ public class FhirTypeConverterFactory {
             case R5:
                 return new R5FhirTypeConverter();
             default:
-                throw new IllegalArgumentException(String.format("Unsupported FHIR version for type conversion: %s", fhirVersionEnum));
+                throw new IllegalArgumentException(
+                        String.format("Unsupported FHIR version for type conversion: %s", fhirVersionEnum));
         }
     }
-
 }

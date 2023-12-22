@@ -14,7 +14,10 @@ public class CodeSystemRefEvaluator {
         boolean enteredLibrary = state.enterLibrary(csr.getLibraryName());
         try {
             CodeSystemDef csd = Libraries.resolveCodeSystemRef(csr.getName(), state.getCurrentLibrary());
-            return new CodeSystem().withId(csd.getId()).withVersion(csd.getVersion()).withName(csd.getName());
+            return new CodeSystem()
+                    .withId(csd.getId())
+                    .withVersion(csd.getVersion())
+                    .withName(csd.getName());
         } finally {
             state.exitLibrary(enteredLibrary);
         }

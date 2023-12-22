@@ -1,5 +1,13 @@
 package org.cqframework.cql.cql2elm.preprocessor;
 
+import jakarta.xml.bind.JAXBElement;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Stack;
+import javax.xml.namespace.QName;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -18,15 +26,6 @@ import org.hl7.cql_annotations.r1.Annotation;
 import org.hl7.cql_annotations.r1.Narrative;
 import org.hl7.cql_annotations.r1.Tag;
 import org.hl7.elm.r1.*;
-
-import jakarta.xml.bind.JAXBElement;
-import javax.xml.namespace.QName;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Stack;
 
 /**
  * Common functionality used by {@link CqlPreprocessor} and {@link ElmGenerator}
@@ -99,7 +98,8 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
             try {
                 o = super.visit(tree);
             } catch (CqlIncludeException e) {
-                CqlCompilerException translatorException = new CqlCompilerException(e.getMessage(), getTrackBack(tree), e);
+                CqlCompilerException translatorException =
+                        new CqlCompilerException(e.getMessage(), getTrackBack(tree), e);
                 if (translatorException.getLocator() == null) {
                     throw translatorException;
                 }
@@ -168,8 +168,9 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
         TupleType resultType = new TupleType();
         TupleTypeSpecifier typeSpecifier = of.createTupleTypeSpecifier();
         for (cqlParser.TupleElementDefinitionContext definitionContext : ctx.tupleElementDefinition()) {
-            TupleElementDefinition element = (TupleElementDefinition)visit(definitionContext);
-            resultType.addElement(new TupleTypeElement(element.getName(), element.getElementType().getResultType()));
+            TupleElementDefinition element = (TupleElementDefinition) visit(definitionContext);
+            resultType.addElement(new TupleTypeElement(
+                    element.getName(), element.getElementType().getResultType()));
             typeSpecifier.getElement().add(element);
         }
 
@@ -198,7 +199,8 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
 
     @Override
     public IntervalTypeSpecifier visitIntervalTypeSpecifier(cqlParser.IntervalTypeSpecifierContext ctx) {
-        IntervalTypeSpecifier result = of.createIntervalTypeSpecifier().withPointType(parseTypeSpecifier(ctx.typeSpecifier()));
+        IntervalTypeSpecifier result =
+                of.createIntervalTypeSpecifier().withPointType(parseTypeSpecifier(ctx.typeSpecifier()));
         IntervalType intervalType = new IntervalType(result.getPointType().getResultType());
         result.setResultType(intervalType);
         return result;
@@ -206,18 +208,18 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
 
     @Override
     public ListTypeSpecifier visitListTypeSpecifier(cqlParser.ListTypeSpecifierContext ctx) {
-        ListTypeSpecifier result = of.createListTypeSpecifier().withElementType(parseTypeSpecifier(ctx.typeSpecifier()));
+        ListTypeSpecifier result =
+                of.createListTypeSpecifier().withElementType(parseTypeSpecifier(ctx.typeSpecifier()));
         ListType listType = new ListType(result.getElementType().getResultType());
         result.setResultType(listType);
         return result;
     }
 
     public FunctionHeader parseFunctionHeader(cqlParser.FunctionDefinitionContext ctx) {
-        final FunctionDef fun =
-                of.createFunctionDef()
-                        .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
-                        .withName(parseString(ctx.identifierOrFunctionIdentifier()))
-                        .withContext(getCurrentContext());
+        final FunctionDef fun = of.createFunctionDef()
+                .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
+                .withName(parseString(ctx.identifierOrFunctionIdentifier()))
+                .withContext(getCurrentContext());
 
         if (ctx.fluentModifier() != null) {
             libraryBuilder.checkCompatibilityLevel("Fluent functions", "1.5");
@@ -227,7 +229,10 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
         if (ctx.operandDefinition() != null) {
             for (cqlParser.OperandDefinitionContext opdef : ctx.operandDefinition()) {
                 TypeSpecifier typeSpecifier = parseTypeSpecifier(opdef.typeSpecifier());
-                fun.getOperand().add((OperandDef) of.createOperandDef().withName(parseString(opdef.referentialIdentifier())).withOperandTypeSpecifier(typeSpecifier).withResultType(typeSpecifier.getResultType()));
+                fun.getOperand().add((OperandDef) of.createOperandDef()
+                        .withName(parseString(opdef.referentialIdentifier()))
+                        .withOperandTypeSpecifier(typeSpecifier)
+                        .withResultType(typeSpecifier.getResultType()));
             }
         }
 
@@ -304,14 +309,26 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
             chunk.setElement(element);
 
             if (!(tree instanceof cqlParser.LibraryContext)) {
-                if (element instanceof UsingDef || element instanceof IncludeDef || element instanceof CodeSystemDef || element instanceof ValueSetDef || element instanceof CodeDef || element instanceof ConceptDef || element instanceof ParameterDef || element instanceof ContextDef || element instanceof ExpressionDef) {
+                if (element instanceof UsingDef
+                        || element instanceof IncludeDef
+                        || element instanceof CodeSystemDef
+                        || element instanceof ValueSetDef
+                        || element instanceof CodeDef
+                        || element instanceof ConceptDef
+                        || element instanceof ParameterDef
+                        || element instanceof ContextDef
+                        || element instanceof ExpressionDef) {
                     Annotation a = getAnnotation(element);
                     if (a == null || a.getS() == null) {
                         // Add header information (comments prior to the definition)
                         BaseInfo definitionInfo = libraryInfo.resolveDefinition(tree);
                         if (definitionInfo != null && definitionInfo.getHeaderInterval() != null) {
-                            Chunk headerChunk = new Chunk().withInterval(definitionInfo.getHeaderInterval()).withIsHeaderChunk(true);
-                            Chunk newChunk = new Chunk().withInterval(new org.antlr.v4.runtime.misc.Interval(headerChunk.getInterval().a, chunk.getInterval().b));
+                            Chunk headerChunk = new Chunk()
+                                    .withInterval(definitionInfo.getHeaderInterval())
+                                    .withIsHeaderChunk(true);
+                            Chunk newChunk = new Chunk()
+                                    .withInterval(new org.antlr.v4.runtime.misc.Interval(
+                                            headerChunk.getInterval().a, chunk.getInterval().b));
                             newChunk.addChunk(headerChunk);
                             newChunk.setElement(chunk.getElement());
                             for (Chunk c : chunk.getChunks()) {
@@ -328,9 +345,14 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
                 }
             } else {
                 if (libraryInfo.getDefinition() != null && libraryInfo.getHeaderInterval() != null) {
-                    Chunk headerChunk = new Chunk().withInterval(libraryInfo.getHeaderInterval()).withIsHeaderChunk(true);
-                    Chunk definitionChunk = new Chunk().withInterval(libraryInfo.getDefinition().getSourceInterval());
-                    Chunk newChunk = new Chunk().withInterval(new org.antlr.v4.runtime.misc.Interval(headerChunk.getInterval().a, definitionChunk.getInterval().b));
+                    Chunk headerChunk = new Chunk()
+                            .withInterval(libraryInfo.getHeaderInterval())
+                            .withIsHeaderChunk(true);
+                    Chunk definitionChunk =
+                            new Chunk().withInterval(libraryInfo.getDefinition().getSourceInterval());
+                    Chunk newChunk = new Chunk()
+                            .withInterval(new org.antlr.v4.runtime.misc.Interval(
+                                    headerChunk.getInterval().a, definitionChunk.getInterval().b));
                     newChunk.addChunk(headerChunk);
                     newChunk.addChunk(definitionChunk);
                     newChunk.setElement(chunk.getElement());
@@ -355,7 +377,15 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
             if (o instanceof Element) {
                 Element element = (Element) o;
                 if (!(tree instanceof cqlParser.LibraryContext)) {
-                    if (element instanceof UsingDef || element instanceof IncludeDef || element instanceof CodeSystemDef || element instanceof ValueSetDef || element instanceof CodeDef || element instanceof ConceptDef || element instanceof ParameterDef || element instanceof ContextDef || element instanceof ExpressionDef) {
+                    if (element instanceof UsingDef
+                            || element instanceof IncludeDef
+                            || element instanceof CodeSystemDef
+                            || element instanceof ValueSetDef
+                            || element instanceof CodeDef
+                            || element instanceof ConceptDef
+                            || element instanceof ParameterDef
+                            || element instanceof ContextDef
+                            || element instanceof ExpressionDef) {
                         List<Tag> tags = getTags(tree);
                         if (tags != null && tags.size() > 0) {
                             Annotation a = getAnnotation(element);
@@ -363,10 +393,14 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
                                 a = buildAnnotation();
                                 element.getAnnotation().add(a);
                             }
-                            // If the definition was processed as a forward declaration, the tag processing will already have occurred
-                            // and just adding tags would duplicate them here. This doesn't account for the possibility that
-                            // tags would be added for some other reason, but I didn't want the overhead of checking for existing
-                            // tags, and there is currently nothing that would add tags other than being processed from comments
+                            // If the definition was processed as a forward declaration, the tag processing will already
+                            // have occurred
+                            // and just adding tags would duplicate them here. This doesn't account for the possibility
+                            // that
+                            // tags would be added for some other reason, but I didn't want the overhead of checking for
+                            // existing
+                            // tags, and there is currently nothing that would add tags other than being processed from
+                            // comments
                             if (a.getT().size() == 0) {
                                 a.getT().addAll(tags);
                             }
@@ -429,7 +463,7 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
                 } else {
                     startFrom = tagNamePair.getRight();
                 }
-            } else {  // no name tag found, no need to traverse more
+            } else { // no name tag found, no need to traverse more
                 break;
             }
         }
@@ -452,21 +486,18 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
                             result.add(line.substring(start + 2));
                         }
                         inMultiline = true;
-                    }
-                    else start = line.indexOf("//");
-                    if (start >= 0 && !inMultiline ) {
+                    } else start = line.indexOf("//");
+                    if (start >= 0 && !inMultiline) {
                         result.add(line.substring(start + 2));
                     }
-                }
-                else {
+                } else {
                     int end = line.indexOf("*/");
                     if (end >= 0) {
                         inMultiline = false;
                         if (end > 0) {
                             result.add(line.substring(0, end));
                         }
-                    }
-                    else {
+                    } else {
                         result.add(line);
                     }
                 }
@@ -518,12 +549,10 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
                         currentNarrative = null;
                     }
                     narrative.getContent().add(wrapNarrative(chunkNarrative));
-                }
-                else {
+                } else {
                     if (currentNarrative == null) {
                         currentNarrative = chunkNarrative;
-                    }
-                    else {
+                    } else {
                         currentNarrative.getContent().addAll(chunkNarrative.getContent());
                         if (currentNarrative.getR() == null) {
                             currentNarrative.setR(chunkNarrative.getR());
@@ -534,8 +563,7 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
             if (currentNarrative != null) {
                 narrative.getContent().add(wrapNarrative(currentNarrative));
             }
-        }
-        else {
+        } else {
             String chunkContent = tokenStream.getText(chunk.getInterval());
             if (chunk.isHeaderChunk()) {
                 chunkContent = stripLeading(chunkContent);
@@ -573,7 +601,7 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
                 ctx.getStart().getCharPositionInLine() + 1, // 1-based instead of 0-based
                 ctx.getStop().getLine(),
                 ctx.getStop().getCharPositionInLine() + ctx.getStop().getText().length() // 1-based instead of 0-based
-        );
+                );
         return tb;
     }
 
@@ -607,7 +635,7 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
 
     private Pair<String, Integer> lookForTagName(String header, int startFrom) {
 
-        if(startFrom>= header.length()){
+        if (startFrom >= header.length()) {
             return null;
         }
         int start = header.indexOf("@", startFrom);
@@ -617,12 +645,15 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
         int nextTagStart = header.indexOf("@", start + 1);
         int nextColon = header.indexOf(":", start + 1);
 
-        if (nextTagStart < 0) {  // no next tag , no next colon
+        if (nextTagStart < 0) { // no next tag , no next colon
             if (nextColon < 0) {
                 return Pair.of(header.substring(start + 1, header.length()).trim(), header.length());
             }
         } else {
-            if (nextColon < 0 || nextColon > nextTagStart) {  //(has next tag and no colon) or (has next tag and next colon belongs to next tag)
+            if (nextColon < 0
+                    || nextColon
+                            > nextTagStart) { // (has next tag and no colon) or (has next tag and next colon belongs to
+                // next tag)
                 return Pair.of(header.substring(start + 1, nextTagStart).trim(), nextTagStart);
             }
         }
@@ -635,13 +666,14 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
     // it looks for parameter in double quotes, e.g. @parameter: "Measurement Interval" [@2019,@2020]
     public static Pair<String, Integer> lookForTagValue(String header, int startFrom) {
 
-        if(startFrom>= header.length()) {
+        if (startFrom >= header.length()) {
             return null;
         }
         int nextTag = header.indexOf('@', startFrom);
         int nextStartDoubleQuote = header.indexOf("\"", startFrom);
-        if ((nextTag < 0 || nextTag > nextStartDoubleQuote) && nextStartDoubleQuote > 0 &&
-                (header.length() > (nextStartDoubleQuote + 1))) {
+        if ((nextTag < 0 || nextTag > nextStartDoubleQuote)
+                && nextStartDoubleQuote > 0
+                && (header.length() > (nextStartDoubleQuote + 1))) {
             int nextEndDoubleQuote = header.indexOf("\"", nextStartDoubleQuote + 1);
             if (nextEndDoubleQuote > 0) {
                 int parameterEnd = header.indexOf("\n", (nextStartDoubleQuote + 1));
@@ -650,16 +682,18 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
                 } else {
                     return Pair.of(header.substring(nextStartDoubleQuote, parameterEnd), parameterEnd);
                 }
-            } else {  //branch where the 2nd double quote is missing
+            } else { // branch where the 2nd double quote is missing
                 return Pair.of(header.substring(nextStartDoubleQuote), header.length());
             }
         }
-        if(nextTag == startFrom && !isStartingWithDigit(header, nextTag +1)) {  //starts with `@` and not potential date value
-            return Pair.of("",startFrom);
-        } else if (nextTag > 0) {   // has some text before tag
+        if (nextTag == startFrom
+                && !isStartingWithDigit(header, nextTag + 1)) { // starts with `@` and not potential date value
+            return Pair.of("", startFrom);
+        } else if (nextTag > 0) { // has some text before tag
             String interimText = header.substring(startFrom, nextTag).trim();
-            if (isStartingWithDigit(header, nextTag + 1)) {  // next `@` is a date value
-                if (interimText.length() > 0 && !interimText.equals(":")) {  // interim text has value, regards interim text
+            if (isStartingWithDigit(header, nextTag + 1)) { // next `@` is a date value
+                if (interimText.length() > 0
+                        && !interimText.equals(":")) { // interim text has value, regards interim text
                     return Pair.of(interimText, nextTag);
                 } else {
                     int nextSpace = header.indexOf(' ', nextTag);
@@ -669,13 +703,13 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
 
                     if (mul < 0) {
                         nextDelimeterIndex = Math.max(nextLine, nextSpace);
-                    } else if(mul > 1) {
+                    } else if (mul > 1) {
                         nextDelimeterIndex = Math.min(nextLine, nextSpace);
                     }
 
-                    return Pair.of(header.substring(nextTag, nextDelimeterIndex), nextDelimeterIndex );
+                    return Pair.of(header.substring(nextTag, nextDelimeterIndex), nextDelimeterIndex);
                 }
-            } else {   //next `@` is not date
+            } else { // next `@` is not date
                 return Pair.of(interimText, nextTag);
             }
         }
@@ -703,10 +737,7 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
             }
         }
         */
-        return new JAXBElement<>(
-                new QName("urn:hl7-org:cql-annotations:r1", "s"),
-                Narrative.class,
-                narrative);
+        return new JAXBElement<>(new QName("urn:hl7-org:cql-annotations:r1", "s"), Narrative.class, narrative);
     }
 
     public static boolean isValidIdentifier(String tagName) {
@@ -719,8 +750,7 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
                 if (!Character.isLetter(tagName.charAt(i))) {
                     return false;
                 }
-            }
-            else {
+            } else {
                 if (!Character.isLetterOrDigit(tagName.charAt(i))) {
                     return false;
                 }
@@ -772,7 +802,7 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
     private Annotation getAnnotation(Element element) {
         for (Object o : element.getAnnotation()) {
             if (o instanceof Annotation) {
-                return (Annotation)o;
+                return (Annotation) o;
             }
         }
 
@@ -780,7 +810,7 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
     }
 
     protected String parseString(ParseTree pt) {
-        return StringEscapeUtils.unescapeCql(pt == null ? null : (String)visit(pt));
+        return StringEscapeUtils.unescapeCql(pt == null ? null : (String) visit(pt));
     }
 
     public static String normalizeWhitespace(String input) {
@@ -790,7 +820,6 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
     public static boolean isStartingWithDigit(String header, int index) {
         return (index < header.length()) && Character.isDigit(header.charAt(index));
     }
-
 
     public void enableLocators() {
         locate = true;

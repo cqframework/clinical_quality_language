@@ -7,8 +7,7 @@ public class ElmLibraryWriterFactory {
     private ElmLibraryWriterFactory() {}
 
     public static Iterator<ElmLibraryWriterProvider> providers(boolean refresh) {
-        var loader = ServiceLoader
-            .load(ElmLibraryWriterProvider.class);
+        var loader = ServiceLoader.load(ElmLibraryWriterProvider.class);
         if (refresh) {
             loader.reload();
         }
@@ -21,15 +20,17 @@ public class ElmLibraryWriterFactory {
         if (providers.hasNext()) {
             ElmLibraryWriterProvider p = providers.next();
             if (providers.hasNext()) {
-                throw new RuntimeException(String.join(" ",
-                "Multiple ElmLibraryWriterProviders found on the classpath.",
-                "You need to remove a reference to either the 'elm-jackson' or the 'elm-jaxb' package"));
+                throw new RuntimeException(String.join(
+                        " ",
+                        "Multiple ElmLibraryWriterProviders found on the classpath.",
+                        "You need to remove a reference to either the 'elm-jackson' or the 'elm-jaxb' package"));
             }
 
             return p.create(contentType);
         }
 
-        throw new RuntimeException(String.join(" ",
+        throw new RuntimeException(String.join(
+                " ",
                 "No ElmLibraryWriterProviders found on the classpath.",
                 "You need to add a reference to one of the 'elm-jackson' or 'elm-jaxb' packages,",
                 "or provide your own implementation."));

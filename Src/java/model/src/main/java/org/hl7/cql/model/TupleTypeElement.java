@@ -33,18 +33,14 @@ public class TupleTypeElement {
 
     @Override
     public int hashCode() {
-        return (17 * this.name.hashCode())
-                + (33 * this.type.hashCode())
-                + (31 * (this.oneBased ? 1 : 0));
+        return (17 * this.name.hashCode()) + (33 * this.type.hashCode()) + (31 * (this.oneBased ? 1 : 0));
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof TupleTypeElement) {
-            TupleTypeElement that = (TupleTypeElement)o;
-            return this.name.equals(that.name)
-                    && this.type.equals(that.type)
-                    && (this.oneBased == that.oneBased);
+            TupleTypeElement that = (TupleTypeElement) o;
+            return this.name.equals(that.name) && this.type.equals(that.type) && (this.oneBased == that.oneBased);
         }
 
         return false;

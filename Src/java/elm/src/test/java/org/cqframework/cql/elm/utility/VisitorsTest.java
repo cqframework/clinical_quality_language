@@ -22,8 +22,7 @@ public class VisitorsTest {
         library.getStatements().getDef().add(new ExpressionDef());
 
         var result = trackableCounter.visitLibrary(library, null);
-        assertEquals(4 + 3, result.intValue());  // ELM elements + implicit access modifiers
-
+        assertEquals(4 + 3, result.intValue()); // ELM elements + implicit access modifiers
 
         // This visitor returns the context object that's passed in
         var contextReturner = Visitors.from((t, c) -> c);

@@ -1,9 +1,8 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.util.Iterator;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.execution.State;
-
-import java.util.Iterator;
 
 /*
 Max(argument List<Integer>) Integer
@@ -31,7 +30,7 @@ public class MaxEvaluator {
         }
 
         if (source instanceof Iterable) {
-            Iterable<?> element = (Iterable<?>)source;
+            Iterable<?> element = (Iterable<?>) source;
             Iterator<?> itr = element.iterator();
 
             if (!itr.hasNext()) { // empty list
@@ -59,9 +58,7 @@ public class MaxEvaluator {
         }
 
         throw new InvalidOperatorArgument(
-            "Max(List<Integer>), Max(List<Long>, Max(List<Decimal>, Max(List<Quantity>), Max(List<Date>), Max(List<DateTime>), Max(List<Time>) or Max(List<String>))",
-            String.format("Max(%s)", source.getClass().getName())
-        );
+                "Max(List<Integer>), Max(List<Long>, Max(List<Decimal>, Max(List<Quantity>), Max(List<Date>), Max(List<DateTime>), Max(List<Time>) or Max(List<String>))",
+                String.format("Max(%s)", source.getClass().getName()));
     }
-
 }

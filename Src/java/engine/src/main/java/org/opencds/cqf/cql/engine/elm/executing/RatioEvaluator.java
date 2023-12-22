@@ -2,7 +2,6 @@ package org.opencds.cqf.cql.engine.elm.executing;
 
 import org.cqframework.cql.elm.visiting.ElmLibraryVisitor;
 import org.hl7.elm.r1.Ratio;
-import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.Quantity;
 
@@ -25,6 +24,8 @@ public class RatioEvaluator {
         Quantity numerator = (Quantity) visitor.visitExpression(elm.getNumerator(), state);
         Quantity denominator = (Quantity) visitor.visitExpression(elm.getDenominator(), state);
 
-        return new org.opencds.cqf.cql.engine.runtime.Ratio().setNumerator(numerator).setDenominator(denominator);
+        return new org.opencds.cqf.cql.engine.runtime.Ratio()
+                .setNumerator(numerator)
+                .setDenominator(denominator);
     }
 }

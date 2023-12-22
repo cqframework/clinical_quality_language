@@ -2,7 +2,6 @@ package org.cqframework.cql.elm.visiting;
 
 import java.util.Objects;
 import java.util.function.BiFunction;
-
 import org.cqframework.cql.elm.tracking.Trackable;
 
 /**
@@ -35,7 +34,8 @@ public class ElmFunctionalVisitor<T, C> extends ElmBaseLibraryVisitor<T, C> {
         return this.aggregateResult.apply(aggregate, nextResult);
     }
 
-    public static <C, T> ElmFunctionalVisitor<T, C> from(BiFunction<Trackable, C, T> defaultResult, BiFunction<T, T, T> aggregateResult) {
+    public static <C, T> ElmFunctionalVisitor<T, C> from(
+            BiFunction<Trackable, C, T> defaultResult, BiFunction<T, T, T> aggregateResult) {
         return new ElmFunctionalVisitor<>(defaultResult, aggregateResult);
     }
 }

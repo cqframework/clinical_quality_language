@@ -1,14 +1,12 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.math.BigDecimal;
 import org.cqframework.cql.elm.visiting.ElmLibraryVisitor;
 import org.hl7.elm.r1.Expression;
 import org.hl7.elm.r1.Literal;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
-import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.Quantity;
-
-import java.math.BigDecimal;
 
 /*
 -(argument Integer) Integer
@@ -46,9 +44,8 @@ public class NegateEvaluator {
         }
 
         throw new InvalidOperatorArgument(
-            "Negate(Integer), Negate(Long), Negate(Decimal) or Negate(Quantity)",
-            String.format("Negate(%s)", source.getClass().getName())
-        );
+                "Negate(Integer), Negate(Long), Negate(Decimal) or Negate(Quantity)",
+                String.format("Negate(%s)", source.getClass().getName()));
     }
 
     public static Object internalEvaluate(Expression operand, State state, ElmLibraryVisitor<Object, State> visitor) {

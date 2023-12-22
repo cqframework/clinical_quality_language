@@ -1,12 +1,9 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
-import org.hl7.elm.r1.Expression;
-import org.hl7.elm.r1.InValueSet;
-import org.hl7.elm.r1.IndexOf;
-
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
+import org.hl7.elm.r1.Expression;
+import org.hl7.elm.r1.IndexOf;
 
 public class IndexOfInvocation extends OperatorExpressionInvocation {
     public IndexOfInvocation(IndexOf expression) {

@@ -79,18 +79,16 @@ public class TrackBack {
 
     @Override
     public String toString() {
-        return "TrackBack{" +
-                "library='" + library + '\'' +
-                ", startLine=" + startLine +
-                ", startChar=" + startChar +
-                ", endLine=" + endLine +
-                ", endChar=" + endChar +
-                '}';
+        return "TrackBack{" + "library='"
+                + library + '\'' + ", startLine="
+                + startLine + ", startChar="
+                + startChar + ", endLine="
+                + endLine + ", endChar="
+                + endChar + '}';
     }
 
     public String toLocator() {
-        return
-            startLine == endLine && startChar == endChar
+        return startLine == endLine && startChar == endChar
                 ? String.format("%s:%s", startLine, startChar)
                 : String.format("%s:%s-%s:%s", startLine, startChar, endLine, endChar);
     }

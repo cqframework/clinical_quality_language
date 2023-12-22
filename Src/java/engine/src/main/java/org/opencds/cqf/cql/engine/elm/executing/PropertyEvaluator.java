@@ -14,11 +14,11 @@ public class PropertyEvaluator {
             target = visitor.visitExpression(elm.getSource(), state);
             // Tuple element access
             if (target instanceof Tuple) {
-              // NOTE: translator will throw error if Tuple does not contain the specified element -- no need for x.containsKey() check
-              return ((Tuple)target).getElements().get(elm.getPath());
+                // NOTE: translator will throw error if Tuple does not contain the specified element -- no need for
+                // x.containsKey() check
+                return ((Tuple) target).getElements().get(elm.getPath());
             }
-        }
-        else if (elm.getScope() != null) {
+        } else if (elm.getScope() != null) {
             target = state.resolveVariable(elm.getScope(), true).getValue();
         }
 
@@ -26,9 +26,7 @@ public class PropertyEvaluator {
             return null;
         }
 
-        if (target instanceof Iterable) {
-
-        }
+        if (target instanceof Iterable) {}
 
         return state.getEnvironment().resolvePath(target, elm.getPath());
     }

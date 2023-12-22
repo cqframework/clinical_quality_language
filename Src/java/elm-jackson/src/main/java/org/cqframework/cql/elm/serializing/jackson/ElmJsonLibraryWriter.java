@@ -1,12 +1,11 @@
 package org.cqframework.cql.elm.serializing.jackson;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import java.io.IOException;
+import java.io.Writer;
 import org.cqframework.cql.elm.serializing.ElmLibraryWriter;
 import org.cqframework.cql.elm.serializing.LibraryWrapper;
 import org.hl7.elm.r1.Library;
-
-import java.io.IOException;
-import java.io.Writer;
 
 public class ElmJsonLibraryWriter implements ElmLibraryWriter {
     @Override

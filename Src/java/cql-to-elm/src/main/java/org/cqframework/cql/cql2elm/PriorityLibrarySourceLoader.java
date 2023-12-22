@@ -1,12 +1,11 @@
 package org.cqframework.cql.cql2elm;
 
-import org.hl7.cql.model.NamespaceAware;
-import org.hl7.cql.model.NamespaceManager;
-import org.hl7.elm.r1.VersionedIdentifier;
-
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.*;
+import org.hl7.cql.model.NamespaceAware;
+import org.hl7.cql.model.NamespaceManager;
+import org.hl7.elm.r1.VersionedIdentifier;
 
 /**
  * Used by LibraryManager to manage a set of library source providers that
@@ -24,19 +23,20 @@ public class PriorityLibrarySourceLoader implements LibrarySourceLoader, Namespa
         }
 
         if (provider instanceof NamespaceAware) {
-            ((NamespaceAware)provider).setNamespaceManager(namespaceManager);
+            ((NamespaceAware) provider).setNamespaceManager(namespaceManager);
         }
 
         if (path != null && provider instanceof PathAware) {
-            ((PathAware)provider).setPath(path);
+            ((PathAware) provider).setPath(path);
         }
 
         PROVIDERS.add(provider);
     }
 
     private Path path;
+
     public void setPath(Path path) {
-        if (path == null || ! path.toFile().isDirectory()) {
+        if (path == null || !path.toFile().isDirectory()) {
             throw new IllegalArgumentException(String.format("path '%s' is not a valid directory", path));
         }
 
@@ -44,7 +44,7 @@ public class PriorityLibrarySourceLoader implements LibrarySourceLoader, Namespa
 
         for (LibrarySourceProvider provider : getProviders()) {
             if (provider instanceof PathAware) {
-                ((PathAware)provider).setPath(path);
+                ((PathAware) provider).setPath(path);
             }
         }
     }
@@ -96,7 +96,7 @@ public class PriorityLibrarySourceLoader implements LibrarySourceLoader, Namespa
 
         for (LibrarySourceProvider provider : getProviders()) {
             if (provider instanceof NamespaceAware) {
-                ((NamespaceAware)provider).setNamespaceManager(namespaceManager);
+                ((NamespaceAware) provider).setNamespaceManager(namespaceManager);
             }
         }
     }

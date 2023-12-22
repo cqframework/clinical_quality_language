@@ -17,5 +17,4 @@ class NoEmptyListsFilter {
 
         return false;
     }
-
 }

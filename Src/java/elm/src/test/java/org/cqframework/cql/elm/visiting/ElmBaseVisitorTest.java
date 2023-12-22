@@ -4,7 +4,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.cqframework.cql.elm.tracking.Trackable;
-import org.cqframework.cql.elm.visiting.ElmBaseVisitor;
 import org.hl7.elm.r1.ByDirection;
 import org.hl7.elm.r1.Sort;
 import org.hl7.elm.r1.SortByItem;

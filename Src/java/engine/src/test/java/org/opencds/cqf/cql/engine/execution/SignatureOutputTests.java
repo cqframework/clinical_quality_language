@@ -1,11 +1,10 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import org.testng.annotations.Test;
-
-import java.math.BigDecimal;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+
+import java.math.BigDecimal;
+import org.testng.annotations.Test;
 
 public class SignatureOutputTests extends CqlTestBase {
 
@@ -15,7 +14,6 @@ public class SignatureOutputTests extends CqlTestBase {
         EvaluationResult evaluationResult;
 
         evaluationResult = engine.evaluate(toElmIdentifier("SignatureOutputTests"));
-
 
         Object result = evaluationResult.forExpression("TestIntegerOverload").value();
         assertThat(result, is(new BigDecimal("1")));
@@ -32,7 +30,9 @@ public class SignatureOutputTests extends CqlTestBase {
         result = evaluationResult.forExpression("TestDecimalMultipleOverload").value();
         assertThat(result, is(new BigDecimal("2.0")));
 
-        result = evaluationResult.forExpression("TestIntegerAndDecimalMultipleOverload").value();
+        result = evaluationResult
+                .forExpression("TestIntegerAndDecimalMultipleOverload")
+                .value();
         assertThat(result, is(1));
     }
 }

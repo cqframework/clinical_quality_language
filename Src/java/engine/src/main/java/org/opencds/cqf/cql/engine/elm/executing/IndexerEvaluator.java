@@ -29,7 +29,7 @@ public class IndexerEvaluator {
 
         if (left instanceof String) {
             if (right instanceof Integer) {
-                if((int)right < 0 || (int)right >= ((String)left).length()){
+                if ((int) right < 0 || (int) right >= ((String) left).length()) {
                     return null;
                 }
 
@@ -40,9 +40,9 @@ public class IndexerEvaluator {
         if (left instanceof Iterable) {
             if (right instanceof Integer) {
                 int index = -1;
-                for (Object element : (Iterable<?>)left) {
+                for (Object element : (Iterable<?>) left) {
                     index++;
-                    if ((Integer)right == index) {
+                    if ((Integer) right == index) {
                         return element;
                     }
                 }
@@ -52,8 +52,8 @@ public class IndexerEvaluator {
 
         throw new InvalidOperatorArgument(
                 "Indexer(String, Integer) or Indexer(List<T>, Integer)",
-                String.format("Indexer(%s, %s)", left.getClass().getName(), right.getClass().getName())
-        );
+                String.format(
+                        "Indexer(%s, %s)",
+                        left.getClass().getName(), right.getClass().getName()));
     }
-
 }

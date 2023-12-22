@@ -13,14 +13,14 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
 
     @Override
     public T visitElement(Element elm, C context) {
-        if (elm instanceof CodeDef) return visitCodeDef((CodeDef)elm, context);
-        else if (elm instanceof CodeSystemDef) return visitCodeSystemDef((CodeSystemDef)elm, context);
-        else if (elm instanceof ValueSetDef) return visitValueSetDef((ValueSetDef)elm, context);
-        else if (elm instanceof ConceptDef) return visitConceptDef((ConceptDef)elm, context);
-        else if (elm instanceof CodeFilterElement) return visitCodeFilterElement((CodeFilterElement)elm, context);
-        else if (elm instanceof DateFilterElement) return visitDateFilterElement((DateFilterElement)elm, context);
-        else if (elm instanceof OtherFilterElement) return visitOtherFilterElement((OtherFilterElement)elm, context);
-        else if (elm instanceof IncludeElement) return visitIncludeElement((IncludeElement)elm, context);
+        if (elm instanceof CodeDef) return visitCodeDef((CodeDef) elm, context);
+        else if (elm instanceof CodeSystemDef) return visitCodeSystemDef((CodeSystemDef) elm, context);
+        else if (elm instanceof ValueSetDef) return visitValueSetDef((ValueSetDef) elm, context);
+        else if (elm instanceof ConceptDef) return visitConceptDef((ConceptDef) elm, context);
+        else if (elm instanceof CodeFilterElement) return visitCodeFilterElement((CodeFilterElement) elm, context);
+        else if (elm instanceof DateFilterElement) return visitDateFilterElement((DateFilterElement) elm, context);
+        else if (elm instanceof OtherFilterElement) return visitOtherFilterElement((OtherFilterElement) elm, context);
+        else if (elm instanceof IncludeElement) return visitIncludeElement((IncludeElement) elm, context);
         return super.visitElement(elm, context);
     }
 
@@ -34,15 +34,15 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      */
     @Override
     public T visitExpression(Expression elm, C context) {
-        if (elm instanceof CodeSystemRef) return visitCodeSystemRef((CodeSystemRef)elm, context);
-        else if (elm instanceof ValueSetRef) return visitValueSetRef((ValueSetRef)elm, context);
-        else if (elm instanceof CodeRef) return visitCodeRef((CodeRef)elm, context);
-        else if (elm instanceof ConceptRef) return visitConceptRef((ConceptRef)elm, context);
-        else if (elm instanceof Code) return visitCode((Code)elm, context);
-        else if (elm instanceof Concept) return visitConcept((Concept)elm, context);
-        else if (elm instanceof Quantity) return visitQuantity((Quantity)elm, context);
-        else if (elm instanceof Ratio) return visitRatio((Ratio)elm, context);
-        else if (elm instanceof Retrieve) return visitRetrieve((Retrieve)elm, context);
+        if (elm instanceof CodeSystemRef) return visitCodeSystemRef((CodeSystemRef) elm, context);
+        else if (elm instanceof ValueSetRef) return visitValueSetRef((ValueSetRef) elm, context);
+        else if (elm instanceof CodeRef) return visitCodeRef((CodeRef) elm, context);
+        else if (elm instanceof ConceptRef) return visitConceptRef((ConceptRef) elm, context);
+        else if (elm instanceof Code) return visitCode((Code) elm, context);
+        else if (elm instanceof Concept) return visitConcept((Concept) elm, context);
+        else if (elm instanceof Quantity) return visitQuantity((Quantity) elm, context);
+        else if (elm instanceof Ratio) return visitRatio((Ratio) elm, context);
+        else if (elm instanceof Retrieve) return visitRetrieve((Retrieve) elm, context);
         else return super.visitExpression(elm, context);
     }
 
@@ -56,10 +56,10 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      */
     @Override
     public T visitOperatorExpression(OperatorExpression elm, C context) {
-        if (elm instanceof InCodeSystem) return visitInCodeSystem((InCodeSystem)elm, context);
-        else if (elm instanceof AnyInCodeSystem) return visitAnyInCodeSystem((AnyInCodeSystem)elm, context);
-        else if (elm instanceof InValueSet) return visitInValueSet((InValueSet)elm, context);
-        else if (elm instanceof AnyInValueSet) return visitAnyInValueSet((AnyInValueSet)elm, context);
+        if (elm instanceof InCodeSystem) return visitInCodeSystem((InCodeSystem) elm, context);
+        else if (elm instanceof AnyInCodeSystem) return visitAnyInCodeSystem((AnyInCodeSystem) elm, context);
+        else if (elm instanceof InValueSet) return visitInValueSet((InValueSet) elm, context);
+        else if (elm instanceof AnyInValueSet) return visitAnyInValueSet((AnyInValueSet) elm, context);
         else return super.visitOperatorExpression(elm, context);
     }
 
@@ -74,7 +74,7 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
     @Override
     public T visitUnaryExpression(UnaryExpression elm, C context) {
         if (elm instanceof ExpandValueSet) return visitExpandValueSet((ExpandValueSet) elm, context);
-        if (elm instanceof CalculateAge) return visitCalculateAge((CalculateAge)elm, context);
+        if (elm instanceof CalculateAge) return visitCalculateAge((CalculateAge) elm, context);
         else return super.visitUnaryExpression(elm, context);
     }
 
@@ -88,9 +88,9 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      */
     @Override
     public T visitBinaryExpression(BinaryExpression elm, C context) {
-        if (elm instanceof CalculateAgeAt) return visitCalculateAgeAt((CalculateAgeAt)elm, context);
-        else if (elm instanceof Subsumes) return visitSubsumes((Subsumes)elm, context);
-        else if (elm instanceof SubsumedBy) return visitSubsumedBy((SubsumedBy)elm, context);
+        if (elm instanceof CalculateAgeAt) return visitCalculateAgeAt((CalculateAgeAt) elm, context);
+        else if (elm instanceof Subsumes) return visitSubsumes((Subsumes) elm, context);
+        else if (elm instanceof SubsumedBy) return visitSubsumedBy((SubsumedBy) elm, context);
         else return super.visitBinaryExpression(elm, context);
     }
 
@@ -221,7 +221,7 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
     @Override
     public T visitProperty(Property elm, C context) {
         if (elm instanceof Search) {
-            return visitSearch((Search)elm, context);
+            return visitSearch((Search) elm, context);
         }
         return super.visitProperty(elm, context);
     }

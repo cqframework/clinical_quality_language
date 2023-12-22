@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm.preprocessor;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -12,9 +14,6 @@ import org.hl7.cql.model.*;
 import org.hl7.elm.r1.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CqlPreprocessor extends CqlPreprocessorElmCommonVisitor {
     static final Logger logger = LoggerFactory.getLogger(CqlPreprocessor.class);
@@ -45,7 +44,8 @@ public class CqlPreprocessor extends CqlPreprocessorElmCommonVisitor {
     public Object visitLibrary(cqlParser.LibraryContext ctx) {
         Object lastResult = null;
         // NOTE: Need to set the library identifier here so the builder can begin the translation appropriately
-        VersionedIdentifier identifier = new VersionedIdentifier().withId(libraryInfo.getLibraryName()).withVersion(libraryInfo.getVersion());
+        VersionedIdentifier identifier =
+                new VersionedIdentifier().withId(libraryInfo.getLibraryName()).withVersion(libraryInfo.getVersion());
         if (libraryInfo.getNamespaceName() != null) {
             identifier.setSystem(libraryBuilder.resolveNamespaceUri(libraryInfo.getNamespaceName(), true));
         } else if (libraryBuilder.getNamespaceInfo() != null) {
@@ -79,13 +79,13 @@ public class CqlPreprocessor extends CqlPreprocessorElmCommonVisitor {
     @Override
     @SuppressWarnings("unchecked")
     public Object visitLibraryDefinition(cqlParser.LibraryDefinitionContext ctx) {
-        List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
+        List<String> identifiers = (List<String>) visit(ctx.qualifiedIdentifier());
         libraryInfo.setLibraryName(identifiers.remove(identifiers.size() - 1));
         if (identifiers.size() > 0) {
             libraryInfo.setNamespaceName(String.join(".", identifiers));
         }
         if (ctx.versionSpecifier() != null) {
-            libraryInfo.setVersion((String)visit(ctx.versionSpecifier()));
+            libraryInfo.setVersion((String) visit(ctx.versionSpecifier()));
         }
         libraryInfo.setDefinition(ctx);
         processHeader(ctx, libraryInfo);
@@ -96,18 +96,17 @@ public class CqlPreprocessor extends CqlPreprocessorElmCommonVisitor {
     @SuppressWarnings("unchecked")
     public Object visitIncludeDefinition(cqlParser.IncludeDefinitionContext ctx) {
         IncludeDefinitionInfo includeDefinition = new IncludeDefinitionInfo();
-        List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
+        List<String> identifiers = (List<String>) visit(ctx.qualifiedIdentifier());
         includeDefinition.setName(identifiers.remove(identifiers.size() - 1));
         if (identifiers.size() > 0) {
             includeDefinition.setNamespaceName(String.join(".", identifiers));
         }
         if (ctx.versionSpecifier() != null) {
-            includeDefinition.setVersion((String)visit(ctx.versionSpecifier()));
+            includeDefinition.setVersion((String) visit(ctx.versionSpecifier()));
         }
         if (ctx.localIdentifier() != null) {
             includeDefinition.setLocalName(parseString(ctx.localIdentifier()));
-        }
-        else {
+        } else {
             includeDefinition.setLocalName(includeDefinition.getName());
         }
         includeDefinition.setDefinition(ctx);
@@ -120,28 +119,31 @@ public class CqlPreprocessor extends CqlPreprocessorElmCommonVisitor {
     @SuppressWarnings("unchecked")
     public Object visitUsingDefinition(cqlParser.UsingDefinitionContext ctx) {
         UsingDefinitionInfo usingDefinition = new UsingDefinitionInfo();
-        List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
+        List<String> identifiers = (List<String>) visit(ctx.qualifiedIdentifier());
         final String unqualifiedIdentifier = identifiers.remove(identifiers.size() - 1);
         usingDefinition.setName(unqualifiedIdentifier);
         if (identifiers.size() > 0) {
             usingDefinition.setNamespaceName(String.join(".", identifiers));
         }
         if (ctx.versionSpecifier() != null) {
-            usingDefinition.setVersion((String)visit(ctx.versionSpecifier()));
+            usingDefinition.setVersion((String) visit(ctx.versionSpecifier()));
         }
         if (ctx.localIdentifier() != null) {
             usingDefinition.setLocalName(parseString(ctx.localIdentifier()));
-        }
-        else {
+        } else {
             usingDefinition.setLocalName(usingDefinition.getName());
         }
         usingDefinition.setDefinition(ctx);
         processHeader(ctx, usingDefinition);
         libraryInfo.addUsingDefinition(usingDefinition);
 
-        final String namespaceName = !identifiers.isEmpty() ? String.join(".", identifiers) :
-                libraryBuilder.isWellKnownModelName(unqualifiedIdentifier) ? null :
-                        (libraryBuilder.getNamespaceInfo() != null ? libraryBuilder.getNamespaceInfo().getName() : null);
+        final String namespaceName = !identifiers.isEmpty()
+                ? String.join(".", identifiers)
+                : libraryBuilder.isWellKnownModelName(unqualifiedIdentifier)
+                        ? null
+                        : (libraryBuilder.getNamespaceInfo() != null
+                                ? libraryBuilder.getNamespaceInfo().getName()
+                                : null);
 
         NamespaceInfo modelNamespace = null;
         if (namespaceName != null) {
@@ -149,15 +151,18 @@ public class CqlPreprocessor extends CqlPreprocessorElmCommonVisitor {
             modelNamespace = new NamespaceInfo(namespaceName, namespaceUri);
         }
 
-        String localIdentifier = ctx.localIdentifier() == null ? unqualifiedIdentifier : parseString(ctx.localIdentifier());
+        String localIdentifier =
+                ctx.localIdentifier() == null ? unqualifiedIdentifier : parseString(ctx.localIdentifier());
         if (!localIdentifier.equals(unqualifiedIdentifier)) {
-            throw new IllegalArgumentException(
-                    String.format("Local identifiers for models must be the same as the name of the model in this release of the translator (Model %s, Called %s)",
-                            unqualifiedIdentifier, localIdentifier));
+            throw new IllegalArgumentException(String.format(
+                    "Local identifiers for models must be the same as the name of the model in this release of the translator (Model %s, Called %s)",
+                    unqualifiedIdentifier, localIdentifier));
         }
 
-        // This should only be called once, from this class, and not from Cql2ElmVisitor otherwise there will be duplicate errors sometimes
-        Model model = getModel(modelNamespace, unqualifiedIdentifier, parseString(ctx.versionSpecifier()), localIdentifier);
+        // This should only be called once, from this class, and not from Cql2ElmVisitor otherwise there will be
+        // duplicate errors sometimes
+        Model model =
+                getModel(modelNamespace, unqualifiedIdentifier, parseString(ctx.versionSpecifier()), localIdentifier);
 
         return usingDefinition;
     }
@@ -219,8 +224,7 @@ public class CqlPreprocessor extends CqlPreprocessorElmCommonVisitor {
         String unqualifiedContext = parseString(ctx.identifier());
         if (modelIdentifier != null && !modelIdentifier.equals("")) {
             setCurrentContext(modelIdentifier + "." + unqualifiedContext);
-        }
-        else {
+        } else {
             setCurrentContext(unqualifiedContext);
         }
 
@@ -271,10 +275,10 @@ public class CqlPreprocessor extends CqlPreprocessorElmCommonVisitor {
         DataType resultType = libraryBuilder.resolveTypeName(modelIdentifier, identifier);
         if (null == resultType) {
             libraryBuilder.addNamedTypeSpecifierResult(typeSpecifierKey, ResultWithPossibleError.withError());
-            throw new CqlCompilerException(String.format("Could not find type for model: %s and name: %s", modelIdentifier, identifier));
+            throw new CqlCompilerException(
+                    String.format("Could not find type for model: %s and name: %s", modelIdentifier, identifier));
         }
-        NamedTypeSpecifier result = of.createNamedTypeSpecifier()
-                .withName(libraryBuilder.dataTypeToQName(resultType));
+        NamedTypeSpecifier result = of.createNamedTypeSpecifier().withName(libraryBuilder.dataTypeToQName(resultType));
 
         // Fluent API would be nice here, but resultType isn't part of the model so...
         result.setResultType(resultType);
@@ -301,7 +305,7 @@ public class CqlPreprocessor extends CqlPreprocessorElmCommonVisitor {
         // Return the list of qualified identifiers for resolution by the containing element
         List<String> identifiers = new ArrayList<>();
         for (cqlParser.QualifierContext qualifierContext : ctx.qualifier()) {
-            String qualifier = (String)visit(qualifierContext);
+            String qualifier = (String) visit(qualifierContext);
             identifiers.add(qualifier);
         }
 
@@ -315,7 +319,7 @@ public class CqlPreprocessor extends CqlPreprocessorElmCommonVisitor {
         // Return the list of qualified identifiers for resolution by the containing element
         List<String> identifiers = new ArrayList<>();
         for (cqlParser.QualifierExpressionContext qualifierContext : ctx.qualifierExpression()) {
-            String qualifier = (String)visit(qualifierContext);
+            String qualifier = (String) visit(qualifierContext);
             identifiers.add(qualifier);
         }
 

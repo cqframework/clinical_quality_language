@@ -22,8 +22,7 @@ public class ValueSetRefEvaluator {
                 vs.addCodeSystem(cs);
             }
             return vs;
-        }
-        finally {
+        } finally {
             state.exitLibrary(enteredLibrary);
         }
     }
@@ -33,8 +32,7 @@ public class ValueSetRefEvaluator {
 
         if (vsr.isPreserve() != null && vsr.isPreserve()) {
             return vs;
-        }
-        else {
+        } else {
             TerminologyProvider tp = state.getEnvironment().getTerminologyProvider();
             return tp.expand(ValueSetInfo.fromValueSet(vs));
         }

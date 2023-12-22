@@ -1,6 +1,5 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
-
 public class EndsWithEvaluator {
 
     public static Object endsWith(String argument, String suffix) {
@@ -9,5 +8,4 @@ public class EndsWithEvaluator {
         }
         return argument.endsWith(suffix);
     }
-
 }

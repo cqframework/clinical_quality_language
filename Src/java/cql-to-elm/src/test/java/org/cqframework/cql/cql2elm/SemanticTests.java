@@ -1,24 +1,23 @@
 package org.cqframework.cql.cql2elm;
 
-import org.hl7.cql.model.ChoiceType;
-import org.hl7.cql.model.DataType;
-import org.hl7.cql.model.NamedType;
-import org.hl7.elm.r1.*;
-import org.testng.annotations.Test;
-
-import java.io.IOException;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.testng.Assert.assertThrows;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.hl7.cql.model.ChoiceType;
+import org.hl7.cql.model.DataType;
+import org.hl7.cql.model.NamedType;
+import org.hl7.elm.r1.*;
+import org.testng.annotations.Test;
 
 public class SemanticTests {
 
@@ -135,6 +134,7 @@ public class SemanticTests {
     public void testTimeOperators() throws IOException {
         runSemanticTest("OperatorTests/TimeOperators.cql");
     }
+
     @Test
     public void testTypeOperators() throws IOException {
         CqlTranslator translator = runSemanticTest("OperatorTests/TypeOperators.cql");
@@ -149,33 +149,31 @@ public class SemanticTests {
 
         ExpressionDef def = defs.get("TestIf");
         assertThat(def.getResultType(), instanceOf(ChoiceType.class));
-        ChoiceType choiceType = (ChoiceType)def.getResultType();
+        ChoiceType choiceType = (ChoiceType) def.getResultType();
         DataType type = null;
         for (DataType dt : choiceType.getTypes()) {
             if (type == null) {
                 type = dt;
                 assertThat(dt, instanceOf(NamedType.class));
-                assertThat(((NamedType)dt).getName(), equalTo("System.String"));
-            }
-            else {
+                assertThat(((NamedType) dt).getName(), equalTo("System.String"));
+            } else {
                 assertThat(dt, instanceOf(NamedType.class));
-                assertThat(((NamedType)dt).getName(), equalTo("System.Boolean"));
+                assertThat(((NamedType) dt).getName(), equalTo("System.Boolean"));
             }
         }
 
         def = defs.get("TestCase");
         assertThat(def.getResultType(), instanceOf(ChoiceType.class));
-        choiceType = (ChoiceType)def.getResultType();
+        choiceType = (ChoiceType) def.getResultType();
         type = null;
         for (DataType dt : choiceType.getTypes()) {
             if (type == null) {
                 type = dt;
                 assertThat(dt, instanceOf(NamedType.class));
-                assertThat(((NamedType)dt).getName(), equalTo("System.String"));
-            }
-            else {
+                assertThat(((NamedType) dt).getName(), equalTo("System.String"));
+            } else {
                 assertThat(dt, instanceOf(NamedType.class));
-                assertThat(((NamedType)dt).getName(), equalTo("System.Boolean"));
+                assertThat(((NamedType) dt).getName(), equalTo("System.Boolean"));
             }
         }
     }
@@ -262,12 +260,13 @@ public class SemanticTests {
 
     // NOTE: This test is commented out to an issue with the ANTLR tooling. In 4.5, this test documents the
     // unacceptable performance of the parser. In 4.6+, the parser does not correctly resolve some types of
-    // expressions (see TricksyParse and ShouldFail). See Github issue [#343](https://github.com/cqframework/clinical_quality_language/issues/343)
+    // expressions (see TricksyParse and ShouldFail). See Github issue
+    // [#343](https://github.com/cqframework/clinical_quality_language/issues/343)
     // for more detail.
-    //@Test
-    //public void testParserPerformance() throws IOException {
+    // @Test
+    // public void testParserPerformance() throws IOException {
     //    runSemanticTest("ParserPerformance.cql");
-    //}
+    // }
 
     @Test
     public void tricksyParse() throws IOException {
@@ -303,11 +302,11 @@ public class SemanticTests {
         }
 
         ExpressionDef def = defs.get("Estimated Due Date");
-        Last last = (Last)def.getExpression();
-        Query query = (Query)last.getSource();
+        Last last = (Last) def.getExpression();
+        Query query = (Query) last.getSource();
         AliasedQuerySource source = query.getSource().get(0);
-        Retrieve retrieve = (Retrieve)source.getExpression();
-        ExpressionRef mother = (ExpressionRef)retrieve.getContext();
+        Retrieve retrieve = (Retrieve) source.getExpression();
+        ExpressionRef mother = (ExpressionRef) retrieve.getContext();
         assertThat(mother.getName(), is("Mother"));
     }
 
@@ -323,10 +322,11 @@ public class SemanticTests {
         assertThat(library.getStatements().getDef(), notNullValue());
         assertThat(library.getStatements().getDef().size(), equalTo(2));
         assertThat(library.getStatements().getDef().get(1), instanceOf(ExpressionDef.class));
-        ExpressionDef expressionDef = (ExpressionDef)library.getStatements().getDef().get(1);
+        ExpressionDef expressionDef =
+                (ExpressionDef) library.getStatements().getDef().get(1);
         assertThat(expressionDef.getExpression(), instanceOf(Implies.class));
-        assertThat( expressionDef.getName(), is("Boolean Implies"));
-        assertThat(((Implies)expressionDef.getExpression()).getOperand().size(), is(2));
+        assertThat(expressionDef.getName(), is("Boolean Implies"));
+        assertThat(((Implies) expressionDef.getExpression()).getOperand().size(), is(2));
     }
 
     @Test
@@ -347,28 +347,31 @@ public class SemanticTests {
         assertThat(library.getStatements().getDef(), notNullValue());
         assertThat(library.getStatements().getDef().size(), equalTo(1));
         assertThat(library.getStatements().getDef().get(0), instanceOf(FunctionDef.class));
-        FunctionDef fd = (FunctionDef)library.getStatements().getDef().get(0);
+        FunctionDef fd = (FunctionDef) library.getStatements().getDef().get(0);
         assertThat(fd.getExpression(), instanceOf(If.class));
-        If i = (If)fd.getExpression();
+        If i = (If) fd.getExpression();
         assertThat(i.getCondition(), instanceOf(Not.class));
     }
 
     @Test
     public void testIssue405() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("Issue405.cql", 0, CqlCompilerOptions.Options.EnableAnnotations);
+        CqlTranslator translator =
+                TestUtils.runSemanticTest("Issue405.cql", 0, CqlCompilerOptions.Options.EnableAnnotations);
         Library library = translator.toELM();
         assertThat(library.getStatements().getDef().size(), equalTo(6));
         assertThat(library.getStatements().getDef().get(3), instanceOf(ExpressionDef.class));
-        ExpressionDef expressionDef = (ExpressionDef) library.getStatements().getDef().get(3);
+        ExpressionDef expressionDef =
+                (ExpressionDef) library.getStatements().getDef().get(3);
         assertThat(expressionDef.getExpression().getLocalId(), notNullValue());
-
     }
 
     @Test
     public void testIssue395() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("Issue395.cql", 0, CqlCompilerOptions.Options.EnableAnnotations);
+        CqlTranslator translator =
+                TestUtils.runSemanticTest("Issue395.cql", 0, CqlCompilerOptions.Options.EnableAnnotations);
         Library library = translator.toELM();
-        ExpressionDef expressionDef = (ExpressionDef) library.getStatements().getDef().get(2);
+        ExpressionDef expressionDef =
+                (ExpressionDef) library.getStatements().getDef().get(2);
         assertThat(expressionDef.getExpression().getLocalId(), notNullValue());
     }
 
@@ -412,18 +415,18 @@ public class SemanticTests {
           </before>
          */
         assertThat(ed.getExpression(), instanceOf(Before.class));
-        Before b = (Before)ed.getExpression();
+        Before b = (Before) ed.getExpression();
         assertThat(b.getOperand(), notNullValue());
         assertThat(b.getOperand().size(), equalTo(2));
         assertThat(b.getOperand().get(0), instanceOf(If.class));
         assertThat(b.getOperand().get(1), instanceOf(Interval.class));
-        If i = (If)b.getOperand().get(0);
+        If i = (If) b.getOperand().get(0);
         assertThat(i.getCondition(), instanceOf(IsNull.class));
         assertThat(i.getThen(), instanceOf(Null.class));
         assertThat(i.getElse(), instanceOf(Interval.class));
-        IsNull isNull = (IsNull)i.getCondition();
+        IsNull isNull = (IsNull) i.getCondition();
         assertThat(isNull.getOperand(), instanceOf(As.class));
-        As a = (As)isNull.getOperand();
+        As a = (As) isNull.getOperand();
         assertThat(a.getOperand(), instanceOf(Null.class));
     }
 
@@ -431,7 +434,7 @@ public class SemanticTests {
         FunctionDef fd = null;
         for (ExpressionDef ed : library.getStatements().getDef()) {
             if (ed instanceof FunctionDef && ed.getName().equals(functionName)) {
-                return (FunctionDef)ed;
+                return (FunctionDef) ed;
             }
         }
         return null;
@@ -441,64 +444,64 @@ public class SemanticTests {
     public void testIssue643() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("Issue643.cql", 0);
         /*
-            define function EncountersWithCoding(encounters List<Encounter>, valueSet System.ValueSet):
-              encounters E
-                where E.class in valueSet
+           define function EncountersWithCoding(encounters List<Encounter>, valueSet System.ValueSet):
+             encounters E
+               where E.class in valueSet
 
-            <query>
-              <source>
-                <operandRef encounters/>
-              </source>
-              <where>
-                <inValueSet>
-                  <functionRef ToConcept>
-                      <property class/>
-                        <aliasRef E/>
-                      </property>
-                  </functionRef>
-                  <operandRef valueSet/>
-                </inValueSet>
-              </where>
-            </query>
+           <query>
+             <source>
+               <operandRef encounters/>
+             </source>
+             <where>
+               <inValueSet>
+                 <functionRef ToConcept>
+                     <property class/>
+                       <aliasRef E/>
+                     </property>
+                 </functionRef>
+                 <operandRef valueSet/>
+               </inValueSet>
+             </where>
+           </query>
 
-         */
+        */
 
         FunctionDef fd = resolveFunctionDef(translator.getTranslatedLibrary().getLibrary(), "EncountersWithCoding");
         assertThat(fd.getExpression(), instanceOf(Query.class));
-        Query q = (Query)fd.getExpression();
+        Query q = (Query) fd.getExpression();
         assertThat(q.getWhere(), instanceOf(InValueSet.class));
-        InValueSet ivs = (InValueSet)q.getWhere();
+        InValueSet ivs = (InValueSet) q.getWhere();
         assertThat(ivs.getCode(), instanceOf(FunctionRef.class));
         assertThat(ivs.getValueset(), nullValue());
         assertThat(ivs.getValuesetExpression(), instanceOf(OperandRef.class));
 
         /*
-            define function EncountersWithType(encounters List<Encounter>, valueSet System.ValueSet):
-              encounters E
-                where E.type in valueSet
+           define function EncountersWithType(encounters List<Encounter>, valueSet System.ValueSet):
+             encounters E
+               where E.type in valueSet
 
-         */
+        */
 
         fd = resolveFunctionDef(translator.getTranslatedLibrary().getLibrary(), "EncountersWithType");
         assertThat(fd.getExpression(), instanceOf(Query.class));
-        q = (Query)fd.getExpression();
+        q = (Query) fd.getExpression();
         assertThat(q.getWhere(), instanceOf(AnyInValueSet.class));
-        AnyInValueSet aivs = (AnyInValueSet)q.getWhere();
+        AnyInValueSet aivs = (AnyInValueSet) q.getWhere();
         assertThat(aivs.getCodes(), instanceOf(Query.class));
         assertThat(aivs.getValueset(), nullValue());
         assertThat(aivs.getValuesetExpression(), instanceOf(OperandRef.class));
 
         /*
-            define function EncountersWithServiceType(encounters List<Encounter>, valueSet System.ValueSet):
-              encounters E
-                where E.serviceType in valueSet
-         */
+           define function EncountersWithServiceType(encounters List<Encounter>, valueSet System.ValueSet):
+             encounters E
+               where E.serviceType in valueSet
+        */
 
         fd = resolveFunctionDef(translator.getTranslatedLibrary().getLibrary(), "EncountersWithServiceType");
         assertThat(fd.getExpression(), instanceOf(Query.class));
-        q = (Query)fd.getExpression();
+        q = (Query) fd.getExpression();
         assertThat(q.getWhere(), instanceOf(InValueSet.class));
-        ivs = (InValueSet)q.getWhere();
+        ivs = (InValueSet) q.getWhere();
         assertThat(ivs.getCode(), instanceOf(FunctionRef.class));
         assertThat(ivs.getValueset(), nullValue());
         assertThat(ivs.getValuesetExpression(), instanceOf(OperandRef.class));
@@ -510,10 +513,10 @@ public class SemanticTests {
         TestUtils.runSemanticTest("Issue827.cql", 0);
     }
 
-
     @Test
     public void testIssueEmptySourceInterval() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("IssueEmptySourceInterval.cql", 1, CqlCompilerOptions.Options.EnableAnnotations);
+        CqlTranslator translator = TestUtils.runSemanticTest(
+                "IssueEmptySourceInterval.cql", 1, CqlCompilerOptions.Options.EnableAnnotations);
 
         java.util.List<CqlCompilerException> exceptions = translator.getExceptions();
 
@@ -523,7 +526,11 @@ public class SemanticTests {
     @Test
     public void TestVSCastFunction14() throws IOException {
         CqlCompilerOptions options = new CqlCompilerOptions()
-                .withOptions(CqlCompilerOptions.Options.EnableAnnotations, CqlCompilerOptions.Options.DisableListDemotion, CqlCompilerOptions.Options.DisableListPromotion, CqlCompilerOptions.Options.DisableMethodInvocation)
+                .withOptions(
+                        CqlCompilerOptions.Options.EnableAnnotations,
+                        CqlCompilerOptions.Options.DisableListDemotion,
+                        CqlCompilerOptions.Options.DisableListPromotion,
+                        CqlCompilerOptions.Options.DisableMethodInvocation)
                 .withCompatibilityLevel("1.4");
         CqlTranslator translator = TestUtils.runSemanticTest("TestVSCastFunction.cql", 0, options);
         ExpressionDef ed = translator.getTranslatedLibrary().resolveExpressionRef("TestConditionsViaFunction");
@@ -542,15 +549,15 @@ public class SemanticTests {
           </def>
         */
         assertThat(ed.getExpression(), instanceOf(FunctionRef.class));
-        FunctionRef fr = (FunctionRef)ed.getExpression();
+        FunctionRef fr = (FunctionRef) ed.getExpression();
         assertThat(fr.getName(), equalTo("Conditions in ValueSet"));
         assertThat(fr.getOperand().size(), equalTo(2));
         assertThat(fr.getOperand().get(1), instanceOf(FunctionRef.class));
-        fr = (FunctionRef)fr.getOperand().get(1);
+        fr = (FunctionRef) fr.getOperand().get(1);
         assertThat(fr.getName(), equalTo("VS Cast Function"));
         assertThat(fr.getOperand().size(), equalTo(1));
         assertThat(fr.getOperand().get(0), instanceOf(ValueSetRef.class));
-        ValueSetRef vsr = (ValueSetRef)fr.getOperand().get(0);
+        ValueSetRef vsr = (ValueSetRef) fr.getOperand().get(0);
         assertThat(vsr.getName(), equalTo("Narcolepsy"));
         assertThat(vsr.isPreserve(), nullValue());
 
@@ -568,20 +575,24 @@ public class SemanticTests {
           </def>
         */
         assertThat(ed.getExpression(), instanceOf(FunctionRef.class));
-        fr = (FunctionRef)ed.getExpression();
+        fr = (FunctionRef) ed.getExpression();
         assertThat(fr.getName(), equalTo("Conditions in ValueSet"));
         assertThat(fr.getOperand().size(), equalTo(2));
         assertThat(fr.getOperand().get(1), instanceOf(ValueSetRef.class));
-        vsr = (ValueSetRef)fr.getOperand().get(1);
+        vsr = (ValueSetRef) fr.getOperand().get(1);
         assertThat(vsr.getName(), equalTo("Narcolepsy"));
         assertThat(vsr.isPreserve(), nullValue());
     }
 
     @Test
     public void TestVSCastFunction15() throws IOException {
-        // TODO: This test needs to pass, most likely by implicitly converting a ValueSet to a ValueSetRef? Or maybe a new explicit ELM operation?
+        // TODO: This test needs to pass, most likely by implicitly converting a ValueSet to a ValueSetRef? Or maybe a
+        // new explicit ELM operation?
         CqlCompilerOptions options = new CqlCompilerOptions()
-                .withOptions(CqlCompilerOptions.Options.DisableListDemotion, CqlCompilerOptions.Options.DisableListPromotion, CqlCompilerOptions.Options.DisableMethodInvocation);
+                .withOptions(
+                        CqlCompilerOptions.Options.DisableListDemotion,
+                        CqlCompilerOptions.Options.DisableListPromotion,
+                        CqlCompilerOptions.Options.DisableMethodInvocation);
         CqlTranslator translator = TestUtils.runSemanticTest("TestVSCastFunction.cql", 0, options);
         ExpressionDef ed = translator.getTranslatedLibrary().resolveExpressionRef("TestConditionsViaFunction");
 
@@ -601,17 +612,17 @@ public class SemanticTests {
           </def>
         */
         assertThat(ed.getExpression(), instanceOf(FunctionRef.class));
-        FunctionRef fr = (FunctionRef)ed.getExpression();
+        FunctionRef fr = (FunctionRef) ed.getExpression();
         assertThat(fr.getName(), equalTo("Conditions in ValueSet"));
         assertThat(fr.getOperand().size(), equalTo(2));
         assertThat(fr.getOperand().get(1), instanceOf(FunctionRef.class));
-        fr = (FunctionRef)fr.getOperand().get(1);
+        fr = (FunctionRef) fr.getOperand().get(1);
         assertThat(fr.getName(), equalTo("VS Cast Function"));
         assertThat(fr.getOperand().size(), equalTo(1));
         assertThat(fr.getOperand().get(0), instanceOf(ExpandValueSet.class));
-        ExpandValueSet evs = (ExpandValueSet)fr.getOperand().get(0);
+        ExpandValueSet evs = (ExpandValueSet) fr.getOperand().get(0);
         assertThat(evs.getOperand(), instanceOf(ValueSetRef.class));
-        ValueSetRef vsr = (ValueSetRef)evs.getOperand();
+        ValueSetRef vsr = (ValueSetRef) evs.getOperand();
         assertThat(vsr.getName(), equalTo("Narcolepsy"));
         assertThat(vsr.isPreserve(), equalTo(true));
 
@@ -631,13 +642,13 @@ public class SemanticTests {
           </def>
         */
         assertThat(ed.getExpression(), instanceOf(FunctionRef.class));
-        fr = (FunctionRef)ed.getExpression();
+        fr = (FunctionRef) ed.getExpression();
         assertThat(fr.getName(), equalTo("Conditions in ValueSet"));
         assertThat(fr.getOperand().size(), equalTo(2));
         assertThat(fr.getOperand().get(1), instanceOf(ExpandValueSet.class));
-        evs = (ExpandValueSet)fr.getOperand().get(1);
+        evs = (ExpandValueSet) fr.getOperand().get(1);
         assertThat(evs.getOperand(), instanceOf(ValueSetRef.class));
-        vsr = (ValueSetRef)evs.getOperand();
+        vsr = (ValueSetRef) evs.getOperand();
         assertThat(vsr.getName(), equalTo("Narcolepsy"));
         assertThat(vsr.isPreserve(), equalTo(true));
     }
@@ -653,7 +664,14 @@ public class SemanticTests {
 
         final List<CqlCompilerException> errors = translator.getErrors();
 
-        assertTrue(errors.stream().map(Throwable::getMessage).collect(Collectors.toSet()).toString(), errors.stream().map(Throwable::getMessage).anyMatch("Could not find type for model: null and name: ThisTypeDoesNotExist"::equals));
+        assertTrue(
+                errors.stream()
+                        .map(Throwable::getMessage)
+                        .collect(Collectors.toSet())
+                        .toString(),
+                errors.stream()
+                        .map(Throwable::getMessage)
+                        .anyMatch("Could not find type for model: null and name: ThisTypeDoesNotExist"::equals));
     }
 
     @Test
@@ -663,7 +681,14 @@ public class SemanticTests {
         final List<CqlCompilerException> errors = translator.getErrors();
 
         // Make it clear we treat a Library type with a mismatched case the same as a non-existent type
-        assertTrue(errors.stream().map(Throwable::getMessage).collect(Collectors.toSet()).toString(), errors.stream().map(Throwable::getMessage).anyMatch("Could not find type for model: FHIR and name: Code"::equals));
+        assertTrue(
+                errors.stream()
+                        .map(Throwable::getMessage)
+                        .collect(Collectors.toSet())
+                        .toString(),
+                errors.stream()
+                        .map(Throwable::getMessage)
+                        .anyMatch("Could not find type for model: FHIR and name: Code"::equals));
     }
 
     @Test
@@ -687,7 +712,7 @@ public class SemanticTests {
 
         assertThat(caseDef.getResultType(), instanceOf(ChoiceType.class));
 
-        ChoiceType choiceType = (ChoiceType)caseDef.getResultType();
+        ChoiceType choiceType = (ChoiceType) caseDef.getResultType();
 
         Set<String> expectedChoiceTypes = new HashSet<>();
         expectedChoiceTypes.add("System.String");
@@ -696,7 +721,7 @@ public class SemanticTests {
 
         Set<String> actualChoiceTypes = new HashSet<>();
         for (DataType dt : choiceType.getTypes()) {
-            actualChoiceTypes.add(((NamedType)dt).getName());
+            actualChoiceTypes.add(((NamedType) dt).getName());
         }
         assertTrue("Expected types are String, Boolean, and Integer: ", actualChoiceTypes.equals(expectedChoiceTypes));
     }
@@ -716,7 +741,7 @@ public class SemanticTests {
         ExpressionDef ifDef = defs.get("If");
         assertThat(ifDef.getResultType(), instanceOf(ChoiceType.class));
 
-        ChoiceType choiceType = (ChoiceType)ifDef.getResultType();
+        ChoiceType choiceType = (ChoiceType) ifDef.getResultType();
 
         Set<String> expectedChoiceTypes = new HashSet<>();
         expectedChoiceTypes.add("System.String");
@@ -724,7 +749,7 @@ public class SemanticTests {
 
         Set<String> actualChoiceTypes = new HashSet<>();
         for (DataType dt : choiceType.getTypes()) {
-                actualChoiceTypes.add(((NamedType)dt).getName());
+            actualChoiceTypes.add(((NamedType) dt).getName());
         }
         assertTrue("Expected return types are String and Boolean: ", actualChoiceTypes.equals(expectedChoiceTypes));
     }
@@ -742,11 +767,13 @@ public class SemanticTests {
         return TestUtils.runSemanticTest(testFileName, expectedErrors);
     }
 
-    private CqlTranslator runSemanticTest(String testFileName, int expectedErrors, CqlCompilerOptions.Options... options) throws IOException {
+    private CqlTranslator runSemanticTest(
+            String testFileName, int expectedErrors, CqlCompilerOptions.Options... options) throws IOException {
         return TestUtils.runSemanticTest(testFileName, expectedErrors, options);
     }
 
-    private CqlTranslator runSemanticTest(String testFileName, int expectedErrors, CqlCompilerOptions options) throws IOException {
+    private CqlTranslator runSemanticTest(String testFileName, int expectedErrors, CqlCompilerOptions options)
+            throws IOException {
         return TestUtils.runSemanticTest(testFileName, expectedErrors, options);
     }
 }

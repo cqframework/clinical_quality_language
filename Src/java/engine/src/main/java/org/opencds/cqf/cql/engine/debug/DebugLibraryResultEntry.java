@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.hl7.elm.r1.Element;
 
 public class DebugLibraryResultEntry {
     private String libraryName;
+
     public String getLibraryName() {
         return this.libraryName;
     }
@@ -19,6 +19,7 @@ public class DebugLibraryResultEntry {
     }
 
     private Map<DebugLocator, List<DebugResultEntry>> results;
+
     public Map<DebugLocator, List<DebugResultEntry>> getResults() {
         return results;
     }
@@ -33,7 +34,7 @@ public class DebugLibraryResultEntry {
 
     public void logDebugResultEntry(Element node, Object result) {
         if (node instanceof Element) {
-            Element element = (Element)node;
+            Element element = (Element) node;
             if (element.getLocalId() != null) {
                 DebugLocator locator = new DebugLocator(DebugLocator.DebugLocatorType.NODE_ID, element.getLocalId());
                 logDebugResult(locator, result);
@@ -43,9 +44,9 @@ public class DebugLibraryResultEntry {
                 DebugLocator locator = new DebugLocator(Location.fromLocator(element.getLocator()));
                 logDebugResult(locator, result);
             }
-        }
-        else {
-            DebugLocator locator = new DebugLocator(DebugLocator.DebugLocatorType.NODE_TYPE, node.getClass().getSimpleName());
+        } else {
+            DebugLocator locator = new DebugLocator(
+                    DebugLocator.DebugLocatorType.NODE_TYPE, node.getClass().getSimpleName());
             logDebugResult(locator, result);
         }
     }

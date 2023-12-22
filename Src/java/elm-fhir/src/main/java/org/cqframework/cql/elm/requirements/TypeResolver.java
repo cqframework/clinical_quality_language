@@ -1,13 +1,12 @@
 package org.cqframework.cql.elm.requirements;
 
+import java.util.ArrayList;
+import javax.xml.namespace.QName;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.model.Model;
 import org.hl7.cql.model.*;
 import org.hl7.elm.r1.*;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
-
-import javax.xml.namespace.QName;
-import java.util.ArrayList;
 
 public class TypeResolver {
     public TypeResolver(LibraryManager libraryManager) {
@@ -18,16 +17,17 @@ public class TypeResolver {
     }
 
     private LibraryManager libraryManager;
+
     public LibraryManager getLibraryManager() {
         return libraryManager;
     }
 
     public String getTypeUri(DataType type) {
         if (type instanceof ListType) {
-            return getTypeUri(((ListType)type).getElementType());
+            return getTypeUri(((ListType) type).getElementType());
         }
         if (type instanceof ClassType) {
-            ClassType classType = (ClassType)type;
+            ClassType classType = (ClassType) type;
             if (classType.getIdentifier() != null) {
                 return classType.getIdentifier();
             }
@@ -42,7 +42,7 @@ public class TypeResolver {
 
     public QName dataTypeToProfileQName(DataType type) {
         if (type instanceof ClassType) {
-            ClassType classType = (ClassType)type;
+            ClassType classType = (ClassType) type;
             if (classType.getIdentifier() != null) {
                 int tailIndex = classType.getIdentifier().lastIndexOf('/');
                 if (tailIndex > 0) {
@@ -71,8 +71,11 @@ public class TypeResolver {
      */
     public QName dataTypeToQName(DataType type) {
         if (type instanceof NamedType) {
-            NamedType namedType = (NamedType)type;
-            ModelInfo modelInfo = libraryManager.getModelManager().resolveModel(namedType.getNamespace()).getModelInfo();
+            NamedType namedType = (NamedType) type;
+            ModelInfo modelInfo = libraryManager
+                    .getModelManager()
+                    .resolveModel(namedType.getNamespace())
+                    .getModelInfo();
             return new QName(modelInfo.getUrl(), namedType.getSimpleName());
         }
 
@@ -109,22 +112,19 @@ public class TypeResolver {
         }
 
         if (typeSpecifier instanceof NamedTypeSpecifier) {
-            return resolveNamedTypeSpecifier((NamedTypeSpecifier)typeSpecifier);
-        }
-        else if (typeSpecifier instanceof TupleTypeSpecifier) {
-            return resolveTupleTypeSpecifier((TupleTypeSpecifier)typeSpecifier);
-        }
-        else if (typeSpecifier instanceof IntervalTypeSpecifier) {
-            return resolveIntervalTypeSpecifier((IntervalTypeSpecifier)typeSpecifier);
-        }
-        else if (typeSpecifier instanceof ListTypeSpecifier) {
-            return resolveListTypeSpecifier((ListTypeSpecifier)typeSpecifier);
-        }
-        else if (typeSpecifier instanceof ChoiceTypeSpecifier) {
-            return resolveChoiceTypeSpecifier((ChoiceTypeSpecifier)typeSpecifier);
-        }
-        else {
-            throw new IllegalArgumentException(String.format("Unknown type specifier category: %s", typeSpecifier.getClass().getSimpleName()));
+            return resolveNamedTypeSpecifier((NamedTypeSpecifier) typeSpecifier);
+        } else if (typeSpecifier instanceof TupleTypeSpecifier) {
+            return resolveTupleTypeSpecifier((TupleTypeSpecifier) typeSpecifier);
+        } else if (typeSpecifier instanceof IntervalTypeSpecifier) {
+            return resolveIntervalTypeSpecifier((IntervalTypeSpecifier) typeSpecifier);
+        } else if (typeSpecifier instanceof ListTypeSpecifier) {
+            return resolveListTypeSpecifier((ListTypeSpecifier) typeSpecifier);
+        } else if (typeSpecifier instanceof ChoiceTypeSpecifier) {
+            return resolveChoiceTypeSpecifier((ChoiceTypeSpecifier) typeSpecifier);
+        } else {
+            throw new IllegalArgumentException(String.format(
+                    "Unknown type specifier category: %s",
+                    typeSpecifier.getClass().getSimpleName()));
         }
     }
 
@@ -135,7 +135,8 @@ public class TypeResolver {
     private DataType resolveTupleTypeSpecifier(TupleTypeSpecifier typeSpecifier) {
         TupleType tupleType = new TupleType();
         for (TupleElementDefinition element : typeSpecifier.getElement()) {
-            TupleTypeElement tupleElement = new TupleTypeElement(element.getName(), resolveTypeSpecifier(element.getElementType()));
+            TupleTypeElement tupleElement =
+                    new TupleTypeElement(element.getName(), resolveTypeSpecifier(element.getElementType()));
             tupleType.addElement(tupleElement);
         }
         return tupleType;
@@ -162,7 +163,8 @@ public class TypeResolver {
             throw new IllegalArgumentException("Unqualified type name cannot be resolved");
         }
 
-        // NOTE: Assumption here is that the appropriate version of the given model has already been resolved in this context
+        // NOTE: Assumption here is that the appropriate version of the given model has already been resolved in this
+        // context
         Model model = libraryManager.getModelManager().resolveModel(modelName);
         DataType result = model.resolveTypeName(typeName);
         if (result == null) {
@@ -172,6 +174,7 @@ public class TypeResolver {
     }
 
     private DataType stringType;
+
     public DataType getStringType() {
         if (stringType == null) {
             stringType = resolveTypeName("System", "String");
@@ -180,6 +183,7 @@ public class TypeResolver {
     }
 
     private DataType codeType;
+
     public DataType getCodeType() {
         if (codeType == null) {
             codeType = resolveTypeName("System", "Code");
@@ -188,6 +192,7 @@ public class TypeResolver {
     }
 
     private DataType conceptType;
+
     public DataType getConceptType() {
         if (conceptType == null) {
             conceptType = resolveTypeName("System", "Concept");
@@ -196,6 +201,7 @@ public class TypeResolver {
     }
 
     private DataType valueSetType;
+
     public DataType getValueSetType() {
         if (valueSetType == null) {
             valueSetType = resolveTypeName("System", "ValueSet");
@@ -204,6 +210,7 @@ public class TypeResolver {
     }
 
     private DataType codeSystemType;
+
     public DataType getCodeSystemType() {
         if (codeSystemType == null) {
             codeSystemType = resolveTypeName("System", "CodeSystem");
@@ -212,6 +219,7 @@ public class TypeResolver {
     }
 
     private DataType dateType;
+
     public DataType getDateType() {
         if (dateType == null) {
             dateType = resolveTypeName("System", "Date");
@@ -220,6 +228,7 @@ public class TypeResolver {
     }
 
     private DataType dateTimeType;
+
     public DataType getDateTimeType() {
         if (dateTimeType == null) {
             dateTimeType = resolveTypeName("System", "DateTime");
@@ -228,6 +237,7 @@ public class TypeResolver {
     }
 
     private DataType timeType;
+
     public DataType getTimeType() {
         if (timeType == null) {
             timeType = resolveTypeName("System", "Time");
@@ -236,6 +246,7 @@ public class TypeResolver {
     }
 
     private DataType booleanType;
+
     public DataType getBooleanType() {
         if (booleanType == null) {
             booleanType = resolveTypeName("System", "Boolean");
@@ -244,6 +255,7 @@ public class TypeResolver {
     }
 
     private DataType integerType;
+
     public DataType getIntegerType() {
         if (integerType == null) {
             integerType = resolveTypeName("System", "Integer");
@@ -252,6 +264,7 @@ public class TypeResolver {
     }
 
     private DataType decimalType;
+
     public DataType getDecimalType() {
         if (decimalType == null) {
             decimalType = resolveTypeName("System", "Decimal");
@@ -260,6 +273,7 @@ public class TypeResolver {
     }
 
     private DataType quantityType;
+
     public DataType getQuantityType() {
         if (quantityType == null) {
             quantityType = resolveTypeName("System", "Quantity");
@@ -269,16 +283,15 @@ public class TypeResolver {
 
     public boolean isTerminologyType(DataType dataType) {
         if (dataType != null) {
-            return
-                dataType.isSubTypeOf(getCodeType())
+            return dataType.isSubTypeOf(getCodeType())
                     || dataType.isSubTypeOf(getConceptType())
                     || dataType.isSubTypeOf(getValueSetType())
                     || dataType.isSubTypeOf(getCodeSystemType())
                     || dataType.isSubTypeOf(getStringType())
-                    || (dataType instanceof ListType && (
-                            ((ListType)dataType).getElementType().isSubTypeOf(getCodeType())
-                                || ((ListType)dataType).getElementType().isSubTypeOf(getConceptType())
-                                || ((ListType)dataType).getElementType().isSubTypeOf(getStringType())));
+                    || (dataType instanceof ListType
+                            && (((ListType) dataType).getElementType().isSubTypeOf(getCodeType())
+                                    || ((ListType) dataType).getElementType().isSubTypeOf(getConceptType())
+                                    || ((ListType) dataType).getElementType().isSubTypeOf(getStringType())));
         }
 
         return false;
@@ -286,10 +299,11 @@ public class TypeResolver {
 
     public boolean isDateType(DataType dataType) {
         if (dataType != null) {
-            return dataType.isSubTypeOf(getDateType()) || dataType.isSubTypeOf(getDateTimeType())
-                    || (dataType instanceof IntervalType && (
-                            ((IntervalType)dataType).getPointType().isSubTypeOf(getDateType())
-                                    || ((IntervalType)dataType).getPointType().isSubTypeOf(getDateTimeType())));
+            return dataType.isSubTypeOf(getDateType())
+                    || dataType.isSubTypeOf(getDateTimeType())
+                    || (dataType instanceof IntervalType
+                            && (((IntervalType) dataType).getPointType().isSubTypeOf(getDateType())
+                                    || ((IntervalType) dataType).getPointType().isSubTypeOf(getDateTimeType())));
         }
 
         return false;
@@ -298,7 +312,8 @@ public class TypeResolver {
     public boolean isDateTimeType(DataType dataType) {
         if (dataType != null) {
             return dataType.isSubTypeOf(getDateTimeType())
-                    || (dataType instanceof IntervalType && ((IntervalType)dataType).getPointType().isSubTypeOf(getDateTimeType()));
+                    || (dataType instanceof IntervalType
+                            && ((IntervalType) dataType).getPointType().isSubTypeOf(getDateTimeType()));
         }
 
         return false;

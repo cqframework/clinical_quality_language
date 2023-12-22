@@ -1,7 +1,8 @@
 package org.opencds.cqf.cql.engine.fhir.model;
 
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.context.FhirVersionEnum;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,7 +10,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Age;
 import org.hl7.fhir.r4.model.AnnotatedUuidType;
@@ -37,16 +37,15 @@ import org.hl7.fhir.r4.model.UuidType;
 import org.opencds.cqf.cql.engine.exception.InvalidCast;
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal;
 
-import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.context.FhirVersionEnum;
+public class R4FhirModelResolver
+        extends FhirModelResolver<
+                Base, BaseDateTimeType, TimeType, SimpleQuantity, IdType, Resource, Enumeration<?>, EnumFactory<?>> {
 
-public class R4FhirModelResolver extends FhirModelResolver<Base, BaseDateTimeType, TimeType, SimpleQuantity, IdType, Resource, Enumeration<?>, EnumFactory<?>> {
-
-	public R4FhirModelResolver() {
+    public R4FhirModelResolver() {
         // This ModelResolver makes specific alterations to the FhirContext,
         // so it's unable to use a cached version.
         this(FhirContext.forR4());
-	}
+    }
 
     protected R4FhirModelResolver(FhirContext fhirContext) {
         super(fhirContext);
@@ -73,7 +72,8 @@ public class R4FhirModelResolver extends FhirModelResolver<Base, BaseDateTimeTyp
             f.setAccessible(true);
             myNameToResourceType = (Map<String, Class<? extends IBaseResource>>) f.get(this.fhirContext);
 
-            List<Class<? extends IBaseResource>> toLoad = new ArrayList<Class<? extends IBaseResource>>(myNameToResourceType.size());
+            List<Class<? extends IBaseResource>> toLoad =
+                    new ArrayList<Class<? extends IBaseResource>>(myNameToResourceType.size());
 
             for (Enumerations.ResourceType type : Enumerations.ResourceType.values()) {
                 // These are abstract types that should never be resolved directly.
@@ -100,8 +100,7 @@ public class R4FhirModelResolver extends FhirModelResolver<Base, BaseDateTimeTyp
     @Override
     protected Object resolveProperty(Object target, String path) {
         // This is kind of a hack to get around contained resources - HAPI doesn't have ResourceContainer type for STU3
-        if (target instanceof Resource && ((Resource) target).fhirType().equals(path))
-        {
+        if (target instanceof Resource && ((Resource) target).fhirType().equals(path)) {
             return target;
         }
 
@@ -156,25 +155,53 @@ public class R4FhirModelResolver extends FhirModelResolver<Base, BaseDateTimeTyp
     public Class<?> resolveType(String typeName) {
 
         // TODO: Might be able to patch some of these by registering custom types in HAPI.
-        switch(typeName) {
-            case "ConfidentialityClassification": typeName = "Composition$DocumentConfidentiality"; break;
-            case "ContractResourceStatusCodes": typeName = "Contract$ContractStatus"; break;
-            case "EventStatus": typeName = "Procedure$ProcedureStatus"; break;
-            case "FinancialResourceStatusCodes": typeName = "ClaimResponse$ClaimResponseStatus"; break;
-            case "SampledDataDataType": typeName = "StringType"; break;
-            case "ClaimProcessingCodes": typeName = "ClaimResponse$RemittanceOutcome"; break;
-            case "vConfidentialityClassification": typeName = "Composition$DocumentConfidentiality"; break;
-            case "ContractResourcePublicationStatusCodes": typeName = "Contract$ContractPublicationStatus"; break;
-            // CodeTypes - Bug in HAPI 4.2
-            case "CurrencyCode" : typeName = "CodeType"; break;
-            case "MedicationAdministrationStatus": typeName = "CodeType"; break;
-            case "MedicationDispenseStatus": typeName = "CodeType"; break;
-            case "MedicationKnowledgeStatus": typeName = "CodeType"; break;
-            case "Messageheader_Response_Request": typeName = "CodeType"; break;
-            case "MimeType": typeName = "CodeType"; break;
-            default: break;
+        switch (typeName) {
+            case "ConfidentialityClassification":
+                typeName = "Composition$DocumentConfidentiality";
+                break;
+            case "ContractResourceStatusCodes":
+                typeName = "Contract$ContractStatus";
+                break;
+            case "EventStatus":
+                typeName = "Procedure$ProcedureStatus";
+                break;
+            case "FinancialResourceStatusCodes":
+                typeName = "ClaimResponse$ClaimResponseStatus";
+                break;
+            case "SampledDataDataType":
+                typeName = "StringType";
+                break;
+            case "ClaimProcessingCodes":
+                typeName = "ClaimResponse$RemittanceOutcome";
+                break;
+            case "vConfidentialityClassification":
+                typeName = "Composition$DocumentConfidentiality";
+                break;
+            case "ContractResourcePublicationStatusCodes":
+                typeName = "Contract$ContractPublicationStatus";
+                break;
+                // CodeTypes - Bug in HAPI 4.2
+            case "CurrencyCode":
+                typeName = "CodeType";
+                break;
+            case "MedicationAdministrationStatus":
+                typeName = "CodeType";
+                break;
+            case "MedicationDispenseStatus":
+                typeName = "CodeType";
+                break;
+            case "MedicationKnowledgeStatus":
+                typeName = "CodeType";
+                break;
+            case "Messageheader_Response_Request":
+                typeName = "CodeType";
+                break;
+            case "MimeType":
+                typeName = "CodeType";
+                break;
+            default:
+                break;
         }
-
 
         return super.resolveType(typeName);
     }
@@ -208,29 +235,41 @@ public class R4FhirModelResolver extends FhirModelResolver<Base, BaseDateTimeTyp
         // TODO: These should really be using profile validation
         if (value instanceof UriType) {
             switch (type.getSimpleName()) {
-                case "UrlType": return true;
-                case "CanonicalType": return true;
+                case "UrlType":
+                    return true;
+                case "CanonicalType":
+                    return true;
                 case "AnnotatedUuidType":
-                case "UuidType": return true;
-                case "OidType": return true;
-                default: break;
+                case "UuidType":
+                    return true;
+                case "OidType":
+                    return true;
+                default:
+                    break;
             }
         }
 
         if (value instanceof IntegerType) {
             switch (type.getSimpleName()) {
-                case "PositiveIntType": return true;
-                case "UnsignedIntType": return true;
-                default: break;
+                case "PositiveIntType":
+                    return true;
+                case "UnsignedIntType":
+                    return true;
+                default:
+                    break;
             }
         }
 
         if (value instanceof StringType) {
             switch (type.getSimpleName()) {
-                case "CodeType": return true;
-                case "MarkdownType": return true;
-                case "IdType": return true;
-                default: break;
+                case "CodeType":
+                    return true;
+                case "MarkdownType":
+                    return true;
+                case "IdType":
+                    return true;
+                default:
+                    break;
             }
         }
 
@@ -241,8 +280,10 @@ public class R4FhirModelResolver extends FhirModelResolver<Base, BaseDateTimeTyp
                 case "Duration":
                 case "Count":
                 case "SimpleQuantity":
-                case "MoneyQuantity": return true;
-                default: break;
+                case "MoneyQuantity":
+                    return true;
+                default:
+                    break;
             }
         }
 
@@ -260,38 +301,60 @@ public class R4FhirModelResolver extends FhirModelResolver<Base, BaseDateTimeTyp
         }
 
         if (value instanceof UriType) {
-            UriType uriType = (UriType)value;
+            UriType uriType = (UriType) value;
             switch (type.getSimpleName()) {
-                case "UrlType": return uriType.castToUrl(uriType);
-                case "CanonicalType": return uriType.castToCanonical(uriType);
+                case "UrlType":
+                    return uriType.castToUrl(uriType);
+                case "CanonicalType":
+                    return uriType.castToCanonical(uriType);
                 case "AnnotatedUuidType":
-                case "UuidType": return uriType.hasPrimitiveValue() && uriType.getValue().startsWith("urn:uuid:") ? new UuidType(uriType.primitiveValue()) : null;
-                case "OidType": return uriType.hasPrimitiveValue() && uriType.getValue().startsWith("urn:oid:") ? new OidType(uriType.primitiveValue()) : null; // castToOid(uriType); Throws an exception, not implemented
-                default: break;
+                case "UuidType":
+                    return uriType.hasPrimitiveValue() && uriType.getValue().startsWith("urn:uuid:")
+                            ? new UuidType(uriType.primitiveValue())
+                            : null;
+                case "OidType":
+                    return uriType.hasPrimitiveValue() && uriType.getValue().startsWith("urn:oid:")
+                            ? new OidType(uriType.primitiveValue())
+                            : null; // castToOid(uriType); Throws an exception, not implemented
+                default:
+                    break;
             }
         }
 
         if (value instanceof IntegerType) {
-            IntegerType integerType = (IntegerType)value;
+            IntegerType integerType = (IntegerType) value;
             switch (type.getSimpleName()) {
-                case "PositiveIntType": return integerType.hasPrimitiveValue() && integerType.getValue() > 0 ? new PositiveIntType(integerType.primitiveValue()) : null; // integerType.castToPositiveInt(integerType); Throws an exception, not implemented
-                case "UnsignedIntType": return integerType.hasPrimitiveValue() && integerType.getValue() >= 0 ? new UnsignedIntType(integerType.primitiveValue()) : null; // castToUnsignedInt(integerType); Throws an exception, not implemented
-                default: break;
+                case "PositiveIntType":
+                    return integerType.hasPrimitiveValue() && integerType.getValue() > 0
+                            ? new PositiveIntType(integerType.primitiveValue())
+                            : null; // integerType.castToPositiveInt(integerType); Throws an exception, not implemented
+                case "UnsignedIntType":
+                    return integerType.hasPrimitiveValue() && integerType.getValue() >= 0
+                            ? new UnsignedIntType(integerType.primitiveValue())
+                            : null; // castToUnsignedInt(integerType); Throws an exception, not implemented
+                default:
+                    break;
             }
         }
 
         if (value instanceof StringType) {
-            StringType stringType = (StringType)value;
+            StringType stringType = (StringType) value;
             switch (type.getSimpleName()) {
-                case "CodeType": return stringType.castToCode(stringType);
-                case "MarkdownType": return stringType.castToMarkdown(stringType);
-                case "IdType": return stringType.hasPrimitiveValue() ? new IdType(stringType.primitiveValue()) : null; // stringType.castToId(stringType); Throws an exception, not implemented
-                default: break;
+                case "CodeType":
+                    return stringType.castToCode(stringType);
+                case "MarkdownType":
+                    return stringType.castToMarkdown(stringType);
+                case "IdType":
+                    return stringType.hasPrimitiveValue()
+                            ? new IdType(stringType.primitiveValue())
+                            : null; // stringType.castToId(stringType); Throws an exception, not implemented
+                default:
+                    break;
             }
         }
 
         if (value instanceof Quantity) {
-            Quantity quantity = (Quantity)value;
+            Quantity quantity = (Quantity) value;
             switch (type.getSimpleName()) {
                 case "Age":
                     Age age = new Age();
@@ -317,19 +380,24 @@ public class R4FhirModelResolver extends FhirModelResolver<Base, BaseDateTimeTyp
                     count.setCode(quantity.getCode());
                     // TODO: Ensure count constraints are met, else return null
                     return count;
-                case "SimpleQuantity": return quantity.castToSimpleQuantity(quantity); // NOTE: This is wrong in that it is copying the comparator, it should be ensuring comparator is not set...
+                case "SimpleQuantity":
+                    return quantity.castToSimpleQuantity(
+                            quantity); // NOTE: This is wrong in that it is copying the comparator, it should be
+                    // ensuring comparator is not set...
                 case "MoneyQuantity":
                     MoneyQuantity moneyQuantity = new MoneyQuantity();
                     moneyQuantity.setValue(quantity.getValue());
                     moneyQuantity.setCode(quantity.getCode());
                     // TODO: Ensure money constraints are met, else return null
                     return moneyQuantity;
-                default: break;
+                default:
+                    break;
             }
         }
 
         if (isStrict) {
-            throw new InvalidCast(String.format("Cannot cast a value of type %s as %s.", value.getClass().getName(), type.getName()));
+            throw new InvalidCast(String.format(
+                    "Cannot cast a value of type %s as %s.", value.getClass().getName(), type.getName()));
         }
 
         return null;
@@ -337,7 +405,7 @@ public class R4FhirModelResolver extends FhirModelResolver<Base, BaseDateTimeTyp
 
     @Override
     public Object getContextPath(String contextType, String targetType) {
-        if (targetType == null || contextType == null ) {
+        if (targetType == null || contextType == null) {
             return null;
         }
 
@@ -352,7 +420,6 @@ public class R4FhirModelResolver extends FhirModelResolver<Base, BaseDateTimeTyp
         if (contextType.equals("Patient") && targetType.equals("Coverage")) {
             return "beneficiary";
         }
-
 
         return super.getContextPath(contextType, targetType);
     }

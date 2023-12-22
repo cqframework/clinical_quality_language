@@ -6,15 +6,10 @@ import org.hl7.cql_annotations.r1.Annotation;
 import org.hl7.cql_annotations.r1.CqlToElmError;
 import org.hl7.cql_annotations.r1.CqlToElmInfo;
 
-@JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        include = JsonTypeInfo.As.PROPERTY,
-        property = "type")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = CqlToElmInfo.class, name = "a:CqlToElmInfo"),
-        @JsonSubTypes.Type(value = CqlToElmError.class, name = "a:CqlToElmError"),
-        @JsonSubTypes.Type(value = Annotation.class, name = "a:Annotation")
+    @JsonSubTypes.Type(value = CqlToElmInfo.class, name = "a:CqlToElmInfo"),
+    @JsonSubTypes.Type(value = CqlToElmError.class, name = "a:CqlToElmError"),
+    @JsonSubTypes.Type(value = Annotation.class, name = "a:Annotation")
 })
-public interface CqlToElmBaseMixIn {
-
-}
+public interface CqlToElmBaseMixIn {}

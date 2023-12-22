@@ -1,7 +1,6 @@
 package org.opencds.cqf.cql.engine.data;
 
 import java.util.List;
-
 import org.opencds.cqf.cql.engine.model.ModelResolver;
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider;
 import org.opencds.cqf.cql.engine.runtime.Code;
@@ -57,7 +56,7 @@ public class CompositeDataProvider implements DataProvider {
     @Override
     public Class<?> resolveType(Object value) {
         return this.modelResolver.resolveType(value);
-	}
+    }
 
     @Override
     public Boolean is(Object value, Class<?> type) {
@@ -95,9 +94,31 @@ public class CompositeDataProvider implements DataProvider {
     }
 
     @Override
-    public Iterable<Object> retrieve(String context, String contextPath, Object contextValue, String dataType,
-            String templateId, String codePath, Iterable<Code> codes, String valueSet, String datePath,
-            String dateLowPath, String dateHighPath, Interval dateRange) {
-        return this.retrieveProvider.retrieve(context, contextPath, contextValue, dataType, templateId, codePath, codes, valueSet, datePath, dateLowPath, dateHighPath, dateRange);
+    public Iterable<Object> retrieve(
+            String context,
+            String contextPath,
+            Object contextValue,
+            String dataType,
+            String templateId,
+            String codePath,
+            Iterable<Code> codes,
+            String valueSet,
+            String datePath,
+            String dateLowPath,
+            String dateHighPath,
+            Interval dateRange) {
+        return this.retrieveProvider.retrieve(
+                context,
+                contextPath,
+                contextValue,
+                dataType,
+                templateId,
+                codePath,
+                codes,
+                valueSet,
+                datePath,
+                dateLowPath,
+                dateHighPath,
+                dateRange);
     }
 }

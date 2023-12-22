@@ -1,9 +1,9 @@
 package org.cqframework.cql.elm.requirements;
 
-import org.hl7.elm.r1.*;
-import java.util.Iterator;
-
 import static org.cqframework.cql.elm.evaluating.SimpleElmEvaluator.*;
+
+import java.util.Iterator;
+import org.hl7.elm.r1.*;
 
 public class ComparableElmRequirement {
     public ComparableElmRequirement(ElmRequirement requirement) {
@@ -15,6 +15,7 @@ public class ComparableElmRequirement {
     }
 
     private ElmRequirement requirement;
+
     public ElmRequirement getRequirement() {
         return this.requirement;
     }
@@ -23,8 +24,12 @@ public class ComparableElmRequirement {
     public int hashCode() {
         // Hashing only by the type/profile
         if (requirement.getElement() instanceof Retrieve) {
-            Retrieve retrieve = (Retrieve)this.requirement.getElement();
-            String typeUri = retrieve.getTemplateId() != null ? retrieve.getTemplateId() : (retrieve.getDataType() != null && retrieve.getDataType().getLocalPart() != null ? retrieve.getDataType().getLocalPart() : null);
+            Retrieve retrieve = (Retrieve) this.requirement.getElement();
+            String typeUri = retrieve.getTemplateId() != null
+                    ? retrieve.getTemplateId()
+                    : (retrieve.getDataType() != null && retrieve.getDataType().getLocalPart() != null
+                            ? retrieve.getDataType().getLocalPart()
+                            : null);
             if (typeUri != null) {
                 return typeUri.hashCode();
             }
@@ -166,9 +171,14 @@ public class ComparableElmRequirement {
     }
 
     public static boolean includeElementsEqual(IncludeElement left, IncludeElement right) {
-        return left.getRelatedDataType() != null && right.getRelatedDataType() != null
-                && stringsEqual(left.getRelatedDataType().getNamespaceURI(), right.getRelatedDataType().getNamespaceURI())
-                && stringsEqual(left.getRelatedDataType().getLocalPart(), right.getRelatedDataType().getLocalPart())
+        return left.getRelatedDataType() != null
+                && right.getRelatedDataType() != null
+                && stringsEqual(
+                        left.getRelatedDataType().getNamespaceURI(),
+                        right.getRelatedDataType().getNamespaceURI())
+                && stringsEqual(
+                        left.getRelatedDataType().getLocalPart(),
+                        right.getRelatedDataType().getLocalPart())
                 && stringsEqual(left.getRelatedProperty(), right.getRelatedProperty())
                 && stringsEqual(left.getRelatedSearch(), right.getRelatedSearch());
     }
@@ -202,18 +212,18 @@ public class ComparableElmRequirement {
     @Override
     public boolean equals(Object other) {
         if (other instanceof ComparableElmRequirement) {
-            return requirementsEquivalent(requirement, ((ComparableElmRequirement)other).getRequirement());
+            return requirementsEquivalent(requirement, ((ComparableElmRequirement) other).getRequirement());
         }
 
         return false;
     }
 
     public static boolean requirementsEquivalent(ElmRequirement left, ElmRequirement right) {
-        Retrieve retrieve = (Retrieve)left.getElement();
-        Retrieve otherRetrieve = (Retrieve)right.getElement();
+        Retrieve retrieve = (Retrieve) left.getElement();
+        Retrieve otherRetrieve = (Retrieve) right.getElement();
 
-        return
-            retrieve.getDataType() != null && retrieve.getDataType().equals(otherRetrieve.getDataType())
+        return retrieve.getDataType() != null
+                && retrieve.getDataType().equals(otherRetrieve.getDataType())
                 && stringsEqual(retrieve.getTemplateId(), otherRetrieve.getTemplateId())
                 && stringsEqual(retrieve.getContext(), otherRetrieve.getContext())
                 && stringsEqual(retrieve.getContextProperty(), otherRetrieve.getContextProperty())
@@ -254,22 +264,23 @@ public class ComparableElmRequirement {
             if (required instanceof ElmDataRequirement) {
                 if (existing.getElement() instanceof Retrieve) {
                     if (required.getElement() instanceof Retrieve) {
-                        Retrieve existingRetrieve = (Retrieve)existing.getElement();
-                        Retrieve requiredRetrieve = (Retrieve)required.getElement();
+                        Retrieve existingRetrieve = (Retrieve) existing.getElement();
+                        Retrieve requiredRetrieve = (Retrieve) required.getElement();
                         Retrieve newRetrieve = ElmCloner.clone(existingRetrieve);
                         // Merge trackbacks
                         newRetrieve.getTrackbacks().addAll(requiredRetrieve.getTrackbacks());
 
-                        ElmDataRequirement newRequirement = new ElmDataRequirement(existing.getLibraryIdentifier(), newRetrieve);
-                        if (((ElmDataRequirement)existing).getProperties() != null) {
-                            for (Property property : ((ElmDataRequirement)existing).getProperties()) {
+                        ElmDataRequirement newRequirement =
+                                new ElmDataRequirement(existing.getLibraryIdentifier(), newRetrieve);
+                        if (((ElmDataRequirement) existing).getProperties() != null) {
+                            for (Property property : ((ElmDataRequirement) existing).getProperties()) {
                                 newRequirement.addProperty(property);
                             }
                         }
 
                         // Merge mustSupport
-                        if (((ElmDataRequirement)required).getProperties() != null) {
-                            for (Property property : ((ElmDataRequirement)required).getProperties()) {
+                        if (((ElmDataRequirement) required).getProperties() != null) {
+                            for (Property property : ((ElmDataRequirement) required).getProperties()) {
                                 newRequirement.addProperty(property);
                             }
                         }

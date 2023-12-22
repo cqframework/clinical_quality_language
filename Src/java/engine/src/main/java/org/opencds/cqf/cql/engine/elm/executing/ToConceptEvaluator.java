@@ -23,18 +23,16 @@ public class ToConceptEvaluator {
 
         if (operand instanceof Iterable) {
             for (Object code : (Iterable<?>) operand) {
-                result.withCode((Code)code);
+                result.withCode((Code) code);
             }
             return result;
-        }
-        else if (operand instanceof Code) {
+        } else if (operand instanceof Code) {
             result.withCode((Code) operand);
             return result;
         }
 
         throw new InvalidOperatorArgument(
                 "ToConcept(Code)",
-                String.format("ToConcept(%s)", operand.getClass().getName())
-        );
+                String.format("ToConcept(%s)", operand.getClass().getName()));
     }
 }

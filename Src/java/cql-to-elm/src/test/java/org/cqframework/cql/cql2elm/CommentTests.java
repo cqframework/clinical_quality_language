@@ -1,28 +1,22 @@
 package org.cqframework.cql.cql2elm;
 
-import org.cqframework.cql.cql2elm.model.CompiledLibrary;
-import org.hl7.cql_annotations.r1.Annotation;
-import org.hl7.cql_annotations.r1.CqlToElmBase;
-import org.hl7.cql_annotations.r1.Narrative;
-import org.hl7.cql_annotations.r1.Tag;
-import org.hl7.elm.r1.ExpressionDef;
-import org.hl7.elm.r1.FunctionDef;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import static org.cqframework.cql.cql2elm.CqlCompilerOptions.Options.EnableAnnotations;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 import jakarta.xml.bind.JAXBElement;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.cqframework.cql.cql2elm.CqlCompilerOptions.Options.EnableAnnotations;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeThat;
+import org.cqframework.cql.cql2elm.model.CompiledLibrary;
+import org.hl7.cql_annotations.r1.Annotation;
+import org.hl7.cql_annotations.r1.Narrative;
+import org.hl7.cql_annotations.r1.Tag;
+import org.hl7.elm.r1.ExpressionDef;
+import org.hl7.elm.r1.FunctionDef;
+import org.testng.annotations.Test;
 
 public class CommentTests {
-
 
     @Test
     public void testComments() throws IOException {
@@ -45,20 +39,19 @@ public class CommentTests {
         assertThat(def.getAnnotation(), notNullValue());
         assertThat(def.getAnnotation().size(), is(1));
         assertThat(def.getAnnotation().get(0), instanceOf(Annotation.class));
-        Annotation a = (Annotation)def.getAnnotation().get(0);
+        Annotation a = (Annotation) def.getAnnotation().get(0);
         assertThat(a.getS().getContent(), notNullValue());
         assertThat(a.getS().getContent().size(), is(2));
         assertThat(a.getS().getContent().get(0), instanceOf(JAXBElement.class));
-        JAXBElement e = (JAXBElement)a.getS().getContent().get(0);
+        JAXBElement e = (JAXBElement) a.getS().getContent().get(0);
         assertThat(e, notNullValue());
         assertThat(e.getValue(), instanceOf(Narrative.class));
-        Narrative n = (Narrative)e.getValue();
+        Narrative n = (Narrative) e.getValue();
         assertThat(n.getContent(), notNullValue());
         assertThat(n.getContent().size(), is(4));
         assertThat(n.getContent().get(0), instanceOf(String.class));
-        String s = (String)n.getContent().get(0);
+        String s = (String) n.getContent().get(0);
         assertThat(s, is("/* Multi-line works fine */\n// Single-line comment does not work\n"));
-
 
         // Validate that singleLineCommentTest has appropriate comment value
         // Comment should be: "// Unmixed single-line comment works\n"
@@ -67,18 +60,18 @@ public class CommentTests {
         assertThat(def.getAnnotation(), notNullValue());
         assertThat(def.getAnnotation().size(), is(1));
         assertThat(def.getAnnotation().get(0), instanceOf(Annotation.class));
-        a = (Annotation)def.getAnnotation().get(0);
+        a = (Annotation) def.getAnnotation().get(0);
         assertThat(a.getS().getContent(), notNullValue());
         assertThat(a.getS().getContent().size(), is(2));
         assertThat(a.getS().getContent().get(0), instanceOf(JAXBElement.class));
-        e = (JAXBElement)a.getS().getContent().get(0);
+        e = (JAXBElement) a.getS().getContent().get(0);
         assertThat(e, notNullValue());
         assertThat(e.getValue(), instanceOf(Narrative.class));
-        n = (Narrative)e.getValue();
+        n = (Narrative) e.getValue();
         assertThat(n.getContent(), notNullValue());
         assertThat(n.getContent().size(), is(4));
         assertThat(n.getContent().get(0), instanceOf(String.class));
-        s = (String)n.getContent().get(0);
+        s = (String) n.getContent().get(0);
         assertThat(s, is("// Unmixed single-line comment works\n"));
     }
 
@@ -90,7 +83,7 @@ public class CommentTests {
         Annotation a = null;
         for (Object o : library.getLibrary().getAnnotation()) {
             if (o instanceof Annotation) {
-                a = (Annotation)o;
+                a = (Annotation) o;
             }
         }
         assertThat(a, notNullValue());
@@ -118,7 +111,7 @@ public class CommentTests {
         assertThat(d.getAnnotation(), notNullValue());
         for (Object o : d.getAnnotation()) {
             if (o instanceof Annotation) {
-                a = (Annotation)o;
+                a = (Annotation) o;
             }
         }
         assertThat(a, notNullValue());
@@ -147,7 +140,7 @@ public class CommentTests {
         assertThat(d.getAnnotation(), notNullValue());
         for (Object o : d.getAnnotation()) {
             if (o instanceof Annotation) {
-                a = (Annotation)o;
+                a = (Annotation) o;
             }
         }
         assertThat(a, notNullValue());
@@ -171,7 +164,7 @@ public class CommentTests {
         assertThat(d.getAnnotation(), notNullValue());
         for (Object o : d.getAnnotation()) {
             if (o instanceof Annotation) {
-                a = (Annotation)o;
+                a = (Annotation) o;
             }
         }
         assertThat(a, notNullValue());
@@ -195,12 +188,11 @@ public class CommentTests {
             }
         }
 
-
         d = library.resolveExpressionRef("TestMultiTagInline");
         assertThat(d.getAnnotation(), notNullValue());
         for (Object o : d.getAnnotation()) {
             if (o instanceof Annotation) {
-                a = (Annotation)o;
+                a = (Annotation) o;
             }
         }
         assertThat(a, notNullValue());
@@ -220,12 +212,11 @@ public class CommentTests {
             }
         }
 
-
         d = library.resolveExpressionRef("TestDateMultiTag");
         assertThat(d.getAnnotation(), notNullValue());
         for (Object o : d.getAnnotation()) {
             if (o instanceof Annotation) {
-                a = (Annotation)o;
+                a = (Annotation) o;
             }
         }
         assertThat(a, notNullValue());
@@ -257,7 +248,7 @@ public class CommentTests {
         assertThat(d.getAnnotation(), notNullValue());
         for (Object o : d.getAnnotation()) {
             if (o instanceof Annotation) {
-                a = (Annotation)o;
+                a = (Annotation) o;
             }
         }
         assertThat(a, notNullValue());
@@ -289,7 +280,7 @@ public class CommentTests {
         assertThat(d.getAnnotation(), notNullValue());
         for (Object o : d.getAnnotation()) {
             if (o instanceof Annotation) {
-                a = (Annotation)o;
+                a = (Annotation) o;
             }
         }
         assertThat(a, notNullValue());
@@ -300,8 +291,7 @@ public class CommentTests {
             switch (i) {
                 case 0:
                     assertThat(t.getName(), equalTo("test"));
-                    assertThat(t.getValue(), equalTo("this is a\n" +
-                            "multi-line tag value"));
+                    assertThat(t.getValue(), equalTo("this is a\n" + "multi-line tag value"));
                     break;
             }
         }
@@ -310,7 +300,7 @@ public class CommentTests {
         assertThat(d.getAnnotation(), notNullValue());
         for (Object o : d.getAnnotation()) {
             if (o instanceof Annotation) {
-                a = (Annotation)o;
+                a = (Annotation) o;
             }
         }
         assertThat(a, notNullValue());
@@ -325,8 +315,7 @@ public class CommentTests {
                     break;
                 case 1:
                     assertThat(t.getName(), equalTo("test"));
-                    assertThat(t.getValue(), equalTo("this is a\n" +
-                            "multi-line tag value"));
+                    assertThat(t.getValue(), equalTo("this is a\n" + "multi-line tag value"));
                     break;
                 case 2:
                     assertThat(t.getName(), equalTo("pertinence"));
@@ -339,7 +328,7 @@ public class CommentTests {
         assertThat(d.getAnnotation(), notNullValue());
         for (Object o : d.getAnnotation()) {
             if (o instanceof Annotation) {
-                a = (Annotation)o;
+                a = (Annotation) o;
             }
         }
         assertThat(a, notNullValue());
@@ -354,19 +343,17 @@ public class CommentTests {
                     break;
                 case 1:
                     assertThat(t.getName(), equalTo("tagname2"));
-                    assertThat(t.getValue(), equalTo("tag value2 this is\n" +
-                            "a long tag value"));
+                    assertThat(t.getValue(), equalTo("tag value2 this is\n" + "a long tag value"));
                     break;
             }
         }
-
 
         ExpressionDef dInvalid = library.resolveExpressionRef("TestInvalid");
         assertThat(dInvalid.getAnnotation(), notNullValue());
         Annotation aInvalid = null;
         for (Object o : dInvalid.getAnnotation()) {
             if (o instanceof Annotation) {
-                aInvalid = (Annotation)o;
+                aInvalid = (Annotation) o;
             }
         }
 

@@ -1,11 +1,10 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.hl7.elm.r1.Filter;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.execution.Variable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class FilterEvaluator {
 
@@ -27,12 +26,10 @@ public class FilterEvaluator {
                         state.push(new Variable().withName(elm.getScope()).withValue(obj));
                     }
 
-
                     if (condition instanceof Boolean && (Boolean) condition) {
                         ret.add(obj);
                     }
-                }
-                finally {
+                } finally {
                     state.pop();
                 }
             }

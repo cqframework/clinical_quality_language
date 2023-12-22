@@ -1,11 +1,10 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.math.BigDecimal;
+import javax.xml.namespace.QName;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.*;
-
-import javax.xml.namespace.QName;
-import java.math.BigDecimal;
 
 /*
 minimum<T>() T
@@ -40,7 +39,7 @@ public class MinValueEvaluator {
             return new Date(1, 1, 1);
         }
         if (type.endsWith("DateTime")) {
-            return new DateTime(BigDecimal.ZERO,1, 1, 1, 0, 0, 0, 0);
+            return new DateTime(BigDecimal.ZERO, 1, 1, 1, 0, 0, 0, 0);
         }
         if (type.endsWith("Time")) {
             return new Time(0, 0, 0, 0);
@@ -52,7 +51,6 @@ public class MinValueEvaluator {
 
         throw new InvalidOperatorArgument(String.format("The Minimum operator is not implemented for type %s", type));
     }
-
 
     public static Object internalEvaluate(QName vtype, State state) {
         QName valueType = state.getEnvironment().fixupQName(vtype);

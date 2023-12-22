@@ -1,6 +1,17 @@
 package org.cqframework.cql.cql2elm.operators;
 
+import static org.cqframework.cql.cql2elm.matchers.HasTypeAndResult.hasTypeAndResult;
+import static org.cqframework.cql.cql2elm.matchers.LiteralFor.literalFor;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import org.cqframework.cql.cql2elm.CqlTranslator;
+import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.ModelManager;
 import org.hl7.elm.r1.Coalesce;
 import org.hl7.elm.r1.Expression;
@@ -10,18 +21,6 @@ import org.hl7.elm.r1.Library;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import org.cqframework.cql.cql2elm.LibraryManager;
-
-import static org.cqframework.cql.cql2elm.matchers.HasTypeAndResult.hasTypeAndResult;
-import static org.cqframework.cql.cql2elm.matchers.LiteralFor.literalFor;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-
 public class NullologicalOperatorsTest {
 
     private Map<String, ExpressionDef> defs;
@@ -29,11 +28,13 @@ public class NullologicalOperatorsTest {
     @BeforeTest
     public void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
-        CqlTranslator translator = CqlTranslator.fromStream(NullologicalOperatorsTest.class.getResourceAsStream("../OperatorTests/NullologicalOperators.cql"), new LibraryManager(modelManager));
+        CqlTranslator translator = CqlTranslator.fromStream(
+                NullologicalOperatorsTest.class.getResourceAsStream("../OperatorTests/NullologicalOperators.cql"),
+                new LibraryManager(modelManager));
         assertThat(translator.getErrors().size(), is(0));
         Library library = translator.toELM();
         defs = new HashMap<>();
-        for (ExpressionDef def: library.getStatements().getDef()) {
+        for (ExpressionDef def : library.getStatements().getDef()) {
             defs.put(def.getName(), def);
         }
     }

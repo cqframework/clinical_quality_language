@@ -1,12 +1,10 @@
 package org.opencds.cqf.cql.engine.execution;
 
+import java.util.*;
 import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator;
 import org.opencds.cqf.cql.engine.runtime.Tuple;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import java.util.*;
-
 
 public class CqlQueryTest extends CqlTestBase {
 
@@ -32,7 +30,8 @@ public class CqlQueryTest extends CqlTestBase {
         Assert.assertTrue(results.size() == 1);
         Assert.assertTrue(results.get(0) instanceof Tuple);
         Tuple resultTuple = (Tuple) results.get(0);
-        Assert.assertTrue(resultTuple.getElements().containsKey("A") && resultTuple.getElements().containsKey("B"));
+        Assert.assertTrue(resultTuple.getElements().containsKey("A")
+                && resultTuple.getElements().containsKey("B"));
 
         result = evaluationResult.forExpression("Complex Multisource").value();
         Assert.assertTrue(result instanceof List);
@@ -41,25 +40,25 @@ public class CqlQueryTest extends CqlTestBase {
 
         result = evaluationResult.forExpression("Let Test Fails").value();
 
-
         result = evaluationResult.forExpression("Triple Source Query").value();
         Assert.assertTrue(result instanceof List);
         results = (List<?>) result;
         Assert.assertTrue(results.size() == 27);
 
-        result = evaluationResult.forExpression("Let Expression in Multi Source Query").value();
+        result = evaluationResult
+                .forExpression("Let Expression in Multi Source Query")
+                .value();
         Assert.assertTrue(result instanceof List);
         results = (List<?>) result;
         Assert.assertTrue(results.size() == 1);
         Assert.assertTrue(EquivalentEvaluator.equivalent(results.get(0), 3));
 
-
-        result = evaluationResult.forExpression("Accessing Third Element of Triple Source Query").value();
+        result = evaluationResult
+                .forExpression("Accessing Third Element of Triple Source Query")
+                .value();
         Assert.assertTrue(result instanceof List);
         results = (List<?>) result;
         Assert.assertTrue(results.size() == 1);
         Assert.assertTrue(EquivalentEvaluator.equivalent(results.get(0), 3));
-
-
     }
 }

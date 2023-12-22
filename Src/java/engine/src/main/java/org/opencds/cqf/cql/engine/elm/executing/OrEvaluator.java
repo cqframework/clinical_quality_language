@@ -33,7 +33,6 @@ public class OrEvaluator {
                 String.format(
                         "Or(%s, %s)",
                         left == null ? "Null" : left.getClass().getName(),
-                        right == null ? "Null" : right.getClass().getName())
-        );
+                        right == null ? "Null" : right.getClass().getName()));
     }
 }

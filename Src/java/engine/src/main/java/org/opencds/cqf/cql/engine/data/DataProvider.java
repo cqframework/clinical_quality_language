@@ -1,7 +1,6 @@
 package org.opencds.cqf.cql.engine.data;
 
 import java.util.function.Supplier;
-
 import org.opencds.cqf.cql.engine.elm.executing.obfuscate.NoOpPHIObfuscator;
 import org.opencds.cqf.cql.engine.elm.executing.obfuscate.PHIObfuscator;
 import org.opencds.cqf.cql.engine.model.ModelResolver;

@@ -65,81 +65,67 @@ same _precision_ as(left Interval<T>, right Interval<T>) Boolean
 
 */
 
-public class SameAsEvaluator
-{
-    public static Boolean sameAs(Object left, Object right, String precision, State state)
-    {
-        if (left == null || right == null)
-        {
+public class SameAsEvaluator {
+    public static Boolean sameAs(Object left, Object right, String precision, State state) {
+        if (left == null || right == null) {
             return null;
         }
 
-        if (left instanceof Interval && right instanceof Interval)
-        {
+        if (left instanceof Interval && right instanceof Interval) {
             Object leftStart = ((Interval) left).getStart();
             Object leftEnd = ((Interval) left).getEnd();
             Object rightStart = ((Interval) right).getStart();
             Object rightEnd = ((Interval) right).getEnd();
 
-            if (leftStart instanceof BaseTemporal && leftEnd instanceof BaseTemporal
-                    && rightStart instanceof BaseTemporal && rightEnd instanceof BaseTemporal)
-            {
+            if (leftStart instanceof BaseTemporal
+                    && leftEnd instanceof BaseTemporal
+                    && rightStart instanceof BaseTemporal
+                    && rightEnd instanceof BaseTemporal) {
                 String startPrecision = null;
-                if (precision == null)
-                {
-                    startPrecision = BaseTemporal.getHighestPrecision((BaseTemporal) leftStart, (BaseTemporal) rightStart);
+                if (precision == null) {
+                    startPrecision =
+                            BaseTemporal.getHighestPrecision((BaseTemporal) leftStart, (BaseTemporal) rightStart);
                     precision = BaseTemporal.getHighestPrecision((BaseTemporal) leftEnd, (BaseTemporal) rightEnd);
                 }
-                Integer startResult = ((BaseTemporal) leftStart).compareToPrecision((BaseTemporal) rightStart, Precision.fromString(startPrecision == null ? precision : startPrecision));
-                Integer endResult = ((BaseTemporal) leftEnd).compareToPrecision((BaseTemporal) rightEnd, Precision.fromString(precision));
-                if (startResult == null && endResult == null)
-                {
+                Integer startResult = ((BaseTemporal) leftStart)
+                        .compareToPrecision(
+                                (BaseTemporal) rightStart,
+                                Precision.fromString(startPrecision == null ? precision : startPrecision));
+                Integer endResult = ((BaseTemporal) leftEnd)
+                        .compareToPrecision((BaseTemporal) rightEnd, Precision.fromString(precision));
+                if (startResult == null && endResult == null) {
                     return null;
-                }
-                else if (startResult == null && endResult != 0)
-                {
+                } else if (startResult == null && endResult != 0) {
                     return false;
-                }
-                else if (endResult == null && startResult != 0)
-                {
+                } else if (endResult == null && startResult != 0) {
                     return false;
                 }
                 return startResult == null || endResult == null ? null : startResult == 0 && endResult == 0;
-            }
-            else
-            {
+            } else {
                 Boolean startResult = EqualEvaluator.equal(leftStart, rightStart, state);
                 Boolean endResult = EqualEvaluator.equal(leftEnd, rightEnd, state);
-                if (startResult == null && endResult == null)
-                {
+                if (startResult == null && endResult == null) {
                     return null;
-                }
-                else if (startResult == null && !endResult)
-                {
+                } else if (startResult == null && !endResult) {
                     return false;
-                }
-                else if (endResult == null && !startResult)
-                {
+                } else if (endResult == null && !startResult) {
                     return false;
                 }
                 return startResult == null || endResult == null ? null : startResult && endResult;
             }
-        }
-
-        else if (left instanceof BaseTemporal && right instanceof BaseTemporal)
-        {
-            if (precision == null)
-            {
+        } else if (left instanceof BaseTemporal && right instanceof BaseTemporal) {
+            if (precision == null) {
                 precision = BaseTemporal.getHighestPrecision((BaseTemporal) left, (BaseTemporal) right);
             }
-            Integer result = ((BaseTemporal) left).compareToPrecision((BaseTemporal) right, Precision.fromString(precision));
+            Integer result =
+                    ((BaseTemporal) left).compareToPrecision((BaseTemporal) right, Precision.fromString(precision));
             return result == null ? null : result == 0;
         }
 
         throw new InvalidOperatorArgument(
                 "SameAs(Date, Date), SameAs(DateTime, DateTime), SameAs(Time, Time) or SameAs(Interval<T>, Interval<T>)",
-                String.format("SameAs(%s, %s)", left.getClass().getName(), right.getClass().getName())
-        );
+                String.format(
+                        "SameAs(%s, %s)",
+                        left.getClass().getName(), right.getClass().getName()));
     }
-
 }

@@ -1,25 +1,24 @@
 package org.opencds.cqf.cql.engine.fhir.retrieve;
 
+import ca.uhn.fhir.rest.client.api.IGenericClient;
+import ca.uhn.fhir.util.BundleUtil;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import org.hl7.fhir.instance.model.api.IBaseBundle;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.instance.model.api.IPrimitiveType;
 import org.opencds.cqf.cql.engine.fhir.exception.UnknownElement;
 
-import ca.uhn.fhir.rest.client.api.IGenericClient;
-import ca.uhn.fhir.util.BundleUtil;
-
 public class FhirBundleCursor implements Iterable<Object> {
 
-    public FhirBundleCursor(IGenericClient fhirClient, IBaseBundle results)
-    {
+    public FhirBundleCursor(IGenericClient fhirClient, IBaseBundle results) {
         this(fhirClient, results, null, null);
     }
 
-    public FhirBundleCursor(IGenericClient fhirClient, IBaseBundle results, String dataType) { this(fhirClient, results, null, null); }
+    public FhirBundleCursor(IGenericClient fhirClient, IBaseBundle results, String dataType) {
+        this(fhirClient, results, null, null);
+    }
 
     // This constructor filters the bundle based on dataType
     // If templateId is provided, this is a trusted cursor, meaning that it will only return results
@@ -36,7 +35,6 @@ public class FhirBundleCursor implements Iterable<Object> {
     private String dataType;
     private String templateId;
 
-
     /**
      * Returns an iterator over elements of type {@code T}.
      *
@@ -49,18 +47,23 @@ public class FhirBundleCursor implements Iterable<Object> {
     private class FhirBundleIterator implements Iterator<Object> {
         public FhirBundleIterator(IGenericClient fhirClient, IBaseBundle results, String dataType, String templateId) {
             this.fhirClient = fhirClient;
-            this.results =  results;
+            this.results = results;
             this.current = -1;
             this.dataType = dataType;
             this.templateId = templateId;
 
             // Do not test templateId for base resource "profiles"
-            if (this.templateId != null && this.templateId.startsWith(String.format("http://hl7.org/fhir/StructureDefinition/%s", dataType))) {
+            if (this.templateId != null
+                    && this.templateId.startsWith(
+                            String.format("http://hl7.org/fhir/StructureDefinition/%s", dataType))) {
                 this.templateId = null;
             }
 
             if (dataType != null) {
-                this.dataTypeClass = this.fhirClient.getFhirContext().getResourceDefinition(this.dataType).getImplementingClass();
+                this.dataTypeClass = this.fhirClient
+                        .getFhirContext()
+                        .getResourceDefinition(this.dataType)
+                        .getImplementingClass();
             }
 
             this.currentEntry = this.getEntry();
@@ -82,27 +85,25 @@ public class FhirBundleCursor implements Iterable<Object> {
          * @return {@code true} if the iteration has more elements
          */
         public boolean hasNext() {
-            return current < this.currentEntry.size() - 1
-                    || this.getLink() != null;
+            return current < this.currentEntry.size() - 1 || this.getLink() != null;
         }
 
         private List<? extends IBaseResource> getEntry() {
-            if (this.dataTypeClass != null)
-            {
-                List<? extends IBaseResource> entries = BundleUtil.toListOfResourcesOfType(this.fhirClient.getFhirContext(), this.results, this.dataTypeClass);
+            if (this.dataTypeClass != null) {
+                List<? extends IBaseResource> entries = BundleUtil.toListOfResourcesOfType(
+                        this.fhirClient.getFhirContext(), this.results, this.dataTypeClass);
                 if (templateId != null) {
                     return getTrustedEntries(entries, templateId);
-                }
-                else {
+                } else {
                     return entries;
                 }
-            }
-            else {
+            } else {
                 return BundleUtil.toListOfResources(this.fhirClient.getFhirContext(), this.results);
             }
         }
 
-        private List<? extends IBaseResource> getTrustedEntries(List<? extends IBaseResource> entries, String templateId) {
+        private List<? extends IBaseResource> getTrustedEntries(
+                List<? extends IBaseResource> entries, String templateId) {
             List<IBaseResource> trustedEntries = new ArrayList<IBaseResource>();
             for (IBaseResource entry : entries) {
                 if (entry.getMeta() != null && entry.getMeta().getProfile() != null) {
@@ -139,7 +140,8 @@ public class FhirBundleCursor implements Iterable<Object> {
                 }
             }
 
-            // TODO: It would be possible to get here if the next link was present, but the returned page had 0 entries...
+            // TODO: It would be possible to get here if the next link was present, but the returned page had 0
+            // entries...
             // NOTE: This is especially true if the page has only data that is not conformant to the given profile
             throw new UnknownElement("The iteration has no more elements.");
         }
