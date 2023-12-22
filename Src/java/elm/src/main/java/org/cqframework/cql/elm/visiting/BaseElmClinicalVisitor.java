@@ -106,7 +106,7 @@ public abstract class BaseElmClinicalVisitor<T, C> extends BaseElmVisitor<T, C> 
      * @return the visitor result
      */
     public T visitExpandValueSet(ExpandValueSet elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -118,14 +118,9 @@ public abstract class BaseElmClinicalVisitor<T, C> extends BaseElmVisitor<T, C> 
      * @return the visitor result
      */
     public T visitCodeFilterElement(CodeFilterElement elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
         if (elm.getValue() != null) {
             T childResult = visitExpression(elm.getValue(), context);
-            result = aggregateResult(result, childResult);
-        }
-
-        if (elm.getResultTypeSpecifier() != null) {
-            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
 
@@ -141,14 +136,10 @@ public abstract class BaseElmClinicalVisitor<T, C> extends BaseElmVisitor<T, C> 
      * @return the visitor result
      */
     public T visitDateFilterElement(DateFilterElement elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getValue() != null) {
             T childResult = visitExpression(elm.getValue(), context);
-            result = aggregateResult(result, childResult);
-        }
-
-        if (elm.getResultTypeSpecifier() != null) {
-            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
 
@@ -164,14 +155,10 @@ public abstract class BaseElmClinicalVisitor<T, C> extends BaseElmVisitor<T, C> 
      * @return the visitor result
      */
     public T visitOtherFilterElement(OtherFilterElement elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getValue() != null) {
             T childResult = visitExpression(elm.getValue(), context);
-            result = aggregateResult(result, childResult);
-        }
-
-        if (elm.getResultTypeSpecifier() != null) {
-            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
 
@@ -187,7 +174,7 @@ public abstract class BaseElmClinicalVisitor<T, C> extends BaseElmVisitor<T, C> 
      * @return the visitor result
      */
     public T visitIncludeElement(IncludeElement elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -199,7 +186,7 @@ public abstract class BaseElmClinicalVisitor<T, C> extends BaseElmVisitor<T, C> 
      * @return the visitor result
      */
     public T visitRetrieve(Retrieve elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
 
         for (var cfe : elm.getCodeFilter()) {
             T childResult = visitCodeFilterElement(cfe, context);
@@ -238,11 +225,6 @@ public abstract class BaseElmClinicalVisitor<T, C> extends BaseElmVisitor<T, C> 
             result = aggregateResult(result, childResult);
         }
 
-        if (elm.getResultTypeSpecifier() != null) {
-            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
-            result = aggregateResult(result, childResult);
-        }
-
         return result;
     }
 
@@ -271,14 +253,10 @@ public abstract class BaseElmClinicalVisitor<T, C> extends BaseElmVisitor<T, C> 
      * @return the visitor result
      */
     public T visitSearch(Search elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getSource() != null) {
             T childResult = visitExpression(elm.getSource(), context);
-            result = aggregateResult(result, childResult);
-        }
-
-        if (elm.getResultTypeSpecifier() != null) {
-            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
 
@@ -294,14 +272,9 @@ public abstract class BaseElmClinicalVisitor<T, C> extends BaseElmVisitor<T, C> 
      * @return the visitor result
      */
     public T visitCodeSystemDef(CodeSystemDef elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
         if (elm.getAccessLevel() != null) {
             T childResult = visitAccessModifier(elm.getAccessLevel(), context);
-            result = aggregateResult(result, childResult);
-        }
-
-        if (elm.getResultTypeSpecifier() != null) {
-            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
 
@@ -317,18 +290,14 @@ public abstract class BaseElmClinicalVisitor<T, C> extends BaseElmVisitor<T, C> 
      * @return the visitor result
      */
     public T visitValueSetDef(ValueSetDef elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getAccessLevel() != null) {
             T childResult = visitAccessModifier(elm.getAccessLevel(), context);
             result = aggregateResult(result, childResult);
         }
         for (CodeSystemRef codeSystemRef : elm.getCodeSystem()) {
             T childResult = visitCodeSystemRef(codeSystemRef, context);
-            result = aggregateResult(result, childResult);
-        }
-
-        if (elm.getResultTypeSpecifier() != null) {
-            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
 
@@ -344,18 +313,14 @@ public abstract class BaseElmClinicalVisitor<T, C> extends BaseElmVisitor<T, C> 
      * @return the visitor result
      */
     public T visitCodeDef(CodeDef elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getAccessLevel() != null) {
             T childResult = visitAccessModifier(elm.getAccessLevel(), context);
             result = aggregateResult(result, childResult);
         }
         if (elm.getCodeSystem() != null) {
             T childResult = visitCodeSystemRef(elm.getCodeSystem(), context);
-            result = aggregateResult(result, childResult);
-        }
-
-        if (elm.getResultTypeSpecifier() != null) {
-            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
 
@@ -371,18 +336,14 @@ public abstract class BaseElmClinicalVisitor<T, C> extends BaseElmVisitor<T, C> 
      * @return the visitor result
      */
     public T visitConceptDef(ConceptDef elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getAccessLevel() != null) {
             T childResult = visitAccessModifier(elm.getAccessLevel(), context);
             result = aggregateResult(result, childResult);
         }
         for (CodeRef cr : elm.getCode()) {
             T childResult = visitCodeRef(cr, context);
-            result = aggregateResult(result, childResult);
-        }
-
-        if (elm.getResultTypeSpecifier() != null) {
-            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
 
@@ -398,7 +359,7 @@ public abstract class BaseElmClinicalVisitor<T, C> extends BaseElmVisitor<T, C> 
      * @return the visitor result
      */
     public T visitCodeSystemRef(CodeSystemRef elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -410,7 +371,7 @@ public abstract class BaseElmClinicalVisitor<T, C> extends BaseElmVisitor<T, C> 
      * @return the visitor result
      */
     public T visitValueSetRef(ValueSetRef elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -422,7 +383,7 @@ public abstract class BaseElmClinicalVisitor<T, C> extends BaseElmVisitor<T, C> 
      * @return the visitor result
      */
     public T visitCodeRef(CodeRef elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -434,7 +395,7 @@ public abstract class BaseElmClinicalVisitor<T, C> extends BaseElmVisitor<T, C> 
      * @return the visitor result
      */
     public T visitConceptRef(ConceptRef elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -446,14 +407,10 @@ public abstract class BaseElmClinicalVisitor<T, C> extends BaseElmVisitor<T, C> 
      * @return the visitor result
      */
     public T visitCode(Code elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getSystem() != null) {
             T childResult = visitCodeSystemRef(elm.getSystem(), context);
-            result = aggregateResult(result, childResult);
-        }
-
-        if (elm.getResultTypeSpecifier() != null) {
-            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
 
@@ -469,14 +426,10 @@ public abstract class BaseElmClinicalVisitor<T, C> extends BaseElmVisitor<T, C> 
      * @return the visitor result
      */
     public T visitConcept(Concept elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         for (Code c : elm.getCode()) {
             T childResult = visitCode(c, context);
-            result = aggregateResult(result, childResult);
-        }
-
-        if (elm.getResultTypeSpecifier() != null) {
-            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
             result = aggregateResult(result, childResult);
         }
 
@@ -492,7 +445,8 @@ public abstract class BaseElmClinicalVisitor<T, C> extends BaseElmVisitor<T, C> 
      * @return the visitor result
      */
     public T visitInCodeSystem(InCodeSystem elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getCode() != null) {
             T childResult = visitExpression(elm.getCode(), context);
             result = aggregateResult(result, childResult);
@@ -506,15 +460,6 @@ public abstract class BaseElmClinicalVisitor<T, C> extends BaseElmVisitor<T, C> 
             result = aggregateResult(result, childResult);
         }
 
-        for (var s : elm.getSignature()) {
-            T childResult = visitTypeSpecifier(s, context);
-            result = aggregateResult(result, childResult);
-        }
-
-        if (elm.getResultTypeSpecifier() != null) {
-            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
-            result = aggregateResult(result, childResult);
-        }
         return result;
     }
 
@@ -527,7 +472,8 @@ public abstract class BaseElmClinicalVisitor<T, C> extends BaseElmVisitor<T, C> 
      * @return the visitor result
      */
     public T visitAnyInCodeSystem(AnyInCodeSystem elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getCodes() != null) {
             T childResult = visitExpression(elm.getCodes(), context);
             result = aggregateResult(result, childResult);
@@ -541,15 +487,6 @@ public abstract class BaseElmClinicalVisitor<T, C> extends BaseElmVisitor<T, C> 
             result = aggregateResult(result, childResult);
         }
 
-        for (var s : elm.getSignature()) {
-            T childResult = visitTypeSpecifier(s, context);
-            result = aggregateResult(result, childResult);
-        }
-
-        if (elm.getResultTypeSpecifier() != null) {
-            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
-            result = aggregateResult(result, childResult);
-        }
         return result;
     }
 
@@ -562,7 +499,8 @@ public abstract class BaseElmClinicalVisitor<T, C> extends BaseElmVisitor<T, C> 
      * @return the visitor result
      */
     public T visitInValueSet(InValueSet elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getCode() != null) {
             T childResult = visitExpression(elm.getCode(), context);
             result = aggregateResult(result, childResult);
@@ -576,15 +514,6 @@ public abstract class BaseElmClinicalVisitor<T, C> extends BaseElmVisitor<T, C> 
             result = aggregateResult(result, childResult);
         }
 
-        for (var s : elm.getSignature()) {
-            T childResult = visitTypeSpecifier(s, context);
-            result = aggregateResult(result, childResult);
-        }
-
-        if (elm.getResultTypeSpecifier() != null) {
-            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
-            result = aggregateResult(result, childResult);
-        }
         return result;
     }
 
@@ -597,7 +526,8 @@ public abstract class BaseElmClinicalVisitor<T, C> extends BaseElmVisitor<T, C> 
      * @return the visitor result
      */
     public T visitAnyInValueSet(AnyInValueSet elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getCodes() != null) {
             T childResult = visitExpression(elm.getCodes(), context);
             result = aggregateResult(result, childResult);
@@ -611,15 +541,6 @@ public abstract class BaseElmClinicalVisitor<T, C> extends BaseElmVisitor<T, C> 
             result = aggregateResult(result, childResult);
         }
 
-        for (var s : elm.getSignature()) {
-            T childResult = visitTypeSpecifier(s, context);
-            result = aggregateResult(result, childResult);
-        }
-
-        if (elm.getResultTypeSpecifier() != null) {
-            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
-            result = aggregateResult(result, childResult);
-        }
         return result;
     }
 
@@ -632,7 +553,7 @@ public abstract class BaseElmClinicalVisitor<T, C> extends BaseElmVisitor<T, C> 
      * @return the visitor result
      */
     public T visitSubsumes(Subsumes elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -644,7 +565,7 @@ public abstract class BaseElmClinicalVisitor<T, C> extends BaseElmVisitor<T, C> 
      * @return the visitor result
      */
     public T visitSubsumedBy(SubsumedBy elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -656,7 +577,7 @@ public abstract class BaseElmClinicalVisitor<T, C> extends BaseElmVisitor<T, C> 
      * @return the visitor result
      */
     public T visitQuantity(Quantity elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -668,7 +589,8 @@ public abstract class BaseElmClinicalVisitor<T, C> extends BaseElmVisitor<T, C> 
      * @return the visitor result
      */
     public T visitRatio(Ratio elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
+
         if (elm.getDenominator() != null) {
             T childResult = visitQuantity(elm.getDenominator(), context);
             result = aggregateResult(result, childResult);
@@ -678,10 +600,6 @@ public abstract class BaseElmClinicalVisitor<T, C> extends BaseElmVisitor<T, C> 
             result = aggregateResult(result, childResult);
         }
 
-        if (elm.getResultTypeSpecifier() != null) {
-            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
-            result = aggregateResult(result, childResult);
-        }
         return result;
     }
 
@@ -694,7 +612,7 @@ public abstract class BaseElmClinicalVisitor<T, C> extends BaseElmVisitor<T, C> 
      * @return the visitor result
      */
     public T visitCalculateAge(CalculateAge elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -706,6 +624,6 @@ public abstract class BaseElmClinicalVisitor<T, C> extends BaseElmVisitor<T, C> 
      * @return the visitor result
      */
     public T visitCalculateAgeAt(CalculateAgeAt elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 }

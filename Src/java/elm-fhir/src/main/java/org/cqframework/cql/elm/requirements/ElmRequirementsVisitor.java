@@ -314,11 +314,11 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor<ElmRequirement
     }
 
     @Override
-    public ElmRequirement visitChildren(BinaryExpression elm, ElmRequirementsContext context) {
+    public ElmRequirement visitFields(BinaryExpression elm, ElmRequirementsContext context) {
         // Override visit children behavior to determine whether to create an
         // ElmConditionRequirement
         if (elm.getOperand().size() != 2) {
-            return super.visitChildren(elm, context);
+            throw new IllegalArgumentException("BinaryExpression must have two operands.");
         }
 
         switch (elm.getClass().getSimpleName()) {
@@ -413,7 +413,7 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor<ElmRequirement
             case "ProperIncludes":
             case "ProperIncludedIn":
             default: {
-                super.visitChildren(elm, context);
+                super.visitFields(elm, context);
                 return new ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm);
             }
         }
@@ -653,7 +653,8 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor<ElmRequirement
         return result;
     }
 
-    public ElmRequirement commonAliasedQuerySource(AliasedQuerySource elm, ElmRequirementsContext context) {
+    @Override
+    public ElmRequirement visitFields(AliasedQuerySource elm, ElmRequirementsContext context) {
         // Override visit behavior because we need to exit the definition context prior
         // to traversing the such that
         // condition
@@ -681,7 +682,7 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor<ElmRequirement
 
     @Override
     public ElmRequirement visitWith(With elm, ElmRequirementsContext context) {
-        ElmRequirement result = commonAliasedQuerySource((AliasedQuerySource) elm, context);
+        ElmRequirement result = visitFields((AliasedQuerySource) elm, context);
 
         if (elm.getSuchThat() != null) {
             ElmRequirement childResult = visitExpression(elm.getSuchThat(), context);
@@ -696,7 +697,7 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor<ElmRequirement
 
     @Override
     public ElmRequirement visitWithout(Without elm, ElmRequirementsContext context) {
-        ElmRequirement result = commonAliasedQuerySource((AliasedQuerySource) elm, context);
+        ElmRequirement result = visitFields((AliasedQuerySource) elm, context);
 
         if (elm.getSuchThat() != null) {
             ElmRequirement childResult = visitExpression(elm.getSuchThat(), context);
@@ -714,7 +715,7 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor<ElmRequirement
             return visitRelationshipClause((RelationshipClause) elm, context);
         }
 
-        return commonAliasedQuerySource(elm, context);
+        return visitFields(elm, context);
     }
 
     @Override
@@ -733,11 +734,9 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor<ElmRequirement
         return letContext.getRequirements();
     }
 
-    // This is most a copy of the super-class visitQuery
-    // But it reports the requirements of the where clause to the requirements
-    // context
-    public ElmRequirement innerVisitQuery(Query elm, ElmRequirementsContext context) {
-        ElmRequirement result = defaultResult(elm, context);
+    protected ElmRequirement visitFields(Query elm, ElmRequirementsContext context) {
+        ElmRequirement result = visitFields((Expression) elm, context);
+
         for (var source : elm.getSource()) {
             ElmRequirement childResult = visitAliasedQuerySource(source, context);
             result = aggregateResult(result, childResult);
@@ -787,7 +786,7 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor<ElmRequirement
         ElmQueryContext queryContext = null;
         context.enterQueryContext(elm);
         try {
-            childResult = innerVisitQuery(elm, context);
+            childResult = visitFields(elm, context);
         } finally {
             queryContext = context.exitQueryContext();
         }

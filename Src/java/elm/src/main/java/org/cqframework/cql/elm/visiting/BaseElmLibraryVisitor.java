@@ -34,7 +34,7 @@ public abstract class BaseElmLibraryVisitor<T, C> extends BaseElmClinicalVisitor
      * @return the visitor result
      */
     public T visitLibrary(Library elm, C context) {
-        T result = defaultResult(elm, context);
+        T result = visitFields(elm, context);
         if (elm.getUsings() != null
                 && elm.getUsings().getDef() != null
                 && !elm.getUsings().getDef().isEmpty()) {
@@ -108,11 +108,6 @@ public abstract class BaseElmLibraryVisitor<T, C> extends BaseElmClinicalVisitor
             }
         }
 
-        if (elm.getResultTypeSpecifier() != null) {
-            T childResult = visitTypeSpecifier(elm.getResultTypeSpecifier(), context);
-            result = aggregateResult(result, childResult);
-        }
-
         return result;
     }
 
@@ -125,7 +120,7 @@ public abstract class BaseElmLibraryVisitor<T, C> extends BaseElmClinicalVisitor
      * @return the visitor result
      */
     public T visitUsingDef(UsingDef elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -137,7 +132,7 @@ public abstract class BaseElmLibraryVisitor<T, C> extends BaseElmClinicalVisitor
      * @return the visitor result
      */
     public T visitIncludeDef(IncludeDef elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 
     /**
@@ -149,6 +144,6 @@ public abstract class BaseElmLibraryVisitor<T, C> extends BaseElmClinicalVisitor
      * @return the visitor result
      */
     public T visitContextDef(ContextDef elm, C context) {
-        return visitChildren(elm, context);
+        return visitFields(elm, context);
     }
 }
