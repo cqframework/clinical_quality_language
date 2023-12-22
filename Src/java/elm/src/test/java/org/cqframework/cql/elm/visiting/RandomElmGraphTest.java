@@ -58,7 +58,7 @@ public class RandomElmGraphTest {
 
                 // Debugging for specific types and paths
                 // that aren't being visited.
-                // if (t instanceof CaseItem) {
+                // if (t instanceof ConvertsToDate || t instanceof SplitOnMatches || t instanceof DateFrom) {
                 //     printContext((Element) t, context);
                 // }
 
