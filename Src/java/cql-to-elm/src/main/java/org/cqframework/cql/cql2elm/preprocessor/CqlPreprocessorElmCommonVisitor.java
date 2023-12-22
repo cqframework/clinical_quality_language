@@ -28,7 +28,7 @@ import org.hl7.cql_annotations.r1.Tag;
 import org.hl7.elm.r1.*;
 
 /**
- * Common functionality used by {@link CqlPreprocessor} and {@link ElmGenerator}
+ * Common functionality used by {@link CqlPreprocessor} and {@link Cql2ElmVisitor}
  */
 public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
     protected final ObjectFactory of;
@@ -50,13 +50,6 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
 
     private final List<Expression> expressions = new ArrayList<>();
     private boolean includeDeprecatedElements = false;
-
-    /**
-     * TODO: refactor away!
-     */
-    public void setLibraryInfo(LibraryInfo libraryInfo) {
-        this.libraryInfo = libraryInfo;
-    }
 
     public CqlPreprocessorElmCommonVisitor(LibraryBuilder libraryBuilder, TokenStream tokenStream) {
         this.libraryBuilder = Objects.requireNonNull(libraryBuilder, "libraryBuilder required");

@@ -225,16 +225,16 @@ public class CqlCompiler {
 
         // Phase 4: generate the ELM (the ELM is generated with full type information that can be used
         // for validation, optimization, rewriting, debugging, etc.)
-        ElmGenerator visitor = new ElmGenerator(builder, tokens, preprocessor.getLibraryInfo());
+        Cql2ElmVisitor visitor = new Cql2ElmVisitor(builder, tokens, preprocessor.getLibraryInfo());
         visitResult = visitor.visit(tree);
         library = builder.getLibrary();
 
         // Phase 5: ELM optimization/reduction (this is where result types, annotations, etc. are removed
         // and there will probably be a lot of other optimizations that happen here in the future)
-        var edits = coalesceAll(
-                nullIfFalse(options.contains(EnableAnnotations), ElmEdit.REMOVE_ANNOTATION),
-                nullIfFalse(options.contains(EnableResultTypes), ElmEdit.REMOVE_RESULT_TYPE),
-                nullIfFalse(options.contains(EnableLocators), ElmEdit.REMOVE_LOCATOR));
+        var edits = allNonNull(
+                !options.contains(EnableAnnotations) ? ElmEdit.REMOVE_ANNOTATION : null,
+                !options.contains(EnableResultTypes) ? ElmEdit.REMOVE_RESULT_TYPE : null,
+                !options.contains(EnableLocators) ? ElmEdit.REMOVE_LOCATOR : null);
 
         new ElmEditor(edits).edit(library);
 
@@ -248,11 +248,7 @@ public class CqlCompiler {
         return library;
     }
 
-    private static <T> T nullIfFalse(boolean b, T t) {
-        return !b ? t : null;
-    }
-
-    private static List<ElmEdit> coalesceAll(ElmEdit... ts) {
-        return Arrays.stream(ts).filter(t -> t != null).collect(Collectors.toList());
+    private List<ElmEdit> allNonNull(ElmEdit... ts) {
+        return Arrays.stream(ts).filter(x -> x != null).collect(Collectors.toList());
     }
 }

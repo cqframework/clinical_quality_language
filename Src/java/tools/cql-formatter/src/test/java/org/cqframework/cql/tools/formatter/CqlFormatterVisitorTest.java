@@ -4,7 +4,7 @@ import static org.cqframework.cql.tools.formatter.CqlFormatterVisitor.*;
 
 import java.io.IOException;
 import java.io.InputStream;
-import org.cqframework.cql.cql2elm.ElmGenerator;
+import org.cqframework.cql.cql2elm.Cql2ElmVisitor;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -164,7 +164,7 @@ public class CqlFormatterVisitorTest {
     }
 
     private InputStream getInput(String fileName) {
-        InputStream is = ElmGenerator.class.getResourceAsStream(fileName);
+        InputStream is = Cql2ElmVisitor.class.getResourceAsStream(fileName);
 
         if (is == null) {
             is = CqlFormatterVisitorTest.class.getResourceAsStream(fileName);
@@ -172,7 +172,7 @@ public class CqlFormatterVisitorTest {
             if (is == null) {
                 throw new IllegalArgumentException(String.format(
                         "Invalid test resource: %s not in %s or %s",
-                        fileName, ElmGenerator.class.getSimpleName(), CqlFormatterVisitor.class.getSimpleName()));
+                        fileName, Cql2ElmVisitor.class.getSimpleName(), CqlFormatterVisitor.class.getSimpleName()));
             }
         }
 

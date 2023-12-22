@@ -30,11 +30,11 @@ public class TestUtils {
         return new ModelManager();
     }
 
-    public static ElmGenerator visitFile(String fileName, boolean inClassPath) throws IOException {
+    public static Cql2ElmVisitor visitFile(String fileName, boolean inClassPath) throws IOException {
         InputStream is = inClassPath ? TestUtils.class.getResourceAsStream(fileName) : new FileInputStream(fileName);
         TokenStream tokens = parseCharStream(CharStreams.fromStream(is));
         ParseTree tree = parseTokenStream(tokens);
-        ElmGenerator visitor = createElmTranslatorVisitor(tokens, tree);
+        Cql2ElmVisitor visitor = createElmTranslatorVisitor(tokens, tree);
         visitor.visit(tree);
         return visitor;
     }
@@ -98,13 +98,13 @@ public class TestUtils {
         }
     }
 
-    private static ElmGenerator createElmTranslatorVisitor(TokenStream tokens, ParseTree tree) {
+    private static Cql2ElmVisitor createElmTranslatorVisitor(TokenStream tokens, ParseTree tree) {
         ModelManager modelManager = new ModelManager();
         LibraryManager libraryManager = getLibraryManager(modelManager, null);
         LibraryBuilder libraryBuilder = new LibraryBuilder(libraryManager, new IdObjectFactory());
         CqlPreprocessor preprocessor = new CqlPreprocessor(libraryBuilder, tokens);
         preprocessor.visit(tree);
-        ElmGenerator visitor = new ElmGenerator(libraryBuilder, tokens, preprocessor.getLibraryInfo());
+        Cql2ElmVisitor visitor = new Cql2ElmVisitor(libraryBuilder, tokens, preprocessor.getLibraryInfo());
         return visitor;
     }
 

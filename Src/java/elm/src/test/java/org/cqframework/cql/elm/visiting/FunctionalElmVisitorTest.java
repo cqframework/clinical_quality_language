@@ -42,9 +42,7 @@ public class FunctionalElmVisitorTest {
     @Test
     public void nullVisitorTest() {
         assertThrows(NullPointerException.class, () -> new FunctionalElmVisitor<Integer, Void>(null, null));
-        assertThrows(
-                NullPointerException.class, () -> new FunctionalElmVisitor<Integer, Void>(null, Integer::sum));
-        assertThrows(
-                NullPointerException.class, () -> new FunctionalElmVisitor<Integer, Void>((x, y) -> 1, null));
+        assertThrows(NullPointerException.class, () -> new FunctionalElmVisitor<Integer, Void>(null, Integer::sum));
+        assertThrows(NullPointerException.class, () -> new FunctionalElmVisitor<Integer, Void>((x, y) -> 1, null));
     }
 }

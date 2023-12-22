@@ -19,11 +19,8 @@ import org.cqframework.cql.gen.cqlParser;
 import org.hl7.cql.model.*;
 import org.hl7.elm.r1.*;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class ElmGenerator extends CqlPreprocessorElmCommonVisitor {
-    private static final Logger logger = LoggerFactory.getLogger(ElmGenerator.class);
+public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     private final SystemMethodResolver systemMethodResolver;
 
     private final Set<String> definedExpressionDefinitions = new HashSet<>();
@@ -37,7 +34,7 @@ public class ElmGenerator extends CqlPreprocessorElmCommonVisitor {
     private final List<Expression> expressions = new ArrayList<>();
     private final Map<String, Element> contextDefinitions = new HashMap<>();
 
-    public ElmGenerator(LibraryBuilder libraryBuilder, TokenStream tokenStream, LibraryInfo libraryInfo) {
+    public Cql2ElmVisitor(LibraryBuilder libraryBuilder, TokenStream tokenStream, LibraryInfo libraryInfo) {
         super(libraryBuilder, tokenStream);
         this.libraryInfo = Objects.requireNonNull(libraryInfo, "libraryInfo required");
         this.systemMethodResolver = new SystemMethodResolver(this, libraryBuilder);
@@ -340,7 +337,13 @@ public class ElmGenerator extends CqlPreprocessorElmCommonVisitor {
         if (ctx.codesystems() != null) {
             for (cqlParser.CodesystemIdentifierContext codesystem :
                     ctx.codesystems().codesystemIdentifier()) {
-                vs.getCodeSystem().add((CodeSystemRef) visit(codesystem));
+                var cs = (CodeSystemRef) visit(codesystem);
+                if (cs == null) {
+                    throw new IllegalArgumentException(
+                            String.format("Could not resolve reference to code system %s.", codesystem.getText()));
+                }
+
+                vs.getCodeSystem().add(cs);
             }
         }
         if (libraryBuilder.isCompatibleWith("1.5")) {

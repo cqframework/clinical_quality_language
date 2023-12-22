@@ -15,10 +15,10 @@ import org.hl7.elm.r1.*;
  */
 public class SystemMethodResolver {
     private final ObjectFactory of;
-    private final ElmGenerator visitor;
+    private final Cql2ElmVisitor visitor;
     private final LibraryBuilder builder;
 
-    public SystemMethodResolver(ElmGenerator visitor, LibraryBuilder builder) {
+    public SystemMethodResolver(Cql2ElmVisitor visitor, LibraryBuilder builder) {
         this.visitor = Objects.requireNonNull(visitor, "visitor required");
         this.builder = Objects.requireNonNull(builder, "builder required");
         this.of = Objects.requireNonNull(builder.getObjectFactory(), "builder must have an object factory");
