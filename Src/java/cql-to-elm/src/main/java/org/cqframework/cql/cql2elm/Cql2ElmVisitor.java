@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.cqframework.cql.cql2elm.model.*;
@@ -17,22 +18,10 @@ import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 import org.hl7.cql.model.*;
 import org.hl7.elm.r1.*;
-import org.hl7.elm.r1.Element;
-import org.hl7.elm.r1.Interval;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
-    private static final Logger logger = LoggerFactory.getLogger(Cql2ElmVisitor.class);
     private final SystemMethodResolver systemMethodResolver;
-
-    public void setLibraryInfo(LibraryInfo libraryInfo) {
-        if (libraryInfo == null) {
-            throw new IllegalArgumentException("libraryInfo is null");
-        }
-        this.libraryInfo = libraryInfo;
-    }
 
     private final Set<String> definedExpressionDefinitions = new HashSet<>();
     private final Stack<ExpressionDefinitionInfo> forwards = new Stack<>();
@@ -45,13 +34,9 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     private final List<Expression> expressions = new ArrayList<>();
     private final Map<String, Element> contextDefinitions = new HashMap<>();
 
-    public Cql2ElmVisitor(LibraryBuilder libraryBuilder) {
-        super(libraryBuilder);
-
-        if (libraryBuilder == null) {
-            throw new IllegalArgumentException("libraryBuilder is null");
-        }
-
+    public Cql2ElmVisitor(LibraryBuilder libraryBuilder, TokenStream tokenStream, LibraryInfo libraryInfo) {
+        super(libraryBuilder, tokenStream);
+        this.libraryInfo = Objects.requireNonNull(libraryInfo, "libraryInfo required");
         this.systemMethodResolver = new SystemMethodResolver(this, libraryBuilder);
     }
 
@@ -352,7 +337,13 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         if (ctx.codesystems() != null) {
             for (cqlParser.CodesystemIdentifierContext codesystem :
                     ctx.codesystems().codesystemIdentifier()) {
-                vs.getCodeSystem().add((CodeSystemRef) visit(codesystem));
+                var cs = (CodeSystemRef) visit(codesystem);
+                if (cs == null) {
+                    throw new IllegalArgumentException(
+                            String.format("Could not resolve reference to code system %s.", codesystem.getText()));
+                }
+
+                vs.getCodeSystem().add(cs);
             }
         }
         if (libraryBuilder.isCompatibleWith("1.5")) {
@@ -1623,10 +1614,6 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                     .withOperand(parseExpression(ctx.expression(0)), parseExpression(ctx.expression(1)));
 
             libraryBuilder.resolveBinaryCall("System", "Equivalent", equivalent);
-
-            if (isAnnotationEnabled()) {
-                equivalent.setLocalId(Integer.toString(getNextLocalId()));
-            }
 
             if (!"~".equals(parseString(ctx.getChild(1)))) {
                 track(equivalent, ctx);

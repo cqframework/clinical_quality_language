@@ -3,6 +3,7 @@ package org.cqframework.cql.cql2elm;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import org.cqframework.cql.cql2elm.model.QueryContext;
 import org.cqframework.cql.gen.cqlParser;
@@ -13,21 +14,14 @@ import org.hl7.elm.r1.*;
  * Created by Bryn on 12/27/2016.
  */
 public class SystemMethodResolver {
-    private final ObjectFactory of = new ObjectFactory();
+    private final ObjectFactory of;
     private final Cql2ElmVisitor visitor;
     private final LibraryBuilder builder;
 
     public SystemMethodResolver(Cql2ElmVisitor visitor, LibraryBuilder builder) {
-        if (visitor == null) {
-            throw new IllegalArgumentException("visitor is null");
-        }
-
-        if (builder == null) {
-            throw new IllegalArgumentException("builder is null");
-        }
-
-        this.visitor = visitor;
-        this.builder = builder;
+        this.visitor = Objects.requireNonNull(visitor, "visitor required");
+        this.builder = Objects.requireNonNull(builder, "builder required");
+        this.of = Objects.requireNonNull(builder.getObjectFactory(), "builder must have an object factory");
     }
 
     private List<Expression> getParams(Expression target, cqlParser.ParamListContext ctx) {

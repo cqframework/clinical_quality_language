@@ -1,8 +1,5 @@
 package org.cqframework.cql.cql2elm;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static uk.co.datumedge.hamcrest.json.SameJSONAs.sameJSONAs;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -11,6 +8,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 import org.cqframework.cql.cql2elm.CqlCompilerException.ErrorSeverity;
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
+import org.json.JSONException;
+import org.skyscreamer.jsonassert.JSONAssert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -27,7 +26,8 @@ public class CMS146JsonTest {
     }
 
     @Test(dataProvider = "sigFileAndSigLevel")
-    public void testCms146_SignatureLevels(String fileName, SignatureLevel expectedSignatureLevel) throws IOException {
+    public void testCms146_SignatureLevels(String fileName, SignatureLevel expectedSignatureLevel)
+            throws IOException, JSONException {
         final String expectedJson = getJson(fileName);
 
         final File cms146 = getFile("CMS146v2_Test_CQM.cql");
@@ -37,7 +37,7 @@ public class CMS146JsonTest {
                 new LibraryManager(
                         modelManager, new CqlCompilerOptions(ErrorSeverity.Warning, expectedSignatureLevel)));
         final String actualJson = translator.toJson();
-        assertThat(actualJson, sameJSONAs(expectedJson));
+        JSONAssert.assertEquals(expectedJson, actualJson, true);
     }
 
     private static String getJson(String name) throws IOException {

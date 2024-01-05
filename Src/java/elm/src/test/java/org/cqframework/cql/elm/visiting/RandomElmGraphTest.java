@@ -93,7 +93,7 @@ public class RandomElmGraphTest {
 
         var elementsVisited = new HashMap<Integer, Element>();
         var elementsDuplicated = new HashMap<Integer, Element>();
-        var countingVisitor = new FunctionalElmLibraryVisitor<Integer, HashMap<Integer, Element>>(
+        var countingVisitor = new FunctionalElmVisitor<Integer, HashMap<Integer, Element>>(
                 (x, y) -> {
                     if (x instanceof Element) {
                         var hash = System.identityHashCode(x);

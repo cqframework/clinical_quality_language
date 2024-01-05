@@ -17,7 +17,8 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.cqframework.cql.cql2elm.CqlCompilerException.ErrorSeverity;
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
-import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorVisitor;
+import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessor;
+import org.cqframework.cql.elm.IdObjectFactory;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 import org.hl7.cql.model.NamespaceInfo;
@@ -100,11 +101,10 @@ public class TestUtils {
     private static Cql2ElmVisitor createElmTranslatorVisitor(TokenStream tokens, ParseTree tree) {
         ModelManager modelManager = new ModelManager();
         LibraryManager libraryManager = getLibraryManager(modelManager, null);
-        LibraryBuilder libraryBuilder = new LibraryBuilder(libraryManager);
-        CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor(libraryBuilder, tokens);
+        LibraryBuilder libraryBuilder = new LibraryBuilder(libraryManager, new IdObjectFactory());
+        CqlPreprocessor preprocessor = new CqlPreprocessor(libraryBuilder, tokens);
         preprocessor.visit(tree);
-        Cql2ElmVisitor visitor = new Cql2ElmVisitor(libraryBuilder);
-        visitor.setLibraryInfo(preprocessor.getLibraryInfo());
+        Cql2ElmVisitor visitor = new Cql2ElmVisitor(libraryBuilder, tokens, preprocessor.getLibraryInfo());
         return visitor;
     }
 

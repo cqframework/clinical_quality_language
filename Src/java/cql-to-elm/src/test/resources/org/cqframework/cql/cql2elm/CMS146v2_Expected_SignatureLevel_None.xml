@@ -262,7 +262,6 @@
                 </wstxns7:expression>
               </wstxns7:source>
             </wstxns7:source>
-            <wstxns7:relationship/>
             <wstxns7:where wstxns7:type="And">
               <wstxns7:operand>
                 <wstxns7:operand wstxns7:type="In">

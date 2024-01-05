@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm;
 
+import static org.cqframework.cql.cql2elm.CqlCompilerOptions.Options.EnableAnnotations;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -19,8 +20,7 @@ public class CommentTests {
 
     @Test
     public void testComments() throws IOException {
-        CqlTranslator translator =
-                TestUtils.runSemanticTest("TestComments.cql", 0, CqlCompilerOptions.Options.EnableAnnotations);
+        CqlTranslator translator = TestUtils.runSemanticTest("TestComments.cql", 0, EnableAnnotations);
         CompiledLibrary library = translator.getTranslatedLibrary();
         assertThat(library.getLibrary().getAnnotation(), notNullValue());
 
@@ -77,7 +77,7 @@ public class CommentTests {
 
     @Test
     public void testTags() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("TestTags.cql", 0);
+        CqlTranslator translator = TestUtils.runSemanticTest("TestTags.cql", 0, EnableAnnotations);
         CompiledLibrary library = translator.getTranslatedLibrary();
         assertThat(library.getLibrary().getAnnotation(), notNullValue());
         Annotation a = null;
@@ -356,6 +356,11 @@ public class CommentTests {
                 aInvalid = (Annotation) o;
             }
         }
-        assertThat(aInvalid, nullValue());
+
+        // Narrative still applies in the event of an invalid, it'll just
+        // be a comment instead of a tag
+        assertThat(aInvalid, notNullValue());
+        assertThat(aInvalid.getS(), notNullValue());
+        assertThat(aInvalid.getT().size(), equalTo(0));
     }
 }

@@ -1,7 +1,7 @@
 package org.cqframework.cql.elm.requirements;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import org.hl7.cql.model.ClassType;
 import org.hl7.cql.model.DataType;
 import org.hl7.cql.model.ListType;
@@ -127,7 +127,7 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
                 .withResultType(expression.getResultType());
     }
 
-    private Set<Property> propertySet;
+    private List<Property> propertySet;
 
     public Iterable<Property> getProperties() {
         return propertySet;
@@ -138,9 +138,22 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
     }
 
     public void addProperty(Property property) {
+        // NOTE: This is conceptually a set, but the ELM model includes
+        // annotations as part of the `equals` and `hashCode` implementations
+        // so we must check for uniqueness manually
         if (propertySet == null) {
-            propertySet = new LinkedHashSet<Property>();
+            propertySet = new ArrayList<Property>();
         }
+
+        var alreadyHasProperty = propertySet.stream()
+                .filter(x -> x.getPath().equals(property.getPath()))
+                .findFirst()
+                .isPresent();
+
+        if (alreadyHasProperty) {
+            return;
+        }
+
         propertySet.add(property);
     }
 
@@ -151,10 +164,7 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
     }
 
     public void reportProperty(ElmPropertyRequirement propertyRequirement) {
-        if (propertySet == null) {
-            propertySet = new LinkedHashSet<Property>();
-        }
-        propertySet.add(propertyRequirement.getProperty());
+        addProperty(propertyRequirement.getProperty());
     }
 
     private ElmConjunctiveRequirement conjunctiveRequirement;

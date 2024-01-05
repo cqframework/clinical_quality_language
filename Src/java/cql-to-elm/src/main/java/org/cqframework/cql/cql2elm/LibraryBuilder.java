@@ -19,7 +19,7 @@ import org.hl7.elm.r1.*;
 /**
  * Created by Bryn on 12/29/2016.
  */
-public class LibraryBuilder implements ModelResolver {
+public class LibraryBuilder {
     public static enum SignatureLevel {
         /*
         Indicates signatures will never be included in operator invocations
@@ -42,19 +42,17 @@ public class LibraryBuilder implements ModelResolver {
         All
     }
 
-    public LibraryBuilder(LibraryManager libraryManager) {
-        this(null, libraryManager);
+    public LibraryBuilder(LibraryManager libraryManager, ObjectFactory objectFactory) {
+        this(null, libraryManager, objectFactory);
     }
 
-    public LibraryBuilder(NamespaceInfo namespaceInfo, LibraryManager libraryManager) {
-        if (libraryManager == null) {
-            throw new IllegalArgumentException("libraryManager is null");
-        }
+    public LibraryBuilder(NamespaceInfo namespaceInfo, LibraryManager libraryManager, ObjectFactory objectFactory) {
+        this.libraryManager = Objects.requireNonNull(libraryManager);
+        this.of = Objects.requireNonNull(objectFactory);
 
         this.namespaceInfo = namespaceInfo; // Note: allowed to be null, implies global namespace
         this.modelManager = libraryManager.getModelManager();
-        this.libraryManager = libraryManager;
-        this.typeBuilder = new TypeBuilder(of, this);
+        this.typeBuilder = new TypeBuilder(of, this.modelManager);
 
         this.library = of.createLibrary()
                 .withSchemaIdentifier(of.createVersionedIdentifier()
@@ -63,8 +61,13 @@ public class LibraryBuilder implements ModelResolver {
 
         this.cqlToElmInfo = af.createCqlToElmInfo();
         this.cqlToElmInfo.setTranslatorVersion(LibraryBuilder.class.getPackage().getImplementationVersion());
+
         this.library.getAnnotation().add(this.cqlToElmInfo);
 
+        this.options = Objects.requireNonNull(
+                libraryManager.getCqlCompilerOptions(), "libraryManager compilerOptions can not be null.");
+
+        this.setCompilerOptions(this.options);
         compiledLibrary = new CompiledLibrary();
         compiledLibrary.setLibrary(library);
     }
@@ -97,6 +100,14 @@ public class LibraryBuilder implements ModelResolver {
         return exceptions;
     }
 
+    public ObjectFactory getObjectFactory() {
+        return of;
+    }
+
+    public LibraryManager getLibraryManager() {
+        return libraryManager;
+    }
+
     private final Map<String, Model> models = new LinkedHashMap<>();
 
     private final Map<String, ResultWithPossibleError<NamedTypeSpecifier>> nameTypeSpecifiers = new HashMap<>();
@@ -108,10 +119,10 @@ public class LibraryBuilder implements ModelResolver {
     private final Deque<HidingIdentifierContext> hidingIdentifiersContexts = new ArrayDeque<>();
     private int literalContext = 0;
     private int typeSpecifierContext = 0;
-    private NamespaceInfo namespaceInfo = null;
-    private ModelManager modelManager = null;
+    private final NamespaceInfo namespaceInfo;
+    private final ModelManager modelManager;
     private Model defaultModel = null;
-    private LibraryManager libraryManager = null;
+    private final LibraryManager libraryManager;
     private Library library = null;
 
     public Library getLibrary() {
@@ -130,24 +141,18 @@ public class LibraryBuilder implements ModelResolver {
         return conversionMap;
     }
 
-    private final ObjectFactory of = new ObjectFactory();
+    private final ObjectFactory of;
     private final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
     private boolean listTraversal = true;
-    private CqlCompilerOptions options;
-    private CqlToElmInfo cqlToElmInfo = null;
-    private TypeBuilder typeBuilder = null;
-    private Cql2ElmVisitor visitor = null;
+    private final CqlCompilerOptions options;
+    private final CqlToElmInfo cqlToElmInfo;
+    private final TypeBuilder typeBuilder;
 
     public void enableListTraversal() {
         listTraversal = true;
     }
 
-    public void setCompilerOptions(CqlCompilerOptions options) {
-        if (options == null) {
-            throw new IllegalArgumentException("Options cannot be null");
-        }
-
-        this.options = options;
+    private void setCompilerOptions(CqlCompilerOptions options) {
         if (options.getOptions().contains(CqlCompilerOptions.Options.DisableListTraversal)) {
             this.listTraversal = false;
         }
@@ -166,10 +171,6 @@ public class LibraryBuilder implements ModelResolver {
         setCompatibilityLevel(options.getCompatibilityLevel());
         this.cqlToElmInfo.setTranslatorOptions(options.toString());
         this.cqlToElmInfo.setSignatureLevel(options.getSignatureLevel().name());
-    }
-
-    public void setVisitor(Cql2ElmVisitor visitor) {
-        this.visitor = visitor;
     }
 
     private String compatibilityLevel = null;
@@ -964,11 +965,6 @@ public class LibraryBuilder implements ModelResolver {
         // TODO: Take advantage of nary unions
         BinaryWrapper wrapper = normalizeListTypes(left, right);
         Union union = of.createUnion().withOperand(wrapper.left, wrapper.right);
-
-        if (visitor != null && visitor.isAnnotationEnabled()) {
-            union.setLocalId(Integer.toString(visitor.getNextLocalId()));
-        }
-
         resolveNaryCall("System", "Union", union);
         return union;
     }

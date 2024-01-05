@@ -831,7 +831,6 @@
               },
               "alias" : "R"
             } ],
-            "relationship" : [ ],
             "where" : {
               "type" : "And",
               "signature" : [ {

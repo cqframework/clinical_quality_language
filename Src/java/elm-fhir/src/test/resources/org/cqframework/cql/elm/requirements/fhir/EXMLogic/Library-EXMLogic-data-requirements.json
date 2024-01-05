@@ -143,7 +143,7 @@
   "dataRequirement": [ {
     "type": "Patient",
     "profile": [ "http://hl7.org/fhir/StructureDefinition/Patient" ],
-    "mustSupport": [ "ethnicity", "url", "value", "race" ]
+    "mustSupport": [ "ethnicity", "value", "race" ]
   }, {
     "type": "Encounter",
     "profile": [ "http://hl7.org/fhir/StructureDefinition/Encounter" ],

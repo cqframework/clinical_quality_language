@@ -1,17 +1,26 @@
 package org.cqframework.cql.cql2elm;
 
+import static org.cqframework.cql.cql2elm.CqlCompilerOptions.Options.EnableAnnotations;
+import static org.cqframework.cql.cql2elm.CqlCompilerOptions.Options.EnableLocators;
+import static org.cqframework.cql.cql2elm.CqlCompilerOptions.Options.EnableResultTypes;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.cqframework.cql.cql2elm.elm.ElmEdit;
+import org.cqframework.cql.cql2elm.elm.ElmEditor;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
-import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorVisitor;
+import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessor;
+import org.cqframework.cql.elm.IdObjectFactory;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
@@ -190,34 +199,45 @@ public class CqlCompiler {
         warnings = new ArrayList<>();
         messages = new ArrayList<>();
 
-        LibraryBuilder builder = new LibraryBuilder(namespaceInfo, libraryManager);
-        builder.setCompilerOptions(libraryManager.getCqlCompilerOptions());
-        Cql2ElmVisitor visitor = new Cql2ElmVisitor(builder);
-        builder.setVisitor(visitor);
-        visitor.setTranslatorOptions(libraryManager.getCqlCompilerOptions());
+        var options = libraryManager.getCqlCompilerOptions().getOptions();
 
-        CqlCompiler.CqlErrorListener errorListener =
-                new CqlCompiler.CqlErrorListener(builder, visitor.isDetailedErrorsEnabled());
+        LibraryBuilder builder = new LibraryBuilder(namespaceInfo, libraryManager, new IdObjectFactory());
+        CqlCompiler.CqlErrorListener errorListener = new CqlCompiler.CqlErrorListener(
+                builder, options.contains(CqlCompilerOptions.Options.EnableDetailedErrors));
 
+        // Phase 1: Lexing
         cqlLexer lexer = new cqlLexer(is);
         lexer.removeErrorListeners();
         lexer.addErrorListener(errorListener);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
+
+        // Phase 2: Parsing (the lexer is actually streaming, so Phase 1 and 2 happen together)
         cqlParser parser = new cqlParser(tokens);
         parser.setBuildParseTree(true);
-
         parser.removeErrorListeners(); // Clear the default console listener
         parser.addErrorListener(errorListener);
         ParseTree tree = parser.library();
 
-        CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor(builder, tokens);
+        // Phase 3: preprocess the parse tree (generates the LibraryInfo with
+        // header information for definitions)
+        CqlPreprocessor preprocessor = new CqlPreprocessor(builder, tokens);
         preprocessor.visit(tree);
 
-        visitor.setTokenStream(tokens);
-        visitor.setLibraryInfo(preprocessor.getLibraryInfo());
-
+        // Phase 4: generate the ELM (the ELM is generated with full type information that can be used
+        // for validation, optimization, rewriting, debugging, etc.)
+        Cql2ElmVisitor visitor = new Cql2ElmVisitor(builder, tokens, preprocessor.getLibraryInfo());
         visitResult = visitor.visit(tree);
         library = builder.getLibrary();
+
+        // Phase 5: ELM optimization/reduction (this is where result types, annotations, etc. are removed
+        // and there will probably be a lot of other optimizations that happen here in the future)
+        var edits = allNonNull(
+                !options.contains(EnableAnnotations) ? ElmEdit.REMOVE_ANNOTATION : null,
+                !options.contains(EnableResultTypes) ? ElmEdit.REMOVE_RESULT_TYPE : null,
+                !options.contains(EnableLocators) ? ElmEdit.REMOVE_LOCATOR : null);
+
+        new ElmEditor(edits).edit(library);
+
         compiledLibrary = builder.getCompiledLibrary();
         retrieves = visitor.getRetrieves();
         exceptions.addAll(builder.getExceptions());
@@ -226,5 +246,9 @@ public class CqlCompiler {
         messages.addAll(builder.getMessages());
 
         return library;
+    }
+
+    private List<ElmEdit> allNonNull(ElmEdit... ts) {
+        return Arrays.stream(ts).filter(x -> x != null).collect(Collectors.toList());
     }
 }

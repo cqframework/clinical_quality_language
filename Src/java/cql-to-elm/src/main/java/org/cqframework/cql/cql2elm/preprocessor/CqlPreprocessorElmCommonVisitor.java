@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Stack;
 import javax.xml.namespace.QName;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -27,16 +28,16 @@ import org.hl7.cql_annotations.r1.Tag;
 import org.hl7.elm.r1.*;
 
 /**
- * Common functionality used by {@link CqlPreprocessorVisitor} and {@link Cql2ElmVisitor}
+ * Common functionality used by {@link CqlPreprocessor} and {@link Cql2ElmVisitor}
  */
 public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
-    protected final ObjectFactory of = new ObjectFactory();
+    protected final ObjectFactory of;
     protected final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
     private boolean implicitContextCreated = false;
     private String currentContext = "Unfiltered";
     protected Stack<Chunk> chunks = new Stack<>();
     protected final LibraryBuilder libraryBuilder;
-    protected TokenStream tokenStream;
+    protected final TokenStream tokenStream;
     protected LibraryInfo libraryInfo = new LibraryInfo();
     private boolean annotate = false;
     private boolean detailedErrors = false;
@@ -50,13 +51,13 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
     private final List<Expression> expressions = new ArrayList<>();
     private boolean includeDeprecatedElements = false;
 
-    public CqlPreprocessorElmCommonVisitor(LibraryBuilder libraryBuilder) {
-        this.libraryBuilder = libraryBuilder;
-    }
-
     public CqlPreprocessorElmCommonVisitor(LibraryBuilder libraryBuilder, TokenStream tokenStream) {
-        this.libraryBuilder = libraryBuilder;
-        this.tokenStream = tokenStream;
+        this.libraryBuilder = Objects.requireNonNull(libraryBuilder, "libraryBuilder required");
+        this.tokenStream = Objects.requireNonNull(tokenStream, "tokenStream required");
+        this.of = Objects.requireNonNull(libraryBuilder.getObjectFactory(), "libraryBuilder.objectFactory required");
+
+        // Don't talk to strangers. Except when you have to.
+        this.setCompilerOptions(libraryBuilder.getLibraryManager().getCqlCompilerOptions());
     }
 
     protected boolean getImplicitContextCreated() {
@@ -79,10 +80,6 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
         String saveContext = this.currentContext;
         this.currentContext = currentContext;
         return saveContext;
-    }
-
-    public void setTokenStream(TokenStream theTokenStream) {
-        tokenStream = theTokenStream;
     }
 
     @Override
@@ -897,7 +894,7 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
         this.includeDeprecatedElements = includeDeprecatedElements;
     }
 
-    public void setTranslatorOptions(CqlCompilerOptions options) {
+    private void setCompilerOptions(CqlCompilerOptions options) {
         if (options.getOptions().contains(CqlCompilerOptions.Options.EnableDateRangeOptimization)) {
             this.enableDateRangeOptimization();
         }

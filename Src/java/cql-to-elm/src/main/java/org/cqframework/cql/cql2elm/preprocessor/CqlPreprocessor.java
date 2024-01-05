@@ -15,11 +15,11 @@ import org.hl7.elm.r1.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CqlPreprocessorVisitor extends CqlPreprocessorElmCommonVisitor {
-    static final Logger logger = LoggerFactory.getLogger(CqlPreprocessorVisitor.class);
+public class CqlPreprocessor extends CqlPreprocessorElmCommonVisitor {
+    static final Logger logger = LoggerFactory.getLogger(CqlPreprocessor.class);
     private int lastSourceIndex = -1;
 
-    public CqlPreprocessorVisitor(LibraryBuilder libraryBuilder, TokenStream tokenStream) {
+    public CqlPreprocessor(LibraryBuilder libraryBuilder, TokenStream tokenStream) {
         super(libraryBuilder, tokenStream);
     }
 
