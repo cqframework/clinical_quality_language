@@ -19,8 +19,7 @@ It contains the following sub-projects:
 # Building the Project
 
 This project uses the [Gradle](http://www.gradle.org/) build system.  A gradle wrapper, which automatically downloads
-and uses an instance of gradle, is provided for convenience.  To build the project, install the [Java SE Development
-Kit 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) (a.k.a. JDK 1.8), clone this
+and uses an instance of gradle, is provided for convenience.  To build the project, install the [JDK 11](https://adoptium.net/temurin/releases/?version=11), clone this
 repository, then execute this command from within this directory:
 
     ./gradlew build
