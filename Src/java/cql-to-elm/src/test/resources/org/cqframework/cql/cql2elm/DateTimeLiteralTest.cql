@@ -28,6 +28,9 @@ define UTCDateTimeLiteral: @2014-02-12T10:30:15.0000Z
 define TimeZoneDateTimeLiteral: @2014-02-12T10:30:15.0000-07:00
 define TimeZonePositiveDateTimeLiteral: @2014-02-12T10:30:15.0000+07:00
 
+// Test for https://github.com/cqframework/clinical_quality_language/issues/1298
+define TimeZoneHalfHourLiteral: @2014-01-01T12:05:05.955+01:30
+
 define YearExpression: 1 year
 define YearsExpression: 10 years
 define MonthExpression: 1 month
