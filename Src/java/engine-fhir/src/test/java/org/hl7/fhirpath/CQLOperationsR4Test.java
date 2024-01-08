@@ -142,8 +142,6 @@ public class CQLOperationsR4Test extends TestFhirPath implements ITest {
             "cql/CqlTypeOperatorsTest/As/CastAsQuantity",
             "cql/CqlTypeOperatorsTest/Convert/StringToDateTimeMalformed",
             "cql/CqlTypeOperatorsTest/Convert/StringToIntegerError",
-            "cql/CqlTypeOperatorsTest/ToDateTime/ToDateTime4",
-            "cql/CqlTypeOperatorsTest/ToDateTime/ToDateTime5",
             "cql/CqlTypeOperatorsTest/ToDateTime/ToDateTimeMalformed",
             "cql/CqlTypeOperatorsTest/ToTime/ToTime2",
             "cql/CqlTypeOperatorsTest/ToTime/ToTime3",

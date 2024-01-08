@@ -976,7 +976,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                         }
 
                         result.setTimezoneOffset(libraryBuilder.createLiteral(
-                                (double) (hourOffset + (minuteOffset / 60)) * offsetPolarity));
+                                (double) (hourOffset + ((double) minuteOffset / 60)) * offsetPolarity));
                     } else {
                         if (matcher.group(26) != null) {
                             int hourOffset = Integer.parseInt(matcher.group(26));

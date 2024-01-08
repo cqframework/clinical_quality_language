@@ -67,6 +67,11 @@ public class LiteralTests {
 
         def = defs.get("UTCDateLiteral");
         assertThat(def, hasTypeAndResult(DateTime.class, "System.DateTime"));
+
+        def = defs.get("TimeZoneHalfHourLiteral");
+        assertThat(def, hasTypeAndResult(DateTime.class, "System.DateTime"));
+        dateTime = (DateTime) def.getExpression();
+        assertThat(dateTime.getTimezoneOffset(), literalFor(1.5));
     }
 
     @Test
