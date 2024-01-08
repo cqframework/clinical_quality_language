@@ -1,5 +1,8 @@
 package org.cqframework.cql.cql2elm;
 
+import static org.cqframework.cql.cql2elm.CqlCompilerOptions.Options.EnableAnnotations;
+import static org.cqframework.cql.cql2elm.CqlCompilerOptions.Options.EnableDetailedErrors;
+import static org.cqframework.cql.cql2elm.CqlCompilerOptions.Options.EnableResultTypes;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -171,6 +174,18 @@ public class TranslationTests {
 
         As as = (As) operand;
         assertThat(as.getAsTypeSpecifier(), is(instanceOf(ChoiceTypeSpecifier.class)));
+    }
+
+    @Test
+    // test for https://github.com/cqframework/clinical_quality_language/issues/1293
+    public void defaultContextIsUnfiltered() throws IOException {
+        CqlTranslator translator = TestUtils.createTranslator(
+                "DefaultContext.cql", EnableAnnotations, EnableResultTypes, EnableDetailedErrors);
+        assertEquals(0, translator.getErrors().size());
+        Library library = translator.getTranslatedLibrary().getLibrary();
+        assertThat(library.getStatements().getDef().size(), is(2));
+        var def = library.getStatements().getDef().get(0);
+        assertThat(def.getContext(), is("Unfiltered"));
     }
 
     @Test
