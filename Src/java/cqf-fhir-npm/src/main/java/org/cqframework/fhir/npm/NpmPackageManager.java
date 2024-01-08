@@ -33,7 +33,7 @@ public class NpmPackageManager implements IWorkerContext.ILoggingService {
       if (fspcm == null) {
          try {
             // userMode indicates whether the packageCache is within the working directory or in the user home
-            this.fspcm = new FilesystemPackageCacheManager(true);
+            this.fspcm = new FilesystemPackageCacheManager.Builder().build();
          } catch (IOException e) {
             String message = "Error creating the FilesystemPackageCacheManager: " + e.getMessage();
             logErrorMessage(message);
