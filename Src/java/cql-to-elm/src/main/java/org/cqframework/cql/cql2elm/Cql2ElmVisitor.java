@@ -1067,10 +1067,9 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
     private BigDecimal parseDecimal(String value) {
         try {
-            BigDecimal result = new BigDecimal(value);
-            return result;
+            return new BigDecimal(value);
         } catch (Exception e) {
-            throw new IllegalArgumentException(String.format("Could not parse number literal: %s", value, e));
+            throw new IllegalArgumentException(String.format("Could not parse number literal: %s", value));
         }
     }
 
@@ -3133,7 +3132,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                         // ERROR:
                         // WARNING:
                         libraryBuilder.recordParsingException(new CqlSemanticException(
-                                String.format("Unknown code comparator % in retrieve", codeComparator),
+                                String.format("Unknown code comparator %s in retrieve", codeComparator),
                                 useStrictRetrieveTyping
                                         ? CqlCompilerException.ErrorSeverity.Error
                                         : CqlCompilerException.ErrorSeverity.Warning,

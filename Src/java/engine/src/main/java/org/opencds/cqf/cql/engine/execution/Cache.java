@@ -75,6 +75,6 @@ public class Cache {
     }
 
     public FunctionDef getCachedFunctionDef(FunctionRef functionRef) {
-        return this.getCachedFunctionDef(functionRef);
+        return this.functionCache.get(functionRef);
     }
 }

@@ -106,7 +106,7 @@ public class ModelInfoLoader implements NamespaceAware, PathAware {
 
     @Override
     public void setNamespaceManager(NamespaceManager namespaceManager) {
-        namespaceManager = namespaceManager;
+        this.namespaceManager = namespaceManager;
 
         for (ModelInfoProvider provider : getProviders()) {
             if (provider instanceof NamespaceAware) {

@@ -67,7 +67,7 @@ public class R4TypeConverterTests {
             }
         }
 
-        return !leftIterator.hasNext() && !leftIterator.hasNext();
+        return !leftIterator.hasNext() && !rightIterator.hasNext();
     }
 
     @SuppressWarnings("unchecked")

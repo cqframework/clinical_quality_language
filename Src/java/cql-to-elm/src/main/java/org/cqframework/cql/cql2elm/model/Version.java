@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm.model;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
@@ -170,7 +171,7 @@ public class Version implements Comparable<Version> {
             return matchStrictly(that);
         }
 
-        return this.majorVersion == that.majorVersion && compareTo(that, 2) >= 0;
+        return Objects.equals(this.majorVersion, that.majorVersion) && compareTo(that, 2) >= 0;
     }
 
     public boolean matchStrictly(Version that) {

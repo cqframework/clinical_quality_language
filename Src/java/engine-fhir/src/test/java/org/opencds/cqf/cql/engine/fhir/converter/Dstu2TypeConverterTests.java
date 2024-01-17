@@ -62,7 +62,7 @@ public class Dstu2TypeConverterTests {
             }
         }
 
-        return !leftIterator.hasNext() && !leftIterator.hasNext();
+        return !leftIterator.hasNext() && !rightIterator.hasNext();
     }
 
     @SuppressWarnings("unchecked")

@@ -574,7 +574,7 @@ public class DataRequirementsProcessor {
                     mapModelInfoUri(uri, name), name, version != null ? ("|" + version) : "");
         }
 
-        return String.format("Library/%-ModelInfo%s", name, version != null ? ("|" + version) : "");
+        return String.format("Library/%s-ModelInfo%s", name, version != null ? ("|" + version) : "");
     }
 
     private org.hl7.fhir.r5.model.RelatedArtifact toRelatedArtifact(

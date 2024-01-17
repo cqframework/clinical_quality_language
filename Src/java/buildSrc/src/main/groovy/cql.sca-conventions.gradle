@@ -16,5 +16,13 @@ tasks.withType(JavaCompile).configureEach  {
     options.errorprone.disableAllWarnings = true
     options.errorprone.disableWarningsInGeneratedCode = true
     options.errorprone.disable("DoubleBraceInitialization")
-    options.errorprone.errorproneArgs = ["-XepPatchLocation:IN_PLACE"]
+    // This applies recommended fixes to the source code in place
+    // options.errorprone.errorproneArgs = ["-XepPatchLocation:IN_PLACE"]
+}
+
+tasks {
+    compileTestJava {
+        options.errorprone.disableAllWarnings = true
+        options.errorprone.disableWarningsInGeneratedCode = true
+    }
 }

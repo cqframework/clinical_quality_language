@@ -17,7 +17,7 @@ public class FhirBundleCursor implements Iterable<Object> {
     }
 
     public FhirBundleCursor(IGenericClient fhirClient, IBaseBundle results, String dataType) {
-        this(fhirClient, results, null, null);
+        this(fhirClient, results, dataType, null);
     }
 
     // This constructor filters the bundle based on dataType

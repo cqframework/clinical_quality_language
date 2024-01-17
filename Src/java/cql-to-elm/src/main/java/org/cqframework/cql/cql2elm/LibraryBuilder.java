@@ -2744,7 +2744,7 @@ public class LibraryBuilder {
                         result = resolveIdentifier(sourceProperty.getScope(), true);
                     } else {
                         throw new IllegalArgumentException(
-                                String.format("Cannot resolve %parent reference in targetMap %s", targetMap));
+                                String.format("Cannot resolve %%parent reference in targetMap %s", targetMap));
                     }
                 } else {
                     Property p = of.createProperty().withSource(result).withPath(path);

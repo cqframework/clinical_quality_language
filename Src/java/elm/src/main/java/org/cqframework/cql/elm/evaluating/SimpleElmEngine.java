@@ -845,8 +845,8 @@ public class SimpleElmEngine {
 
     public boolean operandsEqual(FunctionRef left, FunctionRef right) {
         if (left.getOperand() != null
-                && left.getOperand() != null
-                && left.getOperand().size() == left.getOperand().size()) {
+                && right.getOperand() != null
+                && left.getOperand().size() == right.getOperand().size()) {
             for (int i = 0; i < left.getOperand().size(); i++) {
                 if (!expressionsEqual(
                         left.getOperand().get(i), right.getOperand().get(i))) {
@@ -862,8 +862,8 @@ public class SimpleElmEngine {
 
     public boolean operandsEqual(BinaryExpression left, BinaryExpression right) {
         if (left.getOperand() != null
-                && left.getOperand() != null
-                && left.getOperand().size() == left.getOperand().size()) {
+                && right.getOperand() != null
+                && left.getOperand().size() == right.getOperand().size()) {
             for (int i = 0; i < left.getOperand().size(); i++) {
                 if (!expressionsEqual(
                         left.getOperand().get(i), right.getOperand().get(i))) {
@@ -879,8 +879,8 @@ public class SimpleElmEngine {
 
     public boolean operandsEqual(TernaryExpression left, TernaryExpression right) {
         if (left.getOperand() != null
-                && left.getOperand() != null
-                && left.getOperand().size() == left.getOperand().size()) {
+                && right.getOperand() != null
+                && left.getOperand().size() == right.getOperand().size()) {
             for (int i = 0; i < left.getOperand().size(); i++) {
                 if (!expressionsEqual(
                         left.getOperand().get(i), right.getOperand().get(i))) {
@@ -896,8 +896,8 @@ public class SimpleElmEngine {
 
     public boolean operandsEqual(NaryExpression left, NaryExpression right) {
         if (left.getOperand() != null
-                && left.getOperand() != null
-                && left.getOperand().size() == left.getOperand().size()) {
+                && right.getOperand() != null
+                && left.getOperand().size() == right.getOperand().size()) {
             for (int i = 0; i < left.getOperand().size(); i++) {
                 if (!expressionsEqual(
                         left.getOperand().get(i), right.getOperand().get(i))) {

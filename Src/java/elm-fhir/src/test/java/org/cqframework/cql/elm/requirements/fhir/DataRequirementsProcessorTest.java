@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -1155,7 +1156,7 @@ public class DataRequirementsProcessorTest {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         var manager = setupDataRequirementsAnalysis("TestCases/TestCase2e.cql", compilerOptions);
         // Evaluate this test as of 12/31/2022
-        ZonedDateTime evaluationDateTime = ZonedDateTime.of(2022, 12, 31, 0, 0, 0, 0, ZoneId.of("Z"));
+        ZonedDateTime evaluationDateTime = ZonedDateTime.of(2022, 12, 31, 0, 0, 0, 0, ZoneOffset.UTC);
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary =
                 getModuleDefinitionLibrary(manager, compilerOptions, new HashMap<String, Object>(), evaluationDateTime);
 
