@@ -1,64 +1,20 @@
 plugins {
     id 'java'
-    id 'pmd' apply false
-    id 'com.github.spotbugs' apply false
+    id 'net.ltgt.errorprone'
 }
 
 ext {
-    pmdVersion = '6.55.0'
-    spotBugsVersion = '4.7.3'
+    errorproneVersion = '2.24.1'
 }
 
-/*
-Turn on static code analysis by passing 'sca' as a system property:
-e.g., gradle -Dsca build
-
-Or add it to your user gradle.properties file (${HOME}/.gradle/gradle.properties):
-systemProp.sca=true
-*/
 dependencies {
-    pmd(
-        "net.sourceforge.pmd:pmd-core:${pmdVersion}",
-        "net.sourceforge.pmd:pmd-java:${pmdVersion}"
-    )
+    errorprone "com.google.errorprone:error_prone_core:${errorproneVersion}"
 }
 
-// PMD Configuration
-pmd {
-    consoleOutput = true
-    toolVersion = pmdVersion
-    ruleSetFiles = files("${rootProject.projectDir}/config/custom-pmd-ruleset.xml")
-    ruleSets = []
-}
-
-// PMD Tasks
-pmdMain {
-    enabled = System.getProperty('sca') != null
-}
-
-pmdTest {
-    enabled = false
-}
-
-// Spotbugs configuration
-spotbugs {
-    toolVersion = spotBugsVersion
-    excludeFilter = file("${rootProject.projectDir}/config/findbugs-exclude-filter.xml")
-}
-
-// Spotbugs Tasks
-spotbugsMain {
-    enabled = System.getProperty('sca') != null
-    reports {
-        html {
-            enabled = true
-        }
-        xml {
-            enabled = true
-        }
-    }
-}
-
-spotbugsTest {
-    enabled = false
+tasks.withType(JavaCompile).configureEach  {
+    // TODO: Change this once we fix all the errors
+    options.errorprone.disableAllWarnings = true
+    options.errorprone.disableWarningsInGeneratedCode = true
+    options.errorprone.disable("DoubleBraceInitialization")
+    options.errorprone.errorproneArgs = ["-XepPatchLocation:IN_PLACE"]
 }
