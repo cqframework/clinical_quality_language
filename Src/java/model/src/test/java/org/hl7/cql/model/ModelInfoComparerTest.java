@@ -1,7 +1,7 @@
 package org.hl7.cql.model;
 
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 import jakarta.xml.bind.JAXB;
 import java.util.*;
@@ -13,8 +13,10 @@ public class ModelInfoComparerTest {
 
     @Test
     public void compareModelInfo() {
-        ModelInfo a = JAXB.unmarshal(ModelInfoComparerTest.class.getResourceAsStream("a-modelinfo.xml"), ModelInfo.class);
-        ModelInfo b = JAXB.unmarshal(ModelInfoComparerTest.class.getResourceAsStream("b-modelinfo.xml"), ModelInfo.class);
+        ModelInfo a =
+                JAXB.unmarshal(ModelInfoComparerTest.class.getResourceAsStream("a-modelinfo.xml"), ModelInfo.class);
+        ModelInfo b =
+                JAXB.unmarshal(ModelInfoComparerTest.class.getResourceAsStream("b-modelinfo.xml"), ModelInfo.class);
 
         ModelInfoCompareContext differences = new ModelInfoCompareContext();
         compareModelInfo(differences, a, b);
@@ -70,7 +72,8 @@ public class ModelInfoComparerTest {
         ModelInfo a = JAXB.unmarshal(
                 ModelInfoComparerTest.class.getResourceAsStream("fhir-modelinfo-4.0.1-1.5.1.xml"), ModelInfo.class);
         ModelInfo b = JAXB.unmarshal(
-                ModelInfoComparerTest.class.getResourceAsStream("fhir-modelinfo-4.0.1-with-metadata.xml"), ModelInfo.class);
+                ModelInfoComparerTest.class.getResourceAsStream("fhir-modelinfo-4.0.1-with-metadata.xml"),
+                ModelInfo.class);
 
         ModelInfoCompareContext differences = new ModelInfoCompareContext();
         compareModelInfo(differences, a, b);
