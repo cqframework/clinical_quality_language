@@ -13,6 +13,8 @@ dependencies {
 }
 
 checkstyleMain.source = "src/main/java"
+// TODO: Have a conversation with the team about enforcing checkstyle in tests
+checkstyleTest.enabled = false
 
 tasks.withType(JavaCompile).configureEach  {
     // TODO: Change this once we fix all the errors

@@ -11,6 +11,7 @@ import org.opencds.cqf.cql.engine.retrieve.TerminologyAwareRetrieveProvider;
 import org.opencds.cqf.cql.engine.runtime.Code;
 import org.opencds.cqf.cql.engine.runtime.Interval;
 
+@SuppressWarnings("checkstyle:abstractclassname")
 public abstract class SearchParamFhirRetrieveProvider extends TerminologyAwareRetrieveProvider {
     protected FhirContext fhirContext;
     protected SearchParameterResolver searchParameterResolver;

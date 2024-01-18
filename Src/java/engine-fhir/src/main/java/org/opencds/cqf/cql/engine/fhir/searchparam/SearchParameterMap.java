@@ -37,7 +37,8 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 // This class was copied from package ca.uhn.fhir.jpa.searchparam.SearchParameterMap
 // It included many unnecessary HAPI FHIR server dependencies.
 
-@SuppressWarnings("unchecked")
+// Justification for these suppressions: this is a copy of hapi-fhir code.
+@SuppressWarnings({"unchecked", "checkstyle:methodname", "checkstyle:parametername", "checkstyle:membername"})
 public class SearchParameterMap implements Serializable {
     private static final org.slf4j.Logger ourLog = org.slf4j.LoggerFactory.getLogger(SearchParameterMap.class);
 

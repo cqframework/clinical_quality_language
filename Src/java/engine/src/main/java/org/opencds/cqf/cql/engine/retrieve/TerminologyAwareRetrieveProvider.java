@@ -2,6 +2,7 @@ package org.opencds.cqf.cql.engine.retrieve;
 
 import org.opencds.cqf.cql.engine.terminology.TerminologyProvider;
 
+@SuppressWarnings("checkstyle:abstractclassname")
 public abstract class TerminologyAwareRetrieveProvider implements RetrieveProvider {
 
     protected TerminologyProvider terminologyProvider;

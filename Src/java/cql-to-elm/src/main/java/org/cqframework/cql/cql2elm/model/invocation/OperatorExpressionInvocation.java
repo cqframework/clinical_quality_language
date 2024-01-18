@@ -6,6 +6,7 @@ import org.hl7.elm.r1.TypeSpecifier;
 /**
  * Created by Bryn on 4/12/2018.
  */
+@SuppressWarnings("checkstyle:abstractclassname")
 public abstract class OperatorExpressionInvocation extends AbstractExpressionInvocation {
     public OperatorExpressionInvocation(OperatorExpression expression) {
         super(expression);

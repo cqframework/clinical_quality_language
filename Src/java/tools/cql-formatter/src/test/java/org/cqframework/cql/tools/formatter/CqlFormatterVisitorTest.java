@@ -23,7 +23,7 @@ public class CqlFormatterVisitorTest {
     }
 
     @Test
-    public void TestFormatterSpecific() throws IOException {
+    public void testFormatterSpecific() throws IOException {
         runTest("comments.cql");
         // I commented these catches out because it seems to me that the formatter should not clobber input when these
         // errors occur...
@@ -78,7 +78,7 @@ public class CqlFormatterVisitorTest {
     }
 
     @Test
-    public void RunCql2ElmRegressionTestSuite() throws IOException {
+    public void runCql2ElmRegressionTestSuite() throws IOException {
         runTest("CMS146v2_Test_CQM.cql");
         runTest("CodeAndConceptTest.cql");
         runTest("DateTimeLiteralTest.cql");

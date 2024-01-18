@@ -15,7 +15,7 @@ import org.hl7.elm.r1.VersionedIdentifier;
  * to be used outside the context of the instantiating LibraryManager instance.
  */
 class DefaultLibrarySourceLoader implements LibrarySourceLoader, NamespaceAware, PathAware {
-    private final List<LibrarySourceProvider> PROVIDERS = new ArrayList<>();
+    private final List<LibrarySourceProvider> providers = new ArrayList<>();
     boolean initialized = false;
 
     @Override
@@ -32,7 +32,7 @@ class DefaultLibrarySourceLoader implements LibrarySourceLoader, NamespaceAware,
             ((PathAware) provider).setPath(path);
         }
 
-        PROVIDERS.add(provider);
+        providers.add(provider);
     }
 
     private Path path;
@@ -53,7 +53,7 @@ class DefaultLibrarySourceLoader implements LibrarySourceLoader, NamespaceAware,
 
     @Override
     public void clearProviders() {
-        PROVIDERS.clear();
+        providers.clear();
         initialized = false;
     }
 
@@ -66,7 +66,7 @@ class DefaultLibrarySourceLoader implements LibrarySourceLoader, NamespaceAware,
             }
         }
 
-        return PROVIDERS;
+        return providers;
     }
 
     @Override

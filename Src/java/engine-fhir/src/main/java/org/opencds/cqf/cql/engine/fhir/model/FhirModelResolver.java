@@ -41,7 +41,7 @@ import org.opencds.cqf.cql.engine.runtime.Time;
  * See <a href="https://github.com/DBCG/cql-evaluator/blob/master/evaluator.engine/src/main/java/org/opencds/cqf/cql/evaluator/engine/model/CachingModelResolverDecorator.java"/>
  * for a decorator that adds caching logic for ModelResolvers.
  */
-@SuppressWarnings({"unchecked", "rawtypes"})
+@SuppressWarnings({"unchecked", "rawtypes", "checkstyle:abstractclassname"})
 public abstract class FhirModelResolver<
                 BaseType,
                 BaseDateTimeType,

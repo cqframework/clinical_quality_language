@@ -26,7 +26,7 @@ public class NpmPackageManagerTests implements IWorkerContext.ILoggingService {
     private final VersionConvertor_40_50 convertor = new VersionConvertor_40_50(new BaseAdvisor_40_50());
 
     @Test
-    public void TestSampleIGLocalNoDependencies() {
+    public void testSampleIGLocalNoDependencies() {
         Resource igResource = (Resource) FhirContext.forR4Cached()
                 .newXmlParser()
                 .parseResource(NpmPackageManagerTests.class.getResourceAsStream("myig.xml"));
@@ -36,7 +36,7 @@ public class NpmPackageManagerTests implements IWorkerContext.ILoggingService {
     }
 
     @Test
-    public void TestSampleContentIGLocalWithRecursiveDependencies() {
+    public void testSampleContentIGLocalWithRecursiveDependencies() {
         Resource igResource = (Resource) FhirContext.forR4Cached()
                 .newXmlParser()
                 .parseResource(NpmPackageManagerTests.class.getResourceAsStream("mycontentig.xml"));
@@ -65,7 +65,7 @@ public class NpmPackageManagerTests implements IWorkerContext.ILoggingService {
     }
 
     @Test
-    public void TestOpioidMMEIGLocalWithSingleFileDependency() {
+    public void testOpioidMMEIGLocalWithSingleFileDependency() {
         Resource igResource = (Resource) FhirContext.forR4Cached()
                 .newXmlParser()
                 .parseResource(NpmPackageManagerTests.class.getResourceAsStream("opioid-mme-r4.xml"));
@@ -90,7 +90,7 @@ public class NpmPackageManagerTests implements IWorkerContext.ILoggingService {
 
     @Test
     @Ignore("This test depends on the example.fhir.uv.myig package, which is not currently published")
-    public void TestLibrarySourceProviderLocal() {
+    public void testLibrarySourceProviderLocal() {
         Resource igResource = (Resource) FhirContext.forR4Cached()
                 .newXmlParser()
                 .parseResource(NpmPackageManagerTests.class.getResourceAsStream("mycontentig.xml"));
@@ -111,7 +111,7 @@ public class NpmPackageManagerTests implements IWorkerContext.ILoggingService {
     }
 
     @Test
-    public void TestModelInfoProviderLocal() {
+    public void testModelInfoProviderLocal() {
         Resource igResource = (Resource) FhirContext.forR4Cached()
                 .newXmlParser()
                 .parseResource(NpmPackageManagerTests.class.getResourceAsStream("testig.xml"));

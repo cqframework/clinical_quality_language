@@ -11,9 +11,9 @@ public class HidingIdentifierContext {
     private final String identifier;
     private final Class<? extends Trackable> elementSubclass;
 
-    public HidingIdentifierContext(String theIdentifier, Class<? extends Trackable> theElementSubclass) {
-        identifier = theIdentifier;
-        elementSubclass = theElementSubclass;
+    public HidingIdentifierContext(String identifier, Class<? extends Trackable> elementSubclass) {
+        this.identifier = identifier;
+        this.elementSubclass = elementSubclass;
     }
 
     public String getIdentifier() {
@@ -25,14 +25,14 @@ public class HidingIdentifierContext {
     }
 
     @Override
-    public boolean equals(Object theO) {
-        if (this == theO) {
+    public boolean equals(Object other) {
+        if (this == other) {
             return true;
         }
-        if (theO == null || getClass() != theO.getClass()) {
+        if (other == null || getClass() != other.getClass()) {
             return false;
         }
-        HidingIdentifierContext that = (HidingIdentifierContext) theO;
+        HidingIdentifierContext that = (HidingIdentifierContext) other;
         return Objects.equals(identifier, that.identifier) && Objects.equals(elementSubclass, that.elementSubclass);
     }
 

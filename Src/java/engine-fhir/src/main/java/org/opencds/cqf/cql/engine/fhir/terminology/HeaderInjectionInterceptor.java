@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class HeaderInjectionInterceptor implements IClientInterceptor {
 
-    private HashMap<String, String> myHeaders;
+    private HashMap<String, String> headers;
 
     /**
      * Instantiates a new header injection interception.
@@ -26,8 +26,8 @@ public class HeaderInjectionInterceptor implements IClientInterceptor {
      */
     public HeaderInjectionInterceptor(String headerKey, String headerValue) {
         super();
-        this.myHeaders = new HashMap<>();
-        this.myHeaders.put(headerKey, headerValue);
+        this.headers = new HashMap<>();
+        this.headers.put(headerKey, headerValue);
     }
 
     /**
@@ -37,19 +37,19 @@ public class HeaderInjectionInterceptor implements IClientInterceptor {
      */
     public HeaderInjectionInterceptor(HashMap<String, String> headers) {
         super();
-        this.myHeaders = headers;
+        this.headers = headers;
     }
 
     @Override
-    public void interceptRequest(IHttpRequest theRequest) {
+    public void interceptRequest(IHttpRequest request) {
 
-        for (Map.Entry<String, String> entry : this.myHeaders.entrySet()) {
-            theRequest.addHeader(entry.getKey(), entry.getValue());
+        for (Map.Entry<String, String> entry : this.headers.entrySet()) {
+            request.addHeader(entry.getKey(), entry.getValue());
         }
     }
 
     @Override
-    public void interceptResponse(IHttpResponse theResponse) throws IOException {
+    public void interceptResponse(IHttpResponse response) throws IOException {
         // nothing
     }
 }

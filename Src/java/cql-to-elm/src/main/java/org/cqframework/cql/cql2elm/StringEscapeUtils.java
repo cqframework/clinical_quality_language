@@ -7,6 +7,7 @@ import org.apache.commons.text.translate.*;
 /**
  * Created by Bryn on 3/22/2017.
  */
+@SuppressWarnings("checkstyle:methodname")
 public class StringEscapeUtils {
 
     /**
@@ -47,7 +48,7 @@ public class StringEscapeUtils {
                 }
             };
 
-    public static final CharSequenceTranslator ESACPE_CQL = new LookupTranslator(
+    public static final CharSequenceTranslator ESCAPE_CQL = new LookupTranslator(
                     new HashMap<CharSequence, CharSequence>() {
                         {
                             put("\"", "\\\"");
@@ -73,7 +74,7 @@ public class StringEscapeUtils {
             }));
 
     public static final String escapeCql(final String input) {
-        return ESACPE_CQL.translate(input);
+        return ESCAPE_CQL.translate(input);
     }
 
     public static final String unescapeCql(final String input) {

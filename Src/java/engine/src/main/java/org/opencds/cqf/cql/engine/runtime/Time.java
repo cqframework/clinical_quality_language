@@ -69,9 +69,9 @@ public class Time extends BaseTemporal {
         time = LocalTime.parse(timeString.toString());
     }
 
-    public Time expandPartialMinFromPrecision(Precision thePrecision) {
+    public Time expandPartialMinFromPrecision(Precision precision) {
         LocalTime ot = this.time.plusHours(0);
-        for (int i = thePrecision.toTimeIndex() + 1; i < 4; ++i) {
+        for (int i = precision.toTimeIndex() + 1; i < 4; ++i) {
             ot = ot.with(
                     Precision.fromTimeIndex(i).toChronoField(),
                     ot.range(Precision.fromTimeIndex(i).toChronoField()).getMinimum());
@@ -79,15 +79,15 @@ public class Time extends BaseTemporal {
         return new Time(ot, this.precision);
     }
 
-    public Time expandPartialMin(Precision thePrecision) {
+    public Time expandPartialMin(Precision precision) {
         LocalTime ot = this.getTime().plusHours(0);
-        return new Time(ot, thePrecision == null ? Precision.MILLISECOND : thePrecision);
+        return new Time(ot, precision == null ? Precision.MILLISECOND : precision);
     }
 
-    public Time expandPartialMax(Precision thePrecision) {
+    public Time expandPartialMax(Precision precision) {
         LocalTime ot = this.getTime().plusHours(0);
         for (int i = this.getPrecision().toTimeIndex() + 1; i < 4; ++i) {
-            if (i <= thePrecision.toTimeIndex()) {
+            if (i <= precision.toTimeIndex()) {
                 ot = ot.with(
                         Precision.fromTimeIndex(i).toChronoField(),
                         ot.range(Precision.fromTimeIndex(i).toChronoField()).getMaximum());
@@ -97,18 +97,18 @@ public class Time extends BaseTemporal {
                         ot.range(Precision.fromTimeIndex(i).toChronoField()).getMinimum());
             }
         }
-        return new Time(ot, thePrecision == null ? Precision.MILLISECOND : thePrecision);
+        return new Time(ot, precision == null ? Precision.MILLISECOND : precision);
     }
 
     @Override
-    public boolean isUncertain(Precision thePrecision) {
-        return this.precision.toTimeIndex() < thePrecision.toTimeIndex();
+    public boolean isUncertain(Precision precision) {
+        return this.precision.toTimeIndex() < precision.toTimeIndex();
     }
 
     @Override
-    public Interval getUncertaintyInterval(Precision thePrecision) {
-        Time start = expandPartialMin(thePrecision);
-        Time end = expandPartialMax(thePrecision).expandPartialMinFromPrecision(thePrecision);
+    public Interval getUncertaintyInterval(Precision precision) {
+        Time start = expandPartialMin(precision);
+        Time end = expandPartialMax(precision).expandPartialMinFromPrecision(precision);
         return new Interval(start, true, end, true);
     }
 
@@ -129,19 +129,19 @@ public class Time extends BaseTemporal {
     }
 
     @Override
-    public Integer compareToPrecision(BaseTemporal other, Precision thePrecision) {
-        boolean leftMeetsPrecisionRequirements = this.precision.toTimeIndex() >= thePrecision.toTimeIndex();
-        boolean rightMeetsPrecisionRequirements = other.precision.toTimeIndex() >= thePrecision.toTimeIndex();
+    public Integer compareToPrecision(BaseTemporal other, Precision precision) {
+        boolean leftMeetsPrecisionRequirements = this.precision.toTimeIndex() >= precision.toTimeIndex();
+        boolean rightMeetsPrecisionRequirements = other.precision.toTimeIndex() >= precision.toTimeIndex();
 
         // adjust dates to evaluation offset
         LocalTime leftTime = this.time;
         LocalTime rightTime = ((Time) other).time;
 
         if (!leftMeetsPrecisionRequirements || !rightMeetsPrecisionRequirements) {
-            thePrecision = Precision.getLowestTimePrecision(this.precision, other.precision);
+            precision = Precision.getLowestTimePrecision(this.precision, other.precision);
         }
 
-        for (int i = 0; i < thePrecision.toTimeIndex() + 1; ++i) {
+        for (int i = 0; i < precision.toTimeIndex() + 1; ++i) {
             int leftComp = leftTime.get(Precision.getTimeChronoFieldFromIndex(i));
             int rightComp = rightTime.get(Precision.getTimeChronoFieldFromIndex(i));
             if (leftComp > rightComp) {

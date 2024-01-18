@@ -16,12 +16,6 @@
     <property name="fileExtensions" value="java, properties, xml" />
 
     <module name="SuppressWarningsFilter" />
-    <!-- https://checkstyle.org/filters/suppressionfilter.html -->
-    <module name="SuppressionFilter">
-        <property name="file" value="${org.checkstyle.google.suppressionfilter.config}"
-            default="checkstyle-suppressions.xml" />
-        <property name="optional" value="true" />
-    </module>
 
     <!-- Excludes all 'module-info.java' files              -->
     <!-- See https://checkstyle.org/filefilters/index.html -->
@@ -30,6 +24,8 @@
     </module>
 
     <module name="TreeWalker">
+		<!-- Make the @SuppressWarnings annotations available to Checkstyle -->
+		<module name="SuppressWarningsHolder" />
         <module name="AbstractClassName">
             <property name="format" value="^(Base|Abstract).+$" />
         </module>

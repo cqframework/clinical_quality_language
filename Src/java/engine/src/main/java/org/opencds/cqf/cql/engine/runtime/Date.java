@@ -61,25 +61,25 @@ public class Date extends BaseTemporal {
         setDate(date);
     }
 
-    public Date expandPartialMinFromPrecision(Precision thePrecision) {
+    public Date expandPartialMinFromPrecision(Precision precision) {
         LocalDate ld = this.getDate().plusYears(0);
-        for (int i = thePrecision.toDateIndex() + 1; i < 3; ++i) {
+        for (int i = precision.toDateIndex() + 1; i < 3; ++i) {
             ld = ld.with(
                     Precision.fromDateIndex(i).toChronoField(),
                     ld.range(Precision.fromDateIndex(i).toChronoField()).getMinimum());
         }
-        return (Date) new Date(ld.getYear(), ld.getMonthValue(), ld.getDayOfMonth()).setPrecision(thePrecision);
+        return (Date) new Date(ld.getYear(), ld.getMonthValue(), ld.getDayOfMonth()).setPrecision(precision);
     }
 
-    private Date expandPartialMin(Precision thePrecision) {
+    private Date expandPartialMin(Precision precision) {
         LocalDate ld = this.getDate().plusYears(0);
-        return (Date) new Date(ld.getYear(), ld.getMonthValue(), ld.getDayOfMonth()).setPrecision(thePrecision);
+        return (Date) new Date(ld.getYear(), ld.getMonthValue(), ld.getDayOfMonth()).setPrecision(precision);
     }
 
-    public Date expandPartialMax(Precision thePrecision) {
+    public Date expandPartialMax(Precision precision) {
         LocalDate ld = this.getDate().plusYears(0);
         for (int i = this.getPrecision().toDateIndex() + 1; i < 3; ++i) {
-            if (i <= thePrecision.toDateIndex()) {
+            if (i <= precision.toDateIndex()) {
                 ld = ld.with(
                         Precision.fromDateIndex(i).toChronoField(),
                         ld.range(Precision.fromDateIndex(i).toChronoField()).getMaximum());
@@ -89,7 +89,7 @@ public class Date extends BaseTemporal {
                         ld.range(Precision.fromDateIndex(i).toChronoField()).getMinimum());
             }
         }
-        return (Date) new Date(ld.getYear(), ld.getMonthValue(), ld.getDayOfMonth()).setPrecision(thePrecision);
+        return (Date) new Date(ld.getYear(), ld.getMonthValue(), ld.getDayOfMonth()).setPrecision(precision);
     }
 
     @Override
@@ -109,15 +109,15 @@ public class Date extends BaseTemporal {
     }
 
     @Override
-    public Integer compareToPrecision(BaseTemporal other, Precision thePrecision) {
-        boolean leftMeetsPrecisionRequirements = this.precision.toDateIndex() >= thePrecision.toDateIndex();
-        boolean rightMeetsPrecisionRequirements = other.precision.toDateIndex() >= thePrecision.toDateIndex();
+    public Integer compareToPrecision(BaseTemporal other, Precision precision) {
+        boolean leftMeetsPrecisionRequirements = this.precision.toDateIndex() >= precision.toDateIndex();
+        boolean rightMeetsPrecisionRequirements = other.precision.toDateIndex() >= precision.toDateIndex();
 
         if (!leftMeetsPrecisionRequirements || !rightMeetsPrecisionRequirements) {
-            thePrecision = Precision.getLowestDatePrecision(this.precision, other.precision);
+            precision = Precision.getLowestDatePrecision(this.precision, other.precision);
         }
 
-        for (int i = 0; i < thePrecision.toDateIndex() + 1; ++i) {
+        for (int i = 0; i < precision.toDateIndex() + 1; ++i) {
             int leftComp = this.date.get(Precision.getDateChronoFieldFromIndex(i));
             int rightComp = ((Date) other).getDate().get(Precision.getDateChronoFieldFromIndex(i));
             if (leftComp > rightComp) {
@@ -135,18 +135,18 @@ public class Date extends BaseTemporal {
     }
 
     @Override
-    public boolean isUncertain(Precision thePrecision) {
-        if (thePrecision == Precision.WEEK) {
-            thePrecision = Precision.DAY;
+    public boolean isUncertain(Precision precision) {
+        if (precision == Precision.WEEK) {
+            precision = Precision.DAY;
         }
 
-        return this.precision.toDateIndex() < thePrecision.toDateIndex();
+        return this.precision.toDateIndex() < precision.toDateIndex();
     }
 
     @Override
-    public Interval getUncertaintyInterval(Precision thePrecision) {
-        Date start = expandPartialMin(thePrecision);
-        Date end = expandPartialMax(thePrecision).expandPartialMinFromPrecision(thePrecision);
+    public Interval getUncertaintyInterval(Precision precision) {
+        Date start = expandPartialMin(precision);
+        Date end = expandPartialMax(precision).expandPartialMinFromPrecision(precision);
         return new Interval(start, true, end, true);
     }
 

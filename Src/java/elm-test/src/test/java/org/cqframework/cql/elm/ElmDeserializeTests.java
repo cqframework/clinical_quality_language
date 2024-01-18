@@ -64,7 +64,7 @@ public class ElmDeserializeTests {
     }
 
     @Test
-    public void testJsonAdultOutpatientEncounters_FHIR4LibraryLoad() {
+    public void testJsonAdultOutpatientEncountersFHIR4LibraryLoad() {
         try {
             final Library library =
                     deserializeJsonLibrary("ElmDeserialize/fhir/AdultOutpatientEncounters_FHIR4-2.0.000.json");
@@ -381,8 +381,8 @@ public class ElmDeserializeTests {
         return new org.cqframework.cql.elm.serializing.jaxb.ElmXmlLibraryReader().read(resourceAsStream);
     }
 
-    private static void verifySigLevels(Library theLibrary, LibraryBuilder.SignatureLevel expectedSignatureLevel) {
-        final List<String> sigLevels = theLibrary.getAnnotation().stream()
+    private static void verifySigLevels(Library library, LibraryBuilder.SignatureLevel expectedSignatureLevel) {
+        final List<String> sigLevels = library.getAnnotation().stream()
                 .filter(CqlToElmInfo.class::isInstance)
                 .map(CqlToElmInfo.class::cast)
                 .map(CqlToElmInfo::getSignatureLevel)

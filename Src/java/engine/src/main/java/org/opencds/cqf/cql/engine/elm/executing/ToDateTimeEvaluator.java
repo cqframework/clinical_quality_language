@@ -39,7 +39,7 @@ If the argument is null, the result is null.
 
 public class ToDateTimeEvaluator {
 
-    public static Object ToDateTime(Object operand, State state) {
+    public static Object toDateTime(Object operand, State state) {
 
         if (operand == null) {
             return null;

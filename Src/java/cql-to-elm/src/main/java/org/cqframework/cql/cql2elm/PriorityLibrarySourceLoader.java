@@ -13,7 +13,7 @@ import org.hl7.elm.r1.VersionedIdentifier;
  * to be used outside the context of the instantiating LibraryManager instance.
  */
 public class PriorityLibrarySourceLoader implements LibrarySourceLoader, NamespaceAware, PathAware {
-    private final List<LibrarySourceProvider> PROVIDERS = new ArrayList<>();
+    private final List<LibrarySourceProvider> providers = new ArrayList<>();
     private boolean initialized = false;
 
     @Override
@@ -30,7 +30,7 @@ public class PriorityLibrarySourceLoader implements LibrarySourceLoader, Namespa
             ((PathAware) provider).setPath(path);
         }
 
-        PROVIDERS.add(provider);
+        providers.add(provider);
     }
 
     private Path path;
@@ -51,7 +51,7 @@ public class PriorityLibrarySourceLoader implements LibrarySourceLoader, Namespa
 
     @Override
     public void clearProviders() {
-        PROVIDERS.clear();
+        providers.clear();
         initialized = false;
     }
 
@@ -64,7 +64,7 @@ public class PriorityLibrarySourceLoader implements LibrarySourceLoader, Namespa
             }
         }
 
-        return PROVIDERS;
+        return providers;
     }
 
     @Override

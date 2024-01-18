@@ -123,9 +123,9 @@ public class DateTime extends BaseTemporal {
         return zoneOffset;
     }
 
-    public DateTime expandPartialMinFromPrecision(Precision thePrecision) {
+    public DateTime expandPartialMinFromPrecision(Precision precision) {
         OffsetDateTime odt = this.getDateTime().plusYears(0);
-        for (int i = thePrecision.toDateTimeIndex() + 1; i < 7; ++i) {
+        for (int i = precision.toDateTimeIndex() + 1; i < 7; ++i) {
             odt = odt.with(
                     Precision.fromDateTimeIndex(i).toChronoField(),
                     odt.range(Precision.fromDateTimeIndex(i).toChronoField()).getMinimum());
@@ -133,15 +133,15 @@ public class DateTime extends BaseTemporal {
         return new DateTime(odt, this.precision);
     }
 
-    public DateTime expandPartialMin(Precision thePrecision) {
+    public DateTime expandPartialMin(Precision precision) {
         OffsetDateTime odt = this.getDateTime().plusYears(0);
-        return new DateTime(odt, thePrecision == null ? Precision.MILLISECOND : thePrecision);
+        return new DateTime(odt, precision == null ? Precision.MILLISECOND : precision);
     }
 
-    public DateTime expandPartialMax(Precision thePrecision) {
+    public DateTime expandPartialMax(Precision precision) {
         OffsetDateTime odt = this.getDateTime().plusYears(0);
         for (int i = this.getPrecision().toDateTimeIndex() + 1; i < 7; ++i) {
-            if (i <= thePrecision.toDateTimeIndex()) {
+            if (i <= precision.toDateTimeIndex()) {
                 odt = odt.with(
                         Precision.fromDateTimeIndex(i).toChronoField(),
                         odt.range(Precision.fromDateTimeIndex(i).toChronoField())
@@ -153,22 +153,22 @@ public class DateTime extends BaseTemporal {
                                 .getMinimum());
             }
         }
-        return new DateTime(odt, thePrecision == null ? Precision.MILLISECOND : thePrecision);
+        return new DateTime(odt, precision == null ? Precision.MILLISECOND : precision);
     }
 
     @Override
-    public boolean isUncertain(Precision thePrecision) {
-        if (thePrecision == Precision.WEEK) {
-            thePrecision = Precision.DAY;
+    public boolean isUncertain(Precision precision) {
+        if (precision == Precision.WEEK) {
+            precision = Precision.DAY;
         }
 
-        return this.precision.toDateTimeIndex() < thePrecision.toDateTimeIndex();
+        return this.precision.toDateTimeIndex() < precision.toDateTimeIndex();
     }
 
     @Override
-    public Interval getUncertaintyInterval(Precision thePrecision) {
-        DateTime start = expandPartialMin(thePrecision);
-        DateTime end = expandPartialMax(thePrecision).expandPartialMinFromPrecision(thePrecision);
+    public Interval getUncertaintyInterval(Precision precision) {
+        DateTime start = expandPartialMin(precision);
+        DateTime end = expandPartialMax(precision).expandPartialMinFromPrecision(precision);
         return new Interval(start, true, end, true);
     }
 
@@ -205,19 +205,19 @@ public class DateTime extends BaseTemporal {
     }
 
     @Override
-    public Integer compareToPrecision(BaseTemporal other, Precision thePrecision) {
-        boolean leftMeetsPrecisionRequirements = this.precision.toDateTimeIndex() >= thePrecision.toDateTimeIndex();
-        boolean rightMeetsPrecisionRequirements = other.precision.toDateTimeIndex() >= thePrecision.toDateTimeIndex();
+    public Integer compareToPrecision(BaseTemporal other, Precision precision) {
+        boolean leftMeetsPrecisionRequirements = this.precision.toDateTimeIndex() >= precision.toDateTimeIndex();
+        boolean rightMeetsPrecisionRequirements = other.precision.toDateTimeIndex() >= precision.toDateTimeIndex();
 
         // adjust dates to evaluation offset
-        OffsetDateTime leftDateTime = this.getNormalized(thePrecision);
-        OffsetDateTime rightDateTime = ((DateTime) other).getNormalized(thePrecision, getZoneOffset());
+        OffsetDateTime leftDateTime = this.getNormalized(precision);
+        OffsetDateTime rightDateTime = ((DateTime) other).getNormalized(precision, getZoneOffset());
 
         if (!leftMeetsPrecisionRequirements || !rightMeetsPrecisionRequirements) {
-            thePrecision = Precision.getLowestDateTimePrecision(this.precision, other.precision);
+            precision = Precision.getLowestDateTimePrecision(this.precision, other.precision);
         }
 
-        for (int i = 0; i < thePrecision.toDateTimeIndex() + 1; ++i) {
+        for (int i = 0; i < precision.toDateTimeIndex() + 1; ++i) {
             int leftComp = leftDateTime.get(Precision.getDateTimeChronoFieldFromIndex(i));
             int rightComp = rightDateTime.get(Precision.getDateTimeChronoFieldFromIndex(i));
             if (leftComp > rightComp) {

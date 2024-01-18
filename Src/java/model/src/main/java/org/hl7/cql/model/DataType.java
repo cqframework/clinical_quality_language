@@ -2,7 +2,7 @@ package org.hl7.cql.model;
 
 // One-time exception for this class
 // to avoid any backwards-incompatible changes
-//CHECKSTYLE:OFF
+@SuppressWarnings("checkstyle:abstractclassname")
 public abstract class DataType {
     public DataType() {
         this(null);
@@ -85,4 +85,3 @@ public abstract class DataType {
 
     public static final SimpleType ANY = new SimpleType("System.Any");
 }
-//CHECKSTYLE:ON

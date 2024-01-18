@@ -418,7 +418,7 @@ public class EvaluationVisitor extends BaseElmLibraryVisitor<Object, State> {
     @Override
     public Object visitToDateTime(ToDateTime elm, State state) {
         Object operand = visitExpression(elm.getOperand(), state);
-        return ToDateTimeEvaluator.ToDateTime(operand, state);
+        return ToDateTimeEvaluator.toDateTime(operand, state);
     }
 
     @Override

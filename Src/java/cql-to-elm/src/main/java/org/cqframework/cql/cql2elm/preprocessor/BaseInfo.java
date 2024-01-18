@@ -3,6 +3,7 @@ package org.cqframework.cql.cql2elm.preprocessor;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTree;
 
+@SuppressWarnings("checkstyle:abstractclassname")
 public class BaseInfo {
     private String header;
     private Interval headerInterval;

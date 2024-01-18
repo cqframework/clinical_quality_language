@@ -5,6 +5,7 @@ import org.opencds.cqf.cql.engine.elm.executing.EqualEvaluator;
 import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator;
 import org.opencds.cqf.cql.engine.elm.executing.OrEvaluator;
 
+@SuppressWarnings("checkstyle:abstractclassname")
 public abstract class Vocabulary implements CqlType {
 
     private String id;

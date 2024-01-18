@@ -9,6 +9,7 @@ import org.hl7.elm.r1.Sort;
 import org.hl7.elm.r1.SortByItem;
 import org.junit.Test;
 
+@SuppressWarnings("checkstyle:abstractclassname")
 public class BaseElmVisitorTest {
 
     @Test

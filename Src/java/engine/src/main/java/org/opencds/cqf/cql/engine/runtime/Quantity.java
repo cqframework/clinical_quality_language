@@ -6,7 +6,7 @@ import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator;
 
 public class Quantity implements CqlType, Comparable<Quantity> {
 
-    private final String DEFAULT_UNIT = "1";
+    private static final String DEFAULT_UNIT = "1";
 
     public Quantity() {
         this.value = new BigDecimal("0.0");
