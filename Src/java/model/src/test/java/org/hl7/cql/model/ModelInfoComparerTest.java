@@ -1,7 +1,7 @@
 package org.hl7.cql.model;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import jakarta.xml.bind.JAXB;
 import java.util.*;
@@ -9,12 +9,12 @@ import java.util.stream.Collectors;
 import org.hl7.elm_modelinfo.r1.*;
 import org.testng.annotations.Test;
 
-public class ModelInfoComparer {
+public class ModelInfoComparerTest {
 
     @Test
     public void compareModelInfo() {
-        ModelInfo a = JAXB.unmarshal(ModelInfoComparer.class.getResourceAsStream("a-modelinfo.xml"), ModelInfo.class);
-        ModelInfo b = JAXB.unmarshal(ModelInfoComparer.class.getResourceAsStream("b-modelinfo.xml"), ModelInfo.class);
+        ModelInfo a = JAXB.unmarshal(ModelInfoComparerTest.class.getResourceAsStream("a-modelinfo.xml"), ModelInfo.class);
+        ModelInfo b = JAXB.unmarshal(ModelInfoComparerTest.class.getResourceAsStream("b-modelinfo.xml"), ModelInfo.class);
 
         ModelInfoCompareContext differences = new ModelInfoCompareContext();
         compareModelInfo(differences, a, b);
@@ -35,9 +35,9 @@ public class ModelInfoComparer {
     // Not an actual test, Used to determine differences between current and updated model info from the MAT team
     public void compareMATModelInfo() {
         ModelInfo a = JAXB.unmarshal(
-                ModelInfoComparer.class.getResourceAsStream("fhir-modelinfo-4.0.1.xml"), ModelInfo.class);
+                ModelInfoComparerTest.class.getResourceAsStream("fhir-modelinfo-4.0.1.xml"), ModelInfo.class);
         ModelInfo b = JAXB.unmarshal(
-                ModelInfoComparer.class.getResourceAsStream("mat-fhir-modelinfo-4.0.1.xml"), ModelInfo.class);
+                ModelInfoComparerTest.class.getResourceAsStream("mat-fhir-modelinfo-4.0.1.xml"), ModelInfo.class);
 
         ModelInfoCompareContext differences = new ModelInfoCompareContext();
         compareModelInfo(differences, a, b);
@@ -47,9 +47,9 @@ public class ModelInfoComparer {
     @Test
     public void compareNewModelInfo() {
         ModelInfo a = JAXB.unmarshal(
-                ModelInfoComparer.class.getResourceAsStream("fhir-modelinfo-4.0.1.xml"), ModelInfo.class);
+                ModelInfoComparerTest.class.getResourceAsStream("fhir-modelinfo-4.0.1.xml"), ModelInfo.class);
         ModelInfo b = JAXB.unmarshal(
-                ModelInfoComparer.class.getResourceAsStream("new-fhir-modelinfo-4.0.1.xml"), ModelInfo.class);
+                ModelInfoComparerTest.class.getResourceAsStream("new-fhir-modelinfo-4.0.1.xml"), ModelInfo.class);
 
         ModelInfoCompareContext differences = new ModelInfoCompareContext();
         compareModelInfo(differences, a, b);
@@ -68,9 +68,9 @@ public class ModelInfoComparer {
     @Test
     public void compareMetadataModelInfo() {
         ModelInfo a = JAXB.unmarshal(
-                ModelInfoComparer.class.getResourceAsStream("fhir-modelinfo-4.0.1-1.5.1.xml"), ModelInfo.class);
+                ModelInfoComparerTest.class.getResourceAsStream("fhir-modelinfo-4.0.1-1.5.1.xml"), ModelInfo.class);
         ModelInfo b = JAXB.unmarshal(
-                ModelInfoComparer.class.getResourceAsStream("fhir-modelinfo-4.0.1-with-metadata.xml"), ModelInfo.class);
+                ModelInfoComparerTest.class.getResourceAsStream("fhir-modelinfo-4.0.1-with-metadata.xml"), ModelInfo.class);
 
         ModelInfoCompareContext differences = new ModelInfoCompareContext();
         compareModelInfo(differences, a, b);
@@ -103,7 +103,7 @@ public class ModelInfoComparer {
                         "ModelInfo.MoneyQuantity.Element code in left only%n"
                         + // ditto
                         "ModelInfo.uuid.Element value in right only%n"
-                        + // redeclartion for metadata
+                        + // redeclaration for metadata
                         "ModelInfo.ElementDefinition.Type.targetProfile.name: targetProfile <> profile%n"
                         + // backwards compatible, but more accurate ElementDefinition.Type
                         "ModelInfo.ElementDefinition.Type.versioning.name: versioning <> targetProfile%n"
@@ -115,18 +115,18 @@ public class ModelInfoComparer {
                         "ModelInfo.ElementDefinition.Type.Element versioning in right only%n"
                         + // ditto
                         "ModelInfo.unsignedInt.Element value in right only%n"
-                        + // redeclaration for metdata
+                        + // redeclaration for metadata
                         "ModelInfo.id.Element value in right only%n"
-                        + // redeclaration for metdata
+                        + // redeclaration for metadata
                         "ModelInfo.url.Element value in right only%n"
-                        + // redeclaration for metdata
+                        + // redeclaration for metadata
                         "ModelInfo.canonical.Element value in right only%n"
-                        + // redeclaration for metdata
+                        + // redeclaration for metadata
                         "ModelInfo.code.Element value in right only%n"
-                        + // redeclaration for metdata
+                        + // redeclaration for metadata
                         "ModelInfo.oid.Element value in right only%n"
-                        + // redeclaration for metdata
-                        "ModelInfo.positiveInt.Element value in right only%n"))); // redeclaration for metdata
+                        + // redeclaration for metadata
+                        "ModelInfo.positiveInt.Element value in right only%n"))); // redeclaration for metadata
     }
 
     public class ModelInfoCompareContext {
@@ -283,7 +283,7 @@ public class ModelInfoComparer {
         if (a == null) {
             context.append(String.format("Model specifier %s|%s in right only", b.getName(), b.getVersion()));
         } else if (b == null) {
-            context.append(String.format("Model specifier %s|%s in left only", a.getName(), b.getVersion()));
+            context.append(String.format("Model specifier %s|%s in left only", a.getName(), a.getVersion()));
         } else {
             compareAttribute(context, "version", a.getVersion(), b.getVersion());
         }
