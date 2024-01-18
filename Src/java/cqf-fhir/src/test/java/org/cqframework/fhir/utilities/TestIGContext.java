@@ -11,7 +11,7 @@ import org.testng.annotations.Test;
 public class TestIGContext implements IWorkerContext.ILoggingService {
 
     @Test
-    public void TestTypesAndValuesIG() throws URISyntaxException {
+    public void testTypesAndValuesIG() throws URISyntaxException {
         URL url = TestIGContext.class.getResource("types-and-values/ig.ini");
         assertNotNull(url);
         URI uri = Uris.parseOrNull(url.toURI().toString());

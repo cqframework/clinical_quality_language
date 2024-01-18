@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'net.ltgt.errorprone'
+    id 'checkstyle'
 }
 
 ext {
@@ -10,6 +11,8 @@ ext {
 dependencies {
     errorprone "com.google.errorprone:error_prone_core:${errorproneVersion}"
 }
+
+checkstyleMain.source = "src/main/java"
 
 tasks.withType(JavaCompile).configureEach  {
     // TODO: Change this once we fix all the errors
