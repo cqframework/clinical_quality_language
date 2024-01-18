@@ -353,7 +353,7 @@ public class DateTimeTest {
         assertEquals(dateTime, dateTime2);
 
         // varying offset
-        dateTime2 = new DateTime(BigDecimal.TWO, 2020);
+        dateTime2 = new DateTime(BigDecimal.valueOf(2l), 2020);
         assertNotEquals(dateTime, dateTime2);
 
         // varying year
