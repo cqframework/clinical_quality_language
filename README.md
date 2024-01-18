@@ -34,6 +34,12 @@ Changes to the tooling maintained within this repository are managed using as li
 * [CQL-to-ELM Translator](Src/java/cql-to-elm/OVERVIEW.md)
 * [Java Quickstart](Src/java-quickstart/README.md)
 
+# Cloning This Repository
+
+Some of the tests in this repository have long paths which require this setting for git on Windows:
+
+`git config --system core.longpaths true`
+
 # License
 
 All code in this repository is licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0). All documentation is licensed under the [Creative Common Attribution 4.0 International license (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/).
