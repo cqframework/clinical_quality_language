@@ -3179,7 +3179,7 @@ public class LibraryBuilder {
         var globalMatch = findMatchingIdentifierContext(globalIdentifiers, identifier);
 
         if (globalMatch.isPresent() || localMatch.isPresent()) {
-            var matchedContext = globalMatch.or(() -> localMatch).orElseThrow();
+            var matchedContext = globalMatch.isPresent() ? globalMatch.get() : localMatch.get();
 
             boolean matchedOnFunctionOverloads =
                     matchedContext.getTrackableSubclass().equals(FunctionDef.class) && trackable instanceof FunctionDef;
