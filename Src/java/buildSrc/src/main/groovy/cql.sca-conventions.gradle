@@ -27,6 +27,7 @@ tasks.withType(JavaCompile).configureEach  {
 
 tasks {
     compileTestJava {
+        // TODO: Talk to the team about warnings in tests
         options.errorprone.disableAllWarnings = true
         options.errorprone.disableWarningsInGeneratedCode = true
     }

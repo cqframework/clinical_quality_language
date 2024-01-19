@@ -7,11 +7,11 @@ import org.cqframework.cql.elm.tracking.Trackable;
 /**
  * Simple POJO using for identifier hider that maintains the identifier and Trackable type of the construct being evaluated.
  */
-public class HidingIdentifierContext {
+public class IdentifierContext {
     private final String identifier;
     private final Class<? extends Trackable> elementSubclass;
 
-    public HidingIdentifierContext(String identifier, Class<? extends Trackable> elementSubclass) {
+    public IdentifierContext(String identifier, Class<? extends Trackable> elementSubclass) {
         this.identifier = identifier;
         this.elementSubclass = elementSubclass;
     }
@@ -32,7 +32,7 @@ public class HidingIdentifierContext {
         if (other == null || getClass() != other.getClass()) {
             return false;
         }
-        HidingIdentifierContext that = (HidingIdentifierContext) other;
+        IdentifierContext that = (IdentifierContext) other;
         return Objects.equals(identifier, that.identifier) && Objects.equals(elementSubclass, that.elementSubclass);
     }
 
@@ -43,7 +43,7 @@ public class HidingIdentifierContext {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", HidingIdentifierContext.class.getSimpleName() + "[", "]")
+        return new StringJoiner(", ", IdentifierContext.class.getSimpleName() + "[", "]")
                 .add("identifier='" + identifier + "'")
                 .add("elementSubclass=" + elementSubclass)
                 .toString();
