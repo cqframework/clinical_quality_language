@@ -20,7 +20,7 @@ import org.hl7.elm.r1.*;
  * Created by Bryn on 12/29/2016.
  */
 public class LibraryBuilder {
-    public static enum SignatureLevel {
+    public enum SignatureLevel {
         /*
         Indicates signatures will never be included in operator invocations
          */
@@ -116,7 +116,8 @@ public class LibraryBuilder {
     private final Stack<String> expressionContext = new Stack<>();
     private final ExpressionDefinitionContextStack expressionDefinitions = new ExpressionDefinitionContextStack();
     private final Stack<FunctionDef> functionDefs = new Stack<>();
-    private final Deque<HidingIdentifierContext> hidingIdentifiersContexts = new ArrayDeque<>();
+    private final Deque<IdentifierContext> globalIdentifiers = new ArrayDeque<>();
+    private final Stack<Deque<IdentifierContext>> localIdentifierStack = new Stack<>();
     private int literalContext = 0;
     private int typeSpecifierContext = 0;
     private final NamespaceInfo namespaceInfo;
@@ -3127,6 +3128,33 @@ public class LibraryBuilder {
                 currentExpressionContext(), expressionDef.getContext()));
     }
 
+    public enum IdentifierScope {
+        GLOBAL,
+        LOCAL
+    }
+
+    /**
+     * Add an identifier to the deque to indicate that we are considering it for consideration for identifier hiding and
+     * adding a compiler warning if this is the case.
+     * <p/>
+     * For example, if an alias within an expression body has the same name as a parameter, execution would have
+     * added the parameter identifier and the next execution would consider an alias with the same name, thus resulting
+     * in a warning.
+     * <p/>
+     * Exact case matching as well as case-insensitive matching are considered.  If known, the type of the structure
+     * in question will be considered in crafting the warning message, as per the {@link Element} parameter.
+     * <p/>
+     * Also, special case function overloads so that only a single overloaded function name is taken into account.
+     *
+     * Default scope is {@link IdentifierScope#LOCAL}
+     *
+     * @param identifier The identifier belonging to the parameter, expression, function, alias, etc, to be evaluated.
+     * @param trackable  The construct trackable, for example {@link ExpressionRef}.
+     */
+    void pushIdentifier(String identifier, Trackable trackable) {
+        pushIdentifier(identifier, trackable, IdentifierScope.LOCAL);
+    }
+
     /**
      * Add an identifier to the deque to indicate that we are considering it for consideration for identifier hiding and
      * adding a compiler warning if this is the case.
@@ -3142,44 +3170,69 @@ public class LibraryBuilder {
      *
      * @param identifier The identifier belonging to the parameter, expression, function, alias, etc, to be evaluated.
      * @param trackable  The construct trackable, for example {@link ExpressionRef}.
+     * @param scope the scope of the current identifier
      */
-    void pushIdentifierForHiding(String identifier, Trackable trackable) {
-        final boolean hasRelevantMatch = hidingIdentifiersContexts.stream()
-                .filter(innerContext -> innerContext.getIdentifier().equals(identifier))
-                .peek(matchedContext -> {
-                    // If we are passing an overloaded function definition, do not issue a warning
-                    if (trackable instanceof FunctionDef
-                            && FunctionDef.class == matchedContext.getTrackableSubclass()) {
-                        return;
-                    }
+    void pushIdentifier(String identifier, Trackable trackable, IdentifierScope scope) {
+        var localMatch = !localIdentifierStack.isEmpty()
+                ? findMatchingIdentifierContext(localIdentifierStack.peek(), identifier)
+                : Optional.<IdentifierContext>empty();
+        var globalMatch = findMatchingIdentifierContext(globalIdentifiers, identifier);
 
-                    reportWarning(
-                            resolveWarningMessage(matchedContext.getIdentifier(), identifier, trackable), trackable);
-                })
-                .findAny()
-                .isPresent();
+        if (globalMatch.isPresent() || localMatch.isPresent()) {
+            var matchedContext = globalMatch.or(() -> localMatch).orElseThrow();
 
-        // We will only add function definitions once
-        if (!(trackable instanceof FunctionDef) || !hasRelevantMatch) {
-            if (shouldPushHidingContext(trackable)) {
-                final Class<? extends Trackable> trackableOrNull = trackable != null ? trackable.getClass() : null;
-                // Sometimes the underlying Trackable doesn't resolve in the calling code
-                hidingIdentifiersContexts.push(
-                        new HidingIdentifierContext(identifier, trackable != null ? trackable.getClass() : null));
+            boolean matchedOnFunctionOverloads =
+                    matchedContext.getTrackableSubclass().equals(FunctionDef.class) && trackable instanceof FunctionDef;
+
+            if (!matchedOnFunctionOverloads) {
+                reportWarning(resolveWarningMessage(matchedContext.getIdentifier(), identifier, trackable), trackable);
+            }
+        }
+
+        if (shouldAddIdentifierContext(trackable)) {
+            final Class<? extends Trackable> trackableOrNull = trackable != null ? trackable.getClass() : null;
+            // Sometimes the underlying Trackable doesn't resolve in the calling code
+            if (scope == IdentifierScope.GLOBAL) {
+                globalIdentifiers.push(new IdentifierContext(identifier, trackableOrNull));
+            } else {
+                localIdentifierStack.peek().push(new IdentifierContext(identifier, trackableOrNull));
             }
         }
     }
 
+    private Optional<IdentifierContext> findMatchingIdentifierContext(
+            Collection<IdentifierContext> identifierContext, String identifier) {
+        return identifierContext.stream()
+                .filter(innerContext -> innerContext.getIdentifier().equals(identifier))
+                .findFirst();
+    }
+
     /**
      * Pop the last resolved identifier off the deque.  This is needed in case of a context in which an identifier
-     * falls out of scope, for an example, an alias within an expression or function body
+     * falls out of scope, for an example, an alias within an expression or function body.
      */
-    void popIdentifierForHiding() {
-        hidingIdentifiersContexts.pop();
+    void popIdentifier() {
+        popIdentifier(IdentifierScope.LOCAL);
+    }
+
+    void popIdentifier(IdentifierScope scope) {
+        if (scope == IdentifierScope.GLOBAL) {
+            globalIdentifiers.pop();
+        } else {
+            localIdentifierStack.peek().pop();
+        }
+    }
+
+    void pushIdentifierScope() {
+        localIdentifierStack.push(new ArrayDeque<>());
+    }
+
+    void popIdentifierScope() {
+        localIdentifierStack.pop();
     }
 
     // TODO:  consider other structures that should only trigger a readonly check of identifier hiding
-    private boolean shouldPushHidingContext(Trackable trackable) {
+    private boolean shouldAddIdentifierContext(Trackable trackable) {
         return !(trackable instanceof Literal);
     }
 

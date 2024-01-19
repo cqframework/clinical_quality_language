@@ -9,6 +9,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.cqframework.cql.cql2elm.LibraryBuilder.IdentifierScope;
 import org.cqframework.cql.cql2elm.model.*;
 import org.cqframework.cql.cql2elm.model.invocation.*;
 import org.cqframework.cql.cql2elm.preprocessor.*;
@@ -67,7 +68,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
             }
         }
 
-        // Return last result (consistent with super implementation and helps w/ testing)
+        // Return last result (consistent with super implementation and helps w/
+        // testing)
         return lastResult;
     }
 
@@ -121,7 +123,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
         // The model was already calculated by CqlPreprocessorVisitor
         final UsingDef usingDef = libraryBuilder.resolveUsingRef(localIdentifier);
-        libraryBuilder.pushIdentifierForHiding(localIdentifier, usingDef);
+        libraryBuilder.pushIdentifier(localIdentifier, usingDef, IdentifierScope.GLOBAL);
         return usingDef;
     }
 
@@ -173,9 +175,11 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 .withPath(path)
                 .withVersion(parseString(ctx.versionSpecifier()));
 
-        // TODO: This isn't great because it complicates the loading process (and results in the source being loaded
+        // TODO: This isn't great because it complicates the loading process (and
+        // results in the source being loaded
         // twice in the general case)
-        // But the full fix is to introduce source resolution/caching to enable this layer to determine whether the
+        // But the full fix is to introduce source resolution/caching to enable this
+        // layer to determine whether the
         // library identifier resolved
         // with the namespace
         if (!libraryBuilder.canResolveLibrary(library)) {
@@ -195,7 +199,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         }
 
         libraryBuilder.addInclude(library);
-        libraryBuilder.pushIdentifierForHiding(library.getLocalIdentifier(), library);
+        libraryBuilder.pushIdentifier(library.getLocalIdentifier(), library, IdentifierScope.GLOBAL);
 
         return library;
     }
@@ -232,7 +236,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         }
 
         libraryBuilder.addParameter(param);
-        libraryBuilder.pushIdentifierForHiding(param.getName(), param);
+        libraryBuilder.pushIdentifier(param.getName(), param, IdentifierScope.GLOBAL);
 
         return param;
     }
@@ -278,7 +282,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         }
 
         libraryBuilder.addCodeSystem(cs);
-        libraryBuilder.pushIdentifierForHiding(cs.getName(), cs);
+        libraryBuilder.pushIdentifier(cs.getName(), cs, IdentifierScope.GLOBAL);
         return cs;
     }
 
@@ -352,7 +356,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
             vs.setResultType(new ListType(libraryBuilder.resolveTypeName("System", "Code")));
         }
         libraryBuilder.addValueSet(vs);
-        libraryBuilder.pushIdentifierForHiding(vs.getName(), vs);
+        libraryBuilder.pushIdentifier(vs.getName(), vs, IdentifierScope.GLOBAL);
 
         return vs;
     }
@@ -374,7 +378,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
         cd.setResultType(libraryBuilder.resolveTypeName("Code"));
         libraryBuilder.addCode(cd);
-        libraryBuilder.pushIdentifierForHiding(cd.getName(), cd);
+        libraryBuilder.pushIdentifier(cd.getName(), cd, IdentifierScope.GLOBAL);
 
         return cd;
     }
@@ -446,7 +450,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         if (!isUnfilteredContext(unqualifiedIdentifier)) {
             ModelContext modelContext = libraryBuilder.resolveContextName(modelIdentifier, unqualifiedIdentifier);
 
-            // If this is the first time a context definition is encountered, construct a context definition:
+            // If this is the first time a context definition is encountered, construct a
+            // context definition:
             // define <Context> = element of [<Context model type>]
             Element modelContextDefinition = contextDefinitions.get(modelContext.getName());
             if (modelContextDefinition == null) {
@@ -457,7 +462,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                                     .getModelInfo()
                             : libraryBuilder.getModel(modelIdentifier).getModelInfo();
                     // String contextTypeName = modelContext.getName();
-                    // DataType contextType = libraryBuilder.resolveTypeName(modelInfo.getName(), contextTypeName);
+                    // DataType contextType = libraryBuilder.resolveTypeName(modelInfo.getName(),
+                    // contextTypeName);
                     DataType contextType = modelContext.getType();
                     modelContextDefinition = libraryBuilder.resolveParameterRef(modelContext.getName());
                     if (modelContextDefinition != null) {
@@ -532,10 +538,16 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         String identifier = parseString(ctx.identifier());
         ExpressionDef def = libraryBuilder.resolveExpressionRef(identifier);
 
-        // lightweight ExpressionDef to be used to output a hiding warning message
-        final ExpressionDef hollowExpressionDef =
-                of.createExpressionDef().withName(identifier).withContext(getCurrentContext());
-        libraryBuilder.pushIdentifierForHiding(identifier, hollowExpressionDef);
+        // First time visiting this expression definition, create a lightweight ExpressionDef to be used to output a
+        // hiding warning message
+        // If it's the second time around, we'll be able to resolve it and we can assume it's already on the
+        // hiding stack.
+        if (def == null) {
+            final ExpressionDef hollowExpressionDef =
+                    of.createExpressionDef().withName(identifier).withContext(getCurrentContext());
+            libraryBuilder.pushIdentifier(identifier, hollowExpressionDef, IdentifierScope.GLOBAL);
+        }
+
         if (def == null || isImplicitContextExpressionDef(def)) {
             if (def != null && isImplicitContextExpressionDef(def)) {
                 libraryBuilder.removeExpression(def);
@@ -568,26 +580,35 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
     @Override
     public ExpressionDef visitExpressionDefinition(cqlParser.ExpressionDefinitionContext ctx) {
-        ExpressionDef expressionDef = internalVisitExpressionDefinition(ctx);
-        if (forwards.isEmpty() || !forwards.peek().getName().equals(expressionDef.getName())) {
-            if (definedExpressionDefinitions.contains(expressionDef.getName())) {
-                // ERROR:
-                throw new IllegalArgumentException(
-                        String.format("Identifier %s is already in use in this library.", expressionDef.getName()));
-            }
+        this.libraryBuilder.pushIdentifierScope();
+        try {
+            ExpressionDef expressionDef = internalVisitExpressionDefinition(ctx);
+            if (forwards.isEmpty() || !forwards.peek().getName().equals(expressionDef.getName())) {
+                if (definedExpressionDefinitions.contains(expressionDef.getName())) {
+                    // ERROR:
+                    throw new IllegalArgumentException(
+                            String.format("Identifier %s is already in use in this library.", expressionDef.getName()));
+                }
 
-            // Track defined expression definitions locally, otherwise duplicate expression definitions will be missed
-            // because they are
-            // overwritten by name when they are encountered by the preprocessor.
-            definedExpressionDefinitions.add(expressionDef.getName());
+                // Track defined expression definitions locally, otherwise duplicate expression
+                // definitions will be missed
+                // because they are
+                // overwritten by name when they are encountered by the preprocessor.
+                definedExpressionDefinitions.add(expressionDef.getName());
+            }
+            return expressionDef;
+
+        } finally {
+            this.libraryBuilder.popIdentifierScope();
         }
-        return expressionDef;
     }
 
     @Override
     public Literal visitStringLiteral(cqlParser.StringLiteralContext ctx) {
         final Literal stringLiteral = libraryBuilder.createLiteral(parseString(ctx.STRING()));
-        libraryBuilder.pushIdentifierForHiding(stringLiteral.getValue(), stringLiteral);
+        // Literals are never actually pushed to the stack. This just emits a warning if
+        // the literal is hiding something
+        libraryBuilder.pushIdentifier(stringLiteral.getValue(), stringLiteral);
         return stringLiteral;
     }
 
@@ -823,25 +844,25 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
     private Expression parseDateTimeLiteral(String input) {
         /*
-        DATETIME
-                : '@'
-                    [0-9][0-9][0-9][0-9] // year
-                    (
-                        (
-                            '-'[0-9][0-9] // month
-                            (
-                                (
-                                    '-'[0-9][0-9] // day
-                                    ('T' TIMEFORMAT?)?
-                                )
-                                | 'T'
-                            )?
-                        )
-                        | 'T'
-                    )?
-                    ('Z' | ('+' | '-') [0-9][0-9]':'[0-9][0-9])? // timezone offset
-                ;
-        */
+         * DATETIME
+         * : '@'
+         * [0-9][0-9][0-9][0-9] // year
+         * (
+         * (
+         * '-'[0-9][0-9] // month
+         * (
+         * (
+         * '-'[0-9][0-9] // day
+         * ('T' TIMEFORMAT?)?
+         * )
+         * | 'T'
+         * )?
+         * )
+         * | 'T'
+         * )?
+         * ('Z' | ('+' | '-') [0-9][0-9]':'[0-9][0-9])? // timezone offset
+         * ;
+         */
 
         Pattern dateTimePattern = Pattern.compile(
                 "(\\d{4})(((-(\\d{2}))(((-(\\d{2}))((T)((\\d{2})(\\:(\\d{2})(\\:(\\d{2})(\\.(\\d+))?)?)?)?)?)|(T))?)|(T))?((Z)|(([+-])(\\d{2})(\\:(\\d{2}))))?");
@@ -849,28 +870,32 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         // ----------------------------------01--23-------4---5-------6---7-------8---9-----------------0------1----23---45-----6-------7---8-----------
 
         /*
-           year - group 1
-           month - group 5
-           day - group 9
-           day dateTime indicator - group 11
-           hour - group 13
-           minute - group 15
-           second - group 17
-           millisecond - group 19
-           month dateTime indicator - group 20
-           year dateTime indicator - group 21
-           utc indicator - group 23
-           timezone offset polarity - group 25
-           timezone offset hour - group 26
-           timezone offset minute - group 28
-        */
+         * year - group 1
+         * month - group 5
+         * day - group 9
+         * day dateTime indicator - group 11
+         * hour - group 13
+         * minute - group 15
+         * second - group 17
+         * millisecond - group 19
+         * month dateTime indicator - group 20
+         * year dateTime indicator - group 21
+         * utc indicator - group 23
+         * timezone offset polarity - group 25
+         * timezone offset hour - group 26
+         * timezone offset minute - group 28
+         */
 
         /*
-                Pattern dateTimePattern =
-                        Pattern.compile("(\\d{4})(-(\\d{2}))?(-(\\d{2}))?((Z)|(T((\\d{2})(\\:(\\d{2})(\\:(\\d{2})(\\.(\\d+))?)?)?)?((Z)|(([+-])(\\d{2})(\\:?(\\d{2}))?))?))?");
-                                       //1-------2-3---------4-5---------67---8-91-------1---1-------1---1-------1---1-------------11---12-----2-------2----2---------------
-                                       //----------------------------------------0-------1---2-------3---4-------5---6-------------78---90-----1-------2----3---------------
-        */
+         * Pattern dateTimePattern =
+         * Pattern.compile(
+         * "(\\d{4})(-(\\d{2}))?(-(\\d{2}))?((Z)|(T((\\d{2})(\\:(\\d{2})(\\:(\\d{2})(\\.(\\d+))?)?)?)?((Z)|(([+-])(\\d{2})(\\:?(\\d{2}))?))?))?"
+         * );
+         * //1-------2-3---------4-5---------67---8-91-------1---1-------1---1-------1--
+         * -1-------------11---12-----2-------2----2---------------
+         * //----------------------------------------0-------1---2-------3---4-------5--
+         * -6-------------78---90-----1-------2----3---------------
+         */
 
         Matcher matcher = dateTimePattern.matcher(input);
         if (matcher.matches()) {
@@ -1416,7 +1441,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
     @Override
     public Object visitDifferenceExpressionTerm(cqlParser.DifferenceExpressionTermContext ctx) {
-        // difference in days of X <=> difference in days between start of X and end of X
+        // difference in days of X <=> difference in days between start of X and end of
+        // X
         Expression operand = parseExpression(ctx.expressionTerm());
 
         Start start = of.createStart().withOperand(operand);
@@ -1533,14 +1559,19 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                     Expression left = parseExpression(ctx.expression(0));
                     Expression right = parseExpression(ctx.expression(1));
                     if (left instanceof ValueSetRef) {
-                        InValueSet in = of.createInValueSet().withCode(right).withValueset((ValueSetRef) left);
+                        InValueSet in = of.createInValueSet()
+                                .withCode(right)
+                                .withValueset((ValueSetRef) left)
+                                .withValuesetExpression(left);
                         libraryBuilder.resolveCall("System", "InValueSet", new InValueSetInvocation(in));
                         return in;
                     }
 
                     if (left instanceof CodeSystemRef) {
-                        InCodeSystem in =
-                                of.createInCodeSystem().withCode(right).withCodesystem((CodeSystemRef) left);
+                        InCodeSystem in = of.createInCodeSystem()
+                                .withCode(right)
+                                .withCodesystem((CodeSystemRef) left)
+                                .withCodesystemExpression(left);
                         libraryBuilder.resolveCall("System", "InCodeSystem", new InCodeSystemInvocation(in));
                         return in;
                     }
@@ -1671,7 +1702,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
     @Override
     public List<String> visitQualifiedIdentifier(cqlParser.QualifiedIdentifierContext ctx) {
-        // Return the list of qualified identifiers for resolution by the containing element
+        // Return the list of qualified identifiers for resolution by the containing
+        // element
         List<String> identifiers = new ArrayList<>();
         for (cqlParser.QualifierContext qualifierContext : ctx.qualifier()) {
             String qualifier = parseString(qualifierContext);
@@ -1685,7 +1717,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
     @Override
     public List<String> visitQualifiedIdentifierExpression(cqlParser.QualifiedIdentifierExpressionContext ctx) {
-        // Return the list of qualified identifiers for resolution by the containing element
+        // Return the list of qualified identifiers for resolution by the containing
+        // element
         List<String> identifiers = new ArrayList<>();
         for (cqlParser.QualifierExpressionContext qualifierContext : ctx.qualifierExpression()) {
             String qualifier = parseString(qualifierContext);
@@ -1741,13 +1774,14 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
             // chop off leading and trailing ', ", or `
             text = text.substring(1, text.length() - 1);
 
-            // This is an alternate style of escaping that was removed when we switched to industry-standard escape
+            // This is an alternate style of escaping that was removed when we switched to
+            // industry-standard escape
             // sequences
             // if (cqlLexer.STRING == tokenType) {
-            //    text = text.replace("''", "'");
+            // text = text.replace("''", "'");
             // }
             // else {
-            //    text = text.replace("\"\"", "\"");
+            // text = text.replace("\"\"", "\"");
             // }
         }
 
@@ -1787,7 +1821,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
     @Override
     public Object visitTypeExpression(cqlParser.TypeExpressionContext ctx) {
-        // NOTE: These don't use the buildIs or buildAs because those start with a DataType, rather than a TypeSpecifier
+        // NOTE: These don't use the buildIs or buildAs because those start with a
+        // DataType, rather than a TypeSpecifier
         if (ctx.getChild(1).getText().equals("is")) {
             Is is = of.createIs()
                     .withOperand(parseExpression(ctx.expression()))
@@ -1808,7 +1843,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
     @Override
     public Object visitCastExpression(cqlParser.CastExpressionContext ctx) {
-        // NOTE: This doesn't use buildAs because it starts with a DataType, rather than a TypeSpecifier
+        // NOTE: This doesn't use buildAs because it starts with a DataType, rather than
+        // a TypeSpecifier
         As as = of.createAs()
                 .withOperand(parseExpression(ctx.expression()))
                 .withAsTypeSpecifier(parseTypeSpecifier(ctx.typeSpecifier()))
@@ -1869,7 +1905,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
     @Override
     public Object visitConcurrentWithIntervalOperatorPhrase(cqlParser.ConcurrentWithIntervalOperatorPhraseContext ctx) {
-        // ('starts' | 'ends' | 'occurs')? 'same' dateTimePrecision? (relativeQualifier | 'as') ('start' | 'end')?
+        // ('starts' | 'ends' | 'occurs')? 'same' dateTimePrecision? (relativeQualifier
+        // | 'as') ('start' | 'end')?
         TimingOperatorContext timingOperator = timingOperators.peek();
         ParseTree firstChild = ctx.getChild(0);
         if ("starts".equals(firstChild.getText())) {
@@ -1991,9 +2028,9 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
         // If the right is not convertible to an interval or list
         // if (!isRightPoint &&
-        //        !(timingOperator.getRight().getResultType() instanceof IntervalType
-        //                || timingOperator.getRight().getResultType() instanceof ListType)) {
-        //    isRightPoint = true;
+        // !(timingOperator.getRight().getResultType() instanceof IntervalType
+        // || timingOperator.getRight().getResultType() instanceof ListType)) {
+        // isRightPoint = true;
         // }
 
         if (isRightPoint) {
@@ -2025,7 +2062,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
     @Override
     public Object visitIncludedInIntervalOperatorPhrase(cqlParser.IncludedInIntervalOperatorPhraseContext ctx) {
-        // ('starts' | 'ends' | 'occurs')? 'properly'? ('during' | 'included in') dateTimePrecisionSpecifier?
+        // ('starts' | 'ends' | 'occurs')? 'properly'? ('during' | 'included in')
+        // dateTimePrecisionSpecifier?
         boolean isProper = false;
         boolean isLeftPoint = false;
         TimingOperatorContext timingOperator = timingOperators.peek();
@@ -2060,9 +2098,9 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
         // If the left is not convertible to an interval or list
         // if (!isLeftPoint &&
-        //        !(timingOperator.getLeft().getResultType() instanceof IntervalType
-        //                || timingOperator.getLeft().getResultType() instanceof ListType)) {
-        //    isLeftPoint = true;
+        // !(timingOperator.getLeft().getResultType() instanceof IntervalType
+        // || timingOperator.getLeft().getResultType() instanceof ListType)) {
+        // isLeftPoint = true;
         // }
 
         if (isLeftPoint) {
@@ -2094,7 +2132,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
     @Override
     public Object visitBeforeOrAfterIntervalOperatorPhrase(cqlParser.BeforeOrAfterIntervalOperatorPhraseContext ctx) {
-        // ('starts' | 'ends' | 'occurs')? quantityOffset? ('before' | 'after') dateTimePrecisionSpecifier? ('start' |
+        // ('starts' | 'ends' | 'occurs')? quantityOffset? ('before' | 'after')
+        // dateTimePrecisionSpecifier? ('start' |
         // 'end')?
 
         // duration before/after
@@ -2364,7 +2403,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                         track(in, ctx.quantityOffset());
                         libraryBuilder.resolveBinaryCall("System", "In", in);
 
-                        // if the offset or comparison is inclusive, add a null check for B to ensure correct
+                        // if the offset or comparison is inclusive, add a null check for B to ensure
+                        // correct
                         // interpretation
                         if (isOffsetInclusive || isInclusive) {
                             IsNull nullTest = of.createIsNull().withOperand(right);
@@ -2402,9 +2442,11 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
     @Override
     public Object visitWithinIntervalOperatorPhrase(cqlParser.WithinIntervalOperatorPhraseContext ctx) {
-        // ('starts' | 'ends' | 'occurs')? 'properly'? 'within' quantityLiteral 'of' ('start' | 'end')?
+        // ('starts' | 'ends' | 'occurs')? 'properly'? 'within' quantityLiteral 'of'
+        // ('start' | 'end')?
         // A starts within 3 days of start B
-        // * start of A in [start of B - 3 days, start of B + 3 days] and start B is not null
+        // * start of A in [start of B - 3 days, start of B + 3 days] and start B is not
+        // null
         // A starts within 3 days of B
         // * start of A in [start of B - 3 days, end of B + 3 days]
 
@@ -2480,7 +2522,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         In in = of.createIn().withOperand(timingOperator.getLeft(), interval);
         libraryBuilder.resolveBinaryCall("System", "In", in);
 
-        // if the within is not proper and the interval is being constructed from a single point, add a null check for
+        // if the within is not proper and the interval is being constructed from a
+        // single point, add a null check for
         // that point to ensure correct interpretation
         if (!isProper && (initialBound != null)) {
             IsNull nullTest = of.createIsNull().withOperand(initialBound);
@@ -2718,19 +2761,19 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                     per = libraryBuilder.buildNull(libraryBuilder.resolveTypeName("System", "Quantity"));
 
                     // TODO: Test this...
-                    //                    // Successor(MinValue<T>) - MinValue<T>
-                    //                    MinValue minimum = libraryBuilder.buildMinimum(pointType);
-                    //                    track(minimum, ctx);
+                    // // Successor(MinValue<T>) - MinValue<T>
+                    // MinValue minimum = libraryBuilder.buildMinimum(pointType);
+                    // track(minimum, ctx);
                     //
-                    //                    Expression successor = libraryBuilder.buildSuccessor(minimum);
-                    //                    track(successor, ctx);
+                    // Expression successor = libraryBuilder.buildSuccessor(minimum);
+                    // track(successor, ctx);
                     //
-                    //                    minimum = libraryBuilder.buildMinimum(pointType);
-                    //                    track(minimum, ctx);
+                    // minimum = libraryBuilder.buildMinimum(pointType);
+                    // track(minimum, ctx);
                     //
-                    //                    Subtract subtract = of.createSubtract().withOperand(successor, minimum);
-                    //                    libraryBuilder.resolveBinaryCall("System", "Subtract", subtract);
-                    //                    per = subtract;
+                    // Subtract subtract = of.createSubtract().withOperand(successor, minimum);
+                    // libraryBuilder.resolveBinaryCall("System", "Subtract", subtract);
+                    // per = subtract;
                 }
             } else {
                 per = libraryBuilder.buildNull(libraryBuilder.resolveTypeName("System", "Quantity"));
@@ -2774,16 +2817,23 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         }
 
         ClassType classType = (ClassType) dataType;
-        // BTR -> The original intent of this code was to have the retrieve return the base type, and use the
+        // BTR -> The original intent of this code was to have the retrieve return the
+        // base type, and use the
         // "templateId"
-        // element of the retrieve to communicate the "positive" or "negative" profile to the data access layer.
-        // However, because this notion of carrying the "profile" through a type is not general, it causes
+        // element of the retrieve to communicate the "positive" or "negative" profile
+        // to the data access layer.
+        // However, because this notion of carrying the "profile" through a type is not
+        // general, it causes
         // inconsistencies
-        // when using retrieve results with functions defined in terms of the same type (see GitHub Issue #131).
-        // Based on the discussion there, the retrieve will now return the declared type, whether it is a profile or
+        // when using retrieve results with functions defined in terms of the same type
+        // (see GitHub Issue #131).
+        // Based on the discussion there, the retrieve will now return the declared
+        // type, whether it is a profile or
         // not.
-        // ProfileType profileType = dataType instanceof ProfileType ? (ProfileType)dataType : null;
-        // NamedType namedType = profileType == null ? classType : (NamedType)classType.getBaseType();
+        // ProfileType profileType = dataType instanceof ProfileType ?
+        // (ProfileType)dataType : null;
+        // NamedType namedType = profileType == null ? classType :
+        // (NamedType)classType.getBaseType();
         NamedType namedType = classType;
 
         ModelInfo modelInfo = libraryBuilder.getModel(namedType.getNamespace()).getModelInfo();
@@ -2857,10 +2907,13 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                         && ((NamedType) propertyType).getSimpleName().equals("Reference")
                         && namedType.getSimpleName().equals("MedicationRequest")) {
                     // TODO: This is a model-specific special case to support QICore
-                    // This functionality needs to be generalized to a retrieve mapping in the model info
-                    // But that requires a model info change (to represent references, right now the model info only
+                    // This functionality needs to be generalized to a retrieve mapping in the model
+                    // info
+                    // But that requires a model info change (to represent references, right now the
+                    // model info only
                     // includes context relationships)
-                    // The reference expands to [MedicationRequest] MR with [Medication] M such that M.id =
+                    // The reference expands to [MedicationRequest] MR with [Medication] M such that
+                    // M.id =
                     // Last(Split(MR.medication.reference, '/')) and M.code in <valueset>
                     Retrieve mrRetrieve = buildRetrieve(
                             ctx, useStrictRetrieveTyping, namedType, classType, null, null, null, null, null, null);
@@ -2952,9 +3005,11 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                     if (result == null) {
                         result = retrieve;
                     } else {
-                        // Should only include the result if it resolved appropriately with the codeComparator
+                        // Should only include the result if it resolved appropriately with the
+                        // codeComparator
                         // Allowing it to go through for now
-                        // if (retrieve.getCodeProperty() != null && retrieve.getCodeComparator() != null &&
+                        // if (retrieve.getCodeProperty() != null && retrieve.getCodeComparator() !=
+                        // null &&
                         // retrieve.getCodes() != null) {
                         track(retrieve, ctx);
                         result = libraryBuilder.resolveUnion(result, retrieve);
@@ -3071,7 +3126,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                                 retrieve.setCodes(
                                         ((Contains) contains).getOperand().get(1));
                             }
-                            // TODO: Introduce support for the contains operator to make this possible to support with a
+                            // TODO: Introduce support for the contains operator to make this possible to
+                            // support with a
                             // retrieve (direct-reference code negation)
                             // ERROR:
                             libraryBuilder.recordParsingException(new CqlSemanticException(
@@ -3142,9 +3198,11 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 retrieve.setCodeComparator(codeComparator);
 
                 // Verify that the type of the terminology target is a List<Code>
-                // Due to implicit conversion defined by specific models, the resolution path above may result in a
+                // Due to implicit conversion defined by specific models, the resolution path
+                // above may result in a
                 // List<Concept>
-                // In that case, convert to a list of code (Union the Code elements of the Concepts in the list)
+                // In that case, convert to a list of code (Union the Code elements of the
+                // Concepts in the list)
                 if (retrieve.getCodes() != null
                         && retrieve.getCodes().getResultType() != null
                         && retrieve.getCodes().getResultType() instanceof ListType
@@ -3154,7 +3212,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                     if (retrieve.getCodes() instanceof ToList) {
                         // ToList will always have a single argument
                         ToList toList = (ToList) retrieve.getCodes();
-                        // If that argument is a ToConcept, replace the ToList argument with the code (skip the implicit
+                        // If that argument is a ToConcept, replace the ToList argument with the code
+                        // (skip the implicit
                         // conversion, the data access layer is responsible for it)
                         if (toList.getOperand() instanceof ToConcept) {
                             toList.setOperand(((ToConcept) toList.getOperand()).getOperand());
@@ -3176,8 +3235,10 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                     }
                 }
             } catch (Exception e) {
-                // If something goes wrong attempting to resolve, just set to the expression and report it as a warning,
-                // it shouldn't prevent translation unless the modelinfo indicates strict retrieve typing
+                // If something goes wrong attempting to resolve, just set to the expression and
+                // report it as a warning,
+                // it shouldn't prevent translation unless the modelinfo indicates strict
+                // retrieve typing
                 if ((libraryBuilder.isCompatibleWith("1.5")
                                 && !(terminology
                                         .getResultType()
@@ -3239,26 +3300,31 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
             queryContext.addPrimaryQuerySources(sources);
 
             for (AliasedQuerySource source : sources) {
-                libraryBuilder.pushIdentifierForHiding(source.getAlias(), source);
+                libraryBuilder.pushIdentifier(source.getAlias(), source);
             }
 
-            // If we are evaluating a population-level query whose source ranges over any patient-context expressions,
-            // then references to patient context expressions within the iteration clauses of the query can be accessed
+            // If we are evaluating a population-level query whose source ranges over any
+            // patient-context expressions,
+            // then references to patient context expressions within the iteration clauses
+            // of the query can be accessed
             // at the patient, rather than the population, context.
             boolean expressionContextPushed = false;
-            /* TODO: Address the issue of referencing multiple context expressions within a query (or even expression in general)
-            if (libraryBuilder.inUnfilteredContext() && queryContext.referencesSpecificContext()) {
-                libraryBuilder.pushExpressionContext("Patient");
-                expressionContextPushed = true;
-            }
-            */
+            /*
+             * TODO: Address the issue of referencing multiple context expressions within a
+             * query (or even expression in general)
+             * if (libraryBuilder.inUnfilteredContext() &&
+             * queryContext.referencesSpecificContext()) {
+             * libraryBuilder.pushExpressionContext("Patient");
+             * expressionContextPushed = true;
+             * }
+             */
             List<LetClause> dfcx = null;
             try {
                 dfcx = ctx.letClause() != null ? (List<LetClause>) visit(ctx.letClause()) : null;
 
                 if (dfcx != null) {
                     for (LetClause letClause : dfcx) {
-                        libraryBuilder.pushIdentifierForHiding(letClause.getIdentifier(), letClause);
+                        libraryBuilder.pushIdentifier(letClause.getIdentifier(), letClause);
                     }
                 }
 
@@ -3330,11 +3396,13 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                         queryContext.enterSortClause();
                         try {
                             sort = (SortClause) visit(ctx.sortClause());
-                            // Validate that the sort can be performed based on the existence of comparison operators
+                            // Validate that the sort can be performed based on the existence of comparison
+                            // operators
                             // for all types involved
                             for (SortByItem sortByItem : sort.getBy()) {
                                 if (sortByItem instanceof ByDirection) {
-                                    // validate that there is a comparison operator defined for the result element type
+                                    // validate that there is a comparison operator defined for the result element
+                                    // type
                                     // of the query context
                                     libraryBuilder.verifyComparable(queryContext.getResultElementType());
                                 } else {
@@ -3369,7 +3437,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 }
                 if (dfcx != null) {
                     for (LetClause letClause : dfcx) {
-                        libraryBuilder.popIdentifierForHiding();
+                        libraryBuilder.popIdentifier();
                     }
                 }
             }
@@ -3378,25 +3446,33 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
             libraryBuilder.popQueryContext();
             if (sources != null) {
                 for (AliasedQuerySource source : sources) {
-                    libraryBuilder.popIdentifierForHiding();
+                    libraryBuilder.popIdentifier();
                 }
             }
         }
     }
 
-    // TODO: Expand this optimization to work the DateLow/DateHigh property attributes
+    // TODO: Expand this optimization to work the DateLow/DateHigh property
+    // attributes
 
     /**
-     * Some systems may wish to optimize performance by restricting retrieves with available date ranges.  Specifying
-     * date ranges in a retrieve was removed from the CQL grammar, but it is still possible to extract date ranges from
-     * the where clause and put them in the Retrieve in ELM.  The <code>optimizeDateRangeInQuery</code> method
-     * attempts to do this automatically.  If optimization is possible, it will remove the corresponding "during" from
+     * Some systems may wish to optimize performance by restricting retrieves with
+     * available date ranges. Specifying
+     * date ranges in a retrieve was removed from the CQL grammar, but it is still
+     * possible to extract date ranges from
+     * the where clause and put them in the Retrieve in ELM. The
+     * <code>optimizeDateRangeInQuery</code> method
+     * attempts to do this automatically. If optimization is possible, it will
+     * remove the corresponding "during" from
      * the where clause and insert the date range into the Retrieve.
      *
-     * @param aqs   the AliasedQuerySource containing the ClinicalRequest to possibly refactor a date range into.
-     * @param where the Where clause to search for potential date range optimizations
-     * @return the where clause with optimized "durings" removed, or <code>null</code> if there is no longer a Where
-     * clause after optimization.
+     * @param aqs   the AliasedQuerySource containing the ClinicalRequest to
+     *              possibly refactor a date range into.
+     * @param where the Where clause to search for potential date range
+     *              optimizations
+     * @return the where clause with optimized "durings" removed, or
+     *         <code>null</code> if there is no longer a Where
+     *         clause after optimization.
      */
     public Expression optimizeDateRangeInQuery(Expression where, AliasedQuerySource aqs) {
         if (aqs.getExpression() instanceof Retrieve) {
@@ -3414,15 +3490,20 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     }
 
     /**
-     * Test a <code>BinaryExpression</code> expression and determine if it is suitable to be refactored into the
-     * <code>Retrieve</code> as a date range restriction.  If so, adjust the <code>Retrieve</code>
+     * Test a <code>BinaryExpression</code> expression and determine if it is
+     * suitable to be refactored into the
+     * <code>Retrieve</code> as a date range restriction. If so, adjust the
+     * <code>Retrieve</code>
      * accordingly and return <code>true</code>.
      *
-     * @param during   the <code>BinaryExpression</code> expression to potentially refactor into the <code>Retrieve</code>
-     * @param retrieve the <code>Retrieve</code> to add qualifying date ranges to (if applicable)
+     * @param during   the <code>BinaryExpression</code> expression to potentially
+     *                 refactor into the <code>Retrieve</code>
+     * @param retrieve the <code>Retrieve</code> to add qualifying date ranges to
+     *                 (if applicable)
      * @param alias    the alias of the <code>Retrieve</code> in the query.
-     * @return <code>true</code> if the date range was set in the <code>Retrieve</code>; <code>false</code>
-     * otherwise.
+     * @return <code>true</code> if the date range was set in the
+     *         <code>Retrieve</code>; <code>false</code>
+     *         otherwise.
      */
     private boolean attemptDateRangeOptimization(BinaryExpression during, Retrieve retrieve, String alias) {
         if (retrieve.getDateProperty() != null || retrieve.getDateRange() != null) {
@@ -3443,12 +3524,14 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     }
 
     /**
-     * Collapse a property path expression back to it's qualified form for use as the path attribute of the retrieve.
+     * Collapse a property path expression back to it's qualified form for use as
+     * the path attribute of the retrieve.
      *
      * @param reference the <code>Expression</code> to collapse
-     * @param alias    the alias of the <code>Retrieve</code> in the query.
+     * @param alias     the alias of the <code>Retrieve</code> in the query.
      * @return The collapsed path
-     * operands (or sub-operands) were modified; <code>false</code> otherwise.
+     *         operands (or sub-operands) were modified; <code>false</code>
+     *         otherwise.
      */
     private String getPropertyPath(Expression reference, String alias) {
         reference = getConversionReference(reference);
@@ -3469,11 +3552,13 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     }
 
     /**
-     * If this is a conversion operator, return the argument of the conversion, on the grounds that the date range optimization
+     * If this is a conversion operator, return the argument of the conversion, on
+     * the grounds that the date range optimization
      * should apply through a conversion (i.e. it is an order-preserving conversion)
      *
      * @param reference the <code>Expression</code> to examine
-     * @return The argument to the conversion operator if there was one, otherwise, the given <code>reference</code>
+     * @return The argument to the conversion operator if there was one, otherwise,
+     *         the given <code>reference</code>
      */
     private Expression getConversionReference(Expression reference) {
         if (reference instanceof FunctionRef) {
@@ -3499,11 +3584,13 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     }
 
     /**
-     * If this is a choice selection, return the argument of the choice selection, on the grounds that the date range optimization
+     * If this is a choice selection, return the argument of the choice selection,
+     * on the grounds that the date range optimization
      * should apply through the cast (i.e. it is an order-preserving cast)
      *
      * @param reference the <code>Expression</code> to examine
-     * @return The argument to the choice selection (i.e. As) if there was one, otherwise, the given <code>reference</code>
+     * @return The argument to the choice selection (i.e. As) if there was one,
+     *         otherwise, the given <code>reference</code>
      */
     private Expression getChoiceSelection(Expression reference) {
         if (reference instanceof As) {
@@ -3517,18 +3604,26 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     }
 
     /**
-     * Test an <code>And</code> expression and determine if it contains any operands (first-level or nested deeper)
-     * than are <code>IncludedIn</code> expressions that can be refactored into a <code>Retrieve</code>.  If so,
-     * adjust the <code>Retrieve</code> accordingly and reset the corresponding operand to a literal
-     * <code>true</code>.  This <code>and</code> branch containing a <code>true</code> can be further consolidated
+     * Test an <code>And</code> expression and determine if it contains any operands
+     * (first-level or nested deeper)
+     * than are <code>IncludedIn</code> expressions that can be refactored into a
+     * <code>Retrieve</code>. If so,
+     * adjust the <code>Retrieve</code> accordingly and reset the corresponding
+     * operand to a literal
+     * <code>true</code>. This <code>and</code> branch containing a
+     * <code>true</code> can be further consolidated
      * later.
      *
-     * @param and      the <code>And</code> expression containing operands to potentially refactor into the
+     * @param and      the <code>And</code> expression containing operands to
+     *                 potentially refactor into the
      *                 <code>Retrieve</code>
-     * @param retrieve the <code>Retrieve</code> to add qualifying date ranges to (if applicable)
+     * @param retrieve the <code>Retrieve</code> to add qualifying date ranges to
+     *                 (if applicable)
      * @param alias    the alias of the <code>Retrieve</code> in the query.
-     * @return <code>true</code> if the date range was set in the <code>Retrieve</code> and the <code>And</code>
-     * operands (or sub-operands) were modified; <code>false</code> otherwise.
+     * @return <code>true</code> if the date range was set in the
+     *         <code>Retrieve</code> and the <code>And</code>
+     *         operands (or sub-operands) were modified; <code>false</code>
+     *         otherwise.
      */
     private boolean attemptDateRangeOptimization(And and, Retrieve retrieve, String alias) {
         if (retrieve.getDateProperty() != null || retrieve.getDateRange() != null) {
@@ -3551,7 +3646,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     }
 
     /**
-     * If any branches in the <code>And</code> tree contain a <code>true</code>, refactor it out.
+     * If any branches in the <code>And</code> tree contain a <code>true</code>,
+     * refactor it out.
      *
      * @param and the <code>And</code> tree to attempt to consolidate
      * @return the potentially consolidated <code>And</code>
@@ -3574,60 +3670,69 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     }
 
     /**
-     * Determine if the right-hand side of an <code>IncludedIn</code> expression can be refactored into the date range
-     * of a <code>Retrieve</code>.  Currently, refactoring is only supported when the RHS is a literal
-     * DateTime interval, a literal DateTime, a parameter representing a DateTime interval or a DateTime, or an
+     * Determine if the right-hand side of an <code>IncludedIn</code> expression can
+     * be refactored into the date range
+     * of a <code>Retrieve</code>. Currently, refactoring is only supported when the
+     * RHS is a literal
+     * DateTime interval, a literal DateTime, a parameter representing a DateTime
+     * interval or a DateTime, or an
      * expression reference representing a DateTime interval or a DateTime.
      *
-     * @param rhs the right-hand side of the <code>IncludedIn</code> to test for potential optimization
-     * @return <code>true</code> if the RHS supports refactoring to a <code>Retrieve</code>, <code>false</code>
-     * otherwise.
+     * @param rhs the right-hand side of the <code>IncludedIn</code> to test for
+     *            potential optimization
+     * @return <code>true</code> if the RHS supports refactoring to a
+     *         <code>Retrieve</code>, <code>false</code>
+     *         otherwise.
      */
     private boolean isRHSEligibleForDateRangeOptimization(Expression rhs) {
         return rhs.getResultType().isSubTypeOf(libraryBuilder.resolveTypeName("System", "DateTime"))
                 || rhs.getResultType()
                         .isSubTypeOf(new IntervalType(libraryBuilder.resolveTypeName("System", "DateTime")));
 
-        // BTR: The only requirement for the optimization is that the expression be of type DateTime or
+        // BTR: The only requirement for the optimization is that the expression be of
+        // type DateTime or
         // Interval<DateTime>
-        // Whether or not the expression can be statically evaluated (literal, in the loose sense of the word) is really
-        // a function of the engine in determining the "initial" data requirements, versus subsequent data requirements
-        //        Element targetElement = rhs;
-        //        if (rhs instanceof ParameterRef) {
-        //            String paramName = ((ParameterRef) rhs).getName();
-        //            for (ParameterDef def : getLibrary().getParameters().getDef()) {
-        //                if (paramName.equals(def.getName())) {
-        //                    targetElement = def.getParameterTypeSpecifier();
-        //                    if (targetElement == null) {
-        //                        targetElement = def.getDefault();
-        //                    }
-        //                    break;
-        //                }
-        //            }
-        //        } else if (rhs instanceof ExpressionRef && !(rhs instanceof FunctionRef)) {
-        //            // TODO: Support forward declaration, if necessary
-        //            String expName = ((ExpressionRef) rhs).getName();
-        //            for (ExpressionDef def : getLibrary().getStatements().getDef()) {
-        //                if (expName.equals(def.getName())) {
-        //                    targetElement = def.getExpression();
-        //                }
-        //            }
-        //        }
+        // Whether or not the expression can be statically evaluated (literal, in the
+        // loose sense of the word) is really
+        // a function of the engine in determining the "initial" data requirements,
+        // versus subsequent data requirements
+        // Element targetElement = rhs;
+        // if (rhs instanceof ParameterRef) {
+        // String paramName = ((ParameterRef) rhs).getName();
+        // for (ParameterDef def : getLibrary().getParameters().getDef()) {
+        // if (paramName.equals(def.getName())) {
+        // targetElement = def.getParameterTypeSpecifier();
+        // if (targetElement == null) {
+        // targetElement = def.getDefault();
+        // }
+        // break;
+        // }
+        // }
+        // } else if (rhs instanceof ExpressionRef && !(rhs instanceof FunctionRef)) {
+        // // TODO: Support forward declaration, if necessary
+        // String expName = ((ExpressionRef) rhs).getName();
+        // for (ExpressionDef def : getLibrary().getStatements().getDef()) {
+        // if (expName.equals(def.getName())) {
+        // targetElement = def.getExpression();
+        // }
+        // }
+        // }
         //
-        //        boolean isEligible = false;
-        //        if (targetElement instanceof DateTime) {
-        //            isEligible = true;
-        //        } else if (targetElement instanceof Interval) {
-        //            Interval ivl = (Interval) targetElement;
-        //            isEligible = (ivl.getLow() != null && ivl.getLow() instanceof DateTime) || (ivl.getHigh() != null
+        // boolean isEligible = false;
+        // if (targetElement instanceof DateTime) {
+        // isEligible = true;
+        // } else if (targetElement instanceof Interval) {
+        // Interval ivl = (Interval) targetElement;
+        // isEligible = (ivl.getLow() != null && ivl.getLow() instanceof DateTime) ||
+        // (ivl.getHigh() != null
         // && ivl.getHigh() instanceof DateTime);
-        //        } else if (targetElement instanceof IntervalTypeSpecifier) {
-        //            IntervalTypeSpecifier spec = (IntervalTypeSpecifier) targetElement;
-        //            isEligible = isDateTimeTypeSpecifier(spec.getPointType());
-        //        } else if (targetElement instanceof NamedTypeSpecifier) {
-        //            isEligible = isDateTimeTypeSpecifier(targetElement);
-        //        }
-        //        return isEligible;
+        // } else if (targetElement instanceof IntervalTypeSpecifier) {
+        // IntervalTypeSpecifier spec = (IntervalTypeSpecifier) targetElement;
+        // isEligible = isDateTimeTypeSpecifier(spec.getPointType());
+        // } else if (targetElement instanceof NamedTypeSpecifier) {
+        // isEligible = isDateTimeTypeSpecifier(targetElement);
+        // }
+        // return isEligible;
     }
 
     private boolean isDateTimeTypeSpecifier(Element e) {
@@ -3765,7 +3870,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         }
 
         // If there is a starting, that's the type of the var
-        // If there's not a starting, push an Any and then attempt to evaluate (might need a type hint here)
+        // If there's not a starting, push an Any and then attempt to evaluate (might
+        // need a type hint here)
         aggregateClause.setIdentifier(parseString(ctx.identifier()));
 
         Expression accumulator = null;
@@ -3921,7 +4027,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     }
 
     private Expression resolveIdentifier(String identifier) {
-        // If the identifier cannot be resolved in the library builder, check for forward declarations for expressions
+        // If the identifier cannot be resolved in the library builder, check for
+        // forward declarations for expressions
         // and parameters
         Expression result = libraryBuilder.resolveIdentifier(identifier, false);
         if (result == null) {
@@ -3963,8 +4070,10 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
     private String ensureSystemFunctionName(String libraryName, String functionName) {
         if (libraryName == null || libraryName.equals("System")) {
-            // Because these functions can be both a keyword and the name of a method, they can be resolved by the
-            // parser as a function, instead of as the keyword-based parser rule. In this case, the function
+            // Because these functions can be both a keyword and the name of a method, they
+            // can be resolved by the
+            // parser as a function, instead of as the keyword-based parser rule. In this
+            // case, the function
             // name needs to be translated to the System function name in order to resolve.
             switch (functionName) {
                 case "contains":
@@ -4012,8 +4121,10 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         functionName = ensureSystemFunctionName(libraryName, functionName);
 
         // 1. Ensure all overloads of the function are registered with the operator map
-        // 2. Resolve the function, allowing for the case that operator map is a skeleton
-        // 3. If the resolution from the operator map is a skeleton, compile the function body to determine the result
+        // 2. Resolve the function, allowing for the case that operator map is a
+        // skeleton
+        // 3. If the resolution from the operator map is a skeleton, compile the
+        // function body to determine the result
         // type
 
         // Find all functionDefinitionInfo instances with the given name
@@ -4068,7 +4179,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         }
 
         if (mustResolve) {
-            // Extra internal error handling, these should never be hit if the two-phase operator compile is working as
+            // Extra internal error handling, these should never be hit if the two-phase
+            // operator compile is working as
             // expected
             if (result == null) {
                 throw new IllegalArgumentException("Internal error: could not resolve function");
@@ -4118,7 +4230,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
             }
         }
 
-        // If we are in an implicit $this context, the function may be resolved as a method invocation
+        // If we are in an implicit $this context, the function may be resolved as a
+        // method invocation
         Expression thisRef = libraryBuilder.resolveIdentifier("$this", false);
         if (thisRef != null) {
             Expression result = systemMethodResolver.resolveMethod(thisRef, identifier, paramListCtx, false);
@@ -4127,7 +4240,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
             }
         }
 
-        // If we are in an implicit context (i.e. a context named the same as a parameter), the function may be resolved
+        // If we are in an implicit context (i.e. a context named the same as a
+        // parameter), the function may be resolved
         // as a method invocation
         ParameterRef parameterRef = libraryBuilder.resolveImplicitContext();
         if (parameterRef != null) {
@@ -4208,8 +4322,10 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     }
 
     private FunctionHeader getFunctionHeaderByDef(FunctionDef fd) {
-        // Shouldn't need to do this, something about the hashCode implementation of FunctionDef is throwing this off,
-        // Don't have time to investigate right now, this should work fine, could potentially be improved
+        // Shouldn't need to do this, something about the hashCode implementation of
+        // FunctionDef is throwing this off,
+        // Don't have time to investigate right now, this should work fine, could
+        // potentially be improved
         for (Map.Entry<FunctionDef, FunctionHeader> entry : functionHeadersByDef.entrySet()) {
             if (entry.getKey() == fd) {
                 return entry.getValue();
@@ -4262,70 +4378,82 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                     "Internal error: Could not resolve operator map entry for function header %s",
                     fh.getMangledName()));
         }
-        libraryBuilder.pushIdentifierForHiding(fun.getName(), fun);
+        libraryBuilder.pushIdentifier(fun.getName(), fun, IdentifierScope.GLOBAL);
         final List<OperandDef> operand = op.getFunctionDef().getOperand();
         for (OperandDef operandDef : operand) {
-            libraryBuilder.pushIdentifierForHiding(operandDef.getName(), operandDef);
+            libraryBuilder.pushIdentifier(operandDef.getName(), operandDef);
         }
 
-        if (ctx.functionBody() != null) {
-            libraryBuilder.beginFunctionDef(fun);
-            try {
-                libraryBuilder.pushExpressionContext(getCurrentContext());
+        try {
+            if (ctx.functionBody() != null) {
+                libraryBuilder.beginFunctionDef(fun);
                 try {
-                    libraryBuilder.pushExpressionDefinition(fh.getMangledName());
+                    libraryBuilder.pushExpressionContext(getCurrentContext());
                     try {
-                        fun.setExpression(parseExpression(ctx.functionBody()));
+                        libraryBuilder.pushExpressionDefinition(fh.getMangledName());
+                        try {
+                            fun.setExpression(parseExpression(ctx.functionBody()));
+                        } finally {
+                            libraryBuilder.popExpressionDefinition();
+                        }
                     } finally {
-                        libraryBuilder.popExpressionDefinition();
+                        libraryBuilder.popExpressionContext();
                     }
                 } finally {
-                    libraryBuilder.popExpressionContext();
+                    libraryBuilder.endFunctionDef();
                 }
-            } finally {
-                for (OperandDef operandDef : operand) {
-                    libraryBuilder.popIdentifierForHiding();
-                }
-                libraryBuilder.endFunctionDef();
-            }
 
-            if (resultType != null
-                    && fun.getExpression() != null
-                    && fun.getExpression().getResultType() != null) {
-                if (!DataTypes.subTypeOf(fun.getExpression().getResultType(), resultType.getResultType())) {
+                if (resultType != null
+                        && fun.getExpression() != null
+                        && fun.getExpression().getResultType() != null) {
+                    if (!DataTypes.subTypeOf(fun.getExpression().getResultType(), resultType.getResultType())) {
+                        // ERROR:
+                        throw new IllegalArgumentException(String.format(
+                                "Function %s has declared return type %s but the function body returns incompatible type %s.",
+                                fun.getName(),
+                                resultType.getResultType(),
+                                fun.getExpression().getResultType()));
+                    }
+                }
+
+                fun.setResultType(fun.getExpression().getResultType());
+                op.setResultType(fun.getResultType());
+            } else {
+                fun.setExternal(true);
+                if (resultType == null) {
                     // ERROR:
                     throw new IllegalArgumentException(String.format(
-                            "Function %s has declared return type %s but the function body returns incompatible type %s.",
-                            fun.getName(),
-                            resultType.getResultType(),
-                            fun.getExpression().getResultType()));
+                            "Function %s is marked external but does not declare a return type.", fun.getName()));
+                }
+                fun.setResultType(resultType.getResultType());
+                op.setResultType(fun.getResultType());
+            }
+
+            fun.setContext(getCurrentContext());
+            fh.setIsCompiled();
+
+            return fun;
+        } finally {
+            for (OperandDef operandDef : operand) {
+                try {
+                    libraryBuilder.popIdentifier();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
-
-            fun.setResultType(fun.getExpression().getResultType());
-            op.setResultType(fun.getResultType());
-        } else {
-            fun.setExternal(true);
-            if (resultType == null) {
-                // ERROR:
-                throw new IllegalArgumentException(String.format(
-                        "Function %s is marked external but does not declare a return type.", fun.getName()));
-            }
-            fun.setResultType(resultType.getResultType());
-            op.setResultType(fun.getResultType());
+            // Intentionally do _not_ pop the function name, it needs to remain in global scope!
         }
-
-        fun.setContext(getCurrentContext());
-        fh.setIsCompiled();
-
-        return fun;
     }
 
     @Override
     public Object visitFunctionDefinition(cqlParser.FunctionDefinitionContext ctx) {
-        registerFunctionDefinition(ctx);
-        FunctionDef fun = compileFunctionDefinition(ctx);
-        return fun;
+        libraryBuilder.pushIdentifierScope();
+        try {
+            registerFunctionDefinition(ctx);
+            return compileFunctionDefinition(ctx);
+        } finally {
+            libraryBuilder.popIdentifierScope();
+        }
     }
 
     private Expression parseLiteralExpression(ParseTree pt) {

@@ -5,12 +5,14 @@ import static org.cqframework.cql.cql2elm.TestUtils.visitFileLibrary;
 import static org.cqframework.cql.cql2elm.matchers.QuickDataType.quickDataType;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import org.cqframework.cql.cql2elm.CqlCompilerOptions;
 import org.cqframework.cql.cql2elm.CqlTranslator;
+import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
 import org.cqframework.cql.cql2elm.TestUtils;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.hl7.elm.r1.*;
@@ -322,5 +324,12 @@ public class BaseTest {
         assertThat(retrieve.getCodes(), instanceOf(ToList.class));
         ToList toList = (ToList) retrieve.getCodes();
         assertThat(toList.getOperand(), instanceOf(CodeRef.class));
+    }
+
+    @Test
+    public void testExm108IdentifierHiding() throws IOException {
+        var translator = TestUtils.runSemanticTest("fhir/r4/exm108/EXM108.cql", 0, SignatureLevel.All);
+        // Should only be one identifier being hid after fixes, "Warafin"
+        assertEquals(1, translator.getExceptions().size());
     }
 }

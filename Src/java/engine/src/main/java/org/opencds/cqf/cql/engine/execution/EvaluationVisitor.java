@@ -74,7 +74,13 @@ public class EvaluationVisitor extends BaseElmLibraryVisitor<Object, State> {
     @Override
     public Object visitAnyInCodeSystem(AnyInCodeSystem anyInCodeSystem, State state) {
         Object codes = visitExpression(anyInCodeSystem.getCodes(), state);
-        Object codeSystem = visitExpression(anyInCodeSystem.getCodesystemExpression(), state);
+        Object codeSystem = null;
+        if (anyInCodeSystem.getCodesystem() != null) {
+            codeSystem = CodeSystemRefEvaluator.toCodeSystem(anyInCodeSystem.getCodesystem(), state);
+        } else {
+            codeSystem = visitExpression(anyInCodeSystem.getCodesystemExpression(), state);
+        }
+
         return AnyInCodeSystemEvaluator.internalEvaluate(codes, anyInCodeSystem.getCodesystem(), codeSystem, state);
     }
 
@@ -94,9 +100,14 @@ public class EvaluationVisitor extends BaseElmLibraryVisitor<Object, State> {
     @Override
     public Object visitAnyInValueSet(AnyInValueSet anyInValueSet, State state) {
         Object codes = visitExpression(anyInValueSet.getCodes(), state);
-        Object valueset = visitExpression(anyInValueSet.getValuesetExpression(), state);
+        Object valueSet = null;
+        if (anyInValueSet.getValueset() != null) {
+            valueSet = ValueSetRefEvaluator.toValueSet(state, anyInValueSet.getValueset());
+        } else {
+            valueSet = visitExpression(anyInValueSet.getValuesetExpression(), state);
+        }
 
-        return AnyInValueSetEvaluator.internalEvaluate(codes, anyInValueSet.getValueset(), valueset, state);
+        return AnyInValueSetEvaluator.internalEvaluate(codes, anyInValueSet.getValueset(), valueSet, state);
     }
 
     @Override
