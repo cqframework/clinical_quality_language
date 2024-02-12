@@ -35,10 +35,14 @@ public class UsCoreModelInfoProvider implements ModelInfoProvider {
                                 .read(QuickModelInfoProvider.class.getResourceAsStream(
                                         "/org/hl7/fhir/uscore-modelinfo-3.1.0.xml"));
                     case "3.1.1":
-                    default:
                         return ModelInfoReaderFactory.getReader("application/xml")
                                 .read(QuickModelInfoProvider.class.getResourceAsStream(
                                         "/org/hl7/fhir/uscore-modelinfo-3.1.1.xml"));
+                    case "6.1.0":
+                    default:
+                        return ModelInfoReaderFactory.getReader("application/xml")
+                                .read(QuickModelInfoProvider.class.getResourceAsStream(
+                                        "/org/hl7/fhir/uscore-modelinfo-6.1.0.xml"));
                 }
             } catch (IOException e) {
                 // Do not throw, allow other providers to resolve

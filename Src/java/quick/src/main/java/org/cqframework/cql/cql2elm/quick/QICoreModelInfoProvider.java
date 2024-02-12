@@ -42,10 +42,14 @@ public class QICoreModelInfoProvider implements ModelInfoProvider {
                                 .read(QICoreModelInfoProvider.class.getResourceAsStream(
                                         "/org/hl7/fhir/qicore-modelinfo-4.1.1.xml"));
                     case "5.0.0":
-                    default:
                         return ModelInfoReaderFactory.getReader("application/xml")
                                 .read(QICoreModelInfoProvider.class.getResourceAsStream(
                                         "/org/hl7/fhir/qicore-modelinfo-5.0.0.xml"));
+                    case "6.0.0":
+                    default:
+                        return ModelInfoReaderFactory.getReader("application/xml")
+                                .read(QICoreModelInfoProvider.class.getResourceAsStream(
+                                        "/org/hl7/fhir/qicore-modelinfo-6.0.0.xml"));
                 }
             } catch (IOException e) {
                 // Do not throw, allow other providers to resolve
