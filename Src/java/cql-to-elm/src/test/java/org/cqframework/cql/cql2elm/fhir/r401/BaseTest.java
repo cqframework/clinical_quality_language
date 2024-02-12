@@ -851,8 +851,8 @@ public class BaseTest {
                 translator.getWarnings().stream().map(Throwable::getMessage).collect(Collectors.toList());
         assertThat(warningMessages.toString(), translator.getWarnings().size(), is(2));
 
-        final String first =
-                "You used a string literal: [Encounter] here that matches an identifier in scope: [Encounter]. Did you mean to use the identifier instead? \n";
+        final String first = String.format(
+                "You used a string literal: [Encounter] here that matches an identifier in scope: [Encounter]. Did you mean to use the identifier instead? %n");
         final String second =
                 "The function TestOverload.Stringify has multiple overloads and due to the SignatureLevel setting (None), the overload signature is not being included in the output. This may result in ambiguous function resolution at runtime, consider setting the SignatureLevel to Overloads or All to ensure that the output includes sufficient information to support correct overload selection at runtime.";
 
@@ -871,7 +871,8 @@ public class BaseTest {
                 warningMessages.toString(),
                 warningMessages,
                 contains(
-                        "You used a string literal: [Encounter] here that matches an identifier in scope: [Encounter]. Did you mean to use the identifier instead? \n"));
+                        String.format(
+                                "You used a string literal: [Encounter] here that matches an identifier in scope: [Encounter]. Did you mean to use the identifier instead? %n")));
     }
 
     @Test
@@ -883,8 +884,8 @@ public class BaseTest {
                 translator.getWarnings().stream().map(Throwable::getMessage).collect(Collectors.toList());
         assertThat(warningMessages.toString(), translator.getWarnings().size(), is(2));
 
-        final String first =
-                "You used a string literal: [Encounter] here that matches an identifier in scope: [Encounter]. Did you mean to use the identifier instead? \n";
+        final String first = String.format(
+                "You used a string literal: [Encounter] here that matches an identifier in scope: [Encounter]. Did you mean to use the identifier instead? %n");
         final String second =
                 "The function TestOverloadForward.Stringify has multiple overloads and due to the SignatureLevel setting (None), the overload signature is not being included in the output. This may result in ambiguous function resolution at runtime, consider setting the SignatureLevel to Overloads or All to ensure that the output includes sufficient information to support correct overload selection at runtime.";
 
@@ -903,6 +904,7 @@ public class BaseTest {
                 warningMessages.toString(),
                 warningMessages,
                 contains(
-                        "You used a string literal: [Encounter] here that matches an identifier in scope: [Encounter]. Did you mean to use the identifier instead? \n"));
+                        String.format(
+                                "You used a string literal: [Encounter] here that matches an identifier in scope: [Encounter]. Did you mean to use the identifier instead? %n")));
     }
 }

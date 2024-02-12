@@ -353,21 +353,27 @@ public class TranslationTests {
         assertThat(warningMessages.toString(), distinct.size(), is(11));
 
         final String hidingDefinition =
-                "An alias identifier [Definition] is hiding another identifier of the same name. \n";
-        final String hidingVarLet = "A let identifier [var] is hiding another identifier of the same name. \n";
+                String.format("An alias identifier [Definition] is hiding another identifier of the same name. %n");
+        final String hidingVarLet =
+                String.format("A let identifier [var] is hiding another identifier of the same name. %n");
         final String hidingContextValueSet =
-                "An alias identifier [ValueSet] is hiding another identifier of the same name. \n";
+                String.format("An alias identifier [ValueSet] is hiding another identifier of the same name. %n");
         final String hidingLetValueSet =
-                "A let identifier [ValueSet] is hiding another identifier of the same name. \n";
-        final String hidingContextCode = "An alias identifier [Code] is hiding another identifier of the same name. \n";
-        final String hidingLetCode = "A let identifier [Code] is hiding another identifier of the same name. \n";
+                String.format("A let identifier [ValueSet] is hiding another identifier of the same name. %n");
+        final String hidingContextCode =
+                String.format("An alias identifier [Code] is hiding another identifier of the same name. %n");
+        final String hidingLetCode =
+                String.format("A let identifier [Code] is hiding another identifier of the same name. %n");
         final String hidingContextCodeSystem =
-                "An alias identifier [CodeSystem] is hiding another identifier of the same name. \n";
+                String.format("An alias identifier [CodeSystem] is hiding another identifier of the same name. %n");
         final String hidingLetCodeSystem =
-                "A let identifier [CodeSystem] is hiding another identifier of the same name. \n";
-        final String hidingContextFhir = "An alias identifier [FHIR] is hiding another identifier of the same name. \n";
-        final String hidingLetFhir = "A let identifier [FHIR] is hiding another identifier of the same name. \n";
-        final String hidingAliasLet = "A let identifier [Alias] is hiding another identifier of the same name. \n";
+                String.format("A let identifier [CodeSystem] is hiding another identifier of the same name. %n");
+        final String hidingContextFhir =
+                String.format("An alias identifier [FHIR] is hiding another identifier of the same name. %n");
+        final String hidingLetFhir =
+                String.format("A let identifier [FHIR] is hiding another identifier of the same name. %n");
+        final String hidingAliasLet =
+                String.format("A let identifier [Alias] is hiding another identifier of the same name. %n");
 
         assertThat(
                 distinct,

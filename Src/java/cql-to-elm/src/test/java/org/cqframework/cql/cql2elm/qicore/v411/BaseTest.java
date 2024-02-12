@@ -24,7 +24,8 @@ public class BaseTest {
 
         assertThat(translator.getWarnings().toString(), translator.getWarnings().size(), is(1));
 
-        final String first = "An alias identifier [Diabetes] is hiding another identifier of the same name. \n";
+        final String first =
+                String.format("An alias identifier [Diabetes] is hiding another identifier of the same name. %n");
 
         assertThat(
                 translator.getWarnings().stream().map(Throwable::getMessage).collect(Collectors.toList()),
