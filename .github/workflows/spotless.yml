@@ -1,11 +1,11 @@
-name: gradle spotlessCheck (Formatting)
+name: Format Check
 
 on:
   pull_request:
     types: [opened, reopened, synchronize]
 
 jobs:
-  format-check:
+  spotless:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
