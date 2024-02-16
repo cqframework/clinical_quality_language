@@ -25,7 +25,7 @@ public class CqlPerformanceIT extends CqlTestBase {
     @Test
     public void testEngineInit() throws IOException, UcumException {
         VersionedIdentifier libraryId = toElmIdentifier("Test");
-        runPerformanceTest(libraryId, 1, null);
+        runPerformanceTest(libraryId, 1.0, null);
     }
 
     // This test is for the various CQL operators
