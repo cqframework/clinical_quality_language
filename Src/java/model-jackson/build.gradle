@@ -2,12 +2,14 @@ plugins {
     id 'cql.library-conventions'
 }
 
+ext {
+    jacksonVersion = project['jackson.version']
+}
+
 dependencies {
     api project(':model')
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.16.1'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.1'
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.16.1'
-    implementation 'com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations:2.16.1'
+    api "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${jacksonVersion}"
+    api "com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations:${jacksonVersion}"
 
     testImplementation project(":quick")
     testImplementation project(":qdm")
