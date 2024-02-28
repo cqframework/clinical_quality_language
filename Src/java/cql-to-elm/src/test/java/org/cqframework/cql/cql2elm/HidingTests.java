@@ -30,7 +30,7 @@ public class HidingTests {
                 warnings.stream().map(Throwable::getMessage).collect(Collectors.toSet());
         assertThat(
                 warningMessages,
-                contains(String.format("A let identifier [var] is hiding another identifier of the same name. %n")));
+                contains(String.format("A let identifier [var] is hiding another identifier of the same name.")));
     }
 
     @Test
@@ -50,9 +50,9 @@ public class HidingTests {
         assertThat(distinct.size(), is(2));
 
         final String first = String.format(
-                "You used a string literal: [X] here that matches an identifier in scope: [X]. Did you mean to use the identifier instead? %n");
+                "You used a string literal: [X] here that matches an identifier in scope: [X]. Did you mean to use the identifier instead?");
         final String second = String.format(
-                "You used a string literal: [Y] here that matches an identifier in scope: [Y]. Did you mean to use the identifier instead? %n");
+                "You used a string literal: [Y] here that matches an identifier in scope: [Y]. Did you mean to use the identifier instead?");
 
         assertThat(distinct.toString(), distinct, containsInAnyOrder(first, second));
     }
@@ -75,11 +75,11 @@ public class HidingTests {
         assertThat(distinct.size(), is(3));
 
         final String first = String.format(
-                "You used a string literal: [X] here that matches an identifier in scope: [X]. Did you mean to use the identifier instead? %n");
+                "You used a string literal: [X] here that matches an identifier in scope: [X]. Did you mean to use the identifier instead?");
         final String second = String.format(
-                "You used a string literal: [Y] here that matches an identifier in scope: [Y]. Did you mean to use the identifier instead? %n");
-        final String third = String.format(
-                "An alias identifier [IWantToBeHidden] is hiding another identifier of the same name. %n");
+                "You used a string literal: [Y] here that matches an identifier in scope: [Y]. Did you mean to use the identifier instead?");
+        final String third =
+                String.format("An alias identifier [IWantToBeHidden] is hiding another identifier of the same name.");
 
         assertThat(distinct.toString(), distinct, containsInAnyOrder(first, second, third));
     }
@@ -103,7 +103,7 @@ public class HidingTests {
         assertThat(
                 warnings.stream().map(Throwable::getMessage).collect(Collectors.toList()),
                 containsInAnyOrder(String.format(
-                        "An alias identifier [SoMuchNesting] is hiding another identifier of the same name. %n")));
+                        "An alias identifier [SoMuchNesting] is hiding another identifier of the same name.")));
     }
 
     @Test
@@ -124,9 +124,9 @@ public class HidingTests {
         assertThat(distinct.size(), is(2));
 
         final String first =
-                String.format("An alias identifier [SoMuchNesting] is hiding another identifier of the same name. %n");
+                String.format("An alias identifier [SoMuchNesting] is hiding another identifier of the same name.");
         final String second =
-                String.format("A let identifier [SoMuchNesting] is hiding another identifier of the same name. %n");
+                String.format("A let identifier [SoMuchNesting] is hiding another identifier of the same name.");
 
         assertThat(distinct, containsInAnyOrder(first, second));
     }
@@ -142,7 +142,7 @@ public class HidingTests {
         assertThat(
                 warnings.stream().map(Throwable::getMessage).collect(Collectors.toList()),
                 containsInAnyOrder(
-                        String.format("A let identifier [Alias] is hiding another identifier of the same name. %n")));
+                        String.format("A let identifier [Alias] is hiding another identifier of the same name.")));
     }
 
     @Test
@@ -154,7 +154,7 @@ public class HidingTests {
         assertThat(
                 translator.getWarnings().stream().map(Throwable::getMessage).collect(Collectors.toList()),
                 contains(String.format(
-                        "An alias identifier [testOperand] is hiding another identifier of the same name. %n")));
+                        "An alias identifier [testOperand] is hiding another identifier of the same name.")));
     }
 
     @Test
@@ -175,7 +175,7 @@ public class HidingTests {
         assertThat(
                 warningMessages,
                 contains(String.format(
-                        "An alias identifier [IWantToBeHidden] is hiding another identifier of the same name. %n")));
+                        "An alias identifier [IWantToBeHidden] is hiding another identifier of the same name.")));
     }
 
     @Test
@@ -189,7 +189,7 @@ public class HidingTests {
         assertThat(
                 warningMessages,
                 contains(String.format(
-                        "An alias identifier [Measurement Period] is hiding another identifier of the same name. %n")));
+                        "An alias identifier [Measurement Period] is hiding another identifier of the same name.")));
     }
 
     @Test
@@ -203,7 +203,7 @@ public class HidingTests {
         assertThat(
                 warningMessages,
                 contains(String.format(
-                        "An alias identifier [FHIRHelpers] is hiding another identifier of the same name. %n")));
+                        "An alias identifier [FHIRHelpers] is hiding another identifier of the same name.")));
     }
 
     @Test
@@ -219,7 +219,7 @@ public class HidingTests {
         assertThat(distinctWarningMessages.toString(), distinctWarningMessages.size(), is(1));
         assertThat(
                 distinctWarningMessages,
-                contains(String.format("An alias identifier [5] is hiding another identifier of the same name. %n")));
+                contains(String.format("An alias identifier [5] is hiding another identifier of the same name.")));
     }
 
     @Test
@@ -235,9 +235,9 @@ public class HidingTests {
         assertThat(distinctWarningMessages.toString(), distinctWarningMessages.size(), is(2));
 
         final String stringLiteralIWantToBeHidden = String.format(
-                "You used a string literal: [IWantToBeHidden] here that matches an identifier in scope: [IWantToBeHidden]. Did you mean to use the identifier instead? %n");
+                "You used a string literal: [IWantToBeHidden] here that matches an identifier in scope: [IWantToBeHidden]. Did you mean to use the identifier instead?");
         final String stringLiteralIWantToHide = String.format(
-                "You used a string literal: [IWantToHide] here that matches an identifier in scope: [IWantToHide]. Did you mean to use the identifier instead? %n");
+                "You used a string literal: [IWantToHide] here that matches an identifier in scope: [IWantToHide]. Did you mean to use the identifier instead?");
         assertThat(distinctWarningMessages, containsInAnyOrder(stringLiteralIWantToBeHidden, stringLiteralIWantToHide));
     }
 }

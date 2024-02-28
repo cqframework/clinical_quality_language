@@ -3241,12 +3241,12 @@ public class LibraryBuilder {
 
         if (trackable instanceof Literal) {
             return String.format(
-                    "You used a string literal: [%s] here that matches an identifier in scope: [%s]. Did you mean to use the identifier instead? %n",
+                    "You used a string literal: [%s] here that matches an identifier in scope: [%s]. Did you mean to use the identifier instead?",
                     identifierParam, matchedIdentifier);
         }
 
         return String.format(
-                "%s identifier [%s] is hiding another identifier of the same name. %n", elementString, identifierParam);
+                "%s identifier [%s] is hiding another identifier of the same name.", elementString, identifierParam);
     }
 
     private class Scope {
