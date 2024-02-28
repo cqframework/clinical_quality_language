@@ -4,5 +4,4 @@ plugins {
 
 dependencies {
     api project(':elm')
-    implementation 'org.apache.commons:commons-text:1.10.0'
 }
