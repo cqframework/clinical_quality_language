@@ -24,14 +24,14 @@ public class CqlPerformanceIT extends CqlTestBase {
     // initialization takes.
     @Test
     public void testEngineInit() throws IOException, UcumException {
-        VersionedIdentifier libraryId = toIdentifier("Test");
+        VersionedIdentifier libraryId = toElmIdentifier("Test");
         runPerformanceTest(libraryId, 1.0, null);
     }
 
     // This test is for the various CQL operators
     @Test
     public void testMainSuite() throws IOException, UcumException {
-        VersionedIdentifier libraryId = toIdentifier("CqlPerformanceTest", "1");
+        VersionedIdentifier libraryId = toElmIdentifier("CqlPerformanceTest", "1");
         ZonedDateTime date =
                 ZonedDateTime.of(2018, 1, 1, 7, 0, 0, 0, TimeZone.getDefault().toZoneId());
         runPerformanceTest(libraryId, 1000.0, date);
@@ -51,7 +51,7 @@ public class CqlPerformanceIT extends CqlTestBase {
     // types (OPTIONAL)
     @Test
     public void testInternalTypeRepresentationSuite() throws IOException, UcumException {
-        VersionedIdentifier libraryId = toIdentifier("CqlInternalTypeRepresentationSuite", "1");
+        VersionedIdentifier libraryId = toElmIdentifier("CqlInternalTypeRepresentationSuite", "1");
         runPerformanceTest(libraryId, 10.0, null);
     }
 

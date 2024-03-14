@@ -14,7 +14,7 @@ public class CqlQueryTest extends CqlTestBase {
         Set<String> set = new HashSet<>();
         EvaluationResult evaluationResult;
 
-        evaluationResult = engine.evaluate(toIdentifier("CqlQueryTests"));
+        evaluationResult = engine.evaluate(toElmIdentifier("CqlQueryTests"));
         Object result;
 
         result = evaluationResult.forExpression("RightShift").value();

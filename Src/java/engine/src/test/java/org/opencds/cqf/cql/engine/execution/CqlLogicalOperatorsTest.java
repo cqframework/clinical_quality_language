@@ -15,7 +15,7 @@ public class CqlLogicalOperatorsTest extends CqlTestBase {
         Set<String> set = new HashSet<>();
         EvaluationResult evaluationResult;
 
-        evaluationResult = engine.evaluate(toIdentifier("CqlLogicalOperatorsTest"));
+        evaluationResult = engine.evaluate(toElmIdentifier("CqlLogicalOperatorsTest"));
         Object result;
 
         result = evaluationResult.forExpression("TrueAndTrue").value();

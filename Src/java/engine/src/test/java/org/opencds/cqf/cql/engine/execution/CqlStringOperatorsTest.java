@@ -16,7 +16,7 @@ public class CqlStringOperatorsTest extends CqlTestBase {
         Set<String> set = new HashSet<>();
         EvaluationResult evaluationResult;
 
-        evaluationResult = engine.evaluate(toIdentifier("CqlStringOperatorsTest"));
+        evaluationResult = engine.evaluate(toElmIdentifier("CqlStringOperatorsTest"));
         Object result;
 
         result = evaluationResult.forExpression("CombineNull").value();

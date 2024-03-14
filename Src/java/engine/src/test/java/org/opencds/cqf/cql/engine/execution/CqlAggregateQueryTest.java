@@ -8,7 +8,7 @@ import org.testng.annotations.Test;
 public class CqlAggregateQueryTest extends CqlTestBase {
     @Test
     void test_all_aggregate_clause_tests() {
-        var evaluationResult = engine.evaluate(toIdentifier("CqlAggregateQueryTest"));
+        var evaluationResult = engine.evaluate(toElmIdentifier("CqlAggregateQueryTest"));
         var result = evaluationResult.forExpression("AggregateSumWithStart").value();
         assertThat(result, is(16));
 

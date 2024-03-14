@@ -21,7 +21,7 @@ public class ListOperatorsTest extends CqlTestBase {
     @Test
     public void test_cql_list_test_suite_compiles() {
         var errors = new ArrayList<CqlCompilerException>();
-        this.getLibrary(toIdentifier("CqlListOperatorsTest"), errors, testCompilerOptions());
+        this.getLibrary(toElmIdentifier("CqlListOperatorsTest"), errors, testCompilerOptions());
         assertFalse(
                 CqlCompilerException.hasErrors(errors),
                 String.format("Test library compiled with the following errors : %s", this.toString(errors)));
@@ -33,7 +33,7 @@ public class ListOperatorsTest extends CqlTestBase {
 
         var eng = getEngine(testCompilerOptions());
 
-        var evaluationResult = eng.evaluate(toIdentifier("CqlListOperatorsTest"));
+        var evaluationResult = eng.evaluate(toElmIdentifier("CqlListOperatorsTest"));
 
         var result = evaluationResult.forExpression("simpleList").value();
         assertThat(result, is(Arrays.asList(4, 5, 1, 6, 2, 1)));

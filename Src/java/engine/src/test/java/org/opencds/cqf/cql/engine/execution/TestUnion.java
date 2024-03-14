@@ -14,7 +14,7 @@ public class TestUnion extends CqlTestBase {
 
         EvaluationResult evaluationResult;
 
-        evaluationResult = engine.evaluate(toIdentifier("TestUnion"));
+        evaluationResult = engine.evaluate(toElmIdentifier("TestUnion"));
         Object result = evaluationResult.forExpression("NullAndNull").value();
         assertNotNull(result);
         assertTrue(((List<?>) result).isEmpty());

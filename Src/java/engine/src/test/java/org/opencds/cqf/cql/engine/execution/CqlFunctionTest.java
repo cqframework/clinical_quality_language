@@ -12,7 +12,7 @@ public class CqlFunctionTest extends CqlTestBase {
     public void test_all_function_tests() {
         EvaluationResult evaluationResult;
 
-        evaluationResult = engine.evaluate(toIdentifier("CqlFunctionTests"));
+        evaluationResult = engine.evaluate(toElmIdentifier("CqlFunctionTests"));
 
         Object result;
         result = evaluationResult.forExpression("FunctionTestStringArg").value();

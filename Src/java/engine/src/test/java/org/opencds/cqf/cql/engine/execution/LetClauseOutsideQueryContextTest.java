@@ -12,7 +12,7 @@ public class LetClauseOutsideQueryContextTest extends CqlTestBase {
 
         EvaluationResult evaluationResult;
 
-        evaluationResult = engine.evaluate(toIdentifier("LetClauseOutsideQueryContextTest"));
+        evaluationResult = engine.evaluate(toElmIdentifier("LetClauseOutsideQueryContextTest"));
 
         Object result = evaluationResult.forExpression("First Position of list").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) result).get(0), 1));

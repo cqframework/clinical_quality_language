@@ -13,7 +13,7 @@ public class Issue223 extends CqlTestBase {
 
         EvaluationResult evaluationResult;
 
-        evaluationResult = engine.evaluate(toIdentifier("Issue223"));
+        evaluationResult = engine.evaluate(toElmIdentifier("Issue223"));
         Object result = evaluationResult
                 .forExpression("Access Flattened List of List Items")
                 .value();

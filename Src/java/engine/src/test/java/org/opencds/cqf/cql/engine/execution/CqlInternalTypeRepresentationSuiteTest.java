@@ -40,7 +40,7 @@ public class CqlInternalTypeRepresentationSuiteTest extends CqlTestBase {
         EvaluationResult evaluationResult;
 
         evaluationResult =
-                engine.evaluate(toIdentifier("CqlInternalTypeRepresentationSuite"), ZonedDateTime.of(now, zoneId));
+                engine.evaluate(toElmIdentifier("CqlInternalTypeRepresentationSuite"), ZonedDateTime.of(now, zoneId));
 
         final BigDecimal bigDecimalZoneOffset = getBigDecimalZoneOffset();
 

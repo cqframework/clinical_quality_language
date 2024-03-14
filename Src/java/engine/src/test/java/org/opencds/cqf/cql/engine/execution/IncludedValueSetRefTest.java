@@ -42,7 +42,7 @@ public class IncludedValueSetRefTest {
 
         EvaluationResult evaluationResult;
 
-        evaluationResult = engine.evaluate(CqlTestBase.toIdentifier("IncludedValueSetRefTest"));
+        evaluationResult = engine.evaluate(CqlTestBase.toElmIdentifier("IncludedValueSetRefTest"));
 
         @SuppressWarnings("unchecked")
         List<Code> actual =

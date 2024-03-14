@@ -17,7 +17,7 @@ public class CqlClinicalOperatorsTest extends CqlTestBase {
         EvaluationResult evaluationResult;
 
         evaluationResult = engine.evaluate(
-                toIdentifier("CqlClinicalOperatorsTest"),
+                toElmIdentifier("CqlClinicalOperatorsTest"),
                 ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, TimeZone.getDefault().toZoneId()));
 
         Object result = evaluationResult.forExpression("CalculateAgeYears").value();

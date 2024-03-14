@@ -21,7 +21,7 @@ public class CqlAggregateFunctionsTest extends CqlTestBase {
     public void test_all_aggregate_function_tests() {
         final BigDecimal bigDecimalZoneOffset = getBigDecimalZoneOffset();
 
-        var evaluationResult = engine.evaluate(toIdentifier("CqlAggregateFunctionsTest"));
+        var evaluationResult = engine.evaluate(toElmIdentifier("CqlAggregateFunctionsTest"));
         Object result = evaluationResult.forExpression("AllTrueAllTrue").value();
         assertThat(result, is(true));
 
