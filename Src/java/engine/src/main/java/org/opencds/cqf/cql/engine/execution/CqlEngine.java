@@ -244,7 +244,7 @@ public class CqlEngine {
                 result.expressionResults.put(
                         expression, new ExpressionResult(object, this.state.getEvaluatedResources()));
                 if (action != DebugAction.NONE) {
-                    getState().logDebugResult(def, result, action);
+                    getState().logDebugResult(def, object, action);
                 }
             } catch (CqlException ce) {
                 processException(ce, def);
