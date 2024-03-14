@@ -58,8 +58,7 @@ public class EvaluatedResourcesTest extends FhirExecutionTestBase {
                 .getEnvironment()
                 .registerDataProvider("http://hl7.org/fhir", new CompositeDataProvider(r4ModelResolver, rp));
         engine.getCache().setExpressionCaching(true);
-        EvaluationResult evaluationResult =
-                engine.evaluate(library.getIdentifier(), Set.of("Union"));
+        EvaluationResult evaluationResult = engine.evaluate(library.getIdentifier(), Set.of("Union"));
 
         Object result = evaluationResult.forExpression("Union").value();
         assertThat(result, instanceOf(List.class));
@@ -86,8 +85,7 @@ public class EvaluatedResourcesTest extends FhirExecutionTestBase {
         engine.getState()
                 .getEnvironment()
                 .registerDataProvider("http://hl7.org/fhir", new CompositeDataProvider(r4ModelResolver, rp));
-        EvaluationResult evaluationResult =
-                engine.evaluate(library.getIdentifier(), Set.of("Union"));
+        EvaluationResult evaluationResult = engine.evaluate(library.getIdentifier(), Set.of("Union"));
 
         Object result = evaluationResult.forExpression("Union").value();
         assertThat(result, instanceOf(List.class));

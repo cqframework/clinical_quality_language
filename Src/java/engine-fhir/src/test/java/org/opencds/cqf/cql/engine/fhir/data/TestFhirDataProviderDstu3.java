@@ -90,8 +90,7 @@ public class TestFhirDataProviderDstu3 extends FhirExecutionTestBase {
     public void testChoiceTypes() {
         CqlEngine engine = getEngine();
         engine.getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);
-        EvaluationResult evaluationResult =
-                engine.evaluate(library.getIdentifier(), Set.of("testChoiceTypes"));
+        EvaluationResult evaluationResult = engine.evaluate(library.getIdentifier(), Set.of("testChoiceTypes"));
 
         Object result = evaluationResult.forExpression("testChoiceTypes").value();
         Assert.assertTrue(result != null);
@@ -102,8 +101,7 @@ public class TestFhirDataProviderDstu3 extends FhirExecutionTestBase {
         CqlEngine engine = getEngine();
         engine.getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);
         engine.getState().setContextValue("Patient", "Patient-12214");
-        EvaluationResult evaluationResult =
-                engine.evaluate(library.getIdentifier(), Set.of("testDateType"));
+        EvaluationResult evaluationResult = engine.evaluate(library.getIdentifier(), Set.of("testDateType"));
 
         Object result = evaluationResult.forExpression("testDateType").value();
         Assert.assertTrue(result != null);
@@ -113,8 +111,7 @@ public class TestFhirDataProviderDstu3 extends FhirExecutionTestBase {
     public void testFhirObjectEqual() {
         CqlEngine engine = getEngine();
         engine.getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);
-        EvaluationResult evaluationResult =
-                engine.evaluate(library.getIdentifier(), Set.of("testFhirObjectEqual"));
+        EvaluationResult evaluationResult = engine.evaluate(library.getIdentifier(), Set.of("testFhirObjectEqual"));
         Object result = evaluationResult.forExpression("testFhirObjectEqual").value();
         Assert.assertTrue((Boolean) result);
     }
@@ -264,8 +261,7 @@ public class TestFhirDataProviderDstu3 extends FhirExecutionTestBase {
         engine.getState().enterContext("Patient");
         engine.getState().setContextValue("Patient", "81ee6581-02b9-44de-b026-7401bf36643a");
 
-        EvaluationResult evaluationResult =
-                engine.evaluate(library.getIdentifier(), Set.of("GetProvenance"));
+        EvaluationResult evaluationResult = engine.evaluate(library.getIdentifier(), Set.of("GetProvenance"));
         Object result = evaluationResult.forExpression("GetProvenance").value();
         Assert.assertTrue(result instanceof List && ((List<?>) result).size() == 1);
     }

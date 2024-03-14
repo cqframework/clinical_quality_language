@@ -20,8 +20,7 @@ public class TestCodeRef extends FhirExecutionTestBase {
     public void CodeRefTest1() {
         CqlEngine engine = getEngine();
 
-        EvaluationResult evaluationResult =
-                engine.evaluate(library.getIdentifier(), Set.of("CodeRef1"));
+        EvaluationResult evaluationResult = engine.evaluate(library.getIdentifier(), Set.of("CodeRef1"));
 
         assertTrue(evaluationResult.forExpression("CodeRef1").value() != null);
     }
@@ -30,8 +29,7 @@ public class TestCodeRef extends FhirExecutionTestBase {
     public void CodeRefTest2() {
         CqlEngine engine = getEngine();
 
-        EvaluationResult evaluationResult =
-                engine.evaluate(library.getIdentifier(), Set.of("CodeRef2"));
+        EvaluationResult evaluationResult = engine.evaluate(library.getIdentifier(), Set.of("CodeRef2"));
 
         assertTrue(evaluationResult.forExpression("CodeRef2").value() != null);
     }

@@ -13,8 +13,7 @@ public class TestFhirExecution extends FhirExecutionTestBase {
     public void testCoalesce() {
         CqlEngine engine = getEngine();
         engine.getEnvironment().registerDataProvider("http://hl7.org/fhir", dstu3Provider);
-        EvaluationResult evaluationResult =
-                engine.evaluate(library.getIdentifier(), Set.of("testCoalesce"));
+        EvaluationResult evaluationResult = engine.evaluate(library.getIdentifier(), Set.of("testCoalesce"));
 
         Object result = evaluationResult.forExpression("testCoalesce").value();
         Assert.assertTrue((Integer) ((List<?>) result).get(0) == 72);
@@ -25,8 +24,7 @@ public class TestFhirExecution extends FhirExecutionTestBase {
         CqlEngine engine = getEngine();
         engine.getEnvironment().registerDataProvider("http://hl7.org/fhir", dstu3Provider);
         engine.getState().setParameter(null, "MAXYEAR", 2014);
-        EvaluationResult evaluationResult =
-                engine.evaluate(library.getIdentifier(), Set.of("testMonthFrom"));
+        EvaluationResult evaluationResult = engine.evaluate(library.getIdentifier(), Set.of("testMonthFrom"));
         Object result = evaluationResult.forExpression("testMonthFrom").value();
         Assert.assertTrue(result != null);
     }
@@ -35,8 +33,7 @@ public class TestFhirExecution extends FhirExecutionTestBase {
     public void testMultisourceQueryCreatingDatePeriod() {
         CqlEngine engine = getEngine();
         engine.getEnvironment().registerDataProvider("http://hl7.org/fhir", dstu3Provider);
-        EvaluationResult evaluationResult =
-                engine.evaluate(library.getIdentifier(), Set.of("Immunizations in range"));
+        EvaluationResult evaluationResult = engine.evaluate(library.getIdentifier(), Set.of("Immunizations in range"));
         Object result = evaluationResult.forExpression("Immunizations in range").value();
         Assert.assertTrue(result != null);
     }
@@ -45,8 +42,7 @@ public class TestFhirExecution extends FhirExecutionTestBase {
     public void testIdResolution() {
         CqlEngine engine = getEngine();
         engine.getEnvironment().registerDataProvider("http://hl7.org/fhir", dstu3Provider);
-        EvaluationResult evaluationResult =
-                engine.evaluate(library.getIdentifier(), Set.of("Resource Id"));
+        EvaluationResult evaluationResult = engine.evaluate(library.getIdentifier(), Set.of("Resource Id"));
         Object result = evaluationResult.forExpression("Resource Id").value();
         Assert.assertTrue(result != null);
     }

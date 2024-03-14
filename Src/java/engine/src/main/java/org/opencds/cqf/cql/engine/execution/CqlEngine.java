@@ -8,7 +8,6 @@ import org.cqframework.cql.cql2elm.CqlCompilerException;
 import org.hl7.cql.model.NamespaceManager;
 import org.hl7.elm.r1.*;
 import org.opencds.cqf.cql.engine.debug.DebugAction;
-import org.opencds.cqf.cql.engine.debug.DebugMap;
 import org.opencds.cqf.cql.engine.debug.SourceLocator;
 import org.opencds.cqf.cql.engine.exception.CqlException;
 
@@ -87,7 +86,7 @@ public class CqlEngine {
             VersionedIdentifier libraryIdentifier, String expressionName, ZonedDateTime evaluationDateTime) {
         var set = new HashSet<String>();
         set.add(expressionName);
-        var result = this.evaluate(libraryIdentifier, set, null,  null, evaluationDateTime);
+        var result = this.evaluate(libraryIdentifier, set, null, null, evaluationDateTime);
         return result.forExpression(expressionName);
     }
 
@@ -242,14 +241,12 @@ public class CqlEngine {
                 if (action != DebugAction.NONE) {
                     getState().logDebugResult(def, result, action);
                 }
-            }
-            catch (CqlException ce) {
+            } catch (CqlException ce) {
                 processException(ce, def);
             } catch (Exception e) {
                 processException(
                         e, def, String.format("Error evaluating expression %s: %s", expression, e.getMessage()));
             }
-
         }
 
         result.setDebugResult(this.state.getDebugResult());
