@@ -18,6 +18,10 @@ public class DebugResult {
     }
 
     public void logDebugResult(Element node, Library currentLibrary, Object result, DebugAction action) {
+        if (action == DebugAction.NONE) {
+            return;
+        }
+
         try {
             DebugLibraryResultEntry libraryResultEntry =
                     libraryResults.get(currentLibrary.getIdentifier().getId());

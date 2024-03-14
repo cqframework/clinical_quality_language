@@ -239,13 +239,13 @@ public class CqlEngine {
             }
 
             try {
-                DebugAction action = getState().shouldDebug(def);
+                var action = getState().shouldDebug(def);
+
                 Object object = this.evaluationVisitor.visitExpressionDef(def, this.state);
                 result.expressionResults.put(
                         expression, new ExpressionResult(object, this.state.getEvaluatedResources()));
-                if (action != DebugAction.NONE) {
-                    getState().logDebugResult(def, object, action);
-                }
+
+                getState().logDebugResult(def, object, action);
             } catch (CqlException ce) {
                 processException(ce, def);
             } catch (Exception e) {
