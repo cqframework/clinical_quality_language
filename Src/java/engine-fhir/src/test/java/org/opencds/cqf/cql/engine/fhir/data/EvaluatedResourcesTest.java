@@ -12,7 +12,6 @@ import org.hl7.fhir.r4.model.Encounter;
 import org.hl7.fhir.r4.model.Patient;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
-import org.opencds.cqf.cql.engine.execution.EvaluationResult;
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider;
 import org.opencds.cqf.cql.engine.runtime.Code;
 import org.opencds.cqf.cql.engine.runtime.Interval;
@@ -58,7 +57,7 @@ public class EvaluatedResourcesTest extends FhirExecutionTestBase {
                 .getEnvironment()
                 .registerDataProvider("http://hl7.org/fhir", new CompositeDataProvider(r4ModelResolver, rp));
         engine.getCache().setExpressionCaching(true);
-        EvaluationResult evaluationResult = engine.evaluate(library.getIdentifier(), Set.of("Union"));
+        var evaluationResult = engine.evaluate(library.getIdentifier(), Set.of("Union"));
 
         Object result = evaluationResult.forExpression("Union").value();
         assertThat(result, instanceOf(List.class));
@@ -85,7 +84,7 @@ public class EvaluatedResourcesTest extends FhirExecutionTestBase {
         engine.getState()
                 .getEnvironment()
                 .registerDataProvider("http://hl7.org/fhir", new CompositeDataProvider(r4ModelResolver, rp));
-        EvaluationResult evaluationResult = engine.evaluate(library.getIdentifier(), Set.of("Union"));
+        var evaluationResult = engine.evaluate(library.getIdentifier(), Set.of("Union"));
 
         Object result = evaluationResult.forExpression("Union").value();
         assertThat(result, instanceOf(List.class));
