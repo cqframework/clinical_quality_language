@@ -198,7 +198,7 @@ public abstract class TestFhirPath {
                 VersionedIdentifier libraryId = TranslatorHelper.toElmIdentifier("TestFHIRPath");
                 Map<VersionedIdentifier, Library> map = new HashMap<>();
                 map.put(libraryId, library);
-                EvaluationResult evaluationResult = engine.evaluate(libraryId, Set.of("Test"), null, null, null);
+                EvaluationResult evaluationResult = engine.evaluate(libraryId, Set.of("Test"));
 
                 result = evaluationResult.forExpression("Test").value();
                 testPassed = invalidType.equals(InvalidType.FALSE);
