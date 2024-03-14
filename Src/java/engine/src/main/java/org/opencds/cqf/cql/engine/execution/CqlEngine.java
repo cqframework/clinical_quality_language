@@ -213,14 +213,15 @@ public class CqlEngine {
     }
 
     private void initializeState(Library library, DebugMap debugMap, ZonedDateTime evaluationDateTime) {
-        if (evaluationDateTime != null) {
-            this.state.setEvaluationDateTime(evaluationDateTime);
-        } else {
-            this.state.setEvaluationDateTime(ZonedDateTime.now());
+        if (evaluationDateTime == null) {
+            evaluationDateTime = ZonedDateTime.now();
         }
 
+        this.state.setEvaluationDateTime(evaluationDateTime);
         this.state.init(library);
-        this.state.setDebugMap(debugMap);
+        if (debugMap != null) {
+            this.state.setDebugMap(debugMap);
+        }
     }
 
     private EvaluationResult evaluateExpressions(Set<String> expressions) {
@@ -237,11 +238,14 @@ public class CqlEngine {
                 continue;
             }
 
-            // TODO: How do we want to return handle errors?
             try {
+                DebugAction action = getState().shouldDebug(def);
                 Object object = this.evaluationVisitor.visitExpressionDef(def, this.state);
                 result.expressionResults.put(
                         expression, new ExpressionResult(object, this.state.getEvaluatedResources()));
+                if (action != DebugAction.NONE) {
+                    getState().logDebugResult(def, result, action);
+                }
             } catch (CqlException ce) {
                 processException(ce, def);
             } catch (Exception e) {
@@ -367,7 +371,7 @@ public class CqlEngine {
 
     public void processException(CqlException e, Element element) {
         if (e.getSourceLocator() == null) {
-            e.setSourceLocator(SourceLocator.fromNode(element, null));
+            e.setSourceLocator(SourceLocator.fromNode(element, this.getState().getCurrentLibrary()));
             DebugAction action = state.shouldDebug(e);
             if (action != DebugAction.NONE) {
                 state.logDebugError(e);
@@ -378,7 +382,8 @@ public class CqlEngine {
     }
 
     public void processException(Exception e, Element element, String message) {
-        CqlException ce = new CqlException(message, e, SourceLocator.fromNode(element, null));
+        CqlException ce = new CqlException(
+                message, e, SourceLocator.fromNode(element, this.getState().getCurrentLibrary()));
         DebugAction action = state.shouldDebug(ce);
         if (action != DebugAction.NONE) {
             state.logDebugError(ce);
