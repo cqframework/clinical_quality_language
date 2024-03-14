@@ -22,328 +22,294 @@ public class CqlTypesOperatorsTest extends CqlTestBase {
 
             final SoftAssert softAssert = new SoftAssert();
 
-            EvaluationResult evaluationResult;
-
-            evaluationResult = engine.evaluate(toElmIdentifier("CqlTypeOperatorsTest"));
-            Object result;
-
-            result = evaluationResult.forExpression("AsQuantity").value();
-            softAssert.assertTrue(((Quantity) result)
+            var results = engine.evaluate(toElmIdentifier("CqlTypeOperatorsTest"));
+            var value = results.forExpression("AsQuantity").value();
+            softAssert.assertTrue(((Quantity) value)
                     .equal(new Quantity().withValue(new BigDecimal("45.5")).withUnit("g")));
 
-            result = evaluationResult.forExpression("CastAsQuantity").value();
-            softAssert.assertTrue(((Quantity) result)
+            value = results.forExpression("CastAsQuantity").value();
+            softAssert.assertTrue(((Quantity) value)
                     .equal(new Quantity().withValue(new BigDecimal("45.5")).withUnit("g")));
 
-            result = evaluationResult.forExpression("AsDateTime").value();
+            value = results.forExpression("AsDateTime").value();
             softAssert.assertTrue(
-                    EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2014, 1, 1)));
+                    EquivalentEvaluator.equivalent(value, new DateTime(bigDecimalZoneOffset, 2014, 1, 1)));
 
-            result = evaluationResult.forExpression("IntegerToDecimal").value();
-            softAssert.assertEquals(result, new BigDecimal(5));
+            value = results.forExpression("IntegerToDecimal").value();
+            softAssert.assertEquals(value, new BigDecimal(5));
 
-            result = evaluationResult.forExpression("IntegerToString").value();
-            softAssert.assertEquals(result, "5");
+            value = results.forExpression("IntegerToString").value();
+            softAssert.assertEquals(value, "5");
 
-            result = evaluationResult.forExpression("StringToDateTime").value();
+            value = results.forExpression("StringToDateTime").value();
             softAssert.assertTrue(
-                    EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2014, 1, 1)));
+                    EquivalentEvaluator.equivalent(value, new DateTime(bigDecimalZoneOffset, 2014, 1, 1)));
 
-            result = evaluationResult.forExpression("StringToTime").value();
-            softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(14, 30, 0, 0)));
+            value = results.forExpression("StringToTime").value();
+            softAssert.assertTrue(EquivalentEvaluator.equivalent(value, new Time(14, 30, 0, 0)));
 
-            result = evaluationResult.forExpression("ConvertQuantity").value();
+            value = results.forExpression("ConvertQuantity").value();
             softAssert.assertTrue(EquivalentEvaluator.equivalent(
-                    result, new Quantity().withValue(new BigDecimal("0.005")).withUnit("g")));
+                    value, new Quantity().withValue(new BigDecimal("0.005")).withUnit("g")));
 
-            result = evaluationResult.forExpression("ConvertSyntax").value();
+            value = results.forExpression("ConvertSyntax").value();
             softAssert.assertTrue(EquivalentEvaluator.equivalent(
-                    result, new Quantity().withValue(new BigDecimal("0.005")).withUnit("g")));
+                    value, new Quantity().withValue(new BigDecimal("0.005")).withUnit("g")));
 
-            result = evaluationResult.forExpression("ConvertsToBooleanTrue").value();
-            softAssert.assertTrue((Boolean) result);
+            value = results.forExpression("ConvertsToBooleanTrue").value();
+            softAssert.assertTrue((Boolean) value);
 
-            result = evaluationResult.forExpression("ConvertsToBooleanFalse").value();
-            softAssert.assertFalse((Boolean) result);
+            value = results.forExpression("ConvertsToBooleanFalse").value();
+            softAssert.assertFalse((Boolean) value);
 
-            result = evaluationResult.forExpression("ConvertsToBooleanNull").value();
-            softAssert.assertNull(result);
+            value = results.forExpression("ConvertsToBooleanNull").value();
+            softAssert.assertNull(value);
 
-            result = evaluationResult.forExpression("ConvertsToDateTrue").value();
-            softAssert.assertTrue((Boolean) result);
+            value = results.forExpression("ConvertsToDateTrue").value();
+            softAssert.assertTrue((Boolean) value);
 
-            result = evaluationResult.forExpression("ConvertsToDateFalse").value();
-            softAssert.assertFalse((Boolean) result);
+            value = results.forExpression("ConvertsToDateFalse").value();
+            softAssert.assertFalse((Boolean) value);
 
-            result = evaluationResult.forExpression("ConvertsToDateNull").value();
-            softAssert.assertNull(result);
+            value = results.forExpression("ConvertsToDateNull").value();
+            softAssert.assertNull(value);
 
-            result = evaluationResult
-                    .forExpression("ConvertsToDateTimeStringTrue")
-                    .value();
-            softAssert.assertTrue((Boolean) result);
+            value = results.forExpression("ConvertsToDateTimeStringTrue").value();
+            softAssert.assertTrue((Boolean) value);
 
-            result =
-                    evaluationResult.forExpression("ConvertsToDateTimeDateTrue").value();
-            softAssert.assertTrue((Boolean) result);
+            value = results.forExpression("ConvertsToDateTimeDateTrue").value();
+            softAssert.assertTrue((Boolean) value);
 
-            result = evaluationResult.forExpression("ConvertsToDateTimeFalse").value();
-            softAssert.assertFalse((Boolean) result);
+            value = results.forExpression("ConvertsToDateTimeFalse").value();
+            softAssert.assertFalse((Boolean) value);
 
-            result = evaluationResult.forExpression("ConvertsToDateTimeNull").value();
-            softAssert.assertNull(result);
+            value = results.forExpression("ConvertsToDateTimeNull").value();
+            softAssert.assertNull(value);
 
-            result = evaluationResult.forExpression("ConvertsToDecimalTrue").value();
-            softAssert.assertTrue((Boolean) result);
+            value = results.forExpression("ConvertsToDecimalTrue").value();
+            softAssert.assertTrue((Boolean) value);
 
-            result = evaluationResult.forExpression("ConvertsToDecimalFalse").value();
-            softAssert.assertFalse((Boolean) result);
+            value = results.forExpression("ConvertsToDecimalFalse").value();
+            softAssert.assertFalse((Boolean) value);
 
-            result = evaluationResult.forExpression("ConvertsToDecimalNull").value();
-            softAssert.assertNull(result);
+            value = results.forExpression("ConvertsToDecimalNull").value();
+            softAssert.assertNull(value);
 
-            result = evaluationResult.forExpression("ConvertsToIntegerTrue").value();
-            softAssert.assertTrue((Boolean) result);
+            value = results.forExpression("ConvertsToIntegerTrue").value();
+            softAssert.assertTrue((Boolean) value);
 
-            result = evaluationResult.forExpression("ConvertsToIntegerLong").value();
-            softAssert.assertTrue((Boolean) result);
+            value = results.forExpression("ConvertsToIntegerLong").value();
+            softAssert.assertTrue((Boolean) value);
 
-            result = evaluationResult.forExpression("ConvertsToIntegerFalse").value();
-            softAssert.assertFalse((Boolean) result);
+            value = results.forExpression("ConvertsToIntegerFalse").value();
+            softAssert.assertFalse((Boolean) value);
 
-            result = evaluationResult.forExpression("ConvertsToIntegerNull").value();
-            softAssert.assertNull(result);
+            value = results.forExpression("ConvertsToIntegerNull").value();
+            softAssert.assertNull(value);
 
-            result = evaluationResult.forExpression("ConvertsToLongTrue").value();
-            softAssert.assertTrue((Boolean) result);
+            value = results.forExpression("ConvertsToLongTrue").value();
+            softAssert.assertTrue((Boolean) value);
 
-            result = evaluationResult.forExpression("ConvertsToLongFalse").value();
-            softAssert.assertFalse((Boolean) result);
+            value = results.forExpression("ConvertsToLongFalse").value();
+            softAssert.assertFalse((Boolean) value);
 
-            result = evaluationResult.forExpression("ConvertsToLongNull").value();
-            softAssert.assertNull(result);
+            value = results.forExpression("ConvertsToLongNull").value();
+            softAssert.assertNull(value);
 
-            result = evaluationResult
-                    .forExpression("ConvertsToQuantityStringTrue")
-                    .value();
-            softAssert.assertTrue((Boolean) result);
+            value = results.forExpression("ConvertsToQuantityStringTrue").value();
+            softAssert.assertTrue((Boolean) value);
 
-            result = evaluationResult
-                    .forExpression("ConvertsToQuantityStringFalse")
-                    .value();
-            softAssert.assertFalse((Boolean) result);
+            value = results.forExpression("ConvertsToQuantityStringFalse").value();
+            softAssert.assertFalse((Boolean) value);
 
-            result = evaluationResult
-                    .forExpression("ConvertsToQuantityIntegerTrue")
-                    .value();
-            softAssert.assertTrue((Boolean) result);
+            value = results.forExpression("ConvertsToQuantityIntegerTrue").value();
+            softAssert.assertTrue((Boolean) value);
 
-            result = evaluationResult
-                    .forExpression("ConvertsToQuantityDecimalTrue")
-                    .value();
-            softAssert.assertTrue((Boolean) result);
+            value = results.forExpression("ConvertsToQuantityDecimalTrue").value();
+            softAssert.assertTrue((Boolean) value);
 
-            result = evaluationResult
-                    .forExpression("ConvertsToQuantityRatioTrue")
-                    .value();
-            softAssert.assertTrue((Boolean) result);
+            value = results.forExpression("ConvertsToQuantityRatioTrue").value();
+            softAssert.assertTrue((Boolean) value);
 
-            result = evaluationResult.forExpression("ConvertsToQuantityNull").value();
-            softAssert.assertNull(result);
+            value = results.forExpression("ConvertsToQuantityNull").value();
+            softAssert.assertNull(value);
 
-            result = evaluationResult.forExpression("ConvertsToStringBoolean").value();
-            softAssert.assertTrue((Boolean) result);
+            value = results.forExpression("ConvertsToStringBoolean").value();
+            softAssert.assertTrue((Boolean) value);
 
-            result = evaluationResult.forExpression("ConvertsToStringInteger").value();
-            softAssert.assertTrue((Boolean) result);
+            value = results.forExpression("ConvertsToStringInteger").value();
+            softAssert.assertTrue((Boolean) value);
 
-            result = evaluationResult.forExpression("ConvertsToStringLong").value();
-            softAssert.assertTrue((Boolean) result);
+            value = results.forExpression("ConvertsToStringLong").value();
+            softAssert.assertTrue((Boolean) value);
 
-            result = evaluationResult.forExpression("ConvertsToStringDecimal").value();
-            softAssert.assertTrue((Boolean) result);
+            value = results.forExpression("ConvertsToStringDecimal").value();
+            softAssert.assertTrue((Boolean) value);
 
-            result = evaluationResult.forExpression("ConvertsToStringQuantity").value();
-            softAssert.assertTrue((Boolean) result);
+            value = results.forExpression("ConvertsToStringQuantity").value();
+            softAssert.assertTrue((Boolean) value);
 
-            result = evaluationResult.forExpression("ConvertsToStringRatio").value();
-            softAssert.assertTrue((Boolean) result);
+            value = results.forExpression("ConvertsToStringRatio").value();
+            softAssert.assertTrue((Boolean) value);
 
-            result = evaluationResult.forExpression("ConvertsToStringDate").value();
-            softAssert.assertTrue((Boolean) result);
+            value = results.forExpression("ConvertsToStringDate").value();
+            softAssert.assertTrue((Boolean) value);
 
-            result = evaluationResult.forExpression("ConvertsToStringDateTime").value();
-            softAssert.assertTrue((Boolean) result);
+            value = results.forExpression("ConvertsToStringDateTime").value();
+            softAssert.assertTrue((Boolean) value);
 
-            result = evaluationResult.forExpression("ConvertsToStringTime").value();
-            softAssert.assertTrue((Boolean) result);
+            value = results.forExpression("ConvertsToStringTime").value();
+            softAssert.assertTrue((Boolean) value);
 
-            result = evaluationResult.forExpression("ConvertsToStringNull").value();
-            softAssert.assertNull(result);
+            value = results.forExpression("ConvertsToStringNull").value();
+            softAssert.assertNull(value);
 
-            result = evaluationResult.forExpression("ConvertsToTimeTrue").value();
-            softAssert.assertTrue((Boolean) result);
+            value = results.forExpression("ConvertsToTimeTrue").value();
+            softAssert.assertTrue((Boolean) value);
 
-            result = evaluationResult.forExpression("ConvertsToTimeFalse").value();
-            softAssert.assertFalse((Boolean) result);
+            value = results.forExpression("ConvertsToTimeFalse").value();
+            softAssert.assertFalse((Boolean) value);
 
-            result = evaluationResult.forExpression("ConvertsToTimeNull").value();
-            softAssert.assertNull(result);
+            value = results.forExpression("ConvertsToTimeNull").value();
+            softAssert.assertNull(value);
 
-            result = evaluationResult.forExpression("IntegerIsInteger").value();
-            softAssert.assertEquals(result, true);
+            value = results.forExpression("IntegerIsInteger").value();
+            softAssert.assertEquals(value, true);
 
-            result = evaluationResult.forExpression("StringIsInteger").value();
-            softAssert.assertEquals(result, false);
+            value = results.forExpression("StringIsInteger").value();
+            softAssert.assertEquals(value, false);
 
-            result = evaluationResult.forExpression("StringNoToBoolean").value();
-            softAssert.assertEquals(result, false);
+            value = results.forExpression("StringNoToBoolean").value();
+            softAssert.assertEquals(value, false);
 
-            result = evaluationResult.forExpression("CodeToConcept1").value();
-            softAssert.assertTrue(((Concept) result).equivalent(new Concept().withCode(new Code().withCode("8480-6"))));
+            value = results.forExpression("CodeToConcept1").value();
+            softAssert.assertTrue(((Concept) value).equivalent(new Concept().withCode(new Code().withCode("8480-6"))));
 
-            result = evaluationResult.forExpression("ToDateTime0").value();
-            softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2014, 1)));
+            value = results.forExpression("ToDateTime0").value();
+            softAssert.assertTrue(EquivalentEvaluator.equivalent(value, new DateTime(bigDecimalZoneOffset, 2014, 1)));
 
-            result = evaluationResult.forExpression("ToDateTime1").value();
+            value = results.forExpression("ToDateTime1").value();
             softAssert.assertTrue(
-                    EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2014, 1, 1)));
+                    EquivalentEvaluator.equivalent(value, new DateTime(bigDecimalZoneOffset, 2014, 1, 1)));
 
-            result = evaluationResult.forExpression("ToDateTime2").value();
+            value = results.forExpression("ToDateTime2").value();
             softAssert.assertTrue(
-                    EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2014, 1, 1, 12, 5)));
+                    EquivalentEvaluator.equivalent(value, new DateTime(bigDecimalZoneOffset, 2014, 1, 1, 12, 5)));
 
-            result = evaluationResult.forExpression("ToDateTime3").value();
+            value = results.forExpression("ToDateTime3").value();
             softAssert.assertTrue(EquivalentEvaluator.equivalent(
-                    result, new DateTime(bigDecimalZoneOffset, 2014, 1, 1, 12, 5, 5, 955)));
+                    value, new DateTime(bigDecimalZoneOffset, 2014, 1, 1, 12, 5, 5, 955)));
 
-            result = evaluationResult.forExpression("ToDateTime4").value();
+            value = results.forExpression("ToDateTime4").value();
             softAssert.assertTrue(
                     EquivalentEvaluator.equivalent(
-                            result, new DateTime(new BigDecimal("1.5"), 2014, 1, 1, 12, 5, 5, 955)),
+                            value, new DateTime(new BigDecimal("1.5"), 2014, 1, 1, 12, 5, 5, 955)),
                     "ToDateTime4 vs. new DateTime(-1.5)");
 
-            result = evaluationResult.forExpression("ToDateTime5").value();
+            value = results.forExpression("ToDateTime5").value();
             softAssert.assertTrue(
                     EquivalentEvaluator.equivalent(
-                            result, new DateTime(new BigDecimal("-1.25"), 2014, 1, 1, 12, 5, 5, 955)),
+                            value, new DateTime(new BigDecimal("-1.25"), 2014, 1, 1, 12, 5, 5, 955)),
                     "ToDateTime5 vs. new DateTime(-1.25)");
 
-            result = evaluationResult.forExpression("ToDateTime6").value();
+            value = results.forExpression("ToDateTime6").value();
             final BigDecimal bigDecimalOffsetForUtc = getBigDecimalZoneOffset(ZoneId.of("UTC"));
             softAssert.assertTrue(EquivalentEvaluator.equivalent(
-                    result, new DateTime(bigDecimalOffsetForUtc, 2014, 1, 1, 12, 5, 5, 955)));
+                    value, new DateTime(bigDecimalOffsetForUtc, 2014, 1, 1, 12, 5, 5, 955)));
 
-            result = evaluationResult.forExpression("ToDateTimeMalformed").value();
-            softAssert.assertNull(result);
+            value = results.forExpression("ToDateTimeMalformed").value();
+            softAssert.assertNull(value);
 
-            result = evaluationResult.forExpression("String25D5ToDecimal").value();
-            softAssert.assertEquals(result, new BigDecimal("25.5"));
+            value = results.forExpression("String25D5ToDecimal").value();
+            softAssert.assertEquals(value, new BigDecimal("25.5"));
 
-            result = evaluationResult.forExpression("StringNeg25ToInteger").value();
-            softAssert.assertEquals(result, -25);
+            value = results.forExpression("StringNeg25ToInteger").value();
+            softAssert.assertEquals(value, -25);
 
-            result = evaluationResult.forExpression("String123ToLong").value();
-            softAssert.assertEquals(result, 123L);
+            value = results.forExpression("String123ToLong").value();
+            softAssert.assertEquals(value, 123L);
 
-            result = evaluationResult.forExpression("String5D5CMToQuantity").value();
-            softAssert.assertTrue(((Quantity) result)
+            value = results.forExpression("String5D5CMToQuantity").value();
+            softAssert.assertTrue(((Quantity) value)
                     .equal(new Quantity().withValue(new BigDecimal("5.5")).withUnit("cm")));
 
-            result = evaluationResult
-                    .forExpression("StringInvalidToQuantityNull")
-                    .value();
-            softAssert.assertNull(result);
+            value = results.forExpression("StringInvalidToQuantityNull").value();
+            softAssert.assertNull(value);
 
-            result = evaluationResult
-                    .forExpression("String100PerMinPerSqMeterToQuantity")
-                    .value();
-            softAssert.assertTrue(((Quantity) result)
+            value = results.forExpression("String100PerMinPerSqMeterToQuantity").value();
+            softAssert.assertTrue(((Quantity) value)
                     .equal(new Quantity().withValue(new BigDecimal("100")).withUnit("daL/min/m2")));
 
-            result = evaluationResult
-                    .forExpression("String100UnitPer10BillionToQuantity")
-                    .value();
-            softAssert.assertTrue(((Quantity) result)
+            value = results.forExpression("String100UnitPer10BillionToQuantity").value();
+            softAssert.assertTrue(((Quantity) value)
                     .equal(new Quantity().withValue(new BigDecimal("100")).withUnit("U/10*10{cells}")));
 
-            result = evaluationResult
-                    .forExpression("String60DayPer7DayToQuantity")
-                    .value();
-            softAssert.assertTrue(((Quantity) result)
+            value = results.forExpression("String60DayPer7DayToQuantity").value();
+            softAssert.assertTrue(((Quantity) value)
                     .equal(new Quantity().withValue(new BigDecimal("60")).withUnit("d/(7.d)")));
 
-            result = evaluationResult
-                    .forExpression("String60EhrlichPer100gmToQuantity")
-                    .value();
-            softAssert.assertTrue(((Quantity) result)
+            value = results.forExpression("String60EhrlichPer100gmToQuantity").value();
+            softAssert.assertTrue(((Quantity) value)
                     .equal(new Quantity().withValue(new BigDecimal("60")).withUnit("{EhrlichU}/100.g")));
 
-            result = evaluationResult.forExpression("StringPercentToQuantity").value();
-            softAssert.assertTrue(((Quantity) result)
+            value = results.forExpression("StringPercentToQuantity").value();
+            softAssert.assertTrue(((Quantity) value)
                     .equal(new Quantity().withValue(new BigDecimal("60")).withUnit("%")));
 
-            result = evaluationResult
-                    .forExpression("StringPercentWithoutQuoteToQuantity")
-                    .value();
-            softAssert.assertTrue(((Quantity) result)
+            value = results.forExpression("StringPercentWithoutQuoteToQuantity").value();
+            softAssert.assertTrue(((Quantity) value)
                     .equal(new Quantity().withValue(new BigDecimal("70")).withUnit("%")));
 
-            result = evaluationResult
-                    .forExpression("StringPercentWithTabToQuantity")
-                    .value();
-            softAssert.assertTrue(((Quantity) result)
+            value = results.forExpression("StringPercentWithTabToQuantity").value();
+            softAssert.assertTrue(((Quantity) value)
                     .equal(new Quantity().withValue(new BigDecimal("80")).withUnit("%")));
 
-            result = evaluationResult
-                    .forExpression("StringPercentWithMultiSpacesToQuantity")
+            value = results.forExpression("StringPercentWithMultiSpacesToQuantity")
                     .value();
-            softAssert.assertTrue(((Quantity) result)
+            softAssert.assertTrue(((Quantity) value)
                     .equal(new Quantity().withValue(new BigDecimal("90")).withUnit("%")));
 
-            result = evaluationResult
-                    .forExpression("StringPercentWithSpacesUnitToQuantity")
+            value = results.forExpression("StringPercentWithSpacesUnitToQuantity")
                     .value();
-            softAssert.assertTrue(((Quantity) result)
+            softAssert.assertTrue(((Quantity) value)
                     .equal(new Quantity().withValue(new BigDecimal("10")).withUnit("ml")));
 
-            result = evaluationResult
-                    .forExpression("StringPercentWithQuoteUnitToQuantity")
+            value = results.forExpression("StringPercentWithQuoteUnitToQuantity")
                     .value();
-            softAssert.assertTrue(((Quantity) result)
+            softAssert.assertTrue(((Quantity) value)
                     .equal(new Quantity().withValue(new BigDecimal("20")).withUnit("ml")));
 
-            result = evaluationResult.forExpression("ToRatioIsValid").value();
-            softAssert.assertTrue(((Ratio) result)
+            value = results.forExpression("ToRatioIsValid").value();
+            softAssert.assertTrue(((Ratio) value)
                     .getNumerator()
                     .equal(new Quantity().withValue(new BigDecimal("1.0")).withUnit("mg")));
-            softAssert.assertTrue(((Ratio) result)
+            softAssert.assertTrue(((Ratio) value)
                     .getDenominator()
                     .equal(new Quantity().withValue(new BigDecimal("2.0")).withUnit("mg")));
 
-            result = evaluationResult.forExpression("ToRatioIsNull").value();
-            softAssert.assertNull(result);
+            value = results.forExpression("ToRatioIsNull").value();
+            softAssert.assertNull(value);
 
-            result = evaluationResult.forExpression("IntegerNeg5ToString").value();
-            softAssert.assertEquals(result, "-5");
+            value = results.forExpression("IntegerNeg5ToString").value();
+            softAssert.assertEquals(value, "-5");
 
-            result = evaluationResult.forExpression("LongNeg5ToString").value();
-            softAssert.assertEquals(result, "-5");
+            value = results.forExpression("LongNeg5ToString").value();
+            softAssert.assertEquals(value, "-5");
 
-            result = evaluationResult.forExpression("Decimal18D55ToString").value();
-            softAssert.assertEquals(result, "18.55");
+            value = results.forExpression("Decimal18D55ToString").value();
+            softAssert.assertEquals(value, "18.55");
 
-            result = evaluationResult.forExpression("Quantity5D5CMToString").value();
-            softAssert.assertEquals(result, "5.5 'cm'");
+            value = results.forExpression("Quantity5D5CMToString").value();
+            softAssert.assertEquals(value, "5.5 'cm'");
 
-            result = evaluationResult.forExpression("BooleanTrueToString").value();
-            softAssert.assertEquals(result, "true");
+            value = results.forExpression("BooleanTrueToString").value();
+            softAssert.assertEquals(value, "true");
 
-            result = evaluationResult.forExpression("ToTime1").value();
-            softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(14, 30, 0, 0)));
+            value = results.forExpression("ToTime1").value();
+            softAssert.assertTrue(EquivalentEvaluator.equivalent(value, new Time(14, 30, 0, 0)));
 
-            result = evaluationResult.forExpression("ToTimeMalformed").value();
-            softAssert.assertNull(result);
+            value = results.forExpression("ToTimeMalformed").value();
+            softAssert.assertNull(value);
 
             softAssert.assertAll();
         } finally {

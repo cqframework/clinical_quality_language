@@ -267,8 +267,8 @@ public class TestR5ModelResolver {
 
         Patient p = new Patient();
 
-        Object result = resolver.resolvePath(p, "not-a-path");
-        assertNull(result);
+        var value = resolver.resolvePath(p, "not-a-path");
+        assertNull(value);
     }
 
     @Test
@@ -279,13 +279,13 @@ public class TestR5ModelResolver {
         p.setId("5");
         IdType idType = p.getIdElement();
 
-        Object result = resolver.resolvePath(p, "id");
-        assertNotNull(result);
-        assertThat(result, is(idType));
+        var value = resolver.resolvePath(p, "id");
+        assertNotNull(value);
+        assertThat(value, is(idType));
 
-        result = resolver.resolvePath(p, "id.value");
-        assertNotNull(result);
-        assertThat(result, is("5"));
+        value = resolver.resolvePath(p, "id.value");
+        assertNotNull(value);
+        assertThat(value, is("5"));
     }
 
     @Test
@@ -299,9 +299,9 @@ public class TestR5ModelResolver {
 
         DateTimeType dateTimeType = vp.getDateWrittenElement();
 
-        Object result = resolver.resolvePath(vp, "dateWritten");
-        assertNotNull(result);
-        assertThat(result, is(dateTimeType));
+        var value = resolver.resolvePath(vp, "dateWritten");
+        assertNotNull(value);
+        assertThat(value, is(dateTimeType));
     }
 
     @Test
@@ -314,8 +314,8 @@ public class TestR5ModelResolver {
         q.setUnit("1");
         SimpleQuantity sq = resolver.castToSimpleQuantity(q);
 
-        Object result = resolver.resolvePath(sq, "comparator");
-        assertNull(result);
+        var value = resolver.resolvePath(sq, "comparator");
+        assertNull(value);
     }
 
     @Test
@@ -325,7 +325,7 @@ public class TestR5ModelResolver {
 
         DateTimeType dt = new DateTimeType();
 
-        Object result = resolver.resolvePath(dt, "value");
-        assertNull(result);
+        var value = resolver.resolvePath(dt, "value");
+        assertNull(value);
     }
 }

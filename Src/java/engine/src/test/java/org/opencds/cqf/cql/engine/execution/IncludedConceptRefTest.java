@@ -20,9 +20,9 @@ public class IncludedConceptRefTest extends CqlTestBase {
                 .withVersion("1");
         Concept expected = new Concept().withDisplay("concept-display").withCodes(Collections.singletonList(code));
 
-        var evaluationResult = engine.evaluate(toElmIdentifier("IncludedConceptRefTest"));
-        CqlType actual = (CqlType)
-                evaluationResult.forExpression("testIncludedConceptRef").value();
+        var results = engine.evaluate(toElmIdentifier("IncludedConceptRefTest"));
+        CqlType actual =
+                (CqlType) results.forExpression("testIncludedConceptRef").value();
 
         assertEqual(expected, actual);
     }

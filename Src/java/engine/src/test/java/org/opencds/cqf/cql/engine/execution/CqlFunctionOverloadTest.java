@@ -10,22 +10,17 @@ public class CqlFunctionOverloadTest extends CqlTestBase {
 
     @Test
     public void test_function_overloads() {
-        EvaluationResult evaluationResult;
+        var results = engine.evaluate(toElmIdentifier("FunctionOverloadTest"));
+        var value = results.forExpression("TestAnyFunctionWithInteger").value();
+        assertThat(value, is(1));
 
-        evaluationResult = engine.evaluate(toElmIdentifier("FunctionOverloadTest"));
+        value = results.forExpression("TestAnyFunctionWithString").value();
+        assertThat(value, is("joe"));
 
-        Object result;
+        value = results.forExpression("TestAnyFunctionWithDecimal").value();
+        assertThat(value, is(new BigDecimal("12.3")));
 
-        result = evaluationResult.forExpression("TestAnyFunctionWithInteger").value();
-        assertThat(result, is(1));
-
-        result = evaluationResult.forExpression("TestAnyFunctionWithString").value();
-        assertThat(result, is("joe"));
-
-        result = evaluationResult.forExpression("TestAnyFunctionWithDecimal").value();
-        assertThat(result, is(new BigDecimal("12.3")));
-
-        result = evaluationResult.forExpression("TestAnyFunctionWithNoArgs").value();
-        assertThat(result, is("any"));
+        value = results.forExpression("TestAnyFunctionWithNoArgs").value();
+        assertThat(value, is("any"));
     }
 }

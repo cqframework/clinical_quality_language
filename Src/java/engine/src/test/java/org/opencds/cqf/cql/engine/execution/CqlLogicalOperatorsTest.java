@@ -4,108 +4,101 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
-import java.util.*;
 import org.testng.annotations.Test;
 
 public class CqlLogicalOperatorsTest extends CqlTestBase {
 
     @Test
     public void test_all_logical_operators() {
+        var results = engine.evaluate(toElmIdentifier("CqlLogicalOperatorsTest"));
+        var value = results.forExpression("TrueAndTrue").value();
+        assertThat(value, is(true));
 
-        Set<String> set = new HashSet<>();
-        EvaluationResult evaluationResult;
+        value = results.forExpression("TrueAndFalse").value();
+        assertThat(value, is(false));
 
-        evaluationResult = engine.evaluate(toElmIdentifier("CqlLogicalOperatorsTest"));
-        Object result;
+        value = results.forExpression("TrueAndNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("TrueAndTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("FalseAndTrue").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TrueAndFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("FalseAndFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TrueAndNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("FalseAndNull").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("FalseAndTrue").value();
-        assertThat(result, is(false));
+        value = results.forExpression("NullAndTrue").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("FalseAndFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("NullAndFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("FalseAndNull").value();
-        assertThat(result, is(false));
+        value = results.forExpression("NullAndNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("NullAndTrue").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("NotTrue").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("NullAndFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("NotFalse").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("NullAndNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("NotNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("NotTrue").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TrueOrTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("NotFalse").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TrueOrFalse").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("NotNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("TrueOrNull").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TrueOrTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("FalseOrTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TrueOrFalse").value();
-        assertThat(result, is(true));
+        value = results.forExpression("FalseOrFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TrueOrNull").value();
-        assertThat(result, is(true));
+        value = results.forExpression("FalseOrNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("FalseOrTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("NullOrTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("FalseOrFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("NullOrFalse").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("FalseOrNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("NullOrNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("NullOrTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TrueXorTrue").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("NullOrFalse").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("TrueXorFalse").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("NullOrNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("TrueXorNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("TrueXorTrue").value();
-        assertThat(result, is(false));
+        value = results.forExpression("FalseXorTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TrueXorFalse").value();
-        assertThat(result, is(true));
+        value = results.forExpression("FalseXorFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TrueXorNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("FalseXorNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("FalseXorTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("NullXorTrue").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("FalseXorFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("NullXorFalse").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("FalseXorNull").value();
-        assertThat(result, is(nullValue()));
-
-        result = evaluationResult.forExpression("NullXorTrue").value();
-        assertThat(result, is(nullValue()));
-
-        result = evaluationResult.forExpression("NullXorFalse").value();
-        assertThat(result, is(nullValue()));
-
-        result = evaluationResult.forExpression("NullXorNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("NullXorNull").value();
+        assertThat(value, is(nullValue()));
     }
 }

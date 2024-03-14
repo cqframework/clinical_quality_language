@@ -39,15 +39,10 @@ public class ExpandValueSetTest {
         Environment environment = new Environment(libraryManager, null, terminologyProvider);
 
         CqlEngine engine = new CqlEngine(environment);
-
-        EvaluationResult evaluationResult;
-
-        evaluationResult =
-                engine.evaluate(CqlTestBase.toElmIdentifier("ExpandValueSetTest"), null, null, null, null, null);
+        var results = engine.evaluate(CqlTestBase.toElmIdentifier("ExpandValueSetTest"));
 
         @SuppressWarnings("unchecked")
-        List<Code> actual =
-                (List<Code>) evaluationResult.forExpression("ExpandValueSet").value();
+        List<Code> actual = (List<Code>) results.forExpression("ExpandValueSet").value();
         assertNotNull(actual);
         assertEquals(actual.size(), 1);
 

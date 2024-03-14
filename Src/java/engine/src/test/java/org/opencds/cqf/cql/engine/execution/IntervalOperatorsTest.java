@@ -17,11 +17,11 @@ public class IntervalOperatorsTest extends CqlTestBase {
     //
     //        Set<String> set = new HashSet<>();
     //        set.add("InvalidIntegerIntervalA");
-    //        EvaluationResult evaluationResult;
+    //
     //        try {
-    //            evaluationResult = engine.evaluate(toElmIdentifier("CqlIntervalOperatorsTest"), set, null, null, null,
+    //            results = engine.evaluate(toElmIdentifier("CqlIntervalOperatorsTest"), set, null, null, null,
     // null);
-    //            Object result = evaluationResult.forExpression("InvalidIntegerIntervalA").value();
+    //            Object value = results.forExpression("InvalidIntegerIntervalA").value();
     //            Assert.fail();
     //
     //
@@ -35,1279 +35,1144 @@ public class IntervalOperatorsTest extends CqlTestBase {
     public void test_all_interval_operators() {
         final BigDecimal bigDecimalZoneOffset = getBigDecimalZoneOffset();
 
-        Set<String> set = new HashSet<>();
-        EvaluationResult evaluationResult;
+        var results = engine.evaluate(toElmIdentifier("CqlIntervalOperatorsTest"));
+        var value = results.forExpression("IntegerIntervalAfterTrue").value();
+        assertThat(value, is(true));
 
-        evaluationResult = engine.evaluate(toElmIdentifier("CqlIntervalOperatorsTest"));
-        Object result;
+        value = results.forExpression("IntegerIntervalAfterTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("IntegerIntervalAfterTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("IntegerIntervalAfterFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("IntegerIntervalAfterTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("IntegerIntervalPointAfterTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("IntegerIntervalAfterFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("IntegerIntervalPointAfterFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("IntegerIntervalPointAfterTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("IntegerIntervalAfterPointTrue").value();
+        assertThat(value, is(true));
 
-        result =
-                evaluationResult.forExpression("IntegerIntervalPointAfterFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("IntegerIntervalAfterPointFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("IntegerIntervalAfterPointTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DecimalIntervalAfterTrue").value();
+        assertThat(value, is(true));
 
-        result =
-                evaluationResult.forExpression("IntegerIntervalAfterPointFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DecimalIntervalAfterFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DecimalIntervalAfterTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DecimalIntervalPointAfterTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DecimalIntervalAfterFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DecimalIntervalPointAfterFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DecimalIntervalPointAfterTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DecimalIntervalAfterPointTrue").value();
+        assertThat(value, is(true));
 
-        result =
-                evaluationResult.forExpression("DecimalIntervalPointAfterFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DecimalIntervalAfterPointFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DecimalIntervalAfterPointTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("QuantityIntervalAfterTrue").value();
+        assertThat(value, is(true));
 
-        result =
-                evaluationResult.forExpression("DecimalIntervalAfterPointFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("QuantityIntervalAfterFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("QuantityIntervalAfterTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("QuantityIntervalPointAfterTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("QuantityIntervalAfterFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("QuantityIntervalPointAfterFalse").value();
+        assertThat(value, is(false));
 
-        result =
-                evaluationResult.forExpression("QuantityIntervalPointAfterTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("QuantityIntervalAfterPointTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult
-                .forExpression("QuantityIntervalPointAfterFalse")
-                .value();
-        assertThat(result, is(false));
+        value = results.forExpression("QuantityIntervalAfterPointFalse").value();
+        assertThat(value, is(false));
 
-        result =
-                evaluationResult.forExpression("QuantityIntervalAfterPointTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DateTimeAfterTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult
-                .forExpression("QuantityIntervalAfterPointFalse")
-                .value();
-        assertThat(result, is(false));
+        value = results.forExpression("DateTimeAfterFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DateTimeAfterTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TimeAfterTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DateTimeAfterFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TimeAfterFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TimeAfterTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TestBeforeNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("TimeAfterFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("IntegerIntervalBeforeFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TestBeforeNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("IntegerIntervalBeforeTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("IntegerIntervalBeforeFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("IntegerIntervalPointBeforeTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("IntegerIntervalBeforeTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("IntegerIntervalPointBeforeFalse").value();
+        assertThat(value, is(false));
 
-        result =
-                evaluationResult.forExpression("IntegerIntervalPointBeforeTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("IntegerIntervalBeforePointTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult
-                .forExpression("IntegerIntervalPointBeforeFalse")
-                .value();
-        assertThat(result, is(false));
+        value = results.forExpression("IntegerIntervalBeforePointFalse").value();
+        assertThat(value, is(false));
 
-        result =
-                evaluationResult.forExpression("IntegerIntervalBeforePointTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DecimalIntervalBeforeFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult
-                .forExpression("IntegerIntervalBeforePointFalse")
-                .value();
-        assertThat(result, is(false));
+        value = results.forExpression("DecimalIntervalBeforeTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DecimalIntervalBeforeFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DecimalIntervalPointBeforeTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DecimalIntervalBeforeTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DecimalIntervalPointBeforeFalse").value();
+        assertThat(value, is(false));
 
-        result =
-                evaluationResult.forExpression("DecimalIntervalPointBeforeTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DecimalIntervalBeforePointTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult
-                .forExpression("DecimalIntervalPointBeforeFalse")
-                .value();
-        assertThat(result, is(false));
+        value = results.forExpression("DecimalIntervalBeforePointFalse").value();
+        assertThat(value, is(false));
 
-        result =
-                evaluationResult.forExpression("DecimalIntervalBeforePointTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("QuantityIntervalBeforeTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult
-                .forExpression("DecimalIntervalBeforePointFalse")
-                .value();
-        assertThat(result, is(false));
+        value = results.forExpression("QuantityIntervalBeforeFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("QuantityIntervalBeforeTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("QuantityIntervalPointBeforeTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("QuantityIntervalBeforeFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("QuantityIntervalPointBeforeFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult
-                .forExpression("QuantityIntervalPointBeforeTrue")
-                .value();
-        assertThat(result, is(true));
+        value = results.forExpression("QuantityIntervalBeforePointTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult
-                .forExpression("QuantityIntervalPointBeforeFalse")
-                .value();
-        assertThat(result, is(false));
+        value = results.forExpression("QuantityIntervalBeforePointFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult
-                .forExpression("QuantityIntervalBeforePointTrue")
-                .value();
-        assertThat(result, is(true));
+        value = results.forExpression("DateTimeBeforeTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult
-                .forExpression("QuantityIntervalBeforePointFalse")
-                .value();
-        assertThat(result, is(false));
+        value = results.forExpression("DateTimeBeforeFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DateTimeBeforeTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TimeBeforeTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DateTimeBeforeFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TimeBeforeFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TimeBeforeTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TestCollapseNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("TimeBeforeFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("IntegerIntervalCollapse").value();
+        Assert.assertTrue(((Interval) ((List<?>) value).get(0)).equal(new Interval(1, true, 10, true)));
+        Assert.assertTrue(((Interval) ((List<?>) value).get(1)).equal(new Interval(12, true, 19, true)));
 
-        result = evaluationResult.forExpression("TestCollapseNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("IntegerIntervalCollapse2").value();
+        Assert.assertTrue(((Interval) ((List<?>) value).get(0)).equal(new Interval(1, true, 19, true)));
 
-        result = evaluationResult.forExpression("IntegerIntervalCollapse").value();
-        Assert.assertTrue(((Interval) ((List<?>) result).get(0)).equal(new Interval(1, true, 10, true)));
-        Assert.assertTrue(((Interval) ((List<?>) result).get(1)).equal(new Interval(12, true, 19, true)));
+        value = results.forExpression("IntegerIntervalCollapse3").value();
+        Assert.assertTrue(((Interval) ((List<?>) value).get(0)).equal(new Interval(4, true, 8, true)));
 
-        result = evaluationResult.forExpression("IntegerIntervalCollapse2").value();
-        Assert.assertTrue(((Interval) ((List<?>) result).get(0)).equal(new Interval(1, true, 19, true)));
+        value = results.forExpression("IntegerIntervalCollapse4").value();
+        Assert.assertTrue(((Interval) ((List<?>) value).get(0)).equal(new Interval(4, true, 6, true)));
+        Assert.assertTrue(((Interval) ((List<?>) value).get(1)).equal(new Interval(8, true, 10, true)));
 
-        result = evaluationResult.forExpression("IntegerIntervalCollapse3").value();
-        Assert.assertTrue(((Interval) ((List<?>) result).get(0)).equal(new Interval(4, true, 8, true)));
-
-        result = evaluationResult.forExpression("IntegerIntervalCollapse4").value();
-        Assert.assertTrue(((Interval) ((List<?>) result).get(0)).equal(new Interval(4, true, 6, true)));
-        Assert.assertTrue(((Interval) ((List<?>) result).get(1)).equal(new Interval(8, true, 10, true)));
-
-        result = evaluationResult.forExpression("DecimalIntervalCollapse").value();
-        Assert.assertTrue(((Interval) ((List<?>) result).get(0))
+        value = results.forExpression("DecimalIntervalCollapse").value();
+        Assert.assertTrue(((Interval) ((List<?>) value).get(0))
                 .equal(new Interval(new BigDecimal("1.0"), true, new BigDecimal("10.0"), true)));
-        Assert.assertTrue(((Interval) ((List<?>) result).get(1))
+        Assert.assertTrue(((Interval) ((List<?>) value).get(1))
                 .equal(new Interval(new BigDecimal("12.0"), true, new BigDecimal("19.0"), true)));
 
-        result = evaluationResult.forExpression("DecimalIntervalCollapse2").value();
-        Assert.assertTrue(((Interval) ((List<?>) result).get(0))
+        value = results.forExpression("DecimalIntervalCollapse2").value();
+        Assert.assertTrue(((Interval) ((List<?>) value).get(0))
                 .equal(new Interval(new BigDecimal("4.0"), true, new BigDecimal("8.0"), true)));
 
-        result = evaluationResult.forExpression("QuantityIntervalCollapse").value();
-        Assert.assertTrue(((Interval) ((List<?>) result).get(0))
+        value = results.forExpression("QuantityIntervalCollapse").value();
+        Assert.assertTrue(((Interval) ((List<?>) value).get(0))
                 .equal(new Interval(
                         new Quantity().withValue(new BigDecimal("1.0")).withUnit("g"),
                         true,
                         new Quantity().withValue(new BigDecimal("10.0")).withUnit("g"),
                         true)));
-        Assert.assertTrue(((Interval) ((List<?>) result).get(1))
+        Assert.assertTrue(((Interval) ((List<?>) value).get(1))
                 .equal(new Interval(
                         new Quantity().withValue(new BigDecimal("12.0")).withUnit("g"),
                         true,
                         new Quantity().withValue(new BigDecimal("19.0")).withUnit("g"),
                         true)));
 
-        result = evaluationResult.forExpression("DateTimeCollapse").value();
+        value = results.forExpression("DateTimeCollapse").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(
-                ((Interval) ((List<?>) result).get(0)).getStart(), new DateTime(bigDecimalZoneOffset, 2012, 1, 1)));
+                ((Interval) ((List<?>) value).get(0)).getStart(), new DateTime(bigDecimalZoneOffset, 2012, 1, 1)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(
-                ((Interval) ((List<?>) result).get(0)).getEnd(), new DateTime(bigDecimalZoneOffset, 2012, 1, 25)));
+                ((Interval) ((List<?>) value).get(0)).getEnd(), new DateTime(bigDecimalZoneOffset, 2012, 1, 25)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(
-                ((Interval) ((List<?>) result).get(1)).getStart(), new DateTime(bigDecimalZoneOffset, 2012, 5, 10)));
+                ((Interval) ((List<?>) value).get(1)).getStart(), new DateTime(bigDecimalZoneOffset, 2012, 5, 10)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(
-                ((Interval) ((List<?>) result).get(1)).getEnd(), new DateTime(bigDecimalZoneOffset, 2012, 5, 30)));
-        assertThat(((List<?>) result).size(), is(2));
+                ((Interval) ((List<?>) value).get(1)).getEnd(), new DateTime(bigDecimalZoneOffset, 2012, 5, 30)));
+        assertThat(((List<?>) value).size(), is(2));
 
-        result = evaluationResult.forExpression("DateTimeCollapse2").value();
+        value = results.forExpression("DateTimeCollapse2").value();
 
         Assert.assertTrue(EquivalentEvaluator.equivalent(
-                ((Interval) ((List<?>) result).get(0)).getStart(), new DateTime(bigDecimalZoneOffset, 2012, 1, 1)));
+                ((Interval) ((List<?>) value).get(0)).getStart(), new DateTime(bigDecimalZoneOffset, 2012, 1, 1)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(
-                ((Interval) ((List<?>) result).get(0)).getEnd(), new DateTime(bigDecimalZoneOffset, 2012, 5, 25)));
-        assertThat(((List<?>) result).size(), is(1));
+                ((Interval) ((List<?>) value).get(0)).getEnd(), new DateTime(bigDecimalZoneOffset, 2012, 5, 25)));
+        assertThat(((List<?>) value).size(), is(1));
 
-        result = evaluationResult.forExpression("DateTimeCollapse3").value();
+        value = results.forExpression("DateTimeCollapse3").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(
-                ((Interval) ((List<?>) result).get(0)).getStart(), new DateTime(bigDecimalZoneOffset, 2018, 1, 1)));
+                ((Interval) ((List<?>) value).get(0)).getStart(), new DateTime(bigDecimalZoneOffset, 2018, 1, 1)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(
-                ((Interval) ((List<?>) result).get(0)).getEnd(), new DateTime(bigDecimalZoneOffset, 2018, 8, 28)));
+                ((Interval) ((List<?>) value).get(0)).getEnd(), new DateTime(bigDecimalZoneOffset, 2018, 8, 28)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(
-                ((Interval) ((List<?>) result).get(1)).getStart(), new DateTime(bigDecimalZoneOffset, 2018, 8, 30)));
+                ((Interval) ((List<?>) value).get(1)).getStart(), new DateTime(bigDecimalZoneOffset, 2018, 8, 30)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(
-                ((Interval) ((List<?>) result).get(1)).getEnd(), new DateTime(bigDecimalZoneOffset, 2018, 10, 15)));
-        assertThat(((List<?>) result).size(), is(2));
+                ((Interval) ((List<?>) value).get(1)).getEnd(), new DateTime(bigDecimalZoneOffset, 2018, 10, 15)));
+        assertThat(((List<?>) value).size(), is(2));
 
-        result = evaluationResult.forExpression("DateTimeCollapse4").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(
-                ((Interval) ((List<?>) result).get(0)).getStart(), new Date(2018, 1, 1)));
+        value = results.forExpression("DateTimeCollapse4").value();
         Assert.assertTrue(
-                EquivalentEvaluator.equivalent(((Interval) ((List<?>) result).get(0)).getEnd(), new Date(2018, 8, 28)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(
-                ((Interval) ((List<?>) result).get(1)).getStart(), new Date(2018, 8, 30)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(
-                ((Interval) ((List<?>) result).get(1)).getEnd(), new Date(2018, 10, 15)));
-
-        result = evaluationResult.forExpression("DateTimeCollapse5").value();
-        System.out.println(result);
-        Assert.assertTrue(EquivalentEvaluator.equivalent(
-                ((Interval) ((List<?>) result).get(0)).getStart(), new Date(2018, 1, 1)));
+                EquivalentEvaluator.equivalent(((Interval) ((List<?>) value).get(0)).getStart(), new Date(2018, 1, 1)));
         Assert.assertTrue(
-                EquivalentEvaluator.equivalent(((Interval) ((List<?>) result).get(0)).getEnd(), new Date(2018, 8, 28)));
+                EquivalentEvaluator.equivalent(((Interval) ((List<?>) value).get(0)).getEnd(), new Date(2018, 8, 28)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(
-                ((Interval) ((List<?>) result).get(1)).getStart(), new Date(2018, 8, 30)));
+                ((Interval) ((List<?>) value).get(1)).getStart(), new Date(2018, 8, 30)));
+        Assert.assertTrue(
+                EquivalentEvaluator.equivalent(((Interval) ((List<?>) value).get(1)).getEnd(), new Date(2018, 10, 15)));
+
+        value = results.forExpression("DateTimeCollapse5").value();
+        System.out.println(value);
+        Assert.assertTrue(
+                EquivalentEvaluator.equivalent(((Interval) ((List<?>) value).get(0)).getStart(), new Date(2018, 1, 1)));
+        Assert.assertTrue(
+                EquivalentEvaluator.equivalent(((Interval) ((List<?>) value).get(0)).getEnd(), new Date(2018, 8, 28)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(
-                ((Interval) ((List<?>) result).get(1)).getEnd(), new Date(2018, 10, 15)));
+                ((Interval) ((List<?>) value).get(1)).getStart(), new Date(2018, 8, 30)));
+        Assert.assertTrue(
+                EquivalentEvaluator.equivalent(((Interval) ((List<?>) value).get(1)).getEnd(), new Date(2018, 10, 15)));
 
-        result = evaluationResult.forExpression("DateTimeCollapse6").value();
+        value = results.forExpression("DateTimeCollapse6").value();
+        Assert.assertTrue(
+                EquivalentEvaluator.equivalent(((Interval) ((List<?>) value).get(0)).getStart(), new Date(2018, 1, 1)));
+        Assert.assertTrue(
+                EquivalentEvaluator.equivalent(((Interval) ((List<?>) value).get(0)).getEnd(), new Date(2018, 10, 15)));
+
+        value = results.forExpression("TimeCollapse").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(
-                ((Interval) ((List<?>) result).get(0)).getStart(), new Date(2018, 1, 1)));
+                ((Interval) ((List<?>) value).get(0)).getStart(), new Time(1, 59, 59, 999)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(
-                ((Interval) ((List<?>) result).get(0)).getEnd(), new Date(2018, 10, 15)));
-
-        result = evaluationResult.forExpression("TimeCollapse").value();
+                ((Interval) ((List<?>) value).get(0)).getEnd(), new Time(15, 59, 59, 999)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(
-                ((Interval) ((List<?>) result).get(0)).getStart(), new Time(1, 59, 59, 999)));
+                ((Interval) ((List<?>) value).get(1)).getStart(), new Time(17, 59, 59, 999)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(
-                ((Interval) ((List<?>) result).get(0)).getEnd(), new Time(15, 59, 59, 999)));
+                ((Interval) ((List<?>) value).get(1)).getEnd(), new Time(22, 59, 59, 999)));
+        assertThat(((List<?>) value).size(), is(2));
+
+        value = results.forExpression("TimeCollapse2").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(
-                ((Interval) ((List<?>) result).get(1)).getStart(), new Time(17, 59, 59, 999)));
+                ((Interval) ((List<?>) value).get(0)).getStart(), new Time(1, 59, 59, 999)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(
-                ((Interval) ((List<?>) result).get(1)).getEnd(), new Time(22, 59, 59, 999)));
-        assertThat(((List<?>) result).size(), is(2));
+                ((Interval) ((List<?>) value).get(0)).getEnd(), new Time(15, 59, 59, 999)));
+        assertThat(((List<?>) value).size(), is(1));
+        value = results.forExpression("TestContainsNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("TimeCollapse2").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(
-                ((Interval) ((List<?>) result).get(0)).getStart(), new Time(1, 59, 59, 999)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(
-                ((Interval) ((List<?>) result).get(0)).getEnd(), new Time(15, 59, 59, 999)));
-        assertThat(((List<?>) result).size(), is(1));
-        result = evaluationResult.forExpression("TestContainsNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("TestNullElement1").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TestNullElement1").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TestNullElement2").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TestNullElement2").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TestNullElementTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TestNullElementTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("IntegerIntervalContainsTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("IntegerIntervalContainsTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("IntegerIntervalContainsFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("IntegerIntervalContainsFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DecimalIntervalContainsTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DecimalIntervalContainsTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DecimalIntervalContainsFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DecimalIntervalContainsFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("QuantityIntervalContainsTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("QuantityIntervalContainsTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("QuantityIntervalContainsFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("QuantityIntervalContainsFalse").value();
-        assertThat(result, is(false));
+        //        value = results.forExpression("DateTimeContainsNull").value();
+        //        assertThat(value, is(nullValue()));
 
-        //        result = evaluationResult.forExpression("DateTimeContainsNull").value();
-        //        assertThat(result, is(nullValue()));
+        value = results.forExpression("DateTimeContainsTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DateTimeContainsTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DateTimeContainsFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DateTimeContainsFalse").value();
-        assertThat(result, is(false));
+        //        value = results.forExpression("TimeContainsNull").value();
+        //        assertThat(value, is(nullValue()));
 
-        //        result = evaluationResult.forExpression("TimeContainsNull").value();
-        //        assertThat(result, is(nullValue()));
+        value = results.forExpression("TimeContainsTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TimeContainsTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TimeContainsFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TimeContainsFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("IntegerIntervalEnd").value();
+        assertThat(value, is(10));
 
-        result = evaluationResult.forExpression("IntegerIntervalEnd").value();
-        assertThat(result, is(10));
+        value = results.forExpression("DecimalIntervalEnd").value();
+        assertThat(value, is(new BigDecimal("10.0")));
 
-        result = evaluationResult.forExpression("DecimalIntervalEnd").value();
-        assertThat(result, is(new BigDecimal("10.0")));
-
-        result = evaluationResult.forExpression("QuantityIntervalEnd").value();
-        Assert.assertTrue(((Quantity) result)
+        value = results.forExpression("QuantityIntervalEnd").value();
+        Assert.assertTrue(((Quantity) value)
                 .equal(new Quantity().withValue(new BigDecimal("10.0")).withUnit("g")));
 
-        result = evaluationResult.forExpression("DateTimeIntervalEnd").value();
+        value = results.forExpression("DateTimeIntervalEnd").value();
         Assert.assertTrue(
-                EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2016, 5, 2, 0, 0, 0, 0)));
+                EquivalentEvaluator.equivalent(value, new DateTime(bigDecimalZoneOffset, 2016, 5, 2, 0, 0, 0, 0)));
 
-        result = evaluationResult.forExpression("TimeIntervalEnd").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(23, 59, 59, 599)));
+        value = results.forExpression("TimeIntervalEnd").value();
+        Assert.assertTrue(EquivalentEvaluator.equivalent(value, new Time(23, 59, 59, 599)));
 
-        //        result = evaluationResult.forExpression("TestEndsNull").value();
-        //        assertThat(result, is(nullValue()));
+        //        value = results.forExpression("TestEndsNull").value();
+        //        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("IntegerIntervalEndsTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("IntegerIntervalEndsTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("IntegerIntervalEndsFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("IntegerIntervalEndsFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DecimalIntervalEndsTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DecimalIntervalEndsTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DecimalIntervalEndsFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DecimalIntervalEndsFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("QuantityIntervalEndsTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("QuantityIntervalEndsTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("QuantityIntervalEndsFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("QuantityIntervalEndsFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DateTimeEndsTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DateTimeEndsTrue").value();
+        assertThat(value, is(true));
 
-        //        result = evaluationResult.forExpression("DateTimeEndsNull").value();
-        //        assertThat(result, is(nullValue()));
+        //        value = results.forExpression("DateTimeEndsNull").value();
+        //        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("DateTimeEndsFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DateTimeEndsFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TimeEndsTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TimeEndsTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TimeEndsFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TimeEndsFalse").value();
+        assertThat(value, is(false));
 
-        //        result = evaluationResult.forExpression("TestEqualNull").value();
-        //        assertThat(result, is(nullValue()));
+        //        value = results.forExpression("TestEqualNull").value();
+        //        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("IntegerIntervalEqualTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("IntegerIntervalEqualTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("IntegerIntervalEqualFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("IntegerIntervalEqualFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DecimalIntervalEqualTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DecimalIntervalEqualTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DecimalIntervalEqualFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DecimalIntervalEqualFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("QuantityIntervalEqualTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("QuantityIntervalEqualTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("QuantityIntervalEqualFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("QuantityIntervalEqualFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DateTimeEqualTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DateTimeEqualTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DateTimeEqualFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DateTimeEqualFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TimeEqualTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TimeEqualTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TimeEqualFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TimeEqualFalse").value();
+        assertThat(value, is(false));
 
-        //        result = evaluationResult.forExpression("TestExceptNull").value();
-        //        assertThat(result, is(nullValue()));
+        //        value = results.forExpression("TestExceptNull").value();
+        //        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("IntegerIntervalExcept1to3").value();
-        Assert.assertTrue(((Interval) result).equal(new Interval(1, true, 3, true)));
+        value = results.forExpression("IntegerIntervalExcept1to3").value();
+        Assert.assertTrue(((Interval) value).equal(new Interval(1, true, 3, true)));
 
-        result = evaluationResult.forExpression("IntegerIntervalExcept4to6").value();
-        Assert.assertTrue(((Interval) result).equal(new Interval(-4, false, 6, false)));
+        value = results.forExpression("IntegerIntervalExcept4to6").value();
+        Assert.assertTrue(((Interval) value).equal(new Interval(-4, false, 6, false)));
 
-        result = evaluationResult
-                .forExpression("IntegerIntervalExceptNullOutNull")
-                .value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("IntegerIntervalExceptNullOutNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("IntegerIntervalExceptNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("IntegerIntervalExceptNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("DecimalIntervalExcept1to3").value();
-        Assert.assertTrue(((Interval) result)
+        value = results.forExpression("DecimalIntervalExcept1to3").value();
+        Assert.assertTrue(((Interval) value)
                 .equal(new Interval(new BigDecimal("1.0"), true, new BigDecimal("3.99999999"), true)));
 
-        result = evaluationResult.forExpression("DecimalIntervalExceptNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("DecimalIntervalExceptNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("QuantityIntervalExcept1to4").value();
-        Assert.assertTrue(((Interval) result)
+        value = results.forExpression("QuantityIntervalExcept1to4").value();
+        Assert.assertTrue(((Interval) value)
                 .equal(new Interval(
                         new Quantity().withValue(new BigDecimal("1.0")).withUnit("g"),
                         true,
                         new Quantity().withValue(new BigDecimal("4.99999999")).withUnit("g"),
                         true)));
 
-        result = evaluationResult.forExpression("Except12").value();
-        Assert.assertTrue(((Interval) result).equal(new Interval(1, true, 2, true)));
+        value = results.forExpression("Except12").value();
+        Assert.assertTrue(((Interval) value).equal(new Interval(1, true, 2, true)));
 
-        result = evaluationResult.forExpression("ExceptDateTimeInterval").value();
+        value = results.forExpression("ExceptDateTimeInterval").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(
-                ((Interval) result).getStart(), new DateTime(bigDecimalZoneOffset, 2012, 1, 5)));
+                ((Interval) value).getStart(), new DateTime(bigDecimalZoneOffset, 2012, 1, 5)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(
-                ((Interval) result).getEnd(), new DateTime(bigDecimalZoneOffset, 2012, 1, 6)));
+                ((Interval) value).getEnd(), new DateTime(bigDecimalZoneOffset, 2012, 1, 6)));
 
-        result = evaluationResult.forExpression("ExceptDateTime2").value();
+        value = results.forExpression("ExceptDateTime2").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(
-                ((Interval) result).getStart(), new DateTime(bigDecimalZoneOffset, 2012, 1, 13)));
+                ((Interval) value).getStart(), new DateTime(bigDecimalZoneOffset, 2012, 1, 13)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(
-                ((Interval) result).getEnd(), new DateTime(bigDecimalZoneOffset, 2012, 1, 16)));
+                ((Interval) value).getEnd(), new DateTime(bigDecimalZoneOffset, 2012, 1, 16)));
 
-        result = evaluationResult.forExpression("ExceptTimeInterval").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((Interval) result).getStart(), new Time(5, 59, 59, 999)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((Interval) result).getEnd(), new Time(8, 59, 59, 998)));
+        value = results.forExpression("ExceptTimeInterval").value();
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((Interval) value).getStart(), new Time(5, 59, 59, 999)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((Interval) value).getEnd(), new Time(8, 59, 59, 998)));
 
-        result = evaluationResult.forExpression("ExceptTime2").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((Interval) result).getStart(), new Time(11, 0, 0, 0)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((Interval) result).getEnd(), new Time(11, 59, 59, 999)));
+        value = results.forExpression("ExceptTime2").value();
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((Interval) value).getStart(), new Time(11, 0, 0, 0)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((Interval) value).getEnd(), new Time(11, 59, 59, 999)));
 
-        result = evaluationResult.forExpression("TestInNull").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TestInNull").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TestInNullEnd").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TestInNullEnd").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TestNullIn").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("TestNullIn").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("IntegerIntervalInTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("IntegerIntervalInTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("IntegerIntervalInFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("IntegerIntervalInFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DecimalIntervalInTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DecimalIntervalInTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DecimalIntervalInFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DecimalIntervalInFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("QuantityIntervalInTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("QuantityIntervalInTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("QuantityIntervalInFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("QuantityIntervalInFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DateTimeInTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DateTimeInTrue").value();
+        assertThat(value, is(true));
 
-        //        result = evaluationResult.forExpression("DateTimeInNullPrecision").value();
-        //        assertThat(result, is(nullValue()));
+        //        value = results.forExpression("DateTimeInNullPrecision").value();
+        //        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("DateTimeInFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DateTimeInFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DateTimeInNullTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DateTimeInNullTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TimeInTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TimeInTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TimeInFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TimeInFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TimeInNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("TimeInNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("Issue32Interval").value();
-        assertThat(result, is(true));
-        result = evaluationResult.forExpression("TestIncludesNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("Issue32Interval").value();
+        assertThat(value, is(true));
+        value = results.forExpression("TestIncludesNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("IntegerIntervalIncludesTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("IntegerIntervalIncludesTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("IntegerIntervalIncludesFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("IntegerIntervalIncludesFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DecimalIntervalIncludesTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DecimalIntervalIncludesTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DecimalIntervalIncludesFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DecimalIntervalIncludesFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("QuantityIntervalIncludesTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("QuantityIntervalIncludesTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("QuantityIntervalIncludesFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("QuantityIntervalIncludesFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DateTimeIncludesTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DateTimeIncludesTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DateTimeIncludesFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DateTimeIncludesFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TimeIncludesTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TimeIncludesTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TimeIncludesFalse").value();
-        assertThat(result, is(false));
-        result = evaluationResult.forExpression("IntegerIntervalIncludedInTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TimeIncludesFalse").value();
+        assertThat(value, is(false));
+        value = results.forExpression("IntegerIntervalIncludedInTrue").value();
+        assertThat(value, is(true));
 
-        result =
-                evaluationResult.forExpression("IntegerIntervalIncludedInFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("IntegerIntervalIncludedInFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DecimalIntervalIncludedInTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DecimalIntervalIncludedInTrue").value();
+        assertThat(value, is(true));
 
-        result =
-                evaluationResult.forExpression("DecimalIntervalIncludedInFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DecimalIntervalIncludedInFalse").value();
+        assertThat(value, is(false));
 
-        result =
-                evaluationResult.forExpression("QuantityIntervalIncludedInTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("QuantityIntervalIncludedInTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult
-                .forExpression("QuantityIntervalIncludedInFalse")
-                .value();
-        assertThat(result, is(false));
+        value = results.forExpression("QuantityIntervalIncludedInFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DateTimeIncludedInTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DateTimeIncludedInTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DateTimeIncludedInFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DateTimeIncludedInFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TimeIncludedInTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TimeIncludedInTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TimeIncludedInFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TimeIncludedInFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DateTimeIncludedInNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("DateTimeIncludedInNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult
-                .forExpression("DateTimeIncludedInPrecisionTrue")
-                .value();
-        assertThat(result, is(true));
+        value = results.forExpression("DateTimeIncludedInPrecisionTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult
-                .forExpression("DateTimeIncludedInPrecisionNull")
-                .value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("DateTimeIncludedInPrecisionNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult
-                .forExpression("IntegerIntervalIntersectTest4to10")
-                .value();
-        Assert.assertTrue(((Interval) result).equal(new Interval(4, true, 10, true)));
+        value = results.forExpression("IntegerIntervalIntersectTest4to10").value();
+        Assert.assertTrue(((Interval) value).equal(new Interval(4, true, 10, true)));
 
-        result = evaluationResult
-                .forExpression("IntegerIntervalIntersectTestNull")
-                .value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("IntegerIntervalIntersectTestNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult
-                .forExpression("DecimalIntervalIntersectTest4to10")
-                .value();
+        value = results.forExpression("DecimalIntervalIntersectTest4to10").value();
         Assert.assertTrue(
-                ((Interval) result).equal(new Interval(new BigDecimal("4.0"), true, new BigDecimal("10.0"), true)));
+                ((Interval) value).equal(new Interval(new BigDecimal("4.0"), true, new BigDecimal("10.0"), true)));
 
-        result = evaluationResult
-                .forExpression("IntegerIntervalIntersectTestNull")
-                .value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("IntegerIntervalIntersectTestNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult
-                .forExpression("QuantityIntervalIntersectTest5to10")
-                .value();
-        Assert.assertTrue(((Interval) result)
+        value = results.forExpression("QuantityIntervalIntersectTest5to10").value();
+        Assert.assertTrue(((Interval) value)
                 .equal(new Interval(
                         new Quantity().withValue(new BigDecimal("5.0")).withUnit("g"),
                         true,
                         new Quantity().withValue(new BigDecimal("10.0")).withUnit("g"),
                         true)));
 
-        result = evaluationResult
-                .forExpression("QuantityIntervalIntersectTestNull")
-                .value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("QuantityIntervalIntersectTestNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("DateTimeIntersect").value();
+        value = results.forExpression("DateTimeIntersect").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(
-                ((Interval) result).getStart(), new DateTime(bigDecimalZoneOffset, 2012, 1, 7)));
+                ((Interval) value).getStart(), new DateTime(bigDecimalZoneOffset, 2012, 1, 7)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(
-                ((Interval) result).getEnd(), new DateTime(bigDecimalZoneOffset, 2012, 1, 10)));
+                ((Interval) value).getEnd(), new DateTime(bigDecimalZoneOffset, 2012, 1, 10)));
 
-        result = evaluationResult.forExpression("TimeIntersect").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((Interval) result).getStart(), new Time(4, 59, 59, 999)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((Interval) result).getEnd(), new Time(6, 59, 59, 999)));
+        value = results.forExpression("TimeIntersect").value();
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((Interval) value).getStart(), new Time(4, 59, 59, 999)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((Interval) value).getEnd(), new Time(6, 59, 59, 999)));
 
-        result = evaluationResult.forExpression("IntegerIntervalEquivalentTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("IntegerIntervalEquivalentTrue").value();
+        assertThat(value, is(true));
 
-        result =
-                evaluationResult.forExpression("IntegerIntervalEquivalentFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("IntegerIntervalEquivalentFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DecimalIntervalEquivalentTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DecimalIntervalEquivalentTrue").value();
+        assertThat(value, is(true));
 
-        result =
-                evaluationResult.forExpression("DecimalIntervalEquivalentFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DecimalIntervalEquivalentFalse").value();
+        assertThat(value, is(false));
 
-        result =
-                evaluationResult.forExpression("QuantityIntervalEquivalentTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("QuantityIntervalEquivalentTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult
-                .forExpression("QuantityIntervalEquivalentFalse")
-                .value();
-        assertThat(result, is(false));
+        value = results.forExpression("QuantityIntervalEquivalentFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DateTimeEquivalentTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DateTimeEquivalentTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DateTimeEquivalentFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DateTimeEquivalentFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TimeEquivalentTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TimeEquivalentTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TimeEquivalentFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TimeEquivalentFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TestMeetsNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("TestMeetsNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("IntegerIntervalMeetsTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("IntegerIntervalMeetsTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("IntegerIntervalMeetsFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("IntegerIntervalMeetsFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DecimalIntervalMeetsTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DecimalIntervalMeetsTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DecimalIntervalMeetsFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DecimalIntervalMeetsFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("QuantityIntervalMeetsTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("QuantityIntervalMeetsTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("QuantityIntervalMeetsFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("QuantityIntervalMeetsFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DateTimeMeetsTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DateTimeMeetsTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DateTimeMeetsNull").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DateTimeMeetsNull").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DateTimeMeetsFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DateTimeMeetsFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TimeMeetsTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TimeMeetsTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TimeMeetsFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TimeMeetsFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TestMeetsBeforeNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("TestMeetsBeforeNull").value();
+        assertThat(value, is(nullValue()));
 
-        result =
-                evaluationResult.forExpression("IntegerIntervalMeetsBeforeTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("IntegerIntervalMeetsBeforeTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult
-                .forExpression("IntegerIntervalMeetsBeforeFalse")
-                .value();
-        assertThat(result, is(false));
+        value = results.forExpression("IntegerIntervalMeetsBeforeFalse").value();
+        assertThat(value, is(false));
 
-        result =
-                evaluationResult.forExpression("DecimalIntervalMeetsBeforeTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DecimalIntervalMeetsBeforeTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult
-                .forExpression("DecimalIntervalMeetsBeforeFalse")
-                .value();
-        assertThat(result, is(false));
+        value = results.forExpression("DecimalIntervalMeetsBeforeFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult
-                .forExpression("QuantityIntervalMeetsBeforeTrue")
-                .value();
-        assertThat(result, is(true));
+        value = results.forExpression("QuantityIntervalMeetsBeforeTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult
-                .forExpression("QuantityIntervalMeetsBeforeFalse")
-                .value();
-        assertThat(result, is(false));
+        value = results.forExpression("QuantityIntervalMeetsBeforeFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DateTimeMeetsBeforeTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DateTimeMeetsBeforeTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DateTimeMeetsBeforeNull").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DateTimeMeetsBeforeNull").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DateTimeMeetsBeforeFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DateTimeMeetsBeforeFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TimeMeetsBeforeTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TimeMeetsBeforeTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TimeMeetsBeforeFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TimeMeetsBeforeFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TestMeetsAfterNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("TestMeetsAfterNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("IntegerIntervalMeetsAfterTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("IntegerIntervalMeetsAfterTrue").value();
+        assertThat(value, is(true));
 
-        result =
-                evaluationResult.forExpression("IntegerIntervalMeetsAfterFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("IntegerIntervalMeetsAfterFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DecimalIntervalMeetsAfterTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DecimalIntervalMeetsAfterTrue").value();
+        assertThat(value, is(true));
 
-        result =
-                evaluationResult.forExpression("DecimalIntervalMeetsAfterFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DecimalIntervalMeetsAfterFalse").value();
+        assertThat(value, is(false));
 
-        result =
-                evaluationResult.forExpression("QuantityIntervalMeetsAfterTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("QuantityIntervalMeetsAfterTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult
-                .forExpression("QuantityIntervalMeetsAfterFalse")
-                .value();
-        assertThat(result, is(false));
+        value = results.forExpression("QuantityIntervalMeetsAfterFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DateTimeMeetsAfterTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DateTimeMeetsAfterTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DateTimeMeetsAfterNull").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DateTimeMeetsAfterNull").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DateTimeMeetsAfterFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DateTimeMeetsAfterFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TimeMeetsAfterTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TimeMeetsAfterTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TimeMeetsAfterFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TimeMeetsAfterFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("IntegerIntervalNotEqualTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("IntegerIntervalNotEqualTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("IntegerIntervalNotEqualFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("IntegerIntervalNotEqualFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DecimalIntervalNotEqualTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DecimalIntervalNotEqualTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DecimalIntervalNotEqualFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DecimalIntervalNotEqualFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("QuantityIntervalNotEqualTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("QuantityIntervalNotEqualTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("QuantityIntervalNotEqualFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("QuantityIntervalNotEqualFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DateTimeNotEqualTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DateTimeNotEqualTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DateTimeNotEqualFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DateTimeNotEqualFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TimeNotEqualTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TimeNotEqualTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TimeNotEqualFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TimeNotEqualFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TestOnOrAfterNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("TestOnOrAfterNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("TestOnOrAfterDateTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TestOnOrAfterDateTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TestOnOrAfterDateFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TestOnOrAfterDateFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TestOnOrAfterTimeTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TestOnOrAfterTimeTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TestOnOrAfterTimeFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TestOnOrAfterTimeFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TestOnOrAfterIntegerTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TestOnOrAfterIntegerTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TestOnOrAfterDecimalFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TestOnOrAfterDecimalFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TestOnOrAfterQuantityTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TestOnOrAfterQuantityTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TestOnOrBeforeNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("TestOnOrBeforeNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("TestOnOrBeforeDateTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TestOnOrBeforeDateTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TestOnOrBeforeDateFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TestOnOrBeforeDateFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TestOnOrBeforeTimeTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TestOnOrBeforeTimeTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TestOnOrBeforeTimeFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TestOnOrBeforeTimeFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TestOnOrBeforeIntegerTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TestOnOrBeforeIntegerTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TestOnOrBeforeDecimalFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TestOnOrBeforeDecimalFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TestOnOrBeforeQuantityTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TestOnOrBeforeQuantityTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TestOverlapsNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("TestOverlapsNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("IntegerIntervalOverlapsTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("IntegerIntervalOverlapsTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("IntegerIntervalOverlapsFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("IntegerIntervalOverlapsFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DecimalIntervalOverlapsTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DecimalIntervalOverlapsTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DecimalIntervalOverlapsFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DecimalIntervalOverlapsFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("QuantityIntervalOverlapsTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("QuantityIntervalOverlapsTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("QuantityIntervalOverlapsFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("QuantityIntervalOverlapsFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DateTimeOverlapsTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DateTimeOverlapsTrue").value();
+        assertThat(value, is(true));
 
-        //        result = evaluationResult.forExpression("DateTimeOverlapsNull").value();
-        //        assertThat(result, is(nullValue()));
+        //        value = results.forExpression("DateTimeOverlapsNull").value();
+        //        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("DateTimeOverlapsFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DateTimeOverlapsFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TimeOverlapsTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TimeOverlapsTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TimeOverlapsFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TimeOverlapsFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TestOverlapsBeforeNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("TestOverlapsBeforeNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult
-                .forExpression("IntegerIntervalOverlapsBeforeTrue")
-                .value();
-        assertThat(result, is(true));
+        value = results.forExpression("IntegerIntervalOverlapsBeforeTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult
-                .forExpression("IntegerIntervalOverlapsBeforeFalse")
-                .value();
-        assertThat(result, is(false));
+        value = results.forExpression("IntegerIntervalOverlapsBeforeFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult
-                .forExpression("DecimalIntervalOverlapsBeforeTrue")
-                .value();
-        assertThat(result, is(true));
+        value = results.forExpression("DecimalIntervalOverlapsBeforeTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult
-                .forExpression("DecimalIntervalOverlapsBeforeFalse")
-                .value();
-        assertThat(result, is(false));
+        value = results.forExpression("DecimalIntervalOverlapsBeforeFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult
-                .forExpression("QuantityIntervalOverlapsBeforeTrue")
-                .value();
-        assertThat(result, is(true));
+        value = results.forExpression("QuantityIntervalOverlapsBeforeTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult
-                .forExpression("QuantityIntervalOverlapsBeforeFalse")
-                .value();
-        assertThat(result, is(false));
+        value = results.forExpression("QuantityIntervalOverlapsBeforeFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DateTimeOverlapsBeforeTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DateTimeOverlapsBeforeTrue").value();
+        assertThat(value, is(true));
 
-        //        result = evaluationResult.forExpression("DateTimeOverlapsBeforeNull").value();
-        //        assertThat(result, is(nullValue()));
+        //        value = results.forExpression("DateTimeOverlapsBeforeNull").value();
+        //        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("DateTimeOverlapsBeforeFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DateTimeOverlapsBeforeFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TimeOverlapsBeforeTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TimeOverlapsBeforeTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TimeOverlapsBeforeFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TimeOverlapsBeforeFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TestOverlapsAfterNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("TestOverlapsAfterNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult
-                .forExpression("IntegerIntervalOverlapsAfterTrue")
-                .value();
-        assertThat(result, is(true));
+        value = results.forExpression("IntegerIntervalOverlapsAfterTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult
-                .forExpression("IntegerIntervalOverlapsAfterFalse")
-                .value();
-        assertThat(result, is(false));
+        value = results.forExpression("IntegerIntervalOverlapsAfterFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult
-                .forExpression("DecimalIntervalOverlapsAfterTrue")
-                .value();
-        assertThat(result, is(true));
+        value = results.forExpression("DecimalIntervalOverlapsAfterTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult
-                .forExpression("DecimalIntervalOverlapsAfterFalse")
-                .value();
-        assertThat(result, is(false));
+        value = results.forExpression("DecimalIntervalOverlapsAfterFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult
-                .forExpression("QuantityIntervalOverlapsAfterTrue")
-                .value();
-        assertThat(result, is(true));
+        value = results.forExpression("QuantityIntervalOverlapsAfterTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult
-                .forExpression("QuantityIntervalOverlapsAfterFalse")
-                .value();
-        assertThat(result, is(false));
+        value = results.forExpression("QuantityIntervalOverlapsAfterFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DateTimeOverlapsAfterTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DateTimeOverlapsAfterTrue").value();
+        assertThat(value, is(true));
 
-        //        result = evaluationResult.forExpression("DateTimeOverlapsAfterNull").value();
-        //        assertThat(result, is(nullValue()));
+        //        value = results.forExpression("DateTimeOverlapsAfterNull").value();
+        //        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("DateTimeOverlapsAfterFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DateTimeOverlapsAfterFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TimeOverlapsAfterTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TimeOverlapsAfterTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TimeOverlapsAfterFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TimeOverlapsAfterFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TestPointFromNull").value();
-        Assert.assertTrue(result == null);
+        value = results.forExpression("TestPointFromNull").value();
+        Assert.assertTrue(value == null);
 
-        result = evaluationResult.forExpression("TestPointFromInteger").value();
-        Assert.assertTrue((Integer) result == 1);
+        value = results.forExpression("TestPointFromInteger").value();
+        Assert.assertTrue((Integer) value == 1);
 
-        result = evaluationResult.forExpression("TestPointFromDecimal").value();
-        Assert.assertTrue(((BigDecimal) result).compareTo(new BigDecimal("1.0")) == 0);
+        value = results.forExpression("TestPointFromDecimal").value();
+        Assert.assertTrue(((BigDecimal) value).compareTo(new BigDecimal("1.0")) == 0);
 
-        result = evaluationResult.forExpression("TestPointFromQuantity").value();
-        Assert.assertTrue(((Quantity) result)
+        value = results.forExpression("TestPointFromQuantity").value();
+        Assert.assertTrue(((Quantity) value)
                 .equal(new Quantity().withValue(new BigDecimal("1.0")).withUnit("cm")));
 
-        result = evaluationResult.forExpression("TestProperlyIncludesNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("TestProperlyIncludesNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult
-                .forExpression("IntegerIntervalProperlyIncludesTrue")
-                .value();
-        assertThat(result, is(true));
+        value = results.forExpression("IntegerIntervalProperlyIncludesTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult
-                .forExpression("IntegerIntervalProperlyIncludesFalse")
-                .value();
-        assertThat(result, is(false));
+        value = results.forExpression("IntegerIntervalProperlyIncludesFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult
-                .forExpression("DecimalIntervalProperlyIncludesTrue")
-                .value();
-        assertThat(result, is(true));
+        value = results.forExpression("DecimalIntervalProperlyIncludesTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult
-                .forExpression("DecimalIntervalProperlyIncludesFalse")
-                .value();
-        assertThat(result, is(false));
+        value = results.forExpression("DecimalIntervalProperlyIncludesFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult
-                .forExpression("QuantityIntervalProperlyIncludesTrue")
-                .value();
-        assertThat(result, is(true));
+        value = results.forExpression("QuantityIntervalProperlyIncludesTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult
-                .forExpression("QuantityIntervalProperlyIncludesFalse")
-                .value();
-        assertThat(result, is(false));
+        value = results.forExpression("QuantityIntervalProperlyIncludesFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DateTimeProperlyIncludesTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DateTimeProperlyIncludesTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DateTimeProperlyIncludesFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DateTimeProperlyIncludesFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TimeProperlyIncludesTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TimeProperlyIncludesTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TimeProperlyIncludesFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TimeProperlyIncludesFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TimeProperContainsTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TimeProperContainsTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TimeProperContainsFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TimeProperContainsFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TimeProperContainsNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("TimeProperContainsNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult
-                .forExpression("TimeProperContainsPrecisionTrue")
-                .value();
-        assertThat(result, is(true));
+        value = results.forExpression("TimeProperContainsPrecisionTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult
-                .forExpression("TimeProperContainsPrecisionFalse")
-                .value();
-        assertThat(result, is(false));
+        value = results.forExpression("TimeProperContainsPrecisionFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult
-                .forExpression("TimeProperContainsPrecisionNull")
-                .value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("TimeProperContainsPrecisionNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("TimeProperInTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TimeProperInTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TimeProperInFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TimeProperInFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TimeProperInNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("TimeProperInNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("TimeProperInPrecisionTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TimeProperInPrecisionTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TimeProperInPrecisionFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TimeProperInPrecisionFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TimeProperInPrecisionNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("TimeProperInPrecisionNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("TestProperlyIncludedInNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("TestProperlyIncludedInNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult
-                .forExpression("IntegerIntervalProperlyIncludedInTrue")
-                .value();
-        assertThat(result, is(true));
+        value = results.forExpression("IntegerIntervalProperlyIncludedInTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult
-                .forExpression("IntegerIntervalProperlyIncludedInFalse")
-                .value();
-        assertThat(result, is(false));
+        value = results.forExpression("IntegerIntervalProperlyIncludedInFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult
-                .forExpression("DecimalIntervalProperlyIncludedInTrue")
-                .value();
-        assertThat(result, is(true));
+        value = results.forExpression("DecimalIntervalProperlyIncludedInTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult
-                .forExpression("DecimalIntervalProperlyIncludedInFalse")
-                .value();
-        assertThat(result, is(false));
+        value = results.forExpression("DecimalIntervalProperlyIncludedInFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult
-                .forExpression("QuantityIntervalProperlyIncludedInTrue")
-                .value();
-        assertThat(result, is(true));
+        value = results.forExpression("QuantityIntervalProperlyIncludedInTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult
-                .forExpression("QuantityIntervalProperlyIncludedInFalse")
-                .value();
-        assertThat(result, is(false));
+        value = results.forExpression("QuantityIntervalProperlyIncludedInFalse").value();
+        assertThat(value, is(false));
 
-        result =
-                evaluationResult.forExpression("DateTimeProperlyIncludedInTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DateTimeProperlyIncludedInTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult
-                .forExpression("DateTimeProperlyIncludedInFalse")
-                .value();
-        assertThat(result, is(false));
+        value = results.forExpression("DateTimeProperlyIncludedInFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TimeProperlyIncludedInTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TimeProperlyIncludedInTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TimeProperlyIncludedInFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TimeProperlyIncludedInFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("SizeTest").value();
-        assertThat(result, is(5));
+        value = results.forExpression("SizeTest").value();
+        assertThat(value, is(5));
 
-        result = evaluationResult.forExpression("SizeTestEquivalent").value();
-        assertThat(result, is(5));
+        value = results.forExpression("SizeTestEquivalent").value();
+        assertThat(value, is(5));
 
-        result = evaluationResult.forExpression("SizeIsNull").value();
-        Assert.assertNull(result);
+        value = results.forExpression("SizeIsNull").value();
+        Assert.assertNull(value);
 
-        result = evaluationResult.forExpression("IntegerIntervalStart").value();
-        assertThat(result, is(1));
+        value = results.forExpression("IntegerIntervalStart").value();
+        assertThat(value, is(1));
 
-        result = evaluationResult.forExpression("DecimalIntervalStart").value();
-        assertThat(result, is(new BigDecimal("1.0")));
+        value = results.forExpression("DecimalIntervalStart").value();
+        assertThat(value, is(new BigDecimal("1.0")));
 
-        result = evaluationResult.forExpression("QuantityIntervalStart").value();
-        Assert.assertTrue(((Quantity) result)
+        value = results.forExpression("QuantityIntervalStart").value();
+        Assert.assertTrue(((Quantity) value)
                 .equal(new Quantity().withValue(new BigDecimal("1.0")).withUnit("g")));
 
-        result = evaluationResult.forExpression("DateTimeIntervalStart").value();
+        value = results.forExpression("DateTimeIntervalStart").value();
         Assert.assertTrue(
-                EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2016, 5, 1, 0, 0, 0, 0)));
+                EquivalentEvaluator.equivalent(value, new DateTime(bigDecimalZoneOffset, 2016, 5, 1, 0, 0, 0, 0)));
 
-        result = evaluationResult.forExpression("TimeIntervalStart").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(0, 0, 0, 0)));
+        value = results.forExpression("TimeIntervalStart").value();
+        Assert.assertTrue(EquivalentEvaluator.equivalent(value, new Time(0, 0, 0, 0)));
 
-        result = evaluationResult.forExpression("TestStartsNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("TestStartsNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("IntegerIntervalStartsTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("IntegerIntervalStartsTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("IntegerIntervalStartsFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("IntegerIntervalStartsFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DecimalIntervalStartsTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DecimalIntervalStartsTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DecimalIntervalStartsFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DecimalIntervalStartsFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("QuantityIntervalStartsTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("QuantityIntervalStartsTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("QuantityIntervalStartsFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("QuantityIntervalStartsFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DateTimeStartsTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DateTimeStartsTrue").value();
+        assertThat(value, is(true));
 
-        //        result = evaluationResult.forExpression("DateTimeStartsNull").value();
-        //        assertThat(result, is(nullValue()));
+        //        value = results.forExpression("DateTimeStartsNull").value();
+        //        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("DateTimeStartsFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DateTimeStartsFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TimeStartsTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TimeStartsTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TimeStartsFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TimeStartsFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TestUnionNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("TestUnionNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("IntegerIntervalUnion1To15").value();
-        Assert.assertTrue(((Interval) result).equal(new Interval(1, true, 15, true)));
+        value = results.forExpression("IntegerIntervalUnion1To15").value();
+        Assert.assertTrue(((Interval) value).equal(new Interval(1, true, 15, true)));
 
-        result = evaluationResult.forExpression("IntegerIntervalUnionNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("IntegerIntervalUnionNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("DecimalIntervalUnion1To15").value();
+        value = results.forExpression("DecimalIntervalUnion1To15").value();
         Assert.assertTrue(
-                ((Interval) result).equal(new Interval(new BigDecimal("1.0"), true, new BigDecimal("15.0"), true)));
+                ((Interval) value).equal(new Interval(new BigDecimal("1.0"), true, new BigDecimal("15.0"), true)));
 
-        result = evaluationResult.forExpression("DecimalIntervalUnionNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("DecimalIntervalUnionNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("QuantityIntervalUnion1To15").value();
-        Assert.assertTrue(((Interval) result)
+        value = results.forExpression("QuantityIntervalUnion1To15").value();
+        Assert.assertTrue(((Interval) value)
                 .equal(new Interval(
                         new Quantity().withValue(new BigDecimal("1.0")).withUnit("g"),
                         true,
                         new Quantity().withValue(new BigDecimal("15.0")).withUnit("g"),
                         true)));
 
-        result = evaluationResult.forExpression("QuantityIntervalUnionNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("QuantityIntervalUnionNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("DateTimeUnion").value();
+        value = results.forExpression("DateTimeUnion").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(
-                ((Interval) result).getStart(), new DateTime(bigDecimalZoneOffset, 2012, 1, 5)));
+                ((Interval) value).getStart(), new DateTime(bigDecimalZoneOffset, 2012, 1, 5)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(
-                ((Interval) result).getEnd(), new DateTime(bigDecimalZoneOffset, 2012, 1, 28)));
+                ((Interval) value).getEnd(), new DateTime(bigDecimalZoneOffset, 2012, 1, 28)));
 
-        result = evaluationResult.forExpression("DateTimeUnionNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("DateTimeUnionNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("TimeUnion").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((Interval) result).getStart(), new Time(5, 59, 59, 999)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((Interval) result).getEnd(), new Time(20, 59, 59, 999)));
+        value = results.forExpression("TimeUnion").value();
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((Interval) value).getStart(), new Time(5, 59, 59, 999)));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((Interval) value).getEnd(), new Time(20, 59, 59, 999)));
 
-        result = evaluationResult.forExpression("TimeUnionNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("TimeUnionNull").value();
+        assertThat(value, is(nullValue()));
     }
 }

@@ -276,8 +276,8 @@ public class TestDstu3ModelResolver {
 
         Patient p = new Patient();
 
-        Object result = resolver.resolvePath(p, "not-a-path");
-        assertNull(result);
+        var value = resolver.resolvePath(p, "not-a-path");
+        assertNull(value);
     }
 
     @Test
@@ -290,8 +290,8 @@ public class TestDstu3ModelResolver {
         q.setUnit("1");
         SimpleQuantity sq = resolver.castToSimpleQuantity(q);
 
-        Object result = resolver.resolvePath(sq, "comparator");
-        assertNull(result);
+        var value = resolver.resolvePath(sq, "comparator");
+        assertNull(value);
     }
 
     @Test
@@ -301,7 +301,7 @@ public class TestDstu3ModelResolver {
 
         DateTimeType dt = new DateTimeType();
 
-        Object result = resolver.resolvePath(dt, "value");
-        assertNull(result);
+        var value = resolver.resolvePath(dt, "value");
+        assertNull(value);
     }
 }

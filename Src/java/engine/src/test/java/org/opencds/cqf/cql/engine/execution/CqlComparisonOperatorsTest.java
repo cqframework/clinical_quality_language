@@ -28,214 +28,212 @@ public class CqlComparisonOperatorsTest extends CqlTestBase {
     @Test
     public void test_all_comparison_operators_tests() {
         var eng = getEngine(testCompilerOptions());
-        var evaluationResult = eng.evaluate(toElmIdentifier("CqlComparisonOperatorsTest"));
+        var results = eng.evaluate(toElmIdentifier("CqlComparisonOperatorsTest"));
 
-        Object result = evaluationResult.forExpression("BetweenIntTrue").value();
-        assertThat(result, is(true));
+        Object value = results.forExpression("BetweenIntTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("SimpleEqTrueTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("SimpleEqTrueTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("SimpleEqTrueFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("SimpleEqTrueFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("SimpleEqFalseFalse").value();
-        assertThat(result, is(true));
+        value = results.forExpression("SimpleEqFalseFalse").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("SimpleEqFalseTrue").value();
-        assertThat(result, is(false));
+        value = results.forExpression("SimpleEqFalseTrue").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("SimpleEqNullNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("SimpleEqNullNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("SimpleEqTrueNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("SimpleEqTrueNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("SimpleEqNullTrue").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("SimpleEqNullTrue").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("SimpleEqInt1Int1").value();
-        assertThat(result, is(true));
+        value = results.forExpression("SimpleEqInt1Int1").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("SimpleEqInt1Int2").value();
-        assertThat(result, is(false));
+        value = results.forExpression("SimpleEqInt1Int2").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("SimpleEqInt1Int2Long").value();
-        assertThat(result, is(false));
+        value = results.forExpression("SimpleEqInt1Int2Long").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("SimpleEqStringAStringA").value();
-        assertThat(result, is(true));
+        value = results.forExpression("SimpleEqStringAStringA").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("SimpleEqStringAStringB").value();
-        assertThat(result, is(false));
+        value = results.forExpression("SimpleEqStringAStringB").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("SimpleEqFloat1Float1").value();
-        assertThat(result, is(true));
+        value = results.forExpression("SimpleEqFloat1Float1").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("SimpleEqFloat1Float1WithZ").value();
-        assertThat(result, is(true));
+        value = results.forExpression("SimpleEqFloat1Float1WithZ").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult
-                .forExpression("SimpleEqFloat1Float1WithPrecisionAndZ")
-                .value();
-        assertThat(result, is(false));
+        value = results.forExpression("SimpleEqFloat1Float1WithPrecisionAndZ").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("SimpleEqFloat1Float2").value();
-        assertThat(result, is(false));
+        value = results.forExpression("SimpleEqFloat1Float2").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("SimpleEqFloat1Int1").value();
-        assertThat(result, is(true));
+        value = results.forExpression("SimpleEqFloat1Int1").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("SimpleEqFloat1Int2").value();
-        assertThat(result, is(false));
+        value = results.forExpression("SimpleEqFloat1Int2").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("QuantityEqCM1CM1").value();
-        assertThat(result, is(true));
+        value = results.forExpression("QuantityEqCM1CM1").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("QuantityEqDiffPrecision").value();
-        assertThat(result, is(true));
+        value = results.forExpression("QuantityEqDiffPrecision").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("RatioEqual").value();
-        assertThat(result, is(true));
+        value = results.forExpression("RatioEqual").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("RatioNotEqual").value();
-        assertThat(result, is(false));
+        value = results.forExpression("RatioNotEqual").value();
+        assertThat(value, is(false));
 
         // TODO: Quantity unit comparison is not implemented yet
-        // result = evaluationResult.forExpression("QuantityEqCM1M01").value();
-        // assertThat(result, is(true));
+        // value = results.forExpression("QuantityEqCM1M01").value();
+        // assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TupleEqJohnJohn").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TupleEqJohnJohn").value();
+        assertThat(value, is(true));
 
         // TODO - this test should actually throw a translation error, but due to a bug in the translator it isn't -
         // remove once bug is resolved
-        //        result = evaluationResult.forExpression("TupleEqJohnJohnFalse").value();
-        //        assertThat(result, is(false));
+        //        value = results.forExpression("TupleEqJohnJohnFalse").value();
+        //        assertThat(value, is(false));
 
         // TODO - this test should actually throw a translation error, but due to a bug in the translator it isn't -
         // remove once bug is resolved
-        //        result = evaluationResult.forExpression("TupleEqJohnJohnFalse2").value();
-        //        assertThat(result, is(false));
+        //        value = results.forExpression("TupleEqJohnJohnFalse2").value();
+        //        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TupleEqJohnJane").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TupleEqJohnJane").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TupleEqJohn1John2").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TupleEqJohn1John2").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TupleEqDateTimeTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TupleEqDateTimeTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TupleEqDateTimeFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TupleEqDateTimeFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TupleEqTimeTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TupleEqTimeTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TupleEqTimeFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TupleEqTimeFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DateTimeEqTodayToday").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DateTimeEqTodayToday").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DateTimeEqJanJan").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DateTimeEqJanJan").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DateTimeEqJanJuly").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DateTimeEqJanJuly").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DateTimeEqNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("DateTimeEqNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("DateTimeUTC").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DateTimeUTC").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DateTimeEqTodayYesterday").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DateTimeEqTodayYesterday").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TimeEq10A10A").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TimeEq10A10A").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TimeEq10A10P").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TimeEq10A10P").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("GreaterZZ").value();
-        assertThat(result, is(false));
+        value = results.forExpression("GreaterZZ").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("GreaterLong").value();
-        assertThat(result, is(false));
+        value = results.forExpression("GreaterLong").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("GreaterZ1").value();
-        assertThat(result, is(false));
+        value = results.forExpression("GreaterZ1").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("GreaterZNeg1").value();
-        assertThat(result, is(true));
+        value = results.forExpression("GreaterZNeg1").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("GreaterDecZZ").value();
-        assertThat(result, is(false));
+        value = results.forExpression("GreaterDecZZ").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("GreaterDecZ1").value();
-        assertThat(result, is(false));
+        value = results.forExpression("GreaterDecZ1").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("GreaterDecZNeg1").value();
-        assertThat(result, is(true));
+        value = results.forExpression("GreaterDecZNeg1").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("GreaterCM0CM0").value();
-        assertThat(result, is(false));
+        value = results.forExpression("GreaterCM0CM0").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("GreaterCM0CM1").value();
-        assertThat(result, is(false));
+        value = results.forExpression("GreaterCM0CM1").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("GreaterCM0NegCM1").value();
-        assertThat(result, is(true));
-
-        // TODO: Quantity unit comparison is not implemented yet
-        // result = evaluationResult.forExpression("GreaterM1CM1").value();
-        // assertThat(result, is(true));
+        value = results.forExpression("GreaterCM0NegCM1").value();
+        assertThat(value, is(true));
 
         // TODO: Quantity unit comparison is not implemented yet
-        // result = evaluationResult.forExpression("GreaterM1CM10").value();
-        // assertThat(result, is(true));
+        // value = results.forExpression("GreaterM1CM1").value();
+        // assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("GreaterAA").value();
-        assertThat(result, is(false));
+        // TODO: Quantity unit comparison is not implemented yet
+        // value = results.forExpression("GreaterM1CM10").value();
+        // assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("GreaterAB").value();
-        assertThat(result, is(false));
+        value = results.forExpression("GreaterAA").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("GreaterBA").value();
-        assertThat(result, is(true));
+        value = results.forExpression("GreaterAB").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("GreaterAThanAA").value();
-        assertThat(result, is(false));
+        value = results.forExpression("GreaterBA").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("GreaterAAThanA").value();
-        assertThat(result, is(true));
+        value = results.forExpression("GreaterAThanAA").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("GreaterJackJill").value();
-        assertThat(result, is(false));
+        value = results.forExpression("GreaterAAThanA").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DateTimeGreaterTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("GreaterJackJill").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DateTimeGreaterFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DateTimeGreaterTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TimeGreaterTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DateTimeGreaterFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TimeGreaterFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TimeGreaterTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("UncertaintyGreaterNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("TimeGreaterFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("UncertaintyGreaterTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("UncertaintyGreaterNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("UncertaintyGreaterFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("UncertaintyGreaterTrue").value();
+        assertThat(value, is(true));
+
+        value = results.forExpression("UncertaintyGreaterFalse").value();
+        assertThat(value, is(false));
 
         try {
             GreaterEvaluator.greater(1, "one", engine.getState());
@@ -244,434 +242,431 @@ public class CqlComparisonOperatorsTest extends CqlTestBase {
             // pass
         }
 
-        result = evaluationResult.forExpression("GreaterOrEqualZZ").value();
-        assertThat(result, is(true));
+        value = results.forExpression("GreaterOrEqualZZ").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("GreaterOrEqualZ1").value();
-        assertThat(result, is(false));
+        value = results.forExpression("GreaterOrEqualZ1").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("GreaterOrEqualZ1Long").value();
-        assertThat(result, is(false));
+        value = results.forExpression("GreaterOrEqualZ1Long").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("GreaterOrEqualZNeg1").value();
-        assertThat(result, is(true));
+        value = results.forExpression("GreaterOrEqualZNeg1").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("GreaterOrEqualDecZZ").value();
-        assertThat(result, is(true));
+        value = results.forExpression("GreaterOrEqualDecZZ").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("GreaterOrEqualDecZ1").value();
-        assertThat(result, is(false));
+        value = results.forExpression("GreaterOrEqualDecZ1").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("GreaterOrEqualDecZNeg1").value();
-        assertThat(result, is(true));
+        value = results.forExpression("GreaterOrEqualDecZNeg1").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("GreaterOrEqualCM0CM0").value();
-        assertThat(result, is(true));
+        value = results.forExpression("GreaterOrEqualCM0CM0").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("GreaterOrEqualCM0CM1").value();
-        assertThat(result, is(false));
+        value = results.forExpression("GreaterOrEqualCM0CM1").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("GreaterOrEqualCM0NegCM1").value();
-        assertThat(result, is(true));
+        value = results.forExpression("GreaterOrEqualCM0NegCM1").value();
+        assertThat(value, is(true));
 
         // TODO: Quantity unit comparison is not implemented yet
-        // result = evaluationResult.forExpression("GreaterOrEqualM1CM1").value();
-        // assertThat(result, is(true));
+        // value = results.forExpression("GreaterOrEqualM1CM1").value();
+        // assertThat(value, is(true));
         //
-        // result = evaluationResult.forExpression("GreaterOrEqualM1CM10").value();
-        // assertThat(result, is(true));
+        // value = results.forExpression("GreaterOrEqualM1CM10").value();
+        // assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("GreaterOrEqualAA").value();
-        assertThat(result, is(true));
+        value = results.forExpression("GreaterOrEqualAA").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("GreaterOrEqualAB").value();
-        assertThat(result, is(false));
+        value = results.forExpression("GreaterOrEqualAB").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("GreaterOrEqualBA").value();
-        assertThat(result, is(true));
+        value = results.forExpression("GreaterOrEqualBA").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("GreaterOrEqualAThanAA").value();
-        assertThat(result, is(false));
+        value = results.forExpression("GreaterOrEqualAThanAA").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("GreaterOrEqualAAThanA").value();
-        assertThat(result, is(true));
+        value = results.forExpression("GreaterOrEqualAAThanA").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("GreaterOrEqualJackJill").value();
-        assertThat(result, is(false));
+        value = results.forExpression("GreaterOrEqualJackJill").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DateTimeGreaterEqTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DateTimeGreaterEqTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DateTimeGreaterEqTrue2").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DateTimeGreaterEqTrue2").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DateTimeGreaterEqFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DateTimeGreaterEqFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TimeGreaterEqTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TimeGreaterEqTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TimeGreaterEqTrue2").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TimeGreaterEqTrue2").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TimeGreaterEqFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TimeGreaterEqFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("UncertaintyGreaterEqualNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("UncertaintyGreaterEqualNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("UncertaintyGreaterEqualTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("UncertaintyGreaterEqualTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("UncertaintyGreaterEqualFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("UncertaintyGreaterEqualFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("LessZZ").value();
-        assertThat(result, is(false));
+        value = results.forExpression("LessZZ").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("LessZ1").value();
-        assertThat(result, is(true));
+        value = results.forExpression("LessZ1").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("LessLong").value();
-        assertThat(result, is(true));
+        value = results.forExpression("LessLong").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("LessLongNeg").value();
-        assertThat(result, is(true));
+        value = results.forExpression("LessLongNeg").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("LessZNeg1").value();
-        assertThat(result, is(false));
+        value = results.forExpression("LessZNeg1").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("LessDecZZ").value();
-        assertThat(result, is(false));
+        value = results.forExpression("LessDecZZ").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("LessDecZ1").value();
-        assertThat(result, is(true));
+        value = results.forExpression("LessDecZ1").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("LessDecZNeg1").value();
-        assertThat(result, is(false));
+        value = results.forExpression("LessDecZNeg1").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("LessCM0CM0").value();
-        assertThat(result, is(false));
+        value = results.forExpression("LessCM0CM0").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("LessCM0CM1").value();
-        assertThat(result, is(true));
+        value = results.forExpression("LessCM0CM1").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("LessCM0NegCM1").value();
-        assertThat(result, is(false));
+        value = results.forExpression("LessCM0NegCM1").value();
+        assertThat(value, is(false));
 
         // TODO: Quantity unit comparison is not implemented yet
-        // result = evaluationResult.forExpression("LessM1CM1").value();
-        // assertThat(result, is(false));
+        // value = results.forExpression("LessM1CM1").value();
+        // assertThat(value, is(false));
 
-        // result = evaluationResult.forExpression("LessM1CM10").value();
-        // assertThat(result, is(false));
+        // value = results.forExpression("LessM1CM10").value();
+        // assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("LessAA").value();
-        assertThat(result, is(false));
+        value = results.forExpression("LessAA").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("LessAB").value();
-        assertThat(result, is(true));
+        value = results.forExpression("LessAB").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("LessBA").value();
-        assertThat(result, is(false));
+        value = results.forExpression("LessBA").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("LessAThanAA").value();
-        assertThat(result, is(true));
+        value = results.forExpression("LessAThanAA").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("LessAAThanA").value();
-        assertThat(result, is(false));
+        value = results.forExpression("LessAAThanA").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("LessJackJill").value();
-        assertThat(result, is(true));
+        value = results.forExpression("LessJackJill").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DateTimeLessTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DateTimeLessTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DateTimeLessFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DateTimeLessFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TimeLessTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TimeLessTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TimeLessFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TimeLessFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("UncertaintyLessNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("UncertaintyLessNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("UncertaintyLessTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("UncertaintyLessTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("UncertaintyLessFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("UncertaintyLessFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("LessOrEqualZZ").value();
-        assertThat(result, is(true));
+        value = results.forExpression("LessOrEqualZZ").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("LessOrEqualZ1").value();
-        assertThat(result, is(true));
+        value = results.forExpression("LessOrEqualZ1").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("LessOrEqualZ1Long").value();
-        assertThat(result, is(true));
+        value = results.forExpression("LessOrEqualZ1Long").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("LessOrEqualZNeg1").value();
-        assertThat(result, is(false));
+        value = results.forExpression("LessOrEqualZNeg1").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("LessOrEqualDecZZ").value();
-        assertThat(result, is(true));
+        value = results.forExpression("LessOrEqualDecZZ").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("LessOrEqualDecZ1").value();
-        assertThat(result, is(true));
+        value = results.forExpression("LessOrEqualDecZ1").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("LessOrEqualDecZNeg1").value();
-        assertThat(result, is(false));
+        value = results.forExpression("LessOrEqualDecZNeg1").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("LessOrEqualCM0CM0").value();
-        assertThat(result, is(true));
+        value = results.forExpression("LessOrEqualCM0CM0").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("LessOrEqualCM0CM1").value();
-        assertThat(result, is(true));
+        value = results.forExpression("LessOrEqualCM0CM1").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("LessOrEqualCM0NegCM1").value();
-        assertThat(result, is(false));
+        value = results.forExpression("LessOrEqualCM0NegCM1").value();
+        assertThat(value, is(false));
 
         // TODO: uncomment once quantity unit comparison is implemented
-        // result = evaluationResult.forExpression("LessOrEqualM1CM1").value();
-        // assertThat(result, is(false));
+        // value = results.forExpression("LessOrEqualM1CM1").value();
+        // assertThat(value, is(false));
         //
-        // result = evaluationResult.forExpression("LessOrEqualM1CM10").value();
-        // assertThat(result, is(false));
+        // value = results.forExpression("LessOrEqualM1CM10").value();
+        // assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("LessOrEqualAA").value();
-        assertThat(result, is(true));
+        value = results.forExpression("LessOrEqualAA").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("LessOrEqualAB").value();
-        assertThat(result, is(true));
+        value = results.forExpression("LessOrEqualAB").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("LessOrEqualBA").value();
-        assertThat(result, is(false));
+        value = results.forExpression("LessOrEqualBA").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("LessOrEqualAThanAA").value();
-        assertThat(result, is(true));
+        value = results.forExpression("LessOrEqualAThanAA").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("LessOrEqualAAThanA").value();
-        assertThat(result, is(false));
+        value = results.forExpression("LessOrEqualAAThanA").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("LessOrEqualJackJill").value();
-        assertThat(result, is(true));
+        value = results.forExpression("LessOrEqualJackJill").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DateTimeLessEqTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DateTimeLessEqTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DateTimeLessEqTrue2").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DateTimeLessEqTrue2").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DateTimeLessEqFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DateTimeLessEqFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TimeLessEqTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TimeLessEqTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TimeLessEqTrue2").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TimeLessEqTrue2").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TimeLessEqFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TimeLessEqFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("UncertaintyLessEqualNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("UncertaintyLessEqualNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("UncertaintyLessEqualTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("UncertaintyLessEqualTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("UncertaintyLessEqualFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("UncertaintyLessEqualFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("EquivTrueTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("EquivTrueTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("EquivTrueFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("EquivTrueFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("EquivFalseFalse").value();
-        assertThat(result, is(true));
+        value = results.forExpression("EquivFalseFalse").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("EquivFalseTrue").value();
-        assertThat(result, is(false));
+        value = results.forExpression("EquivFalseTrue").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("EquivNullNull").value();
-        assertThat(result, is(true));
+        value = results.forExpression("EquivNullNull").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("EquivTrueNull").value();
-        assertThat(result, is(false));
+        value = results.forExpression("EquivTrueNull").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("EquivNullTrue").value();
-        assertThat(result, is(false));
+        value = results.forExpression("EquivNullTrue").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("EquivInt1Int1").value();
-        assertThat(result, is(true));
+        value = results.forExpression("EquivInt1Int1").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("EquivInt1Int2").value();
-        assertThat(result, is(false));
+        value = results.forExpression("EquivInt1Int2").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("EquivStringAStringA").value();
-        assertThat(result, is(true));
+        value = results.forExpression("EquivStringAStringA").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("EquivStringAStringB").value();
-        assertThat(result, is(false));
+        value = results.forExpression("EquivStringAStringB").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("EquivStringIgnoreCase").value();
-        assertThat(result, is(true));
+        value = results.forExpression("EquivStringIgnoreCase").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("EquivFloat1Float1").value();
-        assertThat(result, is(true));
+        value = results.forExpression("EquivFloat1Float1").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("EquivFloat1Float2").value();
-        assertThat(result, is(false));
+        value = results.forExpression("EquivFloat1Float2").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("EquivFloat1Float1WithZ").value();
-        assertThat(result, is(true));
+        value = results.forExpression("EquivFloat1Float1WithZ").value();
+        assertThat(value, is(true));
 
-        result =
-                evaluationResult.forExpression("EquivFloat1Float1WithPrecision").value();
-        assertThat(result, is(true));
+        value = results.forExpression("EquivFloat1Float1WithPrecision").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult
-                .forExpression("EquivFloat1Float1WithPrecisionAndZ")
-                .value();
-        assertThat(result, is(true));
+        value = results.forExpression("EquivFloat1Float1WithPrecisionAndZ").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("EquivFloatTrailingZero").value();
-        assertThat(result, is(true));
+        value = results.forExpression("EquivFloatTrailingZero").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("EquivFloat1Int1").value();
-        assertThat(result, is(true));
+        value = results.forExpression("EquivFloat1Int1").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("EquivFloat1Int2").value();
-        assertThat(result, is(false));
+        value = results.forExpression("EquivFloat1Int2").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("EquivEqCM1CM1").value();
-        assertThat(result, is(true));
+        value = results.forExpression("EquivEqCM1CM1").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("RatioEquivalent").value();
-        assertThat(result, is(true));
+        value = results.forExpression("RatioEquivalent").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("RatioNotEquivalent").value();
-        assertThat(result, is(false));
+        value = results.forExpression("RatioNotEquivalent").value();
+        assertThat(value, is(false));
 
         // TODO: Quantity unit comparison is not implemented yet
-        // result = evaluationResult.forExpression("EquivEqCM1M01").value();
-        // assertThat(result, is(true));
+        // value = results.forExpression("EquivEqCM1M01").value();
+        // assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("EquivTupleJohnJohn").value();
-        assertThat(result, is(true));
+        value = results.forExpression("EquivTupleJohnJohn").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("EquivTupleJohnJohnWithNulls").value();
-        assertThat(result, is(true));
+        value = results.forExpression("EquivTupleJohnJohnWithNulls").value();
+        assertThat(value, is(true));
 
         // TODO - this test should actually throw a translation error, but due to a bug in the translator it isn't -
         // remove once bug is resolved
-        //        result = evaluationResult.forExpression("EquivTupleJohnJohnFalse").value();
-        //        assertThat(result, is(false));
+        //        value = results.forExpression("EquivTupleJohnJohnFalse").value();
+        //        assertThat(value, is(false));
 
         // TODO - this test should actually throw a translation error, but due to a bug in the translator it isn't -
         // remove once bug is resolved
-        //        result = evaluationResult.forExpression("EquivTupleJohnJohnFalse2").value();
-        //        assertThat(result, is(false));
+        //        value = results.forExpression("EquivTupleJohnJohnFalse2").value();
+        //        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("EquivTupleJohnJane").value();
-        assertThat(result, is(false));
+        value = results.forExpression("EquivTupleJohnJane").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("EquivTupleJohn1John2").value();
-        assertThat(result, is(false));
+        value = results.forExpression("EquivTupleJohn1John2").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("EquivDateTimeTodayToday").value();
-        assertThat(result, is(true));
+        value = results.forExpression("EquivDateTimeTodayToday").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("EquivDateTimeTodayYesterday").value();
-        assertThat(result, is(false));
+        value = results.forExpression("EquivDateTimeTodayYesterday").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("EquivTime10A10A").value();
-        assertThat(result, is(true));
+        value = results.forExpression("EquivTime10A10A").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("EquivTime10A10P").value();
-        assertThat(result, is(false));
+        value = results.forExpression("EquivTime10A10P").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("SimpleNotEqTrueTrue").value();
-        assertThat(result, is(false));
+        value = results.forExpression("SimpleNotEqTrueTrue").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("SimpleNotEqTrueFalse").value();
-        assertThat(result, is(true));
+        value = results.forExpression("SimpleNotEqTrueFalse").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("SimpleNotEqFalseFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("SimpleNotEqFalseFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("SimpleNotEqFalseTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("SimpleNotEqFalseTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("SimpleNotEqNullNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("SimpleNotEqNullNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("SimpleNotEqTrueNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("SimpleNotEqTrueNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("SimpleNotEqNullTrue").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("SimpleNotEqNullTrue").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("SimpleNotEqInt1Int1").value();
-        assertThat(result, is(false));
+        value = results.forExpression("SimpleNotEqInt1Int1").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("SimpleNotEqInt1Int2").value();
-        assertThat(result, is(true));
+        value = results.forExpression("SimpleNotEqInt1Int2").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("SimpleNotEqInt1Int2Long").value();
-        assertThat(result, is(true));
+        value = results.forExpression("SimpleNotEqInt1Int2Long").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("SimpleNotEqStringAStringA").value();
-        assertThat(result, is(false));
+        value = results.forExpression("SimpleNotEqStringAStringA").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("SimpleNotEqStringAStringB").value();
-        assertThat(result, is(true));
+        value = results.forExpression("SimpleNotEqStringAStringB").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("SimpleNotEqFloat1Float1").value();
-        assertThat(result, is(false));
+        value = results.forExpression("SimpleNotEqFloat1Float1").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("SimpleNotEqFloat1Float2").value();
-        assertThat(result, is(true));
+        value = results.forExpression("SimpleNotEqFloat1Float2").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("SimpleNotEqFloat1Int1").value();
-        assertThat(result, is(false));
+        value = results.forExpression("SimpleNotEqFloat1Int1").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("SimpleNotEqFloat1Int2").value();
-        assertThat(result, is(true));
+        value = results.forExpression("SimpleNotEqFloat1Int2").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("QuantityNotEqCM1CM1").value();
-        assertThat(result, is(false));
+        value = results.forExpression("QuantityNotEqCM1CM1").value();
+        assertThat(value, is(false));
 
         // TODO: Quantity unit comparison is not implemented yet
-        // result = evaluationResult.forExpression("QuantityNotEqCM1M01").value();
-        // assertThat(result, is(false));
+        // value = results.forExpression("QuantityNotEqCM1M01").value();
+        // assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TupleNotEqJohnJohn").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TupleNotEqJohnJohn").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TupleNotEqJohnJane").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TupleNotEqJohnJane").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TupleNotEqJohn1John2").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TupleNotEqJohn1John2").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("DateTimeNotEqTodayToday").value();
-        assertThat(result, is(false));
+        value = results.forExpression("DateTimeNotEqTodayToday").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("DateTimeNotEqTodayYesterday").value();
-        assertThat(result, is(true));
+        value = results.forExpression("DateTimeNotEqTodayYesterday").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TimeNotEq10A10A").value();
-        assertThat(result, is(false));
+        value = results.forExpression("TimeNotEq10A10A").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TimeNotEq10A10P").value();
-        assertThat(result, is(true));
+        value = results.forExpression("TimeNotEq10A10P").value();
+        assertThat(value, is(true));
     }
 
     protected CqlCompilerOptions testCompilerOptions() {

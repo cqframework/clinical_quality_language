@@ -44,10 +44,6 @@ public class TranslatorHelper {
         return new Environment(getLibraryManager(), null, terminologyProvider);
     }
 
-    public static CqlEngine getengine(TerminologyProvider terminologyProvider) {
-        return getEngine(getEnvironment(terminologyProvider));
-    }
-
     public static CqlEngine getEngine(Environment environment) {
         return new CqlEngine(environment);
     }

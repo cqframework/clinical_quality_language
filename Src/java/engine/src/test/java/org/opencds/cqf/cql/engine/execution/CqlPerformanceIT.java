@@ -65,15 +65,13 @@ public class CqlPerformanceIT extends CqlTestBase {
         // Warm up the JVM
         for (int i = 0; i < ITERATIONS; i++) {
             CqlEngine engine = new CqlEngine(environment);
-            EvaluationResult evaluationResult =
-                    engine.evaluate(libraryId, null, null, null, null, evaluationZonedDateTime);
+            var results = engine.evaluate(libraryId, null, null, null, null, evaluationZonedDateTime);
         }
 
         Instant start = Instant.now();
         for (int i = 0; i < ITERATIONS; i++) {
             CqlEngine engine = new CqlEngine(environment);
-            EvaluationResult evaluationResult =
-                    engine.evaluate(libraryId, null, null, null, null, evaluationZonedDateTime);
+            var results = engine.evaluate(libraryId, null, null, null, null, evaluationZonedDateTime);
         }
         Instant finish = Instant.now();
 

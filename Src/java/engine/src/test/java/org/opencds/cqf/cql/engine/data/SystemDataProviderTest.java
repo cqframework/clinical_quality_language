@@ -14,8 +14,8 @@ public class SystemDataProviderTest {
 
         Date date = new Date(2019, Month.JANUARY.getValue(), 1);
 
-        Object result = provider.resolvePath(date, "notapath");
-        assertNull(result);
+        var value = provider.resolvePath(date, "notapath");
+        assertNull(value);
     }
 
     @Test

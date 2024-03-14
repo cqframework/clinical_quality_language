@@ -20,8 +20,8 @@ public class TestFhirLibrary {
           //BaseFhirDataProvider provider = new FhirDataProviderStu3().setEndpoint("http://wildfhir.aegis.net/fhir");
           context.registerDataProvider("http://hl7.org/fhir", provider);
 
-          Object result = context.resolveExpressionRef("BP: Systolic").evaluate(context);
-          assertThat(result, instanceOf(Iterable.class));
+          var value = context.resolveExpressionRef("BP: Systolic").evaluate(context);
+          assertThat(value, instanceOf(Iterable.class));
           for (Object element : (Iterable<?>)result) {
               assertThat(element, instanceOf(Observation.class));
               Observation observation = (Observation)element;
@@ -29,7 +29,7 @@ public class TestFhirLibrary {
           }
 
           result = context.resolveExpressionRef("BP: Diastolic").evaluate(context);
-          assertThat(result, instanceOf(Iterable.class));
+          assertThat(value, instanceOf(Iterable.class));
           for (Object element : (Iterable<?>)result) {
               assertThat(element, instanceOf(Observation.class));
               Observation observation = (Observation)element;
@@ -55,8 +55,8 @@ public class TestFhirLibrary {
           //BaseFhirDataProvider provider = new FhirDataProviderStu3().setEndpoint("http://wildfhir.aegis.net/fhir");
           context.registerDataProvider("http://hl7.org/fhir", provider);
 
-          Object result = context.resolveExpressionRef("Breastfeeding Intention Assessment").evaluate(context);
-          assertThat(result, instanceOf(Iterable.class));
+          var value = context.resolveExpressionRef("Breastfeeding Intention Assessment").evaluate(context);
+          assertThat(value, instanceOf(Iterable.class));
           for (Object element : (Iterable<?>)result) {
               assertThat(element, instanceOf(RiskAssessment.class));
           }

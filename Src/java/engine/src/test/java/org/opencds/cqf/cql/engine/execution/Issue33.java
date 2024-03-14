@@ -13,13 +13,11 @@ public class Issue33 extends CqlTestBase {
     public void testInterval() {
         final BigDecimal bigDecimalZoneOffset = getBigDecimalZoneOffset();
 
-        EvaluationResult evaluationResult;
-
-        evaluationResult = engine.evaluate(toElmIdentifier("Issue33"));
-        Object result = evaluationResult.forExpression("Issue33").value();
+        var results = engine.evaluate(toElmIdentifier("Issue33"));
+        Object value = results.forExpression("Issue33").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(
-                ((Interval) result).getStart(), new DateTime(bigDecimalZoneOffset, 2017, 12, 20, 11, 0, 0)));
+                ((Interval) value).getStart(), new DateTime(bigDecimalZoneOffset, 2017, 12, 20, 11, 0, 0)));
         Assert.assertTrue(EquivalentEvaluator.equivalent(
-                ((Interval) result).getEnd(), new DateTime(bigDecimalZoneOffset, 2017, 12, 20, 23, 59, 59, 999)));
+                ((Interval) value).getEnd(), new DateTime(bigDecimalZoneOffset, 2017, 12, 20, 23, 59, 59, 999)));
     }
 }

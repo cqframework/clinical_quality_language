@@ -6,8 +6,6 @@ import static org.hamcrest.Matchers.nullValue;
 
 import java.math.BigDecimal;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator;
 import org.opencds.cqf.cql.engine.runtime.DateTime;
 import org.opencds.cqf.cql.engine.runtime.Time;
@@ -19,77 +17,71 @@ public class CqlNulLogicalOperatorsTest extends CqlTestBase {
     @Test
     public void test_all_null_logical_operators() {
         final BigDecimal bigDecimalZoneOffset = getBigDecimalZoneOffset();
+        var results = engine.evaluate(toElmIdentifier("CqlNullologicalOperatorsTest"));
+        var value = results.forExpression("CoalesceANull").value();
+        assertThat(value, is("a"));
 
-        Set<String> set = new HashSet<>();
-        EvaluationResult evaluationResult;
+        value = results.forExpression("CoalesceNullA").value();
+        assertThat(value, is("a"));
 
-        evaluationResult = engine.evaluate(toElmIdentifier("CqlNullologicalOperatorsTest"));
-        Object result;
+        value = results.forExpression("CoalesceEmptyList").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("CoalesceANull").value();
-        assertThat(result, is("a"));
+        value = results.forExpression("CoalesceListFirstA").value();
+        assertThat(value, is("a"));
 
-        result = evaluationResult.forExpression("CoalesceNullA").value();
-        assertThat(result, is("a"));
+        value = results.forExpression("CoalesceListLastA").value();
+        assertThat(value, is("a"));
 
-        result = evaluationResult.forExpression("CoalesceEmptyList").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("CoalesceFirstList").value();
+        assertThat(value, is(Collections.singletonList("a")));
 
-        result = evaluationResult.forExpression("CoalesceListFirstA").value();
-        assertThat(result, is("a"));
+        value = results.forExpression("CoalesceLastList").value();
+        assertThat(value, is(Collections.singletonList("a")));
 
-        result = evaluationResult.forExpression("CoalesceListLastA").value();
-        assertThat(result, is("a"));
+        value = results.forExpression("DateTimeCoalesce").value();
+        Assert.assertTrue(EquivalentEvaluator.equivalent(value, new DateTime(bigDecimalZoneOffset, 2012, 5, 18)));
 
-        result = evaluationResult.forExpression("CoalesceFirstList").value();
-        assertThat(result, is(Collections.singletonList("a")));
+        value = results.forExpression("DateTimeListCoalesce").value();
+        Assert.assertTrue(EquivalentEvaluator.equivalent(value, new DateTime(bigDecimalZoneOffset, 2012, 5, 18)));
 
-        result = evaluationResult.forExpression("CoalesceLastList").value();
-        assertThat(result, is(Collections.singletonList("a")));
+        value = results.forExpression("TimeCoalesce").value();
+        Assert.assertTrue(EquivalentEvaluator.equivalent(value, new Time(5, 15, 33, 556)));
 
-        result = evaluationResult.forExpression("DateTimeCoalesce").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2012, 5, 18)));
+        value = results.forExpression("TimeListCoalesce").value();
+        Assert.assertTrue(EquivalentEvaluator.equivalent(value, new Time(5, 15, 33, 556)));
 
-        result = evaluationResult.forExpression("DateTimeListCoalesce").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2012, 5, 18)));
+        value = results.forExpression("IsNullTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("TimeCoalesce").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(5, 15, 33, 556)));
+        value = results.forExpression("IsNullFalseEmptyString").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("TimeListCoalesce").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(5, 15, 33, 556)));
+        value = results.forExpression("IsNullAlsoFalseAbcString").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("IsNullTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("IsNullAlsoFalseNumber1").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("IsNullFalseEmptyString").value();
-        assertThat(result, is(false));
+        value = results.forExpression("IsNullAlsoFalseNumberZero").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("IsNullAlsoFalseAbcString").value();
-        assertThat(result, is(false));
+        value = results.forExpression("IsFalseFalse").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("IsNullAlsoFalseNumber1").value();
-        assertThat(result, is(false));
+        value = results.forExpression("IsFalseTrue").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("IsNullAlsoFalseNumberZero").value();
-        assertThat(result, is(false));
+        value = results.forExpression("IsFalseNull").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("IsFalseFalse").value();
-        assertThat(result, is(true));
+        value = results.forExpression("IsTrueTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("IsFalseTrue").value();
-        assertThat(result, is(false));
+        value = results.forExpression("IsTrueFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("IsFalseNull").value();
-        assertThat(result, is(false));
-
-        result = evaluationResult.forExpression("IsTrueTrue").value();
-        assertThat(result, is(true));
-
-        result = evaluationResult.forExpression("IsTrueFalse").value();
-        assertThat(result, is(false));
-
-        result = evaluationResult.forExpression("IsTrueNull").value();
-        assertThat(result, is(false));
+        value = results.forExpression("IsTrueNull").value();
+        assertThat(value, is(false));
     }
 }

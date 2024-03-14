@@ -19,7 +19,6 @@ import org.hl7.fhirpath.tests.Tests;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
 import org.opencds.cqf.cql.engine.elm.executing.ExistsEvaluator;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
-import org.opencds.cqf.cql.engine.execution.EvaluationResult;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.fhir.model.FhirModelResolver;
 import org.opencds.cqf.cql.engine.runtime.Date;
@@ -44,42 +43,42 @@ public abstract class TestFhirPath {
     }
 
     private Iterable<Object> loadExpectedResults(org.hl7.fhirpath.tests.Test test, boolean isExpressionOutputTest) {
-        List<Object> results = new ArrayList<>();
+        List<Object> values = new ArrayList<>();
         if (isExpressionOutputTest) {
-            results.add(true);
+            values.add(true);
         } else {
             if (test.getOutput() != null) {
                 for (org.hl7.fhirpath.tests.Output output : test.getOutput()) {
                     if (output.getType() != null) {
                         switch (output.getType()) {
                             case BOOLEAN:
-                                results.add(Boolean.valueOf(output.getValue()));
+                                values.add(Boolean.valueOf(output.getValue()));
                                 break;
                             case DECIMAL:
-                                results.add(new BigDecimal(output.getValue()));
+                                values.add(new BigDecimal(output.getValue()));
                                 break;
                             case DATE:
-                                results.add(new Date(output.getValue()));
+                                values.add(new Date(output.getValue()));
                                 break;
                             case DATE_TIME:
-                                results.add(new DateTime(
+                                values.add(new DateTime(
                                         output.getValue(),
                                         ZoneOffset.systemDefault().getRules().getOffset(Instant.now())));
                                 break;
                             case TIME:
-                                results.add(new Time(output.getValue()));
+                                values.add(new Time(output.getValue()));
                                 break;
                             case INTEGER:
-                                results.add(Integer.valueOf(output.getValue()));
+                                values.add(Integer.valueOf(output.getValue()));
                                 break;
                             case STRING:
-                                results.add(output.getValue());
+                                values.add(output.getValue());
                                 break;
                             case CODE:
-                                results.add(output.getValue());
+                                values.add(output.getValue());
                                 break;
                             case QUANTITY:
-                                results.add(toQuantity(output.getValue()));
+                                values.add(toQuantity(output.getValue()));
                                 break;
                             default:
                                 throw new IllegalArgumentException(
@@ -93,7 +92,7 @@ public abstract class TestFhirPath {
             }
         }
 
-        return results;
+        return values;
     }
 
     abstract Boolean compareResults(
@@ -103,14 +102,14 @@ public abstract class TestFhirPath {
             FhirModelResolver<?, ?, ?, ?, ?, ?, ?, ?> resolver);
 
     @SuppressWarnings("unchecked")
-    private Iterable<Object> ensureIterable(Object result) {
+    private Iterable<Object> ensureIterable(Object value) {
         Iterable<Object> actualResults;
-        if (result instanceof Iterable) {
-            actualResults = (Iterable<Object>) result;
+        if (value instanceof Iterable) {
+            actualResults = (Iterable<Object>) value;
         } else {
-            List<Object> results = new ArrayList<Object>();
-            results.add(result);
-            actualResults = results;
+            List<Object> values = new ArrayList<Object>();
+            values.add(value);
+            actualResults = values;
         }
         return actualResults;
     }
@@ -179,8 +178,8 @@ public abstract class TestFhirPath {
                     return;
                 } else {
                     e.printStackTrace();
-                    throw new RuntimeException(String.format(
-                            "Couldn't translate library and was expecting a result. %s.", test.getName()));
+                    throw new RuntimeException(
+                            String.format("Couldn't translate library and was expecting a value. %s.", test.getName()));
                 }
             }
 
@@ -191,16 +190,16 @@ public abstract class TestFhirPath {
                 engine.getState().setParameter(null, resource.fhirType(), resource);
             }
 
-            Object result = null;
+            Object value = null;
             boolean testPassed = false;
             String message = null;
             try {
                 VersionedIdentifier libraryId = TranslatorHelper.toElmIdentifier("TestFHIRPath");
                 Map<VersionedIdentifier, Library> map = new HashMap<>();
                 map.put(libraryId, library);
-                EvaluationResult evaluationResult = engine.evaluate(libraryId, Set.of("Test"), null, null, null, null);
+                var results = engine.evaluate(libraryId, Set.of("Test"));
 
-                result = evaluationResult.forExpression("Test").value();
+                value = results.forExpression("Test").value();
                 testPassed = invalidType.equals(InvalidType.FALSE);
             } catch (Exception e) {
                 testPassed = invalidType.equals(InvalidType.TRUE);
@@ -218,10 +217,10 @@ public abstract class TestFhirPath {
             }
 
             if (test.isPredicate() != null && test.isPredicate().booleanValue()) {
-                result = ExistsEvaluator.exists(ensureIterable(result));
+                value = ExistsEvaluator.exists(ensureIterable(value));
             }
 
-            Iterable<Object> actualResults = ensureIterable(result);
+            Iterable<Object> actualResults = ensureIterable(value);
             Iterable<Object> expectedResults = loadExpectedResults(test, isExpressionOutputTest);
             Iterator<Object> actualResultsIterator = actualResults.iterator();
             for (Object expectedResult : expectedResults) {
@@ -233,10 +232,10 @@ public abstract class TestFhirPath {
                         System.out.println(
                                 "- Expected Result: " + expectedResult + " (" + expectedResult.getClass() + ")");
                         System.out.println("- Actual Result: " + actualResult + " (" + expectedResult.getClass() + ")");
-                        throw new RuntimeException("Actual result is not equal to expected result.");
+                        throw new RuntimeException("Actual value is not equal to expected value.");
                     }
                 } else {
-                    throw new RuntimeException("Actual result is not equal to expected result.");
+                    throw new RuntimeException("Actual value is not equal to expected value.");
                 }
             }
         }

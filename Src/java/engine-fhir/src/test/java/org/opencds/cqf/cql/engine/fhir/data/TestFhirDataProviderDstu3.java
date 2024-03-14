@@ -13,7 +13,6 @@ import org.hl7.fhir.dstu3.model.ListResource;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
-import org.opencds.cqf.cql.engine.execution.EvaluationResult;
 import org.opencds.cqf.cql.engine.fhir.model.CachedDstu3FhirModelResolver;
 import org.opencds.cqf.cql.engine.fhir.model.Dstu3FhirModelResolver;
 import org.opencds.cqf.cql.engine.fhir.retrieve.FhirBundleCursor;
@@ -89,12 +88,11 @@ public class TestFhirDataProviderDstu3 extends FhirExecutionTestBase {
     // @Test
     public void testChoiceTypes() {
         CqlEngine engine = getEngine();
-        engine.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);
-        EvaluationResult evaluationResult =
-                engine.evaluate(library.getIdentifier(), Set.of("testChoiceTypes"), null, null, null, null);
+        engine.getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);
+        var results = engine.evaluate(library.getIdentifier(), Set.of("testChoiceTypes"));
 
-        Object result = evaluationResult.forExpression("testChoiceTypes").value();
-        Assert.assertTrue(result != null);
+        Object value = results.forExpression("testChoiceTypes").value();
+        Assert.assertNotNull(value);
     }
 
     // @Test
@@ -102,32 +100,28 @@ public class TestFhirDataProviderDstu3 extends FhirExecutionTestBase {
         CqlEngine engine = getEngine();
         engine.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);
         engine.getState().setContextValue("Patient", "Patient-12214");
-        EvaluationResult evaluationResult =
-                engine.evaluate(library.getIdentifier(), Set.of("testDateType"), null, null, null, null);
+        var results = engine.evaluate(library.getIdentifier(), Set.of("testDateType"));
 
-        Object result = evaluationResult.forExpression("testDateType").value();
-        Assert.assertTrue(result != null);
+        Object value = results.forExpression("testDateType").value();
+        Assert.assertNotNull(value);
     }
 
     @Test
     public void testFhirObjectEqual() {
         CqlEngine engine = getEngine();
-        engine.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);
-        EvaluationResult evaluationResult =
-                engine.evaluate(library.getIdentifier(), Set.of("testFhirObjectEqual"), null, null, null, null);
-        Object result = evaluationResult.forExpression("testFhirObjectEqual").value();
-        Assert.assertTrue((Boolean) result);
+        engine.getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);
+        var results = engine.evaluate(library.getIdentifier(), Set.of("testFhirObjectEqual"));
+        Object value = results.forExpression("testFhirObjectEqual").value();
+        Assert.assertTrue((Boolean) value);
     }
 
     @Test
     public void testFhirObjectEquivalent() {
         CqlEngine engine = getEngine();
-        engine.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);
-        EvaluationResult evaluationResult =
-                engine.evaluate(library.getIdentifier(), Set.of("testFhirObjectEquivalent"), null, null, null, null);
-        Object result =
-                evaluationResult.forExpression("testFhirObjectEquivalent").value();
-        Assert.assertTrue((Boolean) result);
+        engine.getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);
+        var results = engine.evaluate(library.getIdentifier(), Set.of("testFhirObjectEquivalent"));
+        var value = results.forExpression("testFhirObjectEquivalent").value();
+        Assert.assertTrue((Boolean) value);
     }
 
     //    TODO - fix
@@ -157,9 +151,9 @@ public class TestFhirDataProviderDstu3 extends FhirExecutionTestBase {
     //     context.enterContext("Patient");
     //     context.setContextValue("Patient", patientId);
 
-    //     Object result = context.resolveExpressionRef("Active Ambulatory Opioid
+    //     var value = context.resolveExpressionRef("Active Ambulatory Opioid
     // Rx").getExpression().evaluate(context);
-    //     Assert.assertTrue(result instanceof List && ((List) result).size() == 1);
+    //     Assert.assertTrue(value instanceof List && ((List) value).size() == 1);
     // }
 
     // @Test
@@ -264,9 +258,8 @@ public class TestFhirDataProviderDstu3 extends FhirExecutionTestBase {
         engine.getState().enterContext("Patient");
         engine.getState().setContextValue("Patient", "81ee6581-02b9-44de-b026-7401bf36643a");
 
-        EvaluationResult evaluationResult =
-                engine.evaluate(library.getIdentifier(), Set.of("GetProvenance"), null, null, null, null);
-        Object result = evaluationResult.forExpression("GetProvenance").value();
-        Assert.assertTrue(result instanceof List && ((List<?>) result).size() == 1);
+        var results = engine.evaluate(library.getIdentifier(), Set.of("GetProvenance"));
+        Object value = results.forExpression("GetProvenance").value();
+        Assert.assertTrue(value instanceof List && ((List<?>) value).size() == 1);
     }
 }
