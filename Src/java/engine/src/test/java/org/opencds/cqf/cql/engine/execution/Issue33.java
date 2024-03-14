@@ -15,7 +15,7 @@ public class Issue33 extends CqlTestBase {
 
         EvaluationResult evaluationResult;
 
-        evaluationResult = engine.evaluate(toElmIdentifier("Issue33"));
+        evaluationResult = engine.evaluate(toIdentifier("Issue33"));
         Object result = evaluationResult.forExpression("Issue33").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(
                 ((Interval) result).getStart(), new DateTime(bigDecimalZoneOffset, 2017, 12, 20, 11, 0, 0)));

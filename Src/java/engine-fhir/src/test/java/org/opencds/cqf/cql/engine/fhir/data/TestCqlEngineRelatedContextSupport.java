@@ -200,7 +200,7 @@ public class TestCqlEngineRelatedContextSupport extends FhirExecutionTestBase {
     @Nonnull
     private Object evaluate(CqlEngine cqlEngine, String expression, Pair<String, Object> initialContext) {
         final EvaluationResult evaluateResult =
-                cqlEngine.evaluate(library.getIdentifier(), Set.of(expression), initialContext, null, null, null);
+                cqlEngine.evaluate(library.getIdentifier(), Set.of(expression), initialContext);
         return evaluateResult.forExpression(expression).value();
     }
 

@@ -85,11 +85,11 @@ public class CqlTestBase {
         return translator.toELM();
     }
 
-    public static org.hl7.elm.r1.VersionedIdentifier toElmIdentifier(String name) {
+    public static org.hl7.elm.r1.VersionedIdentifier toIdentifier(String name) {
         return new org.hl7.elm.r1.VersionedIdentifier().withId(name);
     }
 
-    public static org.hl7.elm.r1.VersionedIdentifier toElmIdentifier(String name, String version) {
+    public static org.hl7.elm.r1.VersionedIdentifier toIdentifier(String name, String version) {
         return new org.hl7.elm.r1.VersionedIdentifier().withId(name).withVersion(version);
     }
 

@@ -54,7 +54,7 @@ public class TestFhirDataProviderDstu3 extends FhirExecutionTestBase {
         // BaseFhirDataProvider provider = new
         // FhirDataProviderStu3().setEndpoint("http://measure.eval.kanvix.com/cqf-ruler/baseDstu3");
         // FhirBundleCursorStu3 results = (FhirBundleCursorStu3) provider.retrieve("Patient", null, "Patient", null,
-        // null, null, null, null, null, null, null);
+        // null, null, null);
 
         assertTrue(results.iterator().hasNext());
     }
@@ -73,7 +73,7 @@ public class TestFhirDataProviderDstu3 extends FhirExecutionTestBase {
 
         // BaseFhirDataProvider provider = new
         // FhirDataProviderStu3().setEndpoint("http://measure.eval.kanvix.com/cqf-ruler/baseDstu3");
-        // Iterable<Object> results = provider.retrieve("Patient", "Patient-12214", "Patient", null, null, null, null,
+        // Iterable<Object> results = provider.retrieve("Patient", "Patient-12214", "Patient",
         // null, null, null, null);
         List<Patient> patients = new ArrayList<>();
 
@@ -89,9 +89,9 @@ public class TestFhirDataProviderDstu3 extends FhirExecutionTestBase {
     // @Test
     public void testChoiceTypes() {
         CqlEngine engine = getEngine();
-        engine.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);
+        engine.getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);
         EvaluationResult evaluationResult =
-                engine.evaluate(library.getIdentifier(), Set.of("testChoiceTypes"), null, null, null, null);
+                engine.evaluate(library.getIdentifier(), Set.of("testChoiceTypes"));
 
         Object result = evaluationResult.forExpression("testChoiceTypes").value();
         Assert.assertTrue(result != null);
@@ -100,10 +100,10 @@ public class TestFhirDataProviderDstu3 extends FhirExecutionTestBase {
     // @Test
     public void testDateType() {
         CqlEngine engine = getEngine();
-        engine.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);
+        engine.getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);
         engine.getState().setContextValue("Patient", "Patient-12214");
         EvaluationResult evaluationResult =
-                engine.evaluate(library.getIdentifier(), Set.of("testDateType"), null, null, null, null);
+                engine.evaluate(library.getIdentifier(), Set.of("testDateType"));
 
         Object result = evaluationResult.forExpression("testDateType").value();
         Assert.assertTrue(result != null);
@@ -112,9 +112,9 @@ public class TestFhirDataProviderDstu3 extends FhirExecutionTestBase {
     @Test
     public void testFhirObjectEqual() {
         CqlEngine engine = getEngine();
-        engine.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);
+        engine.getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);
         EvaluationResult evaluationResult =
-                engine.evaluate(library.getIdentifier(), Set.of("testFhirObjectEqual"), null, null, null, null);
+                engine.evaluate(library.getIdentifier(), Set.of("testFhirObjectEqual"));
         Object result = evaluationResult.forExpression("testFhirObjectEqual").value();
         Assert.assertTrue((Boolean) result);
     }
@@ -122,9 +122,9 @@ public class TestFhirDataProviderDstu3 extends FhirExecutionTestBase {
     @Test
     public void testFhirObjectEquivalent() {
         CqlEngine engine = getEngine();
-        engine.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);
+        engine.getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);
         EvaluationResult evaluationResult =
-                engine.evaluate(library.getIdentifier(), Set.of("testFhirObjectEquivalent"), null, null, null, null);
+                engine.evaluate(library.getIdentifier(), Set.of("testFhirObjectEquivalent"));
         Object result =
                 evaluationResult.forExpression("testFhirObjectEquivalent").value();
         Assert.assertTrue((Boolean) result);
@@ -176,7 +176,7 @@ public class TestFhirDataProviderDstu3 extends FhirExecutionTestBase {
 
         // BaseFhirDataProvider provider = new FhirDataProviderStu3().setEndpoint("http://fhir.hl7.de:8080/baseDstu3");
         // FhirBundleCursorStu3 results = (FhirBundleCursorStu3) provider.retrieve("Patient", null, "List", null, null,
-        // null, null, null, null, null, null);
+        // null, null);
         List<ListResource> lists = new ArrayList<>();
         int resultCount = 0;
         for (Object o : results) {
@@ -260,12 +260,12 @@ public class TestFhirDataProviderDstu3 extends FhirExecutionTestBase {
         // dstu3Provider.setTerminologyProvider(new
         // FhirTerminologyProvider().setEndpoint("http://measure.eval.kanvix.com/cqf-ruler/baseDstu3", false));
         CqlEngine engine = getEngine();
-        engine.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", dstu3Provider);
+        engine.getEnvironment().registerDataProvider("http://hl7.org/fhir", dstu3Provider);
         engine.getState().enterContext("Patient");
         engine.getState().setContextValue("Patient", "81ee6581-02b9-44de-b026-7401bf36643a");
 
         EvaluationResult evaluationResult =
-                engine.evaluate(library.getIdentifier(), Set.of("GetProvenance"), null, null, null, null);
+                engine.evaluate(library.getIdentifier(), Set.of("GetProvenance"));
         Object result = evaluationResult.forExpression("GetProvenance").value();
         Assert.assertTrue(result instanceof List && ((List<?>) result).size() == 1);
     }

@@ -17,7 +17,7 @@ public class ExpressionCacheTest extends CqlTestBase {
         EvaluationResult evaluationResult;
         engine.getCache().setExpressionCaching(true);
 
-        VersionedIdentifier libId = toElmIdentifier("ExpressionCacheTest");
+        VersionedIdentifier libId = toIdentifier("ExpressionCacheTest");
 
         evaluationResult = engine.evaluate(libId);
         Object result;

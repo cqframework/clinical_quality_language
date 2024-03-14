@@ -43,7 +43,7 @@ public class ExpandValueSetTest {
         EvaluationResult evaluationResult;
 
         evaluationResult =
-                engine.evaluate(CqlTestBase.toElmIdentifier("ExpandValueSetTest"), null, null, null, null, null);
+                engine.evaluate(CqlTestBase.toIdentifier("ExpandValueSetTest"));
 
         @SuppressWarnings("unchecked")
         List<Code> actual =

@@ -49,8 +49,8 @@ public class FhirHelpersDstu2Test {
                 FhirContext.forCached(FhirVersionEnum.DSTU2).newRestfulGenericClient(""));
         CompositeDataProvider provider = new CompositeDataProvider(modelResolver, retrieveProvider);
         // BaseFhirDataProvider provider = new FhirDataProviderDstu2();
-        engine.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", provider);
-        EvaluationResult evaluationResult = engine.evaluate(libraryId, null, null, null, null, null);
+        engine.getEnvironment().registerDataProvider("http://hl7.org/fhir", provider);
+        EvaluationResult evaluationResult = engine.evaluate(libraryId, null, null, null, null);
 
         // TODO - millis shouldn't be populated - issue with DateTime.fromJavaDate(Date date)
         Object result = evaluationResult.forExpression("TestPeriodToInterval").value();

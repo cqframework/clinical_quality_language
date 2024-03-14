@@ -12,7 +12,7 @@ public class Issue39 extends CqlTestBase {
 
         EvaluationResult evaluationResult;
 
-        evaluationResult = engine.evaluate(toElmIdentifier("Issue39"));
+        evaluationResult = engine.evaluate(toIdentifier("Issue39"));
         Object result = evaluationResult.forExpression("EquivalentIntervals").value();
         assertThat(result, is(true));
     }

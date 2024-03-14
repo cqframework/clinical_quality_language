@@ -13,7 +13,7 @@ public class SignatureOutputTests extends CqlTestBase {
 
         EvaluationResult evaluationResult;
 
-        evaluationResult = engine.evaluate(toElmIdentifier("SignatureOutputTests"));
+        evaluationResult = engine.evaluate(toIdentifier("SignatureOutputTests"));
 
         Object result = evaluationResult.forExpression("TestIntegerOverload").value();
         assertThat(result, is(new BigDecimal("1")));

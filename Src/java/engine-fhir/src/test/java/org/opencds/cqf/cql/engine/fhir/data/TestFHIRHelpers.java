@@ -14,8 +14,8 @@ public class TestFHIRHelpers extends FhirExecutionTestBase {
     public void test() {
 
         CqlEngine engine = getEngine();
-        engine.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);
-        EvaluationResult evaluationResult = engine.evaluate(library.getIdentifier(), null, null, null, null, null);
+        engine.getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);
+        EvaluationResult evaluationResult = engine.evaluate(library.getIdentifier());
 
         Object result;
 

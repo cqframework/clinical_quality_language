@@ -87,7 +87,7 @@ public class CqlEngine {
             VersionedIdentifier libraryIdentifier, String expressionName, ZonedDateTime evaluationDateTime) {
         var set = new HashSet<String>();
         set.add(expressionName);
-        var result = this.evaluate(libraryIdentifier, set, null, null, null, evaluationDateTime);
+        var result = this.evaluate(libraryIdentifier, set, null,  null, evaluationDateTime);
         return result.forExpression(expressionName);
     }
 
@@ -148,7 +148,7 @@ public class CqlEngine {
     }
 
     public EvaluationResult evaluate(VersionedIdentifier libraryIdentifier, ZonedDateTime evaluationDateTime) {
-        return this.evaluate(libraryIdentifier, null, null, null, null, evaluationDateTime);
+        return this.evaluate(libraryIdentifier, null, null, null, evaluationDateTime);
     }
 
     public EvaluationResult evaluate(VersionedIdentifier libraryIdentifier, Set<String> expressions) {
@@ -177,7 +177,15 @@ public class CqlEngine {
     }
 
     public EvaluationResult evaluate(VersionedIdentifier libraryIdentifier, Map<String, Object> parameters) {
-        return this.evaluate(libraryIdentifier, null, null, parameters, null);
+        return this.evaluate(libraryIdentifier, null, null, parameters);
+    }
+
+    public EvaluationResult evaluate(
+            VersionedIdentifier libraryIdentifier,
+            Set<String> expressions,
+            Pair<String, Object> contextParameter,
+            Map<String, Object> parameters) {
+        return this.evaluate(libraryIdentifier, expressions, contextParameter, parameters, null);
     }
 
     public EvaluationResult evaluate(
@@ -185,16 +193,6 @@ public class CqlEngine {
             Set<String> expressions,
             Pair<String, Object> contextParameter,
             Map<String, Object> parameters,
-            DebugMap debugMap) {
-        return this.evaluate(libraryIdentifier, expressions, contextParameter, parameters, debugMap, null);
-    }
-
-    public EvaluationResult evaluate(
-            VersionedIdentifier libraryIdentifier,
-            Set<String> expressions,
-            Pair<String, Object> contextParameter,
-            Map<String, Object> parameters,
-            DebugMap debugMap,
             ZonedDateTime evaluationDateTime) {
         if (libraryIdentifier == null) {
             throw new IllegalArgumentException("libraryIdentifier can not be null.");
@@ -206,21 +204,19 @@ public class CqlEngine {
             expressions = this.getExpressionSet(library);
         }
 
-        this.initializeState(library, debugMap, evaluationDateTime);
+        this.initializeState(library, evaluationDateTime);
         this.setParametersForContext(library, contextParameter, parameters);
 
         return this.evaluateExpressions(expressions);
     }
 
-    private void initializeState(Library library, DebugMap debugMap, ZonedDateTime evaluationDateTime) {
-        if (evaluationDateTime != null) {
-            this.state.setEvaluationDateTime(evaluationDateTime);
-        } else {
-            this.state.setEvaluationDateTime(ZonedDateTime.now());
+    private void initializeState(Library library, ZonedDateTime evaluationDateTime) {
+        if (evaluationDateTime == null) {
+            evaluationDateTime = ZonedDateTime.now();
         }
 
+        this.state.setEvaluationDateTime(evaluationDateTime);
         this.state.init(library);
-        this.state.setDebugMap(debugMap);
     }
 
     private EvaluationResult evaluateExpressions(Set<String> expressions) {
@@ -237,17 +233,23 @@ public class CqlEngine {
                 continue;
             }
 
-            // TODO: How do we want to return handle errors?
             try {
+                DebugAction action = getState().shouldDebug(def);
                 Object object = this.evaluationVisitor.visitExpressionDef(def, this.state);
                 result.expressionResults.put(
                         expression, new ExpressionResult(object, this.state.getEvaluatedResources()));
-            } catch (CqlException ce) {
+
+                if (action != DebugAction.NONE) {
+                    getState().logDebugResult(def, result, action);
+                }
+            }
+            catch (CqlException ce) {
                 processException(ce, def);
             } catch (Exception e) {
                 processException(
                         e, def, String.format("Error evaluating expression %s: %s", expression, e.getMessage()));
             }
+
         }
 
         result.setDebugResult(this.state.getDebugResult());

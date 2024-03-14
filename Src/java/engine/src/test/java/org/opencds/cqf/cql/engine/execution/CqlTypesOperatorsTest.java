@@ -24,7 +24,7 @@ public class CqlTypesOperatorsTest extends CqlTestBase {
 
             EvaluationResult evaluationResult;
 
-            evaluationResult = engine.evaluate(toElmIdentifier("CqlTypeOperatorsTest"));
+            evaluationResult = engine.evaluate(toIdentifier("CqlTypeOperatorsTest"));
             Object result;
 
             result = evaluationResult.forExpression("AsQuantity").value();

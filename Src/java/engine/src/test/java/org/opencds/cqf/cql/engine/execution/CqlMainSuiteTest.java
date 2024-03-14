@@ -17,7 +17,7 @@ public class CqlMainSuiteTest extends CqlTestBase {
     @Test
     public void test_cql_main_test_suite_compiles() {
         var errors = new ArrayList<CqlCompilerException>();
-        this.getLibrary(toElmIdentifier("CqlTestSuite"), errors, testCompilerOptions());
+        this.getLibrary(toIdentifier("CqlTestSuite"), errors, testCompilerOptions());
         assertFalse(
                 CqlCompilerException.hasErrors(errors),
                 String.format("Test library compiled with the following errors : %s", this.toString(errors)));
@@ -29,7 +29,7 @@ public class CqlMainSuiteTest extends CqlTestBase {
         // TODO: It'd be interesting to be able to inspect the
         // possible set of expressions from the CQL engine API
         // prior to evaluating them all
-        var result = e.evaluate(toElmIdentifier("CqlTestSuite"), evalTime);
+        var result = e.evaluate(toIdentifier("CqlTestSuite"), evalTime);
 
         for (var entry : result.expressionResults.entrySet()) {
             if (entry.getKey().toString().startsWith("test")) {
@@ -49,7 +49,7 @@ public class CqlMainSuiteTest extends CqlTestBase {
         // possible set of expressions from the CQL engine API
         // prior to evaluating them all
 
-        var result = e.evaluate(toElmIdentifier("CqlTimeZoneTestSuite"), evalTime);
+        var result = e.evaluate(toIdentifier("CqlTimeZoneTestSuite"), evalTime);
 
         for (var entry : result.expressionResults.entrySet()) {
             if (entry.getKey().toString().startsWith("test")) {

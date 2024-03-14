@@ -22,7 +22,7 @@ public class CqlTypesTest extends CqlTestBase {
         Set<String> set = new HashSet<>();
         EvaluationResult evaluationResult;
 
-        evaluationResult = engine.evaluate(toElmIdentifier("CqlTypesTest"));
+        evaluationResult = engine.evaluate(toIdentifier("CqlTypesTest"));
         Object result;
 
         result = evaluationResult.forExpression("AnyInteger").value();

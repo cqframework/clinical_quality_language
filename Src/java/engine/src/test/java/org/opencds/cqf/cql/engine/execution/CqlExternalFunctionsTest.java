@@ -13,7 +13,7 @@ public class CqlExternalFunctionsTest extends CqlTestBase {
 
     @Test
     public void testExternalFunctions() {
-        VersionedIdentifier identifier = toElmIdentifier("CqlExternalFunctionsTest");
+        VersionedIdentifier identifier = toIdentifier("CqlExternalFunctionsTest");
 
         engine.getState()
                 .getEnvironment()

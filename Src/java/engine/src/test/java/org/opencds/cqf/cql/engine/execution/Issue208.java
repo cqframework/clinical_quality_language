@@ -12,7 +12,7 @@ public class Issue208 extends CqlTestBase {
 
         EvaluationResult evaluationResult;
 
-        evaluationResult = engine.evaluate(toElmIdentifier("Issue208"));
+        evaluationResult = engine.evaluate(toIdentifier("Issue208"));
         Object result = evaluationResult.forExpression("Let Test 1").value();
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) (((List<?>) result).get(0))).get(0), 1));
         Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) (((List<?>) result).get(0))).get(1), 2));

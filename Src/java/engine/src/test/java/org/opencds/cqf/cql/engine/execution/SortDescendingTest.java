@@ -12,7 +12,7 @@ public class SortDescendingTest extends CqlTestBase {
 
         EvaluationResult evaluationResult;
 
-        evaluationResult = engine.evaluate(toElmIdentifier("SortDescendingTest"));
+        evaluationResult = engine.evaluate(toIdentifier("SortDescendingTest"));
 
         Object result = evaluationResult
                 .forExpression("sorted list of numbers descending")

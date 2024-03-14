@@ -54,8 +54,8 @@ public class FhirHelpersDstu3Test {
         CompositeDataProvider provider = new CompositeDataProvider(modelResolver, retrieveProvider);
         // BaseFhirDataProvider provider = new
         // FhirDataProviderStu3().setEndpoint("http://fhirtest.uhn.ca/baseDstu3");
-        engine.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", provider);
-        EvaluationResult evaluationResult = engine.evaluate(libraryId, null, null, null, null, null);
+        engine.getEnvironment().registerDataProvider("http://hl7.org/fhir", provider);
+        EvaluationResult evaluationResult = engine.evaluate(libraryId, null, null, null, null);
 
         // TODO - fix
         Object result = evaluationResult.forExpression("TestPeriodToInterval").value();

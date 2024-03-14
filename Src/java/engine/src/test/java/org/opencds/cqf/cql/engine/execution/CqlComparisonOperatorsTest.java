@@ -19,7 +19,7 @@ public class CqlComparisonOperatorsTest extends CqlTestBase {
     @Test
     public void test_cql_comparison_test_suite_compiles() {
         var errors = new ArrayList<CqlCompilerException>();
-        this.getLibrary(toElmIdentifier("CqlComparisonOperatorsTest"), errors, testCompilerOptions());
+        this.getLibrary(toIdentifier("CqlComparisonOperatorsTest"), errors, testCompilerOptions());
         assertFalse(
                 CqlCompilerException.hasErrors(errors),
                 String.format("Test library compiled with the following errors : %s", this.toString(errors)));
@@ -28,7 +28,7 @@ public class CqlComparisonOperatorsTest extends CqlTestBase {
     @Test
     public void test_all_comparison_operators_tests() {
         var eng = getEngine(testCompilerOptions());
-        var evaluationResult = eng.evaluate(toElmIdentifier("CqlComparisonOperatorsTest"));
+        var evaluationResult = eng.evaluate(toIdentifier("CqlComparisonOperatorsTest"));
 
         Object result = evaluationResult.forExpression("BetweenIntTrue").value();
         assertThat(result, is(true));

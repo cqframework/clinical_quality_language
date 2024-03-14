@@ -186,7 +186,7 @@ public abstract class TestFhirPath {
 
             CqlEngine engine = TranslatorHelper.getEngine(env);
             engine.getCache().setExpressionCaching(false);
-            engine.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", provider);
+            engine.getEnvironment().registerDataProvider("http://hl7.org/fhir", provider);
             if (resource != null) {
                 engine.getState().setParameter(null, resource.fhirType(), resource);
             }
@@ -198,7 +198,7 @@ public abstract class TestFhirPath {
                 VersionedIdentifier libraryId = TranslatorHelper.toElmIdentifier("TestFHIRPath");
                 Map<VersionedIdentifier, Library> map = new HashMap<>();
                 map.put(libraryId, library);
-                EvaluationResult evaluationResult = engine.evaluate(libraryId, Set.of("Test"), null, null, null, null);
+                EvaluationResult evaluationResult = engine.evaluate(libraryId, Set.of("Test"), null, null, null);
 
                 result = evaluationResult.forExpression("Test").value();
                 testPassed = invalidType.equals(InvalidType.FALSE);

@@ -12,7 +12,7 @@ public class DateComparatorTest extends CqlTestBase {
 
         EvaluationResult evaluationResult;
 
-        evaluationResult = engine.evaluate(toElmIdentifier("DateComparatorTest"));
+        evaluationResult = engine.evaluate(toIdentifier("DateComparatorTest"));
         Object result = evaluationResult.forExpression("Date Comparator Test").value();
         assertThat(result, is(true));
     }

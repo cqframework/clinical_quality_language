@@ -38,7 +38,7 @@ public class IntervalOperatorsTest extends CqlTestBase {
         Set<String> set = new HashSet<>();
         EvaluationResult evaluationResult;
 
-        evaluationResult = engine.evaluate(toElmIdentifier("CqlIntervalOperatorsTest"));
+        evaluationResult = engine.evaluate(toIdentifier("CqlIntervalOperatorsTest"));
         Object result;
 
         result = evaluationResult.forExpression("IntegerIntervalAfterTrue").value();

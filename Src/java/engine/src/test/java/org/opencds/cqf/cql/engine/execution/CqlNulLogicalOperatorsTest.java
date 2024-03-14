@@ -23,7 +23,7 @@ public class CqlNulLogicalOperatorsTest extends CqlTestBase {
         Set<String> set = new HashSet<>();
         EvaluationResult evaluationResult;
 
-        evaluationResult = engine.evaluate(toElmIdentifier("CqlNullologicalOperatorsTest"));
+        evaluationResult = engine.evaluate(toIdentifier("CqlNullologicalOperatorsTest"));
         Object result;
 
         result = evaluationResult.forExpression("CoalesceANull").value();

@@ -13,8 +13,8 @@ public class TestFHIR3Helpers extends FhirExecutionTestBase {
     // Backing out of the updates to FHIR Model Info for STU3, would require another week I don't have right now
     public void test() {
         CqlEngine engine = getEngine();
-        engine.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", dstu3Provider);
-        EvaluationResult evaluationResult = engine.evaluate(library.getIdentifier(), null, null, null, null, null);
+        engine.getEnvironment().registerDataProvider("http://hl7.org/fhir", dstu3Provider);
+        EvaluationResult evaluationResult = engine.evaluate(library.getIdentifier());
         Object result;
 
         // Primitives

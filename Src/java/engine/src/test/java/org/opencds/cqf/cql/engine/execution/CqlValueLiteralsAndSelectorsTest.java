@@ -22,7 +22,7 @@ public class CqlValueLiteralsAndSelectorsTest extends CqlTestBase {
         Set<String> set = new HashSet<>();
         EvaluationResult evaluationResult;
 
-        evaluationResult = engine.evaluate(toElmIdentifier("CqlValueLiteralsAndSelectorsTest"));
+        evaluationResult = engine.evaluate(toIdentifier("CqlValueLiteralsAndSelectorsTest"));
         Object result;
 
         result = evaluationResult.forExpression("Null").value();
