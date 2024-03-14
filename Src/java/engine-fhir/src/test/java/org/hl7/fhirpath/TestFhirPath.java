@@ -43,42 +43,42 @@ public abstract class TestFhirPath {
     }
 
     private Iterable<Object> loadExpectedResults(org.hl7.fhirpath.tests.Test test, boolean isExpressionOutputTest) {
-        List<Object> values = new ArrayList<>();
+        List<Object> results = new ArrayList<>();
         if (isExpressionOutputTest) {
-            values.add(true);
+            results.add(true);
         } else {
             if (test.getOutput() != null) {
                 for (org.hl7.fhirpath.tests.Output output : test.getOutput()) {
                     if (output.getType() != null) {
                         switch (output.getType()) {
                             case BOOLEAN:
-                                values.add(Boolean.valueOf(output.getValue()));
+                                results.add(Boolean.valueOf(output.getValue()));
                                 break;
                             case DECIMAL:
-                                values.add(new BigDecimal(output.getValue()));
+                                results.add(new BigDecimal(output.getValue()));
                                 break;
                             case DATE:
-                                values.add(new Date(output.getValue()));
+                                results.add(new Date(output.getValue()));
                                 break;
                             case DATE_TIME:
-                                values.add(new DateTime(
+                                results.add(new DateTime(
                                         output.getValue(),
                                         ZoneOffset.systemDefault().getRules().getOffset(Instant.now())));
                                 break;
                             case TIME:
-                                values.add(new Time(output.getValue()));
+                                results.add(new Time(output.getValue()));
                                 break;
                             case INTEGER:
-                                values.add(Integer.valueOf(output.getValue()));
+                                results.add(Integer.valueOf(output.getValue()));
                                 break;
                             case STRING:
-                                values.add(output.getValue());
+                                results.add(output.getValue());
                                 break;
                             case CODE:
-                                values.add(output.getValue());
+                                results.add(output.getValue());
                                 break;
                             case QUANTITY:
-                                values.add(toQuantity(output.getValue()));
+                                results.add(toQuantity(output.getValue()));
                                 break;
                             default:
                                 throw new IllegalArgumentException(
@@ -92,7 +92,7 @@ public abstract class TestFhirPath {
             }
         }
 
-        return values;
+        return results;
     }
 
     abstract Boolean compareResults(
@@ -103,15 +103,15 @@ public abstract class TestFhirPath {
 
     @SuppressWarnings("unchecked")
     private Iterable<Object> ensureIterable(Object value) {
-        Iterable<Object> actualResults;
+        Iterable<Object> actualValues;
         if (value instanceof Iterable) {
-            actualResults = (Iterable<Object>) value;
+            actualValues = (Iterable<Object>) value;
         } else {
             List<Object> values = new ArrayList<Object>();
             values.add(value);
-            actualResults = values;
+            actualValues = values;
         }
-        return actualResults;
+        return actualValues;
     }
 
     protected void runTest(
@@ -178,8 +178,8 @@ public abstract class TestFhirPath {
                     return;
                 } else {
                     e.printStackTrace();
-                    throw new RuntimeException(
-                            String.format("Couldn't translate library and was expecting a value. %s.", test.getName()));
+                    throw new RuntimeException(String.format(
+                            "Couldn't translate library and was expecting a result. %s.", test.getName()));
                 }
             }
 
