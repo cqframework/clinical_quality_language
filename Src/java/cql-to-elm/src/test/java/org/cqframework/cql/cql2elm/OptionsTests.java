@@ -15,7 +15,7 @@ public class OptionsTests {
         StringWriter sw = new StringWriter();
         CqlTranslatorOptionsMapper.toWriter(sw, options);
         String result = sw.toString();
-        Assert.assertTrue(result != null);
+        Assert.assertNotNull(result);
 
         InputStream input = OptionsTests.class.getResourceAsStream("options.json");
         CqlTranslatorOptions readOptions = CqlTranslatorOptionsMapper.fromReader(new InputStreamReader(input));

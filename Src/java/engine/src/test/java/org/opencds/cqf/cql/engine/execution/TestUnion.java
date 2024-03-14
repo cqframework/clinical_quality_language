@@ -11,30 +11,27 @@ public class TestUnion extends CqlTestBase {
 
     @Test
     public void testUnion() {
+        var results = engine.evaluate(toElmIdentifier("TestUnion"));
+        var value = results.forExpression("NullAndNull").value();
+        assertNotNull(value);
+        assertTrue(((List<?>) value).isEmpty());
 
-        EvaluationResult evaluationResult;
+        value = results.forExpression("NullAndEmpty").value();
+        assertNotNull(value);
+        assertTrue(((List<?>) value).isEmpty());
 
-        evaluationResult = engine.evaluate(toElmIdentifier("TestUnion"));
-        Object result = evaluationResult.forExpression("NullAndNull").value();
-        assertNotNull(result);
-        assertTrue(((List<?>) result).isEmpty());
+        value = results.forExpression("EmptyAndNull").value();
+        assertNotNull(value);
+        assertTrue(((List<?>) value).isEmpty());
 
-        result = evaluationResult.forExpression("NullAndEmpty").value();
-        assertNotNull(result);
-        assertTrue(((List<?>) result).isEmpty());
+        value = results.forExpression("NullAndSingle").value();
+        assertNotNull(value);
+        assertEquals(1, ((List<?>) value).size());
+        assertEquals(1, ((List<?>) value).get(0));
 
-        result = evaluationResult.forExpression("EmptyAndNull").value();
-        assertNotNull(result);
-        assertTrue(((List<?>) result).isEmpty());
-
-        result = evaluationResult.forExpression("NullAndSingle").value();
-        assertNotNull(result);
-        assertEquals(1, ((List<?>) result).size());
-        assertEquals(1, ((List<?>) result).get(0));
-
-        result = evaluationResult.forExpression("SingleAndNull").value();
-        assertNotNull(result);
-        assertEquals(1, ((List<?>) result).size());
-        assertEquals(1, ((List<?>) result).get(0));
+        value = results.forExpression("SingleAndNull").value();
+        assertNotNull(value);
+        assertEquals(1, ((List<?>) value).size());
+        assertEquals(1, ((List<?>) value).get(0));
     }
 }

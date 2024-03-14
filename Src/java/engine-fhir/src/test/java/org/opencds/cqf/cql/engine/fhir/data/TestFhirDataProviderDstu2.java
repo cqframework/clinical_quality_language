@@ -1,5 +1,6 @@
 package org.opencds.cqf.cql.engine.fhir.data;
 
+import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 import org.hl7.fhir.dstu2.model.Encounter;
@@ -11,13 +12,13 @@ import org.testng.annotations.BeforeMethod;
 
 public class TestFhirDataProviderDstu2 extends FhirExecutionTestBase {
 
-    private EvaluationResult evaluationResult;
+    private EvaluationResult results;
 
     @BeforeMethod
     public void before() {
         CqlEngine engine = getEngine();
         engine.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", dstu2Provider);
-        evaluationResult = engine.evaluate(library.getIdentifier(), null, null, null, null, null);
+        results = engine.evaluate(library.getIdentifier());
         // BaseFhirDataProvider provider = new FhirDataProviderDstu2().setEndpoint("http://fhirtest.uhn.ca/baseDstu2");
         //        FhirDataProviderDstu2 primitiveProvider = new
         // FhirDataProviderDstu2().withEndpoint("http://fhirtest.uhn.ca/baseDstu2").withPackageName("ca.uhn.fhir.model.primitive");
@@ -46,31 +47,31 @@ public class TestFhirDataProviderDstu2 extends FhirExecutionTestBase {
 
     // @Test
     public void testDstu2ProviderString() {
-        Object result = evaluationResult.forExpression("testString").value();
-        assertTrue(result != null);
+        Object value = results.forExpression("testString").value();
+        assertNotNull(value);
     }
 
     // @Test
     public void testDstu2ProviderCode() {
-        Object result = evaluationResult.forExpression("testCode").value();
-        assertTrue(result != null);
+        Object value = results.forExpression("testCode").value();
+        assertNotNull(value);
     }
 
     // @Test
     public void testDstu2ProviderDate() {
-        Object result = evaluationResult.forExpression("testDate").value();
-        assertTrue(result != null);
+        Object value = results.forExpression("testDate").value();
+        assertNotNull(value);
     }
 
     // @Test
     public void testDstu2ProviderDecimal() {
-        Object result = evaluationResult.forExpression("testDecimal").value();
-        assertTrue(result != null);
+        Object value = results.forExpression("testDecimal").value();
+        assertNotNull(value);
     }
 
     // @Test
     public void testDstu2ProviderID() {
-        Object result = evaluationResult.forExpression("testID").value();
-        assertTrue(result != null);
+        var value = results.forExpression("testID").value();
+        assertNotNull(value);
     }
 }

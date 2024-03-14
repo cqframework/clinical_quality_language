@@ -9,11 +9,8 @@ public class Issue39 extends CqlTestBase {
 
     @Test
     public void testInterval() {
-
-        EvaluationResult evaluationResult;
-
-        evaluationResult = engine.evaluate(toElmIdentifier("Issue39"));
-        Object result = evaluationResult.forExpression("EquivalentIntervals").value();
-        assertThat(result, is(true));
+        var results = engine.evaluate(toElmIdentifier("Issue39"));
+        Object value = results.forExpression("EquivalentIntervals").value();
+        assertThat(value, is(true));
     }
 }

@@ -12,7 +12,6 @@ import org.hl7.fhir.r4.model.Encounter;
 import org.hl7.fhir.r4.model.Patient;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
-import org.opencds.cqf.cql.engine.execution.EvaluationResult;
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider;
 import org.opencds.cqf.cql.engine.runtime.Code;
 import org.opencds.cqf.cql.engine.runtime.Interval;
@@ -58,26 +57,23 @@ public class EvaluatedResourcesTest extends FhirExecutionTestBase {
                 .getEnvironment()
                 .registerDataProvider("http://hl7.org/fhir", new CompositeDataProvider(r4ModelResolver, rp));
         engine.getCache().setExpressionCaching(true);
-        EvaluationResult evaluationResult =
-                engine.evaluate(library.getIdentifier(), Set.of("Union"), null, null, null, null);
+        var results = engine.evaluate(library.getIdentifier(), Set.of("Union"));
 
-        Object result = evaluationResult.forExpression("Union").value();
-        assertThat(result, instanceOf(List.class));
-        assertThat(evaluationResult.forExpression("Union").evaluatedResources().size(), is(2));
+        Object value = results.forExpression("Union").value();
+        assertThat(value, instanceOf(List.class));
+        assertThat(results.forExpression("Union").evaluatedResources().size(), is(2));
         engine.getState().clearEvaluatedResources();
 
-        evaluationResult = engine.evaluate(library.getIdentifier(), Set.of("Encounter"), null, null, null, null);
-        result = evaluationResult.forExpression("Encounter").value();
-        assertThat(result, instanceOf(List.class));
-        assertThat(
-                evaluationResult.forExpression("Encounter").evaluatedResources().size(), is(1));
+        results = engine.evaluate(library.getIdentifier(), Set.of("Encounter"));
+        value = results.forExpression("Encounter").value();
+        assertThat(value, instanceOf(List.class));
+        assertThat(results.forExpression("Encounter").evaluatedResources().size(), is(1));
         engine.getState().clearEvaluatedResources();
 
-        evaluationResult = engine.evaluate(library.getIdentifier(), Set.of("Condition"), null, null, null, null);
-        result = evaluationResult.forExpression("Condition").value();
-        assertThat(result, instanceOf(List.class));
-        assertThat(
-                evaluationResult.forExpression("Condition").evaluatedResources().size(), is(1));
+        results = engine.evaluate(library.getIdentifier(), Set.of("Condition"));
+        value = results.forExpression("Condition").value();
+        assertThat(value, instanceOf(List.class));
+        assertThat(results.forExpression("Condition").evaluatedResources().size(), is(1));
     }
 
     @Test
@@ -86,31 +82,28 @@ public class EvaluatedResourcesTest extends FhirExecutionTestBase {
         engine.getState()
                 .getEnvironment()
                 .registerDataProvider("http://hl7.org/fhir", new CompositeDataProvider(r4ModelResolver, rp));
-        EvaluationResult evaluationResult =
-                engine.evaluate(library.getIdentifier(), Set.of("Union"), null, null, null, null);
+        var results = engine.evaluate(library.getIdentifier(), Set.of("Union"));
 
-        Object result = evaluationResult.forExpression("Union").value();
-        assertThat(result, instanceOf(List.class));
-        assertThat(evaluationResult.forExpression("Union").evaluatedResources().size(), is(2));
+        Object value = results.forExpression("Union").value();
+        assertThat(value, instanceOf(List.class));
+        assertThat(results.forExpression("Union").evaluatedResources().size(), is(2));
         engine.getState().clearEvaluatedResources();
 
-        evaluationResult = engine.evaluate(library.getIdentifier(), Set.of("Encounter"), null, null, null, null);
-        result = evaluationResult.forExpression("Encounter").value();
-        assertThat(result, instanceOf(List.class));
-        assertThat(
-                evaluationResult.forExpression("Encounter").evaluatedResources().size(), is(1));
+        results = engine.evaluate(library.getIdentifier(), Set.of("Encounter"));
+        value = results.forExpression("Encounter").value();
+        assertThat(value, instanceOf(List.class));
+        assertThat(results.forExpression("Encounter").evaluatedResources().size(), is(1));
         engine.getState().clearEvaluatedResources();
 
-        evaluationResult = engine.evaluate(library.getIdentifier(), Set.of("Condition"), null, null, null, null);
-        result = evaluationResult.forExpression("Condition").value();
-        assertThat(result, instanceOf(List.class));
-        assertThat(
-                evaluationResult.forExpression("Condition").evaluatedResources().size(), is(1));
+        results = engine.evaluate(library.getIdentifier(), Set.of("Condition"));
+        value = results.forExpression("Condition").value();
+        assertThat(value, instanceOf(List.class));
+        assertThat(results.forExpression("Condition").evaluatedResources().size(), is(1));
 
-        evaluationResult = engine.evaluate(library.getIdentifier(), Set.of("Union"), null, null, null, null);
-        result = evaluationResult.forExpression("Union").value();
-        assertThat(result, instanceOf(List.class));
-        assertThat(evaluationResult.forExpression("Union").evaluatedResources().size(), is(2));
+        results = engine.evaluate(library.getIdentifier(), Set.of("Union"));
+        value = results.forExpression("Union").value();
+        assertThat(value, instanceOf(List.class));
+        assertThat(results.forExpression("Union").evaluatedResources().size(), is(2));
         engine.getState().clearEvaluatedResources();
     }
 }

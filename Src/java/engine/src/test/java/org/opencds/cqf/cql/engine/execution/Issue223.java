@@ -10,21 +10,15 @@ public class Issue223 extends CqlTestBase {
 
     @Test
     public void testInterval() {
-
-        EvaluationResult evaluationResult;
-
-        evaluationResult = engine.evaluate(toElmIdentifier("Issue223"));
-        Object result = evaluationResult
-                .forExpression("Access Flattened List of List Items")
-                .value();
-        List<?> list = (List<?>) result;
+        var results = engine.evaluate(toElmIdentifier("Issue223"));
+        var value = results.forExpression("Access Flattened List of List Items").value();
+        List<?> list = (List<?>) value;
         assertThat(list.size(), is(1));
         assertThat(list.get(0), is(true));
 
-        result = evaluationResult
-                .forExpression("Access Flattened List of List Items in a Single Query")
+        value = results.forExpression("Access Flattened List of List Items in a Single Query")
                 .value();
-        list = (List<?>) result;
+        list = (List<?>) value;
         assertThat(list.size(), is(1));
         assertThat(list.get(0), is(true));
     }

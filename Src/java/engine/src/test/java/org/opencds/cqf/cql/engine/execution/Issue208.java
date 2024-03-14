@@ -9,26 +9,23 @@ public class Issue208 extends CqlTestBase {
 
     @Test
     public void testInterval() {
+        var results = engine.evaluate(toElmIdentifier("Issue208"));
+        var value = results.forExpression("Let Test 1").value();
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) (((List<?>) value).get(0))).get(0), 1));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) (((List<?>) value).get(0))).get(1), 2));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) (((List<?>) value).get(0))).get(2), 3));
 
-        EvaluationResult evaluationResult;
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) (((List<?>) value).get(1))).get(0), 4));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) (((List<?>) value).get(1))).get(1), 5));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) (((List<?>) value).get(1))).get(2), 6));
 
-        evaluationResult = engine.evaluate(toElmIdentifier("Issue208"));
-        Object result = evaluationResult.forExpression("Let Test 1").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) (((List<?>) result).get(0))).get(0), 1));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) (((List<?>) result).get(0))).get(1), 2));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) (((List<?>) result).get(0))).get(2), 3));
+        value = results.forExpression("Let Test 2").value();
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) (((List<?>) value).get(0))).get(0), 1));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) (((List<?>) value).get(0))).get(1), 2));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) (((List<?>) value).get(0))).get(2), 3));
 
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) (((List<?>) result).get(1))).get(0), 4));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) (((List<?>) result).get(1))).get(1), 5));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) (((List<?>) result).get(1))).get(2), 6));
-
-        result = evaluationResult.forExpression("Let Test 2").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) (((List<?>) result).get(0))).get(0), 1));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) (((List<?>) result).get(0))).get(1), 2));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) (((List<?>) result).get(0))).get(2), 3));
-
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) (((List<?>) result).get(1))).get(0), 4));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) (((List<?>) result).get(1))).get(1), 5));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) (((List<?>) result).get(1))).get(2), 6));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) (((List<?>) value).get(1))).get(0), 4));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) (((List<?>) value).get(1))).get(1), 5));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) (((List<?>) value).get(1))).get(2), 6));
     }
 }

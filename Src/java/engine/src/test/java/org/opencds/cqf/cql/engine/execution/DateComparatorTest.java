@@ -9,11 +9,8 @@ public class DateComparatorTest extends CqlTestBase {
 
     @Test
     public void test_date_comparator() {
-
-        EvaluationResult evaluationResult;
-
-        evaluationResult = engine.evaluate(toElmIdentifier("DateComparatorTest"));
-        Object result = evaluationResult.forExpression("Date Comparator Test").value();
-        assertThat(result, is(true));
+        var results = engine.evaluate(toElmIdentifier("DateComparatorTest"));
+        var value = results.forExpression("Date Comparator Test").value();
+        assertThat(value, is(true));
     }
 }

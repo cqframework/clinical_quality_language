@@ -21,14 +21,11 @@ public class CqlExternalFunctionsTest extends CqlTestBase {
                         identifier,
                         new SystemExternalFunctionProvider(Arrays.asList(MyMath.class.getDeclaredMethods())));
 
-        EvaluationResult evaluationResult = engine.evaluate(identifier);
+        var results = engine.evaluate(identifier);
+        var value = results.forExpression("CallMyPlus").value();
+        assertThat(value, is(10));
 
-        Object result;
-
-        result = evaluationResult.forExpression("CallMyPlus").value();
-        assertThat(result, is(10));
-
-        result = evaluationResult.forExpression("CallMyMinus").value();
-        assertThat(result, is(-2));
+        value = results.forExpression("CallMyMinus").value();
+        assertThat(value, is(-2));
     }
 }

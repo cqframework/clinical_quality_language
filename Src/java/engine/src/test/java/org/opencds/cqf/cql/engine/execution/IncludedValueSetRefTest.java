@@ -40,14 +40,11 @@ public class IncludedValueSetRefTest {
 
         CqlEngine engine = new CqlEngine(environment);
 
-        EvaluationResult evaluationResult;
-
-        evaluationResult =
-                engine.evaluate(CqlTestBase.toElmIdentifier("IncludedValueSetRefTest"), null, null, null, null, null);
+        var results = engine.evaluate(CqlTestBase.toElmIdentifier("IncludedValueSetRefTest"));
 
         @SuppressWarnings("unchecked")
         List<Code> actual =
-                (List<Code>) evaluationResult.forExpression("IncludedValueSet").value();
+                (List<Code>) results.forExpression("IncludedValueSet").value();
         assertNotNull(actual);
         assertEquals(actual.size(), 1);
 

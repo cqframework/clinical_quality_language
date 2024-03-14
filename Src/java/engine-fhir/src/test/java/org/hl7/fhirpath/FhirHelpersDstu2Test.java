@@ -10,7 +10,6 @@ import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
-import org.opencds.cqf.cql.engine.execution.EvaluationResult;
 import org.opencds.cqf.cql.engine.fhir.model.Dstu2FhirModelResolver;
 import org.opencds.cqf.cql.engine.fhir.retrieve.RestFhirRetrieveProvider;
 
@@ -49,25 +48,25 @@ public class FhirHelpersDstu2Test {
                 FhirContext.forCached(FhirVersionEnum.DSTU2).newRestfulGenericClient(""));
         CompositeDataProvider provider = new CompositeDataProvider(modelResolver, retrieveProvider);
         // BaseFhirDataProvider provider = new FhirDataProviderDstu2();
-        engine.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", provider);
-        EvaluationResult evaluationResult = engine.evaluate(libraryId, null, null, null, null, null);
+        engine.getEnvironment().registerDataProvider("http://hl7.org/fhir", provider);
+        var results = engine.evaluate(libraryId);
 
         // TODO - millis shouldn't be populated - issue with DateTime.fromJavaDate(Date date)
-        Object result = evaluationResult.forExpression("TestPeriodToInterval").value();
-        //        Assert.assertEquals(((DateTime)((Interval) result).getStart()).getPartial(), new
+        Object value = results.forExpression("TestPeriodToInterval").value();
+        //        Assert.assertEquals(((DateTime)((Interval) value).getStart()).getPartial(), new
         // Partial(DateTime.getFields(7), new int[] {2017, 5, 6, 18, 8, 0, 0}));
-        //        Assert.assertEquals(((DateTime)((Interval) result).getEnd()).getPartial(), new
+        //        Assert.assertEquals(((DateTime)((Interval) value).getEnd()).getPartial(), new
         // Partial(DateTime.getFields(7), new int[] {2017, 5, 6, 19, 8, 0, 0}));
-        result = evaluationResult.forExpression("TestToQuantity").value();
-        result = evaluationResult.forExpression("TestRangeToInterval").value();
-        result = evaluationResult.forExpression("TestToCode").value();
-        result = evaluationResult.forExpression("TestToConcept").value();
-        result = evaluationResult.forExpression("TestToString").value();
-        result = evaluationResult.forExpression("TestRequestStatusToString").value();
-        result = evaluationResult.forExpression("TestToDateTime").value();
-        result = evaluationResult.forExpression("TestToTime").value();
-        result = evaluationResult.forExpression("TestToInteger").value();
-        result = evaluationResult.forExpression("TestToDecimal").value();
-        result = evaluationResult.forExpression("TestToBoolean").value();
+        value = results.forExpression("TestToQuantity").value();
+        value = results.forExpression("TestRangeToInterval").value();
+        value = results.forExpression("TestToCode").value();
+        value = results.forExpression("TestToConcept").value();
+        value = results.forExpression("TestToString").value();
+        value = results.forExpression("TestRequestStatusToString").value();
+        value = results.forExpression("TestToDateTime").value();
+        value = results.forExpression("TestToTime").value();
+        value = results.forExpression("TestToInteger").value();
+        value = results.forExpression("TestToDecimal").value();
+        value = results.forExpression("TestToBoolean").value();
     }
 }

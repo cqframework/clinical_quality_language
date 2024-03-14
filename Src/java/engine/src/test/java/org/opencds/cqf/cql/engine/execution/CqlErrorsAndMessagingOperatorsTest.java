@@ -21,87 +21,87 @@ public class CqlErrorsAndMessagingOperatorsTest extends CqlTestBase {
 
     @Test
     public void test_message() {
-        Object result = engine.expression(library, "TestMessageInfo").value();
-        assertThat(result, is(1));
+        var value = engine.expression(library, "TestMessageInfo").value();
+        assertThat(value, is(1));
         // Assert.assertEquals(result.toString(), "100: Test Message");
 
-        result = engine.expression(library, "TestMessageWarn").value();
-        assertThat(result, is(2));
+        value = engine.expression(library, "TestMessageWarn").value();
+        assertThat(value, is(2));
         // Assert.assertEquals(result.toString(), "200: You have been warned!");
 
-        result = engine.expression(library, "TestMessageTrace").value();
-        assertThat(result, is(new ArrayList<Object>(Arrays.asList(3, 4, 5))));
+        value = engine.expression(library, "TestMessageTrace").value();
+        assertThat(value, is(new ArrayList<Object>(Arrays.asList(3, 4, 5))));
         // Assert.assertEquals(result.toString(), "300: This is a trace\n[3, 4, 5]");
 
         try {
-            result = engine.expression(library, "TestMessageError").value();
+            value = engine.expression(library, "TestMessageError").value();
         } catch (RuntimeException re) {
             Assert.assertEquals(re.getMessage(), String.format("400: This is an error!%n"));
         }
 
-        result = engine.expression(library, "TestMessageWithNullSeverity").value();
-        assertThat(result, is(1));
+        value = engine.expression(library, "TestMessageWithNullSeverity").value();
+        assertThat(value, is(1));
 
-        result = engine.expression(library, "TestMessageWithNullSource").value();
-        assertThat(result == null, is(true));
+        value = engine.expression(library, "TestMessageWithNullSource").value();
+        assertThat(value == null, is(true));
 
-        result = engine.expression(library, "TestMessageWithNullCondition").value();
-        assertThat(result, is(1));
+        value = engine.expression(library, "TestMessageWithNullCondition").value();
+        assertThat(value, is(1));
 
-        result = engine.expression(library, "TestMessageWithNullCode").value();
-        assertThat(result, is(1));
+        value = engine.expression(library, "TestMessageWithNullCode").value();
+        assertThat(value, is(1));
 
-        result = engine.expression(library, "TestMessageWithNullMessage").value();
-        assertThat(result, is(1));
+        value = engine.expression(library, "TestMessageWithNullMessage").value();
+        assertThat(value, is(1));
 
-        result = engine.expression(library, "TestWarningWithNullSource").value();
-        assertThat(result == null, is(true));
+        value = engine.expression(library, "TestWarningWithNullSource").value();
+        assertThat(value == null, is(true));
 
-        result = engine.expression(library, "TestWarningWithNullCondition").value();
-        assertThat(result, is(1));
+        value = engine.expression(library, "TestWarningWithNullCondition").value();
+        assertThat(value, is(1));
 
-        result = engine.expression(library, "TestWarningWithNullCode").value();
-        assertThat(result, is(1));
+        value = engine.expression(library, "TestWarningWithNullCode").value();
+        assertThat(value, is(1));
 
-        result = engine.expression(library, "TestWarningWithNullMessage").value();
-        assertThat(result, is(1));
+        value = engine.expression(library, "TestWarningWithNullMessage").value();
+        assertThat(value, is(1));
 
-        result = engine.expression(library, "TestTraceWithNullSource").value();
-        assertThat(result == null, is(true));
+        value = engine.expression(library, "TestTraceWithNullSource").value();
+        assertThat(value == null, is(true));
 
-        result = engine.expression(library, "TestTraceWithNullCondition").value();
-        assertThat(result, is(1));
+        value = engine.expression(library, "TestTraceWithNullCondition").value();
+        assertThat(value, is(1));
 
-        result = engine.expression(library, "TestTraceWithNullCode").value();
-        assertThat(result, is(1));
+        value = engine.expression(library, "TestTraceWithNullCode").value();
+        assertThat(value, is(1));
 
-        result = engine.expression(library, "TestTraceWithNullMessage").value();
-        assertThat(result, is(1));
+        value = engine.expression(library, "TestTraceWithNullMessage").value();
+        assertThat(value, is(1));
 
         try {
-            result = engine.expression(library, "TestErrorWithNullSource").value();
-            assertThat(result == null, is(true));
+            value = engine.expression(library, "TestErrorWithNullSource").value();
+            assertThat(value == null, is(true));
         } catch (RuntimeException re) {
             Assert.assertEquals(re.getMessage(), String.format("1: This is a message%nnull"));
         }
 
         try {
-            result = engine.expression(library, "TestErrorWithNullCondition").value();
-            assertThat(result, is(1));
+            value = engine.expression(library, "TestErrorWithNullCondition").value();
+            assertThat(value, is(1));
         } catch (RuntimeException re) {
             Assert.assertEquals(re.getMessage(), String.format("1: This is a message%n"));
         }
 
         try {
-            result = engine.expression(library, "TestErrorWithNullCode").value();
-            assertThat(result, is(1));
+            value = engine.expression(library, "TestErrorWithNullCode").value();
+            assertThat(value, is(1));
         } catch (RuntimeException re) {
             Assert.assertEquals(re.getMessage(), String.format("This is a message%n"));
         }
 
         try {
-            result = engine.expression(library, "TestErrorWithNullMessage").value();
-            assertThat(result, is(1));
+            value = engine.expression(library, "TestErrorWithNullMessage").value();
+            assertThat(value, is(1));
         } catch (RuntimeException re) {
             Assert.assertEquals(re.getMessage(), String.format("1: null%n"));
         }

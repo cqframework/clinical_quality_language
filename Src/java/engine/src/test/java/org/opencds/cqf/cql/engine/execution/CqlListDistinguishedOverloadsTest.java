@@ -15,7 +15,7 @@ public class CqlListDistinguishedOverloadsTest extends CqlTestBase {
     @Test
     @Ignore("There's a bug in the cql engine that is causing it to select the wrong function overload at runtime")
     public void test_list_overload() {
-        var result = engine.expression(library, "Test").value();
-        assertEquals(result, "1, 2, 3, 4, 5");
+        var value = engine.expression(library, "Test").value();
+        assertEquals(value, "1, 2, 3, 4, 5");
     }
 }

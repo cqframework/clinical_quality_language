@@ -19,7 +19,6 @@ import org.hl7.fhirpath.tests.Tests;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
 import org.opencds.cqf.cql.engine.elm.executing.ExistsEvaluator;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
-import org.opencds.cqf.cql.engine.execution.EvaluationResult;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.fhir.model.FhirModelResolver;
 import org.opencds.cqf.cql.engine.runtime.Date;
@@ -103,16 +102,16 @@ public abstract class TestFhirPath {
             FhirModelResolver<?, ?, ?, ?, ?, ?, ?, ?> resolver);
 
     @SuppressWarnings("unchecked")
-    private Iterable<Object> ensureIterable(Object result) {
-        Iterable<Object> actualResults;
-        if (result instanceof Iterable) {
-            actualResults = (Iterable<Object>) result;
+    private Iterable<Object> ensureIterable(Object value) {
+        Iterable<Object> actualValues;
+        if (value instanceof Iterable) {
+            actualValues = (Iterable<Object>) value;
         } else {
-            List<Object> results = new ArrayList<Object>();
-            results.add(result);
-            actualResults = results;
+            List<Object> values = new ArrayList<Object>();
+            values.add(value);
+            actualValues = values;
         }
-        return actualResults;
+        return actualValues;
     }
 
     protected void runTest(
@@ -191,16 +190,16 @@ public abstract class TestFhirPath {
                 engine.getState().setParameter(null, resource.fhirType(), resource);
             }
 
-            Object result = null;
+            Object value = null;
             boolean testPassed = false;
             String message = null;
             try {
                 VersionedIdentifier libraryId = TranslatorHelper.toElmIdentifier("TestFHIRPath");
                 Map<VersionedIdentifier, Library> map = new HashMap<>();
                 map.put(libraryId, library);
-                EvaluationResult evaluationResult = engine.evaluate(libraryId, Set.of("Test"), null, null, null, null);
+                var results = engine.evaluate(libraryId, Set.of("Test"));
 
-                result = evaluationResult.forExpression("Test").value();
+                value = results.forExpression("Test").value();
                 testPassed = invalidType.equals(InvalidType.FALSE);
             } catch (Exception e) {
                 testPassed = invalidType.equals(InvalidType.TRUE);
@@ -218,10 +217,10 @@ public abstract class TestFhirPath {
             }
 
             if (test.isPredicate() != null && test.isPredicate().booleanValue()) {
-                result = ExistsEvaluator.exists(ensureIterable(result));
+                value = ExistsEvaluator.exists(ensureIterable(value));
             }
 
-            Iterable<Object> actualResults = ensureIterable(result);
+            Iterable<Object> actualResults = ensureIterable(value);
             Iterable<Object> expectedResults = loadExpectedResults(test, isExpressionOutputTest);
             Iterator<Object> actualResultsIterator = actualResults.iterator();
             for (Object expectedResult : expectedResults) {
@@ -233,10 +232,10 @@ public abstract class TestFhirPath {
                         System.out.println(
                                 "- Expected Result: " + expectedResult + " (" + expectedResult.getClass() + ")");
                         System.out.println("- Actual Result: " + actualResult + " (" + expectedResult.getClass() + ")");
-                        throw new RuntimeException("Actual result is not equal to expected result.");
+                        throw new RuntimeException("Actual value is not equal to expected value.");
                     }
                 } else {
-                    throw new RuntimeException("Actual result is not equal to expected result.");
+                    throw new RuntimeException("Actual value is not equal to expected value.");
                 }
             }
         }

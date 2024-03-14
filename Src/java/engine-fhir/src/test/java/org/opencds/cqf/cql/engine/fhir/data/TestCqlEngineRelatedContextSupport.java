@@ -15,7 +15,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.hl7.fhir.r4.model.*;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
-import org.opencds.cqf.cql.engine.execution.EvaluationResult;
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -156,7 +155,6 @@ public class TestCqlEngineRelatedContextSupport extends FhirExecutionTestBase {
         final CqlEngine cqlEngine = getEngine();
 
         cqlEngine
-                .getState()
                 .getEnvironment()
                 .registerDataProvider(URL_FHIR, new CompositeDataProvider(r4ModelResolver, retrieveProvider));
         cqlEngine.getCache().setExpressionCaching(true);
@@ -199,8 +197,7 @@ public class TestCqlEngineRelatedContextSupport extends FhirExecutionTestBase {
 
     @Nonnull
     private Object evaluate(CqlEngine cqlEngine, String expression, Pair<String, Object> initialContext) {
-        final EvaluationResult evaluateResult =
-                cqlEngine.evaluate(library.getIdentifier(), Set.of(expression), initialContext, null, null, null);
+        var evaluateResult = cqlEngine.evaluate(library.getIdentifier(), Set.of(expression), initialContext);
         return evaluateResult.forExpression(expression).value();
     }
 

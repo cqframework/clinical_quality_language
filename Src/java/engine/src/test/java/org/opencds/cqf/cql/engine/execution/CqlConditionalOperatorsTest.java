@@ -14,21 +14,21 @@ public class CqlConditionalOperatorsTest extends CqlTestBase {
 
     @Test
     public void test_all_conditional_operators_tests() throws IOException {
-        var result = engine.expression(library, "IfTrue1").value();
-        assertThat(result, is(5));
+        var value = engine.expression(library, "IfTrue1").value();
+        assertThat(value, is(5));
 
-        result = engine.expression(library, "IfFalse1").value();
-        assertThat(result, is(5));
+        value = engine.expression(library, "IfFalse1").value();
+        assertThat(value, is(5));
 
-        result = engine.expression(library, "IfNull1").value();
-        assertThat(result, is(10));
-        result = engine.expression(library, "StandardCase1").value();
-        assertThat(result, is(5));
+        value = engine.expression(library, "IfNull1").value();
+        assertThat(value, is(10));
+        value = engine.expression(library, "StandardCase1").value();
+        assertThat(value, is(5));
 
-        result = engine.expression(library, "StandardCase2").value();
-        assertThat(result, is(5));
+        value = engine.expression(library, "StandardCase2").value();
+        assertThat(value, is(5));
 
-        result = engine.expression(library, "StandardCase3").value();
-        assertThat(result, is(15));
+        value = engine.expression(library, "StandardCase3").value();
+        assertThat(value, is(15));
     }
 }

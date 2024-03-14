@@ -12,275 +12,269 @@ public class CqlStringOperatorsTest extends CqlTestBase {
 
     @Test
     public void test_all_string_operators() {
+        var results = engine.evaluate(toElmIdentifier("CqlStringOperatorsTest"));
+        var value = results.forExpression("CombineNull").value();
+        assertThat(value, is(nullValue()));
 
-        Set<String> set = new HashSet<>();
-        EvaluationResult evaluationResult;
+        value = results.forExpression("CombineEmptyList").value();
+        assertThat(value, is(""));
 
-        evaluationResult = engine.evaluate(toElmIdentifier("CqlStringOperatorsTest"));
-        Object result;
+        value = results.forExpression("CombineABC").value();
+        assertThat(value, is("abc"));
 
-        result = evaluationResult.forExpression("CombineNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("CombineABCSepDash").value();
+        assertThat(value, is("a-b-c"));
 
-        result = evaluationResult.forExpression("CombineEmptyList").value();
-        assertThat(result, is(""));
+        value = results.forExpression("ConcatenateNullNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("CombineABC").value();
-        assertThat(result, is("abc"));
+        value = results.forExpression("ConcatenateANull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("CombineABCSepDash").value();
-        assertThat(result, is("a-b-c"));
+        value = results.forExpression("ConcatenateNullB").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("ConcatenateNullNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("ConcatenateAB").value();
+        assertThat(value, is("ab"));
 
-        result = evaluationResult.forExpression("ConcatenateANull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("ConcatenateABWithAdd").value();
+        assertThat(value, is("ab"));
 
-        result = evaluationResult.forExpression("ConcatenateNullB").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("EndsWithNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("ConcatenateAB").value();
-        assertThat(result, is("ab"));
+        value = results.forExpression("EndsWithTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("ConcatenateABWithAdd").value();
-        assertThat(result, is("ab"));
+        value = results.forExpression("EndsWithFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("EndsWithNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("IndexerNullNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("EndsWithTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("IndexerANull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("EndsWithFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("IndexerNull1String").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("IndexerNullNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("IndexerAB0").value();
+        assertThat(value, is("a"));
 
-        result = evaluationResult.forExpression("IndexerANull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("IndexerAB1").value();
+        assertThat(value, is("b"));
 
-        result = evaluationResult.forExpression("IndexerNull1String").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("IndexerAB2").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("IndexerAB0").value();
-        assertThat(result, is("a"));
+        value = results.forExpression("IndexerABNeg1").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("IndexerAB1").value();
-        assertThat(result, is("b"));
+        value = results.forExpression("MatchesNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("IndexerAB2").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("MatchesNumberFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("IndexerABNeg1").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("MatchesNumberTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("MatchesNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("MatchesAllTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("MatchesNumberFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("MatchesWordsAndSpacesTrue").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("MatchesNumberTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("MatchesWordsAndSpacesFalse").value();
+        assertThat(value, is(false));
 
-        result = evaluationResult.forExpression("MatchesAllTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("MatchesNotWords").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("MatchesWordsAndSpacesTrue").value();
-        assertThat(result, is(true));
+        value = results.forExpression("MatchesWhiteSpace").value();
+        assertThat(value, is(true));
 
-        result = evaluationResult.forExpression("MatchesWordsAndSpacesFalse").value();
-        assertThat(result, is(false));
+        value = results.forExpression("LastPositionOfNull").value();
+        Assert.assertTrue(value == null);
 
-        result = evaluationResult.forExpression("MatchesNotWords").value();
-        assertThat(result, is(true));
+        value = results.forExpression("LastPositionOfNull1").value();
+        Assert.assertTrue(value == null);
 
-        result = evaluationResult.forExpression("MatchesWhiteSpace").value();
-        assertThat(result, is(true));
+        value = results.forExpression("LastPositionOfNull2").value();
+        Assert.assertTrue(value == null);
 
-        result = evaluationResult.forExpression("LastPositionOfNull").value();
-        Assert.assertTrue(result == null);
+        value = results.forExpression("LastPositionOf1").value();
+        Assert.assertTrue((Integer) value == 1);
 
-        result = evaluationResult.forExpression("LastPositionOfNull1").value();
-        Assert.assertTrue(result == null);
+        value = results.forExpression("LastPositionOf2").value();
+        Assert.assertTrue((Integer) value == 11);
 
-        result = evaluationResult.forExpression("LastPositionOfNull2").value();
-        Assert.assertTrue(result == null);
+        value = results.forExpression("LengthNullString").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("LastPositionOf1").value();
-        Assert.assertTrue((Integer) result == 1);
+        value = results.forExpression("LengthEmptyString").value();
+        assertThat(value, is(0));
 
-        result = evaluationResult.forExpression("LastPositionOf2").value();
-        Assert.assertTrue((Integer) result == 11);
+        value = results.forExpression("LengthA").value();
+        assertThat(value, is(1));
 
-        result = evaluationResult.forExpression("LengthNullString").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("LengthAB").value();
+        assertThat(value, is(2));
 
-        result = evaluationResult.forExpression("LengthEmptyString").value();
-        assertThat(result, is(0));
+        value = results.forExpression("LowerNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("LengthA").value();
-        assertThat(result, is(1));
+        value = results.forExpression("LowerEmpty").value();
+        assertThat(value, is(""));
 
-        result = evaluationResult.forExpression("LengthAB").value();
-        assertThat(result, is(2));
+        value = results.forExpression("LowerA").value();
+        assertThat(value, is("a"));
 
-        result = evaluationResult.forExpression("LowerNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("LowerB").value();
+        assertThat(value, is("b"));
 
-        result = evaluationResult.forExpression("LowerEmpty").value();
-        assertThat(result, is(""));
+        value = results.forExpression("LowerAB").value();
+        assertThat(value, is("ab"));
 
-        result = evaluationResult.forExpression("LowerA").value();
-        assertThat(result, is("a"));
+        value = results.forExpression("PositionOfNullNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("LowerB").value();
-        assertThat(result, is("b"));
+        value = results.forExpression("PositionOfANull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("LowerAB").value();
-        assertThat(result, is("ab"));
+        value = results.forExpression("PositionOfNullA").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("PositionOfNullNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("PositionOfAInAB").value();
+        assertThat(value, is(0));
 
-        result = evaluationResult.forExpression("PositionOfANull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("PositionOfBInAB").value();
+        assertThat(value, is(1));
 
-        result = evaluationResult.forExpression("PositionOfNullA").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("PositionOfCInAB").value();
+        assertThat(value, is(-1));
 
-        result = evaluationResult.forExpression("PositionOfAInAB").value();
-        assertThat(result, is(0));
+        value = results.forExpression("ReplaceMatchesNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("PositionOfBInAB").value();
-        assertThat(result, is(1));
+        value = results.forExpression("ReplaceMatchesAll").value();
+        assertThat(value, is("But still waters run deep"));
 
-        result = evaluationResult.forExpression("PositionOfCInAB").value();
-        assertThat(result, is(-1));
+        value = results.forExpression("ReplaceMatchesMany").value();
+        assertThat(value, is("Who put the bang in the bang she bang she bang?"));
 
-        result = evaluationResult.forExpression("ReplaceMatchesNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("ReplaceMatchesSpaces").value();
+        assertThat(value, is("All$that$glitters$is$not$gold"));
 
-        result = evaluationResult.forExpression("ReplaceMatchesAll").value();
-        assertThat(result, is("But still waters run deep"));
+        value = results.forExpression("SplitNullNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("ReplaceMatchesMany").value();
-        assertThat(result, is("Who put the bang in the bang she bang she bang?"));
+        value = results.forExpression("SplitNullComma").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("ReplaceMatchesSpaces").value();
-        assertThat(result, is("All$that$glitters$is$not$gold"));
+        value = results.forExpression("SplitABNull").value();
+        assertThat(value, is(new ArrayList<Object>(Collections.singletonList("a,b"))));
 
-        result = evaluationResult.forExpression("SplitNullNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("SplitABDash").value();
+        assertThat(value, is(new ArrayList<Object>(Collections.singletonList("a,b"))));
 
-        result = evaluationResult.forExpression("SplitNullComma").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("SplitABSpace").value();
+        assertThat(value, is(new ArrayList<Object>(Arrays.asList("a", "b"))));
 
-        result = evaluationResult.forExpression("SplitABNull").value();
-        assertThat(result, is(new ArrayList<Object>(Collections.singletonList("a,b"))));
+        value = results.forExpression("SplitABComma").value();
+        assertThat(value, is(new ArrayList<Object>(Arrays.asList("a", "b"))));
 
-        result = evaluationResult.forExpression("SplitABDash").value();
-        assertThat(result, is(new ArrayList<Object>(Collections.singletonList("a,b"))));
+        value = results.forExpression("SplitMatchesNullNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("SplitABSpace").value();
-        assertThat(result, is(new ArrayList<Object>(Arrays.asList("a", "b"))));
+        value = results.forExpression("SplitMatchesNullComma").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("SplitABComma").value();
-        assertThat(result, is(new ArrayList<Object>(Arrays.asList("a", "b"))));
+        value = results.forExpression("SplitMatchesABNull").value();
+        assertThat(value, is(new ArrayList<Object>(Collections.singletonList("a,b"))));
 
-        result = evaluationResult.forExpression("SplitMatchesNullNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("SplitMatchesABSpaceRegex").value();
+        assertThat(value, is(new ArrayList<Object>(Arrays.asList("a", "b"))));
 
-        result = evaluationResult.forExpression("SplitMatchesNullComma").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("SplitMatchesABComma").value();
+        assertThat(value, is(new ArrayList<Object>(Arrays.asList("a", "b"))));
 
-        result = evaluationResult.forExpression("SplitMatchesABNull").value();
-        assertThat(result, is(new ArrayList<Object>(Collections.singletonList("a,b"))));
+        value = results.forExpression("StartsWithNull").value();
+        Assert.assertTrue(value == null);
 
-        result = evaluationResult.forExpression("SplitMatchesABSpaceRegex").value();
-        assertThat(result, is(new ArrayList<Object>(Arrays.asList("a", "b"))));
+        value = results.forExpression("StartsWithNull1").value();
+        Assert.assertTrue(value == null);
 
-        result = evaluationResult.forExpression("SplitMatchesABComma").value();
-        assertThat(result, is(new ArrayList<Object>(Arrays.asList("a", "b"))));
+        value = results.forExpression("StartsWithNull2").value();
+        Assert.assertTrue(value == null);
 
-        result = evaluationResult.forExpression("StartsWithNull").value();
-        Assert.assertTrue(result == null);
+        value = results.forExpression("StartsWithTrue1").value();
+        Assert.assertTrue((Boolean) value);
 
-        result = evaluationResult.forExpression("StartsWithNull1").value();
-        Assert.assertTrue(result == null);
+        value = results.forExpression("StartsWithFalse1").value();
+        Assert.assertTrue(!(Boolean) value);
 
-        result = evaluationResult.forExpression("StartsWithNull2").value();
-        Assert.assertTrue(result == null);
+        value = results.forExpression("SubstringNullNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("StartsWithTrue1").value();
-        Assert.assertTrue((Boolean) result);
+        value = results.forExpression("SubstringANull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("StartsWithFalse1").value();
-        Assert.assertTrue(!(Boolean) result);
+        value = results.forExpression("SubstringNull1").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("SubstringNullNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("SubstringAB0").value();
+        assertThat(value, is("ab"));
 
-        result = evaluationResult.forExpression("SubstringANull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("SubstringAB1").value();
+        assertThat(value, is("b"));
 
-        result = evaluationResult.forExpression("SubstringNull1").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("SubstringAB2").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("SubstringAB0").value();
-        assertThat(result, is("ab"));
+        value = results.forExpression("SubstringABNeg1").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("SubstringAB1").value();
-        assertThat(result, is("b"));
+        value = results.forExpression("SubstringAB0To1").value();
+        assertThat(value, is("a"));
 
-        result = evaluationResult.forExpression("SubstringAB2").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("SubstringABC1To1").value();
+        assertThat(value, is("b"));
 
-        result = evaluationResult.forExpression("SubstringABNeg1").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("SubstringAB0To3").value();
+        assertThat(value, is("ab"));
 
-        result = evaluationResult.forExpression("SubstringAB0To1").value();
-        assertThat(result, is("a"));
+        value = results.forExpression("UpperNull").value();
+        assertThat(value, is(nullValue()));
 
-        result = evaluationResult.forExpression("SubstringABC1To1").value();
-        assertThat(result, is("b"));
+        value = results.forExpression("UpperSpace").value();
+        assertThat(value, is(" "));
 
-        result = evaluationResult.forExpression("SubstringAB0To3").value();
-        assertThat(result, is("ab"));
+        value = results.forExpression("UpperEmpty").value();
+        assertThat(value, is(""));
 
-        result = evaluationResult.forExpression("UpperNull").value();
-        assertThat(result, is(nullValue()));
+        value = results.forExpression("UpperA").value();
+        assertThat(value, is("A"));
 
-        result = evaluationResult.forExpression("UpperSpace").value();
-        assertThat(result, is(" "));
+        value = results.forExpression("UpperB").value();
+        assertThat(value, is("B"));
 
-        result = evaluationResult.forExpression("UpperEmpty").value();
-        assertThat(result, is(""));
+        value = results.forExpression("UpperAB").value();
+        assertThat(value, is("AB"));
 
-        result = evaluationResult.forExpression("UpperA").value();
-        assertThat(result, is("A"));
+        value = results.forExpression("QuantityToString").value();
+        assertThat(value, is("125 'cm'"));
 
-        result = evaluationResult.forExpression("UpperB").value();
-        assertThat(result, is("B"));
+        value = results.forExpression("DateTimeToString1").value();
+        assertThat(value, is("2000-01-01"));
 
-        result = evaluationResult.forExpression("UpperAB").value();
-        assertThat(result, is("AB"));
+        value = results.forExpression("DateTimeToString2").value();
+        assertThat(value, is("2000-01-01T15:25:25.300"));
 
-        result = evaluationResult.forExpression("QuantityToString").value();
-        assertThat(result, is("125 'cm'"));
+        value = results.forExpression("DateTimeToString3").value();
+        assertThat(value, is("2000-01-01T08:25:25.300"));
 
-        result = evaluationResult.forExpression("DateTimeToString1").value();
-        assertThat(result, is("2000-01-01"));
-
-        result = evaluationResult.forExpression("DateTimeToString2").value();
-        assertThat(result, is("2000-01-01T15:25:25.300"));
-
-        result = evaluationResult.forExpression("DateTimeToString3").value();
-        assertThat(result, is("2000-01-01T08:25:25.300"));
-
-        result = evaluationResult.forExpression("TimeToString1").value();
-        assertThat(result, is("09:30:01.003"));
+        value = results.forExpression("TimeToString1").value();
+        assertThat(value, is("09:30:01.003"));
     }
 }

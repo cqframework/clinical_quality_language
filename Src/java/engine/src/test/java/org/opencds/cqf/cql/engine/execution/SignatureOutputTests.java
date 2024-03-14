@@ -10,29 +10,23 @@ public class SignatureOutputTests extends CqlTestBase {
 
     @Test
     public void testEvaluate() {
+        var results = engine.evaluate(toElmIdentifier("SignatureOutputTests"));
+        var value = results.forExpression("TestIntegerOverload").value();
+        assertThat(value, is(new BigDecimal("1")));
 
-        EvaluationResult evaluationResult;
+        value = results.forExpression("TestDecimalOverload").value();
+        assertThat(value, is(new BigDecimal("1.0")));
 
-        evaluationResult = engine.evaluate(toElmIdentifier("SignatureOutputTests"));
+        value = results.forExpression("TestMultipleOverload").value();
+        assertThat(value, is(5));
 
-        Object result = evaluationResult.forExpression("TestIntegerOverload").value();
-        assertThat(result, is(new BigDecimal("1")));
+        value = results.forExpression("TestIntegerMultipleOverload").value();
+        assertThat(value, is(1));
 
-        result = evaluationResult.forExpression("TestDecimalOverload").value();
-        assertThat(result, is(new BigDecimal("1.0")));
+        value = results.forExpression("TestDecimalMultipleOverload").value();
+        assertThat(value, is(new BigDecimal("2.0")));
 
-        result = evaluationResult.forExpression("TestMultipleOverload").value();
-        assertThat(result, is(5));
-
-        result = evaluationResult.forExpression("TestIntegerMultipleOverload").value();
-        assertThat(result, is(1));
-
-        result = evaluationResult.forExpression("TestDecimalMultipleOverload").value();
-        assertThat(result, is(new BigDecimal("2.0")));
-
-        result = evaluationResult
-                .forExpression("TestIntegerAndDecimalMultipleOverload")
-                .value();
-        assertThat(result, is(1));
+        value = results.forExpression("TestIntegerAndDecimalMultipleOverload").value();
+        assertThat(value, is(1));
     }
 }

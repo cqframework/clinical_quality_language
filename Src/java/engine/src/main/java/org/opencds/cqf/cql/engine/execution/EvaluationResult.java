@@ -5,7 +5,7 @@ import java.util.Map;
 import org.opencds.cqf.cql.engine.debug.DebugResult;
 
 public class EvaluationResult {
-    public Map<String, ExpressionResult> expressionResults;
+    public final Map<String, ExpressionResult> expressionResults;
 
     public EvaluationResult() {
         this.expressionResults = new LinkedHashMap<>();

@@ -19,43 +19,38 @@ public class CqlTypesTest extends CqlTestBase {
         final BigDecimal bigDecimalZoneOffset = getBigDecimalZoneOffset();
         final SoftAssert softAssert = new SoftAssert();
 
-        Set<String> set = new HashSet<>();
-        EvaluationResult evaluationResult;
+        var results = engine.evaluate(toElmIdentifier("CqlTypesTest"));
+        var value = results.forExpression("AnyInteger").value();
+        softAssert.assertEquals(value, 5, "AnyInteger");
 
-        evaluationResult = engine.evaluate(toElmIdentifier("CqlTypesTest"));
-        Object result;
+        value = results.forExpression("AnyLong").value();
+        softAssert.assertEquals(value, Long.valueOf("12"), "AnyLong");
 
-        result = evaluationResult.forExpression("AnyInteger").value();
-        softAssert.assertEquals(result, 5, "AnyInteger");
+        value = results.forExpression("AnyDecimal").value();
+        softAssert.assertEquals(value, new BigDecimal("5.0"), "AnyDecimal");
 
-        result = evaluationResult.forExpression("AnyLong").value();
-        softAssert.assertEquals(result, Long.valueOf("12"), "AnyLong");
-
-        result = evaluationResult.forExpression("AnyDecimal").value();
-        softAssert.assertEquals(result, new BigDecimal("5.0"), "AnyDecimal");
-
-        result = evaluationResult.forExpression("AnyQuantity").value();
+        value = results.forExpression("AnyQuantity").value();
         softAssert.assertTrue(
-                ((Quantity) result)
+                ((Quantity) value)
                         .equal(new Quantity().withValue(new BigDecimal("5.0")).withUnit("g")),
                 "AnyQuantity");
 
-        result = evaluationResult.forExpression("AnyDateTime").value();
+        value = results.forExpression("AnyDateTime").value();
         softAssert.assertTrue(
-                EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2012, 4, 4)), "AnyDateTime");
+                EquivalentEvaluator.equivalent(value, new DateTime(bigDecimalZoneOffset, 2012, 4, 4)), "AnyDateTime");
 
-        result = evaluationResult.forExpression("AnyTime").value();
-        softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(9, 0, 0, 0)), "AnyTime");
+        value = results.forExpression("AnyTime").value();
+        softAssert.assertTrue(EquivalentEvaluator.equivalent(value, new Time(9, 0, 0, 0)), "AnyTime");
 
-        result = evaluationResult.forExpression("AnyInterval").value();
-        softAssert.assertEquals(((Interval) result), new Interval(2, true, 7, true), "AnyInterval");
+        value = results.forExpression("AnyInterval").value();
+        softAssert.assertEquals(((Interval) value), new Interval(2, true, 7, true), "AnyInterval");
 
-        result = evaluationResult.forExpression("AnyList").value();
-        softAssert.assertEquals(result, Arrays.asList(1, 2, 3), "AnyList");
+        value = results.forExpression("AnyList").value();
+        softAssert.assertEquals(value, Arrays.asList(1, 2, 3), "AnyList");
 
-        result = evaluationResult.forExpression("AnyTuple").value();
+        value = results.forExpression("AnyTuple").value();
         softAssert.assertEquals(
-                ((Tuple) result).getElements(),
+                ((Tuple) value).getElements(),
                 new HashMap<String, Object>() {
                     {
                         put("id", 5);
@@ -64,17 +59,17 @@ public class CqlTypesTest extends CqlTestBase {
                 },
                 "AnyTuple");
 
-        result = evaluationResult.forExpression("BooleanTestTrue").value();
-        softAssert.assertEquals(result.getClass().getSimpleName(), "Boolean", "BooleanTestTrue");
-        softAssert.assertEquals(result, true, "BooleanTestTrue");
+        value = results.forExpression("BooleanTestTrue").value();
+        softAssert.assertEquals(value.getClass().getSimpleName(), "Boolean", "BooleanTestTrue");
+        softAssert.assertEquals(value, true, "BooleanTestTrue");
 
-        result = evaluationResult.forExpression("BooleanTestFalse").value();
-        softAssert.assertEquals(result.getClass().getSimpleName(), "Boolean", "BooleanTestFalse");
-        softAssert.assertEquals(result, false, "BooleanTestFalse");
+        value = results.forExpression("BooleanTestFalse").value();
+        softAssert.assertEquals(value.getClass().getSimpleName(), "Boolean", "BooleanTestFalse");
+        softAssert.assertEquals(value, false, "BooleanTestFalse");
 
-        result = evaluationResult.forExpression("CodeLiteral").value();
+        value = results.forExpression("CodeLiteral").value();
         softAssert.assertTrue(
-                ((Code) result)
+                ((Code) value)
                         .equal(new Code()
                                 .withCode("8480-6")
                                 .withSystem("http://loinc.org")
@@ -82,9 +77,9 @@ public class CqlTypesTest extends CqlTestBase {
                                 .withDisplay("Systolic blood pressure")),
                 "CodeLiteral");
 
-        result = evaluationResult.forExpression("CodeLiteral2").value();
+        value = results.forExpression("CodeLiteral2").value();
         softAssert.assertTrue(
-                ((Code) result)
+                ((Code) value)
                         .equal(new Code()
                                 .withCode("1234-5")
                                 .withSystem("http://example.org")
@@ -92,9 +87,9 @@ public class CqlTypesTest extends CqlTestBase {
                                 .withDisplay("Test Code")),
                 "CodeLiteral2");
 
-        result = evaluationResult.forExpression("ConceptTest").value();
+        value = results.forExpression("ConceptTest").value();
         softAssert.assertTrue(
-                ((Concept) result)
+                ((Concept) value)
                         .equal(new Concept()
                                 .withCodes(Arrays.asList(
                                         new Code()
@@ -110,84 +105,84 @@ public class CqlTypesTest extends CqlTestBase {
                                 .withDisplay("Type B viral hepatitis")),
                 "ConceptTest");
 
-        result = evaluationResult.forExpression("DateTimeNull").value();
-        softAssert.assertNull(result, "DateTimeNull");
+        value = results.forExpression("DateTimeNull").value();
+        softAssert.assertNull(value, "DateTimeNull");
 
-        result = evaluationResult.forExpression("DateTimeProper").value();
+        value = results.forExpression("DateTimeProper").value();
         softAssert.assertTrue(
-                EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2016, 7, 7, 6, 25, 33, 910)),
+                EquivalentEvaluator.equivalent(value, new DateTime(bigDecimalZoneOffset, 2016, 7, 7, 6, 25, 33, 910)),
                 "DateTimeProper");
 
-        result = evaluationResult.forExpression("DateTimeIncomplete").value();
+        value = results.forExpression("DateTimeIncomplete").value();
         softAssert.assertTrue(
-                EquivalentEvaluator.equivalent(result, new DateTime(bigDecimalZoneOffset, 2015, 2, 10)),
+                EquivalentEvaluator.equivalent(value, new DateTime(bigDecimalZoneOffset, 2015, 2, 10)),
                 "DateTimeIncomplete");
 
-        result = evaluationResult.forExpression("DateTimeUncertain").value();
-        softAssert.assertEquals(((Interval) result).getStart(), 19, "DateTimeUncertain");
-        softAssert.assertEquals(((Interval) result).getEnd(), 49, "DateTimeUncertain");
+        value = results.forExpression("DateTimeUncertain").value();
+        softAssert.assertEquals(((Interval) value).getStart(), 19, "DateTimeUncertain");
+        softAssert.assertEquals(((Interval) value).getEnd(), 49, "DateTimeUncertain");
 
-        result = evaluationResult.forExpression("DateTimeMin").value();
+        value = results.forExpression("DateTimeMin").value();
         softAssert.assertTrue(EquivalentEvaluator.equivalent(
-                result,
+                value,
                 new DateTime(OffsetDateTime.of(
                         1, 1, 1, 0, 0, 0, 0, OffsetDateTime.now().getOffset()))));
 
-        result = evaluationResult.forExpression("DateTimeMax").value();
+        value = results.forExpression("DateTimeMax").value();
         softAssert.assertTrue(EquivalentEvaluator.equivalent(
-                result, new DateTime(bigDecimalZoneOffset, 9999, 12, 31, 23, 59, 59, 999)));
+                value, new DateTime(bigDecimalZoneOffset, 9999, 12, 31, 23, 59, 59, 999)));
 
-        result = evaluationResult.forExpression("DecimalUpperBoundExcept").value();
+        value = results.forExpression("DecimalUpperBoundExcept").value();
         softAssert.assertEquals(
-                result, new BigDecimal("10000000000000000000000000000000000.00000000"), "DecimalUpperBoundExcept");
+                value, new BigDecimal("10000000000000000000000000000000000.00000000"), "DecimalUpperBoundExcept");
 
-        result = evaluationResult.forExpression("DecimalLowerBoundExcept").value();
+        value = results.forExpression("DecimalLowerBoundExcept").value();
         softAssert.assertEquals(
-                result, new BigDecimal("-10000000000000000000000000000000000.00000000"), "DecimalLowerBoundExcept");
+                value, new BigDecimal("-10000000000000000000000000000000000.00000000"), "DecimalLowerBoundExcept");
 
         // NOTE: This should also return an error as the fractional precision is greater than 8
-        result = evaluationResult.forExpression("DecimalFractionalTooBig").value();
-        softAssert.assertEquals(result, new BigDecimal("5.999999999"), "DecimalFractionalTooBig");
+        value = results.forExpression("DecimalFractionalTooBig").value();
+        softAssert.assertEquals(value, new BigDecimal("5.999999999"), "DecimalFractionalTooBig");
 
-        result = evaluationResult.forExpression("DecimalPi").value();
-        softAssert.assertEquals(result, new BigDecimal("3.14159265"), "DecimalPi");
+        value = results.forExpression("DecimalPi").value();
+        softAssert.assertEquals(value, new BigDecimal("3.14159265"), "DecimalPi");
 
-        result = evaluationResult.forExpression("IntegerProper").value();
-        softAssert.assertEquals(result, 5000, "IntegerProper");
+        value = results.forExpression("IntegerProper").value();
+        softAssert.assertEquals(value, 5000, "IntegerProper");
 
-        result = evaluationResult.forExpression("QuantityTest").value();
-        softAssert.assertTrue(((Quantity) result)
+        value = results.forExpression("QuantityTest").value();
+        softAssert.assertTrue(((Quantity) value)
                 .equal(new Quantity().withValue(new BigDecimal("150.2")).withUnit("[lb_av]")));
 
-        result = evaluationResult.forExpression("QuantityTest2").value();
-        softAssert.assertTrue(((Quantity) result)
+        value = results.forExpression("QuantityTest2").value();
+        softAssert.assertTrue(((Quantity) value)
                 .equal(new Quantity().withValue(new BigDecimal("2.5589")).withUnit("{eskimo kisses}")));
 
         // NOTE: This should also return an error as the fractional precision is greater than 8
-        result = evaluationResult.forExpression("QuantityFractionalTooBig").value();
-        softAssert.assertTrue(((Quantity) result)
+        value = results.forExpression("QuantityFractionalTooBig").value();
+        softAssert.assertTrue(((Quantity) value)
                 .equal(new Quantity().withValue(new BigDecimal("5.99999999")).withUnit("g")));
 
-        result = evaluationResult.forExpression("RatioTest").value();
-        softAssert.assertTrue(((Ratio) result)
+        value = results.forExpression("RatioTest").value();
+        softAssert.assertTrue(((Ratio) value)
                 .getNumerator()
                 .equal(new Quantity().withValue(new BigDecimal("150.2")).withUnit("[lb_av]")));
-        softAssert.assertTrue(((Ratio) result)
+        softAssert.assertTrue(((Ratio) value)
                 .getDenominator()
                 .equal(new Quantity().withValue(new BigDecimal("2.5589")).withUnit("{eskimo kisses}")));
 
-        result = evaluationResult.forExpression("StringTestEscapeQuotes").value();
+        value = results.forExpression("StringTestEscapeQuotes").value();
         softAssert.assertEquals(
-                result, "\'I start with a single quote and end with a double quote\"", "StringTestEscapeQuotes");
+                value, "\'I start with a single quote and end with a double quote\"", "StringTestEscapeQuotes");
 
-        result = evaluationResult.forExpression("TimeProper").value();
-        softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(10, 25, 12, 863)), "TimeProper");
+        value = results.forExpression("TimeProper").value();
+        softAssert.assertTrue(EquivalentEvaluator.equivalent(value, new Time(10, 25, 12, 863)), "TimeProper");
 
-        result = evaluationResult.forExpression("TimeAllMax").value();
-        softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(23, 59, 59, 999)), "TimeAllMax");
+        value = results.forExpression("TimeAllMax").value();
+        softAssert.assertTrue(EquivalentEvaluator.equivalent(value, new Time(23, 59, 59, 999)), "TimeAllMax");
 
-        result = evaluationResult.forExpression("TimeAllMin").value();
-        softAssert.assertTrue(EquivalentEvaluator.equivalent(result, new Time(0, 0, 0, 0)), "TimeAllMin");
+        value = results.forExpression("TimeAllMin").value();
+        softAssert.assertTrue(EquivalentEvaluator.equivalent(value, new Time(0, 0, 0, 0)), "TimeAllMin");
 
         softAssert.assertAll();
     }

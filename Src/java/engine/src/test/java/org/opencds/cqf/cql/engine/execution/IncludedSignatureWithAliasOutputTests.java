@@ -10,30 +10,27 @@ public class IncludedSignatureWithAliasOutputTests extends CqlTestBase {
 
     @Test
     public void testEvaluate() {
+        var results = engine.evaluate(toElmIdentifier("IncludedSignatureWithAliasOutputTests"));
 
-        EvaluationResult evaluationResult;
+        Object value = results.forExpression("TestOverload").value();
+        assertThat(value, is(5));
 
-        evaluationResult = engine.evaluate(toElmIdentifier("IncludedSignatureWithAliasOutputTests"));
+        value = results.forExpression("TestOverloadOneInt").value();
+        assertThat(value, is(1));
 
-        Object result = evaluationResult.forExpression("TestOverload").value();
-        assertThat(result, is(5));
+        value = results.forExpression("TestOverloadOneDecimal").value();
+        assertThat(value, is(new BigDecimal("2.0")));
 
-        result = evaluationResult.forExpression("TestOverloadOneInt").value();
-        assertThat(result, is(1));
+        value = results.forExpression("TestOverloadTwoInts").value();
+        assertThat(value, is(1));
 
-        result = evaluationResult.forExpression("TestOverloadOneDecimal").value();
-        assertThat(result, is(new BigDecimal("2.0")));
+        value = results.forExpression("TestOverloadTwoDecimals").value();
+        assertThat(value, is(new BigDecimal("2.0")));
 
-        result = evaluationResult.forExpression("TestOverloadTwoInts").value();
-        assertThat(result, is(1));
+        value = results.forExpression("TestOverloadOneIntOneDecimal").value();
+        assertThat(value, is(new BigDecimal("2.0")));
 
-        result = evaluationResult.forExpression("TestOverloadTwoDecimals").value();
-        assertThat(result, is(new BigDecimal("2.0")));
-
-        result = evaluationResult.forExpression("TestOverloadOneIntOneDecimal").value();
-        assertThat(result, is(new BigDecimal("2.0")));
-
-        result = evaluationResult.forExpression("TestOverloadOneIntTwoDecimal").value();
-        assertThat(result, is(1));
+        value = results.forExpression("TestOverloadOneIntTwoDecimal").value();
+        assertThat(value, is(1));
     }
 }

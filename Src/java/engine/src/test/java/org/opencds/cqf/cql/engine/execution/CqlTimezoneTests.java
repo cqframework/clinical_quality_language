@@ -44,7 +44,7 @@ public class CqlTimezoneTests extends CqlTestBase {
     }
 
     private void evaluateExpression(String functionName, boolean expectedResult, SoftAssert softAssert) {
-        Object result = engine.expression(library, functionName).value();
-        softAssert.assertEquals(result, expectedResult, functionName);
+        var value = engine.expression(library, functionName).value();
+        softAssert.assertEquals(value, expectedResult, functionName);
     }
 }

@@ -9,17 +9,11 @@ public class SortDescendingTest extends CqlTestBase {
 
     @Test
     public void testEvaluate() {
-
-        EvaluationResult evaluationResult;
-
-        evaluationResult = engine.evaluate(toElmIdentifier("SortDescendingTest"));
-
-        Object result = evaluationResult
-                .forExpression("sorted list of numbers descending")
-                .value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) result).get(0), 9));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) result).get(1), 4));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) result).get(2), 2));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) result).get(3), 1));
+        var results = engine.evaluate(toElmIdentifier("SortDescendingTest"));
+        var value = results.forExpression("sorted list of numbers descending").value();
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) value).get(0), 9));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) value).get(1), 4));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) value).get(2), 2));
+        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) value).get(3), 1));
     }
 }
