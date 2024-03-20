@@ -92,6 +92,10 @@
 			<expression>DateTime(9999, 12, 31, 23, 59, 59, 999)</expression>
 			<output>@9999-12-31T23:59:59.999</output>
 		</test>
+		<test name="DateTimeTimeUnspecified">
+			<expression>hour from @2015-02-10T is null</expression>
+			<output>true</output>
+		</test>
 	</group>
 	<group name="Decimal">
 		<!-- REPLACED BY TestIsolatedCqlExprs : ValueLiteralsAndSelectors.xml

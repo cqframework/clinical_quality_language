@@ -666,8 +666,23 @@
 	<group name="Intersect">
 		<test name="TestIntersectNull">
 			<expression>Interval[1, 10] intersect Interval[5, null)</expression>
-			<output>null</output>
-			<!-- TODO: Fix CQL Engine to not throw a java.lang.NullPointerException -->
+			<output>Interval[5, null)</output>
+		</test>
+		<test name="TestIntersectNull1">
+			<expression>start of (Interval[1, 10] intersect Interval[5, null)) &lt;= 10</expression>
+			<output>true</output>
+		</test>
+		<test name="TestIntersectNull2">
+			<expression>start of (Interval[1, 10] intersect Interval[5, null)) &gt;= 5</expression>
+			<output>true</output>
+		</test>
+		<test name="TestIntersectNull3">
+			<expression>start of (Interval[1, 10] intersect Interval[5, null)) &gt; 10</expression>
+			<output>false</output>
+		</test>
+		<test name="TestIntersectNull4">
+			<expression>start of (Interval[1, 10] intersect Interval[5, null)) &lt; 5</expression>
+			<output>false</output>
 		</test>
 		<test name="IntegerIntervalIntersectTest4to10">
 			<expression>Interval[1, 10] intersect Interval[4, 10]</expression>

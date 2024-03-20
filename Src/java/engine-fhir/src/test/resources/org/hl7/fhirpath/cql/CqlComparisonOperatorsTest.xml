@@ -75,7 +75,6 @@
 		<test name="QuantityEqCM1M01">
 			<expression>1'cm' = 0.01'm'</expression>
 			<output>true</output>
-			<!-- TODO: make Engine convert units properly -->
 		</test>
 		<test name="QuantityEqDiffPrecision">
 			<expression>2.0'cm' = 2.00'cm'</expression>
@@ -133,6 +132,10 @@
 			<expression>@2014-01-25T14:30:14.559+01:00 = @2014-01-25T14:30:14.559+01:00</expression>
 			<output>true</output>
 		</test>
+		<test name="DateTimeDayCompare">
+			<expression>@2022-02-22T00:00:00.000-05:00 same day as @2022-02-22T04:59:00.000Z</expression>
+			<output>true</output>
+		</test>
 		<test name="TimeEq10A10A">
 			<expression>@T10:00:00.000 = @T10:00:00.000</expression>
 			<output>true</output>
@@ -167,6 +170,10 @@
 			<expression>0.0 &gt; -1.0</expression>
 			<output>true</output>
 		</test>
+		<test name="GreaterDec1Int2">
+			<expression>1.0 &gt; 2</expression>
+			<output>false</output>
+		</test>
 		<test name="GreaterCM0CM0">
 			<expression>0'cm' &gt; 0'cm'</expression>
 			<output>false</output>
@@ -182,12 +189,10 @@
 		<test name="GreaterM1CM1">
 			<expression>1'm' &gt; 1'cm'</expression>
 			<output>true</output>
-			<!-- TODO: make Engine convert units properly -->
 		</test>
 		<test name="GreaterM1CM10">
 			<expression>1'm' &gt; 10'cm'</expression>
 			<output>true</output>
-			<!-- TODO: make Engine convert units properly -->
 		</test>
 		<test name="GreaterAA">
 			<expression>'a' &gt; 'a'</expression>
@@ -267,6 +272,10 @@
 			<expression>0.0 &gt;= -1.0</expression>
 			<output>true</output>
 		</test>
+		<test name="GreaterOrEqualDec1Int2">
+			<expression>1.0 &gt;= 2</expression>
+			<output>false</output>
+		</test>
 		<test name="GreaterOrEqualCM0CM0">
 			<expression>0'cm' &gt;= 0'cm'</expression>
 			<output>true</output>
@@ -282,12 +291,10 @@
 		<test name="GreaterOrEqualM1CM1">
 			<expression>1'm' &gt;= 1'cm'</expression>
 			<output>true</output>
-			<!-- TODO: make Engine convert units properly; note, only passes by coincidence -->
 		</test>
 		<test name="GreaterOrEqualM1CM10">
 			<expression>1'm' &gt;= 10'cm'</expression>
 			<output>true</output>
-			<!-- TODO: make Engine convert units properly -->
 		</test>
 		<test name="GreaterOrEqualAA">
 			<expression>'a' &gt;= 'a'</expression>
@@ -375,6 +382,10 @@
 			<expression>0.0 &lt; -1.0</expression>
 			<output>false</output>
 		</test>
+		<test name="LessDec1Int2">
+			<expression>1.0 &lt; 2</expression>
+			<output>true</output>
+		</test>
 		<test name="LessCM0CM0">
 			<expression>0'cm' &lt; 0'cm'</expression>
 			<output>false</output>
@@ -390,12 +401,10 @@
 		<test name="LessM1CM1">
 			<expression>1'm' &lt; 1'cm'</expression>
 			<output>false</output>
-			<!-- TODO: make Engine convert units properly; note, only works by coincidence -->
 		</test>
 		<test name="LessM1CM10">
 			<expression>1'm' &lt; 10'cm'</expression>
 			<output>false</output>
-			<!-- TODO: make Engine convert units properly -->
 		</test>
 		<test name="LessAA">
 			<expression>'a' &lt; 'a'</expression>
@@ -475,6 +484,10 @@
 			<expression>0.0 &lt;= -1.0</expression>
 			<output>false</output>
 		</test>
+		<test name="LessOrEqualDec1Int2">
+			<expression>1.0 &lt;= 2</expression>
+			<output>true</output>
+		</test>
 		<test name="LessOrEqualCM0CM0">
 			<expression>0'cm' &lt;= 0'cm'</expression>
 			<output>true</output>
@@ -490,12 +503,10 @@
 		<test name="LessOrEqualM1CM1">
 			<expression>1'm' &lt;= 1'cm'</expression>
 			<output>false</output>
-			<!-- TODO: make Engine convert units properly -->
 		</test>
 		<test name="LessOrEqualM1CM10">
 			<expression>1'm' &lt;= 10'cm'</expression>
 			<output>false</output>
-			<!-- TODO: make Engine convert units properly -->
 		</test>
 		<test name="LessOrEqualAA">
 			<expression>'a' &lt;= 'a'</expression>
@@ -626,7 +637,6 @@
 		<test name="EquivEqCM1M01">
 			<expression>1'cm' ~ 0.01'm'</expression>
 			<output>true</output>
-			<!-- TODO: make Engine convert units properly -->
 		</test>
 		<test name="EquivTupleJohnJohn">
 			<expression>Tuple { Id : 1, Name : 'John' } ~ Tuple { Id : 1, Name : 'John' }</expression>
@@ -729,7 +739,6 @@
 		<test name="QuantityNotEqCM1M01">
 			<expression>1'cm' != 0.01'm'</expression>
 			<output>false</output>
-			<!-- TODO: make Engine convert units properly -->
 		</test>
 		<test name="TupleNotEqJohnJohn">
 			<expression>Tuple{ Id : 1, Name : 'John' } != Tuple{ Id : 1, Name : 'John' }</expression>
