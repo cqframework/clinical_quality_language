@@ -96,6 +96,14 @@
 			<expression invalid="true">ToDateTime('2014/01/01T12:05:05.955Z')</expression>
 			<!-- EXPECT: Invalid format: "2014/01/01T12:05:05.955" is malformed at "/01/01T12:05:05.955" -->
 		</test>
+		<test name="ToDateTimeDate">
+			<expression>ToDateTime(@2014-01-01)</expression>
+			<output>@2014-01-01T</output>
+		</test>
+		<test name="ToDateTimeTimeUnspecified">
+			<expression>hour from ToDateTime(@2014-01-01) is null</expression>
+			<output>true</output>
+		</test>
 	</group>
 	<group name="ToDecimal">
 		<test name="String25D5ToDecimal">
