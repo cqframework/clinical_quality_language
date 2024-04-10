@@ -271,6 +271,7 @@ define Union123And2: { 1, 2, 3 } union { 2 }
 define Union123And4: { 1, 2, 3 } union { 4 }
 define UnionDateTime: { DateTime(2001, 9, 11)} union {DateTime(2012, 5, 10), DateTime(2014, 12, 10) }
 define UnionTime: { @T15:59:59.999, @T20:59:59.999, @T12:59:59.999 } union { @T10:59:59.999 }
+define UnionDisparateTypes:  { 1, 'hi', true } union { 1.0, true }
 
 // Sort
 define intList: { 3, 2, 1 }
