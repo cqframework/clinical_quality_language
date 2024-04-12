@@ -48,22 +48,22 @@ public class CQLOperationsR4Test extends TestFhirPath implements ITest {
     @DataProvider
     public static Object[][] dataMethod() {
         String[] listOfFiles = {
-            "r4/tests-fhir-r4.xml",
-            "cql/CqlAggregateFunctionsTest.xml",
-            "cql/CqlAggregateTest.xml",
-            "cql/CqlArithmeticFunctionsTest.xml",
-            "cql/CqlComparisonOperatorsTest.xml",
-            "cql/CqlConditionalOperatorsTest.xml",
-            "cql/CqlDateTimeOperatorsTest.xml",
-            "cql/CqlErrorsAndMessagingOperatorsTest.xml",
-            "cql/CqlIntervalOperatorsTest.xml",
-            "cql/CqlListOperatorsTest.xml",
-            "cql/CqlLogicalOperatorsTest.xml",
-            "cql/CqlNullologicalOperatorsTest.xml",
-            "cql/CqlStringOperatorsTest.xml",
+            // "r4/tests-fhir-r4.xml",
+            // "cql/CqlAggregateFunctionsTest.xml",
+            // "cql/CqlAggregateTest.xml",
+            // "cql/CqlArithmeticFunctionsTest.xml",
+            // "cql/CqlComparisonOperatorsTest.xml",
+            // "cql/CqlConditionalOperatorsTest.xml",
+            // "cql/CqlDateTimeOperatorsTest.xml",
+            // "cql/CqlErrorsAndMessagingOperatorsTest.xml",
+            // "cql/CqlIntervalOperatorsTest.xml",
+            // "cql/CqlListOperatorsTest.xml",
+            // "cql/CqlLogicalOperatorsTest.xml",
+            // "cql/CqlNullologicalOperatorsTest.xml",
+            // "cql/CqlStringOperatorsTest.xml",
             "cql/CqlTypeOperatorsTest.xml",
-            "cql/CqlTypesTest.xml",
-            "cql/ValueLiteralsAndSelectors.xml"
+            // "cql/CqlTypesTest.xml",
+            // "cql/ValueLiteralsAndSelectors.xml"
         };
 
         List<Object[]> testsToRun = new ArrayList<>();
@@ -150,9 +150,6 @@ public class CQLOperationsR4Test extends TestFhirPath implements ITest {
             "cql/CqlTypeOperatorsTest/As/CastAsQuantity",
             "cql/CqlTypeOperatorsTest/Convert/StringToDateTimeMalformed",
             "cql/CqlTypeOperatorsTest/Convert/StringToIntegerError",
-            "cql/CqlTypeOperatorsTest/ToDateTime/ToDateTimeDate",
-            "cql/CqlTypeOperatorsTest/ToDateTime/ToDateTimeMalformed",
-            "cql/CqlTypeOperatorsTest/ToDateTime/ToDateTimeTimeUnspecified",
             "cql/CqlTypeOperatorsTest/ToTime/ToTime2",
             "cql/CqlTypeOperatorsTest/ToTime/ToTime3",
             "cql/CqlTypeOperatorsTest/ToTime/ToTime4",

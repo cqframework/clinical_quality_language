@@ -64,11 +64,7 @@ public class ToDateTimeEvaluator {
                             state.getEvaluationZonedDateTime().getOffset()),
                     ((Date) operand).getDate().getYear(),
                     ((Date) operand).getDate().getMonthValue(),
-                    ((Date) operand).getDate().getDayOfMonth(),
-                    0,
-                    0,
-                    0,
-                    0);
+                    ((Date) operand).getDate().getDayOfMonth());
         }
 
         throw new InvalidOperatorArgument(
