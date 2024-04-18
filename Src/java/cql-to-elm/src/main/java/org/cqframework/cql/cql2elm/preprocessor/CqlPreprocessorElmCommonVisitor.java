@@ -4,6 +4,7 @@ import jakarta.xml.bind.JAXBElement;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Stack;
@@ -30,7 +31,7 @@ import org.hl7.elm.r1.*;
 /**
  * Common functionality used by {@link CqlPreprocessor} and {@link Cql2ElmVisitor}
  */
-public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
+public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor<Object> {
     protected final ObjectFactory of;
     protected final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
     private boolean implicitContextCreated = false;
@@ -84,6 +85,7 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visit(ParseTree tree) {
+        Objects.requireNonNull(tree, "ParseTree required");
         boolean pushedChunk = pushChunk(tree);
         Object o = null;
         try {
@@ -98,20 +100,11 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
                 }
                 libraryBuilder.recordParsingException(translatorException);
             } catch (CqlCompilerException e) {
-                if (e.getLocator() == null) {
-                    if (tree == null) {
-                        throw e;
-                    }
-                    e.setLocator(getTrackBack(tree));
-                }
                 libraryBuilder.recordParsingException(e);
             } catch (Exception e) {
                 CqlCompilerException ex = null;
                 if (e.getMessage() == null) {
                     ex = new CqlInternalException("Internal translator error.", getTrackBack(tree), e);
-                    if (tree == null) {
-                        throw ex;
-                    }
                 } else {
                     ex = new CqlSemanticException(e.getMessage(), getTrackBack(tree), e);
                 }
@@ -174,8 +167,8 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
 
     @Override
     public ChoiceTypeSpecifier visitChoiceTypeSpecifier(cqlParser.ChoiceTypeSpecifierContext ctx) {
-        ArrayList<TypeSpecifier> typeSpecifiers = new ArrayList<TypeSpecifier>();
-        ArrayList<DataType> types = new ArrayList<DataType>();
+        var typeSpecifiers = new ArrayList<TypeSpecifier>();
+        var types = new ArrayList<DataType>();
         for (cqlParser.TypeSpecifierContext typeSpecifierContext : ctx.typeSpecifier()) {
             TypeSpecifier typeSpecifier = parseTypeSpecifier(typeSpecifierContext);
             typeSpecifiers.add(typeSpecifier);
@@ -366,51 +359,55 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
     }
 
     private void processTags(ParseTree tree, Object o) {
-        if (libraryBuilder.isCompatibleWith("1.5")) {
-            if (o instanceof Element) {
-                Element element = (Element) o;
-                if (!(tree instanceof cqlParser.LibraryContext)) {
-                    if (element instanceof UsingDef
-                            || element instanceof IncludeDef
-                            || element instanceof CodeSystemDef
-                            || element instanceof ValueSetDef
-                            || element instanceof CodeDef
-                            || element instanceof ConceptDef
-                            || element instanceof ParameterDef
-                            || element instanceof ContextDef
-                            || element instanceof ExpressionDef) {
-                        List<Tag> tags = getTags(tree);
-                        if (tags != null && tags.size() > 0) {
-                            Annotation a = getAnnotation(element);
-                            if (a == null) {
-                                a = buildAnnotation();
-                                element.getAnnotation().add(a);
-                            }
-                            // If the definition was processed as a forward declaration, the tag processing will already
-                            // have occurred
-                            // and just adding tags would duplicate them here. This doesn't account for the possibility
-                            // that
-                            // tags would be added for some other reason, but I didn't want the overhead of checking for
-                            // existing
-                            // tags, and there is currently nothing that would add tags other than being processed from
-                            // comments
-                            if (a.getT().size() == 0) {
-                                a.getT().addAll(tags);
-                            }
-                        }
+        if (!libraryBuilder.isCompatibleWith("1.5")) {
+            return;
+        }
+
+        if (!(o instanceof Element)) {
+            return;
+        }
+
+        Element element = (Element) o;
+        if (!(tree instanceof cqlParser.LibraryContext)) {
+            if (element instanceof UsingDef
+                    || element instanceof IncludeDef
+                    || element instanceof CodeSystemDef
+                    || element instanceof ValueSetDef
+                    || element instanceof CodeDef
+                    || element instanceof ConceptDef
+                    || element instanceof ParameterDef
+                    || element instanceof ContextDef
+                    || element instanceof ExpressionDef) {
+                var tags = getTags(tree);
+                if (!tags.isEmpty()) {
+                    Annotation a = getAnnotation(element);
+                    if (a == null) {
+                        a = buildAnnotation();
+                        element.getAnnotation().add(a);
                     }
-                } else {
-                    if (libraryInfo.getDefinition() != null && libraryInfo.getHeaderInterval() != null) {
-                        List<Tag> tags = getTags(libraryInfo.getHeader());
-                        if (tags != null && tags.size() > 0) {
-                            Annotation a = getAnnotation(libraryBuilder.getLibrary());
-                            if (a == null) {
-                                a = buildAnnotation();
-                                libraryBuilder.getLibrary().getAnnotation().add(a);
-                            }
-                            a.getT().addAll(tags);
-                        }
+                    // If the definition was processed as a forward declaration, the tag processing will already
+                    // have occurred
+                    // and just adding tags would duplicate them here. This doesn't account for the possibility
+                    // that
+                    // tags would be added for some other reason, but I didn't want the overhead of checking for
+                    // existing
+                    // tags, and there is currently nothing that would add tags other than being processed from
+                    // comments
+                    if (a.getT().isEmpty()) {
+                        a.getT().addAll(tags);
                     }
+                }
+            }
+        } else {
+            if (libraryInfo.getDefinition() != null && libraryInfo.getHeaderInterval() != null) {
+                var tags = getTags(libraryInfo.getHeader());
+                if (!tags.isEmpty()) {
+                    Annotation a = getAnnotation(libraryBuilder.getLibrary());
+                    if (a == null) {
+                        a = buildAnnotation();
+                        libraryBuilder.getLibrary().getAnnotation().add(a);
+                    }
+                    a.getT().addAll(tags);
                 }
             }
         }
@@ -422,7 +419,7 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
             return parseTags(header);
         }
 
-        return null;
+        return Collections.emptyList();
     }
 
     private List<Tag> getTags(ParseTree tree) {
@@ -431,12 +428,12 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
             return getTags(bi.getHeader());
         }
 
-        return null;
+        return Collections.emptyList();
     }
 
     private List<Tag> parseTags(String header) {
         header = String.join("\n", Arrays.asList(header.trim().split("\n[ \t]*\\*[ \t\\*]*")));
-        List<Tag> tags = new ArrayList<>();
+        var tags = new ArrayList<Tag>();
 
         int startFrom = 0;
         while (startFrom < header.length()) {
@@ -518,8 +515,7 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
     }
 
     private Annotation buildAnnotation() {
-        Annotation annotation = af.createAnnotation();
-        return annotation;
+        return af.createAnnotation();
     }
 
     private void addNarrativeToAnnotation(Annotation annotation, Chunk chunk) {
@@ -588,14 +584,13 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
     }
 
     private TrackBack getTrackBack(ParserRuleContext ctx) {
-        TrackBack tb = new TrackBack(
+        return new TrackBack(
                 libraryBuilder.getLibraryIdentifier(),
                 ctx.getStart().getLine(),
                 ctx.getStart().getCharPositionInLine() + 1, // 1-based instead of 0-based
                 ctx.getStop().getLine(),
                 ctx.getStop().getCharPositionInLine() + ctx.getStop().getText().length() // 1-based instead of 0-based
                 );
-        return tb;
     }
 
     private TrackBack track(Trackable trackable, ParseTree pt) {
@@ -793,7 +788,7 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor {
     }
 
     private Annotation getAnnotation(Element element) {
-        for (Object o : element.getAnnotation()) {
+        for (var o : element.getAnnotation()) {
             if (o instanceof Annotation) {
                 return (Annotation) o;
             }
