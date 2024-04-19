@@ -40,9 +40,6 @@ public class ContainsEvaluator {
         if (left == null && right != null) {
             return false;
         }
-        if (right == null) {
-            return null;
-        }
 
         // null left operand case
         if (expression instanceof As) {
