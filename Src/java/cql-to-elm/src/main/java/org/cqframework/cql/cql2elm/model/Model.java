@@ -86,18 +86,18 @@ public class Model {
 
         // Resolve to a "default" context definition if the context name matches a type name exactly
         DataType contextType = resolveTypeName(contextName);
-        if (contextType != null && contextType instanceof ClassType) {
+        if (contextType instanceof ClassType) {
             ClassType contextClassType = (ClassType) contextType;
             String keyName = null;
-            for (ClassTypeElement cte : ((ClassType) contextType).getElements()) {
+            for (ClassTypeElement cte : contextClassType.getElements()) {
                 if (cte.getName().equals("id")) {
                     keyName = cte.getName();
                     break;
                 }
             }
-            ModelContext modelContext = new ModelContext(
+
+            return new ModelContext(
                     contextName, (ClassType) contextType, keyName != null ? Arrays.asList(keyName) : null, null);
-            return modelContext;
         }
 
         if (mustResolve) {

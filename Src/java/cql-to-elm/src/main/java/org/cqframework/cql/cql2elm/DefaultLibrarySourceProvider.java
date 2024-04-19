@@ -26,12 +26,6 @@ public class DefaultLibrarySourceProvider implements LibrarySourceProvider, Path
         this.path = path;
     }
 
-    private void checkPath() {
-        if (path == null || path.equals("")) {
-            throw new IllegalArgumentException("Path is required for DefaultLibrarySourceProvider implementation");
-        }
-    }
-
     @Override
     public InputStream getLibrarySource(VersionedIdentifier libraryIdentifier) {
         if (path != null) {
