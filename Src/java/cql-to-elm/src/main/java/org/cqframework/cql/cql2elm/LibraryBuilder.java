@@ -705,7 +705,7 @@ public class LibraryBuilder {
                 .withId(NamespaceManager.getNamePart(includeDef.getPath()))
                 .withVersion(includeDef.getVersion());
 
-        ArrayList<CqlCompilerException> errors = new ArrayList<CqlCompilerException>();
+        var errors = new ArrayList<CqlCompilerException>();
         CompiledLibrary referencedLibrary = libraryManager.resolveLibrary(libraryIdentifier, errors);
         for (CqlCompilerException error : errors) {
             this.recordParsingException(error);
@@ -1240,14 +1240,13 @@ public class LibraryBuilder {
             dataTypes.add(operand.getResultType());
         }
 
-        CallContext callContext = new CallContext(
+        return new CallContext(
                 libraryName,
                 operatorName,
                 allowPromotionAndDemotion,
                 allowFluent,
                 mustResolve,
                 dataTypes.toArray(new DataType[dataTypes.size()]));
-        return callContext;
     }
 
     public Invocation resolveInvocation(
@@ -1344,7 +1343,7 @@ public class LibraryBuilder {
                 compiledLibrary.getIdentifier().getId(),
                 fd.getName(),
                 false,
-                fd.isFluent() == null ? false : fd.isFluent(),
+                fd.isFluent() != null && fd.isFluent(),
                 false,
                 dataTypes.toArray(new DataType[dataTypes.size()]));
         // Resolve exact, no conversion map
@@ -1364,9 +1363,9 @@ public class LibraryBuilder {
                 if (result == null && callContext.getAllowFluent()) {
                     // attempt to resolve in each non-system included library, in order of inclusion, first resolution
                     // wins
-                    for (CompiledLibrary library : libraries.values()) {
-                        if (!library.equals(getSystemLibrary())) {
-                            result = library.resolveCall(callContext, conversionMap);
+                    for (var lib : libraries.values()) {
+                        if (!lib.equals(getSystemLibrary())) {
+                            result = lib.resolveCall(callContext, conversionMap);
                             if (result != null) {
                                 break;
                             }
@@ -1655,7 +1654,7 @@ public class LibraryBuilder {
     private Expression convertIntervalExpression(Expression expression, Conversion conversion) {
         IntervalType fromType = (IntervalType) conversion.getFromType();
         IntervalType toType = (IntervalType) conversion.getToType();
-        Interval interval = (Interval) of.createInterval()
+        return (Interval) of.createInterval()
                 .withLow(convertExpression(
                         (Property) of.createProperty()
                                 .withSource(expression)
@@ -1677,7 +1676,6 @@ public class LibraryBuilder {
                         .withPath("highClosed")
                         .withResultType(resolveTypeName("System", "Boolean")))
                 .withResultType(toType);
-        return interval;
     }
 
     public As buildAs(Expression expression, DataType asType) {

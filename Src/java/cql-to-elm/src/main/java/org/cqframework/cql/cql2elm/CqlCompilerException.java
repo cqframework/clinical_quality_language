@@ -21,41 +21,31 @@ public class CqlCompilerException extends RuntimeException {
     }
 
     public CqlCompilerException(String message) {
-        super(message);
-        this.severity = ErrorSeverity.Error;
+        this(message, ErrorSeverity.Error, null, null);
     }
 
     public CqlCompilerException(String message, ErrorSeverity severity) {
-        super(message);
-        this.severity = severity;
+        this(message, severity, null, null);
     }
 
     public CqlCompilerException(String message, Throwable cause) {
-        super(message, cause);
-        this.severity = ErrorSeverity.Error;
+        this(message, ErrorSeverity.Error, null, cause);
     }
 
     public CqlCompilerException(String message, ErrorSeverity severity, Throwable cause) {
-        super(message, cause);
-        this.severity = severity;
+        this(message, severity, null, cause);
     }
 
     public CqlCompilerException(String message, TrackBack locator) {
-        super(message);
-        this.severity = ErrorSeverity.Error;
-        this.locator = locator;
+        this(message, ErrorSeverity.Error, locator, null);
     }
 
     public CqlCompilerException(String message, ErrorSeverity severity, TrackBack locator) {
-        super(message);
-        this.severity = severity;
-        this.locator = locator;
+        this(message, severity, locator, null);
     }
 
     public CqlCompilerException(String message, TrackBack locator, Throwable cause) {
-        super(message, cause);
-        this.severity = ErrorSeverity.Error;
-        this.locator = locator;
+        this(message, ErrorSeverity.Error, locator, cause);
     }
 
     public CqlCompilerException(String message, ErrorSeverity severity, TrackBack locator, Throwable cause) {
@@ -70,13 +60,9 @@ public class CqlCompilerException extends RuntimeException {
         return severity;
     }
 
-    private TrackBack locator;
+    private final transient TrackBack locator;
 
     public TrackBack getLocator() {
         return locator;
-    }
-
-    public void setLocator(TrackBack locator) {
-        this.locator = locator;
     }
 }

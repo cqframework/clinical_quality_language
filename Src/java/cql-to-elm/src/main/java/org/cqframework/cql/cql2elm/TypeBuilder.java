@@ -51,7 +51,7 @@ public class TypeBuilder {
     }
 
     public Iterable<TypeSpecifier> dataTypesToTypeSpecifiers(Iterable<DataType> types) {
-        ArrayList<TypeSpecifier> result = new ArrayList<TypeSpecifier>();
+        var result = new ArrayList<TypeSpecifier>();
         for (DataType type : types) {
             result.add(dataTypeToTypeSpecifier(type));
         }
