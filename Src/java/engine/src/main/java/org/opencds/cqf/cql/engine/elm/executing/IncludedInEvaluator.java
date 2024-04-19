@@ -88,11 +88,13 @@ public class IncludedInEvaluator {
     }
 
     public static Boolean listIncludedIn(Iterable<?> left, Iterable<?> right, State state) {
-        if (left == null) {
-            return true;
-        }
         if (right == null) {
             return false;
+        }
+
+        if (left == null) {
+            // For singleton values, include in is equivalent to in.
+            return InEvaluator.in(null, right, null, state);
         }
 
         for (Object element : left) {

@@ -353,12 +353,12 @@
 		</test>
 		<test name="IncludesNullLeft">
 			<expression>null includes {2}</expression>
-			<output>null</output>
+			<output>false</output>
 		</test>
 		<!-- this test is going to the ContainsEvaluator -->
 		<test name="IncludesNullRight">
 			<expression>{'s', 'a', 'm'} includes null</expression>
-			<output>null</output>
+			<output>false</output>
 		</test>
 	</group>
 	<group name="IncludedIn">
@@ -401,11 +401,11 @@
 		<!-- the following expression is going to the InEvaluator -->
 		<test name="IncludedInNullLeft">
 			<expression>null included in {2}</expression>
-			<output>null</output>
+			<output>false</output>
 		</test>
 		<test name="IncludedInNullRight">
 			<expression>{'s', 'a', 'm'} included in null</expression>
-			<output>null</output>
+			<output>false</output>
 		</test>
 	</group>
 	<group name="Indexer">

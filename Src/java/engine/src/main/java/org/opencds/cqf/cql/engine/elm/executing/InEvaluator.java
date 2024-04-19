@@ -32,10 +32,6 @@ If either argument is null, the result is null.
 
 public class InEvaluator {
     public static Boolean in(Object left, Object right, String precision, State state) {
-        if (left == null) {
-            return null;
-        }
-
         if (right == null) {
             return false;
         }
@@ -113,6 +109,12 @@ public class InEvaluator {
     private static Boolean listIn(Object left, Iterable<?> right, State state) {
         Boolean isEqual;
         for (Object element : right) {
+            // Nulls are considered equivalent in lists
+            // Other elements use equality semantics
+            if (element == null && left == null) {
+                return true;
+            }
+
             isEqual = EqualEvaluator.equal(left, element, state);
             if ((isEqual != null && isEqual)) {
                 return true;
