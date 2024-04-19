@@ -4690,9 +4690,9 @@ define test_In_IsIn: TestMessage(In_IsIn, 'In_IsIn', toString(true), toString(In
 define test_In_IsNotIn: TestMessage(not In_IsNotIn, 'In_IsNotIn', toString(false), toString(In_IsNotIn))
 define test_In_TupleIsIn: TestMessage(In_TupleIsIn, 'In_TupleIsIn', toString(true), toString(In_TupleIsIn))
 define test_In_TupleIsNotIn: TestMessage(not In_TupleIsNotIn, 'In_TupleIsNotIn', toString(false), toString(In_TupleIsNotIn))
-define test_In_NullIn: TestMessage(In_NullIn is null, 'In_NullIn', 'null', toString(In_NullIn))
+define test_In_NullIn: TestMessage(In_NullIn, 'In_NullIn', toString(true), toString(In_NullIn))
 define test_In_InNull: TestMessage(not In_InNull, 'In_InNull', toString(false), toString(In_InNull))
-define test_In_NullNotIn: TestMessage(In_NullNotIn is null, 'In_NullNotIn', 'null', toString(In_NullNotIn))
+define test_In_NullNotIn: TestMessage(not In_NullNotIn, 'In_NullNotIn', toString(false), toString(In_NullNotIn))
 
 // Contains
 define Contains_IsIn: { 3, 4, 5 } contains 4
@@ -4708,8 +4708,8 @@ define test_Contains_IsNotIn: TestMessage(not Contains_IsNotIn, 'Contains_IsNotI
 define test_Contains_TupleIsIn: TestMessage(Contains_TupleIsIn, 'Contains_TupleIsIn', toString(true), toString(Contains_TupleIsIn))
 define test_Contains_TupleIsNotIn: TestMessage(not Contains_TupleIsNotIn, 'Contains_TupleIsNotIn', toString(false), toString(Contains_TupleIsNotIn))
 define test_Contains_InNull: TestMessage(not Contains_InNull, 'Contains_InNull', toString(false), toString(Contains_InNull))
-define test_Contains_NullIn: TestMessage(Contains_NullIn is null, 'Contains_NullIn', 'null', toString(Contains_NullIn))
-define test_Contains_NullNotIn: TestMessage(Contains_NullNotIn is null, 'Contains_NullNotIn', 'null', toString(Contains_NullNotIn))
+define test_Contains_NullIn: TestMessage(Contains_NullIn, 'Contains_NullIn', toString(true), toString(Contains_NullIn))
+define test_Contains_NullNotIn: TestMessage(not Contains_NullNotIn, 'Contains_NullNotIn', toString(false), toString(Contains_NullNotIn))
 
 // Includes
 define Includes_IsIncluded: {1, 2, 3, 4, 5} includes {2, 3, 4}
@@ -4733,7 +4733,7 @@ define test_Includes_IsSame: TestMessage(Includes_IsSame, 'Includes_IsSame', toS
 define test_Includes_IsNotIncluded: TestMessage(not Includes_IsNotIncluded, 'Includes_IsNotIncluded', toString(false), toString(Includes_IsNotIncluded))
 define test_Includes_TuplesIncluded: TestMessage(Includes_TuplesIncluded, 'Includes_TuplesIncluded', toString(true), toString(Includes_TuplesIncluded))
 define test_Includes_TuplesNotIncluded: TestMessage(not Includes_TuplesNotIncluded, 'Includes_TuplesNotIncluded', toString(false), toString(Includes_TuplesNotIncluded))
-define test_Includes_NullIncluded: TestMessage(Includes_NullIncluded, 'Includes_NullIncluded', toString(true), toString(Includes_NullIncluded))
+define test_Includes_NullIncluded: TestMessage(not Includes_NullIncluded, 'Includes_NullIncluded', toString(false), toString(Includes_NullIncluded))
 define test_Includes_NullIncludes: TestMessage(not Includes_NullIncludes, 'Includes_NullIncludes', toString(false), toString(Includes_NullIncludes))
 define test_Includes_DayIncluded: TestMessage(Includes_DayIncluded, 'Includes_DayIncluded', toString(true), toString(Includes_DayIncluded))
 define test_Includes_DayNotIncluded: TestMessage(not Includes_DayNotIncluded, 'Includes_DayNotIncluded', toString(false), toString(Includes_DayNotIncluded))
@@ -4765,7 +4765,7 @@ define test_IncludedIn_IsNotIncluded: TestMessage(not IncludedIn_IsNotIncluded, 
 define test_IncludedIn_TuplesIncluded: TestMessage(IncludedIn_TuplesIncluded, 'IncludedIn_TuplesIncluded', toString(true), toString(IncludedIn_TuplesIncluded))
 define test_IncludedIn_TuplesNotIncluded: TestMessage(not IncludedIn_TuplesNotIncluded, 'IncludedIn_TuplesNotIncluded', toString(false), toString(IncludedIn_TuplesNotIncluded))
 define test_IncludedIn_NullIncludes: TestMessage(not IncludedIn_NullIncludes, 'IncludedIn_NullIncludes', toString(false), toString(IncludedIn_NullIncludes))
-define test_IncludedIn_NullIncluded: TestMessage(IncludedIn_NullIncluded, 'IncludedIn_NullIncluded', toString(true), toString(IncludedIn_NullIncluded))
+define test_IncludedIn_NullIncluded: TestMessage(not IncludedIn_NullIncluded, 'IncludedIn_NullIncluded', toString(false), toString(IncludedIn_NullIncluded))
 define test_IncludedIn_DayIncluded: TestMessage(IncludedIn_DayIncluded, 'IncludedIn_DayIncluded', toString(true), toString(IncludedIn_DayIncluded))
 define test_IncludedIn_DayNotIncluded: TestMessage(not IncludedIn_DayNotIncluded, 'IncludedIn_DayNotIncluded', toString(false), toString(IncludedIn_DayNotIncluded))
 define test_IncludedIn_IntegerIncluded: TestMessage(IncludedIn_IntegerIncluded, 'IncludedIn_IntegerIncluded', toString(true), toString(IncludedIn_IntegerIncluded))

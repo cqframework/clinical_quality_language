@@ -101,6 +101,9 @@ public class ListOperatorsTest extends CqlTestBase {
         arrList.add(new Time(15, 12, 13, 999));
         assertTrue(equivalent(value, arrList));
 
+        value = results.forExpression("ContainsABNullHasNull").value();
+        assertThat(value, is(true));
+
         value = results.forExpression("ContainsNullFirst").value();
         assertThat(value, is(false));
 
@@ -275,10 +278,10 @@ public class ListOperatorsTest extends CqlTestBase {
         assertTrue(equivalent(value, new Time(15, 59, 59, 999)));
 
         value = results.forExpression("InNullEmpty").value();
-        assertThat(value, is(nullValue()));
+        assertThat(value, is(false));
 
         value = results.forExpression("InNullAnd1Null").value();
-        assertThat(value, is(nullValue()));
+        assertThat(value, is(true));
 
         value = results.forExpression("In1Null").value();
         assertThat(value, is(false));
