@@ -299,11 +299,6 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor<Object> {
         Chunk chunk = chunks.pop();
         if (o instanceof Element) {
             Element element = (Element) o;
-            if (element.getLocalId() == null) {
-                throw new CqlInternalException(
-                        "Internal translator error. LocalId was not assigned", getTrackBack(tree));
-            }
-
             chunk.setElement(element);
 
             if (!(tree instanceof cqlParser.LibraryContext)) {
