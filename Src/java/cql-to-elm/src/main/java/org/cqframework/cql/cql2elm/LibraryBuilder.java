@@ -7,6 +7,7 @@ import javax.xml.namespace.QName;
 import org.apache.commons.lang3.StringUtils;
 import org.cqframework.cql.cql2elm.model.*;
 import org.cqframework.cql.cql2elm.model.invocation.*;
+import org.cqframework.cql.elm.IdObjectFactory;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.cqframework.cql.elm.tracking.Trackable;
 import org.hl7.cql.model.*;
@@ -42,17 +43,18 @@ public class LibraryBuilder {
         All
     }
 
-    public LibraryBuilder(LibraryManager libraryManager, ObjectFactory objectFactory) {
+    public LibraryBuilder(LibraryManager libraryManager, IdObjectFactory objectFactory) {
         this(null, libraryManager, objectFactory);
     }
 
-    public LibraryBuilder(NamespaceInfo namespaceInfo, LibraryManager libraryManager, ObjectFactory objectFactory) {
+    public LibraryBuilder(NamespaceInfo namespaceInfo, LibraryManager libraryManager, IdObjectFactory objectFactory) {
         this.libraryManager = Objects.requireNonNull(libraryManager);
         this.of = Objects.requireNonNull(objectFactory);
 
         this.namespaceInfo = namespaceInfo; // Note: allowed to be null, implies global namespace
         this.modelManager = libraryManager.getModelManager();
         this.typeBuilder = new TypeBuilder(of, this.modelManager);
+        this.systemFunctionResolver = new SystemFunctionResolver(this, this.of);
 
         this.library = of.createLibrary()
                 .withSchemaIdentifier(of.createVersionedIdentifier()
@@ -100,7 +102,7 @@ public class LibraryBuilder {
         return exceptions;
     }
 
-    public ObjectFactory getObjectFactory() {
+    public IdObjectFactory getObjectFactory() {
         return of;
     }
 
@@ -112,7 +114,7 @@ public class LibraryBuilder {
 
     private final Map<String, ResultWithPossibleError<NamedTypeSpecifier>> nameTypeSpecifiers = new HashMap<>();
     private final Map<String, CompiledLibrary> libraries = new LinkedHashMap<>();
-    private final SystemFunctionResolver systemFunctionResolver = new SystemFunctionResolver(this);
+    private final SystemFunctionResolver systemFunctionResolver;
     private final Stack<String> expressionContext = new Stack<>();
     private final ExpressionDefinitionContextStack expressionDefinitions = new ExpressionDefinitionContextStack();
     private final Stack<FunctionDef> functionDefs = new Stack<>();
@@ -142,7 +144,7 @@ public class LibraryBuilder {
         return conversionMap;
     }
 
-    private final ObjectFactory of;
+    private final IdObjectFactory of;
     private final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
     private boolean listTraversal = true;
     private final CqlCompilerOptions options;
@@ -2454,6 +2456,7 @@ public class LibraryBuilder {
         if (element instanceof IncludeDef) {
             checkLiteralContext();
             LibraryRef libraryRef = new LibraryRef();
+            libraryRef.setLocalId(of.nextId());
             libraryRef.setLibraryName(((IncludeDef) element).getLocalIdentifier());
             return libraryRef;
         }
@@ -3009,14 +3012,14 @@ public class LibraryBuilder {
             QueryContext query = peekQueryContext();
             if (query.inSortClause() && !query.isSingular()) {
                 if (identifier.equals("$this")) {
-                    IdentifierRef result = new IdentifierRef().withName(identifier);
+                    IdentifierRef result = of.createIdentifierRef().withName(identifier);
                     result.setResultType(query.getResultElementType());
                     return result;
                 }
 
                 PropertyResolution resolution = resolveProperty(query.getResultElementType(), identifier, false);
                 if (resolution != null) {
-                    IdentifierRef result = new IdentifierRef().withName(resolution.getName());
+                    IdentifierRef result = of.createIdentifierRef().withName(resolution.getName());
                     result.setResultType(resolution.getType());
                     return applyTargetMap(result, resolution.getTargetMap());
                 }

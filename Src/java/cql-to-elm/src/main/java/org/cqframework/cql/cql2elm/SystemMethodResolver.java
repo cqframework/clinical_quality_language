@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import org.cqframework.cql.cql2elm.model.QueryContext;
+import org.cqframework.cql.elm.IdObjectFactory;
 import org.cqframework.cql.gen.cqlParser;
 import org.hl7.cql.model.*;
 import org.hl7.elm.r1.*;
@@ -14,7 +15,7 @@ import org.hl7.elm.r1.*;
  * Created by Bryn on 12/27/2016.
  */
 public class SystemMethodResolver {
-    private final ObjectFactory of;
+    private final IdObjectFactory of;
     private final Cql2ElmVisitor visitor;
     private final LibraryBuilder builder;
 
