@@ -1,10 +1,18 @@
 package org.cqframework.cql.cql2elm;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
 import org.cqframework.cql.cql2elm.CqlCompilerOptions.Options;
+import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessor;
+import org.cqframework.cql.elm.IdObjectFactory;
 import org.cqframework.cql.elm.utility.Visitors;
 import org.cqframework.cql.elm.visiting.FunctionalElmVisitor;
+import org.cqframework.cql.gen.cqlLexer;
+import org.cqframework.cql.gen.cqlParser;
 import org.hl7.elm.r1.Element;
 import org.junit.Test;
 
@@ -40,5 +48,41 @@ public class TestLocalId {
                 .toELM();
 
         idChecker.visitLibrary(lib, cqlFileName);
+    }
+
+    @Test
+    public void noLocalIdThrowsException() throws Exception {
+
+        // This is an intentionally broken IdObjectFactory that will not assign localIds
+        var brokenFactory = new IdObjectFactory() {
+            @Override
+            public String nextId() {
+                return null;
+            }
+        };
+
+        // Bit longer setup because we're handling some deeper internals
+        var modelManager = new ModelManager();
+        var options = new CqlCompilerOptions(Options.EnableLocators, Options.EnableAnnotations);
+        var libraryManager = new LibraryManager(modelManager, options);
+        libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
+        var libraryBuilder = new LibraryBuilder(libraryManager, brokenFactory);
+
+        // Simplest possible library, just to trigger a missing id error.
+        cqlLexer lexer = new cqlLexer(CharStreams.fromString("library Test\ndefine \"One\": 1"));
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+        cqlParser parser = new cqlParser(tokens);
+        parser.setBuildParseTree(true);
+        var tree = parser.library();
+        CqlPreprocessor preprocessor = new CqlPreprocessor(libraryBuilder, tokens);
+        preprocessor.visit(tree);
+        Cql2ElmVisitor visitor = new Cql2ElmVisitor(libraryBuilder, tokens, preprocessor.getLibraryInfo());
+        visitor.visit(tree);
+
+        var exceptions = libraryBuilder.getExceptions();
+        // Exceptions for the literal and the define, plus the library itself
+        assertEquals(3, exceptions.size());
+        var e = exceptions.get(0);
+        assertTrue(e.getMessage().contains("localId"));
     }
 }
