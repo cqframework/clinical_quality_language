@@ -151,7 +151,7 @@ public class ElmDeserializeTests {
             throws IOException, JAXBException {
         Library xmlLibrary = null;
         try {
-            xmlLibrary = new org.cqframework.cql.elm.serializing.jaxb.ElmJsonLibraryReader()
+            xmlLibrary = new org.cqframework.cql.elm.serializing.jaxb.ElmXmlLibraryReader()
                     .read(new FileReader(path + "/" + xmlFileName));
         } catch (Exception e) {
             throw new IllegalArgumentException(
@@ -333,7 +333,7 @@ public class ElmDeserializeTests {
             validateEmptyStringsTest(xmlLibrary);
 
             xmlLibrary =
-                    new org.cqframework.cql.elm.serializing.jaxb.ElmJsonLibraryReader().read(new StringReader(jaxbXml));
+                    new org.cqframework.cql.elm.serializing.jaxb.ElmXmlLibraryReader().read(new StringReader(jaxbXml));
             validateEmptyStringsTest(xmlLibrary);
 
             // xmlLibrary = new org.cqframework.cql.elm.serializing.jackson.ElmXmlLibraryReader().read(new
@@ -378,7 +378,7 @@ public class ElmDeserializeTests {
     private static Library deserializeXmlLibrary(String filePath) throws IOException {
         final InputStream resourceAsStream = ElmDeserializeTests.class.getResourceAsStream(filePath);
         assertNotNull(resourceAsStream);
-        return new org.cqframework.cql.elm.serializing.jaxb.ElmJsonLibraryReader().read(resourceAsStream);
+        return new org.cqframework.cql.elm.serializing.jaxb.ElmXmlLibraryReader().read(resourceAsStream);
     }
 
     private static void verifySigLevels(Library library, LibraryBuilder.SignatureLevel expectedSignatureLevel) {
