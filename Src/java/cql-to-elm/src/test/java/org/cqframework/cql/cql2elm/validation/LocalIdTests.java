@@ -1,6 +1,6 @@
 package org.cqframework.cql.cql2elm.validation;
 
-import static org.junit.Assert.assertTrue;
+import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;

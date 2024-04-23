@@ -3,7 +3,7 @@ package org.cqframework.cql.elm;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import org.hl7.elm.r1.Element;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 public class IdObjectFactoryTest {
 

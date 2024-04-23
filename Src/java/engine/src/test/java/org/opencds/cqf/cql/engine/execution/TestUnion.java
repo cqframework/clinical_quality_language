@@ -1,6 +1,6 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import static org.junit.Assert.assertEquals;
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 

@@ -1,12 +1,12 @@
 package org.cqframework.cql.elm.utility;
 
-import static org.junit.Assert.assertEquals;
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertThrows;
 
 import org.hl7.elm.r1.ExpressionDef;
 import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.Library.Statements;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 public class VisitorsTest {
 

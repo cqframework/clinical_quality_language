@@ -1,13 +1,13 @@
 package org.cqframework.cql.elm.visiting;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 import org.cqframework.cql.elm.tracking.Trackable;
 import org.hl7.elm.r1.ByDirection;
 import org.hl7.elm.r1.Sort;
 import org.hl7.elm.r1.SortByItem;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 @SuppressWarnings("checkstyle:abstractclassname")
 public class BaseElmVisitorTest {

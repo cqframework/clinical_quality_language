@@ -1,11 +1,11 @@
 package org.opencds.cqf.cql.engine.model;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
 
 import java.util.Date;
 import org.mockito.Mock;

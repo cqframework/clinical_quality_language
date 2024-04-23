@@ -1,6 +1,6 @@
 package org.opencds.cqf.cql.engine.fhir.data;
 
-import static org.junit.Assert.assertEquals;
+import static org.testng.Assert.assertEquals;
 
 import java.util.Collections;
 import org.hl7.fhir.r4.model.Address;

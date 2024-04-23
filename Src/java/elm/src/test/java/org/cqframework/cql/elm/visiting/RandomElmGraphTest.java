@@ -1,6 +1,6 @@
 package org.cqframework.cql.elm.visiting;
 
-import static org.junit.Assert.assertEquals;
+import static org.testng.Assert.assertEquals;
 
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
@@ -16,33 +16,20 @@ import org.jeasy.random.EasyRandomParameters;
 import org.jeasy.random.ObjenesisObjectFactory;
 import org.jeasy.random.api.ExclusionPolicy;
 import org.jeasy.random.api.RandomizerContext;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
 
-@RunWith(Parameterized.class)
 public class RandomElmGraphTest {
 
-    @Parameters
-    public static Iterable<Object[]> seeds() {
+    @DataProvider(name = "seed")
+    public static Object[] seeds() {
         // I randomly picked these seeds until
         // I got 3 in a row that passed without errors.
         // Not perfect, but it's a start.
-        return java.util.Arrays.asList(new Object[][] {{96874}, {15895}, {121873}, {174617}});
+        return new Object[] {96874, 15895, 121873, 174617};
     }
 
-    public RandomElmGraphTest(int seed) {
-        this.seed = seed;
-    }
-
-    private int seed;
-
-    @Test
-    public void allNodesVisited() {
-        allNodesVisited(seed);
-    }
-
+    @Test(dataProvider = "seed")
     public void allNodesVisited(int seed) {
         // This test generates a random ELM graph and verifies that all nodes are
         // visited exactly once.
@@ -118,7 +105,7 @@ public class RandomElmGraphTest {
         }
 
         // No missed nodes, working as intended
-        assertEquals(0, elementsGenerated.size());
+        assertEquals(elementsGenerated.size(), 0);
 
         // Check that we didn't double-visit any nodes
         if (!elementsDuplicated.isEmpty()) {
@@ -128,11 +115,11 @@ public class RandomElmGraphTest {
         }
 
         // No duplicate visits, working as intended
-        assertEquals(0, elementsDuplicated.size());
+        assertEquals(elementsDuplicated.size(), 0);
 
         // if these are equal, then aggregateResult
         // ran once for every node in the graph (working as intended)
-        assertEquals(elementsGeneratedCount, visitorCount.intValue());
+        assertEquals(visitorCount.intValue(), elementsGeneratedCount);
     }
 
     class NoTypeSpecifierRecursionPolicy implements ExclusionPolicy {

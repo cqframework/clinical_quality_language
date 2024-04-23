@@ -2,9 +2,9 @@ package org.cqframework.cql.cql2elm;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertThrows;
+import static org.testng.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -667,11 +667,11 @@ public class SemanticTests {
         assertTrue(
                 errors.stream()
                         .map(Throwable::getMessage)
-                        .collect(Collectors.toSet())
-                        .toString(),
+                        .anyMatch("Could not find type for model: null and name: ThisTypeDoesNotExist"::equals),
                 errors.stream()
                         .map(Throwable::getMessage)
-                        .anyMatch("Could not find type for model: null and name: ThisTypeDoesNotExist"::equals));
+                        .collect(Collectors.toSet())
+                        .toString());
     }
 
     @Test
@@ -684,11 +684,11 @@ public class SemanticTests {
         assertTrue(
                 errors.stream()
                         .map(Throwable::getMessage)
-                        .collect(Collectors.toSet())
-                        .toString(),
+                        .anyMatch("Could not find type for model: FHIR and name: Code"::equals),
                 errors.stream()
                         .map(Throwable::getMessage)
-                        .anyMatch("Could not find type for model: FHIR and name: Code"::equals));
+                        .collect(Collectors.toSet())
+                        .toString());
     }
 
     @Test
@@ -723,7 +723,7 @@ public class SemanticTests {
         for (DataType dt : choiceType.getTypes()) {
             actualChoiceTypes.add(((NamedType) dt).getName());
         }
-        assertTrue("Expected types are String, Boolean, and Integer: ", actualChoiceTypes.equals(expectedChoiceTypes));
+        assertTrue(actualChoiceTypes.equals(expectedChoiceTypes), "Expected types are String, Boolean, and Integer: ");
     }
 
     @Test
@@ -751,7 +751,7 @@ public class SemanticTests {
         for (DataType dt : choiceType.getTypes()) {
             actualChoiceTypes.add(((NamedType) dt).getName());
         }
-        assertTrue("Expected return types are String and Boolean: ", actualChoiceTypes.equals(expectedChoiceTypes));
+        assertTrue(actualChoiceTypes.equals(expectedChoiceTypes), "Expected return types are String and Boolean: ");
     }
 
     @Test

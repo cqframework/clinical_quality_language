@@ -30,7 +30,7 @@ public abstract class R4FhirTest {
     private static IParser FHIR_PARSER = FHIR_CONTEXT.newJsonParser().setPrettyPrint(true);
     private static int HTTP_PORT = 0;
 
-    // emulate wiremock's junit.WireMockRule with testng features
+    // emulate wiremock's testng.WireMockRule with testng features
     WireMockServer wireMockServer;
     WireMock wireMock;
 
