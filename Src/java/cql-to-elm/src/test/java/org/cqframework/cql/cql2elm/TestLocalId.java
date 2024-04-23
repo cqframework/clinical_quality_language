@@ -1,8 +1,8 @@
 package org.cqframework.cql.cql2elm;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -14,7 +14,7 @@ import org.cqframework.cql.elm.visiting.FunctionalElmVisitor;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 import org.hl7.elm.r1.Element;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 // This test compiles a few example libraries and ensures
 // local ids are assigned for all elements in the resulting ELM

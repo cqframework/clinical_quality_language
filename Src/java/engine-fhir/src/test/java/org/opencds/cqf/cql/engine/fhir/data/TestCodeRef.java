@@ -1,6 +1,6 @@
 package org.opencds.cqf.cql.engine.fhir.data;
 
-import static org.testng.AssertJUnit.assertTrue;
+import static org.testng.Assert.assertTrue;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.FhirVersionEnum;

@@ -1,13 +1,13 @@
 package org.cqframework.cql.cql2elm;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
 
 import java.io.IOException;
 import java.util.List;
 import org.hl7.elm.r1.VersionedIdentifier;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 public class StringLibrarySourceProviderTest {
 
@@ -19,7 +19,7 @@ public class StringLibrarySourceProviderTest {
     private static final String NOT_QUOTED_VERSION_2 = "library Test version '2.0.0'\n define \"Value\": 2 + 2";
     private static final String GARBAGE = "NotALibrary";
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void ambiguous_id_throws_error() throws IOException {
         var list = List.of(QUOTED, NOT_QUOTED);
 
@@ -28,7 +28,7 @@ public class StringLibrarySourceProviderTest {
         provider.getLibrarySource(new VersionedIdentifier().withId("Test"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void ambiguous_id_without_version_throws_error() throws IOException {
         var list = List.of(QUOTED_VERSION_1, NOT_QUOTED_VERSION_1);
 
@@ -36,7 +36,7 @@ public class StringLibrarySourceProviderTest {
         provider.getLibrarySource(new VersionedIdentifier().withId("Test"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void ambiguous_id_with_version_throws_error() throws IOException {
         var list = List.of(QUOTED_VERSION_1, NOT_QUOTED_VERSION_1);
 

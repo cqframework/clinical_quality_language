@@ -14,7 +14,7 @@ import com.tngtech.archunit.lang.ArchCondition;
 import com.tngtech.archunit.lang.ConditionEvents;
 import com.tngtech.archunit.lang.SimpleConditionEvent;
 import org.hl7.elm.r1.Element;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 public class DesignTests {
 

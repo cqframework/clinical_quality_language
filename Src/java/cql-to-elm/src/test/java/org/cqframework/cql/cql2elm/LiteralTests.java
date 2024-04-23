@@ -4,7 +4,7 @@ import static org.cqframework.cql.cql2elm.matchers.HasTypeAndResult.hasTypeAndRe
 import static org.cqframework.cql.cql2elm.matchers.LiteralFor.literalFor;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertEquals;
+import static org.testng.Assert.assertEquals;
 
 import java.io.IOException;
 import java.math.BigDecimal;

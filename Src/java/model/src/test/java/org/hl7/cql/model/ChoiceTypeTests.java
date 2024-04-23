@@ -1,6 +1,6 @@
 package org.hl7.cql.model;
 
-import static org.junit.Assert.*;
+import static org.testng.Assert.*;
 
 import java.util.Arrays;
 import org.testng.annotations.Test;

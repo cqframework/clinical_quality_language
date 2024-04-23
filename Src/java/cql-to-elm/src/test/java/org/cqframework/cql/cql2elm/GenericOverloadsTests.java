@@ -3,8 +3,8 @@ package org.cqframework.cql.cql2elm;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.util.HashMap;

@@ -5,7 +5,7 @@ import static org.cqframework.cql.cql2elm.CqlCompilerOptions.Options.EnableDetai
 import static org.cqframework.cql.cql2elm.CqlCompilerOptions.Options.EnableResultTypes;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.testng.Assert.*;
 
 import jakarta.xml.bind.JAXBException;
 import java.io.File;
@@ -191,86 +191,74 @@ public class TranslationTests {
     @Test
     public void tenDividedByTwo() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslator("TenDividedByTwo.cql");
-        assertEquals(
-                "Errors: " + translator.getErrors(), 0, translator.getErrors().size());
+        assertEquals(translator.getErrors().size(), 0, "Errors: " + translator.getErrors());
     }
 
     @Test
     public void divideMultiple() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslator("DivideMultiple.cql");
-        assertEquals(
-                "Errors: " + translator.getErrors(), 0, translator.getErrors().size());
+        assertEquals(translator.getErrors().size(), 0, "Errors: " + translator.getErrors());
     }
 
     @Test
     public void divideVariables() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslator("DivideVariables.cql");
-        assertEquals(
-                "Errors: " + translator.getErrors(), 0, translator.getErrors().size());
+        assertEquals(translator.getErrors().size(), 0, "Errors: " + translator.getErrors());
     }
 
     @Test
     public void arithmetic_Mixed() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslator("Arithmetic_Mixed.cql");
-        assertEquals(
-                "Errors: " + translator.getErrors(), 0, translator.getErrors().size());
+        assertEquals(translator.getErrors().size(), 0, "Errors: " + translator.getErrors());
     }
 
     @Test
     public void arithmetic_Parenthetical() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslator("Arithmetic_Parenthetical.cql");
-        assertEquals(
-                "Errors: " + translator.getErrors(), 0, translator.getErrors().size());
+        assertEquals(translator.getErrors().size(), 0, "Errors: " + translator.getErrors());
     }
 
     @Test
     public void roundUp() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslator("RoundUp.cql");
-        assertEquals(
-                "Errors: " + translator.getErrors(), 0, translator.getErrors().size());
+        assertEquals(translator.getErrors().size(), 0, "Errors: " + translator.getErrors());
     }
 
     @Test
     public void roundDown() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslator("RoundDown.cql");
-        assertEquals(
-                "Errors: " + translator.getErrors(), 0, translator.getErrors().size());
+        assertEquals(translator.getErrors().size(), 0, "Errors: " + translator.getErrors());
     }
 
     @Test
     public void log_BaseTen() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslator("Log_BaseTen.cql");
-        assertEquals(
-                "Errors: " + translator.getErrors(), 0, translator.getErrors().size());
+        assertEquals(translator.getErrors().size(), 0, "Errors: " + translator.getErrors());
     }
 
     @Test
     public void median_odd() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslator("Median_odd.cql");
-        assertEquals(
-                "Errors: " + translator.getErrors(), 0, translator.getErrors().size());
+        assertEquals(translator.getErrors().size(), 0, "Errors: " + translator.getErrors());
     }
 
     @Test
     public void median_dup_vals_odd() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslator("Median_dup_vals_odd.cql");
-        assertEquals(
-                "Errors: " + translator.getErrors(), 0, translator.getErrors().size());
+        assertEquals(translator.getErrors().size(), 0, "Errors: " + translator.getErrors());
     }
 
     @Test
     public void geometricMean_Zero() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslator("GeometricMean_Zero.cql");
-        assertEquals(
-                "Errors: " + translator.getErrors(), 0, translator.getErrors().size());
+        assertEquals(translator.getErrors().size(), 0, "Errors: " + translator.getErrors());
     }
 
     @Test
     @Ignore("Could not resolve call to operator Equal with signature (tuple{Foo:System.Any},tuple{Bar:System.Any}")
     public void tupleDifferentKeys() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslator("TupleDifferentKeys.cql");
-        assertEquals(
-                "Errors: " + translator.getErrors(), 0, translator.getErrors().size());
+        assertEquals(translator.getErrors().size(), 0, "Errors: " + translator.getErrors());
     }
 
     @Test
@@ -278,23 +266,20 @@ public class TranslationTests {
             "Could not resolve call to operator Equal with signature (tuple{a:System.String,b:System.Any},tuple{a:System.String,c:System.Any})")
     public void uncertTuplesWithDiffNullFields() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslator("UncertTuplesWithDiffNullFields.cql");
-        assertEquals(
-                "Errors: " + translator.getErrors(), 0, translator.getErrors().size());
+        assertEquals(translator.getErrors().size(), 0, "Errors: " + translator.getErrors());
     }
 
     @Test
     @Ignore("Could not resolve call to operator Collapse with signature (System.Any,System.Quantity)")
     public void nullIvlCollapse_NullCollapse() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslator("NullIvlCollapse_NullCollapse.cql");
-        assertEquals(
-                "Errors: " + translator.getErrors(), 0, translator.getErrors().size());
+        assertEquals(translator.getErrors().size(), 0, "Errors: " + translator.getErrors());
     }
 
     @Test
     public void median_q_diff_units() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslator("Median_q_diff_units.cql");
-        assertEquals(
-                "Errors: " + translator.getErrors(), 0, translator.getErrors().size());
+        assertEquals(translator.getErrors().size(), 0, "Errors: " + translator.getErrors());
     }
 
     @Test

@@ -5,7 +5,7 @@ import static org.cqframework.cql.cql2elm.TestUtils.visitFileLibrary;
 import static org.cqframework.cql.cql2elm.matchers.QuickDataType.quickDataType;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertEquals;
+import static org.testng.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.HashMap;
