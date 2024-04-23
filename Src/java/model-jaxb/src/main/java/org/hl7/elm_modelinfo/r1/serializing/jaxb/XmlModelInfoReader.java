@@ -33,9 +33,14 @@ public class XmlModelInfoReader implements ModelInfoReader {
         return unmarshaller;
     }
 
+    @SuppressWarnings("unchecked")
+    private ModelInfo toModelInfo(Object obj) {
+        return ((JAXBElement<ModelInfo>) obj).getValue();
+    }
+
     public ModelInfo read(File src) throws IOException {
         try {
-            return ((JAXBElement<ModelInfo>) getUnmarshaller().unmarshal(src)).getValue();
+            return toModelInfo(getUnmarshaller().unmarshal(src));
         } catch (JAXBException e) {
             throw new IOException(e);
         }
@@ -43,7 +48,7 @@ public class XmlModelInfoReader implements ModelInfoReader {
 
     public ModelInfo read(Reader src) throws IOException {
         try {
-            return ((JAXBElement<ModelInfo>) getUnmarshaller().unmarshal(src)).getValue();
+            return toModelInfo(getUnmarshaller().unmarshal(src));
         } catch (JAXBException e) {
             throw new IOException(e);
         }
@@ -51,7 +56,7 @@ public class XmlModelInfoReader implements ModelInfoReader {
 
     public ModelInfo read(InputStream src) throws IOException {
         try {
-            return ((JAXBElement<ModelInfo>) getUnmarshaller().unmarshal(src)).getValue();
+            return toModelInfo(getUnmarshaller().unmarshal(src));
         } catch (JAXBException e) {
             throw new IOException(e);
         }
@@ -59,7 +64,7 @@ public class XmlModelInfoReader implements ModelInfoReader {
 
     public ModelInfo read(URL url) throws IOException {
         try {
-            return ((JAXBElement<ModelInfo>) getUnmarshaller().unmarshal(url)).getValue();
+            return toModelInfo(getUnmarshaller().unmarshal(url));
         } catch (JAXBException e) {
             throw new IOException(e);
         }
@@ -67,7 +72,7 @@ public class XmlModelInfoReader implements ModelInfoReader {
 
     public ModelInfo read(URI uri) throws IOException {
         try {
-            return ((JAXBElement<ModelInfo>) getUnmarshaller().unmarshal(uri.toURL())).getValue();
+            return toModelInfo(getUnmarshaller().unmarshal(uri.toURL()));
         } catch (JAXBException e) {
             throw new IOException(e);
         }
@@ -75,8 +80,7 @@ public class XmlModelInfoReader implements ModelInfoReader {
 
     public ModelInfo read(String string) throws IOException {
         try {
-            return ((JAXBElement<ModelInfo>) getUnmarshaller().unmarshal(new ByteArrayInputStream(string.getBytes())))
-                    .getValue();
+            return toModelInfo(getUnmarshaller().unmarshal(new ByteArrayInputStream(string.getBytes())));
         } catch (JAXBException e) {
             throw new IOException(e);
         }
