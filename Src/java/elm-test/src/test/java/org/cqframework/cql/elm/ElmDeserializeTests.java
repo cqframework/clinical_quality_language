@@ -336,13 +336,13 @@ public class ElmDeserializeTests {
                     new org.cqframework.cql.elm.serializing.jaxb.ElmXmlLibraryReader().read(new StringReader(jaxbXml));
             validateEmptyStringsTest(xmlLibrary);
 
-            // xmlLibrary = new org.cqframework.cql.elm.serializing.jackson.ElmXmlLibraryReader().read(new
-            // StringReader(jacksonXml));
-            // validateEmptyStringsTest(xmlLibrary);
+            Library jsonLibrary = new org.cqframework.cql.elm.serializing.jackson.ElmJsonLibraryReader()
+                    .read(new StringReader(jacksonJson));
+            validateEmptyStringsTest(jsonLibrary);
 
-            // xmlLibrary = new org.cqframework.cql.elm.serializing.jaxb.ElmXmlLibraryReader().read(new
-            // StringReader(jacksonXml));
-            // validateEmptyStringsTest(xmlLibrary);
+            jsonLibrary = new org.cqframework.cql.elm.serializing.jaxb.ElmJsonLibraryReader()
+                    .read(new StringReader(jaxbJson));
+            validateEmptyStringsTest(xmlLibrary);
         } catch (IOException e) {
             e.printStackTrace();
         }
