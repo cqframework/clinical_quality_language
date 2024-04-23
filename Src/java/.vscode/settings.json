@@ -30,7 +30,8 @@
         "tngtech",
         "trackback",
         "Ucum",
-        "unescaping"
+        "unescaping",
+        "Unmarshaller"
     ],
     "cSpell.enabledLanguageIds": [
         "java",
