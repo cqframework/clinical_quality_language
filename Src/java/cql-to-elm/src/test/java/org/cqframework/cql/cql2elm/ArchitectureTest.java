@@ -5,8 +5,8 @@ import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.constructors;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import org.cqframework.cql.cql2elm.model.LibraryRef;
+import org.cqframework.cql.elm.IdObjectFactory;
 import org.hl7.elm.r1.Element;
-import org.hl7.elm.r1.ObjectFactory;
 import org.junit.Test;
 
 public class ArchitectureTest {
@@ -27,7 +27,7 @@ public class ArchitectureTest {
                 .should()
                 .onlyBeCalled()
                 .byClassesThat()
-                .areAssignableTo(ObjectFactory.class)
+                .areAssignableTo(IdObjectFactory.class)
                 .because("ELM classes should never be instantiated directly, "
                         + "use an ObjectFactory that ensures that "
                         + "the classes are initialized and tracked correctly.")

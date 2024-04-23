@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.namespace.QName;
 import org.cqframework.cql.cql2elm.model.Model;
+import org.cqframework.cql.elm.IdObjectFactory;
 import org.hl7.cql.model.*;
-import org.hl7.elm.r1.ObjectFactory;
 import org.hl7.elm.r1.ParameterTypeSpecifier;
 import org.hl7.elm.r1.TupleElementDefinition;
 import org.hl7.elm.r1.TypeSpecifier;
@@ -13,7 +13,7 @@ import org.hl7.elm_modelinfo.r1.ModelInfo;
 
 public class TypeBuilder {
 
-    private ObjectFactory of;
+    private IdObjectFactory of;
     private ModelResolver mr;
 
     public static class InternalModelResolver implements ModelResolver {
@@ -28,12 +28,12 @@ public class TypeBuilder {
         }
     }
 
-    public TypeBuilder(ObjectFactory of, ModelResolver mr) {
+    public TypeBuilder(IdObjectFactory of, ModelResolver mr) {
         this.of = of;
         this.mr = mr;
     }
 
-    public TypeBuilder(ObjectFactory of, ModelManager modelManager) {
+    public TypeBuilder(IdObjectFactory of, ModelManager modelManager) {
         this(of, new InternalModelResolver(modelManager));
     }
 

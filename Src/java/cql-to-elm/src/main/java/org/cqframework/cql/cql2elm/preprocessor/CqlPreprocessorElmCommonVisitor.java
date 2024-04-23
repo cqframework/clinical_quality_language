@@ -18,6 +18,7 @@ import org.cqframework.cql.cql2elm.*;
 import org.cqframework.cql.cql2elm.model.Chunk;
 import org.cqframework.cql.cql2elm.model.FunctionHeader;
 import org.cqframework.cql.cql2elm.model.Model;
+import org.cqframework.cql.elm.IdObjectFactory;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.cqframework.cql.elm.tracking.Trackable;
 import org.cqframework.cql.gen.cqlBaseVisitor;
@@ -32,7 +33,7 @@ import org.hl7.elm.r1.*;
  * Common functionality used by {@link CqlPreprocessor} and {@link Cql2ElmVisitor}
  */
 public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor<Object> {
-    protected final ObjectFactory of;
+    protected final IdObjectFactory of;
     protected final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
     private boolean implicitContextCreated = false;
     private String currentContext = "Unfiltered";
@@ -42,7 +43,6 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor<Object> {
     protected LibraryInfo libraryInfo = new LibraryInfo();
     private boolean annotate = false;
     private boolean detailedErrors = false;
-    private int nextLocalId = 1;
     private boolean locate = false;
     private boolean resultTypes = false;
     private boolean dateRangeOptimization = false;
@@ -92,6 +92,16 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor<Object> {
             // ERROR:
             try {
                 o = super.visit(tree);
+                if (o instanceof Element) {
+                    Element element = (Element) o;
+                    if (element.getLocalId() == null) {
+                        throw new CqlInternalException(
+                                String.format(
+                                        "Internal translator error. 'localId' was not assigned for Element \"%s\"",
+                                        element.getClass().getName()),
+                                getTrackBack(tree));
+                    }
+                }
             } catch (CqlIncludeException e) {
                 CqlCompilerException translatorException =
                         new CqlCompilerException(e.getMessage(), getTrackBack(tree), e);
@@ -289,9 +299,6 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor<Object> {
         Chunk chunk = chunks.pop();
         if (o instanceof Element) {
             Element element = (Element) o;
-            if (element.getLocalId() == null) {
-                element.setLocalId(Integer.toString(getNextLocalId()));
-            }
             chunk.setElement(element);
 
             if (!(tree instanceof cqlParser.LibraryContext)) {
@@ -777,10 +784,6 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor<Object> {
             return "";
         }
         return s.substring(index);
-    }
-
-    public int getNextLocalId() {
-        return nextLocalId++;
     }
 
     private void addExpression(Expression expression) {

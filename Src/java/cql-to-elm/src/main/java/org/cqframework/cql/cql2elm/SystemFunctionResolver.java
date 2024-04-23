@@ -7,14 +7,16 @@ import org.cqframework.cql.cql2elm.model.Invocation;
 import org.cqframework.cql.cql2elm.model.PropertyResolution;
 import org.cqframework.cql.cql2elm.model.SystemModel;
 import org.cqframework.cql.cql2elm.model.invocation.*;
+import org.cqframework.cql.elm.IdObjectFactory;
 import org.hl7.elm.r1.*;
 
 public class SystemFunctionResolver {
-    private final ObjectFactory of = new ObjectFactory();
+    private final IdObjectFactory of;
     private final LibraryBuilder builder;
 
-    public SystemFunctionResolver(LibraryBuilder builder) {
+    public SystemFunctionResolver(LibraryBuilder builder, IdObjectFactory of) {
         this.builder = builder;
+        this.of = builder.getObjectFactory();
     }
 
     public Invocation resolveSystemFunction(FunctionRef fun) {
@@ -220,15 +222,12 @@ public class SystemFunctionResolver {
                 }
 
                 case "Contains":
-                case "Except":
                 case "Expand":
                 case "In":
                 case "Includes":
                 case "IncludedIn":
-                case "Intersect":
                 case "ProperIncludes":
-                case "ProperIncludedIn":
-                case "Union": {
+                case "ProperIncludedIn": {
                     return resolveBinary(fun);
                 }
 
@@ -241,8 +240,10 @@ public class SystemFunctionResolver {
                     return resolveUnary(fun);
                 }
 
-                    // Nullological Functions
-                case "Coalesce": {
+                case "Coalesce":
+                case "Intersect":
+                case "Union":
+                case "Except": {
                     return resolveNary(fun);
                 }
 
@@ -699,93 +700,60 @@ public class SystemFunctionResolver {
 
     // General Function Support
 
-    private UnaryExpressionInvocation resolveUnary(FunctionRef fun) {
-        UnaryExpression operator = null;
+    @SuppressWarnings("unchecked")
+    private <T extends Expression> T createExpression(FunctionRef fun) {
         try {
-            Class<?> clazz = Class.forName("org.hl7.elm.r1." + fun.getName());
-            if (UnaryExpression.class.isAssignableFrom(clazz)) {
-                operator = (UnaryExpression) clazz.getConstructor().newInstance();
-                checkNumberOfOperands(fun, 1);
-                operator.setOperand(fun.getOperand().get(0));
-                UnaryExpressionInvocation invocation = new UnaryExpressionInvocation(operator);
-                builder.resolveInvocation("System", fun.getName(), invocation);
-                return invocation;
-            }
+            return (T) of.getClass().getMethod("create" + fun.getName()).invoke(of);
         } catch (Exception e) {
-            // Do nothing but fall through
+            throw new CqlInternalException(
+                    String.format("Could not create instance of Element \"%s\"", fun.getName()),
+                    !fun.getTrackbacks().isEmpty() ? fun.getTrackbacks().get(0) : null,
+                    e);
         }
-        return null;
+    }
+
+    private UnaryExpressionInvocation resolveUnary(FunctionRef fun) {
+        UnaryExpression operator = createExpression(fun);
+        checkNumberOfOperands(fun, 1);
+        operator.setOperand(fun.getOperand().get(0));
+        UnaryExpressionInvocation invocation = new UnaryExpressionInvocation(operator);
+        builder.resolveInvocation("System", fun.getName(), invocation);
+        return invocation;
     }
 
     private BinaryExpressionInvocation resolveBinary(FunctionRef fun) {
-        BinaryExpression operator = null;
-        try {
-            Class<?> clazz = Class.forName("org.hl7.elm.r1." + fun.getName());
-            if (BinaryExpression.class.isAssignableFrom(clazz)) {
-                operator = (BinaryExpression) clazz.getConstructor().newInstance();
-                checkNumberOfOperands(fun, 2);
-                operator.getOperand().addAll(fun.getOperand());
-                BinaryExpressionInvocation invocation = new BinaryExpressionInvocation(operator);
-                builder.resolveInvocation("System", fun.getName(), invocation);
-                return invocation;
-            }
-        } catch (Exception e) {
-            // Do nothing but fall through
-        }
-        return null;
+        BinaryExpression operator = createExpression(fun);
+        checkNumberOfOperands(fun, 2);
+        operator.getOperand().addAll(fun.getOperand());
+        BinaryExpressionInvocation invocation = new BinaryExpressionInvocation(operator);
+        builder.resolveInvocation("System", fun.getName(), invocation);
+        return invocation;
     }
 
     private TernaryExpressionInvocation resolveTernary(FunctionRef fun) {
-        TernaryExpression operator = null;
-        try {
-            Class<?> clazz = Class.forName("org.hl7.elm.r1." + fun.getName());
-            if (TernaryExpression.class.isAssignableFrom(clazz)) {
-                operator = (TernaryExpression) clazz.getConstructor().newInstance();
-                checkNumberOfOperands(fun, 3);
-                operator.getOperand().addAll(fun.getOperand());
-                TernaryExpressionInvocation invocation = new TernaryExpressionInvocation(operator);
-                builder.resolveInvocation("System", fun.getName(), invocation);
-                return invocation;
-            }
-        } catch (Exception e) {
-            // Do nothing but fall through
-        }
-        return null;
+        TernaryExpression operator = createExpression(fun);
+        checkNumberOfOperands(fun, 3);
+        operator.getOperand().addAll(fun.getOperand());
+        TernaryExpressionInvocation invocation = new TernaryExpressionInvocation(operator);
+        builder.resolveInvocation("System", fun.getName(), invocation);
+        return invocation;
     }
 
     private NaryExpressionInvocation resolveNary(FunctionRef fun) {
-        NaryExpression operator = null;
-        try {
-            Class<?> clazz = Class.forName("org.hl7.elm.r1." + fun.getName());
-            if (NaryExpression.class.isAssignableFrom(clazz)) {
-                operator = (NaryExpression) clazz.getConstructor().newInstance();
-                operator.getOperand().addAll(fun.getOperand());
-                NaryExpressionInvocation invocation = new NaryExpressionInvocation(operator);
-                builder.resolveInvocation("System", fun.getName(), invocation);
-                return invocation;
-            }
-        } catch (Exception e) {
-            // Do nothing but fall through
-        }
-        return null;
+        NaryExpression operator = createExpression(fun);
+        operator.getOperand().addAll(fun.getOperand());
+        NaryExpressionInvocation invocation = new NaryExpressionInvocation(operator);
+        builder.resolveInvocation("System", fun.getName(), invocation);
+        return invocation;
     }
 
     private AggregateExpressionInvocation resolveAggregate(FunctionRef fun) {
-        AggregateExpression operator = null;
-        try {
-            Class<?> clazz = Class.forName("org.hl7.elm.r1." + fun.getName());
-            if (AggregateExpression.class.isAssignableFrom(clazz)) {
-                operator = (AggregateExpression) clazz.getConstructor().newInstance();
-                checkNumberOfOperands(fun, 1);
-                operator.setSource(fun.getOperand().get(0));
-                AggregateExpressionInvocation invocation = new AggregateExpressionInvocation(operator);
-                builder.resolveInvocation("System", fun.getName(), invocation);
-                return invocation;
-            }
-        } catch (Exception e) {
-            // Do nothing but fall through
-        }
-        return null;
+        AggregateExpression operator = createExpression(fun);
+        checkNumberOfOperands(fun, 1);
+        operator.setSource(fun.getOperand().get(0));
+        AggregateExpressionInvocation invocation = new AggregateExpressionInvocation(operator);
+        builder.resolveInvocation("System", fun.getName(), invocation);
+        return invocation;
     }
 
     private void checkNumberOfOperands(FunctionRef fun, int expectedOperands) {
