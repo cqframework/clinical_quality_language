@@ -15,15 +15,15 @@ import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.ModelManager;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public class DateTimeOperatorsTest {
+class DateTimeOperatorsTest {
 
-    private Map<String, ExpressionDef> defs;
+    private static Map<String, ExpressionDef> defs;
 
-    @BeforeTest
-    public void setup() throws IOException {
+    @BeforeAll
+    static void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
         CqlTranslator translator = CqlTranslator.fromStream(
                 DateTimeOperatorsTest.class.getResourceAsStream("../OperatorTests/DateTimeOperators.cql"),
@@ -37,7 +37,7 @@ public class DateTimeOperatorsTest {
     }
 
     @Test
-    public void testDateTime() {
+    void dateTime() {
         ExpressionDef def = defs.get("DateTimeYear");
         assertThat(def, hasTypeAndResult(DateTime.class, "System.DateTime"));
         DateTime dt = (DateTime) def.getExpression();
@@ -136,7 +136,7 @@ public class DateTimeOperatorsTest {
     }
 
     @Test
-    public void testDate() {
+    void date() {
         ExpressionDef def = defs.get("DateYear");
         assertThat(def, hasTypeAndResult(Date.class, "System.Date"));
         Date d = (Date) def.getExpression();
@@ -160,7 +160,7 @@ public class DateTimeOperatorsTest {
     }
 
     @Test
-    public void testTime() {
+    void time() {
         ExpressionDef def = defs.get("TimeHour");
         assertThat(def, hasTypeAndResult(Time.class, "System.Time"));
         Time dt = (Time) def.getExpression();
@@ -195,31 +195,31 @@ public class DateTimeOperatorsTest {
     }
 
     @Test
-    public void testDateExtractor() {
+    void dateExtractor() {
         ExpressionDef def = defs.get("DateExtractor");
         assertThat(def, hasTypeAndResult(DateFrom.class, "System.Date"));
     }
 
     @Test
-    public void testTimeExtractor() {
+    void timeExtractor() {
         ExpressionDef def = defs.get("TimeExtractor");
         assertThat(def, hasTypeAndResult(TimeFrom.class, "System.Time"));
     }
 
     @Test
-    public void testNow() {
+    void now() {
         ExpressionDef def = defs.get("NowExpression");
         assertThat(def, hasTypeAndResult(Now.class, "System.DateTime"));
     }
 
     @Test
-    public void testToday() {
+    void today() {
         ExpressionDef def = defs.get("TodayExpression");
         assertThat(def, hasTypeAndResult(Today.class, "System.Date"));
     }
 
     @Test
-    public void testTimeOfDay() {
+    void timeOfDay() {
         ExpressionDef def = defs.get("TimeOfDayExpression");
         assertThat(def, hasTypeAndResult(TimeOfDay.class, "System.Time"));
     }

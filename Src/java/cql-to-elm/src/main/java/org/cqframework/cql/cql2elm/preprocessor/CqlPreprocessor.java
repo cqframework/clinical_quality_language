@@ -2,6 +2,7 @@ package org.cqframework.cql.cql2elm.preprocessor;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -58,7 +59,7 @@ public class CqlPreprocessor extends CqlPreprocessorElmCommonVisitor {
             for (int i = 0; i < ctx.getChildCount(); i++) {
                 ParseTree tree = ctx.getChild(i);
                 TerminalNode terminalNode = tree instanceof TerminalNode ? (TerminalNode) tree : null;
-                if (terminalNode != null && terminalNode.getSymbol().getType() == cqlLexer.EOF) {
+                if (terminalNode != null && terminalNode.getSymbol().getType() == Recognizer.EOF) {
                     continue;
                 }
 
@@ -168,7 +169,6 @@ public class CqlPreprocessor extends CqlPreprocessorElmCommonVisitor {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Object visitCodesystemDefinition(cqlParser.CodesystemDefinitionContext ctx) {
         CodesystemDefinitionInfo codesystemDefinition = new CodesystemDefinitionInfo();
         codesystemDefinition.setName(parseString(ctx.identifier()));

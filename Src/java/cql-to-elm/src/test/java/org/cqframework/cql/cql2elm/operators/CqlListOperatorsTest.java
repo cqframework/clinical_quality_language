@@ -11,20 +11,20 @@ import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.ModelManager;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * Created by Bryn on 12/30/2016.
  */
-public class CqlListOperatorsTest {
+class CqlListOperatorsTest {
     // NOTE: The CQL for this test is taken from an engine testing suite that produced a particular issue with ambiguous
     // conversions.
 
-    private Map<String, ExpressionDef> defs;
+    private static Map<String, ExpressionDef> defs;
 
-    @BeforeTest
-    public void setup() throws IOException {
+    @BeforeAll
+    static void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
         CqlTranslator translator = CqlTranslator.fromStream(
                 CqlListOperatorsTest.class.getResourceAsStream("../OperatorTests/CqlListOperators.cql"),
@@ -40,7 +40,7 @@ public class CqlListOperatorsTest {
     }
 
     @Test
-    public void testUnion() {
+    void union() {
         ExpressionDef def = defs.get("Union123AndEmpty");
         assertThat(def, hasTypeAndResult(Union.class, "list<System.Any>"));
     }

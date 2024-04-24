@@ -10,15 +10,15 @@ import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.ModelManager;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public class SortingTest {
+class SortingTest {
 
-    private Map<String, ExpressionDef> defs;
+    private static Map<String, ExpressionDef> defs;
 
-    @BeforeTest
-    public void setup() throws IOException {
+    @BeforeAll
+    static void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
         CqlTranslator translator = CqlTranslator.fromStream(
                 QueryTest.class.getResourceAsStream("../OperatorTests/Sorting.cql"), new LibraryManager(modelManager));
@@ -34,7 +34,7 @@ public class SortingTest {
     }
 
     @Test
-    public void testSimpleSort() {
+    void simpleSort() {
         Query query = (Query) defs.get("TestSimpleSort").getExpression();
         SortClause sort = query.getSort();
         assertThat(sort.getBy().size(), is(1));
@@ -42,7 +42,7 @@ public class SortingTest {
     }
 
     @Test
-    public void testDescendingSort() {
+    void descendingSort() {
         Query query = (Query) defs.get("TestDescendingSort").getExpression();
         SortClause sort = query.getSort();
         assertThat(sort.getBy().size(), is(1));
@@ -50,7 +50,7 @@ public class SortingTest {
     }
 
     @Test
-    public void testAscSort() {
+    void ascSort() {
         Query query = (Query) defs.get("TestAscSort").getExpression();
         SortClause sort = query.getSort();
         assertThat(sort.getBy().size(), is(1));
@@ -58,7 +58,7 @@ public class SortingTest {
     }
 
     @Test
-    public void testAscendingSort() {
+    void ascendingSort() {
         Query query = (Query) defs.get("TestAscendingSort").getExpression();
         SortClause sort = query.getSort();
         assertThat(sort.getBy().size(), is(1));

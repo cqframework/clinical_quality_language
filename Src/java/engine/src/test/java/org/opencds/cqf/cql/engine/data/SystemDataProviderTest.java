@@ -1,15 +1,15 @@
 package org.opencds.cqf.cql.engine.data;
 
-import static org.testng.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.time.Month;
+import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.runtime.Date;
-import org.testng.annotations.Test;
 
-public class SystemDataProviderTest {
+class SystemDataProviderTest {
 
     @Test
-    public void resolveMissingPropertyReturnsNull() {
+    void resolveMissingPropertyReturnsNull() {
         SystemDataProvider provider = new SystemDataProvider();
 
         Date date = new Date(2019, Month.JANUARY.getValue(), 1);
@@ -19,7 +19,7 @@ public class SystemDataProviderTest {
     }
 
     @Test
-    public void resolveIdAlwaysReturnsNull() {
+    void resolveIdAlwaysReturnsNull() {
         final SystemDataProvider provider = new SystemDataProvider();
 
         assertNull(provider.resolveId("someObject"));

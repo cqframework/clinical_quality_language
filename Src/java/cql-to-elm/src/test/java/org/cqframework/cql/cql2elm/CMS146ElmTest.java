@@ -2,7 +2,7 @@ package org.cqframework.cql.cql2elm;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,18 +17,20 @@ import org.cqframework.cql.elm.tracking.TrackBack;
 import org.hl7.cql_annotations.r1.CqlToElmBase;
 import org.hl7.cql_annotations.r1.CqlToElmInfo;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class CMS146ElmTest {
 
-    private CqlTranslator translator;
-    private Library library;
-    private ObjectFactory of;
+    private static CqlTranslator translator;
+    private static Library library;
+    private static ObjectFactory of;
 
-    @BeforeTest
-    public void setup() throws IOException {
+    @BeforeAll
+    static void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
         translator = CqlTranslator.fromStream(
                 CMS146ElmTest.class.getResourceAsStream("CMS146v2_Test_CQM.cql"),
@@ -38,15 +40,15 @@ public class CMS146ElmTest {
         of = new ObjectFactory();
     }
 
-    @DataProvider(name = "sigLevels")
     public static Object[][] primeNumbers() {
         return new Object[][] {
             {SignatureLevel.None}, {SignatureLevel.Differing}, {SignatureLevel.Overloads}, {SignatureLevel.All}
         };
     }
 
-    @Test(dataProvider = "sigLevels")
-    public void testSignatureLevels(SignatureLevel signatureLevel) throws IOException {
+    @ParameterizedTest
+    @MethodSource("primeNumbers")
+    void signatureLevels(SignatureLevel signatureLevel) throws IOException {
         final ModelManager modelManager = new ModelManager();
         final CqlTranslator translator = CqlTranslator.fromStream(
                 CMS146ElmTest.class.getResourceAsStream("CMS146v2_Test_CQM.cql"),
@@ -66,21 +68,21 @@ public class CMS146ElmTest {
     }
 
     @Test
-    public void testLibraryAndVersion() {
+    void libraryAndVersion() {
         assertThat(
                 library.getIdentifier(),
                 is(of.createVersionedIdentifier().withId("CMS146").withVersion("2")));
     }
 
     @Test
-    public void testUsingDataModel() {
+    void usingDataModel() {
         List<UsingDef> models = library.getUsings().getDef();
         assertThat(models, hasSize(2));
         assertThat(models.get(1).getUri(), is("http://hl7.org/fhir"));
     }
 
     @Test
-    public void testClinicalRequests() {
+    void clinicalRequests() {
         Collection<Retrieve> actualCR = translator.toRetrieves();
 
         Collection<Retrieve> expectedCR = Arrays.asList(
@@ -130,8 +132,9 @@ public class CMS146ElmTest {
 
     // TODO: Disabled the test for now, valuesets have been moved to expression definitions. These are being checked in
     // the testVariables() test, but not as completely as this.
-    @Test(enabled = false)
-    public void testValueSets() {
+    @Test
+    @Disabled
+    void valueSets() {
         Collection<ValueSetDef> actualVS = library.getValueSets().getDef();
 
         Collection<ValueSetDef> expectedVS = Arrays.asList(
@@ -151,7 +154,7 @@ public class CMS146ElmTest {
     }
 
     @Test
-    public void testVariables() {
+    void variables() {
         Collection<String> actualVars = new ArrayList<>();
         for (ExpressionDef def : library.getStatements().getDef()) {
             actualVars.add(def.getName());
@@ -175,8 +178,9 @@ public class CMS146ElmTest {
     }
 
     // TODO: Disabled the test for now, needs to be updated to use annotations, will update after all syntax changes.
-    @Test(enabled = false)
-    public void testTrackBacks() {
+    @Test
+    @Disabled
+    void trackBacks() {
         for (Retrieve dc : translator.toRetrieves()) {
             int expectedNumbers[] = new int[4];
             switch (((ValueSetRef) dc.getCodes()).getName()) {

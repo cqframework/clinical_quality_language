@@ -1,6 +1,7 @@
 package org.opencds.cqf.cql.engine.fhir.retrieve;
 
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.FhirVersionEnum;
@@ -14,6 +15,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import org.apache.commons.lang3.tuple.Pair;
 import org.hl7.fhir.r4.model.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.fhir.R4FhirTest;
 import org.opencds.cqf.cql.engine.fhir.exception.FhirVersionMisMatchException;
 import org.opencds.cqf.cql.engine.fhir.model.CachedR4FhirModelResolver;
@@ -23,11 +27,8 @@ import org.opencds.cqf.cql.engine.fhir.terminology.R4FhirTerminologyProvider;
 import org.opencds.cqf.cql.engine.runtime.DateTime;
 import org.opencds.cqf.cql.engine.runtime.Interval;
 import org.opencds.cqf.cql.engine.terminology.TerminologyProvider;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
-public class TestR4FhirQueryGenerator extends R4FhirTest {
+class TestR4FhirQueryGenerator extends R4FhirTest {
     static IGenericClient CLIENT;
 
     R4FhirQueryGenerator generator;
@@ -36,13 +37,13 @@ public class TestR4FhirQueryGenerator extends R4FhirTest {
     Map<String, Object> contextValues;
     Map<String, Object> parameters;
 
-    @BeforeClass
-    public void setUpBeforeClass() {
+    @BeforeAll
+    static void setUpBeforeAll() {
         CLIENT = newClient();
     }
 
-    @BeforeMethod
-    public void setUp() throws FhirVersionMisMatchException {
+    @BeforeEach
+    void setUp() throws FhirVersionMisMatchException {
         SearchParameterResolver searchParameterResolver =
                 new SearchParameterResolver(FhirContext.forCached(FhirVersionEnum.R4));
         TerminologyProvider terminologyProvider = new R4FhirTerminologyProvider(CLIENT);
@@ -55,7 +56,7 @@ public class TestR4FhirQueryGenerator extends R4FhirTest {
     }
 
     @Test
-    public void Test() {
+    void test() {
         DateTime evaluationDateTime = new DateTime(evaluationOffsetDateTime);
         OffsetDateTime evaluationDateTimeAsLocal = OffsetDateTime.ofInstant(
                 evaluationOffsetDateTime.toInstant(),
@@ -63,7 +64,8 @@ public class TestR4FhirQueryGenerator extends R4FhirTest {
         Date expectedRangeStartDateTime =
                 Date.from(evaluationDateTimeAsLocal.minusDays(90).toInstant());
 
-        SimpleDateFormat simpleDateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        /* spell-checker: disable */
+        SimpleDateFormat simpleDateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.");
         String expectedQuery = String.format("date=%s", simpleDateFormatter.format(expectedRangeStartDateTime));
     }
 
@@ -105,7 +107,7 @@ public class TestR4FhirQueryGenerator extends R4FhirTest {
     }
 
     @Test
-    void testGetFhirQueriesPatientWithNoFilters() {
+    void getFhirQueriesPatientWithNoFilters() {
 
         DataRequirement dataRequirement = new DataRequirement();
         dataRequirement.setType("Patient");
@@ -121,7 +123,7 @@ public class TestR4FhirQueryGenerator extends R4FhirTest {
     }
 
     @Test
-    void testGetFhirQueriesConditionWithNoFilters() {
+    void getFhirQueriesConditionWithNoFilters() {
 
         DataRequirement dataRequirement = new DataRequirement();
         dataRequirement.setType("Condition");
@@ -137,7 +139,7 @@ public class TestR4FhirQueryGenerator extends R4FhirTest {
     }
 
     @Test
-    void testGetFhirQueriesObservation() {
+    void getFhirQueriesObservation() {
         ValueSet valueSet = getTestValueSet("MyValueSet", 3);
 
         org.hl7.fhir.r4.model.Bundle valueSetBundle = new org.hl7.fhir.r4.model.Bundle();
@@ -147,6 +149,7 @@ public class TestR4FhirQueryGenerator extends R4FhirTest {
         entry.setResource(valueSet);
         valueSetBundle.addEntry(entry);
 
+        /* spell-checker: disable */
         mockFhirRead("/ValueSet?url=http%3A%2F%2Fmyterm.com%2Ffhir%2FValueSet%2FMyValueSet", valueSetBundle);
 
         DataRequirement dataRequirement = getCodeFilteredDataRequirement("Observation", "category", valueSet);
@@ -163,7 +166,7 @@ public class TestR4FhirQueryGenerator extends R4FhirTest {
     }
 
     @Test
-    void testGetFhirQueriesCodeInValueSet() {
+    void getFhirQueriesCodeInValueSet() {
         ValueSet valueSet = getTestValueSet("MyValueSet", 500);
 
         org.hl7.fhir.r4.model.Bundle valueSetBundle = new org.hl7.fhir.r4.model.Bundle();
@@ -190,7 +193,7 @@ public class TestR4FhirQueryGenerator extends R4FhirTest {
     }
 
     @Test
-    void testGetFhirQueriesAppointment() {
+    void getFhirQueriesAppointment() {
         DataRequirement dataRequirement = new DataRequirement();
         dataRequirement.setType("Appointment");
         this.contextValues.put("Patient", "{{context.patientId}}");
@@ -204,7 +207,7 @@ public class TestR4FhirQueryGenerator extends R4FhirTest {
     }
 
     @Test
-    void testGetFhirQueriesAppointmentWithDate() {
+    void getFhirQueriesAppointmentWithDate() {
         DataRequirement dataRequirement = new DataRequirement();
         dataRequirement.setType("Appointment");
         DataRequirement.DataRequirementDateFilterComponent dateFilterComponent =
@@ -233,7 +236,7 @@ public class TestR4FhirQueryGenerator extends R4FhirTest {
     }
 
     @Test
-    void testGetFhirQueriesObservationWithDuration() {
+    void getFhirQueriesObservationWithDuration() {
         DataRequirement dataRequirement = new DataRequirement();
         dataRequirement.setType("Observation");
         DataRequirement.DataRequirementDateFilterComponent dateFilterComponent =
@@ -268,7 +271,7 @@ public class TestR4FhirQueryGenerator extends R4FhirTest {
     }
 
     @Test
-    void testCodesExceedMaxCodesPerQuery() {
+    void codesExceedMaxCodesPerQuery() {
         ValueSet valueSet = getTestValueSet("MyValueSet", 8);
 
         org.hl7.fhir.r4.model.Bundle valueSetBundle = new org.hl7.fhir.r4.model.Bundle();
@@ -295,13 +298,13 @@ public class TestR4FhirQueryGenerator extends R4FhirTest {
                 "Observation?category=http://myterm.com/fhir/CodeSystem/MyValueSet|code4,http://myterm.com/fhir/CodeSystem/MyValueSet|code5,http://myterm.com/fhir/CodeSystem/MyValueSet|code6,http://myterm.com/fhir/CodeSystem/MyValueSet|code7&subject=Patient/{{context.patientId}}";
 
         assertNotNull(actual);
-        assertEquals(actual.size(), 2);
+        assertEquals(2, actual.size());
         assertEquals(actual.get(0), expectedQuery1);
         assertEquals(actual.get(1), expectedQuery2);
     }
 
     @Test
-    void testQueryBatchThresholdExceeded() {
+    void queryBatchThresholdExceeded() {
         ValueSet valueSet = getTestValueSet("MyValueSet", 21);
 
         org.hl7.fhir.r4.model.Bundle valueSetBundle = new org.hl7.fhir.r4.model.Bundle();
@@ -324,11 +327,11 @@ public class TestR4FhirQueryGenerator extends R4FhirTest {
                 dataRequirement, this.evaluationDateTime, this.contextValues, this.parameters, null);
 
         assertNotNull(actual);
-        assertEquals(actual.size(), 1);
+        assertEquals(1, actual.size());
     }
 
     @Test
-    void testQueryBatchThreshold() {
+    void queryBatchThreshold() {
         ValueSet valueSet = getTestValueSet("MyValueSet", 21);
 
         org.hl7.fhir.r4.model.Bundle valueSetBundle = new org.hl7.fhir.r4.model.Bundle();
@@ -362,7 +365,7 @@ public class TestR4FhirQueryGenerator extends R4FhirTest {
                 "Observation?category=http://myterm.com/fhir/CodeSystem/MyValueSet|code20&subject=Patient/{{context.patientId}}";
 
         assertNotNull(actual);
-        assertEquals(actual.size(), 5);
+        assertEquals(5, actual.size());
         assertEquals(actual.get(0), expectedQuery1);
         assertEquals(actual.get(1), expectedQuery2);
         assertEquals(actual.get(2), expectedQuery3);
@@ -371,7 +374,7 @@ public class TestR4FhirQueryGenerator extends R4FhirTest {
     }
 
     @Test
-    void testMaxCodesPerQueryNull() {
+    void maxCodesPerQueryNull() {
         ValueSet valueSet = getTestValueSet("MyValueSet", 21);
 
         org.hl7.fhir.r4.model.Bundle valueSetBundle = new org.hl7.fhir.r4.model.Bundle();
@@ -396,12 +399,12 @@ public class TestR4FhirQueryGenerator extends R4FhirTest {
                 "Observation?category=http://myterm.com/fhir/CodeSystem/MyValueSet|code0,http://myterm.com/fhir/CodeSystem/MyValueSet|code1,http://myterm.com/fhir/CodeSystem/MyValueSet|code10,http://myterm.com/fhir/CodeSystem/MyValueSet|code11,http://myterm.com/fhir/CodeSystem/MyValueSet|code12,http://myterm.com/fhir/CodeSystem/MyValueSet|code13,http://myterm.com/fhir/CodeSystem/MyValueSet|code14,http://myterm.com/fhir/CodeSystem/MyValueSet|code15,http://myterm.com/fhir/CodeSystem/MyValueSet|code16,http://myterm.com/fhir/CodeSystem/MyValueSet|code17,http://myterm.com/fhir/CodeSystem/MyValueSet|code18,http://myterm.com/fhir/CodeSystem/MyValueSet|code19,http://myterm.com/fhir/CodeSystem/MyValueSet|code2,http://myterm.com/fhir/CodeSystem/MyValueSet|code20,http://myterm.com/fhir/CodeSystem/MyValueSet|code3,http://myterm.com/fhir/CodeSystem/MyValueSet|code4,http://myterm.com/fhir/CodeSystem/MyValueSet|code5,http://myterm.com/fhir/CodeSystem/MyValueSet|code6,http://myterm.com/fhir/CodeSystem/MyValueSet|code7,http://myterm.com/fhir/CodeSystem/MyValueSet|code8,http://myterm.com/fhir/CodeSystem/MyValueSet|code9&subject=Patient/{{context.patientId}}";
 
         assertNotNull(actual);
-        assertEquals(actual.size(), 1);
+        assertEquals(1, actual.size());
         assertEquals(actual.get(0), expectedQuery1);
     }
 
     @Test
-    void testBatchQueryThresholdNull() {
+    void batchQueryThresholdNull() {
         ValueSet valueSet = getTestValueSet("MyValueSet", 21);
 
         org.hl7.fhir.r4.model.Bundle valueSetBundle = new org.hl7.fhir.r4.model.Bundle();
@@ -424,11 +427,11 @@ public class TestR4FhirQueryGenerator extends R4FhirTest {
                 dataRequirement, this.evaluationDateTime, this.contextValues, this.parameters, null);
 
         assertNotNull(actual);
-        assertEquals(actual.size(), 11);
+        assertEquals(11, actual.size());
     }
 
     @Test
-    void testGetDateRangeParamWithDateType() throws ParseException {
+    void getDateRangeParamWithDateType() throws ParseException {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 
         Date low = formatter.parse("2023-01-01");
@@ -439,12 +442,12 @@ public class TestR4FhirQueryGenerator extends R4FhirTest {
                 this.generator.getDateRangeParam("Condition", "onset", "valueDate", "valueDate", interval);
 
         assertNotNull(rangeParam);
-        assertTrue(rangeParam.getValue().getLowerBound().getValue().equals(low));
-        assertTrue(rangeParam.getValue().getUpperBound().getValue().equals(high));
+        assertEquals(rangeParam.getValue().getLowerBound().getValue(), low);
+        assertEquals(rangeParam.getValue().getUpperBound().getValue(), high);
     }
 
     @Test
-    void testGetDateRangeParamWithDateTimeType() throws ParseException {
+    void getDateRangeParamWithDateTimeType() throws ParseException {
         DateTime low = new DateTime(OffsetDateTime.parse("2023-01-01T12:01:56-07:00"));
         DateTime high = new DateTime(OffsetDateTime.parse("2023-02-06T12:08:56-07:00"));
         Interval interval = new Interval(low, true, high, true);
@@ -453,7 +456,7 @@ public class TestR4FhirQueryGenerator extends R4FhirTest {
                 this.generator.getDateRangeParam("Condition", "onset", "valueDateTime", "valueDateTime", interval);
 
         assertNotNull(rangeParam);
-        assertTrue(rangeParam.getValue().getLowerBound().getValue().equals(low.toJavaDate()));
-        assertTrue(rangeParam.getValue().getUpperBound().getValue().equals(high.toJavaDate()));
+        assertEquals(rangeParam.getValue().getLowerBound().getValue(), low.toJavaDate());
+        assertEquals(rangeParam.getValue().getUpperBound().getValue(), high.toJavaDate());
     }
 }

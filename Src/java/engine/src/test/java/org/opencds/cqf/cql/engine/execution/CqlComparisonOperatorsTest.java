@@ -3,21 +3,21 @@ package org.opencds.cqf.cql.engine.execution;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.testng.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.cqframework.cql.cql2elm.CqlCompilerException;
 import org.cqframework.cql.cql2elm.CqlCompilerOptions;
+import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.elm.executing.GreaterEvaluator;
 import org.opencds.cqf.cql.engine.exception.CqlException;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
-public class CqlComparisonOperatorsTest extends CqlTestBase {
+class CqlComparisonOperatorsTest extends CqlTestBase {
 
     @Test
-    public void test_cql_comparison_test_suite_compiles() {
+    void cql_comparison_test_suite_compiles() {
         var errors = new ArrayList<CqlCompilerException>();
         this.getLibrary(toElmIdentifier("CqlComparisonOperatorsTest"), errors, testCompilerOptions());
         assertFalse(
@@ -26,7 +26,7 @@ public class CqlComparisonOperatorsTest extends CqlTestBase {
     }
 
     @Test
-    public void test_all_comparison_operators_tests() {
+    void all_comparison_operators_tests() {
         var eng = getEngine(testCompilerOptions());
         var results = eng.evaluate(toElmIdentifier("CqlComparisonOperatorsTest"));
 
@@ -237,7 +237,7 @@ public class CqlComparisonOperatorsTest extends CqlTestBase {
 
         try {
             GreaterEvaluator.greater(1, "one", engine.getState());
-            Assert.fail();
+            fail();
         } catch (CqlException e) {
             // pass
         }

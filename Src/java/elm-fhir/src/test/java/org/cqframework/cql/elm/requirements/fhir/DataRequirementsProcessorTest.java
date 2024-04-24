@@ -1,6 +1,6 @@
 package org.cqframework.cql.elm.requirements.fhir;
 
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
@@ -22,9 +22,9 @@ import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider;
 import org.hl7.cql.model.NamespaceInfo;
 import org.hl7.elm.r1.*;
 import org.hl7.fhir.r5.model.*;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.Test;
 
 public class DataRequirementsProcessorTest {
     private static Logger logger = LoggerFactory.getLogger(DataRequirementsProcessorTest.class);
@@ -34,7 +34,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestDataRequirementsProcessor() {
+    void dataRequirementsProcessor() {
         CqlCompilerOptions cqlTranslatorOptions = new CqlCompilerOptions();
         cqlTranslatorOptions.getOptions().add(CqlCompilerOptions.Options.EnableAnnotations);
         try {
@@ -103,7 +103,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestDataRequirementsProcessorOpioidIssueExpression() {
+    void dataRequirementsProcessorOpioidIssueExpression() {
         CqlCompilerOptions cqlTranslatorOptions = new CqlCompilerOptions();
         cqlTranslatorOptions.setCollapseDataRequirements(true);
         cqlTranslatorOptions.setAnalyzeDataRequirements(true);
@@ -143,10 +143,10 @@ public class DataRequirementsProcessorTest {
             assertNotNull(ra, "Expected depends-on http://fhir.org/guides/cdc/opioid-cds/ValueSet/pcp-medications");
 
             // parameter "Negative PCP Screenings Count Since Last POS": integer
-            assertTrue(moduleDefinitionLibrary.getParameter().size() == 1);
+            assertEquals(1, moduleDefinitionLibrary.getParameter().size());
             ParameterDefinition pd = moduleDefinitionLibrary.getParameter().get(0);
-            assertEquals(pd.getName(), "Negative PCP Screenings Count Since Last POS");
-            assertEquals(pd.getType(), Enumerations.FHIRTypes.INTEGER);
+            assertEquals("Negative PCP Screenings Count Since Last POS", pd.getName());
+            assertEquals(Enumerations.FHIRTypes.INTEGER, pd.getType());
 
             // dataRequirement Observation {
             //   ms: { code, category, value, status, status.value, effective },
@@ -155,35 +155,41 @@ public class DataRequirementsProcessorTest {
             //     { code in http://fhir.org/guides/cdc/opioid-cds/ValueSet/pcp-medications }
             //   }
             // }
-            assertTrue(moduleDefinitionLibrary.getDataRequirement().size() == 1);
+            assertEquals(1, moduleDefinitionLibrary.getDataRequirement().size());
             DataRequirement dr = moduleDefinitionLibrary.getDataRequirement().get(0);
-            assertEquals(dr.getType(), Enumerations.FHIRTypes.OBSERVATION);
-            assertTrue(dr.getMustSupport().size() == 6);
-            assertTrue(dr.getMustSupport().stream()
+            assertEquals(Enumerations.FHIRTypes.OBSERVATION, dr.getType());
+            assertEquals(6, dr.getMustSupport().size());
+            assertEquals(
+                    1,
+                    dr.getMustSupport().stream()
                             .filter(x -> x.getValue().equals("code"))
-                            .count()
-                    == 1);
-            assertTrue(dr.getMustSupport().stream()
+                            .count());
+            assertEquals(
+                    1,
+                    dr.getMustSupport().stream()
                             .filter(x -> x.getValue().equals("category"))
-                            .count()
-                    == 1);
-            assertTrue(dr.getMustSupport().stream()
+                            .count());
+            assertEquals(
+                    1,
+                    dr.getMustSupport().stream()
                             .filter(x -> x.getValue().equals("value"))
-                            .count()
-                    == 1);
-            assertTrue(dr.getMustSupport().stream()
+                            .count());
+            assertEquals(
+                    1,
+                    dr.getMustSupport().stream()
                             .filter(x -> x.getValue().equals("status"))
-                            .count()
-                    == 1);
-            assertTrue(dr.getMustSupport().stream()
+                            .count());
+            assertEquals(
+                    1,
+                    dr.getMustSupport().stream()
                             .filter(x -> x.getValue().equals("status.value"))
-                            .count()
-                    == 1);
-            assertTrue(dr.getMustSupport().stream()
+                            .count());
+            assertEquals(
+                    1,
+                    dr.getMustSupport().stream()
                             .filter(x -> x.getValue().equals("effective"))
-                            .count()
-                    == 1);
-            assertTrue(dr.getCodeFilter().size() == 2);
+                            .count());
+            assertEquals(2, dr.getCodeFilter().size());
             DataRequirement.DataRequirementCodeFilterComponent cf = null;
             for (DataRequirement.DataRequirementCodeFilterComponent drcf : dr.getCodeFilter()) {
                 if (drcf.getPath().equals("category")
@@ -213,7 +219,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestDataRequirementsProcessorOpioidIssueLibrary() {
+    void dataRequirementsProcessorOpioidIssueLibrary() {
         CqlCompilerOptions cqlTranslatorOptions = new CqlCompilerOptions();
         cqlTranslatorOptions.setCollapseDataRequirements(true);
         cqlTranslatorOptions.setAnalyzeDataRequirements(true);
@@ -278,63 +284,63 @@ public class DataRequirementsProcessorTest {
 
             pd = getParameter(moduleDefinitionLibrary, "ContextPrescriptions");
             assertNotNull(pd, "Expected parameter ContextPrescriptions");
-            assertEquals(pd.getType(), Enumerations.FHIRTypes.MEDICATIONREQUEST);
-            assertEquals(pd.getUse(), Enumerations.OperationParameterUse.IN);
-            assertEquals(pd.getMax(), "*");
+            assertEquals(Enumerations.FHIRTypes.MEDICATIONREQUEST, pd.getType());
+            assertEquals(Enumerations.OperationParameterUse.IN, pd.getUse());
+            assertEquals("*", pd.getMax());
 
             pd = getParameter(moduleDefinitionLibrary, "Patient");
             assertNotNull(pd, "Expected parameter Patient");
-            assertEquals(pd.getType(), Enumerations.FHIRTypes.PATIENT);
-            assertEquals(pd.getUse(), Enumerations.OperationParameterUse.OUT);
-            assertEquals(pd.getMax(), "1");
+            assertEquals(Enumerations.FHIRTypes.PATIENT, pd.getType());
+            assertEquals(Enumerations.OperationParameterUse.OUT, pd.getUse());
+            assertEquals("1", pd.getMax());
 
             pd = getParameter(moduleDefinitionLibrary, "Lookback Year");
             assertNotNull(pd, "Expected parameter Lookback Year");
-            assertEquals(pd.getType(), Enumerations.FHIRTypes.PERIOD);
-            assertEquals(pd.getUse(), Enumerations.OperationParameterUse.OUT);
-            assertEquals(pd.getMax(), "1");
+            assertEquals(Enumerations.FHIRTypes.PERIOD, pd.getType());
+            assertEquals(Enumerations.OperationParameterUse.OUT, pd.getUse());
+            assertEquals("1", pd.getMax());
 
             pd = getParameter(moduleDefinitionLibrary, "PCP Screenings");
             assertNotNull(pd, "Expected parameter PCP Screenings");
-            assertEquals(pd.getType(), Enumerations.FHIRTypes.OBSERVATION);
-            assertEquals(pd.getUse(), Enumerations.OperationParameterUse.OUT);
-            assertEquals(pd.getMax(), "*");
+            assertEquals(Enumerations.FHIRTypes.OBSERVATION, pd.getType());
+            assertEquals(Enumerations.OperationParameterUse.OUT, pd.getUse());
+            assertEquals("*", pd.getMax());
 
             pd = getParameter(moduleDefinitionLibrary, "Positive PCP Screenings");
             assertNotNull(pd, "Expected parameter Positive PCP Screenings");
-            assertEquals(pd.getType(), Enumerations.FHIRTypes.OBSERVATION);
-            assertEquals(pd.getUse(), Enumerations.OperationParameterUse.OUT);
-            assertEquals(pd.getMax(), "*");
+            assertEquals(Enumerations.FHIRTypes.OBSERVATION, pd.getType());
+            assertEquals(Enumerations.OperationParameterUse.OUT, pd.getUse());
+            assertEquals("*", pd.getMax());
 
             pd = getParameter(moduleDefinitionLibrary, "Negative PCP Screenings");
             assertNotNull(pd, "Expected parameter Negative PCP Screenings");
-            assertEquals(pd.getType(), Enumerations.FHIRTypes.OBSERVATION);
-            assertEquals(pd.getUse(), Enumerations.OperationParameterUse.OUT);
-            assertEquals(pd.getMax(), "*");
+            assertEquals(Enumerations.FHIRTypes.OBSERVATION, pd.getType());
+            assertEquals(Enumerations.OperationParameterUse.OUT, pd.getUse());
+            assertEquals("*", pd.getMax());
 
             pd = getParameter(moduleDefinitionLibrary, "Negative PCP Screenings Count Since Last POS");
             assertNotNull(pd, "Expected parameter Negative PCP Screenings Count Since Last POS");
-            assertEquals(pd.getType(), Enumerations.FHIRTypes.INTEGER);
-            assertEquals(pd.getUse(), Enumerations.OperationParameterUse.OUT);
-            assertEquals(pd.getMax(), "1");
+            assertEquals(Enumerations.FHIRTypes.INTEGER, pd.getType());
+            assertEquals(Enumerations.OperationParameterUse.OUT, pd.getUse());
+            assertEquals("1", pd.getMax());
 
             pd = getParameter(moduleDefinitionLibrary, "Positive PCP Dates in Lookback Period");
             assertNotNull(pd, "Expected parameter Positive PCP Dates in Lookback Period");
-            assertEquals(pd.getType(), Enumerations.FHIRTypes.STRING);
-            assertEquals(pd.getUse(), Enumerations.OperationParameterUse.OUT);
-            assertEquals(pd.getMax(), "*");
+            assertEquals(Enumerations.FHIRTypes.STRING, pd.getType());
+            assertEquals(Enumerations.OperationParameterUse.OUT, pd.getUse());
+            assertEquals("*", pd.getMax());
 
             pd = getParameter(moduleDefinitionLibrary, "Has Positive Screening for PCP in Last 12 Months");
             assertNotNull(pd, "Expected parameter Has Positive Screening for PCP in Last 12 Months");
-            assertEquals(pd.getType(), Enumerations.FHIRTypes.BOOLEAN);
-            assertEquals(pd.getUse(), Enumerations.OperationParameterUse.OUT);
-            assertEquals(pd.getMax(), "1");
+            assertEquals(Enumerations.FHIRTypes.BOOLEAN, pd.getType());
+            assertEquals(Enumerations.OperationParameterUse.OUT, pd.getUse());
+            assertEquals("1", pd.getMax());
 
             pd = getParameter(moduleDefinitionLibrary, "PCP Summary");
             assertNotNull(pd, "Expected parameter PCPSummary");
-            assertEquals(pd.getType(), Enumerations.FHIRTypes.STRING);
-            assertEquals(pd.getUse(), Enumerations.OperationParameterUse.OUT);
-            assertEquals(pd.getMax(), "1");
+            assertEquals(Enumerations.FHIRTypes.STRING, pd.getType());
+            assertEquals(Enumerations.OperationParameterUse.OUT, pd.getUse());
+            assertEquals("1", pd.getMax());
 
             // dataRequirement Observation {
             //   ms: { code, category, value, status, status.value, effective },
@@ -343,7 +349,7 @@ public class DataRequirementsProcessorTest {
             //     { code in http://fhir.org/guides/cdc/opioid-cds/ValueSet/pcp-medications }
             //   }
             // }
-            assertTrue(moduleDefinitionLibrary.getDataRequirement().size() == 2);
+            assertEquals(2, moduleDefinitionLibrary.getDataRequirement().size());
             DataRequirement dr = null;
             for (DataRequirement r : moduleDefinitionLibrary.getDataRequirement()) {
                 if (r.getType() == Enumerations.FHIRTypes.OBSERVATION) {
@@ -352,33 +358,39 @@ public class DataRequirementsProcessorTest {
                 }
             }
             assertNotNull(dr);
-            assertEquals(dr.getType(), Enumerations.FHIRTypes.OBSERVATION);
-            assertTrue(dr.getMustSupport().size() == 6);
-            assertTrue(dr.getMustSupport().stream()
+            assertEquals(Enumerations.FHIRTypes.OBSERVATION, dr.getType());
+            assertEquals(6, dr.getMustSupport().size());
+            assertEquals(
+                    1,
+                    dr.getMustSupport().stream()
                             .filter(x -> x.getValue().equals("code"))
-                            .count()
-                    == 1);
-            assertTrue(dr.getMustSupport().stream()
+                            .count());
+            assertEquals(
+                    1,
+                    dr.getMustSupport().stream()
                             .filter(x -> x.getValue().equals("category"))
-                            .count()
-                    == 1);
-            assertTrue(dr.getMustSupport().stream()
+                            .count());
+            assertEquals(
+                    1,
+                    dr.getMustSupport().stream()
                             .filter(x -> x.getValue().equals("value"))
-                            .count()
-                    == 1);
-            assertTrue(dr.getMustSupport().stream()
+                            .count());
+            assertEquals(
+                    1,
+                    dr.getMustSupport().stream()
                             .filter(x -> x.getValue().equals("status"))
-                            .count()
-                    == 1);
-            assertTrue(dr.getMustSupport().stream()
+                            .count());
+            assertEquals(
+                    1,
+                    dr.getMustSupport().stream()
                             .filter(x -> x.getValue().equals("status.value"))
-                            .count()
-                    == 1);
-            assertTrue(dr.getMustSupport().stream()
+                            .count());
+            assertEquals(
+                    1,
+                    dr.getMustSupport().stream()
                             .filter(x -> x.getValue().equals("effective"))
-                            .count()
-                    == 1);
-            assertTrue(dr.getCodeFilter().size() == 2);
+                            .count());
+            assertEquals(2, dr.getCodeFilter().size());
             DataRequirement.DataRequirementCodeFilterComponent cf = null;
             for (DataRequirement.DataRequirementCodeFilterComponent drcf : dr.getCodeFilter()) {
                 if (drcf.getPath().equals("category")
@@ -408,7 +420,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestDataRequirementsProcessorWithExpressions() {
+    void dataRequirementsProcessorWithExpressions() {
         CqlCompilerOptions cqlTranslatorOptions = new CqlCompilerOptions();
         try {
             Set<String> expressions = new HashSet<>();
@@ -428,14 +440,14 @@ public class DataRequirementsProcessorTest {
 
             List<Extension> directReferenceCodes = moduleDefinitionLibrary.getExtensionsByUrl(
                     "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-directReferenceCode");
-            assertTrue(directReferenceCodes.size() == 4);
+            assertEquals(4, directReferenceCodes.size());
             Extension directReferenceCode = directReferenceCodes.get(0);
             Coding coding = directReferenceCode.getValueCoding();
             assertEquals("http://hl7.org/fhir/condition-category", coding.getSystem());
             assertEquals("encounter-diagnosis", coding.getCode());
             assertEquals("Encounter Diagnosis", coding.getDisplay());
 
-            assertTrue(moduleDefinitionLibrary.getRelatedArtifact().size() == 6);
+            assertEquals(6, moduleDefinitionLibrary.getRelatedArtifact().size());
             RelatedArtifact conditionCategoryCodes = null;
             for (RelatedArtifact relatedArtifact : moduleDefinitionLibrary.getRelatedArtifact()) {
                 if (relatedArtifact.getType() == RelatedArtifact.RelatedArtifactType.DEPENDSON
@@ -447,7 +459,7 @@ public class DataRequirementsProcessorTest {
             }
             assertTrue(conditionCategoryCodes != null);
 
-            assertTrue(moduleDefinitionLibrary.getParameter().size() == 1);
+            assertEquals(1, moduleDefinitionLibrary.getParameter().size());
             ParameterDefinition conditionsIndicatingEndOfLife = null;
             for (ParameterDefinition parameter : moduleDefinitionLibrary.getParameter()) {
                 if (parameter.getName().equals("Conditions Indicating End of Life or With Limited Life Expectancy")) {
@@ -457,7 +469,7 @@ public class DataRequirementsProcessorTest {
             }
             assertTrue(conditionsIndicatingEndOfLife != null);
 
-            assertTrue(moduleDefinitionLibrary.getDataRequirement().size() == 3);
+            assertEquals(3, moduleDefinitionLibrary.getDataRequirement().size());
             DataRequirement diagnosisRequirement = null;
             for (DataRequirement requirement : moduleDefinitionLibrary.getDataRequirement()) {
                 if (requirement.getType() == Enumerations.FHIRTypes.CONDITION
@@ -485,7 +497,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestLibraryDataRequirements() {
+    void libraryDataRequirements() {
         CqlCompilerOptions cqlTranslatorOptions = new CqlCompilerOptions();
 
         try {
@@ -503,7 +515,7 @@ public class DataRequirementsProcessorTest {
 
             List<Extension> directReferenceCodes = moduleDefinitionLibrary.getExtensionsByUrl(
                     "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-directReferenceCode");
-            assertTrue(directReferenceCodes.size() == 5);
+            assertEquals(5, directReferenceCodes.size());
             Extension directReferenceCode = directReferenceCodes.get(0);
             Coding coding = directReferenceCode.getValueCoding();
             assertEquals("http://loinc.org", coding.getSystem());
@@ -561,7 +573,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestLibraryDataRequirementsRecursive() {
+    void libraryDataRequirementsRecursive() {
         CqlCompilerOptions cqlTranslatorOptions = new CqlCompilerOptions();
         cqlTranslatorOptions.setCollapseDataRequirements(true);
         try {
@@ -593,7 +605,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestDataRequirementsFHIRReferences() {
+    void dataRequirementsFHIRReferences() {
         CqlCompilerOptions cqlTranslatorOptions = new CqlCompilerOptions();
 
         try {
@@ -700,7 +712,7 @@ public class DataRequirementsProcessorTest {
                 evaluationDateTime,
                 false,
                 false);
-        assertEquals(moduleDefinitionLibrary.getName(), "EffectiveDataRequirements");
+        assertEquals("EffectiveDataRequirements", moduleDefinitionLibrary.getName());
         assertTrue(moduleDefinitionLibrary
                 .getType()
                 .getCode("http://terminology.hl7.org/CodeSystem/library-type")
@@ -774,7 +786,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestFunctionDataRequirements() throws IOException {
+    void functionDataRequirements() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         var manager = setupDataRequirementsGather("CMS104/MATGlobalCommonFunctionsFHIR4.cql", compilerOptions);
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary =
@@ -789,7 +801,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestNonElectiveInpatientEncounterDataRequirements() throws IOException {
+    void nonElectiveInpatientEncounterDataRequirements() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         var manager = setupDataRequirementsGather("CMS104/TJCOverallFHIR.cql", compilerOptions);
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(
@@ -815,7 +827,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestAllStrokeEncounterDataRequirements() throws IOException {
+    void allStrokeEncounterDataRequirements() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         var manager = setupDataRequirementsGather("CMS104/TJCOverallFHIR.cql", compilerOptions);
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary =
@@ -847,7 +859,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestCMS104DataRequirements() throws IOException {
+    void cms104DataRequirements() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         var manager = setupDataRequirementsGather("CMS104/DischargedonAntithromboticTherapyFHIR.cql", compilerOptions);
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions);
@@ -881,7 +893,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestDataRequirementsAnalysisCase1() throws IOException {
+    void dataRequirementsAnalysisCase1() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         var manager = setupDataRequirementsAnalysis("TestCases/TestCase1.cql", compilerOptions);
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions);
@@ -897,9 +909,9 @@ public class DataRequirementsProcessorTest {
         ExpressionDef ed = manager.library().resolveExpressionRef("ESRD Observations");
         assertTrue(ed.getExpression() instanceof Retrieve);
         Retrieve r = (Retrieve) ed.getExpression();
-        assertEquals(r.getCodeProperty(), "code");
+        assertEquals("code", r.getCodeProperty());
         assertTrue(r.getCodes() instanceof ValueSetRef);
-        assertEquals(((ValueSetRef) r.getCodes()).getName(), "ESRD Diagnosis");
+        assertEquals("ESRD Diagnosis", ((ValueSetRef) r.getCodes()).getName());
 
         // Validate the data requirement is reported in the module definition library
         DataRequirement expectedDataRequirement = null;
@@ -921,7 +933,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestDataRequirementsAnalysisCase1b() throws IOException {
+    void dataRequirementsAnalysisCase1b() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         var manager = setupDataRequirementsAnalysis("TestCases/TestCase1b.cql", compilerOptions);
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions);
@@ -944,12 +956,12 @@ public class DataRequirementsProcessorTest {
         assertTrue(r.getCodeProperty() == null);
         assertTrue(r.getCodes() == null);
         assertTrue(r.getCodeFilter() != null);
-        assertTrue(r.getCodeFilter().size() == 1);
+        assertEquals(1, r.getCodeFilter().size());
         CodeFilterElement cfe = r.getCodeFilter().get(0);
-        assertEquals(cfe.getProperty(), "status");
-        assertEquals(cfe.getComparator(), "=");
+        assertEquals("status", cfe.getProperty());
+        assertEquals("=", cfe.getComparator());
         assertTrue(cfe.getValue() instanceof Literal);
-        assertEquals(((Literal) cfe.getValue()).getValue(), "final");
+        assertEquals("final", ((Literal) cfe.getValue()).getValue());
 
         // Validate the data requirement is reported in the module definition library
         DataRequirement expectedDataRequirement = null;
@@ -974,7 +986,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestDataRequirementsAnalysisCase1c() throws IOException {
+    void dataRequirementsAnalysisCase1c() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         var manager = setupDataRequirementsAnalysis("TestCases/TestCase1c.cql", compilerOptions);
         Set<String> expressions = new HashSet<>();
@@ -999,7 +1011,7 @@ public class DataRequirementsProcessorTest {
 
         // Validate the TestReferencedDataRequirement is the only output parameter...
         ParameterDefinition expectedParameterDefinition = null;
-        assertEquals(moduleDefinitionLibrary.getParameter().size(), 1);
+        assertEquals(1, moduleDefinitionLibrary.getParameter().size());
         for (ParameterDefinition pd : moduleDefinitionLibrary.getParameter()) {
             if ("TestReferencedDataRequirement".equals(pd.getName())
                     && pd.getUse() == Enumerations.OperationParameterUse.OUT
@@ -1017,7 +1029,7 @@ public class DataRequirementsProcessorTest {
         DataRequirement expectedDataRequirement = null;
         // TODO: This really should be 1, but we're using the recursive gather, so it reports the [Medication] retrieve
         // in the referenced expression as well
-        assertEquals(moduleDefinitionLibrary.getDataRequirement().size(), 2);
+        assertEquals(2, moduleDefinitionLibrary.getDataRequirement().size());
         for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
             if (dr.getType() == Enumerations.FHIRTypes.MEDICATION) {
                 if (dr.getCodeFilter().size() == 1) {
@@ -1037,7 +1049,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestDataRequirementsAnalysisCase2a() throws IOException {
+    void dataRequirementsAnalysisCase2a() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         var manager = setupDataRequirementsAnalysis("TestCases/TestCase2a.cql", compilerOptions);
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions);
@@ -1065,12 +1077,12 @@ public class DataRequirementsProcessorTest {
         assertTrue(r.getCodeProperty() == null);
         assertTrue(r.getCodes() == null);
         assertTrue(r.getCodeFilter() != null);
-        assertTrue(r.getCodeFilter().size() == 1);
+        assertEquals(1, r.getCodeFilter().size());
         CodeFilterElement cfe = r.getCodeFilter().get(0);
-        assertEquals(cfe.getProperty(), "item.revenue");
-        assertEquals(cfe.getComparator(), "in");
+        assertEquals("item.revenue", cfe.getProperty());
+        assertEquals("in", cfe.getComparator());
         assertTrue(cfe.getValue() instanceof ValueSetRef);
-        assertEquals(((ValueSetRef) cfe.getValue()).getName(), "Hospice Encounter");
+        assertEquals("Hospice Encounter", ((ValueSetRef) cfe.getValue()).getName());
 
         // Validate the data requirement is reported in the module definition library
         DataRequirement expectedDataRequirement = null;
@@ -1092,7 +1104,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestDataRequirementsAnalysisCase2b() throws IOException {
+    void dataRequirementsAnalysisCase2b() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         var manager = setupDataRequirementsAnalysis("TestCases/TestCase2b.cql", compilerOptions);
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions);
@@ -1121,11 +1133,11 @@ public class DataRequirementsProcessorTest {
         assertTrue(r.getDateProperty() == null);
         assertTrue(r.getDateRange() == null);
         assertTrue(r.getDateFilter() != null);
-        assertTrue(r.getDateFilter().size() == 1);
+        assertEquals(1, r.getDateFilter().size());
         DateFilterElement dfe = r.getDateFilter().get(0);
-        assertEquals(dfe.getProperty(), "item.serviced.start");
+        assertEquals("item.serviced.start", dfe.getProperty());
         assertTrue(dfe.getValue() instanceof ParameterRef);
-        assertEquals(((ParameterRef) dfe.getValue()).getName(), "Measurement Period");
+        assertEquals("Measurement Period", ((ParameterRef) dfe.getValue()).getName());
 
         // Validate the data requirement is reported in the module definition library
         DataRequirement expectedDataRequirement = null;
@@ -1152,7 +1164,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestDataRequirementsAnalysisCase2e() throws IOException {
+    void dataRequirementsAnalysisCase2e() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         var manager = setupDataRequirementsAnalysis("TestCases/TestCase2e.cql", compilerOptions);
         // Evaluate this test as of 12/31/2022
@@ -1180,7 +1192,7 @@ public class DataRequirementsProcessorTest {
         Retrieve r = (Retrieve) source.getExpression();
         assertTrue(r.getDateFilter() != null && r.getDateFilter().size() == 1);
         DateFilterElement dfe = r.getDateFilter().get(0);
-        assertEquals(dfe.getProperty(), "onset");
+        assertEquals("onset", dfe.getProperty());
         assertTrue(dfe.getValue() instanceof Interval);
 
         OffsetDateTime expectedPeriodStart =
@@ -1225,7 +1237,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestDataRequirementsAnalysisCase2g() throws IOException {
+    void dataRequirementsAnalysisCase2g() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         var manager = setupDataRequirementsAnalysis("TestCases/TestCase2g.cql", compilerOptions);
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary =
@@ -1251,7 +1263,7 @@ public class DataRequirementsProcessorTest {
         Retrieve r = (Retrieve) source.getExpression();
         assertTrue(r.getDateFilter() != null && r.getDateFilter().size() == 1);
         DateFilterElement dfe = r.getDateFilter().get(0);
-        assertEquals(dfe.getProperty(), "onset");
+        assertEquals("onset", dfe.getProperty());
         assertTrue(dfe.getValue() instanceof Interval);
 
         DataRequirement expectedDataRequirement = null;
@@ -1273,7 +1285,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestDataRequirementsAnalysisCase2i() throws IOException {
+    void dataRequirementsAnalysisCase2i() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         var manager = setupDataRequirementsAnalysis("TestCases/TestCase2i.cql", compilerOptions);
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary =
@@ -1302,7 +1314,7 @@ public class DataRequirementsProcessorTest {
         Retrieve r = (Retrieve) source.getExpression();
         assertTrue(r.getDateFilter() != null && r.getDateFilter().size() == 1);
         DateFilterElement dfe = r.getDateFilter().get(0);
-        assertEquals(dfe.getProperty(), "onset");
+        assertEquals("onset", dfe.getProperty());
         assertTrue(dfe.getValue() instanceof Interval);
 
         DataRequirement expectedDataRequirement = null;
@@ -1331,7 +1343,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestDataRequirementsAnalysisCase2j() throws IOException {
+    void dataRequirementsAnalysisCase2j() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         var manager = setupDataRequirementsAnalysis("TestCases/TestCase2j.cql", compilerOptions);
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary =
@@ -1366,10 +1378,10 @@ public class DataRequirementsProcessorTest {
         Retrieve r = (Retrieve) source.getExpression();
         assertTrue(r.getDateFilter() != null && r.getDateFilter().size() == 2);
         DateFilterElement dfe = r.getDateFilter().get(0);
-        assertEquals(dfe.getProperty(), "onset");
+        assertEquals("onset", dfe.getProperty());
         assertTrue(dfe.getValue() instanceof Interval);
         dfe = r.getDateFilter().get(1);
-        assertEquals(dfe.getProperty(), "onset");
+        assertEquals("onset", dfe.getProperty());
         assertTrue(dfe.getValue() instanceof Interval);
 
         DataRequirement expectedDataRequirement = null;
@@ -1431,7 +1443,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestDataRequirementsAnalysisCase9a() throws IOException {
+    void dataRequirementsAnalysisCase9a() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         var manager = setupDataRequirementsAnalysis("TestCases/TestCase9a.cql", compilerOptions);
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions);
@@ -1455,20 +1467,20 @@ public class DataRequirementsProcessorTest {
         AliasedQuerySource source = q.getSource().get(0);
         assertTrue(source.getExpression() instanceof Retrieve);
         Retrieve r = (Retrieve) source.getExpression();
-        assertTrue(r.getDataType().getLocalPart().equals("MedicationRequest"));
-        assertTrue(r.getInclude().size() == 1);
+        assertEquals("MedicationRequest", r.getDataType().getLocalPart());
+        assertEquals(1, r.getInclude().size());
         String primarySourceId = r.getLocalId();
         IncludeElement ie = r.getInclude().get(0);
-        assertTrue(ie.getRelatedDataType().getLocalPart().equals("Encounter"));
-        assertTrue(ie.getRelatedProperty().equals("encounter.reference"));
-        assertTrue(!ie.isIsReverse());
-        assertTrue(q.getRelationship().size() == 1);
+        assertEquals("Encounter", ie.getRelatedDataType().getLocalPart());
+        assertEquals("encounter.reference", ie.getRelatedProperty());
+        assertFalse(ie.isIsReverse());
+        assertEquals(1, q.getRelationship().size());
         assertTrue(q.getRelationship().get(0) instanceof With);
         With w = (With) q.getRelationship().get(0);
         assertTrue(w.getExpression() instanceof Retrieve);
         r = (Retrieve) w.getExpression();
-        assertTrue(r.getDataType().getLocalPart().equals("Encounter"));
-        assertTrue(r.getIncludedIn().equals(primarySourceId));
+        assertEquals("Encounter", r.getDataType().getLocalPart());
+        assertEquals(r.getIncludedIn(), primarySourceId);
 
         // Validate the data requirement is reported in the module definition library
         DataRequirement expectedDataRequirement = null;
@@ -1502,7 +1514,7 @@ public class DataRequirementsProcessorTest {
 
     // @Test
     // TODO: Enable include when the reference is in a let
-    public void TestDataRequirementsAnalysisCase9d() throws IOException {
+    public void testDataRequirementsAnalysisCase9d() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         var manager = setupDataRequirementsAnalysis("TestCases/TestCase9d.cql", compilerOptions);
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions);
@@ -1530,33 +1542,33 @@ public class DataRequirementsProcessorTest {
         AliasedQuerySource source = q.getSource().get(0);
         assertTrue(source.getExpression() instanceof Retrieve);
         Retrieve r = (Retrieve) source.getExpression();
-        assertTrue(r.getDataType().getLocalPart().equals("MedicationRequest"));
-        assertTrue(r.getInclude().size() == 1);
+        assertEquals("MedicationRequest", r.getDataType().getLocalPart());
+        assertEquals(1, r.getInclude().size());
         String primarySourceId = r.getLocalId();
         IncludeElement ie = r.getInclude().get(0);
-        assertTrue(ie.getRelatedDataType().getLocalPart().equals("Medication"));
-        assertTrue(ie.getRelatedProperty().equals("medication.reference"));
-        assertTrue(!ie.isIsReverse());
+        assertEquals("Medication", ie.getRelatedDataType().getLocalPart());
+        assertEquals("medication.reference", ie.getRelatedProperty());
+        assertFalse(ie.isIsReverse());
 
-        assertTrue(q.getLet().size() == 1);
+        assertEquals(1, q.getLet().size());
         LetClause lc = q.getLet().get(0);
         assertTrue(lc.getExpression() instanceof SingletonFrom);
         SingletonFrom sf = (SingletonFrom) lc.getExpression();
         assertTrue(sf.getOperand() instanceof Query);
         q = (Query) sf.getOperand();
-        assertTrue(q.getSource().size() == 1);
+        assertEquals(1, q.getSource().size());
         source = q.getSource().get(0);
         assertTrue(source.getExpression() instanceof Retrieve);
         r = (Retrieve) source.getExpression();
-        assertTrue(r.getDataType().getLocalPart().equals("Medication"));
-        assertTrue(r.getIncludedIn().equals(primarySourceId));
-        assertTrue(r.getCodeFilter().size() == 2);
+        assertEquals("Medication", r.getDataType().getLocalPart());
+        assertEquals(r.getIncludedIn(), primarySourceId);
+        assertEquals(2, r.getCodeFilter().size());
         CodeFilterElement cfe = r.getCodeFilter().get(0);
-        assertTrue(cfe.getProperty().equals("id"));
-        assertTrue(cfe.getComparator().equals("="));
+        assertEquals("id", cfe.getProperty());
+        assertEquals("=", cfe.getComparator());
         cfe = r.getCodeFilter().get(1);
-        assertTrue(cfe.getProperty().equals("code"));
-        assertTrue(cfe.getComparator().equals("in"));
+        assertEquals("code", cfe.getProperty());
+        assertEquals("in", cfe.getComparator());
 
         // Validate the data requirement is reported in the module definition library
         DataRequirement expectedDataRequirement = null;
@@ -1589,7 +1601,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestDataRequirementsAnalysisCase9e() throws IOException {
+    void dataRequirementsAnalysisCase9e() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         var manager = setupDataRequirementsAnalysis("TestCases/TestCase9e.cql", compilerOptions);
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions);
@@ -1617,29 +1629,29 @@ public class DataRequirementsProcessorTest {
         AliasedQuerySource source = q.getSource().get(0);
         assertTrue(source.getExpression() instanceof Retrieve);
         Retrieve r = (Retrieve) source.getExpression();
-        assertTrue(r.getDataType().getLocalPart().equals("MedicationRequest"));
-        assertTrue(r.getInclude().size() == 1);
+        assertEquals("MedicationRequest", r.getDataType().getLocalPart());
+        assertEquals(1, r.getInclude().size());
         String primarySourceId = r.getLocalId();
         IncludeElement ie = r.getInclude().get(0);
-        assertTrue(ie.getRelatedDataType().getLocalPart().equals("Medication"));
-        assertTrue(ie.getRelatedProperty().equals("medication.reference"));
-        assertTrue(!ie.isIsReverse());
+        assertEquals("Medication", ie.getRelatedDataType().getLocalPart());
+        assertEquals("medication.reference", ie.getRelatedProperty());
+        assertFalse(ie.isIsReverse());
 
         assertTrue(q.getWhere() != null);
         assertTrue(q.getWhere() instanceof Exists);
         Exists ex = (Exists) q.getWhere();
         assertTrue(ex.getOperand() instanceof Query);
         q = (Query) ex.getOperand();
-        assertTrue(q.getSource().size() == 1);
+        assertEquals(1, q.getSource().size());
         source = q.getSource().get(0);
         assertTrue(source.getExpression() instanceof Retrieve);
         r = (Retrieve) source.getExpression();
-        assertTrue(r.getDataType().getLocalPart().equals("Medication"));
-        assertTrue(r.getIncludedIn().equals(primarySourceId));
-        assertTrue(r.getCodeFilter().size() == 1);
+        assertEquals("Medication", r.getDataType().getLocalPart());
+        assertEquals(r.getIncludedIn(), primarySourceId);
+        assertEquals(1, r.getCodeFilter().size());
         CodeFilterElement cfe = r.getCodeFilter().get(0);
-        assertTrue(cfe.getProperty().equals("code"));
-        assertTrue(cfe.getComparator().equals("in"));
+        assertEquals("code", cfe.getProperty());
+        assertEquals("in", cfe.getComparator());
 
         // Validate the data requirement is reported in the module definition library
         DataRequirement expectedDataRequirement = null;
@@ -1672,7 +1684,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestDataRequirementsAnalysisCase9f() throws IOException {
+    void dataRequirementsAnalysisCase9f() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         var manager = setupDataRequirementsAnalysis("TestCases/TestCase9f.cql", compilerOptions);
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions);
@@ -1699,23 +1711,23 @@ public class DataRequirementsProcessorTest {
         AliasedQuerySource source = q.getSource().get(0);
         assertTrue(source.getExpression() instanceof Retrieve);
         Retrieve r = (Retrieve) source.getExpression();
-        assertTrue(r.getDataType().getLocalPart().equals("MedicationRequest"));
-        assertTrue(r.getInclude().size() == 1);
+        assertEquals("MedicationRequest", r.getDataType().getLocalPart());
+        assertEquals(1, r.getInclude().size());
         String primarySourceId = r.getLocalId();
         IncludeElement ie = r.getInclude().get(0);
-        assertTrue(ie.getRelatedDataType().getLocalPart().equals("Medication"));
-        assertTrue(ie.getRelatedProperty().equals("medication.reference"));
-        assertTrue(!ie.isIsReverse());
+        assertEquals("Medication", ie.getRelatedDataType().getLocalPart());
+        assertEquals("medication.reference", ie.getRelatedProperty());
+        assertFalse(ie.isIsReverse());
 
         source = q.getSource().get(1);
         assertTrue(source.getExpression() instanceof Retrieve);
         r = (Retrieve) source.getExpression();
-        assertTrue(r.getDataType().getLocalPart().equals("Medication"));
-        assertTrue(r.getIncludedIn().equals(primarySourceId));
-        assertTrue(r.getCodeFilter().size() == 1);
+        assertEquals("Medication", r.getDataType().getLocalPart());
+        assertEquals(r.getIncludedIn(), primarySourceId);
+        assertEquals(1, r.getCodeFilter().size());
         CodeFilterElement cfe = r.getCodeFilter().get(0);
-        assertTrue(cfe.getProperty().equals("code"));
-        assertTrue(cfe.getComparator().equals("in"));
+        assertEquals("code", cfe.getProperty());
+        assertEquals("in", cfe.getComparator());
 
         // Validate the data requirement is reported in the module definition library
         DataRequirement expectedDataRequirement = null;
@@ -1748,7 +1760,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestDataRequirementsAnalysisCase10a() throws IOException {
+    void dataRequirementsAnalysisCase10a() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         var manager = setupDataRequirementsAnalysis("TestCases/TestCase10a.cql", compilerOptions);
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions);
@@ -1784,7 +1796,7 @@ public class DataRequirementsProcessorTest {
         AliasedQuerySource source = q.getSource().get(0);
         assertTrue(source.getExpression() instanceof Retrieve);
         Retrieve r = (Retrieve) source.getExpression();
-        assertTrue(r.getDataType().getLocalPart().equals("Observation"));
+        assertEquals("Observation", r.getDataType().getLocalPart());
 
         // Validate the data requirement is reported in the module definition library
         DataRequirement expectedDataRequirement = null;
@@ -1795,38 +1807,41 @@ public class DataRequirementsProcessorTest {
         }
         assertTrue(expectedDataRequirement != null);
 
-        assertTrue(expectedDataRequirement.getMustSupport().size() == 2);
+        assertEquals(2, expectedDataRequirement.getMustSupport().size());
         boolean hasCode = false;
-        assertTrue(expectedDataRequirement.getMustSupport().stream()
+        assertEquals(
+                1,
+                expectedDataRequirement.getMustSupport().stream()
                         .filter(s -> s.getValue().equals("code"))
-                        .count()
-                == 1);
-        assertTrue(expectedDataRequirement.getMustSupport().stream()
+                        .count());
+        assertEquals(
+                1,
+                expectedDataRequirement.getMustSupport().stream()
                         .filter(s -> s.getValue().equals("issued"))
-                        .count()
-                == 1);
+                        .count());
 
-        assertTrue(expectedDataRequirement.getCodeFilter().size() == 1);
+        assertEquals(1, expectedDataRequirement.getCodeFilter().size());
         DataRequirement.DataRequirementCodeFilterComponent drcfc =
                 expectedDataRequirement.getCodeFilter().get(0);
-        assertTrue(drcfc.getPath().equals("code"));
-        assertTrue(drcfc.getValueSet().equals("http://fakeurl.com/ersd-diagnosis"));
+        assertEquals("code", drcfc.getPath());
+        assertEquals("http://fakeurl.com/ersd-diagnosis", drcfc.getValueSet());
 
-        assertTrue(expectedDataRequirement.getDateFilter().size() == 1);
+        assertEquals(1, expectedDataRequirement.getDateFilter().size());
         DataRequirement.DataRequirementDateFilterComponent drdfc =
                 expectedDataRequirement.getDateFilter().get(0);
         LocalDate ld = LocalDate.of(2022, 2, 15);
-        assertTrue(drdfc.getValuePeriod()
+        assertEquals(
+                0,
+                drdfc.getValuePeriod()
                         .getStart()
                         .compareTo(Date.from(
-                                ld.atStartOfDay(ZoneId.systemDefault()).toInstant()))
-                == 0);
+                                ld.atStartOfDay(ZoneId.systemDefault()).toInstant())));
 
         // outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
-    public void TestDataRequirementsAnalysisCase10b() throws IOException {
+    void dataRequirementsAnalysisCase10b() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         var manager = setupDataRequirementsAnalysis("TestCases/TestCase10b.cql", compilerOptions);
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(manager, compilerOptions);
@@ -1847,7 +1862,7 @@ public class DataRequirementsProcessorTest {
         AliasedQuerySource source = q.getSource().get(0);
         assertTrue(source.getExpression() instanceof Retrieve);
         Retrieve r = (Retrieve) source.getExpression();
-        assertTrue(r.getDataType().getLocalPart().equals("Observation"));
+        assertEquals("Observation", r.getDataType().getLocalPart());
 
         // Validate the data requirement is reported in the module definition library
         DataRequirement expectedDataRequirement = null;
@@ -1862,7 +1877,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestDataRequirementsAnalysisCase10c() throws IOException {
+    void dataRequirementsAnalysisCase10c() throws IOException {
         // TODO: Complete this test case
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         var manager = setupDataRequirementsAnalysis("TestCases/TestCase10c.cql", compilerOptions);
@@ -1884,7 +1899,7 @@ public class DataRequirementsProcessorTest {
         AliasedQuerySource source = q.getSource().get(0);
         assertTrue(source.getExpression() instanceof Retrieve);
         Retrieve r = (Retrieve) source.getExpression();
-        assertTrue(r.getDataType().getLocalPart().equals("Observation"));
+        assertEquals("Observation", r.getDataType().getLocalPart());
 
         // Validate the data requirement is reported in the module definition library
         DataRequirement expectedDataRequirement = null;
@@ -1899,7 +1914,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestHEDISBCSE() throws IOException {
+    void hedisbcse() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         compilerOptions.setCompatibilityLevel("1.4");
         var manager = setupDataRequirementsAnalysis("BCSE/BCSE_HEDIS_MY2022.cql", compilerOptions);
@@ -1922,7 +1937,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestEXMLogic() throws IOException {
+    void exmLogic() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         compilerOptions.setAnalyzeDataRequirements(false);
         var manager = setupDataRequirementsAnalysis("EXMLogic/EXMLogic.cql", compilerOptions);
@@ -1935,7 +1950,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestWithDependencies() throws IOException {
+    void withDependencies() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         compilerOptions.setAnalyzeDataRequirements(false);
         var manager = setupDataRequirementsAnalysis("WithDependencies/BSElements.cql", compilerOptions);
@@ -1952,7 +1967,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestCMS645() throws IOException {
+    void cms645() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         compilerOptions.setAnalyzeDataRequirements(false);
         var manager = setupDataRequirementsAnalysis("CMS645/CMS645Test.cql", compilerOptions);
@@ -1969,7 +1984,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestPCSBMI() throws IOException {
+    void pcsbmi() throws IOException {
         CqlCompilerOptions compilerOptions = CqlCompilerOptions.defaultOptions();
         var manager = setupDataRequirementsAnalysis("PCSBMI/PCSBMIScreenAndFollowUpFHIR.cql", compilerOptions);
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(
@@ -1985,7 +2000,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestCMS143() throws IOException {
+    void cms143() throws IOException {
         CqlCompilerOptions compilerOptions = CqlCompilerOptions.defaultOptions();
         compilerOptions.getOptions().add(CqlCompilerOptions.Options.EnableResultTypes);
         Set<String> expressions = new HashSet<>();
@@ -2016,7 +2031,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestSDESex() throws IOException {
+    void sdeSex() throws IOException {
         CqlCompilerOptions compilerOptions = CqlCompilerOptions.defaultOptions();
         compilerOptions.getOptions().add(CqlCompilerOptions.Options.EnableResultTypes);
         Set<String> expressions = new HashSet<>();
@@ -2041,7 +2056,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestSDEPayer() throws IOException {
+    void sdePayer() throws IOException {
         CqlCompilerOptions compilerOptions = CqlCompilerOptions.defaultOptions();
         compilerOptions.getOptions().add(CqlCompilerOptions.Options.EnableResultTypes);
         Set<String> expressions = new HashSet<>();
@@ -2065,7 +2080,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestSDEEthnicity() throws IOException {
+    void sdeEthnicity() throws IOException {
         CqlCompilerOptions compilerOptions = CqlCompilerOptions.defaultOptions();
         compilerOptions.getOptions().add(CqlCompilerOptions.Options.EnableResultTypes);
         Set<String> expressions = new HashSet<>();
@@ -2087,7 +2102,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestSDERace() throws IOException {
+    void sdeRace() throws IOException {
         CqlCompilerOptions compilerOptions = CqlCompilerOptions.defaultOptions();
         compilerOptions.getOptions().add(CqlCompilerOptions.Options.EnableResultTypes);
         Set<String> expressions = new HashSet<>();
@@ -2109,7 +2124,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestQualifyingEncounterMP() throws IOException {
+    void qualifyingEncounterMP() throws IOException {
         CqlCompilerOptions compilerOptions = CqlCompilerOptions.defaultOptions();
         compilerOptions.getOptions().add(CqlCompilerOptions.Options.EnableResultTypes);
         Set<String> expressions = new HashSet<>();
@@ -2139,7 +2154,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestCMS149() throws IOException {
+    void cms149() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         compilerOptions.setAnalyzeDataRequirements(false);
         var manager = setupDataRequirementsAnalysis(
@@ -2171,7 +2186,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestDeviceOrder() throws IOException {
+    void deviceOrder() throws IOException {
         CqlCompilerOptions compilerOptions = CqlCompilerOptions.defaultOptions();
         var manager = setupDataRequirementsGather("DeviceOrder/TestDeviceOrder.cql", compilerOptions);
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(
@@ -2194,7 +2209,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestDataRequirementsProcessorWithPertinence() {
+    void dataRequirementsProcessorWithPertinence() {
         CqlCompilerOptions cqlTranslatorOptions = new CqlCompilerOptions();
 
         cqlTranslatorOptions.getOptions().add(CqlCompilerOptions.Options.EnableAnnotations);
@@ -2207,13 +2222,13 @@ public class DataRequirementsProcessorTest {
             org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(
                     setup.manager(), setup.library(), cqlTranslatorOptions, null, false);
 
-            assertTrue(moduleDefinitionLibrary.getDataRequirement().size() == 3);
+            assertEquals(3, moduleDefinitionLibrary.getDataRequirement().size());
             DataRequirement dr = moduleDefinitionLibrary.getDataRequirement().get(1);
-            assertEquals(dr.getType(), Enumerations.FHIRTypes.CONDITION);
+            assertEquals(Enumerations.FHIRTypes.CONDITION, dr.getType());
             assertEquals(
-                    dr.getExtension().get(0).getUrl(),
-                    "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinence");
-            assertEquals(((Coding) dr.getExtension().get(0).getValue()).getCode(), "pathognomonic");
+                    "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinence",
+                    dr.getExtension().get(0).getUrl());
+            assertEquals("pathognomonic", ((Coding) dr.getExtension().get(0).getValue()).getCode());
 
             FhirContext context = getFhirContext();
             IParser parser = context.newJsonParser();
@@ -2225,7 +2240,7 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestDataRequirementsProcessorWithPertinenceAgain() {
+    void dataRequirementsProcessorWithPertinenceAgain() {
         CqlCompilerOptions cqlTranslatorOptions = new CqlCompilerOptions();
 
         cqlTranslatorOptions.getOptions().add(CqlCompilerOptions.Options.EnableAnnotations);
@@ -2239,25 +2254,26 @@ public class DataRequirementsProcessorTest {
                     setup.manager(), setup.library(), cqlTranslatorOptions, null, false);
 
             DataRequirement dr = moduleDefinitionLibrary.getDataRequirement().get(1);
-            assertEquals(dr.getType(), Enumerations.FHIRTypes.CONDITION);
+            assertEquals(Enumerations.FHIRTypes.CONDITION, dr.getType());
             assertEquals(
-                    dr.getExtension().get(0).getUrl(),
-                    "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinence");
-            assertEquals(((Coding) dr.getExtension().get(0).getValue()).getCode(), "weakly-negative");
+                    "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinence",
+                    dr.getExtension().get(0).getUrl());
+            assertEquals("weakly-negative", ((Coding) dr.getExtension().get(0).getValue()).getCode());
 
             DataRequirement dr2 = moduleDefinitionLibrary.getDataRequirement().get(2);
-            assertEquals(dr2.getType(), Enumerations.FHIRTypes.ENCOUNTER);
+            assertEquals(Enumerations.FHIRTypes.ENCOUNTER, dr2.getType());
             assertEquals(
-                    dr2.getExtension().get(0).getUrl(),
-                    "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinence");
-            assertEquals(((Coding) dr2.getExtension().get(0).getValue()).getCode(), "pathognomonic");
+                    "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinence",
+                    dr2.getExtension().get(0).getUrl());
+            assertEquals("pathognomonic", ((Coding) dr2.getExtension().get(0).getValue()).getCode());
 
             DataRequirement dr5 = moduleDefinitionLibrary.getDataRequirement().get(5);
-            assertEquals(dr5.getType(), Enumerations.FHIRTypes.DEVICEREQUEST);
+            assertEquals(Enumerations.FHIRTypes.DEVICEREQUEST, dr5.getType());
             assertEquals(
-                    dr5.getExtension().get(0).getUrl(),
-                    "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinence");
-            assertEquals(((Coding) dr5.getExtension().get(0).getValue()).getCode(), "strongly-positive");
+                    "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinence",
+                    dr5.getExtension().get(0).getUrl());
+            assertEquals(
+                    "strongly-positive", ((Coding) dr5.getExtension().get(0).getValue()).getCode());
 
             FhirContext context = getFhirContext();
             IParser parser = context.newJsonParser();

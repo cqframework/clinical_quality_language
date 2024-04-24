@@ -1,16 +1,16 @@
 package org.cqframework.cql.cql2elm.model;
 
-import org.testng.SkipException;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-public class ModelImporterTest {
+class ModelImporterTest {
 
     @Test
-    // TODO: Re-enable generic support here
-    // Requires type resolution capability in the model classes
-    // Was being handled by pre-resolving and passing the entire map through to the GenericClassSignatureParser
-    public void handleModelInfoGenerics() {
-        throw new SkipException("Requires type resolution capability in the model classes");
+    @Disabled("TODO: Requires type resolution capability in the model classes")
+    void handleModelInfoGenerics() {
+        // TODO: Re-enable generic support here
+        // Requires type resolution capability in the model classes
+        // Was being handled by pre-resolving and passing the entire map through to the GenericClassSignatureParser
         /*
                 try {
 
@@ -50,9 +50,9 @@ public class ModelImporterTest {
 
                     //Checking that myGenericType has one element with type - parameter 'T' (an open type - one degree of freedom)
                     assertThat(myQuantityType.getElements().size(), is(1));
-                    ClassTypeElement overridenField1 = myQuantityType.getElements().get(0);
-                    assertThat(overridenField1.getName(), is("field1"));
-                    assertThat(((ClassType)overridenField1.getType()).getName(), is("System.Quantity"));
+                    ClassTypeElement overriddenField1 = myQuantityType.getElements().get(0);
+                    assertThat(overriddenField1.getName(), is("field1"));
+                    assertThat(((ClassType)overriddenField1.getType()).getName(), is("System.Quantity"));
 
 
                     //Map<S,T extends System.Interval>
@@ -75,9 +75,9 @@ public class ModelImporterTest {
 
                     //Checking that myGenericType has one element with type - parameter 'T' (an open type - one degree of freedom)
                     assertThat(myIntegerType.getElements().size(), is(1));
-                    overridenField1 = myIntegerType.getElements().get(0);
-                    assertThat(overridenField1.getName(), is("field1"));
-                    assertThat(((SimpleType)overridenField1.getType()).getName(), is("System.Integer"));
+                    overriddenField1 = myIntegerType.getElements().get(0);
+                    assertThat(overriddenField1.getName(), is("field1"));
+                    assertThat(((SimpleType)overriddenField1.getType()).getName(), is("System.Integer"));
 
         //            //List<Integer>
         //            GenericClassProfileInfo listOfIntegers = (GenericClassProfileInfo)gentestModel.getTypeInfo().get(2);
@@ -123,29 +123,27 @@ public class ModelImporterTest {
     }
 
     @Test
-    // TODO: Re-enable, see message above
-    public void handleModelInfoGenericsSad1() {
-        throw new SkipException("Disabled until model classes support type resolution");
-        /*
-        try {
+    @Disabled("Disabled until model classes support type resolution")
+    void handleModelInfoGenericsSad1() {
+        // /*
+        // try {
 
-            ModelManager modelManager = new ModelManager();
-            GentestModelInfoProviderSad1 gentestModelInfoProvider = new GentestModelInfoProviderSad1();
-            ModelImporter systemImporter = new ModelImporter(modelManager.getModelInfoLoader().getModelInfo(new VersionedIdentifier().withId("System").withVersion("1")), null);
-            ModelInfo gentestModel = gentestModelInfoProvider.load(new VersionedIdentifier().withId("GENTEST"));
-            try {
-                ModelImporter gentestImporter = new ModelImporter(gentestModel, modelManager);
-                fail();
-            } catch(Exception e) {
-                assertThat(e.getMessage(), is("Unknown symbols [T]"));
-            }
+        //     ModelManager modelManager = new ModelManager();
+        //     GentestModelInfoProviderSad1 gentestModelInfoProvider = new GentestModelInfoProviderSad1();
+        //     ModelImporter systemImporter = new ModelImporter(modelManager.getModelInfoLoader().getModelInfo(new
+        // VersionedIdentifier().withId("System").withVersion("1")), null);
+        //     ModelInfo gentestModel = gentestModelInfoProvider.load(new VersionedIdentifier().withId("GENTEST"));
+        //     try {
+        //         ModelImporter gentestImporter = new ModelImporter(gentestModel, modelManager);
+        //         fail();
+        //     } catch(Exception e) {
+        //         assertThat(e.getMessage(), is("Unknown symbols [T]"));
+        //     }
 
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail();
-        }
-        */
+        // } catch (Exception e) {
+        //     e.printStackTrace();
+        //     fail();
+        // }
+        // */
     }
 }

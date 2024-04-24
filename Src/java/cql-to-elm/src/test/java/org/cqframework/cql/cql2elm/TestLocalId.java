@@ -1,8 +1,8 @@
 package org.cqframework.cql.cql2elm;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -14,11 +14,11 @@ import org.cqframework.cql.elm.visiting.FunctionalElmVisitor;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 import org.hl7.elm.r1.Element;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 // This test compiles a few example libraries and ensures
 // local ids are assigned for all elements in the resulting ELM
-public class TestLocalId {
+class TestLocalId {
 
     // This visitor checks that all nodes the graph have a localId
     static FunctionalElmVisitor<Void, String> idChecker = Visitors.from((node, libraryName) -> {
@@ -37,7 +37,7 @@ public class TestLocalId {
     });
 
     @Test
-    public void testLocalIds() throws Exception {
+    void localIds() throws Exception {
         runTest("OperatorTests/CqlListOperators.cql");
         runTest("TranslationTests.cql");
         runTest("LibraryTests/TestMeasure.cql");
@@ -51,7 +51,7 @@ public class TestLocalId {
     }
 
     @Test
-    public void noLocalIdThrowsException() throws Exception {
+    void noLocalIdThrowsException() throws Exception {
 
         // This is an intentionally broken IdObjectFactory that will not assign localIds
         var brokenFactory = new IdObjectFactory() {

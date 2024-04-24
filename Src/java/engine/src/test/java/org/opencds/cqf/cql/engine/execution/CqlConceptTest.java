@@ -1,19 +1,18 @@
 package org.opencds.cqf.cql.engine.execution;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.IOException;
 import java.util.*;
+import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.runtime.*;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
-public class CqlConceptTest extends CqlTestBase {
+class CqlConceptTest extends CqlTestBase {
     @Test
-    public void test_all_cql_concept_tests() throws IOException {
+    void all_cql_concept_tests() throws IOException {
 
         Environment environment = new Environment(getLibraryManager());
         CqlEngine engine = new CqlEngine(environment);
-
-        Set<String> set = new HashSet<>();
 
         var results = engine.evaluate(toElmIdentifier("CqlConceptTest"));
 
@@ -36,7 +35,7 @@ public class CqlConceptTest extends CqlTestBase {
     static void assertEqual(CqlType expected, CqlType actual) {
         if (!expected.equal(actual)) {
             String message = "Expected " + expected + " but got " + actual;
-            Assert.fail(message);
+            fail(message);
         }
     }
 }

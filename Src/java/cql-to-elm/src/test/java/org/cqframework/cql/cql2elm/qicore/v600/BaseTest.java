@@ -10,11 +10,11 @@ import java.util.Map;
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.TestUtils;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-public class BaseTest {
+class BaseTest {
     @Test
-    public void testQICore() throws IOException {
+    void qICore() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("qicore/v600/TestQICore.cql", 0);
 
         Library library = translator.toELM();

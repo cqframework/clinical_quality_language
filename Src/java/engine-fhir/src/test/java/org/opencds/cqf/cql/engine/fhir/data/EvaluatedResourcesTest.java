@@ -10,14 +10,14 @@ import java.util.Set;
 import org.hl7.fhir.r4.model.Condition;
 import org.hl7.fhir.r4.model.Encounter;
 import org.hl7.fhir.r4.model.Patient;
+import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider;
 import org.opencds.cqf.cql.engine.runtime.Code;
 import org.opencds.cqf.cql.engine.runtime.Interval;
-import org.testng.annotations.Test;
 
-public class EvaluatedResourcesTest extends FhirExecutionTestBase {
+class EvaluatedResourcesTest extends FhirExecutionTestBase {
 
     private static RetrieveProvider rp = new RetrieveProvider() {
 
@@ -51,7 +51,7 @@ public class EvaluatedResourcesTest extends FhirExecutionTestBase {
     };
 
     @Test
-    public void testWithCache() {
+    void withCache() {
         CqlEngine engine = getEngine();
         engine.getState()
                 .getEnvironment()
@@ -77,7 +77,7 @@ public class EvaluatedResourcesTest extends FhirExecutionTestBase {
     }
 
     @Test
-    public void testWithoutCache() {
+    void withoutCache() {
         CqlEngine engine = getEngine();
         engine.getState()
                 .getEnvironment()

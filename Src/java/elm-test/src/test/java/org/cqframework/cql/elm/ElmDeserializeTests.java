@@ -1,6 +1,6 @@
 package org.cqframework.cql.elm;
 
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import jakarta.xml.bind.JAXBException;
 import java.io.*;
@@ -15,12 +15,12 @@ import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.LibraryBuilder;
 import org.hl7.cql_annotations.r1.CqlToElmInfo;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-public class ElmDeserializeTests {
+class ElmDeserializeTests {
 
     @Test
-    public void testElmTests() {
+    void elmTests() {
         try {
             deserializeXmlLibrary("ElmDeserialize/ElmTests.xml");
         } catch (IOException e) {
@@ -30,7 +30,7 @@ public class ElmDeserializeTests {
     }
 
     @Test
-    public void testJsonANCFHIRDummyLibraryLoad() {
+    void jsonANCFHIRDummyLibraryLoad() {
         try {
             final Library library = deserializeJsonLibrary("ElmDeserialize/ANCFHIRDummy.json");
             assertNotNull(library);
@@ -64,7 +64,7 @@ public class ElmDeserializeTests {
     }
 
     @Test
-    public void testJsonAdultOutpatientEncountersFHIR4LibraryLoad() {
+    void jsonAdultOutpatientEncountersFHIR4LibraryLoad() {
         try {
             final Library library =
                     deserializeJsonLibrary("ElmDeserialize/fhir/AdultOutpatientEncounters_FHIR4-2.0.000.json");
@@ -73,8 +73,9 @@ public class ElmDeserializeTests {
             EnumSet<CqlCompilerOptions.Options> translatorOptions =
                     EnumSet.of(CqlCompilerOptions.Options.EnableAnnotations);
             assertEquals(CompilerOptions.getCompilerOptions(library), translatorOptions);
-            assertEquals(library.getIdentifier().getId(), "AdultOutpatientEncounters_FHIR4");
-            assertEquals(library.getIdentifier().getVersion(), "2.0.000");
+            assertEquals(
+                    "AdultOutpatientEncounters_FHIR4", library.getIdentifier().getId());
+            assertEquals("2.0.000", library.getIdentifier().getVersion());
             assertNotNull(library.getUsings());
             assertNotNull(library.getUsings().getDef());
             assertTrue(library.getUsings().getDef().size() >= 2);
@@ -85,7 +86,9 @@ public class ElmDeserializeTests {
             assertTrue(
                     ((SingletonFrom) library.getStatements().getDef().get(0).getExpression()).getOperand()
                             instanceof Retrieve);
-            assertEquals(library.getStatements().getDef().get(1).getName(), "Qualifying Encounters");
+            assertEquals(
+                    "Qualifying Encounters",
+                    library.getStatements().getDef().get(1).getName());
             assertNotNull(library.getStatements().getDef().get(1));
             assertTrue(library.getStatements().getDef().get(1).getExpression() instanceof Query);
 
@@ -96,13 +99,14 @@ public class ElmDeserializeTests {
     }
 
     @Test
-    public void testXmlLibraryLoad() {
+    void xmlLibraryLoad() {
         try {
             final Library library =
                     deserializeXmlLibrary("ElmDeserialize/fhir/AdultOutpatientEncounters_FHIR4-2.0.000.xml");
             assertNotNull(library);
-            assertEquals(library.getIdentifier().getId(), "AdultOutpatientEncounters_FHIR4");
-            assertEquals(library.getIdentifier().getVersion(), "2.0.000");
+            assertEquals(
+                    "AdultOutpatientEncounters_FHIR4", library.getIdentifier().getId());
+            assertEquals("2.0.000", library.getIdentifier().getVersion());
 
             EnumSet<CqlCompilerOptions.Options> translatorOptions = EnumSet.of(
                     CqlCompilerOptions.Options.EnableDateRangeOptimization,
@@ -124,7 +128,9 @@ public class ElmDeserializeTests {
             assertTrue(
                     ((SingletonFrom) library.getStatements().getDef().get(0).getExpression()).getOperand()
                             instanceof Retrieve);
-            assertEquals(library.getStatements().getDef().get(1).getName(), "Qualifying Encounters");
+            assertEquals(
+                    "Qualifying Encounters",
+                    library.getStatements().getDef().get(1).getName());
             assertNotNull(library.getStatements().getDef().get(1));
             assertTrue(library.getStatements().getDef().get(1).getExpression() instanceof Query);
 
@@ -136,7 +142,7 @@ public class ElmDeserializeTests {
     }
 
     @Test
-    public void testJsonTerminologyLibraryLoad() {
+    void jsonTerminologyLibraryLoad() {
         try {
             final Library library = deserializeJsonLibrary("ElmDeserialize/ANCFHIRTerminologyDummy.json");
             assertNotNull(library);
@@ -192,7 +198,7 @@ public class ElmDeserializeTests {
     }
 
     @Test
-    public void regressionTestJsonSerializer() throws URISyntaxException, IOException, JAXBException {
+    void regressionTestJsonSerializer() throws URISyntaxException, IOException, JAXBException {
         // This test validates that the ELM library deserialized from the Json matches the ELM library deserialized from
         // Xml
         // Regression inputs are annual update measure Xml for QDM and FHIR
@@ -315,10 +321,10 @@ public class ElmDeserializeTests {
     }
 
     @Test
-    public void emptyStringsTest() throws IOException {
+    void emptyStringsTest() throws IOException {
         InputStream inputStream = ElmDeserializeTests.class.getResourceAsStream("ElmDeserialize/EmptyStringsTest.cql");
         CqlTranslator translator = TestUtils.createTranslatorFromStream(inputStream);
-        assertEquals(translator.getErrors().size(), 0);
+        assertEquals(0, translator.getErrors().size());
 
         String jaxbXml = toJaxbXml(translator.toELM());
         String jaxbJson = toJaxbJson(translator.toELM());
@@ -388,7 +394,7 @@ public class ElmDeserializeTests {
                 .map(CqlToElmInfo::getSignatureLevel)
                 .collect(Collectors.toList());
 
-        assertEquals(sigLevels.size(), 1);
+        assertEquals(1, sigLevels.size());
         assertEquals(sigLevels.get(0), expectedSignatureLevel.name());
     }
 }

@@ -9,6 +9,10 @@ import org.hl7.fhir.utilities.Utilities;
 
 public class IGUtils {
 
+    private IGUtils() {
+        // intentionally empty
+    }
+
     public static String getImplementationGuideCanonicalBase(String url) {
         String canonicalBase = null;
 
@@ -19,12 +23,11 @@ public class IGUtils {
         return canonicalBase;
     }
 
-    public static ArrayList<String> extractResourcePaths(String rootDir, ImplementationGuide sourceIg)
-            throws IOException {
+    public static List<String> extractResourcePaths(String rootDir, ImplementationGuide sourceIg) throws IOException {
         ArrayList<String> result = new ArrayList<>();
         for (ImplementationGuide.ImplementationGuideDefinitionParameterComponent p :
                 sourceIg.getDefinition().getParameter()) {
-            if (p.getCode().equals("path-resource")) {
+            if ("path-resource".equals(p.getCode().getCode())) {
                 result.add(Utilities.path(rootDir, p.getValue()));
             }
         }

@@ -3,11 +3,11 @@ package org.opencds.cqf.cql.engine.execution;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-public class CqlAggregateQueryTest extends CqlTestBase {
+class CqlAggregateQueryTest extends CqlTestBase {
     @Test
-    void test_all_aggregate_clause_tests() {
+    void all_aggregate_clause_tests() {
         var results = engine.evaluate(toElmIdentifier("CqlAggregateQueryTest"));
         var value = results.forExpression("AggregateSumWithStart").value();
         assertThat(value, is(16));

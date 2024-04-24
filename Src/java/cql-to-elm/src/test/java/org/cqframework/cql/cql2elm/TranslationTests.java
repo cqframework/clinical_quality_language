@@ -5,7 +5,7 @@ import static org.cqframework.cql.cql2elm.CqlCompilerOptions.Options.EnableDetai
 import static org.cqframework.cql.cql2elm.CqlCompilerOptions.Options.EnableResultTypes;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import jakarta.xml.bind.JAXBException;
 import java.io.File;
@@ -19,18 +19,21 @@ import org.cqframework.cql.elm.tracking.TrackBack;
 import org.hamcrest.Matchers;
 import org.hl7.cql_annotations.r1.CqlToElmInfo;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.Ignore;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-public class TranslationTests {
+class TranslationTests {
     // TODO: sameXMLAs? Couldn't find such a thing in hamcrest, but I don't want this to run on the JSON, I want it to
     // verify the actual XML.
-    @Test(enabled = false)
-    public void testPatientPropertyAccess() throws IOException, JAXBException {
+    @Test
+    @Disabled
+    void patientPropertyAccess() throws IOException, JAXBException {
         File expectedXmlFile = new File(
                 Cql2ElmVisitorTest.class.getResource("PropertyTest_ELM.xml").getFile());
-        String expectedXml =
-                new Scanner(expectedXmlFile, "UTF-8").useDelimiter("\\Z").next();
+        String expectedXml = null;
+        try (var scanner = new Scanner(expectedXmlFile, "UTF-8").useDelimiter("\\Z")) {
+            expectedXml = scanner.next();
+        }
 
         File propertyTestFile = new File(
                 Cql2ElmVisitorTest.class.getResource("PropertyTest.cql").getFile());
@@ -40,8 +43,9 @@ public class TranslationTests {
         assertThat(actualXml, is(expectedXml));
     }
 
-    @Test(enabled = false)
-    public void testForPrintElm() throws IOException, JAXBException {
+    @Test
+    @Disabled
+    void forPrintElm() throws IOException, JAXBException {
         File propertyTestFile = new File(TranslationTests.class
                 .getResource("LibraryTests/SupplementalDataElements_FHIR4-2.0.0.cql")
                 .getFile());
@@ -63,8 +67,9 @@ public class TranslationTests {
         System.out.println(translator.toJson());
     }
 
-    @Test(enabled = false)
-    public void testCMS146v2XML() throws IOException {
+    @Test
+    @Disabled
+    void cms146v2XML() throws IOException {
         String expectedXml = "";
         File cqlFile = new File(
                 Cql2ElmVisitorTest.class.getResource("CMS146v2_Test_CQM.cql").getFile());
@@ -75,7 +80,7 @@ public class TranslationTests {
     }
 
     @Test
-    public void testIdentifierLocation() throws IOException {
+    void identifierLocation() throws IOException {
         CqlTranslator translator = TestUtils.createTranslator("TranslatorTests/UnknownIdentifier.cql");
         assertEquals(1, translator.getErrors().size());
 
@@ -90,7 +95,7 @@ public class TranslationTests {
     }
 
     @Test
-    public void testAnnotationsPresent() throws IOException {
+    void annotationsPresent() throws IOException {
         CqlTranslator translator =
                 TestUtils.createTranslator("CMS146v2_Test_CQM.cql", CqlCompilerOptions.Options.EnableAnnotations);
         assertEquals(0, translator.getErrors().size());
@@ -101,16 +106,16 @@ public class TranslationTests {
     }
 
     @Test
-    public void testAnnotationsAbsent() throws IOException {
+    void annotationsAbsent() throws IOException {
         CqlTranslator translator = TestUtils.createTranslator("CMS146v2_Test_CQM.cql");
         assertEquals(0, translator.getErrors().size());
         List<ExpressionDef> defs =
                 translator.getTranslatedLibrary().getLibrary().getStatements().getDef();
-        assertTrue(defs.get(1).getAnnotation().size() == 0);
+        assertEquals(0, defs.get(1).getAnnotation().size());
     }
 
     @Test
-    public void testTranslatorOptionsPresent() throws IOException {
+    void translatorOptionsPresent() throws IOException {
         CqlTranslator translator =
                 TestUtils.createTranslator("CMS146v2_Test_CQM.cql", CqlCompilerOptions.Options.EnableAnnotations);
         assertEquals(0, translator.getErrors().size());
@@ -123,7 +128,7 @@ public class TranslationTests {
     }
 
     @Test
-    public void testNoImplicitCasts() throws IOException {
+    void noImplicitCasts() throws IOException {
         CqlTranslator translator = TestUtils.createTranslator("TestNoImplicitCast.cql");
         assertEquals(0, translator.getErrors().size());
         // Gets the "TooManyCasts" define
@@ -176,9 +181,9 @@ public class TranslationTests {
         assertThat(as.getAsTypeSpecifier(), is(instanceOf(ChoiceTypeSpecifier.class)));
     }
 
-    @Test
     // test for https://github.com/cqframework/clinical_quality_language/issues/1293
-    public void defaultContextIsUnfiltered() throws IOException {
+    @Test
+    void defaultContextIsUnfiltered() throws IOException {
         CqlTranslator translator = TestUtils.createTranslator(
                 "DefaultContext.cql", EnableAnnotations, EnableResultTypes, EnableDetailedErrors);
         assertEquals(0, translator.getErrors().size());
@@ -189,101 +194,101 @@ public class TranslationTests {
     }
 
     @Test
-    public void tenDividedByTwo() throws IOException {
+    void tenDividedByTwo() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslator("TenDividedByTwo.cql");
-        assertEquals(translator.getErrors().size(), 0, "Errors: " + translator.getErrors());
+        assertEquals(0, translator.getErrors().size(), "Errors: " + translator.getErrors());
     }
 
     @Test
-    public void divideMultiple() throws IOException {
+    void divideMultiple() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslator("DivideMultiple.cql");
-        assertEquals(translator.getErrors().size(), 0, "Errors: " + translator.getErrors());
+        assertEquals(0, translator.getErrors().size(), "Errors: " + translator.getErrors());
     }
 
     @Test
-    public void divideVariables() throws IOException {
+    void divideVariables() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslator("DivideVariables.cql");
-        assertEquals(translator.getErrors().size(), 0, "Errors: " + translator.getErrors());
+        assertEquals(0, translator.getErrors().size(), "Errors: " + translator.getErrors());
     }
 
     @Test
-    public void arithmetic_Mixed() throws IOException {
+    void arithmetic_Mixed() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslator("Arithmetic_Mixed.cql");
-        assertEquals(translator.getErrors().size(), 0, "Errors: " + translator.getErrors());
+        assertEquals(0, translator.getErrors().size(), "Errors: " + translator.getErrors());
     }
 
     @Test
-    public void arithmetic_Parenthetical() throws IOException {
+    void arithmetic_Parenthetical() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslator("Arithmetic_Parenthetical.cql");
-        assertEquals(translator.getErrors().size(), 0, "Errors: " + translator.getErrors());
+        assertEquals(0, translator.getErrors().size(), "Errors: " + translator.getErrors());
     }
 
     @Test
-    public void roundUp() throws IOException {
+    void roundUp() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslator("RoundUp.cql");
-        assertEquals(translator.getErrors().size(), 0, "Errors: " + translator.getErrors());
+        assertEquals(0, translator.getErrors().size(), "Errors: " + translator.getErrors());
     }
 
     @Test
-    public void roundDown() throws IOException {
+    void roundDown() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslator("RoundDown.cql");
-        assertEquals(translator.getErrors().size(), 0, "Errors: " + translator.getErrors());
+        assertEquals(0, translator.getErrors().size(), "Errors: " + translator.getErrors());
     }
 
     @Test
-    public void log_BaseTen() throws IOException {
+    void log_BaseTen() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslator("Log_BaseTen.cql");
-        assertEquals(translator.getErrors().size(), 0, "Errors: " + translator.getErrors());
+        assertEquals(0, translator.getErrors().size(), "Errors: " + translator.getErrors());
     }
 
     @Test
-    public void median_odd() throws IOException {
+    void median_odd() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslator("Median_odd.cql");
-        assertEquals(translator.getErrors().size(), 0, "Errors: " + translator.getErrors());
+        assertEquals(0, translator.getErrors().size(), "Errors: " + translator.getErrors());
     }
 
     @Test
-    public void median_dup_vals_odd() throws IOException {
+    void median_dup_vals_odd() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslator("Median_dup_vals_odd.cql");
-        assertEquals(translator.getErrors().size(), 0, "Errors: " + translator.getErrors());
+        assertEquals(0, translator.getErrors().size(), "Errors: " + translator.getErrors());
     }
 
     @Test
-    public void geometricMean_Zero() throws IOException {
+    void geometricMean_Zero() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslator("GeometricMean_Zero.cql");
-        assertEquals(translator.getErrors().size(), 0, "Errors: " + translator.getErrors());
+        assertEquals(0, translator.getErrors().size(), "Errors: " + translator.getErrors());
     }
 
     @Test
-    @Ignore("Could not resolve call to operator Equal with signature (tuple{Foo:System.Any},tuple{Bar:System.Any}")
-    public void tupleDifferentKeys() throws IOException {
+    @Disabled("Could not resolve call to operator Equal with signature (tuple{Foo:System.Any},tuple{Bar:System.Any}")
+    void tupleDifferentKeys() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslator("TupleDifferentKeys.cql");
-        assertEquals(translator.getErrors().size(), 0, "Errors: " + translator.getErrors());
+        assertEquals(0, translator.getErrors().size(), "Errors: " + translator.getErrors());
     }
 
     @Test
-    @Ignore(
+    @Disabled(
             "Could not resolve call to operator Equal with signature (tuple{a:System.String,b:System.Any},tuple{a:System.String,c:System.Any})")
-    public void uncertTuplesWithDiffNullFields() throws IOException {
+    void uncertTuplesWithDiffNullFields() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslator("UncertTuplesWithDiffNullFields.cql");
-        assertEquals(translator.getErrors().size(), 0, "Errors: " + translator.getErrors());
+        assertEquals(0, translator.getErrors().size(), "Errors: " + translator.getErrors());
     }
 
     @Test
-    @Ignore("Could not resolve call to operator Collapse with signature (System.Any,System.Quantity)")
-    public void nullIvlCollapse_NullCollapse() throws IOException {
+    @Disabled("Could not resolve call to operator Collapse with signature (System.Any,System.Quantity)")
+    void nullIvlCollapse_NullCollapse() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslator("NullIvlCollapse_NullCollapse.cql");
-        assertEquals(translator.getErrors().size(), 0, "Errors: " + translator.getErrors());
+        assertEquals(0, translator.getErrors().size(), "Errors: " + translator.getErrors());
     }
 
     @Test
-    public void median_q_diff_units() throws IOException {
+    void median_q_diff_units() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslator("Median_q_diff_units.cql");
-        assertEquals(translator.getErrors().size(), 0, "Errors: " + translator.getErrors());
+        assertEquals(0, translator.getErrors().size(), "Errors: " + translator.getErrors());
     }
 
     @Test
-    public void testForwardDeclarationSameTypeDifferentNamespaceNormalTypes() throws IOException {
+    void forwardDeclarationSameTypeDifferentNamespaceNormalTypes() throws IOException {
         final CqlTranslator translator =
                 TestUtils.createTranslator("TestForwardDeclarationSameTypeDifferentNamespaceNormalTypes.cql");
         assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), Matchers.equalTo(0));
@@ -294,7 +299,7 @@ public class TranslationTests {
     }
 
     @Test
-    public void testForwardDeclarationSameTypeDifferentNamespaceGenericTypes() throws IOException {
+    void forwardDeclarationSameTypeDifferentNamespaceGenericTypes() throws IOException {
         final CqlTranslator translator =
                 TestUtils.createTranslator("TestForwardDeclarationSameTypeDifferentNamespaceGenericTypes.cql");
         assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), Matchers.equalTo(0));
@@ -307,7 +312,7 @@ public class TranslationTests {
     // This test creates a bunch of translators on the common pool to suss out any race conditions.
     // It's not fool-proof, but is reasonably consistent on my local machine.
     @Test
-    public void multiThreadedTranslation() throws IOException {
+    void multiThreadedTranslation() throws IOException {
         List<CompletableFuture<Void>> futures = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             futures.add(CompletableFuture.runAsync(() -> {
@@ -325,7 +330,7 @@ public class TranslationTests {
     }
 
     @Test
-    public void testHidingVariousUseCases() throws IOException {
+    void hidingVariousUseCases() throws IOException {
         final CqlTranslator translator = TestUtils.runSemanticTest("HidingTests/TestHidingVariousUseCases.cql", 0);
         final List<CqlCompilerException> warnings = translator.getWarnings();
         final List<String> warningMessages =

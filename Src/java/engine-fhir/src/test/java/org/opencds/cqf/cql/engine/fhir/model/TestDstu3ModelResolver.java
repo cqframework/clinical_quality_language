@@ -1,9 +1,9 @@
 package org.opencds.cqf.cql.engine.fhir.model;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.FhirVersionEnum;
@@ -39,11 +39,11 @@ import org.hl7.fhir.dstu3.model.Enumerations.SpecialValues;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Quantity;
 import org.hl7.fhir.dstu3.model.SimpleQuantity;
+import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.fhir.exception.UnknownType;
 import org.opencds.cqf.cql.engine.model.ModelResolver;
-import org.testng.annotations.Test;
 
-public class TestDstu3ModelResolver {
+class TestDstu3ModelResolver {
 
     // Couldn't find a way to automatically get the full list of enums.
     @SuppressWarnings("serial")
@@ -69,15 +69,15 @@ public class TestDstu3ModelResolver {
         }
     };
 
-    @Test(expectedExceptions = UnknownType.class)
-    public void resolverThrowsExceptionForUnknownType() {
+    @Test
+    void resolverThrowsExceptionForUnknownType() {
         ModelResolver resolver = new Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3));
-        resolver.resolveType("ImpossibleTypeThatDoesntExistAndShouldBlowUp");
+        assertThrows(UnknownType.class, () -> resolver.resolveType("ImpossibleTypeThatDoesn'tExistAndShouldBlowUp"));
     }
 
-    @Test
     // This tests all the top-level types HAPI knows about.
-    public void resolveTypeTests() {
+    @Test
+    void resolveTypeTests() {
         ModelResolver resolver = new Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3));
 
         for (DataType type : DataType.values()) {
@@ -110,9 +110,9 @@ public class TestDstu3ModelResolver {
         }
     }
 
-    @Test
     // This tests all the types that are present in the ModelInfo.
-    public void resolveModelInfoTests() {
+    @Test
+    void resolveModelInfoTests() {
         ModelResolver resolver = new Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3));
         ModelManager mm = new ModelManager();
         Model m = mm.resolveModel(new ModelIdentifier().withId("FHIR").withVersion("3.0.0"));
@@ -143,7 +143,7 @@ public class TestDstu3ModelResolver {
     // Ideally, these would all disappear with either registering custom types
     // on the FhirContext or generalized logic, or fixed-up ModelInfos
     @Test
-    public void modelInfoSpecialCaseTests() {
+    void modelInfoSpecialCaseTests() {
         ModelResolver resolver = new Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3));
 
         // This tests resolution of inner classes. They aren't registered directly.
@@ -165,7 +165,7 @@ public class TestDstu3ModelResolver {
     }
 
     @Test
-    public void createInstanceTests() {
+    void createInstanceTests() {
         ModelResolver resolver = new Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3));
 
         for (DataType type : DataType.values()) {
@@ -204,11 +204,9 @@ public class TestDstu3ModelResolver {
             Enumeration<?> instance = (Enumeration<?>) resolver.createInstance(enumType.getSimpleName());
             assertNotNull(instance);
 
-            assertTrue(instance.getEnumFactory()
-                    .getClass()
-                    .getSimpleName()
-                    .replace("EnumFactory", "")
-                    .equals(enumType.getSimpleName()));
+            assertEquals(
+                    instance.getEnumFactory().getClass().getSimpleName().replace("EnumFactory", ""),
+                    enumType.getSimpleName());
         }
 
         // These are some inner classes that don't appear in the enums above
@@ -222,12 +220,12 @@ public class TestDstu3ModelResolver {
     }
 
     @Test
-    public void contextPathTests() {
+    void contextPathTests() {
         ModelResolver resolver = new Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3));
 
         String path = (String) resolver.getContextPath("Patient", "Patient");
         assertNotNull(path);
-        assertEquals(path, "id");
+        assertEquals("id", path);
 
         path = (String) resolver.getContextPath(null, "Encounter");
         assertNull(path);
@@ -239,28 +237,28 @@ public class TestDstu3ModelResolver {
 
         path = (String) resolver.getContextPath("Patient", "Condition");
         assertNotNull(path);
-        assertEquals(path, "subject");
+        assertEquals("subject", path);
 
         path = (String) resolver.getContextPath("Patient", "Appointment");
         assertNotNull(path);
-        assertEquals(path, "participant.actor");
+        assertEquals("participant.actor", path);
 
         path = (String) resolver.getContextPath("Patient", "Account");
         assertNotNull(path);
-        assertEquals(path, "subject");
+        assertEquals("subject", path);
 
         path = (String) resolver.getContextPath("Patient", "Encounter");
         assertNotNull(path);
-        assertEquals(path, "subject");
+        assertEquals("subject", path);
 
         path = (String) resolver.getContextPath("Patient", "MedicationStatement");
-        assertEquals(path, "subject");
+        assertEquals("subject", path);
 
         path = (String) resolver.getContextPath("Patient", "Task");
-        assertEquals(path, "for");
+        assertEquals("for", path);
 
         path = (String) resolver.getContextPath("Patient", "Coverage");
-        assertEquals(path, "beneficiary");
+        assertEquals("beneficiary", path);
 
         // Issue 527 - https://github.com/DBCG/cql_engine/issues/527
         path = (String) resolver.getContextPath("Unfiltered", "MedicationStatement");
@@ -271,7 +269,7 @@ public class TestDstu3ModelResolver {
     }
 
     @Test
-    public void resolveMissingPropertyReturnsNull() {
+    void resolveMissingPropertyReturnsNull() {
         ModelResolver resolver = new Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3));
 
         Patient p = new Patient();
@@ -281,7 +279,7 @@ public class TestDstu3ModelResolver {
     }
 
     @Test
-    public void resolveNullEnumerationReturnsNull() {
+    void resolveNullEnumerationReturnsNull() {
         FhirModelResolver<Base, ?, ?, SimpleQuantity, ?, ?, ?, ?> resolver =
                 new Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3));
 
@@ -295,7 +293,7 @@ public class TestDstu3ModelResolver {
     }
 
     @Test
-    public void resolveNullPrimitiveReturnsNull() {
+    void resolveNullPrimitiveReturnsNull() {
         FhirModelResolver<Base, BaseDateTimeType, ?, ?, ?, ?, ?, ?> resolver =
                 new Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3));
 

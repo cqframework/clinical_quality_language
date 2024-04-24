@@ -22,19 +22,18 @@ import org.hl7.fhir.r4.model.Enumerations;
 import org.hl7.fhir.r4.model.OperationOutcome;
 import org.hl7.fhir.r4.model.OperationOutcome.IssueSeverity;
 import org.hl7.fhir.r4.model.Resource;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 public abstract class R4FhirTest {
     private static FhirContext FHIR_CONTEXT = FhirContext.forCached(FhirVersionEnum.R4);
     private static IParser FHIR_PARSER = FHIR_CONTEXT.newJsonParser().setPrettyPrint(true);
     private static int HTTP_PORT = 0;
 
-    // emulate wiremock's testng.WireMockRule with testng features
     WireMockServer wireMockServer;
     WireMock wireMock;
 
-    @BeforeMethod()
+    @BeforeEach
     public void start() {
         wireMockServer = new WireMockServer(getHttpPort());
         wireMockServer.start();
@@ -44,12 +43,12 @@ public abstract class R4FhirTest {
         mockFhirRead("/metadata", getCapabilityStatement());
     }
 
-    @AfterMethod
+    @AfterEach
     public void stop() {
         wireMockServer.stop();
     }
 
-    public FhirContext getFhirContext() {
+    public static FhirContext getFhirContext() {
         return FHIR_CONTEXT;
     }
 
@@ -57,7 +56,7 @@ public abstract class R4FhirTest {
         return FHIR_PARSER;
     }
 
-    public int getHttpPort() {
+    public static int getHttpPort() {
         if (HTTP_PORT == 0) {
             try (ServerSocket socket = new ServerSocket(0)) {
                 HTTP_PORT = socket.getLocalPort();
@@ -68,7 +67,7 @@ public abstract class R4FhirTest {
         return HTTP_PORT;
     }
 
-    public IGenericClient newClient() {
+    public static IGenericClient newClient() {
         IGenericClient client =
                 getFhirContext().newRestfulGenericClient(String.format("http://localhost:%d/", getHttpPort()));
 

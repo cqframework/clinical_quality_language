@@ -7,12 +7,12 @@ import jakarta.xml.bind.JAXB;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.hl7.elm_modelinfo.r1.*;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class ModelInfoComparerTest {
 
     @Test
-    public void compareModelInfo() {
+    void compareModelInfo() {
         ModelInfo a =
                 JAXB.unmarshal(ModelInfoComparerTest.class.getResourceAsStream("a-modelinfo.xml"), ModelInfo.class);
         ModelInfo b =
@@ -47,7 +47,7 @@ public class ModelInfoComparerTest {
     }
 
     @Test
-    public void compareNewModelInfo() {
+    void compareNewModelInfo() {
         ModelInfo a = JAXB.unmarshal(
                 ModelInfoComparerTest.class.getResourceAsStream("fhir-modelinfo-4.0.1.xml"), ModelInfo.class);
         ModelInfo b = JAXB.unmarshal(
@@ -68,7 +68,7 @@ public class ModelInfoComparerTest {
     }
 
     @Test
-    public void compareMetadataModelInfo() {
+    void compareMetadataModelInfo() {
         ModelInfo a = JAXB.unmarshal(
                 ModelInfoComparerTest.class.getResourceAsStream("fhir-modelinfo-4.0.1-1.5.1.xml"), ModelInfo.class);
         ModelInfo b = JAXB.unmarshal(

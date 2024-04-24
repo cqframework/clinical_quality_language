@@ -12,15 +12,15 @@ import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.ModelManager;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public class TimeOperatorsTest {
+class TimeOperatorsTest {
 
-    private Map<String, ExpressionDef> defs;
+    private static Map<String, ExpressionDef> defs;
 
-    @BeforeTest
-    public void setup() throws IOException {
+    @BeforeAll
+    static void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
         CqlTranslator translator = CqlTranslator.fromStream(
                 TimeOperatorsTest.class.getResourceAsStream("../OperatorTests/TimeOperators.cql"),
@@ -34,7 +34,7 @@ public class TimeOperatorsTest {
     }
 
     @Test
-    public void testTime() {
+    void time() {
         ExpressionDef def = defs.get("TimeHour");
         assertThat(def, hasTypeAndResult(Time.class, "System.Time"));
         Time t = (Time) def.getExpression();
@@ -63,7 +63,7 @@ public class TimeOperatorsTest {
     }
 
     @Test
-    public void testTimeOfDay() {
+    void timeOfDay() {
         ExpressionDef def = defs.get("TimeOfDayExpression");
         assertThat(def, hasTypeAndResult(TimeOfDay.class, "System.Time"));
     }

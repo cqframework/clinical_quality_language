@@ -11,23 +11,23 @@ import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.ModelManager;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * Created by Bryn on 12/30/2016.
  */
-public class CqlIntervalOperatorsTest {
+class CqlIntervalOperatorsTest {
 
     // NOTE: The CQL for this test is taken from an engine testing suite that produced a particular issue with generic
     // instantiations.
     // This library will not translate successfully without the proper fix in place.
     // So this test only needs to validate that the library translates successfully.
 
-    private Map<String, ExpressionDef> defs;
+    private static Map<String, ExpressionDef> defs;
 
-    @BeforeTest
-    public void setup() throws IOException {
+    @BeforeAll
+    static void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
         CqlTranslator translator = CqlTranslator.fromStream(
                 CqlIntervalOperatorsTest.class.getResourceAsStream("../OperatorTests/CqlIntervalOperators.cql"),
@@ -50,19 +50,19 @@ public class CqlIntervalOperatorsTest {
     //    }
 
     @Test
-    public void testOverlapsDay() {
+    void overlapsDay() {
         ExpressionDef def = defs.get("TestOverlapsDay");
         assertThat(def, hasTypeAndResult(Overlaps.class, "System.Boolean"));
     }
 
     @Test
-    public void testOverlapsDayBefore() {
+    void overlapsDayBefore() {
         ExpressionDef def = defs.get("TestOverlapsDayBefore");
         assertThat(def, hasTypeAndResult(OverlapsBefore.class, "System.Boolean"));
     }
 
     @Test
-    public void testOverlapsDayAfter() {
+    void overlapsDayAfter() {
         ExpressionDef def = defs.get("TestOverlapsDayAfter");
         assertThat(def, hasTypeAndResult(OverlapsAfter.class, "System.Boolean"));
     }

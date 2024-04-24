@@ -27772,7 +27772,7 @@
       <element name="action" description="A setup operation or assert that was executed" definition="Action would contain either an operation or an assertion." comment="An action should contain either an operation or an assertion but not both.  It can contain any number of variables.">
          <elementTypeSpecifier elementType="FHIR.TestReport.Setup.Action" xsi:type="ListTypeSpecifier"/>
          <constraint name="inv-1" severity="ERROR" message="Setup action SHALL contain either an operation or assert but not both.">
-            <expression language="text/fhirpath" expression="operation.exists() xor assert.exists()"/>
+            <expression language="text/fhirpath" expression="operation.exists() xor Assertions.exists()"/>
          </constraint>
       </element>
    </typeInfo>
@@ -27808,7 +27808,7 @@
       <element name="action" description="A test operation or assert that was performed" definition="Action would contain either an operation or an assertion." comment="An action should contain either an operation or an assertion but not both.  It can contain any number of variables.">
          <elementTypeSpecifier elementType="FHIR.TestReport.Test.Action" xsi:type="ListTypeSpecifier"/>
          <constraint name="inv-2" severity="ERROR" message="Test action SHALL contain either an operation or assert but not both.">
-            <expression language="text/fhirpath" expression="operation.exists() xor assert.exists()"/>
+            <expression language="text/fhirpath" expression="operation.exists() xor Assertions.exists()"/>
          </constraint>
       </element>
    </typeInfo>
@@ -27940,7 +27940,7 @@
       <element name="action" description="A setup operation or assert to perform" definition="Action would contain either an operation or an assertion." comment="An action should contain either an operation or an assertion but not both.  It can contain any number of variables.">
          <elementTypeSpecifier elementType="FHIR.TestScript.Setup.Action" xsi:type="ListTypeSpecifier"/>
          <constraint name="tst-1" severity="ERROR" message="Setup action SHALL contain either an operation or assert but not both.">
-            <expression language="text/fhirpath" expression="operation.exists() xor assert.exists()"/>
+            <expression language="text/fhirpath" expression="operation.exists() xor Assertions.exists()"/>
          </constraint>
       </element>
    </typeInfo>
@@ -27978,7 +27978,7 @@
       <element name="headerField" elementType="FHIR.string" description="HTTP header field name" definition="The HTTP header field name e.g. 'Location'." comment="If &quot;headerField&quot; is specified then &quot;value&quot; must be specified.  If &quot;sourceId&quot; is not specified, then &quot;headerField&quot; will be evaluated against the last operation's response headers.  Test engines are to keep track of the last operation's response body and response headers."/>
       <element name="minimumId" elementType="FHIR.string" description="Fixture Id of minimum content resource" definition="The ID of a fixture.  Asserts that the response contains at a minimum the fixture specified by minimumId." comment="Asserts that the response contains all the element/content in another fixture pointed to by minimumId.  This can be a statically defined fixture or one that is dynamically set via responseId."/>
       <element name="navigationLinks" elementType="FHIR.boolean" description="Perform validation on navigation links?" definition="Whether or not the test execution performs validation on the bundle navigation links." comment="Asserts that the Bundle contains first, last, and next links."/>
-      <element name="operator" elementType="FHIR.AssertionOperatorType" description="equals | notEquals | in | notIn | greaterThan | lessThan | empty | notEmpty | contains | notContains | eval" definition="The operator type defines the conditional behavior of the assert. If not defined, the default is equals." comment="Operators are useful especially for negative testing.  If operator is not specified, then the &quot;equals&quot; operator is assumed; e.g. ```&lt;code>   &lt;assert>  &lt;operator value=&quot;in&quot; />  &lt;responseCode value=&quot;200,201,204&quot; />    &lt;/assert>    &lt;assert>  &lt;operator value=&quot;notEquals&quot; />  &lt;response value=&quot;okay&quot;/>   &lt;/assert>    &lt;assert>  &lt;operator value=&quot;greaterThan&quot; />    &lt;responseHeader>     &lt;field value=&quot;Content-Length&quot; />     &lt;value value=&quot;0&quot; />    &lt;/responseHeader/>   &lt;/assert> &lt;/code> ```.">
+      <element name="operator" elementType="FHIR.AssertionOperatorType" description="equals | notEquals | in | notIn | greaterThan | lessThan | empty | notEmpty | contains | notContains | eval" definition="The operator type defines the conditional behavior of the Assertions. If not defined, the default is equals." comment="Operators are useful especially for negative testing.  If operator is not specified, then the &quot;equals&quot; operator is assumed; e.g. ```&lt;code>   &lt;assert>  &lt;operator value=&quot;in&quot; />  &lt;responseCode value=&quot;200,201,204&quot; />    &lt;/assert>    &lt;assert>  &lt;operator value=&quot;notEquals&quot; />  &lt;response value=&quot;okay&quot;/>   &lt;/assert>    &lt;assert>  &lt;operator value=&quot;greaterThan&quot; />    &lt;responseHeader>     &lt;field value=&quot;Content-Length&quot; />     &lt;value value=&quot;0&quot; />    &lt;/responseHeader/>   &lt;/assert> &lt;/code> ```.">
          <binding name="AssertionOperatorType" description="The type of operator to use for assertion." strength="Required"/>
       </element>
       <element name="path" elementType="FHIR.string" description="XPath or JSONPath expression" definition="The XPath or JSONPath expression to be evaluated against the fixture representing the response received from server." comment="If both &quot;path&quot; and a &quot;fixtureId&quot; are specified, then the path will be evaluated against the request or response body mapped to the fixtureId.  If &quot;path&quot; is specified and a &quot;fixtureId&quot; is not, then the path will be evaluated against the response body of the last operation.  Test engines are to store the request and response body and headers of the last operation at all times for subsequent assertions."/>
@@ -27996,7 +27996,7 @@
       <element name="sourceId" elementType="FHIR.id" description="Fixture Id of source expression or headerField" definition="Fixture to evaluate the XPath/JSONPath expression or the headerField  against." comment="This can be a statically defined fixture (at the top of the testscript) or a dynamically set fixture created by responseId of the action.operation element."/>
       <element name="validateProfileId" elementType="FHIR.id" description="Profile Id of validation profile reference" definition="The ID of the Profile to validate against." comment="The ID of a Profile fixture. Asserts that the response is valid according to the Profile specified by validateProfileId."/>
       <element name="value" elementType="FHIR.string" description="The value to compare to" definition="The value to compare to." comment="The string-representation of a number, string, or boolean that is expected.  Test engines do have to look for placeholders (${}) and replace the variable placeholders with the variable values at runtime before comparing this value to the actual value."/>
-      <element name="warningOnly" elementType="FHIR.boolean" description="Will this assert produce a warning only on error?" definition="Whether or not the test execution will produce a warning only on error for this assert." comment="If this element is specified and it is true, then assertion failures can be logged by test engine but should not stop the test script execution from proceeding.  There are likely cases where the spec is not clear on what should happen. If the spec says something is optional (maybe a response header for example), but a server doesn’t do it, we could choose to issue a warning."/>
+      <element name="warningOnly" elementType="FHIR.boolean" description="Will this assert produce a warning only on error?" definition="Whether or not the test execution will produce a warning only on error for this Assertions." comment="If this element is specified and it is true, then assertion failures can be logged by test engine but should not stop the test script execution from proceeding.  There are likely cases where the spec is not clear on what should happen. If the spec says something is optional (maybe a response header for example), but a server doesn’t do it, we could choose to issue a warning."/>
    </typeInfo>
    <typeInfo xsi:type="ClassInfo" baseType="FHIR.BackboneElement" namespace="FHIR" name="TestScript.Setup.Action.Operation" retrievable="false">
       <element name="type" elementType="FHIR.Coding" description="The operation code type that will be executed" definition="Server interaction or operation type." comment="See http://build.fhir.org/http.html for list of server interactions.">
@@ -28051,7 +28051,7 @@
       <element name="action" description="A test operation or assert to perform" definition="Action would contain either an operation or an assertion." comment="An action should contain either an operation or an assertion but not both.  It can contain any number of variables.">
          <elementTypeSpecifier elementType="FHIR.TestScript.Test.Action" xsi:type="ListTypeSpecifier"/>
          <constraint name="tst-2" severity="ERROR" message="Test action SHALL contain either an operation or assert but not both.">
-            <expression language="text/fhirpath" expression="operation.exists() xor assert.exists()"/>
+            <expression language="text/fhirpath" expression="operation.exists() xor Assertions.exists()"/>
          </constraint>
       </element>
    </typeInfo>

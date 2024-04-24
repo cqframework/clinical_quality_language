@@ -1,6 +1,6 @@
 package org.opencds.cqf.cql.engine.runtime;
 
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -8,13 +8,14 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.util.List;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.opencds.cqf.cql.engine.exception.CqlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
 
-public class DateTimeTest {
+class DateTimeTest {
     private static final Logger logger = LoggerFactory.getLogger(DateTimeTest.class);
 
     private static final LocalDateTime DST_2023_10_26_22_12_0 = LocalDateTime.of(2023, Month.OCTOBER, 26, 22, 12, 0);
@@ -75,7 +76,6 @@ public class DateTimeTest {
                 localDateTime.getSecond());
     }
 
-    @DataProvider
     private static Object[][] dateStrings() {
         return new Object[][] {
             {DST_2023_10_26_22_12_0_STRING, ZoneOffset.UTC, Precision.HOUR},
@@ -97,8 +97,9 @@ public class DateTimeTest {
         };
     }
 
-    @Test(dataProvider = "dateStrings")
-    void testDateStrings(String dateString, ZoneOffset zoneOffset, Precision precision) {
+    @ParameterizedTest
+    @MethodSource("dateStrings")
+    void dateStrings(String dateString, ZoneOffset zoneOffset, Precision precision) {
         final DateTime dateTime = new DateTime(dateString, zoneOffset);
 
         final OffsetDateTime normalizedDateTime = dateTime.getNormalized(precision);
@@ -106,12 +107,12 @@ public class DateTimeTest {
         assertEquals(normalizedDateTime, dateTime.getDateTime());
     }
 
-    @Test(expectedExceptions = CqlException.class)
-    void testDateStringsNullOffsets() {
-        new DateTime(DST_2023_10_26_22_12_0_STRING, null);
+    @Test
+    void dateStringsNullOffsets() {
+        assertThrows(CqlException.class, () -> new DateTime(DST_2023_10_26_22_12_0_STRING, null));
+        ;
     }
 
-    @DataProvider
     private static Object[][] dateStringsOtherZoneId() {
         return new Object[][] {
             {DST_2023_10_26_22_12_0, DST_OFFSET_NORTH_AMERICA_EASTERN, DST_OFFSET_NORTH_AMERICA_MOUNTAIN, Precision.HOUR
@@ -209,8 +210,9 @@ public class DateTimeTest {
         };
     }
 
-    @Test(dataProvider = "dateStringsOtherZoneId")
-    void testDateStringsOtherZoneId(
+    @ParameterizedTest
+    @MethodSource("dateStringsOtherZoneId")
+    void dateStringsOtherZoneId(
             LocalDateTime localDateTime,
             ZoneOffset zoneOffsetInit,
             ZoneOffset zonedOffsetGetNormalized,
@@ -226,7 +228,6 @@ public class DateTimeTest {
         assertEquals(normalizedDateTime, expectedOffsetDateTime);
     }
 
-    @DataProvider
     private static Object[][] offsetPrecisions() {
         return new Object[][] {
             {DST_2023_10_26_22_12_0, ZoneOffset.UTC, Precision.HOUR},
@@ -248,8 +249,9 @@ public class DateTimeTest {
         };
     }
 
-    @Test(dataProvider = "offsetPrecisions")
-    void testOffsetPrecisions(LocalDateTime localDateTime, ZoneOffset zoneOffset, Precision precision) {
+    @ParameterizedTest
+    @MethodSource("offsetPrecisions")
+    void offsetPrecisions(LocalDateTime localDateTime, ZoneOffset zoneOffset, Precision precision) {
         final OffsetDateTime offsetDateTime = OffsetDateTime.of(localDateTime, zoneOffset);
         final DateTime dateTimeNoPrecision = new DateTime(offsetDateTime);
         final DateTime dateTimePrecision = new DateTime(offsetDateTime, precision);
@@ -261,7 +263,6 @@ public class DateTimeTest {
         assertEquals(normalizedDateTimePrecision, dateTimePrecision.getDateTime());
     }
 
-    @DataProvider
     private static Object[][] bigDecimals() {
         return new Object[][] {
             {BigDecimal.ZERO, Precision.HOUR, DST_2023_10_26_22_12_0_INTS},
@@ -283,8 +284,9 @@ public class DateTimeTest {
         };
     }
 
-    @Test(dataProvider = "bigDecimals")
-    void testBigDecimal(BigDecimal offset, Precision precision, List<Integer> dateElements) {
+    @ParameterizedTest
+    @MethodSource("bigDecimals")
+    void bigDecimal(BigDecimal offset, Precision precision, List<Integer> dateElements) {
         final int[] dateElementsArray =
                 dateElements.stream().mapToInt(anInt -> anInt).toArray();
         final DateTime dateTime = new DateTime(offset, dateElementsArray);
@@ -303,11 +305,11 @@ public class DateTimeTest {
         assertEquals(normalizedDateTime, dateTime.getDateTime());
     }
 
-    @Test(expectedExceptions = CqlException.class)
-    void testNullBigDecimalOffset() {
-        new DateTime(
-                null,
-                DST_2023_10_26_22_12_0_INTS.stream().mapToInt(anInt -> anInt).toArray());
+    @Test
+    void nullBigDecimalOffset() {
+        var digits =
+                DST_2023_10_26_22_12_0_INTS.stream().mapToInt(anInt -> anInt).toArray();
+        assertThrows(CqlException.class, () -> new DateTime(null, digits));
     }
 
     private static final ZoneId UTC = ZoneId.of("UTC");
@@ -317,7 +319,6 @@ public class DateTimeTest {
     private static final LocalDateTime DST_2023_11_01 = LocalDateTime.of(2023, Month.NOVEMBER, 1, 0, 0, 0);
     private static final LocalDateTime NON_DST_2023_11_13 = LocalDateTime.of(2023, Month.NOVEMBER, 13, 0, 0, 0);
 
-    @DataProvider
     private static Object[][] timeZones() {
         return new Object[][] {
             {UTC, DST_2023_11_01}, {MONTREAL, DST_2023_11_01}, {REGINA, DST_2023_11_01},
@@ -325,8 +326,9 @@ public class DateTimeTest {
         };
     }
 
-    @Test(dataProvider = "timeZones")
-    void testBigDecimalWithCustomTimezoneAndNow(ZoneId zoneId, LocalDateTime now) {
+    @ParameterizedTest
+    @MethodSource("timeZones")
+    void bigDecimalWithCustomTimezoneAndNow(ZoneId zoneId, LocalDateTime now) {
         final ZoneOffset currentOffsetForMyZone = zoneId.getRules().getOffset(now);
         final BigDecimal offset = TemporalHelper.zoneToOffset(currentOffsetForMyZone);
 
@@ -340,12 +342,12 @@ public class DateTimeTest {
     }
 
     @Test
-    void testDateTimeEquals() {
+    void dateTimeEquals() {
         var dateTime = new DateTime(BigDecimal.ONE, 2020);
 
-        assertTrue(dateTime.equals(dateTime));
-        assertFalse(dateTime.equals(null));
-        assertFalse(dateTime.equals(1));
+        assertEquals(dateTime, dateTime);
+        assertNotEquals(null, dateTime);
+        assertNotEquals(1, dateTime);
 
         var dateTime2 = new DateTime(BigDecimal.ONE, 2020);
 

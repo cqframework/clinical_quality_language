@@ -10,16 +10,16 @@ import java.util.Map;
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.TestUtils;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-public class BaseTest {
+class BaseTest {
     @Test
-    public void testEntities() throws IOException {
+    void entities() throws IOException {
         TestUtils.runSemanticTest("qdm/v56/TestEntities.cql", 0);
     }
 
     @Test
-    public void testChoiceTypes() throws IOException {
+    void choiceTypes() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("qdm/v56/TestChoiceTypes.cql", 0);
         Library library = translator.toELM();
         Map<String, ExpressionDef> defs = new HashMap<>();

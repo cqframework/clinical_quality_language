@@ -2,7 +2,7 @@ package org.cqframework.cql.cql2elm;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,30 +17,31 @@ import java.util.stream.Collectors;
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
 import org.hl7.cql_annotations.r1.CqlToElmError;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
-public class LibraryTests {
+class LibraryTests {
 
-    ModelManager modelManager;
-    LibraryManager libraryManager;
+    private static ModelManager modelManager;
+    private static LibraryManager libraryManager;
 
-    @BeforeClass
-    public void setup() {
+    @BeforeAll
+    static void setup() {
         modelManager = new ModelManager();
         libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
     }
 
-    @AfterClass
-    public void tearDown() {
+    @AfterAll
+    static void tearDown() {
         libraryManager.getLibrarySourceLoader().clearProviders();
     }
 
     @Test
-    public void testLibraryReferences() {
+    void libraryReferences() {
         CqlTranslator translator = null;
         try {
             translator = CqlTranslator.fromStream(
@@ -65,7 +66,7 @@ public class LibraryTests {
     // }
 
     @Test
-    public void testIncludedLibraryWithSignatures() {
+    void includedLibraryWithSignatures() {
         var compilerOptions = new CqlCompilerOptions(CqlCompilerException.ErrorSeverity.Info, SignatureLevel.All);
         libraryManager = new LibraryManager(modelManager, compilerOptions);
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
@@ -98,7 +99,7 @@ public class LibraryTests {
     }
 
     @Test
-    public void testAlphanumericVersionIssue641() {
+    void alphanumericVersionIssue641() {
         // the issue identified with using DefaultLibrarySourceLoader only; thus
         // creating a fresh set below
         ModelManager modelManager = new ModelManager();
@@ -142,7 +143,7 @@ public class LibraryTests {
     }
 
     @Test
-    public void testInvalidLibraryReferences() {
+    void invalidLibraryReferences() {
         CqlTranslator translator = null;
         try {
             translator = CqlTranslator.fromStream(
@@ -155,7 +156,7 @@ public class LibraryTests {
     }
 
     @Test
-    public void testPrivateAccessModifierReferencing() throws IOException {
+    void privateAccessModifierReferencing() throws IOException {
         CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/AccessModifierReferencing.cql");
         assertThat(translator.getErrors().size(), is(not(0)));
 
@@ -187,14 +188,14 @@ public class LibraryTests {
     }
 
     @Test
-    public void testPrivateAccessModifierNonReferencing() throws IOException {
+    void privateAccessModifierNonReferencing() throws IOException {
         CqlTranslator translator =
                 TestUtils.createTranslatorFromStream("LibraryTests/AccessModifierNonReferencing.cql");
         assertThat(translator.getErrors().size(), is(0));
     }
 
     @Test
-    public void testInvalidLibraryReference() {
+    void invalidLibraryReference() {
         CqlTranslator translator = null;
         try {
             translator = CqlTranslator.fromStream(
@@ -206,7 +207,7 @@ public class LibraryTests {
     }
 
     @Test
-    public void testDuplicateExpressionLibrary() {
+    void duplicateExpressionLibrary() {
         CqlTranslator translator = null;
         try {
             translator = CqlTranslator.fromStream(
@@ -219,7 +220,7 @@ public class LibraryTests {
     }
 
     @Test
-    public void testMissingLibrary() {
+    void missingLibrary() {
         CqlTranslator translator = null;
         try {
             translator = CqlTranslator.fromStream(
@@ -233,7 +234,7 @@ public class LibraryTests {
     }
 
     @Test
-    public void testInvalidBaseLibrary() {
+    void invalidBaseLibrary() {
         CqlTranslator translator = null;
         try {
             translator = CqlTranslator.fromStream(
@@ -265,7 +266,7 @@ public class LibraryTests {
     // This test verifies that when a model load failure prevents proper creation of
     // the context expression, that doesn't lead to internal translator errors.
     @Test
-    public void testMixedVersionModelReferences() {
+    void mixedVersionModelReferences() {
         CqlTranslator translator = null;
         try {
             translator = CqlTranslator.fromStream(
@@ -281,7 +282,7 @@ public class LibraryTests {
     }
 
     @Test
-    public void testTranslatorOptionsFlowDownWithAnnotations() {
+    void translatorOptionsFlowDownWithAnnotations() {
         try {
             // Test Annotations are created for both libraries
             var options = new CqlCompilerOptions(
@@ -308,7 +309,7 @@ public class LibraryTests {
     }
 
     @Test
-    public void testTranslatorOptionsFlowDownWithoutAnnotations() {
+    void translatorOptionsFlowDownWithoutAnnotations() {
         try {
             // Test Annotations are created for both libraries
             CqlCompiler compiler = null;
@@ -322,10 +323,11 @@ public class LibraryTests {
             var includedLibraries = compiler.getLibraries();
             includedLibraries.values().stream().forEach(includedLibrary -> {
                 // Ensure that no annotations are present.
-                assertTrue(includedLibrary.getStatements().getDef().stream()
+                assertEquals(
+                        0,
+                        includedLibrary.getStatements().getDef().stream()
                                 .filter(x -> x.getAnnotation().size() > 0)
-                                .count()
-                        == 0);
+                                .count());
             });
         } catch (IOException e) {
             e.printStackTrace();
@@ -333,7 +335,7 @@ public class LibraryTests {
     }
 
     @Test
-    public void testSyntaxErrorWithNoLibrary() throws IOException {
+    void syntaxErrorWithNoLibrary() throws IOException {
         // Syntax errors in anonymous libraries are reported with the name of the source
         // file as the library identifier
         CqlTranslator translator = TestUtils.createTranslator("LibraryTests/SyntaxErrorWithNoLibrary.cql");
@@ -343,7 +345,7 @@ public class LibraryTests {
     }
 
     @Test
-    public void testSyntaxErrorWithNoLibraryFromStream() throws IOException {
+    void syntaxErrorWithNoLibraryFromStream() throws IOException {
         // Syntax errors in anonymous libraries are reported with the name of the source
         // file as the library identifier
         CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/SyntaxErrorWithNoLibrary.cql");
@@ -352,21 +354,21 @@ public class LibraryTests {
     }
 
     @Test
-    public void testSyntaxErrorWithLibrary() throws IOException {
+    void syntaxErrorWithLibrary() throws IOException {
         CqlTranslator translator = TestUtils.createTranslator("LibraryTests/SyntaxErrorWithLibrary.cql");
         assertThat(translator.getErrors().size(), greaterThanOrEqualTo(1));
         assertThat(translator.getErrors().get(0).getLocator().getLibrary().getId(), equalTo("SyntaxErrorWithLibrary"));
     }
 
     @Test
-    public void testSyntaxErrorWithLibraryFromStream() throws IOException {
+    void syntaxErrorWithLibraryFromStream() throws IOException {
         CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/SyntaxErrorWithLibrary.cql");
         assertThat(translator.getErrors().size(), greaterThanOrEqualTo(1));
         assertThat(translator.getErrors().get(0).getLocator().getLibrary().getId(), equalTo("SyntaxErrorWithLibrary"));
     }
 
     @Test
-    public void testSyntaxErrorReferencingLibrary() throws IOException {
+    void syntaxErrorReferencingLibrary() throws IOException {
         CqlTranslator translator = TestUtils.createTranslator("LibraryTests/SyntaxErrorReferencingLibrary.cql");
         assertThat(translator.getErrors().size(), greaterThanOrEqualTo(2));
         assertThat(
@@ -376,7 +378,7 @@ public class LibraryTests {
     }
 
     @Test
-    public void testSyntaxErrorReferencingLibraryFromStream() throws IOException {
+    void syntaxErrorReferencingLibraryFromStream() throws IOException {
         CqlTranslator translator =
                 TestUtils.createTranslatorFromStream("LibraryTests/SyntaxErrorReferencingLibrary.cql");
         assertThat(translator.getErrors().size(), greaterThanOrEqualTo(2));
@@ -396,7 +398,7 @@ public class LibraryTests {
     }
 
     @Test
-    public void testFluentFunctions1() throws IOException {
+    void fluentFunctions1() throws IOException {
         CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestFluent3.cql");
         assertThat(translator.getErrors().size(), equalTo(0));
         Library library = translator.toELM();
@@ -413,7 +415,7 @@ public class LibraryTests {
     }
 
     @Test
-    public void testFluentFunctions2() throws IOException {
+    void fluentFunctions2() throws IOException {
         CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestFluent4.cql");
         assertThat(translator.getErrors().size(), equalTo(0));
         Library library = translator.toELM();
@@ -430,7 +432,7 @@ public class LibraryTests {
     }
 
     @Test
-    public void testFluentFunctions5() throws IOException {
+    void fluentFunctions5() throws IOException {
         CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestFluent5.cql");
         assertThat(translator.getErrors().size(), equalTo(1)); // Expects invalid invocation
         assertThat(
@@ -440,7 +442,7 @@ public class LibraryTests {
     }
 
     @Test
-    public void testFluentFunctions6() throws IOException {
+    void fluentFunctions6() throws IOException {
         CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestFluent6.cql");
         assertThat(translator.getErrors().size(), equalTo(1)); // Expects invalid fluent invocation
         assertThat(
@@ -450,7 +452,7 @@ public class LibraryTests {
     }
 
     @Test
-    public void testFluentFunctions7() throws IOException {
+    void fluentFunctions7() throws IOException {
         CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestFluent7.cql");
         assertThat(translator.getErrors().size(), equalTo(0));
         Library library = translator.toELM();
@@ -467,7 +469,7 @@ public class LibraryTests {
     }
 
     @Test
-    public void testInvalidInvocation() throws IOException {
+    void invalidInvocation() throws IOException {
         CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestInvalidFunction.cql");
         assertThat(translator.getErrors().size(), equalTo(1));
         assertThat(
@@ -476,7 +478,7 @@ public class LibraryTests {
     }
 
     @Test
-    public void testExpression() throws IOException {
+    void expression() throws IOException {
         // This test checks to the that the engine can compile short snippets of CQL
         CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/expression.cql");
         assertThat(translator.getErrors().size(), equalTo(0));
@@ -487,7 +489,7 @@ public class LibraryTests {
     }
 
     @Test
-    public void testExpression2() throws IOException {
+    void expression2() throws IOException {
         // This test checks to the that the engine can compile short snippets of CQL
         CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/expression2.cql");
         assertThat(translator.getErrors().size(), equalTo(0));
@@ -498,7 +500,7 @@ public class LibraryTests {
     }
 
     @Test
-    public void TestForwardDeclaration() throws IOException {
+    void forwardDeclaration() throws IOException {
         final CqlTranslator translator =
                 TestUtils.createTranslatorFromStream("LibraryTests/TestForwardDeclaration.cql");
         assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(0));
@@ -509,7 +511,7 @@ public class LibraryTests {
     }
 
     @Test
-    public void TestForwardDeclarationsNormalType() throws IOException {
+    void forwardDeclarationsNormalType() throws IOException {
         final CqlTranslator translator =
                 TestUtils.createTranslatorFromStream("LibraryTests/TestForwardDeclarationNormalType.cql");
         assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(0));
@@ -520,7 +522,7 @@ public class LibraryTests {
     }
 
     @Test
-    public void TestForwardDeclarationsGenericType() throws IOException {
+    void forwardDeclarationsGenericType() throws IOException {
         final CqlTranslator translator =
                 TestUtils.createTranslatorFromStream("LibraryTests/TestForwardDeclarationGenericType.cql");
         assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(0));
@@ -531,7 +533,7 @@ public class LibraryTests {
     }
 
     @Test
-    public void TestForwardDeclarationsImplicitConversion() throws IOException {
+    void forwardDeclarationsImplicitConversion() throws IOException {
         final CqlTranslator translator =
                 TestUtils.createTranslatorFromStream("LibraryTests/TestForwardDeclarationImplicitConversion.cql");
         assertThat(translator.getErrors().size(), equalTo(0));
@@ -542,7 +544,7 @@ public class LibraryTests {
     }
 
     @Test
-    public void TestForwardDeclarationsScoringImplicitConversion() throws IOException {
+    void forwardDeclarationsScoringImplicitConversion() throws IOException {
         CqlTranslator translator = TestUtils.createTranslatorFromStream(
                 "LibraryTests/TestForwardDeclarationScoringImplicitConversion.cql");
         assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(0));
@@ -569,7 +571,7 @@ public class LibraryTests {
     }
 
     @Test
-    public void TestForwardDeclarationsScoringImplicitConversionNonRelevantFunctionFirst() throws IOException {
+    void forwardDeclarationsScoringImplicitConversionNonRelevantFunctionFirst() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslatorFromStream(
                 "LibraryTests/TestForwardDeclarationScoringImplicitConversionNonRelevantFunctionFirst.cql");
         assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(0));
@@ -596,7 +598,7 @@ public class LibraryTests {
     }
 
     @Test
-    public void TestForwardDeclarationsScoringImplicitConversionMultipleParams() throws IOException {
+    void forwardDeclarationsScoringImplicitConversionMultipleParams() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslatorFromStream(
                 "LibraryTests/TestForwardDeclarationScoringImplicitConversionMultipleParams.cql");
         assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(0));
@@ -626,14 +628,14 @@ public class LibraryTests {
     }
 
     @Test
-    public void TestForwardDeclarationsScoringImplicitConversionMultipleParamsCannotResolve() throws IOException {
+    void forwardDeclarationsScoringImplicitConversionMultipleParamsCannotResolve() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslatorFromStream(
                 "LibraryTests/TestForwardDeclarationScoringImplicitConversionMultipleParamsCannotResolve.cql");
         assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(1));
     }
 
     @Test
-    public void TestNonForwardDeclarationsScoringImplicitConversion() throws IOException {
+    void nonForwardDeclarationsScoringImplicitConversion() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslatorFromStream(
                 "LibraryTests/TestNonForwardDeclarationScoringImplicitConversion.cql");
         assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(0));
@@ -660,7 +662,7 @@ public class LibraryTests {
     }
 
     @Test
-    public void TestNonForwardDeclarationsScoringImplicitConversionMultipleParams() throws IOException {
+    void nonForwardDeclarationsScoringImplicitConversionMultipleParams() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslatorFromStream(
                 "LibraryTests/TestNonForwardDeclarationScoringImplicitConversionMultipleParams.cql");
         assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(0));
@@ -690,7 +692,7 @@ public class LibraryTests {
     }
 
     @Test
-    public void TestNonForwardDeclarationsScoringImplicitConversionMultipleParamsCannotResolve() throws IOException {
+    void nonForwardDeclarationsScoringImplicitConversionMultipleParamsCannotResolve() throws IOException {
         final CqlTranslator translator = TestUtils.createTranslatorFromStream(
                 "LibraryTests/TestNonForwardDeclarationScoringImplicitConversionMultipleParamsCannotResolve.cql");
         assertThat("Errors: " + translator.getErrors(), translator.getErrors().size(), equalTo(1));
@@ -701,7 +703,6 @@ public class LibraryTests {
     private static final String NON_FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE =
             "LibraryTests/TestNonForwardAmbiguousFunctionResolutionWithoutTypeInformation.cql";
 
-    @DataProvider
     private static Object[][] sigParams() {
         return new Object[][] {
             {FORWARD_AMBIGUOUS_FUNCTION_RESOLUTION_FILE, SignatureLevel.None},
@@ -715,8 +716,9 @@ public class LibraryTests {
         };
     }
 
-    @Test(dataProvider = "sigParams")
-    public void testForwardAmbiguousFailOnAmbiguousFunctionResolutionWithoutTypeInformation_SignatureLevelNone(
+    @ParameterizedTest
+    @MethodSource("sigParams")
+    void forwardAmbiguousFailOnAmbiguousFunctionResolutionWithoutTypeInformationSignatureLevelNone(
             String testFileName, SignatureLevel signatureLevel) throws IOException {
         final CqlTranslator translator = TestUtils.createTranslatorFromStream(testFileName, signatureLevel);
         final int expectedWarningCount =

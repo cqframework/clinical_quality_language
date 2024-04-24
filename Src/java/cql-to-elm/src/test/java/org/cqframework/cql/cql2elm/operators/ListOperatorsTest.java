@@ -15,15 +15,15 @@ import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.ModelManager;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public class ListOperatorsTest {
+class ListOperatorsTest {
 
-    private Map<String, ExpressionDef> defs;
+    private static Map<String, ExpressionDef> defs;
 
-    @BeforeTest
-    public void setup() throws IOException {
+    @BeforeAll
+    static void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
         CqlTranslator translator = CqlTranslator.fromStream(
                 ListOperatorsTest.class.getResourceAsStream("../OperatorTests/ListOperators.cql"),
@@ -37,7 +37,7 @@ public class ListOperatorsTest {
     }
 
     @Test
-    public void testIndexOf() {
+    void indexOf() {
         ExpressionDef def = defs.get("ListIndexOf");
         assertThat(def, hasTypeAndResult(IndexOf.class, "System.Integer"));
 
@@ -47,7 +47,7 @@ public class ListOperatorsTest {
     }
 
     @Test
-    public void testFirst() {
+    void first() {
         ExpressionDef def = defs.get("ListFirst");
         assertThat(def, hasTypeAndResult(First.class, "System.Integer"));
 
@@ -56,7 +56,7 @@ public class ListOperatorsTest {
     }
 
     @Test
-    public void testLast() {
+    void last() {
         ExpressionDef def = defs.get("ListLast");
         assertThat(def, hasTypeAndResult(Last.class, "System.Integer"));
 
@@ -65,7 +65,7 @@ public class ListOperatorsTest {
     }
 
     @Test
-    public void testSkip() {
+    void skip() {
         ExpressionDef def = defs.get("ListSkip");
         assertThat(def, hasTypeAndResult(Slice.class, "list<System.Integer>"));
 
@@ -76,7 +76,7 @@ public class ListOperatorsTest {
     }
 
     @Test
-    public void testTail() {
+    void tail() {
         ExpressionDef def = defs.get("ListTail");
         assertThat(def, hasTypeAndResult(Slice.class, "list<System.Integer>"));
 
@@ -87,7 +87,7 @@ public class ListOperatorsTest {
     }
 
     @Test
-    public void testTake() {
+    void take() {
         ExpressionDef def = defs.get("ListTake");
         assertThat(def, hasTypeAndResult(Slice.class, "list<System.Integer>"));
 
@@ -101,7 +101,7 @@ public class ListOperatorsTest {
     }
 
     @Test
-    public void testFlatten() {
+    void flatten() {
         ExpressionDef def = defs.get("ListFlatten");
         Flatten flatten = (Flatten) def.getExpression();
         assertThat(flatten.getOperand() instanceof List, is(true));
@@ -112,7 +112,7 @@ public class ListOperatorsTest {
     }
 
     @Test
-    public void testLength() {
+    void length() {
         ExpressionDef def = defs.get("ListLength");
         assertThat(def, hasTypeAndResult(Length.class, "System.Integer"));
 
@@ -121,7 +121,7 @@ public class ListOperatorsTest {
     }
 
     @Test
-    public void testChoiceType() {
+    void choiceType() {
         ExpressionDef def = defs.get("ListUnionWithChoice");
         assertThat(
                 def,

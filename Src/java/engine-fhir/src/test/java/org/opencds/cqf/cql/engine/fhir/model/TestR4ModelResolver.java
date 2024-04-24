@@ -2,10 +2,10 @@ package org.opencds.cqf.cql.engine.fhir.model;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.FhirVersionEnum;
@@ -42,11 +42,11 @@ import org.hl7.fhir.r4.model.Enumerations.RequestResourceType;
 import org.hl7.fhir.r4.model.Enumerations.ResourceType;
 import org.hl7.fhir.r4.model.Enumerations.SearchParamType;
 import org.hl7.fhir.r4.model.Enumerations.SpecialValues;
+import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.fhir.exception.UnknownType;
 import org.opencds.cqf.cql.engine.model.ModelResolver;
-import org.testng.annotations.Test;
 
-public class TestR4ModelResolver {
+class TestR4ModelResolver {
 
     // Couldn't find a way to automatically get the full list of enums.
     @SuppressWarnings("serial")
@@ -77,14 +77,16 @@ public class TestR4ModelResolver {
         }
     };
 
-    @Test(expectedExceptions = UnknownType.class)
-    public void resolverThrowsExceptionForUnknownType() {
+    @Test
+    void resolverThrowsExceptionForUnknownType() {
         ModelResolver resolver = new R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4));
-        resolver.resolveType("ImpossibleTypeThatDoesntExistAndShouldBlowUp");
+        assertThrows(UnknownType.class, () -> {
+            resolver.resolveType("ImpossibleTypeThatDoesn'tExistAndShouldBlowUp");
+        });
     }
 
     @Test
-    public void resolveTypeTests() {
+    void resolveTypeTests() {
         ModelResolver resolver = new R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4));
 
         for (DataType type : DataType.values()) {
@@ -119,7 +121,7 @@ public class TestR4ModelResolver {
     }
 
     @Test
-    public void modelInfoSpecialCaseTests() {
+    void modelInfoSpecialCaseTests() {
         ModelResolver resolver = new R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4));
 
         // This tests resolution of inner classes. They aren't registered directly.
@@ -157,7 +159,7 @@ public class TestR4ModelResolver {
     }
 
     @Test
-    public void modelInfo400Tests() {
+    void modelInfo400Tests() {
         ModelResolver resolver = new R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4));
         ModelManager mm = new ModelManager();
         Model m = mm.resolveModel(new ModelIdentifier().withId("FHIR").withVersion("4.0.1"));
@@ -193,7 +195,7 @@ public class TestR4ModelResolver {
     }
 
     @Test
-    public void modelInfo401Tests() throws Exception {
+    void modelInfo401Tests() throws Exception {
         ModelResolver resolver = new R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4));
         ModelManager mm = new ModelManager();
         Model m = mm.resolveModel(new ModelIdentifier().withId("FHIR").withVersion("4.0.1"));
@@ -242,7 +244,7 @@ public class TestR4ModelResolver {
     }
 
     @Test
-    public void createInstanceTests() {
+    void createInstanceTests() {
         ModelResolver resolver = new R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4));
 
         for (DataType type : DataType.values()) {
@@ -280,11 +282,9 @@ public class TestR4ModelResolver {
             Enumeration<?> instance = (Enumeration<?>) resolver.createInstance(enumType.getSimpleName());
             assertNotNull(instance);
 
-            assertTrue(instance.getEnumFactory()
-                    .getClass()
-                    .getSimpleName()
-                    .replace("EnumFactory", "")
-                    .equals(enumType.getSimpleName()));
+            assertEquals(
+                    instance.getEnumFactory().getClass().getSimpleName().replace("EnumFactory", ""),
+                    enumType.getSimpleName());
         }
 
         // These are some inner classes that don't appear in the enums above
@@ -297,12 +297,12 @@ public class TestR4ModelResolver {
     }
 
     @Test
-    public void contextPathTests() {
+    void contextPathTests() {
         ModelResolver resolver = new R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4));
 
         String path = (String) resolver.getContextPath("Patient", "Patient");
         assertNotNull(path);
-        assertTrue(path.equals("id"));
+        assertEquals("id", path);
 
         path = (String) resolver.getContextPath(null, "Encounter");
         assertNull(path);
@@ -314,31 +314,31 @@ public class TestR4ModelResolver {
 
         path = (String) resolver.getContextPath("Patient", "Condition");
         assertNotNull(path);
-        assertEquals(path, "subject");
+        assertEquals("subject", path);
 
         path = (String) resolver.getContextPath("Patient", "Appointment");
         assertNotNull(path);
-        assertEquals(path, "participant.actor");
+        assertEquals("participant.actor", path);
 
         path = (String) resolver.getContextPath("Patient", "Account");
         assertNotNull(path);
-        assertEquals(path, "subject");
+        assertEquals("subject", path);
 
         path = (String) resolver.getContextPath("Patient", "Encounter");
         assertNotNull(path);
-        assertEquals(path, "subject");
+        assertEquals("subject", path);
 
         path = (String) resolver.getContextPath("Patient", "ValueSet");
         assertNull(path);
 
         path = (String) resolver.getContextPath("Patient", "MedicationStatement");
-        assertEquals(path, "subject");
+        assertEquals("subject", path);
 
         path = (String) resolver.getContextPath("Patient", "Task");
-        assertEquals(path, "for");
+        assertEquals("for", path);
 
         path = (String) resolver.getContextPath("Patient", "Coverage");
-        assertEquals(path, "beneficiary");
+        assertEquals("beneficiary", path);
 
         // Issue 527 - https://github.com/DBCG/cql_engine/issues/527
         path = (String) resolver.getContextPath("Unfiltered", "MedicationStatement");
@@ -349,7 +349,7 @@ public class TestR4ModelResolver {
     }
 
     @Test
-    public void resolveMissingPropertyReturnsNull() {
+    void resolveMissingPropertyReturnsNull() {
         ModelResolver resolver = new R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4));
 
         Patient p = new Patient();
@@ -359,7 +359,7 @@ public class TestR4ModelResolver {
     }
 
     @Test
-    public void resolveIdPropertyReturnsString() {
+    void resolveIdPropertyReturnsString() {
         ModelResolver resolver = new R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4));
 
         Patient p = new Patient();
@@ -376,7 +376,7 @@ public class TestR4ModelResolver {
     }
 
     @Test
-    public void resolveDateTimeProviderReturnsDate() {
+    void resolveDateTimeProviderReturnsDate() {
 
         ModelResolver resolver = new R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4));
 
@@ -392,7 +392,7 @@ public class TestR4ModelResolver {
     }
 
     @Test
-    public void resolveNullEnumerationReturnsNull() {
+    void resolveNullEnumerationReturnsNull() {
         FhirModelResolver<Base, ?, ?, SimpleQuantity, ?, ?, ?, ?> resolver =
                 new R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4));
 
@@ -406,7 +406,7 @@ public class TestR4ModelResolver {
     }
 
     @Test
-    public void resolveNullPrimitiveReturnsNull() {
+    void resolveNullPrimitiveReturnsNull() {
         FhirModelResolver<Base, BaseDateTimeType, ?, ?, ?, ?, ?, ?> resolver =
                 new R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4));
 
@@ -417,7 +417,7 @@ public class TestR4ModelResolver {
     }
 
     @Test
-    public void resolveIdPatient() {
+    void resolveIdPatient() {
         final String expectedId = "123";
         final FhirModelResolver<Base, BaseDateTimeType, ?, ?, ?, ?, ?, ?> resolver =
                 new R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4));
@@ -429,7 +429,7 @@ public class TestR4ModelResolver {
     }
 
     @Test
-    public void resolveIdProcedure() {
+    void resolveIdProcedure() {
         final String expectedId = "456";
         final FhirModelResolver<Base, BaseDateTimeType, ?, ?, ?, ?, ?, ?> resolver =
                 new R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4));
@@ -441,7 +441,7 @@ public class TestR4ModelResolver {
     }
 
     @Test
-    public void resolveIdStringReturnsNull() {
+    void resolveIdStringReturnsNull() {
         final FhirModelResolver<Base, BaseDateTimeType, ?, ?, ?, ?, ?, ?> resolver =
                 new R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4));
 
@@ -449,7 +449,7 @@ public class TestR4ModelResolver {
     }
 
     @Test
-    public void resolveIdStringTypeReturnsNull() {
+    void resolveIdStringTypeReturnsNull() {
         final FhirModelResolver<Base, BaseDateTimeType, ?, ?, ?, ?, ?, ?> resolver =
                 new R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4));
 

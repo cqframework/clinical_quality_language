@@ -8,15 +8,15 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public class EscapeSequenceTests {
+class EscapeSequenceTests {
 
-    private Map<String, ExpressionDef> defs;
+    private static Map<String, ExpressionDef> defs;
 
-    @BeforeTest
-    public void setup() throws IOException {
+    @BeforeAll
+    static void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
         LibraryManager libraryManager = new LibraryManager(modelManager);
         CqlTranslator translator = CqlTranslator.fromStream(
@@ -31,7 +31,7 @@ public class EscapeSequenceTests {
     }
 
     @Test
-    public void testString() {
+    void string() {
         ExpressionDef def = defs.get("EmptyString");
         assertThat(def, hasTypeAndResult(Literal.class, "System.String"));
 
@@ -126,7 +126,7 @@ public class EscapeSequenceTests {
     }
 
     @Test
-    public void testIdentifier() {
+    void identifier() {
         ExpressionDef def = defs.get("");
         assertThat(def, hasTypeAndResult(Literal.class, "System.String"));
 

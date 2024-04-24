@@ -1,6 +1,7 @@
 package org.opencds.cqf.cql.engine.fhir.retrieve;
 
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.FhirVersionEnum;
@@ -14,6 +15,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import org.apache.commons.lang3.tuple.Pair;
 import org.hl7.fhir.dstu3.model.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.fhir.Dstu3FhirTest;
 import org.opencds.cqf.cql.engine.fhir.exception.FhirVersionMisMatchException;
 import org.opencds.cqf.cql.engine.fhir.model.CachedDstu3FhirModelResolver;
@@ -23,11 +27,8 @@ import org.opencds.cqf.cql.engine.fhir.terminology.Dstu3FhirTerminologyProvider;
 import org.opencds.cqf.cql.engine.runtime.DateTime;
 import org.opencds.cqf.cql.engine.runtime.Interval;
 import org.opencds.cqf.cql.engine.terminology.TerminologyProvider;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
-public class TestDstu3FhirQueryGenerator extends Dstu3FhirTest {
+class TestDstu3FhirQueryGenerator extends Dstu3FhirTest {
     static IGenericClient CLIENT;
 
     Dstu3FhirQueryGenerator generator;
@@ -36,13 +37,13 @@ public class TestDstu3FhirQueryGenerator extends Dstu3FhirTest {
     Map<String, Object> contextValues;
     Map<String, Object> parameters;
 
-    @BeforeClass
-    public void setUpBeforeClass() {
+    @BeforeAll
+    static void setUpBeforeAll() {
         CLIENT = newClient();
     }
 
-    @BeforeMethod
-    public void setUp() throws FhirVersionMisMatchException {
+    @BeforeEach
+    void setUp() throws FhirVersionMisMatchException {
         SearchParameterResolver searchParameterResolver =
                 new SearchParameterResolver(FhirContext.forCached(FhirVersionEnum.DSTU3));
         TerminologyProvider terminologyProvider = new Dstu3FhirTerminologyProvider(CLIENT);
@@ -92,7 +93,7 @@ public class TestDstu3FhirQueryGenerator extends Dstu3FhirTest {
     }
 
     @Test
-    void testGetFhirQueriesObservation() {
+    void getFhirQueriesObservation() {
         ValueSet valueSet = getTestValueSet("MyValueSet", 3);
 
         org.hl7.fhir.dstu3.model.Bundle valueSetBundle = new org.hl7.fhir.dstu3.model.Bundle();
@@ -102,6 +103,7 @@ public class TestDstu3FhirQueryGenerator extends Dstu3FhirTest {
         entry.setResource(valueSet);
         valueSetBundle.addEntry(entry);
 
+        /* spell-checker: disable */
         mockFhirRead("/ValueSet?url=http%3A%2F%2Fmyterm.com%2Ffhir%2FValueSet%2FMyValueSet", valueSetBundle);
 
         DataRequirement dataRequirement = getCodeFilteredDataRequirement("Observation", "category", valueSet);
@@ -118,7 +120,7 @@ public class TestDstu3FhirQueryGenerator extends Dstu3FhirTest {
     }
 
     @Test
-    void testGetFhirQueriesCodeInValueSet() {
+    void getFhirQueriesCodeInValueSet() {
         ValueSet valueSet = getTestValueSet("MyValueSet", 500);
 
         org.hl7.fhir.dstu3.model.Bundle valueSetBundle = new org.hl7.fhir.dstu3.model.Bundle();
@@ -128,6 +130,7 @@ public class TestDstu3FhirQueryGenerator extends Dstu3FhirTest {
         entry.setResource(valueSet);
         valueSetBundle.addEntry(entry);
 
+        /* spell-checker: disable */
         mockFhirRead("/ValueSet?url=http%3A%2F%2Fmyterm.com%2Ffhir%2FValueSet%2FMyValueSet", valueSetBundle);
 
         DataRequirement dataRequirement = getCodeFilteredDataRequirement("Observation", "category", valueSet);
@@ -145,7 +148,7 @@ public class TestDstu3FhirQueryGenerator extends Dstu3FhirTest {
     }
 
     @Test
-    void testGetFhirQueriesAppointment() {
+    void getFhirQueriesAppointment() {
         DataRequirement dataRequirement = new DataRequirement();
         dataRequirement.setType("Appointment");
 
@@ -160,7 +163,7 @@ public class TestDstu3FhirQueryGenerator extends Dstu3FhirTest {
     }
 
     @Test
-    void testGetFhirQueriesAppointmentWithDate() {
+    void getFhirQueriesAppointmentWithDate() {
         DataRequirement dataRequirement = new DataRequirement();
         dataRequirement.setType("Appointment");
         DataRequirement.DataRequirementDateFilterComponent dateFilterComponent =
@@ -189,7 +192,7 @@ public class TestDstu3FhirQueryGenerator extends Dstu3FhirTest {
     }
 
     @Test
-    void testGetFhirQueriesObservationWithDuration() {
+    void getFhirQueriesObservationWithDuration() {
         DataRequirement dataRequirement = new DataRequirement();
         dataRequirement.setType("Observation");
         DataRequirement.DataRequirementDateFilterComponent dateFilterComponent =
@@ -225,7 +228,7 @@ public class TestDstu3FhirQueryGenerator extends Dstu3FhirTest {
     }
 
     @Test
-    void testCodesExceedMaxCodesPerQuery() {
+    void codesExceedMaxCodesPerQuery() {
         ValueSet valueSet = getTestValueSet("MyValueSet", 8);
 
         org.hl7.fhir.dstu3.model.Bundle valueSetBundle = new org.hl7.fhir.dstu3.model.Bundle();
@@ -235,6 +238,7 @@ public class TestDstu3FhirQueryGenerator extends Dstu3FhirTest {
         entry.setResource(valueSet);
         valueSetBundle.addEntry(entry);
 
+        /* spell-checker: disable */
         mockFhirRead("/ValueSet?url=http%3A%2F%2Fmyterm.com%2Ffhir%2FValueSet%2FMyValueSet", valueSetBundle);
         mockFhirRead("/ValueSet/MyValueSet/$expand", valueSet);
 
@@ -252,13 +256,13 @@ public class TestDstu3FhirQueryGenerator extends Dstu3FhirTest {
                 "Observation?category=http://myterm.com/fhir/CodeSystem/MyValueSet|code4,http://myterm.com/fhir/CodeSystem/MyValueSet|code5,http://myterm.com/fhir/CodeSystem/MyValueSet|code6,http://myterm.com/fhir/CodeSystem/MyValueSet|code7&patient=Patient/{{context.patientId}}";
 
         assertNotNull(actual);
-        assertEquals(actual.size(), 2);
+        assertEquals(2, actual.size());
         assertEquals(actual.get(0), expectedQuery1);
         assertEquals(actual.get(1), expectedQuery2);
     }
 
     @Test
-    void testMaxQueryThresholdExceeded() {
+    void maxQueryThresholdExceeded() {
         ValueSet valueSet = getTestValueSet("MyValueSet", 21);
 
         Bundle valueSetBundle = new Bundle();
@@ -281,11 +285,11 @@ public class TestDstu3FhirQueryGenerator extends Dstu3FhirTest {
                 dataRequirement, this.evaluationDateTime, this.contextValues, this.parameters, null);
 
         assertNotNull(actual);
-        assertEquals(actual.size(), 1);
+        assertEquals(1, actual.size());
     }
 
     @Test
-    void testMaxQueryThreshold() {
+    void maxQueryThreshold() {
         ValueSet valueSet = getTestValueSet("MyValueSet", 21);
 
         Bundle valueSetBundle = new Bundle();
@@ -295,6 +299,7 @@ public class TestDstu3FhirQueryGenerator extends Dstu3FhirTest {
         entry.setResource(valueSet);
         valueSetBundle.addEntry(entry);
 
+        /* spell-checker: disable */
         mockFhirRead("/ValueSet?url=http%3A%2F%2Fmyterm.com%2Ffhir%2FValueSet%2FMyValueSet", valueSetBundle);
         mockFhirRead("/ValueSet/MyValueSet/$expand", valueSet);
 
@@ -319,7 +324,7 @@ public class TestDstu3FhirQueryGenerator extends Dstu3FhirTest {
                 "Observation?category=http://myterm.com/fhir/CodeSystem/MyValueSet|code20&patient=Patient/{{context.patientId}}";
 
         assertNotNull(actual);
-        assertEquals(actual.size(), 5);
+        assertEquals(5, actual.size());
         assertEquals(actual.get(0), expectedQuery1);
         assertEquals(actual.get(1), expectedQuery2);
         assertEquals(actual.get(2), expectedQuery3);
@@ -328,7 +333,7 @@ public class TestDstu3FhirQueryGenerator extends Dstu3FhirTest {
     }
 
     @Test
-    void testGetDateRangeParamWithDateInterval() throws ParseException {
+    void getDateRangeParamWithDateInterval() throws ParseException {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 
         Date low = formatter.parse("2023-01-01");
@@ -339,12 +344,12 @@ public class TestDstu3FhirQueryGenerator extends Dstu3FhirTest {
                 this.generator.getDateRangeParam("Condition", "onset", "valueDate", "valueDate", interval);
 
         assertNotNull(rangeParam);
-        assertTrue(rangeParam.getValue().getLowerBound().getValue().equals(low));
-        assertTrue(rangeParam.getValue().getUpperBound().getValue().equals(high));
+        assertEquals(rangeParam.getValue().getLowerBound().getValue(), low);
+        assertEquals(rangeParam.getValue().getUpperBound().getValue(), high);
     }
 
     @Test
-    void testGetDateRangeParamWithDateTimeInterval() throws ParseException {
+    void getDateRangeParamWithDateTimeInterval() throws ParseException {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.ENGLISH);
 
         Date low = formatter.parse("2023-01-01T12:01:02-0700");
@@ -355,7 +360,7 @@ public class TestDstu3FhirQueryGenerator extends Dstu3FhirTest {
                 this.generator.getDateRangeParam("Condition", "onset", "valueDate", "valueDate", interval);
 
         assertNotNull(rangeParam);
-        assertTrue(rangeParam.getValue().getLowerBound().getValue().equals(low));
-        assertTrue(rangeParam.getValue().getUpperBound().getValue().equals(high));
+        assertEquals(rangeParam.getValue().getLowerBound().getValue(), low);
+        assertEquals(rangeParam.getValue().getUpperBound().getValue(), high);
     }
 }

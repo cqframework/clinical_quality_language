@@ -11,18 +11,18 @@ import org.hl7.cql.model.NamespaceManager;
 import org.hl7.cql_annotations.r1.CqlToElmError;
 import org.hl7.elm.r1.IncludeDef;
 import org.hl7.elm.r1.VersionedIdentifier;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public class NamespaceTests {
-    ModelManager modelManager;
-    LibraryManager libraryManager;
-    NamespaceInfo defaultNamespaceInfo;
-    NamespaceInfo coreNamespaceInfo;
-    NamespaceInfo sharedNamespaceInfo;
-    NamespaceInfo contentNamespaceInfo;
+class NamespaceTests {
+    private static ModelManager modelManager;
+    private static LibraryManager libraryManager;
+    private static NamespaceInfo defaultNamespaceInfo;
+    private static NamespaceInfo coreNamespaceInfo;
+    private static NamespaceInfo sharedNamespaceInfo;
+    private static NamespaceInfo contentNamespaceInfo;
 
-    public class NamespaceTestsLibrarySourceProvider implements LibrarySourceProvider {
+    static class NamespaceTestsLibrarySourceProvider implements LibrarySourceProvider {
         @Override
         public InputStream getLibrarySource(VersionedIdentifier libraryIdentifier) {
             String namespacePath = "NamespaceTests/";
@@ -42,8 +42,8 @@ public class NamespaceTests {
         }
     }
 
-    @BeforeClass
-    public void setup() {
+    @BeforeAll
+    static void setup() {
         modelManager = new ModelManager();
         libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().registerProvider(new NamespaceTestsLibrarySourceProvider());
@@ -60,25 +60,25 @@ public class NamespaceTests {
     /* Unit test namespace functionality */
 
     @Test
-    public void testNamespacePath() {
+    void namespacePath() {
         assertThat(
                 NamespaceManager.getPath(defaultNamespaceInfo.getUri(), "Main"), is("http://cql.hl7.org/public/Main"));
     }
 
     @Test
-    public void testNamespaceNamePart() {
+    void namespaceNamePart() {
         assertThat(NamespaceManager.getNamePart("http://cql.hl7.org/public/Main"), is("Main"));
     }
 
     @Test
-    public void testNamespaceUriPart() {
+    void namespaceUriPart() {
         assertThat(NamespaceManager.getUriPart("http://cql.hl7.org/public/Main"), is("http://cql.hl7.org/public"));
     }
 
     /* Ensure base functionality with a defaulted namespace uri */
 
     @Test
-    public void testLibraryReferences() {
+    void libraryReferences() {
         CqlTranslator translator = null;
         try {
             translator = CqlTranslator.fromStream(
@@ -93,7 +93,7 @@ public class NamespaceTests {
     }
 
     @Test
-    public void testInvalidLibraryReferences() {
+    void invalidLibraryReferences() {
         CqlTranslator translator = null;
         try {
             translator = CqlTranslator.fromStream(
@@ -107,7 +107,7 @@ public class NamespaceTests {
     }
 
     @Test
-    public void testInvalidLibraryReference() {
+    void invalidLibraryReference() {
         CqlTranslator translator = null;
         try {
             translator = CqlTranslator.fromStream(
@@ -121,7 +121,7 @@ public class NamespaceTests {
     }
 
     @Test
-    public void testInvalidBaseLibrary() {
+    void invalidBaseLibrary() {
         CqlTranslator translator = null;
         try {
             translator = CqlTranslator.fromStream(
@@ -156,7 +156,7 @@ public class NamespaceTests {
     }
 
     @Test
-    public void testMain() {
+    void main() {
         try {
             CqlTranslator translator = CqlTranslator.fromStream(
                     defaultNamespaceInfo,
@@ -171,7 +171,7 @@ public class NamespaceTests {
     }
 
     @Test
-    public void testReferencingMain() {
+    void referencingMain() {
         try {
             CqlTranslator translator = CqlTranslator.fromStream(
                     defaultNamespaceInfo,
@@ -192,7 +192,7 @@ public class NamespaceTests {
     }
 
     @Test
-    public void testCoreMain() {
+    void coreMain() {
         try {
             CqlTranslator translator = CqlTranslator.fromStream(
                     coreNamespaceInfo,
@@ -207,7 +207,7 @@ public class NamespaceTests {
     }
 
     @Test
-    public void testCoreReferencingMain() {
+    void coreReferencingMain() {
         try {
             CqlTranslator translator = CqlTranslator.fromStream(
                     coreNamespaceInfo,
@@ -228,7 +228,7 @@ public class NamespaceTests {
     }
 
     @Test
-    public void testSharedMain() {
+    void sharedMain() {
         try {
             CqlTranslator translator = CqlTranslator.fromStream(
                     sharedNamespaceInfo,
@@ -250,7 +250,7 @@ public class NamespaceTests {
     }
 
     @Test
-    public void testSharedReferencingMain() {
+    void sharedReferencingMain() {
         try {
             CqlTranslator translator = CqlTranslator.fromStream(
                     sharedNamespaceInfo,
@@ -271,7 +271,7 @@ public class NamespaceTests {
     }
 
     @Test
-    public void testContentMain() {
+    void contentMain() {
         try {
             CqlTranslator translator = CqlTranslator.fromStream(
                     contentNamespaceInfo,
@@ -297,7 +297,7 @@ public class NamespaceTests {
     }
 
     @Test
-    public void testContentReferencingMain() {
+    void contentReferencingMain() {
         try {
             CqlTranslator translator = CqlTranslator.fromStream(
                     contentNamespaceInfo,

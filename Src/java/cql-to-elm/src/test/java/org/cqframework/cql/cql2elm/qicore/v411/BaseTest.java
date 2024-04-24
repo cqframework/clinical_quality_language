@@ -4,7 +4,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.testng.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -14,11 +14,11 @@ import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.LibraryBuilder;
 import org.cqframework.cql.cql2elm.TestUtils;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class BaseTest {
     @Test
-    public void testAuthoringPatterns() throws IOException {
+    void authoringPatterns() throws IOException {
         final CqlTranslator translator = TestUtils.runSemanticTest(
                 "qicore/v411/AuthoringPatterns.cql", 0, LibraryBuilder.SignatureLevel.Overloads);
 
@@ -33,7 +33,7 @@ public class BaseTest {
     }
 
     @Test
-    public void testQICore() throws IOException {
+    void qICore() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("qicore/v411/TestQICore.cql", 0);
 
         Library library = translator.toELM();
@@ -198,7 +198,7 @@ public class BaseTest {
     }
 
     @Test
-    public void testEXM124() throws IOException {
+    void exm124() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("qicore/v411/EXM124_QICore4-8.2.000.cql", 0);
 
         Library library = translator.toELM();
@@ -215,7 +215,7 @@ public class BaseTest {
     }
 
     @Test
-    public void testEXM165() throws IOException {
+    void exm165() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("qicore/v411/EXM165_QICore4-8.5.000.cql", 0);
 
         Library library = translator.toELM();
@@ -232,7 +232,7 @@ public class BaseTest {
     }
 
     @Test
-    public void testAdultOutpatientEncounters() throws IOException {
+    void adultOutpatientEncounters() throws IOException {
         CqlTranslator translator =
                 TestUtils.runSemanticTest("qicore/v411/AdultOutpatientEncounters_QICore4-2.0.000.cql", 0);
         Library library = translator.toELM();
@@ -272,7 +272,7 @@ public class BaseTest {
     }
 
     @Test
-    public void testPapTestWithResults() throws IOException {
+    void papTestWithResults() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("qicore/v411/EXM124_QICore4-8.2.000.cql", 0);
         Library library = translator.toELM();
         Map<String, ExpressionDef> defs = new HashMap<>();
@@ -314,7 +314,7 @@ public class BaseTest {
     }
 
     @Test
-    public void TestMedicationRequest() throws IOException {
+    void medicationRequest() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("qicore/v411/TestMedicationRequest.cql", 0);
         Library library = translator.toELM();
         Map<String, ExpressionDef> defs = new HashMap<>();
@@ -379,7 +379,7 @@ public class BaseTest {
     }
 
     @Test
-    public void TestChoiceUnion() throws IOException {
+    void choiceUnion() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("qicore/v411/TestChoiceUnion.cql", 0);
         Library library = translator.toELM();
         Map<String, ExpressionDef> defs = new HashMap<>();
@@ -422,7 +422,7 @@ public class BaseTest {
 
     // TODO: Apparently (enabled=false) doesn't work on the CI server?
     // @Test(enabled = false, description = "Signature overloads not yet working for derived models")
-    public void TestSignatureOnInterval() throws IOException {
+    public void testSignatureOnInterval() throws IOException {
         CqlTranslator translator =
                 TestUtils.runSemanticTest("qicore/v411/SupplementalDataElements_QICore4-2.0.0.cql", 0);
 

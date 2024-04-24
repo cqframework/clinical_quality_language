@@ -1,14 +1,15 @@
 package org.hl7.cql.model;
 
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-public class ChoiceTypeTests {
+class ChoiceTypeTests {
 
     @Test
-    public void testChoiceTypeIsCompatible() {
+    void choiceTypeIsCompatible() {
         ChoiceType first = new ChoiceType(
                 Arrays.asList(new SimpleType("Period"), new SimpleType("Interval"), new SimpleType("DateTime")));
 
@@ -24,7 +25,7 @@ public class ChoiceTypeTests {
     }
 
     @Test
-    public void testChoiceTypeIsNotCompatible() {
+    void choiceTypeIsNotCompatible() {
         ChoiceType first = new ChoiceType(
                 Arrays.asList(new SimpleType("Period"), new SimpleType("Interval"), new SimpleType("DateTime")));
 

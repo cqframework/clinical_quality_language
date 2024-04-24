@@ -7,12 +7,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-public class HidingTests {
+class HidingTests {
 
     @Test
-    public void testCaseInsensitiveWarning() throws IOException {
+    void caseInsensitiveWarning() throws IOException {
         final CqlTranslator translator = TestUtils.runSemanticTest(
                 "HidingTests/TestHidingCaseInsensitiveWarning.cql", 0, LibraryBuilder.SignatureLevel.All);
         final List<CqlCompilerException> warnings = translator.getWarnings();
@@ -20,7 +20,7 @@ public class HidingTests {
     }
 
     @Test
-    public void testHiddenIdentifierFromReturn() throws IOException {
+    void hiddenIdentifierFromReturn() throws IOException {
         final CqlTranslator translator =
                 TestUtils.runSemanticTestNoErrors("HidingTests/TestHiddenIdentifierFromReturn.cql");
         final List<CqlCompilerException> warnings = translator.getWarnings();
@@ -34,7 +34,7 @@ public class HidingTests {
     }
 
     @Test
-    public void testHidingUnionWithSameAlias() throws IOException {
+    void hidingUnionWithSameAlias() throws IOException {
         final CqlTranslator translator = TestUtils.runSemanticTestNoErrors("HidingTests/TestHidingUnionSameAlias.cql");
         final List<CqlCompilerException> warnings = translator.getWarnings();
 
@@ -58,7 +58,7 @@ public class HidingTests {
     }
 
     @Test
-    public void testHidingUnionWithSameAliasEachHides() throws IOException {
+    void hidingUnionWithSameAliasEachHides() throws IOException {
         final CqlTranslator translator =
                 TestUtils.runSemanticTestNoErrors("HidingTests/TestHidingUnionSameAliasEachHides.cql");
         final List<CqlCompilerException> warnings = translator.getWarnings();
@@ -85,7 +85,7 @@ public class HidingTests {
     }
 
     @Test
-    public void testSoMuchNestingNormal() throws IOException {
+    void soMuchNestingNormal() throws IOException {
         final CqlTranslator translator =
                 TestUtils.runSemanticTestNoErrors("HidingTests/TestHidingSoMuchNestingNormal.cql");
         final List<CqlCompilerException> warnings = translator.getWarnings();
@@ -94,7 +94,7 @@ public class HidingTests {
     }
 
     @Test
-    public void testSoMuchNestingHidingSimple() throws IOException {
+    void soMuchNestingHidingSimple() throws IOException {
         final CqlTranslator translator =
                 TestUtils.runSemanticTestNoErrors("HidingTests/TestHidingSoMuchNestingHidingSimple.cql");
         final List<CqlCompilerException> warnings = translator.getWarnings();
@@ -107,7 +107,7 @@ public class HidingTests {
     }
 
     @Test
-    public void testSoMuchNestingHidingComplex() throws IOException {
+    void soMuchNestingHidingComplex() throws IOException {
         final CqlTranslator translator =
                 TestUtils.runSemanticTestNoErrors("HidingTests/TestHidingSoMuchNestingHidingComplex.cql");
         final List<CqlCompilerException> warnings = translator.getWarnings();
@@ -132,7 +132,7 @@ public class HidingTests {
     }
 
     @Test
-    public void testHidingLetAlias() throws IOException {
+    void hidingLetAlias() throws IOException {
         final CqlTranslator translator = TestUtils.runSemanticTestNoErrors("HidingTests/TestHidingLetAlias.cql");
         final List<CqlCompilerException> warnings = translator.getWarnings();
 
@@ -146,7 +146,7 @@ public class HidingTests {
     }
 
     @Test
-    public void testHiddenIdentifierArgumentToAlias() throws IOException {
+    void hiddenIdentifierArgumentToAlias() throws IOException {
         final CqlTranslator translator =
                 TestUtils.runSemanticTestNoErrors("HidingTests/TestHiddenIdentifierArgumentToAlias.cql");
 
@@ -158,14 +158,14 @@ public class HidingTests {
     }
 
     @Test
-    public void testReturnArgumentNotConsideredHiddenIdentifier() throws IOException {
+    void returnArgumentNotConsideredHiddenIdentifier() throws IOException {
         final CqlTranslator translator = TestUtils.runSemanticTestNoErrors(
                 "HidingTests/TestHidingReturnArgumentNotConsideredHiddenIdentifier.cql");
         assertThat(translator.getWarnings().size(), is(0));
     }
 
     @Test
-    public void testHidingFunctionDefinitionWithOverloads() throws IOException {
+    void hidingFunctionDefinitionWithOverloads() throws IOException {
         final CqlTranslator translator =
                 TestUtils.runSemanticTestNoErrors("HidingTests/TestHidingFunctionDefinitionWithOverloads.cql");
         final List<CqlCompilerException> warnings = translator.getWarnings();
@@ -179,7 +179,7 @@ public class HidingTests {
     }
 
     @Test
-    public void testHidingParameterDefinition() throws IOException {
+    void hidingParameterDefinition() throws IOException {
         final CqlTranslator translator =
                 TestUtils.runSemanticTestNoErrors("HidingTests/TestHidingParameterDefinition.cql");
         final List<CqlCompilerException> warnings = translator.getWarnings();
@@ -193,7 +193,7 @@ public class HidingTests {
     }
 
     @Test
-    public void testHidingIncludeDefinition() throws IOException {
+    void hidingIncludeDefinition() throws IOException {
         final CqlTranslator translator =
                 TestUtils.runSemanticTestNoErrors("HidingTests/TestHidingIncludeDefinition.cql");
         final List<CqlCompilerException> warnings = translator.getWarnings();
@@ -207,7 +207,7 @@ public class HidingTests {
     }
 
     @Test
-    public void testHidingCommaMissingInListConstruction() throws IOException {
+    void hidingCommaMissingInListConstruction() throws IOException {
         final CqlTranslator translator =
                 TestUtils.runSemanticTestNoErrors("HidingTests/TestHidingCommaMissingInListConstruction.cql");
         final List<CqlCompilerException> warnings = translator.getWarnings();
@@ -223,7 +223,7 @@ public class HidingTests {
     }
 
     @Test
-    public void testHidingStringLiteral() throws IOException {
+    void hidingStringLiteral() throws IOException {
         final CqlTranslator translator = TestUtils.runSemanticTestNoErrors("HidingTests/TestHidingStringLiteral.cql");
         final List<CqlCompilerException> warnings = translator.getWarnings();
         final List<String> warningMessages =

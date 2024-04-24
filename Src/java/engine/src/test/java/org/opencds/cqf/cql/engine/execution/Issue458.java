@@ -1,17 +1,17 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.runtime.Interval;
-import org.testng.annotations.Test;
 
-public class Issue458 extends CqlTestBase {
+class Issue458 extends CqlTestBase {
 
     @Test
-    public void testInterval() {
+    void interval() {
         var results = engine.evaluate(toElmIdentifier("Issue458"));
         var value = results.forExpression("Closed-Open Interval").value();
         Interval interval = (Interval) value;
-        assertEquals(interval.toString(), "Interval[3, 5)");
+        assertEquals("Interval[3, 5)", interval.toString());
     }
 }

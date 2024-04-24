@@ -4,12 +4,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-public class CqlLogicalOperatorsTest extends CqlTestBase {
+class CqlLogicalOperatorsTest extends CqlTestBase {
 
     @Test
-    public void test_all_logical_operators() {
+    void all_logical_operators() {
         var results = engine.evaluate(toElmIdentifier("CqlLogicalOperatorsTest"));
         var value = results.forExpression("TrueAndTrue").value();
         assertThat(value, is(true));

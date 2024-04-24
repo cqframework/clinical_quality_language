@@ -11,15 +11,15 @@ import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.ModelManager;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public class AgeOperatorsTest {
+class AgeOperatorsTest {
 
-    private Map<String, ExpressionDef> defs;
+    private static Map<String, ExpressionDef> defs;
 
-    @BeforeTest
-    public void setup() throws IOException {
+    @BeforeAll
+    static void setup() throws IOException {
         var modelManager = new ModelManager();
         var translator = CqlTranslator.fromStream(
                 AgeOperatorsTest.class.getResourceAsStream("../OperatorTests/AgeOperators.cql"),
@@ -35,7 +35,7 @@ public class AgeOperatorsTest {
     }
 
     @Test
-    public void testAgeInYears() {
+    void ageInYears() {
         ExpressionDef def = defs.get("TestAgeInYears");
         assertThat(def, hasTypeAndResult(CalculateAge.class, "System.Integer"));
         CalculateAge age = (CalculateAge) def.getExpression();
@@ -45,7 +45,7 @@ public class AgeOperatorsTest {
     }
 
     @Test
-    public void testAgeInMonths() {
+    void ageInMonths() {
         ExpressionDef def = defs.get("TestAgeInMonths");
         assertThat(def, hasTypeAndResult(CalculateAge.class, "System.Integer"));
         CalculateAge age = (CalculateAge) def.getExpression();
@@ -55,7 +55,7 @@ public class AgeOperatorsTest {
     }
 
     @Test
-    public void testAgeInWeeks() {
+    void ageInWeeks() {
         ExpressionDef def = defs.get("TestAgeInWeeks");
         assertThat(def, hasTypeAndResult(CalculateAge.class, "System.Integer"));
         CalculateAge age = (CalculateAge) def.getExpression();
@@ -65,7 +65,7 @@ public class AgeOperatorsTest {
     }
 
     @Test
-    public void testAgeInDays() {
+    void ageInDays() {
         ExpressionDef def = defs.get("TestAgeInDays");
         assertThat(def, hasTypeAndResult(CalculateAge.class, "System.Integer"));
         CalculateAge age = (CalculateAge) def.getExpression();
@@ -75,7 +75,7 @@ public class AgeOperatorsTest {
     }
 
     @Test
-    public void testAgeInHours() {
+    void ageInHours() {
         ExpressionDef def = defs.get("TestAgeInHours");
         assertThat(def, hasTypeAndResult(CalculateAge.class, "System.Integer"));
         CalculateAge age = (CalculateAge) def.getExpression();
@@ -85,7 +85,7 @@ public class AgeOperatorsTest {
     }
 
     @Test
-    public void testAgeInMinutes() {
+    void ageInMinutes() {
         ExpressionDef def = defs.get("TestAgeInMinutes");
         assertThat(def, hasTypeAndResult(CalculateAge.class, "System.Integer"));
         CalculateAge age = (CalculateAge) def.getExpression();
@@ -95,7 +95,7 @@ public class AgeOperatorsTest {
     }
 
     @Test
-    public void testAgeInSeconds() {
+    void ageInSeconds() {
         ExpressionDef def = defs.get("TestAgeInSeconds");
         assertThat(def, hasTypeAndResult(CalculateAge.class, "System.Integer"));
         CalculateAge age = (CalculateAge) def.getExpression();
@@ -105,7 +105,7 @@ public class AgeOperatorsTest {
     }
 
     @Test
-    public void testAgeInYearsAtDateTime() {
+    void ageInYearsAtDateTime() {
         ExpressionDef def = defs.get("TestAgeInYearsAtDateTime");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
         CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
@@ -115,7 +115,7 @@ public class AgeOperatorsTest {
     }
 
     @Test
-    public void testAgeInMonthsAtDateTime() {
+    void ageInMonthsAtDateTime() {
         ExpressionDef def = defs.get("TestAgeInMonthsAtDateTime");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
         CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
@@ -125,7 +125,7 @@ public class AgeOperatorsTest {
     }
 
     @Test
-    public void testAgeInWeeksAtDateTime() {
+    void ageInWeeksAtDateTime() {
         ExpressionDef def = defs.get("TestAgeInWeeksAtDateTime");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
         CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
@@ -135,7 +135,7 @@ public class AgeOperatorsTest {
     }
 
     @Test
-    public void testAgeInDaysAtDateTime() {
+    void ageInDaysAtDateTime() {
         ExpressionDef def = defs.get("TestAgeInDaysAtDateTime");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
         CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
@@ -145,7 +145,7 @@ public class AgeOperatorsTest {
     }
 
     @Test
-    public void testAgeInYearsAtDate() {
+    void ageInYearsAtDate() {
         ExpressionDef def = defs.get("TestAgeInYearsAtDate");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
         CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
@@ -155,7 +155,7 @@ public class AgeOperatorsTest {
     }
 
     @Test
-    public void testAgeInMonthsAtDate() {
+    void ageInMonthsAtDate() {
         ExpressionDef def = defs.get("TestAgeInMonthsAtDate");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
         CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
@@ -165,7 +165,7 @@ public class AgeOperatorsTest {
     }
 
     @Test
-    public void testAgeInWeeksAtDate() {
+    void ageInWeeksAtDate() {
         ExpressionDef def = defs.get("TestAgeInWeeksAtDate");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
         CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
@@ -175,7 +175,7 @@ public class AgeOperatorsTest {
     }
 
     @Test
-    public void testAgeInDaysAtDate() {
+    void ageInDaysAtDate() {
         ExpressionDef def = defs.get("TestAgeInDaysAtDate");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
         CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
@@ -185,7 +185,7 @@ public class AgeOperatorsTest {
     }
 
     @Test
-    public void testAgeInHoursAtDateTime() {
+    void ageInHoursAtDateTime() {
         ExpressionDef def = defs.get("TestAgeInHoursAtDateTime");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
         CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
@@ -195,7 +195,7 @@ public class AgeOperatorsTest {
     }
 
     @Test
-    public void testAgeInMinutesAtDateTime() {
+    void ageInMinutesAtDateTime() {
         ExpressionDef def = defs.get("TestAgeInMinutesAtDateTime");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
         CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
@@ -205,7 +205,7 @@ public class AgeOperatorsTest {
     }
 
     @Test
-    public void testAgeInSecondsAtDateTime() {
+    void ageInSecondsAtDateTime() {
         ExpressionDef def = defs.get("TestAgeInSecondsAtDateTime");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
         CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
@@ -215,7 +215,7 @@ public class AgeOperatorsTest {
     }
 
     @Test
-    public void testCalculateAgeInYearsAtDateTime() {
+    void calculateAgeInYearsAtDateTime() {
         ExpressionDef def = defs.get("TestCalculateAgeInYearsAtDateTime");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
         CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
@@ -225,7 +225,7 @@ public class AgeOperatorsTest {
     }
 
     @Test
-    public void testCalculateAgeInMonthsAtDateTime() {
+    void calculateAgeInMonthsAtDateTime() {
         ExpressionDef def = defs.get("TestCalculateAgeInMonthsAtDateTime");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
         CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
@@ -235,7 +235,7 @@ public class AgeOperatorsTest {
     }
 
     @Test
-    public void testCalculateAgeInWeeksAtDateTime() {
+    void calculateAgeInWeeksAtDateTime() {
         ExpressionDef def = defs.get("TestCalculateAgeInWeeksAtDateTime");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
         CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
@@ -245,7 +245,7 @@ public class AgeOperatorsTest {
     }
 
     @Test
-    public void testCalculateAgeInDaysAtDateTime() {
+    void calculateAgeInDaysAtDateTime() {
         ExpressionDef def = defs.get("TestCalculateAgeInDaysAtDateTime");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
         CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
@@ -255,7 +255,7 @@ public class AgeOperatorsTest {
     }
 
     @Test
-    public void testCalculateAgeInYearsAtDate() {
+    void calculateAgeInYearsAtDate() {
         ExpressionDef def = defs.get("TestCalculateAgeInYearsAtDate");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
         CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
@@ -265,7 +265,7 @@ public class AgeOperatorsTest {
     }
 
     @Test
-    public void testCalculateAgeInMonthsAtDate() {
+    void calculateAgeInMonthsAtDate() {
         ExpressionDef def = defs.get("TestCalculateAgeInMonthsAtDate");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
         CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
@@ -275,7 +275,7 @@ public class AgeOperatorsTest {
     }
 
     @Test
-    public void testCalculateAgeInWeeksAtDate() {
+    void calculateAgeInWeeksAtDate() {
         ExpressionDef def = defs.get("TestCalculateAgeInWeeksAtDate");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
         CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
@@ -285,7 +285,7 @@ public class AgeOperatorsTest {
     }
 
     @Test
-    public void testCalculateAgeInDaysAtDate() {
+    void calculateAgeInDaysAtDate() {
         ExpressionDef def = defs.get("TestCalculateAgeInDaysAtDate");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
         CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
@@ -295,7 +295,7 @@ public class AgeOperatorsTest {
     }
 
     @Test
-    public void testCalculateAgeInHoursAtDateTime() {
+    void calculateAgeInHoursAtDateTime() {
         ExpressionDef def = defs.get("TestCalculateAgeInHoursAtDateTime");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
         CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
@@ -305,7 +305,7 @@ public class AgeOperatorsTest {
     }
 
     @Test
-    public void testCalculateAgeInMinutesAtDateTime() {
+    void calculateAgeInMinutesAtDateTime() {
         ExpressionDef def = defs.get("TestCalculateAgeInMinutesAtDateTime");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
         CalculateAgeAt age = (CalculateAgeAt) def.getExpression();
@@ -315,7 +315,7 @@ public class AgeOperatorsTest {
     }
 
     @Test
-    public void testCalculateAgeInSecondsAtDateTime() {
+    void calculateAgeInSecondsAtDateTime() {
         ExpressionDef def = defs.get("TestCalculateAgeInSecondsAtDateTime");
         assertThat(def, hasTypeAndResult(CalculateAgeAt.class, "System.Integer"));
         CalculateAgeAt age = (CalculateAgeAt) def.getExpression();

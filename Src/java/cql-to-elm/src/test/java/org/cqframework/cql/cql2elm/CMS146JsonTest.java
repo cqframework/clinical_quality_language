@@ -9,13 +9,12 @@ import java.util.Scanner;
 import org.cqframework.cql.cql2elm.CqlCompilerException.ErrorSeverity;
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
 import org.json.JSONException;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.skyscreamer.jsonassert.JSONAssert;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
 
-public class CMS146JsonTest {
+class CMS146JsonTest {
 
-    @DataProvider(name = "sigFileAndSigLevel")
     private static Object[][] sigFileAndSigLevel() {
         return new Object[][] {
             {"CMS146v2_Expected_SignatureLevel_None.json", SignatureLevel.None},
@@ -25,8 +24,9 @@ public class CMS146JsonTest {
         };
     }
 
-    @Test(dataProvider = "sigFileAndSigLevel")
-    public void testCms146_SignatureLevels(String fileName, SignatureLevel expectedSignatureLevel)
+    @ParameterizedTest
+    @MethodSource("sigFileAndSigLevel")
+    void cms146SignatureLevels(String fileName, SignatureLevel expectedSignatureLevel)
             throws IOException, JSONException {
         final String expectedJson = getJson(fileName);
 

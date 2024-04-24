@@ -5,7 +5,7 @@ import static org.cqframework.cql.cql2elm.TestUtils.visitFileLibrary;
 import static org.cqframework.cql.cql2elm.matchers.QuickDataType.quickDataType;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.testng.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -16,12 +16,12 @@ import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
 import org.cqframework.cql.cql2elm.TestUtils;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-public class BaseTest {
+class BaseTest {
 
     @Test
-    public void testChoiceWithAlternativeConversion() throws IOException {
+    void choiceWithAlternativeConversion() throws IOException {
         ExpressionDef def = (ExpressionDef) visitFile("fhir/r4/TestChoiceTypes.cql");
         Query query = (Query) def.getExpression();
 
@@ -45,13 +45,13 @@ public class BaseTest {
     }
 
     @Test
-    public void testURIConversion() throws IOException {
+    void uriConversion() throws IOException {
         // If this translates without errors, the test is successful
         ExpressionDef def = (ExpressionDef) visitFile("fhir/r4/TestURIConversion.cql");
     }
 
     @Test
-    public void testFHIRTiming() throws IOException {
+    void fhirTiming() throws IOException {
         ExpressionDef def = (ExpressionDef) visitFile("fhir/r4/TestFHIRTiming.cql");
         // Query->
         //  where->
@@ -86,7 +86,7 @@ public class BaseTest {
     }
 
     @Test
-    public void testEqualityWithConversions() throws IOException {
+    void equalityWithConversions() throws IOException {
         CompiledLibrary library = visitFileLibrary("fhir/r4/EqualityWithConversions.cql");
         ExpressionDef getGender = library.resolveExpressionRef("GetGender");
         assertThat(getGender.getExpression(), instanceOf(Equal.class));
@@ -98,7 +98,7 @@ public class BaseTest {
     }
 
     @Test
-    public void testDoubleListPromotion() throws IOException {
+    void doubleListPromotion() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("fhir/r4/TestDoubleListPromotion.cql", 0);
         Library library = translator.toELM();
         Map<String, ExpressionDef> defs = new HashMap<>();
@@ -117,7 +117,7 @@ public class BaseTest {
     }
 
     @Test
-    public void testChoiceDateRangeOptimization() throws IOException {
+    void choiceDateRangeOptimization() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest(
                 "fhir/r4/TestChoiceDateRangeOptimization.cql",
                 0,
@@ -197,37 +197,37 @@ public class BaseTest {
     }
 
     @Test
-    public void testIntervalImplicitConversion() throws IOException {
+    void intervalImplicitConversion() throws IOException {
         TestUtils.runSemanticTest("fhir/r4/TestIntervalImplicitConversion.cql", 0);
     }
 
     @Test
-    public void testFHIRHelpers() throws IOException {
+    void fhirHelpers() throws IOException {
         TestUtils.runSemanticTest("fhir/r4/TestFHIRHelpers.cql", 0);
     }
 
     @Test
-    public void testImplicitFHIRHelpers() throws IOException {
+    void implicitFHIRHelpers() throws IOException {
         TestUtils.runSemanticTest("fhir/r4/TestImplicitFHIRHelpers.cql", 0);
     }
 
     @Test
-    public void testFHIR() throws IOException {
+    void fhir() throws IOException {
         TestUtils.runSemanticTest("fhir/r4/TestFHIR.cql", 0);
     }
 
     @Test
-    public void testFHIRWithHelpers() throws IOException {
+    void fhirWithHelpers() throws IOException {
         TestUtils.runSemanticTest("fhir/r4/TestFHIRWithHelpers.cql", 0);
     }
 
     @Test
-    public void testBundle() throws IOException {
+    void bundle() throws IOException {
         TestUtils.runSemanticTest("fhir/r4/TestBundle.cql", 0);
     }
 
     @Test
-    public void testConceptConversion() throws IOException {
+    void conceptConversion() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("fhir/r4/TestConceptConversion.cql", 0);
         Library library = translator.toELM();
         Map<String, ExpressionDef> defs = new HashMap<>();
@@ -314,7 +314,7 @@ public class BaseTest {
     }
 
     @Test
-    public void testRetrieveWithConcept() throws IOException {
+    void retrieveWithConcept() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("fhir/r4/TestRetrieveWithConcept.cql", 0);
         CompiledLibrary library = translator.getTranslatedLibrary();
         ExpressionDef expressionDef = library.resolveExpressionRef("Test Tobacco Smoking Status");
@@ -327,7 +327,7 @@ public class BaseTest {
     }
 
     @Test
-    public void testExm108IdentifierHiding() throws IOException {
+    void exm108IdentifierHiding() throws IOException {
         var translator = TestUtils.runSemanticTest("fhir/r4/exm108/EXM108.cql", 0, SignatureLevel.All);
         // Should only be one identifier being hid after fixes, "Warafin"
         assertEquals(1, translator.getExceptions().size());

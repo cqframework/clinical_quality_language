@@ -1,18 +1,18 @@
 package org.opencds.cqf.cql.engine.data;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.testng.Assert.*;
 
 import java.util.Date;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.opencds.cqf.cql.engine.model.ModelResolver;
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
-public class CompositeDataProviderTest {
+class CompositeDataProviderTest {
     @Mock
     private ModelResolver mockModelResolver;
 
@@ -21,18 +21,18 @@ public class CompositeDataProviderTest {
 
     private AutoCloseable mocks;
 
-    @BeforeMethod
+    @BeforeEach
     void before() {
         mocks = MockitoAnnotations.openMocks(this);
     }
 
-    @AfterMethod
+    @AfterEach
     void after() throws Exception {
         mocks.close();
     }
 
     @Test
-    void testResolveIdString() {
+    void resolveIdString() {
         final String object = "object";
         final String id = "text";
 
@@ -46,7 +46,7 @@ public class CompositeDataProviderTest {
     }
 
     @Test
-    void testResolveIdIntLong() {
+    void resolveIdIntLong() {
         final long object = 1L;
         final String id = "oneL";
 
@@ -60,7 +60,7 @@ public class CompositeDataProviderTest {
     }
 
     @Test
-    void testResolveIdDate() {
+    void resolveIdDate() {
         final Date object = new Date();
         final String id = "now";
 

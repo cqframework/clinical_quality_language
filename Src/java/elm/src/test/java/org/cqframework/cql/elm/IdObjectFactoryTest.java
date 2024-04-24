@@ -3,12 +3,12 @@ package org.cqframework.cql.elm;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import org.hl7.elm.r1.Element;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-public class IdObjectFactoryTest {
+class IdObjectFactoryTest {
 
     @Test
-    public void ensureAllElementsHaveLocalId() {
+    void ensureAllElementsHaveLocalId() {
         var factory = new IdObjectFactory();
         var methods = Arrays.asList(IdObjectFactory.class.getMethods()).stream()
                 .filter(x -> Element.class.isAssignableFrom(x.getReturnType()));

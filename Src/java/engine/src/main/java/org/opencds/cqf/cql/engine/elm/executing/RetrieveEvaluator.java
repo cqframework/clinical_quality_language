@@ -12,11 +12,8 @@ import org.opencds.cqf.cql.engine.runtime.Code;
 import org.opencds.cqf.cql.engine.runtime.Concept;
 import org.opencds.cqf.cql.engine.runtime.Interval;
 import org.opencds.cqf.cql.engine.runtime.ValueSet;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class RetrieveEvaluator {
-    private static final Logger logger = LoggerFactory.getLogger(RetrieveEvaluator.class);
 
     @SuppressWarnings("unchecked")
     public static Object internalEvaluate(Retrieve elm, State state, ElmLibraryVisitor<Object, State> visitor) {
@@ -27,7 +24,7 @@ public class RetrieveEvaluator {
 
         if (context != null) {
             /*
-               This whole block is a bit a hack in the sense that we need to the context (ex Practitioner) identifies itself in a non-domain specific way3
+               This whole block is a bit a hack in the sense that the need to switch to the context (e.g. Practitioner) identifies itself in a non-domain specific way
             */
             final Object contextValue = visitor.visitExpression(context, state);
             final String name = contextValue.getClass().getPackage().getName();
@@ -106,26 +103,5 @@ public class RetrieveEvaluator {
         }
 
         return result;
-    }
-
-    // TODO: LD:  Consider adding this to some sort of Library class
-    /**
-     * Do an instanceof on the class in question and then cast the parameter if it passes the test
-     * <p>
-     * Note this method is not recommended for use with generic types.
-     *
-     * @param superType The variable typed as the supertype of the type being tested to cast
-     * @param clazz The {@link Class} to which we are instance of checking for and attempting to cast
-     * @return The variable casted to the new subclass after a successful instanceof check.
-     * @param <T> The supertype from which we aim to cast
-     * @param <S> The subtype to which we aim to cast.
-     * @throws IllegalArgumentException if the first parameter fails the instanceof check
-     */
-    private static <T, S> S instanceOfCast(T superType, Class<S> clazz) {
-        if (clazz.isInstance(superType)) {
-            return clazz.cast(superType);
-        }
-
-        throw new IllegalArgumentException(String.format("Subtype of %s is not as expected", superType));
     }
 }

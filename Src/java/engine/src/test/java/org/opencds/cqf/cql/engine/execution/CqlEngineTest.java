@@ -1,16 +1,16 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.debug.DebugMap;
-import org.testng.annotations.Test;
 
 class CqlEngineTest extends CqlTestBase {
 
     @Test
-    void testDebugMap() {
+    void debugMap() {
 
         // The specific library isn't important, just that it has a debug map
         var debugMap = new DebugMap();

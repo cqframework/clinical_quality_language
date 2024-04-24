@@ -1,16 +1,16 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-public class TestUnion extends CqlTestBase {
+class TestUnion extends CqlTestBase {
 
     @Test
-    public void testUnion() {
+    void union() {
         var results = engine.evaluate(toElmIdentifier("TestUnion"));
         var value = results.forExpression("NullAndNull").value();
         assertNotNull(value);

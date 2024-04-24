@@ -1,8 +1,6 @@
 package org.opencds.cqf.cql.engine.fhir.model;
 
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.FhirVersionEnum;
@@ -30,9 +28,9 @@ import org.hl7.fhir.dstu2.model.Enumerations.RemittanceOutcome;
 import org.hl7.fhir.dstu2.model.Enumerations.ResourceType;
 import org.hl7.fhir.dstu2.model.Enumerations.SearchParamType;
 import org.hl7.fhir.dstu2.model.Enumerations.SpecialValues;
+import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.fhir.exception.UnknownType;
 import org.opencds.cqf.cql.engine.model.ModelResolver;
-import org.testng.annotations.Test;
 
 public class TestDstu2ModelResolver {
 
@@ -57,14 +55,16 @@ public class TestDstu2ModelResolver {
         }
     };
 
-    @Test(expectedExceptions = UnknownType.class)
-    public void resolverThrowsExceptionForUnknownType() {
+    @Test
+    void resolverThrowsExceptionForUnknownType() {
         ModelResolver resolver = new Dstu2FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU2));
-        resolver.resolveType("ImpossibleTypeThatDoesntExistAndShouldBlowUp");
+        assertThrows(UnknownType.class, () -> {
+            resolver.resolveType("ImpossibleTypeThatDoesn'tExistAndShouldBlowUp");
+        });
     }
 
     @Test
-    public void resolveModelInfoTests() {
+    void resolveModelInfoTests() {
         ModelResolver resolver = new Dstu2FhirModelResolver();
         ModelManager mm = new ModelManager();
         Model m = mm.resolveModel(new ModelIdentifier().withId("FHIR").withVersion("1.0.2"));
@@ -92,7 +92,7 @@ public class TestDstu2ModelResolver {
     }
 
     @Test
-    public void resolveTypeTests() {
+    void resolveTypeTests() {
         ModelResolver resolver = new Dstu2FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU2));
 
         for (DataType type : DataType.values()) {
@@ -126,7 +126,7 @@ public class TestDstu2ModelResolver {
     }
 
     @Test
-    public void createInstanceTests() {
+    void createInstanceTests() {
         ModelResolver resolver = new Dstu2FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU2));
 
         for (DataType type : DataType.values()) {
@@ -171,10 +171,7 @@ public class TestDstu2ModelResolver {
                 enumFactory.setAccessible(true);
                 EnumFactory<?> factory = (EnumFactory<?>) enumFactory.get(instance);
 
-                assertTrue(factory.getClass()
-                        .getSimpleName()
-                        .replace("EnumFactory", "")
-                        .equals(enumType.getSimpleName()));
+                assertEquals(factory.getClass().getSimpleName().replace("EnumFactory", ""), enumType.getSimpleName());
             } catch (Exception e) {
                 throw new AssertionError("error getting factory type. " + e.getMessage());
             }
@@ -182,12 +179,12 @@ public class TestDstu2ModelResolver {
     }
 
     @Test
-    public void contextPathTests() {
+    void contextPathTests() {
         ModelResolver resolver = new Dstu2FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU2));
 
         String path = (String) resolver.getContextPath("Patient", "Patient");
         assertNotNull(path);
-        assertTrue(path.equals("id"));
+        assertEquals("id", path);
 
         path = (String) resolver.getContextPath(null, "Encounter");
         assertNull(path);
@@ -199,22 +196,22 @@ public class TestDstu2ModelResolver {
 
         path = (String) resolver.getContextPath("Patient", "Condition");
         assertNotNull(path);
-        assertTrue(path.equals("patient"));
+        assertEquals("patient", path);
 
         path = (String) resolver.getContextPath("Patient", "Appointment");
         assertNotNull(path);
-        assertTrue(path.equals("participant.actor"));
+        assertEquals("participant.actor", path);
 
         path = (String) resolver.getContextPath("Patient", "Observation");
         assertNotNull(path);
-        assertTrue(path.equals("subject"));
+        assertEquals("subject", path);
 
         path = (String) resolver.getContextPath("Patient", "Encounter");
         assertNotNull(path);
-        assertTrue(path.equals("patient"));
+        assertEquals("patient", path);
 
         path = (String) resolver.getContextPath("Patient", "MedicationStatement");
-        assertTrue(path.equals("patient"));
+        assertEquals("patient", path);
 
         // Issue 527 - https://github.com/DBCG/cql_engine/issues/527
         path = (String) resolver.getContextPath("Unfiltered", "MedicationStatement");

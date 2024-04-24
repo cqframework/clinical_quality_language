@@ -3,17 +3,17 @@ package org.opencds.cqf.cql.engine.execution;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.ZonedDateTime;
 import java.util.TimeZone;
+import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.runtime.Interval;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
-public class CqlClinicalOperatorsTest extends CqlTestBase {
+class CqlClinicalOperatorsTest extends CqlTestBase {
 
     @Test
-    public void test_all_clinical_operators_tests() {
+    void all_clinical_operators_tests() {
         var results = engine.evaluate(
                 toElmIdentifier("CqlClinicalOperatorsTest"),
                 ZonedDateTime.of(2016, 1, 1, 0, 0, 0, 0, TimeZone.getDefault().toZoneId()));
@@ -68,8 +68,8 @@ public class CqlClinicalOperatorsTest extends CqlTestBase {
         assertThat(value, is((27 * 60 + 10) * 60 + 15));
 
         value = results.forExpression("CalculateAgeAtUncertain").value();
-        Assert.assertTrue(((Interval) value).getStart().equals(187));
-        Assert.assertTrue(((Interval) value).getEnd().equals(198));
+        assertEquals(187, ((Interval) value).getStart());
+        assertEquals(198, ((Interval) value).getEnd());
 
         value = results.forExpression("Issue70A").value();
         assertThat(value, is(false));

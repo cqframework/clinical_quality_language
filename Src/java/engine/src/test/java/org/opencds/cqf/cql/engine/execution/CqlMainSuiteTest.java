@@ -1,21 +1,21 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import static org.testng.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.time.ZonedDateTime;
 import java.util.*;
 import org.cqframework.cql.cql2elm.CqlCompilerException;
 import org.cqframework.cql.cql2elm.CqlCompilerOptions;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-public class CqlMainSuiteTest extends CqlTestBase {
+class CqlMainSuiteTest extends CqlTestBase {
 
     private static final ZonedDateTime evalTime =
             ZonedDateTime.of(2018, 1, 1, 7, 0, 0, 0, TimeZone.getDefault().toZoneId());
 
     @Test
-    public void test_cql_main_test_suite_compiles() {
+    void cql_main_test_suite_compiles() {
         var errors = new ArrayList<CqlCompilerException>();
         this.getLibrary(toElmIdentifier("CqlTestSuite"), errors, testCompilerOptions());
         assertFalse(
@@ -24,7 +24,7 @@ public class CqlMainSuiteTest extends CqlTestBase {
     }
 
     @Test
-    public void test_all_portable_cql_engine_tests() {
+    void all_portable_cql_engine_tests() {
         var e = getEngine(testCompilerOptions());
         // TODO: It'd be interesting to be able to inspect the
         // possible set of expressions from the CQL engine API
@@ -34,7 +34,7 @@ public class CqlMainSuiteTest extends CqlTestBase {
         for (var entry : result.expressionResults.entrySet()) {
             if (entry.getKey().toString().startsWith("test")) {
                 if (((ExpressionResult) entry.getValue()).value() != null) {
-                    Assert.assertEquals(
+                    assertEquals(
                             (String) ((ExpressionResult) entry.getValue()).value(),
                             entry.getKey().toString().replaceAll("test_", "") + " TEST PASSED");
                 }
@@ -43,7 +43,7 @@ public class CqlMainSuiteTest extends CqlTestBase {
     }
 
     @Test
-    public void test_cql_timezone_tests() {
+    void cql_timezone_tests() {
         var e = getEngine(testCompilerOptions());
         // TODO: It'd be interesting to be able to inspect the
         // possible set of expressions from the CQL engine API
@@ -54,7 +54,7 @@ public class CqlMainSuiteTest extends CqlTestBase {
         for (var entry : result.expressionResults.entrySet()) {
             if (entry.getKey().toString().startsWith("test")) {
                 if (((ExpressionResult) entry.getValue()).value() != null) {
-                    Assert.assertEquals(
+                    assertEquals(
                             (String) ((ExpressionResult) entry.getValue()).value(),
                             entry.getKey().toString().replaceAll("test_", "") + " TEST PASSED");
                 }

@@ -1,9 +1,6 @@
 package org.opencds.cqf.cql.engine.fhir.terminology;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -14,15 +11,15 @@ import org.hl7.fhir.r4.model.BooleanType;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.ValueSet;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.exception.TerminologyProviderException;
 import org.opencds.cqf.cql.engine.fhir.R4FhirTest;
 import org.opencds.cqf.cql.engine.runtime.Code;
 import org.opencds.cqf.cql.engine.terminology.CodeSystemInfo;
 import org.opencds.cqf.cql.engine.terminology.ValueSetInfo;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
-public class TestR4FhirTerminologyProvider extends R4FhirTest {
+class TestR4FhirTerminologyProvider extends R4FhirTest {
 
     private static final String TEST_DISPLAY = "Display";
     private static final String TEST_CODE = "425178004";
@@ -30,13 +27,13 @@ public class TestR4FhirTerminologyProvider extends R4FhirTest {
     private static final String TEST_SYSTEM_VERSION = "2013-09";
     R4FhirTerminologyProvider provider;
 
-    @BeforeMethod
-    public void initializeProvider() {
+    @BeforeEach
+    void initializeProvider() {
         provider = new R4FhirTerminologyProvider(newClient());
     }
 
     @Test
-    public void resolveByUrlUsingUrlSucceeds() throws Exception {
+    void resolveByUrlUsingUrlSucceeds() throws Exception {
         ValueSetInfo info = new ValueSetInfo().withId("https://cts.nlm.nih.gov/fhir/ValueSet/1.2.3.4");
 
         ValueSet response = new ValueSet();
@@ -51,7 +48,7 @@ public class TestR4FhirTerminologyProvider extends R4FhirTest {
     }
 
     @Test
-    public void resolveByUrlUsingIdentifierSucceeds() throws Exception {
+    void resolveByUrlUsingIdentifierSucceeds() throws Exception {
         ValueSetInfo info = new ValueSetInfo().withId("urn:oid:1.2.3.4");
 
         ValueSet response = new ValueSet();
@@ -66,7 +63,7 @@ public class TestR4FhirTerminologyProvider extends R4FhirTest {
     }
 
     @Test
-    public void resolveByUrlUsingResourceIdSucceeds() throws Exception {
+    void resolveByUrlUsingResourceIdSucceeds() throws Exception {
         ValueSetInfo info = new ValueSetInfo().withId("1.2.3.4");
 
         ValueSet response = new ValueSet();
@@ -79,35 +76,35 @@ public class TestR4FhirTerminologyProvider extends R4FhirTest {
         assertEquals(id, response.getId());
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void resolveByUrlNoMatchesThrowsException() throws Exception {
+    @Test
+    void resolveByUrlNoMatchesThrowsException() throws Exception {
         ValueSetInfo info = new ValueSetInfo().withId("urn:oid:1.2.3.4");
 
         mockResolveSearchPath(info, null);
 
-        provider.resolveValueSetId(info);
+        assertThrows(IllegalArgumentException.class, () -> provider.resolveValueSetId(info));
     }
 
-    @Test(expectedExceptions = TerminologyProviderException.class)
-    public void expandByUrlNoMatchesThrowsException() throws Exception {
+    @Test
+    void expandByUrlNoMatchesThrowsException() throws Exception {
         ValueSetInfo info = new ValueSetInfo().withId("urn:oid:1.2.3.4");
 
         mockResolveSearchPath(info, null);
 
-        provider.expand(info);
+        assertThrows(TerminologyProviderException.class, () -> provider.expand(info));
     }
 
-    @Test(expectedExceptions = UnsupportedOperationException.class)
-    public void nonNullVersionUnsupported() {
+    @Test
+    void nonNullVersionUnsupported() {
         ValueSetInfo info = new ValueSetInfo();
         info.setId("urn:oid:Test");
         info.setVersion("1.0.0.");
 
-        provider.resolveValueSetId(info);
+        assertThrows(UnsupportedOperationException.class, () -> provider.resolveValueSetId(info));
     }
 
-    @Test(expectedExceptions = UnsupportedOperationException.class)
-    public void nonNullCodesystemsUnsupported() {
+    @Test
+    void nonNullCodesystemsUnsupported() {
         CodeSystemInfo codeSystem = new CodeSystemInfo();
         codeSystem.setId("SNOMED-CT");
         codeSystem.setVersion("2013-09");
@@ -116,11 +113,11 @@ public class TestR4FhirTerminologyProvider extends R4FhirTest {
         info.setId("urn:oid:Test");
         info.getCodeSystems().add(codeSystem);
 
-        provider.resolveValueSetId(info);
+        assertThrows(UnsupportedOperationException.class, () -> provider.resolveValueSetId(info));
     }
 
     @Test
-    public void urnOidPrefixIsStripped() throws Exception {
+    void urnOidPrefixIsStripped() throws Exception {
         ValueSetInfo info = new ValueSetInfo();
         info.setId("urn:oid:Test");
 
@@ -131,11 +128,11 @@ public class TestR4FhirTerminologyProvider extends R4FhirTest {
         mockResolveSearchPath(info, valueSet);
 
         String id = provider.resolveValueSetId(info);
-        assertEquals(id, "Test");
+        assertEquals("Test", id);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void moreThanOneURLSearchResultIsError() throws Exception {
+    @Test
+    void moreThanOneURLSearchResultIsError() throws Exception {
         ValueSetInfo info = new ValueSetInfo();
         info.setId("http://localhost/fhir/ValueSet/1.2.3.4");
 
@@ -147,23 +144,23 @@ public class TestR4FhirTerminologyProvider extends R4FhirTest {
         secondSet.setId("1");
         secondSet.setUrl(info.getId());
 
-        mockFhirSearch("/ValueSet?url=" + urlencode(info.getId()), firstSet, secondSet);
+        mockFhirSearch("/ValueSet?url=" + urlEncode(info.getId()), firstSet, secondSet);
 
-        provider.resolveValueSetId(info);
+        assertThrows(IllegalArgumentException.class, () -> provider.resolveValueSetId(info));
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void zeroURLSearchResultIsError() throws Exception {
+    @Test
+    void zeroURLSearchResultIsError() throws Exception {
         ValueSetInfo info = new ValueSetInfo();
         info.setId("http://localhost/fhir/ValueSet/1.2.3.4");
 
         mockResolveSearchPath(info, null);
 
-        provider.resolveValueSetId(info);
+        assertThrows(IllegalArgumentException.class, () -> provider.resolveValueSetId(info));
     }
 
     @Test
-    public void expandOperationReturnsCorrectCodesMoreThanZero() throws Exception {
+    void expandOperationReturnsCorrectCodesMoreThanZero() throws Exception {
         ValueSetInfo info = new ValueSetInfo();
         info.setId("urn:oid:Test");
 
@@ -181,13 +178,13 @@ public class TestR4FhirTerminologyProvider extends R4FhirTest {
         Iterable<Code> codes = provider.expand(info);
 
         List<Code> list = StreamSupport.stream(codes.spliterator(), false).collect(Collectors.toList());
-        assertEquals(list.size(), 1);
-        assertEquals(list.get(0).getSystem(), TEST_SYSTEM);
-        assertEquals(list.get(0).getCode(), TEST_CODE);
+        assertEquals(1, list.size());
+        assertEquals(TEST_SYSTEM, list.get(0).getSystem());
+        assertEquals(TEST_CODE, list.get(0).getCode());
     }
 
     @Test
-    public void inOperationReturnsTrueWhenFhirReturnsTrue() throws Exception {
+    void inOperationReturnsTrueWhenFhirReturnsTrue() throws Exception {
         ValueSetInfo info = new ValueSetInfo();
         info.setId("urn:oid:Test");
 
@@ -206,8 +203,8 @@ public class TestR4FhirTerminologyProvider extends R4FhirTest {
         parameters.getParameterFirstRep().setName("result").setValue(new BooleanType(true));
 
         mockFhirRead(
-                "/ValueSet/Test/$validate-code?code=" + urlencode(code.getCode()) + "&system="
-                        + urlencode(code.getSystem()),
+                "/ValueSet/Test/$validate-code?code=" + urlEncode(code.getCode()) + "&system="
+                        + urlEncode(code.getSystem()),
                 parameters);
 
         boolean result = provider.in(code, info);
@@ -215,7 +212,7 @@ public class TestR4FhirTerminologyProvider extends R4FhirTest {
     }
 
     @Test
-    public void inOperationReturnsFalseWhenFhirReturnsFalse() throws Exception {
+    void inOperationReturnsFalseWhenFhirReturnsFalse() throws Exception {
         ValueSetInfo info = new ValueSetInfo();
         info.setId("urn:oid:Test");
 
@@ -233,8 +230,8 @@ public class TestR4FhirTerminologyProvider extends R4FhirTest {
         parameters.getParameterFirstRep().setName("result").setValue(new BooleanType(false));
 
         mockFhirRead(
-                "/ValueSet/Test/$validate-code?code=" + urlencode(code.getCode()) + "&system="
-                        + urlencode(code.getSystem()),
+                "/ValueSet/Test/$validate-code?code=" + urlEncode(code.getCode()) + "&system="
+                        + urlEncode(code.getSystem()),
                 parameters);
 
         boolean result = provider.in(code, info);
@@ -242,7 +239,7 @@ public class TestR4FhirTerminologyProvider extends R4FhirTest {
     }
 
     @Test
-    public void inOperationHandlesNullSystem() throws Exception {
+    void inOperationHandlesNullSystem() throws Exception {
         ValueSetInfo info = new ValueSetInfo();
         info.setId("urn:oid:Test");
 
@@ -258,14 +255,14 @@ public class TestR4FhirTerminologyProvider extends R4FhirTest {
         Parameters parameters = new Parameters();
         parameters.getParameterFirstRep().setName("result").setValue(new BooleanType(true));
 
-        mockFhirRead("/ValueSet/Test/$validate-code?code=" + urlencode(code.getCode()), parameters);
+        mockFhirRead("/ValueSet/Test/$validate-code?code=" + urlEncode(code.getCode()), parameters);
 
         boolean result = provider.in(code, info);
         assertTrue(result);
     }
 
     @Test
-    public void lookupOperationSuccess() throws Exception {
+    void lookupOperationSuccess() throws Exception {
         CodeSystemInfo info = new CodeSystemInfo();
         info.setId(TEST_SYSTEM);
         info.setVersion(TEST_SYSTEM_VERSION);
@@ -289,21 +286,21 @@ public class TestR4FhirTerminologyProvider extends R4FhirTest {
         assertEquals(result.getDisplay(), code.getDisplay());
     }
 
-    protected String urlencode(String value) throws UnsupportedEncodingException {
+    protected String urlEncode(String value) throws UnsupportedEncodingException {
         return URLEncoder.encode(value, "utf-8");
     }
 
     protected void mockResolveSearchPath(ValueSetInfo info, ValueSet valueSet) throws UnsupportedEncodingException {
         if (valueSet != null && valueSet.getUrl() != null) {
-            mockFhirSearch("/ValueSet?url=" + urlencode(info.getId()), valueSet);
+            mockFhirSearch("/ValueSet?url=" + urlEncode(info.getId()), valueSet);
         } else {
-            mockFhirSearch("/ValueSet?url=" + urlencode(info.getId()));
+            mockFhirSearch("/ValueSet?url=" + urlEncode(info.getId()));
         }
 
         if (valueSet != null && valueSet.getIdentifier().size() > 0) {
-            mockFhirSearch("/ValueSet?identifier=" + urlencode(info.getId()), valueSet);
+            mockFhirSearch("/ValueSet?identifier=" + urlEncode(info.getId()), valueSet);
         } else {
-            mockFhirSearch("/ValueSet?identifier=" + urlencode(info.getId()));
+            mockFhirSearch("/ValueSet?identifier=" + urlEncode(info.getId()));
         }
 
         if (valueSet != null) {

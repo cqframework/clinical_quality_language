@@ -1,17 +1,17 @@
 package org.cqframework.cql.elm.utility;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.hl7.elm.r1.ExpressionDef;
 import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.Library.Statements;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-public class VisitorsTest {
+class VisitorsTest {
 
     @Test
-    public void constructVisitorTest() {
+    void constructVisitorTest() {
         // set up visitor that counts all visited elements
         var trackableCounter = Visitors.from((elm, context) -> 1, Integer::sum);
 
@@ -31,7 +31,7 @@ public class VisitorsTest {
     }
 
     @Test
-    public void nullVisitorTest() {
+    void nullVisitorTest() {
         assertThrows(NullPointerException.class, () -> Visitors.<Object, Object>from(null));
         assertThrows(NullPointerException.class, () -> Visitors.<Object, Object>from(null, null));
         assertThrows(NullPointerException.class, () -> Visitors.<Object, Object>from(null, (a, b) -> b));

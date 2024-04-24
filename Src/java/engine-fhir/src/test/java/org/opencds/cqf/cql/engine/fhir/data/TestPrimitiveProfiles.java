@@ -6,13 +6,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.math.BigDecimal;
 import org.hl7.fhir.r4.model.*;
+import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
-import org.testng.annotations.Test;
 
-public class TestPrimitiveProfiles extends FhirExecutionTestBase {
+class TestPrimitiveProfiles extends FhirExecutionTestBase {
 
     @Test
-    public void testProfileCast() {
+    void profileCast() {
 
         CqlEngine engine = getEngine();
         engine.getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);
