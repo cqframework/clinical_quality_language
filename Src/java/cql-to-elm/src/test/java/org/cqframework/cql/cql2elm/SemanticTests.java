@@ -2,9 +2,9 @@ package org.cqframework.cql.cql2elm;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertThrows;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -17,82 +17,82 @@ import org.hl7.cql.model.ChoiceType;
 import org.hl7.cql.model.DataType;
 import org.hl7.cql.model.NamedType;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class SemanticTests {
 
     @Test
-    public void testTranslations() throws IOException {
+    void translations() throws IOException {
         runSemanticTest("TranslationTests.cql");
     }
 
     @Test
-    public void testIn() throws IOException {
+    void in() throws IOException {
         runSemanticTest("InTest.cql");
     }
 
     @Test
-    public void testInValueSet() throws IOException {
+    void inValueSet() throws IOException {
         runSemanticTest("InValueSetTest.cql");
     }
 
     @Test
-    public void testTerminologyReferences() throws IOException {
+    void terminologyReferences() throws IOException {
         runSemanticTest("OperatorTests/TerminologyReferences.cql", 0);
     }
 
     @Test
-    public void testProperties() throws IOException {
+    void properties() throws IOException {
         runSemanticTest("PropertyTest.cql");
     }
 
     @Test
-    public void testParameters() throws IOException {
+    void parameters() throws IOException {
         runSemanticTest("ParameterTest.cql");
     }
 
     @Test
-    public void testInvalidParameters() throws IOException {
+    void invalidParameters() throws IOException {
         runSemanticTest("ParameterTestInvalid.cql", 17);
     }
 
     @Test
-    public void testSignatureResolution() throws IOException {
+    void signatureResolution() throws IOException {
         runSemanticTest("SignatureResolutionTest.cql");
     }
 
     @Test
-    public void testCMS146v2() throws IOException {
+    void cms146v2() throws IOException {
         runSemanticTest("CMS146v2_Test_CQM.cql");
     }
 
     @Test
-    public void testAggregateOperators() throws IOException {
+    void aggregateOperators() throws IOException {
         runSemanticTest("OperatorTests/AggregateOperators.cql");
     }
 
     @Test
-    public void testArithmeticOperators() throws IOException {
+    void arithmeticOperators() throws IOException {
         runSemanticTest("OperatorTests/ArithmeticOperators.cql");
     }
 
     @Test
-    public void testComparisonOperators() throws IOException {
+    void comparisonOperators() throws IOException {
         runSemanticTest("OperatorTests/ComparisonOperators.cql");
     }
 
     @Test
-    public void testDateTimeOperators() throws IOException {
+    void dateTimeOperators() throws IOException {
         runSemanticTest("OperatorTests/DateTimeOperators.cql");
     }
 
     @Test
-    public void testIntervalOperators() throws IOException {
+    void intervalOperators() throws IOException {
         runSemanticTest("OperatorTests/IntervalOperators.cql");
     }
 
     @Test
-    public void testIntervalOperatorPhrases() throws IOException {
+    void intervalOperatorPhrases() throws IOException {
         CqlTranslator translator = runSemanticTest("OperatorTests/IntervalOperatorPhrases.cql");
         Library library = translator.toELM();
         ExpressionDef pointWithin = getExpressionDef(library, "PointWithin");
@@ -111,32 +111,32 @@ public class SemanticTests {
     }
 
     @Test
-    public void testListOperators() throws IOException {
+    void listOperators() throws IOException {
         runSemanticTest("OperatorTests/ListOperators.cql");
     }
 
     @Test
-    public void testLogicalOperators() throws IOException {
+    void logicalOperators() throws IOException {
         runSemanticTest("OperatorTests/LogicalOperators.cql");
     }
 
     @Test
-    public void testNullologicalOperators() throws IOException {
+    void nullologicalOperators() throws IOException {
         runSemanticTest("OperatorTests/NullologicalOperators.cql");
     }
 
     @Test
-    public void testStringOperators() throws IOException {
+    void stringOperators() throws IOException {
         runSemanticTest("OperatorTests/StringOperators.cql");
     }
 
     @Test
-    public void testTimeOperators() throws IOException {
+    void timeOperators() throws IOException {
         runSemanticTest("OperatorTests/TimeOperators.cql");
     }
 
     @Test
-    public void testTypeOperators() throws IOException {
+    void typeOperators() throws IOException {
         CqlTranslator translator = runSemanticTest("OperatorTests/TypeOperators.cql");
         org.hl7.elm.r1.Library library = translator.toELM();
         Map<String, ExpressionDef> defs = new HashMap<>();
@@ -179,82 +179,82 @@ public class SemanticTests {
     }
 
     @Test
-    public void testImplicitConversions() throws IOException {
+    void implicitConversions() throws IOException {
         runSemanticTest("OperatorTests/ImplicitConversions.cql");
     }
 
     @Test
-    public void testTupleAndClassConversions() throws IOException {
+    void tupleAndClassConversions() throws IOException {
         runSemanticTest("OperatorTests/TupleAndClassConversions.cql");
     }
 
     @Test
-    public void testFunctions() throws IOException {
+    void functions() throws IOException {
         runSemanticTest("OperatorTests/Functions.cql");
     }
 
     @Test
-    public void testDateTimeLiteral() throws IOException {
+    void dateTimeLiteral() throws IOException {
         runSemanticTest("DateTimeLiteralTest.cql");
     }
 
     @Test
-    public void testCodeAndConcepts() throws IOException {
+    void codeAndConcepts() throws IOException {
         runSemanticTest("CodeAndConceptTest.cql");
     }
 
     @Test
-    public void testInvalidCastExpression() throws IOException {
+    void invalidCastExpression() throws IOException {
         runSemanticTest("OperatorTests/InvalidCastExpression.cql", 1);
     }
 
     @Test
-    public void testForwardReferences() throws IOException {
+    void forwardReferences() throws IOException {
         runSemanticTest("OperatorTests/ForwardReferences.cql", 0);
     }
 
     @Test
-    public void testRecursiveFunctions() throws IOException {
+    void recursiveFunctions() throws IOException {
         runSemanticTest("OperatorTests/RecursiveFunctions.cql", 1);
     }
 
     @Test
-    public void testNameHiding() throws IOException {
+    void nameHiding() throws IOException {
         runSemanticTest("OperatorTests/NameHiding.cql", 1);
     }
 
     @Test
-    public void testSorting() throws IOException {
+    void sorting() throws IOException {
         runSemanticTest("OperatorTests/Sorting.cql", 1);
     }
 
     @Test
-    public void testInvalidSortClauses() throws IOException {
+    void invalidSortClauses() throws IOException {
         runSemanticTest("OperatorTests/InvalidSortClauses.cql", 3);
     }
 
     @Test
-    public void testUndeclaredForward() throws IOException {
+    void undeclaredForward() throws IOException {
         runSemanticTest("OperatorTests/UndeclaredForward.cql", 1);
     }
 
     @Test
-    public void testUndeclaredSignature() throws IOException {
+    void undeclaredSignature() throws IOException {
         runSemanticTest("OperatorTests/UndeclaredSignature.cql", 1);
     }
 
     @Test
-    public void testMessageOperators() throws IOException {
+    void messageOperators() throws IOException {
         runSemanticTest("OperatorTests/MessageOperators.cql", 0);
     }
 
     @Test
-    public void testMultiSourceQuery() throws IOException {
+    void multiSourceQuery() throws IOException {
         runSemanticTest("OperatorTests/MultiSourceQuery.cql", 0);
     }
 
     @Test
-    public void testQuery() throws IOException {
+    void query() throws IOException {
         runSemanticTest("OperatorTests/Query.cql", 0);
     }
 
@@ -269,28 +269,28 @@ public class SemanticTests {
     // }
 
     @Test
-    public void tricksyParse() throws IOException {
+    void tricksyParse() throws IOException {
         runSemanticTest("TricksyParse.cql");
     }
 
     @Test
-    public void shouldFail() throws IOException {
+    void shouldFail() throws IOException {
         runSemanticTest("ShouldFail.cql", 1);
     }
 
     @Test
-    public void testCompatibilityLevel3() throws IOException {
+    void compatibilityLevel3() throws IOException {
         runSemanticTest("TestCompatibilityLevel3.cql", 1);
         runSemanticTest("TestCompatibilityLevel3.cql", 0, new CqlCompilerOptions().withCompatibilityLevel("1.3"));
     }
 
     @Test
-    public void invalidEquality() throws IOException {
+    void invalidEquality() throws IOException {
         runSemanticTest("InvalidEquality.cql", 1, CqlCompilerOptions.Options.DisableListPromotion);
     }
 
     @Test
-    public void testRelatedContextRetrieve() throws IOException {
+    void relatedContextRetrieve() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("TestRelatedContextRetrieve.cql", 0);
         org.hl7.elm.r1.Library library = translator.toELM();
         Map<String, ExpressionDef> defs = new HashMap<>();
@@ -311,7 +311,7 @@ public class SemanticTests {
     }
 
     @Test
-    public void testIssue616() throws IOException {
+    void issue616() throws IOException {
         TestUtils.runSemanticTest("Issue616.cql", 1);
     }
 
@@ -330,17 +330,17 @@ public class SemanticTests {
     }
 
     @Test
-    public void testIssue547() throws IOException {
+    void issue547() throws IOException {
         TestUtils.runSemanticTest("Issue547.cql", 3);
     }
 
     @Test
-    public void testIssue558() throws IOException {
+    void issue558() throws IOException {
         TestUtils.runSemanticTest("Issue558.cql", 1);
     }
 
     @Test
-    public void testIssue581() throws IOException {
+    void issue581() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("Issue581.cql", 0);
         Library library = translator.toELM();
         assertThat(library.getStatements(), notNullValue());
@@ -354,7 +354,7 @@ public class SemanticTests {
     }
 
     @Test
-    public void testIssue405() throws IOException {
+    void issue405() throws IOException {
         CqlTranslator translator =
                 TestUtils.runSemanticTest("Issue405.cql", 0, CqlCompilerOptions.Options.EnableAnnotations);
         Library library = translator.toELM();
@@ -366,7 +366,7 @@ public class SemanticTests {
     }
 
     @Test
-    public void testIssue395() throws IOException {
+    void issue395() throws IOException {
         CqlTranslator translator =
                 TestUtils.runSemanticTest("Issue395.cql", 0, CqlCompilerOptions.Options.EnableAnnotations);
         Library library = translator.toELM();
@@ -376,7 +376,7 @@ public class SemanticTests {
     }
 
     @Test
-    public void testIssue587() throws IOException {
+    void issue587() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("Issue587.cql", 2);
         // This doesn't resolve correctly, collapse null should work, but it's related to this issue:
         // [#435](https://github.com/cqframework/clinical_quality_language/issues/435)
@@ -385,12 +385,12 @@ public class SemanticTests {
     }
 
     @Test
-    public void testIssue592() throws IOException {
+    void issue592() throws IOException {
         TestUtils.runSemanticTest("Issue592.cql", 0, new CqlCompilerOptions().withCompatibilityLevel("1.3"));
     }
 
     @Test
-    public void testIssue596() throws IOException {
+    void issue596() throws IOException {
         // NOTE: This test is susceptible to constant folding optimization...
         CqlTranslator translator = TestUtils.runSemanticTest("Issue596.cql", 0);
         ExpressionDef ed = translator.getTranslatedLibrary().resolveExpressionRef("NullBeforeInterval");
@@ -441,7 +441,7 @@ public class SemanticTests {
     }
 
     @Test
-    public void testIssue643() throws IOException {
+    void issue643() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("Issue643.cql", 0);
         /*
            define function EncountersWithCoding(encounters List<Encounter>, valueSet System.ValueSet):
@@ -508,13 +508,13 @@ public class SemanticTests {
     }
 
     @Test
-    public void testIssue827() throws IOException {
+    void issue827() throws IOException {
         // https://github.com/cqframework/clinical_quality_language/issues/827
         TestUtils.runSemanticTest("Issue827.cql", 0);
     }
 
     @Test
-    public void testIssueEmptySourceInterval() throws IOException {
+    void issueEmptySourceInterval() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest(
                 "IssueEmptySourceInterval.cql", 1, CqlCompilerOptions.Options.EnableAnnotations);
 
@@ -524,7 +524,7 @@ public class SemanticTests {
     }
 
     @Test
-    public void TestVSCastFunction14() throws IOException {
+    void vSCastFunction14() throws IOException {
         CqlCompilerOptions options = new CqlCompilerOptions()
                 .withOptions(
                         CqlCompilerOptions.Options.EnableAnnotations,
@@ -585,7 +585,7 @@ public class SemanticTests {
     }
 
     @Test
-    public void TestVSCastFunction15() throws IOException {
+    void vSCastFunction15() throws IOException {
         // TODO: This test needs to pass, most likely by implicitly converting a ValueSet to a ValueSetRef? Or maybe a
         // new explicit ELM operation?
         CqlCompilerOptions options = new CqlCompilerOptions()
@@ -654,12 +654,12 @@ public class SemanticTests {
     }
 
     @Test
-    public void TestQuotedForwards() throws IOException {
+    void quotedForwards() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("TestQuotedForwards.cql", 0);
     }
 
     @Test
-    public void testIncorrectParameterType1204() throws IOException {
+    void incorrectParameterType1204() throws IOException {
         final CqlTranslator translator = runSemanticTest("TestIncorrectParameterType1204.cql", 2);
 
         final List<CqlCompilerException> errors = translator.getErrors();
@@ -675,7 +675,7 @@ public class SemanticTests {
     }
 
     @Test
-    public void testIdentifierCaseMismatch() throws IOException {
+    void identifierCaseMismatch() throws IOException {
         final CqlTranslator translator = runSemanticTest("TestIdentifierCaseMismatch.cql", 2);
 
         final List<CqlCompilerException> errors = translator.getErrors();
@@ -692,12 +692,12 @@ public class SemanticTests {
     }
 
     @Test
-    public void testNonExistentFileName() {
+    void nonExistentFileName() {
         assertThrows(IOException.class, () -> TestUtils.runSemanticTest("ThisFileDoesNotExist.cql", 0));
     }
 
     @Test
-    public void testCaseConditionalReturnTypes() throws IOException {
+    void caseConditionalReturnTypes() throws IOException {
         CqlTranslator translator = runSemanticTest("Issue648.cql", 0);
         org.hl7.elm.r1.Library library = translator.toELM();
         Map<String, ExpressionDef> defs = new HashMap<>();
@@ -723,11 +723,11 @@ public class SemanticTests {
         for (DataType dt : choiceType.getTypes()) {
             actualChoiceTypes.add(((NamedType) dt).getName());
         }
-        assertTrue(actualChoiceTypes.equals(expectedChoiceTypes), "Expected types are String, Boolean, and Integer: ");
+        assertEquals(actualChoiceTypes, expectedChoiceTypes, "Expected types are String, Boolean, and Integer: ");
     }
 
     @Test
-    public void testIfConditionalReturnTypes() throws IOException {
+    void ifConditionalReturnTypes() throws IOException {
         CqlTranslator translator = runSemanticTest("Issue648.cql", 0);
         org.hl7.elm.r1.Library library = translator.toELM();
         Map<String, ExpressionDef> defs = new HashMap<>();
@@ -751,11 +751,11 @@ public class SemanticTests {
         for (DataType dt : choiceType.getTypes()) {
             actualChoiceTypes.add(((NamedType) dt).getName());
         }
-        assertTrue(actualChoiceTypes.equals(expectedChoiceTypes), "Expected return types are String and Boolean: ");
+        assertEquals(actualChoiceTypes, expectedChoiceTypes, "Expected return types are String and Boolean: ");
     }
 
     @Test
-    public void testIssue863() throws IOException {
+    void issue863() throws IOException {
         TestUtils.runSemanticTest("Issue863.cql", 0);
     }
 

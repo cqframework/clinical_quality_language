@@ -5,15 +5,15 @@ import static org.hamcrest.Matchers.is;
 
 import java.io.IOException;
 import org.hl7.elm.r1.VersionedIdentifier;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("removal")
-public class CqlConditionalOperatorsTest extends CqlTestBase {
+class CqlConditionalOperatorsTest extends CqlTestBase {
 
     private static final VersionedIdentifier library = new VersionedIdentifier().withId("CqlConditionalOperatorsTest");
 
     @Test
-    public void test_all_conditional_operators_tests() throws IOException {
+    void all_conditional_operators_tests() throws IOException {
         var value = engine.expression(library, "IfTrue1").value();
         assertThat(value, is(5));
 

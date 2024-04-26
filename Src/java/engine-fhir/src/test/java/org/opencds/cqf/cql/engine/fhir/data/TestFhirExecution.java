@@ -1,9 +1,11 @@
 package org.opencds.cqf.cql.engine.fhir.data;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 import java.util.Set;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
-import org.testng.Assert;
 
 public class TestFhirExecution extends FhirExecutionTestBase {
 
@@ -15,7 +17,7 @@ public class TestFhirExecution extends FhirExecutionTestBase {
         var results = engine.evaluate(library.getIdentifier(), Set.of("testCoalesce"));
 
         Object value = results.forExpression("testCoalesce").value();
-        Assert.assertTrue((Integer) ((List<?>) value).get(0) == 72);
+        assertTrue((Integer) ((List<?>) value).get(0) == 72);
     }
 
     // @Test
@@ -25,7 +27,7 @@ public class TestFhirExecution extends FhirExecutionTestBase {
         engine.getState().setParameter(null, "MAXYEAR", 2014);
         var results = engine.evaluate(library.getIdentifier(), Set.of("testMonthFrom"));
         Object value = results.forExpression("testMonthFrom").value();
-        Assert.assertNotNull(value);
+        assertNotNull(value);
     }
 
     // @Test
@@ -34,7 +36,7 @@ public class TestFhirExecution extends FhirExecutionTestBase {
         engine.getEnvironment().registerDataProvider("http://hl7.org/fhir", dstu3Provider);
         var results = engine.evaluate(library.getIdentifier(), Set.of("Immunizations in range"));
         Object value = results.forExpression("Immunizations in range").value();
-        Assert.assertNotNull(value);
+        assertNotNull(value);
     }
 
     // @Test
@@ -43,6 +45,6 @@ public class TestFhirExecution extends FhirExecutionTestBase {
         engine.getEnvironment().registerDataProvider("http://hl7.org/fhir", dstu3Provider);
         var results = engine.evaluate(library.getIdentifier(), Set.of("Resource Id"));
         Object value = results.forExpression("Resource Id").value();
-        Assert.assertNotNull(value);
+        assertNotNull(value);
     }
 }

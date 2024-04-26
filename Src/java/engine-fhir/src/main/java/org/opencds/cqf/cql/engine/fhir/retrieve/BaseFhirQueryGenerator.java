@@ -122,8 +122,6 @@ public abstract class BaseFhirQueryGenerator implements FhirVersionIntegrityChec
             Map<String, Object> parameters,
             IBaseConformance capabilityStatement);
 
-    public abstract FhirVersionEnum getFhirVersion();
-
     protected Pair<String, IQueryParameterType> getTemplateParam(String dataType, String templateId) {
         if (templateId == null || templateId.equals("")) {
             return null;
@@ -379,9 +377,9 @@ public abstract class BaseFhirQueryGenerator implements FhirVersionIntegrityChec
         }
 
         List<SearchParameterMap> maps = new ArrayList<>();
-        for (TokenOrListParam tolp : chunkedCodeParam.getValue()) {
+        for (TokenOrListParam t : chunkedCodeParam.getValue()) {
             SearchParameterMap base = this.getBaseMap(templateParam, contextParam, dateRangeParams, codeParams);
-            base.add(chunkedCodeParam.getKey(), tolp);
+            base.add(chunkedCodeParam.getKey(), t);
             maps.add(base);
         }
 

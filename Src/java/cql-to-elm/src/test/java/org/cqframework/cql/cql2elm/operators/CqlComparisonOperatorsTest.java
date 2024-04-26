@@ -11,21 +11,21 @@ import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.ModelManager;
 import org.hl7.elm.r1.ExpressionDef;
 import org.hl7.elm.r1.Library;
-import org.testng.annotations.BeforeTest;
+import org.junit.jupiter.api.BeforeAll;
 
 /**
  * Created by Bryn on 12/30/2016.
  */
-public class CqlComparisonOperatorsTest {
+class CqlComparisonOperatorsTest {
 
     // NOTE: The CQL for this test is taken from an engine testing suite that produced a particular issue with the
     // operatorMap. This library will not translate successfully without the proper fix in place.
     // So this test only needs to validate that the library translates successfully.
 
-    private Map<String, ExpressionDef> defs;
+    private static Map<String, ExpressionDef> defs;
 
-    @BeforeTest
-    public void setup() throws IOException {
+    @BeforeAll
+    static void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
         CqlTranslator translator = CqlTranslator.fromStream(
                 CqlComparisonOperatorsTest.class.getResourceAsStream("../OperatorTests/CqlComparisonOperators.cql"),

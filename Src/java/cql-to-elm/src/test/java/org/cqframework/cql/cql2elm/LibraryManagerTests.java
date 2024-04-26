@@ -3,32 +3,32 @@ package org.cqframework.cql.cql2elm;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
-import static org.testng.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.hl7.elm.r1.VersionedIdentifier;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public class LibraryManagerTests {
+class LibraryManagerTests {
 
-    ModelManager modelManager;
-    LibraryManager libraryManager;
+    private static ModelManager modelManager;
+    private static LibraryManager libraryManager;
 
-    @BeforeClass
-    public void setup() {
+    @BeforeAll
+    static void setup() {
         modelManager = new ModelManager();
         libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider("LibraryManagerTests"));
     }
 
-    @AfterClass
-    public void tearDown() {
+    @AfterAll
+    static void tearDown() {
         libraryManager.getLibrarySourceLoader().clearProviders();
     }
 
     @Test
-    public void testLibraryStatementsAreSorted() {
+    void libraryStatementsAreSorted() {
         // Some optimizations depend on the Library statements being sorted in lexicographic order by name
         // This test validates that they are ordered
         var lib = libraryManager

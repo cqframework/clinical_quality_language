@@ -5,14 +5,14 @@ import static org.hamcrest.Matchers.is;
 
 import java.util.Arrays;
 import org.hl7.elm.r1.VersionedIdentifier;
+import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.data.SystemExternalFunctionProvider;
 import org.opencds.cqf.cql.engine.execution.external.MyMath2;
-import org.testng.annotations.Test;
 
-public class CqlExternalFunctionsTest2 extends CqlTestBase {
+class CqlExternalFunctionsTest2 extends CqlTestBase {
 
     @Test
-    public void testExternalFunctions() {
+    void externalFunctions() {
         VersionedIdentifier identifier = toElmIdentifier("CqlExternalFunctionsTest2");
 
         engine.getEnvironment()

@@ -7,11 +7,11 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 import org.hl7.fhir.r4.model.DateType;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-public class DateTypeTest {
+class DateTypeTest {
     @Test
-    public void testDateType() {
+    void dateType() {
         // DateType Month is zero-based (11 == December)
         DateType birthDate = new DateType(1974, 11, 25);
         assertThat(birthDate.getYear(), is(1974));
@@ -20,7 +20,7 @@ public class DateTypeTest {
     }
 
     @Test
-    public void testDate() {
+    void date() {
         // NOTE: DateType uses default GMT
         java.util.Date birthDate = new DateType(1974, 11, 25).getValue();
         GregorianCalendar calendar = new GregorianCalendar(TimeZone.getTimeZone("GMT"));

@@ -1,32 +1,32 @@
 package org.cqframework.cql.cql2elm;
 
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public class ElmSupportTest {
+class ElmSupportTest {
 
-    ModelManager modelManager;
-    LibraryManager libraryManager;
+    static ModelManager modelManager;
+    static LibraryManager libraryManager;
 
-    @BeforeClass
-    public void setup() {
+    @BeforeAll
+    static void setup() {
         modelManager = new ModelManager();
         libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
     }
 
-    @AfterClass
-    public void tearDown() {
+    @AfterAll
+    static void tearDown() {
         libraryManager.getLibrarySourceLoader().clearProviders();
     }
 
     @Test
-    public void testIncludedLibraryWithJsonElm() {
+    void includedLibraryWithJsonElm() {
         CqlCompilerOptions options =
                 new CqlCompilerOptions(CqlCompilerException.ErrorSeverity.Info, SignatureLevel.All);
         libraryManager = new LibraryManager(modelManager, options);
@@ -46,7 +46,7 @@ public class ElmSupportTest {
     }
 
     @Test
-    public void testIncludedLibraryWithXmlElm() {
+    void includedLibraryWithXmlElm() {
         CqlCompilerOptions options =
                 new CqlCompilerOptions(CqlCompilerException.ErrorSeverity.Info, SignatureLevel.All);
         libraryManager = new LibraryManager(modelManager, options);
@@ -65,7 +65,7 @@ public class ElmSupportTest {
     }
 
     @Test
-    public void testIncludedLibraryWithJsonWithNullTypeSpecifierElm() {
+    void includedLibraryWithJsonWithNullTypeSpecifierElm() {
         CqlCompilerOptions options =
                 new CqlCompilerOptions(CqlCompilerException.ErrorSeverity.Info, SignatureLevel.All);
         libraryManager = new LibraryManager(modelManager, options);

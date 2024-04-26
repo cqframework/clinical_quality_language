@@ -7,12 +7,12 @@ import com.tngtech.archunit.core.importer.ClassFileImporter;
 import org.cqframework.cql.cql2elm.model.LibraryRef;
 import org.cqframework.cql.elm.IdObjectFactory;
 import org.hl7.elm.r1.Element;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-public class ArchitectureTest {
+class ArchitectureTest {
 
     @Test
-    public void ensureNoDirectElmConstruction() {
+    void ensureNoDirectElmConstruction() {
 
         JavaClasses importedClasses = new ClassFileImporter().importPackages("org.cqframework.cql");
 

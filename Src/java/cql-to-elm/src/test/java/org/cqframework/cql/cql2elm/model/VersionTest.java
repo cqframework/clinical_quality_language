@@ -1,63 +1,66 @@
 package org.cqframework.cql.cql2elm.model;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class VersionTest {
+import org.junit.jupiter.api.Test;
+
+class VersionTest {
 
     @Test
-    public void testVersionComparable() {
+    void versionComparable() {
         Version versionComparable = new Version("0.0.1");
-        Assert.assertTrue(versionComparable.isComparable());
+        assertTrue(versionComparable.isComparable());
 
         Version versionNonComparable = new Version("0.0a.0b1");
-        Assert.assertFalse(versionNonComparable.isComparable());
+        assertFalse(versionNonComparable.isComparable());
 
         Version version = new Version("0.0&.1");
-        Assert.assertFalse(version.isComparable());
+        assertFalse(version.isComparable());
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void testVersionValidateCompareToThrows() {
+    @Test
+    void versionValidateCompareToThrows() {
         Version version = new Version("0.0.1");
         Version versionThat = new Version("0.0a.1");
-        version.compareTo(versionThat);
+        assertThrows(IllegalArgumentException.class, () -> {
+            version.compareTo(versionThat);
+        });
     }
 
     @Test
-    public void testVersionValidateCompareTo() {
+    void versionValidateCompareTo() {
         Version version = new Version("0.0.1");
         Version versionThat = new Version("0.0.1");
-        Assert.assertTrue(version.compareTo(versionThat) == 0);
+        assertEquals(0, version.compareTo(versionThat));
 
         Version versionThatLater = new Version("0.0.2");
-        Assert.assertTrue(version.compareTo(versionThatLater) < 0);
-        Assert.assertTrue(versionThatLater.compareTo(version) > 0);
+        assertTrue(version.compareTo(versionThatLater) < 0);
+        assertTrue(versionThatLater.compareTo(version) > 0);
     }
 
     @Test
-    public void testVersionValidateCompatibility() {
+    void versionValidateCompatibility() {
         Version version = new Version("0.0.1");
         Version versionThat = new Version("0.0b.1");
         Version versionThatSame = new Version("0.0b.1");
-        Assert.assertFalse(version.compatibleWith(versionThat));
-        Assert.assertFalse(versionThat.compatibleWith(version));
-        Assert.assertTrue(versionThat.compatibleWith(versionThatSame));
+        assertFalse(version.compatibleWith(versionThat));
+        assertFalse(versionThat.compatibleWith(version));
+        assertTrue(versionThat.compatibleWith(versionThatSame));
     }
 
     @Test
-    public void testMATVersions() {
+    void matVersions() {
         Version version = new Version("v1-0-0-QDM-5-6");
-        Assert.assertTrue(version.getMajorVersion() == 1);
-        Assert.assertTrue(version.getMinorVersion() == 0);
-        Assert.assertTrue(version.getPatchVersion() == 0);
-        Assert.assertTrue(version.getBuildVersion().equals("QDM-5-6"));
+        assertTrue(version.getMajorVersion() == 1);
+        assertTrue(version.getMinorVersion() == 0);
+        assertTrue(version.getPatchVersion() == 0);
+        assertEquals("QDM-5-6", version.getBuildVersion());
     }
 
     @Test
-    public void testMATVersionsCompatible() {
+    void matVersionsCompatible() {
         Version version = new Version("7.0.0");
         Version matVersion = new Version("v7-0-0-QDM-5-6");
-        Assert.assertTrue(matVersion.compatibleWith(version));
+        assertTrue(matVersion.compatibleWith(version));
     }
 }

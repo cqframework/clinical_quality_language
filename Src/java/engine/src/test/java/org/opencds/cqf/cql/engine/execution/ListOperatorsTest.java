@@ -2,9 +2,9 @@ package org.opencds.cqf.cql.engine.execution;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator.equivalent;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -13,13 +13,13 @@ import java.util.Collections;
 import java.util.List;
 import org.cqframework.cql.cql2elm.CqlCompilerException;
 import org.cqframework.cql.cql2elm.CqlCompilerOptions;
+import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.runtime.*;
-import org.testng.annotations.Test;
 
-public class ListOperatorsTest extends CqlTestBase {
+class ListOperatorsTest extends CqlTestBase {
 
     @Test
-    public void test_cql_list_test_suite_compiles() {
+    void cql_list_test_suite_compiles() {
         var errors = new ArrayList<CqlCompilerException>();
         this.getLibrary(toElmIdentifier("CqlListOperatorsTest"), errors, testCompilerOptions());
         assertFalse(
@@ -28,7 +28,7 @@ public class ListOperatorsTest extends CqlTestBase {
     }
 
     @Test
-    public void test_all_interval_operators() {
+    void all_interval_operators() {
         final BigDecimal bigDecimalZoneOffset = getBigDecimalZoneOffset();
 
         var eng = getEngine(testCompilerOptions());
@@ -696,7 +696,7 @@ public class ListOperatorsTest extends CqlTestBase {
     }
 
     @Test
-    public void test_union_operator() {
+    void union_operator() {
         final BigDecimal bigDecimalZoneOffset = getBigDecimalZoneOffset();
         var eng = getEngine(testCompilerOptions());
         var results = eng.evaluate(toElmIdentifier("CqlListOperatorsTest"));

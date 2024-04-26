@@ -17,15 +17,15 @@ import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.ModelManager;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public class StringOperatorsTest {
+class StringOperatorsTest {
 
-    private Map<String, ExpressionDef> defs;
+    private static Map<String, ExpressionDef> defs;
 
-    @BeforeTest
-    public void setup() throws IOException {
+    @BeforeAll
+    static void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
         CqlTranslator translator = CqlTranslator.fromStream(
                 StringOperatorsTest.class.getResourceAsStream("../OperatorTests/StringOperators.cql"),
@@ -39,19 +39,19 @@ public class StringOperatorsTest {
     }
 
     @Test
-    public void testAdd() {
+    void add() {
         ExpressionDef def = defs.get("StringAdd");
         assertThat(def, hasTypeAndResult(Concatenate.class, "System.String"));
     }
 
     @Test
-    public void testConcatenate() {
+    void concatenate() {
         ExpressionDef def = defs.get("StringConcatenate");
         assertThat(def, hasTypeAndResult(Concatenate.class, "System.String"));
     }
 
     @Test
-    public void testConcatenateWithAmpersand() {
+    void concatenateWithAmpersand() {
         ExpressionDef def = defs.get("StringConcatenateWithAmpersand");
         assertThat(def, hasTypeAndResult(Concatenate.class, "System.String"));
 
@@ -62,7 +62,7 @@ public class StringOperatorsTest {
     }
 
     @Test
-    public void testCombine() {
+    void combine() {
         ExpressionDef def = defs.get("StringCombine");
         assertThat(def, hasTypeAndResult(Combine.class, "System.String"));
         Combine combine = (Combine) def.getExpression();
@@ -77,7 +77,7 @@ public class StringOperatorsTest {
     }
 
     @Test
-    public void testSplit() {
+    void split() {
         ExpressionDef def = defs.get("StringSplit");
         assertThat(def, hasTypeAndResult(Split.class, "list<System.String>"));
         Split split = (Split) def.getExpression();
@@ -86,7 +86,7 @@ public class StringOperatorsTest {
     }
 
     @Test
-    public void testSplitOnMatches() {
+    void splitOnMatches() {
         ExpressionDef def = defs.get("StringSplitOnMatches");
         assertThat(def, hasTypeAndResult(SplitOnMatches.class, "list<System.String>"));
         SplitOnMatches splitOnMatches = (SplitOnMatches) def.getExpression();
@@ -95,7 +95,7 @@ public class StringOperatorsTest {
     }
 
     @Test
-    public void testUpper() {
+    void upper() {
         ExpressionDef def = defs.get("StringUpper");
         assertThat(def, hasTypeAndResult(Upper.class, "System.String"));
         Upper upper = (Upper) def.getExpression();
@@ -103,7 +103,7 @@ public class StringOperatorsTest {
     }
 
     @Test
-    public void testLower() {
+    void lower() {
         ExpressionDef def = defs.get("StringLower");
         assertThat(def, hasTypeAndResult(Lower.class, "System.String"));
         Lower lower = (Lower) def.getExpression();
@@ -111,7 +111,7 @@ public class StringOperatorsTest {
     }
 
     @Test
-    public void testPositionOf() {
+    void positionOf() {
         ExpressionDef def = defs.get("StringPositionOf");
         assertThat(def, hasTypeAndResult(PositionOf.class, "System.Integer"));
         PositionOf positionOf = (PositionOf) def.getExpression();
@@ -120,7 +120,7 @@ public class StringOperatorsTest {
     }
 
     @Test
-    public void testLastPositionOf() {
+    void lastPositionOf() {
         ExpressionDef def = defs.get("StringLastPositionOf");
         assertThat(def, hasTypeAndResult(LastPositionOf.class, "System.Integer"));
         LastPositionOf lastPositionOf = (LastPositionOf) def.getExpression();
@@ -129,7 +129,7 @@ public class StringOperatorsTest {
     }
 
     @Test
-    public void testSubstring() {
+    void substring() {
         ExpressionDef def = defs.get("StringSubstring");
         assertThat(def, hasTypeAndResult(Substring.class, "System.String"));
         Substring substring = (Substring) def.getExpression();
@@ -146,7 +146,7 @@ public class StringOperatorsTest {
     }
 
     @Test
-    public void testLength() {
+    void length() {
         ExpressionDef def = defs.get("StringLength");
         assertThat(def, hasTypeAndResult(Length.class, "System.Integer"));
 
@@ -155,25 +155,25 @@ public class StringOperatorsTest {
     }
 
     @Test
-    public void testStartsWith() {
+    void startsWith() {
         ExpressionDef def = defs.get("StringStartsWith");
         assertThat(def, hasTypeAndResult(StartsWith.class, "System.Boolean"));
     }
 
     @Test
-    public void testEndsWith() {
+    void endsWith() {
         ExpressionDef def = defs.get("StringEndsWith");
         assertThat(def, hasTypeAndResult(EndsWith.class, "System.Boolean"));
     }
 
     @Test
-    public void testMatches() {
+    void matches() {
         ExpressionDef def = defs.get("StringMatches");
         assertThat(def, hasTypeAndResult(Matches.class, "System.Boolean"));
     }
 
     @Test
-    public void testReplaceMatches() {
+    void replaceMatches() {
         ExpressionDef def = defs.get("StringReplaceMatches");
         assertThat(def, hasTypeAndResult(ReplaceMatches.class, "System.String"));
     }

@@ -1,19 +1,20 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import java.util.List;
-import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SortDescendingTest extends CqlTestBase {
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator;
+
+class SortDescendingTest extends CqlTestBase {
 
     @Test
-    public void testEvaluate() {
+    void evaluate() {
         var results = engine.evaluate(toElmIdentifier("SortDescendingTest"));
         var value = results.forExpression("sorted list of numbers descending").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) value).get(0), 9));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) value).get(1), 4));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) value).get(2), 2));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) value).get(3), 1));
+        assertTrue(EquivalentEvaluator.equivalent(((List<?>) value).get(0), 9));
+        assertTrue(EquivalentEvaluator.equivalent(((List<?>) value).get(1), 4));
+        assertTrue(EquivalentEvaluator.equivalent(((List<?>) value).get(2), 2));
+        assertTrue(EquivalentEvaluator.equivalent(((List<?>) value).get(3), 1));
     }
 }

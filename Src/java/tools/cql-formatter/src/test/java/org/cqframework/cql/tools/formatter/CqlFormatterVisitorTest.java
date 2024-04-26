@@ -1,17 +1,18 @@
 package org.cqframework.cql.tools.formatter;
 
 import static org.cqframework.cql.tools.formatter.CqlFormatterVisitor.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
 import org.cqframework.cql.cql2elm.Cql2ElmVisitor;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Created by Christopher on 7/20/2017.
  */
-public class CqlFormatterVisitorTest {
+class CqlFormatterVisitorTest {
 
     boolean inError = false;
 
@@ -19,11 +20,11 @@ public class CqlFormatterVisitorTest {
         String input = getInputStreamAsString(getInput(fileName));
         FormatResult result = getFormattedOutput(getInput(fileName));
         inError = result.errors.size() > 0;
-        Assert.assertTrue(inputMatchesOutput(input, result.output));
+        assertTrue(inputMatchesOutput(input, result.output));
     }
 
     @Test
-    public void testFormatterSpecific() throws IOException {
+    void formatterSpecific() throws IOException {
         runTest("comments.cql");
         // I commented these catches out because it seems to me that the formatter should not clobber input when these
         // errors occur...
@@ -36,49 +37,49 @@ public class CqlFormatterVisitorTest {
         // this test has an extra "`", which is not ignored - causing a syntax error.
         runTest("git-issue-206-a.cql");
         // } catch (AssertionError ae) {
-        //    Assert.assertFalse(inError);
+        //    Assertions.assertFalse(inError);
         // }
         // try {
         // this test has an extra """, which is not ignored - causing a syntax error.
         runTest("git-issue-206-b.cql");
         // } catch (AssertionError ae) {
-        //    Assert.assertTrue(inError);
+        //    Assertions.assertTrue(inError);
         // }
         runTest("git-issue-210-a.cql");
-        Assert.assertFalse(inError);
+        assertFalse(inError);
         runTest("git-issue-210-b.cql");
-        Assert.assertFalse(inError);
+        assertFalse(inError);
         runTest("git-issue-210-c.cql");
-        Assert.assertFalse(inError);
+        assertFalse(inError);
         runTest("git-issue-246.cql");
-        Assert.assertFalse(inError);
+        assertFalse(inError);
         runTest("comment-after.cql");
-        Assert.assertFalse(inError);
+        assertFalse(inError);
         runTest("comment-before.cql");
-        Assert.assertFalse(inError);
+        assertFalse(inError);
         runTest("comment-first.cql");
-        Assert.assertFalse(inError);
+        assertFalse(inError);
         runTest("comment-in-clause.cql");
-        Assert.assertFalse(inError);
+        assertFalse(inError);
         runTest("comment-last.cql");
-        Assert.assertFalse(inError);
+        assertFalse(inError);
         runTest("git-issue-349.cql");
-        Assert.assertFalse(inError);
+        assertFalse(inError);
         runTest("git-issue-613.cql");
-        Assert.assertFalse(inError);
+        assertFalse(inError);
         runTest("git-issue-437.cql");
-        Assert.assertFalse(inError);
+        assertFalse(inError);
         runTest("git-issue-377.cql");
-        Assert.assertFalse(inError);
+        assertFalse(inError);
         try {
             runTest("invalid-syntax.cql");
         } catch (AssertionError ae) {
-            Assert.assertTrue(inError);
+            assertTrue(inError);
         }
     }
 
     @Test
-    public void runCql2ElmRegressionTestSuite() throws IOException {
+    void runCql2ElmRegressionTestSuite() throws IOException {
         runTest("CMS146v2_Test_CQM.cql");
         runTest("CodeAndConceptTest.cql");
         runTest("DateTimeLiteralTest.cql");

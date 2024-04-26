@@ -5,20 +5,20 @@ import static org.hamcrest.Matchers.comparesEqualTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.runtime.*;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
-public class CqlValueLiteralsAndSelectorsTest extends CqlTestBase {
+class CqlValueLiteralsAndSelectorsTest extends CqlTestBase {
 
     @Test
-    public void test_all_ValueLiteralsAndSelectors() {
+    void all_value_literals_and_selectors() {
         var results = engine.evaluate(toElmIdentifier("CqlValueLiteralsAndSelectorsTest"));
         var value = results.forExpression("Null").value();
-        Assert.assertNull(value);
+        assertNull(value);
         assertThat(value, is(nullValue()));
 
         value = results.forExpression("BooleanFalse").value();

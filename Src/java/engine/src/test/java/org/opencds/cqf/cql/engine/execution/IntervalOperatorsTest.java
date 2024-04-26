@@ -2,16 +2,18 @@ package org.opencds.cqf.cql.engine.execution;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.util.*;
+import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator;
 import org.opencds.cqf.cql.engine.runtime.*;
 import org.opencds.cqf.cql.engine.runtime.Date;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
-public class IntervalOperatorsTest extends CqlTestBase {
+class IntervalOperatorsTest extends CqlTestBase {
     //    @Test
     //    public void test_fail() {
     //
@@ -22,7 +24,7 @@ public class IntervalOperatorsTest extends CqlTestBase {
     //            results = engine.evaluate(toElmIdentifier("CqlIntervalOperatorsTest"), set, null, null, null,
     // null);
     //            Object value = results.forExpression("InvalidIntegerIntervalA").value();
-    //            Assert.fail();
+    //            Assertions.fail();
     //
     //
     //        } catch (Exception e) {
@@ -32,7 +34,7 @@ public class IntervalOperatorsTest extends CqlTestBase {
     //    }
 
     @Test
-    public void test_all_interval_operators() {
+    void all_interval_operators() {
         final BigDecimal bigDecimalZoneOffset = getBigDecimalZoneOffset();
 
         var results = engine.evaluate(toElmIdentifier("CqlIntervalOperatorsTest"));
@@ -178,37 +180,37 @@ public class IntervalOperatorsTest extends CqlTestBase {
         assertThat(value, is(nullValue()));
 
         value = results.forExpression("IntegerIntervalCollapse").value();
-        Assert.assertTrue(((Interval) ((List<?>) value).get(0)).equal(new Interval(1, true, 10, true)));
-        Assert.assertTrue(((Interval) ((List<?>) value).get(1)).equal(new Interval(12, true, 19, true)));
+        assertTrue(((Interval) ((List<?>) value).get(0)).equal(new Interval(1, true, 10, true)));
+        assertTrue(((Interval) ((List<?>) value).get(1)).equal(new Interval(12, true, 19, true)));
 
         value = results.forExpression("IntegerIntervalCollapse2").value();
-        Assert.assertTrue(((Interval) ((List<?>) value).get(0)).equal(new Interval(1, true, 19, true)));
+        assertTrue(((Interval) ((List<?>) value).get(0)).equal(new Interval(1, true, 19, true)));
 
         value = results.forExpression("IntegerIntervalCollapse3").value();
-        Assert.assertTrue(((Interval) ((List<?>) value).get(0)).equal(new Interval(4, true, 8, true)));
+        assertTrue(((Interval) ((List<?>) value).get(0)).equal(new Interval(4, true, 8, true)));
 
         value = results.forExpression("IntegerIntervalCollapse4").value();
-        Assert.assertTrue(((Interval) ((List<?>) value).get(0)).equal(new Interval(4, true, 6, true)));
-        Assert.assertTrue(((Interval) ((List<?>) value).get(1)).equal(new Interval(8, true, 10, true)));
+        assertTrue(((Interval) ((List<?>) value).get(0)).equal(new Interval(4, true, 6, true)));
+        assertTrue(((Interval) ((List<?>) value).get(1)).equal(new Interval(8, true, 10, true)));
 
         value = results.forExpression("DecimalIntervalCollapse").value();
-        Assert.assertTrue(((Interval) ((List<?>) value).get(0))
+        assertTrue(((Interval) ((List<?>) value).get(0))
                 .equal(new Interval(new BigDecimal("1.0"), true, new BigDecimal("10.0"), true)));
-        Assert.assertTrue(((Interval) ((List<?>) value).get(1))
+        assertTrue(((Interval) ((List<?>) value).get(1))
                 .equal(new Interval(new BigDecimal("12.0"), true, new BigDecimal("19.0"), true)));
 
         value = results.forExpression("DecimalIntervalCollapse2").value();
-        Assert.assertTrue(((Interval) ((List<?>) value).get(0))
+        assertTrue(((Interval) ((List<?>) value).get(0))
                 .equal(new Interval(new BigDecimal("4.0"), true, new BigDecimal("8.0"), true)));
 
         value = results.forExpression("QuantityIntervalCollapse").value();
-        Assert.assertTrue(((Interval) ((List<?>) value).get(0))
+        assertTrue(((Interval) ((List<?>) value).get(0))
                 .equal(new Interval(
                         new Quantity().withValue(new BigDecimal("1.0")).withUnit("g"),
                         true,
                         new Quantity().withValue(new BigDecimal("10.0")).withUnit("g"),
                         true)));
-        Assert.assertTrue(((Interval) ((List<?>) value).get(1))
+        assertTrue(((Interval) ((List<?>) value).get(1))
                 .equal(new Interval(
                         new Quantity().withValue(new BigDecimal("12.0")).withUnit("g"),
                         true,
@@ -216,77 +218,77 @@ public class IntervalOperatorsTest extends CqlTestBase {
                         true)));
 
         value = results.forExpression("DateTimeCollapse").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(
+        assertTrue(EquivalentEvaluator.equivalent(
                 ((Interval) ((List<?>) value).get(0)).getStart(), new DateTime(bigDecimalZoneOffset, 2012, 1, 1)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(
+        assertTrue(EquivalentEvaluator.equivalent(
                 ((Interval) ((List<?>) value).get(0)).getEnd(), new DateTime(bigDecimalZoneOffset, 2012, 1, 25)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(
+        assertTrue(EquivalentEvaluator.equivalent(
                 ((Interval) ((List<?>) value).get(1)).getStart(), new DateTime(bigDecimalZoneOffset, 2012, 5, 10)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(
+        assertTrue(EquivalentEvaluator.equivalent(
                 ((Interval) ((List<?>) value).get(1)).getEnd(), new DateTime(bigDecimalZoneOffset, 2012, 5, 30)));
         assertThat(((List<?>) value).size(), is(2));
 
         value = results.forExpression("DateTimeCollapse2").value();
 
-        Assert.assertTrue(EquivalentEvaluator.equivalent(
+        assertTrue(EquivalentEvaluator.equivalent(
                 ((Interval) ((List<?>) value).get(0)).getStart(), new DateTime(bigDecimalZoneOffset, 2012, 1, 1)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(
+        assertTrue(EquivalentEvaluator.equivalent(
                 ((Interval) ((List<?>) value).get(0)).getEnd(), new DateTime(bigDecimalZoneOffset, 2012, 5, 25)));
         assertThat(((List<?>) value).size(), is(1));
 
         value = results.forExpression("DateTimeCollapse3").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(
+        assertTrue(EquivalentEvaluator.equivalent(
                 ((Interval) ((List<?>) value).get(0)).getStart(), new DateTime(bigDecimalZoneOffset, 2018, 1, 1)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(
+        assertTrue(EquivalentEvaluator.equivalent(
                 ((Interval) ((List<?>) value).get(0)).getEnd(), new DateTime(bigDecimalZoneOffset, 2018, 8, 28)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(
+        assertTrue(EquivalentEvaluator.equivalent(
                 ((Interval) ((List<?>) value).get(1)).getStart(), new DateTime(bigDecimalZoneOffset, 2018, 8, 30)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(
+        assertTrue(EquivalentEvaluator.equivalent(
                 ((Interval) ((List<?>) value).get(1)).getEnd(), new DateTime(bigDecimalZoneOffset, 2018, 10, 15)));
         assertThat(((List<?>) value).size(), is(2));
 
         value = results.forExpression("DateTimeCollapse4").value();
-        Assert.assertTrue(
+        assertTrue(
                 EquivalentEvaluator.equivalent(((Interval) ((List<?>) value).get(0)).getStart(), new Date(2018, 1, 1)));
-        Assert.assertTrue(
+        assertTrue(
                 EquivalentEvaluator.equivalent(((Interval) ((List<?>) value).get(0)).getEnd(), new Date(2018, 8, 28)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(
+        assertTrue(EquivalentEvaluator.equivalent(
                 ((Interval) ((List<?>) value).get(1)).getStart(), new Date(2018, 8, 30)));
-        Assert.assertTrue(
+        assertTrue(
                 EquivalentEvaluator.equivalent(((Interval) ((List<?>) value).get(1)).getEnd(), new Date(2018, 10, 15)));
 
         value = results.forExpression("DateTimeCollapse5").value();
         System.out.println(value);
-        Assert.assertTrue(
+        assertTrue(
                 EquivalentEvaluator.equivalent(((Interval) ((List<?>) value).get(0)).getStart(), new Date(2018, 1, 1)));
-        Assert.assertTrue(
+        assertTrue(
                 EquivalentEvaluator.equivalent(((Interval) ((List<?>) value).get(0)).getEnd(), new Date(2018, 8, 28)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(
+        assertTrue(EquivalentEvaluator.equivalent(
                 ((Interval) ((List<?>) value).get(1)).getStart(), new Date(2018, 8, 30)));
-        Assert.assertTrue(
+        assertTrue(
                 EquivalentEvaluator.equivalent(((Interval) ((List<?>) value).get(1)).getEnd(), new Date(2018, 10, 15)));
 
         value = results.forExpression("DateTimeCollapse6").value();
-        Assert.assertTrue(
+        assertTrue(
                 EquivalentEvaluator.equivalent(((Interval) ((List<?>) value).get(0)).getStart(), new Date(2018, 1, 1)));
-        Assert.assertTrue(
+        assertTrue(
                 EquivalentEvaluator.equivalent(((Interval) ((List<?>) value).get(0)).getEnd(), new Date(2018, 10, 15)));
 
         value = results.forExpression("TimeCollapse").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(
+        assertTrue(EquivalentEvaluator.equivalent(
                 ((Interval) ((List<?>) value).get(0)).getStart(), new Time(1, 59, 59, 999)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(
+        assertTrue(EquivalentEvaluator.equivalent(
                 ((Interval) ((List<?>) value).get(0)).getEnd(), new Time(15, 59, 59, 999)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(
+        assertTrue(EquivalentEvaluator.equivalent(
                 ((Interval) ((List<?>) value).get(1)).getStart(), new Time(17, 59, 59, 999)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(
+        assertTrue(EquivalentEvaluator.equivalent(
                 ((Interval) ((List<?>) value).get(1)).getEnd(), new Time(22, 59, 59, 999)));
         assertThat(((List<?>) value).size(), is(2));
 
         value = results.forExpression("TimeCollapse2").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(
+        assertTrue(EquivalentEvaluator.equivalent(
                 ((Interval) ((List<?>) value).get(0)).getStart(), new Time(1, 59, 59, 999)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(
+        assertTrue(EquivalentEvaluator.equivalent(
                 ((Interval) ((List<?>) value).get(0)).getEnd(), new Time(15, 59, 59, 999)));
         assertThat(((List<?>) value).size(), is(1));
         value = results.forExpression("TestContainsNull").value();
@@ -344,15 +346,14 @@ public class IntervalOperatorsTest extends CqlTestBase {
         assertThat(value, is(new BigDecimal("10.0")));
 
         value = results.forExpression("QuantityIntervalEnd").value();
-        Assert.assertTrue(((Quantity) value)
+        assertTrue(((Quantity) value)
                 .equal(new Quantity().withValue(new BigDecimal("10.0")).withUnit("g")));
 
         value = results.forExpression("DateTimeIntervalEnd").value();
-        Assert.assertTrue(
-                EquivalentEvaluator.equivalent(value, new DateTime(bigDecimalZoneOffset, 2016, 5, 2, 0, 0, 0, 0)));
+        assertTrue(EquivalentEvaluator.equivalent(value, new DateTime(bigDecimalZoneOffset, 2016, 5, 2, 0, 0, 0, 0)));
 
         value = results.forExpression("TimeIntervalEnd").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(value, new Time(23, 59, 59, 599)));
+        assertTrue(EquivalentEvaluator.equivalent(value, new Time(23, 59, 59, 599)));
 
         //        value = results.forExpression("TestEndsNull").value();
         //        assertThat(value, is(nullValue()));
@@ -427,10 +428,10 @@ public class IntervalOperatorsTest extends CqlTestBase {
         //        assertThat(value, is(nullValue()));
 
         value = results.forExpression("IntegerIntervalExcept1to3").value();
-        Assert.assertTrue(((Interval) value).equal(new Interval(1, true, 3, true)));
+        assertTrue(((Interval) value).equal(new Interval(1, true, 3, true)));
 
         value = results.forExpression("IntegerIntervalExcept4to6").value();
-        Assert.assertTrue(((Interval) value).equal(new Interval(-4, false, 6, false)));
+        assertTrue(((Interval) value).equal(new Interval(-4, false, 6, false)));
 
         value = results.forExpression("IntegerIntervalExceptNullOutNull").value();
         assertThat(value, is(nullValue()));
@@ -439,14 +440,14 @@ public class IntervalOperatorsTest extends CqlTestBase {
         assertThat(value, is(nullValue()));
 
         value = results.forExpression("DecimalIntervalExcept1to3").value();
-        Assert.assertTrue(((Interval) value)
+        assertTrue(((Interval) value)
                 .equal(new Interval(new BigDecimal("1.0"), true, new BigDecimal("3.99999999"), true)));
 
         value = results.forExpression("DecimalIntervalExceptNull").value();
         assertThat(value, is(nullValue()));
 
         value = results.forExpression("QuantityIntervalExcept1to4").value();
-        Assert.assertTrue(((Interval) value)
+        assertTrue(((Interval) value)
                 .equal(new Interval(
                         new Quantity().withValue(new BigDecimal("1.0")).withUnit("g"),
                         true,
@@ -454,27 +455,27 @@ public class IntervalOperatorsTest extends CqlTestBase {
                         true)));
 
         value = results.forExpression("Except12").value();
-        Assert.assertTrue(((Interval) value).equal(new Interval(1, true, 2, true)));
+        assertTrue(((Interval) value).equal(new Interval(1, true, 2, true)));
 
         value = results.forExpression("ExceptDateTimeInterval").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(
+        assertTrue(EquivalentEvaluator.equivalent(
                 ((Interval) value).getStart(), new DateTime(bigDecimalZoneOffset, 2012, 1, 5)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(
+        assertTrue(EquivalentEvaluator.equivalent(
                 ((Interval) value).getEnd(), new DateTime(bigDecimalZoneOffset, 2012, 1, 6)));
 
         value = results.forExpression("ExceptDateTime2").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(
+        assertTrue(EquivalentEvaluator.equivalent(
                 ((Interval) value).getStart(), new DateTime(bigDecimalZoneOffset, 2012, 1, 13)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(
+        assertTrue(EquivalentEvaluator.equivalent(
                 ((Interval) value).getEnd(), new DateTime(bigDecimalZoneOffset, 2012, 1, 16)));
 
         value = results.forExpression("ExceptTimeInterval").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((Interval) value).getStart(), new Time(5, 59, 59, 999)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((Interval) value).getEnd(), new Time(8, 59, 59, 998)));
+        assertTrue(EquivalentEvaluator.equivalent(((Interval) value).getStart(), new Time(5, 59, 59, 999)));
+        assertTrue(EquivalentEvaluator.equivalent(((Interval) value).getEnd(), new Time(8, 59, 59, 998)));
 
         value = results.forExpression("ExceptTime2").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((Interval) value).getStart(), new Time(11, 0, 0, 0)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((Interval) value).getEnd(), new Time(11, 59, 59, 999)));
+        assertTrue(EquivalentEvaluator.equivalent(((Interval) value).getStart(), new Time(11, 0, 0, 0)));
+        assertTrue(EquivalentEvaluator.equivalent(((Interval) value).getEnd(), new Time(11, 59, 59, 999)));
 
         value = results.forExpression("TestInNull").value();
         assertThat(value, is(false));
@@ -598,20 +599,19 @@ public class IntervalOperatorsTest extends CqlTestBase {
         assertThat(value, is(nullValue()));
 
         value = results.forExpression("IntegerIntervalIntersectTest4to10").value();
-        Assert.assertTrue(((Interval) value).equal(new Interval(4, true, 10, true)));
+        assertTrue(((Interval) value).equal(new Interval(4, true, 10, true)));
 
         value = results.forExpression("IntegerIntervalIntersectTestNull").value();
         assertThat(value, is(nullValue()));
 
         value = results.forExpression("DecimalIntervalIntersectTest4to10").value();
-        Assert.assertTrue(
-                ((Interval) value).equal(new Interval(new BigDecimal("4.0"), true, new BigDecimal("10.0"), true)));
+        assertTrue(((Interval) value).equal(new Interval(new BigDecimal("4.0"), true, new BigDecimal("10.0"), true)));
 
         value = results.forExpression("IntegerIntervalIntersectTestNull").value();
         assertThat(value, is(nullValue()));
 
         value = results.forExpression("QuantityIntervalIntersectTest5to10").value();
-        Assert.assertTrue(((Interval) value)
+        assertTrue(((Interval) value)
                 .equal(new Interval(
                         new Quantity().withValue(new BigDecimal("5.0")).withUnit("g"),
                         true,
@@ -622,14 +622,14 @@ public class IntervalOperatorsTest extends CqlTestBase {
         assertThat(value, is(nullValue()));
 
         value = results.forExpression("DateTimeIntersect").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(
+        assertTrue(EquivalentEvaluator.equivalent(
                 ((Interval) value).getStart(), new DateTime(bigDecimalZoneOffset, 2012, 1, 7)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(
+        assertTrue(EquivalentEvaluator.equivalent(
                 ((Interval) value).getEnd(), new DateTime(bigDecimalZoneOffset, 2012, 1, 10)));
 
         value = results.forExpression("TimeIntersect").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((Interval) value).getStart(), new Time(4, 59, 59, 999)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((Interval) value).getEnd(), new Time(6, 59, 59, 999)));
+        assertTrue(EquivalentEvaluator.equivalent(((Interval) value).getStart(), new Time(4, 59, 59, 999)));
+        assertTrue(EquivalentEvaluator.equivalent(((Interval) value).getEnd(), new Time(6, 59, 59, 999)));
 
         value = results.forExpression("IntegerIntervalEquivalentTrue").value();
         assertThat(value, is(true));
@@ -956,16 +956,16 @@ public class IntervalOperatorsTest extends CqlTestBase {
         assertThat(value, is(false));
 
         value = results.forExpression("TestPointFromNull").value();
-        Assert.assertTrue(value == null);
+        assertTrue(value == null);
 
         value = results.forExpression("TestPointFromInteger").value();
-        Assert.assertTrue((Integer) value == 1);
+        assertTrue((Integer) value == 1);
 
         value = results.forExpression("TestPointFromDecimal").value();
-        Assert.assertTrue(((BigDecimal) value).compareTo(new BigDecimal("1.0")) == 0);
+        assertEquals(0, ((BigDecimal) value).compareTo(new BigDecimal("1.0")));
 
         value = results.forExpression("TestPointFromQuantity").value();
-        Assert.assertTrue(((Quantity) value)
+        assertTrue(((Quantity) value)
                 .equal(new Quantity().withValue(new BigDecimal("1.0")).withUnit("cm")));
 
         value = results.forExpression("TestProperlyIncludesNull").value();
@@ -1077,7 +1077,7 @@ public class IntervalOperatorsTest extends CqlTestBase {
         assertThat(value, is(5));
 
         value = results.forExpression("SizeIsNull").value();
-        Assert.assertNull(value);
+        assertNull(value);
 
         value = results.forExpression("IntegerIntervalStart").value();
         assertThat(value, is(1));
@@ -1086,15 +1086,14 @@ public class IntervalOperatorsTest extends CqlTestBase {
         assertThat(value, is(new BigDecimal("1.0")));
 
         value = results.forExpression("QuantityIntervalStart").value();
-        Assert.assertTrue(((Quantity) value)
+        assertTrue(((Quantity) value)
                 .equal(new Quantity().withValue(new BigDecimal("1.0")).withUnit("g")));
 
         value = results.forExpression("DateTimeIntervalStart").value();
-        Assert.assertTrue(
-                EquivalentEvaluator.equivalent(value, new DateTime(bigDecimalZoneOffset, 2016, 5, 1, 0, 0, 0, 0)));
+        assertTrue(EquivalentEvaluator.equivalent(value, new DateTime(bigDecimalZoneOffset, 2016, 5, 1, 0, 0, 0, 0)));
 
         value = results.forExpression("TimeIntervalStart").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(value, new Time(0, 0, 0, 0)));
+        assertTrue(EquivalentEvaluator.equivalent(value, new Time(0, 0, 0, 0)));
 
         value = results.forExpression("TestStartsNull").value();
         assertThat(value, is(nullValue()));
@@ -1136,20 +1135,19 @@ public class IntervalOperatorsTest extends CqlTestBase {
         assertThat(value, is(nullValue()));
 
         value = results.forExpression("IntegerIntervalUnion1To15").value();
-        Assert.assertTrue(((Interval) value).equal(new Interval(1, true, 15, true)));
+        assertTrue(((Interval) value).equal(new Interval(1, true, 15, true)));
 
         value = results.forExpression("IntegerIntervalUnionNull").value();
         assertThat(value, is(nullValue()));
 
         value = results.forExpression("DecimalIntervalUnion1To15").value();
-        Assert.assertTrue(
-                ((Interval) value).equal(new Interval(new BigDecimal("1.0"), true, new BigDecimal("15.0"), true)));
+        assertTrue(((Interval) value).equal(new Interval(new BigDecimal("1.0"), true, new BigDecimal("15.0"), true)));
 
         value = results.forExpression("DecimalIntervalUnionNull").value();
         assertThat(value, is(nullValue()));
 
         value = results.forExpression("QuantityIntervalUnion1To15").value();
-        Assert.assertTrue(((Interval) value)
+        assertTrue(((Interval) value)
                 .equal(new Interval(
                         new Quantity().withValue(new BigDecimal("1.0")).withUnit("g"),
                         true,
@@ -1160,17 +1158,17 @@ public class IntervalOperatorsTest extends CqlTestBase {
         assertThat(value, is(nullValue()));
 
         value = results.forExpression("DateTimeUnion").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(
+        assertTrue(EquivalentEvaluator.equivalent(
                 ((Interval) value).getStart(), new DateTime(bigDecimalZoneOffset, 2012, 1, 5)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(
+        assertTrue(EquivalentEvaluator.equivalent(
                 ((Interval) value).getEnd(), new DateTime(bigDecimalZoneOffset, 2012, 1, 28)));
 
         value = results.forExpression("DateTimeUnionNull").value();
         assertThat(value, is(nullValue()));
 
         value = results.forExpression("TimeUnion").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((Interval) value).getStart(), new Time(5, 59, 59, 999)));
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((Interval) value).getEnd(), new Time(20, 59, 59, 999)));
+        assertTrue(EquivalentEvaluator.equivalent(((Interval) value).getStart(), new Time(5, 59, 59, 999)));
+        assertTrue(EquivalentEvaluator.equivalent(((Interval) value).getEnd(), new Time(20, 59, 59, 999)));
 
         value = results.forExpression("TimeUnionNull").value();
         assertThat(value, is(nullValue()));

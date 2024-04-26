@@ -4,7 +4,7 @@ public class TestFhirLibrary {
 
     // @Test
     /* TODO: These tests haven't been run for a while. Why not just deleting them? I am not sure what their purpose is.
-      public void TestCBP() throws IOException, JAXBException {
+      public void testCBP() throws IOException, JAXBException {
           File xmlFile = new File(URLDecoder.decode(TestFhirLibrary.class.getResource("library-cbp.elm.xml").getFile(), "UTF-8"));
           Library library = CqlLibraryReader.read(xmlFile);
 
@@ -39,7 +39,7 @@ public class TestFhirLibrary {
 
       // TODO: Fix this, it depends on the Convert...
       //@Test
-      public void TestCMS9v4_CQM() throws IOException, JAXBException {
+      public void testCMS9v4_CQM() throws IOException, JAXBException {
           File xmlFile = new File(URLDecoder.decode(TestFhirLibrary.class.getResource("CMS9v4_CQM.xml").getFile(), "UTF-8"));
           Library library = CqlLibraryReader.read(xmlFile);
 

@@ -2,21 +2,21 @@ package org.cqframework.cql.cql2elm.fhir.v32;
 
 import java.io.IOException;
 import org.cqframework.cql.cql2elm.TestUtils;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-public class BaseTest {
+class BaseTest {
     @Test
-    public void testFHIRHelpers() throws IOException {
+    void fhirHelpers() throws IOException {
         TestUtils.runSemanticTest("fhir/v32/TestFHIRHelpers.cql", 0);
     }
 
     @Test
-    public void testFHIR() throws IOException {
+    void fhir() throws IOException {
         TestUtils.runSemanticTest("fhir/v32/TestFHIR.cql", 0);
     }
 
     @Test
-    public void testFHIRWithHelpers() throws IOException {
+    void fhirWithHelpers() throws IOException {
         TestUtils.runSemanticTest("fhir/v32/TestFHIRWithHelpers.cql", 0);
     }
 }

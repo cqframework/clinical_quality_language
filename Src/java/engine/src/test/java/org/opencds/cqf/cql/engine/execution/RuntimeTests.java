@@ -2,19 +2,20 @@ package org.opencds.cqf.cql.engine.execution;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.math.BigDecimal;
+import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.debug.Location;
 import org.opencds.cqf.cql.engine.debug.SourceLocator;
 import org.opencds.cqf.cql.engine.exception.InvalidInterval;
 import org.opencds.cqf.cql.engine.runtime.Interval;
 import org.opencds.cqf.cql.engine.runtime.Quantity;
 import org.opencds.cqf.cql.engine.runtime.Tuple;
-import org.testng.annotations.Test;
 
-public class RuntimeTests {
+class RuntimeTests {
     @Test
-    public void testQuantityToString() {
+    void quantityToString() {
         Quantity q = new Quantity().withValue(null).withUnit(null);
         assertThat(q.toString(), is("null 'null'"));
 
@@ -28,15 +29,18 @@ public class RuntimeTests {
         assertThat(q.toString(), is("0.05 'mg'"));
     }
 
-    @Test(expectedExceptions = InvalidInterval.class)
-    public void testIntervalOfQuantityWithDifferentUOM() {
+    @Test
+    void intervalOfQuantityWithDifferentUOM() {
         Quantity s = new Quantity().withValue(new BigDecimal(10)).withUnit("mg/mL");
         Quantity e = new Quantity().withValue(new BigDecimal(10)).withUnit("kg/m3");
-        new Interval(s, true, e, true);
+
+        assertThrows(InvalidInterval.class, () -> {
+            new Interval(s, true, e, true);
+        });
     }
 
     @Test
-    public void testTupleToString() {
+    void tupleToString() {
         Tuple t = new Tuple();
         assertThat(t.toString(), is("Tuple { : }"));
 
@@ -48,7 +52,7 @@ public class RuntimeTests {
     }
 
     @Test
-    public void testSourceLocation() {
+    void sourceLocation() {
         SourceLocator sourceLocator = new SourceLocator(
                 "http://cql.hl7.org/Library/Example",
                 "Example",

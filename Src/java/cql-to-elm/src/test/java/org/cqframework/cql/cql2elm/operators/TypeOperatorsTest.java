@@ -6,7 +6,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -16,15 +16,15 @@ import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.ModelManager;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public class TypeOperatorsTest {
+class TypeOperatorsTest {
 
-    private Map<String, ExpressionDef> defs;
+    private static Map<String, ExpressionDef> defs;
 
-    @BeforeTest
-    public void setup() throws IOException {
+    @BeforeAll
+    static void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
         CqlTranslator translator = CqlTranslator.fromStream(
                 TypeOperatorsTest.class.getResourceAsStream("../OperatorTests/TypeOperators.cql"),
@@ -38,7 +38,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testAs() {
+    void as() {
         ExpressionDef def = defs.get("AsExpression");
         assertThat(def, hasTypeAndResult(As.class, "System.Boolean"));
         As as = (As) def.getExpression();
@@ -51,7 +51,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testCast() {
+    void cast() {
         ExpressionDef def = defs.get("CastExpression");
         assertThat(def, hasTypeAndResult(As.class, "System.Boolean"));
         As as = (As) def.getExpression();
@@ -64,7 +64,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testIs() {
+    void isExpression() {
         ExpressionDef def = defs.get("IsExpression");
         assertThat(def, hasTypeAndResult(Is.class, "System.Boolean"));
         Is is = (Is) def.getExpression();
@@ -85,7 +85,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         ExpressionDef def = defs.get("BooleanToString");
         assertThat(def, hasTypeAndResult(ToString.class, "System.String"));
         ToString convert = (ToString) def.getExpression();
@@ -161,7 +161,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testToStringFunction() {
+    void toStringFunction() {
         ExpressionDef def = defs.get("BooleanToStringFun");
         assertThat(def, hasTypeAndResult(ToString.class, "System.String"));
         ToString convert = (ToString) def.getExpression();
@@ -246,7 +246,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testConvertsToString() {
+    void convertsToString() {
         ExpressionDef def = defs.get("BooleanConvertsToString");
         assertThat(def, hasTypeAndResult(ConvertsToString.class, "System.Boolean"));
         ConvertsToString convert = (ConvertsToString) def.getExpression();
@@ -331,7 +331,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testToBoolean() {
+    void toBoolean() {
         ExpressionDef def = defs.get("StringToBoolean");
         assertThat(def, hasTypeAndResult(ToBoolean.class, "System.Boolean"));
         ToBoolean convert = (ToBoolean) def.getExpression();
@@ -340,7 +340,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testToBooleanFunction() {
+    void toBooleanFunction() {
         ExpressionDef def = defs.get("StringToBooleanFun");
         assertThat(def, hasTypeAndResult(ToBoolean.class, "System.Boolean"));
         ToBoolean convert = (ToBoolean) def.getExpression();
@@ -350,7 +350,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testConvertsToBoolean() {
+    void convertsToBoolean() {
         ExpressionDef def = defs.get("StringConvertsToBoolean");
         assertThat(def, hasTypeAndResult(ConvertsToBoolean.class, "System.Boolean"));
         ConvertsToBoolean convert = (ConvertsToBoolean) def.getExpression();
@@ -360,7 +360,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testToInteger() {
+    void toInteger() {
         ExpressionDef def = defs.get("StringToInteger");
         assertThat(def, hasTypeAndResult(ToInteger.class, "System.Integer"));
         ToInteger convert = (ToInteger) def.getExpression();
@@ -369,7 +369,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testToIntegerFunction() {
+    void toIntegerFunction() {
         ExpressionDef def = defs.get("StringToIntegerFun");
         assertThat(def, hasTypeAndResult(ToInteger.class, "System.Integer"));
         ToInteger convert = (ToInteger) def.getExpression();
@@ -379,7 +379,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testConvertsToInteger() {
+    void convertsToInteger() {
         ExpressionDef def = defs.get("StringConvertsToInteger");
         assertThat(def, hasTypeAndResult(ConvertsToInteger.class, "System.Boolean"));
         ConvertsToInteger convert = (ConvertsToInteger) def.getExpression();
@@ -389,7 +389,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testToLong() {
+    void toLong() {
         ExpressionDef def = defs.get("StringToLong");
         assertThat(def, hasTypeAndResult(ToLong.class, "System.Long"));
         ToLong convert = (ToLong) def.getExpression();
@@ -398,7 +398,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testConvertsToLong() {
+    void convertsToLong() {
         ExpressionDef def = defs.get("StringConvertsToLong");
         assertThat(def, hasTypeAndResult(ConvertsToLong.class, "System.Boolean"));
         ConvertsToLong convert = (ConvertsToLong) def.getExpression();
@@ -408,7 +408,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testToDecimal() {
+    void toDecimal() {
         ExpressionDef def = defs.get("StringToDecimal");
         assertThat(def, hasTypeAndResult(ToDecimal.class, "System.Decimal"));
         ToDecimal convert = (ToDecimal) def.getExpression();
@@ -423,7 +423,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testToDecimalFunction() {
+    void toDecimalFunction() {
         ExpressionDef def = defs.get("StringToDecimalFun");
         assertThat(def, hasTypeAndResult(ToDecimal.class, "System.Decimal"));
         ToDecimal convert = (ToDecimal) def.getExpression();
@@ -439,7 +439,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testConvertsToDecimal() {
+    void convertsToDecimal() {
         ExpressionDef def = defs.get("StringConvertsToDecimal");
         assertThat(def, hasTypeAndResult(ConvertsToDecimal.class, "System.Boolean"));
         ConvertsToDecimal convert = (ConvertsToDecimal) def.getExpression();
@@ -455,7 +455,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testToDate() {
+    void toDate() {
         ExpressionDef def = defs.get("StringToDate");
         assertThat(def, hasTypeAndResult(ToDate.class, "System.Date"));
         ToDate convert = (ToDate) def.getExpression();
@@ -464,7 +464,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testToDateFunction() {
+    void toDateFunction() {
         ExpressionDef def = defs.get("StringToDateFun");
         assertThat(def, hasTypeAndResult(ToDate.class, "System.Date"));
         ToDate convert = (ToDate) def.getExpression();
@@ -474,7 +474,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testConvertsToDate() {
+    void convertsToDate() {
         ExpressionDef def = defs.get("StringConvertsToDate");
         assertThat(def, hasTypeAndResult(ConvertsToDate.class, "System.Boolean"));
         ConvertsToDate convert = (ConvertsToDate) def.getExpression();
@@ -484,7 +484,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testToDateTime() {
+    void toDateTime() {
         ExpressionDef def = defs.get("StringToDateTime");
         assertThat(def, hasTypeAndResult(ToDateTime.class, "System.DateTime"));
         ToDateTime convert = (ToDateTime) def.getExpression();
@@ -493,7 +493,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testToDateTimeFunction() {
+    void toDateTimeFunction() {
         ExpressionDef def = defs.get("StringToDateTimeFun");
         assertThat(def, hasTypeAndResult(ToDateTime.class, "System.DateTime"));
         ToDateTime convert = (ToDateTime) def.getExpression();
@@ -503,7 +503,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testConvertsToDateTime() {
+    void convertsToDateTime() {
         ExpressionDef def = defs.get("StringConvertsToDateTime");
         assertThat(def, hasTypeAndResult(ConvertsToDateTime.class, "System.Boolean"));
         ConvertsToDateTime convert = (ConvertsToDateTime) def.getExpression();
@@ -513,7 +513,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testToTime() {
+    void toTime() {
         ExpressionDef def = defs.get("StringToTime");
         assertThat(def, hasTypeAndResult(ToTime.class, "System.Time"));
         ToTime convert = (ToTime) def.getExpression();
@@ -522,7 +522,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testToTimeFunction() {
+    void toTimeFunction() {
         ExpressionDef def = defs.get("StringToTimeFun");
         assertThat(def, hasTypeAndResult(ToTime.class, "System.Time"));
         ToTime convert = (ToTime) def.getExpression();
@@ -532,7 +532,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testConvertsToTime() {
+    void convertsToTime() {
         ExpressionDef def = defs.get("StringConvertsToTime");
         assertThat(def, hasTypeAndResult(ConvertsToTime.class, "System.Boolean"));
         ConvertsToTime convert = (ConvertsToTime) def.getExpression();
@@ -542,7 +542,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testToQuantity() {
+    void toQuantity() {
         ExpressionDef def = defs.get("StringToQuantity");
         assertThat(def, hasTypeAndResult(ToQuantity.class, "System.Quantity"));
         ToQuantity convert = (ToQuantity) def.getExpression();
@@ -563,7 +563,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testToQuantityFunction() {
+    void toQuantityFunction() {
         ExpressionDef def = defs.get("StringToQuantityFun");
         assertThat(def, hasTypeAndResult(ToQuantity.class, "System.Quantity"));
         ToQuantity convert = (ToQuantity) def.getExpression();
@@ -585,7 +585,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testConvertsToQuantity() {
+    void convertsToQuantity() {
         ExpressionDef def = defs.get("StringConvertsToQuantity");
         assertThat(def, hasTypeAndResult(ConvertsToQuantity.class, "System.Boolean"));
         ConvertsToQuantity convert = (ConvertsToQuantity) def.getExpression();
@@ -607,7 +607,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testToRatio() {
+    void toRatio() {
         ExpressionDef def = defs.get("StringToRatio");
         assertThat(def, hasTypeAndResult(ToRatio.class, "System.Ratio"));
         ToRatio convert = (ToRatio) def.getExpression();
@@ -616,7 +616,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testToRatioFunction() {
+    void toRatioFunction() {
         ExpressionDef def = defs.get("StringToRatioFun");
         assertThat(def, hasTypeAndResult(ToRatio.class, "System.Ratio"));
         ToRatio convert = (ToRatio) def.getExpression();
@@ -626,7 +626,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testConvertsToRatio() {
+    void convertsToRatio() {
         ExpressionDef def = defs.get("StringConvertsToRatio");
         assertThat(def, hasTypeAndResult(ConvertsToRatio.class, "System.Boolean"));
         ConvertsToRatio convert = (ConvertsToRatio) def.getExpression();
@@ -636,7 +636,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testToConcept() {
+    void toConcept() {
         ExpressionDef def = defs.get("CodeToConcept");
         assertThat(def, hasTypeAndResult(ToConcept.class, "System.Concept"));
         ToConcept toConcept = (ToConcept) def.getExpression();
@@ -657,7 +657,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testToConceptFunction() {
+    void toConceptFunction() {
         ExpressionDef def = defs.get("CodeToConceptFun");
         assertThat(def, hasTypeAndResult(ToConcept.class, "System.Concept"));
         ToConcept convert = (ToConcept) def.getExpression();
@@ -680,7 +680,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testMinValue() {
+    void minValue() {
         ExpressionDef def = defs.get("MinimumInteger");
         assertThat(def, hasTypeAndResult(MinValue.class, "System.Integer"));
         MinValue minValue = (MinValue) def.getExpression();
@@ -703,7 +703,7 @@ public class TypeOperatorsTest {
     }
 
     @Test
-    public void testMaxValue() {
+    void maxValue() {
         ExpressionDef def = defs.get("MaximumInteger");
         assertThat(def, hasTypeAndResult(MaxValue.class, "System.Integer"));
         MaxValue maxValue = (MaxValue) def.getExpression();

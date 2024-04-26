@@ -8,17 +8,17 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Created by Bryn on 6/25/2018.
  */
-public class TestPointIntervalSignatures {
+class TestPointIntervalSignatures {
 
-    private Map<String, ExpressionDef> defs;
+    private static Map<String, ExpressionDef> defs;
 
     @Test
-    public void TestResolvedSignatures() throws IOException {
+    void resolvedSignatures() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("TestPointIntervalSignatures.cql", 0);
         Library library = translator.toELM();
         defs = new HashMap<>();

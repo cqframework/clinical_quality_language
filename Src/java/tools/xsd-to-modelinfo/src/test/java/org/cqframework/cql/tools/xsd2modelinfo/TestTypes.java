@@ -7,12 +7,12 @@ import java.io.*;
 import javax.xml.transform.stream.StreamSource;
 import org.apache.ws.commons.schema.*;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-public class TestTypes {
+class TestTypes {
 
     @Test
-    public void testModelImporter() {
+    void modelImporter() {
         InputStream is = null;
         try {
             File f = new File(TestTypes.class.getResource("fhir-single.xsd").getFile());

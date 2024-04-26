@@ -7,16 +7,16 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Created by Bryn on 4/12/2018.
  */
-public class IncludedSignatureOutputTests {
+class IncludedSignatureOutputTests {
 
     private static final String CQL_TEST_FILE = "SignatureTests/IncludedSignatureOutputTests.cql";
     private static final String LIBRARY_SOURCE_PROVIDER = "SignatureTests";
-    private Map<String, ExpressionDef> defs;
+    private static Map<String, ExpressionDef> defs;
 
     private Library getLibrary(LibraryBuilder.SignatureLevel signatureLevel) throws IOException {
         final CqlTranslator translator = getTranslator(signatureLevel);
@@ -36,7 +36,7 @@ public class IncludedSignatureOutputTests {
     }
 
     @Test
-    public void TestNone() throws IOException {
+    void none() throws IOException {
         final CqlTranslator translator = getTranslator(LibraryBuilder.SignatureLevel.None);
         assertThat(translator.getWarnings().size(), greaterThan(1));
         assertThat(
@@ -46,7 +46,7 @@ public class IncludedSignatureOutputTests {
     }
 
     @Test
-    public void TestDiffering() throws IOException {
+    void differing() throws IOException {
         Library library = getLibrary(LibraryBuilder.SignatureLevel.Differing);
 
         ExpressionDef def = defs.get("TestOverload");
@@ -72,7 +72,7 @@ public class IncludedSignatureOutputTests {
     }
 
     @Test
-    public void TestOverloads() throws IOException {
+    void overloads() throws IOException {
         Library library = getLibrary(LibraryBuilder.SignatureLevel.Overloads);
 
         ExpressionDef def = defs.get("TestOverload");
@@ -98,7 +98,7 @@ public class IncludedSignatureOutputTests {
     }
 
     @Test
-    public void TestAll() throws IOException {
+    void all() throws IOException {
         Library library = getLibrary(LibraryBuilder.SignatureLevel.All);
 
         ExpressionDef def = defs.get("TestOverload");

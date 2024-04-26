@@ -7,9 +7,8 @@ import java.time.ZoneOffset;
 import java.util.List;
 import org.cqframework.cql.cql2elm.*;
 import org.hl7.elm.r1.Library;
+import org.junit.jupiter.api.BeforeEach;
 import org.opencds.cqf.cql.engine.runtime.TemporalHelper;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
 
 public class CqlTestBase {
     static final String NORTH_AMERICA_MOUNTAIN =
@@ -24,7 +23,6 @@ public class CqlTestBase {
     static final String INDIAN_COCOS = "Indian/Cocos";
     static final String PACIFIC_CHATHAM = "Pacific/Chatham";
 
-    @DataProvider
     static Object[][] timezones() {
         return new Object[][] {
             {NORTH_AMERICA_MOUNTAIN},
@@ -101,7 +99,7 @@ public class CqlTestBase {
     Environment environment;
     CqlEngine engine;
 
-    @BeforeMethod
+    @BeforeEach
     protected void beforeEachMethod() {
         environment = new Environment(getLibraryManager());
         engine = new CqlEngine(environment);

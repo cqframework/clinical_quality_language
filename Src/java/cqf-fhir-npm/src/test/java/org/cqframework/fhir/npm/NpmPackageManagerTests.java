@@ -1,8 +1,8 @@
 package org.cqframework.fhir.npm;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.uhn.fhir.context.FhirContext;
 import java.io.InputStream;
@@ -15,10 +15,10 @@ import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r5.context.IWorkerContext;
 import org.hl7.fhir.r5.model.ImplementationGuide;
 import org.hl7.fhir.utilities.npm.NpmPackage;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.Ignore;
-import org.testng.annotations.Test;
 
 public class NpmPackageManagerTests implements IWorkerContext.ILoggingService {
 
@@ -26,17 +26,17 @@ public class NpmPackageManagerTests implements IWorkerContext.ILoggingService {
     private final VersionConvertor_40_50 convertor = new VersionConvertor_40_50(new BaseAdvisor_40_50());
 
     @Test
-    public void testSampleIGLocalNoDependencies() {
+    void sampleIGLocalNoDependencies() {
         Resource igResource = (Resource) FhirContext.forR4Cached()
                 .newXmlParser()
                 .parseResource(NpmPackageManagerTests.class.getResourceAsStream("myig.xml"));
         ImplementationGuide ig = (ImplementationGuide) convertor.convertResource(igResource);
         NpmPackageManager pm = new NpmPackageManager(ig);
-        assertEquals(pm.getNpmList().size(), 1);
+        assertEquals(1, pm.getNpmList().size());
     }
 
     @Test
-    public void testSampleContentIGLocalWithRecursiveDependencies() {
+    void sampleContentIGLocalWithRecursiveDependencies() {
         Resource igResource = (Resource) FhirContext.forR4Cached()
                 .newXmlParser()
                 .parseResource(NpmPackageManagerTests.class.getResourceAsStream("mycontentig.xml"));
@@ -65,7 +65,7 @@ public class NpmPackageManagerTests implements IWorkerContext.ILoggingService {
     }
 
     @Test
-    public void testOpioidMMEIGLocalWithSingleFileDependency() {
+    void opioidMmeIGLocalWithSingleFileDependency() {
         Resource igResource = (Resource) FhirContext.forR4Cached()
                 .newXmlParser()
                 .parseResource(NpmPackageManagerTests.class.getResourceAsStream("opioid-mme-r4.xml"));
@@ -89,8 +89,8 @@ public class NpmPackageManagerTests implements IWorkerContext.ILoggingService {
     }
 
     @Test
-    @Ignore("This test depends on the example.fhir.uv.myig package, which is not currently published")
-    public void testLibrarySourceProviderLocal() {
+    @Disabled("This test depends on the example.fhir.uv.myig package, which is not currently published")
+    void librarySourceProviderLocal() {
         Resource igResource = (Resource) FhirContext.forR4Cached()
                 .newXmlParser()
                 .parseResource(NpmPackageManagerTests.class.getResourceAsStream("mycontentig.xml"));
@@ -111,7 +111,7 @@ public class NpmPackageManagerTests implements IWorkerContext.ILoggingService {
     }
 
     @Test
-    public void testModelInfoProviderLocal() {
+    void modelInfoProviderLocal() {
         Resource igResource = (Resource) FhirContext.forR4Cached()
                 .newXmlParser()
                 .parseResource(NpmPackageManagerTests.class.getResourceAsStream("testig.xml"));
@@ -125,7 +125,7 @@ public class NpmPackageManagerTests implements IWorkerContext.ILoggingService {
                 .withSystem("http://hl7.org/fhir/us/qicore")
                 .withId("QICore"));
         assertNotNull(mi);
-        assertEquals(mi.getName(), "QICore");
+        assertEquals("QICore", mi.getName());
     }
 
     @Override

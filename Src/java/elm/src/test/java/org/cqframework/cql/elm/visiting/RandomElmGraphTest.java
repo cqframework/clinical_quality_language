@@ -1,6 +1,6 @@
 package org.cqframework.cql.elm.visiting;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
@@ -16,12 +16,11 @@ import org.jeasy.random.EasyRandomParameters;
 import org.jeasy.random.ObjenesisObjectFactory;
 import org.jeasy.random.api.ExclusionPolicy;
 import org.jeasy.random.api.RandomizerContext;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class RandomElmGraphTest {
 
-    @DataProvider(name = "seed")
     public static Object[] seeds() {
         // I randomly picked these seeds until
         // I got 3 in a row that passed without errors.
@@ -29,8 +28,9 @@ public class RandomElmGraphTest {
         return new Object[] {96874, 15895, 121873, 174617};
     }
 
-    @Test(dataProvider = "seed")
-    public void allNodesVisited(int seed) {
+    @ParameterizedTest
+    @MethodSource("seeds")
+    void allNodesVisited(int seed) {
         // This test generates a random ELM graph and verifies that all nodes are
         // visited exactly once.
         var elementsGenerated = new HashMap<Integer, Element>();
@@ -105,7 +105,7 @@ public class RandomElmGraphTest {
         }
 
         // No missed nodes, working as intended
-        assertEquals(elementsGenerated.size(), 0);
+        assertEquals(0, elementsGenerated.size());
 
         // Check that we didn't double-visit any nodes
         if (!elementsDuplicated.isEmpty()) {
@@ -115,7 +115,7 @@ public class RandomElmGraphTest {
         }
 
         // No duplicate visits, working as intended
-        assertEquals(elementsDuplicated.size(), 0);
+        assertEquals(0, elementsDuplicated.size());
 
         // if these are equal, then aggregateResult
         // ran once for every node in the graph (working as intended)

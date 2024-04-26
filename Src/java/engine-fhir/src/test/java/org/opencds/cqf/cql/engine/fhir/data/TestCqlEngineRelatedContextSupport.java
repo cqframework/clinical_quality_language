@@ -3,7 +3,7 @@ package org.opencds.cqf.cql.engine.fhir.data;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.testng.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import jakarta.annotation.Nonnull;
 import java.time.LocalDate;
@@ -13,14 +13,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 import org.hl7.fhir.r4.model.*;
+import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.Test;
 
-public class TestCqlEngineRelatedContextSupport extends FhirExecutionTestBase {
+class TestCqlEngineRelatedContextSupport extends FhirExecutionTestBase {
     private static final Logger logger = LoggerFactory.getLogger(TestCqlEngineRelatedContextSupport.class);
     private static final String PATIENT = "Patient";
     private static final String PRACTITIONER = "Practitioner";
@@ -151,7 +151,7 @@ public class TestCqlEngineRelatedContextSupport extends FhirExecutionTestBase {
     }
 
     @Test
-    public void testCqlEngineRelatedContext() {
+    void cqlEngineRelatedContext() {
         final CqlEngine cqlEngine = getEngine();
 
         cqlEngine

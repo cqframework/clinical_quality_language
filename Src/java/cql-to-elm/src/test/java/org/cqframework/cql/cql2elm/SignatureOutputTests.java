@@ -7,15 +7,15 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Created by Bryn on 4/12/2018.
  */
-public class SignatureOutputTests {
+class SignatureOutputTests {
 
     private static final String CQL_TEST_FILE = "SignatureTests/SignatureOutputTests.cql";
-    private Map<String, ExpressionDef> defs;
+    private static Map<String, ExpressionDef> defs;
 
     private Library getLibrary(LibraryBuilder.SignatureLevel signatureLevel) throws IOException {
         final CqlTranslator translator = getTranslator(signatureLevel);
@@ -35,7 +35,7 @@ public class SignatureOutputTests {
     }
 
     @Test
-    public void TestNone() throws IOException {
+    void none() throws IOException {
         final CqlTranslator translator = getTranslator(LibraryBuilder.SignatureLevel.None);
         assertThat(translator.getWarnings().size(), greaterThan(1));
         assertThat(
@@ -45,7 +45,7 @@ public class SignatureOutputTests {
     }
 
     @Test
-    public void TestDiffering() throws IOException {
+    void differing() throws IOException {
         Library library = getLibrary(LibraryBuilder.SignatureLevel.Differing);
         // TestAvg->Avg->signature(1)
         // TestDivide->Divide->signature(2)
@@ -85,7 +85,7 @@ public class SignatureOutputTests {
     }
 
     @Test
-    public void TestOverloads() throws IOException {
+    void overloads() throws IOException {
         Library library = getLibrary(LibraryBuilder.SignatureLevel.Overloads);
         // TestAdd->operand->signature(2)
         // TestDateAdd->operand->signature(2)
@@ -128,7 +128,7 @@ public class SignatureOutputTests {
     }
 
     @Test
-    public void TestAll() throws IOException {
+    void all() throws IOException {
         Library library = getLibrary(LibraryBuilder.SignatureLevel.All);
         // TestAdd->operand->signature(2)
         // TestDateAdd->operand->signature(2)

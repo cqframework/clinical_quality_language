@@ -17,15 +17,15 @@ import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.ModelManager;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public class ArithmeticOperatorsTest {
+class ArithmeticOperatorsTest {
 
-    private Map<String, ExpressionDef> defs;
+    private static Map<String, ExpressionDef> defs;
 
-    @BeforeTest
-    public void setup() throws IOException {
+    @BeforeAll
+    static void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
         CqlTranslator translator = CqlTranslator.fromStream(
                 ArithmeticOperatorsTest.class.getResourceAsStream("../OperatorTests/ArithmeticOperators.cql"),
@@ -39,7 +39,7 @@ public class ArithmeticOperatorsTest {
     }
 
     @Test
-    public void testDivide() {
+    void divide() {
         ExpressionDef def = defs.get("IntegerDivide");
         assertThat(def, hasTypeAndResult(Divide.class, "System.Decimal"));
 
@@ -57,7 +57,7 @@ public class ArithmeticOperatorsTest {
     }
 
     @Test
-    public void testCeiling() {
+    void ceiling() {
         ExpressionDef def = defs.get("IntegerCeiling");
         assertThat(def, hasTypeAndResult(Ceiling.class, "System.Integer"));
 
@@ -72,7 +72,7 @@ public class ArithmeticOperatorsTest {
     }
 
     @Test
-    public void testFloor() {
+    void floor() {
         ExpressionDef def = defs.get("IntegerFloor");
         assertThat(def, hasTypeAndResult(Floor.class, "System.Integer"));
 
@@ -87,7 +87,7 @@ public class ArithmeticOperatorsTest {
     }
 
     @Test
-    public void testTruncate() {
+    void truncate() {
         ExpressionDef def = defs.get("IntegerTruncate");
         assertThat(def, hasTypeAndResult(Truncate.class, "System.Integer"));
 
@@ -102,7 +102,7 @@ public class ArithmeticOperatorsTest {
     }
 
     @Test
-    public void testAbs() {
+    void abs() {
         ExpressionDef def = defs.get("IntegerAbs");
         assertThat(def, hasTypeAndResult(Abs.class, "System.Integer"));
 
@@ -130,7 +130,7 @@ public class ArithmeticOperatorsTest {
     }
 
     @Test
-    public void testLog() {
+    void log() {
         ExpressionDef def = defs.get("DecimalDecimalLog");
         assertThat(def, hasTypeAndResult(Log.class, "System.Decimal"));
 
@@ -165,7 +165,7 @@ public class ArithmeticOperatorsTest {
     }
 
     @Test
-    public void testLn() {
+    void ln() {
         ExpressionDef def = defs.get("IntegerLn");
         assertThat(def, hasTypeAndResult(Ln.class, "System.Decimal"));
 
@@ -180,7 +180,7 @@ public class ArithmeticOperatorsTest {
     }
 
     @Test
-    public void testExp() {
+    void exp() {
         ExpressionDef def = defs.get("IntegerExp");
         assertThat(def, hasTypeAndResult(Exp.class, "System.Decimal"));
 
@@ -195,7 +195,7 @@ public class ArithmeticOperatorsTest {
     }
 
     @Test
-    public void testRound() {
+    void round() {
         ExpressionDef def = defs.get("DecimalRound");
         assertThat(def, hasTypeAndResult(Round.class, "System.Decimal"));
 
@@ -212,7 +212,7 @@ public class ArithmeticOperatorsTest {
     }
 
     @Test
-    public void testPrecision() {
+    void precision() {
         ExpressionDef def = defs.get("DecimalPrecision");
         assertThat(def, hasTypeAndResult(Precision.class, "System.Integer"));
 
@@ -227,7 +227,7 @@ public class ArithmeticOperatorsTest {
     }
 
     @Test
-    public void testLowBoundary() {
+    void lowBoundary() {
         ExpressionDef def = defs.get("DecimalLowBoundary");
         assertThat(def, hasTypeAndResult(LowBoundary.class, "System.Decimal"));
 
@@ -242,7 +242,7 @@ public class ArithmeticOperatorsTest {
     }
 
     @Test
-    public void testHighBoundary() {
+    void highBoundary() {
         ExpressionDef def = defs.get("DecimalHighBoundary");
         assertThat(def, hasTypeAndResult(HighBoundary.class, "System.Decimal"));
 

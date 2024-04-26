@@ -4,12 +4,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import java.util.List;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-public class Issue223 extends CqlTestBase {
+class Issue223 extends CqlTestBase {
 
     @Test
-    public void testInterval() {
+    void interval() {
         var results = engine.evaluate(toElmIdentifier("Issue223"));
         var value = results.forExpression("Access Flattened List of List Items").value();
         List<?> list = (List<?>) value;

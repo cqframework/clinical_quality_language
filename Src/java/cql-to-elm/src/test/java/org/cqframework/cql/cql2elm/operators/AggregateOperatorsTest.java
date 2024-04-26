@@ -17,15 +17,15 @@ import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.ModelManager;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public class AggregateOperatorsTest {
+class AggregateOperatorsTest {
 
-    private Map<String, ExpressionDef> defs;
+    private static Map<String, ExpressionDef> defs;
 
-    @BeforeTest
-    public void setup() throws IOException {
+    @BeforeAll
+    static void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
         CqlTranslator translator = CqlTranslator.fromStream(
                 AggregateOperatorsTest.class.getResourceAsStream("../OperatorTests/AggregateOperators.cql"),
@@ -41,7 +41,7 @@ public class AggregateOperatorsTest {
     }
 
     @Test
-    public void testAllTrue() {
+    void allTrue() {
         ExpressionDef def = defs.get("AllTrueExpression");
         assertThat(def, hasTypeAndResult(AllTrue.class, "System.Boolean"));
 
@@ -50,7 +50,7 @@ public class AggregateOperatorsTest {
     }
 
     @Test
-    public void testAnyTrue() {
+    void anyTrue() {
         ExpressionDef def = defs.get("AnyTrueExpression");
         assertThat(def, hasTypeAndResult(AnyTrue.class, "System.Boolean"));
 
@@ -59,7 +59,7 @@ public class AggregateOperatorsTest {
     }
 
     @Test
-    public void testAverage() {
+    void average() {
         ExpressionDef def = defs.get("IntegerAvg");
         assertThat(def, hasTypeAndResult(Avg.class, "System.Decimal"));
         assertDecimalConversionForIntegerListOneToFive(((Avg) def.getExpression()).getSource());
@@ -74,21 +74,21 @@ public class AggregateOperatorsTest {
     }
 
     @Test
-    public void testCount() {
+    void count() {
         ExpressionDef def = defs.get("CountExpression");
         assertThat(def, hasTypeAndResult(Count.class, "System.Integer"));
         assertThat(((Count) def.getExpression()).getSource(), listOfLiterals(1, 2, 3, 4, 5));
     }
 
     @Test
-    public void testGeometricMean() {
+    void geometricMean() {
         ExpressionDef def = defs.get("GeometricMeanExpression");
         assertThat(def, hasTypeAndResult(GeometricMean.class, "System.Decimal"));
         assertThat(((GeometricMean) def.getExpression()).getSource(), listOfLiterals(1.0, 2.0, 3.0, 4.0, 5.0));
     }
 
     @Test
-    public void testMax() {
+    void max() {
         ExpressionDef def = defs.get("IntegerMax");
         assertThat(def, hasTypeAndResult(Max.class, "System.Integer"));
         assertThat(((Max) def.getExpression()).getSource(), listOfLiterals(1, 2, 3, 4, 5));
@@ -115,7 +115,7 @@ public class AggregateOperatorsTest {
     }
 
     @Test
-    public void testMin() {
+    void min() {
         ExpressionDef def = defs.get("IntegerMin");
         assertThat(def, hasTypeAndResult(Min.class, "System.Integer"));
         assertThat(((Min) def.getExpression()).getSource(), listOfLiterals(1, 2, 3, 4, 5));
@@ -142,7 +142,7 @@ public class AggregateOperatorsTest {
     }
 
     @Test
-    public void testMedian() {
+    void median() {
         ExpressionDef def = defs.get("IntegerMedian");
         assertThat(def, hasTypeAndResult(Median.class, "System.Decimal"));
         assertDecimalConversionForIntegerListOneToFive(((Median) def.getExpression()).getSource());
@@ -157,7 +157,7 @@ public class AggregateOperatorsTest {
     }
 
     @Test
-    public void testMode() {
+    void mode() {
         ExpressionDef def = defs.get("IntegerMode");
         assertThat(def, hasTypeAndResult(Mode.class, "System.Integer"));
         assertThat(((Mode) def.getExpression()).getSource(), listOfLiterals(1, 2, 3, 4, 5));
@@ -168,7 +168,7 @@ public class AggregateOperatorsTest {
     }
 
     @Test
-    public void testPopulationStdDev() {
+    void populationStdDev() {
         ExpressionDef def = defs.get("IntegerPopulationStdDev");
         assertThat(def, hasTypeAndResult(PopulationStdDev.class, "System.Decimal"));
         assertDecimalConversionForIntegerListOneToFive(((PopulationStdDev) def.getExpression()).getSource());
@@ -183,7 +183,7 @@ public class AggregateOperatorsTest {
     }
 
     @Test
-    public void testPopulationVariance() {
+    void populationVariance() {
         ExpressionDef def = defs.get("IntegerPopulationVariance");
         assertThat(def, hasTypeAndResult(PopulationVariance.class, "System.Decimal"));
         assertDecimalConversionForIntegerListOneToFive(((PopulationVariance) def.getExpression()).getSource());
@@ -198,7 +198,7 @@ public class AggregateOperatorsTest {
     }
 
     @Test
-    public void testProduct() {
+    void product() {
         ExpressionDef def = defs.get("IntegerProduct");
         assertThat(def, hasTypeAndResult(Product.class, "System.Integer"));
         assertThat(((Product) def.getExpression()).getSource(), listOfLiterals(1, 2, 3, 4, 5));
@@ -209,7 +209,7 @@ public class AggregateOperatorsTest {
     }
 
     @Test
-    public void testStdDev() {
+    void stdDev() {
         ExpressionDef def = defs.get("IntegerStdDev");
         assertThat(def, hasTypeAndResult(StdDev.class, "System.Decimal"));
         assertDecimalConversionForIntegerListOneToFive(((StdDev) def.getExpression()).getSource());
@@ -224,7 +224,7 @@ public class AggregateOperatorsTest {
     }
 
     @Test
-    public void testSum() {
+    void sum() {
         ExpressionDef def = defs.get("IntegerSum");
         assertThat(def, hasTypeAndResult(Sum.class, "System.Integer"));
         assertThat(((Sum) def.getExpression()).getSource(), listOfLiterals(1, 2, 3, 4, 5));
@@ -239,7 +239,7 @@ public class AggregateOperatorsTest {
     }
 
     @Test
-    public void testVariance() {
+    void variance() {
         ExpressionDef def = defs.get("IntegerVariance");
         assertThat(def, hasTypeAndResult(Variance.class, "System.Decimal"));
         assertDecimalConversionForIntegerListOneToFive(((Variance) def.getExpression()).getSource());

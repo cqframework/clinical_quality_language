@@ -1,6 +1,6 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -10,9 +10,9 @@ import java.util.TimeZone;
 import org.cqframework.cql.cql2elm.CqlCompilerOptions;
 import org.fhir.ucum.UcumException;
 import org.hl7.elm.r1.VersionedIdentifier;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.Test;
 
 public class CqlPerformanceIT extends CqlTestBase {
 
@@ -23,14 +23,14 @@ public class CqlPerformanceIT extends CqlTestBase {
     // This test is a basically empty library that tests how long the engine
     // initialization takes.
     @Test
-    public void testEngineInit() throws IOException, UcumException {
+    void engineInit() throws IOException, UcumException {
         VersionedIdentifier libraryId = toElmIdentifier("Test");
         runPerformanceTest(libraryId, 1.0, null);
     }
 
     // This test is for the various CQL operators
     @Test
-    public void testMainSuite() throws IOException, UcumException {
+    void mainSuite() throws IOException, UcumException {
         VersionedIdentifier libraryId = toElmIdentifier("CqlPerformanceTest", "1");
         ZonedDateTime date =
                 ZonedDateTime.of(2018, 1, 1, 7, 0, 0, 0, TimeZone.getDefault().toZoneId());
@@ -50,7 +50,7 @@ public class CqlPerformanceIT extends CqlTestBase {
     // This test is to check the validity of the internal representation of the CQL
     // types (OPTIONAL)
     @Test
-    public void testInternalTypeRepresentationSuite() throws IOException, UcumException {
+    void internalTypeRepresentationSuite() throws IOException, UcumException {
         VersionedIdentifier libraryId = toElmIdentifier("CqlInternalTypeRepresentationSuite", "1");
         runPerformanceTest(libraryId, 10.0, null);
     }

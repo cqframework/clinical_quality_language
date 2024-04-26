@@ -9,6 +9,9 @@ import java.util.Set;
 import org.fhir.ucum.UcumException;
 import org.hl7.fhir.r4.model.*;
 import org.hl7.fhirpath.tests.Group;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
 import org.opencds.cqf.cql.engine.elm.executing.EqualEvaluator;
 import org.opencds.cqf.cql.engine.execution.State;
@@ -18,13 +21,8 @@ import org.opencds.cqf.cql.engine.fhir.model.R4FhirModelResolver;
 import org.opencds.cqf.cql.engine.fhir.retrieve.RestFhirRetrieveProvider;
 import org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterResolver;
 import org.opencds.cqf.cql.engine.runtime.Code;
-import org.testng.ITest;
-import org.testng.SkipException;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Factory;
-import org.testng.annotations.Test;
 
-public class CQLOperationsR4Test extends TestFhirPath implements ITest {
+public class CQLOperationsR4Test extends TestFhirPath {
 
     private static FhirContext fhirContext = FhirContext.forCached(FhirVersionEnum.R4);
     private static R4FhirModelResolver fhirModelResolver = new CachedR4FhirModelResolver();
@@ -34,18 +32,6 @@ public class CQLOperationsR4Test extends TestFhirPath implements ITest {
             fhirContext.newRestfulGenericClient("http://fhirtest.uhn.ca/baseR4"));
     private static CompositeDataProvider provider = new CompositeDataProvider(fhirModelResolver, retrieveProvider);
 
-    private final String file;
-    private final org.hl7.fhirpath.tests.Test test;
-    private final org.hl7.fhirpath.tests.Group group;
-
-    @Factory(dataProvider = "dataMethod")
-    public CQLOperationsR4Test(String file, Group group, org.hl7.fhirpath.tests.Test test) {
-        this.file = file;
-        this.group = group;
-        this.test = test;
-    }
-
-    @DataProvider
     public static Object[][] dataMethod() {
         String[] listOfFiles = {
             "r4/tests-fhir-r4.xml",
@@ -320,8 +306,7 @@ public class CQLOperationsR4Test extends TestFhirPath implements ITest {
             "r4/tests-fhir-r4/testWhere/testWhere3",
             "r4/tests-fhir-r4/testWhere/testWhere4");
 
-    @Override
-    public String getTestName() {
+    public String getTestName(String file, Group group, org.hl7.fhirpath.tests.Test test) {
         return file.replaceAll(".xml", "") + "/" + group.getName()
                 + "/"
                 + (test.getName() != null
@@ -329,13 +314,11 @@ public class CQLOperationsR4Test extends TestFhirPath implements ITest {
                         : test.getExpression().getValue());
     }
 
-    @Test
-    public void test() throws UcumException {
-
-        if (SKIP.contains(getTestName())) {
-            throw new SkipException("Skipping " + getTestName());
-        }
-
+    @ParameterizedTest
+    @MethodSource("dataMethod")
+    void test(String file, Group group, org.hl7.fhirpath.tests.Test test) throws UcumException {
+        var name = getTestName(file, group, test);
+        Assumptions.assumeFalse(SKIP.contains(name), "Skipping " + name);
         runTest(test, "r4/input/", fhirContext, provider, fhirModelResolver);
     }
 

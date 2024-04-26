@@ -58,9 +58,9 @@ public class FhirHelpersDstu3Test {
 
         // TODO - fix
         Object value = results.forExpression("TestPeriodToInterval").value();
-        // Assert.assertEquals(((DateTime)((Interval) value).getStart()).getPartial(),
+        // Assertions.assertEquals(((DateTime)((Interval) value).getStart()).getPartial(),
         // new Partial(DateTime.getFields(6), new int[] {2017, 5, 6, 18, 8, 0}));
-        // Assert.assertEquals(((DateTime)((Interval) value).getEnd()).getPartial(),
+        // Assertions.assertEquals(((DateTime)((Interval) value).getEnd()).getPartial(),
         // new Partial(DateTime.getFields(6), new int[] {2017, 5, 6, 19, 8, 0}));
         value = results.forExpression("TestToQuantity").value();
         // TODO: ModelInfo bug. Not aware of SimpleQuantity

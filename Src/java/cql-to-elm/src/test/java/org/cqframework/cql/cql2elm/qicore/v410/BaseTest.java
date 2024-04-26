@@ -12,11 +12,11 @@ import org.cqframework.cql.cql2elm.TestUtils;
 import org.hl7.elm.r1.ExpressionDef;
 import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.Retrieve;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-public class BaseTest {
+class BaseTest {
     @Test
-    public void testQICore() throws IOException {
+    void qICore() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("qicore/v410/TestQICore.cql", 0);
 
         Library library = translator.toELM();
@@ -36,7 +36,7 @@ public class BaseTest {
     }
 
     @Test
-    public void testEXM124() throws IOException {
+    void exm124() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("qicore/v410/EXM124_QICore4-8.2.000.cql", 0);
 
         Library library = translator.toELM();
@@ -52,7 +52,7 @@ public class BaseTest {
     }
 
     @Test
-    public void testEXM165() throws IOException {
+    void exm165() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("qicore/v410/EXM165_QICore4-8.5.000.cql", 0);
 
         Library library = translator.toELM();

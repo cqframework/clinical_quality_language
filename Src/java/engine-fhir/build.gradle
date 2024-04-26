@@ -6,7 +6,7 @@ plugins {
 
 dependencies {
     api project(':engine')
-    testImplementation 'com.github.tomakehurst:wiremock-jre8:2.35.0'
+    testImplementation 'com.github.tomakehurst:wiremock-jre8:2.35.2'
     testImplementation project(':cql-to-elm')
     testImplementation project(':model-jackson')
     testImplementation project(':elm-jackson')

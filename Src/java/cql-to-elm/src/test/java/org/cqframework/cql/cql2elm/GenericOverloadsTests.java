@@ -3,8 +3,8 @@ package org.cqframework.cql.cql2elm;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -16,12 +16,12 @@ import org.hl7.elm.r1.FunctionDef;
 import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.ListTypeSpecifier;
 import org.hl7.elm.r1.NamedTypeSpecifier;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-public class GenericOverloadsTests {
+class GenericOverloadsTests {
 
     private static final String CQL_TEST_FILE = "SignatureTests/GenericOverloadsTests.cql";
-    private Map<String, ExpressionDef> defs;
+    private static Map<String, ExpressionDef> defs;
 
     private Library getLibrary(boolean enableResultTypes, SignatureLevel level) throws IOException {
         final CqlTranslator translator = getTranslator(enableResultTypes, level);
@@ -76,7 +76,7 @@ public class GenericOverloadsTests {
     }
 
     @Test
-    public void TestResultTypes() throws IOException {
+    void resultTypes() throws IOException {
         Library library = getLibrary(true, SignatureLevel.Overloads);
 
         var stringifies = stringifies(library);
@@ -84,7 +84,7 @@ public class GenericOverloadsTests {
     }
 
     @Test
-    public void TestNoResultTypes() throws IOException {
+    void noResultTypes() throws IOException {
         Library library = getLibrary(false, SignatureLevel.Overloads);
 
         var stringifies = stringifies(library);
@@ -92,7 +92,7 @@ public class GenericOverloadsTests {
     }
 
     @Test
-    public void TestResultTypesSignatureNone() throws IOException {
+    void resultTypesSignatureNone() throws IOException {
         Library library = getLibrary(true, SignatureLevel.None);
 
         var stringifies = stringifies(library);
@@ -100,7 +100,7 @@ public class GenericOverloadsTests {
     }
 
     @Test
-    public void TestNoResultTypesSignatureNone() throws IOException {
+    void noResultTypesSignatureNone() throws IOException {
         Library library = getLibrary(false, SignatureLevel.None);
 
         var stringifies = stringifies(library);

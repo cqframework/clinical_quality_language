@@ -7,180 +7,180 @@ import org.cqframework.cql.cql2elm.quick.QICoreModelInfoProvider;
 import org.cqframework.cql.cql2elm.quick.QuickFhirModelInfoProvider;
 import org.cqframework.cql.cql2elm.quick.QuickModelInfoProvider;
 import org.hl7.cql.model.SystemModelInfoProvider;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-public class JacksonModelInfoLoadingTests {
+class JacksonModelInfoLoadingTests {
     @Test
-    public void testSystem() throws IOException {
+    void system() throws IOException {
         new org.hl7.elm_modelinfo.r1.serializing.jackson.XmlModelInfoReader()
                 .read(SystemModelInfoProvider.class.getResourceAsStream("/org/hl7/elm/r1/system-modelinfo.xml"));
     }
 
     @Test
-    public void testUSCore310() throws IOException {
+    void uSCore310() throws IOException {
         new org.hl7.elm_modelinfo.r1.serializing.jackson.XmlModelInfoReader()
                 .read(QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/uscore-modelinfo-3.1.0.xml"));
     }
 
     @Test
-    public void testUSCore311() throws IOException {
+    void uSCore311() throws IOException {
         new org.hl7.elm_modelinfo.r1.serializing.jackson.XmlModelInfoReader()
                 .read(QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/uscore-modelinfo-3.1.1.xml"));
     }
 
     @Test
-    public void testQuickFhir301() throws IOException {
+    void quickFhir301() throws IOException {
         new org.hl7.elm_modelinfo.r1.serializing.jackson.XmlModelInfoReader()
                 .read(QuickFhirModelInfoProvider.class.getResourceAsStream(
                         "/org/hl7/fhir/quickfhir-modelinfo-3.0.1.xml"));
     }
 
     @Test
-    public void testQuick330() throws IOException {
+    void quick330() throws IOException {
         new org.hl7.elm_modelinfo.r1.serializing.jackson.XmlModelInfoReader()
                 .read(QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/quick-modelinfo-3.3.0.xml"));
     }
 
     @Test
-    public void testQuick300() throws IOException {
+    void quick300() throws IOException {
         new org.hl7.elm_modelinfo.r1.serializing.jackson.XmlModelInfoReader()
                 .read(QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/quick-modelinfo-3.0.0.xml"));
     }
 
     @Test
-    public void testQuick() throws IOException {
+    void quick() throws IOException {
         new org.hl7.elm_modelinfo.r1.serializing.jackson.XmlModelInfoReader()
                 .read(QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/quick-modelinfo.xml"));
     }
 
     @Test
-    public void testQICore400() throws IOException {
+    void qICore400() throws IOException {
         new org.hl7.elm_modelinfo.r1.serializing.jackson.XmlModelInfoReader()
                 .read(QICoreModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/qicore-modelinfo-4.0.0.xml"));
     }
 
     @Test
-    public void testQICore410() throws IOException {
+    void qICore410() throws IOException {
         new org.hl7.elm_modelinfo.r1.serializing.jackson.XmlModelInfoReader()
                 .read(QICoreModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/qicore-modelinfo-4.1.0.xml"));
     }
 
     @Test
-    public void testQICore411() throws IOException {
+    void qICore411() throws IOException {
         new org.hl7.elm_modelinfo.r1.serializing.jackson.XmlModelInfoReader()
                 .read(QICoreModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/qicore-modelinfo-4.1.1.xml"));
     }
 
     @Test
-    public void testQDM() throws IOException {
+    void qdm() throws IOException {
         new org.hl7.elm_modelinfo.r1.serializing.jackson.XmlModelInfoReader()
                 .read(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo.xml"));
     }
 
     @Test
-    public void testQDM420() throws IOException {
+    void qdm420() throws IOException {
         new org.hl7.elm_modelinfo.r1.serializing.jackson.XmlModelInfoReader()
                 .read(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-4.2.xml"));
     }
 
     @Test
-    public void testQDM430() throws IOException {
+    void qdm430() throws IOException {
         new org.hl7.elm_modelinfo.r1.serializing.jackson.XmlModelInfoReader()
                 .read(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-4.3.xml"));
     }
 
     @Test
-    public void testQDM500() throws IOException {
+    void qdm500() throws IOException {
         new org.hl7.elm_modelinfo.r1.serializing.jackson.XmlModelInfoReader()
                 .read(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.0.xml"));
     }
 
     @Test
-    public void testQDM501() throws IOException {
+    void qdm501() throws IOException {
         new org.hl7.elm_modelinfo.r1.serializing.jackson.XmlModelInfoReader()
                 .read(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.0.1.xml"));
     }
 
     @Test
-    public void testQDM502() throws IOException {
+    void qdm502() throws IOException {
         new org.hl7.elm_modelinfo.r1.serializing.jackson.XmlModelInfoReader()
                 .read(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.0.2.xml"));
     }
 
     @Test
-    public void testQDM530() throws IOException {
+    void qdm530() throws IOException {
         new org.hl7.elm_modelinfo.r1.serializing.jackson.XmlModelInfoReader()
                 .read(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.3.xml"));
     }
 
     @Test
-    public void testQDM540() throws IOException {
+    void qdm540() throws IOException {
         new org.hl7.elm_modelinfo.r1.serializing.jackson.XmlModelInfoReader()
                 .read(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.4.xml"));
     }
 
     @Test
-    public void testQDM550() throws IOException {
+    void qdm550() throws IOException {
         new org.hl7.elm_modelinfo.r1.serializing.jackson.XmlModelInfoReader()
                 .read(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.5.xml"));
     }
 
     @Test
-    public void testQDM560() throws IOException {
+    void qdm560() throws IOException {
         new org.hl7.elm_modelinfo.r1.serializing.jackson.XmlModelInfoReader()
                 .read(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.6.xml"));
     }
 
     @Test
-    public void testFhirModelInfo102() throws IOException {
+    void fhirModelInfo102() throws IOException {
         new org.hl7.elm_modelinfo.r1.serializing.jackson.XmlModelInfoReader()
                 .read(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-1.0.2.xml"));
     }
 
     @Test
-    public void testFhirModelInfo140() throws IOException {
+    void fhirModelInfo140() throws IOException {
         new org.hl7.elm_modelinfo.r1.serializing.jackson.XmlModelInfoReader()
                 .read(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-1.4.xml"));
     }
 
     @Test
-    public void testFhirModelInfo160() throws IOException {
+    void fhirModelInfo160() throws IOException {
         new org.hl7.elm_modelinfo.r1.serializing.jackson.XmlModelInfoReader()
                 .read(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-1.6.xml"));
     }
 
     @Test
-    public void testFhirModelInfo180() throws IOException {
+    void fhirModelInfo180() throws IOException {
         new org.hl7.elm_modelinfo.r1.serializing.jackson.XmlModelInfoReader()
                 .read(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-1.8.xml"));
     }
 
     @Test
-    public void testFhirModelInfo300() throws IOException {
+    void fhirModelInfo300() throws IOException {
         new org.hl7.elm_modelinfo.r1.serializing.jackson.XmlModelInfoReader()
                 .read(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-3.0.0.xml"));
     }
 
     @Test
-    public void testFhirModelInfo301() throws IOException {
+    void fhirModelInfo301() throws IOException {
         new org.hl7.elm_modelinfo.r1.serializing.jackson.XmlModelInfoReader()
                 .read(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-3.0.1.xml"));
     }
 
     @Test
-    public void testFhirModelInfo320() throws IOException {
+    void fhirModelInfo320() throws IOException {
         new org.hl7.elm_modelinfo.r1.serializing.jackson.XmlModelInfoReader()
                 .read(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-3.2.0.xml"));
     }
 
     @Test
-    public void testFhirModelInfo400() throws IOException {
+    void fhirModelInfo400() throws IOException {
         new org.hl7.elm_modelinfo.r1.serializing.jackson.XmlModelInfoReader()
                 .read(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-4.0.0.xml"));
     }
 
     @Test
-    public void testFhirModelInfo401() throws IOException {
+    void fhirModelInfo401() throws IOException {
         new org.hl7.elm_modelinfo.r1.serializing.jackson.XmlModelInfoReader()
                 .read(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-4.0.1.xml"));
     }

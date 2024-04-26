@@ -14,12 +14,12 @@ import org.hl7.cql_annotations.r1.Narrative;
 import org.hl7.cql_annotations.r1.Tag;
 import org.hl7.elm.r1.ExpressionDef;
 import org.hl7.elm.r1.FunctionDef;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-public class CommentTests {
+class CommentTests {
 
     @Test
-    public void testComments() throws IOException {
+    void comments() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("TestComments.cql", 0, EnableAnnotations);
         CompiledLibrary library = translator.getTranslatedLibrary();
         assertThat(library.getLibrary().getAnnotation(), notNullValue());
@@ -76,7 +76,7 @@ public class CommentTests {
     }
 
     @Test
-    public void testTags() throws IOException {
+    void tags() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("TestTags.cql", 0, EnableAnnotations);
         CompiledLibrary library = translator.getTranslatedLibrary();
         assertThat(library.getLibrary().getAnnotation(), notNullValue());

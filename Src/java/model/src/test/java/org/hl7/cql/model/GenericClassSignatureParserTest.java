@@ -2,16 +2,16 @@ package org.hl7.cql.model;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.testng.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-public class GenericClassSignatureParserTest {
+class GenericClassSignatureParserTest {
 
     @Test
-    public void parseTest1() {
+    void parseTest1() {
         GenericClassSignatureParser genericClassSignatureParser = new GenericClassSignatureParser("MyType<M,N>", null);
         if (genericClassSignatureParser.isValidGenericSignature()) {
             ClassType signature = genericClassSignatureParser.parseGenericSignature();
@@ -25,7 +25,7 @@ public class GenericClassSignatureParserTest {
     }
 
     @Test
-    public void parseTest2() {
+    void parseTest2() {
         ClassType collectionType = new ClassType("Collection", null, null);
         Map<String, DataType> resolvedTypes = new HashMap<>();
         resolvedTypes.put("Collection", collectionType);
@@ -49,7 +49,7 @@ public class GenericClassSignatureParserTest {
     }
 
     @Test
-    public void parseTest3() {
+    void parseTest3() {
         ClassType collectionType = new ClassType("Collection", null, null);
         ClassType objectType = new ClassType("Object", null, null);
         Map<String, DataType> resolvedTypes = new HashMap<>();
@@ -80,7 +80,7 @@ public class GenericClassSignatureParserTest {
     }
 
     @Test
-    public void parseTest4() {
+    void parseTest4() {
         try {
             ClassType collectionType = new ClassType("Collection", null, null);
             Map<String, DataType> resolvedTypes = new HashMap<>();
@@ -95,7 +95,7 @@ public class GenericClassSignatureParserTest {
     }
 
     @Test
-    public void parseTest5() {
+    void parseTest5() {
         ClassType objectType = new ClassType("Object", null, null);
         ClassType listType = new ClassType("List", null, null);
         listType.addGenericParameter(new TypeParameter("T"));
@@ -124,7 +124,7 @@ public class GenericClassSignatureParserTest {
     }
 
     @Test
-    public void parseTest6() {
+    void parseTest6() {
         ClassType objectType = new ClassType("Object", null, null);
         SimpleType stringType = new SimpleType("String", null);
         ClassType listType = new ClassType("List", null, null);
@@ -161,7 +161,7 @@ public class GenericClassSignatureParserTest {
     }
 
     @Test
-    public void parseTest7() {
+    void parseTest7() {
         SimpleType integerType = new SimpleType("Integer", null);
         SimpleType stringType = new SimpleType("String", null);
         ClassType listType = new ClassType("List", null, null);

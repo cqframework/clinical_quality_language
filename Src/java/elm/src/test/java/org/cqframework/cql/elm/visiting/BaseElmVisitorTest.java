@@ -1,19 +1,19 @@
 package org.cqframework.cql.elm.visiting;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.cqframework.cql.elm.tracking.Trackable;
 import org.hl7.elm.r1.ByDirection;
 import org.hl7.elm.r1.Sort;
 import org.hl7.elm.r1.SortByItem;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("checkstyle:abstractclassname")
-public class BaseElmVisitorTest {
+class BaseElmVisitorTest {
 
     @Test
-    public void sortByVisited() {
+    void sortByVisited() {
         // set up visitor that returns true if it visits a SortByItem
         var sortByFinder = new BaseElmVisitor<Boolean, Void>() {
             @Override

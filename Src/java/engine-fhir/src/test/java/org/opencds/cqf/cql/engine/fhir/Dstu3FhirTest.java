@@ -14,20 +14,19 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import java.net.ServerSocket;
 import java.util.List;
 import org.hl7.fhir.dstu3.model.*;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 public class Dstu3FhirTest {
     private static FhirContext FHIR_CONTEXT = FhirContext.forCached(FhirVersionEnum.DSTU3);
     private static IParser FHIR_PARSER = FHIR_CONTEXT.newJsonParser().setPrettyPrint(true);
     private static int HTTP_PORT = 0;
 
-    // emulate wiremock's testng.WireMockRule with testng features
     WireMockServer wireMockServer;
     WireMock wireMock;
 
-    @BeforeMethod()
-    public void start() {
+    @BeforeEach()
+    void start() {
         wireMockServer = new WireMockServer(getHttpPort());
         wireMockServer.start();
         WireMock.configureFor("localhost", getHttpPort());
@@ -36,20 +35,20 @@ public class Dstu3FhirTest {
         mockFhirRead("/metadata", getCapabilityStatement());
     }
 
-    @AfterMethod
-    public void stop() {
+    @AfterEach
+    void stop() {
         wireMockServer.stop();
     }
 
-    public FhirContext getFhirContext() {
+    public static FhirContext getFhirContext() {
         return FHIR_CONTEXT;
     }
 
-    public IParser getFhirParser() {
+    public static IParser getFhirParser() {
         return FHIR_PARSER;
     }
 
-    public int getHttpPort() {
+    public static int getHttpPort() {
         if (HTTP_PORT == 0) {
             try (ServerSocket socket = new ServerSocket(0)) {
                 HTTP_PORT = socket.getLocalPort();
@@ -60,7 +59,7 @@ public class Dstu3FhirTest {
         return HTTP_PORT;
     }
 
-    public IGenericClient newClient() {
+    public static IGenericClient newClient() {
         IGenericClient client =
                 getFhirContext().newRestfulGenericClient(String.format("http://localhost:%d/", getHttpPort()));
 

@@ -33,13 +33,11 @@ public class SystemDataProvider extends BaseModelResolver implements DataProvide
         throw new IllegalArgumentException("SystemDataProvider does not support retrieval.");
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public String getPackageName() {
         return "org.opencds.cqf.cql.engine.runtime";
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void setPackageName(String packageName) {}
 

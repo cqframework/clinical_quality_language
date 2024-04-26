@@ -8,21 +8,21 @@ import org.cqframework.cql.cql2elm.*;
 import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider;
 import org.hl7.cql.model.ModelInfoProvider;
 import org.hl7.elm.r1.Library;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * Created by Bryn on 12/11/2016.
  */
-public class PathTests {
+class PathTests {
 
     private static LibraryManager libraryManager;
     private static ModelManager modelManager;
     private static ModelInfoProvider modelInfoProvider;
 
-    @BeforeClass
-    public void setup() {
+    @BeforeAll
+    static void setup() {
         modelManager = new ModelManager();
         libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().clearProviders();
@@ -32,13 +32,13 @@ public class PathTests {
         modelManager.getModelInfoLoader().registerModelInfoProvider(modelInfoProvider, true);
     }
 
-    @AfterClass
-    public void tearDown() {
+    @AfterAll
+    static void tearDown() {
         modelManager.getModelInfoLoader().unregisterModelInfoProvider(modelInfoProvider);
     }
 
     @Test
-    public void testPaths() {
+    void paths() {
         CqlTranslator translator = null;
         try {
             translator = CqlTranslator.fromStream(PathTests.class.getResourceAsStream("PathTests.cql"), libraryManager);

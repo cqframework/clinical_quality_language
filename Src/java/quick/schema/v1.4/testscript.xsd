@@ -739,7 +739,7 @@
           </xs:element>
           <xs:element name="warningOnly" minOccurs="0" maxOccurs="1" type="boolean">
             <xs:annotation>
-              <xs:documentation xml:lang="en">Whether or not the test execution will produce a warning only on error for this assert.</xs:documentation>
+              <xs:documentation xml:lang="en">Whether or not the test execution will produce a warning only on error for this Assertions.</xs:documentation>
            </xs:annotation>
           </xs:element>
         </xs:sequence>

@@ -4,13 +4,13 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
-import org.testng.annotations.Test;
 
-public class TestFHIRHelpers extends FhirExecutionTestBase {
+class TestFHIRHelpers extends FhirExecutionTestBase {
 
     @Test
-    public void test() {
+    void test() {
 
         CqlEngine engine = getEngine();
         engine.getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);

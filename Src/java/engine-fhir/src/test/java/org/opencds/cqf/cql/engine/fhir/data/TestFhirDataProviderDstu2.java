@@ -1,21 +1,19 @@
 package org.opencds.cqf.cql.engine.fhir.data;
 
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.hl7.fhir.dstu2.model.Encounter;
+import org.junit.jupiter.api.BeforeEach;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.execution.EvaluationResult;
 import org.opencds.cqf.cql.engine.fhir.retrieve.FhirBundleCursor;
-import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
 
 public class TestFhirDataProviderDstu2 extends FhirExecutionTestBase {
 
     private EvaluationResult results;
 
-    @BeforeMethod
-    public void before() {
+    @BeforeEach
+    void before() {
         CqlEngine engine = getEngine();
         engine.getState().getEnvironment().registerDataProvider("http://hl7.org/fhir", dstu2Provider);
         results = engine.evaluate(library.getIdentifier());
@@ -38,7 +36,7 @@ public class TestFhirDataProviderDstu2 extends FhirExecutionTestBase {
         for (Object result : results) {
             Encounter e = (Encounter) result;
             if (!e.getPatient().getIdElement().getIdPart().equals("2822")) {
-                Assert.fail("Invalid patient id in Resource");
+                fail("Invalid patient id in Resource");
             }
         }
 

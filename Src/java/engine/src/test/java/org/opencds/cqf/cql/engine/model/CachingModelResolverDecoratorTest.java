@@ -1,24 +1,23 @@
 package org.opencds.cqf.cql.engine.model;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.testng.Assert.assertEquals;
 
 import java.util.Date;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
 import org.opencds.cqf.cql.engine.retrieve.RetrieveProvider;
-import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 // TODO: Extend testing to cover more of the CachedModelResolver
-public class CachingModelResolverDecoratorTest {
+class CachingModelResolverDecoratorTest {
     @Mock
     private ModelResolver mockModelResolver;
 
@@ -27,19 +26,19 @@ public class CachingModelResolverDecoratorTest {
 
     private AutoCloseable mocks;
 
-    @BeforeMethod
+    @BeforeEach
     void before() {
         mocks = MockitoAnnotations.openMocks(this);
     }
 
-    @AfterMethod
+    @AfterEach
     void after() throws Exception {
         mocks.close();
     }
 
     @Test
     @SuppressWarnings("deprecation")
-    public void context_path_resolved_only_once() {
+    void context_path_resolved_only_once() {
         var m = mock(ModelResolver.class);
         when(m.getPackageName()).thenReturn("test.package");
         when(m.getContextPath("Patient", "Patient")).thenReturn("id");
@@ -54,7 +53,7 @@ public class CachingModelResolverDecoratorTest {
 
     @Test
     @SuppressWarnings({"unchecked", "deprecation"})
-    public void type_resolved_only_once() {
+    void type_resolved_only_once() {
         var m = mock(ModelResolver.class);
         when(m.getPackageName()).thenReturn("test.package");
         when(m.resolveType(isA(Integer.class))).thenReturn((Class) Integer.class);
@@ -69,7 +68,7 @@ public class CachingModelResolverDecoratorTest {
     }
 
     @Test
-    void testResolveIdString() {
+    void resolveIdString() {
         final String object = "object";
         final String id = "text";
 
@@ -78,12 +77,12 @@ public class CachingModelResolverDecoratorTest {
         final CompositeDataProvider compositeDataProvider =
                 new CompositeDataProvider(mockModelResolver, mockRetrieveProvider);
 
-        Assert.assertEquals(id, compositeDataProvider.resolveId(object));
+        assertEquals(id, compositeDataProvider.resolveId(object));
         verify(mockModelResolver, times(1)).resolveId(object);
     }
 
     @Test
-    void testResolveIdIntLong() {
+    void resolveIdIntLong() {
         final long object = 1L;
         final String id = "oneL";
 
@@ -92,12 +91,12 @@ public class CachingModelResolverDecoratorTest {
         final CompositeDataProvider compositeDataProvider =
                 new CompositeDataProvider(mockModelResolver, mockRetrieveProvider);
 
-        Assert.assertEquals(id, compositeDataProvider.resolveId(object));
+        assertEquals(id, compositeDataProvider.resolveId(object));
         verify(mockModelResolver, times(1)).resolveId(object);
     }
 
     @Test
-    void testResolveIdDate() {
+    void resolveIdDate() {
         final Date object = new Date();
         final String id = "now";
 
@@ -106,7 +105,7 @@ public class CachingModelResolverDecoratorTest {
         final CompositeDataProvider compositeDataProvider =
                 new CompositeDataProvider(mockModelResolver, mockRetrieveProvider);
 
-        Assert.assertEquals(id, compositeDataProvider.resolveId(object));
+        assertEquals(id, compositeDataProvider.resolveId(object));
         verify(mockModelResolver, times(1)).resolveId(object);
     }
 }

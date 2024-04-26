@@ -11,12 +11,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 import org.cqframework.cql.cql2elm.CqlCompilerException.ErrorSeverity;
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
-public class CMS146XmlTest {
+class CMS146XmlTest {
 
-    @DataProvider(name = "sigFileAndSigLevel")
     private static Object[][] sigFileAndSigLevel() {
         return new Object[][] {
             {"CMS146v2_Expected_SignatureLevel_None.xml", SignatureLevel.None},
@@ -26,8 +25,9 @@ public class CMS146XmlTest {
         };
     }
 
-    @Test(dataProvider = "sigFileAndSigLevel")
-    public void testCms146_SignatureLevels(String fileName, SignatureLevel expectedSignatureLevel) throws IOException {
+    @ParameterizedTest
+    @MethodSource("sigFileAndSigLevel")
+    void cms146SignatureLevels(String fileName, SignatureLevel expectedSignatureLevel) throws IOException {
         final String expectedXml = getXml(fileName);
 
         final File cms146 = getFile("CMS146v2_Test_CQM.cql");
@@ -41,9 +41,9 @@ public class CMS146XmlTest {
     }
 
     private static String getXml(String name) throws IOException {
-        return new Scanner(getFile(name), StandardCharsets.UTF_8)
-                .useDelimiter("\\Z")
-                .next();
+        try (Scanner scanner = new Scanner(getFile(name), StandardCharsets.UTF_8).useDelimiter("\\Z")) {
+            return scanner.next();
+        }
     }
 
     private static File getFile(String name) {

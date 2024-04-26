@@ -6,29 +6,29 @@ import static org.hamcrest.Matchers.is;
 import java.io.IOException;
 import org.hl7.cql.model.ModelInfoProvider;
 import org.hl7.elm.r1.Library;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public class ModelWithoutDefaultLoadersTests {
-    private ModelManager modelManager;
-    private ModelInfoProvider modelInfoProvider;
+class ModelWithoutDefaultLoadersTests {
+    private static ModelManager modelManager;
+    private static ModelInfoProvider modelInfoProvider;
 
-    @BeforeClass
-    public void setup() {
+    @BeforeAll
+    static void setup() {
         modelManager = new ModelManager(false);
         modelInfoProvider = new TestModelInfoProvider();
         // modelManager.getModelInfoLoader().registerSystemModelInfoProvider();
         modelManager.getModelInfoLoader().registerModelInfoProvider(modelInfoProvider);
     }
 
-    @AfterClass
-    public void tearDown() {
+    @AfterAll
+    static void tearDown() {
         modelManager.getModelInfoLoader().unregisterModelInfoProvider(modelInfoProvider);
     }
 
     @Test
-    public void testModelInfo() {
+    void modelInfo() {
         CqlTranslator translator = null;
         try {
             translator = CqlTranslator.fromStream(

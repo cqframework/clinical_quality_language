@@ -1,23 +1,23 @@
 package org.opencds.cqf.cql.engine.execution;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.opencds.cqf.cql.engine.execution.CqlConceptTest.assertEqual;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
 
 import java.util.Collections;
 import java.util.List;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.ModelManager;
+import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.runtime.Code;
 import org.opencds.cqf.cql.engine.terminology.CodeSystemInfo;
 import org.opencds.cqf.cql.engine.terminology.TerminologyProvider;
 import org.opencds.cqf.cql.engine.terminology.ValueSetInfo;
-import org.testng.annotations.Test;
 
-public class ExpandValueSetTest {
+class ExpandValueSetTest {
 
     @Test
-    public void test_all_expand_valueset() {
+    void all_expand_valueset() {
         LibraryManager libraryManager = new LibraryManager(new ModelManager());
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
 
@@ -44,7 +44,7 @@ public class ExpandValueSetTest {
         @SuppressWarnings("unchecked")
         List<Code> actual = (List<Code>) results.forExpression("ExpandValueSet").value();
         assertNotNull(actual);
-        assertEquals(actual.size(), 1);
+        assertEquals(1, actual.size());
 
         assertEqual(expected, actual.get(0));
     }

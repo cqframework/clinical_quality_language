@@ -1,8 +1,8 @@
 package org.opencds.cqf.cql.engine.fhir.searchparam;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.FhirVersionEnum;
@@ -10,11 +10,11 @@ import ca.uhn.fhir.context.RuntimeSearchParam;
 import ca.uhn.fhir.model.api.IQueryParameterType;
 import ca.uhn.fhir.rest.api.RestSearchParameterTypeEnum;
 import org.apache.commons.lang3.tuple.Pair;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-public class TestSearchParameterResolver {
+class TestSearchParameterResolver {
     @Test
-    public void testReturnsNullPathReturnsNull() {
+    void returnsNullPathReturnsNull() {
         SearchParameterResolver resolver = new SearchParameterResolver(FhirContext.forCached(FhirVersionEnum.DSTU3));
 
         RuntimeSearchParam param = resolver.getSearchParameterDefinition("Patient", null);
@@ -22,7 +22,7 @@ public class TestSearchParameterResolver {
     }
 
     @Test
-    public void testNullDataTypeReturnsNull() {
+    void nullDataTypeReturnsNull() {
         SearchParameterResolver resolver = new SearchParameterResolver(FhirContext.forCached(FhirVersionEnum.DSTU3));
 
         RuntimeSearchParam param = resolver.getSearchParameterDefinition(null, "code");
@@ -30,7 +30,7 @@ public class TestSearchParameterResolver {
     }
 
     @Test
-    void testDstu3SearchParams() {
+    void dstu3SearchParams() {
         SearchParameterResolver resolver = new SearchParameterResolver(FhirContext.forCached(FhirVersionEnum.DSTU3));
 
         RuntimeSearchParam param = resolver.getSearchParameterDefinition("Patient", "id");
@@ -65,7 +65,7 @@ public class TestSearchParameterResolver {
     }
 
     @Test
-    void testDstu3DateSearchParams() {
+    void dstu3DateSearchParams() {
         SearchParameterResolver resolver = new SearchParameterResolver(FhirContext.forCached(FhirVersionEnum.DSTU3));
 
         RuntimeSearchParam param = resolver.getSearchParameterDefinition(
@@ -75,7 +75,7 @@ public class TestSearchParameterResolver {
     }
 
     @Test
-    void testR4SearchParams() {
+    void r4SearchParams() {
         SearchParameterResolver resolver = new SearchParameterResolver(FhirContext.forCached(FhirVersionEnum.R4));
 
         RuntimeSearchParam param = resolver.getSearchParameterDefinition("Patient", "id");
@@ -118,7 +118,7 @@ public class TestSearchParameterResolver {
     }
 
     @Test
-    void testR4DateSearchParams() {
+    void r4DateSearchParams() {
         SearchParameterResolver resolver = new SearchParameterResolver(FhirContext.forCached(FhirVersionEnum.R4));
 
         RuntimeSearchParam param =
@@ -144,7 +144,7 @@ public class TestSearchParameterResolver {
     }
 
     @Test
-    void testR4ReferenceParameter() {
+    void r4ReferenceParameter() {
         FhirContext context = FhirContext.forCached(FhirVersionEnum.R4);
         SearchParameterResolver resolver = new SearchParameterResolver(context);
         Pair<String, IQueryParameterType> actual =
@@ -154,7 +154,7 @@ public class TestSearchParameterResolver {
     }
 
     @Test
-    void testR4TokenParameter() {
+    void r4TokenParameter() {
         FhirContext context = FhirContext.forCached(FhirVersionEnum.R4);
         SearchParameterResolver resolver = new SearchParameterResolver(context);
         Pair<String, IQueryParameterType> actual =

@@ -708,7 +708,7 @@
           </xs:element>
           <xs:element name="operator" minOccurs="0" maxOccurs="1" type="AssertionOperatorType">
             <xs:annotation>
-              <xs:documentation xml:lang="en">The operator type defines the conditional behavior of the assert. If not defined, the default is equals.</xs:documentation>
+              <xs:documentation xml:lang="en">The operator type defines the conditional behavior of the Assertions. If not defined, the default is equals.</xs:documentation>
            </xs:annotation>
           </xs:element>
           <xs:element name="path" minOccurs="0" maxOccurs="1" type="string">
@@ -763,7 +763,7 @@
           </xs:element>
           <xs:element name="warningOnly" minOccurs="0" maxOccurs="1" type="boolean">
             <xs:annotation>
-              <xs:documentation xml:lang="en">Whether or not the test execution will produce a warning only on error for this assert.</xs:documentation>
+              <xs:documentation xml:lang="en">Whether or not the test execution will produce a warning only on error for this Assertions.</xs:documentation>
            </xs:annotation>
           </xs:element>
         </xs:sequence>

@@ -1,20 +1,21 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import java.util.List;
-import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class LetClauseOutsideQueryContextTest extends CqlTestBase {
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator;
+
+class LetClauseOutsideQueryContextTest extends CqlTestBase {
 
     @Test
-    public void testEvaluate() {
+    void evaluate() {
         var results = engine.evaluate(toElmIdentifier("LetClauseOutsideQueryContextTest"));
         var value = results.forExpression("First Position of list").value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) value).get(0), 1));
+        assertTrue(EquivalentEvaluator.equivalent(((List<?>) value).get(0), 1));
 
         value = results.forExpression("Third Position of list With Same Name of Let As First")
                 .value();
-        Assert.assertTrue(EquivalentEvaluator.equivalent(((List<?>) value).get(0), 3));
+        assertTrue(EquivalentEvaluator.equivalent(((List<?>) value).get(0), 3));
     }
 }

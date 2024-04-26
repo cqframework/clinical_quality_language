@@ -1,17 +1,18 @@
 package org.cqframework.fhir.utilities;
 
-import static org.testng.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import org.hl7.fhir.r5.context.IWorkerContext;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestIGContext implements IWorkerContext.ILoggingService {
 
     @Test
-    public void testTypesAndValuesIG() throws URISyntaxException {
+    void typesAndValuesIG() throws URISyntaxException {
         URL url = TestIGContext.class.getResource("types-and-values/ig.ini");
         assertNotNull(url);
         URI uri = Uris.parseOrNull(url.toURI().toString());
@@ -19,8 +20,8 @@ public class TestIGContext implements IWorkerContext.ILoggingService {
         String path = uri.getSchemeSpecificPart();
         IGContext igContext = new IGContext(this);
         igContext.initializeFromIni(path);
-        assertEquals(igContext.getPackageId(), "fhir.cqf.typesandvalues");
-        assertEquals(igContext.getCanonicalBase(), "http://fhir.org/guides/cqf/typesandvalues");
+        assertEquals("fhir.cqf.typesandvalues", igContext.getPackageId());
+        assertEquals("http://fhir.org/guides/cqf/typesandvalues", igContext.getCanonicalBase());
     }
 
     @Override

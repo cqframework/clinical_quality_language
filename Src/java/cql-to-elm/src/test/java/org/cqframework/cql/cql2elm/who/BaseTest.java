@@ -7,11 +7,11 @@ import org.cqframework.cql.cql2elm.CqlCompilerOptions;
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.TestUtils;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-public class BaseTest {
+class BaseTest {
     @Test
-    public void testWho() throws IOException {
+    void who() throws IOException {
         var options = CqlCompilerOptions.defaultOptions();
         CqlTranslator translator = TestUtils.runSemanticTest("who/TestSignature.cql", 0, options);
         Library library = translator.toELM();

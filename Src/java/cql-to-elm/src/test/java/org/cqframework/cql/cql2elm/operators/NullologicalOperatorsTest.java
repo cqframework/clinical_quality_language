@@ -18,15 +18,15 @@ import org.hl7.elm.r1.Expression;
 import org.hl7.elm.r1.ExpressionDef;
 import org.hl7.elm.r1.IsNull;
 import org.hl7.elm.r1.Library;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public class NullologicalOperatorsTest {
+class NullologicalOperatorsTest {
 
-    private Map<String, ExpressionDef> defs;
+    private static Map<String, ExpressionDef> defs;
 
-    @BeforeTest
-    public void setup() throws IOException {
+    @BeforeAll
+    static void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
         CqlTranslator translator = CqlTranslator.fromStream(
                 NullologicalOperatorsTest.class.getResourceAsStream("../OperatorTests/NullologicalOperators.cql"),
@@ -40,7 +40,7 @@ public class NullologicalOperatorsTest {
     }
 
     @Test
-    public void testIsNull() {
+    void isNull() {
         ExpressionDef def = defs.get("IsNullExpression");
         assertThat(def, hasTypeAndResult(IsNull.class, "System.Boolean"));
 
@@ -49,7 +49,7 @@ public class NullologicalOperatorsTest {
     }
 
     @Test
-    public void testCoalesce() {
+    void coalesce() {
         ExpressionDef def = defs.get("CoalesceList");
         assertThat(def, hasTypeAndResult(Coalesce.class, "System.Integer"));
 

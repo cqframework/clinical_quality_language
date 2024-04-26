@@ -14,15 +14,15 @@ import com.tngtech.archunit.lang.ArchCondition;
 import com.tngtech.archunit.lang.ConditionEvents;
 import com.tngtech.archunit.lang.SimpleConditionEvent;
 import org.hl7.elm.r1.Element;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-public class DesignTests {
+class DesignTests {
 
     private static final JavaClasses importedClasses =
             new ClassFileImporter().importPackages("org.cqframework.cql.elm", "org.hl7.elm.r1");
 
     @Test
-    public void ensureVisitAbstractDoesNotCallDefaultResult() {
+    void ensureVisitAbstractDoesNotCallDefaultResult() {
 
         var isAbstractElementType = and(modifier(JavaModifier.ABSTRACT), assignableTo(Element.class));
 

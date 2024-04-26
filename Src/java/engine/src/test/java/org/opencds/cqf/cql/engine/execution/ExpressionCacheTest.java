@@ -2,17 +2,17 @@ package org.opencds.cqf.cql.engine.execution;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.hl7.elm.r1.VersionedIdentifier;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("removal")
-public class ExpressionCacheTest extends CqlTestBase {
+class ExpressionCacheTest extends CqlTestBase {
 
     @Test
-    public void test_expression_cache() {
+    void expression_cache() {
 
         engine.getCache().setExpressionCaching(true);
 

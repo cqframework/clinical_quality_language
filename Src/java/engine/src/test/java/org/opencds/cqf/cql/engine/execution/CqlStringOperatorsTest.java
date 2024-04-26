@@ -3,15 +3,16 @@ package org.opencds.cqf.cql.engine.execution;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.*;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-public class CqlStringOperatorsTest extends CqlTestBase {
+class CqlStringOperatorsTest extends CqlTestBase {
 
     @Test
-    public void test_all_string_operators() {
+    void all_string_operators() {
         var results = engine.evaluate(toElmIdentifier("CqlStringOperatorsTest"));
         var value = results.forExpression("CombineNull").value();
         assertThat(value, is(nullValue()));
@@ -95,19 +96,19 @@ public class CqlStringOperatorsTest extends CqlTestBase {
         assertThat(value, is(true));
 
         value = results.forExpression("LastPositionOfNull").value();
-        Assert.assertTrue(value == null);
+        assertTrue(value == null);
 
         value = results.forExpression("LastPositionOfNull1").value();
-        Assert.assertTrue(value == null);
+        assertTrue(value == null);
 
         value = results.forExpression("LastPositionOfNull2").value();
-        Assert.assertTrue(value == null);
+        assertTrue(value == null);
 
         value = results.forExpression("LastPositionOf1").value();
-        Assert.assertTrue((Integer) value == 1);
+        assertTrue((Integer) value == 1);
 
         value = results.forExpression("LastPositionOf2").value();
-        Assert.assertTrue((Integer) value == 11);
+        assertTrue((Integer) value == 11);
 
         value = results.forExpression("LengthNullString").value();
         assertThat(value, is(nullValue()));
@@ -200,19 +201,19 @@ public class CqlStringOperatorsTest extends CqlTestBase {
         assertThat(value, is(new ArrayList<Object>(Arrays.asList("a", "b"))));
 
         value = results.forExpression("StartsWithNull").value();
-        Assert.assertTrue(value == null);
+        assertTrue(value == null);
 
         value = results.forExpression("StartsWithNull1").value();
-        Assert.assertTrue(value == null);
+        assertTrue(value == null);
 
         value = results.forExpression("StartsWithNull2").value();
-        Assert.assertTrue(value == null);
+        assertTrue(value == null);
 
         value = results.forExpression("StartsWithTrue1").value();
-        Assert.assertTrue((Boolean) value);
+        assertTrue((Boolean) value);
 
         value = results.forExpression("StartsWithFalse1").value();
-        Assert.assertTrue(!(Boolean) value);
+        assertFalse((Boolean) value);
 
         value = results.forExpression("SubstringNullNull").value();
         assertThat(value, is(nullValue()));

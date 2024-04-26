@@ -53,9 +53,9 @@ public class FhirHelpersDstu2Test {
 
         // TODO - millis shouldn't be populated - issue with DateTime.fromJavaDate(Date date)
         Object value = results.forExpression("TestPeriodToInterval").value();
-        //        Assert.assertEquals(((DateTime)((Interval) value).getStart()).getPartial(), new
+        //        Assertions.assertEquals(((DateTime)((Interval) value).getStart()).getPartial(), new
         // Partial(DateTime.getFields(7), new int[] {2017, 5, 6, 18, 8, 0, 0}));
-        //        Assert.assertEquals(((DateTime)((Interval) value).getEnd()).getPartial(), new
+        //        Assertions.assertEquals(((DateTime)((Interval) value).getEnd()).getPartial(), new
         // Partial(DateTime.getFields(7), new int[] {2017, 5, 6, 19, 8, 0, 0}));
         value = results.forExpression("TestToQuantity").value();
         value = results.forExpression("TestRangeToInterval").value();

@@ -1,6 +1,6 @@
 package org.opencds.cqf.cql.engine.fhir.data;
 
-import static org.testng.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.FhirVersionEnum;
@@ -11,6 +11,7 @@ import java.util.Set;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.ListResource;
 import org.hl7.fhir.dstu3.model.Patient;
+import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
 import org.opencds.cqf.cql.engine.fhir.model.CachedDstu3FhirModelResolver;
@@ -19,8 +20,6 @@ import org.opencds.cqf.cql.engine.fhir.retrieve.FhirBundleCursor;
 import org.opencds.cqf.cql.engine.fhir.retrieve.RestFhirRetrieveProvider;
 import org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterResolver;
 import org.opencds.cqf.cql.engine.fhir.terminology.Dstu3FhirTerminologyProvider;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
 public class TestFhirDataProviderDstu3 extends FhirExecutionTestBase {
 
@@ -82,7 +81,7 @@ public class TestFhirDataProviderDstu3 extends FhirExecutionTestBase {
             resultCount++;
         }
 
-        assertTrue(patients.size() == resultCount);
+        assertEquals(patients.size(), resultCount);
     }
 
     // @Test
@@ -92,7 +91,7 @@ public class TestFhirDataProviderDstu3 extends FhirExecutionTestBase {
         var results = engine.evaluate(library.getIdentifier(), Set.of("testChoiceTypes"));
 
         Object value = results.forExpression("testChoiceTypes").value();
-        Assert.assertNotNull(value);
+        assertNotNull(value);
     }
 
     // @Test
@@ -103,25 +102,25 @@ public class TestFhirDataProviderDstu3 extends FhirExecutionTestBase {
         var results = engine.evaluate(library.getIdentifier(), Set.of("testDateType"));
 
         Object value = results.forExpression("testDateType").value();
-        Assert.assertNotNull(value);
+        assertNotNull(value);
     }
 
     @Test
-    public void testFhirObjectEqual() {
+    void fhirObjectEqual() {
         CqlEngine engine = getEngine();
         engine.getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);
         var results = engine.evaluate(library.getIdentifier(), Set.of("testFhirObjectEqual"));
         Object value = results.forExpression("testFhirObjectEqual").value();
-        Assert.assertTrue((Boolean) value);
+        assertTrue((Boolean) value);
     }
 
     @Test
-    public void testFhirObjectEquivalent() {
+    void fhirObjectEquivalent() {
         CqlEngine engine = getEngine();
         engine.getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);
         var results = engine.evaluate(library.getIdentifier(), Set.of("testFhirObjectEquivalent"));
         var value = results.forExpression("testFhirObjectEquivalent").value();
-        Assert.assertTrue((Boolean) value);
+        assertTrue((Boolean) value);
     }
 
     //    TODO - fix
@@ -153,7 +152,7 @@ public class TestFhirDataProviderDstu3 extends FhirExecutionTestBase {
 
     //     var value = context.resolveExpressionRef("Active Ambulatory Opioid
     // Rx").getExpression().evaluate(context);
-    //     Assert.assertTrue(value instanceof List && ((List) value).size() == 1);
+    //     Assertions.assertTrue(value instanceof List && ((List) value).size() == 1);
     // }
 
     // @Test
@@ -178,7 +177,7 @@ public class TestFhirDataProviderDstu3 extends FhirExecutionTestBase {
             resultCount++;
         }
 
-        assertTrue(lists.size() == resultCount);
+        assertEquals(lists.size(), resultCount);
     }
 
     // @Test
@@ -260,6 +259,6 @@ public class TestFhirDataProviderDstu3 extends FhirExecutionTestBase {
 
         var results = engine.evaluate(library.getIdentifier(), Set.of("GetProvenance"));
         Object value = results.forExpression("GetProvenance").value();
-        Assert.assertTrue(value instanceof List && ((List<?>) value).size() == 1);
+        assertTrue(value instanceof List && ((List<?>) value).size() == 1);
     }
 }

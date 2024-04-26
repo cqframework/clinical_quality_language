@@ -4,12 +4,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import java.math.BigDecimal;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-public class IncludedSignatureOutputTests extends CqlTestBase {
+class IncludedSignatureOutputTests extends CqlTestBase {
 
     @Test
-    public void testEvaluate() {
+    void evaluate() {
         var results = engine.evaluate(toElmIdentifier("IncludedSignatureOutputTests"));
 
         Object value = results.forExpression("TestOverload").value();

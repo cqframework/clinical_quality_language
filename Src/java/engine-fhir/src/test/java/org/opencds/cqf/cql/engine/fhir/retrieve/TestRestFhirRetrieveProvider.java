@@ -3,8 +3,8 @@ package org.opencds.cqf.cql.engine.fhir.retrieve;
 import static ca.uhn.fhir.util.UrlUtil.escapeUrlParam;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import ca.uhn.fhir.context.FhirVersionEnum;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
@@ -13,6 +13,9 @@ import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.List;
 import org.hl7.fhir.r4.model.Patient;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.fhir.R4FhirTest;
 import org.opencds.cqf.cql.engine.fhir.exception.FhirVersionMisMatchException;
 import org.opencds.cqf.cql.engine.fhir.model.*;
@@ -21,11 +24,8 @@ import org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterResolver;
 import org.opencds.cqf.cql.engine.runtime.Code;
 import org.opencds.cqf.cql.engine.runtime.DateTime;
 import org.opencds.cqf.cql.engine.runtime.Interval;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
-public class TestRestFhirRetrieveProvider extends R4FhirTest {
+class TestRestFhirRetrieveProvider extends R4FhirTest {
 
     static SearchParameterResolver RESOLVER;
     static IGenericClient CLIENT;
@@ -33,14 +33,14 @@ public class TestRestFhirRetrieveProvider extends R4FhirTest {
     RestFhirRetrieveProvider provider;
     FhirModelResolver<?, ?, ?, ?, ?, ?, ?, ?> modelResolver;
 
-    @BeforeClass
-    public void setUpBeforeClass() {
+    @BeforeAll
+    static void setUpBeforeAll() {
         CLIENT = newClient();
         RESOLVER = new SearchParameterResolver(CLIENT.getFhirContext());
     }
 
-    @BeforeMethod
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         modelResolver = getModelResolver(CLIENT.getFhirContext().getVersion().getVersion());
         this.provider = new RestFhirRetrieveProvider(RESOLVER, modelResolver, CLIENT);
     }
@@ -55,7 +55,7 @@ public class TestRestFhirRetrieveProvider extends R4FhirTest {
     }
 
     @Test
-    public void noUserSpecifiedPageSizeUsesDefault() throws FhirVersionMisMatchException {
+    void noUserSpecifiedPageSizeUsesDefault() throws FhirVersionMisMatchException {
         BaseFhirQueryGenerator fhirQueryGenerator = FhirQueryGeneratorFactory.create(
                 modelResolver, provider.searchParameterResolver, provider.getTerminologyProvider());
 
@@ -64,7 +64,7 @@ public class TestRestFhirRetrieveProvider extends R4FhirTest {
     }
 
     @Test
-    public void userSpecifiedPageSizeIsUsed() throws FhirVersionMisMatchException {
+    void userSpecifiedPageSizeIsUsed() throws FhirVersionMisMatchException {
         Integer expected = 100;
         provider.setPageSize(expected);
         BaseFhirQueryGenerator fhirQueryGenerator = FhirQueryGeneratorFactory.create(
@@ -81,8 +81,8 @@ public class TestRestFhirRetrieveProvider extends R4FhirTest {
     }
 
     @Test
-    public void userSpecifiedPageSizeIsUsedWhenCodeBasedQuery() {
-        Code code = new Code().withSystem("http://mysystem.com").withCode("mycode");
+    void userSpecifiedPageSizeIsUsedWhenCodeBasedQuery() {
+        Code code = new Code().withSystem("http://mysystem.com").withCode("myCode");
         List<Code> codes = Collections.singletonList(code);
 
         mockFhirSearch("/Condition?code=" + escapeUrlParam(code.getSystem() + "|" + code.getCode()) + "&subject="
@@ -93,7 +93,7 @@ public class TestRestFhirRetrieveProvider extends R4FhirTest {
     }
 
     @Test
-    public void userSpecifiedPageSizeIsUsedWhenValueSetQuery() {
+    void userSpecifiedPageSizeIsUsedWhenValueSetQuery() {
 
         String valueSetUrl = "http://myterm.com/fhir/ValueSet/MyValueSet";
 
@@ -117,7 +117,7 @@ public class TestRestFhirRetrieveProvider extends R4FhirTest {
     }
 
     @Test
-    public void userSpecifiedPageSizeIsUsedWhenDateQuery() {
+    void userSpecifiedPageSizeIsUsedWhenDateQuery() {
         /*
          * As best as I can tell, the date range optimized queries are
          * broken right now. See https://github.com/DBCG/cql_engine/issues/467.
@@ -145,7 +145,7 @@ public class TestRestFhirRetrieveProvider extends R4FhirTest {
     }
 
     @Test
-    public void userSpecifiedPageSizeNotUsedWhenIDQuery() {
+    void userSpecifiedPageSizeNotUsedWhenIDQuery() {
         mockFhirRead("/Patient/123", new Patient());
 
         provider.setPageSize(500);
@@ -165,8 +165,8 @@ public class TestRestFhirRetrieveProvider extends R4FhirTest {
     }
 
     @Test
-    public void noUserSpecifiedPageSizeSpecifiedNoCountInURL() {
-        Code code = new Code().withSystem("http://mysystem.com").withCode("mycode");
+    void noUserSpecifiedPageSizeSpecifiedNoCountInURL() {
+        Code code = new Code().withSystem("http://mysystem.com").withCode("myCode");
         List<Code> codes = Collections.singletonList(code);
 
         mockFhirSearch("/Condition?code=" + escapeUrlParam(code.getSystem() + "|" + code.getCode()) + "&subject="

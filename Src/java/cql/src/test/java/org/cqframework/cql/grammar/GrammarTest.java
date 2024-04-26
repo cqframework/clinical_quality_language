@@ -1,7 +1,7 @@
 package org.cqframework.cql.grammar;
 
 import static org.cqframework.cql.gen.cqlParser.*;
-import static org.testng.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -9,17 +9,17 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * GrammarTest ensures that the grammar (and generated parsers) work as expected.  If non-compatible changes are made
  * to the grammar, these tests should fail.  If the change is intentional, modify the tests to pass-- otherwise, fix
  * the grammar.
  */
-public class GrammarTest {
+class GrammarTest {
 
     @Test
-    public void ageAt() {
+    void ageAt() {
         ParseTree tree = parseToTree("define inIPP : AgeAt(start of MeasurementPeriod) < 18");
         LibraryContext logic = (LibraryContext) tree.getPayload();
 

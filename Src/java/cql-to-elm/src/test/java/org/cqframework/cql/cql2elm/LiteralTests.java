@@ -4,24 +4,24 @@ import static org.cqframework.cql.cql2elm.matchers.HasTypeAndResult.hasTypeAndRe
 import static org.cqframework.cql.cql2elm.matchers.LiteralFor.literalFor;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.testng.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Created by Bryn on 11/21/2017.
  */
-public class LiteralTests {
+class LiteralTests {
 
-    private Map<String, ExpressionDef> defs;
+    private static Map<String, ExpressionDef> defs;
 
     @Test
-    public void dateTimeLiteralTests() throws IOException {
+    void dateTimeLiteralTests() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("DateTimeLiteralTest.cql", 0);
         Library library = translator.toELM();
         defs = new HashMap<>();
@@ -75,7 +75,7 @@ public class LiteralTests {
     }
 
     @Test
-    public void quantityLiteralTests() throws IOException {
+    void quantityLiteralTests() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("QuantityLiteralTest.cql", 1);
         Library library = translator.toELM();
         defs = new HashMap<>();
@@ -140,7 +140,7 @@ public class LiteralTests {
     }
 
     @Test
-    public void RatioLiteralTests() throws IOException {
+    void RatioLiteralTests() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("RatioLiteralTest.cql", 0);
         Library library = translator.toELM();
         defs = getDefs(library);
@@ -161,7 +161,7 @@ public class LiteralTests {
     }
 
     @Test
-    public void testDecimal() throws IOException {
+    void decimal() throws IOException {
         CqlTranslator translator = TestUtils.createTranslatorFromText("define TestDecimal: 1.5");
         Library library = translator.toELM();
         defs = getDefs(library);
@@ -174,7 +174,7 @@ public class LiteralTests {
     }
 
     @Test
-    public void testString() throws IOException {
+    void string() throws IOException {
         CqlTranslator translator = TestUtils.createTranslatorFromText("define TestString: '12345''");
         Library library = translator.toELM();
         defs = getDefs(library);
@@ -187,7 +187,7 @@ public class LiteralTests {
     }
 
     @Test
-    public void testInteger() throws IOException {
+    void integer() throws IOException {
         CqlTranslator translator = TestUtils.createTranslatorFromText("define TestInteger: 12345");
         Library library = translator.toELM();
         defs = getDefs(library);
@@ -200,7 +200,7 @@ public class LiteralTests {
     }
 
     @Test
-    public void testLongInteger() throws IOException {
+    void longInteger() throws IOException {
         CqlTranslator translator = TestUtils.createTranslatorFromText("define TestLongInteger: 12345L");
         Library library = translator.toELM();
         defs = getDefs(library);
@@ -213,7 +213,7 @@ public class LiteralTests {
     }
 
     @Test
-    public void TokenRecognitionErrorTest() throws IOException {
+    void TokenRecognitionErrorTest() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("TokenRecognitionError.cql", 1);
         assertThat(translator.getErrors().size(), equalTo(1));
     }

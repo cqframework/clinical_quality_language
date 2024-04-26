@@ -1,18 +1,18 @@
 package org.cqframework.cql.elm.visiting;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.hl7.elm.r1.Element;
 import org.hl7.elm.r1.ExpressionDef;
 import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.Library.Statements;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-public class FunctionalElmVisitorTest {
+class FunctionalElmVisitorTest {
 
     @Test
-    public void countTest() {
+    void countTest() {
         // set up visitor that counts all visited elements
         var trackableCounter = new FunctionalElmVisitor<Integer, Void>((elm, context) -> 1, Integer::sum);
 
@@ -40,7 +40,7 @@ public class FunctionalElmVisitorTest {
     }
 
     @Test
-    public void nullVisitorTest() {
+    void nullVisitorTest() {
         assertThrows(NullPointerException.class, () -> new FunctionalElmVisitor<Integer, Void>(null, null));
         assertThrows(NullPointerException.class, () -> new FunctionalElmVisitor<Integer, Void>(null, Integer::sum));
         assertThrows(NullPointerException.class, () -> new FunctionalElmVisitor<Integer, Void>((x, y) -> 1, null));

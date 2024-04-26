@@ -13,7 +13,7 @@ import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.TestUtils;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.hl7.elm.r1.*;
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
 public class BaseTest {
 
@@ -51,7 +51,7 @@ public class BaseTest {
     }
 
     @Test
-    public void testFHIRTiming() throws IOException {
+    void fhirTiming() throws IOException {
         ExpressionDef def = (ExpressionDef) visitFile("quick/v330/TestFHIRTiming.cql");
         // Query->
         //  where->
@@ -86,7 +86,7 @@ public class BaseTest {
     }
 
     @Test
-    public void testEqualityWithConversions() throws IOException {
+    void equalityWithConversions() throws IOException {
         CompiledLibrary library = visitFileLibrary("quick/v330/EqualityWithConversions.cql");
         ExpressionDef getGender = library.resolveExpressionRef("GetGender");
         assertThat(getGender.getExpression(), instanceOf(Equal.class));
@@ -97,7 +97,7 @@ public class BaseTest {
     }
 
     @Test
-    public void testDoubleListPromotion() throws IOException {
+    void doubleListPromotion() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("quick/v330/TestDoubleListPromotion.cql", 0);
         Library library = translator.toELM();
         Map<String, ExpressionDef> defs = new HashMap<>();
@@ -119,12 +119,12 @@ public class BaseTest {
     }
 
     @Test
-    public void testIntervalImplicitConversion() throws IOException {
+    void intervalImplicitConversion() throws IOException {
         TestUtils.runSemanticTest("quick/v330/TestIntervalImplicitConversion.cql", 0);
     }
 
     @Test
-    public void testImplicitFHIRHelpers() throws IOException {
+    void implicitFHIRHelpers() throws IOException {
         TestUtils.runSemanticTest("quick/v330/TestImplicitFHIRHelpers.cql", 0);
     }
 }
