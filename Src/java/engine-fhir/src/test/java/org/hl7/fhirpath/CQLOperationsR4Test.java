@@ -66,7 +66,6 @@ public class CQLOperationsR4Test extends TestFhirPath {
     }
 
     public static Set<String> SKIP = Sets.newHashSet(
-            "cql/CqlAggregateTest/AggregateTests/FactorialOfFive",
             "cql/CqlAggregateTest/AggregateTests/RolledOutIntervals",
             "cql/CqlArithmeticFunctionsTest/Divide/Divide1Q1Q",
             "cql/CqlArithmeticFunctionsTest/Ln/Ln1000D",
