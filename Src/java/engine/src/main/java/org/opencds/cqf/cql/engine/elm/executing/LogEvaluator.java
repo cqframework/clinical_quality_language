@@ -19,7 +19,7 @@ public class LogEvaluator {
             return null;
         }
 
-        if (left instanceof BigDecimal && right instanceof BigDecimal) {
+        if (left instanceof BigDecimal) {
             double base = ((BigDecimal) right).doubleValue();
             double argument = ((BigDecimal) left).doubleValue();
 
