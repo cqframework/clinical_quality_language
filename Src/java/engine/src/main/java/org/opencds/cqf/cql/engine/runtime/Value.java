@@ -9,10 +9,18 @@ public class Value {
 
     public static final Integer MAX_INT = Integer.MAX_VALUE;
     public static final Long MAX_LONG = Long.MAX_VALUE;
-    public static final BigDecimal MAX_DECIMAL = new BigDecimal("9999999999999999999999999999.99999999");
+
+    /**
+     * Set to (10^28 - 1) / 10^8.
+     */
+    public static final BigDecimal MAX_DECIMAL = new BigDecimal("99999999999999999999.99999999");
     public static final Integer MIN_INT = Integer.MIN_VALUE;
     public static final Long MIN_LONG = Long.MIN_VALUE;
-    public static final BigDecimal MIN_DECIMAL = new BigDecimal("-9999999999999999999999999999.99999999");
+
+    /**
+     * Set to ((-10)^28 + 1) / 10^8.
+     */
+    public static final BigDecimal MIN_DECIMAL = new BigDecimal("-99999999999999999999.99999999");
 
     private Value() {}
 
