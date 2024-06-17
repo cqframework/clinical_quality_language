@@ -4658,7 +4658,7 @@ define test_IndexOf_IndexOfThirdTuple: TestMessage(IndexOf_IndexOfThirdTuple = 2
 define test_IndexOf_MultipleMatches: TestMessage(IndexOf_MultipleMatches = 3, 'IndexOf_MultipleMatches', toString(3), toString(IndexOf_MultipleMatches))
 define test_IndexOf_ItemNotFound: TestMessage(IndexOf_ItemNotFound = -1, 'IndexOf_ItemNotFound', toString(-1), toString(IndexOf_ItemNotFound))
 define test_IndexOf_NullList: TestMessage(IndexOf_NullList is null, 'IndexOf_NullList', 'null', toString(IndexOf_NullList))
-define test_IndexOf_NullItem: TestMessage(IndexOf_NullItem = -1, 'IndexOf_NullItem', toString(-1), toString(IndexOf_NullItem))
+define test_IndexOf_NullItem: TestMessage(IndexOf_NullItem is null, 'IndexOf_NullItem', 'null', toString(IndexOf_NullItem))
 define test_IndexOf_ListCode: TestMessage(IndexOf_ListCode = 0, 'IndexOf_ListCode', toString(0), toString(IndexOf_ListCode))
 define test_IndexOf_ListCodeUndefined: TestMessage(IndexOf_ListCodeUndefined = 0, 'IndexOf_ListCodeUndefined', toString(0), toString(IndexOf_ListCodeUndefined))
 define test_IndexOf_ListWrongCode: TestMessage(IndexOf_ListWrongCode = -1, 'IndexOf_ListWrongCode', toString(-1), toString(IndexOf_ListWrongCode))
