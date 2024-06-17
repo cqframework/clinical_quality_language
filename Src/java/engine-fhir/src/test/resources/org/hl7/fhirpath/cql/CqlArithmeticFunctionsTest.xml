@@ -239,6 +239,10 @@
 			<expression>Log(1, 1)</expression>
 			<output>null</output>
 		</test>
+		<test name="Log2Base1">
+			<expression>Log(2, 1)</expression>
+			<output>null</output>
+		</test>
 		<test name="Log1Base2">
 			<expression>Log(1, 2)</expression>
 			<output>0.0</output>
