@@ -11,14 +11,14 @@ public class Value {
     public static final Long MAX_LONG = Long.MAX_VALUE;
 
     /**
-     * Set to (10^28 - 1) / 10^8.
+     * Set to (10<sup>28</sup> - 1) / 10<sup>8</sup>.
      */
     public static final BigDecimal MAX_DECIMAL = new BigDecimal("99999999999999999999.99999999");
     public static final Integer MIN_INT = Integer.MIN_VALUE;
     public static final Long MIN_LONG = Long.MIN_VALUE;
 
     /**
-     * Set to ((-10)^28 + 1) / 10^8.
+     * Set to (-10<sup>28</sup> + 1) / 10<sup>8</sup>.
      */
     public static final BigDecimal MIN_DECIMAL = new BigDecimal("-99999999999999999999.99999999");
 
