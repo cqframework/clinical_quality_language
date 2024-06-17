@@ -72,7 +72,6 @@ public class CQLOperationsR4Test extends TestFhirPath {
             "cql/CqlArithmeticFunctionsTest/Ln/Ln1000",
             "cql/CqlArithmeticFunctionsTest/MinValue/LongMinValue",
             "cql/CqlArithmeticFunctionsTest/Multiply/Multiply1CMBy2CM",
-            "cql/CqlArithmeticFunctionsTest/Truncated Divide/TruncatedDivide10LBy3L",
             "cql/CqlComparisonOperatorsTest/Equal/QuantityEqCM1M01",
             "cql/CqlComparisonOperatorsTest/Equivalent/EquivEqCM1M01",
             "cql/CqlComparisonOperatorsTest/Greater/GreaterM1CM1",
