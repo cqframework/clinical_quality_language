@@ -70,7 +70,6 @@ public class CQLOperationsR4Test extends TestFhirPath {
             "cql/CqlArithmeticFunctionsTest/Divide/Divide1Q1Q",
             "cql/CqlArithmeticFunctionsTest/Ln/Ln1000D",
             "cql/CqlArithmeticFunctionsTest/Ln/Ln1000",
-            "cql/CqlArithmeticFunctionsTest/Log/Log1Base1",
             "cql/CqlArithmeticFunctionsTest/MaxValue/DecimalMaxValue",
             "cql/CqlArithmeticFunctionsTest/MinValue/DecimalMinValue",
             "cql/CqlArithmeticFunctionsTest/MinValue/LongMinValue",
