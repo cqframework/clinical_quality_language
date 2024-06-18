@@ -482,7 +482,7 @@ define MinDateTime: minimum  DateTime
 define MinTime: minimum Time
 
 define test_MinInteger: TestMessage(MinInteger = -2147483648, 'MinInteger', toString(-2147483648), toString(MinInteger))
-define test_MinDecimal: TestMessage(MinDecimal = -9999999999999999999999999999.99999999, 'MinDecimal', toString(-9999999999999999999999999999.99999999), toString(MinDecimal))
+define test_MinDecimal: TestMessage(MinDecimal = -99999999999999999999.99999999, 'MinDecimal', toString(-99999999999999999999.99999999), toString(MinDecimal))
 define test_MinDate: TestMessage(MinDate = @0001-01-01, 'MinDate', toString(@0001-01-01), toString(MinDate))
 define test_MinDateTime: TestMessage(MinDateTime = @0001-01-01T00:00:00.000Z, 'MinDateTime', toString(@0001-01-01T00:00:00.000Z), toString(MinDateTime))
 define test_MinTime: TestMessage(MinTime = @T00:00:00.000, 'MinTime', toString(@T00:00:00.000), toString(MinTime))
@@ -495,7 +495,7 @@ define MaxDateTime: maximum DateTime
 define MaxTime: maximum Time
 
 define test_MaxInteger: TestMessage(MaxInteger = 2147483647, 'MaxInteger', toString(2147483647), toString(MaxInteger))
-define test_MaxDecimal: TestMessage(MaxDecimal = 9999999999999999999999999999.99999999, 'MaxDecimal', toString(9999999999999999999999999999.99999999), toString(MaxDecimal))
+define test_MaxDecimal: TestMessage(MaxDecimal = 99999999999999999999.99999999, 'MaxDecimal', toString(99999999999999999999.99999999), toString(MaxDecimal))
 define test_MaxDate: TestMessage(MaxDate = @9999-12-31, 'MaxDate', toString(@9999-12-31), toString(MaxDate))
 define test_MaxDateTime: TestMessage(MaxDateTime = @9999-12-31T23:59:59.999Z, 'MaxDateTime', toString(@9999-12-31T23:59:59.999Z), toString(MaxDateTime))
 define test_MaxTime: TestMessage(MaxTime = @T23:59:59.999, 'MaxTime', toString(@T23:59:59.999), toString(MaxTime))
@@ -3818,7 +3818,7 @@ define QuantityMeterNullHighIntervalList: { Interval[ToQuantity('1 \'m\''),ToQua
 define CollapseQuantityNullHighUnitsWithinPerExpected : { Interval[ToQuantity('1 \'m\''), null] }
 define QuantityIntervalListWithNulls: { Interval[ToQuantity(4), ToQuantity(8)], Interval[null, ToQuantity(2)], Interval[ToQuantity(1), ToQuantity(4)], Interval[ToQuantity(7), null] }
 // TODO: should be { Interval[(null as Quantity), (null as Quantity)] } but that currently evaluates to null in the engine
-define CollapseQuantityIntervalListWithNullsExpected: { Interval[null, 9999999999999999999999999999.99999999 '1'] }
+define CollapseQuantityIntervalListWithNullsExpected: { Interval[null, 99999999999999999999.99999999 '1'] }
 define QuantityIntervalListWithNullLowNoOverlap: { Interval[ToQuantity(4), ToQuantity(8)], Interval[null, ToQuantity(2)] }
 define CollapseQuantityIntervalListWithNullLowNoOverlapExpected: { Interval[null, ToQuantity(2)], Interval[ToQuantity(4), ToQuantity(8)]}
 define QuantityIntervalListWithNullHighNoOverlap: { Interval[ToQuantity(4), null], Interval[ToQuantity(1), ToQuantity(2)] }
