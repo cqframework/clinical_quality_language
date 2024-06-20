@@ -24,33 +24,21 @@ properly includes(left List<T>, right List<T>) Boolean
 The properly includes operator for lists returns true if the first list contains every element of the second list, a
     nd the first list is strictly larger than the second list.
 This operator uses the notion of equivalence to determine whether or not two elements are the same.
-If the left argument is null, the result is false, else if the right argument is null, the result is true if the left argument is not empty.
+If either argument is null, the result is null.
 Note that the order of elements does not matter for the purposes of determining inclusion.
 */
 
 public class ProperIncludesEvaluator {
 
     public static Boolean properlyIncludes(Object left, Object right, String precision, State state) {
-        if (left == null && right == null) {
+        if (left == null || right == null) {
             return null;
         }
 
-        if (left == null) {
-            return right instanceof Interval
-                    ? intervalProperlyIncludes(null, (Interval) right, precision, state)
-                    : listProperlyIncludes(null, (Iterable<?>) right, state);
-        }
-
-        if (right == null) {
-            return left instanceof Interval
-                    ? intervalProperlyIncludes((Interval) left, null, precision, state)
-                    : listProperlyIncludes((Iterable<?>) left, null, state);
-        }
-
-        if (left instanceof Interval && right instanceof Interval) {
+        if (left instanceof Interval) {
             return intervalProperlyIncludes((Interval) left, (Interval) right, precision, state);
         }
-        if (left instanceof Iterable && right instanceof Iterable) {
+        if (left instanceof Iterable) {
             return listProperlyIncludes((Iterable<?>) left, (Iterable<?>) right, state);
         }
 
@@ -62,10 +50,6 @@ public class ProperIncludesEvaluator {
     }
 
     public static Boolean intervalProperlyIncludes(Interval left, Interval right, String precision, State state) {
-        if (left == null || right == null) {
-            return null;
-        }
-
         Object leftStart = left.getStart();
         Object leftEnd = left.getEnd();
         Object rightStart = right.getStart();
@@ -88,10 +72,6 @@ public class ProperIncludesEvaluator {
     }
 
     public static Boolean listProperlyIncludes(Iterable<?> left, Iterable<?> right, State state) {
-        if (left == null) {
-            return false;
-        }
-
         int leftCount = (int)
                 StreamSupport.stream(((Iterable<?>) left).spliterator(), false).count();
 

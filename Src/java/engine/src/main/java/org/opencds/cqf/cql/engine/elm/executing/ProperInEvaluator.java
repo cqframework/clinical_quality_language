@@ -28,6 +28,9 @@ public class ProperInEvaluator {
     }
 
     public static Object internalEvaluate(Object left, Object right, String precision, State state) {
+        if (left == null || right == null) {
+            return null;
+        }
 
         if (precision != null) {
             return properIn(left, right, precision, state);

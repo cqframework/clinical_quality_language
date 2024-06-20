@@ -650,13 +650,13 @@
 		</test>
 	</group>
 	<group name="ProperContains">
-		<test name="ProperContainsNullRightFalse">
+		<test name="ProperContainsNullRightWithoutNull">
 			<expression>{'s', 'u', 'n'} properly includes null</expression>
-			<output>false</output>
+			<output>null</output>
 		</test>
-		<test name="ProperContainsNullRightTrue">
+		<test name="ProperContainsNullRightWithNull">
 			<expression>{'s', 'u', 'n', null} properly includes null</expression>
-			<output>true</output>
+			<output>null</output>
 		</test>
 		<test name="ProperContainsTimeTrue">
 			<expression>{ @T15:59:59, @T20:59:59.999, @T20:59:49.999 } properly includes @T15:59:59</expression>
@@ -668,13 +668,13 @@
 		</test>
 	</group>
 	<group name="ProperIn">
-		<test name="ProperInNullRightFalse">
+		<test name="ProperInNullRightWithoutNull">
 			<expression>null properly included in {'s', 'u', 'n'}</expression>
-			<output>false</output>
+			<output>null</output>
 		</test>
-		<test name="ProperInNullRightTrue">
+		<test name="ProperInNullRightWithNull">
 			<expression>null properly included in {'s', 'u', 'n', null}</expression>
-			<output>true</output>
+			<output>null</output>
 		</test>
 		<test name="ProperInTimeTrue">
 			<expression>@T15:59:59 properly included in { @T15:59:59, @T20:59:59.999, @T20:59:49.999 }</expression>

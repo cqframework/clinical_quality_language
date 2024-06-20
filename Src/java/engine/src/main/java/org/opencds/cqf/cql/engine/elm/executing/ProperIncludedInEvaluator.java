@@ -23,30 +23,14 @@ properly included in(left List<T>, right list<T>) Boolean
 The properly included in operator for lists returns true if every element of the first list is in the second list and the
     first list is strictly smaller than the second list.
 This operator uses the notion of equivalence to determine whether or not two elements are the same.
-If the left argument is null, the result is true if the right argument is not empty. Otherwise, if the right argument is null, the result is false.
+If either argument is null, the result is null.
 Note that the order of elements does not matter for the purposes of determining inclusion.
 */
 
 public class ProperIncludedInEvaluator {
 
     public static Object properlyIncludedIn(Object left, Object right, String precision, State state) {
-        if (left == null && right == null) {
-            return null;
-        }
-
         try {
-            if (left == null) {
-                return right instanceof Interval
-                        ? ProperIncludesEvaluator.intervalProperlyIncludes((Interval) right, null, precision, state)
-                        : ProperIncludesEvaluator.listProperlyIncludes((Iterable<?>) right, null, state);
-            }
-
-            if (right == null) {
-                return left instanceof Interval
-                        ? ProperIncludesEvaluator.intervalProperlyIncludes(null, (Interval) left, precision, state)
-                        : ProperIncludesEvaluator.listProperlyIncludes(null, (Iterable<?>) left, state);
-            }
-
             return ProperIncludesEvaluator.properlyIncludes(right, left, precision, state);
         } catch (InvalidOperatorArgument e) {
             throw new InvalidOperatorArgument(

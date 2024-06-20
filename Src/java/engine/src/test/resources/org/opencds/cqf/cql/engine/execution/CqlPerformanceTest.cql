@@ -4789,8 +4789,8 @@ define test_ProperIncludes_IsSame: TestMessage(not ProperIncludes_IsSame, 'Prope
 define test_ProperIncludes_IsNotIncluded: TestMessage(not ProperIncludes_IsNotIncluded, 'ProperIncludes_IsNotIncluded', toString(false), toString(ProperIncludes_IsNotIncluded))
 define test_ProperIncludes_TuplesIncluded: TestMessage(ProperIncludes_TuplesIncluded, 'ProperIncludes_TuplesIncluded', toString(true), toString(ProperIncludes_TuplesIncluded))
 define test_ProperIncludes_TuplesNotIncluded: TestMessage(not ProperIncludes_TuplesNotIncluded, 'ProperIncludes_TuplesNotIncluded', toString(false), toString(ProperIncludes_TuplesNotIncluded))
-define test_ProperIncludes_NullIncludes: TestMessage(not ProperIncludes_NullIncludes, 'ProperIncludes_NullIncludes', toString(false), toString(ProperIncludes_NullIncludes))
-define test_ProperIncludes_NullIncluded: TestMessage(ProperIncludes_NullIncluded, 'ProperIncludes_NullIncluded', toString(true), toString(ProperIncludes_NullIncluded))
+define test_ProperIncludes_NullIncludes: TestMessage(ProperIncludes_NullIncludes is null, 'ProperIncludes_NullIncludes', 'null', toString(ProperIncludes_NullIncludes))
+define test_ProperIncludes_NullIncluded: TestMessage(ProperIncludes_NullIncluded is null, 'ProperIncludes_NullIncluded', 'null', toString(ProperIncludes_NullIncluded))
 
 // ProperIncludedIn
 define ProperIncludedIn_IsIncluded: {2, 3, 4} properly included in {1, 2, 3, 4, 5}
@@ -4808,8 +4808,8 @@ define test_ProperIncludedIn_IsSame: TestMessage(not ProperIncludedIn_IsSame, 'P
 define test_ProperIncludedIn_IsNotIncluded: TestMessage(not ProperIncludedIn_IsNotIncluded, 'ProperIncludedIn_IsNotIncluded', toString(false), toString(ProperIncludedIn_IsNotIncluded))
 define test_ProperIncludedIn_TuplesIncluded: TestMessage(ProperIncludedIn_TuplesIncluded, 'ProperIncludedIn_TuplesIncluded', toString(true), toString(ProperIncludedIn_TuplesIncluded))
 define test_ProperIncludedIn_TuplesNotIncluded: TestMessage(not ProperIncludedIn_TuplesNotIncluded, 'ProperIncludedIn_TuplesNotIncluded', toString(false), toString(ProperIncludedIn_TuplesNotIncluded))
-define test_ProperIncludedIn_NullIncludes: TestMessage(not ProperIncludedIn_NullIncludes, 'ProperIncludedIn_NullIncludes', toString(false), toString(ProperIncludedIn_NullIncludes))
-define test_ProperIncludedIn_NullIncluded: TestMessage(ProperIncludedIn_NullIncluded, 'ProperIncludedIn_NullIncluded', toString(true), toString(ProperIncludedIn_NullIncluded))
+define test_ProperIncludedIn_NullIncludes: TestMessage(ProperIncludedIn_NullIncludes is null, 'ProperIncludedIn_NullIncludes', 'null', toString(ProperIncludedIn_NullIncludes))
+define test_ProperIncludedIn_NullIncluded: TestMessage(ProperIncludedIn_NullIncluded is null, 'ProperIncludedIn_NullIncluded', 'null', toString(ProperIncludedIn_NullIncluded))
 
 // Flatten
 define Flatten_ListOfLists: flatten { {1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {9, 8, 7, 6, 5}, {4}, {3, 2, 1} }
