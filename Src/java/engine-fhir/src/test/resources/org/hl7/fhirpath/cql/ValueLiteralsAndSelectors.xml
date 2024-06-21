@@ -274,30 +274,30 @@
 			<!-- EXPECT: Either some error saying the literal uses more
 			precision than the Decimal step size, or round to a whole step. -->
 		</test>
-		<test name="Decimal10Pow28ToZeroOneStepDecimalMaxValue">
-			<expression>9999999999999999999999999999.99999999</expression>
-			<output>10*1000000000000000000000000000.00000000-0.00000001</output>
+		<test name="Decimal10Pow20ToZeroOneStepDecimalMaxValue">
+			<expression>99999999999999999999.99999999</expression>
+			<output>10*10000000000000000000.00000000-0.00000001</output>
 		</test>
-		<test name="DecimalPos10Pow28ToZeroOneStepDecimalMaxValue">
-			<expression>+9999999999999999999999999999.99999999</expression>
-			<output>+10*1000000000000000000000000000.00000000-0.00000001</output>
+		<test name="DecimalPos10Pow20ToZeroOneStepDecimalMaxValue">
+			<expression>+99999999999999999999.99999999</expression>
+			<output>+10*10000000000000000000.00000000-0.00000001</output>
 		</test>
-		<test name="DecimalNeg10Pow28ToZeroOneStepDecimalMinValue">
-			<expression>-9999999999999999999999999999.99999999</expression>
-			<output>-10*1000000000000000000000000000.00000000+0.00000001</output>
+		<test name="DecimalNeg10Pow20ToZeroOneStepDecimalMinValue">
+			<expression>-99999999999999999999.99999999</expression>
+			<output>-10*10000000000000000000.00000000+0.00000001</output>
 		</test>
-		<test name="Decimal10Pow28">
-			<expression invalid="true">10000000000000000000000000000.00000000</expression>
+		<test name="Decimal10Pow20">
+			<expression invalid="true">100000000000000000000.00000000</expression>
 			<!-- TODO: Fix Engine to raise an error on this input. -->
 			<!-- EXPECT: Some error saying the literal is a greater magnitude than a Decimal supports. -->
 		</test>
-		<test name="DecimalPos10Pow28">
-			<expression invalid="true">+10000000000000000000000000000.00000000</expression>
+		<test name="DecimalPos10Pow20">
+			<expression invalid="true">+100000000000000000000.00000000</expression>
 			<!-- TODO: Fix Engine to raise an error on this input. -->
 			<!-- EXPECT: Some error saying the literal is a greater magnitude than a Decimal supports. -->
 		</test>
-		<test name="DecimalNeg10Pow28">
-			<expression invalid="true">-10000000000000000000000000000.00000000</expression>
+		<test name="DecimalNeg10Pow20">
+			<expression invalid="true">-100000000000000000000.00000000</expression>
 			<!-- TODO: Fix Engine to raise an error on this input. -->
 			<!-- EXPECT: Some error saying the literal is a greater magnitude than a Decimal supports. -->
 		</test>

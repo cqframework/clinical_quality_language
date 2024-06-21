@@ -20,14 +20,15 @@ public class LogEvaluator {
         }
 
         if (left instanceof BigDecimal) {
-            Double base = Math.log(((BigDecimal) right).doubleValue());
-            Double value = Math.log(((BigDecimal) left).doubleValue());
+            double base = ((BigDecimal) right).doubleValue();
+            double argument = ((BigDecimal) left).doubleValue();
 
-            if (base == 0) {
-                return Value.verifyPrecision(new BigDecimal(value), null);
+            // Logarithm is not defined for base 1.
+            if (base == 1) {
+                return null;
             }
 
-            return Value.verifyPrecision(new BigDecimal(value / base), null);
+            return Value.verifyPrecision(BigDecimal.valueOf(Math.log(argument) / Math.log(base)), null);
         }
 
         throw new InvalidOperatorArgument(

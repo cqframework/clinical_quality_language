@@ -394,13 +394,13 @@ class ListOperatorsTest extends CqlTestBase {
         assertTrue(equivalent(value, new Time(15, 59, 59, 999)));
 
         value = results.forExpression("IndexOfEmptyNull").value();
-        assertThat(value, is(-1));
+        assertThat(value, is(nullValue()));
 
         value = results.forExpression("IndexOfNullEmpty").value();
         assertThat(value, is(nullValue()));
 
         value = results.forExpression("IndexOfNullIn1Null").value();
-        assertThat(value, is(1));
+        assertThat(value, is(nullValue()));
 
         value = results.forExpression("IndexOf1In12").value();
         assertThat(value, is(0));

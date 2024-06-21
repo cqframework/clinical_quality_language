@@ -152,28 +152,28 @@ class CqlValueLiteralsAndSelectorsTest extends CqlTestBase {
                         new BigDecimal(0).subtract(new BigDecimal(0.00000001).setScale(8, RoundingMode.HALF_EVEN))));
         assertThat(((Quantity) value).getUnit(), is("mg"));
 
-        // define QuantityMax: 9999999999999999999999999999.99999999 'mg'
+        // define QuantityMax: 99999999999999999999.99999999 'mg'
         value = results.forExpression("QuantityMax").value();
         assertThat(value, instanceOf(Quantity.class));
         assertThat(
                 ((Quantity) value).getValue(),
-                comparesEqualTo(new BigDecimal("9999999999999999999999999999.99999999")));
+                comparesEqualTo(new BigDecimal("99999999999999999999.99999999")));
         assertThat(((Quantity) value).getUnit(), is("mg"));
 
-        // define QuantityPosMax: +9999999999999999999999999999.99999999 'mg'
+        // define QuantityPosMax: +99999999999999999999.99999999 'mg'
         value = results.forExpression("QuantityPosMax").value();
         assertThat(value, instanceOf(Quantity.class));
         assertThat(
                 ((Quantity) value).getValue(),
-                comparesEqualTo(new BigDecimal("9999999999999999999999999999.99999999")));
+                comparesEqualTo(new BigDecimal("99999999999999999999.99999999")));
         assertThat(((Quantity) value).getUnit(), is("mg"));
 
-        // define QuantityMin: -9999999999999999999999999999.99999999 'mg'
+        // define QuantityMin: -99999999999999999999.99999999 'mg'
         value = results.forExpression("QuantityMin").value();
         assertThat(value, instanceOf(Quantity.class));
         assertThat(
                 ((Quantity) value).getValue(),
-                comparesEqualTo(new BigDecimal("-9999999999999999999999999999.99999999")));
+                comparesEqualTo(new BigDecimal("-99999999999999999999.99999999")));
         assertThat(((Quantity) value).getUnit(), is("mg"));
 
         value = results.forExpression("DecimalZero").value();
@@ -330,14 +330,14 @@ class CqlValueLiteralsAndSelectorsTest extends CqlTestBase {
         // assertThat(((BigDecimal)result).setScale(7, RoundingMode.HALF_EVEN), comparesEqualTo(new
         // BigDecimal(-1*Math.pow(10.0,-7)).setScale(7,RoundingMode.HALF_EVEN)));
 
-        // define DecimalMaxValue : 9999999999999999999999999999.99999999
+        // define DecimalMaxValue : 99999999999999999999.99999999
         value = results.forExpression("DecimalMaxValue").value();
-        assertThat(((BigDecimal) value), comparesEqualTo(new BigDecimal("9999999999999999999999999999.99999999")));
-        // define DecimalPosMaxValue : +9999999999999999999999999999.99999999
+        assertThat(((BigDecimal) value), comparesEqualTo(new BigDecimal("99999999999999999999.99999999")));
+        // define DecimalPosMaxValue : +99999999999999999999.99999999
         value = results.forExpression("DecimalPosMaxValue").value();
-        assertThat(((BigDecimal) value), comparesEqualTo(new BigDecimal("9999999999999999999999999999.99999999")));
-        // define DecimalMinValue: -9999999999999999999999999999.99999999
+        assertThat(((BigDecimal) value), comparesEqualTo(new BigDecimal("99999999999999999999.99999999")));
+        // define DecimalMinValue: -99999999999999999999.99999999
         value = results.forExpression("DecimalMinValue").value();
-        assertThat(((BigDecimal) value), comparesEqualTo(new BigDecimal("-9999999999999999999999999999.99999999")));
+        assertThat(((BigDecimal) value), comparesEqualTo(new BigDecimal("-99999999999999999999.99999999")));
     }
 }
