@@ -9,13 +9,13 @@ The IndexOf operator returns the 0-based index of the given element in the given
 The operator uses the notion of equivalence to determine the index. The search is linear,
   and returns the index of the first element that is equivalent to the element being searched for.
 If the list is empty, or no element is found, the result is -1.
-If the list argument is null, the result is null.
+If either argument is null, the result is null.
 */
 
 public class IndexOfEvaluator {
 
     public static Object indexOf(Object source, Object elementToFind, State state) {
-        if (source == null) {
+        if (source == null || elementToFind == null) {
             return null;
         }
 

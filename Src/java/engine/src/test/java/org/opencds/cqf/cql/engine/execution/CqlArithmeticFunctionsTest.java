@@ -272,7 +272,7 @@ class CqlArithmeticFunctionsTest extends CqlTestBase {
         assertThat(value, is(nullValue()));
 
         value = engine.expression(library, "Log1Base1").value();
-        assertThat((BigDecimal) value, comparesEqualTo(BigDecimal.valueOf(0d)));
+        assertThat(value, is(nullValue()));
 
         value = engine.expression(library, "Log1Base2").value();
         assertThat((BigDecimal) value, comparesEqualTo(BigDecimal.valueOf(0d)));
@@ -367,7 +367,7 @@ class CqlArithmeticFunctionsTest extends CqlTestBase {
         assertThat(value, is(Long.MAX_VALUE));
 
         value = engine.expression(library, "DecimalMaxValue").value();
-        assertEquals(0, ((BigDecimal) value).compareTo(new BigDecimal("9999999999999999999999999999.99999999")));
+        assertEquals(0, ((BigDecimal) value).compareTo(new BigDecimal("99999999999999999999.99999999")));
 
         value = engine.expression(library, "DateTimeMaxValue").value();
         assertTrue(EquivalentEvaluator.equivalent(value, new DateTime(BigDecimal.ZERO, 9999, 12, 31, 23, 59, 59, 999)));
@@ -389,7 +389,7 @@ class CqlArithmeticFunctionsTest extends CqlTestBase {
         assertThat(value, is(Long.MIN_VALUE));
 
         value = engine.expression(library, "DecimalMinValue").value();
-        assertEquals(0, ((BigDecimal) value).compareTo(new BigDecimal("-9999999999999999999999999999.99999999")));
+        assertEquals(0, ((BigDecimal) value).compareTo(new BigDecimal("-99999999999999999999.99999999")));
 
         value = engine.expression(library, "DateTimeMinValue").value();
         assertTrue(EquivalentEvaluator.equivalent(value, new DateTime(BigDecimal.ZERO, 1, 1, 1, 0, 0, 0, 0)));
