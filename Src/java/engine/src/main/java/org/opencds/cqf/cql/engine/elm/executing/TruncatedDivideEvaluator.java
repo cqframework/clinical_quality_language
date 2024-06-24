@@ -9,6 +9,7 @@ import org.opencds.cqf.cql.engine.runtime.Quantity;
 /*
 div(left Integer, right Integer) Integer
 div(left Decimal, right Decimal) Decimal
+div(left Long, right Long) Long
 div(left Quantity, right Quantity) Quantity
 
 The div operator performs truncated division of its arguments.
@@ -29,6 +30,12 @@ public class TruncatedDivideEvaluator {
             }
 
             return (Integer) left / (Integer) right;
+        } else if (left instanceof Long) {
+            if ((Long) right == 0) {
+                return null;
+            }
+
+            return (Long) left / (Long) right;
         } else if (left instanceof BigDecimal) {
             if (EqualEvaluator.equal(right, new BigDecimal("0.0"), state)) {
                 return null;
