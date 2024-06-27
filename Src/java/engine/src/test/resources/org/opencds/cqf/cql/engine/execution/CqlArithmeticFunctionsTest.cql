@@ -105,6 +105,8 @@ define DecimalMinValue: minimum Decimal
 define QuantityMinValue: minimum Quantity
 define DateTimeMinValue: minimum DateTime
 define TimeMinValue: minimum Time
+define BooleanMinValue: minimum Boolean
+define NullMinValue: minimum null
 
 //MaxValue
 define IntegerMaxValue: maximum Integer
@@ -113,6 +115,8 @@ define DecimalMaxValue: maximum Decimal
 define QuantityMaxValue: maximum Quantity
 define DateTimeMaxValue: maximum DateTime
 define TimeMaxValue: maximum Time
+define BooleanMaxValue: maximum Boolean
+define NullMaxValue: maximum null
 
 //Modulo
 define ModuloNull  : 1 mod null

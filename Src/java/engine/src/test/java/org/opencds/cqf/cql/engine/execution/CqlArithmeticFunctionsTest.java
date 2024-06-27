@@ -374,6 +374,16 @@ class CqlArithmeticFunctionsTest extends CqlTestBase {
 
         value = engine.expression(library, "TimeMaxValue").value();
         assertTrue(EquivalentEvaluator.equivalent(value, new Time(23, 59, 59, 999)));
+
+        try {
+            value = engine.expression(library, "BooleanMaxValue").value();
+            fail();
+        } catch (UndefinedResult ae) {
+            assertThat(ae.getMessage(), is("The Maximum operator is not implemented for type Boolean"));
+        }
+
+        value = engine.expression(library, "NullMaxValue").value();
+        assertThat(value, is(nullValue()));
     }
 
     /**
@@ -396,6 +406,16 @@ class CqlArithmeticFunctionsTest extends CqlTestBase {
 
         value = engine.expression(library, "TimeMinValue").value();
         assertTrue(EquivalentEvaluator.equivalent(value, new Time(0, 0, 0, 0)));
+
+        try {
+            value = engine.expression(library, "BooleanMinValue").value();
+            fail();
+        } catch (UndefinedResult ae) {
+            assertThat(ae.getMessage(), is("The Minimum operator is not implemented for type Boolean"));
+        }
+
+        value = engine.expression(library, "NullMinValue").value();
+        assertThat(value, is(nullValue()));
     }
 
     /**

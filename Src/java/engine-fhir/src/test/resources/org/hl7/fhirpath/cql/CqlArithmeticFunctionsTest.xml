@@ -335,6 +335,14 @@
 			<expression>minimum Time</expression>
 			<output>@T00:00:00.000</output>
 		</test>
+		<test name="BooleanMinValue">
+			<expression invalid="true">minimum Boolean</expression>
+			<!-- EXPECT: The Minimum operator is not implemented for type Boolean -->
+		</test>
+		<test name="NullMinValue">
+			<expression>minimum null</expression>
+			<output>null</output>
+		</test>
 	</group>
 	<group name="MaxValue">
 		<test name="IntegerMaxValue">
@@ -361,6 +369,14 @@
 		<test name="TimeMaxValue">
 			<expression>maximum Time</expression>
 			<output>@T23:59:59.999</output>
+		</test>
+		<test name="BooleanMaxValue">
+			<expression invalid="true">maximum Boolean</expression>
+			<!-- EXPECT: The Maximum operator is not implemented for type Boolean -->
+		</test>
+		<test name="NullMaxValue">
+			<expression>maximum null</expression>
+			<output>null</output>
 		</test>
 	</group>
 	<group name="Modulo">
