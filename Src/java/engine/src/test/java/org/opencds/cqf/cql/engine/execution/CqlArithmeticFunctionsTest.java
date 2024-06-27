@@ -9,6 +9,7 @@ import org.hl7.elm.r1.VersionedIdentifier;
 import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.elm.executing.*;
 import org.opencds.cqf.cql.engine.exception.CqlException;
+import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.exception.UndefinedResult;
 import org.opencds.cqf.cql.engine.runtime.*;
 
@@ -378,7 +379,7 @@ class CqlArithmeticFunctionsTest extends CqlTestBase {
         try {
             value = engine.expression(library, "BooleanMaxValue").value();
             fail();
-        } catch (UndefinedResult ae) {
+        } catch (InvalidOperatorArgument ae) {
             assertThat(ae.getMessage(), is("The Maximum operator is not implemented for type Boolean"));
         }
     }
@@ -407,7 +408,7 @@ class CqlArithmeticFunctionsTest extends CqlTestBase {
         try {
             value = engine.expression(library, "BooleanMinValue").value();
             fail();
-        } catch (UndefinedResult ae) {
+        } catch (InvalidOperatorArgument ae) {
             assertThat(ae.getMessage(), is("The Minimum operator is not implemented for type Boolean"));
         }
     }
