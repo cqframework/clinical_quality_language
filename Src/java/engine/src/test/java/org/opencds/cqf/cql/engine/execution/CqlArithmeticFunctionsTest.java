@@ -796,11 +796,23 @@ class CqlArithmeticFunctionsTest extends CqlTestBase {
         value = engine.expression(library, "TruncatedDivide2By1").value();
         assertThat(value, is(2));
 
+        value = engine.expression(library, "TruncatedDivide2By0").value();
+        assertThat(value, is(nullValue()));
+
         value = engine.expression(library, "TruncatedDivide10By3").value();
         assertThat(value, is(3));
 
+        value = engine.expression(library, "TruncatedDivide10LBy3L").value();
+        assertThat(value, is(3L));
+
+        value = engine.expression(library, "TruncatedDivide10LBy0L").value();
+        assertThat(value, is(nullValue()));
+
         value = engine.expression(library, "TruncatedDivide10d1By3D1").value();
         assertThat((BigDecimal) value, comparesEqualTo(BigDecimal.valueOf(3.0)));
+
+        value = engine.expression(library, "TruncatedDivide10D1By0D").value();
+        assertThat(value, is(nullValue()));
 
         value = engine.expression(library, "TruncatedDivideNeg2ByNeg1").value();
         assertThat(value, is(2));

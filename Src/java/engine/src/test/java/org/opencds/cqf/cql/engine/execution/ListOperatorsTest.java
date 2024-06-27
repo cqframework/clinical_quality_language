@@ -574,10 +574,13 @@ class ListOperatorsTest extends CqlTestBase {
         value = results.forExpression("ProperlyIncludes1And111").value();
         assertThat(value, is(false));
 
-        value = results.forExpression("ProperContainsNullRightWithoutNull").value();
+        value = results.forExpression("ProperContainsNullRight1").value();
         assertThat(value, is(nullValue()));
 
-        value = results.forExpression("ProperContainsNullRightWithNull").value();
+        value = results.forExpression("ProperContainsNullRight2").value();
+        assertThat(value, is(nullValue()));
+
+        value = results.forExpression("ProperContainsNullLeft").value();
         assertThat(value, is(nullValue()));
 
         value = results.forExpression("ProperContainsTimeTrue").value();
@@ -586,10 +589,13 @@ class ListOperatorsTest extends CqlTestBase {
         value = results.forExpression("ProperContainsTimeNull").value();
         assertThat(value, is(false));
 
-        value = results.forExpression("ProperInNullRightWithoutNull").value();
+        value = results.forExpression("ProperInNullLeft1").value();
         assertThat(value, is(nullValue()));
 
-        value = results.forExpression("ProperInNullRightWithNull").value();
+        value = results.forExpression("ProperInNullLeft2").value();
+        assertThat(value, is(nullValue()));
+
+        value = results.forExpression("ProperInNullRight").value();
         assertThat(value, is(nullValue()));
 
         value = results.forExpression("ProperInTimeTrue").value();

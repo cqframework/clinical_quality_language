@@ -209,14 +209,16 @@ define ProperlyIncludesNullLeft:          null properly includes {2}
 define ProperlyIncludes1And111:           {1} properly includes {1, 1}
 
 //ProperContains
-define ProperContainsNullRightWithoutNull: {'s', 'u', 'n'} properly includes null
-define ProperContainsNullRightWithNull: {'s', 'u', 'n', null} properly includes null
+define ProperContainsNullRight1: {'s', 'u', 'n'} properly includes null
+define ProperContainsNullRight2: {'s', 'u', 'n', null} properly includes null
+define ProperContainsNullLeft: null as List<String> properly includes 's'
 define ProperContainsTimeTrue: { @T15:59:59, @T20:59:59.999, @T20:59:49.999 } properly includes @T15:59:59
 define ProperContainsTimeNull: { @T15:59:59.999, @T20:59:59.999, @T20:59:49.999 } properly includes @T15:59:59
 
 //ProperIn
-define ProperInNullRightWithoutNull: null properly included in {'s', 'u', 'n'}
-define ProperInNullRightWithNull: null properly included in {'s', 'u', 'n', null}
+define ProperInNullLeft1: null properly included in {'s', 'u', 'n'}
+define ProperInNullLeft2: null properly included in {'s', 'u', 'n', null}
+define ProperInNullRight: 's' properly included in null as List<String>
 define ProperInTimeTrue: @T15:59:59 properly included in { @T15:59:59, @T20:59:59.999, @T20:59:49.999 }
 define ProperInTimeNull: @T15:59:59 properly included in { @T15:59:59.999, @T20:59:59.999, @T20:59:49.999 }
 

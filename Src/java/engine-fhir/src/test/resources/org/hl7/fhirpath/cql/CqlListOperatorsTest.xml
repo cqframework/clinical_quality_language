@@ -650,12 +650,16 @@
 		</test>
 	</group>
 	<group name="ProperContains">
-		<test name="ProperContainsNullRightWithoutNull">
+		<test name="ProperContainsNullRight1">
 			<expression>{'s', 'u', 'n'} properly includes null</expression>
 			<output>null</output>
 		</test>
-		<test name="ProperContainsNullRightWithNull">
+		<test name="ProperContainsNullRight2">
 			<expression>{'s', 'u', 'n', null} properly includes null</expression>
+			<output>null</output>
+		</test>
+		<test name="ProperContainsNullLeft">
+			<expression>null as List&lt;String&gt; properly includes 's'</expression>
 			<output>null</output>
 		</test>
 		<test name="ProperContainsTimeTrue">
@@ -668,12 +672,16 @@
 		</test>
 	</group>
 	<group name="ProperIn">
-		<test name="ProperInNullRightWithoutNull">
+		<test name="ProperInNullLeft1">
 			<expression>null properly included in {'s', 'u', 'n'}</expression>
 			<output>null</output>
 		</test>
-		<test name="ProperInNullRightWithNull">
+		<test name="ProperInNullLeft2">
 			<expression>null properly included in {'s', 'u', 'n', null}</expression>
+			<output>null</output>
+		</test>
+		<test name="ProperInNullRight">
+			<expression>'s' properly included in null as List&lt;String&gt;</expression>
 			<output>null</output>
 		</test>
 		<test name="ProperInTimeTrue">

@@ -236,8 +236,12 @@ define TruncateNeg1D9: Truncate(-1.9)
 //Truncated Divide
 define TruncatedDivideNull: (null as Integer) div (null as Integer)
 define TruncatedDivide2By1: 2 div 1
+define TruncatedDivide2By0: 2 div 0
 define TruncatedDivide10By3: 10 div 3
+define TruncatedDivide10LBy3L: 10L div 3L
+define TruncatedDivide10LBy0L: 10L div 0L
 define TruncatedDivide10d1By3D1: 10.1 div 3.1
+define TruncatedDivide10D1By0D: 10.1 div 0.0
 define TruncatedDivideNeg2ByNeg1: -2 div -1
 define TruncatedDivideNeg10ByNeg3: -10 div -3
 define TruncatedDivideNeg10d1ByNeg3D1: -10.1 div -3.1

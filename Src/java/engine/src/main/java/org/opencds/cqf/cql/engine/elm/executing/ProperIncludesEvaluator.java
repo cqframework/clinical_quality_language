@@ -75,10 +75,6 @@ public class ProperIncludesEvaluator {
         int leftCount = (int)
                 StreamSupport.stream(((Iterable<?>) left).spliterator(), false).count();
 
-        if (right == null) {
-            return leftCount > 0;
-        }
-
         return AndEvaluator.and(
                 IncludedInEvaluator.listIncludedIn(right, left, state),
                 GreaterEvaluator.greater(

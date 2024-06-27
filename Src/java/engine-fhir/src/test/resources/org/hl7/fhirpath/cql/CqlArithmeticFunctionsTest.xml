@@ -777,6 +777,10 @@
 			<expression>2 div 1</expression>
 			<output>2</output>
 		</test>
+		<test name="TruncatedDivide2By0">
+			<expression>2 div 0</expression>
+			<output>null</output>
+		</test>
 		<test name="TruncatedDivide10By3">
 			<expression>10 div 3</expression>
 			<output>3</output>
@@ -785,9 +789,17 @@
 			<expression>10L div 3L</expression>
 			<output>3L</output>
 		</test>
+		<test name="TruncatedDivide10LBy0L">
+			<expression>10L div 0L</expression>
+			<output>null</output>
+		</test>
 		<test name="TruncatedDivide10d1By3D1">
 			<expression>10.1 div 3.1</expression>
 			<output>3.0</output>
+		</test>
+		<test name="TruncatedDivide10D1By0D">
+			<expression>10.1 div 0.0</expression>
+			<output>null</output>
 		</test>
 		<test name="TruncatedDivideNeg2ByNeg1">
 			<expression>-2 div -1</expression>
