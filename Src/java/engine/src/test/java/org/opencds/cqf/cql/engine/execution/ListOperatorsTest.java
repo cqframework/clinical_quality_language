@@ -569,16 +569,19 @@ class ListOperatorsTest extends CqlTestBase {
         assertThat(value, is(false));
 
         value = results.forExpression("ProperlyIncludesNullLeft").value();
-        assertThat(value, is(false));
+        assertThat(value, is(nullValue()));
 
         value = results.forExpression("ProperlyIncludes1And111").value();
         assertThat(value, is(false));
 
-        value = results.forExpression("ProperContainsNullRightFalse").value();
-        assertThat(value, is(false));
+        value = results.forExpression("ProperContainsNullRight1").value();
+        assertThat(value, is(nullValue()));
 
-        value = results.forExpression("ProperContainsNullRightTrue").value();
-        assertThat(value, is(true));
+        value = results.forExpression("ProperContainsNullRight2").value();
+        assertThat(value, is(nullValue()));
+
+        value = results.forExpression("ProperContainsNullLeft").value();
+        assertThat(value, is(nullValue()));
 
         value = results.forExpression("ProperContainsTimeTrue").value();
         assertThat(value, is(true));
@@ -586,11 +589,14 @@ class ListOperatorsTest extends CqlTestBase {
         value = results.forExpression("ProperContainsTimeNull").value();
         assertThat(value, is(false));
 
-        value = results.forExpression("ProperInNullRightFalse").value();
-        assertThat(value, is(false));
+        value = results.forExpression("ProperInNullLeft1").value();
+        assertThat(value, is(nullValue()));
 
-        value = results.forExpression("ProperInNullRightTrue").value();
-        assertThat(value, is(true));
+        value = results.forExpression("ProperInNullLeft2").value();
+        assertThat(value, is(nullValue()));
+
+        value = results.forExpression("ProperInNullRight").value();
+        assertThat(value, is(nullValue()));
 
         value = results.forExpression("ProperInTimeTrue").value();
         assertThat(value, is(true));
@@ -626,7 +632,7 @@ class ListOperatorsTest extends CqlTestBase {
         assertThat(value, is(false));
 
         value = results.forExpression("ProperlyIncludedInNullRight").value();
-        assertThat(value, is(false));
+        assertThat(value, is(nullValue()));
 
         value = results.forExpression("ProperlyIncludedIn11And1").value();
         assertThat(value, is(false));

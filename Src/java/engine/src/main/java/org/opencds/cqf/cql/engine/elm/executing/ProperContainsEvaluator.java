@@ -55,6 +55,10 @@ public class ProperContainsEvaluator {
     }
 
     public static Boolean properContains(Object left, Object right, String precision, State state) {
+        if (left == null || right == null) {
+            return null;
+        }
+
         if (left instanceof Interval && right instanceof BaseTemporal) {
             Boolean startProperContains = AfterEvaluator.after(right, ((Interval) left).getStart(), precision, state);
             Boolean endProperContains = BeforeEvaluator.before(right, ((Interval) left).getEnd(), precision, state);

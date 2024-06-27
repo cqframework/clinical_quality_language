@@ -9,6 +9,7 @@ import org.hl7.elm.r1.VersionedIdentifier;
 import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.elm.executing.*;
 import org.opencds.cqf.cql.engine.exception.CqlException;
+import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.exception.UndefinedResult;
 import org.opencds.cqf.cql.engine.runtime.*;
 
@@ -374,6 +375,13 @@ class CqlArithmeticFunctionsTest extends CqlTestBase {
 
         value = engine.expression(library, "TimeMaxValue").value();
         assertTrue(EquivalentEvaluator.equivalent(value, new Time(23, 59, 59, 999)));
+
+        try {
+            value = engine.expression(library, "BooleanMaxValue").value();
+            fail();
+        } catch (InvalidOperatorArgument ae) {
+            assertThat(ae.getMessage(), is("The Maximum operator is not implemented for type Boolean"));
+        }
     }
 
     /**
@@ -396,6 +404,13 @@ class CqlArithmeticFunctionsTest extends CqlTestBase {
 
         value = engine.expression(library, "TimeMinValue").value();
         assertTrue(EquivalentEvaluator.equivalent(value, new Time(0, 0, 0, 0)));
+
+        try {
+            value = engine.expression(library, "BooleanMinValue").value();
+            fail();
+        } catch (InvalidOperatorArgument ae) {
+            assertThat(ae.getMessage(), is("The Minimum operator is not implemented for type Boolean"));
+        }
     }
 
     /**
@@ -796,11 +811,23 @@ class CqlArithmeticFunctionsTest extends CqlTestBase {
         value = engine.expression(library, "TruncatedDivide2By1").value();
         assertThat(value, is(2));
 
+        value = engine.expression(library, "TruncatedDivide2By0").value();
+        assertThat(value, is(nullValue()));
+
         value = engine.expression(library, "TruncatedDivide10By3").value();
         assertThat(value, is(3));
 
+        value = engine.expression(library, "TruncatedDivide10LBy3L").value();
+        assertThat(value, is(3L));
+
+        value = engine.expression(library, "TruncatedDivide10LBy0L").value();
+        assertThat(value, is(nullValue()));
+
         value = engine.expression(library, "TruncatedDivide10d1By3D1").value();
         assertThat((BigDecimal) value, comparesEqualTo(BigDecimal.valueOf(3.0)));
+
+        value = engine.expression(library, "TruncatedDivide10D1By0D").value();
+        assertThat(value, is(nullValue()));
 
         value = engine.expression(library, "TruncatedDivideNeg2ByNeg1").value();
         assertThat(value, is(2));
