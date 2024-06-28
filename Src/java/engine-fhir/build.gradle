@@ -33,6 +33,6 @@ jacocoTestReport {
     ))
 
     classDirectories.setFrom(files(
-        "${projectDir}/../cql-to-elm/build/classes",
+        "${projectDir}/../cql-to-elm/build/classes/java/main",
     ))
 }
