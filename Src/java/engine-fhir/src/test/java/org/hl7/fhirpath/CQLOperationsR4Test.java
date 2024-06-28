@@ -10,8 +10,8 @@ import org.fhir.ucum.UcumException;
 import org.hl7.fhir.r4.model.*;
 import org.hl7.fhirpath.tests.Group;
 import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
 import org.opencds.cqf.cql.engine.data.CompositeDataProvider;
 import org.opencds.cqf.cql.engine.elm.executing.EqualEvaluator;
 import org.opencds.cqf.cql.engine.execution.State;
@@ -21,6 +21,8 @@ import org.opencds.cqf.cql.engine.fhir.model.R4FhirModelResolver;
 import org.opencds.cqf.cql.engine.fhir.retrieve.RestFhirRetrieveProvider;
 import org.opencds.cqf.cql.engine.fhir.searchparam.SearchParameterResolver;
 import org.opencds.cqf.cql.engine.runtime.Code;
+
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 public class CQLOperationsR4Test extends TestFhirPath {
 
@@ -32,7 +34,8 @@ public class CQLOperationsR4Test extends TestFhirPath {
             fhirContext.newRestfulGenericClient("http://fhirtest.uhn.ca/baseR4"));
     private static CompositeDataProvider provider = new CompositeDataProvider(fhirModelResolver, retrieveProvider);
 
-    public static Object[][] dataMethod() {
+    @TestFactory
+    List<DynamicTest> test() {
         String[] listOfFiles = {
             "r4/tests-fhir-r4.xml",
             "cql/CqlAggregateFunctionsTest.xml",
@@ -52,17 +55,17 @@ public class CQLOperationsR4Test extends TestFhirPath {
             "cql/ValueLiteralsAndSelectors.xml"
         };
 
-        List<Object[]> testsToRun = new ArrayList<>();
+        List<DynamicTest> testsToRun = new ArrayList<>();
         for (String file : listOfFiles) {
             for (Group group : loadTestsFile(file).getGroup()) {
                 for (org.hl7.fhirpath.tests.Test test : group.getTest()) {
                     if (!"2.1.0".equals(test.getVersion())) { // unsupported version
-                        testsToRun.add(new Object[] {file, group, test});
+                        testsToRun.add(dynamicTest(getTestName(file, group, test), () -> test(file, group, test)));
                     }
                 }
             }
         }
-        return testsToRun.toArray(new Object[testsToRun.size()][]);
+        return testsToRun;
     }
 
     public static Set<String> SKIP = Sets.newHashSet(
@@ -307,8 +310,6 @@ public class CQLOperationsR4Test extends TestFhirPath {
                         : test.getExpression().getValue());
     }
 
-    @ParameterizedTest
-    @MethodSource("dataMethod")
     void test(String file, Group group, org.hl7.fhirpath.tests.Test test) throws UcumException {
         var name = getTestName(file, group, test);
         Assumptions.assumeFalse(SKIP.contains(name), "Skipping " + name);
