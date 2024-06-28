@@ -24,3 +24,13 @@ generateSources {
         }
     }
 }
+
+jacocoTestReport {
+    sourceDirectories.setFrom(files(
+        "${projectDir}/../cql-to-elm/src/main/java",
+    ))
+
+    classDirectories.setFrom(files(
+        "${projectDir}/../cql-to-elm/build/classes",
+    ))
+}
