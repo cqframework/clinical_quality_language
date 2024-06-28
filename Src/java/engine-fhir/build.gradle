@@ -26,6 +26,8 @@ generateSources {
 }
 
 jacocoTestReport {
+    dependsOn ':cql-to-elm:compileTestJava'
+
     sourceDirectories.setFrom(files(
         "${projectDir}/../cql-to-elm/src/main/java",
     ))
