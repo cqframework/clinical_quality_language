@@ -27,12 +27,15 @@ generateSources {
 
 jacocoTestReport {
     dependsOn ':cql-to-elm:compileTestJava'
+    dependsOn ':engine:compileTestJava'
 
     sourceDirectories.setFrom(files(
         "${projectDir}/../cql-to-elm/src/main/java",
+        "${projectDir}/../engine/src/main/java",
     ))
 
     classDirectories.setFrom(files(
         "${projectDir}/../cql-to-elm/build/classes/java/main",
+        "${projectDir}/../engine/build/classes/java/main",
     ))
 }
