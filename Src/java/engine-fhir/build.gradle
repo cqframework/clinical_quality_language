@@ -24,3 +24,21 @@ generateSources {
         }
     }
 }
+
+jacocoTestReport {
+    dependsOn ':cql-to-elm:test'
+    dependsOn ':engine:test'
+    dependsOn ':engine-fhir:test'
+
+    sourceDirectories.setFrom(files(
+        "${projectDir}/../cql-to-elm/src/main/java",
+        "${projectDir}/../engine/src/main/java",
+        "${projectDir}/../engine-fhir/src/main/java",
+    ))
+
+    classDirectories.setFrom(files(
+        "${projectDir}/../cql-to-elm/build/classes/java/main",
+        "${projectDir}/../engine/build/classes/java/main",
+        "${projectDir}/../engine-fhir/build/classes/java/main",
+    ))
+}

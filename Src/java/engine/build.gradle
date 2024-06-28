@@ -10,3 +10,18 @@ dependencies {
     testImplementation project(':elm-jackson')
     testImplementation 'org.mockito:mockito-core:5.4.0'
 }
+
+jacocoTestReport {
+    dependsOn ':cql-to-elm:test'
+    dependsOn ':engine:test'
+
+    sourceDirectories.setFrom(files(
+            "${projectDir}/../cql-to-elm/src/main/java",
+            "${projectDir}/../engine/src/main/java",
+    ))
+
+    classDirectories.setFrom(files(
+            "${projectDir}/../cql-to-elm/build/classes/java/main",
+            "${projectDir}/../engine/build/classes/java/main",
+    ))
+}
