@@ -14,9 +14,8 @@ If the source is null, the result is null.
 public class AnyTrueEvaluator {
 
     public static Boolean anyTrue(Object src) {
-
         if (src == null) {
-            return null;
+            return false;
         }
 
         if (src instanceof Iterable) {
