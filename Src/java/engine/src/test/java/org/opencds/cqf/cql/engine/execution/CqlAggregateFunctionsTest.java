@@ -43,6 +43,9 @@ class CqlAggregateFunctionsTest extends CqlTestBase {
         value = results.forExpression("AllTrueEmptyList").value();
         assertThat(value, is(true));
 
+        value = results.forExpression("AllTrueIsTrueWhenNull").value();
+        assertThat(value, is(true));
+
         value = results.forExpression("AnyTrueAllTrue").value();
         assertThat(value, is(true));
 
@@ -69,6 +72,10 @@ class CqlAggregateFunctionsTest extends CqlTestBase {
 
         value = results.forExpression("AnyTrueEmptyList").value();
         assertThat(value, is(false));
+
+        value = results.forExpression("AnyTrueIsFalseWhenNull").value();
+        assertThat(value, is(false));
+
 
         try {
             value = AnyTrueEvaluator.anyTrue(Arrays.asList("this", "is", "error"));
