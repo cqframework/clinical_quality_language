@@ -8,7 +8,7 @@ define AllTrueAllTrueFalseTrue      : AllTrue({true,false,true})
 define AllTrueAllFalseTrueFalse     : AllTrue({false,true,false})
 define AllTrueNullFirst             : AllTrue({null,true,true})
 define AllTrueEmptyList             : AllTrue({})
-define AllTrueIsTrueWhenNull        : AllTrue(null) // Should be true, returns null
+define AllTrueIsTrueWhenNull        : AllTrue(null)
 //AnyTrue
 define AnyTrueAllTrue               : AnyTrue({true,true})
 define AnyTrueAllFalse              : AnyTrue({false,false})
@@ -19,7 +19,7 @@ define AnyTrueFalseFirst            : AnyTrue({false,true})
 define AnyTrueNullFirstThenTrue     : AnyTrue({null,true})
 define AnyTrueNullFirstThenFalse    : AnyTrue({null,false})
 define AnyTrueEmptyList             : AnyTrue({})
-define AnyTrueIsFalseWhenNull       : AnyTrue(null) // Should be false, returns null
+define AnyTrueIsFalseWhenNull       : AnyTrue(null)
 
 //Avg
 define AvgTest1: Avg({ 1.0, 2.0, 3.0, 6.0 })
@@ -58,14 +58,15 @@ define ModeTestTime: Mode({ @T15:59:59.999, @T05:59:59.999, @T20:59:59.999, @T05
 
 //PopulationStdDev
 define PopStdDevTest1: PopulationStdDev({ 1.0, 2.0, 3.0, 4.0, 5.0 })
-define PopulationStdDevIsNull: PopulationStdDev({ null as Quantity, null as Quantity, null as Quantity }) // Gives NullPointerException, should be null
+define PopulationStdDevIsNull: PopulationStdDev({ null as Quantity, null as Quantity, null as Quantity })
 
 //PopulationVariance
 define PopVarianceTest1: PopulationVariance({ 1.0, 2.0, 3.0, 4.0, 5.0 })
+define PopVarianceIsNull: PopulationVariance({ null as Quantity, null as Quantity, null as Quantity })
 
 //StdDev
 define StdDevTest1: StdDev({ 1.0, 2.0, 3.0, 4.0, 5.0 })
-define StdDevIsNull: StdDev({ null as Quantity, null as Quantity, null as Quantity }) // Gives NullPointerException, should be null
+define StdDevIsNull: StdDev({ null as Quantity, null as Quantity, null as Quantity })
 
 //Sum
 define SumTest1: Sum({ 6.0, 2.0, 3.0, 4.0, 5.0 })

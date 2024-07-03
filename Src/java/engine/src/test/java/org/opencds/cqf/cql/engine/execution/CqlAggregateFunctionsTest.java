@@ -2,10 +2,13 @@ package org.opencds.cqf.cql.engine.execution;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+
+import org.hamcrest.core.IsNull;
 import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.elm.executing.AnyTrueEvaluator;
 import org.opencds.cqf.cql.engine.elm.executing.AvgEvaluator;
@@ -159,14 +162,23 @@ class CqlAggregateFunctionsTest extends CqlTestBase {
                 ((BigDecimal) value)
                         .compareTo(new BigDecimal("1.41421356"))); // 23730951454746218587388284504413604736328125
 
+        value = results.forExpression("PopulationStdDevIsNull").value();
+        assertThat(value, is(nullValue()));
+
         value = results.forExpression("PopVarianceTest1").value();
         assertEquals(0, ((BigDecimal) value).compareTo(new BigDecimal("2.0")));
+
+        value = results.forExpression("PopVarianceIsNull").value();
+        assertThat(value, is(nullValue()));
 
         value = results.forExpression("StdDevTest1").value();
         assertEquals(
                 0,
                 ((BigDecimal) value)
                         .compareTo(new BigDecimal("1.58113883"))); // 00841897613935316257993690669536590576171875
+
+        value = results.forExpression("StdDevIsNull").value();
+        assertThat(value, is(nullValue()));
 
         value = results.forExpression("SumTest1").value();
         assertThat(value, is(new BigDecimal("20.0")));
