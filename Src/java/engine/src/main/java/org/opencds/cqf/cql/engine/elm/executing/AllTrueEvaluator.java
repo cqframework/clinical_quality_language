@@ -15,7 +15,7 @@ public class AllTrueEvaluator {
 
     public static Boolean allTrue(Object src) {
         if (src == null) {
-            return null;
+            return true;
         }
 
         if (src instanceof Iterable) {
