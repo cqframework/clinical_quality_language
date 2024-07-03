@@ -141,8 +141,10 @@ public abstract class TestFhirPath {
             String outputExpression = test.getOutput().get(0).getValue();
             if ("null".equals(outputExpression)) {
                 cql = String.format("%s (%s) is %s", cql, testExpression, outputExpression);
+            } else if ("null".equals(testExpression)) {
+                cql = String.format("%s (%s) is %s", cql, outputExpression, testExpression);
             } else {
-                cql = String.format("%s (%s) = %s", cql, testExpression, outputExpression);
+                cql = String.format("%s (%s) = (%s)", cql, testExpression, outputExpression);
             }
         } else {
             cql = String.format("%s %s", cql, testExpression);
