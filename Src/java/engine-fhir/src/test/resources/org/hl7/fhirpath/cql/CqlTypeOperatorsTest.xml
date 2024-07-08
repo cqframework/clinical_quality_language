@@ -25,8 +25,8 @@
 			<output>'5'</output>
 		</test>
 		<test name="StringToIntegerError">
-			<expression invalid="true">convert 'foo' to Integer</expression>
-			<!-- EXPECT: Unable to convert given string to Integer -->
+			<expression>convert 'foo' to Integer</expression>
+			<output>null</output>
 		</test>
 		<test name="StringToDateTime">
 			<expression>convert '2014-01-01' to DateTime</expression>
@@ -37,8 +37,8 @@
 			<output>@T14:30:00.000</output>
 		</test>
 		<test name="StringToDateTimeMalformed">
-			<expression invalid="true">convert '2014/01/01' to DateTime</expression>
-			<!-- EXPECT: Invalid format: "2014/01/01" is malformed at "/01/01" -->
+			<expression>convert '2014/01/01' to DateTime</expression>
+			<output>null</output>
 		</test>
 	</group>
 	<group name="Is">
@@ -93,8 +93,8 @@
 			<output>@2014-01-01T12:05:05.955+00:00</output>
 		</test>
 		<test name="ToDateTimeMalformed">
-			<expression invalid="true">ToDateTime('2014/01/01T12:05:05.955Z')</expression>
-			<!-- EXPECT: Invalid format: "2014/01/01T12:05:05.955" is malformed at "/01/01T12:05:05.955" -->
+			<expression>ToDateTime('2014/01/01T12:05:05.955Z')</expression>
+			<output>null</output>
 		</test>
 		<test name="ToDateTimeDate">
 			<expression>ToDateTime(@2014-01-01)</expression>
@@ -159,8 +159,8 @@
 			<output>@T14:30:00.000</output>
 		</test>
 		<test name="ToTimeMalformed">
-			<expression invalid="true">ToTime('T14-30-00.0')</expression>
-			<!-- EXPECT: Invalid format: "T14-30-00.0" is malformed at "-30-00.0" -->
+			<expression>ToTime('T14-30-00.0')</expression>
+			<output>null</output>
 		</test>
 	</group>
 </tests>
