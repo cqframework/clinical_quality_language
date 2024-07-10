@@ -192,6 +192,10 @@ define DateTimeIncludedInPrecisionNull:
 
 //Intersect
 define TestIntersectNull: IntegerIntervalTest intersect Interval[5, null)
+define TestIntersectNull1: start of (IntegerIntervalTest intersect Interval[5, null)) <= 10
+define TestIntersectNull2: start of (Interval[1, 10] intersect Interval[5, null)) >= 5
+define TestIntersectNull3: start of (Interval[1, 10] intersect Interval[5, null)) > 10
+define TestIntersectNull4: start of (Interval[1, 10] intersect Interval[5, null)) < 5
 define IntegerIntervalIntersectTest4to10: IntegerIntervalTest intersect IntegerIntervalTest4
 define IntegerIntervalIntersectTestNull: IntegerIntervalTest intersect IntegerIntervalTest2
 define DecimalIntervalIntersectTest4to10: DecimalIntervalTest intersect DecimalIntervalTest3
