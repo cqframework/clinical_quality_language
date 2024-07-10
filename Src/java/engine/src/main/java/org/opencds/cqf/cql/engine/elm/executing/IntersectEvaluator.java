@@ -58,7 +58,7 @@ public class IntersectEvaluator {
             Boolean leftEndLtRightEnd = LessEvaluator.less(leftEnd, rightEnd, state);
 
             Object max;
-            if(leftStart == null || rightStart == null) {
+            if (leftStart == null || rightStart == null) {
                 // If either of the start points is null, the start point of the intersection is null because the
                 // boundary is unknown.
                 max = null;
@@ -72,7 +72,7 @@ public class IntersectEvaluator {
             }
 
             Object min;
-            if(leftEnd == null || rightEnd == null) {
+            if (leftEnd == null || rightEnd == null) {
                 min = null;
             } else if (leftEndLtRightEnd == null && precision != null) {
                 min = ((BaseTemporal) leftEnd).getPrecision().toString().equals(precision) ? leftEnd : rightEnd;
