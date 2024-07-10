@@ -31,6 +31,10 @@ public class PopulationStdDevEvaluator {
             }
 
             Object variance = PopulationVarianceEvaluator.popVariance(source, state);
+            // The cases in which PopulationVariance returns null are the same as those where PopulationStdDev does.
+            if(variance == null) {
+                return null;
+            }
 
             return variance instanceof BigDecimal
                     ? PowerEvaluator.power(variance, new BigDecimal("0.5"))
