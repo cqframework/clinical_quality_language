@@ -32,7 +32,7 @@ public class PopulationStdDevEvaluator {
 
             Object variance = PopulationVarianceEvaluator.popVariance(source, state);
             // The cases in which PopulationVariance returns null are the same as those where PopulationStdDev does.
-            if(variance == null) {
+            if (variance == null) {
                 return null;
             }
 
