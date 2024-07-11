@@ -155,25 +155,19 @@ class CqlValueLiteralsAndSelectorsTest extends CqlTestBase {
         // define QuantityMax: 99999999999999999999.99999999 'mg'
         value = results.forExpression("QuantityMax").value();
         assertThat(value, instanceOf(Quantity.class));
-        assertThat(
-                ((Quantity) value).getValue(),
-                comparesEqualTo(new BigDecimal("99999999999999999999.99999999")));
+        assertThat(((Quantity) value).getValue(), comparesEqualTo(new BigDecimal("99999999999999999999.99999999")));
         assertThat(((Quantity) value).getUnit(), is("mg"));
 
         // define QuantityPosMax: +99999999999999999999.99999999 'mg'
         value = results.forExpression("QuantityPosMax").value();
         assertThat(value, instanceOf(Quantity.class));
-        assertThat(
-                ((Quantity) value).getValue(),
-                comparesEqualTo(new BigDecimal("99999999999999999999.99999999")));
+        assertThat(((Quantity) value).getValue(), comparesEqualTo(new BigDecimal("99999999999999999999.99999999")));
         assertThat(((Quantity) value).getUnit(), is("mg"));
 
         // define QuantityMin: -99999999999999999999.99999999 'mg'
         value = results.forExpression("QuantityMin").value();
         assertThat(value, instanceOf(Quantity.class));
-        assertThat(
-                ((Quantity) value).getValue(),
-                comparesEqualTo(new BigDecimal("-99999999999999999999.99999999")));
+        assertThat(((Quantity) value).getValue(), comparesEqualTo(new BigDecimal("-99999999999999999999.99999999")));
         assertThat(((Quantity) value).getUnit(), is("mg"));
 
         value = results.forExpression("DecimalZero").value();

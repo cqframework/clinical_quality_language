@@ -32,7 +32,7 @@ public class StdDevEvaluator {
 
             Object variance = VarianceEvaluator.variance(source, state);
             // The cases in which Variance returns null are the same as those where StdDev does.
-            if(variance == null) {
+            if (variance == null) {
                 return null;
             }
 
