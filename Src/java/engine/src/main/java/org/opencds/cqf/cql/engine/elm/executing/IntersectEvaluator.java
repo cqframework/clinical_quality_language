@@ -42,10 +42,6 @@ public class IntersectEvaluator {
             Object rightStart = rightInterval.getStart();
             Object rightEnd = rightInterval.getEnd();
 
-            if (leftStart == null || leftEnd == null || rightStart == null || rightEnd == null) {
-                return null;
-            }
-
             String precision = null;
             if (leftStart instanceof BaseTemporal && rightStart instanceof BaseTemporal) {
                 precision = BaseTemporal.getHighestPrecision(
@@ -54,7 +50,7 @@ public class IntersectEvaluator {
             }
 
             Boolean overlaps = OverlapsEvaluator.overlaps(leftInterval, rightInterval, precision, state);
-            if (overlaps == null || !overlaps) {
+            if (overlaps != null && !overlaps) {
                 return null;
             }
 
@@ -62,14 +58,23 @@ public class IntersectEvaluator {
             Boolean leftEndLtRightEnd = LessEvaluator.less(leftEnd, rightEnd, state);
 
             Object max;
-            if (leftStartGtRightStart == null && precision != null) {
+            if (leftStart == null || rightStart == null) {
+                // If either of the start points is null, the start point of the intersection is null because the
+                // boundary is unknown.
+                max = null;
+            } else if (leftStartGtRightStart == null && precision != null) {
+                // It is possible for leftStartGtRightStart to be null without either leftStart or rightStart being null
+                // if one has a value for the precision and the other does not, see:
+                // https://cql.hl7.org/09-b-cqlreference.html#greater
                 max = ((BaseTemporal) leftStart).getPrecision().toString().equals(precision) ? leftStart : rightStart;
             } else {
                 max = leftStartGtRightStart == null ? null : leftStartGtRightStart ? leftStart : rightStart;
             }
 
             Object min;
-            if (leftEndLtRightEnd == null && precision != null) {
+            if (leftEnd == null || rightEnd == null) {
+                min = null;
+            } else if (leftEndLtRightEnd == null && precision != null) {
                 min = ((BaseTemporal) leftEnd).getPrecision().toString().equals(precision) ? leftEnd : rightEnd;
             } else {
                 min = leftEndLtRightEnd == null ? null : leftEndLtRightEnd ? leftEnd : rightEnd;
