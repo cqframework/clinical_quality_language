@@ -7,8 +7,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-
-import org.hamcrest.core.IsNull;
 import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.elm.executing.AnyTrueEvaluator;
 import org.opencds.cqf.cql.engine.elm.executing.AvgEvaluator;
@@ -78,7 +76,6 @@ class CqlAggregateFunctionsTest extends CqlTestBase {
 
         value = results.forExpression("AnyTrueIsFalseWhenNull").value();
         assertThat(value, is(false));
-
 
         try {
             value = AnyTrueEvaluator.anyTrue(Arrays.asList("this", "is", "error"));
