@@ -596,8 +596,17 @@ class IntervalOperatorsTest extends CqlTestBase {
         value = results.forExpression("DateTimeIncludedInPrecisionNull").value();
         assertThat(value, is(nullValue()));
 
-        value = results.forExpression("TestIntersectNull").value();
+        value = results.forExpression("TestIntersectNullRightStart").value();
         // Because of how nulls work, equivalence, not equality, is the relevant test here (equality just gives null).
+        assertTrue(((Interval) value).equivalent(new Interval(null, false, 5, true)));
+
+        value = results.forExpression("TestIntersectNullRightEnd").value();
+        assertTrue(((Interval) value).equivalent(new Interval(5, true, null, false)));
+
+        value = results.forExpression("TestIntersectNullLeftStart").value();
+        assertTrue(((Interval) value).equivalent(new Interval(null, false, 5, true)));
+
+        value = results.forExpression("TestIntersectNullLeftEnd").value();
         assertTrue(((Interval) value).equivalent(new Interval(5, true, null, false)));
 
         value = results.forExpression("TestIntersectNull1").value();

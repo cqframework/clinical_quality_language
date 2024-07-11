@@ -191,7 +191,10 @@ define DateTimeIncludedInPrecisionNull:
     Interval [@2017-09-01T00:00:00, @2017-09-01T00:00:00] included in millisecond of Interval [@2017-09-01T00:00:00.000, @2017-12-30T23:59:59.999]
 
 //Intersect
-define TestIntersectNull: IntegerIntervalTest intersect Interval[5, null)
+define TestIntersectNullRightStart: IntegerIntervalTest intersect Interval(null, 5]
+define TestIntersectNullRightEnd: IntegerIntervalTest intersect Interval[5, null)
+define TestIntersectNullLeftStart: Interval(null, 5] intersect IntegerIntervalTest
+define TestIntersectNullLeftEnd: Interval[5, null) intersect IntegerIntervalTest
 define TestIntersectNull1: start of (IntegerIntervalTest intersect Interval[5, null)) <= 10
 define TestIntersectNull2: start of (Interval[1, 10] intersect Interval[5, null)) >= 5
 define TestIntersectNull3: start of (Interval[1, 10] intersect Interval[5, null)) > 10
