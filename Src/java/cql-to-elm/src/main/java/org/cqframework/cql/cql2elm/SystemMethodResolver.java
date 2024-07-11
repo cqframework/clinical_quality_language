@@ -550,6 +550,8 @@ public class SystemMethodResolver {
             }
             case "truncate":
                 return builder.resolveFunction(null, "Truncate", getParams(target, ctx));
+            case "union":
+                return builder.resolveFunction(null, "Union", getParams(target, ctx));
             case "upper":
                 return builder.resolveFunction(null, "Upper", getParams(target, ctx));
             case "where": {
