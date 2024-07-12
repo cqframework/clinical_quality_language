@@ -14,6 +14,10 @@
 			<expression>Abs(-1)</expression>
 			<output>1</output>
 		</test>
+		<test name="AbsNeg1Long">
+			<expression>Abs(-1L)</expression>
+			<output>1L</output>
+		</test>
 		<test name="AbsNeg1Dec">
 			<expression>Abs(-1.0)</expression>
 			<output>1.0</output>
@@ -30,6 +34,10 @@
 			<expression>Abs(-1L)</expression>
 			<output>1L</output>
 		</test>
+		<test name="AbsError">
+			<expression invalid="true">Abs('This is an error')</expression>
+			<!-- EXPECT: Cannot take Abs of string -->
+		</test>
 	</group>
 	<group name="Add">
 		<test name="AddNull">
@@ -39,6 +47,10 @@
 		<test name="Add11">
 			<expression>1 + 1</expression>
 			<output>2</output>
+		</test>
+		<test name="Add12Long">
+			<expression>1L + 2L</expression>
+			<output>3L</output>
 		</test>
 		<test name="Add1D1D">
 			<expression>1.0 + 1.0</expression>
@@ -55,6 +67,10 @@
 		<test name="Add1L1L">
 			<expression>1L + 1L</expression>
 			<output>2L</output>
+		</test>
+		<test name="AddError">
+			<expression invalid="true">'This is an error' + 404</expression>
+			<!-- EXPECT: Cannot add string -->
 		</test>
 	</group>
 	<group name="Ceiling">
@@ -102,6 +118,10 @@
 		</test>
 		<test name="Divide11">
 			<expression>1 / 1</expression>
+			<output>1.0</output>
+		</test>
+		<test name="Divide11Long">
+			<expression>1L / 1L</expression>
 			<output>1.0</output>
 		</test>
 		<test name="Divide1d1d">
@@ -195,6 +215,10 @@
 			<expression>Round(Exp(1), 8)</expression>
 			<output>2.71828183</output>
 		</test>
+		<test name="Exp1Long">
+			<expression>Round(Exp(1L), 8)</expression>
+			<output>2.71828183</output>
+		</test>
 		<test name="ExpNeg1">
 			<expression>Round(Exp(-1), 8)</expression>
 			<output>0.36787944</output>
@@ -209,6 +233,14 @@
 		</test>
 	</group>
 	<group name="HighBoundary">
+		<test name="HighBoundaryNull">
+			<expression>HighBoundary(null as Decimal, 8)</expression>
+			<output>null</output>
+		</test>
+		<test name="HighBoundaryNullPrecision">
+			<expression>HighBoundary(1.58888, null)</expression>
+			<output>1.58888999</output>
+		</test>
 		<test name="HighBoundaryDecimal">
 			<expression>HighBoundary(1.587, 8)</expression>
 			<output>1.58799999</output>
@@ -251,6 +283,10 @@
 			<expression>Log(1, 100)</expression>
 			<output>0.0</output>
 		</test>
+		<test name="Log1Base100Long">
+			<expression>Log(1L, 100L)</expression>
+			<output>0.0</output>
+		</test>
 		<test name="Log16Base2">
 			<expression>Log(16, 2)</expression>
 			<output>4.0</output>
@@ -261,6 +297,10 @@
 		</test>
 	</group>
 	<group name="LowBoundary">
+		<test name="LowBoundaryNull">
+			<expression>LowBoundary(null as Decimal, 8)</expression>
+			<output>null</output>
+		</test>
 		<test name="LowBoundaryDecimal">
 			<expression>LowBoundary(1.587, 8)</expression>
 			<output>1.58700000</output>
@@ -276,6 +316,10 @@
 		<test name="LowBoundaryTimeMillisecond">
 			<expression>LowBoundary(@T10:30, 9)</expression>
 			<output>@T10:30:00.000</output>
+		</test>
+		<test name="LowBoundaryNullPrecision">
+			<expression>LowBoundary(1.58888, null)</expression>
+			<output>1.58888000</output>
 		</test>
 	</group>
 	<group name="Ln">
@@ -396,6 +440,14 @@
 			<expression>10 mod 3.0</expression>
 			<output>1.0</output>
 		</test>
+		<test name="Modulo10By3Quantity">
+			<expression>10.0 'g' mod 3.0 'g'</expression>
+			<output>1.0 'g'</output>
+		</test>
+		<test name="Modulo10By0Quantity">
+			<expression>10.0 'g' mod 0.0 'g'</expression>
+			<output>null</output>
+		</test>
 		<test name="ModuloDResult">
 			<expression>3.5 mod 3</expression>
 			<output>0.5</output>
@@ -421,6 +473,10 @@
 		<test name="Multiply1By1L">
 			<expression>1 * 1L</expression>
 			<output>1L</output>
+		</test>
+		<test name="Multiply2By3Long">
+			<expression>2L * 3L</expression>
+			<output>6L</output>
 		</test>
 		<test name="Multiply1IBy2D">
 			<expression>1 * 2.0</expression>
@@ -594,6 +650,10 @@
 		<test name="Power2To4">
 			<expression>2^4</expression>
 			<output>16</output>
+		</test>
+		<test name="Power2To3Long">
+			<expression>2L^3L</expression>
+			<output>8L</output>
 		</test>
 		<test name="Power2DTo4D">
 			<expression>2.0^4.0</expression>
@@ -829,9 +889,21 @@
 			<expression>10 div 5.0</expression>
 			<output>2.0</output>
 		</test>
+		<test name="TruncatedDivide10By5DQuantity">
+			<expression>10.0 'g' div 5.0 'g'</expression>
+			<output>2.0 'g'</output>
+		</test>
 		<test name="TruncatedDivide10d1ByNeg3D1Quantity">
 			<expression>10.1 'cm' div -3.1 'cm'</expression>
 			<output>-3.0 'cm'</output>
+		</test>
+		<test name="TruncatedDivide10By0DQuantity">
+			<expression>10.0 'g' div 0.0 'g'</expression>
+			<output>null</output>
+		</test>
+		<test name="TruncatedDivide414By206DQuantity">
+			<expression>4.14 'm' div 2.06 'm'</expression>
+			<output>2.0 'm'</output>
 		</test>
 	</group>
 </tests>
