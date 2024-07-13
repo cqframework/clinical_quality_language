@@ -44,6 +44,10 @@
 			<expression>1 = 2</expression>
 			<output>false</output>
 		</test>
+		<test name="SimpleEqInt1Int2Long">
+			<expression>10L = 20L</expression>
+			<output>false</output>
+		</test>
 		<test name="SimpleEqStringAStringA">
 			<expression>'a' = 'a'</expression>
 			<output>true</output>
@@ -80,9 +84,25 @@
 			<expression>2.0'cm' = 2.00'cm'</expression>
 			<output>true</output>
 		</test>
+		<test name="RatioEqual">
+			<expression>1'cm':2'cm' = 1'cm':2'cm'</expression>
+			<output>true</output>
+		</test>
+		<test name="RatioNotEqual">
+			<expression>1'cm':2'cm' = 1.1'cm':2'cm'</expression>
+			<output>false</output>
+		</test>
 		<test name="TupleEqJohnJohn">
 			<expression>Tuple { Id : 1, Name : 'John' } = Tuple { Id : 1, Name : 'John' }</expression>
 			<output>true</output>
+		</test>
+		<test name="TupleEqJohnJohnFalse">
+			<expression invalid="true">Tuple { Id : 1, Name : 'John', Position: 'Shift Manager' } = Tuple { Id : 1, Name : 'John' }</expression>
+			<!-- EXPECT: translation error -->
+		</test>
+		<test name="TupleEqJohnJohnFalse2">
+			<expression invalid="true">Tuple { Id : 1, Name : 'John' } = Tuple { Id : 1, Name : 'John', Position: 'Shift Manager' }</expression>
+			<!-- EXPECT: translation error -->
 		</test>
 		<test name="TupleEqJohnJane">
 			<expression>Tuple { Id : 1, Name : 'John' } = Tuple { Id : 2, Name : 'Jane' }</expression>
@@ -246,6 +266,10 @@
 			<expression>DateTime(2013) &gt; DateTime(2014, 2, 15)</expression>
 			<output>false</output>
 		</test>
+		<test name="GreaterError">
+			<expression invalid="true">1 > 'one'</expression>
+			<!-- EXPECT: Cannot compare -->
+		</test>
 	</group>
 	<group name="Greater Or Equal">
 		<test name="GreaterOrEqualZZ">
@@ -366,6 +390,14 @@
 			<expression>0 &lt; 1</expression>
 			<output>true</output>
 		</test>
+		<test name="LessLong">
+			<expression>00L &lt; 10L</expression>
+			<output>true</output>
+		</test>
+		<test name="LessLongNeg">
+			<expression>-30L &lt; -20L</expression>
+			<output>true</output>
+		</test>
 		<test name="LessZNeg1">
 			<expression>0 &lt; -1</expression>
 			<output>false</output>
@@ -466,6 +498,10 @@
 		</test>
 		<test name="LessOrEqualZ1">
 			<expression>0 &lt;= 1</expression>
+			<output>true</output>
+		</test>
+		<test name="LessOrEqualZ1Long">
+			<expression>00L >= 10L</expression>
 			<output>true</output>
 		</test>
 		<test name="LessOrEqualZNeg1">
@@ -614,6 +650,14 @@
 			<expression>'a' ~ 'b'</expression>
 			<output>false</output>
 		</test>
+		<test name="EquivStringIgnoreCase">
+			<expression>'Abel' ~ 'abel'</expression>
+			<output>true</output>
+		</test>
+		<test name="EquivStringAStringB">
+			<expression>'a' ~ 'b'</expression>
+			<output>false</output>
+		</test>
 		<test name="EquivFloat1Float1">
 			<expression>1.0 ~ 1.0</expression>
 			<output>true</output>
@@ -621,6 +665,22 @@
 		<test name="EquivFloat1Float2">
 			<expression>1.0 ~ 2.0</expression>
 			<output>false</output>
+		</test>
+		<test name="EquivFloat1Float1WithZ">
+			<expression>1.0 ~ 1.00</expression>
+			<output>true</output>
+		</test>
+		<test name="EquivFloat1Float1WithPrecision">
+			<expression>1.5 ~ 1.55</expression>
+			<output>true</output>
+		</test>
+		<test name="EquivFloat1Float1WithPrecisionAndZ">
+			<expression>1.50 ~ 1.55</expression>
+			<output>true</output>
+		</test>
+		<test name="EquivFloatingTrailingZero">
+			<expression>1.001 ~ 1.000</expression>
+			<output>true</output>
 		</test>
 		<test name="EquivFloat1Int1">
 			<expression>1.0 ~ 1</expression>
@@ -638,9 +698,25 @@
 			<expression>1'cm' ~ 0.01'm'</expression>
 			<output>true</output>
 		</test>
+		<test name="RatioEquivalent">
+			<expression>1'cm':2'cm' ~ 1'cm':2'cm'</expression>
+			<output>true</output>
+		</test>
+		<test name="RatioNotEquivalent">
+			<expression>1'cm':2'cm' ~ 1'cm':3'cm'</expression>
+			<output>false</output>
+		</test>
 		<test name="EquivTupleJohnJohn">
 			<expression>Tuple { Id : 1, Name : 'John' } ~ Tuple { Id : 1, Name : 'John' }</expression>
 			<output>true</output>
+		</test>
+		<test name="EquivTupleJohnJohnFalse">
+			<expression invalid="true">Tuple { Id : 1, Name : 'John', Position: 'Shift Manager' } ~ Tuple { Id : 1, Name : 'John' }</expression>
+			<!-- EXPECT translation error -->
+		</test>
+		<test name="EquivTupleJohnJohnFalse2">
+			<expression invalid="true">Tuple { Id : 1, Name : 'John' } ~ Tuple { Id : 1, Name : 'John', Position: 'Shift Manager' }</expression>
+			<!-- EXPECT translation error -->
 		</test>
 		<test name="EquivTupleJohnJohnWithNulls">
 			<expression>Tuple { Id : 1, Name : 'John', Position: null } ~ Tuple { Id : 1, Name : 'John', Position: null }</expression>
@@ -706,6 +782,10 @@
 		</test>
 		<test name="SimpleNotEqInt1Int2">
 			<expression>1 != 2</expression>
+			<output>true</output>
+		</test>
+		<test name="SimpleNotEqInt1Int2Long">
+			<expression>1L != 2L</expression>
 			<output>true</output>
 		</test>
 		<test name="SimpleNotEqStringAStringA">
