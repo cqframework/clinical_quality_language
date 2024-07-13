@@ -245,8 +245,32 @@
 			<expression>Split('a,b', '-')</expression>
 			<output>{'a,b'}</output>
 		</test>
+		<test name="SplitABSpace">
+			<expression>Split('a b', ' ')</expression>
+			<output>{'a','b'}</output>
+		</test>
 		<test name="SplitABComma">
 			<expression>Split('a,b', ',')</expression>
+			<output>{'a','b'}</output>
+		</test>
+		<test name="SplitMatchesNullNull">
+			<expression>SplitOnMatches(null, null)</expression>
+			<output>null</output>
+		</test>
+		<test name="SplitMatchesNullComma">
+			<expression>SplitOnMatches(null, ',')</expression>
+			<output>null</output>
+		</test>
+		<test name="SplitMatchesABNull">
+			<expression>SplitOnMatches('a,b', null)</expression>
+			<output>{'a,b'}</output>
+		</test>
+		<test name="SplitMatchesABSpaceRegex">
+			<expression>SplitOnMatches('a b', '\\s')</expression>
+			<output>{'a','b'}</output>
+		</test>
+		<test name="SplitMatchesABComma">
+			<expression>SplitOnMatches('a,b', ',')</expression>
 			<output>{'a','b'}</output>
 		</test>
 	</group>
@@ -318,6 +342,10 @@
 		<test name="UpperNull">
 			<expression>Upper(null)</expression>
 			<output>null</output>
+		</test>
+		<test name="UpperSpace">
+			<expression>Upper(' ')</expression>
+			<output>' '</output>
 		</test>
 		<test name="UpperEmpty">
 			<expression>Upper('')</expression>
