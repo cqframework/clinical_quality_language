@@ -1141,6 +1141,14 @@
 			<expression>DateTime(2005, 5, 10) - 6 months</expression>
 			<output>@2004-11-10T</output>
 		</test>
+		<test name="DateTimeSubtractThreeWeeks">
+			<expression>DateTime(2018, 5, 23) - 3 weeks</expression>
+			<output>@2018-05-02T</output>
+		</test>
+		<test name="DateTimeSubtractYearInWeeks">
+			<expression>DateTime(2018, 5, 23) - 52 weeks</expression>
+			<output>@2017-05-23T</output>
+		</test>
 		<test name="DateTimeSubtract5Days">
 			<expression>DateTime(2005, 5, 10) - 5 days</expression>
 			<output>@2005-05-05T</output>
@@ -1169,6 +1177,14 @@
 			<expression>DateTime(2005, 5, 10, 5, 5, 10) - 5 seconds</expression>
 			<output>@2005-05-10T05:05:05</output>
 		</test>
+		<test name="DateTimeSubtract1YearInSeconds">
+			<expression>DateTime(2016,5) - 31535999 seconds</expression>
+			<output>@2015-05T</output>
+		</test>
+		<test name="DateTimeSubtract15HourPrecisionSecond">
+			<expression>DateTime(2016, 10, 1, 10, 20, 30) - 15 hours</expression>
+			<output>@2016-09-30T19:20:30</output>
+		</test>
 		<test name="DateTimeSubtractSecondsUnderflow">
 			<expression>DateTime(2016, 6, 10, 5, 5, 5) - 6 seconds</expression>
 			<output>@2016-06-10T05:04:59</output>
@@ -1188,6 +1204,22 @@
 		<test name="DateTimeSubtract2YearsAsMonthsRem1">
 			<expression>DateTime(2014) - 25 months</expression>
 			<output>@2012T</output>
+		</test>
+		<test name="DateSubtract2YearsAsMonthsRem1">
+			<expression>Date(2014) - 25 months</expression>
+			<output>Date(2012)</output>
+		</test>
+		<test name="DateSubtract2YearsAsMonths">
+			<expression>Date(2014) - 24 months</expression>
+			<output>Date(2012)</output>
+		</test>
+		<test name="DateSubtract33Days">
+			<expression>Date(2014,6) - 33 days</expression>
+			<output>Date(2014,05)</output>
+		</test>
+		<test name="DateSubtract1Year">
+			<expression>Date(2014,6) - 1 year</expression>
+			<output>Date(2013,06)</output>
 		</test>
 		<test name="TimeSubtract5Hours">
 			<expression>@T15:59:59.999 - 5 hours</expression>
