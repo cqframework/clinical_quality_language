@@ -239,9 +239,14 @@ public class CQLOperationsR4Test extends TestFhirPath {
             "r4/tests-fhir-r4/testSuperSetOf/testSuperSetOf2",
             "r4/tests-fhir-r4/testTail/testTail1",
             "r4/tests-fhir-r4/testTail/testTail2",
+
+            // These tests do not pass in CQL because the `=` operator takes precedence over `|` due to the order of
+            // rules in CQL's grammar.
+            // The order of operations can be forced by using parentheses.
             "r4/tests-fhir-r4/testTake/testTake2",
             "r4/tests-fhir-r4/testTake/testTake3",
             "r4/tests-fhir-r4/testTake/testTake4",
+
             "r4/tests-fhir-r4/testTimeOfDay/testTimeOfDay1",
             "r4/tests-fhir-r4/testToChars/testToChars1",
             "r4/tests-fhir-r4/testToday/testToday1",
