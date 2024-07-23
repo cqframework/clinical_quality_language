@@ -175,9 +175,13 @@
 			<expression>{ @T15:59:59.999, @T20:59:59.999, @T20:59:59.999 } = { @T10:59:59.999, @T20:59:59.999, @T20:59:59.999 }</expression>
 			<output>false</output>
 		</test>
-		<test name="EqualWithSubLists">
+		<test name="EqualWithSubListsTrue">
 			<expression>{ { 'a', 'b' }, 'c' } = { { 'a', 'b' }, 'c' }</expression>
 			<output>true</output>
+		</test>
+		<test name="EqualWithSubListsFalse">
+			<expression>{ { 'a', 'b' }, 'c' } = { { 'a', 'b' }, 'd' }</expression>
+			<output>false</output>
 		</test>
 	</group>
 	<group name="Except">
