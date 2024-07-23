@@ -4546,7 +4546,7 @@ define test_Equal_EqualTupleList: TestMessage(Equal_EqualTupleList, 'Equal_Equal
 define test_Equal_UnequalTupleList: TestMessage(not Equal_UnequalTupleList, 'Equal_UnequalTupleList', toString(false), toString(Equal_UnequalTupleList))
 define test_Equal_FirstListHasNull: TestMessage(Equal_FirstListHasNull is null, 'Equal_FirstListHasNull', 'null', toString(Equal_FirstListHasNull))
 define test_Equal_SecondListHasNull: TestMessage(Equal_SecondListHasNull is null, 'Equal_SecondListHasNull', 'null', toString(Equal_SecondListHasNull))
-define test_Equal_BothListsHaveNull: TestMessage(Equal_BothListsHaveNull is null, 'Equal_BothListsHaveNull', 'null', toString(Equal_BothListsHaveNull))
+define test_Equal_BothListsHaveNull: TestMessage(Equal_BothListsHaveNull, 'Equal_BothListsHaveNull', toString(true), toString(Equal_BothListsHaveNull))
 
 // NotEqual
 define NotEqual_EqualIntList: {1, 2, 3} != {1, 2, 3}

@@ -106,9 +106,6 @@ public class CqlList {
             Object leftObject = leftIterator.next();
             if (rightIterator.hasNext()) {
                 Object rightObject = rightIterator.next();
-                if (leftObject instanceof Iterable && rightObject instanceof Iterable) {
-                    return equal((Iterable<?>) leftObject, (Iterable<?>) rightObject, state);
-                }
                 if (leftObject == null && rightObject == null) {
                     continue;
                 }
