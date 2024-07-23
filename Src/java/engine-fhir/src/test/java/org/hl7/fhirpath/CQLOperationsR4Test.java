@@ -108,7 +108,6 @@ public class CQLOperationsR4Test extends TestFhirPath {
             "cql/CqlListOperatorsTest/Equivalent/Equivalent123AndABC",
             "cql/CqlListOperatorsTest/Equivalent/Equivalent123AndString123",
             "cql/CqlListOperatorsTest/Equivalent/EquivalentABCAnd123",
-            "cql/CqlListOperatorsTest/Flatten/FlattenListNullAndNull",
             "cql/CqlListOperatorsTest/NotEqual/NotEqual123AndABC",
             "cql/CqlListOperatorsTest/NotEqual/NotEqual123AndString123",
             "cql/CqlListOperatorsTest/NotEqual/NotEqualABCAnd123",
