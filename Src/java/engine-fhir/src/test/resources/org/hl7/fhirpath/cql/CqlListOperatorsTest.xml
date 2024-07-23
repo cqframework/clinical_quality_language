@@ -131,6 +131,10 @@
 			<expression>{null} = {null}</expression>
 			<output>true</output>
 		</test>
+		<test name="EqualLiteralNull">
+			<expression>{ 1, null } = { 1, null }</expression>
+			<output>true</output>
+		</test>
 		<test name="EqualEmptyListNull">
 			<expression>{} as List&lt;String&gt; = null</expression>
 			<output>null</output>
