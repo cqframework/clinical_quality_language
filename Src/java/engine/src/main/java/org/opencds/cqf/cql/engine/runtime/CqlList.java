@@ -110,7 +110,7 @@ public class CqlList {
                     return equal((Iterable<?>) leftObject, (Iterable<?>) rightObject, state);
                 }
                 if (leftObject == null && rightObject == null) {
-                    return true;
+                    continue;
                 }
                 Boolean elementEquals = EqualEvaluator.equal(leftObject, rightObject, state);
                 if (elementEquals == null || !elementEquals) {
