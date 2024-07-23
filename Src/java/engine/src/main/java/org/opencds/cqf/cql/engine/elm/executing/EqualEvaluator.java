@@ -46,6 +46,10 @@ public class EqualEvaluator {
             return ((Interval) right).equal(left);
         }
 
+        if (left instanceof Iterable && right instanceof Iterable) {
+            return CqlList.equal((Iterable<?>) left, (Iterable<?>) right, state);
+        }
+
         if (!left.getClass().equals(right.getClass())) {
             return false;
         } else if (left instanceof Boolean
@@ -55,8 +59,6 @@ public class EqualEvaluator {
             return left.equals(right);
         } else if (left instanceof BigDecimal && right instanceof BigDecimal) {
             return ((BigDecimal) left).compareTo((BigDecimal) right) == 0;
-        } else if (left instanceof Iterable && right instanceof Iterable) {
-            return CqlList.equal((Iterable<?>) left, (Iterable<?>) right, state);
         } else if (left instanceof CqlType && right instanceof CqlType) {
             return ((CqlType) left).equal(right);
         }
