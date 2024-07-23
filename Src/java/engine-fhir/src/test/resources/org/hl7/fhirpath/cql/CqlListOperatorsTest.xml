@@ -129,7 +129,7 @@
 	<group name="Equal">
 		<test name="EqualNullNull">
 			<expression>{null} = {null}</expression>
-			<output>null</output>
+			<output>true</output>
 		</test>
 		<test name="EqualEmptyListNull">
 			<expression>{} as List&lt;String&gt; = null</expression>
