@@ -1,9 +1,8 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
-import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 
 /*
 ToChars(argument String) List<String>
