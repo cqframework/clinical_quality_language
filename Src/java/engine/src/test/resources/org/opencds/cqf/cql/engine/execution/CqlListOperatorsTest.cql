@@ -209,8 +209,8 @@ define ProperlyIncludesNullLeft:          null properly includes {2}
 define ProperlyIncludes1And111:           {1} properly includes {1, 1}
 
 //ProperContains
-define ProperContainsNullRightFalse: {'s', 'u', 'n'} properly includes null
-define ProperContainsNullRightTrue: {'s', 'u', 'n', null} properly includes null
+define ProperContainsNullRightFalse: {'s', 'u', 'n'} properly includes null as String
+define ProperContainsNullRightTrue: {'s', 'u', 'n', null} properly includes null as String
 define ProperContainsTimeTrue: { @T15:59:59, @T20:59:59.999, @T20:59:49.999 } properly includes @T15:59:59
 define ProperContainsTimeNull: { @T15:59:59.999, @T20:59:59.999, @T20:59:49.999 } properly includes @T15:59:59
 

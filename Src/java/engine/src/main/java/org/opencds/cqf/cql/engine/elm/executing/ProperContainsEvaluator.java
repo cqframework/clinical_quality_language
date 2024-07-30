@@ -12,17 +12,29 @@ import org.opencds.cqf.cql.engine.runtime.Interval;
         Interval, T : The type of T must be the same as the point type of the interval.
 
     For the List, T overload, this operator returns true if the given element is in the list,
-        and it is not the only element in the list, using equivalence semantics.
+        and it is not the only element in the list, using equality semantics, with the exception
+        that null elements are considered equal.
+        If the first argument is null, the result is false.
+        If the second argument is null, the result is true if the list contains any null elements
+        and at least one other element, and false otherwise.
     For the Interval, T overload, this operator returns true if the given point is greater than
         the starting point of the interval, and less than the ending point of the interval, as
         determined by the Start and End operators.
-        If precision is specified and the point type is a date/time type, comparisons used in the
-            operation are performed at the specified precision.
+        If precision is specified and the point type is a Date, DateTime, or Time type, comparisons
+        used in the operation are performed at the specified precision.
+        If the first argument is null, the result is false.
+        If the second argument is null, the result is null.
 */
 
 public class ProperContainsEvaluator {
 
     public static Boolean properContains(Object left, Object right, State state) {
+
+        // If the first argument is null, the result is false.
+        if (left == null) {
+            return false;
+        }
+
         if (left instanceof Interval) {
             Boolean startProperContains = GreaterEvaluator.greater(right, ((Interval) left).getStart(), state);
             Boolean endProperContains = LessEvaluator.less(right, ((Interval) left).getEnd(), state);
@@ -33,15 +45,59 @@ public class ProperContainsEvaluator {
         } else if (left instanceof Iterable) {
             List<?> leftList = (List<?>) left;
 
-            for (Object element : leftList) {
-                Boolean isElementInList = EquivalentEvaluator.equivalent(element, right, state);
-                if (isElementInList == null) {
-                    return null;
+            // The result cannot be true if the list contains fewer than two elements
+            if (leftList.size() < 2) {
+                return false;
+            }
+
+            if (right == null) {
+
+                // The result is true if the list contains any null elements and at least one other element,
+                // and false otherwise
+
+                boolean listContainsNullElements = false;
+                boolean listContainsOtherElements = false;
+
+                for (Object element : leftList) {
+                    if (element == null) {
+                        listContainsNullElements = true;
+                        continue;
+                    }
+
+                    listContainsOtherElements = true;
                 }
 
-                if (isElementInList && leftList.size() > 1) {
-                    return true;
+                return listContainsNullElements && listContainsOtherElements;
+            }
+
+            // Return true if the given element is in the list, and it is not the only element in the list,
+            // using equality semantics
+
+            boolean listContainsGivenElement = false;
+            boolean listContainsOtherElements = false;
+            boolean listContainsElementsOfUnknownEquality = false;
+
+            for (Object element : leftList) {
+                Boolean equalResult = EqualEvaluator.equal(element, right, state);
+                if (equalResult == null) {
+                    listContainsElementsOfUnknownEquality = true;
+                    continue;
                 }
+                if (equalResult) {
+                    listContainsGivenElement = true;
+                    continue;
+                }
+                listContainsOtherElements = true;
+            }
+
+            // The given element is in the list and there are other elements, using equality semantics
+            if (listContainsGivenElement && listContainsOtherElements) {
+                return true;
+            }
+
+            // The above is false, but there are elements of unknown equality
+            if (listContainsElementsOfUnknownEquality) {
+                return null;
             }
 
             return false;
