@@ -111,7 +111,6 @@ public class CQLOperationsR4Test extends TestFhirPath {
             "cql/CqlListOperatorsTest/NotEqual/NotEqual123AndABC",
             "cql/CqlListOperatorsTest/NotEqual/NotEqual123AndString123",
             "cql/CqlListOperatorsTest/NotEqual/NotEqualABCAnd123",
-            "cql/CqlListOperatorsTest/ProperContains/ProperContainsTimeNull",
             "cql/CqlListOperatorsTest/ProperIn/ProperInTimeNull",
             "cql/CqlListOperatorsTest/ProperlyIncludedIn/ProperlyIncludedInNulRight",
             "cql/CqlListOperatorsTest/ProperlyIncludes/ProperlyIncludesNullLeft",
