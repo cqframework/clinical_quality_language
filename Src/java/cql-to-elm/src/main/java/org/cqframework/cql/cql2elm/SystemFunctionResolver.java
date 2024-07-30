@@ -338,7 +338,8 @@ public class SystemFunctionResolver {
                 case "ToTime":
                 case "ToQuantity":
                 case "ToRatio":
-                case "ToConcept": {
+                case "ToConcept":
+                case "ToChars": {
                     return resolveUnary(fun);
                 }
 

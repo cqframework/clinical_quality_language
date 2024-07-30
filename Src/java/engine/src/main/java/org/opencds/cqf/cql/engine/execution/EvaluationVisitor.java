@@ -421,6 +421,12 @@ public class EvaluationVisitor extends BaseElmLibraryVisitor<Object, State> {
     }
 
     @Override
+    public Object visitToChars(ToChars elm, State state) {
+        Object operand = visitExpression(elm.getOperand(), state);
+        return ToCharsEvaluator.toChars(operand);
+    }
+
+    @Override
     public Object visitToDate(ToDate elm, State state) {
         Object operand = visitExpression(elm.getOperand(), state);
         return ToDateEvaluator.toDate(operand);
