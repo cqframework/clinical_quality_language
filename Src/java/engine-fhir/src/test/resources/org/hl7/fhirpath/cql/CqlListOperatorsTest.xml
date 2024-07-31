@@ -720,12 +720,52 @@
 		</test>
 	</group>
 	<group name="ProperIn">
+		<test name="ProperIn1">
+			<expression>'a' properly included in null as List&lt;String&gt;</expression>
+			<output>false</output>
+		</test>
+		<test name="ProperIn2">
+			<expression>'a' properly included in {}</expression>
+			<output>false</output>
+		</test>
+		<test name="ProperIn3">
+			<expression>'a' properly included in { 'a' }</expression>
+			<output>false</output>
+		</test>
+		<test name="ProperIn4">
+			<expression>null as String properly included in { null }</expression>
+			<output>false</output>
+		</test>
 		<test name="ProperInNullRightFalse">
-			<expression>null properly included in {'s', 'u', 'n'}</expression>
+			<expression>null as String properly included in {'s', 'u', 'n'}</expression>
+			<output>false</output>
+		</test>
+		<test name="ProperIn5">
+			<expression>null as String properly included in { null, null }</expression>
 			<output>false</output>
 		</test>
 		<test name="ProperInNullRightTrue">
-			<expression>null properly included in {'s', 'u', 'n', null}</expression>
+			<expression>null as String properly included in {'s', 'u', 'n', null}</expression>
+			<output>true</output>
+		</test>
+		<test name="ProperIn6">
+			<expression>'a' properly included in { 'a', 'b' }</expression>
+			<output>true</output>
+		</test>
+		<test name="ProperIn7">
+			<expression>'a' properly included in { 'a', 'a' }</expression>
+			<output>false</output>
+		</test>
+		<test name="ProperIn8">
+			<expression>'c' properly included in { 'a', 'b' }</expression>
+			<output>false</output>
+		</test>
+		<test name="ProperIn9">
+			<expression>'a' properly included in { 'a', null }</expression>
+			<output>null</output>
+		</test>
+		<test name="ProperIn10">
+			<expression>'a' properly included in { 'a', 'b', null }</expression>
 			<output>true</output>
 		</test>
 		<test name="ProperInTimeTrue">
