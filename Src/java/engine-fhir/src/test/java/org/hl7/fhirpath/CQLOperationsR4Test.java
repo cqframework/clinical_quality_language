@@ -103,8 +103,6 @@ public class CQLOperationsR4Test extends TestFhirPath {
             "cql/CqlIntervalOperatorsTest/Expand/ExpandPer1",
             "cql/CqlIntervalOperatorsTest/Expand/ExpandPer2Days",
             "cql/CqlIntervalOperatorsTest/Expand/ExpandPerMinute",
-            "cql/CqlListOperatorsTest/Distinct/DistinctANullANull",
-            "cql/CqlListOperatorsTest/Distinct/DistinctNullNullNull",
             "cql/CqlListOperatorsTest/Equivalent/Equivalent123AndABC",
             "cql/CqlListOperatorsTest/Equivalent/Equivalent123AndString123",
             "cql/CqlListOperatorsTest/Equivalent/EquivalentABCAnd123",
