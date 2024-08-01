@@ -1,6 +1,6 @@
 plugins {
-    id "cql.library-conventions"
-    id "cql.fhir-conventions"
+    id("cql.library-conventions")
+    id("cql.fhir-conventions")
 }
 
 ext {
@@ -8,13 +8,13 @@ ext {
 }
 
 dependencies {
-    api project(':cql-to-elm')
-    api project(':engine')
-    api project(":engine-fhir")
+    api(project(":cql-to-elm"))
+    api(project(":engine"))
+    api(project(":engine-fhir"))
 
-    testImplementation project(':quick')
-    testImplementation "org.reflections:reflections:0.10.2"
-    testRuntimeOnly project(':model-jackson')
+    testImplementation(project(":quick"))
+    testImplementation("org.reflections:reflections:0.10.2")
+    testRuntimeOnly(project(":model-jackson"))
 
 }
 

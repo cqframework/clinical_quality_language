@@ -1,16 +1,16 @@
 plugins {
-    id 'cql.library-conventions'
-    id 'cql.xjc-conventions'
+    id("cql.library-conventions")
+    id("cql.xjc-conventions")
 }
 
 dependencies {
-    api project(':model')
-    testImplementation 'org.jeasy:easy-random-core:5.0.0'
-    testImplementation 'com.tngtech.archunit:archunit:1.2.1'
+    api(project(":model"))
+    testImplementation("org.jeasy:easy-random-core:5.0.0")
+    testImplementation("com.tngtech.archunit:archunit:1.2.1")
 }
 
 generateSources {
-    inputs.dir "${projectDir}/../../cql-lm/schema"
+    inputs.dir("${projectDir}/../../cql-lm/schema")
 
     doLast {
         ant.xjc(destdir: xjc.destDir, schema: "${projectDir}/../../cql-lm/schema/elm/library.xsd") {
