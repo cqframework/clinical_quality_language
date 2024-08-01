@@ -164,7 +164,7 @@ class ListOperatorsTest extends CqlTestBase {
         assertThat(((List<?>) value).size(), is(2));
 
         value = results.forExpression("EqualNullNull").value();
-        assertThat(value, is(nullValue()));
+        assertThat(value, is(true));
 
         value = results.forExpression("EqualEmptyListNull").value();
         assertThat(value, is(nullValue()));
@@ -584,7 +584,7 @@ class ListOperatorsTest extends CqlTestBase {
         assertThat(value, is(true));
 
         value = results.forExpression("ProperContainsTimeNull").value();
-        assertThat(value, is(false));
+        assertThat(value, is(nullValue()));
 
         value = results.forExpression("ProperInNullRightFalse").value();
         assertThat(value, is(false));
@@ -596,7 +596,7 @@ class ListOperatorsTest extends CqlTestBase {
         assertThat(value, is(true));
 
         value = results.forExpression("ProperInTimeNull").value();
-        assertThat(value, is(false));
+        assertThat(value, is(nullValue()));
 
         value = results.forExpression("ProperIncludedInEmptyAndEmpty").value();
         assertThat(value, is(false));

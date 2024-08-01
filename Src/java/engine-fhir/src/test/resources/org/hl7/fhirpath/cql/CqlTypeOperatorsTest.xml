@@ -57,6 +57,23 @@
 			<output>false</output>
 		</test>
 	</group>
+	<group name="ToChars">
+		<test name="StringToChars">
+			<expression>ToChars('abc123')</expression>
+			<output>{ 'a', 'b', 'c', '1', '2', '3' }</output>
+		</test>
+		<test name="EmptyStringToChars">
+			<expression>ToChars('')</expression>
+			<output>{}</output>
+		</test>
+		<test name="NullToChars">
+			<expression>ToChars(null)</expression>
+			<output>null</output>
+		</test>
+		<test name="ToCharsMalformed">
+			<expression invalid="true">ToChars(123)</expression>
+		</test>
+	</group>
 	<group name="ToConcept">
 		<test name="CodeToConcept1">
 			<expression>ToConcept(Code { code: '8480-6' })</expression>
