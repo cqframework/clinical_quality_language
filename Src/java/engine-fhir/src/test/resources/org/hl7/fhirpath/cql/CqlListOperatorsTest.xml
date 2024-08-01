@@ -662,12 +662,52 @@
 		</test>
 	</group>
 	<group name="ProperContains">
+		<test name="ProperContains1">
+			<expression>null as List&lt;String&gt; properly includes 'a'</expression>
+			<output>false</output>
+		</test>
+		<test name="ProperContains2">
+			<expression>{} properly includes 'a'</expression>
+			<output>false</output>
+		</test>
+		<test name="ProperContains3">
+			<expression>{ 'a' } properly includes 'a'</expression>
+			<output>false</output>
+		</test>
+		<test name="ProperContains4">
+			<expression>{ null } properly includes null as String</expression>
+			<output>false</output>
+		</test>
 		<test name="ProperContainsNullRightFalse">
-			<expression>{'s', 'u', 'n'} properly includes null</expression>
+			<expression>{'s', 'u', 'n'} properly includes null as String</expression>
+			<output>false</output>
+		</test>
+		<test name="ProperContains5">
+			<expression>{ null, null } properly includes null as String</expression>
 			<output>false</output>
 		</test>
 		<test name="ProperContainsNullRightTrue">
-			<expression>{'s', 'u', 'n', null} properly includes null</expression>
+			<expression>{'s', 'u', 'n', null} properly includes null as String</expression>
+			<output>true</output>
+		</test>
+		<test name="ProperContains6">
+			<expression>{ 'a', 'b' } properly includes 'a'</expression>
+			<output>true</output>
+		</test>
+		<test name="ProperContains7">
+			<expression>{ 'a', 'a' } properly includes 'a'</expression>
+			<output>false</output>
+		</test>
+		<test name="ProperContains8">
+			<expression>{ 'a', 'b' } properly includes 'c'</expression>
+			<output>false</output>
+		</test>
+		<test name="ProperContains9">
+			<expression>{ 'a', null } properly includes 'a'</expression>
+			<output>null</output>
+		</test>
+		<test name="ProperContains10">
+			<expression>{ 'a', 'b', null } properly includes 'a'</expression>
 			<output>true</output>
 		</test>
 		<test name="ProperContainsTimeTrue">
