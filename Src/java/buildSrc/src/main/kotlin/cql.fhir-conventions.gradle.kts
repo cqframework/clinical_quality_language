@@ -6,9 +6,9 @@ plugins {
 configurations.all {
     resolutionStrategy {
         eachDependency {
-            if (requested.group == "org.eclipse.jetty" && requested.name == "jetty-continuation") {
-                useTarget("org.eclipse.jetty:jetty-continuation:9.4.55.v20240627")
-                because("version 12 jetty-continuation doesn't exist. There's a bug in the bom.")
+            if (requested.group == "org.eclipse.jetty") {
+                useVersion("11.0.20")
+                because("jetty 12 is java 17")
             }
         }
     }
