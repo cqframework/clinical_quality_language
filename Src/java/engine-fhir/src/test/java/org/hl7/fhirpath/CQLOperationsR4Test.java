@@ -57,7 +57,8 @@ public class CQLOperationsR4Test extends TestFhirPath {
             for (Group group : loadTestsFile(file).getGroup()) {
                 for (org.hl7.fhirpath.tests.Test test : group.getTest()) {
                     if (!"2.1.0".equals(test.getVersion())) { // unsupported version
-                        testsToRun.add(new Object[] {file, group, test});
+                        var name = getTestName(file, group, test);
+                        testsToRun.add(new Object[] {name, test});
                     }
                 }
             }
@@ -273,7 +274,7 @@ public class CQLOperationsR4Test extends TestFhirPath {
             "r4/tests-fhir-r4/testWhere/testWhere3",
             "r4/tests-fhir-r4/testWhere/testWhere4");
 
-    public String getTestName(String file, Group group, org.hl7.fhirpath.tests.Test test) {
+    public static String getTestName(String file, Group group, org.hl7.fhirpath.tests.Test test) {
         return file.replaceAll(".xml", "") + "/" + group.getName()
                 + "/"
                 + (test.getName() != null
@@ -281,10 +282,9 @@ public class CQLOperationsR4Test extends TestFhirPath {
                         : test.getExpression().getValue());
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "{0}")
     @MethodSource("dataMethod")
-    void test(String file, Group group, org.hl7.fhirpath.tests.Test test) throws UcumException {
-        var name = getTestName(file, group, test);
+    void test(String name, org.hl7.fhirpath.tests.Test test) throws UcumException {
         Assumptions.assumeFalse(SKIP.contains(name), "Skipping " + name);
         runTest(test, "r4/input/", fhirContext, provider, fhirModelResolver);
     }
