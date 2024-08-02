@@ -10,11 +10,11 @@ dependencies {
 }
 
 tasks.register<XjcTask>("generateAnnotation") {
-    schemaDir = "${projectDir}/../../cql-lm/schema/elm/cqlannotations.xsd"
+    schema = "${projectDir}/../../cql-lm/schema/elm/cqlannotations.xsd"
     extraArgs = listOf("-npa")
 }
 
 tasks.register<XjcTask>("generateElm") {
-    schemaDir = "${projectDir}/../../cql-lm/schema/elm/library.xsd"
+    schema = "${projectDir}/../../cql-lm/schema/elm/library.xsd"
     extraArgs = listOf("-npa", "-XautoInheritance", "-XautoInheritance-xmlTypesExtend=org.cqframework.cql.elm.tracking.Trackable")
 }

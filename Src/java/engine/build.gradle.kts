@@ -11,7 +11,7 @@ dependencies {
     testImplementation("org.mockito:mockito-core:5.4.0")
 }
 
-jacocoTestReport {
+tasks.jacocoTestReport {
     dependsOn(":cql-to-elm:test")
     dependsOn(":engine:test")
 

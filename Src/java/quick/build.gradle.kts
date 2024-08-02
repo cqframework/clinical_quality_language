@@ -9,5 +9,6 @@ dependencies {
 }
 
 tasks.register<XjcTask>("generateQuick") {
-    schemaDir = "${projectDir}/schema/"
+    schema = "${projectDir}/schema/v1.4/quick.xsd"
+    binding = "${projectDir}/schema/v1.4/quick-binding.xjb"
 }

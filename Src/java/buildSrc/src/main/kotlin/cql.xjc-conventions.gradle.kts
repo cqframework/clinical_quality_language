@@ -22,7 +22,8 @@ dependencies {
     api("codes.rafael.jaxb2_commons:jaxb2-basics-runtime:3.0.0")
 }
 
-val destDir = "${project.layout.buildDirectory}/generated/sources/$name/main/java"
+var buildDir = project.layout.buildDirectory.get().toString()
+val destDir = "${buildDir}/generated/sources/$name/main/java"
 
 tasks.compileJava {
     dependsOn(tasks.withType<XjcTask>())
