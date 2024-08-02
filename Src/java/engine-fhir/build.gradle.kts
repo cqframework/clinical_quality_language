@@ -6,8 +6,7 @@ plugins {
 
 dependencies {
     api(project(":engine"))
-    testImplementation("org.eclipse.jetty:jetty-http:12.0.12")
-    testImplementation("com.github.tomakehurst:wiremock-jre8:2.35.2")
+    testImplementation("org.wiremock:wiremock:3.9.1")
     testImplementation(project(":cql-to-elm"))
     testImplementation(project(":model-jackson"))
     testImplementation(project(":elm-jackson"))

@@ -5,8 +5,9 @@ plugins {
 }
 
 dependencies {
-    antlr("org.antlr:antlr4:${project.findProperty("antlr.version")}")
-    api("org.antlr:antlr4-runtime:${project.findProperty("antlr.version")}")
+    val version = project.findProperty("antlr.version")
+    antlr("org.antlr:antlr4:${version}")
+    api("org.antlr:antlr4-runtime:${version}")
 }
 
 application {
@@ -24,12 +25,12 @@ sourceSets {
     }
 }
 
-tasks.sourcesJar {
-    from(tasks.generateGrammarSource)
-}
-
 tasks.generateGrammarSource {
     val buildDir = project.layout.buildDirectory.get().toString()
     outputDirectory = file("${buildDir}/generated/sources/antlr/main/java/org/cqframework/cql/gen")
     arguments = listOf("-visitor", "-package", "org.cqframework.cql.gen")
+}
+
+tasks.sourcesJar {
+    from(tasks.generateGrammarSource)
 }
