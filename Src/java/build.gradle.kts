@@ -1,13 +1,9 @@
 plugins {
-    id("org.jetbrains.kotlin.jvm")
+  `kotlin-dsl`
 }
 
 repositories {
     mavenCentral()
-}
-
-dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 }
 
 kotlin {

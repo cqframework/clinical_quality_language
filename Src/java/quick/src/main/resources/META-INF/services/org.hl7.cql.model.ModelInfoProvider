@@ -1,5 +1,0 @@
-org.cqframework.cql.cql2elm.quick.FhirModelInfoProvider
-org.cqframework.cql.cql2elm.quick.QICoreModelInfoProvider
-org.cqframework.cql.cql2elm.quick.QuickFhirModelInfoProvider
-org.cqframework.cql.cql2elm.quick.UsCoreModelInfoProvider
-org.cqframework.cql.cql2elm.quick.QuickModelInfoProvider

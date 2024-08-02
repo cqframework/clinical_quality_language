@@ -1,1 +1,0 @@
-define Test: This is a syntax error with no library declaration
