@@ -15,7 +15,7 @@ dependencies {
 sourceSets {
     test {
         resources {
-            srcDir "../../cql-to-elm/src/test/resources"
+            srcDir("../../cql-to-elm/src/test/resources")
         }
     }
 }

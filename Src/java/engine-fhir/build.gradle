@@ -15,15 +15,9 @@ dependencies {
     testImplementation("ca.uhn.hapi.fhir:hapi-fhir-client")
 }
 
-generateSources {
-    inputs.dir "${projectDir}/src/test/resources/org/hl7/fhirpath/testSchema"
-
-    doLast {
-        ant.xjc(destdir: xjc.destDir, schema: "${projectDir}/src/test/resources/org/hl7/fhirpath/testSchema/testSchema.xsd") {
-            arg(line: "${xjc.args} -npa " +
-                    "-p org.hl7.fhirpath.tests")
-        }
-    }
+tasks.register("generateSchema", XjcTask) {
+    schemaDir = file("${projectDir}/src/test/resources/org/hl7/fhirpath/testSchema")
+    extraArgs = ["-npa", "-p", "org.hl7.fhirpath.tests"]
 }
 
 jacocoTestReport {
