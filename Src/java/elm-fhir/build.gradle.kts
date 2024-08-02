@@ -3,10 +3,6 @@ plugins {
     id("cql.fhir-conventions")
 }
 
-ext {
-    mapstructVersion = "1.4.2.Final"
-}
-
 dependencies {
     api(project(":cql-to-elm"))
     api(project(":engine"))
@@ -15,11 +11,4 @@ dependencies {
     testImplementation(project(":quick"))
     testImplementation("org.reflections:reflections:0.10.2")
     testRuntimeOnly(project(":model-jackson"))
-
-}
-
-tasks.withType(JavaCompile) {
-    options.compilerArgs = [
-            "-Amapstruct.suppressGeneratorTimestamp=true"
-    ]
 }

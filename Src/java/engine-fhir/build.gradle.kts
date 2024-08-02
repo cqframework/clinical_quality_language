@@ -5,7 +5,7 @@ plugins {
 }
 
 dependencies {
-    api project(":engine")
+    api(project(":engine"))
     testImplementation("org.eclipse.jetty:jetty-http:12.0.12")
     testImplementation("com.github.tomakehurst:wiremock-jre8:2.35.2")
     testImplementation(project(":cql-to-elm"))
@@ -15,9 +15,9 @@ dependencies {
     testImplementation("ca.uhn.hapi.fhir:hapi-fhir-client")
 }
 
-tasks.register("generateSchema", XjcTask) {
-    schemaDir = file("${projectDir}/src/test/resources/org/hl7/fhirpath/testSchema")
-    extraArgs = ["-npa", "-p", "org.hl7.fhirpath.tests"]
+tasks.register<XjcTask>("generateFhirPathTests") {
+    schema = "${projectDir}/src/test/resources/org/hl7/fhirpath/testSchema"
+    extraArgs = listOf("-npa", "-p", "org.hl7.fhirpath.tests")
 }
 
 jacocoTestReport {

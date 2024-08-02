@@ -9,9 +9,9 @@ dependencies {
 }
 
 tasks.register<XjcTask>("generateQdm") {
-    schemaDir = "${projectDir}/schema/qdm.xsd"
+    schema = "${projectDir}/schema/qdm.xsd"
 }
 
-tasks.register<XjcTask>("generateQmd42") {
-    schemaDir = "${projectDir}/schema/qdm.4.2.xsd"
+tasks.register<XjcTask>("generateQdm42") {
+    schema = "${projectDir}/schema/qdm.4.2.xsd"
 }

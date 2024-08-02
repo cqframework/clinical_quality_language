@@ -1,14 +1,14 @@
 plugins {
-    id 'cql.library-conventions'
+    id("cql.library-conventions")
 }
 
 dependencies {
-    api project(':elm')
-    api project(':cql-to-elm')
+    api(project(":elm"))
+    api(project(":cql-to-elm"))
 
-    testImplementation project(':model-jackson')
-    testImplementation project(':elm-jackson')
-    testImplementation 'org.mockito:mockito-core:5.4.0'
+    testImplementation(project(":model-jackson"))
+    testImplementation(project(":elm-jackson"))
+    testImplementation("org.mockito:mockito-core:5.4.0")
 }
 
 jacocoTestReport {
