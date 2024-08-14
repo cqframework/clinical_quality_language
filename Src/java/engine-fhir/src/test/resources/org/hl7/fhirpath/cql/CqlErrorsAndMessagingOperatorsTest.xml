@@ -18,5 +18,73 @@
 			<expression invalid="true">Message(3 + 1, true, '400', 'Error', 'This is an error!')</expression>
 			<!-- EXPECT: 400: This is an error! -->
 		</test>
+		<test name="TestMessageWithNullSeverity">
+			<expression>Message(1, true, '1', null, 'This is a message')</expression>
+			<output>1</output>
+		</test>
+		<test name="TestMessageWithNullSource">
+			<expression>Message(null, true, '1', 'Message', 'This is a message')</expression>
+			<output>null</output>
+		</test>
+		<test name="TestMessageWithNullCondition">
+			<expression>Message(1, null, '1', 'Message', 'This is a message')</expression>
+			<output>1</output>
+		</test>
+		<test name="TestMessageWithNullCode">
+			<expression>Message(1, true, null, 'Message', 'This is a message')</expression>
+			<output>1</output>
+		</test>
+		<test name="TestMessageWithNullMessage">
+			<expression>Message(1, true, '1', 'Message', null)</expression>
+			<output>1</output>
+		</test>
+		<test name="TestWarningWithNullSource">
+			<expression>Message(null, true, '1', 'Warning', 'This is a message')</expression>
+			<output>null</output>
+		</test>
+		<test name="TestWarningWithNullCondition">
+			<expression>Message(1, null, '1', 'Warning', 'This is a message')</expression>
+			<output>1</output>
+		</test>
+		<test name="TestWarningWithNullCode">
+			<expression>Message(1, true, null, 'Warning', 'This is a message')</expression>
+			<output>1</output>
+		</test>
+		<test name="TestWarningWithNullMessage">
+			<expression>Message(1, true, '1', 'Warning', null)</expression>
+			<output>1</output>
+		</test>
+		<test name="TestTraceWithNullSource">
+			<expression>Message(null, true, '1', 'Trace', 'This is a message')</expression>
+			<output>null</output>
+		</test>
+		<test name="TestTraceWithNullCondition">
+			<expression>Message(1, null, '1', 'Trace', 'This is a message')</expression>
+			<output>1</output>
+		</test>
+		<test name="TestTraceWithNullCode">
+			<expression>Message(1, true, null, 'Trace', 'This is a message')</expression>
+			<output>1</output>
+		</test>
+		<test name="TestTraceWithNullMessage">
+			<expression>Message(1, true, '1', 'Trace', null)</expression>
+			<output>1</output>
+		</test>
+		<test name="TestErrorWithNullSource">
+			<expression invalid="true">Message(null, true, '1', 'Error', 'This is a message')</expression>
+			<!-- EXPECT: This is a message -->
+		</test>
+		<test name="TestErrorWithNullCondition">
+			<expression>Message(1, null, '1', 'Error', 'This is a message')</expression>
+			<output>1</output>
+		</test>
+		<test name="TestErrorWithNullCode">
+			<expression invalid="true">Message(1, true, null, 'Error', 'This is a message')</expression>
+			<!-- EXPECT: This is a message -->
+		</test>
+		<test name="TestErrorWithNullMessage">
+			<expression invalid="true">Message(1, true, '1', 'Error', null)</expression>
+			<!-- EXPECT: null -->
+		</test>
 	</group>
 </tests>
