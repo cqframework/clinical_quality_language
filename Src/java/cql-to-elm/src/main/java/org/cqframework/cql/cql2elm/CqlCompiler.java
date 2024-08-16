@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.cqframework.cql.cql2elm.elm.ElmEdit;
-import org.cqframework.cql.cql2elm.elm.ElmEditEnum;
 import org.cqframework.cql.cql2elm.elm.ElmEditor;
+import org.cqframework.cql.cql2elm.elm.IElmEdit;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessor;
 import org.cqframework.cql.elm.IdObjectFactory;
@@ -233,10 +233,10 @@ public class CqlCompiler {
         // Phase 5: ELM optimization/reduction (this is where result types, annotations, etc. are removed
         // and there will probably be a lot of other optimizations that happen here in the future)
         var edits = allNonNull(
-                !options.contains(EnableAnnotations) ? ElmEditEnum.REMOVE_ANNOTATION : null,
-                !options.contains(EnableResultTypes) ? ElmEditEnum.REMOVE_RESULT_TYPE : null,
-                !options.contains(EnableLocators) ? ElmEditEnum.REMOVE_LOCATOR : null,
-                ElmEditEnum.REMOVE_CHOICE_TYPE_SPECIFIER_TYPE_IF_EMPTY);
+                !options.contains(EnableAnnotations) ? ElmEdit.REMOVE_ANNOTATION : null,
+                !options.contains(EnableResultTypes) ? ElmEdit.REMOVE_RESULT_TYPE : null,
+                !options.contains(EnableLocators) ? ElmEdit.REMOVE_LOCATOR : null,
+                ElmEdit.REMOVE_CHOICE_TYPE_SPECIFIER_TYPE_IF_EMPTY);
 
         new ElmEditor(edits).edit(library);
 
@@ -250,7 +250,7 @@ public class CqlCompiler {
         return library;
     }
 
-    private List<ElmEdit> allNonNull(ElmEdit... ts) {
+    private List<IElmEdit> allNonNull(IElmEdit... ts) {
         return Arrays.stream(ts).filter(x -> x != null).collect(Collectors.toList());
     }
 }

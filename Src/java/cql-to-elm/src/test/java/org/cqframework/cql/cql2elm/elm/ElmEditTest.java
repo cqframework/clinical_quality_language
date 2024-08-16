@@ -15,12 +15,12 @@ class ElmEditTest {
         var extChoiceTypeSpecifier = new ExtChoiceTypeSpecifier();
 
         extChoiceTypeSpecifier.setType(List.of());
-        ElmEditEnum.REMOVE_CHOICE_TYPE_SPECIFIER_TYPE_IF_EMPTY.edit(extChoiceTypeSpecifier);
+        ElmEdit.REMOVE_CHOICE_TYPE_SPECIFIER_TYPE_IF_EMPTY.edit(extChoiceTypeSpecifier);
         assertNull(extChoiceTypeSpecifier.getType());
 
         var typeSpecifiers = List.of((TypeSpecifier) new NamedTypeSpecifier());
         extChoiceTypeSpecifier.setType(typeSpecifiers);
-        ElmEditEnum.REMOVE_CHOICE_TYPE_SPECIFIER_TYPE_IF_EMPTY.edit(extChoiceTypeSpecifier);
+        ElmEdit.REMOVE_CHOICE_TYPE_SPECIFIER_TYPE_IF_EMPTY.edit(extChoiceTypeSpecifier);
         assertSame(typeSpecifiers, extChoiceTypeSpecifier.getType());
     }
 
