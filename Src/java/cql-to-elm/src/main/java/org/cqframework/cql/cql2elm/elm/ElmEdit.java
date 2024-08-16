@@ -6,11 +6,13 @@ import org.hl7.elm.r1.Element;
 
 public enum ElmEdit implements IElmEdit {
     REMOVE_LOCATOR {
+        @Override
         public void edit(Element element) {
             element.setLocator(null);
         }
     },
     REMOVE_ANNOTATION {
+        @Override
         public void edit(Element element) {
             element.setLocalId(null);
             if (element.getAnnotation() != null) {
@@ -32,6 +34,7 @@ public enum ElmEdit implements IElmEdit {
         }
     },
     REMOVE_RESULT_TYPE {
+        @Override
         public void edit(Element element) {
             element.setResultTypeName(null);
             element.setResultTypeSpecifier(null);
@@ -46,6 +49,7 @@ public enum ElmEdit implements IElmEdit {
         // ChoiceTypeSpecifier.getType() (which we do during the ELM optimization stage in the compiler), so
         // this edit is needed to "protect" the downstream JSON serialization if it can be done without data loss.
 
+        @Override
         public void edit(Element element) {
             if (element instanceof ChoiceTypeSpecifier) {
                 var choice = (ChoiceTypeSpecifier) element;
