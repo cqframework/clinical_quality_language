@@ -18,6 +18,14 @@
 			<expression>DateTime(2005, 5, 10) + 10 months</expression>
 			<output>@2006-03-10T</output>
 		</test>
+		<test name="DateTimeAddThreeWeeks">
+			<expression>DateTime(2018, 5, 2) + 3 weeks = DateTime(2018, 5, 23)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeAddYearInWeeks">
+			<expression>DateTime(2018, 5, 23) + 52 weeks = DateTime(2019, 5, 23)</expression>
+			<output>true</output>
+		</test>
 		<test name="DateTimeAdd5Days">
 			<expression>DateTime(2005, 5, 10) + 5 days</expression>
 			<output>@2005-05-15T</output>
@@ -29,6 +37,34 @@
 		<test name="DateTimeAdd5Hours">
 			<expression>DateTime(2005, 5, 10, 5) + 5 hours</expression>
 			<output>@2005-05-10T10</output>
+		</test>
+		<test name="DateTimeAdd5HoursWithLeftMinPrecisionSecond">
+			<expression>DateTime(2005, 5, 10, 5, 20, 30) + 5 hours</expression>
+			<output>@2005-05-10T10:20:30</output>
+		</test>
+		<test name="DateTimeAdd5HoursWithLeftMinPrecisionDay">
+			<expression>DateTime(2005, 5, 10) + 5 hours = DateTime(2005, 5, 10)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeAdd5HoursWithLeftMinPrecisionDayOverflow">
+			<expression>DateTime(2005, 5, 10) + 25 hours = DateTime(2005, 5, 11)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateAdd2YearsAsMonths">
+			<expression>Date(2014) + 24 months</expression>
+			<output>@2016</output>
+		</test>
+		<test name="DateAdd2YearsAsMonthsRem1">
+			<expression>Date(2014) + 25 months</expression>
+			<output>@2016</output>
+		</test>
+		<test name="DateAdd33Days">
+			<expression>Date(2014,6) + 33 days</expression>
+			<output>@2014-07</output>
+		</test>
+		<test name="DateAdd1Year">
+			<expression>Date(2014,6) + 1 year</expression>
+			<output>@2015-06</output>
 		</test>
 		<test name="DateTimeAddHoursOverflow">
 			<expression>DateTime(2016, 6, 10, 5) + 19 hours</expression>
@@ -377,9 +413,12 @@
 			<output>955</output>
 		</test>
 		<test name="DateTimeComponentFromTimezone">
-			<expression>timezone from DateTime(2003, 10, 29, 20, 50, 33, 955, 1)</expression>
+			<expression invalid="true">timezone from DateTime(2003, 10, 29, 20, 50, 33, 955, 1)</expression>
+			<!-- EXPECTED: Timezone keyword is only valid in 1.3 or lower -->
+		</test>
+		<test name="DateTimeComponentFromTimezone2">
+			<expression>timezoneoffset from DateTime(2003, 10, 29, 20, 50, 33, 955, 1)</expression>
 			<output>1.00</output>
-			<!-- Translation Error: Timezone keyword is only valid in 1.3 or lower -->
 		</test>
 		<test name="DateTimeComponentFromDate">
 			<expression>date from DateTime(2003, 10, 29, 20, 50, 33, 955, 1)</expression>
@@ -670,9 +709,12 @@
 			<output>2</output>
 		</test>
 		<test name="TimeDurationBetweenHourDiffPrecision">
-			<expression>hours between @T06Z and @T07:00:00Z</expression>
+			<expression invalid="true">hours between @T06Z and @T07:00:00Z</expression>
+			<!-- EXPECTED: Syntax error at Z -->
+		</test>
+		<test name="TimeDurationBetweenHourDiffPrecision2">
+			<expression>hours between @T06 and @T07:00:00</expression>
 			<output>1</output>
-			<!-- Translation Error: Syntax error at Z -->
 		</test>
 		<test name="TimeDurationBetweenMinute">
 			<expression>minutes between @T23:20:16.555 and @T23:25:15.555</expression>
@@ -1141,6 +1183,14 @@
 			<expression>DateTime(2005, 5, 10) - 6 months</expression>
 			<output>@2004-11-10T</output>
 		</test>
+		<test name="DateTimeSubtractThreeWeeks">
+			<expression>DateTime(2018, 5, 23) - 3 weeks = DateTime(2018, 5, 2)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSubtractYearInWeeks">
+			<expression>DateTime(2018, 5, 23) - 52 weeks = DateTime(2017, 5, 23)</expression>
+			<output>true</output>
+		</test>
 		<test name="DateTimeSubtract5Days">
 			<expression>DateTime(2005, 5, 10) - 5 days</expression>
 			<output>@2005-05-05T</output>
@@ -1169,6 +1219,14 @@
 			<expression>DateTime(2005, 5, 10, 5, 5, 10) - 5 seconds</expression>
 			<output>@2005-05-10T05:05:05</output>
 		</test>
+		<test name="DateTimeSubtract1YearInSeconds">
+			<expression>DateTime(2016,5) - 31535999 seconds = DateTime(2015, 5)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSubtract15HourPrecisionSecond">
+			<expression>DateTime(2016, 10, 1, 10, 20, 30) - 15 hours</expression>
+			<output>@2016-09-30T19:20:30</output>
+		</test>
 		<test name="DateTimeSubtractSecondsUnderflow">
 			<expression>DateTime(2016, 6, 10, 5, 5, 5) - 6 seconds</expression>
 			<output>@2016-06-10T05:04:59</output>
@@ -1188,6 +1246,22 @@
 		<test name="DateTimeSubtract2YearsAsMonthsRem1">
 			<expression>DateTime(2014) - 25 months</expression>
 			<output>@2012T</output>
+		</test>
+		<test name="DateSubtract2YearsAsMonths">
+			<expression>Date(2014) - 24 months</expression>
+			<output>@2012</output>
+		</test>
+		<test name="DateSubtract2YearsAsMonthsRem1">
+			<expression>Date(2014) - 25 months</expression>
+			<output>@2012</output>
+		</test>
+		<test name="DateSubtract33Days">
+			<expression>Date(2014,6) - 33 days</expression>
+			<output>@2014-05</output>
+		</test>
+		<test name="DateSubtract1Year">
+			<expression>Date(2014,6) - 1 year</expression>
+			<output>@2013-06</output>
 		</test>
 		<test name="TimeSubtract5Hours">
 			<expression>@T15:59:59.999 - 5 hours</expression>
