@@ -11,26 +11,24 @@ import org.hl7.elm.r1.Library;
 public class ElmEditor {
 
     private final List<ElmEdit> edits;
-    private final FunctionalElmVisitor<Void, List<ElmEdit>> visitor;
+    private final FunctionalElmVisitor<Trackable, Void> visitor;
 
     public ElmEditor(List<ElmEdit> edits) {
         this.edits = Objects.requireNonNull(edits);
-        this.visitor = Visitors.from(ElmEditor::applyEdits);
+        this.visitor = Visitors.from((elm, context) -> elm, this::applyEdits);
     }
 
     public void edit(Library library) {
-        this.visitor.visitLibrary(library, edits);
+        this.visitor.visitLibrary(library, null);
     }
 
-    protected static Void applyEdits(Trackable trackable, List<ElmEdit> edits) {
-        if (!(trackable instanceof Element)) {
-            return null;
+    protected Trackable applyEdits(Trackable aggregate, Trackable nextResult) {
+        if (nextResult instanceof Element) {
+            for (ElmEdit edit : edits) {
+                edit.edit((Element) nextResult);
+            }
         }
 
-        for (ElmEdit edit : edits) {
-            edit.edit((Element) trackable);
-        }
-
-        return null;
+        return aggregate;
     }
 }
