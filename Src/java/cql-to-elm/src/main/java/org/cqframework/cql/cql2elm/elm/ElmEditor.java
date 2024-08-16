@@ -15,14 +15,17 @@ public class ElmEditor {
 
     public ElmEditor(List<ElmEdit> edits) {
         this.edits = Objects.requireNonNull(edits);
-        this.visitor = Visitors.from((elm, context) -> elm, this::applyEdits);
+        this.visitor = Visitors.from((elm, context) -> elm, this::aggregateResults);
     }
 
     public void edit(Library library) {
         this.visitor.visitLibrary(library, null);
+
+        // This is needed because aggregateResults is not called for the library itself.
+        this.applyEdits(library);
     }
 
-    protected Trackable applyEdits(Trackable aggregate, Trackable nextResult) {
+    protected Trackable aggregateResults(Trackable aggregate, Trackable nextResult) {
         if (nextResult instanceof Element) {
             for (ElmEdit edit : edits) {
                 edit.edit((Element) nextResult);
@@ -30,5 +33,13 @@ public class ElmEditor {
         }
 
         return aggregate;
+    }
+
+    protected void applyEdits(Trackable trackable) {
+        if (trackable instanceof Element) {
+            for (ElmEdit edit : edits) {
+                edit.edit((Element) trackable);
+            }
+        }
     }
 }

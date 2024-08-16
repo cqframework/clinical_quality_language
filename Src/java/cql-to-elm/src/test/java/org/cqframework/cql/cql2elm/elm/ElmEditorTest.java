@@ -1,32 +1,37 @@
 package org.cqframework.cql.cql2elm.elm;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 import org.hl7.elm.r1.ChoiceTypeSpecifier;
-import org.hl7.elm.r1.Element;
+import org.hl7.elm.r1.Library;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class ElmEditorTest {
-    boolean editCalled = false;
+    private int editCount = 0;
+    private final ElmEditor editor = new ElmEditor(List.of(element -> editCount++));
+
+    @BeforeEach
+    void beforeEach() {
+        editCount = 0;
+    }
 
     @Test
-    void applyEdits() {
-        editCalled = false;
-        var editCounter = new ElmEdit() {
-            public void edit(Element element) {
-                editCalled = true;
-            }
-        };
-        var edits = List.of((ElmEdit) editCounter);
-        ElmEditor editor = new ElmEditor(edits);
+    void edit() {
+        editor.edit(new Library());
+        assertEquals(editCount, 1);
+    }
 
-        editCalled = false;
-        editor.applyEdits(null, null);
-        assertFalse(editCalled);
+    @Test
+    void applyEdits1() {
+        editor.applyEdits(null);
+        assertEquals(editCount, 0);
+    }
 
-        editCalled = false;
-        editor.applyEdits(null, new ChoiceTypeSpecifier());
-        assertTrue(editCalled);
+    @Test
+    void applyEdits2() {
+        editor.applyEdits(new ChoiceTypeSpecifier());
+        assertEquals(editCount, 1);
     }
 }
