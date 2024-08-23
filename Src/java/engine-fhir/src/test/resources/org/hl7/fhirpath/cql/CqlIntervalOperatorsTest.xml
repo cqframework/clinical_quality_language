@@ -277,7 +277,7 @@
 			<output>null</output>
 		</test>
 		<test name="TestNullElement1">
-			<expression>null contains 5</expression>
+			<expression>null as Interval&lt;Integer&gt; contains 5</expression>
 			<output>false</output>
 		</test>
 		<test name="TestNullElement2">

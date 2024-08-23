@@ -81,7 +81,7 @@ public class SimpleType extends DataType implements NamedType {
 
     @Override
     public boolean isInstantiable(DataType callType, InstantiationContext context) {
-        if (isSuperTypeOf(callType)) {
+        if (this.equals(DataType.ANY) || isSuperTypeOf(callType)) {
             return true;
         }
 

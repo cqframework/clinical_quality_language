@@ -68,7 +68,7 @@ define FirstTime: First({ @T15:59:59.999, @T20:59:59.999 })
 //In
 define InNullEmpty: null in {}
 define InNullAnd1Null: null in { 1, null }
-define In1Null: 1 in null
+define In1Null: 1 in null as List<Integer>
 define In1And12: 1 in { 1, 2 }
 define In3And12: 3 in { 1, 2 }
 define InDateTimeTrue: DateTime(2012, 5, 10) in { DateTime(2001, 9, 11), DateTime(2012, 5, 10), DateTime(2014, 12, 10) }

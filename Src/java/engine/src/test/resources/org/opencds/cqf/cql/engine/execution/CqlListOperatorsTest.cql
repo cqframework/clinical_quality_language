@@ -24,7 +24,7 @@ define ContainsJan2012True: { DateTime(2012, 10, 5), DateTime(2012, 9, 5), DateT
 define ContainsJan2012False: { DateTime(2012, 10, 5), DateTime(2012, 9, 5), DateTime(2012, 1, 1) } contains DateTime(2012, 1, 1, 0)
 define ContainsTimeTrue: { @T15:59:59.999, @T05:59:59.999, @T20:59:59.999 } contains @T05:59:59.999
 define ContainsTimeFalse: { @T15:59:59.999, @T05:59:59.999, @T20:59:59.999 } contains @T08:59:59.999
-define ContainsNullLeft: null contains 'a'
+define ContainsNullLeft: null as List<String> contains 'a'
 
 //Descendents
 define DescendentsEmptyList: (null).descendents()
@@ -90,7 +90,7 @@ define FirstTime: First({ @T15:59:59.999, @T20:59:59.999 })
 //In
 define InNullEmpty: null in {}
 define InNullAnd1Null: null in { 1, null }
-define In1Null: 1 in null
+define In1Null: 1 in null as List<Integer>
 define In1And12: 1 in { 1, 2 }
 define In3And12: 3 in { 1, 2 }
 define InDateTimeTrue: DateTime(2012, 5, 10) in { DateTime(2001, 9, 11), DateTime(2012, 5, 10), DateTime(2014, 12, 10) }
@@ -108,7 +108,7 @@ define IncludesDateTimeTrue: {DateTime(2001, 9, 11), DateTime(2012, 5, 10), Date
 define IncludesDateTimeFalse: {DateTime(2001, 9, 11), DateTime(2012, 5, 10), DateTime(2014, 12, 10)} includes {DateTime(2012, 5, 11)}
 define IncludesTimeTrue: { @T02:29:15.156, @T15:59:59.999, @T20:59:59.999 } includes @T15:59:59.999
 define IncludesTimeFalse: { @T02:29:15.156, @T15:59:59.999, @T20:59:59.999 } includes @T16:59:59.999
-define IncludesNullLeft: null includes {2}
+define IncludesNullLeft: null as List<Integer> includes {2}
 // this test is going to the ContainsEvaluator
 // define IncludesNullRight: {'s', 'a', 'm'} includes null
 
@@ -124,7 +124,7 @@ define IncludedInTimeTrue: @T15:59:59.999 included in { @T02:29:15.156, @T15:59:
 define IncludedInTimeFalse: @T16:59:59.999 included in { @T02:29:15.156, @T15:59:59.999, @T20:59:59.999 }
 // the following expression is going to the InEvaluator
 // define IncludedInNullLeft: null included in {2}
-define IncludedInNullRight: {'s', 'a', 'm'} included in null
+define IncludedInNullRight: {'s', 'a', 'm'} included in null as List<String>
 
 //Indexer
 define IndexerNull1List :    (null as List<System.Any>)[1] // Cast is required due to ambiguity with Indexer(String) and Indexer(List<Any>)

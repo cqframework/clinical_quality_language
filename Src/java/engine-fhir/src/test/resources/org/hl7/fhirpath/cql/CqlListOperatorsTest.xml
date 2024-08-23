@@ -77,7 +77,7 @@
 			<output>false</output>
 		</test>
 		<test name="ContainsNullLeft">
-			<expression>null contains 'a'</expression>
+			<expression>null as List&lt;String&gt; contains 'a'</expression>
 			<output>false</output>
 		</test>
 	</group>
@@ -298,7 +298,7 @@
 			<output>true</output>
 		</test>
 		<test name="In1Null">
-			<expression>1 in null</expression>
+			<expression>1 in null as List&lt;Integer&gt;</expression>
 			<output>false</output>
 		</test>
 		<test name="In1And12">
@@ -364,7 +364,7 @@
 			<output>false</output>
 		</test>
 		<test name="IncludesNullLeft">
-			<expression>null includes {2}</expression>
+			<expression>null as List&lt;Integer&gt; includes {2}</expression>
 			<output>false</output>
 		</test>
 		<!-- this test is going to the ContainsEvaluator -->
@@ -416,7 +416,7 @@
 			<output>false</output>
 		</test>
 		<test name="IncludedInNullRight">
-			<expression>{'s', 'a', 'm'} included in null</expression>
+			<expression>{'s', 'a', 'm'} included in null as List&lt;String&gt;</expression>
 			<output>false</output>
 		</test>
 	</group>

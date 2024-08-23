@@ -148,6 +148,15 @@ public class ChoiceType extends DataType {
 
     @Override
     public boolean isInstantiable(DataType callType, InstantiationContext context) {
+        if (callType.equals(DataType.ANY)) {
+            for (var type : types) {
+                if (!type.isInstantiable(DataType.ANY, context)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         return isSuperTypeOf(callType);
     }
 
