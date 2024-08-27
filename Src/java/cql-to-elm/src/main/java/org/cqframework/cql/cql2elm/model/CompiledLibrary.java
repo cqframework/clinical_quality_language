@@ -2,7 +2,6 @@ package org.cqframework.cql.cql2elm.model;
 
 import java.util.*;
 import java.util.List;
-
 import org.hl7.cql.model.DataType;
 import org.hl7.cql.model.NamespaceManager;
 import org.hl7.cql_annotations.r1.Annotation;
@@ -137,8 +136,8 @@ public class CompiledLibrary {
         }
 
         conversions.add(conversion);
-
     }
+
     public ResolvedIdentifierContext resolve(String identifier) {
         if (namespace.containsKey(identifier)) {
             return ResolvedIdentifierContext.exactMatch(identifier, namespace.get(identifier));
@@ -153,7 +152,8 @@ public class CompiledLibrary {
     }
 
     public UsingDef resolveUsingRef(String identifier) {
-        return resolve(identifier).getExactMatchElement2()
+        return resolve(identifier)
+                .getExactMatchElement2()
                 .filter(UsingDef.class::isInstance)
                 .map(UsingDef.class::cast)
                 .orElse(null);

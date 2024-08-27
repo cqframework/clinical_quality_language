@@ -1,12 +1,11 @@
 package org.cqframework.cql.cql2elm.model;
 
-import org.cqframework.cql.cql2elm.LibraryBuilder;
-import org.hl7.elm.r1.Element;
-import org.hl7.elm.r1.ExpressionDef;
-
 import java.util.Objects;
 import java.util.Optional;
 import java.util.StringJoiner;
+import org.cqframework.cql.cql2elm.LibraryBuilder;
+import org.hl7.elm.r1.Element;
+import org.hl7.elm.r1.ExpressionDef;
 
 // LUKETODO:  javadoc
 public class ResolvedIdentifierContext {
@@ -30,7 +29,8 @@ public class ResolvedIdentifierContext {
         return new ResolvedIdentifierContext(identifier, nullableElement, ResolvedIdentifierMatchType.CASE_INSENSITIVE);
     }
 
-    private ResolvedIdentifierContext(String identifier, Element nullableElement, ResolvedIdentifierMatchType matchType) {
+    private ResolvedIdentifierContext(
+            String identifier, Element nullableElement, ResolvedIdentifierMatchType matchType) {
         this.identifier = identifier;
         this.nullableElement = nullableElement;
         this.matchType = matchType;
@@ -61,7 +61,7 @@ public class ResolvedIdentifierContext {
     }
 
     private boolean isExactMatch() {
-//        return isExactMatch;
+        //        return isExactMatch;
         return ResolvedIdentifierMatchType.EXACT == matchType;
     }
 
@@ -88,7 +88,10 @@ public class ResolvedIdentifierContext {
             return false;
         }
         ResolvedIdentifierContext that = (ResolvedIdentifierContext) theO;
-        return isExactMatch == that.isExactMatch && Objects.equals(identifier, that.identifier) && Objects.equals(nullableElement, that.nullableElement) && matchType == that.matchType;
+        return isExactMatch == that.isExactMatch
+                && Objects.equals(identifier, that.identifier)
+                && Objects.equals(nullableElement, that.nullableElement)
+                && matchType == that.matchType;
     }
 
     @Override

@@ -2479,7 +2479,8 @@ public class LibraryBuilder {
 
         if (mustResolve) {
             // LUKETODO:  do we still to do this here, or closer to the point where we retrieve the identifier?
-            final Optional<Element> optCaseInsensitiveMatchElement = resolvedIdentifierContext.getCaseInsensitiveMatchElement();
+            final Optional<Element> optCaseInsensitiveMatchElement =
+                    resolvedIdentifierContext.getCaseInsensitiveMatchElement();
             optCaseInsensitiveMatchElement.ifPresent(caseInsensitiveMatchElement -> {
                 if (caseInsensitiveMatchElement instanceof ExpressionDef) {
                     final ExpressionDef caseInsensitiveExpressionDef = (ExpressionDef) caseInsensitiveMatchElement;
@@ -2919,8 +2920,7 @@ public class LibraryBuilder {
             String libraryName = ((LibraryRef) left).getLibraryName();
             CompiledLibrary referencedLibrary = resolveLibrary(libraryName);
 
-            ResolvedIdentifierContext resolvedIdentifierContext =
-                    referencedLibrary.resolve(memberIdentifier);
+            ResolvedIdentifierContext resolvedIdentifierContext = referencedLibrary.resolve(memberIdentifier);
 
             final Element element = resolvedIdentifierContext.getExactMatchElement();
 
