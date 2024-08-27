@@ -548,9 +548,25 @@
 
 	<group name="testTake">
 		<test name="testTake1" inputfile="patient-example.xml"><expression>(0 | 1 | 2).take(1) = 0</expression><output type="boolean">true</output></test>
-		<test name="testTake2" inputfile="patient-example.xml"><expression>(0 | 1 | 2).take(2) = 0 | 1</expression><output type="boolean">true</output></test>
-		<test name="testTake3" inputfile="patient-example.xml"><expression>Patient.name.take(1).given = 'Peter' | 'James'</expression><output type="boolean">true</output></test>
-		<test name="testTake4" inputfile="patient-example.xml"><expression>Patient.name.take(2).given = 'Peter' | 'James' | 'Jim'</expression><output type="boolean">true</output></test>
+		<test name="testTake2" inputfile="patient-example.xml">
+			<expression>(0 | 1 | 2).take(2) = 0 | 1</expression>
+			<output type="boolean">true</output>
+			<!-- This test does not pass in CQL because the `=` operator takes precedence over `|` due to the order
+			of rules in CQL's grammar. -->
+			<!-- The order of operations can be forced by using `(0 | 1 | 2).take(2) = (0 | 1)`. -->
+		</test>
+		<test name="testTake3" inputfile="patient-example.xml">
+			<expression>Patient.name.take(1).given = 'Peter' | 'James'</expression>
+			<output type="boolean">true</output>
+			<!-- Same as above. -->
+			<!-- The order of operations can be forced by using `Patient.name.take(1).given = ('Peter' | 'James')`. -->
+		</test>
+		<test name="testTake4" inputfile="patient-example.xml">
+			<expression>Patient.name.take(2).given = 'Peter' | 'James' | 'Jim'</expression>
+			<output type="boolean">true</output>
+			<!-- Same as above. -->
+			<!-- The order of operations can be forced by using `Patient.name.take(2).given = ('Peter' | 'James' | 'Jim')`. -->
+		</test>
 		<test name="testTake5" inputfile="patient-example.xml"><expression>Patient.name.take(3).given.count() = 5</expression><output type="boolean">true</output></test>
 		<test name="testTake6" inputfile="patient-example.xml"><expression>Patient.name.take(4).given.count() = 5</expression><output type="boolean">true</output></test>
 		<test name="testTake7" inputfile="patient-example.xml"><expression>Patient.name.take(0).given.exists() = false</expression><output type="boolean">true</output></test>
