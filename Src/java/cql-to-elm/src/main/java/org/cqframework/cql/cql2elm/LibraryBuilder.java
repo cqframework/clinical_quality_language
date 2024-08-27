@@ -2372,7 +2372,7 @@ public class LibraryBuilder {
         }
 
         final ResolvedIdentifierContext resolvedIdentifierContext = resolve(identifier);
-        final Element element = resolvedIdentifierContext.getExactMatchElement();
+        final Element element = resolvedIdentifierContext.getExactMatchElement().orElse(null);
 
         if (element instanceof ExpressionDef) {
             checkLiteralContext();
@@ -2479,19 +2479,9 @@ public class LibraryBuilder {
 
         if (mustResolve) {
             // LUKETODO:  do we still to do this here, or closer to the point where we retrieve the identifier?
-            final Optional<Element> optCaseInsensitiveMatchElement =
-                    resolvedIdentifierContext.getCaseInsensitiveMatchElement();
-            optCaseInsensitiveMatchElement.ifPresent(caseInsensitiveMatchElement -> {
-                if (caseInsensitiveMatchElement instanceof ExpressionDef) {
-                    final ExpressionDef caseInsensitiveExpressionDef = (ExpressionDef) caseInsensitiveMatchElement;
-                    reportWarning(
-                            String.format(
-                                    "Could not find identifier: [%s].  Did you mean [%s]?",
-                                    identifier, caseInsensitiveExpressionDef.getName()),
-                            element);
-                }
-                // LUKETODO:  how to handle other Elements?
-            });
+            resolvedIdentifierContext
+                    .warnCaseInsensitiveIfApplicable()
+                    .ifPresent(pair -> reportWarning(pair.getLeft(), pair.getRight()));
             // ERROR:
             throw new IllegalArgumentException(
                     String.format("Could not resolve identifier %s in the current library.", identifier));
@@ -2541,9 +2531,15 @@ public class LibraryBuilder {
     public ParameterRef resolveImplicitContext() {
         if (!inLiteralContext() && inSpecificContext()) {
             ResolvedIdentifierContext resolvedIdentifierContext = resolve(currentExpressionContext());
-            final Element contextElement = resolvedIdentifierContext.getExactMatchElement();
-            if (contextElement instanceof ParameterDef) {
-                ParameterDef contextParameter = (ParameterDef) contextElement;
+            // LUKETODO:  better pattern?
+            final Element contextElement =
+                    resolvedIdentifierContext.getExactMatchElement().orElse(null);
+            final Optional<ParameterDef> optParameterDef =
+                    resolvedIdentifierContext.getElementOfType(ParameterDef.class);
+            //            if (contextElement instanceof ParameterDef) {
+            if (optParameterDef.isPresent()) {
+                //                ParameterDef contextParameter = (ParameterDef) contextElement;
+                final ParameterDef contextParameter = optParameterDef.get();
 
                 checkLiteralContext();
                 ParameterRef parameterRef = of.createParameterRef().withName(contextParameter.getName());
@@ -2922,7 +2918,9 @@ public class LibraryBuilder {
 
             ResolvedIdentifierContext resolvedIdentifierContext = referencedLibrary.resolve(memberIdentifier);
 
-            final Element element = resolvedIdentifierContext.getExactMatchElement();
+            // LUKETODO:  better pattern?
+            final Element element =
+                    resolvedIdentifierContext.getExactMatchElement().orElse(null);
 
             if (element instanceof ExpressionDef) {
                 checkAccessLevel(libraryName, memberIdentifier, ((ExpressionDef) element).getAccessLevel());

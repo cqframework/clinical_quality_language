@@ -33,11 +33,11 @@ public class CompiledLibrary {
     }
 
     private void checkNamespace(String identifier) {
-        ResolvedIdentifierContext existingResolvedIdentifierContext = resolve(identifier);
-        if (existingResolvedIdentifierContext.getExactMatchElement() != null) {
+        final ResolvedIdentifierContext existingResolvedIdentifierContext = resolve(identifier);
+        existingResolvedIdentifierContext.getExactMatchElement().ifPresent(element -> {
             throw new IllegalArgumentException(
                     String.format("Identifier %s is already in use in this library.", identifier));
-        }
+        });
     }
 
     public void add(UsingDef using) {
@@ -152,20 +152,11 @@ public class CompiledLibrary {
     }
 
     public UsingDef resolveUsingRef(String identifier) {
-        return resolve(identifier)
-                .getExactMatchElement2()
-                .filter(UsingDef.class::isInstance)
-                .map(UsingDef.class::cast)
-                .orElse(null);
+        return resolveIdentifier(identifier, UsingDef.class);
     }
 
     public IncludeDef resolveIncludeRef(String identifier) {
-        ResolvedIdentifierContext element = resolve(identifier);
-        if (element.getExactMatchElement() instanceof IncludeDef) {
-            return (IncludeDef) element.getExactMatchElement();
-        }
-
-        return null;
+        return resolveIdentifier(identifier, IncludeDef.class);
     }
 
     public String resolveIncludeAlias(VersionedIdentifier identifier) {
@@ -185,57 +176,31 @@ public class CompiledLibrary {
     }
 
     public CodeSystemDef resolveCodeSystemRef(String identifier) {
-        ResolvedIdentifierContext element = resolve(identifier);
-        if (element.getExactMatchElement() instanceof CodeSystemDef) {
-            return (CodeSystemDef) element.getExactMatchElement();
-        }
-
-        return null;
+        return resolveIdentifier(identifier, CodeSystemDef.class);
     }
 
     public ValueSetDef resolveValueSetRef(String identifier) {
-        ResolvedIdentifierContext element = resolve(identifier);
-        if (element.getExactMatchElement() instanceof ValueSetDef) {
-            return (ValueSetDef) element.getExactMatchElement();
-        }
-
-        return null;
+        return resolveIdentifier(identifier, ValueSetDef.class);
     }
 
     public CodeDef resolveCodeRef(String identifier) {
-        ResolvedIdentifierContext element = resolve(identifier);
-        if (element.getExactMatchElement() instanceof CodeDef) {
-            return (CodeDef) element.getExactMatchElement();
-        }
-
-        return null;
+        return resolveIdentifier(identifier, CodeDef.class);
     }
 
     public ConceptDef resolveConceptRef(String identifier) {
-        ResolvedIdentifierContext element = resolve(identifier);
-        if (element.getExactMatchElement() instanceof ConceptDef) {
-            return (ConceptDef) element.getExactMatchElement();
-        }
-
-        return null;
+        return resolveIdentifier(identifier, ConceptDef.class);
     }
 
     public ParameterDef resolveParameterRef(String identifier) {
-        ResolvedIdentifierContext element = resolve(identifier);
-        if (element.getExactMatchElement() instanceof ParameterDef) {
-            return (ParameterDef) element.getExactMatchElement();
-        }
-
-        return null;
+        return resolveIdentifier(identifier, ParameterDef.class);
     }
 
     public ExpressionDef resolveExpressionRef(String identifier) {
-        ResolvedIdentifierContext element = resolve(identifier);
-        if (element.getExactMatchElement() instanceof ExpressionDef) {
-            return (ExpressionDef) element.getExactMatchElement();
-        }
+        return resolveIdentifier(identifier, ExpressionDef.class);
+    }
 
-        return null;
+    private <T extends Element> T resolveIdentifier(String identifier, Class<T> clazz) {
+        return resolve(identifier).resolveIdentifier(clazz);
     }
 
     public Iterable<FunctionDef> resolveFunctionRef(String identifier) {

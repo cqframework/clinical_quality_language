@@ -3,11 +3,18 @@ package org.cqframework.cql.cql2elm.model;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.StringJoiner;
-import org.cqframework.cql.cql2elm.LibraryBuilder;
+import org.apache.commons.lang3.tuple.Pair;
+import org.hl7.elm.r1.CodeDef;
 import org.hl7.elm.r1.Element;
 import org.hl7.elm.r1.ExpressionDef;
+import org.hl7.elm.r1.OperandDef;
+import org.hl7.elm.r1.TupleElementDefinition;
+import org.hl7.elm.r1.ValueSetDef;
 
-// LUKETODO:  javadoc
+/**
+ * Context for resolved identifiers containing the identifier, the resolved element (if non-null) as well as the type
+ * of matching done to retrieve the element, whether case-sensitive or case-insensitive.
+ */
 public class ResolvedIdentifierContext {
     private final String identifier;
     private final Element nullableElement;
@@ -18,7 +25,6 @@ public class ResolvedIdentifierContext {
     }
 
     // TODO:  enum instead?
-    private boolean isExactMatch;
     private final ResolvedIdentifierMatchType matchType;
 
     public static ResolvedIdentifierContext exactMatch(String identifier, Element nullableElement) {
@@ -36,24 +42,8 @@ public class ResolvedIdentifierContext {
         this.matchType = matchType;
     }
 
-    public Element getExactMatchElement() {
+    public Optional<Element> getExactMatchElement() {
         if (isExactMatch()) {
-            return nullableElement;
-        }
-
-        return null;
-    }
-
-    public Optional<Element> getExactMatchElement2() {
-        if (isExactMatch()) {
-            return Optional.ofNullable(nullableElement);
-        }
-
-        return Optional.empty();
-    }
-
-    public Optional<Element> getCaseInsensitiveMatchElement() {
-        if (!isExactMatch()) {
             return Optional.ofNullable(nullableElement);
         }
 
@@ -61,22 +51,31 @@ public class ResolvedIdentifierContext {
     }
 
     private boolean isExactMatch() {
-        //        return isExactMatch;
         return ResolvedIdentifierMatchType.EXACT == matchType;
     }
 
-    // LUKETODO:  figure out where to call this from
-    public void warnCaseInsensitiveIfApplicable(LibraryBuilder libraryBuilder) {
-        if (nullableElement != null && !isExactMatch)
-            if (nullableElement instanceof ExpressionDef) {
-                final ExpressionDef caseInsensitiveExpressionDef = (ExpressionDef) nullableElement;
-                libraryBuilder.reportWarning(
-                        String.format(
-                                "Could not find identifier: [%s].  Did you mean [%s]?",
-                                identifier, caseInsensitiveExpressionDef.getName()),
-                        nullableElement);
-            }
-        // LUKETODO:  what about other Element types?
+    public Optional<Pair<String, Element>> warnCaseInsensitiveIfApplicable() {
+        if (nullableElement != null && !isExactMatch()) {
+            return getName(nullableElement).map(name -> {
+                final String warning =
+                        String.format("Could not find identifier: [%s].  Did you mean [%s]?", identifier, name);
+                return Pair.of(warning, nullableElement);
+            });
+        }
+
+        return Optional.empty();
+    }
+
+    public <T extends Element> T resolveIdentifier(Class<T> clazz) {
+        return getExactMatchElement().filter(clazz::isInstance).map(clazz::cast).orElse(null);
+    }
+
+    public <T extends Element> Optional<T> getElementOfType(Class<T> clazz) {
+        if (clazz.isInstance(nullableElement)) {
+            return Optional.of(clazz.cast(nullableElement));
+        }
+
+        return Optional.empty();
     }
 
     @Override
@@ -88,15 +87,14 @@ public class ResolvedIdentifierContext {
             return false;
         }
         ResolvedIdentifierContext that = (ResolvedIdentifierContext) theO;
-        return isExactMatch == that.isExactMatch
-                && Objects.equals(identifier, that.identifier)
+        return Objects.equals(identifier, that.identifier)
                 && Objects.equals(nullableElement, that.nullableElement)
                 && matchType == that.matchType;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(identifier, nullableElement, isExactMatch, matchType);
+        return Objects.hash(identifier, nullableElement, matchType);
     }
 
     @Override
@@ -104,8 +102,32 @@ public class ResolvedIdentifierContext {
         return new StringJoiner(", ", ResolvedIdentifierContext.class.getSimpleName() + "[", "]")
                 .add("identifier='" + identifier + "'")
                 .add("nullableElement=" + nullableElement)
-                .add("isExactMatch=" + isExactMatch)
                 .add("matchType=" + matchType)
                 .toString();
+    }
+
+    private static Optional<String> getName(Element element) {
+        // LUKETODO:  should we handle other Elements?
+        if (element instanceof ExpressionDef) {
+            return Optional.of(((ExpressionDef) element).getName());
+        }
+
+        if (element instanceof ValueSetDef) {
+            return Optional.of(((ValueSetDef) element).getName());
+        }
+
+        if (element instanceof OperandDef) {
+            return Optional.of(((OperandDef) element).getName());
+        }
+
+        if (element instanceof TupleElementDefinition) {
+            return Optional.of(((TupleElementDefinition) element).getName());
+        }
+
+        if (element instanceof CodeDef) {
+            return Optional.of(((CodeDef) element).getName());
+        }
+
+        return Optional.empty();
     }
 }

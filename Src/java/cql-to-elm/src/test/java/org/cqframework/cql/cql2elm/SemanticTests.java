@@ -756,8 +756,8 @@ public class SemanticTests {
 
     @Test
     public void testIdentifierDoesNotResolveCaseMismatchExistIdentifier() throws IOException {
-        // LUKETODO:  rename this CQL file
-        final CqlTranslator translator = runSemanticTest("Issue598.cql", 1);
+        final CqlTranslator translator =
+                runSemanticTest("IdentifierDoesNotResolveCaseMismatchExistIdentifier_Issue598.cql", 1);
 
         final List<String> errorMessages =
                 translator.getErrors().stream().map(Throwable::getMessage).collect(Collectors.toList());
