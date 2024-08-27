@@ -795,7 +795,7 @@ public class LibraryBuilder {
         }
     }
 
-    public CompiledLibrary.ResolvedIdentifierContext resolve(String identifier) {
+    public ResolvedIdentifierContext resolve(String identifier) {
         return compiledLibrary.resolve(identifier);
     }
 
@@ -2371,7 +2371,7 @@ public class LibraryBuilder {
             return operandRef;
         }
 
-        CompiledLibrary.ResolvedIdentifierContext resolvedIdentifierContext = resolve(identifier);
+        final ResolvedIdentifierContext resolvedIdentifierContext = resolve(identifier);
         final Element element = resolvedIdentifierContext.getExactMatchElement();
 
         if (element instanceof ExpressionDef) {
@@ -2478,9 +2478,9 @@ public class LibraryBuilder {
         }
 
         if (mustResolve) {
-            // TODO:  do we still to do this here, or closer to the point where we retrieve the identifier?
-            final Element caseInsensitiveMatchElement = resolvedIdentifierContext.getCaseInsensitiveMatchElement();
-            if (caseInsensitiveMatchElement != null) {
+            // LUKETODO:  do we still to do this here, or closer to the point where we retrieve the identifier?
+            final Optional<Element> optCaseInsensitiveMatchElement = resolvedIdentifierContext.getCaseInsensitiveMatchElement();
+            optCaseInsensitiveMatchElement.ifPresent(caseInsensitiveMatchElement -> {
                 if (caseInsensitiveMatchElement instanceof ExpressionDef) {
                     final ExpressionDef caseInsensitiveExpressionDef = (ExpressionDef) caseInsensitiveMatchElement;
                     reportWarning(
@@ -2489,9 +2489,8 @@ public class LibraryBuilder {
                                     identifier, caseInsensitiveExpressionDef.getName()),
                             element);
                 }
-
-                // TODO:  how to handle other Elements?
-            }
+                // LUKETODO:  how to handle other Elements?
+            });
             // ERROR:
             throw new IllegalArgumentException(
                     String.format("Could not resolve identifier %s in the current library.", identifier));
@@ -2540,7 +2539,7 @@ public class LibraryBuilder {
      */
     public ParameterRef resolveImplicitContext() {
         if (!inLiteralContext() && inSpecificContext()) {
-            CompiledLibrary.ResolvedIdentifierContext resolvedIdentifierContext = resolve(currentExpressionContext());
+            ResolvedIdentifierContext resolvedIdentifierContext = resolve(currentExpressionContext());
             final Element contextElement = resolvedIdentifierContext.getExactMatchElement();
             if (contextElement instanceof ParameterDef) {
                 ParameterDef contextParameter = (ParameterDef) contextElement;
@@ -2920,7 +2919,7 @@ public class LibraryBuilder {
             String libraryName = ((LibraryRef) left).getLibraryName();
             CompiledLibrary referencedLibrary = resolveLibrary(libraryName);
 
-            CompiledLibrary.ResolvedIdentifierContext resolvedIdentifierContext =
+            ResolvedIdentifierContext resolvedIdentifierContext =
                     referencedLibrary.resolve(memberIdentifier);
 
             final Element element = resolvedIdentifierContext.getExactMatchElement();

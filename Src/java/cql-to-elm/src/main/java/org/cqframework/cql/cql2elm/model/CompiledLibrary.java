@@ -2,7 +2,7 @@ package org.cqframework.cql.cql2elm.model;
 
 import java.util.*;
 import java.util.List;
-import org.cqframework.cql.cql2elm.LibraryBuilder;
+
 import org.hl7.cql.model.DataType;
 import org.hl7.cql.model.NamespaceManager;
 import org.hl7.cql_annotations.r1.Annotation;
@@ -137,74 +137,26 @@ public class CompiledLibrary {
         }
 
         conversions.add(conversion);
+
     }
-
-    public static class ResolvedIdentifierContext {
-        private final String identifier;
-        private final Element nullableElement;
-
-        // TODO:  enum instead?
-        private final boolean isExactMatch;
-
-        public ResolvedIdentifierContext(String identifier, Element nullableElement, boolean isExactMatch) {
-            this.identifier = identifier;
-            this.nullableElement = nullableElement;
-            this.isExactMatch = isExactMatch;
-        }
-
-        public Element getExactMatchElement() {
-            if (isExactMatch) {
-                return nullableElement;
-            }
-
-            return null;
-        }
-
-        public Element getCaseInsensitiveMatchElement() {
-            if (!isExactMatch) {
-                return nullableElement;
-            }
-
-            return null;
-        }
-
-        // TODO:  figure out where to call this from
-        public void warnCaseInsensitiveIfApplicable(LibraryBuilder libraryBuilder) {
-            if (nullableElement != null && !isExactMatch)
-                if (nullableElement instanceof ExpressionDef) {
-                    final ExpressionDef caseInsensitiveExpressionDef = (ExpressionDef) nullableElement;
-                    libraryBuilder.reportWarning(
-                            String.format(
-                                    "Could not find identifier: [%s].  Did you mean [%s]?",
-                                    identifier, caseInsensitiveExpressionDef.getName()),
-                            nullableElement);
-                }
-            // TODO:  what about other Element types?
-        }
-
-        // TODO:  equals/hashCode/toString()
-    }
-
     public ResolvedIdentifierContext resolve(String identifier) {
         if (namespace.containsKey(identifier)) {
-            return new ResolvedIdentifierContext(identifier, namespace.get(identifier), true);
+            return ResolvedIdentifierContext.exactMatch(identifier, namespace.get(identifier));
         }
 
         return namespace.entrySet().stream()
                 .filter(entry -> entry.getKey().equalsIgnoreCase(identifier))
                 .map(Map.Entry::getValue)
-                .map(element -> new ResolvedIdentifierContext(identifier, element, false))
+                .map(element -> ResolvedIdentifierContext.caseInsensitiveMatch(identifier, element))
                 .findFirst()
-                .orElse(new ResolvedIdentifierContext(identifier, null, false));
+                .orElse(ResolvedIdentifierContext.caseInsensitiveMatch(identifier, null));
     }
 
     public UsingDef resolveUsingRef(String identifier) {
-        ResolvedIdentifierContext element = resolve(identifier);
-        if (element.getExactMatchElement() instanceof UsingDef) {
-            return (UsingDef) element.getExactMatchElement();
-        }
-
-        return null;
+        return resolve(identifier).getExactMatchElement2()
+                .filter(UsingDef.class::isInstance)
+                .map(UsingDef.class::cast)
+                .orElse(null);
     }
 
     public IncludeDef resolveIncludeRef(String identifier) {
