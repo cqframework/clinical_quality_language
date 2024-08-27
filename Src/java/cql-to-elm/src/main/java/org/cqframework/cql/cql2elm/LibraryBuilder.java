@@ -2478,13 +2478,12 @@ public class LibraryBuilder {
         }
 
         if (mustResolve) {
-            // LUKETODO:  do we still to do this here, or closer to the point where we retrieve the identifier?
-            resolvedIdentifierContext
-                    .warnCaseInsensitiveIfApplicable()
-                    .ifPresent(pair -> reportWarning(pair.getLeft(), pair.getRight()));
             // ERROR:
-            throw new IllegalArgumentException(
-                    String.format("Could not resolve identifier %s in the current library.", identifier));
+            final String exceptionMessage = resolvedIdentifierContext
+                    .warnCaseInsensitiveIfApplicable()
+                    .orElse(String.format("Could not resolve identifier %s in the current library.", identifier));
+
+            throw new IllegalArgumentException(exceptionMessage);
         }
 
         return null;

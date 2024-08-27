@@ -3,11 +3,14 @@ package org.cqframework.cql.cql2elm.model;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.StringJoiner;
-import org.apache.commons.lang3.tuple.Pair;
 import org.hl7.elm.r1.CodeDef;
+import org.hl7.elm.r1.CodeSystemDef;
+import org.hl7.elm.r1.ConceptDef;
+import org.hl7.elm.r1.ContextDef;
 import org.hl7.elm.r1.Element;
 import org.hl7.elm.r1.ExpressionDef;
 import org.hl7.elm.r1.OperandDef;
+import org.hl7.elm.r1.ParameterDef;
 import org.hl7.elm.r1.TupleElementDefinition;
 import org.hl7.elm.r1.ValueSetDef;
 
@@ -54,13 +57,11 @@ public class ResolvedIdentifierContext {
         return ResolvedIdentifierMatchType.EXACT == matchType;
     }
 
-    public Optional<Pair<String, Element>> warnCaseInsensitiveIfApplicable() {
+    public Optional<String> warnCaseInsensitiveIfApplicable() {
         if (nullableElement != null && !isExactMatch()) {
-            return getName(nullableElement).map(name -> {
-                final String warning =
-                        String.format("Could not find identifier: [%s].  Did you mean [%s]?", identifier, name);
-                return Pair.of(warning, nullableElement);
-            });
+            return getName(nullableElement)
+                    .map(name ->
+                            String.format("Could not find identifier: [%s].  Did you mean [%s]?", identifier, name));
         }
 
         return Optional.empty();
@@ -107,7 +108,7 @@ public class ResolvedIdentifierContext {
     }
 
     private static Optional<String> getName(Element element) {
-        // LUKETODO:  should we handle other Elements?
+        // TODO:  consider other Elements that don't have getName()
         if (element instanceof ExpressionDef) {
             return Optional.of(((ExpressionDef) element).getName());
         }
@@ -126,6 +127,22 @@ public class ResolvedIdentifierContext {
 
         if (element instanceof CodeDef) {
             return Optional.of(((CodeDef) element).getName());
+        }
+
+        if (element instanceof ConceptDef) {
+            return Optional.of(((ConceptDef) element).getName());
+        }
+
+        if (element instanceof ParameterDef) {
+            return Optional.of(((ParameterDef) element).getName());
+        }
+
+        if (element instanceof CodeSystemDef) {
+            return Optional.of(((CodeSystemDef) element).getName());
+        }
+
+        if (element instanceof ContextDef) {
+            return Optional.of(((ContextDef) element).getName());
         }
 
         return Optional.empty();
