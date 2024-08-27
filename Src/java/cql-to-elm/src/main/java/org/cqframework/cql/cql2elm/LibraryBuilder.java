@@ -2531,14 +2531,9 @@ public class LibraryBuilder {
     public ParameterRef resolveImplicitContext() {
         if (!inLiteralContext() && inSpecificContext()) {
             ResolvedIdentifierContext resolvedIdentifierContext = resolve(currentExpressionContext());
-            // LUKETODO:  better pattern?
-            final Element contextElement =
-                    resolvedIdentifierContext.getExactMatchElement().orElse(null);
             final Optional<ParameterDef> optParameterDef =
                     resolvedIdentifierContext.getElementOfType(ParameterDef.class);
-            //            if (contextElement instanceof ParameterDef) {
             if (optParameterDef.isPresent()) {
-                //                ParameterDef contextParameter = (ParameterDef) contextElement;
                 final ParameterDef contextParameter = optParameterDef.get();
 
                 checkLiteralContext();
@@ -2918,55 +2913,60 @@ public class LibraryBuilder {
 
             ResolvedIdentifierContext resolvedIdentifierContext = referencedLibrary.resolve(memberIdentifier);
 
-            // LUKETODO:  better pattern?
-            final Element element =
-                    resolvedIdentifierContext.getExactMatchElement().orElse(null);
+            final Optional<Element> optElement = resolvedIdentifierContext.getExactMatchElement();
 
-            if (element instanceof ExpressionDef) {
-                checkAccessLevel(libraryName, memberIdentifier, ((ExpressionDef) element).getAccessLevel());
-                Expression result =
-                        of.createExpressionRef().withLibraryName(libraryName).withName(memberIdentifier);
-                result.setResultType(getExpressionDefResultType((ExpressionDef) element));
-                return result;
-            }
+            if (optElement.isPresent()) {
+                final Element element = optElement.get();
 
-            if (element instanceof ParameterDef) {
-                checkAccessLevel(libraryName, memberIdentifier, ((ParameterDef) element).getAccessLevel());
-                Expression result =
-                        of.createParameterRef().withLibraryName(libraryName).withName(memberIdentifier);
-                result.setResultType(element.getResultType());
-                return result;
-            }
+                if (element instanceof ExpressionDef) {
+                    checkAccessLevel(libraryName, memberIdentifier, ((ExpressionDef) element).getAccessLevel());
+                    Expression result = of.createExpressionRef()
+                            .withLibraryName(libraryName)
+                            .withName(memberIdentifier);
+                    result.setResultType(getExpressionDefResultType((ExpressionDef) element));
+                    return result;
+                }
 
-            if (element instanceof ValueSetDef) {
-                checkAccessLevel(libraryName, memberIdentifier, ((ValueSetDef) element).getAccessLevel());
-                ValueSetRef result =
-                        of.createValueSetRef().withLibraryName(libraryName).withName(memberIdentifier);
-                result.setResultType(element.getResultType());
-                return result;
-            }
+                if (element instanceof ParameterDef) {
+                    checkAccessLevel(libraryName, memberIdentifier, ((ParameterDef) element).getAccessLevel());
+                    Expression result =
+                            of.createParameterRef().withLibraryName(libraryName).withName(memberIdentifier);
+                    result.setResultType(element.getResultType());
+                    return result;
+                }
 
-            if (element instanceof CodeSystemDef) {
-                checkAccessLevel(libraryName, memberIdentifier, ((CodeSystemDef) element).getAccessLevel());
-                CodeSystemRef result =
-                        of.createCodeSystemRef().withLibraryName(libraryName).withName(memberIdentifier);
-                result.setResultType(element.getResultType());
-                return result;
-            }
+                if (element instanceof ValueSetDef) {
+                    checkAccessLevel(libraryName, memberIdentifier, ((ValueSetDef) element).getAccessLevel());
+                    ValueSetRef result =
+                            of.createValueSetRef().withLibraryName(libraryName).withName(memberIdentifier);
+                    result.setResultType(element.getResultType());
+                    return result;
+                }
 
-            if (element instanceof CodeDef) {
-                checkAccessLevel(libraryName, memberIdentifier, ((CodeDef) element).getAccessLevel());
-                CodeRef result = of.createCodeRef().withLibraryName(libraryName).withName(memberIdentifier);
-                result.setResultType(element.getResultType());
-                return result;
-            }
+                if (element instanceof CodeSystemDef) {
+                    checkAccessLevel(libraryName, memberIdentifier, ((CodeSystemDef) element).getAccessLevel());
+                    CodeSystemRef result = of.createCodeSystemRef()
+                            .withLibraryName(libraryName)
+                            .withName(memberIdentifier);
+                    result.setResultType(element.getResultType());
+                    return result;
+                }
 
-            if (element instanceof ConceptDef) {
-                checkAccessLevel(libraryName, memberIdentifier, ((ConceptDef) element).getAccessLevel());
-                ConceptRef result =
-                        of.createConceptRef().withLibraryName(libraryName).withName(memberIdentifier);
-                result.setResultType(element.getResultType());
-                return result;
+                if (element instanceof CodeDef) {
+                    checkAccessLevel(libraryName, memberIdentifier, ((CodeDef) element).getAccessLevel());
+                    CodeRef result =
+                            of.createCodeRef().withLibraryName(libraryName).withName(memberIdentifier);
+                    result.setResultType(element.getResultType());
+                    return result;
+                }
+
+                if (element instanceof ConceptDef) {
+                    checkAccessLevel(libraryName, memberIdentifier, ((ConceptDef) element).getAccessLevel());
+                    ConceptRef result =
+                            of.createConceptRef().withLibraryName(libraryName).withName(memberIdentifier);
+                    result.setResultType(element.getResultType());
+                    return result;
+                }
             }
 
             // ERROR:

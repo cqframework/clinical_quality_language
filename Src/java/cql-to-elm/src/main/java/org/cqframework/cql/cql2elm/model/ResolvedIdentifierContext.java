@@ -79,14 +79,14 @@ public class ResolvedIdentifierContext {
     }
 
     @Override
-    public boolean equals(Object theO) {
-        if (this == theO) {
+    public boolean equals(Object other) {
+        if (this == other) {
             return true;
         }
-        if (theO == null || getClass() != theO.getClass()) {
+        if (other == null || getClass() != other.getClass()) {
             return false;
         }
-        ResolvedIdentifierContext that = (ResolvedIdentifierContext) theO;
+        ResolvedIdentifierContext that = (ResolvedIdentifierContext) other;
         return Objects.equals(identifier, that.identifier)
                 && Objects.equals(nullableElement, that.nullableElement)
                 && matchType == that.matchType;
