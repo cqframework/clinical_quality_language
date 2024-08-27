@@ -2482,8 +2482,12 @@ public class LibraryBuilder {
             final Element caseInsensitiveMatchElement = resolvedIdentifierContext.getCaseInsensitiveMatchElement();
             if (caseInsensitiveMatchElement != null) {
                 if (caseInsensitiveMatchElement instanceof ExpressionDef) {
-                    final ExpressionDef caseInsensitiveExpressionDef  = (ExpressionDef) caseInsensitiveMatchElement;
-                    reportWarning(String.format("Could not find identifier: [%s].  Did you mean [%s]?", identifier, caseInsensitiveExpressionDef.getName()), element);
+                    final ExpressionDef caseInsensitiveExpressionDef = (ExpressionDef) caseInsensitiveMatchElement;
+                    reportWarning(
+                            String.format(
+                                    "Could not find identifier: [%s].  Did you mean [%s]?",
+                                    identifier, caseInsensitiveExpressionDef.getName()),
+                            element);
                 }
 
                 // TODO:  how to handle other Elements?
@@ -2916,7 +2920,8 @@ public class LibraryBuilder {
             String libraryName = ((LibraryRef) left).getLibraryName();
             CompiledLibrary referencedLibrary = resolveLibrary(libraryName);
 
-            CompiledLibrary.ResolvedIdentifierContext resolvedIdentifierContext = referencedLibrary.resolve(memberIdentifier);
+            CompiledLibrary.ResolvedIdentifierContext resolvedIdentifierContext =
+                    referencedLibrary.resolve(memberIdentifier);
 
             final Element element = resolvedIdentifierContext.getExactMatchElement();
 

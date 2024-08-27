@@ -759,13 +759,15 @@ public class SemanticTests {
         // LUKETODO:  rename this CQL file
         final CqlTranslator translator = runSemanticTest("Issue598.cql", 1);
 
-        final List<String> errorMessages = translator.getErrors().stream().map(Throwable::getMessage).collect(Collectors.toList());
+        final List<String> errorMessages =
+                translator.getErrors().stream().map(Throwable::getMessage).collect(Collectors.toList());
         assertThat(errorMessages, contains("Could not resolve identifier IaMaDiFeReNtCaSe in the current library."));
 
-        final List<String> warnings = translator.getWarnings().stream().map(Throwable::getMessage).collect(Collectors.toList());
+        final List<String> warnings =
+                translator.getWarnings().stream().map(Throwable::getMessage).collect(Collectors.toList());
         assertThat(warnings, hasSize(1));
-        assertThat(warnings, contains("Could not find identifier: [IaMaDiFeReNtCaSe].  Did you mean [iAmAdIfErEnTcAsE]?"));
-
+        assertThat(
+                warnings, contains("Could not find identifier: [IaMaDiFeReNtCaSe].  Did you mean [iAmAdIfErEnTcAsE]?"));
     }
 
     private CqlTranslator runSemanticTest(String testFileName) throws IOException {

@@ -2,7 +2,6 @@ package org.cqframework.cql.cql2elm.model;
 
 import java.util.*;
 import java.util.List;
-
 import org.cqframework.cql.cql2elm.LibraryBuilder;
 import org.hl7.cql.model.DataType;
 import org.hl7.cql.model.NamespaceManager;
@@ -37,7 +36,8 @@ public class CompiledLibrary {
     private void checkNamespace(String identifier) {
         ResolvedIdentifierContext existingResolvedIdentifierContext = resolve(identifier);
         if (existingResolvedIdentifierContext.getExactMatchElement() != null) {
-            throw new IllegalArgumentException(String.format("Identifier %s is already in use in this library.", identifier));
+            throw new IllegalArgumentException(
+                    String.format("Identifier %s is already in use in this library.", identifier));
         }
     }
 
@@ -141,7 +141,7 @@ public class CompiledLibrary {
 
     public static class ResolvedIdentifierContext {
         private final String identifier;
-        private final Element nullableElement ;
+        private final Element nullableElement;
 
         // TODO:  enum instead?
         private final boolean isExactMatch;
@@ -161,7 +161,7 @@ public class CompiledLibrary {
         }
 
         public Element getCaseInsensitiveMatchElement() {
-            if (! isExactMatch) {
+            if (!isExactMatch) {
                 return nullableElement;
             }
 
@@ -170,10 +170,14 @@ public class CompiledLibrary {
 
         // TODO:  figure out where to call this from
         public void warnCaseInsensitiveIfApplicable(LibraryBuilder libraryBuilder) {
-            if (nullableElement != null && ! isExactMatch)
+            if (nullableElement != null && !isExactMatch)
                 if (nullableElement instanceof ExpressionDef) {
-                    final ExpressionDef caseInsensitiveExpressionDef  = (ExpressionDef) nullableElement;
-                    libraryBuilder.reportWarning(String.format("Could not find identifier: [%s].  Did you mean [%s]?", identifier, caseInsensitiveExpressionDef.getName()), nullableElement);
+                    final ExpressionDef caseInsensitiveExpressionDef = (ExpressionDef) nullableElement;
+                    libraryBuilder.reportWarning(
+                            String.format(
+                                    "Could not find identifier: [%s].  Did you mean [%s]?",
+                                    identifier, caseInsensitiveExpressionDef.getName()),
+                            nullableElement);
                 }
             // TODO:  what about other Element types?
         }
@@ -186,8 +190,7 @@ public class CompiledLibrary {
             return new ResolvedIdentifierContext(identifier, namespace.get(identifier), true);
         }
 
-        return namespace.entrySet()
-                .stream()
+        return namespace.entrySet().stream()
                 .filter(entry -> entry.getKey().equalsIgnoreCase(identifier))
                 .map(Map.Entry::getValue)
                 .map(element -> new ResolvedIdentifierContext(identifier, element, false))
@@ -198,7 +201,7 @@ public class CompiledLibrary {
     public UsingDef resolveUsingRef(String identifier) {
         ResolvedIdentifierContext element = resolve(identifier);
         if (element.getExactMatchElement() instanceof UsingDef) {
-            return (UsingDef)element.getExactMatchElement();
+            return (UsingDef) element.getExactMatchElement();
         }
 
         return null;
@@ -207,7 +210,7 @@ public class CompiledLibrary {
     public IncludeDef resolveIncludeRef(String identifier) {
         ResolvedIdentifierContext element = resolve(identifier);
         if (element.getExactMatchElement() instanceof IncludeDef) {
-            return (IncludeDef)element.getExactMatchElement();
+            return (IncludeDef) element.getExactMatchElement();
         }
 
         return null;
@@ -232,7 +235,7 @@ public class CompiledLibrary {
     public CodeSystemDef resolveCodeSystemRef(String identifier) {
         ResolvedIdentifierContext element = resolve(identifier);
         if (element.getExactMatchElement() instanceof CodeSystemDef) {
-            return (CodeSystemDef)element.getExactMatchElement();
+            return (CodeSystemDef) element.getExactMatchElement();
         }
 
         return null;
@@ -241,7 +244,7 @@ public class CompiledLibrary {
     public ValueSetDef resolveValueSetRef(String identifier) {
         ResolvedIdentifierContext element = resolve(identifier);
         if (element.getExactMatchElement() instanceof ValueSetDef) {
-            return (ValueSetDef)element.getExactMatchElement();
+            return (ValueSetDef) element.getExactMatchElement();
         }
 
         return null;
@@ -250,7 +253,7 @@ public class CompiledLibrary {
     public CodeDef resolveCodeRef(String identifier) {
         ResolvedIdentifierContext element = resolve(identifier);
         if (element.getExactMatchElement() instanceof CodeDef) {
-            return (CodeDef)element.getExactMatchElement();
+            return (CodeDef) element.getExactMatchElement();
         }
 
         return null;
@@ -259,7 +262,7 @@ public class CompiledLibrary {
     public ConceptDef resolveConceptRef(String identifier) {
         ResolvedIdentifierContext element = resolve(identifier);
         if (element.getExactMatchElement() instanceof ConceptDef) {
-            return (ConceptDef)element.getExactMatchElement();
+            return (ConceptDef) element.getExactMatchElement();
         }
 
         return null;
@@ -268,7 +271,7 @@ public class CompiledLibrary {
     public ParameterDef resolveParameterRef(String identifier) {
         ResolvedIdentifierContext element = resolve(identifier);
         if (element.getExactMatchElement() instanceof ParameterDef) {
-            return (ParameterDef)element.getExactMatchElement();
+            return (ParameterDef) element.getExactMatchElement();
         }
 
         return null;
@@ -277,7 +280,7 @@ public class CompiledLibrary {
     public ExpressionDef resolveExpressionRef(String identifier) {
         ResolvedIdentifierContext element = resolve(identifier);
         if (element.getExactMatchElement() instanceof ExpressionDef) {
-            return (ExpressionDef)element.getExactMatchElement();
+            return (ExpressionDef) element.getExactMatchElement();
         }
 
         return null;
