@@ -2926,6 +2926,9 @@ public class LibraryBuilder {
                 ValueSetRef result =
                         of.createValueSetRef().withLibraryName(libraryName).withName(memberIdentifier);
                 result.setResultType(element.getResultType());
+                if (isCompatibleWith("1.5")) {
+                    result.setPreserve(true);
+                }
                 return result;
             }
 
