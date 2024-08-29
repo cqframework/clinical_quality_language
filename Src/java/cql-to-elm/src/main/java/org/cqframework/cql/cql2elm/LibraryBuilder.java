@@ -1562,8 +1562,7 @@ public class LibraryBuilder {
         return query;
     }
 
-    // TODO:  should this really be public?
-    public void reportWarning(String message, Trackable expression) {
+    private void reportWarning(String message, Trackable expression) {
         TrackBack trackback = expression != null
                         && expression.getTrackbacks() != null
                         && !expression.getTrackbacks().isEmpty()
