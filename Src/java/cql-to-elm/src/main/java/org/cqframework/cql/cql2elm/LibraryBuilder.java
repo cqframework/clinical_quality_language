@@ -2371,95 +2371,98 @@ public class LibraryBuilder {
         }
 
         final ResolvedIdentifierContext resolvedIdentifierContext = resolve(identifier);
-        final Element element = resolvedIdentifierContext.getExactMatchElement().orElse(null);
+        final Optional<Element> optElement = resolvedIdentifierContext.getExactMatchElement();
 
-        if (element instanceof ExpressionDef) {
-            checkLiteralContext();
-            ExpressionRef expressionRef = of.createExpressionRef().withName(((ExpressionDef) element).getName());
-            expressionRef.setResultType(getExpressionDefResultType((ExpressionDef) element));
-            if (expressionRef.getResultType() == null) {
-                // ERROR:
-                throw new IllegalArgumentException(String.format(
-                        "Could not validate reference to expression %s because its definition contains errors.",
-                        expressionRef.getName()));
+        if (optElement.isPresent()) {
+            final Element element = optElement.get();
+            if (element instanceof ExpressionDef) {
+                checkLiteralContext();
+                ExpressionRef expressionRef = of.createExpressionRef().withName(((ExpressionDef) element).getName());
+                expressionRef.setResultType(getExpressionDefResultType((ExpressionDef) element));
+                if (expressionRef.getResultType() == null) {
+                    // ERROR:
+                    throw new IllegalArgumentException(String.format(
+                            "Could not validate reference to expression %s because its definition contains errors.",
+                            expressionRef.getName()));
+                }
+                return expressionRef;
             }
-            return expressionRef;
-        }
 
-        if (element instanceof ParameterDef) {
-            checkLiteralContext();
-            ParameterRef parameterRef = of.createParameterRef().withName(((ParameterDef) element).getName());
-            parameterRef.setResultType(element.getResultType());
-            if (parameterRef.getResultType() == null) {
-                // ERROR:
-                throw new IllegalArgumentException(String.format(
-                        "Could not validate reference to parameter %s because its definition contains errors.",
-                        parameterRef.getName()));
+            if (element instanceof ParameterDef) {
+                checkLiteralContext();
+                ParameterRef parameterRef = of.createParameterRef().withName(((ParameterDef) element).getName());
+                parameterRef.setResultType(element.getResultType());
+                if (parameterRef.getResultType() == null) {
+                    // ERROR:
+                    throw new IllegalArgumentException(String.format(
+                            "Could not validate reference to parameter %s because its definition contains errors.",
+                            parameterRef.getName()));
+                }
+                return parameterRef;
             }
-            return parameterRef;
-        }
 
-        if (element instanceof ValueSetDef) {
-            checkLiteralContext();
-            ValueSetRef valuesetRef = of.createValueSetRef().withName(((ValueSetDef) element).getName());
-            valuesetRef.setResultType(element.getResultType());
-            if (valuesetRef.getResultType() == null) {
-                // ERROR:
-                throw new IllegalArgumentException(String.format(
-                        "Could not validate reference to valueset %s because its definition contains errors.",
-                        valuesetRef.getName()));
+            if (element instanceof ValueSetDef) {
+                checkLiteralContext();
+                ValueSetRef valuesetRef = of.createValueSetRef().withName(((ValueSetDef) element).getName());
+                valuesetRef.setResultType(element.getResultType());
+                if (valuesetRef.getResultType() == null) {
+                    // ERROR:
+                    throw new IllegalArgumentException(String.format(
+                            "Could not validate reference to valueset %s because its definition contains errors.",
+                            valuesetRef.getName()));
+                }
+                if (isCompatibleWith("1.5")) {
+                    valuesetRef.setPreserve(true);
+                }
+                return valuesetRef;
             }
-            if (isCompatibleWith("1.5")) {
-                valuesetRef.setPreserve(true);
-            }
-            return valuesetRef;
-        }
 
-        if (element instanceof CodeSystemDef) {
-            checkLiteralContext();
-            CodeSystemRef codesystemRef = of.createCodeSystemRef().withName(((CodeSystemDef) element).getName());
-            codesystemRef.setResultType(element.getResultType());
-            if (codesystemRef.getResultType() == null) {
-                // ERROR:
-                throw new IllegalArgumentException(String.format(
-                        "Could not validate reference to codesystem %s because its definition contains errors.",
-                        codesystemRef.getName()));
+            if (element instanceof CodeSystemDef) {
+                checkLiteralContext();
+                CodeSystemRef codesystemRef = of.createCodeSystemRef().withName(((CodeSystemDef) element).getName());
+                codesystemRef.setResultType(element.getResultType());
+                if (codesystemRef.getResultType() == null) {
+                    // ERROR:
+                    throw new IllegalArgumentException(String.format(
+                            "Could not validate reference to codesystem %s because its definition contains errors.",
+                            codesystemRef.getName()));
+                }
+                return codesystemRef;
             }
-            return codesystemRef;
-        }
 
-        if (element instanceof CodeDef) {
-            checkLiteralContext();
-            CodeRef codeRef = of.createCodeRef().withName(((CodeDef) element).getName());
-            codeRef.setResultType(element.getResultType());
-            if (codeRef.getResultType() == null) {
-                // ERROR:
-                throw new IllegalArgumentException(String.format(
-                        "Could not validate reference to code %s because its definition contains errors.",
-                        codeRef.getName()));
+            if (element instanceof CodeDef) {
+                checkLiteralContext();
+                CodeRef codeRef = of.createCodeRef().withName(((CodeDef) element).getName());
+                codeRef.setResultType(element.getResultType());
+                if (codeRef.getResultType() == null) {
+                    // ERROR:
+                    throw new IllegalArgumentException(String.format(
+                            "Could not validate reference to code %s because its definition contains errors.",
+                            codeRef.getName()));
+                }
+                return codeRef;
             }
-            return codeRef;
-        }
 
-        if (element instanceof ConceptDef) {
-            checkLiteralContext();
-            ConceptRef conceptRef = of.createConceptRef().withName(((ConceptDef) element).getName());
-            conceptRef.setResultType(element.getResultType());
-            if (conceptRef.getResultType() == null) {
-                // ERROR:
-                throw new IllegalArgumentException(String.format(
-                        "Could not validate reference to concept %s because its definition contains error.",
-                        conceptRef.getName()));
+            if (element instanceof ConceptDef) {
+                checkLiteralContext();
+                ConceptRef conceptRef = of.createConceptRef().withName(((ConceptDef) element).getName());
+                conceptRef.setResultType(element.getResultType());
+                if (conceptRef.getResultType() == null) {
+                    // ERROR:
+                    throw new IllegalArgumentException(String.format(
+                            "Could not validate reference to concept %s because its definition contains error.",
+                            conceptRef.getName()));
+                }
+                return conceptRef;
             }
-            return conceptRef;
-        }
 
-        if (element instanceof IncludeDef) {
-            checkLiteralContext();
-            LibraryRef libraryRef = new LibraryRef();
-            libraryRef.setLocalId(of.nextId());
-            libraryRef.setLibraryName(((IncludeDef) element).getLocalIdentifier());
-            return libraryRef;
+            if (element instanceof IncludeDef) {
+                checkLiteralContext();
+                LibraryRef libraryRef = new LibraryRef();
+                libraryRef.setLocalId(of.nextId());
+                libraryRef.setLibraryName(((IncludeDef) element).getLocalIdentifier());
+                return libraryRef;
+            }
         }
 
         // If no other resolution occurs, and we are in a specific context, and there is a parameter with the same name
