@@ -380,4 +380,14 @@ class TranslationTests {
                         hidingLetFhir,
                         hidingAliasLet));
     }
+
+    @Test
+    void abstractClassNotRetrievable() throws IOException {
+        // See:  https://github.com/cqframework/clinical_quality_language/issues/1392
+        final CqlTranslator translator = TestUtils.runSemanticTest("abstractClassNotRetrievable.cql", 1);
+        final List<CqlCompilerException> errors = translator.getErrors();
+        final List<String> errorMessages =
+                errors.stream().map(Throwable::getMessage).toList();
+        assertThat(errorMessages, contains("Specified data type DomainResource does not support retrieval."));
+    }
 }
