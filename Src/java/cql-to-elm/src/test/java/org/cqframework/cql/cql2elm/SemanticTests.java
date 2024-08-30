@@ -755,8 +755,21 @@ public class SemanticTests {
     }
 
     @Test
-    void issue863() throws IOException {
-        TestUtils.runSemanticTest("Issue863.cql", 0);
+    public void testIdentifierDoesNotResolveCaseMismatchExistIdentifier() throws IOException {
+        final CqlTranslator translator =
+                runSemanticTest("IdentifierDoesNotResolveCaseMismatchExistIdentifier_Issue598.cql", 2);
+
+        final List<String> errorMessages =
+                translator.getErrors().stream().map(Throwable::getMessage).collect(Collectors.toList());
+        assertThat(
+                errorMessages,
+                contains(
+                        "Could not resolve identifier NonExistent in the current library.",
+                        "Could not find identifier: [IaMaDiFeReNtCaSe].  Did you mean [iAmAdIfErEnTcAsE]?"));
+
+        final List<String> warnings =
+                translator.getWarnings().stream().map(Throwable::getMessage).collect(Collectors.toList());
+        assertThat(warnings, hasSize(0));
     }
 
     private CqlTranslator runSemanticTest(String testFileName) throws IOException {
