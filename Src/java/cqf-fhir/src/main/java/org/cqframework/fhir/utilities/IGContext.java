@@ -113,16 +113,17 @@ public class IGContext {
      * Initializes from an ig.ini file in the root directory
      */
     public void initializeFromIni(String iniFile) {
-        IniFile ini = new IniFile(new File(iniFile).getAbsolutePath());
-        String rootDir = Utilities.getDirectoryForFile(ini.getFileName());
-        String igPath = ini.getStringProperty("IG", "ig");
-        String specifiedFhirVersion = ini.getStringProperty("IG", "fhir-version");
-        if (specifiedFhirVersion == null || specifiedFhirVersion == "") {
-            logMessage("fhir-version was not specified in the ini file. Trying FHIR version 4.0.1");
-            specifiedFhirVersion = "4.0.1";
-        }
         try {
-            initializeFromIg(rootDir, igPath, specifiedFhirVersion);
+            IniFile ini = new IniFile(new File(iniFile).getAbsolutePath());
+            String iniDir = Utilities.getDirectoryForFile(ini.getFileName());
+            String igPath = ini.getStringProperty("IG", "ig");
+            String specifiedFhirVersion = ini.getStringProperty("IG", "fhir-version");
+            if (specifiedFhirVersion == null || specifiedFhirVersion == "") {
+                logMessage("fhir-version was not specified in the ini file. Trying FHIR version 4.0.1");
+                specifiedFhirVersion = "4.0.1";
+            }
+
+            initializeFromIg(iniDir, igPath, specifiedFhirVersion);
         } catch (Exception e) {
             String message = String.format(
                     "Exceptions occurred initializing refresh from ini file '%s':%s", iniFile, e.getMessage());

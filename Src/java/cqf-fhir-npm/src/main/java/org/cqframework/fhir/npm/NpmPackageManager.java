@@ -3,6 +3,7 @@ package org.cqframework.fhir.npm;
 import ca.uhn.fhir.model.primitive.IdDt;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.hl7.fhir.r5.context.IWorkerContext;
 import org.hl7.fhir.r5.model.ImplementationGuide;
@@ -29,23 +30,10 @@ public class NpmPackageManager implements IWorkerContext.ILoggingService {
     public NpmPackageManager(
             ImplementationGuide sourceIg, FilesystemPackageCacheManager fspcm, List<NpmPackage> npmList) {
         this.sourceIg = sourceIg;
-
-        if (fspcm == null) {
-            try {
-                // userMode indicates whether the packageCache is within the working directory or in the user home
-                this.fspcm = new FilesystemPackageCacheManager(true);
-            } catch (IOException e) {
-                String message = "Error creating the FilesystemPackageCacheManager: " + e.getMessage();
-                logErrorMessage(message);
-                throw new NpmPackageManagerException(message, e);
-            }
-        } else {
-            this.fspcm = fspcm;
-        }
-
         this.npmList = npmList == null ? new ArrayList<>() : npmList;
 
         try {
+            this.fspcm = fspcm != null ? fspcm : new FilesystemPackageCacheManager.Builder().build();
             loadDependencies();
         } catch (Exception e) {
             logErrorMessage(e.getMessage());
