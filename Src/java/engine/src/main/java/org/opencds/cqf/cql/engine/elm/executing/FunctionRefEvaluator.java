@@ -130,11 +130,11 @@ public class FunctionRefEvaluator {
     }
 
     private static boolean operandDefTypeSpecifierEqual(OperandDef operandDef, TypeSpecifier typeSpecifier) {
-        // An operand def can have a resultTypeSpecifier or resultTypeName
+        // An operand def can have an operandTypeSpecifier or operandType
 
-        var operandDefResultTypeSpecifier = operandDef.getResultTypeSpecifier();
-        if (operandDefResultTypeSpecifier != null) {
-            return SimpleElmEvaluator.typeSpecifiersEqual(operandDefResultTypeSpecifier, typeSpecifier);
+        var operandDefOperandTypeSpecifier = operandDef.getOperandTypeSpecifier();
+        if (operandDefOperandTypeSpecifier != null) {
+            return SimpleElmEvaluator.typeSpecifiersEqual(operandDefOperandTypeSpecifier, typeSpecifier);
         }
 
         if (typeSpecifier instanceof NamedTypeSpecifier) {
@@ -148,8 +148,12 @@ public class FunctionRefEvaluator {
     private static String getUnresolvedMessage(State state, List<? extends Object> arguments, String name) {
         StringBuilder argStr = new StringBuilder();
         if (arguments != null) {
-            arguments.forEach(a -> argStr.append((argStr.length() > 0) ? ", " : "")
-                    .append(state.getEnvironment().resolveType(a).getTypeName()));
+            arguments.forEach(a -> {
+                argStr.append((argStr.length() > 0) ? ", " : "");
+
+                Class<?> type = state.getEnvironment().resolveType(a);
+                argStr.append(type == null ? "null" : type.getTypeName());
+            });
         }
 
         return argStr.toString();
