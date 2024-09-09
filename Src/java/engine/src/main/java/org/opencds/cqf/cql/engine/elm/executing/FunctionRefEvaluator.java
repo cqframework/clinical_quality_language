@@ -3,11 +3,10 @@ package org.opencds.cqf.cql.engine.elm.executing;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import org.cqframework.cql.elm.evaluating.SimpleElmEvaluator;
 import org.cqframework.cql.elm.visiting.ElmLibraryVisitor;
-import org.hl7.elm.r1.Expression;
-import org.hl7.elm.r1.FunctionDef;
-import org.hl7.elm.r1.FunctionRef;
-import org.hl7.elm.r1.TypeSpecifier;
+import org.hl7.elm.r1.*;
 import org.opencds.cqf.cql.engine.exception.CqlException;
 import org.opencds.cqf.cql.engine.execution.Libraries;
 import org.opencds.cqf.cql.engine.execution.State;
@@ -65,7 +64,7 @@ public class FunctionRefEvaluator {
             }
         }
 
-        FunctionDef functionDef = resolveFunctionDef(state, functionRef, arguments);
+        FunctionDef functionDef = resolveFunctionRef(state, functionRef, arguments);
 
         if (eligibleForCaching) {
             state.getCache().getFunctionCache().put(functionRef, functionDef);
@@ -74,51 +73,76 @@ public class FunctionRefEvaluator {
         return functionDef;
     }
 
-    protected static FunctionDef resolveFunctionDef(State state, FunctionRef functionRef, ArrayList<Object> arguments) {
-        return resolveFunctionRef(state, functionRef.getName(), arguments, functionRef.getSignature());
-    }
+    protected static FunctionDef resolveFunctionRef(State state, FunctionRef functionRef, List<Object> arguments) {
+        var name = functionRef.getName();
+        var signature = functionRef.getSignature();
 
-    public static FunctionDef resolveFunctionRef(
-            State state, final String name, final List<Object> arguments, final List<TypeSpecifier> signature) {
-        FunctionDef ret;
+        var functionDefs = resolveFunctionRef(state, name, arguments, signature);
 
         final List<? extends Object> types = signature.isEmpty() ? arguments : signature;
 
-        ret = getResolvedFunctionDef(state, name, types, !signature.isEmpty());
+        if (functionDefs.isEmpty()) {
+            throw new CqlException(String.format(
+                    "Could not resolve call to operator '%s(%s)' in library '%s'.",
+                    name,
+                    getUnresolvedMessage(state, types, name),
+                    state.getCurrentLibrary().getIdentifier().getId()));
+        }
 
-        if (ret != null) {
-            return ret;
+        if (functionDefs.size() == 1) {
+            // Normal case
+            return functionDefs.get(0);
         }
 
         throw new CqlException(String.format(
-                "Could not resolve call to operator '%s(%s)' in library '%s'.",
+                "Ambiguous call to operator '%s(%s)' in library '%s'.",
                 name,
                 getUnresolvedMessage(state, types, name),
                 state.getCurrentLibrary().getIdentifier().getId()));
     }
 
-    private static FunctionDef getResolvedFunctionDef(
-            State state, final String name, final List<? extends Object> types, final boolean hasSignature) {
+    private static List<FunctionDef> resolveFunctionRef(
+            State state, final String name, final List<Object> arguments, final List<TypeSpecifier> signature) {
         var namedDefs = Libraries.getFunctionDefs(name, state.getCurrentLibrary());
 
-        var candidateDefs = namedDefs.stream()
-                .filter(x -> x.getOperand().size() == types.size())
+        // If the function ref includes a signature, use the signature to find the matching function defs
+        if (!signature.isEmpty()) {
+            return namedDefs.stream()
+                    .filter(x -> functionDefOperandsSignatureEqual(x, signature))
+                    .collect(Collectors.toList());
+        }
+
+        logger.debug(
+                "Using runtime function resolution for '{}'. It's recommended to always include signatures in ELM",
+                name);
+
+        return namedDefs.stream()
+                .filter(x -> state.getEnvironment().matchesTypes(x, arguments))
                 .collect(Collectors.toList());
+    }
 
-        if (candidateDefs.size() == 1) {
-            return candidateDefs.get(0);
+    private static boolean functionDefOperandsSignatureEqual(FunctionDef functionDef, List<TypeSpecifier> signature) {
+        var operands = functionDef.getOperand();
+
+        return operands.size() == signature.size()
+                && IntStream.range(0, operands.size())
+                        .allMatch(i -> operandDefTypeSpecifierEqual(operands.get(i), signature.get(i)));
+    }
+
+    private static boolean operandDefTypeSpecifierEqual(OperandDef operandDef, TypeSpecifier typeSpecifier) {
+        // An operand def can have a resultTypeSpecifier or resultTypeName
+
+        var operandDefResultTypeSpecifier = operandDef.getResultTypeSpecifier();
+        if (operandDefResultTypeSpecifier != null) {
+            return SimpleElmEvaluator.typeSpecifiersEqual(operandDefResultTypeSpecifier, typeSpecifier);
         }
 
-        if (candidateDefs.size() > 1 && !hasSignature) {
-            logger.debug(
-                    "Using runtime function resolution for '{}'. It's recommended to always include signatures in ELM",
-                    name);
+        if (typeSpecifier instanceof NamedTypeSpecifier) {
+            return SimpleElmEvaluator.qnamesEqual(
+                    operandDef.getOperandType(), ((NamedTypeSpecifier) typeSpecifier).getName());
         }
 
-        return candidateDefs.stream()
-                .filter(x -> state.getEnvironment().matchesTypes(x, types))
-                .findFirst()
-                .orElse(null);
+        return false;
     }
 
     private static String getUnresolvedMessage(State state, List<? extends Object> arguments, String name) {

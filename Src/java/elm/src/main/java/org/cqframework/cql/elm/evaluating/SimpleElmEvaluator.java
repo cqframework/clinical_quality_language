@@ -1,6 +1,8 @@
 package org.cqframework.cql.elm.evaluating;
 
+import javax.xml.namespace.QName;
 import org.hl7.elm.r1.Expression;
+import org.hl7.elm.r1.TypeSpecifier;
 
 public class SimpleElmEvaluator {
 
@@ -40,5 +42,13 @@ public class SimpleElmEvaluator {
 
     public static boolean codesEqual(Expression left, Expression right) {
         return engine.codesEqual(left, right);
+    }
+
+    public static boolean typeSpecifiersEqual(TypeSpecifier left, TypeSpecifier right) {
+        return engine.typeSpecifiersEqual(left, right);
+    }
+
+    public static boolean qnamesEqual(QName left, QName right) {
+        return engine.qnamesEqual(left, right);
     }
 }
