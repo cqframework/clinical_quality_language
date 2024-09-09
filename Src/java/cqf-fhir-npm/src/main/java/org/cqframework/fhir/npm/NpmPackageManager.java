@@ -3,7 +3,6 @@ package org.cqframework.fhir.npm;
 import ca.uhn.fhir.model.primitive.IdDt;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import org.hl7.fhir.r5.context.IWorkerContext;
 import org.hl7.fhir.r5.model.ImplementationGuide;
