@@ -79,30 +79,11 @@ public class FunctionRefEvaluator {
 
         var functionDefs = resolveFunctionRef(state, name, arguments, signature);
 
-        final List<? extends Object> types = signature.isEmpty() ? arguments : signature;
-
-        if (functionDefs.isEmpty()) {
-            throw new CqlException(String.format(
-                    "Could not resolve call to operator '%s(%s)' in library '%s'.",
-                    name,
-                    getUnresolvedMessage(state, types, name),
-                    state.getCurrentLibrary().getIdentifier().getId()));
-        }
-
-        if (functionDefs.size() == 1) {
-            // Normal case
-            return functionDefs.get(0);
-        }
-
-        throw new CqlException(String.format(
-                "Ambiguous call to operator '%s(%s)' in library '%s'.",
-                name,
-                getUnresolvedMessage(state, types, name),
-                state.getCurrentLibrary().getIdentifier().getId()));
+        return pickFunctionDef(state, name, arguments, signature, functionDefs);
     }
 
-    private static List<FunctionDef> resolveFunctionRef(
-            State state, final String name, final List<Object> arguments, final List<TypeSpecifier> signature) {
+    static List<FunctionDef> resolveFunctionRef(
+            State state, String name, List<Object> arguments, List<TypeSpecifier> signature) {
         var namedDefs = Libraries.getFunctionDefs(name, state.getCurrentLibrary());
 
         // If the function ref includes a signature, use the signature to find the matching function defs
@@ -121,7 +102,7 @@ public class FunctionRefEvaluator {
                 .collect(Collectors.toList());
     }
 
-    private static boolean functionDefOperandsSignatureEqual(FunctionDef functionDef, List<TypeSpecifier> signature) {
+    static boolean functionDefOperandsSignatureEqual(FunctionDef functionDef, List<TypeSpecifier> signature) {
         var operands = functionDef.getOperand();
 
         return operands.size() == signature.size()
@@ -129,7 +110,7 @@ public class FunctionRefEvaluator {
                         .allMatch(i -> operandDefTypeSpecifierEqual(operands.get(i), signature.get(i)));
     }
 
-    private static boolean operandDefTypeSpecifierEqual(OperandDef operandDef, TypeSpecifier typeSpecifier) {
+    static boolean operandDefTypeSpecifierEqual(OperandDef operandDef, TypeSpecifier typeSpecifier) {
         // An operand def can have an operandTypeSpecifier or operandType
 
         var operandDefOperandTypeSpecifier = operandDef.getOperandTypeSpecifier();
@@ -145,7 +126,35 @@ public class FunctionRefEvaluator {
         return false;
     }
 
-    private static String getUnresolvedMessage(State state, List<? extends Object> arguments, String name) {
+    static FunctionDef pickFunctionDef(
+            State state,
+            String name,
+            List<Object> arguments,
+            List<TypeSpecifier> signature,
+            List<FunctionDef> functionDefs) {
+        var types = signature.isEmpty() ? arguments : signature;
+
+        if (functionDefs.isEmpty()) {
+            throw new CqlException(String.format(
+                    "Could not resolve call to operator '%s(%s)' in library '%s'.",
+                    name,
+                    typesToString(state, types),
+                    state.getCurrentLibrary().getIdentifier().getId()));
+        }
+
+        if (functionDefs.size() == 1) {
+            // Normal case
+            return functionDefs.get(0);
+        }
+
+        throw new CqlException(String.format(
+                "Ambiguous call to operator '%s(%s)' in library '%s'.",
+                name,
+                typesToString(state, types),
+                state.getCurrentLibrary().getIdentifier().getId()));
+    }
+
+    static String typesToString(State state, List<? extends Object> arguments) {
         StringBuilder argStr = new StringBuilder();
         if (arguments != null) {
             arguments.forEach(a -> {
