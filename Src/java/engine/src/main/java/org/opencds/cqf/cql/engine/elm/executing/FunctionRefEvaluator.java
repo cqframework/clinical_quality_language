@@ -105,6 +105,7 @@ public class FunctionRefEvaluator {
     static boolean functionDefOperandsSignatureEqual(FunctionDef functionDef, List<TypeSpecifier> signature) {
         var operands = functionDef.getOperand();
 
+        // Check if the number of operands match and if the type specifiers match
         return operands.size() == signature.size()
                 && IntStream.range(0, operands.size())
                         .allMatch(i -> operandDefTypeSpecifierEqual(operands.get(i), signature.get(i)));
