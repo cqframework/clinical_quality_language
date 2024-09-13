@@ -26,7 +26,7 @@ sourceSets {
 }
 
 tasks.generateGrammarSource {
-    val buildDir = project.layout.buildDirectory.get().toString()
+    val buildDir = layout.buildDirectory.get().toString()
     outputDirectory = file("${buildDir}/generated/sources/antlr/main/java/org/cqframework/cql/gen")
     arguments = listOf("-visitor", "-package", "org.cqframework.cql.gen")
 }

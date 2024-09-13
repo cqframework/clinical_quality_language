@@ -13,6 +13,10 @@ dependencies {
     errorprone("com.google.errorprone:error_prone_core:2.29.2")
 }
 
+tasks.named<Checkstyle>("checkstyleMain") {
+    exclude("generated/**/*.*")
+}
+
 tasks.named<Checkstyle>("checkstyleTest") {
     enabled = false
 }
