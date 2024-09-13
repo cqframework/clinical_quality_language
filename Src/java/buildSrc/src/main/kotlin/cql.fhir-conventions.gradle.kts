@@ -14,7 +14,6 @@ configurations.all {
     }
 }
 
-
 dependencies {
 
     api(platform("ca.uhn.hapi.fhir:hapi-fhir-bom:${project.findProperty("hapi.version")}"))

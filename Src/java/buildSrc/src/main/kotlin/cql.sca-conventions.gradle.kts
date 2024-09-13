@@ -14,7 +14,7 @@ dependencies {
 }
 
 tasks.named<Checkstyle>("checkstyleMain") {
-    exclude("generated/**/*.*")
+    exclude { it.file.path.contains("generated")}
 }
 
 tasks.named<Checkstyle>("checkstyleTest") {
