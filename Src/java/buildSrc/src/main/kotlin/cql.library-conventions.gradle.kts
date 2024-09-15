@@ -12,5 +12,10 @@ dependencies {
 }
 
 animalsniffer {
-    sourceSets.removeIf { it.name != "main" }
+    sourceSets {
+        val test by getting {
+            java.setSrcDirs(emptyList<String>())
+            resources.setSrcDirs(emptyList<String>())
+        }
+    }
 }

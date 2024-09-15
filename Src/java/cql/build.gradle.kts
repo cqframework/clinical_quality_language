@@ -17,7 +17,6 @@ application {
 sourceSets {
     main {
         antlr {
-            srcDirs.clear()
             srcDir("../../grammar")
         }
         java {
