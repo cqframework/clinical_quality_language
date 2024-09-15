@@ -23,7 +23,9 @@ sourceSets {
 }
 
 tasks.generateGrammarSource {
-    source(file("../../grammar").absolutePath)
+    val path = file("../../grammar").absolutePath
+    logger.error(path)
+    source(path)
     val buildDir = layout.buildDirectory.get().toString()
     outputDirectory = file("${buildDir}/generated/sources/antlr/main/java/org/cqframework/cql/gen")
     arguments = listOf("-visitor", "-package", "org.cqframework.cql.gen")
