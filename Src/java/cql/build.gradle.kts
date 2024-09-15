@@ -17,7 +17,8 @@ application {
 sourceSets {
     main {
         antlr {
-            srcDirs("../../grammar")
+            srcDirs.clear()
+            srcDir("../../grammar")
         }
         java {
             srcDir("build/generated/sources/antlr/main/java")
