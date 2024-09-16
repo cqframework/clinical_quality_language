@@ -4,6 +4,8 @@ import ca.uhn.fhir.model.primitive.IdDt;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.hl7.fhir.r5.context.ILoggingService;
 import org.hl7.fhir.r5.context.IWorkerContext;
 import org.hl7.fhir.r5.model.ImplementationGuide;
 import org.hl7.fhir.utilities.VersionUtilities;
@@ -12,7 +14,7 @@ import org.hl7.fhir.utilities.npm.NpmPackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class NpmPackageManager implements IWorkerContext.ILoggingService {
+public class NpmPackageManager implements ILoggingService {
     private static final Logger logger = LoggerFactory.getLogger(NpmPackageManager.class);
     private final ImplementationGuide sourceIg;
     private final FilesystemPackageCacheManager fspcm;

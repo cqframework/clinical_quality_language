@@ -12,6 +12,7 @@ import org.hl7.elm_modelinfo.r1.ModelInfo;
 import org.hl7.fhir.convertors.advisors.impl.BaseAdvisor_40_50;
 import org.hl7.fhir.convertors.conv40_50.VersionConvertor_40_50;
 import org.hl7.fhir.r4.model.Resource;
+import org.hl7.fhir.r5.context.ILoggingService;
 import org.hl7.fhir.r5.context.IWorkerContext;
 import org.hl7.fhir.r5.model.ImplementationGuide;
 import org.hl7.fhir.utilities.npm.NpmPackage;
@@ -20,7 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class NpmPackageManagerTests implements IWorkerContext.ILoggingService {
+public class NpmPackageManagerTests implements ILoggingService {
 
     private final Logger logger = LoggerFactory.getLogger(NpmPackageManagerTests.class);
     private final VersionConvertor_40_50 convertor = new VersionConvertor_40_50(new BaseAdvisor_40_50());
@@ -134,7 +135,7 @@ public class NpmPackageManagerTests implements IWorkerContext.ILoggingService {
     }
 
     @Override
-    public void logDebugMessage(IWorkerContext.ILoggingService.LogCategory category, String msg) {
+    public void logDebugMessage(ILoggingService.LogCategory category, String msg) {
         logMessage(msg);
     }
 

@@ -8,6 +8,7 @@ import java.util.List;
 import org.hl7.cql.model.ModelIdentifier;
 import org.hl7.cql.model.ModelInfoProvider;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
+import org.hl7.fhir.r5.context.ILoggingService;
 import org.hl7.fhir.r5.context.IWorkerContext;
 import org.hl7.fhir.r5.model.Library;
 import org.hl7.fhir.utilities.npm.NpmPackage;
@@ -18,7 +19,7 @@ import org.hl7.fhir.utilities.npm.NpmPackage;
 public class NpmModelInfoProvider implements ModelInfoProvider {
 
     public NpmModelInfoProvider(
-            List<NpmPackage> packages, ILibraryReader reader, IWorkerContext.ILoggingService logger) {
+            List<NpmPackage> packages, ILibraryReader reader, ILoggingService logger) {
         this.packages = packages;
         this.reader = reader;
         this.logger = logger;
@@ -26,7 +27,7 @@ public class NpmModelInfoProvider implements ModelInfoProvider {
 
     private List<NpmPackage> packages;
     private ILibraryReader reader;
-    private IWorkerContext.ILoggingService logger;
+    private ILoggingService logger;
 
     public ModelInfo load(ModelIdentifier modelIdentifier) {
         // VersionedIdentifier.id: Name of the model
@@ -60,7 +61,7 @@ public class NpmModelInfoProvider implements ModelInfoProvider {
                 }
             } catch (IOException e) {
                 logger.logDebugMessage(
-                        IWorkerContext.ILoggingService.LogCategory.PROGRESS,
+                        ILoggingService.LogCategory.PROGRESS,
                         String.format(
                                 "Exceptions occurred attempting to load npm library for model %s",
                                 modelIdentifier.toString()));
