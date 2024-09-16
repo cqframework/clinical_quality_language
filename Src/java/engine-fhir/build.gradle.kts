@@ -19,7 +19,7 @@ tasks.register<XjcTask>("generateFhirPathTests") {
     extraArgs = listOf("-npa", "-p", "org.hl7.fhirpath.tests")
 }
 
-jacocoTestReport {
+tasks.jacocoTestReport {
     sourceDirectories.setFrom(files(
         "${projectDir}/../elm/src/main/java",
         "${projectDir}/../cql-to-elm/src/main/java",

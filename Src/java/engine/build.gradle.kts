@@ -11,7 +11,7 @@ dependencies {
     testImplementation("org.mockito:mockito-core:5.4.0")
 }
 
-jacocoTestReport {
+tasks.jacocoTestReport {
     sourceDirectories.setFrom(files(
             "${projectDir}/../elm/src/main/java",
             "${projectDir}/../cql-to-elm/src/main/java",
