@@ -4,9 +4,7 @@ import ca.uhn.fhir.model.primitive.IdDt;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.hl7.fhir.r5.context.ILoggingService;
-import org.hl7.fhir.r5.context.IWorkerContext;
 import org.hl7.fhir.r5.model.ImplementationGuide;
 import org.hl7.fhir.utilities.VersionUtilities;
 import org.hl7.fhir.utilities.npm.FilesystemPackageCacheManager;

@@ -9,7 +9,6 @@ import org.hl7.cql.model.ModelIdentifier;
 import org.hl7.cql.model.ModelInfoProvider;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 import org.hl7.fhir.r5.context.ILoggingService;
-import org.hl7.fhir.r5.context.IWorkerContext;
 import org.hl7.fhir.r5.model.Library;
 import org.hl7.fhir.utilities.npm.NpmPackage;
 
@@ -18,8 +17,7 @@ import org.hl7.fhir.utilities.npm.NpmPackage;
  */
 public class NpmModelInfoProvider implements ModelInfoProvider {
 
-    public NpmModelInfoProvider(
-            List<NpmPackage> packages, ILibraryReader reader, ILoggingService logger) {
+    public NpmModelInfoProvider(List<NpmPackage> packages, ILibraryReader reader, ILoggingService logger) {
         this.packages = packages;
         this.reader = reader;
         this.logger = logger;

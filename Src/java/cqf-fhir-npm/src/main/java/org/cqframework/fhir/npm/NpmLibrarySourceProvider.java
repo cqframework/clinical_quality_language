@@ -7,7 +7,6 @@ import java.util.List;
 import org.cqframework.cql.cql2elm.LibrarySourceProvider;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.fhir.r5.context.ILoggingService;
-import org.hl7.fhir.r5.context.IWorkerContext;
 import org.hl7.fhir.r5.model.Library;
 import org.hl7.fhir.utilities.npm.NpmPackage;
 
@@ -16,8 +15,7 @@ import org.hl7.fhir.utilities.npm.NpmPackage;
  */
 public class NpmLibrarySourceProvider implements LibrarySourceProvider {
 
-    public NpmLibrarySourceProvider(
-            List<NpmPackage> packages, ILibraryReader reader, ILoggingService logger) {
+    public NpmLibrarySourceProvider(List<NpmPackage> packages, ILibraryReader reader, ILoggingService logger) {
         this.packages = packages;
         this.reader = reader;
         this.logger = logger;

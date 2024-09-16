@@ -13,7 +13,6 @@ import org.hl7.fhir.convertors.advisors.impl.BaseAdvisor_40_50;
 import org.hl7.fhir.convertors.conv40_50.VersionConvertor_40_50;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r5.context.ILoggingService;
-import org.hl7.fhir.r5.context.IWorkerContext;
 import org.hl7.fhir.r5.model.ImplementationGuide;
 import org.hl7.fhir.utilities.npm.NpmPackage;
 import org.junit.jupiter.api.Disabled;
