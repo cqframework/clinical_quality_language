@@ -33,11 +33,11 @@ public class CompiledLibrary {
     }
 
     private void checkNamespace(String identifier) {
-        Element existingElement = resolve(identifier);
-        if (existingElement != null) {
+        final ResolvedIdentifierContext existingResolvedIdentifierContext = resolve(identifier);
+        existingResolvedIdentifierContext.getExactMatchElement().ifPresent(element -> {
             throw new IllegalArgumentException(
                     String.format("Identifier %s is already in use in this library.", identifier));
-        }
+        });
     }
 
     public void add(UsingDef using) {
@@ -138,26 +138,25 @@ public class CompiledLibrary {
         conversions.add(conversion);
     }
 
-    public Element resolve(String identifier) {
-        return namespace.get(identifier);
+    public ResolvedIdentifierContext resolve(String identifier) {
+        if (namespace.containsKey(identifier)) {
+            return ResolvedIdentifierContext.exactMatch(identifier, namespace.get(identifier));
+        }
+
+        return namespace.entrySet().stream()
+                .filter(entry -> entry.getKey().equalsIgnoreCase(identifier))
+                .map(Map.Entry::getValue)
+                .map(element -> ResolvedIdentifierContext.caseInsensitiveMatch(identifier, element))
+                .findFirst()
+                .orElse(ResolvedIdentifierContext.caseInsensitiveMatch(identifier, null));
     }
 
     public UsingDef resolveUsingRef(String identifier) {
-        Element element = resolve(identifier);
-        if (element instanceof UsingDef) {
-            return (UsingDef) element;
-        }
-
-        return null;
+        return resolveIdentifier(identifier, UsingDef.class);
     }
 
     public IncludeDef resolveIncludeRef(String identifier) {
-        Element element = resolve(identifier);
-        if (element instanceof IncludeDef) {
-            return (IncludeDef) element;
-        }
-
-        return null;
+        return resolveIdentifier(identifier, IncludeDef.class);
     }
 
     public String resolveIncludeAlias(VersionedIdentifier identifier) {
@@ -177,57 +176,31 @@ public class CompiledLibrary {
     }
 
     public CodeSystemDef resolveCodeSystemRef(String identifier) {
-        Element element = resolve(identifier);
-        if (element instanceof CodeSystemDef) {
-            return (CodeSystemDef) element;
-        }
-
-        return null;
+        return resolveIdentifier(identifier, CodeSystemDef.class);
     }
 
     public ValueSetDef resolveValueSetRef(String identifier) {
-        Element element = resolve(identifier);
-        if (element instanceof ValueSetDef) {
-            return (ValueSetDef) element;
-        }
-
-        return null;
+        return resolveIdentifier(identifier, ValueSetDef.class);
     }
 
     public CodeDef resolveCodeRef(String identifier) {
-        Element element = resolve(identifier);
-        if (element instanceof CodeDef) {
-            return (CodeDef) element;
-        }
-
-        return null;
+        return resolveIdentifier(identifier, CodeDef.class);
     }
 
     public ConceptDef resolveConceptRef(String identifier) {
-        Element element = resolve(identifier);
-        if (element instanceof ConceptDef) {
-            return (ConceptDef) element;
-        }
-
-        return null;
+        return resolveIdentifier(identifier, ConceptDef.class);
     }
 
     public ParameterDef resolveParameterRef(String identifier) {
-        Element element = resolve(identifier);
-        if (element instanceof ParameterDef) {
-            return (ParameterDef) element;
-        }
-
-        return null;
+        return resolveIdentifier(identifier, ParameterDef.class);
     }
 
     public ExpressionDef resolveExpressionRef(String identifier) {
-        Element element = resolve(identifier);
-        if (element instanceof ExpressionDef) {
-            return (ExpressionDef) element;
-        }
+        return resolveIdentifier(identifier, ExpressionDef.class);
+    }
 
-        return null;
+    private <T extends Element> T resolveIdentifier(String identifier, Class<T> clazz) {
+        return resolve(identifier).resolveIdentifier(clazz);
     }
 
     public Iterable<FunctionDef> resolveFunctionRef(String identifier) {

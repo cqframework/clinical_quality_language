@@ -1,10 +1,13 @@
 package org.opencds.cqf.cql.engine.execution;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import org.cqframework.cql.cql2elm.CqlCompilerOptions;
+import org.cqframework.cql.cql2elm.LibraryBuilder;
 import org.hl7.elm.r1.VersionedIdentifier;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.opencds.cqf.cql.engine.exception.CqlException;
 
 @SuppressWarnings("removal")
 class CqlListDistinguishedOverloadsTest extends CqlTestBase {
@@ -13,9 +16,17 @@ class CqlListDistinguishedOverloadsTest extends CqlTestBase {
             new VersionedIdentifier().withId("CqlListDistinguishedOverloads");
 
     @Test
-    @Disabled("There's a bug in the cql engine that is causing it to select the wrong function overload at runtime")
     void list_overload() {
-        var value = engine.expression(library, "Test").value();
+        var compilerOptions = CqlCompilerOptions.defaultOptions();
+
+        var engine1 = getEngine(compilerOptions.withSignatureLevel(LibraryBuilder.SignatureLevel.Overloads));
+        var value = engine1.expression(library, "Test").value();
         assertEquals("1, 2, 3, 4, 5", value);
+
+        var engine2 = getEngine(compilerOptions.withSignatureLevel(LibraryBuilder.SignatureLevel.None));
+        var cqlException = assertThrows(CqlException.class, () -> engine2.expression(library, "Test"));
+        assertEquals(
+                "Ambiguous call to operator 'toString(java.util.List)' in library 'CqlListDistinguishedOverloads'.",
+                cqlException.getMessage());
     }
 }

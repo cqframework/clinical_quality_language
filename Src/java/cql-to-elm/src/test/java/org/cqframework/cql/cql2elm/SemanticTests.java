@@ -2,9 +2,7 @@ package org.cqframework.cql.cql2elm;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -755,8 +753,41 @@ public class SemanticTests {
     }
 
     @Test
-    void issue863() throws IOException {
-        TestUtils.runSemanticTest("Issue863.cql", 0);
+    public void testIdentifierDoesNotResolveCaseMismatchExistIdentifier() throws IOException {
+        final CqlTranslator translator =
+                runSemanticTest("IdentifierDoesNotResolveCaseMismatchExistIdentifier_Issue598.cql", 2);
+
+        final List<String> errorMessages =
+                translator.getErrors().stream().map(Throwable::getMessage).collect(Collectors.toList());
+        assertThat(
+                errorMessages,
+                contains(
+                        "Could not resolve identifier NonExistent in the current library.",
+                        "Could not find identifier: [IaMaDiFeReNtCaSe].  Did you mean [iAmAdIfErEnTcAsE]?"));
+
+        final List<String> warnings =
+                translator.getWarnings().stream().map(Throwable::getMessage).collect(Collectors.toList());
+        assertThat(warnings, hasSize(0));
+    }
+
+    @Test
+    void issue1407() throws IOException {
+        assertNull(issue1407GetIsPreserve("1.4"));
+        assertTrue(issue1407GetIsPreserve("1.5"));
+    }
+
+    private Boolean issue1407GetIsPreserve(String compatibilityLevel) throws IOException {
+        CqlTranslator translator = runSemanticTest(
+                "LibraryTests/Issue1407.cql", 0, new CqlCompilerOptions().withCompatibilityLevel(compatibilityLevel));
+        var library = translator.toELM();
+        var testExpression = library.getStatements().getDef().stream()
+                .filter(def -> def.getName().equals("TestStatement"))
+                .findFirst()
+                .orElseThrow()
+                .getExpression();
+
+        assertThat(testExpression, instanceOf(ValueSetRef.class));
+        return ((ValueSetRef) testExpression).isPreserve();
     }
 
     private CqlTranslator runSemanticTest(String testFileName) throws IOException {
