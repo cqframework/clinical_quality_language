@@ -1,5 +1,6 @@
 plugins {
     id("cql.java-conventions")
+    id("cql.kotlin-conventions")
     id("application")
     id("antlr")
 }
@@ -11,7 +12,7 @@ dependencies {
 }
 
 application {
-    mainClass = "org.cqframework.cql.Main"
+    mainClass = "org.cqframework.cql.Application"
 }
 
 sourceSets {
@@ -33,4 +34,8 @@ tasks.generateGrammarSource {
 
 tasks.sourcesJar {
     from(tasks.generateGrammarSource)
+}
+
+tasks.compileKotlin {
+    dependsOn(tasks.generateGrammarSource)
 }

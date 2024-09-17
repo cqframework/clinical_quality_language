@@ -4,6 +4,7 @@ plugins {
     id("java-library")
     id("ru.vyarus.animalsniffer")
     id("cql.java-conventions")
+    id("cql.kotlin-conventions")
 }
 
 dependencies {

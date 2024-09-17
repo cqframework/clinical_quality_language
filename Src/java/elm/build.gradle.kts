@@ -18,3 +18,7 @@ tasks.register<XjcTask>("generateElm") {
     schema = "${projectDir}/../../cql-lm/schema/elm/library.xsd"
     extraArgs = listOf("-npa", "-XautoInheritance", "-XautoInheritance-xmlTypesExtend=org.cqframework.cql.elm.tracking.Trackable")
 }
+
+tasks.compileKotlin {
+    dependsOn("generateAnnotation", "generateElm")
+}
