@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-
 import org.hl7.fhir.r5.context.ILoggingService;
 import org.junit.jupiter.api.Test;
 
