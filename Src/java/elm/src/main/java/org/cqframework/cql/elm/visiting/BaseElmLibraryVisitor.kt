@@ -35,67 +35,49 @@ abstract class BaseElmLibraryVisitor<T, C> :
      */
     override fun visitLibrary(elm: Library, context: C): T {
         var result = visitFields(elm, context)
-        if (!elm.usings?.def.isNullOrEmpty()) {
-            for (def in elm.usings.def) {
-                val childResult = visitUsingDef(def, context)
-                result = aggregateResult(result, childResult)
-            }
+        elm.usings?.def?.forEach {
+            val childResult = visitUsingDef(it, context)
+            result = aggregateResult(result, childResult)
         }
 
-        if (!elm.includes?.def.isNullOrEmpty()) {
-            for (def in elm.includes.def) {
-                val childResult = visitIncludeDef(def, context)
-                result = aggregateResult(result, childResult)
-            }
+        elm.includes?.def?.forEach {
+            val childResult = visitIncludeDef(it, context)
+            result = aggregateResult(result, childResult)
         }
 
-        if (!elm.codeSystems?.def.isNullOrEmpty()) {
-            for (def in elm.codeSystems.def) {
-                val childResult = visitCodeSystemDef(def, context)
-                result = aggregateResult(result, childResult)
-            }
+        elm.codeSystems?.def?.forEach {
+            val childResult = visitCodeSystemDef(it, context)
+            result = aggregateResult(result, childResult)
         }
 
-        if (!elm.valueSets?.def.isNullOrEmpty()) {
-            for (def in elm.valueSets.def) {
-                val childResult = visitValueSetDef(def, context)
-                result = aggregateResult(result, childResult)
-            }
+        elm.valueSets?.def?.forEach {
+            val childResult = visitValueSetDef(it, context)
+            result = aggregateResult(result, childResult)
         }
 
-        if (!elm.codes?.def.isNullOrEmpty()) {
-            for (def in elm.codes.def) {
-                val childResult = visitElement(def, context)
-                result = aggregateResult(result, childResult)
-            }
+        elm.codes?.def?.forEach {
+            val childResult = visitElement(it, context)
+            result = aggregateResult(result, childResult)
         }
 
-        if (!elm.concepts?.def.isNullOrEmpty()) {
-            for (def in elm.concepts.def) {
-                val childResult = visitConceptDef(def, context)
-                result = aggregateResult(result, childResult)
-            }
+        elm.concepts?.def?.forEach {
+            val childResult = visitConceptDef(it, context)
+            result = aggregateResult(result, childResult)
         }
 
-        if (!elm.parameters?.def.isNullOrEmpty()) {
-            for (def in elm.parameters.def) {
-                val childResult = visitParameterDef(def, context)
-                result = aggregateResult(result, childResult)
-            }
+        elm.parameters?.def?.forEach {
+            val childResult = visitParameterDef(it, context)
+            result = aggregateResult(result, childResult)
         }
 
-        if (!elm.contexts?.def.isNullOrEmpty()) {
-            for (def in elm.contexts.def) {
-                val childResult = visitContextDef(def, context)
-                result = aggregateResult(result, childResult)
-            }
+        elm.contexts?.def?.forEach {
+            val childResult = visitContextDef(it, context)
+            result = aggregateResult(result, childResult)
         }
 
-        if (!elm.statements?.def.isNullOrEmpty()) {
-            for (def in elm.statements.def) {
-                val childResult = visitExpressionDef(def, context)
-                result = aggregateResult(result, childResult)
-            }
+        elm.statements?.def?.forEach {
+            val childResult = visitExpressionDef(it, context)
+            result = aggregateResult(result, childResult)
         }
 
         return result
