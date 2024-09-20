@@ -1,8 +1,8 @@
 package org.cqframework.cql
 
+import java.io.FileInputStream
 import org.antlr.v4.kotlinruntime.CharStreams
 import org.antlr.v4.kotlinruntime.CommonTokenStream
-import java.io.FileInputStream
 import org.cqframework.cql.gen.cqlLexer
 import org.cqframework.cql.gen.cqlParser
 

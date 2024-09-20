@@ -243,9 +243,7 @@ import org.hl7.elm.r1.Xor
 open class IdObjectFactory : ObjectFactory() {
     private var nextId = 0
 
-    /**
-     * returns the next id and increments the counter
-     */
+    /** returns the next id and increments the counter */
     open fun nextId(): String {
         return nextId++.toString()
     }

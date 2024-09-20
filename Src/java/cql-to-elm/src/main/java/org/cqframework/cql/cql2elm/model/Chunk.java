@@ -80,7 +80,7 @@ public class Chunk {
     }
 
     public void addChunk(Chunk chunk) {
-        if (chunk.getInterval().getA()< interval.getA()|| chunk.getInterval().getB() > interval.getB()) {
+        if (chunk.getInterval().getA() < interval.getA() || chunk.getInterval().getB() > interval.getB()) {
             throw new IllegalArgumentException(
                     "Child chunk cannot be added because it is not contained within the parent chunk.");
         }
@@ -89,15 +89,15 @@ public class Chunk {
         int chunkIndex = -1;
         Chunk targetChunk = null;
         for (int i = 0; i < chunks.size(); i++) {
-            if (chunk.getInterval().getA()>= chunks.get(i).getInterval().getA()
-                    && chunk.getInterval().getA()<= chunks.get(i).getInterval().getB()) {
+            if (chunk.getInterval().getA() >= chunks.get(i).getInterval().getA()
+                    && chunk.getInterval().getA() <= chunks.get(i).getInterval().getB()) {
                 chunkIndex = i;
                 targetChunk = chunks.get(chunkIndex);
                 break;
             }
         }
 
-        if (chunk.getInterval().getA()== targetChunk.getInterval().getA()) {
+        if (chunk.getInterval().getA() == targetChunk.getInterval().getA()) {
             // the chunk being added starts the targetChunk
             // insert the chunk at the targetChunk's index
             // update the targetChunk's interval start to be the chunk's interval end + 1
@@ -112,10 +112,11 @@ public class Chunk {
             }
             if (chunkIndex < chunks.size()) {
                 chunks.get(chunkIndex)
-                        .setInterval(new Interval(newA, chunks.get(chunkIndex).getInterval().getB()));
+                        .setInterval(new Interval(
+                                newA, chunks.get(chunkIndex).getInterval().getB()));
             }
         } else {
-            int newB = chunk.getInterval().getA()- 1;
+            int newB = chunk.getInterval().getA() - 1;
             int newA = chunk.getInterval().getB() + 1;
             int oldA = chunks.get(chunkIndex).getInterval().getA();
             int oldB = chunks.get(chunkIndex).getInterval().getB();

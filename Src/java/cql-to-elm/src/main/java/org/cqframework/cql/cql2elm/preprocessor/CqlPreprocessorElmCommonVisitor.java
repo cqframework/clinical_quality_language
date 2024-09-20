@@ -321,7 +321,8 @@ public abstract class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor<Obj
                                     .withIsHeaderChunk(true);
                             Chunk newChunk = new Chunk()
                                     .withInterval(new org.antlr.v4.kotlinruntime.misc.Interval(
-                                            headerChunk.getInterval().getA(), chunk.getInterval().getB()));
+                                            headerChunk.getInterval().getA(),
+                                            chunk.getInterval().getB()));
                             newChunk.addChunk(headerChunk);
                             newChunk.setElement(chunk.getElement());
                             for (Chunk c : chunk.getChunks()) {
@@ -345,7 +346,8 @@ public abstract class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor<Obj
                             new Chunk().withInterval(libraryInfo.getDefinition().getSourceInterval());
                     Chunk newChunk = new Chunk()
                             .withInterval(new org.antlr.v4.kotlinruntime.misc.Interval(
-                                    headerChunk.getInterval().getA(), definitionChunk.getInterval().getB()));
+                                    headerChunk.getInterval().getA(),
+                                    definitionChunk.getInterval().getB()));
                     newChunk.addChunk(headerChunk);
                     newChunk.addChunk(definitionChunk);
                     newChunk.setElement(chunk.getElement());

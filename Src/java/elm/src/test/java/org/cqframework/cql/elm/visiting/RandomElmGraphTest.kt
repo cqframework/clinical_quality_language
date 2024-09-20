@@ -1,5 +1,9 @@
 package org.cqframework.cql.elm.visiting
 
+import java.lang.reflect.Field
+import java.nio.charset.StandardCharsets
+import java.util.function.BiFunction
+import javax.xml.namespace.QName
 import org.cqframework.cql.elm.tracking.Trackable
 import org.hl7.cql_annotations.r1.Narrative
 import org.hl7.elm.r1.AccessModifier
@@ -14,10 +18,6 @@ import org.jeasy.random.api.RandomizerContext
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
-import java.lang.reflect.Field
-import java.nio.charset.StandardCharsets
-import java.util.function.BiFunction
-import javax.xml.namespace.QName
 
 class RandomElmGraphTest {
     @ParameterizedTest
@@ -26,43 +26,46 @@ class RandomElmGraphTest {
         // This test generates a random ELM graph and verifies that all nodes are
         // visited exactly once.
         val elementsGenerated = HashMap<Int, Element>()
-        val countingObjectFactory: ObjenesisObjectFactory = object : ObjenesisObjectFactory() {
-            override fun <T> createInstance(type: Class<T>, context: RandomizerContext): T {
-                val t = super.createInstance(type, context)
-                if (t is Element) {
-                    val hash = System.identityHashCode(t)
-                    elementsGenerated[hash] = t
+        val countingObjectFactory: ObjenesisObjectFactory =
+            object : ObjenesisObjectFactory() {
+                override fun <T> createInstance(type: Class<T>, context: RandomizerContext): T {
+                    val t = super.createInstance(type, context)
+                    if (t is Element) {
+                        val hash = System.identityHashCode(t)
+                        elementsGenerated[hash] = t
+                    }
+
+                    // Debugging for specific types and paths
+                    // that aren't being visited.
+                    // if (t instanceof ConvertsToDate || t instanceof SplitOnMatches || t
+                    // instanceof DateFrom) {
+                    //     printContext((Element) t, context);
+                    // }
+                    return t
                 }
 
-                // Debugging for specific types and paths
-                // that aren't being visited.
-                // if (t instanceof ConvertsToDate || t instanceof SplitOnMatches || t instanceof DateFrom) {
-                //     printContext((Element) t, context);
-                // }
-                return t
+                private fun printContext(t: Element, context: RandomizerContext) {
+                    System.err.printf(
+                        "Type: %s, Parent: %s, Path: %s, Hash: %s%n",
+                        t.javaClass.simpleName,
+                        context.currentObject.javaClass.simpleName,
+                        context.currentField,
+                        System.identityHashCode(t)
+                    )
+                }
             }
 
-            private fun printContext(t: Element, context: RandomizerContext) {
-                System.err.printf(
-                    "Type: %s, Parent: %s, Path: %s, Hash: %s%n",
-                    t.javaClass.simpleName,
-                    context.currentObject.javaClass.simpleName,
-                    context.currentField,
-                    System.identityHashCode(t)
-                )
-            }
-        }
-
-        val randomParams = EasyRandomParameters()
-            .objectFactory(countingObjectFactory)
-            .seed(seed.toLong())
-            .randomizationDepth(15)
-            .objectPoolSize(1000) // Never reuse objects
-            .charset(StandardCharsets.UTF_8)
-            .stringLengthRange(5, 50)
-            .collectionSizeRange(1, 3)
-            .exclusionPolicy(NoTypeSpecifierRecursionPolicy())
-            .scanClasspathForConcreteTypes(true)
+        val randomParams =
+            EasyRandomParameters()
+                .objectFactory(countingObjectFactory)
+                .seed(seed.toLong())
+                .randomizationDepth(15)
+                .objectPoolSize(1000) // Never reuse objects
+                .charset(StandardCharsets.UTF_8)
+                .stringLengthRange(5, 50)
+                .collectionSizeRange(1, 3)
+                .exclusionPolicy(NoTypeSpecifierRecursionPolicy())
+                .scanClasspathForConcreteTypes(true)
 
         val randomElmGenerator = EasyRandom(randomParams)
         val randomElm = randomElmGenerator.nextObject(Library::class.java)
@@ -71,24 +74,25 @@ class RandomElmGraphTest {
 
         val elementsVisited = HashMap<Int, Element>()
         val elementsDuplicated = HashMap<Int, Element>()
-        val countingVisitor = FunctionalElmVisitor (
-            BiFunction<Trackable?, HashMap<Int, Element>, Int> { x: Trackable?, y: HashMap<Int, Element>? ->
-                if (x is Element) {
-                    val hash = System.identityHashCode(x)
-                    if (!elementsVisited.containsKey(hash)) {
-                        elementsVisited[hash] = x
-                        return@BiFunction 1
+        val countingVisitor =
+            FunctionalElmVisitor(
+                BiFunction<Trackable?, HashMap<Int, Element>, Int> {
+                    x: Trackable?,
+                    y: HashMap<Int, Element>? ->
+                    if (x is Element) {
+                        val hash = System.identityHashCode(x)
+                        if (!elementsVisited.containsKey(hash)) {
+                            elementsVisited[hash] = x
+                            return@BiFunction 1
+                        }
+                        elementsDuplicated[hash] = x
+                        return@BiFunction 0
                     }
-                    elementsDuplicated[hash] = x
-                    return@BiFunction 0
+                    0
                 }
-                0
+            ) { a: Int?, b: Int? ->
+                Integer.sum(a!!, b!!)
             }
-        ) { a: Int?, b: Int? ->
-            Integer.sum(
-                a!!, b!!
-            )
-        }
 
         val visitorCount = countingVisitor.visitLibrary(randomElm, elementsVisited)
 
@@ -96,11 +100,7 @@ class RandomElmGraphTest {
         if (elementsGenerated.isNotEmpty()) {
             System.err.println("Elements Missed:")
             elementsGenerated.forEach { (x: Int?, e: Element) ->
-                System.err.printf(
-                    "Type: %s, Hash: %s%n",
-                    e.javaClass.simpleName,
-                    x
-                )
+                System.err.printf("Type: %s, Hash: %s%n", e.javaClass.simpleName, x)
             }
         }
 
@@ -111,11 +111,7 @@ class RandomElmGraphTest {
         if (elementsDuplicated.isNotEmpty()) {
             System.err.println("Elements Duplicated:")
             elementsDuplicated.forEach { (x: Int?, e: Element) ->
-                System.err.printf(
-                    "Type: %s, Hash: %s%n",
-                    e.javaClass.simpleName,
-                    x
-                )
+                System.err.printf("Type: %s, Hash: %s%n", e.javaClass.simpleName, x)
             }
         }
 
@@ -134,8 +130,9 @@ class RandomElmGraphTest {
                 return true
             }
 
-            return ((field.name == "resultTypeSpecifier" && TypeSpecifier::class.java.isAssignableFrom(field.type))
-                    || (field.name == "signature"))
+            return ((field.name == "resultTypeSpecifier" &&
+                TypeSpecifier::class.java.isAssignableFrom(field.type)) ||
+                (field.name == "signature"))
         }
 
         // These are excluded to simplify the ELM graph while bugs are being worked out.
@@ -144,7 +141,9 @@ class RandomElmGraphTest {
                 return true
             }
 
-            return type == QName::class.java || type == Narrative::class.java || type == AccessModifier::class.java
+            return type == QName::class.java ||
+                type == Narrative::class.java ||
+                type == AccessModifier::class.java
         }
     }
 

@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import org.antlr.v4.kotlinruntime.*;
 import org.antlr.v4.kotlinruntime.tree.ParseTree;
 import org.cqframework.cql.cql2elm.elm.ElmEdit;

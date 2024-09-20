@@ -73,7 +73,10 @@ public class CqlTranslator {
 
     public static CqlTranslator fromFile(File cqlFile, LibraryManager libraryManager) throws IOException {
         return new CqlTranslator(
-                null, getSourceInfo(cqlFile), CharStreams.INSTANCE.fromStream(new FileInputStream(cqlFile)), libraryManager);
+                null,
+                getSourceInfo(cqlFile),
+                CharStreams.INSTANCE.fromStream(new FileInputStream(cqlFile)),
+                libraryManager);
     }
 
     public static CqlTranslator fromFile(NamespaceInfo namespaceInfo, File cqlFile, LibraryManager libraryManager)
@@ -89,7 +92,10 @@ public class CqlTranslator {
             NamespaceInfo namespaceInfo, VersionedIdentifier sourceInfo, File cqlFile, LibraryManager libraryManager)
             throws IOException {
         return new CqlTranslator(
-                namespaceInfo, sourceInfo, CharStreams.INSTANCE.fromStream(new FileInputStream(cqlFile)), libraryManager);
+                namespaceInfo,
+                sourceInfo,
+                CharStreams.INSTANCE.fromStream(new FileInputStream(cqlFile)),
+                libraryManager);
     }
 
     private CqlTranslator(
