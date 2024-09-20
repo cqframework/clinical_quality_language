@@ -2,7 +2,7 @@ package org.cqframework.cql.cql2elm.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.antlr.v4.runtime.misc.Interval;
+import org.antlr.v4.kotlinruntime.misc.Interval;
 import org.hl7.elm.r1.Element;
 
 /**
@@ -80,7 +80,7 @@ public class Chunk {
     }
 
     public void addChunk(Chunk chunk) {
-        if (chunk.getInterval().a < interval.a || chunk.getInterval().b > interval.b) {
+        if (chunk.getInterval().getA()< interval.getA()|| chunk.getInterval().getB() > interval.getB()) {
             throw new IllegalArgumentException(
                     "Child chunk cannot be added because it is not contained within the parent chunk.");
         }
@@ -89,22 +89,22 @@ public class Chunk {
         int chunkIndex = -1;
         Chunk targetChunk = null;
         for (int i = 0; i < chunks.size(); i++) {
-            if (chunk.getInterval().a >= chunks.get(i).getInterval().a
-                    && chunk.getInterval().a <= chunks.get(i).getInterval().b) {
+            if (chunk.getInterval().getA()>= chunks.get(i).getInterval().getA()
+                    && chunk.getInterval().getA()<= chunks.get(i).getInterval().getB()) {
                 chunkIndex = i;
                 targetChunk = chunks.get(chunkIndex);
                 break;
             }
         }
 
-        if (chunk.getInterval().a == targetChunk.getInterval().a) {
+        if (chunk.getInterval().getA()== targetChunk.getInterval().getA()) {
             // the chunk being added starts the targetChunk
             // insert the chunk at the targetChunk's index
             // update the targetChunk's interval start to be the chunk's interval end + 1
             chunks.add(chunkIndex, chunk);
             chunkIndex++;
-            int newA = chunk.getInterval().b + 1;
-            while (newA > chunks.get(chunkIndex).getInterval().b) {
+            int newA = chunk.getInterval().getB() + 1;
+            while (newA > chunks.get(chunkIndex).getInterval().getB()) {
                 chunks.remove(chunkIndex);
                 if (chunkIndex >= chunks.size()) {
                     break;
@@ -112,13 +112,13 @@ public class Chunk {
             }
             if (chunkIndex < chunks.size()) {
                 chunks.get(chunkIndex)
-                        .setInterval(new Interval(newA, chunks.get(chunkIndex).getInterval().b));
+                        .setInterval(new Interval(newA, chunks.get(chunkIndex).getInterval().getB()));
             }
         } else {
-            int newB = chunk.getInterval().a - 1;
-            int newA = chunk.getInterval().b + 1;
-            int oldA = chunks.get(chunkIndex).getInterval().a;
-            int oldB = chunks.get(chunkIndex).getInterval().b;
+            int newB = chunk.getInterval().getA()- 1;
+            int newA = chunk.getInterval().getB() + 1;
+            int oldA = chunks.get(chunkIndex).getInterval().getA();
+            int oldB = chunks.get(chunkIndex).getInterval().getB();
             chunks.get(chunkIndex).setInterval(new Interval(oldA, newB));
             chunkIndex++;
             chunks.add(chunkIndex, chunk);

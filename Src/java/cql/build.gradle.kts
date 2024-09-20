@@ -1,14 +1,14 @@
+import com.strumenta.antlrkotlin.gradle.AntlrKotlinTask
+
 plugins {
     id("cql.java-conventions")
     id("cql.kotlin-conventions")
     id("application")
-    id("antlr")
+    id("com.strumenta.antlr-kotlin") version "1.0.0"
 }
 
 dependencies {
-    val version = project.findProperty("antlr.version")
-    antlr("org.antlr:antlr4:${version}")
-    api("org.antlr:antlr4-runtime:${version}")
+    api("com.strumenta:antlr-kotlin-runtime:1.0.0")
 }
 
 application {
@@ -17,25 +17,34 @@ application {
 
 sourceSets {
     main {
-        antlr {
-            setSrcDirs(listOf("../../grammar"))
-        }
-        java {
-            srcDir("build/generated/sources/antlr/main/java")
+        kotlin {
+            srcDir("build/generated/sources/antlr/main/kotlin")
         }
     }
 }
 
-tasks.generateGrammarSource {
-    val buildDir = layout.buildDirectory.get().toString()
-    outputDirectory = file("${buildDir}/generated/sources/antlr/main/java/org/cqframework/cql/gen")
-    arguments = listOf("-visitor", "-package", "org.cqframework.cql.gen")
+val generateKotlinGrammarSource = tasks.register<AntlrKotlinTask>("generateKotlinGrammarSource") {
+    dependsOn("cleanGenerateKotlinGrammarSource")
+
+    source = fileTree("../../grammar") {
+        include("**/*.g4")
+    }
+
+    // We want the generated source files to have this package name
+    packageName = "org.cqframework.cql.gen"
+
+    // We want visitors alongside listeners.
+    // The Kotlin target language is implicit, as is the file encoding (UTF-8)
+    arguments = listOf("-visitor")
+
+    // Generated files are outputted inside build/generatedAntlr/{package-name}
+    outputDirectory = file("build/generated/sources/antlr/main/kotlin/${packageName!!.replace(".", "/")}")
 }
 
 tasks.sourcesJar {
-    from(tasks.generateGrammarSource)
+    from(generateKotlinGrammarSource)
 }
 
 tasks.compileKotlin {
-    dependsOn(tasks.generateGrammarSource)
+    dependsOn(generateKotlinGrammarSource)
 }

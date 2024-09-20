@@ -2,7 +2,8 @@ package org.cqframework.cql.cql2elm;
 
 import java.io.*;
 import java.util.*;
-import org.antlr.v4.runtime.*;
+import org.antlr.v4.kotlinruntime.*;
+import org.antlr.v4.kotlinruntime.tree.*;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.cqframework.cql.elm.serializing.ElmLibraryWriterFactory;
 import org.hl7.cql.model.NamespaceInfo;
@@ -20,11 +21,11 @@ public class CqlTranslator {
     private CqlCompiler compiler;
 
     public static CqlTranslator fromText(String cqlText, LibraryManager libraryManager) {
-        return new CqlTranslator(null, null, CharStreams.fromString(cqlText), libraryManager);
+        return new CqlTranslator(null, null, CharStreams.INSTANCE.fromString(cqlText), libraryManager);
     }
 
     public static CqlTranslator fromText(NamespaceInfo namespaceInfo, String cqlText, LibraryManager libraryManager) {
-        return new CqlTranslator(namespaceInfo, null, CharStreams.fromString(cqlText), libraryManager);
+        return new CqlTranslator(namespaceInfo, null, CharStreams.INSTANCE.fromString(cqlText), libraryManager);
     }
 
     public static CqlTranslator fromText(
@@ -32,16 +33,16 @@ public class CqlTranslator {
             VersionedIdentifier sourceInfo,
             String cqlText,
             LibraryManager libraryManager) {
-        return new CqlTranslator(namespaceInfo, sourceInfo, CharStreams.fromString(cqlText), libraryManager);
+        return new CqlTranslator(namespaceInfo, sourceInfo, CharStreams.INSTANCE.fromString(cqlText), libraryManager);
     }
 
     public static CqlTranslator fromStream(
             NamespaceInfo namespaceInfo, InputStream cqlStream, LibraryManager libraryManager) throws IOException {
-        return new CqlTranslator(namespaceInfo, null, CharStreams.fromStream(cqlStream), libraryManager);
+        return new CqlTranslator(namespaceInfo, null, CharStreams.INSTANCE.fromStream(cqlStream), libraryManager);
     }
 
     public static CqlTranslator fromStream(InputStream cqlStream, LibraryManager libraryManager) throws IOException {
-        return new CqlTranslator(null, null, CharStreams.fromStream(cqlStream), libraryManager);
+        return new CqlTranslator(null, null, CharStreams.INSTANCE.fromStream(cqlStream), libraryManager);
     }
 
     public static CqlTranslator fromStream(
@@ -50,14 +51,14 @@ public class CqlTranslator {
             InputStream cqlStream,
             LibraryManager libraryManager)
             throws IOException {
-        return new CqlTranslator(namespaceInfo, sourceInfo, CharStreams.fromStream(cqlStream), libraryManager);
+        return new CqlTranslator(namespaceInfo, sourceInfo, CharStreams.INSTANCE.fromStream(cqlStream), libraryManager);
     }
 
     public static CqlTranslator fromFile(String cqlFileName, LibraryManager libraryManager) throws IOException {
         return new CqlTranslator(
                 null,
                 getSourceInfo(cqlFileName),
-                CharStreams.fromStream(new FileInputStream(cqlFileName)),
+                CharStreams.INSTANCE.fromStream(new FileInputStream(cqlFileName)),
                 libraryManager);
     }
 
@@ -66,13 +67,13 @@ public class CqlTranslator {
         return new CqlTranslator(
                 namespaceInfo,
                 getSourceInfo(cqlFileName),
-                CharStreams.fromStream(new FileInputStream(cqlFileName)),
+                CharStreams.INSTANCE.fromStream(new FileInputStream(cqlFileName)),
                 libraryManager);
     }
 
     public static CqlTranslator fromFile(File cqlFile, LibraryManager libraryManager) throws IOException {
         return new CqlTranslator(
-                null, getSourceInfo(cqlFile), CharStreams.fromStream(new FileInputStream(cqlFile)), libraryManager);
+                null, getSourceInfo(cqlFile), CharStreams.INSTANCE.fromStream(new FileInputStream(cqlFile)), libraryManager);
     }
 
     public static CqlTranslator fromFile(NamespaceInfo namespaceInfo, File cqlFile, LibraryManager libraryManager)
@@ -80,7 +81,7 @@ public class CqlTranslator {
         return new CqlTranslator(
                 namespaceInfo,
                 getSourceInfo(cqlFile),
-                CharStreams.fromStream(new FileInputStream(cqlFile)),
+                CharStreams.INSTANCE.fromStream(new FileInputStream(cqlFile)),
                 libraryManager);
     }
 
@@ -88,7 +89,7 @@ public class CqlTranslator {
             NamespaceInfo namespaceInfo, VersionedIdentifier sourceInfo, File cqlFile, LibraryManager libraryManager)
             throws IOException {
         return new CqlTranslator(
-                namespaceInfo, sourceInfo, CharStreams.fromStream(new FileInputStream(cqlFile)), libraryManager);
+                namespaceInfo, sourceInfo, CharStreams.INSTANCE.fromStream(new FileInputStream(cqlFile)), libraryManager);
     }
 
     private CqlTranslator(

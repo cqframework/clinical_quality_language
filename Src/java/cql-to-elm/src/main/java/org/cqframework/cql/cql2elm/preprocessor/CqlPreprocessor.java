@@ -2,11 +2,10 @@ package org.cqframework.cql.cql2elm.preprocessor;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.antlr.v4.runtime.Recognizer;
-import org.antlr.v4.runtime.TokenStream;
-import org.antlr.v4.runtime.misc.Interval;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.TerminalNode;
+import org.antlr.v4.kotlinruntime.*;
+import org.antlr.v4.kotlinruntime.misc.*;
+import org.antlr.v4.kotlinruntime.misc.Interval;
+import org.antlr.v4.kotlinruntime.tree.*;
 import org.cqframework.cql.cql2elm.*;
 import org.cqframework.cql.cql2elm.model.Model;
 import org.cqframework.cql.gen.cqlLexer;
@@ -30,11 +29,11 @@ public class CqlPreprocessor extends CqlPreprocessorElmCommonVisitor {
 
     private void processHeader(ParseTree ctx, BaseInfo info) {
         Interval header = null;
-        org.antlr.v4.runtime.misc.Interval sourceInterval = ctx.getSourceInterval();
-        int beforeDefinition = sourceInterval.a - 1;
+        var sourceInterval = ctx.getSourceInterval();
+        int beforeDefinition = sourceInterval.getA() - 1;
         if (beforeDefinition >= lastSourceIndex) {
-            header = new org.antlr.v4.runtime.misc.Interval(lastSourceIndex + 1, sourceInterval.a - 1);
-            lastSourceIndex = sourceInterval.b;
+            header = new org.antlr.v4.kotlinruntime.misc.Interval(lastSourceIndex + 1, sourceInterval.getA() - 1);
+            lastSourceIndex = sourceInterval.getB();
 
             info.setHeaderInterval(header);
             info.setHeader(tokenStream.getText(header));
@@ -292,7 +291,7 @@ public class CqlPreprocessor extends CqlPreprocessorElmCommonVisitor {
     public Object visitTerminal(TerminalNode node) {
         String text = node.getText();
         int tokenType = node.getSymbol().getType();
-        if (cqlLexer.STRING == tokenType || cqlLexer.QUOTEDIDENTIFIER == tokenType) {
+        if (cqlLexer.Tokens.STRING == tokenType || cqlLexer.Tokens.QUOTEDIDENTIFIER == tokenType) {
             // chop off leading and trailing ' or "
             text = text.substring(1, text.length() - 1);
         }
@@ -326,5 +325,10 @@ public class CqlPreprocessor extends CqlPreprocessorElmCommonVisitor {
         String identifier = parseString(ctx.referentialIdentifier());
         identifiers.add(identifier);
         return identifiers;
+    }
+
+    @Override
+    protected Object defaultResult() {
+        return null;
     }
 }

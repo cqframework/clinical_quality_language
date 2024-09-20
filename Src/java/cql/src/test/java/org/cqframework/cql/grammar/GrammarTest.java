@@ -3,10 +3,10 @@ package org.cqframework.cql.grammar;
 import static org.cqframework.cql.gen.cqlParser.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.kotlinruntime.CharStream;
+import org.antlr.v4.kotlinruntime.CharStreams;
+import org.antlr.v4.kotlinruntime.CommonTokenStream;
+import org.antlr.v4.kotlinruntime.tree.ParseTree;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 import org.junit.jupiter.api.Test;
@@ -48,7 +48,7 @@ class GrammarTest {
     }
 
     private ParseTree parseToTree(String logic) {
-        CharStream input = CharStreams.fromString(logic);
+        CharStream input = CharStreams.INSTANCE.fromString(logic);
         CommonTokenStream tokens = new CommonTokenStream(new cqlLexer(input));
         cqlParser parser = new cqlParser(tokens);
         parser.setBuildParseTree(true);

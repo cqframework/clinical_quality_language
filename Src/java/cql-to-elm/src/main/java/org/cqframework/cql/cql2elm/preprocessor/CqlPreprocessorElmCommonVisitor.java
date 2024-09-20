@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Stack;
 import javax.xml.namespace.QName;
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.TokenStream;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.TerminalNode;
+import org.antlr.v4.kotlinruntime.ParserRuleContext;
+import org.antlr.v4.kotlinruntime.TokenStream;
+import org.antlr.v4.kotlinruntime.tree.ParseTree;
+import org.antlr.v4.kotlinruntime.tree.TerminalNode;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cqframework.cql.cql2elm.*;
 import org.cqframework.cql.cql2elm.model.Chunk;
@@ -32,7 +32,7 @@ import org.hl7.elm.r1.*;
 /**
  * Common functionality used by {@link CqlPreprocessor} and {@link Cql2ElmVisitor}
  */
-public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor<Object> {
+public abstract class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor<Object> {
     protected final IdObjectFactory of;
     protected final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
     private boolean implicitContextCreated = false;
@@ -279,10 +279,10 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor<Object> {
             return false;
         }
 
-        org.antlr.v4.runtime.misc.Interval sourceInterval = tree.getSourceInterval();
+        org.antlr.v4.kotlinruntime.misc.Interval sourceInterval = tree.getSourceInterval();
 
         // An interval of i..i-1 indicates an empty interval at position i in the input stream,
-        if (sourceInterval.b < sourceInterval.a) {
+        if (sourceInterval.getB() < sourceInterval.getA()) {
             return false;
         }
 
@@ -320,8 +320,8 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor<Object> {
                                     .withInterval(definitionInfo.getHeaderInterval())
                                     .withIsHeaderChunk(true);
                             Chunk newChunk = new Chunk()
-                                    .withInterval(new org.antlr.v4.runtime.misc.Interval(
-                                            headerChunk.getInterval().a, chunk.getInterval().b));
+                                    .withInterval(new org.antlr.v4.kotlinruntime.misc.Interval(
+                                            headerChunk.getInterval().getA(), chunk.getInterval().getB()));
                             newChunk.addChunk(headerChunk);
                             newChunk.setElement(chunk.getElement());
                             for (Chunk c : chunk.getChunks()) {
@@ -344,8 +344,8 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor<Object> {
                     Chunk definitionChunk =
                             new Chunk().withInterval(libraryInfo.getDefinition().getSourceInterval());
                     Chunk newChunk = new Chunk()
-                            .withInterval(new org.antlr.v4.runtime.misc.Interval(
-                                    headerChunk.getInterval().a, definitionChunk.getInterval().b));
+                            .withInterval(new org.antlr.v4.kotlinruntime.misc.Interval(
+                                    headerChunk.getInterval().getA(), definitionChunk.getInterval().getB()));
                     newChunk.addChunk(headerChunk);
                     newChunk.addChunk(definitionChunk);
                     newChunk.setElement(chunk.getElement());

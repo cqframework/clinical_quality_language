@@ -5,10 +5,8 @@ import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.TokenStream;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.TerminalNode;
+import org.antlr.v4.kotlinruntime.*;
+import org.antlr.v4.kotlinruntime.tree.*;
 import org.cqframework.cql.cql2elm.LibraryBuilder.IdentifierScope;
 import org.cqframework.cql.cql2elm.model.*;
 import org.cqframework.cql.cql2elm.model.invocation.*;
@@ -1769,9 +1767,9 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
             return null;
         }
 
-        if (cqlLexer.STRING == tokenType
-                || cqlLexer.QUOTEDIDENTIFIER == tokenType
-                || cqlLexer.DELIMITEDIDENTIFIER == tokenType) {
+        if (cqlLexer.Tokens.STRING == tokenType
+                || cqlLexer.Tokens.QUOTEDIDENTIFIER == tokenType
+                || cqlLexer.Tokens.DELIMITEDIDENTIFIER == tokenType) {
             // chop off leading and trailing ', ", or `
             text = text.substring(1, text.length() - 1);
 
@@ -4555,5 +4553,10 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         }
 
         return tb;
+    }
+
+    @Override
+    protected Object defaultResult() {
+        return null;
     }
 }

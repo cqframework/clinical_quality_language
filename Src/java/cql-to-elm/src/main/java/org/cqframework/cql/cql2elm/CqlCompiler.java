@@ -14,8 +14,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.tree.ParseTree;
+
+import org.antlr.v4.kotlinruntime.*;
+import org.antlr.v4.kotlinruntime.tree.ParseTree;
 import org.cqframework.cql.cql2elm.elm.ElmEdit;
 import org.cqframework.cql.cql2elm.elm.ElmEditor;
 import org.cqframework.cql.cql2elm.elm.IElmEdit;
@@ -130,7 +131,7 @@ public class CqlCompiler {
         private VersionedIdentifier extractLibraryIdentifier(cqlParser parser) {
             RuleContext context = parser.getContext();
             while (context != null && !(context instanceof cqlParser.LibraryContext)) {
-                context = context.parent;
+                context = context.getParent();
             }
 
             if (context instanceof cqlParser.LibraryContext) {
@@ -183,15 +184,15 @@ public class CqlCompiler {
     }
 
     public Library run(File cqlFile) throws IOException {
-        return run(CharStreams.fromStream(new FileInputStream(cqlFile)));
+        return run(CharStreams.INSTANCE.fromStream(new FileInputStream(cqlFile)));
     }
 
     public Library run(String cqlText) {
-        return run(CharStreams.fromString(cqlText));
+        return run(CharStreams.INSTANCE.fromString(cqlText));
     }
 
     public Library run(InputStream is) throws IOException {
-        return run(CharStreams.fromStream(is));
+        return run(CharStreams.INSTANCE.fromStream(is));
     }
 
     public Library run(CharStream is) {

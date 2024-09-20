@@ -1,8 +1,8 @@
 package org.cqframework.cql.cql2elm.preprocessor;
 
 import java.util.*;
-import org.antlr.v4.runtime.misc.Interval;
-import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.kotlinruntime.misc.Interval;
+import org.antlr.v4.kotlinruntime.tree.ParseTree;
 import org.cqframework.cql.cql2elm.ResultWithPossibleError;
 import org.cqframework.cql.gen.cqlParser;
 import org.hl7.elm.r1.OperandDef;
