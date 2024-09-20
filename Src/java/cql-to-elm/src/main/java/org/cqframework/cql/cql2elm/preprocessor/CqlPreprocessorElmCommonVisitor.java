@@ -32,7 +32,7 @@ import org.hl7.elm.r1.*;
 /**
  * Common functionality used by {@link CqlPreprocessor} and {@link Cql2ElmVisitor}
  */
-public abstract class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor<Object> {
+public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor<Object> {
     protected final IdObjectFactory of;
     protected final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
     private boolean implicitContextCreated = false;
@@ -81,6 +81,11 @@ public abstract class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor<Obj
         String saveContext = this.currentContext;
         this.currentContext = currentContext;
         return saveContext;
+    }
+
+    @Override
+    protected Object defaultResult() {
+        return null;
     }
 
     @Override

@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 
+@Suppress("detekt:all")
 class RandomElmGraphTest {
     @ParameterizedTest
     @MethodSource("seeds")
@@ -148,6 +149,7 @@ class RandomElmGraphTest {
     }
 
     companion object {
+        @JvmStatic
         fun seeds(): Array<Any> {
             // I randomly picked these seeds until
             // I got 3 in a row that passed without errors.

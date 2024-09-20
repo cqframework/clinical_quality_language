@@ -240,6 +240,7 @@ import org.hl7.elm.r1.Xor
  * given monotonically increasing ids.
  *
  */
+@Suppress("detekt:all")
 open class IdObjectFactory : ObjectFactory() {
     private var nextId = 0
 
