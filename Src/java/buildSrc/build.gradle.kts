@@ -13,3 +13,7 @@ dependencies {
     implementation("com.github.spotbugs.snom:spotbugs-gradle-plugin:5.0.14")
     implementation("com.diffplug.spotless:spotless-plugin-gradle:6.23.3")
 }
+
+kotlin {
+    jvmToolchain(11)
+}
