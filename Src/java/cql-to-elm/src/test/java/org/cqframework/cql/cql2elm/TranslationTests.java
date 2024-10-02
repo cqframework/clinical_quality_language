@@ -387,7 +387,7 @@ class TranslationTests {
         final CqlTranslator translator = TestUtils.runSemanticTest("abstractClassNotRetrievable.cql", 1);
         final List<CqlCompilerException> errors = translator.getErrors();
         final List<String> errorMessages =
-                errors.stream().map(Throwable::getMessage).toList();
+                errors.stream().map(Throwable::getMessage).collect(Collectors.toList());
         assertThat(errorMessages, contains("Specified data type DomainResource does not support retrieval."));
     }
 }
