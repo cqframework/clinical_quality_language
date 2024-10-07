@@ -4,6 +4,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -40,6 +42,7 @@ import org.hl7.fhir.instance.model.api.IBase;
 import org.hl7.fhir.instance.model.api.ICompositeType;
 import org.hl7.fhir.instance.model.api.IIdType;
 import org.hl7.fhir.instance.model.api.IPrimitiveType;
+import org.hl7.fhir.r4.model.Parameters;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -67,7 +70,7 @@ class Dstu3TypeConverterTests {
         return !leftIterator.hasNext() && !rightIterator.hasNext();
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "null"})
     protected Boolean compareObjects(Object left, Object right) {
         if (left == null ^ right == null) {
             return false;
@@ -528,13 +531,14 @@ class Dstu3TypeConverterTests {
 
     @Test
     void tupleToFhirTuple() {
-        IBase expected = typeConverter.toFhirTuple(null);
-        assertNull(expected);
+        IBase actual = typeConverter.toFhirTuple(null);
+        assertNull(actual);
 
         var tuple = new Tuple();
-        assertThrows(NotImplementedException.class, () -> {
-            typeConverter.toFhirTuple(tuple);
-        });
+        actual = typeConverter.toFhirTuple(tuple);
+        assertNotNull(actual);
+        assertInstanceOf(Parameters.class, actual);
+        assertTrue(((Parameters) actual).isEmpty());
     }
 
     // FHIR-to-CQL

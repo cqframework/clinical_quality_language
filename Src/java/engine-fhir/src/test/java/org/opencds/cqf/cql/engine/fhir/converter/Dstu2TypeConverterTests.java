@@ -2,14 +2,17 @@ package org.opencds.cqf.cql.engine.fhir.converter;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.opencds.cqf.cql.engine.fhir.converter.ConverterTestUtils.*;
 
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
+import ca.uhn.fhir.model.dstu2.resource.Parameters;
 import java.math.BigDecimal;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -67,7 +70,7 @@ class Dstu2TypeConverterTests {
         return !leftIterator.hasNext() && !rightIterator.hasNext();
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "null"})
     protected Boolean compareObjects(Object left, Object right) {
         if (left == null ^ right == null) {
             return false;
@@ -524,13 +527,14 @@ class Dstu2TypeConverterTests {
 
     @Test
     void tupleToFhirTuple() {
-        IBase expected = typeConverter.toFhirTuple(null);
-        assertNull(expected);
+        IBase actual = typeConverter.toFhirTuple(null);
+        assertNull(actual);
 
         var tuple = new Tuple();
-        assertThrows(NotImplementedException.class, () -> {
-            typeConverter.toFhirTuple(tuple);
-        });
+        actual = typeConverter.toFhirTuple(tuple);
+        assertNotNull(actual);
+        assertInstanceOf(Parameters.class, actual);
+        assertTrue(((Parameters) actual).isEmpty());
     }
 
     // FHIR-to-CQL

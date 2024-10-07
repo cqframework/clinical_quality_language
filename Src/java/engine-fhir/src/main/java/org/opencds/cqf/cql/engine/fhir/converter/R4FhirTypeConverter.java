@@ -218,7 +218,28 @@ class R4FhirTypeConverter extends BaseFhirTypeConverter {
             return null;
         }
 
-        throw new NotImplementedException("can't convert Tuples");
+        var parameters = new Parameters();
+        if (value.getElements().isEmpty()) {
+            return parameters;
+        }
+
+        // This parameters needs to be set to the definition name
+        // when it's rolled up to the final result
+        var param = parameters.addParameter();
+        for (String key : value.getElements().keySet()) {
+            var part = param.addPart();
+            part.setName(key);
+            var result = toFhirType(value);
+            if (result instanceof Resource) {
+                part.setResource((Resource) result);
+            } else if (result instanceof Type) {
+                part.setValue((Type) result);
+            } else {
+                throw new IllegalArgumentException("Tuple contains unsupported type");
+            }
+        }
+
+        return parameters;
     }
 
     @Override
