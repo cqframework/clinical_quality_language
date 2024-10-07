@@ -1,8 +1,5 @@
 package org.opencds.cqf.cql.engine.fhir.converter;
 
-import ca.uhn.fhir.model.api.IDatatype;
-import ca.uhn.fhir.model.api.IResource;
-import ca.uhn.fhir.model.dstu2.resource.Parameters;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Collection;
@@ -246,20 +243,20 @@ class Dstu2FhirTypeConverter extends BaseFhirTypeConverter {
             part.setName(key);
             var element = value.getElements().get(key);
             if (element == null) {
-                part.addUndeclaredExtension(false, NULL_EXT_URL, new BooleanType(true));
+                part.addExtension(NULL_EXT_URL, new BooleanType(true));
                 continue;
             } else if (element instanceof Collection) {
                 if (((Collection<?>) element).isEmpty()) {
-                    part.addUndeclaredExtension(false, EMPTY_EXT_URL, new BooleanType(true));
+                    part.addExtension(EMPTY_EXT_URL, new BooleanType(true));
                     continue;
                 }
             }
 
             var result = toFhirType(element);
-            if (result instanceof IResource) {
-                part.setResource((IResource) result);
-            } else if (result instanceof IDatatype) {
-                part.setValue((IDatatype) result);
+            if (result instanceof Resource) {
+                part.setResource((Resource) result);
+            } else if (result instanceof Type) {
+                part.setValue((Type) result);
             } else {
                 throw new IllegalArgumentException("Tuple contains unsupported type");
             }

@@ -11,8 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.opencds.cqf.cql.engine.fhir.converter.ConverterTestUtils.*;
 
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
-import ca.uhn.fhir.model.dstu2.resource.Parameters;
-import ca.uhn.fhir.model.dstu2.resource.Parameters.Parameter;
 import java.math.BigDecimal;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -34,6 +32,8 @@ import org.hl7.fhir.dstu2.model.Encounter;
 import org.hl7.fhir.dstu2.model.IdType;
 import org.hl7.fhir.dstu2.model.InstantType;
 import org.hl7.fhir.dstu2.model.IntegerType;
+import org.hl7.fhir.dstu2.model.Parameters;
+import org.hl7.fhir.dstu2.model.Parameters.ParametersParameterComponent;
 import org.hl7.fhir.dstu2.model.Patient;
 import org.hl7.fhir.dstu2.model.Period;
 import org.hl7.fhir.dstu2.model.Range;
@@ -526,9 +526,9 @@ class Dstu2TypeConverterTests {
         });
     }
 
-    private static Parameters.Parameter getPartByName(Parameter ppc, String name) {
+    private static ParametersParameterComponent getPartByName(ParametersParameterComponent ppc, String name) {
         return ppc.getPart().stream()
-                .filter(p -> p.getName().equals("name"))
+                .filter(p -> p.getName().equals(name))
                 .findFirst()
                 .get();
     }
@@ -552,13 +552,11 @@ class Dstu2TypeConverterTests {
         assertNotNull(actual);
         assertEquals(1, actual.getParameter().size());
 
-        var first = actual.getParameterFirstRep();
+        var first = actual.getParameter().get(0);
         assertEquals(4, first.getPart().size());
 
         var w = getPartByName(first, "W");
-        assertEquals(
-                FhirTypeConverter.NULL_EXT_URL,
-                w.getAllUndeclaredExtensions().get(0).getUrl());
+        assertEquals(FhirTypeConverter.NULL_EXT_URL, w.getExtension().get(0).getUrl());
 
         var x = getPartByName(first, "X");
         assertEquals(5, ((IntegerType) x.getValue()).getValue());
@@ -567,9 +565,7 @@ class Dstu2TypeConverterTests {
         assertEquals("123", y.getResource().getId());
 
         var z = getPartByName(first, "Z");
-        assertEquals(
-                FhirTypeConverter.EMPTY_EXT_URL,
-                z.getAllUndeclaredExtensions().get(0).getUrl());
+        assertEquals(FhirTypeConverter.EMPTY_EXT_URL, z.getExtension().get(0).getUrl());
     }
 
     // FHIR-to-CQL

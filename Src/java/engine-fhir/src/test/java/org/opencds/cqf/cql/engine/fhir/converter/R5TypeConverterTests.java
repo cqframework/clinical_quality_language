@@ -532,7 +532,7 @@ class R5TypeConverterTests {
 
     private static ParametersParameterComponent getPartByName(ParametersParameterComponent ppc, String name) {
         return ppc.getPart().stream()
-                .filter(p -> p.getName().equals("name"))
+                .filter(p -> p.getName().equals(name))
                 .findFirst()
                 .get();
     }
