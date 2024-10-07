@@ -4,7 +4,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -29,9 +28,12 @@ import org.hl7.fhir.dstu3.model.Coding;
 import org.hl7.fhir.dstu3.model.DateTimeType;
 import org.hl7.fhir.dstu3.model.DateType;
 import org.hl7.fhir.dstu3.model.DecimalType;
+import org.hl7.fhir.dstu3.model.Encounter;
 import org.hl7.fhir.dstu3.model.IdType;
 import org.hl7.fhir.dstu3.model.InstantType;
 import org.hl7.fhir.dstu3.model.IntegerType;
+import org.hl7.fhir.dstu3.model.Parameters;
+import org.hl7.fhir.dstu3.model.Parameters.ParametersParameterComponent;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Period;
 import org.hl7.fhir.dstu3.model.Range;
@@ -42,7 +44,6 @@ import org.hl7.fhir.instance.model.api.IBase;
 import org.hl7.fhir.instance.model.api.ICompositeType;
 import org.hl7.fhir.instance.model.api.IIdType;
 import org.hl7.fhir.instance.model.api.IPrimitiveType;
-import org.hl7.fhir.r4.model.Parameters;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -529,16 +530,46 @@ class Dstu3TypeConverterTests {
         });
     }
 
+    private static ParametersParameterComponent getPartByName(ParametersParameterComponent ppc, String name) {
+        return ppc.getPart().stream()
+                .filter(p -> p.getName().equals("name"))
+                .findFirst()
+                .get();
+    }
+
     @Test
     void tupleToFhirTuple() {
-        IBase actual = typeConverter.toFhirTuple(null);
+        Parameters actual = (Parameters) typeConverter.toFhirTuple(null);
         assertNull(actual);
 
         var tuple = new Tuple();
-        actual = typeConverter.toFhirTuple(tuple);
+        actual = (Parameters) typeConverter.toFhirTuple(tuple);
         assertNotNull(actual);
-        assertInstanceOf(Parameters.class, actual);
-        assertTrue(((Parameters) actual).isEmpty());
+        assertTrue(actual.isEmpty());
+
+        tuple.getElements().put("W", null);
+        tuple.getElements().put("X", 5);
+        tuple.getElements().put("Y", new Encounter().setId("123"));
+        tuple.getElements().put("Z", new ArrayList<>());
+
+        actual = (Parameters) typeConverter.toFhirTuple(tuple);
+        assertNotNull(actual);
+        assertEquals(1, actual.getParameter().size());
+
+        var first = actual.getParameterFirstRep();
+        assertEquals(4, first.getPart().size());
+
+        var w = getPartByName(first, "W");
+        assertEquals(FhirTypeConverter.NULL_EXT_URL, w.getExtension().get(0).getUrl());
+
+        var x = getPartByName(first, "X");
+        assertEquals(5, ((IntegerType) x.getValue()).getValue());
+
+        var y = getPartByName(first, "Y");
+        assertEquals("123", y.getResource().getId());
+
+        var z = getPartByName(first, "Z");
+        assertEquals(FhirTypeConverter.EMPTY_EXT_URL, z.getExtension().get(0).getUrl());
     }
 
     // FHIR-to-CQL

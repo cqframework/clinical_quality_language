@@ -2,6 +2,7 @@ package org.opencds.cqf.cql.engine.fhir.converter;
 
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.NotImplementedException;
 import org.hl7.fhir.instance.model.api.IBase;
@@ -229,7 +230,18 @@ class R4FhirTypeConverter extends BaseFhirTypeConverter {
         for (String key : value.getElements().keySet()) {
             var part = param.addPart();
             part.setName(key);
-            var result = toFhirType(value);
+            var element = value.getElements().get(key);
+            if (element == null) {
+                part.addExtension().setUrl(NULL_EXT_URL).setValue(new BooleanType(true));
+                continue;
+            } else if (element instanceof Collection) {
+                if (((Collection<?>) element).isEmpty()) {
+                    part.addExtension().setUrl(EMPTY_EXT_URL).setValue(new BooleanType(true));
+                    continue;
+                }
+            }
+
+            var result = toFhirType(element);
             if (result instanceof Resource) {
                 part.setResource((Resource) result);
             } else if (result instanceof Type) {

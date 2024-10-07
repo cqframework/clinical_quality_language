@@ -5,6 +5,7 @@ import ca.uhn.fhir.model.api.IResource;
 import ca.uhn.fhir.model.dstu2.resource.Parameters;
 import java.math.BigDecimal;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.NotImplementedException;
@@ -237,11 +238,24 @@ class Dstu2FhirTypeConverter extends BaseFhirTypeConverter {
 
         // This parameters needs to be set to the definition name
         // when it's rolled up to the final result
+        // This parameters needs to be set to the definition name
+        // when it's rolled up to the final result
         var param = parameters.addParameter();
         for (String key : value.getElements().keySet()) {
             var part = param.addPart();
             part.setName(key);
-            var result = toFhirType(value);
+            var element = value.getElements().get(key);
+            if (element == null) {
+                part.addUndeclaredExtension(false, NULL_EXT_URL, new BooleanType(true));
+                continue;
+            } else if (element instanceof Collection) {
+                if (((Collection<?>) element).isEmpty()) {
+                    part.addUndeclaredExtension(false, EMPTY_EXT_URL, new BooleanType(true));
+                    continue;
+                }
+            }
+
+            var result = toFhirType(element);
             if (result instanceof IResource) {
                 part.setResource((IResource) result);
             } else if (result instanceof IDatatype) {
