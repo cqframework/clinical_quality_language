@@ -21,3 +21,6 @@ define TimeOfDayTest: TimeOfDay()
 
 //Today
 define Issue34B: Today()
+
+// Default timezoneOffset
+define Issue1420: hours between DateTime(2024, 10, 3, 15, 54, 0, 0) and DateTime(2024, 10, 3, 15, 54, 0, 0, 0)
