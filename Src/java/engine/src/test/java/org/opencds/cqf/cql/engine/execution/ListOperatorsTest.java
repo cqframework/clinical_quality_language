@@ -28,7 +28,7 @@ class ListOperatorsTest extends CqlTestBase {
     }
 
     @Test
-    void all_interval_operators() {
+    void all_list_operators() {
         final BigDecimal bigDecimalZoneOffset = getBigDecimalZoneOffset();
 
         var eng = getEngine(testCompilerOptions());
