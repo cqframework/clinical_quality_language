@@ -119,6 +119,7 @@ class CqlDateTimeOperatorsTest extends CqlTestBase {
 
             // Issue1420 calculates the difference in hours between `DateTime(y, m, d, h, m, s, ms)` and
             // `DateTime(y, m, d, h, m, s, ms, 0)`, so it returns the timezone offset of the first DateTime.
+            // The first DateTime should have the timezone offset of the evaluation request as per the spec.
             // CQL also has `timezoneoffset from DateTime(...)` but here we are testing a more complex scenario.
             var value = engine.expression(library, "Issue1420", evaluationZonedDateTime)
                     .value();
