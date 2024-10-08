@@ -4,6 +4,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.EnumSet;
+import java.util.List;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.junit.jupiter.api.Test;
 import org.opencds.cqf.cql.engine.elm.executing.AfterEvaluator;
@@ -103,5 +107,23 @@ class CqlDateTimeOperatorsTest extends CqlTestBase {
         //        Assertions.assertTrue(EquivalentEvaluator.equivalent(value, new DateTime(null, 2016, 6, 10)));
         //        Assertions.assertTrue(((DateTime)
         // result).getDateTime().getOffset().equals(TemporalHelper.getDefaultZoneOffset()));
+    }
+
+    @Test
+    void defaultTimezoneOffset() {
+        // Disable expression caching so that we can re-evaluate the same expression in different time zones
+        var engine = new CqlEngine(environment, EnumSet.noneOf(CqlEngine.Options.class));
+
+        for (var zoneId : List.of("America/New_York", "Europe/London", "Pacific/Auckland")) {
+            var evaluationZonedDateTime = ZonedDateTime.of(2024, 10, 3, 15, 54, 0, 0, ZoneId.of(zoneId));
+
+            // Issue1420 calculates the difference in hours between `DateTime(y, m, d, h, m, s, ms)` and
+            // `DateTime(y, m, d, h, m, s, ms, 0)`, so it returns the timezone offset of the first DateTime.
+            // CQL also has `timezoneoffset from DateTime(...)` but here we are testing a more complex scenario.
+            var value = engine.expression(library, "Issue1420", evaluationZonedDateTime)
+                    .value();
+            var expected = evaluationZonedDateTime.getOffset().getTotalSeconds() / 3600;
+            assertEquals(expected, value);
+        }
     }
 }
