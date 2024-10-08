@@ -556,7 +556,9 @@ class Dstu2TypeConverterTests {
         assertEquals(4, first.getPart().size());
 
         var w = getPartByName(first, "W");
-        assertEquals(FhirTypeConverter.NULL_EXT_URL, w.getExtension().get(0).getUrl());
+        assertEquals(
+                FhirTypeConverter.DATA_ABSENT_REASON_EXT_URL,
+                w.getExtension().get(0).getUrl());
 
         var x = getPartByName(first, "X");
         assertEquals(5, ((IntegerType) x.getValue()).getValue());
@@ -565,7 +567,8 @@ class Dstu2TypeConverterTests {
         assertEquals("123", y.getResource().getId());
 
         var z = getPartByName(first, "Z");
-        assertEquals(FhirTypeConverter.EMPTY_EXT_URL, z.getExtension().get(0).getUrl());
+        assertEquals(
+                FhirTypeConverter.EMPTY_LIST_EXT_URL, z.getExtension().get(0).getUrl());
     }
 
     // FHIR-to-CQL

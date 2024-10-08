@@ -233,32 +233,26 @@ class Dstu2FhirTypeConverter extends BaseFhirTypeConverter {
             return parameters;
         }
 
-        // This parameters needs to be set to the definition name
-        // when it's rolled up to the final result
-        // This parameters needs to be set to the definition name
-        // when it's rolled up to the final result
         var param = parameters.addParameter();
         for (String key : value.getElements().keySet()) {
             var part = param.addPart();
             part.setName(key);
             var element = value.getElements().get(key);
             if (element == null) {
-                part.addExtension(NULL_EXT_URL, new BooleanType(true));
-                continue;
-            } else if (element instanceof Collection) {
-                if (((Collection<?>) element).isEmpty()) {
-                    part.addExtension(EMPTY_EXT_URL, new BooleanType(true));
-                    continue;
-                }
-            }
-
-            var result = toFhirType(element);
-            if (result instanceof Resource) {
-                part.setResource((Resource) result);
-            } else if (result instanceof Type) {
-                part.setValue((Type) result);
+                part.addExtension()
+                        .setUrl(DATA_ABSENT_REASON_EXT_URL)
+                        .setValue(new CodeType(DATA_ABSENT_REASON_UNKNOWN_CODE));
+            } else if (element instanceof Collection && ((Collection<?>) element).isEmpty()) {
+                part.addExtension().setUrl(EMPTY_LIST_EXT_URL).setValue(new BooleanType(true));
             } else {
-                throw new IllegalArgumentException("Tuple contains unsupported type");
+                var result = toFhirType(element);
+                if (result instanceof Resource) {
+                    part.setResource((Resource) result);
+                } else if (result instanceof Type) {
+                    part.setValue((Type) result);
+                } else {
+                    throw new IllegalArgumentException("Tuple contains unsupported type");
+                }
             }
         }
 

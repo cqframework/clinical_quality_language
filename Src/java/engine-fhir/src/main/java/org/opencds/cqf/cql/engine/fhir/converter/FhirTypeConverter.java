@@ -28,8 +28,9 @@ import org.opencds.cqf.cql.engine.runtime.Tuple;
  */
 public interface FhirTypeConverter {
 
-    static final String EMPTY_EXT_URL = "http://hl7.org/fhir/StructureDefinition/cqf-isEmptyList";
-    static final String NULL_EXT_URL = "http://hl7.org/fhir/StructureDefinition/cqf-isNull";
+    static final String EMPTY_LIST_EXT_URL = "http://hl7.org/fhir/StructureDefinition/cqf-isEmptyList";
+    static final String DATA_ABSENT_REASON_EXT_URL = "http://hl7.org/fhir/StructureDefinition/data-absent-reason";
+    static final String DATA_ABSENT_REASON_UNKNOWN_CODE = "unknown";
 
     // CQL-to-FHIR conversions
 
