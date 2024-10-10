@@ -42,7 +42,7 @@ abstract class BaseFhirTypeConverter implements FhirTypeConverter {
     }
 
     @Override
-    public Iterable<Object> toFhirTypes(Iterable<?> values) {
+    public List<Object> toFhirTypes(Iterable<?> values) {
         List<Object> converted = new ArrayList<>();
         for (Object value : values) {
             if (value == null) {
