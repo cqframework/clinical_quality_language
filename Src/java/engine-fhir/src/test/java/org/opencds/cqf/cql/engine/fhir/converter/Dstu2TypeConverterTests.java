@@ -2,7 +2,6 @@ package org.opencds.cqf.cql.engine.fhir.converter;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -45,6 +44,7 @@ import org.hl7.fhir.instance.model.api.IBase;
 import org.hl7.fhir.instance.model.api.ICompositeType;
 import org.hl7.fhir.instance.model.api.IIdType;
 import org.hl7.fhir.instance.model.api.IPrimitiveType;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -533,13 +533,16 @@ class Dstu2TypeConverterTests {
 
     @Test
     void tupleToFhirTuple() {
-        Parameters actual = (Parameters) typeConverter.toFhirTuple(null);
+        Parameters.ParametersParameterComponent actual =
+                (Parameters.ParametersParameterComponent) typeConverter.toFhirTuple(null);
         assertNull(actual);
 
         var tuple = new Tuple();
-        actual = (Parameters) typeConverter.toFhirTuple(tuple);
-        assertNotNull(actual);
-        assertTrue(actual.isEmpty());
+        actual = (Parameters.ParametersParameterComponent) typeConverter.toFhirTuple(tuple);
+        Assertions.assertNotNull(actual);
+        assertEquals(
+                FhirTypeConverter.EMPTY_TUPLE_EXT_URL,
+                actual.getValue().getExtension().get(0).getUrl());
 
         var ints = new ArrayList<Integer>();
         for (int i = 0; i < 5; i++) {
@@ -552,11 +555,8 @@ class Dstu2TypeConverterTests {
         tuple.getElements().put("Y", new Encounter().setId("123"));
         tuple.getElements().put("Z", new ArrayList<>());
 
-        actual = (Parameters) typeConverter.toFhirTuple(tuple);
-        assertNotNull(actual);
-        assertEquals(1, actual.getParameter().size());
-
-        var first = actual.getParameter().get(0);
+        actual = (Parameters.ParametersParameterComponent) typeConverter.toFhirTuple(tuple);
+        var first = actual;
         assertEquals(9, first.getPart().size());
 
         var v = getPartsByName(first, "V");
@@ -578,6 +578,51 @@ class Dstu2TypeConverterTests {
         assertEquals(
                 FhirTypeConverter.EMPTY_LIST_EXT_URL,
                 z.getValue().getExtension().get(0).getUrl());
+    }
+
+    @Test
+    void complexTupleToFhirTuple() {
+        var innerTuple = new Tuple();
+        innerTuple.getElements().put("X", 1);
+        innerTuple.getElements().put("Y", 2);
+        innerTuple.getElements().put("Z", null);
+        var outerTuple = new Tuple();
+        outerTuple.getElements().put("A", innerTuple);
+        var tupleList = new ArrayList<Tuple>();
+        for (int i = 0; i < 3; i++) {
+            var elementTuple = new Tuple();
+            elementTuple.getElements().put("P", i);
+            elementTuple.getElements().put("Q", i + 1);
+            tupleList.add(elementTuple);
+        }
+        outerTuple.getElements().put("B", tupleList);
+
+        Parameters.ParametersParameterComponent actual =
+                (Parameters.ParametersParameterComponent) typeConverter.toFhirTuple(outerTuple);
+        var first = actual;
+        assertEquals(4, first.getPart().size());
+
+        var a = getPartsByName(first, "A");
+        assertEquals(1, a.size());
+        assertEquals(3, a.get(0).getPart().size());
+        var x = a.get(0).getPart().get(0);
+        assertEquals(1, ((IntegerType) x.getValue()).getValue());
+        var y = a.get(0).getPart().get(1);
+        assertEquals(2, ((IntegerType) y.getValue()).getValue());
+        var z = a.get(0).getPart().get(2);
+        assertEquals(
+                FhirTypeConverter.DATA_ABSENT_REASON_EXT_URL,
+                z.getValue().getExtension().get(0).getUrl());
+
+        var b = getPartsByName(first, "B");
+        assertEquals(3, b.size());
+        var b1 = b.get(0);
+        var p = getPartsByName(b1, "P");
+        assertEquals(1, p.size());
+        assertEquals(0, ((IntegerType) p.get(0).getValue()).getValue());
+        var q = getPartsByName(b1, "Q");
+        assertEquals(1, q.size());
+        assertEquals(1, ((IntegerType) q.get(0).getValue()).getValue());
     }
 
     // FHIR-to-CQL
