@@ -248,6 +248,35 @@ class Dstu2FhirTypeConverter extends BaseFhirTypeConverter {
         }
     }
 
+    private void addElementToParameter(Parameters.ParametersParameterComponent param, String key, Object value) {
+        if (value == null) {
+            // Null value, add a single empty value with an extension indicating the reason
+            var dataAbsentValue = emptyBooleanWithExtension(
+                    DATA_ABSENT_REASON_EXT_URL, new CodeType(DATA_ABSENT_REASON_UNKNOWN_CODE));
+            addPartWithNameAndValue(param, key, dataAbsentValue);
+            return;
+        }
+
+        var iterable = asIterable(value);
+        if (iterable == null) {
+            // Single, non-null value
+            addPartWithNameAndValue(param, key, toFhirType(value));
+            return;
+        }
+
+        if (!iterable.iterator().hasNext()) {
+            // Empty list
+            var emptyListValue = emptyBooleanWithExtension(EMPTY_LIST_EXT_URL, new BooleanType(true));
+            addPartWithNameAndValue(param, key, emptyListValue);
+        } else {
+            // Non-empty list, one part per value
+            var fhirTypes = this.toFhirTypes(iterable);
+            for (var fhirType : fhirTypes) {
+                addPartWithNameAndValue(param, key, fhirType);
+            }
+        }
+    }
+
     @Override
     public IBase toFhirTuple(Tuple value) {
         if (value == null) {
@@ -260,32 +289,7 @@ class Dstu2FhirTypeConverter extends BaseFhirTypeConverter {
 
         var param = parameters.addParameter();
         for (String key : value.getElements().keySet()) {
-            var element = value.getElements().get(key);
-            if (element == null) {
-                // Null value, add a single empty value with an extension indicating the reason
-                var dataAbsentValue = emptyBooleanWithExtension(
-                        DATA_ABSENT_REASON_EXT_URL, new CodeType(DATA_ABSENT_REASON_UNKNOWN_CODE));
-                addPartWithNameAndValue(param, key, dataAbsentValue);
-                continue;
-            }
-
-            var iterable = asIterable(element);
-            if (iterable == null) {
-                // Single value
-                addPartWithNameAndValue(param, key, toFhirType(element));
-            } else {
-                if (!iterable.iterator().hasNext()) {
-                    // Empty list
-                    var emptyListValue = emptyBooleanWithExtension(EMPTY_LIST_EXT_URL, new BooleanType(true));
-                    addPartWithNameAndValue(param, key, emptyListValue);
-                } else {
-                    // Non-empty list, one part per value
-                    var fhirTypes = this.toFhirTypes(iterable);
-                    for (var fhirType : fhirTypes) {
-                        addPartWithNameAndValue(param, key, fhirType);
-                    }
-                }
-            }
+            addElementToParameter(param, key, value.getElements().get(key));
         }
 
         return parameters;

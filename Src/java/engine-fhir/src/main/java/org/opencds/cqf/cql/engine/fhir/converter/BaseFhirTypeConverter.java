@@ -50,7 +50,7 @@ abstract class BaseFhirTypeConverter implements FhirTypeConverter {
             } else if (value instanceof Iterable<?>) {
                 converted.add(toFhirTypes((Iterable<?>) value));
             } else if (isFhirType(value)) {
-                converted.add((IBase) value);
+                converted.add(value);
             } else if (isCqlType(value)) {
                 converted.add(toFhirType(value));
             } else {
