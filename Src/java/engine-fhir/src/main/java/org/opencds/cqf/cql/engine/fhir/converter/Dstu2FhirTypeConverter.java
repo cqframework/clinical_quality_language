@@ -230,7 +230,7 @@ class Dstu2FhirTypeConverter extends BaseFhirTypeConverter {
     private static void addPartWithNameAndValue(
             Parameters.ParametersParameterComponent param, String key, Object value) {
         if (value instanceof Parameters.ParametersParameterComponent) {
-            var part = (Parameters.ParametersParameterComponent)value;
+            var part = (Parameters.ParametersParameterComponent) value;
             part.setName(key);
             param.addPart(part);
         } else {
