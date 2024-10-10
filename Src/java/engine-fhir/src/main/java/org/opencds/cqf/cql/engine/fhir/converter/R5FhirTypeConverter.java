@@ -220,14 +220,20 @@ class R5FhirTypeConverter extends BaseFhirTypeConverter {
 
     private static void addPartWithNameAndValue(
             Parameters.ParametersParameterComponent param, String key, Object value) {
-        var part = param.addPart().setName(key);
-        if (value instanceof Resource) {
-            part.setResource((Resource) value);
-        } else if (value instanceof DataType) {
-            part.setValue((DataType) value);
+        if (value instanceof Parameters.ParametersParameterComponent) {
+            var part = (Parameters.ParametersParameterComponent)value;
+            part.setName(key);
+            param.addPart(part);
         } else {
-            throw new IllegalArgumentException(
-                    "Unsupported FHIR type: " + value.getClass().getName());
+            var part = param.addPart().setName(key);
+            if (value instanceof Resource) {
+                part.setResource((Resource) value);
+            } else if (value instanceof DataType) {
+                part.setValue((DataType) value);
+            } else {
+                throw new IllegalArgumentException(
+                        "Unsupported FHIR type: " + value.getClass().getName());
+            }
         }
     }
 
@@ -273,17 +279,19 @@ class R5FhirTypeConverter extends BaseFhirTypeConverter {
         if (value == null) {
             return null;
         }
+
         var parameters = new Parameters();
+        var param = parameters.addParameter();
+
         if (value.getElements().isEmpty()) {
-            return parameters;
+            param.setValue(emptyBooleanWithExtension(EMPTY_TUPLE_EXT_URL, new BooleanType(true)));
         }
 
-        var param = parameters.addParameter();
         for (String key : value.getElements().keySet()) {
             addElementToParameter(param, key, value.getElements().get(key));
         }
 
-        return parameters;
+        return param;
     }
 
     @Override

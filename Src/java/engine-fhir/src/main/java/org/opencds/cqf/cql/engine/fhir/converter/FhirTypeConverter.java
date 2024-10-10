@@ -30,6 +30,7 @@ import org.opencds.cqf.cql.engine.runtime.Tuple;
 public interface FhirTypeConverter {
 
     static final String EMPTY_LIST_EXT_URL = "http://hl7.org/fhir/StructureDefinition/cqf-isEmptyList";
+    static final String EMPTY_TUPLE_EXT_URL = "http://hl7.org/fhir/StructureDefinition/cqf-isEmptyTuple";
     static final String DATA_ABSENT_REASON_EXT_URL = "http://hl7.org/fhir/StructureDefinition/data-absent-reason";
     static final String DATA_ABSENT_REASON_UNKNOWN_CODE = "unknown";
     static final String CQL_TYPE_EXT_URL = "http://hl7.org/fhir/StructureDefinition/cqf-cqlType";
