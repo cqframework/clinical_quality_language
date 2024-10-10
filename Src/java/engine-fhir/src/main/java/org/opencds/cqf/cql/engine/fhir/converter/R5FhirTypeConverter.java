@@ -2,7 +2,6 @@ package org.opencds.cqf.cql.engine.fhir.converter;
 
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.NotImplementedException;
 import org.hl7.fhir.instance.model.api.IBase;
@@ -213,12 +212,38 @@ class R5FhirTypeConverter extends BaseFhirTypeConverter {
         return range;
     }
 
+    private static BooleanType emptyBooleanWithExtension(String url, DataType value) {
+        var result = new BooleanType((String) null);
+        result.addExtension().setUrl(url).setValue(value);
+        return result;
+    }
+
+    private static void addPartWithNameAndValue(
+            Parameters.ParametersParameterComponent param, String key, Object value) {
+        var part = param.addPart().setName(key);
+        if (value instanceof Resource) {
+            part.setResource((Resource) value);
+        } else if (value instanceof DataType) {
+            part.setValue((DataType) value);
+        } else {
+            throw new IllegalArgumentException(
+                    "Unsupported FHIR type: " + value.getClass().getName());
+        }
+    }
+
+    private static Iterable<?> asIterable(Object value) {
+        if (value instanceof Iterable) {
+            return (Iterable<?>) value;
+        } else {
+            return null;
+        }
+    }
+
     @Override
     public IBase toFhirTuple(Tuple value) {
         if (value == null) {
             return null;
         }
-
         var parameters = new Parameters();
         if (value.getElements().isEmpty()) {
             return parameters;
@@ -226,23 +251,30 @@ class R5FhirTypeConverter extends BaseFhirTypeConverter {
 
         var param = parameters.addParameter();
         for (String key : value.getElements().keySet()) {
-            var part = param.addPart();
-            part.setName(key);
             var element = value.getElements().get(key);
             if (element == null) {
-                part.addExtension()
-                        .setUrl(DATA_ABSENT_REASON_EXT_URL)
-                        .setValue(new CodeType(DATA_ABSENT_REASON_UNKNOWN_CODE));
-            } else if (element instanceof Collection && ((Collection<?>) element).isEmpty()) {
-                part.addExtension().setUrl(EMPTY_LIST_EXT_URL).setValue(new BooleanType(true));
+                // Null value, add a single empty value with an extension indicating the reason
+                var dataAbsentValue = emptyBooleanWithExtension(
+                        DATA_ABSENT_REASON_EXT_URL, new CodeType(DATA_ABSENT_REASON_UNKNOWN_CODE));
+                addPartWithNameAndValue(param, key, dataAbsentValue);
+                continue;
+            }
+
+            var iterable = asIterable(element);
+            if (iterable == null) {
+                // Single value
+                addPartWithNameAndValue(param, key, toFhirType(element));
             } else {
-                var result = toFhirType(element);
-                if (result instanceof Resource) {
-                    part.setResource((Resource) result);
-                } else if (result instanceof DataType) {
-                    part.setValue((DataType) result);
+                if (!iterable.iterator().hasNext()) {
+                    // Empty list
+                    var emptyListValue = emptyBooleanWithExtension(EMPTY_LIST_EXT_URL, new BooleanType(true));
+                    addPartWithNameAndValue(param, key, emptyListValue);
                 } else {
-                    throw new IllegalArgumentException("Tuple contains unsupported type");
+                    // Non-empty list, one part per value
+                    var fhirTypes = this.toFhirTypes(iterable);
+                    for (var fhirType : fhirTypes) {
+                        addPartWithNameAndValue(param, key, fhirType);
+                    }
                 }
             }
         }

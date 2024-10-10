@@ -19,6 +19,7 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.NotImplementedException;
 import org.hl7.fhir.dstu3.model.Attachment;
 import org.hl7.fhir.dstu3.model.Base;
@@ -530,11 +531,8 @@ class Dstu3TypeConverterTests {
         });
     }
 
-    private static ParametersParameterComponent getPartByName(ParametersParameterComponent ppc, String name) {
-        return ppc.getPart().stream()
-                .filter(p -> p.getName().equals(name))
-                .findFirst()
-                .get();
+    private static List<ParametersParameterComponent> getPartsByName(ParametersParameterComponent ppc, String name) {
+        return ppc.getPart().stream().filter(p -> p.getName().equals(name)).collect(Collectors.toList());
     }
 
     @Test
@@ -547,6 +545,12 @@ class Dstu3TypeConverterTests {
         assertNotNull(actual);
         assertTrue(actual.isEmpty());
 
+        var ints = new ArrayList<Integer>();
+        for (int i = 0; i < 5; i++) {
+            ints.add(i);
+        }
+
+        tuple.getElements().put("V", ints);
         tuple.getElements().put("W", null);
         tuple.getElements().put("X", 5);
         tuple.getElements().put("Y", new Encounter().setId("123"));
@@ -557,22 +561,27 @@ class Dstu3TypeConverterTests {
         assertEquals(1, actual.getParameter().size());
 
         var first = actual.getParameterFirstRep();
-        assertEquals(4, first.getPart().size());
+        assertEquals(9, first.getPart().size());
 
-        var w = getPartByName(first, "W");
+        var v = getPartsByName(first, "V");
+        assertEquals(5, v.size());
+        assertEquals(0, ((IntegerType) v.get(0).getValue()).getValue());
+
+        var w = getPartsByName(first, "W").get(0);
         assertEquals(
                 FhirTypeConverter.DATA_ABSENT_REASON_EXT_URL,
-                w.getExtension().get(0).getUrl());
+                w.getValue().getExtension().get(0).getUrl());
 
-        var x = getPartByName(first, "X");
+        var x = getPartsByName(first, "X").get(0);
         assertEquals(5, ((IntegerType) x.getValue()).getValue());
 
-        var y = getPartByName(first, "Y");
+        var y = getPartsByName(first, "Y").get(0);
         assertEquals("123", y.getResource().getId());
 
-        var z = getPartByName(first, "Z");
+        var z = getPartsByName(first, "Z").get(0);
         assertEquals(
-                FhirTypeConverter.EMPTY_LIST_EXT_URL, z.getExtension().get(0).getUrl());
+                FhirTypeConverter.EMPTY_LIST_EXT_URL,
+                z.getValue().getExtension().get(0).getUrl());
     }
 
     // FHIR-to-CQL

@@ -42,7 +42,7 @@ abstract class BaseFhirTypeConverter implements FhirTypeConverter {
     }
 
     @Override
-    public Iterable<Object> toFhirTypes(Iterable<?> values) {
+    public List<Object> toFhirTypes(Iterable<?> values) {
         List<Object> converted = new ArrayList<>();
         for (Object value : values) {
             if (value == null) {
@@ -50,7 +50,7 @@ abstract class BaseFhirTypeConverter implements FhirTypeConverter {
             } else if (value instanceof Iterable<?>) {
                 converted.add(toFhirTypes((Iterable<?>) value));
             } else if (isFhirType(value)) {
-                converted.add(value);
+                converted.add((IBase) value);
             } else if (isCqlType(value)) {
                 converted.add(toFhirType(value));
             } else {

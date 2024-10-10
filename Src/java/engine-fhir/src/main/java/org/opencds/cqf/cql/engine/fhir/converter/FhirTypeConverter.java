@@ -1,6 +1,7 @@
 package org.opencds.cqf.cql.engine.fhir.converter;
 
 import java.math.BigDecimal;
+import java.util.List;
 import org.hl7.fhir.instance.model.api.IBase;
 import org.hl7.fhir.instance.model.api.IBaseCoding;
 import org.hl7.fhir.instance.model.api.ICompositeType;
@@ -31,6 +32,7 @@ public interface FhirTypeConverter {
     static final String EMPTY_LIST_EXT_URL = "http://hl7.org/fhir/StructureDefinition/cqf-isEmptyList";
     static final String DATA_ABSENT_REASON_EXT_URL = "http://hl7.org/fhir/StructureDefinition/data-absent-reason";
     static final String DATA_ABSENT_REASON_UNKNOWN_CODE = "unknown";
+    static final String CQL_TYPE_EXT_URL = "http://hl7.org/fhir/StructureDefinition/cqf-cqlType";
 
     // CQL-to-FHIR conversions
 
@@ -57,9 +59,9 @@ public interface FhirTypeConverter {
      * nulls, and sublist hierarchy
      *
      * @param values an Iterable containing CQL structures, nulls, or sublists
-     * @return an Iterable containing FHIR types, nulls, and sublists
+     * @return an List containing FHIR types, nulls, and sublists
      */
-    public Iterable<Object> toFhirTypes(Iterable<?> values);
+    public List<Object> toFhirTypes(Iterable<?> values);
 
     /**
      * Converts a String to a FHIR Id
