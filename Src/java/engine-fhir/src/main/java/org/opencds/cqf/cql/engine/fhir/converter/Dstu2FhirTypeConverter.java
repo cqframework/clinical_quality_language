@@ -221,13 +221,86 @@ class Dstu2FhirTypeConverter extends BaseFhirTypeConverter {
         return range;
     }
 
+    private static BooleanType emptyBooleanWithExtension(String url, Type value) {
+        var result = new BooleanType((String) null);
+        result.addExtension().setUrl(url).setValue(value);
+        return result;
+    }
+
+    private static void addPartWithNameAndValue(
+            Parameters.ParametersParameterComponent param, String key, Object value) {
+        if (value instanceof Parameters.ParametersParameterComponent) {
+            var part = (Parameters.ParametersParameterComponent) value;
+            part.setName(key);
+            param.addPart(part);
+        } else {
+            var part = param.addPart().setName(key);
+            if (value instanceof Resource) {
+                part.setResource((Resource) value);
+            } else if (value instanceof Type) {
+                part.setValue((Type) value);
+            } else {
+                throw new IllegalArgumentException(
+                        "Unsupported FHIR type: " + value.getClass().getName());
+            }
+        }
+    }
+
+    private static Iterable<?> asIterable(Object value) {
+        if (value instanceof Iterable) {
+            return (Iterable<?>) value;
+        } else {
+            return null;
+        }
+    }
+
+    private void addElementToParameter(Parameters.ParametersParameterComponent param, String key, Object value) {
+        if (value == null) {
+            // Null value, add a single empty value with an extension indicating the reason
+            var dataAbsentValue = emptyBooleanWithExtension(
+                    DATA_ABSENT_REASON_EXT_URL, new CodeType(DATA_ABSENT_REASON_UNKNOWN_CODE));
+            addPartWithNameAndValue(param, key, dataAbsentValue);
+            return;
+        }
+
+        var iterable = asIterable(value);
+        if (iterable == null) {
+            // Single, non-null value
+            addPartWithNameAndValue(param, key, toFhirType(value));
+            return;
+        }
+
+        if (!iterable.iterator().hasNext()) {
+            // Empty list
+            var emptyListValue = emptyBooleanWithExtension(EMPTY_LIST_EXT_URL, new BooleanType(true));
+            addPartWithNameAndValue(param, key, emptyListValue);
+        } else {
+            // Non-empty list, one part per value
+            var fhirTypes = this.toFhirTypes(iterable);
+            for (var fhirType : fhirTypes) {
+                addPartWithNameAndValue(param, key, fhirType);
+            }
+        }
+    }
+
     @Override
     public IBase toFhirTuple(Tuple value) {
         if (value == null) {
             return null;
         }
 
-        throw new NotImplementedException("can't convert Tuples");
+        var parameters = new Parameters();
+        var param = parameters.addParameter();
+
+        if (value.getElements().isEmpty()) {
+            param.setValue(emptyBooleanWithExtension(EMPTY_TUPLE_EXT_URL, new BooleanType(true)));
+        }
+
+        for (String key : value.getElements().keySet()) {
+            addElementToParameter(param, key, value.getElements().get(key));
+        }
+
+        return param;
     }
 
     @Override
