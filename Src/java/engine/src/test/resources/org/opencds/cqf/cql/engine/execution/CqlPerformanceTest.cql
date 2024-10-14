@@ -4719,7 +4719,7 @@ define Includes_IsNotIncluded: {1, 2, 3, 4, 5} includes {4, 5, 6}
 define Includes_TuplesIncluded: {Tuple{a:1, b:'d'}, Tuple{a:2, b:'d'}, Tuple{a:2, b:'c'}} includes {Tuple{a:2, b:'d'}, Tuple{a:2, b:'c'}}
 define Includes_TuplesNotIncluded: {Tuple{a:1, b:'d'}, Tuple{a:2, b:'d'}, Tuple{a:2, b:'c'}} includes {Tuple{a:2, b:'d'}, Tuple{a:3, b:'c'}}
 define Includes_NullIncluded: {1, 2, 3, 4, 5} includes null as List<Integer>
-define Includes_NullIncludes: null includes {1, 2, 3, 4, 5}
+define Includes_NullIncludes: null as List<Integer> includes {1, 2, 3, 4, 5}
 define Includes_DayIncluded: {DateTime(2012, 3, 2), DateTime(2012, 3, 3), DateTime(2012, 3, 4)} includes DateTime(2012, 3, 3)
 define Includes_DayNotIncluded: {DateTime(2012, 3, 2), DateTime(2012, 3, 3), DateTime(2012, 3, 4)} includes DateTime(2014, 3, 3)
 define Includes_IntegerIncluded: {1, 2, 3, 4, 5} includes 3
@@ -4749,7 +4749,7 @@ define IncludedIn_IsSame: {1, 2, 3, 4, 5} included in {1, 2, 3, 4, 5}
 define IncludedIn_IsNotIncluded: {4, 5, 6} included in {1, 2, 3, 4, 5}
 define IncludedIn_TuplesIncluded: {Tuple{a:2, b:'d'}, Tuple{a:2, b:'c'}} included in {Tuple{a:1, b:'d'}, Tuple{a:2, b:'d'}, Tuple{a:2, b:'c'}}
 define IncludedIn_TuplesNotIncluded: {Tuple{a:2, b:'d'}, Tuple{a:3, b:'c'}} included in {Tuple{a:1, b:'d'}, Tuple{a:2, b:'d'}, Tuple{a:2, b:'c'}}
-define IncludedIn_NullIncludes: {1, 2, 3, 4, 5} included in null
+define IncludedIn_NullIncludes: {1, 2, 3, 4, 5} included in null as List<Integer>
 define IncludedIn_NullIncluded: null as List<Integer> included in {1, 2, 3, 4, 5}
 define IncludedIn_DayIncluded: DateTime(2012, 3, 3) included in {DateTime(2012, 3, 2), DateTime(2012, 3, 3), DateTime(2012, 3, 4)}
 define IncludedIn_DayNotIncluded: DateTime(2014, 3, 3) included in {DateTime(2012, 3, 2), DateTime(2012, 3, 3), DateTime(2012, 3, 4)}
@@ -4781,7 +4781,7 @@ define ProperIncludes_IsNotIncluded: {1, 2, 3, 4, 5} properly includes {3, 4, 5,
 define ProperIncludes_TuplesIncluded: {Tuple{a:1, b:'d'}, Tuple{a:2, b:'d'}, Tuple{a:2, b:'c'}} properly includes {Tuple{a:2, b:'d'}, Tuple{a:2, b:'c'}}
 define ProperIncludes_TuplesNotIncluded: {Tuple{a:1, b:'d'}, Tuple{a:2, b:'d'}, Tuple{a:2, b:'c'}} properly includes {Tuple{a:2, b:'d'}, Tuple{a:3, b:'c'}}
 define ProperIncludes_NullIncluded: {1, 2, 3, 4, 5} properly includes null as List<Integer>
-define ProperIncludes_NullIncludes: null properly includes {1, 2, 3, 4, 5}
+define ProperIncludes_NullIncludes: null as List<Integer> properly includes {1, 2, 3, 4, 5}
 
 define test_ProperIncludes_IsIncluded: TestMessage(ProperIncludes_IsIncluded, 'ProperIncludes_IsIncluded', toString(true), toString(ProperIncludes_IsIncluded))
 define test_ProperIncludes_IsIncludedReversed: TestMessage(ProperIncludes_IsIncludedReversed, 'ProperIncludes_IsIncludedReversed', toString(true), toString(ProperIncludes_IsIncludedReversed))

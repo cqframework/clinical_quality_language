@@ -73,7 +73,7 @@ define TimeCollapse2: collapse { Interval[@T01:59:59.999, @T10:59:59.999], Inter
 
 //Contains
 define TestContainsNull: IntegerIntervalTest contains null
-define TestNullElement1: null contains 5
+define TestNullElement1: null as Interval<Integer> contains 5
 define TestNullElement2: Interval[null, 5] contains 10
 define TestNullElementTrue: Interval[null, 12] contains 10
 define IntegerIntervalContainsTrue: IntegerIntervalTest contains 5
