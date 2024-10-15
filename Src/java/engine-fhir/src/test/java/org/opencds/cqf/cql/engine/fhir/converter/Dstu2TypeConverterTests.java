@@ -18,6 +18,7 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.NotImplementedException;
 import org.hl7.fhir.dstu2.model.Attachment;
 import org.hl7.fhir.dstu2.model.Base;
@@ -27,9 +28,12 @@ import org.hl7.fhir.dstu2.model.Coding;
 import org.hl7.fhir.dstu2.model.DateTimeType;
 import org.hl7.fhir.dstu2.model.DateType;
 import org.hl7.fhir.dstu2.model.DecimalType;
+import org.hl7.fhir.dstu2.model.Encounter;
 import org.hl7.fhir.dstu2.model.IdType;
 import org.hl7.fhir.dstu2.model.InstantType;
 import org.hl7.fhir.dstu2.model.IntegerType;
+import org.hl7.fhir.dstu2.model.Parameters;
+import org.hl7.fhir.dstu2.model.Parameters.ParametersParameterComponent;
 import org.hl7.fhir.dstu2.model.Patient;
 import org.hl7.fhir.dstu2.model.Period;
 import org.hl7.fhir.dstu2.model.Range;
@@ -40,6 +44,7 @@ import org.hl7.fhir.instance.model.api.IBase;
 import org.hl7.fhir.instance.model.api.ICompositeType;
 import org.hl7.fhir.instance.model.api.IIdType;
 import org.hl7.fhir.instance.model.api.IPrimitiveType;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -67,7 +72,7 @@ class Dstu2TypeConverterTests {
         return !leftIterator.hasNext() && !rightIterator.hasNext();
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "null"})
     protected Boolean compareObjects(Object left, Object right) {
         if (left == null ^ right == null) {
             return false;
@@ -522,15 +527,102 @@ class Dstu2TypeConverterTests {
         });
     }
 
+    private static List<ParametersParameterComponent> getPartsByName(ParametersParameterComponent ppc, String name) {
+        return ppc.getPart().stream().filter(p -> p.getName().equals(name)).collect(Collectors.toList());
+    }
+
     @Test
     void tupleToFhirTuple() {
-        IBase expected = typeConverter.toFhirTuple(null);
-        assertNull(expected);
+        Parameters.ParametersParameterComponent actual =
+                (Parameters.ParametersParameterComponent) typeConverter.toFhirTuple(null);
+        assertNull(actual);
 
         var tuple = new Tuple();
-        assertThrows(NotImplementedException.class, () -> {
-            typeConverter.toFhirTuple(tuple);
-        });
+        actual = (Parameters.ParametersParameterComponent) typeConverter.toFhirTuple(tuple);
+        Assertions.assertNotNull(actual);
+        assertEquals(
+                FhirTypeConverter.EMPTY_TUPLE_EXT_URL,
+                actual.getValue().getExtension().get(0).getUrl());
+
+        var ints = new ArrayList<Integer>();
+        for (int i = 0; i < 5; i++) {
+            ints.add(i);
+        }
+
+        tuple.getElements().put("V", ints);
+        tuple.getElements().put("W", null);
+        tuple.getElements().put("X", 5);
+        tuple.getElements().put("Y", new Encounter().setId("123"));
+        tuple.getElements().put("Z", new ArrayList<>());
+
+        actual = (Parameters.ParametersParameterComponent) typeConverter.toFhirTuple(tuple);
+        var first = actual;
+        assertEquals(9, first.getPart().size());
+
+        var v = getPartsByName(first, "V");
+        assertEquals(5, v.size());
+        assertEquals(0, ((IntegerType) v.get(0).getValue()).getValue());
+
+        var w = getPartsByName(first, "W").get(0);
+        assertEquals(
+                FhirTypeConverter.DATA_ABSENT_REASON_EXT_URL,
+                w.getValue().getExtension().get(0).getUrl());
+
+        var x = getPartsByName(first, "X").get(0);
+        assertEquals(5, ((IntegerType) x.getValue()).getValue());
+
+        var y = getPartsByName(first, "Y").get(0);
+        assertEquals("123", y.getResource().getId());
+
+        var z = getPartsByName(first, "Z").get(0);
+        assertEquals(
+                FhirTypeConverter.EMPTY_LIST_EXT_URL,
+                z.getValue().getExtension().get(0).getUrl());
+    }
+
+    @Test
+    void complexTupleToFhirTuple() {
+        var innerTuple = new Tuple();
+        innerTuple.getElements().put("X", 1);
+        innerTuple.getElements().put("Y", 2);
+        innerTuple.getElements().put("Z", null);
+        var outerTuple = new Tuple();
+        outerTuple.getElements().put("A", innerTuple);
+        var tupleList = new ArrayList<Tuple>();
+        for (int i = 0; i < 3; i++) {
+            var elementTuple = new Tuple();
+            elementTuple.getElements().put("P", i);
+            elementTuple.getElements().put("Q", i + 1);
+            tupleList.add(elementTuple);
+        }
+        outerTuple.getElements().put("B", tupleList);
+
+        Parameters.ParametersParameterComponent actual =
+                (Parameters.ParametersParameterComponent) typeConverter.toFhirTuple(outerTuple);
+        var first = actual;
+        assertEquals(4, first.getPart().size());
+
+        var a = getPartsByName(first, "A");
+        assertEquals(1, a.size());
+        assertEquals(3, a.get(0).getPart().size());
+        var x = a.get(0).getPart().get(0);
+        assertEquals(1, ((IntegerType) x.getValue()).getValue());
+        var y = a.get(0).getPart().get(1);
+        assertEquals(2, ((IntegerType) y.getValue()).getValue());
+        var z = a.get(0).getPart().get(2);
+        assertEquals(
+                FhirTypeConverter.DATA_ABSENT_REASON_EXT_URL,
+                z.getValue().getExtension().get(0).getUrl());
+
+        var b = getPartsByName(first, "B");
+        assertEquals(3, b.size());
+        var b1 = b.get(0);
+        var p = getPartsByName(b1, "P");
+        assertEquals(1, p.size());
+        assertEquals(0, ((IntegerType) p.get(0).getValue()).getValue());
+        var q = getPartsByName(b1, "Q");
+        assertEquals(1, q.size());
+        assertEquals(1, ((IntegerType) q.get(0).getValue()).getValue());
     }
 
     // FHIR-to-CQL
