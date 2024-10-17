@@ -430,9 +430,37 @@ public class ClassType extends DataType implements NamedType {
     }
 
     @Override
-    public boolean isInstantiable(DataType callType, InstantiationContext context) {
+    public DataType instantiate(DataType callType, InstantiationContext context) {
         if (!isGeneric()) {
-            return true;
+            return this;
+        }
+
+        if (callType == null) {
+            var result = new ClassType(getName(), getBaseType());
+            for (int i = 0; i < elements.size(); i++) {
+                var element = elements.get(i);
+                var elementInstantiated = element.getType().instantiate(null, context);
+                if (elementInstantiated == null) {
+                    return null;
+                }
+                result.addElement(new ClassTypeElement(element.getName(), elementInstantiated));
+            }
+
+            return result;
+        }
+
+        if (callType.equals(DataType.ANY)) {
+            var result = new ClassType(getName(), getBaseType());
+            for (int i = 0; i < elements.size(); i++) {
+                var element = elements.get(i);
+                var elementInstantiated = element.getType().instantiate(DataType.ANY, context);
+                if (elementInstantiated == null) {
+                    return null;
+                }
+                result.addElement(new ClassTypeElement(element.getName(), elementInstantiated));
+            }
+
+            return result;
         }
 
         if (callType instanceof ClassType) {
@@ -440,40 +468,26 @@ public class ClassType extends DataType implements NamedType {
             if (elements.size() == classType.elements.size()) {
                 List<ClassTypeElement> theseElements = getSortedElements();
                 List<ClassTypeElement> thoseElements = classType.getSortedElements();
+                var result = new ClassType(getName(), getBaseType());
                 for (int i = 0; i < theseElements.size(); i++) {
-                    if (!(theseElements
-                                    .get(i)
-                                    .getName()
-                                    .equals(thoseElements.get(i).getName())
-                            && theseElements
-                                    .get(i)
-                                    .getType()
-                                    .isInstantiable(thoseElements.get(i).getType(), context))) {
-                        return false;
+                    var thisElement = theseElements.get(i);
+                    var thatElement = thoseElements.get(i);
+                    if (thisElement.getName().equals(thatElement.getName())) {
+                        var thisElementInstantiated = thisElement.getType().instantiate(thatElement.getType(), context);
+                        if (thisElementInstantiated != null) {
+                            result.addElement(new ClassTypeElement(thisElement.getName(), thisElementInstantiated));
+                            continue;
+                        }
                     }
+                    return null;
                 }
 
-                return true;
+                return result;
             }
         }
 
         // TODO: Attempt list/interval demotion on callType if applicable.
 
-        return false;
-    }
-
-    @Override
-    public DataType instantiate(InstantiationContext context) {
-        if (!isGeneric()) {
-            return this;
-        }
-
-        ClassType result = new ClassType(getName(), getBaseType());
-        for (int i = 0; i < elements.size(); i++) {
-            result.addElement(new ClassTypeElement(
-                    elements.get(i).getName(), elements.get(i).getType().instantiate(context)));
-        }
-
-        return result;
+        return null;
     }
 }

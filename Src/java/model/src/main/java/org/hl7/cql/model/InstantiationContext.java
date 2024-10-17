@@ -1,9 +1,8 @@
 package org.hl7.cql.model;
 
 public interface InstantiationContext {
-    boolean isInstantiable(TypeParameter parameter, DataType callType);
 
-    DataType instantiate(TypeParameter parameter);
+    DataType instantiate(TypeParameter parameter, DataType callType);
 
     Iterable<IntervalType> getIntervalConversionTargets(DataType callType);
 

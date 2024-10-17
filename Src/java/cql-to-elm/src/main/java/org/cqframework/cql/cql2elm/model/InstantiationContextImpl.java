@@ -39,28 +39,33 @@ public class InstantiationContextImpl implements InstantiationContext {
     }
 
     @Override
-    public boolean isInstantiable(TypeParameter parameter, DataType callType) {
+    public DataType instantiate(TypeParameter parameter, DataType callType) {
         // If the type is not yet bound, bind it to the call type.
         DataType boundType = typeMap.get(parameter);
+
+        if (callType == null) {
+            return boundType;
+        }
+
         if (boundType == null) {
             if (parameter.canBind(callType)) {
                 typeMap.put(parameter, callType);
-                return true;
+                return callType;
             } else {
-                return false;
+                return null;
             }
         } else {
             // If the type is bound, and is a super type of the call type, return true;
             if (boundType.isSuperTypeOf(callType) || callType.isCompatibleWith(boundType)) {
-                return true;
+                return callType;
             } else if (callType.isSuperTypeOf(boundType) || boundType.isCompatibleWith(callType)) {
                 // If the call type is a super type of the bound type, switch the bound type for this parameter to the
                 // call type
                 if (parameter.canBind(callType)) {
                     typeMap.put(parameter, callType);
-                    return true;
+                    return callType;
                 } else {
-                    return false;
+                    return null;
                 }
             } else {
                 // If there is an implicit conversion path from the call type to the bound type, return true
@@ -77,13 +82,13 @@ public class InstantiationContextImpl implements InstantiationContext {
                                 conversionScore -=
                                         ConversionMap.ConversionScore.ListPromotion
                                                 .score(); // This removes the list promotion
-                                return true;
+                                return callType;
                             } else {
-                                return false;
+                                return null;
                             }
                         }
                     }
-                    return true;
+                    return callType;
                 }
 
                 // If there is an implicit conversion path from the bound type to the call type
@@ -97,9 +102,9 @@ public class InstantiationContextImpl implements InstantiationContext {
                                 ? ConversionMap.ConversionScore.SimpleConversion.score()
                                 : ConversionMap.ConversionScore.ComplexConversion
                                         .score()); // This removes the conversion from the instantiation
-                        return true;
+                        return callType;
                     } else {
-                        return false;
+                        return null;
                     }
                 }
 
@@ -132,18 +137,7 @@ public class InstantiationContextImpl implements InstantiationContext {
             }
         }
 
-        return false;
-    }
-
-    @Override
-    public DataType instantiate(TypeParameter parameter) {
-        DataType result = typeMap.get(parameter);
-        if (result == null) {
-            throw new IllegalArgumentException(
-                    String.format("Could not resolve type parameter %s.", parameter.getIdentifier()));
-        }
-
-        return result;
+        return null;
     }
 
     @Override

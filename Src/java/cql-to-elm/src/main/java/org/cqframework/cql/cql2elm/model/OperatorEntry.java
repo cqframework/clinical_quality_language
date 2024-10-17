@@ -297,7 +297,6 @@ public class OperatorEntry {
             OperatorMap operatorMap,
             ConversionMap conversionMap,
             boolean allowPromotionAndDemotion) {
-        List<Operator> instantiations = new ArrayList<Operator>();
         int lowestConversionScore = Integer.MAX_VALUE;
         Operator instantiation = null;
         for (GenericOperator genericOperator : genericOperators.values()) {

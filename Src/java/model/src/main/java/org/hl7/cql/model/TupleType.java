@@ -163,9 +163,37 @@ public class TupleType extends DataType {
     }
 
     @Override
-    public boolean isInstantiable(DataType callType, InstantiationContext context) {
+    public DataType instantiate(DataType callType, InstantiationContext context) {
         if (!isGeneric()) {
-            return true;
+            return this;
+        }
+
+        if (callType == null) {
+            var result = new TupleType();
+            for (int i = 0; i < elements.size(); i++) {
+                var element = elements.get(i);
+                var elementInstantiated = element.getType().instantiate(null, context);
+                if (elementInstantiated == null) {
+                    return null;
+                }
+                result.addElement(new TupleTypeElement(element.getName(), elementInstantiated));
+            }
+
+            return result;
+        }
+
+        if (callType.equals(DataType.ANY)) {
+            var result = new TupleType();
+            for (int i = 0; i < elements.size(); i++) {
+                var element = elements.get(i);
+                var elementInstantiated = element.getType().instantiate(DataType.ANY, context);
+                if (elementInstantiated == null) {
+                    return null;
+                }
+                result.addElement(new TupleTypeElement(element.getName(), elementInstantiated));
+            }
+
+            return result;
         }
 
         if (callType instanceof TupleType) {
@@ -173,40 +201,26 @@ public class TupleType extends DataType {
             if (elements.size() == tupleType.elements.size()) {
                 List<TupleTypeElement> theseElements = getSortedElements();
                 List<TupleTypeElement> thoseElements = tupleType.getSortedElements();
+                var result = new TupleType();
                 for (int i = 0; i < theseElements.size(); i++) {
-                    if (!(theseElements
-                                    .get(i)
-                                    .getName()
-                                    .equals(thoseElements.get(i).getName())
-                            && theseElements
-                                    .get(i)
-                                    .getType()
-                                    .isInstantiable(thoseElements.get(i).getType(), context))) {
-                        return false;
+                    var thisElement = theseElements.get(i);
+                    var thatElement = thoseElements.get(i);
+                    if (thisElement.getName().equals(thatElement.getName())) {
+                        var thisElementInstantiated = thisElement.getType().instantiate(thatElement.getType(), context);
+                        if (thisElementInstantiated != null) {
+                            result.addElement(new TupleTypeElement(thisElement.getName(), thisElementInstantiated));
+                            continue;
+                        }
                     }
+                    return null;
                 }
 
-                return true;
+                return result;
             }
         }
 
         // TODO: Attempt list/interval demotion on callType if applicable.
 
-        return false;
-    }
-
-    @Override
-    public DataType instantiate(InstantiationContext context) {
-        if (!isGeneric()) {
-            return this;
-        }
-
-        TupleType result = new TupleType();
-        for (int i = 0; i < elements.size(); i++) {
-            result.addElement(new TupleTypeElement(
-                    elements.get(i).getName(), elements.get(i).getType().instantiate(context)));
-        }
-
-        return result;
+        return null;
     }
 }

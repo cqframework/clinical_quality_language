@@ -68,38 +68,54 @@ public class ListType extends DataType {
     }
 
     @Override
-    public boolean isInstantiable(DataType callType, InstantiationContext context) {
+    public DataType instantiate(DataType callType, InstantiationContext context) {
         if (!isGeneric()) {
-            return true;
+            return this;
+        }
+
+        if (callType == null) {
+            var elementTypeInstantiated = elementType.instantiate(null, context);
+            if (elementTypeInstantiated == null) {
+                return null;
+            }
+            return new ListType(elementTypeInstantiated);
+        }
+
+        if (callType.equals(DataType.ANY)) {
+            var elementTypeInstantiated = elementType.instantiate(DataType.ANY, context);
+            if (elementTypeInstantiated == null) {
+                return null;
+            }
+            return new ListType(elementTypeInstantiated);
         }
 
         if (callType instanceof ListType) {
             ListType listType = (ListType) callType;
-            return elementType.isInstantiable(listType.elementType, context);
+            var elementTypeInstantiated = elementType.instantiate(listType.elementType, context);
+            if (elementTypeInstantiated == null) {
+                return null;
+            }
+            return new ListType(elementTypeInstantiated);
         }
 
-        boolean isAlreadyInstantiable = false;
+        DataType elementTypeInstantiated = null;
         for (ListType targetListType : context.getListConversionTargets(callType)) {
-            boolean isInstantiable = elementType.isInstantiable(targetListType.elementType, context);
-            if (isInstantiable) {
-                if (isAlreadyInstantiable) {
+            var elementTypeInstantiatedWithTargetElementType =
+                    elementType.instantiate(targetListType.elementType, context);
+            if (elementTypeInstantiatedWithTargetElementType != null) {
+                if (elementTypeInstantiated != null) {
                     throw new IllegalArgumentException(String.format(
                             "Ambiguous generic instantiation involving %s to %s.",
                             callType.toString(), targetListType.toString()));
                 }
-                isAlreadyInstantiable = true;
+                elementTypeInstantiated = elementTypeInstantiatedWithTargetElementType;
             }
         }
 
-        if (isAlreadyInstantiable) {
-            return true;
+        if (elementTypeInstantiated != null) {
+            return new ListType(elementTypeInstantiated);
         }
 
-        return false;
-    }
-
-    @Override
-    public DataType instantiate(InstantiationContext context) {
-        return new ListType(elementType.instantiate(context));
+        return null;
     }
 }

@@ -80,12 +80,7 @@ public class SimpleType extends DataType implements NamedType {
     }
 
     @Override
-    public boolean isInstantiable(DataType callType, InstantiationContext context) {
-        return true;
-    }
-
-    @Override
-    public DataType instantiate(InstantiationContext context) {
+    public DataType instantiate(DataType callType, InstantiationContext context) {
         return this;
     }
 }
