@@ -81,16 +81,21 @@ public class Signature {
     }
 
     public Signature instantiate(Signature callSignature, InstantiationContext context) {
-        DataType[] result = new DataType[operandTypes.size()];
-        for (int i = 0; i < operandTypes.size(); i++) {
-            var operandTypeInstantiated = operandTypes.get(i).instantiate(callSignature.operandTypes.get(i), context);
-            if (operandTypeInstantiated == null) {
-                return null;
+        if (operandTypes.size() == callSignature.operandTypes.size()) {
+            DataType[] result = new DataType[operandTypes.size()];
+            for (int i = 0; i < operandTypes.size(); i++) {
+                var operandTypeInstantiated =
+                        operandTypes.get(i).instantiate(callSignature.operandTypes.get(i), context);
+                if (operandTypeInstantiated == null) {
+                    return null;
+                }
+                result[i] = operandTypeInstantiated;
             }
-            result[i] = operandTypeInstantiated;
+
+            return new Signature(result);
         }
 
-        return new Signature(result);
+        return null;
     }
 
     public boolean isConvertibleTo(
