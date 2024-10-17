@@ -164,6 +164,10 @@ public class TupleType extends DataType {
 
     @Override
     public boolean isInstantiable(DataType callType, InstantiationContext context) {
+        if (!isGeneric()) {
+            return true;
+        }
+
         if (callType instanceof TupleType) {
             TupleType tupleType = (TupleType) callType;
             if (elements.size() == tupleType.elements.size()) {
@@ -185,6 +189,8 @@ public class TupleType extends DataType {
                 return true;
             }
         }
+
+        // TODO: Attempt list/interval demotion on callType if applicable.
 
         return false;
     }

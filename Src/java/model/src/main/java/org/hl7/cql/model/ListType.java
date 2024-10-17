@@ -69,6 +69,10 @@ public class ListType extends DataType {
 
     @Override
     public boolean isInstantiable(DataType callType, InstantiationContext context) {
+        if (!isGeneric()) {
+            return true;
+        }
+
         if (callType instanceof ListType) {
             ListType listType = (ListType) callType;
             return elementType.isInstantiable(listType.elementType, context);

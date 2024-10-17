@@ -431,6 +431,10 @@ public class ClassType extends DataType implements NamedType {
 
     @Override
     public boolean isInstantiable(DataType callType, InstantiationContext context) {
+        if (!isGeneric()) {
+            return true;
+        }
+
         if (callType instanceof ClassType) {
             ClassType classType = (ClassType) callType;
             if (elements.size() == classType.elements.size()) {
@@ -452,6 +456,8 @@ public class ClassType extends DataType implements NamedType {
                 return true;
             }
         }
+
+        // TODO: Attempt list/interval demotion on callType if applicable.
 
         return false;
     }

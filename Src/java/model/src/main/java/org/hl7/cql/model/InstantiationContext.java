@@ -5,8 +5,6 @@ public interface InstantiationContext {
 
     DataType instantiate(TypeParameter parameter);
 
-    Iterable<SimpleType> getSimpleConversionTargets(DataType callType);
-
     Iterable<IntervalType> getIntervalConversionTargets(DataType callType);
 
     Iterable<ListType> getListConversionTargets(DataType callType);

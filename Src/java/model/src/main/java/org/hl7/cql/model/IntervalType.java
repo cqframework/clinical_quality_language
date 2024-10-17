@@ -69,6 +69,10 @@ public class IntervalType extends DataType {
 
     @Override
     public boolean isInstantiable(DataType callType, InstantiationContext context) {
+        if (!isGeneric()) {
+            return true;
+        }
+
         if (callType instanceof IntervalType) {
             IntervalType intervalType = (IntervalType) callType;
             return pointType.isInstantiable(intervalType.pointType, context);

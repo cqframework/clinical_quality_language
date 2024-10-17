@@ -277,31 +277,19 @@ public class OperatorEntry {
             throw new IllegalArgumentException("callContext is null");
         }
 
-        List<OperatorResolution> results = signatures.resolve(callContext, conversionMap, operatorMap);
-
-        // If there is no resolution, or all resolutions require conversion, attempt to instantiate a generic signature
-        if (results == null || allResultsUseConversion(results)) {
-            // If the callContext signature contains choices, attempt instantiation with all possible combinations of
-            // the call signature (ouch, this could really hurt...)
-            boolean signaturesInstantiated = false;
-            List<Signature> callSignatures = expandChoices(callContext.getSignature());
-            for (Signature callSignature : callSignatures) {
-                Operator result = instantiate(
-                        callSignature, operatorMap, conversionMap, callContext.getAllowPromotionAndDemotion());
-                if (result != null && !signatures.contains(result)) {
-                    // If the generic signature was instantiated, store it as an actual signature.
-                    signatures.add(new SignatureNode(result));
-                    signaturesInstantiated = true;
-                }
-            }
-
-            // re-attempt the resolution with the instantiated signature registered
-            if (signaturesInstantiated) {
-                results = signatures.resolve(callContext, conversionMap, operatorMap);
+        // If the callContext signature contains choices, attempt instantiation with all possible combinations of
+        // the call signature (ouch, this could really hurt...)
+        List<Signature> callSignatures = expandChoices(callContext.getSignature());
+        for (Signature callSignature : callSignatures) {
+            Operator result =
+                    instantiate(callSignature, operatorMap, conversionMap, callContext.getAllowPromotionAndDemotion());
+            if (result != null && !signatures.contains(result)) {
+                // If the generic signature was instantiated, store it as an actual signature.
+                signatures.add(new SignatureNode(result));
             }
         }
 
-        return results;
+        return signatures.resolve(callContext, conversionMap, operatorMap);
     }
 
     private Operator instantiate(

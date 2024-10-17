@@ -148,7 +148,14 @@ public class ChoiceType extends DataType {
 
     @Override
     public boolean isInstantiable(DataType callType, InstantiationContext context) {
-        return isSuperTypeOf(callType);
+        if (!isGeneric()) {
+            return true;
+        }
+
+        // TODO: If this choice type has generics, call isInstantiable recursively. callType must be a choice type
+        // as well, taking into account list/interval demotion if applicable.
+
+        return false;
     }
 
     @Override
