@@ -79,9 +79,7 @@ public abstract class DataType {
 
     public abstract boolean isGeneric();
 
-    public abstract boolean isInstantiable(DataType callType, InstantiationContext context);
-
-    public abstract DataType instantiate(InstantiationContext context);
+    public abstract DataType instantiate(DataType callType, InstantiationContext context);
 
     public static final SimpleType ANY = new SimpleType("System.Any");
 }

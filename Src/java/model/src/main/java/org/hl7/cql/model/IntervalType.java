@@ -68,34 +68,53 @@ public class IntervalType extends DataType {
     }
 
     @Override
-    public boolean isInstantiable(DataType callType, InstantiationContext context) {
-        if (callType instanceof IntervalType) {
-            IntervalType intervalType = (IntervalType) callType;
-            return pointType.isInstantiable(intervalType.pointType, context);
+    public DataType instantiate(DataType callType, InstantiationContext context) {
+        if (!isGeneric()) {
+            return this;
         }
 
-        boolean isAlreadyInstantiable = false;
+        if (callType == null) {
+            var pointTypeInstantiated = pointType.instantiate(null, context);
+            if (pointTypeInstantiated == null) {
+                return null;
+            }
+            return new IntervalType(pointTypeInstantiated);
+        }
+
+        if (callType.equals(DataType.ANY)) {
+            var pointTypeInstantiated = pointType.instantiate(DataType.ANY, context);
+            if (pointTypeInstantiated == null) {
+                return null;
+            }
+            return new IntervalType(pointTypeInstantiated);
+        }
+
+        if (callType instanceof IntervalType) {
+            IntervalType intervalType = (IntervalType) callType;
+            var pointTypeInstantiated = pointType.instantiate(intervalType.pointType, context);
+            if (pointTypeInstantiated == null) {
+                return null;
+            }
+            return new IntervalType(pointTypeInstantiated);
+        }
+
+        DataType pointTypeInstantiated = null;
         for (IntervalType targetIntervalType : context.getIntervalConversionTargets(callType)) {
-            boolean isInstantiable = pointType.isInstantiable(targetIntervalType.pointType, context);
-            if (isInstantiable) {
-                if (isAlreadyInstantiable) {
+            var pointTypeInstantiatedWithTargetPointType = pointType.instantiate(targetIntervalType.pointType, context);
+            if (pointTypeInstantiatedWithTargetPointType != null) {
+                if (pointTypeInstantiated != null) {
                     throw new IllegalArgumentException(String.format(
                             "Ambiguous generic instantiation involving %s to %s.",
                             callType.toString(), targetIntervalType.toString()));
                 }
-                isAlreadyInstantiable = true;
+                pointTypeInstantiated = pointTypeInstantiatedWithTargetPointType;
             }
         }
 
-        if (isAlreadyInstantiable) {
-            return true;
+        if (pointTypeInstantiated != null) {
+            return new IntervalType(pointTypeInstantiated);
         }
 
-        return false;
-    }
-
-    @Override
-    public DataType instantiate(InstantiationContext context) {
-        return new IntervalType(pointType.instantiate(context));
+        return null;
     }
 }

@@ -54,15 +54,15 @@ public class GenericOperator extends Operator {
         InstantiationContextImpl context =
                 new InstantiationContextImpl(typeMap, operatorMap, conversionMap, allowPromotionAndDemotion);
 
-        Boolean instantiable = getSignature().isInstantiable(callSignature, context);
-        if (instantiable) {
-            Operator result = new Operator(
-                    getName(),
-                    getSignature().instantiate(context),
-                    getResultType().instantiate(context));
-            result.setAccessLevel(getAccessLevel());
-            result.setLibraryName(getLibraryName());
-            return new InstantiationResult(this, result, context.getConversionScore());
+        var signatureInstantiated = getSignature().instantiate(callSignature, context);
+        if (signatureInstantiated != null) {
+            var resultTypeInstantiated = getResultType().instantiate(null, context);
+            if (resultTypeInstantiated != null) {
+                Operator result = new Operator(getName(), signatureInstantiated, resultTypeInstantiated);
+                result.setAccessLevel(getAccessLevel());
+                result.setLibraryName(getLibraryName());
+                return new InstantiationResult(this, result, context.getConversionScore());
+            }
         }
 
         return new InstantiationResult(this, null, context.getConversionScore());
