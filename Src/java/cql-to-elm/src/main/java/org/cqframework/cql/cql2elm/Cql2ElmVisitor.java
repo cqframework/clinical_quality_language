@@ -2746,7 +2746,9 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     @Override
     public Object visitSetAggregateExpressionTerm(cqlParser.SetAggregateExpressionTermContext ctx) {
         Expression source = parseExpression(ctx.expression(0));
-        Expression per = null;
+
+        // If `per` is not set, it will remain `null as System.Quantity`.
+        Expression per = libraryBuilder.buildNull(libraryBuilder.resolveTypeName("System", "Quantity"));
         if (ctx.dateTimePrecision() != null) {
             per = libraryBuilder.createQuantity(BigDecimal.valueOf(1.0), parseString(ctx.dateTimePrecision()));
         } else if (ctx.expression().size() > 1) {
@@ -2758,8 +2760,6 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 if (listType.getElementType() instanceof IntervalType) {
                     IntervalType intervalType = (IntervalType) listType.getElementType();
                     DataType pointType = intervalType.getPointType();
-
-                    per = libraryBuilder.buildNull(libraryBuilder.resolveTypeName("System", "Quantity"));
 
                     // TODO: Test this...
                     // // Successor(MinValue<T>) - MinValue<T>
@@ -2776,8 +2776,6 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                     // libraryBuilder.resolveBinaryCall("System", "Subtract", subtract);
                     // per = subtract;
                 }
-            } else {
-                per = libraryBuilder.buildNull(libraryBuilder.resolveTypeName("System", "Quantity"));
             }
         }
 
