@@ -147,12 +147,14 @@ public class ChoiceType extends DataType {
     }
 
     @Override
-    public boolean isInstantiable(DataType callType, InstantiationContext context) {
-        return isSuperTypeOf(callType);
-    }
+    public DataType instantiate(DataType callType, InstantiationContext context) {
+        if (!isGeneric()) {
+            return this;
+        }
 
-    @Override
-    public DataType instantiate(InstantiationContext context) {
-        return this;
+        // TODO: If this choice type has generics, call `instantiate` recursively. callType must be a choice type
+        // as well, taking into account list/interval demotion if applicable.
+
+        return null;
     }
 }

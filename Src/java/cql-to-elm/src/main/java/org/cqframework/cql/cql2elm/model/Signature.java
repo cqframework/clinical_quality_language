@@ -80,27 +80,22 @@ public class Signature {
         return false;
     }
 
-    public boolean isInstantiable(Signature callSignature, InstantiationContext context) {
+    public Signature instantiate(Signature callSignature, InstantiationContext context) {
         if (operandTypes.size() == callSignature.operandTypes.size()) {
+            DataType[] result = new DataType[operandTypes.size()];
             for (int i = 0; i < operandTypes.size(); i++) {
-                if (!operandTypes.get(i).isInstantiable(callSignature.operandTypes.get(i), context)) {
-                    return false;
+                var operandTypeInstantiated =
+                        operandTypes.get(i).instantiate(callSignature.operandTypes.get(i), context);
+                if (operandTypeInstantiated == null) {
+                    return null;
                 }
+                result[i] = operandTypeInstantiated;
             }
 
-            return true;
+            return new Signature(result);
         }
 
-        return false;
-    }
-
-    public Signature instantiate(InstantiationContext context) {
-        DataType[] result = new DataType[operandTypes.size()];
-        for (int i = 0; i < operandTypes.size(); i++) {
-            result[i] = operandTypes.get(i).instantiate(context);
-        }
-
-        return new Signature(result);
+        return null;
     }
 
     public boolean isConvertibleTo(

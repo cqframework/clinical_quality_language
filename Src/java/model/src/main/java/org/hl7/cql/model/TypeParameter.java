@@ -120,12 +120,7 @@ public class TypeParameter extends DataType {
     }
 
     @Override
-    public boolean isInstantiable(DataType callType, InstantiationContext context) {
-        return context.isInstantiable(this, callType);
-    }
-
-    @Override
-    public DataType instantiate(InstantiationContext context) {
-        return context.instantiate(this);
+    public DataType instantiate(DataType callType, InstantiationContext context) {
+        return context.instantiate(this, callType);
     }
 }
