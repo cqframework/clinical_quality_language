@@ -7,11 +7,23 @@ import org.hl7.elm.r1.VersionedIdentifier;
 public class OperatorResolution {
     public OperatorResolution() {}
 
-    public OperatorResolution(Operator operator) {
+    public OperatorResolution(Operator operator, Signature invocationSignature) {
         this.operator = operator;
+        this.invocationSignature = invocationSignature;
     }
 
     private Operator operator;
+
+    /*
+    The invocationSignature is the result of resolving any wildcards in the call signature.
+    If the call signature has no wildcards, this will be the same signature as the call signature.
+    Otherwise, it will be a new signature with any wildcards resolved to concrete types.
+     */
+    private Signature invocationSignature;
+
+    public Signature getInvocationSignature() {
+        return invocationSignature;
+    }
 
     public Operator getOperator() {
         return operator;

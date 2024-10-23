@@ -7,6 +7,25 @@ import java.util.Map;
 import org.hl7.cql.model.*;
 
 public class ConversionMap {
+    public enum TypePrecedenceScore {
+        Simple(0),
+        Tuple(1),
+        Class(2),
+        Interval(3),
+        List(4),
+        Choice(5),
+        Other(5);
+
+        private final int score;
+
+        public int score() {
+            return score;
+        }
+
+        TypePrecedenceScore(int score) {
+            this.score = score;
+        }
+    }
     public enum ConversionScore {
         ExactMatch(0),
         SubType(1),
@@ -30,12 +49,31 @@ public class ConversionMap {
         }
     }
 
+    public static int getTypePrecedenceScore(DataType operand) {
+        switch (operand.getClass().getSimpleName()) {
+            case "SimpleType": return ConversionMap.TypePrecedenceScore.Simple.score();
+            case "TupleType": return ConversionMap.TypePrecedenceScore.Tuple.score();
+            case "ClassType": return ConversionMap.TypePrecedenceScore.Class.score();
+            case "IntervalType": return ConversionMap.TypePrecedenceScore.Interval.score();
+            case "ListType": return ConversionMap.TypePrecedenceScore.List.score();
+            case "ChoiceType": return ConversionMap.TypePrecedenceScore.Choice.score();
+            default: return ConversionMap.TypePrecedenceScore.Other.score();
+        }
+    }
+
     public static int getConversionScore(DataType callOperand, DataType operand, Conversion conversion) {
         if (operand.equals(callOperand)) {
             return ConversionMap.ConversionScore.ExactMatch.score();
         } else if (operand.isSuperTypeOf(callOperand)) {
             return ConversionMap.ConversionScore.SubType.score();
         } else if (callOperand.isCompatibleWith(operand)) {
+            // Score a "direct instantiation of ANY" as a subtype, rather than a compatible
+            // if (callOperand.equals(DataType.ANY) &&
+            //        ((operand instanceof ListType && ((ListType)operand).getElementType().equals(DataType.ANY))
+            //            || (operand instanceof IntervalType &&
+            // ((IntervalType)operand).getPointType().equals(DataType.ANY)))) {
+            //    return ConversionMap.ConversionScore.SubType.score();
+            // }
             return ConversionMap.ConversionScore.Compatible.score();
         } else if (conversion != null) {
             return conversion.getScore();

@@ -454,6 +454,10 @@ public class LibraryBuilder {
         return result;
     }
 
+    public WildcardType buildWildcardType() {
+        return new WildcardType();
+    }
+
     private boolean isFHIRHelpers(CompiledLibrary library) {
         if (library != null
                 && library.getIdentifier() != null
@@ -1002,7 +1006,8 @@ public class LibraryBuilder {
         if (right instanceof ValueSetRef
                 || (isCompatibleWith("1.5")
                         && right.getResultType().isCompatibleWith(resolveTypeName("System", "ValueSet"))
-                        && !right.getResultType().equals(resolveTypeName("System", "Any")))) {
+                        && !right.getResultType().equals(resolveTypeName("System", "Any"))
+                        && !(right.getResultType() instanceof WildcardType))) {
             if (left.getResultType() instanceof ListType) {
                 AnyInValueSet anyIn = of.createAnyInValueSet()
                         .withCodes(left)
@@ -1024,7 +1029,8 @@ public class LibraryBuilder {
         if (right instanceof CodeSystemRef
                 || (isCompatibleWith("1.5")
                         && right.getResultType().isCompatibleWith(resolveTypeName("System", "CodeSystem"))
-                        && !right.getResultType().equals(resolveTypeName("System", "Any")))) {
+                        && !right.getResultType().equals(resolveTypeName("System", "Any"))
+                        && !(right.getResultType() instanceof WildcardType))) {
             if (left.getResultType() instanceof ListType) {
                 AnyInCodeSystem anyIn = of.createAnyInCodeSystem()
                         .withCodes(left)
@@ -1271,10 +1277,14 @@ public class LibraryBuilder {
         Iterator<Expression> operandIterator = operands.iterator();
         Iterator<DataType> signatureTypes =
                 resolution.getOperator().getSignature().getOperandTypes().iterator();
+        Iterator<DataType> invocationTypes =
+                resolution.getInvocationSignature().getOperandTypes().iterator();
         Iterator<Conversion> conversionIterator =
                 resolution.hasConversions() ? resolution.getConversions().iterator() : null;
         while (operandIterator.hasNext()) {
             Expression operand = operandIterator.next();
+            DataType invocationType = invocationTypes.next();
+            operand.setResultType(invocationType);
             Conversion conversion = conversionIterator != null ? conversionIterator.next() : null;
             if (conversion != null) {
                 operand = convertExpression(operand, conversion);
@@ -1290,7 +1300,7 @@ public class LibraryBuilder {
 
         if (options.getSignatureLevel() == SignatureLevel.All
                 || (options.getSignatureLevel() == SignatureLevel.Differing
-                        && !resolution.getOperator().getSignature().equals(callContext.getSignature()))
+                        && !resolution.getOperator().getSignature().equals(resolution.getInvocationSignature()))
                 || (options.getSignatureLevel() == SignatureLevel.Overloads && resolution.getOperatorHasOverloads())) {
             invocation.setSignature(dataTypesToTypeSpecifiers(
                     resolution.getOperator().getSignature().getOperandTypes()));

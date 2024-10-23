@@ -67,7 +67,7 @@ public class OperatorMap {
                         .getOperandTypes()
                         .iterator();
                 Iterator<DataType> callOperands =
-                        callContext.getSignature().getOperandTypes().iterator();
+                        resolution.getInvocationSignature().getOperandTypes().iterator();
                 Iterator<Conversion> conversions = resolution.hasConversions()
                         ? resolution.getConversions().iterator()
                         : null;
@@ -88,6 +88,27 @@ public class OperatorMap {
                 } else if (score == lowestScore) {
                     lowestScoringResults.add(resolution);
                 }
+            }
+
+            if (lowestScoringResults.size() > 1) {
+                int lowestTypeScore = Integer.MAX_VALUE;
+                List<OperatorResolution> lowestTypeScoringResults = new ArrayList<>();
+                for (OperatorResolution resolution : lowestScoringResults) {
+                    int typeScore = ConversionMap.ConversionScore.ExactMatch.score();
+                    for (DataType operand : resolution.getOperator().getSignature().getOperandTypes()) {
+                        typeScore += ConversionMap.getTypePrecedenceScore(operand);
+                    }
+
+                    if (typeScore < lowestTypeScore) {
+                        lowestTypeScore = typeScore;
+                        lowestTypeScoringResults.clear();
+                        lowestTypeScoringResults.add(resolution);
+                    } else if (typeScore == lowestTypeScore) {
+                        lowestTypeScoringResults.add(resolution);
+                    }
+                }
+
+                lowestScoringResults = lowestTypeScoringResults;
             }
 
             if (lowestScoringResults.size() > 1) {

@@ -74,6 +74,8 @@ public class TypeBuilder {
             return choiceTypeToTypeSpecifier((ChoiceType) type);
         } else if (type instanceof TypeParameter) {
             return typeParameterToTypeSpecifier((TypeParameter) type);
+        } else if (type instanceof WildcardType) {
+            return wildcardTypeToTypeSpecifier((WildcardType) type);
         } else {
             throw new IllegalArgumentException(String.format("Could not convert type %s to a type specifier.", type));
         }
@@ -127,5 +129,9 @@ public class TypeBuilder {
 
     private TypeSpecifier typeParameterToTypeSpecifier(TypeParameter type) {
         return new ParameterTypeSpecifier().withParameterName(type.getIdentifier());
+    }
+
+    private TypeSpecifier wildcardTypeToTypeSpecifier(WildcardType type) {
+        return dataTypeToTypeSpecifier(type.getBaseType());
     }
 }

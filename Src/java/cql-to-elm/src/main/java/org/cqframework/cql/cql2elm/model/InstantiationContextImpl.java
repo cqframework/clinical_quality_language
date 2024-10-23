@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.Map;
 import org.hl7.cql.model.*;
 
-public class InstantiationContextImpl implements InstantiationContext {
+public class InstantiationContextImpl extends ResolutionContextImpl implements InstantiationContext, ResolutionContext {
     public InstantiationContextImpl(
             Map<TypeParameter, DataType> typeMap,
+            Map<WildcardType, DataType> wildcardMap,
             OperatorMap operatorMap,
             ConversionMap conversionMap,
             boolean allowPromotionAndDemotion) {
+        super(wildcardMap);
+
         if (typeMap == null) {
             throw new IllegalArgumentException("typeMap is null");
         }
@@ -40,8 +43,34 @@ public class InstantiationContextImpl implements InstantiationContext {
 
     @Override
     public boolean isInstantiable(TypeParameter parameter, DataType callType) {
-        // If the type is not yet bound, bind it to the call type.
         DataType boundType = typeMap.get(parameter);
+
+        // If the call type is a wildcard, bind it to the type parameter, then use the bound type
+        // If there is no bound type, use Any as the call type
+        if (callType instanceof WildcardType) {
+            matchWildcard(((WildcardType) callType), parameter);
+            if (boundType == null) {
+                callType = DataType.ANY;
+            } else {
+                callType = boundType;
+            }
+        }
+
+        // If the call type is a type parameter, it came in through a wildcard match, so
+        // make sure it's the same parameter, and if it's unbound, bind it to any
+        if (callType instanceof TypeParameter) {
+            if (!parameter.equals(callType)) {
+                return false;
+            }
+            if (boundType == null) {
+                callType = DataType.ANY;
+            }
+            else {
+                callType = boundType;
+            }
+        }
+
+        // If the type is not yet bound, bind it to the call type.
         if (boundType == null) {
             if (parameter.canBind(callType)) {
                 typeMap.put(parameter, callType);
@@ -224,10 +253,15 @@ public class InstantiationContextImpl implements InstantiationContext {
         // NOTE: FHIRPath support
         // Add list promotion if no other conversion is found
         if (results.isEmpty()) {
-            if (!(callType instanceof ListType)
-                    && (allowPromotionAndDemotion || conversionMap.isListPromotionEnabled())) {
-                results.add(new ListType(callType));
-                conversionScore += ConversionMap.ConversionScore.ListPromotion.score();
+            if (!(callType instanceof ListType)) {
+                if (allowPromotionAndDemotion || conversionMap.isListPromotionEnabled()) {
+                    results.add(new ListType(callType));
+                    conversionScore += ConversionMap.ConversionScore.ListPromotion.score();
+                }
+                // else if (callType.equals(DataType.ANY)) {
+                //    results.add(new ListType(callType));
+                //    conversionScore += ConversionMap.ConversionScore.Compatible.score();
+                // }
             }
         }
 
