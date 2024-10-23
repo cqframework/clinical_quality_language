@@ -1,10 +1,11 @@
 package org.cqframework.cql.cql2elm.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import org.hl7.cql.model.ChoiceType;
-import org.hl7.cql.model.DataType;
-import org.hl7.cql.model.InstantiationContext;
+
+import org.hl7.cql.model.*;
 
 public class Signature {
     public Signature(DataType... operandTypes) {
@@ -98,6 +99,32 @@ public class Signature {
         DataType[] result = new DataType[operandTypes.size()];
         for (int i = 0; i < operandTypes.size(); i++) {
             result[i] = operandTypes.get(i).instantiate(context);
+        }
+
+        return new Signature(result);
+    }
+
+    public boolean matchWildcards(Signature operatorSignature, ResolutionContext context) {
+        boolean hasMatch = false;
+        if (operandTypes.size() == operatorSignature.operandTypes.size()) {
+            for (int i = 0; i < operandTypes.size(); i++) {
+                if (!operandTypes.get(i).matchWildcards(operatorSignature.operandTypes.get(i), context)) {
+                    return false;
+                } else {
+                    hasMatch = true;
+                }
+            }
+
+            return hasMatch;
+        }
+
+        return false;
+    }
+
+    public Signature resolveWildcards(ResolutionContext context) {
+        DataType[] result = new DataType[operandTypes.size()];
+        for (int i = 0; i < operandTypes.size(); i++) {
+            result[i] = operandTypes.get(i).resolveWildcards(context);
         }
 
         return new Signature(result);

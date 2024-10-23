@@ -1,11 +1,10 @@
 package org.cqframework.cql.cql2elm.model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import org.hl7.cql.model.DataType;
 import org.hl7.cql.model.TypeParameter;
+import org.hl7.cql.model.WildcardType;
 
 public class GenericOperator extends Operator {
     public GenericOperator(String name, Signature signature, DataType resultType, TypeParameter... typeParameters) {
@@ -51,8 +50,10 @@ public class GenericOperator extends Operator {
             }
         }
 
+        Map<WildcardType, DataType> wildcardMap = new HashMap<>();
+
         InstantiationContextImpl context =
-                new InstantiationContextImpl(typeMap, operatorMap, conversionMap, allowPromotionAndDemotion);
+                new InstantiationContextImpl(typeMap, wildcardMap, operatorMap, conversionMap, allowPromotionAndDemotion);
 
         Boolean instantiable = getSignature().isInstantiable(callSignature, context);
         if (instantiable) {
@@ -62,9 +63,19 @@ public class GenericOperator extends Operator {
                     getResultType().instantiate(context));
             result.setAccessLevel(getAccessLevel());
             result.setLibraryName(getLibraryName());
-            return new InstantiationResult(this, result, context.getConversionScore());
+            Signature invocationSignature = getInvocationSignature(callSignature, context);
+            return new InstantiationResult(this, result, invocationSignature, context.getConversionScore());
         }
 
-        return new InstantiationResult(this, null, context.getConversionScore());
+        return new InstantiationResult(this, null, null, context.getConversionScore());
+    }
+
+    private Signature getInvocationSignature(Signature callSignature, InstantiationContextImpl context) {
+        Iterator<DataType> callSignatureTypes = callSignature.getOperandTypes().iterator();
+        DataType[] invocationSignature = new DataType[callSignature.getSize()];
+        for (int i = 0; i < callSignature.getSize(); i++) {
+            invocationSignature[i] = callSignatureTypes.next().resolveWildcards(context).instantiate(context);
+        }
+        return new Signature(invocationSignature);
     }
 }

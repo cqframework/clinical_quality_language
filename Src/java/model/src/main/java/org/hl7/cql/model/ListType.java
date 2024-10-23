@@ -69,6 +69,11 @@ public class ListType extends DataType {
 
     @Override
     public boolean isInstantiable(DataType callType, InstantiationContext context) {
+        if (callType instanceof WildcardType) {
+            context.matchWildcard(((WildcardType)callType), this);
+            callType = this;
+        }
+
         if (callType instanceof ListType) {
             ListType listType = (ListType) callType;
             return elementType.isInstantiable(listType.elementType, context);
@@ -97,5 +102,19 @@ public class ListType extends DataType {
     @Override
     public DataType instantiate(InstantiationContext context) {
         return new ListType(elementType.instantiate(context));
+    }
+
+    @Override
+    public boolean matchWildcards(DataType operandType, ResolutionContext context) {
+        if (operandType instanceof ListType) {
+            ListType listType = (ListType) operandType;
+            return elementType.matchWildcards(listType.elementType, context);
+        }
+        return false;
+    }
+
+    @Override
+    public DataType resolveWildcards(ResolutionContext context) {
+        return new ListType(elementType.resolveWildcards(context));
     }
 }

@@ -36,6 +36,12 @@ public class ConversionMap {
         } else if (operand.isSuperTypeOf(callOperand)) {
             return ConversionMap.ConversionScore.SubType.score();
         } else if (callOperand.isCompatibleWith(operand)) {
+            // Score a "direct instantiation of ANY" as a subtype, rather than a compatible
+            //if (callOperand.equals(DataType.ANY) &&
+            //        ((operand instanceof ListType && ((ListType)operand).getElementType().equals(DataType.ANY))
+            //            || (operand instanceof IntervalType && ((IntervalType)operand).getPointType().equals(DataType.ANY)))) {
+            //    return ConversionMap.ConversionScore.SubType.score();
+            //}
             return ConversionMap.ConversionScore.Compatible.score();
         } else if (conversion != null) {
             return conversion.getScore();

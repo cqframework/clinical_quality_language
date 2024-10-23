@@ -1,6 +1,6 @@
 package org.hl7.cql.model;
 
-public interface InstantiationContext {
+public interface InstantiationContext extends ResolutionContext {
     boolean isInstantiable(TypeParameter parameter, DataType callType);
 
     DataType instantiate(TypeParameter parameter);

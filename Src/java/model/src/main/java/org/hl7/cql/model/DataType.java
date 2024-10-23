@@ -83,5 +83,13 @@ public abstract class DataType {
 
     public abstract DataType instantiate(InstantiationContext context);
 
+    public boolean matchWildcards(DataType operandType, ResolutionContext context) {
+        return this.equals(operandType);
+    }
+
+    public DataType resolveWildcards(ResolutionContext context) {
+        return this;
+    }
+
     public static final SimpleType ANY = new SimpleType("System.Any");
 }

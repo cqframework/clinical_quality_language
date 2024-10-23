@@ -164,6 +164,11 @@ public class TupleType extends DataType {
 
     @Override
     public boolean isInstantiable(DataType callType, InstantiationContext context) {
+        if (callType instanceof WildcardType) {
+            context.matchWildcard(((WildcardType)callType), this);
+            callType = this;
+        }
+
         if (callType instanceof TupleType) {
             TupleType tupleType = (TupleType) callType;
             if (elements.size() == tupleType.elements.size()) {
@@ -199,6 +204,44 @@ public class TupleType extends DataType {
         for (int i = 0; i < elements.size(); i++) {
             result.addElement(new TupleTypeElement(
                     elements.get(i).getName(), elements.get(i).getType().instantiate(context)));
+        }
+
+        return result;
+    }
+
+    @Override
+    public boolean matchWildcards(DataType operandType, ResolutionContext context) {
+        if (operandType instanceof TupleType) {
+            TupleType tupleType = (TupleType) operandType;
+            if (elements.size() == tupleType.elements.size()) {
+                List<TupleTypeElement> theseElements = getSortedElements();
+                List<TupleTypeElement> thoseElements = tupleType.getSortedElements();
+                for (int i = 0; i < theseElements.size(); i++) {
+                    if (!(theseElements
+                            .get(i)
+                            .getName()
+                            .equals(thoseElements.get(i).getName())
+                            && theseElements
+                            .get(i)
+                            .getType()
+                            .matchWildcards(thoseElements.get(i).getType(), context))) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public DataType resolveWildcards(ResolutionContext context) {
+        TupleType result = new TupleType();
+        for (int i = 0; i < elements.size(); i++) {
+            result.addElement(new TupleTypeElement(
+                    elements.get(i).getName(), elements.get(i).getType().resolveWildcards(context)));
         }
 
         return result;

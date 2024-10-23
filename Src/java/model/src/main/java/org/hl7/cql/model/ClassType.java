@@ -431,6 +431,11 @@ public class ClassType extends DataType implements NamedType {
 
     @Override
     public boolean isInstantiable(DataType callType, InstantiationContext context) {
+        if (callType instanceof WildcardType) {
+            context.matchWildcard(((WildcardType)callType), this);
+            callType = this;
+        }
+
         if (callType instanceof ClassType) {
             ClassType classType = (ClassType) callType;
             if (elements.size() == classType.elements.size()) {
@@ -466,6 +471,43 @@ public class ClassType extends DataType implements NamedType {
         for (int i = 0; i < elements.size(); i++) {
             result.addElement(new ClassTypeElement(
                     elements.get(i).getName(), elements.get(i).getType().instantiate(context)));
+        }
+
+        return result;
+    }
+
+    public boolean matchWildcards(DataType operandType, ResolutionContext context) {
+        if (operandType instanceof ClassType) {
+            ClassType classType = (ClassType) operandType;
+            if (elements.size() == classType.elements.size()) {
+                List<ClassTypeElement> theseElements = getSortedElements();
+                List<ClassTypeElement> thoseElements = classType.getSortedElements();
+                for (int i = 0; i < theseElements.size(); i++) {
+                    if (!(theseElements
+                            .get(i)
+                            .getName()
+                            .equals(thoseElements.get(i).getName())
+                            && theseElements
+                            .get(i)
+                            .getType()
+                            .matchWildcards(thoseElements.get(i).getType(), context))) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public DataType resolveWildcards(ResolutionContext context) {
+        ClassType result = new ClassType(getName(), getBaseType());
+        for (int i = 0; i < elements.size(); i++) {
+            result.addElement(new ClassTypeElement(
+                    elements.get(i).getName(), elements.get(i).getType().resolveWildcards(context)));
         }
 
         return result;

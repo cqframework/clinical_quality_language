@@ -67,7 +67,7 @@ public class OperatorMap {
                         .getOperandTypes()
                         .iterator();
                 Iterator<DataType> callOperands =
-                        callContext.getSignature().getOperandTypes().iterator();
+                        resolution.getInvocationSignature().getOperandTypes().iterator();
                 Iterator<Conversion> conversions = resolution.hasConversions()
                         ? resolution.getConversions().iterator()
                         : null;

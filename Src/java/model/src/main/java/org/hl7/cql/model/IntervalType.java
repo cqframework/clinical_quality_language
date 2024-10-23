@@ -69,6 +69,11 @@ public class IntervalType extends DataType {
 
     @Override
     public boolean isInstantiable(DataType callType, InstantiationContext context) {
+        if (callType instanceof WildcardType) {
+            context.matchWildcard(((WildcardType)callType), this);
+            callType = this;
+        }
+
         if (callType instanceof IntervalType) {
             IntervalType intervalType = (IntervalType) callType;
             return pointType.isInstantiable(intervalType.pointType, context);
@@ -97,5 +102,19 @@ public class IntervalType extends DataType {
     @Override
     public DataType instantiate(InstantiationContext context) {
         return new IntervalType(pointType.instantiate(context));
+    }
+
+    @Override
+    public boolean matchWildcards(DataType operandType, ResolutionContext context) {
+        if (operandType instanceof IntervalType) {
+            IntervalType intervalType = (IntervalType) operandType;
+            return pointType.matchWildcards(intervalType.pointType, context);
+        }
+        return false;
+    }
+
+    @Override
+    public DataType resolveWildcards(ResolutionContext context) {
+        return new IntervalType(pointType.resolveWildcards(context));
     }
 }

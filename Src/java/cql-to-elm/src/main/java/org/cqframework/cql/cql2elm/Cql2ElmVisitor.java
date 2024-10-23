@@ -1068,7 +1068,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     @Override
     public Null visitNullLiteral(cqlParser.NullLiteralContext ctx) {
         Null result = of.createNull();
-        result.setResultType(libraryBuilder.resolveTypeName("System", "Any"));
+        result.setResultType(libraryBuilder.buildWildcardType());
+        //result.setResultType(libraryBuilder.resolveTypeName("System", "Any"));
         return result;
     }
 
