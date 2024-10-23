@@ -7,6 +7,25 @@ import java.util.Map;
 import org.hl7.cql.model.*;
 
 public class ConversionMap {
+    public enum TypePrecedenceScore {
+        Simple(0),
+        Tuple(1),
+        Class(2),
+        Interval(3),
+        List(4),
+        Choice(5),
+        Other(5);
+
+        private final int score;
+
+        public int score() {
+            return score;
+        }
+
+        TypePrecedenceScore(int score) {
+            this.score = score;
+        }
+    }
     public enum ConversionScore {
         ExactMatch(0),
         SubType(1),
@@ -27,6 +46,18 @@ public class ConversionMap {
 
         ConversionScore(int score) {
             this.score = score;
+        }
+    }
+
+    public static int getTypePrecedenceScore(DataType operand) {
+        switch (operand.getClass().getSimpleName()) {
+            case "SimpleType": return ConversionMap.TypePrecedenceScore.Simple.score();
+            case "TupleType": return ConversionMap.TypePrecedenceScore.Tuple.score();
+            case "ClassType": return ConversionMap.TypePrecedenceScore.Class.score();
+            case "IntervalType": return ConversionMap.TypePrecedenceScore.Interval.score();
+            case "ListType": return ConversionMap.TypePrecedenceScore.List.score();
+            case "ChoiceType": return ConversionMap.TypePrecedenceScore.Choice.score();
+            default: return ConversionMap.TypePrecedenceScore.Other.score();
         }
     }
 

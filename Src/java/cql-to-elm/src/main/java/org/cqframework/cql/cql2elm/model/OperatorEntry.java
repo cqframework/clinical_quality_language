@@ -297,11 +297,13 @@ public class OperatorEntry {
         // the call signature (ouch, this could really hurt...)
         List<Signature> callSignatures = expandChoices(callContext.getSignature());
         for (Signature callSignature : callSignatures) {
-            Operator result =
+            List<Operator> instantiations =
                     instantiate(callSignature, operatorMap, conversionMap, callContext.getAllowPromotionAndDemotion());
-            if (result != null && !signatures.contains(result)) {
-                // If the generic signature was instantiated, store it as an actual signature.
-                signatures.add(new SignatureNode(result));
+            for (Operator instantiation : instantiations) {
+                if (!signatures.contains(instantiation)) {
+                    // If the generic signature was instantiated, store it as an actual signature.
+                    signatures.add(new SignatureNode(instantiation));
+                }
             }
         }
 
@@ -310,33 +312,21 @@ public class OperatorEntry {
         return results;
     }
 
-    private Operator instantiate(
+    private List<Operator> instantiate(
             Signature signature,
             OperatorMap operatorMap,
             ConversionMap conversionMap,
             boolean allowPromotionAndDemotion) {
         List<Operator> instantiations = new ArrayList<Operator>();
-        int lowestConversionScore = Integer.MAX_VALUE;
-        Operator instantiation = null;
+
         for (GenericOperator genericOperator : genericOperators.values()) {
             InstantiationResult instantiationResult =
                     genericOperator.instantiate(signature, operatorMap, conversionMap, allowPromotionAndDemotion);
             if (instantiationResult.getOperator() != null) {
-                if (instantiationResult.getConversionScore() <= lowestConversionScore) {
-                    if (instantiation == null || instantiationResult.getConversionScore() < lowestConversionScore) {
-                        instantiation = instantiationResult.getOperator();
-                        lowestConversionScore = instantiationResult.getConversionScore();
-                    } else {
-                        throw new IllegalArgumentException(String.format(
-                                "Ambiguous generic instantiation of operator %s between signature %s and %s.",
-                                this.name,
-                                instantiation.getSignature().toString(),
-                                instantiationResult.getOperator().getSignature().toString()));
-                    }
-                }
+                instantiations.add(instantiationResult.getOperator());
             }
         }
 
-        return instantiation;
+        return instantiations;
     }
 }

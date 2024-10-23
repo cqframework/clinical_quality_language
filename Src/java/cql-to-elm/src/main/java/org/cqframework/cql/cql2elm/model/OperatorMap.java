@@ -91,6 +91,27 @@ public class OperatorMap {
             }
 
             if (lowestScoringResults.size() > 1) {
+                int lowestTypeScore = Integer.MAX_VALUE;
+                List<OperatorResolution> lowestTypeScoringResults = new ArrayList<>();
+                for (OperatorResolution resolution : lowestScoringResults) {
+                    int typeScore = ConversionMap.ConversionScore.ExactMatch.score();
+                    for (DataType operand : resolution.getOperator().getSignature().getOperandTypes()) {
+                        typeScore += ConversionMap.getTypePrecedenceScore(operand);
+                    }
+
+                    if (typeScore < lowestTypeScore) {
+                        lowestTypeScore = typeScore;
+                        lowestTypeScoringResults.clear();
+                        lowestTypeScoringResults.add(resolution);
+                    } else if (typeScore == lowestTypeScore) {
+                        lowestTypeScoringResults.add(resolution);
+                    }
+                }
+
+                lowestScoringResults = lowestTypeScoringResults;
+            }
+
+            if (lowestScoringResults.size() > 1) {
                 if (callContext.getMustResolve()) {
                     // ERROR:
                     StringBuilder message = new StringBuilder("Call to operator ")

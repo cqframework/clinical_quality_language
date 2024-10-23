@@ -1006,7 +1006,8 @@ public class LibraryBuilder {
         if (right instanceof ValueSetRef
                 || (isCompatibleWith("1.5")
                         && right.getResultType().isCompatibleWith(resolveTypeName("System", "ValueSet"))
-                        && !right.getResultType().equals(resolveTypeName("System", "Any")))) {
+                        && !right.getResultType().equals(resolveTypeName("System", "Any"))
+                        && !(right.getResultType() instanceof WildcardType))) {
             if (left.getResultType() instanceof ListType) {
                 AnyInValueSet anyIn = of.createAnyInValueSet()
                         .withCodes(left)
@@ -1028,7 +1029,8 @@ public class LibraryBuilder {
         if (right instanceof CodeSystemRef
                 || (isCompatibleWith("1.5")
                         && right.getResultType().isCompatibleWith(resolveTypeName("System", "CodeSystem"))
-                        && !right.getResultType().equals(resolveTypeName("System", "Any")))) {
+                        && !right.getResultType().equals(resolveTypeName("System", "Any"))
+                        && !(right.getResultType() instanceof WildcardType))) {
             if (left.getResultType() instanceof ListType) {
                 AnyInCodeSystem anyIn = of.createAnyInCodeSystem()
                         .withCodes(left)

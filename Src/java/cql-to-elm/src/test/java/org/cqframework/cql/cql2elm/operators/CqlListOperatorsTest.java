@@ -42,6 +42,6 @@ class CqlListOperatorsTest {
     @Test
     void union() {
         ExpressionDef def = defs.get("Union123AndEmpty");
-        assertThat(def, hasTypeAndResult(Union.class, "list<System.Integer>"));
+        assertThat(def, hasTypeAndResult(Union.class, "list<System.Any>"));
     }
 }

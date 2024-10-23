@@ -56,6 +56,20 @@ public class InstantiationContextImpl extends ResolutionContextImpl implements I
             }
         }
 
+        // If the call type is a type parameter, it came in through a wildcard match, so
+        // make sure it's the same parameter, and if it's unbound, bind it to any
+        if (callType instanceof TypeParameter) {
+            if (!parameter.equals(callType)) {
+                return false;
+            }
+            if (boundType == null) {
+                callType = DataType.ANY;
+            }
+            else {
+                callType = boundType;
+            }
+        }
+
         // If the type is not yet bound, bind it to the call type.
         if (boundType == null) {
             if (parameter.canBind(callType)) {
