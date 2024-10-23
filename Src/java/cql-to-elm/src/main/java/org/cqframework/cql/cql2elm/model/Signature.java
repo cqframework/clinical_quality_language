@@ -1,10 +1,7 @@
 package org.cqframework.cql.cql2elm.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-
 import org.hl7.cql.model.*;
 
 public class Signature {

@@ -1,7 +1,6 @@
 package org.cqframework.cql.cql2elm.model;
 
 import java.util.*;
-
 import org.hl7.cql.model.DataType;
 import org.hl7.cql.model.TypeParameter;
 import org.hl7.cql.model.WildcardType;
@@ -52,8 +51,8 @@ public class GenericOperator extends Operator {
 
         Map<WildcardType, DataType> wildcardMap = new HashMap<>();
 
-        InstantiationContextImpl context =
-                new InstantiationContextImpl(typeMap, wildcardMap, operatorMap, conversionMap, allowPromotionAndDemotion);
+        InstantiationContextImpl context = new InstantiationContextImpl(
+                typeMap, wildcardMap, operatorMap, conversionMap, allowPromotionAndDemotion);
 
         Boolean instantiable = getSignature().isInstantiable(callSignature, context);
         if (instantiable) {
@@ -74,7 +73,8 @@ public class GenericOperator extends Operator {
         Iterator<DataType> callSignatureTypes = callSignature.getOperandTypes().iterator();
         DataType[] invocationSignature = new DataType[callSignature.getSize()];
         for (int i = 0; i < callSignature.getSize(); i++) {
-            invocationSignature[i] = callSignatureTypes.next().resolveWildcards(context).instantiate(context);
+            invocationSignature[i] =
+                    callSignatureTypes.next().resolveWildcards(context).instantiate(context);
         }
         return new Signature(invocationSignature);
     }

@@ -4,7 +4,8 @@ package org.cqframework.cql.cql2elm.model;
  * Created by Bryn on 12/22/2016.
  */
 public class InstantiationResult {
-    public InstantiationResult(GenericOperator genericOperator, Operator operator, Signature invocationSignature, int conversionScore) {
+    public InstantiationResult(
+            GenericOperator genericOperator, Operator operator, Signature invocationSignature, int conversionScore) {
         if (genericOperator == null) {
             throw new IllegalArgumentException("genericOperator is required");
         }

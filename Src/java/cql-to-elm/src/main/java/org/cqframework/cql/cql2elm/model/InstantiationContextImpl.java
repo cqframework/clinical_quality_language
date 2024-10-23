@@ -48,11 +48,10 @@ public class InstantiationContextImpl extends ResolutionContextImpl implements I
         // If the call type is a wildcard, bind it to the type parameter, then use the bound type
         // If there is no bound type, use Any as the call type
         if (callType instanceof WildcardType) {
-            matchWildcard(((WildcardType)callType), parameter);
+            matchWildcard(((WildcardType) callType), parameter);
             if (boundType == null) {
                 callType = DataType.ANY;
-            }
-            else {
+            } else {
                 callType = boundType;
             }
         }
@@ -245,10 +244,10 @@ public class InstantiationContextImpl extends ResolutionContextImpl implements I
                     results.add(new ListType(callType));
                     conversionScore += ConversionMap.ConversionScore.ListPromotion.score();
                 }
-                //else if (callType.equals(DataType.ANY)) {
+                // else if (callType.equals(DataType.ANY)) {
                 //    results.add(new ListType(callType));
                 //    conversionScore += ConversionMap.ConversionScore.Compatible.score();
-                //}
+                // }
             }
         }
 

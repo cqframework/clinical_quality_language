@@ -70,7 +70,7 @@ public class IntervalType extends DataType {
     @Override
     public boolean isInstantiable(DataType callType, InstantiationContext context) {
         if (callType instanceof WildcardType) {
-            context.matchWildcard(((WildcardType)callType), this);
+            context.matchWildcard(((WildcardType) callType), this);
             callType = this;
         }
 

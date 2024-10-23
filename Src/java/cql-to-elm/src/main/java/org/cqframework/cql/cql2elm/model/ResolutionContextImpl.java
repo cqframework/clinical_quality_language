@@ -1,10 +1,9 @@
 package org.cqframework.cql.cql2elm.model;
 
+import java.util.Map;
 import org.hl7.cql.model.DataType;
 import org.hl7.cql.model.ResolutionContext;
 import org.hl7.cql.model.WildcardType;
-
-import java.util.Map;
 
 public class ResolutionContextImpl implements ResolutionContext {
 
@@ -13,7 +12,6 @@ public class ResolutionContextImpl implements ResolutionContext {
             throw new IllegalArgumentException("wildcardMap is null");
         }
         this.wildcardMap = wildcardMap;
-
     }
 
     private Map<WildcardType, DataType> wildcardMap;

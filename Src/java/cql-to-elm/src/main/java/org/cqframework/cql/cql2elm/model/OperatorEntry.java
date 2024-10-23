@@ -54,7 +54,8 @@ public class OperatorEntry {
 
         private Signature getInvocationSignature(Signature callSignature, Signature operatorSignature) {
             if (callSignature.getSize() == operatorSignature.getSize()) {
-                ResolutionContextImpl resolutionContext = new ResolutionContextImpl(new HashMap<WildcardType, DataType>());
+                ResolutionContextImpl resolutionContext =
+                        new ResolutionContextImpl(new HashMap<WildcardType, DataType>());
                 if (callSignature.matchWildcards(operatorSignature, resolutionContext)) {
                     return callSignature.resolveWildcards(resolutionContext);
                 }
@@ -79,18 +80,17 @@ public class OperatorEntry {
                 results.add(new OperatorResolution(operator, invocationSignature));
             }
 
-            //if ((results == null || allResultsUseConversion(results)) && conversionMap != null) {
+            // if ((results == null || allResultsUseConversion(results)) && conversionMap != null) {
             if ((results == null) && conversionMap != null) {
                 // Attempt to find a conversion path from the call signature to the target signature
                 Conversion[] conversions =
                         new Conversion[operator.getSignature().getSize()];
-                boolean isConvertible = invocationSignature
-                        .isConvertibleTo(
-                                operator.getSignature(),
-                                conversionMap,
-                                operatorMap,
-                                callContext.getAllowPromotionAndDemotion(),
-                                conversions);
+                boolean isConvertible = invocationSignature.isConvertibleTo(
+                        operator.getSignature(),
+                        conversionMap,
+                        operatorMap,
+                        callContext.getAllowPromotionAndDemotion(),
+                        conversions);
                 if (isConvertible) {
                     OperatorResolution resolution = new OperatorResolution(operator, invocationSignature);
                     resolution.setConversions(conversions);

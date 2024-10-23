@@ -165,7 +165,7 @@ public class TupleType extends DataType {
     @Override
     public boolean isInstantiable(DataType callType, InstantiationContext context) {
         if (callType instanceof WildcardType) {
-            context.matchWildcard(((WildcardType)callType), this);
+            context.matchWildcard(((WildcardType) callType), this);
             callType = this;
         }
 
@@ -218,13 +218,13 @@ public class TupleType extends DataType {
                 List<TupleTypeElement> thoseElements = tupleType.getSortedElements();
                 for (int i = 0; i < theseElements.size(); i++) {
                     if (!(theseElements
-                            .get(i)
-                            .getName()
-                            .equals(thoseElements.get(i).getName())
+                                    .get(i)
+                                    .getName()
+                                    .equals(thoseElements.get(i).getName())
                             && theseElements
-                            .get(i)
-                            .getType()
-                            .matchWildcards(thoseElements.get(i).getType(), context))) {
+                                    .get(i)
+                                    .getType()
+                                    .matchWildcards(thoseElements.get(i).getType(), context))) {
                         return false;
                     }
                 }
