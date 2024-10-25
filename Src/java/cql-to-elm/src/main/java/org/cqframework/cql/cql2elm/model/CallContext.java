@@ -9,6 +9,7 @@ public class CallContext {
             boolean allowPromotionAndDemotion,
             boolean allowFluent,
             boolean mustResolve,
+            DataType targetType,
             DataType... signature) {
         this.libraryName = libraryName; // allowed to be null
 
@@ -21,6 +22,7 @@ public class CallContext {
         this.allowPromotionAndDemotion = allowPromotionAndDemotion;
         this.allowFluent = allowFluent;
         this.mustResolve = mustResolve;
+        this.targetType = targetType;
     }
 
     private String libraryName;
@@ -57,5 +59,10 @@ public class CallContext {
 
     public boolean getMustResolve() {
         return this.mustResolve;
+    }
+
+    private DataType targetType;
+    public DataType getTargetType() {
+        return targetType;
     }
 }

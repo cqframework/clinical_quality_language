@@ -2676,7 +2676,12 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
             if (pt instanceof cqlParser.ExpressionContext) {
                 if (hitElse) {
-                    result.setElse(parseExpression(pt));
+                    libraryBuilder.pushTargetType(resultType);
+                    try {
+                        result.setElse(parseExpression(pt));
+                    } finally {
+                        libraryBuilder.popTargetType();
+                    }
                     resultType = libraryBuilder.ensureCompatibleTypes(
                             resultType, result.getElse().getResultType());
                 } else {

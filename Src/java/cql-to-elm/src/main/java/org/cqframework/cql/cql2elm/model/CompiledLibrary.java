@@ -226,6 +226,7 @@ public class CompiledLibrary {
                     false,
                     false,
                     false,
+                    null,
                     signature.toArray(new DataType[signature.size()]));
             OperatorResolution resolution = resolveCall(cc, null);
             ArrayList<FunctionDef> results = new ArrayList<FunctionDef>();

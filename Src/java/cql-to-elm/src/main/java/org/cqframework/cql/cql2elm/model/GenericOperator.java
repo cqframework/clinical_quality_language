@@ -27,8 +27,9 @@ public class GenericOperator extends Operator {
             Signature callSignature,
             OperatorMap operatorMap,
             ConversionMap conversionMap,
-            boolean allowPromotionAndDemotion) {
-        return instantiate(callSignature, null, operatorMap, conversionMap, allowPromotionAndDemotion);
+            boolean allowPromotionAndDemotion,
+            DataType targetType) {
+        return instantiate(callSignature, null, operatorMap, conversionMap, allowPromotionAndDemotion, targetType);
     }
 
     public InstantiationResult instantiate(
@@ -36,7 +37,8 @@ public class GenericOperator extends Operator {
             Map<TypeParameter, DataType> parameters,
             OperatorMap operatorMap,
             ConversionMap conversionMap,
-            boolean allowPromotionAndDemotion) {
+            boolean allowPromotionAndDemotion,
+            DataType targetType) {
         Map<TypeParameter, DataType> typeMap = new HashMap<>();
 
         for (TypeParameter p : typeParameters) {
@@ -52,7 +54,7 @@ public class GenericOperator extends Operator {
         Map<WildcardType, DataType> wildcardMap = new HashMap<>();
 
         InstantiationContextImpl context = new InstantiationContextImpl(
-                typeMap, wildcardMap, operatorMap, conversionMap, allowPromotionAndDemotion);
+                typeMap, wildcardMap, operatorMap, conversionMap, allowPromotionAndDemotion, getResultType() instanceof TypeParameter ? (TypeParameter)getResultType() : null, targetType);
 
         Boolean instantiable = getSignature().isInstantiable(callSignature, context);
         if (instantiable) {

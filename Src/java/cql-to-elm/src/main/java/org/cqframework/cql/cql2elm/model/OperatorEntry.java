@@ -298,7 +298,8 @@ public class OperatorEntry {
         List<Signature> callSignatures = expandChoices(callContext.getSignature());
         for (Signature callSignature : callSignatures) {
             List<Operator> instantiations =
-                    instantiate(callSignature, operatorMap, conversionMap, callContext.getAllowPromotionAndDemotion());
+                    instantiate(callSignature, operatorMap, conversionMap, callContext.getAllowPromotionAndDemotion(),
+                            callContext.getTargetType());
             for (Operator instantiation : instantiations) {
                 if (!signatures.contains(instantiation)) {
                     // If the generic signature was instantiated, store it as an actual signature.
@@ -316,12 +317,13 @@ public class OperatorEntry {
             Signature signature,
             OperatorMap operatorMap,
             ConversionMap conversionMap,
-            boolean allowPromotionAndDemotion) {
+            boolean allowPromotionAndDemotion,
+            DataType targetType) {
         List<Operator> instantiations = new ArrayList<Operator>();
 
         for (GenericOperator genericOperator : genericOperators.values()) {
             InstantiationResult instantiationResult =
-                    genericOperator.instantiate(signature, operatorMap, conversionMap, allowPromotionAndDemotion);
+                    genericOperator.instantiate(signature, operatorMap, conversionMap, allowPromotionAndDemotion, targetType);
             if (instantiationResult.getOperator() != null) {
                 instantiations.add(instantiationResult.getOperator());
             }

@@ -340,7 +340,7 @@ public class ConversionMap {
             if (c.getOperator() != null) {
                 // instantiate the generic...
                 InstantiationResult instantiationResult = ((GenericOperator) c.getOperator())
-                        .instantiate(new Signature(fromType), operatorMap, this, false);
+                        .instantiate(new Signature(fromType), operatorMap, this, false, null);
                 Operator operator = instantiationResult.getOperator();
                 if (operator != null && !operatorMap.containsOperator(operator)) {
                     operatorMap.addOperator(operator);

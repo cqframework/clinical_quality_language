@@ -10,7 +10,9 @@ public class InstantiationContextImpl extends ResolutionContextImpl implements I
             Map<WildcardType, DataType> wildcardMap,
             OperatorMap operatorMap,
             ConversionMap conversionMap,
-            boolean allowPromotionAndDemotion) {
+            boolean allowPromotionAndDemotion,
+            TypeParameter resultTypeParameter,
+            DataType targetType) {
         super(wildcardMap);
 
         if (typeMap == null) {
@@ -29,12 +31,16 @@ public class InstantiationContextImpl extends ResolutionContextImpl implements I
         this.operatorMap = operatorMap;
         this.conversionMap = conversionMap;
         this.allowPromotionAndDemotion = allowPromotionAndDemotion;
+        this.resultTypeParameter = resultTypeParameter;
+        this.targetType = targetType;
     }
 
     private Map<TypeParameter, DataType> typeMap;
     private OperatorMap operatorMap;
     private ConversionMap conversionMap;
     private boolean allowPromotionAndDemotion;
+    private TypeParameter resultTypeParameter;
+    private DataType targetType;
     private int conversionScore;
 
     public int getConversionScore() {
@@ -50,7 +56,12 @@ public class InstantiationContextImpl extends ResolutionContextImpl implements I
         if (callType instanceof WildcardType) {
             matchWildcard(((WildcardType) callType), parameter);
             if (boundType == null) {
-                callType = DataType.ANY;
+                // If the type parameter is the same as the result type parameter and we have a target type, use it
+                if (parameter.equals(resultTypeParameter) && targetType != null) {
+                    callType = targetType;
+                } else {
+                    callType = DataType.ANY;
+                }
             } else {
                 callType = boundType;
             }
@@ -63,7 +74,11 @@ public class InstantiationContextImpl extends ResolutionContextImpl implements I
                 return false;
             }
             if (boundType == null) {
-                callType = DataType.ANY;
+                if (parameter.equals(resultTypeParameter) && targetType != null) {
+                    callType = targetType;
+                } else {
+                    callType = DataType.ANY;
+                }
             }
             else {
                 callType = boundType;
@@ -191,7 +206,7 @@ public class InstantiationContextImpl extends ResolutionContextImpl implements I
                     if (c.getToType() instanceof IntervalType) {
                         // instantiate the generic...
                         InstantiationResult instantiationResult = ((GenericOperator) c.getOperator())
-                                .instantiate(new Signature(callType), operatorMap, conversionMap, false);
+                                .instantiate(new Signature(callType), operatorMap, conversionMap, false, null);
                         Operator operator = instantiationResult.getOperator();
                         // TODO: Consider impact of conversion score of the generic instantiation on this conversion
                         // score
@@ -235,7 +250,7 @@ public class InstantiationContextImpl extends ResolutionContextImpl implements I
                     if (c.getToType() instanceof ListType) {
                         // instantiate the generic...
                         InstantiationResult instantiationResult = ((GenericOperator) c.getOperator())
-                                .instantiate(new Signature(callType), operatorMap, conversionMap, false);
+                                .instantiate(new Signature(callType), operatorMap, conversionMap, false, null);
                         Operator operator = instantiationResult.getOperator();
                         // TODO: Consider impact of conversion score of the generic instantiation on this conversion
                         // score
@@ -283,7 +298,7 @@ public class InstantiationContextImpl extends ResolutionContextImpl implements I
                 if (c.getOperator() != null) {
                     if (c.getToType() instanceof SimpleType) {
                         InstantiationResult instantiationResult = ((GenericOperator) c.getOperator())
-                                .instantiate(new Signature(callType), operatorMap, conversionMap, false);
+                                .instantiate(new Signature(callType), operatorMap, conversionMap, false, null);
                         Operator operator = instantiationResult.getOperator();
                         // TODO: Consider impact of conversion score of the generic instantiation on this conversion
                         // score

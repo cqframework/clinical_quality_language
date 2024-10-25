@@ -1237,7 +1237,8 @@ public class LibraryBuilder {
             Iterable<Expression> operands,
             boolean mustResolve,
             boolean allowPromotionAndDemotion,
-            boolean allowFluent) {
+            boolean allowFluent,
+            DataType targetType) {
         List<DataType> dataTypes = new ArrayList<>();
         for (Expression operand : operands) {
             if (operand == null || operand.getResultType() == null) {
@@ -1254,6 +1255,7 @@ public class LibraryBuilder {
                 allowPromotionAndDemotion,
                 allowFluent,
                 mustResolve,
+                targetType,
                 dataTypes.toArray(new DataType[dataTypes.size()]));
     }
 
@@ -1266,7 +1268,8 @@ public class LibraryBuilder {
             boolean allowFluent) {
         Iterable<Expression> operands = invocation.getOperands();
         CallContext callContext = buildCallContext(
-                libraryName, operatorName, operands, mustResolve, allowPromotionAndDemotion, allowFluent);
+                libraryName, operatorName, operands, mustResolve, allowPromotionAndDemotion, allowFluent,
+                peekTargetType());
         OperatorResolution resolution = resolveCall(callContext);
         if (resolution == null && !mustResolve) {
             return null;
@@ -1357,6 +1360,7 @@ public class LibraryBuilder {
                 false,
                 fd.isFluent() != null && fd.isFluent(),
                 false,
+                null,
                 dataTypes.toArray(new DataType[dataTypes.size()]));
         // Resolve exact, no conversion map
         OperatorResolution resolution = compiledLibrary.resolveCall(callContext, null);
@@ -1937,6 +1941,14 @@ public class LibraryBuilder {
     public DataType findCompatibleType(DataType first, DataType second) {
         if (first == null || second == null) {
             return null;
+        }
+
+        if (first instanceof WildcardType) {
+            return second;
+        }
+
+        if (second instanceof WildcardType) {
+            return first;
         }
 
         if (first.equals(DataType.ANY)) {
@@ -3285,12 +3297,18 @@ public class LibraryBuilder {
         private final Stack<Expression> targets = new Stack<>();
         private final Stack<QueryContext> queries = new Stack<>();
 
+        private final Stack<DataType> targetTypes = new Stack<>();
+
         public Stack<Expression> getTargets() {
             return targets;
         }
 
         public Stack<QueryContext> getQueries() {
             return queries;
+        }
+
+        public Stack<DataType> getTargetTypes() {
+            return targetTypes;
         }
     }
 
@@ -3434,6 +3452,21 @@ public class LibraryBuilder {
 
     public boolean hasExpressionTarget() {
         return hasScope() && !getScope().getTargets().isEmpty();
+    }
+
+    public void pushTargetType(DataType targetType) {
+        getScope().getTargetTypes().push(targetType);
+    }
+
+    public DataType popTargetType() {
+        return getScope().getTargetTypes().pop();
+    }
+
+    public boolean hasTargetType() {
+        return hasScope() && !getScope().getTargetTypes().isEmpty();
+    }
+    public DataType peekTargetType() {
+        return hasTargetType() ? getScope().getTargetTypes().peek() : null;
     }
 
     public void beginFunctionDef(FunctionDef functionDef) {
