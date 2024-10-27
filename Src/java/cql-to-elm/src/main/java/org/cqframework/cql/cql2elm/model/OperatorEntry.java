@@ -3,7 +3,6 @@ package org.cqframework.cql.cql2elm.model;
 import java.util.*;
 import org.hl7.cql.model.ChoiceType;
 import org.hl7.cql.model.DataType;
-import org.hl7.cql.model.WildcardType;
 
 public class OperatorEntry {
     public OperatorEntry(String name) {
@@ -54,8 +53,7 @@ public class OperatorEntry {
 
         private Signature getInvocationSignature(Signature callSignature, Signature operatorSignature) {
             if (callSignature.getSize() == operatorSignature.getSize()) {
-                ResolutionContextImpl resolutionContext =
-                        new ResolutionContextImpl(new HashMap<WildcardType, DataType>());
+                ResolutionContextImpl resolutionContext = new ResolutionContextImpl(new HashMap<DataType, DataType>());
                 if (callSignature.matchWildcards(operatorSignature, resolutionContext)) {
                     return callSignature.resolveWildcards(resolutionContext);
                 }
@@ -63,45 +61,125 @@ public class OperatorEntry {
             return callSignature;
         }
 
+        private DataType getInvocationResultType(Operator operator, Signature callSignature) {
+            if (operator.getPreservesWildcards()) {
+                Iterator<DataType> operandTypes =
+                        callSignature.getOperandTypes().iterator();
+                for (int i = 0; i < callSignature.getSize(); i++) {
+                    DataType operandType = operandTypes.next();
+                    if (operandType != null) {
+                        if (i == operator.getWildcardOperandIndex()) {
+                            return operandType;
+                        }
+                    }
+                }
+            }
+
+            return operator.getResultType();
+        }
+
+        private OperatorResolution getOperatorResolution(
+                Operator operator,
+                Signature callSignature,
+                Signature invocationSignature,
+                ConversionMap conversionMap,
+                OperatorMap operatorMap,
+                boolean allowPromotionAndDemotion,
+                boolean requireConversions) {
+            Conversion[] conversions = getConversions(
+                    callSignature, operator.getSignature(), conversionMap, operatorMap, allowPromotionAndDemotion);
+            OperatorResolution result = new OperatorResolution(
+                    operator, invocationSignature, getInvocationResultType(operator, callSignature), conversions);
+            if (requireConversions && conversions == null) {
+                return null;
+            }
+            return result;
+        }
+
         public List<OperatorResolution> resolve(
                 CallContext callContext, ConversionMap conversionMap, OperatorMap operatorMap) {
             List<OperatorResolution> results = null;
             Signature invocationSignature = getInvocationSignature(callContext.getSignature(), operator.getSignature());
 
+            // Attempt exact match against this signature
             if (operator.getSignature().equals(invocationSignature)) {
                 results = new ArrayList<>();
-                results.add(new OperatorResolution(operator, invocationSignature));
-                return results;
-            }
-
-            results = subSignatures.resolve(callContext, conversionMap, operatorMap);
-            if (results == null && operator.getSignature().isSuperTypeOf(invocationSignature)) {
-                results = new ArrayList<>();
-                results.add(new OperatorResolution(operator, invocationSignature));
-            }
-
-            // if ((results == null || allResultsUseConversion(results)) && conversionMap != null) {
-            if ((results == null) && conversionMap != null) {
-                // Attempt to find a conversion path from the call signature to the target signature
-                Conversion[] conversions =
-                        new Conversion[operator.getSignature().getSize()];
-                boolean isConvertible = invocationSignature.isConvertibleTo(
-                        operator.getSignature(),
+                OperatorResolution result = getOperatorResolution(
+                        operator,
+                        callContext.getSignature(),
+                        invocationSignature,
                         conversionMap,
                         operatorMap,
                         callContext.getAllowPromotionAndDemotion(),
-                        conversions);
-                if (isConvertible) {
-                    OperatorResolution resolution = new OperatorResolution(operator, invocationSignature);
-                    resolution.setConversions(conversions);
+                        false);
+                if (result != null) {
+                    results.add(result);
+                    return results;
+                }
+            }
+
+            // Attempt to resolve against sub signatures
+            results = subSignatures.resolve(callContext, conversionMap, operatorMap);
+
+            // If no subsignature match, attempt subType match against this signature
+            if (results == null && operator.getSignature().isSuperTypeOf(invocationSignature)) {
+                results = new ArrayList<>();
+                OperatorResolution result = getOperatorResolution(
+                        operator,
+                        callContext.getSignature(),
+                        invocationSignature,
+                        conversionMap,
+                        operatorMap,
+                        callContext.getAllowPromotionAndDemotion(),
+                        false);
+                if (result != null) {
+                    results.add(result);
+                    return results;
+                }
+            }
+
+            if ((results == null) && conversionMap != null) {
+                // Attempt to find a conversion path from the call signature to the target signature
+                OperatorResolution result = getOperatorResolution(
+                        operator,
+                        callContext.getSignature(),
+                        invocationSignature,
+                        conversionMap,
+                        operatorMap,
+                        callContext.getAllowPromotionAndDemotion(),
+                        true);
+                if (result != null) {
                     if (results == null) {
                         results = new ArrayList<>();
                     }
-                    results.add(resolution);
+                    results.add(result);
                 }
             }
 
             return results;
+        }
+
+        private Conversion[] getConversions(
+                Signature callSignature,
+                Signature operatorSignature,
+                ConversionMap conversionMap,
+                OperatorMap operatorMap,
+                boolean allowPromotionAndDemotion) {
+            if (callSignature == null
+                    || operatorSignature == null
+                    || callSignature.getSize() != operatorSignature.getSize()) {
+                return null;
+            }
+
+            Conversion[] conversions = new Conversion[callSignature.getSize()];
+            boolean isConvertible = callSignature.isConvertibleTo(
+                    operatorSignature, conversionMap, operatorMap, allowPromotionAndDemotion, conversions);
+
+            if (isConvertible) {
+                return conversions;
+            }
+
+            return null;
         }
 
         private SignatureNodes subSignatures = new SignatureNodes();

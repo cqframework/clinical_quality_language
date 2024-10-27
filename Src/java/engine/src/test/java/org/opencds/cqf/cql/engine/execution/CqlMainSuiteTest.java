@@ -17,8 +17,14 @@ class CqlMainSuiteTest extends CqlTestBase {
 
     @Test
     void cql_main_test_suite_compiles() {
+        var exceptions = new ArrayList<CqlCompilerException>();
+        this.getLibrary(toElmIdentifier("CqlTestSuite"), exceptions, testCompilerOptions());
         var errors = new ArrayList<CqlCompilerException>();
-        this.getLibrary(toElmIdentifier("CqlTestSuite"), errors, testCompilerOptions());
+        for (CqlCompilerException exception : exceptions) {
+            if (exception.getSeverity() == CqlCompilerException.ErrorSeverity.Error) {
+                errors.add(exception);
+            }
+        }
         assertFalse(
                 CqlCompilerException.hasErrors(errors),
                 String.format("Test library compiled with the following errors : %s", this.toString(errors)));

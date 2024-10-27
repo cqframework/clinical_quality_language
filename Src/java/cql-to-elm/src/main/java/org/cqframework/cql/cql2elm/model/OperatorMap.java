@@ -95,7 +95,8 @@ public class OperatorMap {
                 List<OperatorResolution> lowestTypeScoringResults = new ArrayList<>();
                 for (OperatorResolution resolution : lowestScoringResults) {
                     int typeScore = ConversionMap.ConversionScore.ExactMatch.score();
-                    for (DataType operand : resolution.getOperator().getSignature().getOperandTypes()) {
+                    for (DataType operand :
+                            resolution.getOperator().getSignature().getOperandTypes()) {
                         typeScore += ConversionMap.getTypePrecedenceScore(operand);
                     }
 

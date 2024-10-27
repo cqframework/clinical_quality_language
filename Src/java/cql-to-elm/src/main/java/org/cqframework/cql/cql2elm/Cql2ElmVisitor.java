@@ -636,9 +636,16 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     public Object visitTupleElementSelector(cqlParser.TupleElementSelectorContext ctx) {
         TupleElement result = of.createTupleElement()
                 .withName(parseString(ctx.referentialIdentifier()))
-                .withValue(parseExpression(ctx.expression()));
+                .withValue(resolveWildcards(parseExpression(ctx.expression())));
         result.setResultType(result.getValue().getResultType());
         return result;
+    }
+
+    public Expression resolveWildcards(Expression expression) {
+        if (expression.getResultType() != null && expression.getResultType().isWildcard()) {
+            expression.setResultType(libraryBuilder.resolveTypeName("System.Any"));
+        }
+        return expression;
     }
 
     @Override
@@ -2776,6 +2783,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                     // Subtract subtract = of.createSubtract().withOperand(successor, minimum);
                     // libraryBuilder.resolveBinaryCall("System", "Subtract", subtract);
                     // per = subtract;
+                } else {
+                    per = libraryBuilder.buildNull(libraryBuilder.resolveTypeName("System", "Quantity"));
                 }
             } else {
                 per = libraryBuilder.buildNull(libraryBuilder.resolveTypeName("System", "Quantity"));
@@ -3880,7 +3889,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         if (aggregateClause.getStarting() != null) {
             accumulator = libraryBuilder.buildNull(aggregateClause.getStarting().getResultType());
         } else {
-            accumulator = libraryBuilder.buildNull(libraryBuilder.resolveTypeName("System", "Any"));
+            accumulator = libraryBuilder.buildNull(libraryBuilder.buildWildcardType());
         }
 
         LetClause letClause =
@@ -4171,7 +4180,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                     try {
                         FunctionDef fd = compileFunctionDefinition(ctx);
                         op.setResultType(fd.getResultType());
-                        invocation.setResultType(op.getResultType());
+                        invocation.getResolution().setInvocationResultType(fd.getResultType());
+                        invocation.setResultType(invocation.getResolution().getInvocationResultType());
                     } finally {
                         setCurrentContext(saveContext);
                         this.chunks = saveChunks;

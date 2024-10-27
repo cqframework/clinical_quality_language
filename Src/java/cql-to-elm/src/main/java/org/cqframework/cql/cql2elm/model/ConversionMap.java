@@ -8,13 +8,14 @@ import org.hl7.cql.model.*;
 
 public class ConversionMap {
     public enum TypePrecedenceScore {
-        Simple(0),
-        Tuple(1),
-        Class(2),
-        Interval(3),
-        List(4),
-        Choice(5),
-        Other(5);
+        Wildcard(0),
+        Simple(1),
+        Tuple(2),
+        Class(3),
+        Interval(4),
+        List(5),
+        Choice(6),
+        Other(7);
 
         private final int score;
 
@@ -26,6 +27,7 @@ public class ConversionMap {
             this.score = score;
         }
     }
+
     public enum ConversionScore {
         ExactMatch(0),
         SubType(1),
@@ -50,14 +52,25 @@ public class ConversionMap {
     }
 
     public static int getTypePrecedenceScore(DataType operand) {
+        if (operand.isWildcard()) {
+            return ConversionMap.TypePrecedenceScore.Wildcard.score();
+        }
+
         switch (operand.getClass().getSimpleName()) {
-            case "SimpleType": return ConversionMap.TypePrecedenceScore.Simple.score();
-            case "TupleType": return ConversionMap.TypePrecedenceScore.Tuple.score();
-            case "ClassType": return ConversionMap.TypePrecedenceScore.Class.score();
-            case "IntervalType": return ConversionMap.TypePrecedenceScore.Interval.score();
-            case "ListType": return ConversionMap.TypePrecedenceScore.List.score();
-            case "ChoiceType": return ConversionMap.TypePrecedenceScore.Choice.score();
-            default: return ConversionMap.TypePrecedenceScore.Other.score();
+            case "SimpleType":
+                return ConversionMap.TypePrecedenceScore.Simple.score();
+            case "TupleType":
+                return ConversionMap.TypePrecedenceScore.Tuple.score();
+            case "ClassType":
+                return ConversionMap.TypePrecedenceScore.Class.score();
+            case "IntervalType":
+                return ConversionMap.TypePrecedenceScore.Interval.score();
+            case "ListType":
+                return ConversionMap.TypePrecedenceScore.List.score();
+            case "ChoiceType":
+                return ConversionMap.TypePrecedenceScore.Choice.score();
+            default:
+                return ConversionMap.TypePrecedenceScore.Other.score();
         }
     }
 

@@ -25,14 +25,18 @@ public class WildcardType extends DataType {
 
     @Override
     public boolean isInstantiable(DataType callType, InstantiationContext context) {
-        // NOTE: A wildcard type will never be in the generic signature, so this should never be called
-        return false;
+        // A wildcard is always instantiable as at least Any
+        return true;
     }
 
     @Override
     public DataType instantiate(InstantiationContext context) {
-        // NOTE: A wildcard type will never be in the generic signature, so this should never be called
-        return null;
+        return DataType.ANY;
+    }
+
+    @Override
+    public boolean isWildcard() {
+        return true;
     }
 
     @Override

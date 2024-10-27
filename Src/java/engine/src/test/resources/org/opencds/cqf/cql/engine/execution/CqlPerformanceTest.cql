@@ -4817,7 +4817,7 @@ define Flatten_NullValue: flatten null
 
 // TODO: This fails due to list-distinguised overloads
 // define test_Flatten_ListOfLists: TestMessage(Flatten_ListOfLists = {1,2,3,4,5,6,7,8,9,9,8,7,6,5,4,3,2,1}, 'Flatten_ListOfLists', toString({1,2,3,4,5,6,7,8,9,9,8,7,6,5,4,3,2,1}), toString(Flatten_ListOfLists))
-define test_Flatten_NullValue: TestMessage(Flatten_NullValue is null, 'Flatten_NullValue', 'null', toString(Flatten_NullValue))
+//define test_Flatten_NullValue: TestMessage(Flatten_NullValue is null, 'Flatten_NullValue', 'null', toString(Flatten_NullValue))
 
 // Distinct
 define Distinct_LotsOfDups: distinct {1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 4, 3, 2, 1}

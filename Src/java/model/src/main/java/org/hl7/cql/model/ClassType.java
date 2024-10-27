@@ -476,7 +476,7 @@ public class ClassType extends DataType implements NamedType {
         return result;
     }
 
-    public boolean matchWildcards(DataType operandType, ResolutionContext context) {
+    private boolean internalMatchWildcards(DataType operandType, ResolutionContext context) {
         if (operandType instanceof ClassType) {
             ClassType classType = (ClassType) operandType;
             if (elements.size() == classType.elements.size()) {
@@ -502,14 +502,38 @@ public class ClassType extends DataType implements NamedType {
         return false;
     }
 
-    @Override
-    public DataType resolveWildcards(ResolutionContext context) {
-        ClassType result = new ClassType(getName(), getBaseType());
-        for (int i = 0; i < elements.size(); i++) {
-            result.addElement(new ClassTypeElement(
-                    elements.get(i).getName(), elements.get(i).getType().resolveWildcards(context)));
+    public boolean matchWildcards(DataType operandType, ResolutionContext context) {
+        return this.equals(operandType);
+        /*
+        // TODO: Support wildcards within class selectors...
+        Boolean result = context.getMatchResult(this);
+        if (result == null) {
+            result = false;
+            context.putMatchResult(this, result);
+            result = internalMatchWildcards(operandType, context);
+            context.putMatchResult(this, result);
         }
 
         return result;
+         */
+    }
+
+    @Override
+    public DataType resolveWildcards(ResolutionContext context) {
+        return this;
+        /*
+        // TODO: Support wildcards within class selectors...
+        ClassType result = (ClassType)context.getResolvedType(this);
+        if (result == null) {
+            result = new ClassType(getName(), getBaseType());
+            context.putResolvedType(this, result);
+            for (int i = 0; i < elements.size(); i++) {
+                result.addElement(new ClassTypeElement(
+                        elements.get(i).getName(), elements.get(i).getType().resolveWildcards(context)));
+            }
+        }
+
+        return result;
+         */
     }
 }

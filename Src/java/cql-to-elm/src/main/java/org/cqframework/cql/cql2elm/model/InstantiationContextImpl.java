@@ -7,7 +7,7 @@ import org.hl7.cql.model.*;
 public class InstantiationContextImpl extends ResolutionContextImpl implements InstantiationContext, ResolutionContext {
     public InstantiationContextImpl(
             Map<TypeParameter, DataType> typeMap,
-            Map<WildcardType, DataType> wildcardMap,
+            Map<DataType, DataType> wildcardMap,
             OperatorMap operatorMap,
             ConversionMap conversionMap,
             boolean allowPromotionAndDemotion) {
@@ -47,8 +47,8 @@ public class InstantiationContextImpl extends ResolutionContextImpl implements I
 
         // If the call type is a wildcard, bind it to the type parameter, then use the bound type
         // If there is no bound type, use Any as the call type
-        if (callType instanceof WildcardType) {
-            matchWildcard(((WildcardType) callType), parameter);
+        if (callType.isWildcard()) {
+            matchWildcard(callType, parameter);
             if (boundType == null) {
                 callType = DataType.ANY;
             } else {
@@ -57,15 +57,14 @@ public class InstantiationContextImpl extends ResolutionContextImpl implements I
         }
 
         // If the call type is a type parameter, it came in through a wildcard match, so
-        // make sure it's the same parameter, and if it's unbound, bind it to any
+        // make sure it's the same parameter, and if it's unbound, bind it to the wildcard type
         if (callType instanceof TypeParameter) {
             if (!parameter.equals(callType)) {
                 return false;
             }
             if (boundType == null) {
                 callType = DataType.ANY;
-            }
-            else {
+            } else {
                 callType = boundType;
             }
         }
@@ -172,7 +171,11 @@ public class InstantiationContextImpl extends ResolutionContextImpl implements I
                     String.format("Could not resolve type parameter %s.", parameter.getIdentifier()));
         }
 
-        return result;
+        if (result instanceof SimpleType && !result.isWildcard()) {
+            return result;
+        }
+
+        return result.instantiate(this);
     }
 
     @Override
@@ -258,10 +261,6 @@ public class InstantiationContextImpl extends ResolutionContextImpl implements I
                     results.add(new ListType(callType));
                     conversionScore += ConversionMap.ConversionScore.ListPromotion.score();
                 }
-                // else if (callType.equals(DataType.ANY)) {
-                //    results.add(new ListType(callType));
-                //    conversionScore += ConversionMap.ConversionScore.Compatible.score();
-                // }
             }
         }
 

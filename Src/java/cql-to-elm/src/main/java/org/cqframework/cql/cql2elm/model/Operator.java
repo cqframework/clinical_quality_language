@@ -101,6 +101,36 @@ public class Operator {
         return this;
     }
 
+    private boolean preservesWildcards = false;
+
+    public boolean getPreservesWildcards() {
+        return preservesWildcards;
+    }
+
+    public void setPreservesWildcards(boolean preservesWildcards) {
+        this.preservesWildcards = preservesWildcards;
+    }
+
+    public Operator withPreservesWildcards(boolean preservesWildcards) {
+        setPreservesWildcards(preservesWildcards);
+        return this;
+    }
+
+    private int wildcardOperandIndex = -1;
+
+    public int getWildcardOperandIndex() {
+        return wildcardOperandIndex;
+    }
+
+    public void setWildcardOperandIndex(int wildcardOperandIndex) {
+        this.wildcardOperandIndex = wildcardOperandIndex;
+    }
+
+    public Operator withWildcardOperandIndex(int wildcardOperandIndex) {
+        setWildcardOperandIndex(wildcardOperandIndex);
+        return this;
+    }
+
     private FunctionDef functionDef;
 
     public FunctionDef getFunctionDef() {

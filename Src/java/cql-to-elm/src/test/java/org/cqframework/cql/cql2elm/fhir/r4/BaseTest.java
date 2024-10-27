@@ -329,7 +329,7 @@ class BaseTest {
     @Test
     void exm108IdentifierHiding() throws IOException {
         var translator = TestUtils.runSemanticTest("fhir/r4/exm108/EXM108.cql", 0, SignatureLevel.All);
-        // Should only be one identifier being hid after fixes, "Warafin"
-        assertEquals(1, translator.getExceptions().size());
+        // Should only be one identifier being hid after fixes, "Warafin", plus 3 list demotion warnings
+        assertEquals(4, translator.getExceptions().size());
     }
 }

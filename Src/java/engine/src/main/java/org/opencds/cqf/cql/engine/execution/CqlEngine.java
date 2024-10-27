@@ -288,7 +288,12 @@ public class CqlEngine {
                     "library %s loaded, but had errors: %s",
                     libraryIdentifier.getId()
                             + (libraryIdentifier.getVersion() != null ? "-" + libraryIdentifier.getVersion() : ""),
-                    String.join(", ", errors.stream().map(e -> e.getMessage()).collect(Collectors.toList()))));
+                    String.join(
+                            ", ",
+                            errors.stream()
+                                    .filter(e -> e.getSeverity() == CqlCompilerException.ErrorSeverity.Error)
+                                    .map(e -> e.getMessage())
+                                    .collect(Collectors.toList()))));
         }
 
         if (this.engineOptions.contains(Options.EnableValidation)) {

@@ -9,6 +9,8 @@ public abstract class DataType {
     }
 
     public DataType(DataType baseType) {
+        // NOTE: This works for the DataType.ANY reference because it isn't set when this constructor is being invoked
+        // In other words, there should only ever be one instance of the Any datatype anywhere in the translator
         this.baseType = baseType == null ? DataType.ANY : baseType;
     }
 
@@ -82,6 +84,10 @@ public abstract class DataType {
     public abstract boolean isInstantiable(DataType callType, InstantiationContext context);
 
     public abstract DataType instantiate(InstantiationContext context);
+
+    public boolean isWildcard() {
+        return false;
+    }
 
     public boolean matchWildcards(DataType operandType, ResolutionContext context) {
         return this.equals(operandType);

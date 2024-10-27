@@ -2,7 +2,15 @@ package org.hl7.cql.model;
 
 public interface ResolutionContext {
 
-    boolean matchWildcard(WildcardType wildcardType, DataType operandType);
+    boolean matchWildcard(DataType wildcardType, DataType operandType);
 
-    DataType resolveWildcard(WildcardType wildcardType);
+    DataType resolveWildcard(DataType wildcardType);
+
+    DataType getResolvedType(DataType callType);
+
+    void putResolvedType(DataType callType, DataType resolvedType);
+
+    Boolean getMatchResult(DataType callType);
+
+    void putMatchResult(DataType callType, Boolean matchResult);
 }

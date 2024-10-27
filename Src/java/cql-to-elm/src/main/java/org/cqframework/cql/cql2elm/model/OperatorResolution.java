@@ -2,14 +2,20 @@ package org.cqframework.cql.cql2elm.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.hl7.cql.model.DataType;
 import org.hl7.elm.r1.VersionedIdentifier;
 
 public class OperatorResolution {
     public OperatorResolution() {}
 
-    public OperatorResolution(Operator operator, Signature invocationSignature) {
+    public OperatorResolution(
+            Operator operator, Signature invocationSignature, DataType invocationResultType, Conversion[] conversions) {
         this.operator = operator;
         this.invocationSignature = invocationSignature;
+        this.invocationResultType = invocationResultType;
+        if (conversions != null) {
+            setConversions(conversions);
+        }
     }
 
     private Operator operator;
@@ -23,6 +29,21 @@ public class OperatorResolution {
 
     public Signature getInvocationSignature() {
         return invocationSignature;
+    }
+
+    /*
+    The invocationResultType is the result type of the actual invocation. If the operator
+    preserves wildcards, and the invocation signature has wildcards, this will be a wildcardType.
+    Otherwise, this will be the result type of the operator.
+     */
+    private DataType invocationResultType;
+
+    public DataType getInvocationResultType() {
+        return invocationResultType;
+    }
+
+    public void setInvocationResultType(DataType invocationResultType) {
+        this.invocationResultType = invocationResultType;
     }
 
     public Operator getOperator() {

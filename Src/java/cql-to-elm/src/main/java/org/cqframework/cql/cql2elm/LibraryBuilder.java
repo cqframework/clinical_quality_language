@@ -454,7 +454,7 @@ public class LibraryBuilder {
         return result;
     }
 
-    public WildcardType buildWildcardType() {
+    public DataType buildWildcardType() {
         return new WildcardType();
     }
 
@@ -1007,7 +1007,7 @@ public class LibraryBuilder {
                 || (isCompatibleWith("1.5")
                         && right.getResultType().isCompatibleWith(resolveTypeName("System", "ValueSet"))
                         && !right.getResultType().equals(resolveTypeName("System", "Any"))
-                        && !(right.getResultType() instanceof WildcardType))) {
+                        && !right.getResultType().isWildcard())) {
             if (left.getResultType() instanceof ListType) {
                 AnyInValueSet anyIn = of.createAnyInValueSet()
                         .withCodes(left)
@@ -1030,7 +1030,7 @@ public class LibraryBuilder {
                 || (isCompatibleWith("1.5")
                         && right.getResultType().isCompatibleWith(resolveTypeName("System", "CodeSystem"))
                         && !right.getResultType().equals(resolveTypeName("System", "Any"))
-                        && !(right.getResultType() instanceof WildcardType))) {
+                        && !right.getResultType().isWildcard())) {
             if (left.getResultType() instanceof ListType) {
                 AnyInCodeSystem anyIn = of.createAnyInCodeSystem()
                         .withCodes(left)
@@ -1322,7 +1322,7 @@ public class LibraryBuilder {
                     invocation.getExpression());
         }
 
-        invocation.setResultType(resolution.getOperator().getResultType());
+        invocation.setResultType(resolution.getInvocationResultType());
         if (resolution.getLibraryIdentifier() != null) {
             resolution.setLibraryName(resolveIncludeAlias(resolution.getLibraryIdentifier()));
         }
@@ -1481,6 +1481,12 @@ public class LibraryBuilder {
         fun = (FunctionRef) resolveCall(
                 fun.getLibraryName(), fun.getName(), invocation, false, allowPromotionAndDemotion, allowFluent);
         if (fun != null) {
+            // If this is a system function, re-resolve with the system function resolver so it gets the
+            // correct ELM output
+            // In doing so, the inferred wildcard type will be wiped out though because the invocation
+            // signature has already been resolved (and so no longer contains a wildcard)
+            // In this case, we preserve the invocation result type from the resolution and use it
+            DataType invocationResultType = invocation.getResolution().getInvocationResultType();
             if ("System".equals(invocation.getResolution().getOperator().getLibraryName())) {
                 FunctionRef systemFun = buildFunctionRef(
                         libraryName,
@@ -1489,6 +1495,8 @@ public class LibraryBuilder {
                 // conversions in place
                 Invocation systemFunctionInvocation = systemFunctionResolver.resolveSystemFunction(systemFun);
                 if (systemFunctionInvocation != null) {
+                    systemFunctionInvocation.getResolution().setInvocationResultType(invocationResultType);
+                    systemFunctionInvocation.setResultType(invocationResultType);
                     return systemFunctionInvocation;
                 }
             } else {
@@ -1690,6 +1698,22 @@ public class LibraryBuilder {
                 .withResultType(toType);
     }
 
+    public Expression resolveAs(Expression expression, DataType asType) {
+        // In the special case that we are casting a wildcard to another wildcard or Any,
+        // the cast is a no-op, just set the result type to the as type
+        if (expression.getResultType() != null && expression.getResultType().isWildcard()) {
+            if (asType.isWildcard() || asType.equals(resolveTypeName("System.Any"))) {
+                expression.setResultType(asType);
+                // Given we are setting result type, make sure the specifiers are consistent
+                expression.setResultTypeName(dataTypeToQName(resolveTypeName("System.Any")));
+                expression.setResultTypeSpecifier(null);
+                return expression;
+            }
+        }
+
+        return buildAs(expression, asType);
+    }
+
     public As buildAs(Expression expression, DataType asType) {
         As result = (As) of.createAs().withOperand(expression).withResultType(asType);
         if (result.getResultType() instanceof NamedType) {
@@ -1774,8 +1798,11 @@ public class LibraryBuilder {
                 // Otherwise, the choice is narrowing and a run-time As is required (to use only the expected target
                 // types)
             }
-            As castedOperand = buildAs(expression, conversion.getToType());
-            return collapseTypeCase(castedOperand);
+            Expression castedOperand = resolveAs(expression, conversion.getToType());
+            if (castedOperand instanceof As) {
+                return collapseTypeCase((As) castedOperand);
+            }
+            return castedOperand;
         } else if (conversion.isCast()
                 && conversion.getConversion() != null
                 && (conversion
@@ -1784,7 +1811,8 @@ public class LibraryBuilder {
                         || conversion
                                 .getFromType()
                                 .isCompatibleWith(conversion.getConversion().getFromType()))) {
-            As castedOperand = buildAs(expression, conversion.getConversion().getFromType());
+            Expression castedOperand =
+                    resolveAs(expression, conversion.getConversion().getFromType());
 
             Expression result = convertExpression(castedOperand, conversion.getConversion());
 
@@ -1798,7 +1826,8 @@ public class LibraryBuilder {
                 for (Conversion alternative : conversion.getAlternativeConversions()) {
                     caseResult.withCaseItem(of.createCaseItem()
                             .withWhen(buildIs(expression, alternative.getFromType()))
-                            .withThen(convertExpression(buildAs(expression, alternative.getFromType()), alternative)));
+                            .withThen(
+                                    convertExpression(resolveAs(expression, alternative.getFromType()), alternative)));
                 }
 
                 caseResult.withElse(buildNull(result.getResultType()));
@@ -1992,6 +2021,10 @@ public class LibraryBuilder {
             return of.createNull();
         }
 
+        if (targetType.isWildcard()) {
+            return expression;
+        }
+
         if (!targetType.isSuperTypeOf(expression.getResultType())) {
             return convertExpression(expression, targetType, true);
         }
@@ -2002,6 +2035,10 @@ public class LibraryBuilder {
     public Expression enforceCompatible(Expression expression, DataType targetType) {
         if (targetType == null) {
             return of.createNull();
+        }
+
+        if (targetType.isWildcard()) {
+            return expression;
         }
 
         if (!targetType.isSuperTypeOf(expression.getResultType())) {

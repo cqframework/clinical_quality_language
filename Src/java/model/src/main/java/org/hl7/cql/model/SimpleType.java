@@ -71,8 +71,6 @@ public class SimpleType extends DataType implements NamedType {
     @Override
     public boolean isCompatibleWith(DataType other) {
         return super.isCompatibleWith(other);
-        // The system type "Any" can be implicitly cast to any other type.
-        // return this.equals(DataType.ANY) || super.isCompatibleWith(other);
     }
 
     @Override
@@ -82,8 +80,8 @@ public class SimpleType extends DataType implements NamedType {
 
     @Override
     public boolean isInstantiable(DataType callType, InstantiationContext context) {
-        if (callType instanceof WildcardType) {
-            context.matchWildcard(((WildcardType) callType), this);
+        if (callType.isWildcard()) {
+            context.matchWildcard(callType, this);
             callType = this;
         }
 

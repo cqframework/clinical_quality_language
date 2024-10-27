@@ -439,7 +439,7 @@ public class SystemFunctionResolver {
             round.setPrecision(fun.getOperand().get(1));
         }
         RoundInvocation invocation = new RoundInvocation(round);
-        builder.resolveInvocation("System", "Round", new RoundInvocation(round));
+        builder.resolveInvocation("System", "Round", invocation);
         return invocation;
     }
 
