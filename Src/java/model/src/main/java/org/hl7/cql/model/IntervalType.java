@@ -53,6 +53,18 @@ public class IntervalType extends DataType {
     }
 
     @Override
+    public boolean isCompatibleWith(DataType other) {
+        if (other instanceof IntervalType) {
+            IntervalType otherIntervalType = (IntervalType)other;
+            if (pointType.isCompatibleWith(otherIntervalType.pointType)) {
+                return true;
+            }
+        }
+
+        return super.isCompatibleWith(other);
+    }
+
+    @Override
     public String toString() {
         return String.format("interval<%s>", pointType.toString());
     }

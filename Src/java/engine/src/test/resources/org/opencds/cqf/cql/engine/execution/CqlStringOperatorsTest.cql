@@ -4,7 +4,7 @@ codesystem "LOINC": 'http://loinc.org'
 
 //Combine
 define CombineNull : Combine(null)
-define CombineEmptyList : Combine({})
+define CombineEmptyList : Combine({} as List<String>)
 define CombineABC : Combine({'a', 'b', 'c'})
 define CombineABCSepDash : Combine({'a', 'b', 'c'}, '-')
 

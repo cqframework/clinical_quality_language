@@ -53,6 +53,18 @@ public class ListType extends DataType {
     }
 
     @Override
+    public boolean isCompatibleWith(DataType other) {
+        if (other instanceof ListType) {
+            ListType otherListType = (ListType)other;
+            if (elementType.isCompatibleWith(otherListType.elementType)) {
+                return true;
+            }
+        }
+
+        return super.isCompatibleWith(other);
+    }
+
+    @Override
     public String toString() {
         return String.format("list<%s>", elementType.toString());
     }

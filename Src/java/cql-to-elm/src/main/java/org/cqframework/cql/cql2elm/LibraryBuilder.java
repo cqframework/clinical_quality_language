@@ -927,29 +927,70 @@ public class LibraryBuilder {
                     && !(leftListType.isCompatibleWith(rightListType)
                             || rightListType.isCompatibleWith(leftListType))) {
                 Set<DataType> elementTypes = new HashSet<DataType>();
+                DataType wildcardType = null;
                 if (leftListType.getElementType() instanceof ChoiceType) {
                     for (DataType choice : ((ChoiceType) leftListType.getElementType()).getTypes()) {
-                        elementTypes.add(choice);
+                        if (choice.isWildcard()) {
+                            if (wildcardType == null) {
+                                wildcardType = choice;
+                            }
+                        } else {
+                            elementTypes.add(choice);
+                        }
                     }
                 } else {
-                    elementTypes.add(leftListType.getElementType());
+                    if (leftListType.getElementType().isWildcard()) {
+                        if (wildcardType == null) {
+                            wildcardType = leftListType.getElementType();
+                        }
+                    } else {
+                        elementTypes.add(leftListType.getElementType());
+                    }
                 }
 
                 if (rightListType.getElementType() instanceof ChoiceType) {
                     for (DataType choice : ((ChoiceType) rightListType.getElementType()).getTypes()) {
-                        elementTypes.add(choice);
+                        if (choice.isWildcard()) {
+                            if (wildcardType == null) {
+                                wildcardType = choice;
+                            }
+                        } else {
+                            elementTypes.add(choice);
+                        }
                     }
                 } else {
-                    elementTypes.add(rightListType.getElementType());
+                    if (rightListType.getElementType().isWildcard()) {
+                        if (wildcardType == null) {
+                            wildcardType = rightListType.getElementType();
+                        }
+                    } else {
+                        elementTypes.add(rightListType.getElementType());
+                    }
+                }
+
+                boolean needsCast = false;
+                if (elementTypes.size() == 0 && wildcardType != null) {
+                    elementTypes.add(wildcardType);
+                    needsCast = true;
                 }
 
                 if (elementTypes.size() > 1) {
-                    ListType targetType = new ListType(new ChoiceType(elementTypes));
-                    left = of.createAs().withOperand(left).withAsTypeSpecifier(dataTypeToTypeSpecifier(targetType));
-                    left.setResultType(targetType);
+                    needsCast = true;
+                }
 
-                    right = of.createAs().withOperand(right).withAsTypeSpecifier(dataTypeToTypeSpecifier(targetType));
-                    right.setResultType(targetType);
+                if (needsCast) {
+                    DataType targetElementType
+                            = elementTypes.size() > 1 ? new ChoiceType(elementTypes) : elementTypes.iterator().next();
+                    ListType targetType = new ListType(targetElementType);
+                    if (!left.getResultType().equals(targetType)) {
+                        left = of.createAs().withOperand(left).withAsTypeSpecifier(dataTypeToTypeSpecifier(targetType));
+                        left.setResultType(targetType);
+                    }
+
+                    if (!right.getResultType().equals(targetType)) {
+                        right = of.createAs().withOperand(right).withAsTypeSpecifier(dataTypeToTypeSpecifier(targetType));
+                        right.setResultType(targetType);
+                    }
                 }
             }
         }
@@ -1467,6 +1508,21 @@ public class LibraryBuilder {
         return fun;
     }
 
+    private Signature preserveSignature(Iterable<Expression> params) {
+        List<DataType> dataTypes = new ArrayList<DataType>();
+        for (Expression param : params) {
+            dataTypes.add(param.getResultType());
+        }
+        return new Signature(dataTypes.toArray(new DataType[dataTypes.size()]));
+    }
+
+    private void restoreSignature(Iterable<Expression> params, Signature preservedSignature) {
+        Iterator<DataType> operandTypes = preservedSignature.getOperandTypes().iterator();
+        for (Expression param : params) {
+            param.setResultType(operandTypes.next());
+        }
+    }
+
     public Invocation resolveFunction(
             String libraryName,
             String functionName,
@@ -1478,6 +1534,7 @@ public class LibraryBuilder {
 
         // Attempt normal resolution, but don't require one
         Invocation invocation = new FunctionRefInvocation(fun);
+        Signature preservedSignature = preserveSignature(paramList);
         fun = (FunctionRef) resolveCall(
                 fun.getLibraryName(), fun.getName(), invocation, false, allowPromotionAndDemotion, allowFluent);
         if (fun != null) {
@@ -1488,16 +1545,23 @@ public class LibraryBuilder {
             // In this case, we preserve the invocation result type from the resolution and use it
             DataType invocationResultType = invocation.getResolution().getInvocationResultType();
             if ("System".equals(invocation.getResolution().getOperator().getLibraryName())) {
+                // Save the resolvedSignature so it can be restored in case the system function call does not resolve
+                Signature resolvedSignature = preserveSignature(paramList);
+                // Rebuild the fun from the original arguments, restoring the original signature,
+                // otherwise it will resolve with conversions in place
+                restoreSignature(paramList, preservedSignature);
                 FunctionRef systemFun = buildFunctionRef(
                         libraryName,
                         functionName,
-                        paramList); // Rebuild the fun from the original arguments, otherwise it will resolve with
-                // conversions in place
+                        paramList);
                 Invocation systemFunctionInvocation = systemFunctionResolver.resolveSystemFunction(systemFun);
                 if (systemFunctionInvocation != null) {
                     systemFunctionInvocation.getResolution().setInvocationResultType(invocationResultType);
                     systemFunctionInvocation.setResultType(invocationResultType);
                     return systemFunctionInvocation;
+                } else {
+                    // Restore the originally resolved signature
+                    restoreSignature(paramList, resolvedSignature);
                 }
             } else {
                 // If the invocation is to a local function or a function in a non-system library, check literal context

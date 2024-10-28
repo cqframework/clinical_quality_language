@@ -760,8 +760,10 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         }
 
         if (elementType == null) {
+            // In FHIRPath, the empty list is equivalent to null (i.e. { } is how you spell null in FHIRPath)
             elementType =
-                    inferredElementType == null ? libraryBuilder.resolveTypeName("System", "Any") : inferredElementType;
+                    inferredElementType == null ? libraryBuilder.buildWildcardType() : inferredElementType;
+                    //inferredElementType == null ? libraryBuilder.resolveTypeName("System", "Any") : inferredElementType;
         }
 
         for (Expression element : elements) {
