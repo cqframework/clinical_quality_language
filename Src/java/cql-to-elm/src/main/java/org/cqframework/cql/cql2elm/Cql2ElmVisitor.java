@@ -728,6 +728,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
         DataType elementType = elementTypeSpecifier != null ? elementTypeSpecifier.getResultType() : null;
         DataType inferredElementType = null;
+        DataType initialInferredElementType = null;
 
         List<Expression> elements = new ArrayList<>();
         for (cqlParser.ExpressionContext elementContext : ctx.expression()) {
@@ -736,12 +737,19 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
             if (elementType != null) {
                 libraryBuilder.verifyType(element.getResultType(), elementType);
             } else {
-                if (inferredElementType == null) {
-                    inferredElementType = element.getResultType();
+                if (initialInferredElementType == null) {
+                    initialInferredElementType = element.getResultType();
+                    inferredElementType = initialInferredElementType;
                 } else {
+                    // Once a list type is inferred as Any, keep it that way
+                    // The only potential exception to this is if the element responsible for the inferred type of Any
+                    // is a null
                     DataType compatibleType =
                             libraryBuilder.findCompatibleType(inferredElementType, element.getResultType());
-                    if (compatibleType != null) {
+                    if (compatibleType != null
+                            && (!inferredElementType.equals(libraryBuilder.resolveTypeName("System", "Any"))
+                                    || initialInferredElementType.equals(
+                                            libraryBuilder.resolveTypeName("System", "Any")))) {
                         inferredElementType = compatibleType;
                     } else {
                         inferredElementType = libraryBuilder.resolveTypeName("System", "Any");

@@ -41,17 +41,50 @@ public class OperatorEntry {
             return operator.getSignature();
         }
 
+        /*
+        The invocation signature is the call signature with arguments of type Any set to the operand types
+         */
+        private Signature getInvocationSignature(Signature callSignature, Signature operatorSignature) {
+            if (callSignature.getSize() == operatorSignature.getSize()) {
+                DataType[] invocationTypes = new DataType[callSignature.getSize()];
+                Iterator<DataType> callTypes = callSignature.getOperandTypes().iterator();
+                Iterator<DataType> operatorTypes =
+                        operatorSignature.getOperandTypes().iterator();
+                boolean isResolved = false;
+                for (int i = 0; i < invocationTypes.length; i++) {
+                    DataType callType = callTypes.next();
+                    DataType operatorType = operatorTypes.next();
+                    if (callType.equals(DataType.ANY) && !operatorType.equals(DataType.ANY)) {
+                        isResolved = true;
+                        invocationTypes[i] = operatorType;
+                    } else {
+                        invocationTypes[i] = callType;
+                    }
+                }
+                if (isResolved) {
+                    return new Signature(invocationTypes);
+                }
+            }
+            return callSignature;
+        }
+
         public List<OperatorResolution> resolve(
                 CallContext callContext, ConversionMap conversionMap, OperatorMap operatorMap) {
             List<OperatorResolution> results = null;
-            if (operator.getSignature().equals(callContext.getSignature())) {
+            Signature invocationSignature = getInvocationSignature(callContext.getSignature(), operator.getSignature());
+
+            // Attempt exact match against this signature
+            if (operator.getSignature().equals(invocationSignature)) {
                 results = new ArrayList<>();
                 results.add(new OperatorResolution(operator));
                 return results;
             }
 
+            // Attempt to resolve against sub signatures
             results = subSignatures.resolve(callContext, conversionMap, operatorMap);
-            if (results == null && operator.getSignature().isSuperTypeOf(callContext.getSignature())) {
+
+            // If no subsignatures match, attempt subType match against this signature
+            if (results == null && operator.getSignature().isSuperTypeOf(invocationSignature)) {
                 results = new ArrayList<>();
                 results.add(new OperatorResolution(operator));
             }
@@ -277,60 +310,42 @@ public class OperatorEntry {
             throw new IllegalArgumentException("callContext is null");
         }
 
-        List<OperatorResolution> results = signatures.resolve(callContext, conversionMap, operatorMap);
-
-        // If there is no resolution, or all resolutions require conversion, attempt to instantiate a generic signature
-        if (results == null || allResultsUseConversion(results)) {
-            // If the callContext signature contains choices, attempt instantiation with all possible combinations of
-            // the call signature (ouch, this could really hurt...)
-            boolean signaturesInstantiated = false;
-            List<Signature> callSignatures = expandChoices(callContext.getSignature());
-            for (Signature callSignature : callSignatures) {
-                Operator result = instantiate(
-                        callSignature, operatorMap, conversionMap, callContext.getAllowPromotionAndDemotion());
-                if (result != null && !signatures.contains(result)) {
-                    // If the generic signature was instantiated, store it as an actual signature.
-                    signatures.add(new SignatureNode(result));
-                    signaturesInstantiated = true;
+        // Attempt to instantiate any generic signatures
+        // If the callContext signature contains choices, attempt instantiation with all possible combinations of
+        // the call signature (ouch, this could really hurt...)
+        boolean signaturesInstantiated = false;
+        List<Signature> callSignatures = expandChoices(callContext.getSignature());
+        for (Signature callSignature : callSignatures) {
+            List<Operator> instantiations =
+                    instantiate(callSignature, operatorMap, conversionMap, callContext.getAllowPromotionAndDemotion());
+            for (Operator instantiation : instantiations) {
+                // If the generic signature was instantiated, store it as an actual signature.
+                if (!signatures.contains(instantiation)) {
+                    signatures.add(new SignatureNode(instantiation));
                 }
             }
-
-            // re-attempt the resolution with the instantiated signature registered
-            if (signaturesInstantiated) {
-                results = signatures.resolve(callContext, conversionMap, operatorMap);
-            }
         }
+
+        List<OperatorResolution> results = signatures.resolve(callContext, conversionMap, operatorMap);
 
         return results;
     }
 
-    private Operator instantiate(
+    private List<Operator> instantiate(
             Signature signature,
             OperatorMap operatorMap,
             ConversionMap conversionMap,
             boolean allowPromotionAndDemotion) {
         List<Operator> instantiations = new ArrayList<Operator>();
-        int lowestConversionScore = Integer.MAX_VALUE;
-        Operator instantiation = null;
+
         for (GenericOperator genericOperator : genericOperators.values()) {
             InstantiationResult instantiationResult =
                     genericOperator.instantiate(signature, operatorMap, conversionMap, allowPromotionAndDemotion);
             if (instantiationResult.getOperator() != null) {
-                if (instantiationResult.getConversionScore() <= lowestConversionScore) {
-                    if (instantiation == null || instantiationResult.getConversionScore() < lowestConversionScore) {
-                        instantiation = instantiationResult.getOperator();
-                        lowestConversionScore = instantiationResult.getConversionScore();
-                    } else {
-                        throw new IllegalArgumentException(String.format(
-                                "Ambiguous generic instantiation of operator %s between signature %s and %s.",
-                                this.name,
-                                instantiation.getSignature().toString(),
-                                instantiationResult.getOperator().getSignature().toString()));
-                    }
-                }
+                instantiations.add(instantiationResult.getOperator());
             }
         }
 
-        return instantiation;
+        return instantiations;
     }
 }

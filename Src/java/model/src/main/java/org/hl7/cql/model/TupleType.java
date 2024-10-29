@@ -164,6 +164,10 @@ public class TupleType extends DataType {
 
     @Override
     public boolean isInstantiable(DataType callType, InstantiationContext context) {
+        if (callType.equals(DataType.ANY)) {
+            return true;
+        }
+
         if (callType instanceof TupleType) {
             TupleType tupleType = (TupleType) callType;
             if (elements.size() == tupleType.elements.size()) {

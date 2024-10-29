@@ -62,9 +62,9 @@ public class GenericOperator extends Operator {
                     getResultType().instantiate(context));
             result.setAccessLevel(getAccessLevel());
             result.setLibraryName(getLibraryName());
-            return new InstantiationResult(this, result, context.getConversionScore());
+            return new InstantiationResult(this, result, typeMap, context.getConversionScore());
         }
 
-        return new InstantiationResult(this, null, context.getConversionScore());
+        return new InstantiationResult(this, null, null, context.getConversionScore());
     }
 }
