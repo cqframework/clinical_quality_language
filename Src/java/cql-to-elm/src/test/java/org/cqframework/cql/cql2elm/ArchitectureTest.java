@@ -4,6 +4,7 @@ import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.constructors;
 
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
+import com.tngtech.archunit.core.importer.ImportOption;
 import org.cqframework.cql.cql2elm.model.LibraryRef;
 import org.cqframework.cql.elm.IdObjectFactory;
 import org.hl7.elm.r1.Element;
@@ -14,7 +15,9 @@ class ArchitectureTest {
     @Test
     void ensureNoDirectElmConstruction() {
 
-        JavaClasses importedClasses = new ClassFileImporter().importPackages("org.cqframework.cql");
+        JavaClasses importedClasses = new ClassFileImporter()
+                .withImportOption(new ImportOption.DoNotIncludeTests())
+                .importPackages("org.cqframework.cql");
 
         constructors()
                 .that()

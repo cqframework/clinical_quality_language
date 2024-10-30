@@ -9,7 +9,7 @@ import org.hl7.fhir.convertors.advisors.impl.BaseAdvisor_40_50;
 import org.hl7.fhir.convertors.conv30_50.VersionConvertor_30_50;
 import org.hl7.fhir.convertors.conv40_50.VersionConvertor_40_50;
 import org.hl7.fhir.exceptions.FHIRException;
-import org.hl7.fhir.r5.context.IWorkerContext;
+import org.hl7.fhir.r5.context.ILoggingService;
 import org.hl7.fhir.r5.elementmodel.Manager;
 import org.hl7.fhir.r5.model.ImplementationGuide;
 import org.hl7.fhir.utilities.IniFile;
@@ -19,9 +19,9 @@ import org.hl7.fhir.utilities.VersionUtilities;
 
 public class IGContext {
 
-    private IWorkerContext.ILoggingService logger;
+    private ILoggingService logger;
 
-    public IWorkerContext.ILoggingService getLogger() {
+    public ILoggingService getLogger() {
         return logger;
     }
 
@@ -65,7 +65,7 @@ public class IGContext {
         this.binaryPaths = binaryPaths;
     }
 
-    public IGContext(IWorkerContext.ILoggingService logger) {
+    public IGContext(ILoggingService logger) {
         this.logger = logger;
     }
 
@@ -113,16 +113,17 @@ public class IGContext {
      * Initializes from an ig.ini file in the root directory
      */
     public void initializeFromIni(String iniFile) {
-        IniFile ini = new IniFile(new File(iniFile).getAbsolutePath());
-        String rootDir = Utilities.getDirectoryForFile(ini.getFileName());
-        String igPath = ini.getStringProperty("IG", "ig");
-        String specifiedFhirVersion = ini.getStringProperty("IG", "fhir-version");
-        if (specifiedFhirVersion == null || specifiedFhirVersion == "") {
-            logMessage("fhir-version was not specified in the ini file. Trying FHIR version 4.0.1");
-            specifiedFhirVersion = "4.0.1";
-        }
         try {
-            initializeFromIg(rootDir, igPath, specifiedFhirVersion);
+            IniFile ini = new IniFile(new File(iniFile).getAbsolutePath());
+            String iniDir = Utilities.getDirectoryForFile(ini.getFileName());
+            String igPath = ini.getStringProperty("IG", "ig");
+            String specifiedFhirVersion = ini.getStringProperty("IG", "fhir-version");
+            if (specifiedFhirVersion == null || specifiedFhirVersion == "") {
+                logMessage("fhir-version was not specified in the ini file. Trying FHIR version 4.0.1");
+                specifiedFhirVersion = "4.0.1";
+            }
+
+            initializeFromIg(iniDir, igPath, specifiedFhirVersion);
         } catch (Exception e) {
             String message = String.format(
                     "Exceptions occurred initializing refresh from ini file '%s':%s", iniFile, e.getMessage());

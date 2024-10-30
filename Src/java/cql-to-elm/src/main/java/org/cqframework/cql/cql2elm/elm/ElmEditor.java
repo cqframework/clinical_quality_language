@@ -10,27 +10,31 @@ import org.hl7.elm.r1.Library;
 
 public class ElmEditor {
 
-    private final List<ElmEdit> edits;
-    private final FunctionalElmVisitor<Void, List<ElmEdit>> visitor;
+    private final List<IElmEdit> edits;
+    private final FunctionalElmVisitor<Trackable, Void> visitor;
 
-    public ElmEditor(List<ElmEdit> edits) {
+    public ElmEditor(List<IElmEdit> edits) {
         this.edits = Objects.requireNonNull(edits);
-        this.visitor = Visitors.from(ElmEditor::applyEdits);
+        this.visitor = Visitors.from((elm, context) -> elm, this::aggregateResults);
     }
 
     public void edit(Library library) {
-        this.visitor.visitLibrary(library, edits);
+        this.visitor.visitLibrary(library, null);
+
+        // This is needed because aggregateResults is not called on the library itself.
+        this.applyEdits(library);
     }
 
-    protected static Void applyEdits(Trackable trackable, List<ElmEdit> edits) {
-        if (!(trackable instanceof Element)) {
-            return null;
-        }
+    protected Trackable aggregateResults(Trackable aggregate, Trackable nextResult) {
+        applyEdits(nextResult);
+        return aggregate;
+    }
 
-        for (ElmEdit edit : edits) {
-            edit.edit((Element) trackable);
+    protected void applyEdits(Trackable trackable) {
+        if (trackable instanceof Element) {
+            for (IElmEdit edit : edits) {
+                edit.edit((Element) trackable);
+            }
         }
-
-        return null;
     }
 }

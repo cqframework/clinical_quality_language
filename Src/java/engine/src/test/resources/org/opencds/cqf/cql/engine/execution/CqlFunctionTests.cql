@@ -22,4 +22,7 @@ define FunctionTestNullTupleArg: f3(Tuple { y: null as Integer })
 
 define function f3(x Quantity): x.unit
 define FunctionTestQuantityArg: f3(12'cm')
+
+// Here the call to f3 can only be unambiguously resolved at runtime
+// if the library is compiled with signature level set to Overloads or All
 define FunctionTestNullQuantityArg: f3(null as Quantity)

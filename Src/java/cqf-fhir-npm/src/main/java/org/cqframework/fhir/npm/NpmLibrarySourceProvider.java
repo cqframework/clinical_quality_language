@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.util.List;
 import org.cqframework.cql.cql2elm.LibrarySourceProvider;
 import org.hl7.elm.r1.VersionedIdentifier;
-import org.hl7.fhir.r5.context.IWorkerContext;
+import org.hl7.fhir.r5.context.ILoggingService;
 import org.hl7.fhir.r5.model.Library;
 import org.hl7.fhir.utilities.npm.NpmPackage;
 
@@ -15,8 +15,7 @@ import org.hl7.fhir.utilities.npm.NpmPackage;
  */
 public class NpmLibrarySourceProvider implements LibrarySourceProvider {
 
-    public NpmLibrarySourceProvider(
-            List<NpmPackage> packages, ILibraryReader reader, IWorkerContext.ILoggingService logger) {
+    public NpmLibrarySourceProvider(List<NpmPackage> packages, ILibraryReader reader, ILoggingService logger) {
         this.packages = packages;
         this.reader = reader;
         this.logger = logger;
@@ -24,7 +23,7 @@ public class NpmLibrarySourceProvider implements LibrarySourceProvider {
 
     private List<NpmPackage> packages;
     private ILibraryReader reader;
-    private IWorkerContext.ILoggingService logger;
+    private ILoggingService logger;
 
     @Override
     public InputStream getLibrarySource(VersionedIdentifier identifier) {
@@ -59,7 +58,7 @@ public class NpmLibrarySourceProvider implements LibrarySourceProvider {
                 }
             } catch (IOException e) {
                 logger.logDebugMessage(
-                        IWorkerContext.ILoggingService.LogCategory.PROGRESS,
+                        ILoggingService.LogCategory.PROGRESS,
                         String.format(
                                 "Exceptions occurred attempting to load npm library source for %s",
                                 identifier.toString()));
