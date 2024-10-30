@@ -164,7 +164,13 @@ public class TupleType extends DataType {
 
     @Override
     public boolean isInstantiable(DataType callType, InstantiationContext context) {
+        // Call isInstantiable recursively to make sure that type parameters (if present) are bound
         if (callType.equals(DataType.ANY)) {
+            for (var element : elements) {
+                if (!element.getType().isInstantiable(callType, context)) {
+                    return false;
+                }
+            }
             return true;
         }
 
