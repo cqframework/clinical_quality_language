@@ -68,6 +68,24 @@ public class OperatorEntry {
             return callSignature;
         }
 
+        private OperatorResolution getOperatorResolution(
+                Operator operator,
+                Signature callSignature,
+                Signature invocationSignature,
+                ConversionMap conversionMap,
+                OperatorMap operatorMap,
+                boolean allowPromotionAndDemotion,
+                boolean requireConversions) {
+            Conversion[] conversions = getConversions(
+                    callSignature, operator.getSignature(), conversionMap, operatorMap, allowPromotionAndDemotion);
+            OperatorResolution result = new OperatorResolution(
+                    operator, conversions);
+            if (requireConversions && conversions == null) {
+                return null;
+            }
+            return result;
+        }
+
         public List<OperatorResolution> resolve(
                 CallContext callContext, ConversionMap conversionMap, OperatorMap operatorMap) {
             List<OperatorResolution> results = null;
@@ -75,9 +93,19 @@ public class OperatorEntry {
 
             // Attempt exact match against this signature
             if (operator.getSignature().equals(invocationSignature)) {
-                results = new ArrayList<>();
-                results.add(new OperatorResolution(operator));
-                return results;
+                OperatorResolution result = getOperatorResolution(
+                        operator,
+                        callContext.getSignature(),
+                        invocationSignature,
+                        conversionMap,
+                        operatorMap,
+                        callContext.getAllowPromotionAndDemotion(),
+                        false);
+                if (result != null) {
+                    results = new ArrayList<>();
+                    results.add(result);
+                    return results;
+                }
             }
 
             // Attempt to resolve against sub signatures
@@ -85,31 +113,63 @@ public class OperatorEntry {
 
             // If no subsignatures match, attempt subType match against this signature
             if (results == null && operator.getSignature().isSuperTypeOf(invocationSignature)) {
-                results = new ArrayList<>();
-                results.add(new OperatorResolution(operator));
+                OperatorResolution result = getOperatorResolution(
+                        operator,
+                        callContext.getSignature(),
+                        invocationSignature,
+                        conversionMap,
+                        operatorMap,
+                        callContext.getAllowPromotionAndDemotion(),
+                        false);
+                if (result != null) {
+                    results = new ArrayList<>();
+                    results.add(result);
+                    return results;
+                }
             }
 
             if (results == null && conversionMap != null) {
                 // Attempt to find a conversion path from the call signature to the target signature
-                Conversion[] conversions =
-                        new Conversion[operator.getSignature().getSize()];
-                boolean isConvertible = callContext
-                        .getSignature()
-                        .isConvertibleTo(
-                                operator.getSignature(),
-                                conversionMap,
-                                operatorMap,
-                                callContext.getAllowPromotionAndDemotion(),
-                                conversions);
-                if (isConvertible) {
-                    OperatorResolution resolution = new OperatorResolution(operator);
-                    resolution.setConversions(conversions);
-                    results = new ArrayList<>();
-                    results.add(resolution);
+                OperatorResolution result = getOperatorResolution(
+                        operator,
+                        callContext.getSignature(),
+                        invocationSignature,
+                        conversionMap,
+                        operatorMap,
+                        callContext.getAllowPromotionAndDemotion(),
+                        true);
+                if (result != null) {
+                    if (results == null) {
+                        results = new ArrayList<>();
+                    }
+                    results.add(result);
                 }
             }
 
             return results;
+        }
+
+        private Conversion[] getConversions(
+                Signature callSignature,
+                Signature operatorSignature,
+                ConversionMap conversionMap,
+                OperatorMap operatorMap,
+                boolean allowPromotionAndDemotion) {
+            if (callSignature == null
+                    || operatorSignature == null
+                    || callSignature.getSize() != operatorSignature.getSize()) {
+                return null;
+            }
+
+            Conversion[] conversions = new Conversion[callSignature.getSize()];
+            boolean isConvertible = callSignature.isConvertibleTo(
+                    operatorSignature, conversionMap, operatorMap, allowPromotionAndDemotion, conversions);
+
+            if (isConvertible) {
+                return conversions;
+            }
+
+            return null;
         }
 
         private SignatureNodes subSignatures = new SignatureNodes();

@@ -1098,12 +1098,48 @@ public class LibraryBuilder {
         return resolveBinaryInvocation("System", "ProperContains", properContains);
     }
 
+    private int getTypeScore(OperatorResolution resolution) {
+        int typeScore = ConversionMap.ConversionScore.ExactMatch.score();
+        for (DataType operand :
+                resolution.getOperator().getSignature().getOperandTypes()) {
+            typeScore += ConversionMap.getTypePrecedenceScore(operand);
+        }
+
+        return typeScore;
+    }
+
     private Expression lowestScoringInvocation(Invocation primary, Invocation secondary) {
         if (primary != null) {
             if (secondary != null) {
                 if (secondary.getResolution().getScore()
                         < primary.getResolution().getScore()) {
                     return secondary.getExpression();
+                } else if (primary.getResolution().getScore() < secondary.getResolution().getScore()) {
+                    return primary.getExpression();
+                }
+                if (primary.getResolution().getScore() == secondary.getResolution().getScore()) {
+                    int primaryTypeScore = getTypeScore(primary.getResolution());
+                    int secondaryTypeScore = getTypeScore(secondary.getResolution());
+
+                    if (secondaryTypeScore < primaryTypeScore) {
+                        return secondary.getExpression();
+                    } else if (primaryTypeScore < secondaryTypeScore) {
+                        return primary.getExpression();
+                    } else {
+                        // ERROR:
+                        StringBuilder message = new StringBuilder("Call to operator ")
+                                .append(primary.getResolution().getOperator().getName())
+                                .append("/")
+                                .append(secondary.getResolution().getOperator().getName())
+                                .append(" is ambiguous with: ")
+                                .append("\n  - ")
+                                .append(primary.getResolution().getOperator().getName())
+                                .append(primary.getResolution().getOperator().getSignature())
+                                .append("\n  - ")
+                                .append(secondary.getResolution().getOperator().getName())
+                                .append(secondary.getResolution().getOperator().getSignature());
+                        throw new IllegalArgumentException(message.toString());
+                    }
                 }
             }
 
