@@ -1100,8 +1100,7 @@ public class LibraryBuilder {
 
     private int getTypeScore(OperatorResolution resolution) {
         int typeScore = ConversionMap.ConversionScore.ExactMatch.score();
-        for (DataType operand :
-                resolution.getOperator().getSignature().getOperandTypes()) {
+        for (DataType operand : resolution.getOperator().getSignature().getOperandTypes()) {
             typeScore += ConversionMap.getTypePrecedenceScore(operand);
         }
 
@@ -1114,10 +1113,12 @@ public class LibraryBuilder {
                 if (secondary.getResolution().getScore()
                         < primary.getResolution().getScore()) {
                     return secondary.getExpression();
-                } else if (primary.getResolution().getScore() < secondary.getResolution().getScore()) {
+                } else if (primary.getResolution().getScore()
+                        < secondary.getResolution().getScore()) {
                     return primary.getExpression();
                 }
-                if (primary.getResolution().getScore() == secondary.getResolution().getScore()) {
+                if (primary.getResolution().getScore()
+                        == secondary.getResolution().getScore()) {
                     int primaryTypeScore = getTypeScore(primary.getResolution());
                     int secondaryTypeScore = getTypeScore(secondary.getResolution());
 

@@ -734,6 +734,10 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         for (cqlParser.ExpressionContext elementContext : ctx.expression()) {
             Expression element = parseExpression(elementContext);
 
+            if (element == null) {
+                throw new RuntimeException("Element failed to parse");
+            }
+
             if (elementType != null) {
                 libraryBuilder.verifyType(element.getResultType(), elementType);
             } else {

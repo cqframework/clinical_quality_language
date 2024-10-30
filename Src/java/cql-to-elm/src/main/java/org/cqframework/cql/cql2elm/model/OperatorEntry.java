@@ -78,8 +78,7 @@ public class OperatorEntry {
                 boolean requireConversions) {
             Conversion[] conversions = getConversions(
                     callSignature, operator.getSignature(), conversionMap, operatorMap, allowPromotionAndDemotion);
-            OperatorResolution result = new OperatorResolution(
-                    operator, conversions);
+            OperatorResolution result = new OperatorResolution(operator, conversions);
             if (requireConversions && conversions == null) {
                 return null;
             }
