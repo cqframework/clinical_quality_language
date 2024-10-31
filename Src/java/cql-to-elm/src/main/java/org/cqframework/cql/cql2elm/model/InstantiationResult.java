@@ -11,7 +11,6 @@ public class InstantiationResult {
     public InstantiationResult(
             GenericOperator genericOperator,
             Operator operator,
-            Map<TypeParameter, DataType> typeMap,
             int conversionScore) {
         if (genericOperator == null) {
             throw new IllegalArgumentException("genericOperator is required");
@@ -19,7 +18,6 @@ public class InstantiationResult {
 
         this.genericOperator = genericOperator;
         this.operator = operator;
-        this.typeMap = typeMap;
         this.conversionScore = conversionScore;
     }
 
@@ -33,12 +31,6 @@ public class InstantiationResult {
 
     public Operator getOperator() {
         return operator;
-    }
-
-    private Map<TypeParameter, DataType> typeMap;
-
-    public Map<TypeParameter, DataType> getTypeMap() {
-        return typeMap;
     }
 
     private int conversionScore;
