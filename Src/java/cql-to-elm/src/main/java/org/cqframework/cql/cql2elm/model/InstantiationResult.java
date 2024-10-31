@@ -1,17 +1,10 @@
 package org.cqframework.cql.cql2elm.model;
 
-import java.util.Map;
-import org.hl7.cql.model.DataType;
-import org.hl7.cql.model.TypeParameter;
-
 /**
  * Created by Bryn on 12/22/2016.
  */
 public class InstantiationResult {
-    public InstantiationResult(
-            GenericOperator genericOperator,
-            Operator operator,
-            int conversionScore) {
+    public InstantiationResult(GenericOperator genericOperator, Operator operator, int conversionScore) {
         if (genericOperator == null) {
             throw new IllegalArgumentException("genericOperator is required");
         }
