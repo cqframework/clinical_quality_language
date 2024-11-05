@@ -7,8 +7,11 @@ import org.hl7.elm.r1.VersionedIdentifier;
 public class OperatorResolution {
     public OperatorResolution() {}
 
-    public OperatorResolution(Operator operator) {
+    public OperatorResolution(Operator operator, Conversion[] conversions) {
         this.operator = operator;
+        if (conversions != null) {
+            setConversions(conversions);
+        }
     }
 
     private Operator operator;
