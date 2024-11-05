@@ -382,11 +382,11 @@ public class SemanticTests {
 
     @Test
     void issue587() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("Issue587.cql", 1);
-        // This doesn't resolve correctly, collapse null should work, but it's related to this issue:
-        // [#435](https://github.com/cqframework/clinical_quality_language/issues/435)
-        // So keeping as a verification of current behavior here, will address as part of vNext
-        assertThat(translator.getErrors().size(), equalTo(1));
+        // Both `collapse null` and `collapse { null }` now translate with no errors (expectedErrors = 0).
+        // The old errors were related to [#435](https://github.com/cqframework/clinical_quality_language/issues/435)
+        // and fixed by [#1428](https://github.com/cqframework/clinical_quality_language/pull/1428) and
+        // [#1425](https://github.com/cqframework/clinical_quality_language/pull/1425).
+        TestUtils.runSemanticTest("Issue587.cql", 0);
     }
 
     @Test
