@@ -18,6 +18,7 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.cqframework.cql.cql2elm.elm.ElmEdit;
 import org.cqframework.cql.cql2elm.elm.ElmEditor;
+import org.cqframework.cql.cql2elm.elm.IElmEdit;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessor;
 import org.cqframework.cql.elm.IdObjectFactory;
@@ -234,7 +235,8 @@ public class CqlCompiler {
         var edits = allNonNull(
                 !options.contains(EnableAnnotations) ? ElmEdit.REMOVE_ANNOTATION : null,
                 !options.contains(EnableResultTypes) ? ElmEdit.REMOVE_RESULT_TYPE : null,
-                !options.contains(EnableLocators) ? ElmEdit.REMOVE_LOCATOR : null);
+                !options.contains(EnableLocators) ? ElmEdit.REMOVE_LOCATOR : null,
+                ElmEdit.REMOVE_CHOICE_TYPE_SPECIFIER_TYPE_IF_EMPTY);
 
         new ElmEditor(edits).edit(library);
 
@@ -248,7 +250,7 @@ public class CqlCompiler {
         return library;
     }
 
-    private List<ElmEdit> allNonNull(ElmEdit... ts) {
+    private List<IElmEdit> allNonNull(IElmEdit... ts) {
         return Arrays.stream(ts).filter(x -> x != null).collect(Collectors.toList());
     }
 }

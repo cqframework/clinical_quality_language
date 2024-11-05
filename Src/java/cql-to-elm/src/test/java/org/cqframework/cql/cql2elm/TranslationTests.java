@@ -17,6 +17,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.hamcrest.Matchers;
+import org.hl7.cql.model.IntervalType;
+import org.hl7.cql.model.SimpleType;
 import org.hl7.cql_annotations.r1.CqlToElmInfo;
 import org.hl7.elm.r1.*;
 import org.junit.jupiter.api.Disabled;
@@ -330,6 +332,81 @@ class TranslationTests {
     }
 
     @Test
+    void resolutionProperlyIncludesTests() throws IOException {
+        final CqlTranslator translator = TestUtils.runSemanticTest("ResolutionTests/ProperlyIncludesTests.cql", 0);
+        Library compiledLibrary = translator.getTranslatedLibrary().getLibrary();
+        List<ExpressionDef> statements = compiledLibrary.getStatements().getDef();
+
+        assertThat(statements.size(), equalTo(5));
+
+        ExpressionDef test = statements.get(0);
+        assertThat(test.getExpression(), instanceOf(ProperContains.class));
+        ProperContains properContains = (ProperContains) test.getExpression();
+        assertThat(properContains.getOperand().get(0), instanceOf(Interval.class));
+        Interval interval = (Interval) properContains.getOperand().get(0);
+        assertThat(interval.getResultType(), instanceOf(IntervalType.class));
+        IntervalType intervalType = (IntervalType) interval.getResultType();
+        assertThat(intervalType.getPointType(), instanceOf(SimpleType.class));
+        SimpleType pointType = (SimpleType) intervalType.getPointType();
+        assertThat(pointType.getName(), equalTo("System.Integer"));
+        assertThat(properContains.getOperand().get(1), instanceOf(As.class));
+        As _as = (As) properContains.getOperand().get(1);
+        assertThat(_as.getAsType().toString(), equalTo("{urn:hl7-org:elm-types:r1}Integer"));
+        assertThat(_as.getOperand(), instanceOf(Null.class));
+
+        test = statements.get(1);
+        assertThat(test.getExpression(), instanceOf(ProperContains.class));
+        properContains = (ProperContains) test.getExpression();
+        assertThat(properContains.getOperand().get(0), instanceOf(Interval.class));
+        interval = (Interval) properContains.getOperand().get(0);
+        assertThat(interval.getResultType(), instanceOf(IntervalType.class));
+        intervalType = (IntervalType) interval.getResultType();
+        assertThat(intervalType.getPointType(), instanceOf(SimpleType.class));
+        pointType = (SimpleType) intervalType.getPointType();
+        assertThat(pointType.getName(), equalTo("System.Integer"));
+        assertThat(properContains.getOperand().get(1), instanceOf(As.class));
+        _as = (As) properContains.getOperand().get(1);
+        assertThat(_as.getAsType().toString(), equalTo("{urn:hl7-org:elm-types:r1}Integer"));
+        assertThat(_as.getOperand(), instanceOf(Null.class));
+
+        test = statements.get(2);
+        assertThat(test.getExpression(), instanceOf(ProperContains.class));
+        properContains = (ProperContains) test.getExpression();
+        assertThat(properContains.getOperand().get(0), instanceOf(Interval.class));
+        interval = (Interval) properContains.getOperand().get(0);
+        assertThat(interval.getResultType(), instanceOf(IntervalType.class));
+        intervalType = (IntervalType) interval.getResultType();
+        assertThat(intervalType.getPointType(), instanceOf(SimpleType.class));
+        pointType = (SimpleType) intervalType.getPointType();
+        assertThat(pointType.getName(), equalTo("System.Any"));
+        assertThat(properContains.getOperand().get(1), instanceOf(Null.class));
+
+        test = statements.get(3);
+        assertThat(test.getExpression(), instanceOf(ProperContains.class));
+        properContains = (ProperContains) test.getExpression();
+        assertThat(properContains.getOperand().get(0), instanceOf(Interval.class));
+        interval = (Interval) properContains.getOperand().get(0);
+        assertThat(interval.getResultType(), instanceOf(IntervalType.class));
+        intervalType = (IntervalType) interval.getResultType();
+        assertThat(intervalType.getPointType(), instanceOf(SimpleType.class));
+        pointType = (SimpleType) intervalType.getPointType();
+        assertThat(pointType.getName(), equalTo("System.Any"));
+        assertThat(properContains.getOperand().get(1), instanceOf(Null.class));
+
+        test = statements.get(4);
+        assertThat(test.getExpression(), instanceOf(ProperContains.class));
+        properContains = (ProperContains) test.getExpression();
+        assertThat(properContains.getOperand().get(0), instanceOf(Interval.class));
+        interval = (Interval) properContains.getOperand().get(0);
+        assertThat(interval.getResultType(), instanceOf(IntervalType.class));
+        intervalType = (IntervalType) interval.getResultType();
+        assertThat(intervalType.getPointType(), instanceOf(SimpleType.class));
+        pointType = (SimpleType) intervalType.getPointType();
+        assertThat(pointType.getName(), equalTo("System.Integer"));
+        assertThat(properContains.getOperand().get(1), instanceOf(As.class));
+    }
+
+    @Test
     void hidingVariousUseCases() throws IOException {
         final CqlTranslator translator = TestUtils.runSemanticTest("HidingTests/TestHidingVariousUseCases.cql", 0);
         final List<CqlCompilerException> warnings = translator.getWarnings();
@@ -379,5 +456,15 @@ class TranslationTests {
                         hidingContextFhir,
                         hidingLetFhir,
                         hidingAliasLet));
+    }
+
+    @Test
+    void abstractClassNotRetrievable() throws IOException {
+        // See:  https://github.com/cqframework/clinical_quality_language/issues/1392
+        final CqlTranslator translator = TestUtils.runSemanticTest("abstractClassNotRetrievable.cql", 1);
+        final List<CqlCompilerException> errors = translator.getErrors();
+        final List<String> errorMessages =
+                errors.stream().map(Throwable::getMessage).collect(Collectors.toList());
+        assertThat(errorMessages, contains("Specified data type DomainResource does not support retrieval."));
     }
 }

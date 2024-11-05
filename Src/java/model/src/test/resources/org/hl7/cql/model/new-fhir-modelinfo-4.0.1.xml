@@ -3562,7 +3562,7 @@
    <typeInfo baseType="FHIR.Element" namespace="FHIR" name="DocumentRelationshipType" retrievable="false" xsi:type="ClassInfo">
       <element name="value" elementType="System.String"/>
    </typeInfo>
-   <typeInfo baseType="FHIR.Resource" namespace="FHIR" name="DomainResource" identifier="http://hl7.org/fhir/StructureDefinition/DomainResource" label="DomainResource" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo baseType="FHIR.Resource" namespace="FHIR" name="DomainResource" identifier="http://hl7.org/fhir/StructureDefinition/DomainResource" label="DomainResource" retrievable="false" xsi:type="ClassInfo">
       <element name="text" elementType="FHIR.Narrative"/>
       <element name="contained">
          <elementTypeSpecifier elementType="FHIR.Resource" xsi:type="ListTypeSpecifier"/>

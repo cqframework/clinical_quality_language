@@ -795,7 +795,7 @@ public class LibraryBuilder {
         }
     }
 
-    public Element resolve(String identifier) {
+    public ResolvedIdentifierContext resolve(String identifier) {
         return compiledLibrary.resolve(identifier);
     }
 
@@ -1098,12 +1098,49 @@ public class LibraryBuilder {
         return resolveBinaryInvocation("System", "ProperContains", properContains);
     }
 
+    private int getTypeScore(OperatorResolution resolution) {
+        int typeScore = ConversionMap.ConversionScore.ExactMatch.score();
+        for (DataType operand : resolution.getOperator().getSignature().getOperandTypes()) {
+            typeScore += ConversionMap.getTypePrecedenceScore(operand);
+        }
+
+        return typeScore;
+    }
+
     private Expression lowestScoringInvocation(Invocation primary, Invocation secondary) {
         if (primary != null) {
             if (secondary != null) {
                 if (secondary.getResolution().getScore()
                         < primary.getResolution().getScore()) {
                     return secondary.getExpression();
+                } else if (primary.getResolution().getScore()
+                        < secondary.getResolution().getScore()) {
+                    return primary.getExpression();
+                }
+                if (primary.getResolution().getScore()
+                        == secondary.getResolution().getScore()) {
+                    int primaryTypeScore = getTypeScore(primary.getResolution());
+                    int secondaryTypeScore = getTypeScore(secondary.getResolution());
+
+                    if (secondaryTypeScore < primaryTypeScore) {
+                        return secondary.getExpression();
+                    } else if (primaryTypeScore < secondaryTypeScore) {
+                        return primary.getExpression();
+                    } else {
+                        // ERROR:
+                        StringBuilder message = new StringBuilder("Call to operator ")
+                                .append(primary.getResolution().getOperator().getName())
+                                .append("/")
+                                .append(secondary.getResolution().getOperator().getName())
+                                .append(" is ambiguous with: ")
+                                .append("\n  - ")
+                                .append(primary.getResolution().getOperator().getName())
+                                .append(primary.getResolution().getOperator().getSignature())
+                                .append("\n  - ")
+                                .append(secondary.getResolution().getOperator().getName())
+                                .append(secondary.getResolution().getOperator().getSignature());
+                        throw new IllegalArgumentException(message.toString());
+                    }
                 }
             }
 
@@ -2370,95 +2407,99 @@ public class LibraryBuilder {
             return operandRef;
         }
 
-        Element element = resolve(identifier);
+        final ResolvedIdentifierContext resolvedIdentifierContext = resolve(identifier);
+        final Optional<Element> optElement = resolvedIdentifierContext.getExactMatchElement();
 
-        if (element instanceof ExpressionDef) {
-            checkLiteralContext();
-            ExpressionRef expressionRef = of.createExpressionRef().withName(((ExpressionDef) element).getName());
-            expressionRef.setResultType(getExpressionDefResultType((ExpressionDef) element));
-            if (expressionRef.getResultType() == null) {
-                // ERROR:
-                throw new IllegalArgumentException(String.format(
-                        "Could not validate reference to expression %s because its definition contains errors.",
-                        expressionRef.getName()));
+        if (optElement.isPresent()) {
+            final Element element = optElement.get();
+            if (element instanceof ExpressionDef) {
+                checkLiteralContext();
+                ExpressionRef expressionRef = of.createExpressionRef().withName(((ExpressionDef) element).getName());
+                expressionRef.setResultType(getExpressionDefResultType((ExpressionDef) element));
+                if (expressionRef.getResultType() == null) {
+                    // ERROR:
+                    throw new IllegalArgumentException(String.format(
+                            "Could not validate reference to expression %s because its definition contains errors.",
+                            expressionRef.getName()));
+                }
+                return expressionRef;
             }
-            return expressionRef;
-        }
 
-        if (element instanceof ParameterDef) {
-            checkLiteralContext();
-            ParameterRef parameterRef = of.createParameterRef().withName(((ParameterDef) element).getName());
-            parameterRef.setResultType(element.getResultType());
-            if (parameterRef.getResultType() == null) {
-                // ERROR:
-                throw new IllegalArgumentException(String.format(
-                        "Could not validate reference to parameter %s because its definition contains errors.",
-                        parameterRef.getName()));
+            if (element instanceof ParameterDef) {
+                checkLiteralContext();
+                ParameterRef parameterRef = of.createParameterRef().withName(((ParameterDef) element).getName());
+                parameterRef.setResultType(element.getResultType());
+                if (parameterRef.getResultType() == null) {
+                    // ERROR:
+                    throw new IllegalArgumentException(String.format(
+                            "Could not validate reference to parameter %s because its definition contains errors.",
+                            parameterRef.getName()));
+                }
+                return parameterRef;
             }
-            return parameterRef;
-        }
 
-        if (element instanceof ValueSetDef) {
-            checkLiteralContext();
-            ValueSetRef valuesetRef = of.createValueSetRef().withName(((ValueSetDef) element).getName());
-            valuesetRef.setResultType(element.getResultType());
-            if (valuesetRef.getResultType() == null) {
-                // ERROR:
-                throw new IllegalArgumentException(String.format(
-                        "Could not validate reference to valueset %s because its definition contains errors.",
-                        valuesetRef.getName()));
+            if (element instanceof ValueSetDef) {
+                checkLiteralContext();
+                ValueSetRef valuesetRef = of.createValueSetRef().withName(((ValueSetDef) element).getName());
+                valuesetRef.setResultType(element.getResultType());
+                if (valuesetRef.getResultType() == null) {
+                    // ERROR:
+                    throw new IllegalArgumentException(String.format(
+                            "Could not validate reference to valueset %s because its definition contains errors.",
+                            valuesetRef.getName()));
+                }
+                if (isCompatibleWith("1.5")) {
+                    valuesetRef.setPreserve(true);
+                }
+                return valuesetRef;
             }
-            if (isCompatibleWith("1.5")) {
-                valuesetRef.setPreserve(true);
-            }
-            return valuesetRef;
-        }
 
-        if (element instanceof CodeSystemDef) {
-            checkLiteralContext();
-            CodeSystemRef codesystemRef = of.createCodeSystemRef().withName(((CodeSystemDef) element).getName());
-            codesystemRef.setResultType(element.getResultType());
-            if (codesystemRef.getResultType() == null) {
-                // ERROR:
-                throw new IllegalArgumentException(String.format(
-                        "Could not validate reference to codesystem %s because its definition contains errors.",
-                        codesystemRef.getName()));
+            if (element instanceof CodeSystemDef) {
+                checkLiteralContext();
+                CodeSystemRef codesystemRef = of.createCodeSystemRef().withName(((CodeSystemDef) element).getName());
+                codesystemRef.setResultType(element.getResultType());
+                if (codesystemRef.getResultType() == null) {
+                    // ERROR:
+                    throw new IllegalArgumentException(String.format(
+                            "Could not validate reference to codesystem %s because its definition contains errors.",
+                            codesystemRef.getName()));
+                }
+                return codesystemRef;
             }
-            return codesystemRef;
-        }
 
-        if (element instanceof CodeDef) {
-            checkLiteralContext();
-            CodeRef codeRef = of.createCodeRef().withName(((CodeDef) element).getName());
-            codeRef.setResultType(element.getResultType());
-            if (codeRef.getResultType() == null) {
-                // ERROR:
-                throw new IllegalArgumentException(String.format(
-                        "Could not validate reference to code %s because its definition contains errors.",
-                        codeRef.getName()));
+            if (element instanceof CodeDef) {
+                checkLiteralContext();
+                CodeRef codeRef = of.createCodeRef().withName(((CodeDef) element).getName());
+                codeRef.setResultType(element.getResultType());
+                if (codeRef.getResultType() == null) {
+                    // ERROR:
+                    throw new IllegalArgumentException(String.format(
+                            "Could not validate reference to code %s because its definition contains errors.",
+                            codeRef.getName()));
+                }
+                return codeRef;
             }
-            return codeRef;
-        }
 
-        if (element instanceof ConceptDef) {
-            checkLiteralContext();
-            ConceptRef conceptRef = of.createConceptRef().withName(((ConceptDef) element).getName());
-            conceptRef.setResultType(element.getResultType());
-            if (conceptRef.getResultType() == null) {
-                // ERROR:
-                throw new IllegalArgumentException(String.format(
-                        "Could not validate reference to concept %s because its definition contains error.",
-                        conceptRef.getName()));
+            if (element instanceof ConceptDef) {
+                checkLiteralContext();
+                ConceptRef conceptRef = of.createConceptRef().withName(((ConceptDef) element).getName());
+                conceptRef.setResultType(element.getResultType());
+                if (conceptRef.getResultType() == null) {
+                    // ERROR:
+                    throw new IllegalArgumentException(String.format(
+                            "Could not validate reference to concept %s because its definition contains error.",
+                            conceptRef.getName()));
+                }
+                return conceptRef;
             }
-            return conceptRef;
-        }
 
-        if (element instanceof IncludeDef) {
-            checkLiteralContext();
-            LibraryRef libraryRef = new LibraryRef();
-            libraryRef.setLocalId(of.nextId());
-            libraryRef.setLibraryName(((IncludeDef) element).getLocalIdentifier());
-            return libraryRef;
+            if (element instanceof IncludeDef) {
+                checkLiteralContext();
+                LibraryRef libraryRef = new LibraryRef();
+                libraryRef.setLocalId(of.nextId());
+                libraryRef.setLibraryName(((IncludeDef) element).getLocalIdentifier());
+                return libraryRef;
+            }
         }
 
         // If no other resolution occurs, and we are in a specific context, and there is a parameter with the same name
@@ -2477,8 +2518,11 @@ public class LibraryBuilder {
 
         if (mustResolve) {
             // ERROR:
-            throw new IllegalArgumentException(
-                    String.format("Could not resolve identifier %s in the current library.", identifier));
+            final String exceptionMessage = resolvedIdentifierContext
+                    .warnCaseInsensitiveIfApplicable()
+                    .orElse(String.format("Could not resolve identifier %s in the current library.", identifier));
+
+            throw new IllegalArgumentException(exceptionMessage);
         }
 
         return null;
@@ -2524,9 +2568,11 @@ public class LibraryBuilder {
      */
     public ParameterRef resolveImplicitContext() {
         if (!inLiteralContext() && inSpecificContext()) {
-            Element contextElement = resolve(currentExpressionContext());
-            if (contextElement instanceof ParameterDef) {
-                ParameterDef contextParameter = (ParameterDef) contextElement;
+            ResolvedIdentifierContext resolvedIdentifierContext = resolve(currentExpressionContext());
+            final Optional<ParameterDef> optParameterDef =
+                    resolvedIdentifierContext.getElementOfType(ParameterDef.class);
+            if (optParameterDef.isPresent()) {
+                final ParameterDef contextParameter = optParameterDef.get();
 
                 checkLiteralContext();
                 ParameterRef parameterRef = of.createParameterRef().withName(contextParameter.getName());
@@ -2903,53 +2949,65 @@ public class LibraryBuilder {
             String libraryName = ((LibraryRef) left).getLibraryName();
             CompiledLibrary referencedLibrary = resolveLibrary(libraryName);
 
-            Element element = referencedLibrary.resolve(memberIdentifier);
+            ResolvedIdentifierContext resolvedIdentifierContext = referencedLibrary.resolve(memberIdentifier);
 
-            if (element instanceof ExpressionDef) {
-                checkAccessLevel(libraryName, memberIdentifier, ((ExpressionDef) element).getAccessLevel());
-                Expression result =
-                        of.createExpressionRef().withLibraryName(libraryName).withName(memberIdentifier);
-                result.setResultType(getExpressionDefResultType((ExpressionDef) element));
-                return result;
-            }
+            final Optional<Element> optElement = resolvedIdentifierContext.getExactMatchElement();
 
-            if (element instanceof ParameterDef) {
-                checkAccessLevel(libraryName, memberIdentifier, ((ParameterDef) element).getAccessLevel());
-                Expression result =
-                        of.createParameterRef().withLibraryName(libraryName).withName(memberIdentifier);
-                result.setResultType(element.getResultType());
-                return result;
-            }
+            if (optElement.isPresent()) {
+                final Element element = optElement.get();
 
-            if (element instanceof ValueSetDef) {
-                checkAccessLevel(libraryName, memberIdentifier, ((ValueSetDef) element).getAccessLevel());
-                ValueSetRef result =
-                        of.createValueSetRef().withLibraryName(libraryName).withName(memberIdentifier);
-                result.setResultType(element.getResultType());
-                return result;
-            }
+                if (element instanceof ExpressionDef) {
+                    checkAccessLevel(libraryName, memberIdentifier, ((ExpressionDef) element).getAccessLevel());
+                    Expression result = of.createExpressionRef()
+                            .withLibraryName(libraryName)
+                            .withName(memberIdentifier);
+                    result.setResultType(getExpressionDefResultType((ExpressionDef) element));
+                    return result;
+                }
 
-            if (element instanceof CodeSystemDef) {
-                checkAccessLevel(libraryName, memberIdentifier, ((CodeSystemDef) element).getAccessLevel());
-                CodeSystemRef result =
-                        of.createCodeSystemRef().withLibraryName(libraryName).withName(memberIdentifier);
-                result.setResultType(element.getResultType());
-                return result;
-            }
+                if (element instanceof ParameterDef) {
+                    checkAccessLevel(libraryName, memberIdentifier, ((ParameterDef) element).getAccessLevel());
+                    Expression result =
+                            of.createParameterRef().withLibraryName(libraryName).withName(memberIdentifier);
+                    result.setResultType(element.getResultType());
+                    return result;
+                }
 
-            if (element instanceof CodeDef) {
-                checkAccessLevel(libraryName, memberIdentifier, ((CodeDef) element).getAccessLevel());
-                CodeRef result = of.createCodeRef().withLibraryName(libraryName).withName(memberIdentifier);
-                result.setResultType(element.getResultType());
-                return result;
-            }
+                if (element instanceof ValueSetDef) {
+                    checkAccessLevel(libraryName, memberIdentifier, ((ValueSetDef) element).getAccessLevel());
+                    ValueSetRef result =
+                            of.createValueSetRef().withLibraryName(libraryName).withName(memberIdentifier);
+                    result.setResultType(element.getResultType());
+                    if (isCompatibleWith("1.5")) {
+                        result.setPreserve(true);
+                    }
+                    return result;
+                }
 
-            if (element instanceof ConceptDef) {
-                checkAccessLevel(libraryName, memberIdentifier, ((ConceptDef) element).getAccessLevel());
-                ConceptRef result =
-                        of.createConceptRef().withLibraryName(libraryName).withName(memberIdentifier);
-                result.setResultType(element.getResultType());
-                return result;
+                if (element instanceof CodeSystemDef) {
+                    checkAccessLevel(libraryName, memberIdentifier, ((CodeSystemDef) element).getAccessLevel());
+                    CodeSystemRef result = of.createCodeSystemRef()
+                            .withLibraryName(libraryName)
+                            .withName(memberIdentifier);
+                    result.setResultType(element.getResultType());
+                    return result;
+                }
+
+                if (element instanceof CodeDef) {
+                    checkAccessLevel(libraryName, memberIdentifier, ((CodeDef) element).getAccessLevel());
+                    CodeRef result =
+                            of.createCodeRef().withLibraryName(libraryName).withName(memberIdentifier);
+                    result.setResultType(element.getResultType());
+                    return result;
+                }
+
+                if (element instanceof ConceptDef) {
+                    checkAccessLevel(libraryName, memberIdentifier, ((ConceptDef) element).getAccessLevel());
+                    ConceptRef result =
+                            of.createConceptRef().withLibraryName(libraryName).withName(memberIdentifier);
+                    result.setResultType(element.getResultType());
+                    return result;
+                }
             }
 
             // ERROR:
