@@ -412,6 +412,19 @@
           } ],
           "where" : {
             "type" : "IncludedIn",
+            "signature" : [ {
+              "type" : "IntervalTypeSpecifier",
+              "pointType" : {
+                "type" : "NamedTypeSpecifier",
+                "name" : "{urn:hl7-org:elm-types:r1}DateTime"
+              }
+            }, {
+              "type" : "IntervalTypeSpecifier",
+              "pointType" : {
+                "type" : "NamedTypeSpecifier",
+                "name" : "{urn:hl7-org:elm-types:r1}DateTime"
+              }
+            } ],
             "operand" : [ {
               "type" : "Property",
               "path" : "period",
