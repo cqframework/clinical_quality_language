@@ -11,6 +11,7 @@ out
 .project
 .classpath
 .settings
+.kotlin
 build
 target
 bin

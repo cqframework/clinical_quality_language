@@ -728,20 +728,32 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
         DataType elementType = elementTypeSpecifier != null ? elementTypeSpecifier.getResultType() : null;
         DataType inferredElementType = null;
+        DataType initialInferredElementType = null;
 
         List<Expression> elements = new ArrayList<>();
         for (cqlParser.ExpressionContext elementContext : ctx.expression()) {
             Expression element = parseExpression(elementContext);
 
+            if (element == null) {
+                throw new RuntimeException("Element failed to parse");
+            }
+
             if (elementType != null) {
                 libraryBuilder.verifyType(element.getResultType(), elementType);
             } else {
-                if (inferredElementType == null) {
-                    inferredElementType = element.getResultType();
+                if (initialInferredElementType == null) {
+                    initialInferredElementType = element.getResultType();
+                    inferredElementType = initialInferredElementType;
                 } else {
+                    // Once a list type is inferred as Any, keep it that way
+                    // The only potential exception to this is if the element responsible for the inferred type of Any
+                    // is a null
                     DataType compatibleType =
                             libraryBuilder.findCompatibleType(inferredElementType, element.getResultType());
-                    if (compatibleType != null) {
+                    if (compatibleType != null
+                            && (!inferredElementType.equals(libraryBuilder.resolveTypeName("System", "Any"))
+                                    || initialInferredElementType.equals(
+                                            libraryBuilder.resolveTypeName("System", "Any")))) {
                         inferredElementType = compatibleType;
                     } else {
                         inferredElementType = libraryBuilder.resolveTypeName("System", "Any");
@@ -2746,7 +2758,9 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     @Override
     public Object visitSetAggregateExpressionTerm(cqlParser.SetAggregateExpressionTermContext ctx) {
         Expression source = parseExpression(ctx.expression(0));
-        Expression per = null;
+
+        // If `per` is not set, it will remain `null as System.Quantity`.
+        Expression per = libraryBuilder.buildNull(libraryBuilder.resolveTypeName("System", "Quantity"));
         if (ctx.dateTimePrecision() != null) {
             per = libraryBuilder.createQuantity(BigDecimal.valueOf(1.0), parseString(ctx.dateTimePrecision()));
         } else if (ctx.expression().size() > 1) {
@@ -2758,8 +2772,6 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 if (listType.getElementType() instanceof IntervalType) {
                     IntervalType intervalType = (IntervalType) listType.getElementType();
                     DataType pointType = intervalType.getPointType();
-
-                    per = libraryBuilder.buildNull(libraryBuilder.resolveTypeName("System", "Quantity"));
 
                     // TODO: Test this...
                     // // Successor(MinValue<T>) - MinValue<T>
@@ -2776,8 +2788,6 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                     // libraryBuilder.resolveBinaryCall("System", "Subtract", subtract);
                     // per = subtract;
                 }
-            } else {
-                per = libraryBuilder.buildNull(libraryBuilder.resolveTypeName("System", "Quantity"));
             }
         }
 

@@ -55,9 +55,9 @@ public class BaseTest {
         ExpressionDef def = (ExpressionDef) visitFile("quick/v330/TestFHIRTiming.cql");
         // Query->
         //  where->
-        //      IncludedIn->
+        //      In->
         //          left->
-        //              As(Interval<DateTime>) ->
+        //              As(DateTime) ->
         //                  Property(P.performed)
         //          right-> MeasurementPeriod
         Query query = (Query) def.getExpression();
@@ -70,15 +70,11 @@ public class BaseTest {
 
         // Then check that the where an IncludedIn with a Case as the left operand
         Expression where = query.getWhere();
-        assertThat(where, instanceOf(IncludedIn.class));
-        IncludedIn includedIn = (IncludedIn) where;
-        assertThat(includedIn.getOperand().get(0), instanceOf(As.class));
-        As asExpression = (As) includedIn.getOperand().get(0);
-        assertThat(asExpression.getAsTypeSpecifier(), instanceOf(IntervalTypeSpecifier.class));
-        IntervalTypeSpecifier intervalTypeSpecifier = (IntervalTypeSpecifier) asExpression.getAsTypeSpecifier();
-        assertThat(intervalTypeSpecifier.getPointType(), instanceOf(NamedTypeSpecifier.class));
-        NamedTypeSpecifier namedTypeSpecifier = (NamedTypeSpecifier) intervalTypeSpecifier.getPointType();
-        assertThat(namedTypeSpecifier.getName().getLocalPart(), is("DateTime"));
+        assertThat(where, instanceOf(In.class));
+        In in = (In) where;
+        assertThat(in.getOperand().get(0), instanceOf(As.class));
+        As asExpression = (As) in.getOperand().get(0);
+        assertThat(asExpression.getAsType().getLocalPart(), equalTo("DateTime"));
         assertThat(asExpression.getOperand(), instanceOf(Property.class));
         Property property = (Property) asExpression.getOperand();
         assertThat(property.getScope(), is("P"));

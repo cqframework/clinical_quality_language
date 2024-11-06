@@ -69,14 +69,14 @@ class BaseTest {
 
         // Then check that the where an IncludedIn with a ToInterval as the left operand
         Expression where = query.getWhere();
-        assertThat(where, instanceOf(IncludedIn.class));
-        IncludedIn includedIn = (IncludedIn) where;
-        assertThat(includedIn.getOperand().get(0), instanceOf(FunctionRef.class));
-        FunctionRef functionRef = (FunctionRef) includedIn.getOperand().get(0);
-        assertThat(functionRef.getName(), is("ToInterval"));
+        assertThat(where, instanceOf(In.class));
+        In in = (In) where;
+        assertThat(in.getOperand().get(0), instanceOf(FunctionRef.class));
+        FunctionRef functionRef = (FunctionRef) in.getOperand().get(0);
+        assertThat(functionRef.getName(), is("ToDateTime"));
         assertThat(functionRef.getOperand().get(0), instanceOf(As.class));
         As asExpression = (As) functionRef.getOperand().get(0);
-        assertThat(asExpression.getAsType().getLocalPart(), is("Period"));
+        assertThat(asExpression.getAsType().getLocalPart(), is("dateTime"));
         assertThat(asExpression.getOperand(), instanceOf(Property.class));
         Property property = (Property) asExpression.getOperand();
         assertThat(property.getScope(), is("P"));
