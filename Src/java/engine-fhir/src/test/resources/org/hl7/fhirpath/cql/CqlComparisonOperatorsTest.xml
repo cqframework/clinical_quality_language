@@ -44,6 +44,10 @@
 			<expression>1 = 2</expression>
 			<output>false</output>
 		</test>
+		<test name="SimpleEqInt1Int2Long">
+			<expression>10L = 20L</expression>
+			<output>false</output>
+		</test>
 		<test name="SimpleEqStringAStringA">
 			<expression>'a' = 'a'</expression>
 			<output>true</output>
@@ -58,6 +62,14 @@
 		</test>
 		<test name="SimpleEqFloat1Float2">
 			<expression>1.0 = 2.0</expression>
+			<output>false</output>
+		</test>
+		<test name="SimpleEqFloat1Float1WithZ">
+			<expression>1.0 = 1.00</expression>
+			<output>true</output>
+		</test>
+		<test name="SimpleEqFloat1Float1WithPrecisionAndZ">
+			<expression>1.50 = 1.55</expression>
 			<output>false</output>
 		</test>
 		<test name="SimpleEqFloat1Int1">
@@ -80,9 +92,25 @@
 			<expression>2.0'cm' = 2.00'cm'</expression>
 			<output>true</output>
 		</test>
+		<test name="RatioEqual">
+			<expression>1'cm':2'cm' = 1'cm':2'cm'</expression>
+			<output>true</output>
+		</test>
+		<test name="RatioNotEqual">
+			<expression>1'cm':2'cm' = 1.1'cm':2'cm'</expression>
+			<output>false</output>
+		</test>
 		<test name="TupleEqJohnJohn">
 			<expression>Tuple { Id : 1, Name : 'John' } = Tuple { Id : 1, Name : 'John' }</expression>
 			<output>true</output>
+		</test>
+		<test name="TupleEqJohnJohnFalse">
+			<expression invalid="true">Tuple { Id : 1, Name : 'John', Position: 'Shift Manager' } = Tuple { Id : 1, Name : 'John' }</expression>
+			<!-- EXPECT: Could not resolve call to operator Equal with signature (tuple{Id:System.Integer,Name:System.String,Position:System.String},tuple{Id:System.Integer,Name:System.String}). -->
+		</test>
+		<test name="TupleEqJohnJohnFalse2">
+			<expression invalid="true">Tuple { Id : 1, Name : 'John' } = Tuple { Id : 1, Name : 'John', Position: 'Shift Manager' }</expression>
+			<!-- EXPECT: Could not resolve call to operator Equal with signature (tuple{Id:System.Integer,Name:System.String},tuple{Id:System.Integer,Name:System.String,Position:System.String}). -->
 		</test>
 		<test name="TupleEqJohnJane">
 			<expression>Tuple { Id : 1, Name : 'John' } = Tuple { Id : 2, Name : 'Jane' }</expression>
@@ -99,6 +127,10 @@
 		<test name="TupleEqDateTimeFalse">
 			<expression>Tuple { dateId: 1, Date: DateTime(2012, 10, 5, 0, 0, 0, 0) } = Tuple { dateId: 1, Date: DateTime(2012, 10, 5, 5, 0, 0, 0) }</expression>
 			<output>false</output>
+		</test>
+		<test name="TupleEqDateTimeTrue2">
+			<expression>Tuple { dateId: 12, Date: DateTime(2012, 1, 1) } = Tuple { dateId: 12, Date: DateTime(2012, 1, 1) }</expression>
+			<output>true</output>
 		</test>
 		<test name="TupleEqTimeTrue">
 			<expression>Tuple { timeId: 55, TheTime: @T05:15:15.541 } = Tuple { timeId: 55, TheTime: @T05:15:15.541 }</expression>
@@ -124,9 +156,17 @@
 			<expression>DateTime(2014, 1, 5, 5, 0, 0, 0, 0) = DateTime(2014, 7, 5, 5, 0, 0, 0, 0)</expression>
 			<output>false</output>
 		</test>
+		<test name="DateTimeEqMissingArg">
+			<expression>DateTime(2015, 1, 5, 5, 0, 0) = DateTime(2015, 1, 5, 5, 0, 0)</expression>
+			<output>true</output>
+		</test>
 		<test name="DateTimeEqNull">
 			<expression>DateTime(null) = DateTime(null)</expression>
 			<output>null</output>
+		</test>
+		<test name="DateTimeEqTrue">
+			<expression>DateTime(2001, 1, 1, null) = DateTime(2001, 1, 1, null, null)</expression>
+			<output>true</output>
 		</test>
 		<test name="DateTimeUTC">
 			<expression>@2014-01-25T14:30:14.559+01:00 = @2014-01-25T14:30:14.559+01:00</expression>
@@ -152,6 +192,10 @@
 		</test>
 		<test name="GreaterZ1">
 			<expression>0 &gt; 1</expression>
+			<output>false</output>
+		</test>
+		<test name="GreaterLong">
+			<expression>00L > 10L</expression>
 			<output>false</output>
 		</test>
 		<test name="GreaterZNeg1">
@@ -254,6 +298,10 @@
 		</test>
 		<test name="GreaterOrEqualZ1">
 			<expression>0 &gt;= 1</expression>
+			<output>false</output>
+		</test>
+		<test name="GreaterOrEqualZ1Long">
+			<expression>00L &gt;= 10L</expression>
 			<output>false</output>
 		</test>
 		<test name="GreaterOrEqualZNeg1">
@@ -366,6 +414,14 @@
 			<expression>0 &lt; 1</expression>
 			<output>true</output>
 		</test>
+		<test name="LessLong">
+			<expression>00L &lt; 10L</expression>
+			<output>true</output>
+		</test>
+		<test name="LessLongNeg">
+			<expression>-30L &lt; -20L</expression>
+			<output>true</output>
+		</test>
 		<test name="LessZNeg1">
 			<expression>0 &lt; -1</expression>
 			<output>false</output>
@@ -466,6 +522,10 @@
 		</test>
 		<test name="LessOrEqualZ1">
 			<expression>0 &lt;= 1</expression>
+			<output>true</output>
+		</test>
+		<test name="LessOrEqualZ1Long">
+			<expression>00L &lt;= 10L</expression>
 			<output>true</output>
 		</test>
 		<test name="LessOrEqualZNeg1">
@@ -614,6 +674,10 @@
 			<expression>'a' ~ 'b'</expression>
 			<output>false</output>
 		</test>
+		<test name="EquivStringIgnoreCase">
+			<expression>'Abel' ~ 'abel'</expression>
+			<output>true</output>
+		</test>
 		<test name="EquivFloat1Float1">
 			<expression>1.0 ~ 1.0</expression>
 			<output>true</output>
@@ -621,6 +685,22 @@
 		<test name="EquivFloat1Float2">
 			<expression>1.0 ~ 2.0</expression>
 			<output>false</output>
+		</test>
+		<test name="EquivFloat1Float1WithZ">
+			<expression>1.0 ~ 1.00</expression>
+			<output>true</output>
+		</test>
+		<test name="EquivFloat1Float1WithPrecision">
+			<expression>1.5 ~ 1.55</expression>
+			<output>true</output>
+		</test>
+		<test name="EquivFloat1Float1WithPrecisionAndZ">
+			<expression>1.50 ~ 1.55</expression>
+			<output>true</output>
+		</test>
+		<test name="EquivFloatTrailingZero">
+			<expression>1.001 ~ 1.000</expression>
+			<output>true</output>
 		</test>
 		<test name="EquivFloat1Int1">
 			<expression>1.0 ~ 1</expression>
@@ -638,6 +718,14 @@
 			<expression>1'cm' ~ 0.01'm'</expression>
 			<output>true</output>
 		</test>
+		<test name="RatioEquivalent">
+			<expression>1'cm':2'cm' ~ 1'cm':2'cm'</expression>
+			<output>true</output>
+		</test>
+		<test name="RatioNotEquivalent">
+			<expression>1'cm':2'cm' ~ 1'cm':3'cm'</expression>
+			<output>false</output>
+		</test>
 		<test name="EquivTupleJohnJohn">
 			<expression>Tuple { Id : 1, Name : 'John' } ~ Tuple { Id : 1, Name : 'John' }</expression>
 			<output>true</output>
@@ -645,6 +733,14 @@
 		<test name="EquivTupleJohnJohnWithNulls">
 			<expression>Tuple { Id : 1, Name : 'John', Position: null } ~ Tuple { Id : 1, Name : 'John', Position: null }</expression>
 			<output>true</output>
+		</test>
+		<test name="EquivTupleJohnJohnFalse">
+			<expression invalid="true">Tuple { Id : 1, Name : 'John', Position: 'Shift Manager' } ~ Tuple { Id : 1, Name : 'John' }</expression>
+			<!-- EXPECT: Could not resolve call to operator Equivalent with signature (tuple{Id:System.Integer,Name:System.String,Position:System.String},tuple{Id:System.Integer,Name:System.String}). -->
+		</test>
+		<test name="EquivTupleJohnJohnFalse2">
+			<expression invalid="true">Tuple { Id : 1, Name : 'John' } ~ Tuple { Id : 1, Name : 'John', Position: 'Shift Manager' }</expression>
+			<!-- EXPECT: Could not resolve call to operator Equivalent with signature (tuple{Id:System.Integer,Name:System.String},tuple{Id:System.Integer,Name:System.String,Position:System.String}). -->
 		</test>
 		<test name="EquivTupleJohnJane">
 			<expression>Tuple { Id : 1, Name : 'John' } ~ Tuple { Id : 2, Name : 'Jane' }</expression>
@@ -706,6 +802,10 @@
 		</test>
 		<test name="SimpleNotEqInt1Int2">
 			<expression>1 != 2</expression>
+			<output>true</output>
+		</test>
+		<test name="SimpleNotEqInt1Int2Long">
+			<expression>10L != 20L</expression>
 			<output>true</output>
 		</test>
 		<test name="SimpleNotEqStringAStringA">

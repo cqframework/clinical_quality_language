@@ -6,10 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import org.hl7.fhir.r5.context.IWorkerContext;
+import org.hl7.fhir.r5.context.ILoggingService;
 import org.junit.jupiter.api.Test;
 
-public class TestIGContext implements IWorkerContext.ILoggingService {
+public class TestIGContext implements ILoggingService {
 
     @Test
     void typesAndValuesIG() throws URISyntaxException {

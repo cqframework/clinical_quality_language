@@ -55,10 +55,10 @@ class BaseTest {
         ExpressionDef def = (ExpressionDef) visitFile("fhir/r4/TestFHIRTiming.cql");
         // Query->
         //  where->
-        //      IncludedIn->
+        //      In->
         //          left->
-        //              ToInterval()
-        //                  As(fhir:Period) ->
+        //              ToDateTime()
+        //                  As(fhir:dateTime) ->
         //                      Property(P.performed)
         //          right-> MeasurementPeriod
         Query query = (Query) def.getExpression();
@@ -69,16 +69,16 @@ class BaseTest {
         Retrieve request = (Retrieve) source.getExpression();
         assertThat(request.getDataType(), quickDataType("Procedure"));
 
-        // Then check that the where an IncludedIn with a ToInterval as the left operand
+        // Then check that the where is an In with a ToDateTime as the left operand
         Expression where = query.getWhere();
-        assertThat(where, instanceOf(IncludedIn.class));
-        IncludedIn includedIn = (IncludedIn) where;
-        assertThat(includedIn.getOperand().get(0), instanceOf(FunctionRef.class));
-        FunctionRef functionRef = (FunctionRef) includedIn.getOperand().get(0);
-        assertThat(functionRef.getName(), is("ToInterval"));
+        assertThat(where, instanceOf(In.class));
+        In in = (In) where;
+        assertThat(in.getOperand().get(0), instanceOf(FunctionRef.class));
+        FunctionRef functionRef = (FunctionRef) in.getOperand().get(0);
+        assertThat(functionRef.getName(), is("ToDateTime"));
         assertThat(functionRef.getOperand().get(0), instanceOf(As.class));
         As asExpression = (As) functionRef.getOperand().get(0);
-        assertThat(asExpression.getAsType().getLocalPart(), is("Period"));
+        assertThat(asExpression.getAsType().getLocalPart(), is("dateTime"));
         assertThat(asExpression.getOperand(), instanceOf(Property.class));
         Property property = (Property) asExpression.getOperand();
         assertThat(property.getScope(), is("P"));
