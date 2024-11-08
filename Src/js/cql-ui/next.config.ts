@@ -3,8 +3,8 @@ import { DefinePlugin } from "webpack";
 
 const nextConfig: NextConfig = {
   reactStrictMode: false,
-  transpilePackages: ["cql-all-cql-wasm-js"],
   webpack: (config, { isServer }) => {
+    // Adjust config to make Next.js work with cql-all-cql-wasm-js
     config.ignoreWarnings = [
       /Accessing import\.meta directly is unsupported \(only property access or destructuring is supported\)/,
       /The generated code contains 'async\/await' because this module is using "topLevelAwait"/,
@@ -13,8 +13,13 @@ const nextConfig: NextConfig = {
     if (isServer) {
       config.plugins.push(
         new DefinePlugin({
-          "import.meta":
-            "{ url: __filename, resolve: (_) => url.pathToFileURL('node_modules/cql-all-cql-wasm-js/kotlin/' + _) }",
+          "import.meta": DefinePlugin.runtimeValue((arg0) => {
+            if (arg0.module.resource.includes("cql-all-cql-wasm-js")) {
+              // Get WASM files from node_modules/cql-all-cql-wasm-js/kotlin
+              return "{ url: __filename, resolve: (_) => url.pathToFileURL('node_modules/cql-all-cql-wasm-js/kotlin/' + _) }";
+            }
+            return "import.meta";
+          }),
         }),
       );
     } else {
