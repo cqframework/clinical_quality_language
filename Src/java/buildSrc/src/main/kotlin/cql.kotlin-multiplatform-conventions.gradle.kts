@@ -62,8 +62,16 @@ kotlin {
         generateTypeScriptDefinitions()
     }
 
+    // Add Kotlin/WASM compilation target.
+    // The output is in the JS packages directory.
+    wasmJs {
+        browser { }
+        binaries.executable()
+        generateTypeScriptDefinitions()
+    }
+
     sourceSets {
-        commonMain{
+        commonMain {
             dependencies {
                 implementation(kotlin("stdlib-common"))
             }
