@@ -22,3 +22,7 @@ tasks.register<XjcTask>("generateElm") {
 tasks.compileKotlin {
     dependsOn("generateAnnotation", "generateElm")
 }
+
+tasks.kotlinSourcesJar {
+    dependsOn("generateAnnotation", "generateElm")
+}

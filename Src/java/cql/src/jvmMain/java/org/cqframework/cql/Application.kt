@@ -7,6 +7,7 @@ import org.cqframework.cql.gen.cqlLexer
 import org.cqframework.cql.gen.cqlParser
 
 object Application {
+    @JvmStatic
     fun main(args: Array<String>) {
         val inputFile = args.getOrNull(0)
         val stream = inputFile?.let { FileInputStream(it) } ?: System.`in`

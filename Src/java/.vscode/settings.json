@@ -79,5 +79,9 @@
         ".git",
         "**/*.gradle",
         "**/test/resources/**"
-    ]
+    ],
+    "sonarlint.connectedMode.project": {
+        "connectionId": "cqframework",
+        "projectKey": "cqframework_clinical_quality_language"
+    }
 }
