@@ -184,6 +184,14 @@
             </wstxns7:relationship>
           </wstxns7:relationship>
           <wstxns7:where wstxns7:type="IncludedIn">
+            <wstxns7:signature>
+              <wstxns7:signature wstxns7:type="IntervalTypeSpecifier">
+                <wstxns7:pointType wstxns7:type="NamedTypeSpecifier" name="{urn:hl7-org:elm-types:r1}DateTime"/>
+              </wstxns7:signature>
+              <wstxns7:signature wstxns7:type="IntervalTypeSpecifier">
+                <wstxns7:pointType wstxns7:type="NamedTypeSpecifier" name="{urn:hl7-org:elm-types:r1}DateTime"/>
+              </wstxns7:signature>
+            </wstxns7:signature>
             <wstxns7:operand>
               <wstxns7:operand wstxns7:type="Property" path="period" scope="E"/>
               <wstxns7:operand wstxns7:type="ParameterRef" name="MeasurementPeriod"/>

@@ -8,6 +8,6 @@ dependencies {
 }
 
 tasks.register<XjcTask>("generateModel") {
-    schema = "${projectDir}/../../cql-lm/schema"
+    schema = "${projectDir}/../../cql-lm/schema/model/modelinfo.xsd"
     extraArgs = listOf("-npa")
 }
