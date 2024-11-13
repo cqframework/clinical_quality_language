@@ -1,0 +1,3 @@
+plugins {
+    id("cql.fhir-conventions")
+}
