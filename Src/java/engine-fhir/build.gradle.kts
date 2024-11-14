@@ -14,6 +14,11 @@ dependencies {
     testImplementation("ca.uhn.hapi.fhir:hapi-fhir-client")
 }
 
+// Shows the sizes of the dependencies of this project.
+// Use ./gradlew :engine-fhir:dependencySize to see the sizes.
+apply<DependencySize>()
+
+
 tasks.register<XjcTask>("generateFhirPathTests") {
     schema = "${projectDir}/src/test/resources/org/hl7/fhirpath/testSchema"
     extraArgs = listOf("-npa", "-p", "org.hl7.fhirpath.tests")

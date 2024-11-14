@@ -3,6 +3,10 @@ plugins {
     id("application")
 }
 
+// Shows the sizes of the dependencies of this project.
+// Use ./gradlew :cql-to-elm-cli:dependencySize to see the sizes.
+apply<DependencySize>()
+
 application {
     mainClass = "org.cqframework.cql.cql2elm.cli.Main"
 }
