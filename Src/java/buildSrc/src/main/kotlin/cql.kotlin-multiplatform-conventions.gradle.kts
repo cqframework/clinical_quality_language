@@ -24,7 +24,7 @@ kotlin {
     // Running the build outputs packages in the build/js/packages directory.
     // These packages can e.g. be required or imported in JS or TS projects.
     // If you get `Task :kotlinStoreYarnLock FAILED` during the build,
-    // run the `kotlinUpgradeYarnLock` task and build again.
+    // run the `:kotlinUpgradeYarnLock` task and build again.
     // Run `jsRun --continuous` to start a local development server with
     // live reloading (automatic re-build on file changes). The local server serves
     // <module>/src/jsMain/resources/index.html from the root.
@@ -62,8 +62,16 @@ kotlin {
         generateTypeScriptDefinitions()
     }
 
+    // Add Kotlin/WASM compilation target.
+    // The output is in the JS packages directory.
+    wasmJs {
+        browser { }
+        binaries.executable()
+        generateTypeScriptDefinitions()
+    }
+
     sourceSets {
-        commonMain{
+        commonMain {
             dependencies {
                 implementation(kotlin("stdlib-common"))
             }
