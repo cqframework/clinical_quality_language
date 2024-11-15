@@ -15,9 +15,6 @@ on:
 jobs:
   CodeQLBuild:
     runs-on: 'ubuntu-latest'
-    defaults:
-      run:
-        working-directory: Src/java
     permissions:
       security-events: write
       packages: read
@@ -40,6 +37,7 @@ jobs:
       with:
         languages: java-kotlin
         build-mode: autobuild
+        source-root: Src/java
         
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
