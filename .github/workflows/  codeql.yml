@@ -32,12 +32,10 @@ jobs:
         cache: 'gradle'
 
     # Initializes the CodeQL tools for scanning.
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
+    - name: Autobuild CodeQL
+      uses: github/codeql-action/autobuild@v3
       with:
-        languages: java-kotlin
-        build-mode: autobuild
-        source-root: Src/java
+        working-directory: Src/java
         
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
