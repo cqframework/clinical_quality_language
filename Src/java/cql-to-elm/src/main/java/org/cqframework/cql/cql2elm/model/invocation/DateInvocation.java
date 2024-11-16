@@ -1,19 +1,18 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.hl7.elm.r1.Date;
 import org.hl7.elm.r1.Expression;
 
-public class DateInvocation extends OperatorExpressionInvocation {
+public class DateInvocation extends OperatorExpressionInvocation<Date> {
     public DateInvocation(Date expression) {
         super(expression);
     }
 
     @Override
-    public Iterable<Expression> getOperands() {
-        Date dt = (Date) expression;
+    public List<Expression> getOperands() {
+        Date dt = expression;
         List<Expression> opList = Arrays.asList(dt.getYear(), dt.getMonth(), dt.getDay());
         // If the last expression is null, we should trim this down
         int i;
@@ -23,12 +22,8 @@ public class DateInvocation extends OperatorExpressionInvocation {
     }
 
     @Override
-    public void setOperands(Iterable<Expression> operands) {
-        ArrayList<Expression> opList = new ArrayList<>();
-        for (Expression operand : operands) {
-            opList.add(operand);
-        }
-        setDateFieldsFromOperands((Date) expression, opList);
+    public void setOperands(List<Expression> operands) {
+        setDateFieldsFromOperands(expression, operands);
     }
 
     public static void setDateFieldsFromOperands(Date dt, List<Expression> operands) {

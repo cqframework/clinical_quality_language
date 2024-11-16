@@ -840,7 +840,7 @@ public class LibraryBuilder {
     }
 
     public Expression resolveUnaryCall(String libraryName, String operatorName, UnaryExpression expression) {
-        return resolveCall(libraryName, operatorName, new UnaryExpressionInvocation(expression), false, false);
+        return resolveCall(libraryName, operatorName, new UnaryExpressionInvocation<>(expression), false, false);
     }
 
     public Invocation resolveBinaryInvocation(String libraryName, String operatorName, BinaryExpression expression) {
@@ -861,7 +861,7 @@ public class LibraryBuilder {
         return resolveInvocation(
                 libraryName,
                 operatorName,
-                new BinaryExpressionInvocation(expression),
+                new BinaryExpressionInvocation<>(expression),
                 mustResolve,
                 allowPromotionAndDemotion,
                 false);
@@ -879,7 +879,7 @@ public class LibraryBuilder {
     }
 
     public Expression resolveTernaryCall(String libraryName, String operatorName, TernaryExpression expression) {
-        return resolveCall(libraryName, operatorName, new TernaryExpressionInvocation(expression), false, false);
+        return resolveCall(libraryName, operatorName, new TernaryExpressionInvocation<>(expression), false, false);
     }
 
     public Expression resolveNaryCall(String libraryName, String operatorName, NaryExpression expression) {
@@ -887,7 +887,7 @@ public class LibraryBuilder {
     }
 
     public Expression resolveAggregateCall(String libraryName, String operatorName, AggregateExpression expression) {
-        return resolveCall(libraryName, operatorName, new AggregateExpressionInvocation(expression), false, false);
+        return resolveCall(libraryName, operatorName, new AggregateExpressionInvocation<>(expression), false, false);
     }
 
     private class BinaryWrapper {
@@ -2184,7 +2184,7 @@ public class LibraryBuilder {
         return typeBuilder.dataTypeToQName(type);
     }
 
-    public Iterable<TypeSpecifier> dataTypesToTypeSpecifiers(Iterable<DataType> types) {
+    public List<TypeSpecifier> dataTypesToTypeSpecifiers(List<DataType> types) {
         return typeBuilder.dataTypesToTypeSpecifiers(types);
     }
 

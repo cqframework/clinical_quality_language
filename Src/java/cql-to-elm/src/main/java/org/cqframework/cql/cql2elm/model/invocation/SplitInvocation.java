@@ -1,32 +1,27 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
 import java.util.Arrays;
-import java.util.Iterator;
+import java.util.List;
 import org.hl7.elm.r1.Expression;
 import org.hl7.elm.r1.Split;
 
-public class SplitInvocation extends OperatorExpressionInvocation {
+public class SplitInvocation extends OperatorExpressionInvocation<Split> {
     public SplitInvocation(Split expression) {
         super(expression);
     }
 
     @Override
-    public Iterable<Expression> getOperands() {
-        Split split = (Split) expression;
-        return Arrays.asList(split.getStringToSplit(), split.getSeparator());
+    public List<Expression> getOperands() {
+        return Arrays.asList(expression.getStringToSplit(), expression.getSeparator());
     }
 
     @Override
-    public void setOperands(Iterable<Expression> operands) {
-        Iterator<Expression> it = operands.iterator();
-        if (!it.hasNext()) {
+    public void setOperands(List<Expression> operands) {
+        if (operands == null || operands.size() != 2) {
             throw new IllegalArgumentException("Split operation requires two operands.");
         }
-        Split split = (Split) expression;
-        split.setStringToSplit(it.next());
-        if (!it.hasNext()) {
-            throw new IllegalArgumentException("Split operation requires two operands.");
-        }
-        split.setSeparator(it.next());
+
+        expression.setStringToSplit(operands.get(0));
+        expression.setSeparator(operands.get(1));
     }
 }

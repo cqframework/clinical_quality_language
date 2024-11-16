@@ -1,42 +1,36 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.List;
 import org.hl7.elm.r1.Expression;
 import org.hl7.elm.r1.Substring;
 
-public class SubstringInvocation extends OperatorExpressionInvocation {
+public class SubstringInvocation extends OperatorExpressionInvocation<Substring> {
     public SubstringInvocation(Substring expression) {
         super(expression);
     }
 
     @Override
-    public Iterable<Expression> getOperands() {
-        Substring substring = (Substring) expression;
+    public List<Expression> getOperands() {
         ArrayList<Expression> ops = new ArrayList<>();
-        // Note: these casts to Expression are necessary because of bug in expression.xsd (DSTU comment #824)
-        ops.add((Expression) substring.getStringToSub());
-        ops.add((Expression) substring.getStartIndex());
-        if (substring.getLength() != null) {
-            ops.add((Expression) substring.getLength());
+        ops.add(expression.getStringToSub());
+        ops.add(expression.getStartIndex());
+        if (expression.getLength() != null) {
+            ops.add(expression.getLength());
         }
         return ops;
     }
 
     @Override
-    public void setOperands(Iterable<Expression> operands) {
-        Iterator<Expression> it = operands.iterator();
-        if (!it.hasNext()) {
+    public void setOperands(List<Expression> operands) {
+        if (operands == null || operands.size() < 2 || operands.size() > 3) {
             throw new IllegalArgumentException("Substring operation requires two or three operands.");
         }
-        Substring substring = (Substring) expression;
-        substring.setStringToSub(it.next());
-        if (!it.hasNext()) {
-            throw new IllegalArgumentException("Substring operation requires two or three operands.");
-        }
-        substring.setStartIndex(it.next());
-        if (it.hasNext()) {
-            substring.setLength(it.next());
+
+        expression.setStringToSub(operands.get(0));
+        expression.setStartIndex(operands.get(1));
+        if (operands.size() > 2) {
+            expression.setLength(operands.get(2));
         }
     }
 }

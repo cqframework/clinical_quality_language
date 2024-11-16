@@ -8,38 +8,30 @@ import org.hl7.elm.r1.Expression;
 /**
  * Created by Bryn on 9/12/2018.
  */
-public class AnyInValueSetInvocation extends OperatorExpressionInvocation {
+public class AnyInValueSetInvocation extends OperatorExpressionInvocation<AnyInValueSet> {
     public AnyInValueSetInvocation(AnyInValueSet expression) {
         super(expression);
     }
 
     @Override
-    public Iterable<Expression> getOperands() {
+    public List<Expression> getOperands() {
         List<Expression> result = new ArrayList<>();
-        result.add(((AnyInValueSet) expression).getCodes());
-        if (((AnyInValueSet) expression).getValuesetExpression() != null) {
-            result.add(((AnyInValueSet) expression).getValuesetExpression());
+        result.add(expression.getCodes());
+        if (expression.getValuesetExpression() != null) {
+            result.add(expression.getValuesetExpression());
         }
         return result;
     }
 
     @Override
-    public void setOperands(Iterable<Expression> operands) {
-        int i = 0;
-        for (Expression operand : operands) {
-            switch (i) {
-                case 0:
-                    ((AnyInValueSet) expression).setCodes(operand);
-                    break;
-                case 1:
-                    ((AnyInValueSet) expression).setValuesetExpression(operand);
-                    break;
-            }
-            i++;
+    public void setOperands(List<Expression> operands) {
+        if (operands == null || operands.isEmpty() || operands.size() > 2) {
+            throw new IllegalArgumentException("AnyInValueSet operation requires one or two operands.");
         }
 
-        if (i > 2) {
-            throw new IllegalArgumentException("Unary or binary operator expected");
+        expression.setCodes(operands.get(0));
+        if (operands.size() > 1) {
+            expression.setValuesetExpression(operands.get(1));
         }
     }
 }

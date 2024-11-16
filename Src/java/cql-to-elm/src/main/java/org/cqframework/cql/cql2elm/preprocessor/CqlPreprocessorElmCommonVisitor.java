@@ -49,7 +49,6 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor<Object> {
     private boolean methodInvocation = true;
     private boolean fromKeywordRequired = false;
 
-    private final List<Expression> expressions = new ArrayList<>();
     private boolean includeDeprecatedElements = false;
 
     public CqlPreprocessorElmCommonVisitor(LibraryBuilder libraryBuilder, TokenStream tokenStream) {
@@ -134,9 +133,6 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor<Object> {
 
             if (o instanceof Trackable && !(tree instanceof cqlParser.LibraryContext)) {
                 this.track((Trackable) o, tree);
-            }
-            if (o instanceof Expression) {
-                addExpression((Expression) o);
             }
 
             return o;
@@ -687,7 +683,7 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor<Object> {
         } else if (nextTag > 0) { // has some text before tag
             String interimText = header.substring(startFrom, nextTag).trim();
             if (isStartingWithDigit(header, nextTag + 1)) { // next `@` is a date value
-                if (interimText.length() > 0
+                if (!interimText.isEmpty()
                         && !interimText.equals(":")) { // interim text has value, regards interim text
                     return Pair.of(interimText, nextTag);
                 } else {
@@ -768,7 +764,7 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor<Object> {
     }
 
     public static String getModelIdentifier(List<String> qualifiers) {
-        return qualifiers.size() > 0 ? qualifiers.get(0) : null;
+        return !qualifiers.isEmpty() ? qualifiers.get(0) : null;
     }
 
     // TODO: Should just use String.stripLeading() but that is only available in 11+
@@ -784,10 +780,6 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor<Object> {
             return "";
         }
         return s.substring(index);
-    }
-
-    private void addExpression(Expression expression) {
-        expressions.add(expression);
     }
 
     private Annotation getAnnotation(Element element) {

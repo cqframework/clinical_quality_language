@@ -371,18 +371,18 @@ public class SystemFunctionResolver {
 
     // Age-Related Function Support
 
-    private UnaryExpressionInvocation resolveCalculateAge(Expression e, DateTimePrecision p) {
+    private UnaryExpressionInvocation<CalculateAge> resolveCalculateAge(Expression e, DateTimePrecision p) {
         CalculateAge operator = of.createCalculateAge().withPrecision(p).withOperand(e);
 
-        UnaryExpressionInvocation invocation = new UnaryExpressionInvocation(operator);
+        var invocation = new UnaryExpressionInvocation<>(operator);
         builder.resolveInvocation("System", "CalculateAge", invocation);
         return invocation;
     }
 
-    private BinaryExpressionInvocation resolveCalculateAgeAt(List<Expression> e, DateTimePrecision p) {
+    private BinaryExpressionInvocation<CalculateAgeAt> resolveCalculateAgeAt(List<Expression> e, DateTimePrecision p) {
         CalculateAgeAt operator = of.createCalculateAgeAt().withPrecision(p).withOperand(e);
 
-        BinaryExpressionInvocation invocation = new BinaryExpressionInvocation(operator);
+        var invocation = new BinaryExpressionInvocation<>(operator);
         builder.resolveInvocation("System", "CalculateAgeAt", invocation);
         return invocation;
     }
@@ -713,29 +713,29 @@ public class SystemFunctionResolver {
         }
     }
 
-    private UnaryExpressionInvocation resolveUnary(FunctionRef fun) {
+    private UnaryExpressionInvocation<?> resolveUnary(FunctionRef fun) {
         UnaryExpression operator = createExpression(fun);
         checkNumberOfOperands(fun, 1);
         operator.setOperand(fun.getOperand().get(0));
-        UnaryExpressionInvocation invocation = new UnaryExpressionInvocation(operator);
+        var invocation = new UnaryExpressionInvocation<>(operator);
         builder.resolveInvocation("System", fun.getName(), invocation);
         return invocation;
     }
 
-    private BinaryExpressionInvocation resolveBinary(FunctionRef fun) {
+    private BinaryExpressionInvocation<?> resolveBinary(FunctionRef fun) {
         BinaryExpression operator = createExpression(fun);
         checkNumberOfOperands(fun, 2);
         operator.getOperand().addAll(fun.getOperand());
-        BinaryExpressionInvocation invocation = new BinaryExpressionInvocation(operator);
+        var invocation = new BinaryExpressionInvocation<>(operator);
         builder.resolveInvocation("System", fun.getName(), invocation);
         return invocation;
     }
 
-    private TernaryExpressionInvocation resolveTernary(FunctionRef fun) {
+    private TernaryExpressionInvocation<?> resolveTernary(FunctionRef fun) {
         TernaryExpression operator = createExpression(fun);
         checkNumberOfOperands(fun, 3);
         operator.getOperand().addAll(fun.getOperand());
-        TernaryExpressionInvocation invocation = new TernaryExpressionInvocation(operator);
+        var invocation = new TernaryExpressionInvocation<>(operator);
         builder.resolveInvocation("System", fun.getName(), invocation);
         return invocation;
     }
@@ -748,11 +748,11 @@ public class SystemFunctionResolver {
         return invocation;
     }
 
-    private AggregateExpressionInvocation resolveAggregate(FunctionRef fun) {
+    private AggregateExpressionInvocation<?> resolveAggregate(FunctionRef fun) {
         AggregateExpression operator = createExpression(fun);
         checkNumberOfOperands(fun, 1);
         operator.setSource(fun.getOperand().get(0));
-        AggregateExpressionInvocation invocation = new AggregateExpressionInvocation(operator);
+        var invocation = new AggregateExpressionInvocation<>(operator);
         builder.resolveInvocation("System", fun.getName(), invocation);
         return invocation;
     }

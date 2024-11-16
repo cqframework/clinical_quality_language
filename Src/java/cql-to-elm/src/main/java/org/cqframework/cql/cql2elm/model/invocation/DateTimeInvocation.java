@@ -1,19 +1,18 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.hl7.elm.r1.DateTime;
 import org.hl7.elm.r1.Expression;
 
-public class DateTimeInvocation extends OperatorExpressionInvocation {
+public class DateTimeInvocation extends OperatorExpressionInvocation<DateTime> {
     public DateTimeInvocation(DateTime expression) {
         super(expression);
     }
 
     @Override
-    public Iterable<Expression> getOperands() {
-        DateTime dt = (DateTime) expression;
+    public List<Expression> getOperands() {
+        DateTime dt = expression;
         List<Expression> opList = Arrays.asList(
                 dt.getYear(),
                 dt.getMonth(),
@@ -31,12 +30,8 @@ public class DateTimeInvocation extends OperatorExpressionInvocation {
     }
 
     @Override
-    public void setOperands(Iterable<Expression> operands) {
-        ArrayList<Expression> opList = new ArrayList<>();
-        for (Expression operand : operands) {
-            opList.add(operand);
-        }
-        setDateTimeFieldsFromOperands((DateTime) expression, opList);
+    public void setOperands(List<Expression> operands) {
+        setDateTimeFieldsFromOperands(expression, operands);
     }
 
     public static void setDateTimeFieldsFromOperands(DateTime dt, List<Expression> operands) {

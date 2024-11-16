@@ -6,14 +6,14 @@ import java.util.List;
 import org.hl7.elm.r1.Expression;
 import org.hl7.elm.r1.Time;
 
-public class TimeInvocation extends OperatorExpressionInvocation {
+public class TimeInvocation extends OperatorExpressionInvocation<Time> {
     public TimeInvocation(Time expression) {
         super(expression);
     }
 
     @Override
-    public Iterable<Expression> getOperands() {
-        Time t = (Time) expression;
+    public List<Expression> getOperands() {
+        Time t = expression;
         List<Expression> opList = Arrays.asList(t.getHour(), t.getMinute(), t.getSecond(), t.getMillisecond());
         // If the last expression is null, we should trim this down
         int i;
@@ -23,12 +23,9 @@ public class TimeInvocation extends OperatorExpressionInvocation {
     }
 
     @Override
-    public void setOperands(Iterable<Expression> operands) {
-        ArrayList<Expression> opList = new ArrayList<>();
-        for (Expression operand : operands) {
-            opList.add(operand);
-        }
-        setTimeFieldsFromOperands((Time) expression, opList);
+    public void setOperands(List<Expression> operands) {
+        var opList = new ArrayList<>(operands);
+        setTimeFieldsFromOperands(expression, opList);
     }
 
     public static void setTimeFieldsFromOperands(Time t, List<Expression> operands) {

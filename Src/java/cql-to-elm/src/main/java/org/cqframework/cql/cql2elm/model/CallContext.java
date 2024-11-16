@@ -12,7 +12,7 @@ public class CallContext {
             DataType... signature) {
         this.libraryName = libraryName; // allowed to be null
 
-        if (operatorName == null || operatorName.equals("")) {
+        if (operatorName == null || operatorName.isEmpty()) {
             throw new IllegalArgumentException("operatorName is null");
         }
 
