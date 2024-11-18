@@ -53,10 +53,8 @@ enum class ElmEdit : IElmEdit {
         // this edit is needed to "protect" the downstream JSON serialization if it can be done
         // without data loss.
         override fun edit(element: Element) {
-            if (element is ChoiceTypeSpecifier) {
-                if (element.type.isEmpty()) {
-                    element.type = null
-                }
+            if (element is ChoiceTypeSpecifier && element.type.isEmpty()) {
+                element.type = null
             }
         }
     }

@@ -10,8 +10,8 @@ import org.hl7.elm.r1.Expression;
  * The AbstractExpressionInvocation can be used to more simply make invocations for classes that only extend
  * Expression.
  */
-public abstract class AbstractExpressionInvocation<E extends Expression> implements Invocation {
-    public AbstractExpressionInvocation(E expression) {
+abstract class AbstractExpressionInvocation<E extends Expression> implements Invocation {
+    protected AbstractExpressionInvocation(E expression) {
         if (expression == null) {
             throw new IllegalArgumentException("expression is null.");
         }

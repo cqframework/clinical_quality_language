@@ -10,7 +10,7 @@ import org.hl7.elm.r1.TypeSpecifier;
 @SuppressWarnings("checkstyle:abstractclassname")
 public abstract class OperatorExpressionInvocation<O extends OperatorExpression>
         extends AbstractExpressionInvocation<O> {
-    public OperatorExpressionInvocation(O expression) {
+    protected OperatorExpressionInvocation(O expression) {
         super(expression);
     }
 
