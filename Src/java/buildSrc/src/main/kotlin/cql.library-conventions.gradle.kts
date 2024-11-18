@@ -1,9 +1,8 @@
-import ru.vyarus.gradle.plugin.animalsniffer.AnimalSniffer
-
 plugins {
     id("java-library")
     id("ru.vyarus.animalsniffer")
     id("cql.java-conventions")
+    id("cql.kotlin-conventions")
 }
 
 dependencies {
