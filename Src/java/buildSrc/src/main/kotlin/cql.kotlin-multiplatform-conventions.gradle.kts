@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+
 plugins {
     kotlin("multiplatform")
     id("com.diffplug.spotless")
@@ -15,7 +17,7 @@ spotless {
 }
 
 kotlin {
-    jvmToolchain(11)
+    jvmToolchain(17)
     jvm {
         withJava()
     }
@@ -64,6 +66,7 @@ kotlin {
 
     // Add Kotlin/WASM compilation target.
     // The output is in the JS packages directory.
+    @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         browser { }
         binaries.executable()

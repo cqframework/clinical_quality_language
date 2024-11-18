@@ -1,0 +1,47 @@
+name: "CodeQL Advanced"
+
+on:
+  push:
+    branches: [ "master" ]
+    paths:
+      - "Src/java/**"
+  pull_request:
+    branches: [ "master" ]
+    paths:
+      - "Src/java/**"
+  schedule:
+    - cron: '36 15 * * 1'
+
+jobs:
+  CodeQLBuild:
+    runs-on: 'ubuntu-latest'
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+      contents: read
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '21'
+        cache: 'gradle'
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: java-kotlin
+        source-root: Src/java
+    - name: Autobuild CodeQL
+      uses: github/codeql-action/autobuild@v3
+      with:
+        working-directory: Src/java
+        
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        category: "/language:java-kotlin"
