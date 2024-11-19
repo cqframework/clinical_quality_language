@@ -4564,9 +4564,4 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
         return tb;
     }
-
-    @Override
-    protected Object defaultResult() {
-        return null;
-    }
 }

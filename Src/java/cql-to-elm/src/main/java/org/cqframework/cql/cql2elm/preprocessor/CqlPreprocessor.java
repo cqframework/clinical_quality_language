@@ -326,9 +326,4 @@ public class CqlPreprocessor extends CqlPreprocessorElmCommonVisitor {
         identifiers.add(identifier);
         return identifiers;
     }
-
-    @Override
-    protected Object defaultResult() {
-        return null;
-    }
 }
