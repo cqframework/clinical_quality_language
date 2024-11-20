@@ -13,6 +13,7 @@ class MessageInvocation(expression: Message) : OperatorExpressionInvocation<Mess
                 expression.severity,
                 expression.message
             )
+        @Suppress("MagicNumber")
         set(operands) {
             require(operands.size == 5) { "Message operator requires five operands." }
             expression.source = operands[0]

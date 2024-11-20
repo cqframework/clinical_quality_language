@@ -21,6 +21,7 @@ class DateTimeInvocation(expression: DateTime) :
             setDateTimeFieldsFromOperands(expression, operands)
         }
 
+    @Suppress("MagicNumber")
     companion object {
         @JvmStatic
         fun setDateTimeFieldsFromOperands(dt: DateTime, operands: List<Expression>) {

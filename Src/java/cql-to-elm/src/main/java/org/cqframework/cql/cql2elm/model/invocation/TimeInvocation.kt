@@ -16,6 +16,7 @@ class TimeInvocation(expression: Time) : OperatorExpressionInvocation<Time>(expr
             setTimeFieldsFromOperands(expression, operands)
         }
 
+    @Suppress("MagicNumber")
     companion object {
         @JvmStatic
         fun setTimeFieldsFromOperands(t: Time, operands: List<Expression>) {

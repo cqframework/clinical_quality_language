@@ -10,6 +10,7 @@ class DateInvocation(expression: Date) : OperatorExpressionInvocation<Date>(expr
             setDateFieldsFromOperands(expression, operands)
         }
 
+    @Suppress("MagicNumber")
     companion object {
         @JvmStatic
         fun setDateFieldsFromOperands(dt: Date, operands: List<Expression>) {
