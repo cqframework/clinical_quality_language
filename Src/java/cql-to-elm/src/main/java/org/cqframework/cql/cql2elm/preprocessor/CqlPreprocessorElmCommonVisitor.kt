@@ -86,7 +86,7 @@ open class CqlPreprocessorElmCommonVisitor(
         return null
     }
 
-    override fun visit(tree: ParseTree): Any {
+    override fun visit(tree: ParseTree): Any? {
         Objects.requireNonNull(tree, "ParseTree required")
         val pushedChunk = pushChunk(tree)
         var o: Any? = null
@@ -140,7 +140,7 @@ open class CqlPreprocessorElmCommonVisitor(
             if (o is Expression) {
                 addExpression(o)
             }
-            o!!
+            o
         } finally {
             popChunk(tree, o, pushedChunk)
             processTags(tree, o)
@@ -246,8 +246,8 @@ open class CqlPreprocessorElmCommonVisitor(
         return if (pt == null) AccessModifier.PUBLIC else (visit(pt) as AccessModifier)
     }
 
-    protected fun parseQualifiers(ctx: cqlParser.NamedTypeSpecifierContext): List<String> {
-        val qualifiers: MutableList<String> = ArrayList()
+    protected fun parseQualifiers(ctx: cqlParser.NamedTypeSpecifierContext): List<String?> {
+        val qualifiers: MutableList<String?> = ArrayList()
         if (ctx.qualifier() != null) {
             for (qualifierContext in ctx.qualifier()) {
                 val qualifier = parseString(qualifierContext)
@@ -673,7 +673,7 @@ open class CqlPreprocessorElmCommonVisitor(
         return null
     }
 
-    protected fun parseString(pt: ParseTree?): String {
+    protected fun parseString(pt: ParseTree?): String? {
         return StringEscapeUtils.unescapeCql(if (pt == null) null else visit(pt) as String)
     }
 

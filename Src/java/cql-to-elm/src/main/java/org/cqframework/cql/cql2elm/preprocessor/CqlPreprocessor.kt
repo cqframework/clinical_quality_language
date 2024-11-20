@@ -207,7 +207,7 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
             if (modelIdentifier != null && modelIdentifier != "") {
                 "$modelIdentifier.$unqualifiedContext"
             } else {
-                unqualifiedContext
+                unqualifiedContext!!
             }
         val contextDefinition = ContextDefinitionInfo()
         contextDefinition.definition = ctx

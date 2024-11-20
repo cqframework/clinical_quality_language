@@ -183,14 +183,16 @@ class LibraryInfo : BaseInfo() {
         addDefinition(functionDefinition)
     }
 
-    fun resolveFunctionReference(identifier: String?): Iterable<FunctionDefinitionInfo> {
-        return functionDefinitions[identifier]!!
+    fun resolveFunctionReference(identifier: String?): Iterable<FunctionDefinitionInfo>? {
+        return functionDefinitions[identifier]
     }
 
     fun resolveFunctionName(identifier: String?): String? {
         val functionDefinitions = resolveFunctionReference(identifier)
-        for (functionInfo in functionDefinitions) {
-            return functionInfo.name
+        if (functionDefinitions != null) {
+            for (functionInfo in functionDefinitions) {
+                return functionInfo.name
+            }
         }
         return null
     }
