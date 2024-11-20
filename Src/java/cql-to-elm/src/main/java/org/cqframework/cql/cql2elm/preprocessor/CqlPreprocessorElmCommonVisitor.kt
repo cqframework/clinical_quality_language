@@ -1,4 +1,4 @@
-@file:Suppress("detekt:all")
+@file:Suppress("WildcardImport")
 
 package org.cqframework.cql.cql2elm.preprocessor
 
@@ -29,6 +29,14 @@ import org.hl7.cql_annotations.r1.Tag
 import org.hl7.elm.r1.*
 
 /** Common functionality used by [CqlPreprocessor] and [Cql2ElmVisitor] */
+@Suppress(
+    "LargeClass",
+    "TooManyFunctions",
+    "NestedBlockDepth",
+    "ReturnCount",
+    "CyclomaticComplexMethod",
+    "ComplexCondition"
+)
 open class CqlPreprocessorElmCommonVisitor(
     libraryBuilder: LibraryBuilder,
     tokenStream: TokenStream
@@ -86,6 +94,7 @@ open class CqlPreprocessorElmCommonVisitor(
         return null
     }
 
+    @Suppress("LongMethod")
     override fun visit(tree: ParseTree): Any? {
         Objects.requireNonNull(tree, "ParseTree required")
         val pushedChunk = pushChunk(tree)
@@ -98,6 +107,7 @@ open class CqlPreprocessorElmCommonVisitor(
                     val element = o
                     if (element.localId == null) {
                         throw CqlInternalException(
+                            @Suppress("ImplicitDefaultLocale")
                             String.format(
                                 "Internal translator error. 'localId' was not assigned for Element \"%s\"",
                                 element.javaClass.name
@@ -114,7 +124,7 @@ open class CqlPreprocessorElmCommonVisitor(
                 libraryBuilder.recordParsingException(translatorException)
             } catch (e: CqlCompilerException) {
                 libraryBuilder.recordParsingException(e)
-            } catch (e: Exception) {
+            } catch (@Suppress("TooGenericExceptionCaught") e: Exception) {
                 var ex: CqlCompilerException? = null
                 ex =
                     if (e.message == null) {
@@ -212,19 +222,19 @@ open class CqlPreprocessorElmCommonVisitor(
     }
 
     fun parseFunctionHeader(ctx: cqlParser.FunctionDefinitionContext): FunctionHeader {
-        val `fun` =
+        val functionDef =
             of.createFunctionDef()
                 .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
                 .withName(parseString(ctx.identifierOrFunctionIdentifier()))
                 .withContext(currentContext)
         if (ctx.fluentModifier() != null) {
             libraryBuilder.checkCompatibilityLevel("Fluent functions", "1.5")
-            `fun`.isFluent = true
+            functionDef.isFluent = true
         }
         if (ctx.operandDefinition() != null) {
             for (opdef in ctx.operandDefinition()) {
                 val typeSpecifier = parseTypeSpecifier(opdef.typeSpecifier())
-                `fun`.operand.add(
+                functionDef.operand.add(
                     of.createOperandDef()
                         .withName(parseString(opdef.referentialIdentifier()))
                         .withOperandTypeSpecifier(typeSpecifier)
@@ -234,8 +244,8 @@ open class CqlPreprocessorElmCommonVisitor(
         }
         val typeSpecifierContext = ctx.typeSpecifier()
         return if (typeSpecifierContext != null) {
-            FunctionHeader.withReturnType(`fun`, parseTypeSpecifier(typeSpecifierContext))
-        } else FunctionHeader.noReturnType(`fun`)
+            FunctionHeader.withReturnType(functionDef, parseTypeSpecifier(typeSpecifierContext))
+        } else FunctionHeader.noReturnType(functionDef)
     }
 
     protected fun parseTypeSpecifier(pt: ParseTree?): TypeSpecifier? {
@@ -292,6 +302,7 @@ open class CqlPreprocessorElmCommonVisitor(
         return true
     }
 
+    @Suppress("LongMethod")
     private fun popChunk(tree: ParseTree, o: Any?, pushedChunk: Boolean) {
         if (!pushedChunk) {
             return
@@ -439,18 +450,13 @@ open class CqlPreprocessorElmCommonVisitor(
     }
 
     private fun parseTags(header: String?): List<Tag> {
-        var header = header
-        header =
-            java.lang.String.join(
-                "\n",
-                Arrays.asList(
-                    *header!!
-                        .trim { it <= ' ' }
-                        .split("\n[ \t]*\\*[ \t\\*]*".toRegex())
-                        .dropLastWhile { it.isEmpty() }
-                        .toTypedArray()
-                )
-            )
+        val header =
+            header!!
+                .trim { it <= ' ' }
+                .split("\n[ \t]*\\*[ \t\\*]*".toRegex())
+                .dropLastWhile { it.isEmpty() }
+                .toTypedArray()
+                .joinToString("\n")
         val tags = ArrayList<Tag>()
         var startFrom = 0
         while (startFrom < header.length) {
@@ -818,6 +824,7 @@ open class CqlPreprocessorElmCommonVisitor(
         }
 
         fun wrapNarrative(narrative: Narrative): Serializable {
+            @Suppress("ForbiddenComment")
             /*
             TODO: Should be able to collapse narrative if the span doesn't have an attribute
             That's what this code is doing, but it doesn't work and I don't have time to debug it
@@ -877,6 +884,7 @@ open class CqlPreprocessorElmCommonVisitor(
             return if (qualifiers!!.size > 0) qualifiers[0] else null
         }
 
+        @Suppress("ForbiddenComment")
         // TODO: Should just use String.stripLeading() but that is only available in 11+
         fun stripLeading(s: String): String {
             var index = 0

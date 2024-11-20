@@ -14,7 +14,7 @@ import org.hl7.elm.r1.NamedTypeSpecifier
 import org.hl7.elm.r1.VersionedIdentifier
 import org.slf4j.LoggerFactory
 
-@Suppress("detekt:all")
+@Suppress("TooManyFunctions", "ImplicitDefaultLocale")
 class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) :
     CqlPreprocessorElmCommonVisitor(libraryBuilder, tokenStream) {
     private var lastSourceIndex = -1
@@ -48,7 +48,7 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
             // Loop through and call visit on each child (to ensure they are tracked)
             for (i in 0 until ctx.childCount) {
                 val tree = ctx.getChild(i)
-                val terminalNode = if (tree is TerminalNode) tree else null
+                val terminalNode = tree as? TerminalNode
                 if (terminalNode != null && terminalNode.symbol.type == cqlParser.Tokens.EOF) {
                     continue
                 }
@@ -135,6 +135,7 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
             else parseString(ctx.localIdentifier())
         require(localIdentifier == unqualifiedIdentifier) {
             String.format(
+                @Suppress("MaxLineLength")
                 "Local identifiers for models must be the same as the name of the model in this release of the translator (Model %s, Called %s)",
                 unqualifiedIdentifier,
                 localIdentifier
@@ -144,6 +145,7 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
         // This should only be called once, from this class, and not from Cql2ElmVisitor otherwise
         // there will be
         // duplicate errors sometimes
+        @Suppress("UnusedPrivateProperty")
         val model =
             getModel(
                 modelNamespace,
