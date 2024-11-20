@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.Arrays;
 import java.util.List;
 import org.hl7.elm.r1.Date;
@@ -27,9 +29,8 @@ public class DateInvocation extends OperatorExpressionInvocation<Date> {
     }
 
     public static void setDateFieldsFromOperands(Date dt, List<Expression> operands) {
-        require(
-                operands != null && !operands.isEmpty() && operands.size() <= 3,
-                "Date operator requires one to three operands.");
+        requireNonNull(operands, "operands cannot be null.");
+        require(!operands.isEmpty() && operands.size() <= 3, "Date operator requires one to three operands.");
 
         dt.setYear(operands.get(0));
         if (operands.size() > 1) {

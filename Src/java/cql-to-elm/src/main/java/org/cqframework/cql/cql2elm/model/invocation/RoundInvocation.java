@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.hl7.elm.r1.Expression;
@@ -22,9 +24,8 @@ public class RoundInvocation extends OperatorExpressionInvocation<Round> {
 
     @Override
     public void setOperands(List<Expression> operands) {
-        require(
-                operands != null && !operands.isEmpty() && operands.size() <= 2,
-                "Round operator requires one or two operands.");
+        requireNonNull(operands, "operands cannot be null.");
+        require(!operands.isEmpty() && operands.size() <= 2, "Round operator requires one or two operands.");
         expression.setOperand(operands.get(0));
         if (operands.size() > 1) {
             expression.setPrecision(operands.get(1));

@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.hl7.elm.r1.Expression;
@@ -23,9 +25,8 @@ public class SubstringInvocation extends OperatorExpressionInvocation<Substring>
 
     @Override
     public void setOperands(List<Expression> operands) {
-        require(
-                operands != null && operands.size() >= 2 && operands.size() <= 3,
-                "Substring operator requires two or three operands.");
+        requireNonNull(operands, "operands cannot be null.");
+        require(operands.size() >= 2 && operands.size() <= 3, "Substring operator requires two or three operands.");
 
         expression.setStringToSub(operands.get(0));
         expression.setStartIndex(operands.get(1));

@@ -20,7 +20,7 @@ public class FunctionRefInvocation extends AbstractExpressionInvocation<Function
 
     @Override
     public void setOperands(List<Expression> operands) {
-        requireNonNull(operands, "FunctionRef requires operands.");
+        requireNonNull(operands, "operands cannot be null.");
         expression.setOperand(operands);
     }
 

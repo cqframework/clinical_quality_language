@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.Arrays;
 import java.util.List;
 import org.hl7.elm.r1.DateTime;
@@ -35,9 +37,8 @@ public class DateTimeInvocation extends OperatorExpressionInvocation<DateTime> {
     }
 
     public static void setDateTimeFieldsFromOperands(DateTime dt, List<Expression> operands) {
-        require(
-                operands != null && !operands.isEmpty() && operands.size() <= 8,
-                "DateTime operator requires one to eight operands.");
+        requireNonNull(operands, "operands cannot be null.");
+        require(!operands.isEmpty() && operands.size() <= 8, "DateTime operator requires one to eight operands.");
 
         dt.setYear(operands.get(0));
         if (operands.size() > 1) {

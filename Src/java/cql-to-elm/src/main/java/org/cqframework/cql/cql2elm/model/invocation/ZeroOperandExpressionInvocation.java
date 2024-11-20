@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.Collections;
 import java.util.List;
 import org.hl7.elm.r1.Expression;
@@ -17,6 +19,7 @@ public class ZeroOperandExpressionInvocation extends OperatorExpressionInvocatio
 
     @Override
     public void setOperands(List<Expression> operands) {
-        require(operands != null && operands.isEmpty(), "Zero operand operator expected.");
+        requireNonNull(operands, "operands cannot be null.");
+        require(operands.isEmpty(), "Zero operand operator expected.");
     }
 }

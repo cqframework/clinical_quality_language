@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.Arrays;
 import java.util.List;
 import org.hl7.elm.r1.Expression;
@@ -17,7 +19,8 @@ public class LastPositionOfInvocation extends OperatorExpressionInvocation<LastP
 
     @Override
     public void setOperands(List<Expression> operands) {
-        require(operands != null && operands.size() == 2, "LastPositionOf operator requires two operands.");
+        requireNonNull(operands, "operands cannot be null.");
+        require(operands.size() == 2, "LastPositionOf operator requires two operands.");
         expression.setPattern(operands.get(0));
         expression.setString(operands.get(1));
     }

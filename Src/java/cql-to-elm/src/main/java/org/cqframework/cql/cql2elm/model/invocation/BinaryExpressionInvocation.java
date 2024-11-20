@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.List;
 import org.hl7.elm.r1.BinaryExpression;
 import org.hl7.elm.r1.Expression;
@@ -16,7 +18,8 @@ public class BinaryExpressionInvocation<B extends BinaryExpression> extends Oper
 
     @Override
     public void setOperands(List<Expression> operands) {
-        require(operands != null && operands.size() == 2, "BinaryExpression requires two operands.");
+        requireNonNull(operands, "operands cannot be null.");
+        require(operands.size() == 2, "BinaryExpression requires two operands.");
         expression.setOperand(operands);
     }
 }

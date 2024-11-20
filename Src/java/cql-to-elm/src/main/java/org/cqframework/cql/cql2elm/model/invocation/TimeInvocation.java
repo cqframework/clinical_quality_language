@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,9 +31,8 @@ public class TimeInvocation extends OperatorExpressionInvocation<Time> {
     }
 
     public static void setTimeFieldsFromOperands(Time t, List<Expression> operands) {
-        require(
-                operands != null && !operands.isEmpty() && operands.size() <= 4,
-                "Time operator requires at one to four operands.");
+        requireNonNull(operands, "operands cannot be null.");
+        require(!operands.isEmpty() && operands.size() <= 4, "Time operator requires at one to four operands.");
 
         t.setHour(operands.get(0));
         if (operands.size() > 1) {

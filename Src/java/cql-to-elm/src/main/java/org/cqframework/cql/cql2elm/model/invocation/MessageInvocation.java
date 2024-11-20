@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.Arrays;
 import java.util.List;
 import org.hl7.elm.r1.Expression;
@@ -22,7 +24,8 @@ public class MessageInvocation extends OperatorExpressionInvocation<Message> {
 
     @Override
     public void setOperands(List<Expression> operands) {
-        require(operands != null && operands.size() == 5, "Message operator requires five operands.");
+        requireNonNull(operands, "operands cannot be null.");
+        require(operands.size() == 5, "Message operator requires five operands.");
         expression.setSource(operands.get(0));
         expression.setCondition(operands.get(1));
         expression.setCode(operands.get(2));

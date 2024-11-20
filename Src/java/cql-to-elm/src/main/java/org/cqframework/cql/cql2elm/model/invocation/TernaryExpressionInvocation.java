@@ -18,7 +18,7 @@ public class TernaryExpressionInvocation<T extends TernaryExpression> extends Op
 
     @Override
     public void setOperands(List<Expression> operands) {
-        requireNonNull(operands, "TernaryExpression operator requires operands.");
+        requireNonNull(operands, "operands cannot be null.");
         expression.setOperand(operands);
     }
 }

@@ -18,7 +18,7 @@ public class NaryExpressionInvocation extends OperatorExpressionInvocation<NaryE
 
     @Override
     public void setOperands(List<Expression> operands) {
-        requireNonNull(operands, "NaryExpression requires operands.");
+        requireNonNull(operands, "operands cannot be null.");
         expression.setOperand(operands);
     }
 }
