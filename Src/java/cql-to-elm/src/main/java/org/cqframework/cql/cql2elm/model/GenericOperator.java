@@ -1,6 +1,7 @@
 package org.cqframework.cql.cql2elm.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,9 +15,7 @@ public class GenericOperator extends Operator {
         // TODO: This constructor really ought to be replacing the TypeParameter references in its signature with copies
         // of the referenced type parameter given here,
         // but the constructor order and signature hiding of the base make that quite difficult here...
-        for (TypeParameter typeParameter : typeParameters) {
-            this.typeParameters.add(typeParameter);
-        }
+        Collections.addAll(this.typeParameters, typeParameters);
     }
 
     private List<TypeParameter> typeParameters = new ArrayList<>();

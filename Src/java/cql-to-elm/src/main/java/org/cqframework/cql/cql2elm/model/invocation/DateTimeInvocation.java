@@ -1,19 +1,20 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
-import java.util.ArrayList;
+import static java.util.Objects.requireNonNull;
+
 import java.util.Arrays;
 import java.util.List;
 import org.hl7.elm.r1.DateTime;
 import org.hl7.elm.r1.Expression;
 
-public class DateTimeInvocation extends OperatorExpressionInvocation {
+public class DateTimeInvocation extends OperatorExpressionInvocation<DateTime> {
     public DateTimeInvocation(DateTime expression) {
         super(expression);
     }
 
     @Override
-    public Iterable<Expression> getOperands() {
-        DateTime dt = (DateTime) expression;
+    public List<Expression> getOperands() {
+        DateTime dt = expression;
         List<Expression> opList = Arrays.asList(
                 dt.getYear(),
                 dt.getMonth(),
@@ -31,19 +32,14 @@ public class DateTimeInvocation extends OperatorExpressionInvocation {
     }
 
     @Override
-    public void setOperands(Iterable<Expression> operands) {
-        ArrayList<Expression> opList = new ArrayList<>();
-        for (Expression operand : operands) {
-            opList.add(operand);
-        }
-        setDateTimeFieldsFromOperands((DateTime) expression, opList);
+    public void setOperands(List<Expression> operands) {
+        setDateTimeFieldsFromOperands(expression, operands);
     }
 
     public static void setDateTimeFieldsFromOperands(DateTime dt, List<Expression> operands) {
-        if (operands.isEmpty() || operands.size() > 8) {
-            throw new IllegalArgumentException(
-                    "Could not resolve call to system operator DateTime.  Expected 1 - 8 arguments.");
-        }
+        requireNonNull(operands, "operands cannot be null.");
+        require(!operands.isEmpty() && operands.size() <= 8, "DateTime operator requires one to eight operands.");
+
         dt.setYear(operands.get(0));
         if (operands.size() > 1) {
             dt.setMonth(operands.get(1));

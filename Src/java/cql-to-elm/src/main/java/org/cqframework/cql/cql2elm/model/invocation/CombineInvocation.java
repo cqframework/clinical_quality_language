@@ -1,18 +1,20 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.List;
 import org.hl7.elm.r1.Combine;
 import org.hl7.elm.r1.Expression;
 
-public class CombineInvocation extends OperatorExpressionInvocation {
+public class CombineInvocation extends OperatorExpressionInvocation<Combine> {
     public CombineInvocation(Combine expression) {
         super(expression);
     }
 
     @Override
-    public Iterable<Expression> getOperands() {
-        Combine combine = (Combine) expression;
+    public List<Expression> getOperands() {
+        Combine combine = expression;
         ArrayList<Expression> ops = new ArrayList<>();
         ops.add(combine.getSource());
         if (combine.getSeparator() != null) {
@@ -22,16 +24,13 @@ public class CombineInvocation extends OperatorExpressionInvocation {
     }
 
     @Override
-    public void setOperands(Iterable<Expression> operands) {
-        Iterator<Expression> it = operands.iterator();
-        if (!it.hasNext()) {
-            throw new IllegalArgumentException("Combine operation requires one or two operands.");
-        }
-        Combine combine = (Combine) expression;
-        combine.setSource(it.next());
+    public void setOperands(List<Expression> operands) {
+        requireNonNull(operands, "operands cannot be null.");
+        require(!operands.isEmpty() && operands.size() <= 2, "Combine operator requires one or two operands.");
 
-        if (it.hasNext()) {
-            combine.setSeparator(it.next());
+        expression.setSource(operands.get(0));
+        if (operands.size() > 1) {
+            expression.setSeparator(operands.get(1));
         }
     }
 }

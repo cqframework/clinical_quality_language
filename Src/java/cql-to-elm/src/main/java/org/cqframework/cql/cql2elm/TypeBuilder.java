@@ -50,7 +50,7 @@ public class TypeBuilder {
         throw new IllegalArgumentException("A named type is required in this context.");
     }
 
-    public Iterable<TypeSpecifier> dataTypesToTypeSpecifiers(Iterable<DataType> types) {
+    public List<TypeSpecifier> dataTypesToTypeSpecifiers(List<DataType> types) {
         var result = new ArrayList<TypeSpecifier>();
         for (DataType type : types) {
             result.add(dataTypeToTypeSpecifier(type));

@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.hl7.elm.r1.AnyInCodeSystem;
@@ -8,38 +10,29 @@ import org.hl7.elm.r1.Expression;
 /**
  * Created by Bryn on 9/12/2018.
  */
-public class AnyInCodeSystemInvocation extends OperatorExpressionInvocation {
+public class AnyInCodeSystemInvocation extends OperatorExpressionInvocation<AnyInCodeSystem> {
     public AnyInCodeSystemInvocation(AnyInCodeSystem expression) {
         super(expression);
     }
 
     @Override
-    public Iterable<Expression> getOperands() {
+    public List<Expression> getOperands() {
         List<Expression> result = new ArrayList<>();
-        result.add(((AnyInCodeSystem) expression).getCodes());
-        if (((AnyInCodeSystem) expression).getCodesystemExpression() != null) {
-            result.add(((AnyInCodeSystem) expression).getCodesystemExpression());
+        result.add(expression.getCodes());
+        if (expression.getCodesystemExpression() != null) {
+            result.add(expression.getCodesystemExpression());
         }
         return result;
     }
 
     @Override
-    public void setOperands(Iterable<Expression> operands) {
-        int i = 0;
-        for (Expression operand : operands) {
-            switch (i) {
-                case 0:
-                    ((AnyInCodeSystem) expression).setCodes(operand);
-                    break;
-                case 1:
-                    ((AnyInCodeSystem) expression).setCodesystemExpression(operand);
-                    break;
-            }
-            i++;
-        }
+    public void setOperands(List<Expression> operands) {
+        requireNonNull(operands, "operands cannot be null.");
+        require(!operands.isEmpty() && operands.size() <= 2, "AnyInCodeSystem operator requires one or two operands.");
 
-        if (i > 2) {
-            throw new IllegalArgumentException("Unary or binary operator expected");
+        expression.setCodes(operands.get(0));
+        if (operands.size() > 1) {
+            expression.setCodesystemExpression(operands.get(1));
         }
     }
 }
