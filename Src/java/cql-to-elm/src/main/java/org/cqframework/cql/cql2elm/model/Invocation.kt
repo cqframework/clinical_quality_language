@@ -21,7 +21,7 @@ interface Invocation {
 
     var resultType: DataType?
 
-    fun getExpression(): Expression
+    val expression: Expression
 
     var resolution: OperatorResolution?
 }

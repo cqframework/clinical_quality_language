@@ -10,7 +10,7 @@ import org.hl7.elm.r1.Expression
  * only extend Expression.
  */
 abstract class AbstractExpressionInvocation<E : Expression>
-protected constructor(@JvmField val expression: E) : Invocation {
+protected constructor(override val expression: E) : Invocation {
 
     override var resultType: DataType?
         get() = expression.resultType
@@ -19,16 +19,4 @@ protected constructor(@JvmField val expression: E) : Invocation {
         }
 
     override var resolution: OperatorResolution? = null
-
-    override fun getExpression(): Expression {
-        return expression
-    }
-
-    companion object {
-        fun require(condition: Boolean, message: String) {
-            if (!condition) {
-                throw IllegalArgumentException(message)
-            }
-        }
-    }
 }

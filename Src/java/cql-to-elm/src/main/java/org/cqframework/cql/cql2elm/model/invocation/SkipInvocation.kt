@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm.model.invocation
 
-import java.util.*
 import org.hl7.elm.r1.Expression
 import org.hl7.elm.r1.Slice
 
