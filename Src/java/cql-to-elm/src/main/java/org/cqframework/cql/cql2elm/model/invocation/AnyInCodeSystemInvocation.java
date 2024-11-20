@@ -25,11 +25,13 @@ public class AnyInCodeSystemInvocation extends OperatorExpressionInvocation<AnyI
 
     @Override
     public void setOperands(List<Expression> operands) {
-        if (operands == null || operands.size() != 2) {
-            throw new IllegalArgumentException("AnyInCodeSystem operation requires two operands.");
+        if (operands == null || operands.isEmpty() || operands.size() > 2) {
+            throw new IllegalArgumentException("AnyInCodeSystem operation requires one or two operands.");
         }
 
         expression.setCodes(operands.get(0));
-        expression.setCodesystemExpression(operands.get(1));
+        if (operands.size() > 1) {
+            expression.setCodesystemExpression(operands.get(1));
+        }
     }
 }

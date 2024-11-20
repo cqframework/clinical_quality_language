@@ -25,6 +25,11 @@ public class SemanticTests {
     }
 
     @Test
+    void inCodeSystem() throws IOException {
+        runSemanticTest("InCodeSystemTest.cql");
+    }
+
+    @Test
     void in() throws IOException {
         runSemanticTest("InTest.cql");
     }
