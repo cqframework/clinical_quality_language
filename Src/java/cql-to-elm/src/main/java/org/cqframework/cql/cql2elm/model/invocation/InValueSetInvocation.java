@@ -23,7 +23,7 @@ public class InValueSetInvocation extends OperatorExpressionInvocation<InValueSe
     @Override
     public void setOperands(List<Expression> operands) {
         if (operands == null || operands.isEmpty() || operands.size() > 2) {
-            throw new IllegalArgumentException("InValueSet operation requires at one or two operands.");
+            throw new IllegalArgumentException("InValueSet operation requires one or two operands.");
         }
 
         expression.setCode(operands.get(0));
