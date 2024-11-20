@@ -1,37 +1,19 @@
-package org.cqframework.cql.cql2elm.preprocessor;
+package org.cqframework.cql.cql2elm.preprocessor
 
-import org.cqframework.cql.gen.cqlParser;
+import org.cqframework.cql.gen.cqlParser
 
-/**
- * Created by Bryn on 5/22/2016.
- */
-public class ConceptDefinitionInfo extends BaseInfo {
-    private String name;
+/** Created by Bryn on 5/22/2016. */
+class ConceptDefinitionInfo : BaseInfo() {
+    var name: String? = null
+    override var definition: cqlParser.ConceptDefinitionContext? = null
 
-    public String getName() {
-        return name;
+    fun withName(value: String?): ConceptDefinitionInfo {
+        name = value
+        return this
     }
 
-    public void setName(String value) {
-        name = value;
-    }
-
-    @Override
-    public cqlParser.ConceptDefinitionContext getDefinition() {
-        return (cqlParser.ConceptDefinitionContext) super.getDefinition();
-    }
-
-    public void setDefinition(cqlParser.ConceptDefinitionContext value) {
-        super.setDefinition(value);
-    }
-
-    public ConceptDefinitionInfo withName(String value) {
-        setName(value);
-        return this;
-    }
-
-    public ConceptDefinitionInfo withDefinition(cqlParser.ConceptDefinitionContext value) {
-        setDefinition(value);
-        return this;
+    fun withDefinition(value: cqlParser.ConceptDefinitionContext?): ConceptDefinitionInfo {
+        this.definition = value
+        return this
     }
 }

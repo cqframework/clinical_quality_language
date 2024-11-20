@@ -1,71 +1,32 @@
-package org.cqframework.cql.cql2elm.preprocessor;
+package org.cqframework.cql.cql2elm.preprocessor
 
-import org.cqframework.cql.gen.cqlParser;
+import org.cqframework.cql.gen.cqlParser
 
-public class IncludeDefinitionInfo extends BaseInfo {
-    private String namespaceName;
-    private String name;
-    private String version;
-    private String localName;
+class IncludeDefinitionInfo : BaseInfo() {
+    var namespaceName: String? = null
+    var name: String? = null
+    var version: String? = null
+    var localName: String? = null
 
-    public String getNamespaceName() {
-        return namespaceName;
+    fun withName(value: String?): IncludeDefinitionInfo {
+        name = value
+        return this
     }
 
-    public void setNamespaceName(String namespaceName) {
-        this.namespaceName = namespaceName;
+    fun withVersion(value: String?): IncludeDefinitionInfo {
+        version = value
+        return this
     }
 
-    public String getName() {
-        return name;
+    fun withLocalName(value: String?): IncludeDefinitionInfo {
+        localName = value
+        return this
     }
 
-    public void setName(String value) {
-        name = value;
-    }
+    override var definition: cqlParser.IncludeDefinitionContext? = null
 
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String value) {
-        version = value;
-    }
-
-    public String getLocalName() {
-        return localName;
-    }
-
-    public void setLocalName(String value) {
-        localName = value;
-    }
-
-    public IncludeDefinitionInfo withName(String value) {
-        setName(value);
-        return this;
-    }
-
-    public IncludeDefinitionInfo withVersion(String value) {
-        setVersion(value);
-        return this;
-    }
-
-    public IncludeDefinitionInfo withLocalName(String value) {
-        setLocalName(value);
-        return this;
-    }
-
-    @Override
-    public cqlParser.IncludeDefinitionContext getDefinition() {
-        return (cqlParser.IncludeDefinitionContext) super.getDefinition();
-    }
-
-    public void setDefinition(cqlParser.IncludeDefinitionContext value) {
-        super.setDefinition(value);
-    }
-
-    public IncludeDefinitionInfo withDefinition(cqlParser.IncludeDefinitionContext value) {
-        setDefinition(value);
-        return this;
+    fun withDefinition(value: cqlParser.IncludeDefinitionContext?): IncludeDefinitionInfo {
+        this.definition = value
+        return this
     }
 }

@@ -1,76 +1,37 @@
-package org.cqframework.cql.cql2elm.preprocessor;
+package org.cqframework.cql.cql2elm.preprocessor
 
-import org.cqframework.cql.gen.cqlParser;
+import org.cqframework.cql.gen.cqlParser
 
-public class UsingDefinitionInfo extends BaseInfo {
-    private String namespaceName;
-    private String name;
-    private String version;
-    private String localName;
+class UsingDefinitionInfo : BaseInfo() {
+    var namespaceName: String? = null
+    @JvmField var name: String? = null
+    @JvmField var version: String? = null
+    var localName: String? = null
 
-    public String getNamespaceName() {
-        return namespaceName;
+    fun withNamespaceName(value: String?): UsingDefinitionInfo {
+        namespaceName = value
+        return this
     }
 
-    public void setNamespaceName(String value) {
-        namespaceName = value;
+    fun withName(value: String?): UsingDefinitionInfo {
+        name = value
+        return this
     }
 
-    public String getName() {
-        return name;
+    fun withVersion(value: String?): UsingDefinitionInfo {
+        version = value
+        return this
     }
 
-    public void setName(String value) {
-        name = value;
+    fun withLocalName(value: String?): UsingDefinitionInfo {
+        localName = value
+        return this
     }
 
-    public String getVersion() {
-        return version;
-    }
+    override var definition: cqlParser.UsingDefinitionContext? = null
 
-    public void setVersion(String value) {
-        version = value;
-    }
-
-    public String getLocalName() {
-        return localName;
-    }
-
-    public void setLocalName(String value) {
-        localName = value;
-    }
-
-    public UsingDefinitionInfo withNamespaceName(String value) {
-        setNamespaceName(value);
-        return this;
-    }
-
-    public UsingDefinitionInfo withName(String value) {
-        setName(value);
-        return this;
-    }
-
-    public UsingDefinitionInfo withVersion(String value) {
-        setVersion(value);
-        return this;
-    }
-
-    public UsingDefinitionInfo withLocalName(String value) {
-        setLocalName(value);
-        return this;
-    }
-
-    @Override
-    public cqlParser.UsingDefinitionContext getDefinition() {
-        return (cqlParser.UsingDefinitionContext) super.getDefinition();
-    }
-
-    public void setDefinition(cqlParser.UsingDefinitionContext value) {
-        super.setDefinition(value);
-    }
-
-    public UsingDefinitionInfo withDefinition(cqlParser.UsingDefinitionContext value) {
-        setDefinition(value);
-        return this;
+    fun withDefinition(value: cqlParser.UsingDefinitionContext?): UsingDefinitionInfo {
+        this.definition = value
+        return this
     }
 }
