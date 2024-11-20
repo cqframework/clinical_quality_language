@@ -1,315 +1,261 @@
-package org.cqframework.cql.cql2elm.preprocessor;
+package org.cqframework.cql.cql2elm.preprocessor
 
-import java.util.*;
-import org.antlr.v4.runtime.misc.Interval;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.cqframework.cql.cql2elm.ResultWithPossibleError;
-import org.cqframework.cql.gen.cqlParser;
-import org.hl7.elm.r1.OperandDef;
+import org.antlr.v4.runtime.misc.Interval
+import org.antlr.v4.runtime.tree.ParseTree
+import org.cqframework.cql.cql2elm.ResultWithPossibleError
+import org.cqframework.cql.gen.cqlParser.ContextDefinitionContext
+import org.cqframework.cql.gen.cqlParser.LibraryDefinitionContext
+import org.hl7.elm.r1.OperandDef
 
-public class LibraryInfo extends BaseInfo {
-    private String namespaceName;
-    private String libraryName;
-    private String version;
+@Suppress("TooManyFunctions")
+class LibraryInfo : BaseInfo() {
+    var namespaceName: String? = null
+    @JvmField var libraryName: String? = null
+    var version: String? = null
+    var defaultUsingDefinition: UsingDefinitionInfo? = null
+        private set
 
-    private UsingDefinitionInfo preferredUsingDefinition;
-    private final Map<String, UsingDefinitionInfo> usingDefinitions;
-    private final Map<String, IncludeDefinitionInfo> includeDefinitions;
-    private final Map<String, CodesystemDefinitionInfo> codesystemDefinitions;
-    private final Map<String, ValuesetDefinitionInfo> valuesetDefinitions;
-    private final Map<String, CodeDefinitionInfo> codeDefinitions;
-    private final Map<String, ConceptDefinitionInfo> conceptDefinitions;
-    private final Map<String, ParameterDefinitionInfo> parameterDefinitions;
-    private final Map<String, ExpressionDefinitionInfo> expressionDefinitions;
-    private final Map<String, List<FunctionDefinitionInfo>> functionDefinitions;
-    private final List<ContextDefinitionInfo> contextDefinitions;
-    private final Map<Interval, BaseInfo> definitions;
+    private val usingDefinitions: MutableMap<String?, UsingDefinitionInfo>
+    private val includeDefinitions: MutableMap<String?, IncludeDefinitionInfo>
+    private val codesystemDefinitions: MutableMap<String?, CodesystemDefinitionInfo>
+    private val valuesetDefinitions: MutableMap<String?, ValuesetDefinitionInfo>
+    private val codeDefinitions: MutableMap<String?, CodeDefinitionInfo>
+    private val conceptDefinitions: MutableMap<String?, ConceptDefinitionInfo>
+    private val parameterDefinitions: MutableMap<String?, ParameterDefinitionInfo>
+    private val expressionDefinitions: MutableMap<String?, ExpressionDefinitionInfo>
+    private val functionDefinitions: MutableMap<String?, MutableList<FunctionDefinitionInfo>>
+    private val contextDefinitions: MutableList<ContextDefinitionInfo>
+    private val definitions: MutableMap<Interval, BaseInfo>
 
-    public LibraryInfo() {
-        usingDefinitions = new LinkedHashMap<>();
-        includeDefinitions = new LinkedHashMap<>();
-        codesystemDefinitions = new LinkedHashMap<>();
-        valuesetDefinitions = new LinkedHashMap<>();
-        codeDefinitions = new LinkedHashMap<>();
-        conceptDefinitions = new LinkedHashMap<>();
-        parameterDefinitions = new LinkedHashMap<>();
-        expressionDefinitions = new LinkedHashMap<>();
-        functionDefinitions = new LinkedHashMap<>();
-        contextDefinitions = new ArrayList<>();
-        definitions = new HashMap<>();
+    init {
+        usingDefinitions = LinkedHashMap()
+        includeDefinitions = LinkedHashMap()
+        codesystemDefinitions = LinkedHashMap()
+        valuesetDefinitions = LinkedHashMap()
+        codeDefinitions = LinkedHashMap()
+        conceptDefinitions = LinkedHashMap()
+        parameterDefinitions = LinkedHashMap()
+        expressionDefinitions = LinkedHashMap()
+        functionDefinitions = LinkedHashMap()
+        contextDefinitions = ArrayList()
+        definitions = HashMap()
     }
 
-    public String getNamespaceName() {
-        return namespaceName;
+    fun withLibraryName(value: String?): LibraryInfo {
+        libraryName = value
+        return this
     }
 
-    public void setNamespaceName(String namespaceName) {
-        this.namespaceName = namespaceName;
+    fun withVersion(value: String?): LibraryInfo {
+        version = value
+        return this
     }
 
-    public String getLibraryName() {
-        return libraryName;
-    }
-
-    public void setLibraryName(String libraryName) {
-        this.libraryName = libraryName;
-    }
-
-    public LibraryInfo withLibraryName(String value) {
-        setLibraryName(value);
-        return this;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    public LibraryInfo withVersion(String value) {
-        setVersion(value);
-        return this;
-    }
-
-    private void addDefinition(BaseInfo definition) {
-        if (definition != null && definition.getDefinition() != null) {
-            Interval sourceInterval = definition.getDefinition().getSourceInterval();
+    private fun addDefinition(definition: BaseInfo?) {
+        if (definition != null && definition.definition != null) {
+            val sourceInterval = definition.definition?.sourceInterval
             if (sourceInterval != null) {
-                definitions.put(sourceInterval, definition);
+                definitions[sourceInterval] = definition
             }
         }
     }
 
-    @Override
-    public cqlParser.LibraryDefinitionContext getDefinition() {
-        return (cqlParser.LibraryDefinitionContext) super.getDefinition();
+    override var definition: LibraryDefinitionContext? = null
+
+    fun withDefinition(value: LibraryDefinitionContext?): LibraryInfo {
+        this.definition = value
+        return this
     }
 
-    public void setDefinition(cqlParser.LibraryDefinitionContext value) {
-        super.setDefinition(value);
-        addDefinition(this);
-    }
-
-    public LibraryInfo withDefinition(cqlParser.LibraryDefinitionContext value) {
-        setDefinition(value);
-        return this;
-    }
-
-    public void addUsingDefinition(UsingDefinitionInfo usingDefinition) {
-        // First using definition encountered is "preferred", meaning it will resolve as the default model info
-        if (preferredUsingDefinition == null) {
-            preferredUsingDefinition = usingDefinition;
+    fun addUsingDefinition(usingDefinition: UsingDefinitionInfo) {
+        // First using definition encountered is "preferred", meaning it will resolve as the default
+        // model info
+        if (defaultUsingDefinition == null) {
+            defaultUsingDefinition = usingDefinition
         }
-        usingDefinitions.put(usingDefinition.getName(), usingDefinition);
-        addDefinition(usingDefinition);
+        usingDefinitions[usingDefinition.name] = usingDefinition
+        addDefinition(usingDefinition)
     }
 
-    public UsingDefinitionInfo resolveModelReference(String identifier) {
-        return usingDefinitions.get(identifier);
+    fun resolveModelReference(identifier: String?): UsingDefinitionInfo? {
+        return usingDefinitions[identifier]
     }
 
-    public UsingDefinitionInfo getDefaultUsingDefinition() {
-        return preferredUsingDefinition;
-    }
-
-    public String getDefaultModelName() {
-        UsingDefinitionInfo usingDefinitionInfo = getDefaultUsingDefinition();
-        if (usingDefinitionInfo == null) {
-            throw new IllegalArgumentException(
-                    "Could not determine a default model because no usings have been defined.");
+    val defaultModelName: String?
+        get() {
+            val usingDefinitionInfo =
+                defaultUsingDefinition
+                    ?: throw IllegalArgumentException(
+                        "Could not determine a default model because no usings have been defined."
+                    )
+            return usingDefinitionInfo.name
         }
 
-        return usingDefinitionInfo.getName();
+    fun addIncludeDefinition(includeDefinition: IncludeDefinitionInfo) {
+        includeDefinitions[includeDefinition.localName] = includeDefinition
+        addDefinition(includeDefinition)
     }
 
-    public void addIncludeDefinition(IncludeDefinitionInfo includeDefinition) {
-        includeDefinitions.put(includeDefinition.getLocalName(), includeDefinition);
-        addDefinition(includeDefinition);
+    fun resolveLibraryReference(identifier: String?): IncludeDefinitionInfo? {
+        return includeDefinitions[identifier]
     }
 
-    public IncludeDefinitionInfo resolveLibraryReference(String identifier) {
-        return includeDefinitions.get(identifier);
+    fun resolveLibraryName(identifier: String?): String? {
+        val includeDefinition = resolveLibraryReference(identifier)
+        return includeDefinition?.localName
     }
 
-    public String resolveLibraryName(String identifier) {
-        IncludeDefinitionInfo includeDefinition = resolveLibraryReference(identifier);
-        if (includeDefinition != null) {
-            return includeDefinition.getLocalName();
-        }
-
-        return null;
+    fun addParameterDefinition(parameterDefinition: ParameterDefinitionInfo) {
+        parameterDefinitions[parameterDefinition.name] = parameterDefinition
+        addDefinition(parameterDefinition)
     }
 
-    public void addParameterDefinition(ParameterDefinitionInfo parameterDefinition) {
-        parameterDefinitions.put(parameterDefinition.getName(), parameterDefinition);
-        addDefinition(parameterDefinition);
+    fun resolveParameterReference(identifier: String?): ParameterDefinitionInfo? {
+        return parameterDefinitions[identifier]
     }
 
-    public ParameterDefinitionInfo resolveParameterReference(String identifier) {
-        return parameterDefinitions.get(identifier);
+    fun resolveParameterName(identifier: String?): String? {
+        val parameterDefinition = resolveParameterReference(identifier)
+        return parameterDefinition?.name
     }
 
-    public String resolveParameterName(String identifier) {
-        ParameterDefinitionInfo parameterDefinition = resolveParameterReference(identifier);
-        if (parameterDefinition != null) {
-            return parameterDefinition.getName();
-        }
-
-        return null;
+    fun addCodesystemDefinition(codesystemDefinition: CodesystemDefinitionInfo) {
+        codesystemDefinitions[codesystemDefinition.name] = codesystemDefinition
+        addDefinition(codesystemDefinition)
     }
 
-    public void addCodesystemDefinition(CodesystemDefinitionInfo codesystemDefinition) {
-        codesystemDefinitions.put(codesystemDefinition.getName(), codesystemDefinition);
-        addDefinition(codesystemDefinition);
+    fun resolveCodesystemReference(identifier: String?): CodesystemDefinitionInfo? {
+        return codesystemDefinitions[identifier]
     }
 
-    public CodesystemDefinitionInfo resolveCodesystemReference(String identifier) {
-        return codesystemDefinitions.get(identifier);
+    fun addValuesetDefinition(valuesetDefinition: ValuesetDefinitionInfo) {
+        valuesetDefinitions[valuesetDefinition.name] = valuesetDefinition
+        addDefinition(valuesetDefinition)
     }
 
-    public void addValuesetDefinition(ValuesetDefinitionInfo valuesetDefinition) {
-        valuesetDefinitions.put(valuesetDefinition.getName(), valuesetDefinition);
-        addDefinition(valuesetDefinition);
+    fun resolveValuesetReference(identifier: String?): ValuesetDefinitionInfo? {
+        return valuesetDefinitions[identifier]
     }
 
-    public ValuesetDefinitionInfo resolveValuesetReference(String identifier) {
-        return valuesetDefinitions.get(identifier);
+    fun resolveValuesetName(identifier: String?): String? {
+        val valuesetDefinition = resolveValuesetReference(identifier)
+        return valuesetDefinition?.name
     }
 
-    public String resolveValuesetName(String identifier) {
-        ValuesetDefinitionInfo valuesetDefinition = resolveValuesetReference(identifier);
-        if (valuesetDefinition != null) {
-            return valuesetDefinition.getName();
-        }
-
-        return null;
+    fun addCodeDefinition(codeDefinition: CodeDefinitionInfo) {
+        codeDefinitions[codeDefinition.name] = codeDefinition
+        addDefinition(codeDefinition)
     }
 
-    public void addCodeDefinition(CodeDefinitionInfo codeDefinition) {
-        codeDefinitions.put(codeDefinition.getName(), codeDefinition);
-        addDefinition(codeDefinition);
+    fun resolveCodeReference(identifier: String?): CodeDefinitionInfo? {
+        return codeDefinitions[identifier]
     }
 
-    public CodeDefinitionInfo resolveCodeReference(String identifier) {
-        return codeDefinitions.get(identifier);
+    fun addConceptDefinition(conceptDefinition: ConceptDefinitionInfo) {
+        conceptDefinitions[conceptDefinition.name] = conceptDefinition
+        addDefinition(conceptDefinition)
     }
 
-    public void addConceptDefinition(ConceptDefinitionInfo conceptDefinition) {
-        conceptDefinitions.put(conceptDefinition.getName(), conceptDefinition);
-        addDefinition(conceptDefinition);
+    fun resolveConceptReference(identifier: String?): ConceptDefinitionInfo? {
+        return conceptDefinitions[identifier]
     }
 
-    public ConceptDefinitionInfo resolveConceptReference(String identifier) {
-        return conceptDefinitions.get(identifier);
+    fun addExpressionDefinition(letStatement: ExpressionDefinitionInfo) {
+        expressionDefinitions[letStatement.name] = letStatement
+        addDefinition(letStatement)
     }
 
-    public void addExpressionDefinition(ExpressionDefinitionInfo letStatement) {
-        expressionDefinitions.put(letStatement.getName(), letStatement);
-        addDefinition(letStatement);
+    fun resolveExpressionReference(identifier: String?): ExpressionDefinitionInfo? {
+        return expressionDefinitions[identifier]
     }
 
-    public ExpressionDefinitionInfo resolveExpressionReference(String identifier) {
-        return expressionDefinitions.get(identifier);
+    fun resolveExpressionName(identifier: String?): String? {
+        val letStatement = resolveExpressionReference(identifier)
+        return letStatement?.name
     }
 
-    public String resolveExpressionName(String identifier) {
-        ExpressionDefinitionInfo letStatement = resolveExpressionReference(identifier);
-        if (letStatement != null) {
-            return letStatement.getName();
-        }
-
-        return null;
-    }
-
-    public void addFunctionDefinition(FunctionDefinitionInfo functionDefinition) {
-        List<FunctionDefinitionInfo> infos = functionDefinitions.get(functionDefinition.getName());
+    fun addFunctionDefinition(functionDefinition: FunctionDefinitionInfo) {
+        var infos = functionDefinitions[functionDefinition.name]
         if (infos == null) {
-            infos = new ArrayList<FunctionDefinitionInfo>();
-            functionDefinitions.put(functionDefinition.getName(), infos);
+            infos = ArrayList()
+            functionDefinitions[functionDefinition.name] = infos
         }
-        infos.add(functionDefinition);
-        addDefinition(functionDefinition);
+        infos.add(functionDefinition)
+        addDefinition(functionDefinition)
     }
 
-    public Iterable<FunctionDefinitionInfo> resolveFunctionReference(String identifier) {
-        return functionDefinitions.get(identifier);
+    fun resolveFunctionReference(identifier: String?): Iterable<FunctionDefinitionInfo>? {
+        return functionDefinitions[identifier]
     }
 
-    public String resolveFunctionName(String identifier) {
-        Iterable<FunctionDefinitionInfo> functionDefinitions = resolveFunctionReference(identifier);
-        for (FunctionDefinitionInfo functionInfo : functionDefinitions) {
-            return functionInfo.getName();
-        }
-
-        return null;
-    }
-
-    public void addContextDefinition(ContextDefinitionInfo contextDefinition) {
-        contextDefinitions.add(contextDefinition);
-        addDefinition(contextDefinition);
-    }
-
-    public ContextDefinitionInfo resolveContext(cqlParser.ContextDefinitionContext ctx) {
-        for (ContextDefinitionInfo cd : contextDefinitions) {
-            if (ctx.getSourceInterval().equals(cd.getDefinition().getSourceInterval())) {
-                return cd;
+    fun resolveFunctionName(identifier: String?): String? {
+        val functionDefinitions = resolveFunctionReference(identifier)
+        if (functionDefinitions != null) {
+            for (functionInfo in functionDefinitions) {
+                return functionInfo.name
             }
         }
-
-        return null;
+        return null
     }
 
-    public BaseInfo resolveDefinition(ParseTree pt) {
-        return definitions.get(pt.getSourceInterval());
+    fun addContextDefinition(contextDefinition: ContextDefinitionInfo) {
+        contextDefinitions.add(contextDefinition)
+        addDefinition(contextDefinition)
     }
 
-    private static boolean isFunctionDefInfoAlreadyPresent(
-            ResultWithPossibleError<FunctionDefinitionInfo> existingFunctionDefInfo,
-            ResultWithPossibleError<FunctionDefinitionInfo> functionDefinition) {
-        // equals/hashCode only goes so far because we don't control the entire class hierarchy
-        return matchesFunctionDefInfos(existingFunctionDefInfo, functionDefinition);
-    }
-
-    private static boolean matchesFunctionDefInfos(
-            ResultWithPossibleError<FunctionDefinitionInfo> existingInfo,
-            ResultWithPossibleError<FunctionDefinitionInfo> newInfo) {
-        if (existingInfo == null) {
-            return false;
-        }
-
-        if (existingInfo.hasError() || newInfo.hasError()) {
-            return existingInfo.hasError() && newInfo.hasError();
-        }
-
-        final List<OperandDef> existingOperands = existingInfo
-                .getUnderlyingResultIfExists()
-                .getPreCompileOutput()
-                .getFunctionDef()
-                .getOperand();
-        final List<OperandDef> newOperands = newInfo.getUnderlyingResultIfExists()
-                .getPreCompileOutput()
-                .getFunctionDef()
-                .getOperand();
-
-        if (existingOperands.size() != newOperands.size()) {
-            return false;
-        }
-
-        for (int index = 0; index < existingOperands.size(); index++) {
-            final OperandDef existingOperand = existingOperands.get(index);
-            final OperandDef newOperand = newOperands.get(index);
-
-            if (!matchesOperands(existingOperand, newOperand)) {
-                return false;
+    fun resolveContext(ctx: ContextDefinitionContext): ContextDefinitionInfo? {
+        for (cd in contextDefinitions) {
+            if (ctx.sourceInterval == cd.definition?.sourceInterval) {
+                return cd
             }
         }
-
-        return true;
+        return null
     }
 
-    private static boolean matchesOperands(OperandDef existingOperand, OperandDef newOperand) {
-        return existingOperand.getResultType().equals(newOperand.getResultType());
+    fun resolveDefinition(pt: ParseTree): BaseInfo? {
+        return definitions[pt.sourceInterval]
+    }
+
+    companion object {
+        @Suppress("UnusedPrivateMember")
+        private fun isFunctionDefInfoAlreadyPresent(
+            existingFunctionDefInfo: ResultWithPossibleError<FunctionDefinitionInfo>,
+            functionDefinition: ResultWithPossibleError<FunctionDefinitionInfo>
+        ): Boolean {
+            // equals/hashCode only goes so far because we don't control the entire class hierarchy
+            return matchesFunctionDefInfos(existingFunctionDefInfo, functionDefinition)
+        }
+
+        @Suppress("ReturnCount")
+        private fun matchesFunctionDefInfos(
+            existingInfo: ResultWithPossibleError<FunctionDefinitionInfo>?,
+            newInfo: ResultWithPossibleError<FunctionDefinitionInfo>
+        ): Boolean {
+            if (existingInfo == null) {
+                return false
+            }
+            if (existingInfo.hasError() || newInfo.hasError()) {
+                return existingInfo.hasError() && newInfo.hasError()
+            }
+            val existingOperands =
+                existingInfo.underlyingResultIfExists.preCompileOutput!!.functionDef.operand
+            val newOperands =
+                newInfo.underlyingResultIfExists.preCompileOutput!!.functionDef.operand
+            if (existingOperands.size != newOperands.size) {
+                return false
+            }
+            for (index in existingOperands.indices) {
+                val existingOperand = existingOperands[index]
+                val newOperand = newOperands[index]
+                if (!matchesOperands(existingOperand, newOperand)) {
+                    return false
+                }
+            }
+            return true
+        }
+
+        private fun matchesOperands(existingOperand: OperandDef, newOperand: OperandDef): Boolean {
+            return existingOperand.resultType == newOperand.resultType
+        }
     }
 }

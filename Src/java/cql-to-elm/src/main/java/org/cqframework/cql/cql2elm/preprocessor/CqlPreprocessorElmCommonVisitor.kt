@@ -1,911 +1,894 @@
-package org.cqframework.cql.cql2elm.preprocessor;
+@file:Suppress("WildcardImport")
 
-import jakarta.xml.bind.JAXBElement;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Stack;
-import javax.xml.namespace.QName;
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.TokenStream;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.TerminalNode;
-import org.apache.commons.lang3.tuple.Pair;
-import org.cqframework.cql.cql2elm.*;
-import org.cqframework.cql.cql2elm.model.Chunk;
-import org.cqframework.cql.cql2elm.model.FunctionHeader;
-import org.cqframework.cql.cql2elm.model.Model;
-import org.cqframework.cql.elm.IdObjectFactory;
-import org.cqframework.cql.elm.tracking.TrackBack;
-import org.cqframework.cql.elm.tracking.Trackable;
-import org.cqframework.cql.gen.cqlBaseVisitor;
-import org.cqframework.cql.gen.cqlParser;
-import org.hl7.cql.model.*;
-import org.hl7.cql_annotations.r1.Annotation;
-import org.hl7.cql_annotations.r1.Narrative;
-import org.hl7.cql_annotations.r1.Tag;
-import org.hl7.elm.r1.*;
+package org.cqframework.cql.cql2elm.preprocessor
 
-/**
- * Common functionality used by {@link CqlPreprocessor} and {@link Cql2ElmVisitor}
- */
-public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor<Object> {
-    protected final IdObjectFactory of;
-    protected final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
-    private boolean implicitContextCreated = false;
-    private String currentContext = "Unfiltered";
-    protected Stack<Chunk> chunks = new Stack<>();
-    protected final LibraryBuilder libraryBuilder;
-    protected final TokenStream tokenStream;
-    protected LibraryInfo libraryInfo = new LibraryInfo();
-    private boolean annotate = false;
-    private boolean detailedErrors = false;
-    private boolean locate = false;
-    private boolean resultTypes = false;
-    private boolean dateRangeOptimization = false;
-    private boolean methodInvocation = true;
-    private boolean fromKeywordRequired = false;
+import jakarta.xml.bind.JAXBElement
+import java.io.Serializable
+import java.util.*
+import javax.xml.namespace.QName
+import org.antlr.v4.runtime.ParserRuleContext
+import org.antlr.v4.runtime.TokenStream
+import org.antlr.v4.runtime.misc.Interval
+import org.antlr.v4.runtime.tree.ParseTree
+import org.antlr.v4.runtime.tree.TerminalNode
+import org.apache.commons.lang3.tuple.Pair
+import org.cqframework.cql.cql2elm.*
+import org.cqframework.cql.cql2elm.model.Chunk
+import org.cqframework.cql.cql2elm.model.FunctionHeader
+import org.cqframework.cql.cql2elm.model.Model
+import org.cqframework.cql.elm.IdObjectFactory
+import org.cqframework.cql.elm.tracking.TrackBack
+import org.cqframework.cql.elm.tracking.Trackable
+import org.cqframework.cql.gen.cqlBaseVisitor
+import org.cqframework.cql.gen.cqlParser.*
+import org.hl7.cql.model.*
+import org.hl7.cql_annotations.r1.Annotation
+import org.hl7.cql_annotations.r1.Narrative
+import org.hl7.cql_annotations.r1.ObjectFactory
+import org.hl7.cql_annotations.r1.Tag
+import org.hl7.elm.r1.*
 
-    private boolean includeDeprecatedElements = false;
+/** Common functionality used by [CqlPreprocessor] and [Cql2ElmVisitor] */
+@Suppress(
+    "LargeClass",
+    "CyclomaticComplexMethod",
+    "NestedBlockDepth",
+    "TooManyFunctions",
+    "ComplexCondition",
+    "ImplicitDefaultLocale",
+    "ReturnCount"
+)
+open class CqlPreprocessorElmCommonVisitor(
+    libraryBuilder: LibraryBuilder,
+    tokenStream: TokenStream
+) : cqlBaseVisitor<Any?>() {
+    @JvmField protected val of: IdObjectFactory
+    protected val af = ObjectFactory()
+    protected var implicitContextCreated = false
+    @JvmField protected var currentContext = "Unfiltered"
+    @JvmField protected var chunks = Stack<Chunk>()
+    @JvmField protected val libraryBuilder: LibraryBuilder
+    protected val tokenStream: TokenStream
+    var libraryInfo = LibraryInfo()
+        protected set
 
-    public CqlPreprocessorElmCommonVisitor(LibraryBuilder libraryBuilder, TokenStream tokenStream) {
-        this.libraryBuilder = Objects.requireNonNull(libraryBuilder, "libraryBuilder required");
-        this.tokenStream = Objects.requireNonNull(tokenStream, "tokenStream required");
-        this.of = Objects.requireNonNull(libraryBuilder.getObjectFactory(), "libraryBuilder.objectFactory required");
+    var isAnnotationEnabled = false
+        private set
+
+    var isDetailedErrorsEnabled = false
+        private set
+
+    private var locate = false
+    private var resultTypes = false
+    var dateRangeOptimization = false
+        private set
+
+    var isMethodInvocationEnabled = true
+        private set
+
+    var isFromKeywordRequired = false
+        private set
+
+    @JvmField var includeDeprecatedElements = false
+
+    init {
+        this.libraryBuilder = Objects.requireNonNull(libraryBuilder, "libraryBuilder required")
+        this.tokenStream = Objects.requireNonNull(tokenStream, "tokenStream required")
+        of =
+            Objects.requireNonNull(
+                libraryBuilder.objectFactory,
+                "libraryBuilder.objectFactory required"
+            )
 
         // Don't talk to strangers. Except when you have to.
-        this.setCompilerOptions(libraryBuilder.getLibraryManager().getCqlCompilerOptions());
+        setCompilerOptions(libraryBuilder.libraryManager.cqlCompilerOptions)
     }
 
-    protected boolean getImplicitContextCreated() {
-        return this.implicitContextCreated;
+    protected fun saveCurrentContext(currentContext: String): String {
+        val saveContext = this.currentContext
+        this.currentContext = currentContext
+        return saveContext
     }
 
-    protected void setImplicitContextCreated(boolean implicitContextCreated) {
-        this.implicitContextCreated = implicitContextCreated;
-    }
-
-    protected String getCurrentContext() {
-        return this.currentContext;
-    }
-
-    protected void setCurrentContext(String currentContext) {
-        this.currentContext = currentContext;
-    }
-
-    protected String saveCurrentContext(String currentContext) {
-        String saveContext = this.currentContext;
-        this.currentContext = currentContext;
-        return saveContext;
-    }
-
-    @Override
-    public Object visit(ParseTree tree) {
-        Objects.requireNonNull(tree, "ParseTree required");
-        boolean pushedChunk = pushChunk(tree);
-        Object o = null;
-        try {
+    override fun visit(tree: ParseTree): Any? {
+        Objects.requireNonNull(tree, "ParseTree required")
+        val pushedChunk = pushChunk(tree)
+        var o: Any? = null
+        return try {
             // ERROR:
             try {
-                o = super.visit(tree);
-                if (o instanceof Element) {
-                    Element element = (Element) o;
-                    if (element.getLocalId() == null) {
-                        throw new CqlInternalException(
-                                String.format(
-                                        "Internal translator error. 'localId' was not assigned for Element \"%s\"",
-                                        element.getClass().getName()),
-                                getTrackBack(tree));
+                o = super.visit(tree)
+                if (o is Element) {
+                    val element = o
+                    if (element.localId == null) {
+                        throw CqlInternalException(
+                            String.format(
+                                "Internal translator error. 'localId' was not assigned for Element \"%s\"",
+                                element.javaClass.name
+                            ),
+                            getTrackBack(tree)
+                        )
                     }
                 }
-            } catch (CqlIncludeException e) {
-                CqlCompilerException translatorException =
-                        new CqlCompilerException(e.getMessage(), getTrackBack(tree), e);
-                if (translatorException.getLocator() == null) {
-                    throw translatorException;
+            } catch (e: CqlIncludeException) {
+                val translatorException = CqlCompilerException(e.message, getTrackBack(tree), e)
+                if (translatorException.locator == null) {
+                    throw translatorException
                 }
-                libraryBuilder.recordParsingException(translatorException);
-            } catch (CqlCompilerException e) {
-                libraryBuilder.recordParsingException(e);
-            } catch (Exception e) {
-                CqlCompilerException ex = null;
-                if (e.getMessage() == null) {
-                    ex = new CqlInternalException("Internal translator error.", getTrackBack(tree), e);
-                } else {
-                    ex = new CqlSemanticException(e.getMessage(), getTrackBack(tree), e);
-                }
-
-                Exception rootCause = libraryBuilder.determineRootCause();
+                libraryBuilder.recordParsingException(translatorException)
+            } catch (e: CqlCompilerException) {
+                libraryBuilder.recordParsingException(e)
+            } catch (@Suppress("TooGenericExceptionCaught") e: Exception) {
+                var ex: CqlCompilerException? = null
+                ex =
+                    if (e.message == null) {
+                        CqlInternalException("Internal translator error.", getTrackBack(tree), e)
+                    } else {
+                        CqlSemanticException(e.message, getTrackBack(tree), e)
+                    }
+                var rootCause = libraryBuilder.determineRootCause()
                 if (rootCause == null) {
-                    rootCause = ex;
-                    libraryBuilder.recordParsingException(ex);
-                    libraryBuilder.setRootCause(rootCause);
+                    rootCause = ex
+                    libraryBuilder.recordParsingException(ex)
+                    libraryBuilder.setRootCause(rootCause)
                 } else {
-                    if (detailedErrors) {
-                        libraryBuilder.recordParsingException(ex);
+                    if (isDetailedErrorsEnabled) {
+                        libraryBuilder.recordParsingException(ex)
                     }
                 }
-                o = of.createNull();
+                o = of.createNull()
             }
-
-            if (o instanceof Trackable && !(tree instanceof cqlParser.LibraryContext)) {
-                this.track((Trackable) o, tree);
+            if (o is Trackable && tree !is LibraryContext) {
+                track(o, tree)
             }
-
-            return o;
+            o
         } finally {
-            popChunk(tree, o, pushedChunk);
-            processTags(tree, o);
+            popChunk(tree, o, pushedChunk)
+            processTags(tree, o)
         }
     }
 
-    @Override
-    public TupleElementDefinition visitTupleElementDefinition(cqlParser.TupleElementDefinitionContext ctx) {
-        TupleElementDefinition result = of.createTupleElementDefinition()
+    override fun visitTupleElementDefinition(
+        ctx: TupleElementDefinitionContext
+    ): TupleElementDefinition {
+        val result =
+            of.createTupleElementDefinition()
                 .withName(parseString(ctx.referentialIdentifier()))
-                .withElementType(parseTypeSpecifier(ctx.typeSpecifier()));
-
+                .withElementType(parseTypeSpecifier(ctx.typeSpecifier()))
         if (includeDeprecatedElements) {
-            result.setType(result.getElementType());
+            result.type = result.elementType
         }
-
-        return result;
+        return result
     }
 
-    @Override
-    public Object visitTupleTypeSpecifier(cqlParser.TupleTypeSpecifierContext ctx) {
-        TupleType resultType = new TupleType();
-        TupleTypeSpecifier typeSpecifier = of.createTupleTypeSpecifier();
-        for (cqlParser.TupleElementDefinitionContext definitionContext : ctx.tupleElementDefinition()) {
-            TupleElementDefinition element = (TupleElementDefinition) visit(definitionContext);
-            resultType.addElement(new TupleTypeElement(
-                    element.getName(), element.getElementType().getResultType()));
-            typeSpecifier.getElement().add(element);
+    override fun visitTupleTypeSpecifier(ctx: TupleTypeSpecifierContext): Any {
+        val resultType = TupleType()
+        val typeSpecifier = of.createTupleTypeSpecifier()
+        for (definitionContext in ctx.tupleElementDefinition()) {
+            val element = visit(definitionContext) as TupleElementDefinition
+            resultType.addElement(TupleTypeElement(element.name, element.elementType.resultType))
+            typeSpecifier.element.add(element)
         }
-
-        typeSpecifier.setResultType(resultType);
-
-        return typeSpecifier;
+        typeSpecifier.resultType = resultType
+        return typeSpecifier
     }
 
-    @Override
-    public ChoiceTypeSpecifier visitChoiceTypeSpecifier(cqlParser.ChoiceTypeSpecifierContext ctx) {
-        var typeSpecifiers = new ArrayList<TypeSpecifier>();
-        var types = new ArrayList<DataType>();
-        for (cqlParser.TypeSpecifierContext typeSpecifierContext : ctx.typeSpecifier()) {
-            TypeSpecifier typeSpecifier = parseTypeSpecifier(typeSpecifierContext);
-            typeSpecifiers.add(typeSpecifier);
-            types.add(typeSpecifier.getResultType());
+    override fun visitChoiceTypeSpecifier(ctx: ChoiceTypeSpecifierContext): ChoiceTypeSpecifier {
+        val typeSpecifiers = ArrayList<TypeSpecifier?>()
+        val types = ArrayList<DataType>()
+        for (typeSpecifierContext in ctx.typeSpecifier()) {
+            val typeSpecifier = parseTypeSpecifier(typeSpecifierContext)
+            typeSpecifiers.add(typeSpecifier)
+            types.add(typeSpecifier!!.resultType)
         }
-        ChoiceTypeSpecifier result = of.createChoiceTypeSpecifier().withChoice(typeSpecifiers);
+        val result = of.createChoiceTypeSpecifier().withChoice(typeSpecifiers)
         if (includeDeprecatedElements) {
-            result.getType().addAll(typeSpecifiers);
+            result.type.addAll(typeSpecifiers)
         }
-        ChoiceType choiceType = new ChoiceType(types);
-        result.setResultType(choiceType);
-        return result;
+        val choiceType = ChoiceType(types)
+        result.resultType = choiceType
+        return result
     }
 
-    @Override
-    public IntervalTypeSpecifier visitIntervalTypeSpecifier(cqlParser.IntervalTypeSpecifierContext ctx) {
-        IntervalTypeSpecifier result =
-                of.createIntervalTypeSpecifier().withPointType(parseTypeSpecifier(ctx.typeSpecifier()));
-        IntervalType intervalType = new IntervalType(result.getPointType().getResultType());
-        result.setResultType(intervalType);
-        return result;
+    override fun visitIntervalTypeSpecifier(
+        ctx: IntervalTypeSpecifierContext
+    ): IntervalTypeSpecifier {
+        val result =
+            of.createIntervalTypeSpecifier().withPointType(parseTypeSpecifier(ctx.typeSpecifier()))
+        val intervalType = IntervalType(result.pointType.resultType)
+        result.resultType = intervalType
+        return result
     }
 
-    @Override
-    public ListTypeSpecifier visitListTypeSpecifier(cqlParser.ListTypeSpecifierContext ctx) {
-        ListTypeSpecifier result =
-                of.createListTypeSpecifier().withElementType(parseTypeSpecifier(ctx.typeSpecifier()));
-        ListType listType = new ListType(result.getElementType().getResultType());
-        result.setResultType(listType);
-        return result;
+    override fun visitListTypeSpecifier(ctx: ListTypeSpecifierContext): ListTypeSpecifier {
+        val result =
+            of.createListTypeSpecifier().withElementType(parseTypeSpecifier(ctx.typeSpecifier()))
+        val listType = ListType(result.elementType.resultType)
+        result.resultType = listType
+        return result
     }
 
-    public FunctionHeader parseFunctionHeader(cqlParser.FunctionDefinitionContext ctx) {
-        final FunctionDef fun = of.createFunctionDef()
+    fun parseFunctionHeader(ctx: FunctionDefinitionContext): FunctionHeader {
+        val functionDef =
+            of.createFunctionDef()
                 .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
                 .withName(parseString(ctx.identifierOrFunctionIdentifier()))
-                .withContext(getCurrentContext());
-
+                .withContext(currentContext)
         if (ctx.fluentModifier() != null) {
-            libraryBuilder.checkCompatibilityLevel("Fluent functions", "1.5");
-            fun.setFluent(true);
+            libraryBuilder.checkCompatibilityLevel("Fluent functions", "1.5")
+            functionDef.isFluent = true
         }
-
         if (ctx.operandDefinition() != null) {
-            for (cqlParser.OperandDefinitionContext opdef : ctx.operandDefinition()) {
-                TypeSpecifier typeSpecifier = parseTypeSpecifier(opdef.typeSpecifier());
-                fun.getOperand().add((OperandDef) of.createOperandDef()
+            for (opdef in ctx.operandDefinition()) {
+                val typeSpecifier = parseTypeSpecifier(opdef.typeSpecifier())
+                functionDef.operand.add(
+                    of.createOperandDef()
                         .withName(parseString(opdef.referentialIdentifier()))
                         .withOperandTypeSpecifier(typeSpecifier)
-                        .withResultType(typeSpecifier.getResultType()));
+                        .withResultType(typeSpecifier!!.resultType) as OperandDef
+                )
             }
         }
-
-        final cqlParser.TypeSpecifierContext typeSpecifierContext = ctx.typeSpecifier();
-
-        if (typeSpecifierContext != null) {
-            return FunctionHeader.withReturnType(fun, parseTypeSpecifier(typeSpecifierContext));
-        }
-
-        return FunctionHeader.noReturnType(fun);
+        val typeSpecifierContext = ctx.typeSpecifier()
+        return if (typeSpecifierContext != null) {
+            FunctionHeader.withReturnType(functionDef, parseTypeSpecifier(typeSpecifierContext))
+        } else FunctionHeader.noReturnType(functionDef)
     }
 
-    protected TypeSpecifier parseTypeSpecifier(ParseTree pt) {
-        return pt == null ? null : (TypeSpecifier) visit(pt);
+    protected fun parseTypeSpecifier(pt: ParseTree?): TypeSpecifier? {
+        return if (pt == null) null else visit(pt) as TypeSpecifier
     }
 
-    protected AccessModifier parseAccessModifier(ParseTree pt) {
-        return pt == null ? AccessModifier.PUBLIC : (AccessModifier) visit(pt);
+    protected fun parseAccessModifier(pt: ParseTree?): AccessModifier {
+        return if (pt == null) AccessModifier.PUBLIC else (visit(pt) as AccessModifier)
     }
 
-    protected List<String> parseQualifiers(cqlParser.NamedTypeSpecifierContext ctx) {
-        List<String> qualifiers = new ArrayList<>();
+    protected fun parseQualifiers(ctx: NamedTypeSpecifierContext): List<String?> {
+        val qualifiers: MutableList<String?> = ArrayList()
         if (ctx.qualifier() != null) {
-            for (cqlParser.QualifierContext qualifierContext : ctx.qualifier()) {
-                String qualifier = parseString(qualifierContext);
-                qualifiers.add(qualifier);
+            for (qualifierContext in ctx.qualifier()) {
+                val qualifier = parseString(qualifierContext)
+                qualifiers.add(qualifier)
             }
         }
-        return qualifiers;
+        return qualifiers
     }
 
-    protected Model getModel(NamespaceInfo modelNamespace, String modelName, String version, String localIdentifier) {
+    protected open fun getModel(
+        modelNamespace: NamespaceInfo?,
+        modelName: String?,
+        version: String?,
+        localIdentifier: String?
+    ): Model? {
+        var modelName = modelName
+        var version = version
         if (modelName == null) {
-            var defaultUsing = libraryInfo.getDefaultUsingDefinition();
-            modelName = defaultUsing.getName();
-            version = defaultUsing.getVersion();
+            val defaultUsing = libraryInfo.defaultUsingDefinition
+            modelName = defaultUsing?.name
+            version = defaultUsing?.version
         }
-
-        var modelIdentifier = new ModelIdentifier().withId(modelName).withVersion(version);
+        val modelIdentifier = ModelIdentifier().withId(modelName).withVersion(version)
         if (modelNamespace != null) {
-            modelIdentifier.setSystem(modelNamespace.getUri());
+            modelIdentifier.system = modelNamespace.uri
         }
-        return libraryBuilder.getModel(modelIdentifier, localIdentifier);
+        return libraryBuilder.getModel(modelIdentifier, localIdentifier)
     }
 
-    private boolean pushChunk(ParseTree tree) {
-        if (!isAnnotationEnabled()) {
-            return false;
+    private fun pushChunk(tree: ParseTree): Boolean {
+        if (!isAnnotationEnabled) {
+            return false
         }
-
-        org.antlr.v4.runtime.misc.Interval sourceInterval = tree.getSourceInterval();
+        val sourceInterval = tree.sourceInterval
 
         // An interval of i..i-1 indicates an empty interval at position i in the input stream,
         if (sourceInterval.b < sourceInterval.a) {
-            return false;
+            return false
         }
-
-        Chunk chunk = new Chunk().withInterval(sourceInterval);
-        chunks.push(chunk);
-        return true;
+        val chunk = Chunk().withInterval(sourceInterval)
+        chunks.push(chunk)
+        return true
     }
 
-    private void popChunk(ParseTree tree, Object o, boolean pushedChunk) {
+    @Suppress("LongMethod")
+    private fun popChunk(tree: ParseTree, o: Any?, pushedChunk: Boolean) {
         if (!pushedChunk) {
-            return;
+            return
         }
-
-        Chunk chunk = chunks.pop();
-        if (o instanceof Element) {
-            Element element = (Element) o;
-            chunk.setElement(element);
-
-            if (!(tree instanceof cqlParser.LibraryContext)) {
-                if (element instanceof UsingDef
-                        || element instanceof IncludeDef
-                        || element instanceof CodeSystemDef
-                        || element instanceof ValueSetDef
-                        || element instanceof CodeDef
-                        || element instanceof ConceptDef
-                        || element instanceof ParameterDef
-                        || element instanceof ContextDef
-                        || element instanceof ExpressionDef) {
-                    Annotation a = getAnnotation(element);
-                    if (a == null || a.getS() == null) {
+        var chunk = chunks.pop()
+        if (o is Element) {
+            val element = o
+            chunk.element = element
+            if (tree !is LibraryContext) {
+                if (
+                    element is UsingDef ||
+                        element is IncludeDef ||
+                        element is CodeSystemDef ||
+                        element is ValueSetDef ||
+                        element is CodeDef ||
+                        element is ConceptDef ||
+                        element is ParameterDef ||
+                        element is ContextDef ||
+                        element is ExpressionDef
+                ) {
+                    val a = getAnnotation(element)
+                    if (a == null || a.s == null) {
                         // Add header information (comments prior to the definition)
-                        BaseInfo definitionInfo = libraryInfo.resolveDefinition(tree);
-                        if (definitionInfo != null && definitionInfo.getHeaderInterval() != null) {
-                            Chunk headerChunk = new Chunk()
-                                    .withInterval(definitionInfo.getHeaderInterval())
-                                    .withIsHeaderChunk(true);
-                            Chunk newChunk = new Chunk()
-                                    .withInterval(new org.antlr.v4.runtime.misc.Interval(
-                                            headerChunk.getInterval().a, chunk.getInterval().b));
-                            newChunk.addChunk(headerChunk);
-                            newChunk.setElement(chunk.getElement());
-                            for (Chunk c : chunk.getChunks()) {
-                                newChunk.addChunk(c);
+                        val definitionInfo = libraryInfo.resolveDefinition(tree)
+                        if (definitionInfo != null && definitionInfo.headerInterval != null) {
+                            val headerChunk =
+                                Chunk()
+                                    .withInterval(definitionInfo.headerInterval)
+                                    .withIsHeaderChunk(true)
+                            val newChunk =
+                                Chunk()
+                                    .withInterval(
+                                        Interval(headerChunk.interval.a, chunk.interval.b)
+                                    )
+                            newChunk.addChunk(headerChunk)
+                            newChunk.element = chunk.element
+                            for (c in chunk.chunks) {
+                                newChunk.addChunk(c)
                             }
-                            chunk = newChunk;
+                            chunk = newChunk
                         }
-                        if (a == null) {
-                            element.getAnnotation().add(buildAnnotation(chunk));
-                        } else {
-                            addNarrativeToAnnotation(a, chunk);
-                        }
+                        a?.let { addNarrativeToAnnotation(it, chunk) }
+                            ?: element.annotation.add(buildAnnotation(chunk))
                     }
                 }
             } else {
-                if (libraryInfo.getDefinition() != null && libraryInfo.getHeaderInterval() != null) {
-                    Chunk headerChunk = new Chunk()
-                            .withInterval(libraryInfo.getHeaderInterval())
-                            .withIsHeaderChunk(true);
-                    Chunk definitionChunk =
-                            new Chunk().withInterval(libraryInfo.getDefinition().getSourceInterval());
-                    Chunk newChunk = new Chunk()
-                            .withInterval(new org.antlr.v4.runtime.misc.Interval(
-                                    headerChunk.getInterval().a, definitionChunk.getInterval().b));
-                    newChunk.addChunk(headerChunk);
-                    newChunk.addChunk(definitionChunk);
-                    newChunk.setElement(chunk.getElement());
-                    chunk = newChunk;
-                    Annotation a = getAnnotation(libraryBuilder.getLibrary());
-                    if (a == null) {
-                        libraryBuilder.getLibrary().getAnnotation().add(buildAnnotation(chunk));
-                    } else {
-                        addNarrativeToAnnotation(a, chunk);
-                    }
+                if (libraryInfo.definition != null && libraryInfo.headerInterval != null) {
+                    val headerChunk =
+                        Chunk().withInterval(libraryInfo.headerInterval).withIsHeaderChunk(true)
+                    val definitionChunk =
+                        Chunk().withInterval(libraryInfo.definition?.sourceInterval)
+                    val newChunk =
+                        Chunk()
+                            .withInterval(
+                                Interval(headerChunk.interval.a, definitionChunk.interval.b)
+                            )
+                    newChunk.addChunk(headerChunk)
+                    newChunk.addChunk(definitionChunk)
+                    newChunk.element = chunk.element
+                    chunk = newChunk
+                    val a = getAnnotation(libraryBuilder.library)
+                    a?.let { addNarrativeToAnnotation(it, chunk) }
+                        ?: libraryBuilder.library.annotation.add(buildAnnotation(chunk))
                 }
             }
         }
-
         if (!chunks.isEmpty()) {
-            chunks.peek().addChunk(chunk);
+            chunks.peek().addChunk(chunk)
         }
     }
 
-    private void processTags(ParseTree tree, Object o) {
+    private fun processTags(tree: ParseTree, o: Any?) {
         if (!libraryBuilder.isCompatibleWith("1.5")) {
-            return;
+            return
         }
-
-        if (!(o instanceof Element)) {
-            return;
+        if (o !is Element) {
+            return
         }
-
-        Element element = (Element) o;
-        if (!(tree instanceof cqlParser.LibraryContext)) {
-            if (element instanceof UsingDef
-                    || element instanceof IncludeDef
-                    || element instanceof CodeSystemDef
-                    || element instanceof ValueSetDef
-                    || element instanceof CodeDef
-                    || element instanceof ConceptDef
-                    || element instanceof ParameterDef
-                    || element instanceof ContextDef
-                    || element instanceof ExpressionDef) {
-                var tags = getTags(tree);
+        val element = o
+        if (tree !is LibraryContext) {
+            if (
+                element is UsingDef ||
+                    element is IncludeDef ||
+                    element is CodeSystemDef ||
+                    element is ValueSetDef ||
+                    element is CodeDef ||
+                    element is ConceptDef ||
+                    element is ParameterDef ||
+                    element is ContextDef ||
+                    element is ExpressionDef
+            ) {
+                val tags = getTags(tree)
                 if (!tags.isEmpty()) {
-                    Annotation a = getAnnotation(element);
+                    var a = getAnnotation(element)
                     if (a == null) {
-                        a = buildAnnotation();
-                        element.getAnnotation().add(a);
+                        a = buildAnnotation()
+                        element.annotation.add(a)
                     }
-                    // If the definition was processed as a forward declaration, the tag processing will already
+                    // If the definition was processed as a forward declaration, the tag processing
+                    // will already
                     // have occurred
-                    // and just adding tags would duplicate them here. This doesn't account for the possibility
+                    // and just adding tags would duplicate them here. This doesn't account for the
+                    // possibility
                     // that
-                    // tags would be added for some other reason, but I didn't want the overhead of checking for
+                    // tags would be added for some other reason, but I didn't want the overhead of
+                    // checking for
                     // existing
-                    // tags, and there is currently nothing that would add tags other than being processed from
+                    // tags, and there is currently nothing that would add tags other than being
+                    // processed from
                     // comments
-                    if (a.getT().isEmpty()) {
-                        a.getT().addAll(tags);
+                    if (a.t.isEmpty()) {
+                        a.t.addAll(tags)
                     }
                 }
             }
         } else {
-            if (libraryInfo.getDefinition() != null && libraryInfo.getHeaderInterval() != null) {
-                var tags = getTags(libraryInfo.getHeader());
+            if (libraryInfo.definition != null && libraryInfo.headerInterval != null) {
+                val tags = getTags(libraryInfo.header)
                 if (!tags.isEmpty()) {
-                    Annotation a = getAnnotation(libraryBuilder.getLibrary());
+                    var a = getAnnotation(libraryBuilder.library)
                     if (a == null) {
-                        a = buildAnnotation();
-                        libraryBuilder.getLibrary().getAnnotation().add(a);
+                        a = buildAnnotation()
+                        libraryBuilder.library.annotation.add(a)
                     }
-                    a.getT().addAll(tags);
+                    a.t.addAll(tags)
                 }
             }
         }
     }
 
-    private List<Tag> getTags(String header) {
+    private fun getTags(header: String?): List<Tag> {
+        var header = header
         if (header != null) {
-            header = parseComments(header);
-            return parseTags(header);
+            header = parseComments(header)
+            return parseTags(header)
         }
-
-        return Collections.emptyList();
+        return emptyList()
     }
 
-    private List<Tag> getTags(ParseTree tree) {
-        BaseInfo bi = libraryInfo.resolveDefinition(tree);
-        if (bi != null) {
-            return getTags(bi.getHeader());
-        }
-
-        return Collections.emptyList();
+    private fun getTags(tree: ParseTree): List<Tag> {
+        val bi = libraryInfo.resolveDefinition(tree)
+        return if (bi != null) {
+            getTags(bi.header)
+        } else emptyList()
     }
 
-    private List<Tag> parseTags(String header) {
-        header = String.join("\n", Arrays.asList(header.trim().split("\n[ \t]*\\*[ \t\\*]*")));
-        var tags = new ArrayList<Tag>();
-
-        int startFrom = 0;
-        while (startFrom < header.length()) {
-            Pair<String, Integer> tagNamePair = lookForTagName(header, startFrom);
+    private fun parseTags(header: String?): List<Tag> {
+        val header =
+            header!!
+                .trim { it <= ' ' }
+                .split("\n[ \t]*\\*[ \t\\*]*".toRegex())
+                .dropLastWhile { it.isEmpty() }
+                .toTypedArray()
+                .joinToString("\n")
+        val tags = ArrayList<Tag>()
+        var startFrom = 0
+        while (startFrom < header.length) {
+            val tagNamePair = lookForTagName(header, startFrom)
             if (tagNamePair != null) {
-                if (tagNamePair.getLeft().length() > 0 && isValidIdentifier(tagNamePair.getLeft())) {
-                    Tag t = af.createTag().withName(tagNamePair.getLeft());
-                    startFrom = tagNamePair.getRight();
-                    Pair<String, Integer> tagValuePair = lookForTagValue(header, startFrom);
+                if (tagNamePair.left.length > 0 && isValidIdentifier(tagNamePair.left)) {
+                    var t = af.createTag().withName(tagNamePair.left)
+                    startFrom = tagNamePair.right
+                    val tagValuePair = lookForTagValue(header, startFrom)
                     if (tagValuePair != null) {
-                        if (tagValuePair.getLeft().length() > 0) {
-                            t = t.withValue(tagValuePair.getLeft());
-                            startFrom = tagValuePair.getRight();
+                        if (tagValuePair.left.length > 0) {
+                            t = t.withValue(tagValuePair.left)
+                            startFrom = tagValuePair.right
                         }
                     }
-                    tags.add(t);
+                    tags.add(t)
                 } else {
-                    startFrom = tagNamePair.getRight();
+                    startFrom = tagNamePair.right
                 }
             } else { // no name tag found, no need to traverse more
-                break;
+                break
             }
         }
-        return tags;
+        return tags
     }
 
-    private String parseComments(String header) {
-        List<String> result = new ArrayList<>();
+    private fun parseComments(header: String): String {
+        var header: String? = header
+        val result: MutableList<String> = ArrayList()
         if (header != null) {
-            header = header.replace("\r\n", "\n");
-            String[] lines = header.split("\n");
-            boolean inMultiline = false;
-            for (String line : lines) {
+            header = header.replace("\r\n", "\n")
+            val lines = header.split("\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            var inMultiline = false
+            for (line in lines) {
                 if (!inMultiline) {
-                    int start = line.indexOf("/*");
+                    var start = line.indexOf("/*")
                     if (start >= 0) {
                         if (line.endsWith("*/")) {
-                            result.add(line.substring(start + 2, line.length() - 2));
+                            result.add(line.substring(start + 2, line.length - 2))
                         } else {
-                            result.add(line.substring(start + 2));
+                            result.add(line.substring(start + 2))
                         }
-                        inMultiline = true;
-                    } else start = line.indexOf("//");
+                        inMultiline = true
+                    } else start = line.indexOf("//")
                     if (start >= 0 && !inMultiline) {
-                        result.add(line.substring(start + 2));
+                        result.add(line.substring(start + 2))
                     }
                 } else {
-                    int end = line.indexOf("*/");
+                    val end = line.indexOf("*/")
                     if (end >= 0) {
-                        inMultiline = false;
+                        inMultiline = false
                         if (end > 0) {
-                            result.add(line.substring(0, end));
+                            result.add(line.substring(0, end))
                         }
                     } else {
-                        result.add(line);
+                        result.add(line)
                     }
                 }
             }
         }
-        return String.join("\n", result);
+        return java.lang.String.join("\n", result)
     }
 
-    public boolean isAnnotationEnabled() {
-        return annotate;
+    fun enableAnnotations() {
+        isAnnotationEnabled = true
     }
 
-    public void enableAnnotations() {
-        annotate = true;
+    fun disableAnnotations() {
+        isAnnotationEnabled = false
     }
 
-    public void disableAnnotations() {
-        annotate = false;
+    private fun buildAnnotation(chunk: Chunk): Annotation {
+        val annotation = af.createAnnotation()
+        annotation.s = buildNarrative(chunk)
+        return annotation
     }
 
-    private Annotation buildAnnotation(Chunk chunk) {
-        Annotation annotation = af.createAnnotation();
-        annotation.setS(buildNarrative(chunk));
-        return annotation;
+    private fun buildAnnotation(): Annotation {
+        return af.createAnnotation()
     }
 
-    private Annotation buildAnnotation() {
-        return af.createAnnotation();
+    private fun addNarrativeToAnnotation(annotation: Annotation, chunk: Chunk) {
+        annotation.s = buildNarrative(chunk)
     }
 
-    private void addNarrativeToAnnotation(Annotation annotation, Chunk chunk) {
-        annotation.setS(buildNarrative(chunk));
-    }
-
-    private Narrative buildNarrative(Chunk chunk) {
-        Narrative narrative = af.createNarrative();
-        if (chunk.getElement() != null) {
-            narrative.setR(chunk.getElement().getLocalId());
+    private fun buildNarrative(chunk: Chunk): Narrative {
+        val narrative = af.createNarrative()
+        if (chunk.element != null) {
+            narrative.r = chunk.element.localId
         }
-
         if (chunk.hasChunks()) {
-            Narrative currentNarrative = null;
-            for (Chunk childChunk : chunk.getChunks()) {
-                Narrative chunkNarrative = buildNarrative(childChunk);
+            var currentNarrative: Narrative? = null
+            for (childChunk in chunk.chunks) {
+                val chunkNarrative = buildNarrative(childChunk)
                 if (hasChunks(chunkNarrative)) {
                     if (currentNarrative != null) {
-                        narrative.getContent().add(wrapNarrative(currentNarrative));
-                        currentNarrative = null;
+                        narrative.content.add(wrapNarrative(currentNarrative))
+                        currentNarrative = null
                     }
-                    narrative.getContent().add(wrapNarrative(chunkNarrative));
+                    narrative.content.add(wrapNarrative(chunkNarrative))
                 } else {
                     if (currentNarrative == null) {
-                        currentNarrative = chunkNarrative;
+                        currentNarrative = chunkNarrative
                     } else {
-                        currentNarrative.getContent().addAll(chunkNarrative.getContent());
-                        if (currentNarrative.getR() == null) {
-                            currentNarrative.setR(chunkNarrative.getR());
+                        currentNarrative.content.addAll(chunkNarrative.content)
+                        if (currentNarrative.r == null) {
+                            currentNarrative.r = chunkNarrative.r
                         }
                     }
                 }
             }
             if (currentNarrative != null) {
-                narrative.getContent().add(wrapNarrative(currentNarrative));
+                narrative.content.add(wrapNarrative(currentNarrative))
             }
         } else {
-            String chunkContent = tokenStream.getText(chunk.getInterval());
-            if (chunk.isHeaderChunk()) {
-                chunkContent = stripLeading(chunkContent);
+            var chunkContent = tokenStream.getText(chunk.interval)
+            if (chunk.isHeaderChunk) {
+                chunkContent = stripLeading(chunkContent)
             }
-            chunkContent = normalizeWhitespace(chunkContent);
-            narrative.getContent().add(chunkContent);
+            chunkContent = normalizeWhitespace(chunkContent)
+            narrative.content.add(chunkContent)
         }
-
-        return narrative;
+        return narrative
     }
 
-    private boolean hasChunks(Narrative narrative) {
-        for (Serializable c : narrative.getContent()) {
-            if (!(c instanceof String)) {
-                return true;
+    private fun hasChunks(narrative: Narrative): Boolean {
+        for (c in narrative.content) {
+            if (c !is String) {
+                return true
             }
         }
-        return false;
+        return false
     }
 
-    private TrackBack getTrackBack(ParseTree tree) {
-        if (tree instanceof ParserRuleContext) {
-            return getTrackBack((ParserRuleContext) tree);
+    private fun getTrackBack(tree: ParseTree): TrackBack? {
+        if (tree is ParserRuleContext) {
+            return getTrackBack(tree)
         }
-        if (tree instanceof TerminalNode) {
-            return getTrackBack((TerminalNode) tree);
-        }
-        return null;
+        return if (tree is TerminalNode) {
+            getTrackBack(tree)
+        } else null
     }
 
-    private TrackBack getTrackBack(ParserRuleContext ctx) {
-        return new TrackBack(
-                libraryBuilder.getLibraryIdentifier(),
-                ctx.getStart().getLine(),
-                ctx.getStart().getCharPositionInLine() + 1, // 1-based instead of 0-based
-                ctx.getStop().getLine(),
-                ctx.getStop().getCharPositionInLine() + ctx.getStop().getText().length() // 1-based instead of 0-based
-                );
+    private fun getTrackBack(ctx: ParserRuleContext): TrackBack {
+        return TrackBack(
+            libraryBuilder.libraryIdentifier,
+            ctx.getStart().line,
+            ctx.getStart().charPositionInLine + 1, // 1-based instead of 0-based
+            ctx.getStop().line,
+            ctx.getStop().charPositionInLine +
+                ctx.getStop().text.length // 1-based instead of 0-based
+        )
     }
 
-    private TrackBack track(Trackable trackable, ParseTree pt) {
-        TrackBack tb = getTrackBack(pt);
-
+    private fun track(trackable: Trackable, pt: ParseTree): TrackBack? {
+        val tb = getTrackBack(pt)
         if (tb != null) {
-            trackable.getTrackbacks().add(tb);
+            trackable.trackbacks.add(tb)
         }
-
-        if (trackable instanceof Element) {
-            decorate((Element) trackable, tb);
+        if (trackable is Element) {
+            decorate(trackable, tb)
         }
-
-        return tb;
+        return tb
     }
 
-    private void decorate(Element element, TrackBack tb) {
+    private fun decorate(element: Element, tb: TrackBack?) {
         if (locate && tb != null) {
-            element.setLocator(tb.toLocator());
+            element.locator = tb.toLocator()
         }
-
-        if (resultTypes && element.getResultType() != null) {
-            if (element.getResultType() instanceof NamedType) {
-                element.setResultTypeName(libraryBuilder.dataTypeToQName(element.getResultType()));
+        if (resultTypes && element.resultType != null) {
+            if (element.resultType is NamedType) {
+                element.resultTypeName = libraryBuilder.dataTypeToQName(element.resultType)
             } else {
-                element.setResultTypeSpecifier(libraryBuilder.dataTypeToTypeSpecifier(element.getResultType()));
+                element.resultTypeSpecifier =
+                    libraryBuilder.dataTypeToTypeSpecifier(element.resultType)
             }
         }
     }
 
-    private Pair<String, Integer> lookForTagName(String header, int startFrom) {
-
-        if (startFrom >= header.length()) {
-            return null;
+    private fun lookForTagName(header: String?, startFrom: Int): Pair<String, Int>? {
+        if (startFrom >= header!!.length) {
+            return null
         }
-        int start = header.indexOf("@", startFrom);
+        val start = header.indexOf("@", startFrom)
         if (start < 0) {
-            return null;
+            return null
         }
-        int nextTagStart = header.indexOf("@", start + 1);
-        int nextColon = header.indexOf(":", start + 1);
-
+        val nextTagStart = header.indexOf("@", start + 1)
+        val nextColon = header.indexOf(":", start + 1)
         if (nextTagStart < 0) { // no next tag , no next colon
             if (nextColon < 0) {
-                return Pair.of(header.substring(start + 1, header.length()).trim(), header.length());
+                return Pair.of(
+                    header.substring(start + 1, header.length).trim { it <= ' ' },
+                    header.length
+                )
             }
         } else {
-            if (nextColon < 0
-                    || nextColon
-                            > nextTagStart) { // (has next tag and no colon) or (has next tag and next colon belongs to
+            if (
+                nextColon < 0 || nextColon > nextTagStart
+            ) { // (has next tag and no colon) or (has next tag and next colon belongs to
                 // next tag)
-                return Pair.of(header.substring(start + 1, nextTagStart).trim(), nextTagStart);
+                return Pair.of(
+                    header.substring(start + 1, nextTagStart).trim { it <= ' ' },
+                    nextTagStart
+                )
             }
         }
-        return Pair.of(header.substring(start + 1, nextColon).trim(), nextColon + 1);
+        return Pair.of(header.substring(start + 1, nextColon).trim { it <= ' ' }, nextColon + 1)
     }
 
-    // this method returns Pair<tag value, next tag name lookup index> starting from startFrom
-    // can return null in cases.
-    // for @1980-12-01, it will potentially check to be treated as value date
-    // it looks for parameter in double quotes, e.g. @parameter: "Measurement Interval" [@2019,@2020]
-    public static Pair<String, Integer> lookForTagValue(String header, int startFrom) {
-
-        if (startFrom >= header.length()) {
-            return null;
-        }
-        int nextTag = header.indexOf('@', startFrom);
-        int nextStartDoubleQuote = header.indexOf("\"", startFrom);
-        if ((nextTag < 0 || nextTag > nextStartDoubleQuote)
-                && nextStartDoubleQuote > 0
-                && (header.length() > (nextStartDoubleQuote + 1))) {
-            int nextEndDoubleQuote = header.indexOf("\"", nextStartDoubleQuote + 1);
-            if (nextEndDoubleQuote > 0) {
-                int parameterEnd = header.indexOf("\n", (nextStartDoubleQuote + 1));
-                if (parameterEnd < 0) {
-                    return Pair.of(header.substring(nextStartDoubleQuote), header.length());
-                } else {
-                    return Pair.of(header.substring(nextStartDoubleQuote, parameterEnd), parameterEnd);
-                }
-            } else { // branch where the 2nd double quote is missing
-                return Pair.of(header.substring(nextStartDoubleQuote), header.length());
+    private fun getAnnotation(element: Element): Annotation? {
+        for (o in element.annotation) {
+            if (o is Annotation) {
+                return o
             }
         }
-        if (nextTag == startFrom
-                && !isStartingWithDigit(header, nextTag + 1)) { // starts with `@` and not potential date value
-            return Pair.of("", startFrom);
-        } else if (nextTag > 0) { // has some text before tag
-            String interimText = header.substring(startFrom, nextTag).trim();
-            if (isStartingWithDigit(header, nextTag + 1)) { // next `@` is a date value
-                if (!interimText.isEmpty()
-                        && !interimText.equals(":")) { // interim text has value, regards interim text
-                    return Pair.of(interimText, nextTag);
-                } else {
-                    int nextSpace = header.indexOf(' ', nextTag);
-                    int nextLine = header.indexOf("\n", nextTag);
-                    int mul = nextSpace * nextLine;
-                    int nextDelimeterIndex = header.length();
+        return null
+    }
 
-                    if (mul < 0) {
-                        nextDelimeterIndex = Math.max(nextLine, nextSpace);
-                    } else if (mul > 1) {
-                        nextDelimeterIndex = Math.min(nextLine, nextSpace);
+    protected fun parseString(pt: ParseTree?): String? {
+        return StringEscapeUtils.unescapeCql(if (pt == null) null else visit(pt) as String)
+    }
+
+    fun enableLocators() {
+        locate = true
+    }
+
+    fun locatorsEnabled(): Boolean {
+        return locate
+    }
+
+    fun disableLocators() {
+        locate = false
+    }
+
+    fun enableResultTypes() {
+        resultTypes = true
+    }
+
+    fun disableResultTypes() {
+        resultTypes = false
+    }
+
+    fun resultTypesEnabled(): Boolean {
+        return resultTypes
+    }
+
+    fun enableDateRangeOptimization() {
+        dateRangeOptimization = true
+    }
+
+    fun disableDateRangeOptimization() {
+        dateRangeOptimization = false
+    }
+
+    fun enableDetailedErrors() {
+        isDetailedErrorsEnabled = true
+    }
+
+    fun disableDetailedErrors() {
+        isDetailedErrorsEnabled = false
+    }
+
+    fun enableMethodInvocation() {
+        isMethodInvocationEnabled = true
+    }
+
+    fun disableMethodInvocation() {
+        isMethodInvocationEnabled = false
+    }
+
+    fun enableFromKeywordRequired() {
+        isFromKeywordRequired = true
+    }
+
+    fun disableFromKeywordRequired() {
+        isFromKeywordRequired = false
+    }
+
+    private fun setCompilerOptions(options: CqlCompilerOptions) {
+        if (options.options.contains(CqlCompilerOptions.Options.EnableDateRangeOptimization)) {
+            enableDateRangeOptimization()
+        }
+        if (options.options.contains(CqlCompilerOptions.Options.EnableAnnotations)) {
+            enableAnnotations()
+        }
+        if (options.options.contains(CqlCompilerOptions.Options.EnableLocators)) {
+            enableLocators()
+        }
+        if (options.options.contains(CqlCompilerOptions.Options.EnableResultTypes)) {
+            enableResultTypes()
+        }
+        if (options.options.contains(CqlCompilerOptions.Options.EnableDetailedErrors)) {
+            enableDetailedErrors()
+        }
+        if (options.options.contains(CqlCompilerOptions.Options.DisableMethodInvocation)) {
+            disableMethodInvocation()
+        }
+        if (options.options.contains(CqlCompilerOptions.Options.RequireFromKeyword)) {
+            enableFromKeywordRequired()
+        }
+        libraryBuilder.compatibilityLevel = options.compatibilityLevel
+    }
+
+    companion object {
+        // this method returns Pair<tag value, next tag name lookup index> starting from startFrom
+        // can return null in cases.
+        // for @1980-12-01, it will potentially check to be treated as value date
+        // it looks for parameter in double quotes, e.g. @parameter: "Measurement Interval"
+        // [@2019,@2020]
+        fun lookForTagValue(header: String?, startFrom: Int): Pair<String, Int>? {
+            if (startFrom >= header!!.length) {
+                return null
+            }
+            val nextTag = header.indexOf('@', startFrom)
+            val nextStartDoubleQuote = header.indexOf("\"", startFrom)
+            if (
+                (nextTag < 0 || nextTag > nextStartDoubleQuote) &&
+                    nextStartDoubleQuote > 0 &&
+                    header.length > nextStartDoubleQuote + 1
+            ) {
+                val nextEndDoubleQuote = header.indexOf("\"", nextStartDoubleQuote + 1)
+                return if (nextEndDoubleQuote > 0) {
+                    val parameterEnd = header.indexOf("\n", nextStartDoubleQuote + 1)
+                    if (parameterEnd < 0) {
+                        Pair.of(header.substring(nextStartDoubleQuote), header.length)
+                    } else {
+                        Pair.of(header.substring(nextStartDoubleQuote, parameterEnd), parameterEnd)
                     }
-
-                    return Pair.of(header.substring(nextTag, nextDelimeterIndex), nextDelimeterIndex);
-                }
-            } else { // next `@` is not date
-                return Pair.of(interimText, nextTag);
-            }
-        }
-
-        return Pair.of(header.substring(startFrom).trim(), header.length());
-    }
-
-    public static Serializable wrapNarrative(Narrative narrative) {
-        /*
-        TODO: Should be able to collapse narrative if the span doesn't have an attribute
-        That's what this code is doing, but it doesn't work and I don't have time to debug it
-        if (narrative.getR() == null) {
-            StringBuilder content = new StringBuilder();
-            boolean onlyStrings = true;
-            for (Serializable s : narrative.getContent()) {
-                if (s instanceof String) {
-                    content.append((String)s);
-                }
-                else {
-                    onlyStrings = false;
+                } else { // branch where the 2nd double quote is missing
+                    Pair.of(header.substring(nextStartDoubleQuote), header.length)
                 }
             }
-            if (onlyStrings) {
-                return content.toString();
-            }
-        }
-        */
-        return new JAXBElement<>(new QName("urn:hl7-org:cql-annotations:r1", "s"), Narrative.class, narrative);
-    }
-
-    public static boolean isValidIdentifier(String tagName) {
-        for (int i = 0; i < tagName.length(); i++) {
-            if (tagName.charAt(i) == '_') {
-                continue;
-            }
-
-            if (i == 0) {
-                if (!Character.isLetter(tagName.charAt(i))) {
-                    return false;
+            if (
+                nextTag == startFrom && !isStartingWithDigit(header, nextTag + 1)
+            ) { // starts with `@` and not potential date value
+                return Pair.of("", startFrom)
+            } else if (nextTag > 0) { // has some text before tag
+                val interimText = header.substring(startFrom, nextTag).trim { it <= ' ' }
+                return if (isStartingWithDigit(header, nextTag + 1)) { // next `@` is a date value
+                    if (
+                        !interimText.isEmpty() && interimText != ":"
+                    ) { // interim text has value, regards interim text
+                        Pair.of(interimText, nextTag)
+                    } else {
+                        val nextSpace = header.indexOf(' ', nextTag)
+                        val nextLine = header.indexOf("\n", nextTag)
+                        val mul = nextSpace * nextLine
+                        var nextDelimeterIndex = header.length
+                        if (mul < 0) {
+                            nextDelimeterIndex = Math.max(nextLine, nextSpace)
+                        } else if (mul > 1) {
+                            nextDelimeterIndex = Math.min(nextLine, nextSpace)
+                        }
+                        Pair.of(header.substring(nextTag, nextDelimeterIndex), nextDelimeterIndex)
+                    }
+                } else { // next `@` is not date
+                    Pair.of(interimText, nextTag)
                 }
-            } else {
-                if (!Character.isLetterOrDigit(tagName.charAt(i))) {
-                    return false;
+            }
+            return Pair.of(header.substring(startFrom).trim { it <= ' ' }, header.length)
+        }
+
+        fun wrapNarrative(narrative: Narrative): Serializable {
+            @Suppress("ForbiddenComment")
+            /*
+            TODO: Should be able to collapse narrative if the span doesn't have an attribute
+            That's what this code is doing, but it doesn't work and I don't have time to debug it
+            if (narrative.getR() == null) {
+                StringBuilder content = new StringBuilder();
+                boolean onlyStrings = true;
+                for (Serializable s : narrative.getContent()) {
+                    if (s instanceof String) {
+                        content.append((String)s);
+                    }
+                    else {
+                        onlyStrings = false;
+                    }
+                }
+                if (onlyStrings) {
+                    return content.toString();
                 }
             }
+            */
+            return JAXBElement(
+                QName("urn:hl7-org:cql-annotations:r1", "s"),
+                Narrative::class.java,
+                narrative
+            )
         }
 
-        return true;
-    }
-
-    public static String getTypeIdentifier(List<String> qualifiers, String identifier) {
-        if (qualifiers.size() > 1) {
-            String result = null;
-            for (int i = 1; i < qualifiers.size(); i++) {
-                result = result == null ? qualifiers.get(i) : (result + "." + qualifiers.get(i));
+        fun isValidIdentifier(tagName: String): Boolean {
+            for (i in 0 until tagName.length) {
+                if (tagName[i] == '_') {
+                    continue
+                }
+                if (i == 0) {
+                    if (!Character.isLetter(tagName[i])) {
+                        return false
+                    }
+                } else {
+                    if (!Character.isLetterOrDigit(tagName[i])) {
+                        return false
+                    }
+                }
             }
-            return result + "." + identifier;
+            return true
         }
 
-        return identifier;
-    }
-
-    public static String getModelIdentifier(List<String> qualifiers) {
-        return !qualifiers.isEmpty() ? qualifiers.get(0) : null;
-    }
-
-    // TODO: Should just use String.stripLeading() but that is only available in 11+
-    public static String stripLeading(String s) {
-        int index = 0;
-        while (index < s.length()) {
-            if (!Character.isWhitespace(s.charAt(index))) {
-                break;
+        fun getTypeIdentifier(qualifiers: List<String?>?, identifier: String?): String? {
+            if (qualifiers!!.size > 1) {
+                var result: String? = null
+                for (i in 1 until qualifiers.size) {
+                    result = if (result == null) qualifiers[i] else result + "." + qualifiers[i]
+                }
+                return "$result.$identifier"
             }
-            index++;
+            return identifier
         }
-        if (index == s.length()) {
-            return "";
-        }
-        return s.substring(index);
-    }
 
-    private Annotation getAnnotation(Element element) {
-        for (var o : element.getAnnotation()) {
-            if (o instanceof Annotation) {
-                return (Annotation) o;
+        fun getModelIdentifier(qualifiers: List<String?>?): String? {
+            return if (!qualifiers!!.isEmpty()) qualifiers[0] else null
+        }
+
+        @Suppress("ForbiddenComment")
+        // TODO: Should just use String.stripLeading() but that is only available in 11+
+        fun stripLeading(s: String): String {
+            var index = 0
+            while (index < s.length) {
+                if (!Character.isWhitespace(s[index])) {
+                    break
+                }
+                index++
             }
+            return if (index == s.length) {
+                ""
+            } else s.substring(index)
         }
 
-        return null;
-    }
-
-    protected String parseString(ParseTree pt) {
-        return StringEscapeUtils.unescapeCql(pt == null ? null : (String) visit(pt));
-    }
-
-    public static String normalizeWhitespace(String input) {
-        return input.replace("\r\n", "\n");
-    }
-
-    public static boolean isStartingWithDigit(String header, int index) {
-        return (index < header.length()) && Character.isDigit(header.charAt(index));
-    }
-
-    public void enableLocators() {
-        locate = true;
-    }
-
-    public boolean locatorsEnabled() {
-        return locate;
-    }
-
-    public void disableLocators() {
-        locate = false;
-    }
-
-    public void enableResultTypes() {
-        resultTypes = true;
-    }
-
-    public void disableResultTypes() {
-        resultTypes = false;
-    }
-
-    public boolean resultTypesEnabled() {
-        return resultTypes;
-    }
-
-    public void enableDateRangeOptimization() {
-        dateRangeOptimization = true;
-    }
-
-    public void disableDateRangeOptimization() {
-        dateRangeOptimization = false;
-    }
-
-    public boolean getDateRangeOptimization() {
-        return dateRangeOptimization;
-    }
-
-    public void enableDetailedErrors() {
-        detailedErrors = true;
-    }
-
-    public void disableDetailedErrors() {
-        detailedErrors = false;
-    }
-
-    public boolean isDetailedErrorsEnabled() {
-        return detailedErrors;
-    }
-
-    public void enableMethodInvocation() {
-        methodInvocation = true;
-    }
-
-    public void disableMethodInvocation() {
-        methodInvocation = false;
-    }
-
-    public boolean isMethodInvocationEnabled() {
-        return methodInvocation;
-    }
-
-    public boolean isFromKeywordRequired() {
-        return fromKeywordRequired;
-    }
-
-    public void enableFromKeywordRequired() {
-        fromKeywordRequired = true;
-    }
-
-    public void disableFromKeywordRequired() {
-        fromKeywordRequired = false;
-    }
-
-    public boolean getIncludeDeprecatedElements() {
-        return includeDeprecatedElements;
-    }
-
-    public void setIncludeDeprecatedElements(boolean includeDeprecatedElements) {
-        this.includeDeprecatedElements = includeDeprecatedElements;
-    }
-
-    private void setCompilerOptions(CqlCompilerOptions options) {
-        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableDateRangeOptimization)) {
-            this.enableDateRangeOptimization();
+        fun normalizeWhitespace(input: String): String {
+            return input.replace("\r\n", "\n")
         }
-        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableAnnotations)) {
-            this.enableAnnotations();
+
+        fun isStartingWithDigit(header: String?, index: Int): Boolean {
+            return index < header!!.length && Character.isDigit(header[index])
         }
-        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableLocators)) {
-            this.enableLocators();
-        }
-        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableResultTypes)) {
-            this.enableResultTypes();
-        }
-        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableDetailedErrors)) {
-            this.enableDetailedErrors();
-        }
-        if (options.getOptions().contains(CqlCompilerOptions.Options.DisableMethodInvocation)) {
-            this.disableMethodInvocation();
-        }
-        if (options.getOptions().contains(CqlCompilerOptions.Options.RequireFromKeyword)) {
-            this.enableFromKeywordRequired();
-        }
-        libraryBuilder.setCompatibilityLevel(options.getCompatibilityLevel());
     }
 }
