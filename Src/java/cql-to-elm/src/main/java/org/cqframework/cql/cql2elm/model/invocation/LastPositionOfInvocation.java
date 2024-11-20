@@ -17,10 +17,7 @@ public class LastPositionOfInvocation extends OperatorExpressionInvocation<LastP
 
     @Override
     public void setOperands(List<Expression> operands) {
-        if (operands == null || operands.size() != 2) {
-            throw new IllegalArgumentException("LastPositionOf operation requires two operands.");
-        }
-
+        require(operands != null && operands.size() == 2, "LastPositionOf operator requires two operands.");
         expression.setPattern(operands.get(0));
         expression.setString(operands.get(1));
     }

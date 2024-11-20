@@ -23,9 +23,9 @@ public class SubstringInvocation extends OperatorExpressionInvocation<Substring>
 
     @Override
     public void setOperands(List<Expression> operands) {
-        if (operands == null || operands.size() < 2 || operands.size() > 3) {
-            throw new IllegalArgumentException("Substring operation requires two or three operands.");
-        }
+        require(
+                operands != null && operands.size() >= 2 && operands.size() <= 3,
+                "Substring operator requires two or three operands.");
 
         expression.setStringToSub(operands.get(0));
         expression.setStartIndex(operands.get(1));

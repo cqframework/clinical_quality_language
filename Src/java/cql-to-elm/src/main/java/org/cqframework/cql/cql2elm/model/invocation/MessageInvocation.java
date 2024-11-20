@@ -22,9 +22,7 @@ public class MessageInvocation extends OperatorExpressionInvocation<Message> {
 
     @Override
     public void setOperands(List<Expression> operands) {
-        if (operands == null || operands.size() != 5) {
-            throw new IllegalArgumentException("Message operation requires five operands.");
-        }
+        require(operands != null && operands.size() == 5, "Message operator requires five operands.");
         expression.setSource(operands.get(0));
         expression.setCondition(operands.get(1));
         expression.setCode(operands.get(2));

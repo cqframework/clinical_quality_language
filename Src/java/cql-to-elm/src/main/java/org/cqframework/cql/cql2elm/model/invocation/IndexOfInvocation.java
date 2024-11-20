@@ -17,9 +17,8 @@ public class IndexOfInvocation extends OperatorExpressionInvocation<IndexOf> {
 
     @Override
     public void setOperands(List<Expression> operands) {
-        if (operands == null || operands.size() != 2) {
-            throw new IllegalArgumentException("IndexOf operation requires two operands.");
-        }
+        require(operands != null && operands.size() == 2, "IndexOf operator requires two operands.");
+
         expression.setSource(operands.get(0));
         expression.setElement(operands.get(1));
     }

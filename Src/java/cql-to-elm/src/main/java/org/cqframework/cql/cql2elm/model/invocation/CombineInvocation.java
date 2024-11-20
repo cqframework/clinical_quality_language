@@ -23,9 +23,9 @@ public class CombineInvocation extends OperatorExpressionInvocation<Combine> {
 
     @Override
     public void setOperands(List<Expression> operands) {
-        if (operands == null || operands.isEmpty() || operands.size() > 2) {
-            throw new IllegalArgumentException("Combine operation requires one or two operands.");
-        }
+        require(
+                operands != null && !operands.isEmpty() && operands.size() <= 2,
+                "Combine operator requires one or two operands.");
 
         expression.setSource(operands.get(0));
         if (operands.size() > 1) {

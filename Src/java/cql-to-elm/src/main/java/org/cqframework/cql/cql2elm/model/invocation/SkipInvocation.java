@@ -20,9 +20,7 @@ public class SkipInvocation extends OperatorExpressionInvocation<Slice> {
 
     @Override
     public void setOperands(List<Expression> operands) {
-        if (operands == null || operands.size() != 2) {
-            throw new IllegalArgumentException("Skip operation requires two operands.");
-        }
+        require(operands != null && operands.size() == 2, "Skip operator requires two operands.");
 
         expression.setSource(operands.get(0));
         expression.setStartIndex(operands.get(1));

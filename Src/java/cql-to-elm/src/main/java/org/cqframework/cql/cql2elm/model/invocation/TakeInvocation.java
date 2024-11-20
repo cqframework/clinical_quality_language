@@ -20,9 +20,7 @@ public class TakeInvocation extends OperatorExpressionInvocation<Slice> {
 
     @Override
     public void setOperands(List<Expression> operands) {
-        if (operands == null || operands.size() != 2) {
-            throw new IllegalArgumentException("Take operation requires two operands.");
-        }
+        require(operands != null && operands.size() == 2, "Take operator requires two operands.");
         expression.setSource(operands.get(0));
         expression.setEndIndex(operands.get(1));
     }

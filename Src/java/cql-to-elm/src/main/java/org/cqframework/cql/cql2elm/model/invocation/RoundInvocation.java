@@ -22,9 +22,9 @@ public class RoundInvocation extends OperatorExpressionInvocation<Round> {
 
     @Override
     public void setOperands(List<Expression> operands) {
-        if (operands == null || operands.isEmpty() || operands.size() > 2) {
-            throw new IllegalArgumentException("Round operation requires one or two operands.");
-        }
+        require(
+                operands != null && !operands.isEmpty() && operands.size() <= 2,
+                "Round operator requires one or two operands.");
         expression.setOperand(operands.get(0));
         if (operands.size() > 1) {
             expression.setPrecision(operands.get(1));

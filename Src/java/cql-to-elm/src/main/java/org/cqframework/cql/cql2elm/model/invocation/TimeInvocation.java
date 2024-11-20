@@ -29,10 +29,9 @@ public class TimeInvocation extends OperatorExpressionInvocation<Time> {
     }
 
     public static void setTimeFieldsFromOperands(Time t, List<Expression> operands) {
-        if (operands.isEmpty() || operands.size() > 4) {
-            throw new IllegalArgumentException(
-                    "Could not resolve call to system operator Time.  Expected 1 - 4 arguments.");
-        }
+        require(
+                operands != null && !operands.isEmpty() && operands.size() <= 4,
+                "Time operator requires at one to four operands.");
 
         t.setHour(operands.get(0));
         if (operands.size() > 1) {

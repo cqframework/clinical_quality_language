@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.List;
 import org.cqframework.cql.cql2elm.model.Invocation;
 import org.cqframework.cql.cql2elm.model.OperatorResolution;
@@ -12,11 +14,7 @@ import org.hl7.elm.r1.Expression;
  */
 abstract class AbstractExpressionInvocation<E extends Expression> implements Invocation {
     protected AbstractExpressionInvocation(E expression) {
-        if (expression == null) {
-            throw new IllegalArgumentException("expression is null.");
-        }
-
-        this.expression = expression;
+        this.expression = requireNonNull(expression, "expression is null.");
     }
 
     protected E expression;
@@ -31,9 +29,15 @@ abstract class AbstractExpressionInvocation<E extends Expression> implements Inv
         return expression;
     }
 
+    protected static void require(boolean condition, String message) {
+        if (!condition) {
+            throw new IllegalArgumentException(message);
+        }
+    }
+
     protected Expression assertAndGetSingleOperand(List<Expression> operands) {
         if (operands == null || operands.size() != 1) {
-            throw new IllegalArgumentException("Unary operation expected.");
+            throw new IllegalArgumentException("Unary operator expected.");
         }
 
         return operands.get(0);

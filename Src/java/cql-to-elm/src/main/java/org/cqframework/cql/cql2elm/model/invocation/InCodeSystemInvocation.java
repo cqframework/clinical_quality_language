@@ -22,9 +22,10 @@ public class InCodeSystemInvocation extends OperatorExpressionInvocation<InCodeS
 
     @Override
     public void setOperands(List<Expression> operands) {
-        if (operands == null || operands.isEmpty() || operands.size() > 2) {
-            throw new IllegalArgumentException("InCodeSystem operation requires one or two operands.");
-        }
+        require(
+                operands != null && !operands.isEmpty() && operands.size() <= 2,
+                "InCodeSystem operator requires one or two operands.");
+
         expression.setCode(operands.get(0));
         if (operands.size() > 1) {
             expression.setCodesystemExpression(operands.get(1));

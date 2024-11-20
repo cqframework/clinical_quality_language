@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.List;
 import org.cqframework.cql.cql2elm.model.OperatorResolution;
 import org.hl7.elm.r1.Expression;
@@ -18,9 +20,8 @@ public class FunctionRefInvocation extends AbstractExpressionInvocation<Function
 
     @Override
     public void setOperands(List<Expression> operands) {
-        List<Expression> expOperands = expression.getOperand();
-        expOperands.clear();
-        expOperands.addAll(operands);
+        requireNonNull(operands, "FunctionRef requires operands.");
+        expression.setOperand(operands);
     }
 
     @Override

@@ -22,10 +22,9 @@ public class InValueSetInvocation extends OperatorExpressionInvocation<InValueSe
 
     @Override
     public void setOperands(List<Expression> operands) {
-        if (operands == null || operands.isEmpty() || operands.size() > 2) {
-            throw new IllegalArgumentException("InValueSet operation requires one or two operands.");
-        }
-
+        require(
+                operands != null && !operands.isEmpty() && operands.size() <= 2,
+                "InValueSet operator requires one or two operands.");
         expression.setCode(operands.get(0));
         if (operands.size() > 1) {
             expression.setValuesetExpression(operands.get(1));

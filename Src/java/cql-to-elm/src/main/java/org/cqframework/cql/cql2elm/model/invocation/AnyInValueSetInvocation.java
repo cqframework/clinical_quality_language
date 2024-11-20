@@ -25,9 +25,9 @@ public class AnyInValueSetInvocation extends OperatorExpressionInvocation<AnyInV
 
     @Override
     public void setOperands(List<Expression> operands) {
-        if (operands == null || operands.isEmpty() || operands.size() > 2) {
-            throw new IllegalArgumentException("AnyInValueSet operation requires one or two operands.");
-        }
+        require(
+                operands != null && !operands.isEmpty() && operands.size() <= 2,
+                "AnyInValueSet operator requires one or two operands.");
 
         expression.setCodes(operands.get(0));
         if (operands.size() > 1) {

@@ -17,8 +17,6 @@ public class ZeroOperandExpressionInvocation extends OperatorExpressionInvocatio
 
     @Override
     public void setOperands(List<Expression> operands) {
-        if (operands != null && !operands.isEmpty()) {
-            throw new IllegalArgumentException("Zero operand operation expected.");
-        }
+        require(operands != null && operands.isEmpty(), "Zero operand operator expected.");
     }
 }

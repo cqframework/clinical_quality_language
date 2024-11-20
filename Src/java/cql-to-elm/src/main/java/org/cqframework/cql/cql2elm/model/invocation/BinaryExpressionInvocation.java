@@ -16,8 +16,7 @@ public class BinaryExpressionInvocation<B extends BinaryExpression> extends Oper
 
     @Override
     public void setOperands(List<Expression> operands) {
-        List<Expression> expOperands = expression.getOperand();
-        expOperands.clear();
-        expOperands.addAll(operands);
+        require(operands != null && operands.size() == 2, "BinaryExpression requires two operands.");
+        expression.setOperand(operands);
     }
 }

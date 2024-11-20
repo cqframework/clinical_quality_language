@@ -17,10 +17,7 @@ public class PositionOfInvocation extends OperatorExpressionInvocation<PositionO
 
     @Override
     public void setOperands(List<Expression> operands) {
-        if (operands == null || operands.size() != 2) {
-            throw new IllegalArgumentException("PositionOf operation requires two operands.");
-        }
-
+        require(operands != null && operands.size() == 2, "PositionOf operator requires two operands.");
         expression.setPattern(operands.get(0));
         expression.setString(operands.get(1));
     }

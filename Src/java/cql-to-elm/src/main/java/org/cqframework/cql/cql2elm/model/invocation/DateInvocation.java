@@ -27,10 +27,10 @@ public class DateInvocation extends OperatorExpressionInvocation<Date> {
     }
 
     public static void setDateFieldsFromOperands(Date dt, List<Expression> operands) {
-        if (operands.isEmpty() || operands.size() > 3) {
-            throw new IllegalArgumentException(
-                    "Could not resolve call to system operator DateTime.  Expected 1 - 3 arguments.");
-        }
+        require(
+                operands != null && !operands.isEmpty() && operands.size() <= 3,
+                "Date operator requires one to three operands.");
+
         dt.setYear(operands.get(0));
         if (operands.size() > 1) {
             dt.setMonth(operands.get(1));

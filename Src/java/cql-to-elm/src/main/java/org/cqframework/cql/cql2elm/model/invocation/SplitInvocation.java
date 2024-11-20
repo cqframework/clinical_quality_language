@@ -17,9 +17,7 @@ public class SplitInvocation extends OperatorExpressionInvocation<Split> {
 
     @Override
     public void setOperands(List<Expression> operands) {
-        if (operands == null || operands.size() != 2) {
-            throw new IllegalArgumentException("Split operation requires two operands.");
-        }
+        require(operands != null && operands.size() == 2, "Split operator requires two operands.");
 
         expression.setStringToSplit(operands.get(0));
         expression.setSeparator(operands.get(1));

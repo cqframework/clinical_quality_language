@@ -35,10 +35,10 @@ public class DateTimeInvocation extends OperatorExpressionInvocation<DateTime> {
     }
 
     public static void setDateTimeFieldsFromOperands(DateTime dt, List<Expression> operands) {
-        if (operands.isEmpty() || operands.size() > 8) {
-            throw new IllegalArgumentException(
-                    "Could not resolve call to system operator DateTime.  Expected 1 - 8 arguments.");
-        }
+        require(
+                operands != null && !operands.isEmpty() && operands.size() <= 8,
+                "DateTime operator requires one to eight operands.");
+
         dt.setYear(operands.get(0));
         if (operands.size() > 1) {
             dt.setMonth(operands.get(1));

@@ -25,9 +25,9 @@ public class AnyInCodeSystemInvocation extends OperatorExpressionInvocation<AnyI
 
     @Override
     public void setOperands(List<Expression> operands) {
-        if (operands == null || operands.isEmpty() || operands.size() > 2) {
-            throw new IllegalArgumentException("AnyInCodeSystem operation requires one or two operands.");
-        }
+        require(
+                operands != null && !operands.isEmpty() && operands.size() <= 2,
+                "AnyInCodeSystem operator requires one or two operands.");
 
         expression.setCodes(operands.get(0));
         if (operands.size() > 1) {
