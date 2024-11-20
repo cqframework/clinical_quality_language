@@ -20,6 +20,6 @@ public class TailInvocation extends OperatorExpressionInvocation<Slice> {
 
     @Override
     public void setOperands(List<Expression> operands) {
-        expression.setSource(assertAndGetSingleOperand(operands));
+        expression.setSource(requireSingleton(operands));
     }
 }

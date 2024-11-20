@@ -3,6 +3,7 @@ package org.cqframework.cql.cql2elm.model.invocation;
 import static java.util.Objects.requireNonNull;
 
 import java.util.List;
+import org.apache.commons.lang3.Validate;
 import org.cqframework.cql.cql2elm.model.Invocation;
 import org.cqframework.cql.cql2elm.model.OperatorResolution;
 import org.hl7.cql.model.DataType;
@@ -30,16 +31,12 @@ abstract class AbstractExpressionInvocation<E extends Expression> implements Inv
     }
 
     protected static void require(boolean condition, String message) {
-        if (!condition) {
-            throw new IllegalArgumentException(message);
-        }
+        Validate.isTrue(condition, message);
     }
 
-    protected Expression assertAndGetSingleOperand(List<Expression> operands) {
-        if (operands == null || operands.size() != 1) {
-            throw new IllegalArgumentException("Unary operator expected.");
-        }
-
+    protected Expression requireSingleton(List<Expression> operands) {
+        requireNonNull(operands, "operands cannot be null.");
+        require(operands.size() == 1, "Unary operator expected.");
         return operands.get(0);
     }
 

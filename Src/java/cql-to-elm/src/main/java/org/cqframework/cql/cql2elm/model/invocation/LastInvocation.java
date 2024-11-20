@@ -17,6 +17,6 @@ public class LastInvocation extends OperatorExpressionInvocation<Last> {
 
     @Override
     public void setOperands(List<Expression> operands) {
-        expression.setSource(assertAndGetSingleOperand(operands));
+        expression.setSource(requireSingleton(operands));
     }
 }

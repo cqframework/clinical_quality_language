@@ -17,6 +17,6 @@ public class FirstInvocation extends OperatorExpressionInvocation<First> {
 
     @Override
     public void setOperands(List<Expression> operands) {
-        expression.setSource(assertAndGetSingleOperand(operands));
+        expression.setSource(requireSingleton(operands));
     }
 }

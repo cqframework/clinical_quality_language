@@ -17,6 +17,6 @@ public class ConvertInvocation extends OperatorExpressionInvocation<Convert> {
 
     @Override
     public void setOperands(List<Expression> operands) {
-        expression.setOperand(assertAndGetSingleOperand(operands));
+        expression.setOperand(requireSingleton(operands));
     }
 }

@@ -18,7 +18,7 @@ public class AggregateExpressionInvocation<A extends AggregateExpression> extend
 
     @Override
     public void setOperands(List<Expression> operands) {
-        expression.setSource(assertAndGetSingleOperand(operands));
+        expression.setSource(requireSingleton(operands));
     }
 
     @Override
