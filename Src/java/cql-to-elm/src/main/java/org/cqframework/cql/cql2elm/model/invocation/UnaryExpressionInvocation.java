@@ -1,21 +1,22 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
 import java.util.Collections;
+import java.util.List;
 import org.hl7.elm.r1.Expression;
 import org.hl7.elm.r1.UnaryExpression;
 
-public class UnaryExpressionInvocation extends OperatorExpressionInvocation {
-    public UnaryExpressionInvocation(UnaryExpression expression) {
+public class UnaryExpressionInvocation<U extends UnaryExpression> extends OperatorExpressionInvocation<U> {
+    public UnaryExpressionInvocation(U expression) {
         super(expression);
     }
 
     @Override
-    public Iterable<Expression> getOperands() {
-        return Collections.singletonList(((UnaryExpression) expression).getOperand());
+    public List<Expression> getOperands() {
+        return Collections.singletonList(expression.getOperand());
     }
 
     @Override
-    public void setOperands(Iterable<Expression> operands) {
-        ((UnaryExpression) expression).setOperand(assertAndGetSingleOperand(operands));
+    public void setOperands(List<Expression> operands) {
+        expression.setOperand(requireSingleton(operands));
     }
 }

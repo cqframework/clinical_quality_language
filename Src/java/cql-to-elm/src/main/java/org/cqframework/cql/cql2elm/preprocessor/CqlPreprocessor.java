@@ -12,11 +12,8 @@ import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 import org.hl7.cql.model.*;
 import org.hl7.elm.r1.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class CqlPreprocessor extends CqlPreprocessorElmCommonVisitor {
-    static final Logger logger = LoggerFactory.getLogger(CqlPreprocessor.class);
     private int lastSourceIndex = -1;
 
     public CqlPreprocessor(LibraryBuilder libraryBuilder, TokenStream tokenStream) {
@@ -81,7 +78,7 @@ public class CqlPreprocessor extends CqlPreprocessorElmCommonVisitor {
     public Object visitLibraryDefinition(cqlParser.LibraryDefinitionContext ctx) {
         List<String> identifiers = (List<String>) visit(ctx.qualifiedIdentifier());
         libraryInfo.setLibraryName(identifiers.remove(identifiers.size() - 1));
-        if (identifiers.size() > 0) {
+        if (!identifiers.isEmpty()) {
             libraryInfo.setNamespaceName(String.join(".", identifiers));
         }
         if (ctx.versionSpecifier() != null) {
@@ -98,7 +95,7 @@ public class CqlPreprocessor extends CqlPreprocessorElmCommonVisitor {
         IncludeDefinitionInfo includeDefinition = new IncludeDefinitionInfo();
         List<String> identifiers = (List<String>) visit(ctx.qualifiedIdentifier());
         includeDefinition.setName(identifiers.remove(identifiers.size() - 1));
-        if (identifiers.size() > 0) {
+        if (!identifiers.isEmpty()) {
             includeDefinition.setNamespaceName(String.join(".", identifiers));
         }
         if (ctx.versionSpecifier() != null) {
@@ -122,7 +119,7 @@ public class CqlPreprocessor extends CqlPreprocessorElmCommonVisitor {
         List<String> identifiers = (List<String>) visit(ctx.qualifiedIdentifier());
         final String unqualifiedIdentifier = identifiers.remove(identifiers.size() - 1);
         usingDefinition.setName(unqualifiedIdentifier);
-        if (identifiers.size() > 0) {
+        if (!identifiers.isEmpty()) {
             usingDefinition.setNamespaceName(String.join(".", identifiers));
         }
         if (ctx.versionSpecifier() != null) {
@@ -221,7 +218,7 @@ public class CqlPreprocessor extends CqlPreprocessorElmCommonVisitor {
     public Object visitContextDefinition(cqlParser.ContextDefinitionContext ctx) {
         String modelIdentifier = ctx.modelIdentifier() != null ? parseString(ctx.modelIdentifier()) : null;
         String unqualifiedContext = parseString(ctx.identifier());
-        if (modelIdentifier != null && !modelIdentifier.equals("")) {
+        if (modelIdentifier != null && !modelIdentifier.isEmpty()) {
             setCurrentContext(modelIdentifier + "." + unqualifiedContext);
         } else {
             setCurrentContext(unqualifiedContext);

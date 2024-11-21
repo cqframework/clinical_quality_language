@@ -23,7 +23,7 @@ public class Signature {
 
     private List<DataType> operandTypes = new ArrayList<>();
 
-    public Iterable<DataType> getOperandTypes() {
+    public List<DataType> getOperandTypes() {
         return this.operandTypes;
     }
 

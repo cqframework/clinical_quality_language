@@ -204,7 +204,7 @@ public class CompiledLibrary {
     }
 
     public Iterable<FunctionDef> resolveFunctionRef(String identifier) {
-        List<FunctionDef> results = new ArrayList<FunctionDef>();
+        var results = new ArrayList<FunctionDef>();
         for (ExpressionDef ed : getLibrary().getStatements().getDef()) {
             if (ed instanceof FunctionDef) {
                 if (ed.getName().equals(identifier)) {
@@ -221,14 +221,9 @@ public class CompiledLibrary {
             return resolveFunctionRef(identifier);
         } else {
             CallContext cc = new CallContext(
-                    this.getIdentifier().getId(),
-                    identifier,
-                    false,
-                    false,
-                    false,
-                    signature.toArray(new DataType[signature.size()]));
+                    this.getIdentifier().getId(), identifier, false, false, false, signature.toArray(new DataType[0]));
             OperatorResolution resolution = resolveCall(cc, null);
-            ArrayList<FunctionDef> results = new ArrayList<FunctionDef>();
+            var results = new ArrayList<FunctionDef>();
             if (resolution != null) {
                 results.add(resolution.getOperator().getFunctionDef());
             }
@@ -292,7 +287,7 @@ public class CompiledLibrary {
         String tagValue = getTag(tagName);
         if (tagValue != null) {
             try {
-                return Boolean.valueOf(tagValue);
+                return Boolean.parseBoolean(tagValue);
             } catch (Exception e) {
                 // Do not throw
                 return false;

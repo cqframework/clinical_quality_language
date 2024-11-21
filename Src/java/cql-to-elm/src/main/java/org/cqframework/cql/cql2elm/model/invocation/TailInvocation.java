@@ -1,24 +1,25 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
 import java.util.Collections;
+import java.util.List;
 import org.hl7.elm.r1.Expression;
 import org.hl7.elm.r1.Slice;
 
 /**
  * Created by Bryn on 5/17/2017.
  */
-public class TailInvocation extends OperatorExpressionInvocation {
+public class TailInvocation extends OperatorExpressionInvocation<Slice> {
     public TailInvocation(Slice expression) {
         super(expression);
     }
 
     @Override
-    public Iterable<Expression> getOperands() {
-        return Collections.singletonList(((Slice) expression).getSource());
+    public List<Expression> getOperands() {
+        return Collections.singletonList(expression.getSource());
     }
 
     @Override
-    public void setOperands(Iterable<Expression> operands) {
-        ((Slice) expression).setSource(assertAndGetSingleOperand(operands));
+    public void setOperands(List<Expression> operands) {
+        expression.setSource(requireSingleton(operands));
     }
 }

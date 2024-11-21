@@ -1,32 +1,28 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.Arrays;
-import java.util.Iterator;
+import java.util.List;
 import org.hl7.elm.r1.Expression;
 import org.hl7.elm.r1.SplitOnMatches;
 
-public class SplitOnMatchesInvocation extends OperatorExpressionInvocation {
+public class SplitOnMatchesInvocation extends OperatorExpressionInvocation<SplitOnMatches> {
     public SplitOnMatchesInvocation(SplitOnMatches expression) {
         super(expression);
     }
 
     @Override
-    public Iterable<Expression> getOperands() {
-        SplitOnMatches splitOnMatches = (SplitOnMatches) expression;
-        return Arrays.asList(splitOnMatches.getStringToSplit(), splitOnMatches.getSeparatorPattern());
+    public List<Expression> getOperands() {
+        return Arrays.asList(expression.getStringToSplit(), expression.getSeparatorPattern());
     }
 
     @Override
-    public void setOperands(Iterable<Expression> operands) {
-        Iterator<Expression> it = operands.iterator();
-        if (!it.hasNext()) {
-            throw new IllegalArgumentException("SplitOnMatches operation requires two operands.");
-        }
-        SplitOnMatches splitOnMatches = (SplitOnMatches) expression;
-        splitOnMatches.setStringToSplit(it.next());
-        if (!it.hasNext()) {
-            throw new IllegalArgumentException("SplitOnMatches operation requires two operands.");
-        }
-        splitOnMatches.setSeparatorPattern(it.next());
+    public void setOperands(List<Expression> operands) {
+        requireNonNull(operands, "operands cannot be null.");
+        require(operands.size() == 2, "SplitOnMatches operator requires two operands.");
+
+        expression.setStringToSplit(operands.get(0));
+        expression.setSeparatorPattern(operands.get(1));
     }
 }

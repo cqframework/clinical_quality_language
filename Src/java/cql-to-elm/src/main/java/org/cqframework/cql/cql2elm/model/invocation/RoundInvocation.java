@@ -1,37 +1,34 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.List;
 import org.hl7.elm.r1.Expression;
 import org.hl7.elm.r1.Round;
 
-public class RoundInvocation extends OperatorExpressionInvocation {
+public class RoundInvocation extends OperatorExpressionInvocation<Round> {
     public RoundInvocation(Round expression) {
         super(expression);
     }
 
     @Override
-    public Iterable<Expression> getOperands() {
-        Round round = (Round) expression;
-        ArrayList<Expression> ops = new ArrayList<>();
-        ops.add(round.getOperand());
-        if (round.getPrecision() != null) {
-            ops.add(round.getPrecision());
+    public List<Expression> getOperands() {
+        var ops = new ArrayList<Expression>();
+        ops.add(expression.getOperand());
+        if (expression.getPrecision() != null) {
+            ops.add(expression.getPrecision());
         }
         return ops;
     }
 
     @Override
-    public void setOperands(Iterable<Expression> operands) {
-        Iterator<Expression> it = operands.iterator();
-        if (!it.hasNext()) {
-            throw new IllegalArgumentException("Round operation requires one or two operands.");
-        }
-        Round round = (Round) expression;
-        round.setOperand(it.next());
-
-        if (it.hasNext()) {
-            round.setPrecision(it.next());
+    public void setOperands(List<Expression> operands) {
+        requireNonNull(operands, "operands cannot be null.");
+        require(!operands.isEmpty() && operands.size() <= 2, "Round operator requires one or two operands.");
+        expression.setOperand(operands.get(0));
+        if (operands.size() > 1) {
+            expression.setPrecision(operands.get(1));
         }
     }
 }
