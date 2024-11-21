@@ -561,7 +561,7 @@ open class CqlPreprocessorElmCommonVisitor(
         } else {
             var chunkContent = tokenStream.getText(chunk.interval)
             if (chunk.isHeaderChunk) {
-                chunkContent = stripLeading(chunkContent)
+                chunkContent = chunkContent.trimStart()
             }
             chunkContent = normalizeWhitespace(chunkContent)
             narrative.content.add(chunkContent)
@@ -866,21 +866,6 @@ open class CqlPreprocessorElmCommonVisitor(
 
         fun getModelIdentifier(qualifiers: List<String?>?): String? {
             return if (!qualifiers!!.isEmpty()) qualifiers[0] else null
-        }
-
-        @Suppress("ForbiddenComment")
-        // TODO: Should just use String.stripLeading() but that is only available in 11+
-        fun stripLeading(s: String): String {
-            var index = 0
-            while (index < s.length) {
-                if (!Character.isWhitespace(s[index])) {
-                    break
-                }
-                index++
-            }
-            return if (index == s.length) {
-                ""
-            } else s.substring(index)
         }
 
         fun normalizeWhitespace(input: String): String {
