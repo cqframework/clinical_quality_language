@@ -449,12 +449,12 @@ open class CqlPreprocessorElmCommonVisitor(
         while (startFrom < header.length) {
             val tagNamePair = lookForTagName(header, startFrom)
             if (tagNamePair != null) {
-                if (tagNamePair.left.length > 0 && isValidIdentifier(tagNamePair.left)) {
+                if (tagNamePair.left.isNotEmpty() && isValidIdentifier(tagNamePair.left)) {
                     var t = af.createTag().withName(tagNamePair.left)
                     startFrom = tagNamePair.right
                     val tagValuePair = lookForTagValue(header, startFrom)
                     if (tagValuePair != null) {
-                        if (tagValuePair.left.length > 0) {
+                        if (tagValuePair.left.isNotEmpty()) {
                             t = t.withValue(tagValuePair.left)
                             startFrom = tagValuePair.right
                         }

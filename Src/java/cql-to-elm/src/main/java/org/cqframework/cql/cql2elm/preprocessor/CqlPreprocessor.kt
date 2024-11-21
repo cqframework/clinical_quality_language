@@ -208,7 +208,7 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
             if (ctx.modelIdentifier() != null) parseString(ctx.modelIdentifier()) else null
         val unqualifiedContext = parseString(ctx.identifier())
         currentContext =
-            if (modelIdentifier != null && !modelIdentifier.isEmpty()) {
+            if (!modelIdentifier.isNullOrEmpty()) {
                 "$modelIdentifier.$unqualifiedContext"
             } else {
                 unqualifiedContext!!
