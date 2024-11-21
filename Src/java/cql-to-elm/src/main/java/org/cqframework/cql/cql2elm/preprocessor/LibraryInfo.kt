@@ -52,7 +52,7 @@ class LibraryInfo : BaseInfo() {
     }
 
     private fun addDefinition(definition: BaseInfo?) {
-        if (definition != null && definition.definition != null) {
+        if (definition?.definition != null) {
             val sourceInterval = definition.definition?.sourceInterval
             if (sourceInterval != null) {
                 definitions[sourceInterval] = definition

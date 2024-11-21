@@ -11,7 +11,6 @@ import org.cqframework.cql.cql2elm.CqlCompilerException
 import org.cqframework.cql.cql2elm.LibraryBuilder
 import org.cqframework.cql.cql2elm.ResultWithPossibleError
 import org.cqframework.cql.gen.cqlLexer
-import org.cqframework.cql.gen.cqlParser
 import org.cqframework.cql.gen.cqlParser.*
 import org.hl7.cql.model.NamespaceInfo
 import org.hl7.elm.r1.*
@@ -22,7 +21,7 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
     private var lastSourceIndex = -1
 
     private fun processHeader(ctx: ParseTree, info: BaseInfo) {
-        var header: Interval? = null
+        val header: Interval?
         val sourceInterval = ctx.sourceInterval
         val beforeDefinition = sourceInterval.a - 1
         if (beforeDefinition >= lastSourceIndex) {
@@ -71,7 +70,7 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
     override fun visitLibraryDefinition(ctx: LibraryDefinitionContext): Any {
         val identifiers = visit(ctx.qualifiedIdentifier()) as MutableList<String>
         libraryInfo.libraryName = identifiers.removeAt(identifiers.size - 1)
-        if (!identifiers.isEmpty()) {
+        if (identifiers.isNotEmpty()) {
             libraryInfo.namespaceName = java.lang.String.join(".", identifiers)
         }
         if (ctx.versionSpecifier() != null) {
@@ -86,7 +85,7 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
         val includeDefinition = IncludeDefinitionInfo()
         val identifiers = visit(ctx.qualifiedIdentifier()) as MutableList<String>
         includeDefinition.name = identifiers.removeAt(identifiers.size - 1)
-        if (!identifiers.isEmpty()) {
+        if (identifiers.isNotEmpty()) {
             includeDefinition.namespaceName = java.lang.String.join(".", identifiers)
         }
         if (ctx.versionSpecifier() != null) {
@@ -108,7 +107,7 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
         val identifiers = visit(ctx.qualifiedIdentifier()) as MutableList<String>
         val unqualifiedIdentifier: String = identifiers.removeAt(identifiers.size - 1)
         usingDefinition.name = unqualifiedIdentifier
-        if (!identifiers.isEmpty()) {
+        if (identifiers.isNotEmpty()) {
             usingDefinition.namespaceName = java.lang.String.join(".", identifiers)
         }
         if (ctx.versionSpecifier() != null) {
@@ -123,7 +122,7 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
         processHeader(ctx, usingDefinition)
         libraryInfo.addUsingDefinition(usingDefinition)
         val namespaceName =
-            if (!identifiers.isEmpty()) java.lang.String.join(".", identifiers)
+            if (identifiers.isNotEmpty()) java.lang.String.join(".", identifiers)
             else if (libraryBuilder.isWellKnownModelName(unqualifiedIdentifier)) null
             else if (libraryBuilder.namespaceInfo != null) libraryBuilder.namespaceInfo.name
             else null
@@ -227,7 +226,7 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
         return currentContext
     }
 
-    override fun visitExpressionDefinition(ctx: cqlParser.ExpressionDefinitionContext): Any {
+    override fun visitExpressionDefinition(ctx: ExpressionDefinitionContext): Any {
         val expressionDefinition = ExpressionDefinitionInfo()
         expressionDefinition.name = parseString(ctx.identifier())
         expressionDefinition.context = currentContext
@@ -249,13 +248,9 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
 
     override fun visitNamedTypeSpecifier(ctx: NamedTypeSpecifierContext): NamedTypeSpecifier {
         val qualifiers = parseQualifiers(ctx)
-        val modelIdentifier: String? =
-            CqlPreprocessorElmCommonVisitor.Companion.getModelIdentifier(qualifiers)
+        val modelIdentifier: String? = getModelIdentifier(qualifiers)
         val identifier: String? =
-            CqlPreprocessorElmCommonVisitor.Companion.getTypeIdentifier(
-                qualifiers,
-                parseString(ctx.referentialOrTypeNameIdentifier())
-            )
+            getTypeIdentifier(qualifiers, parseString(ctx.referentialOrTypeNameIdentifier()))
         val typeSpecifierKey = String.format("%s:%s", modelIdentifier, identifier)
         val resultType = libraryBuilder.resolveTypeName(modelIdentifier, identifier)
         if (null == resultType) {
@@ -293,7 +288,7 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
         return text
     }
 
-    override fun visitQualifiedIdentifier(ctx: cqlParser.QualifiedIdentifierContext): Any {
+    override fun visitQualifiedIdentifier(ctx: QualifiedIdentifierContext): Any {
         // Return the list of qualified identifiers for resolution by the containing element
         val identifiers: MutableList<String?> = ArrayList()
         for (qualifierContext in ctx.qualifier()) {

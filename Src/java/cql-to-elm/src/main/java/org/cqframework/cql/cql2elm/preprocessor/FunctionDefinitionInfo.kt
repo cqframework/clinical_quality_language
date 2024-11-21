@@ -32,7 +32,7 @@ class FunctionDefinitionInfo : BaseInfo() {
         return StringJoiner(", ", FunctionDefinitionInfo::class.java.simpleName + "[", "]")
             .add("name='$name'")
             .add("context='$context'")
-            .add("preCompileOutput=" + preCompileOutput)
+            .add("preCompileOutput=$preCompileOutput")
             .toString()
     }
 }

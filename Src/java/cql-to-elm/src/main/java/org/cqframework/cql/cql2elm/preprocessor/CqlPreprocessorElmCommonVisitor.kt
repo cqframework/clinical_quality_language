@@ -119,8 +119,7 @@ open class CqlPreprocessorElmCommonVisitor(
             } catch (e: CqlCompilerException) {
                 libraryBuilder.recordParsingException(e)
             } catch (@Suppress("TooGenericExceptionCaught") e: Exception) {
-                var ex: CqlCompilerException? = null
-                ex =
+                val ex: CqlCompilerException =
                     if (e.message == null) {
                         CqlInternalException("Internal translator error.", getTrackBack(tree), e)
                     } else {
@@ -314,7 +313,7 @@ open class CqlPreprocessorElmCommonVisitor(
                     if (a == null || a.s == null) {
                         // Add header information (comments prior to the definition)
                         val definitionInfo = libraryInfo.resolveDefinition(tree)
-                        if (definitionInfo != null && definitionInfo.headerInterval != null) {
+                        if (definitionInfo?.headerInterval != null) {
                             val headerChunk =
                                 Chunk()
                                     .withInterval(definitionInfo.headerInterval)
@@ -382,7 +381,7 @@ open class CqlPreprocessorElmCommonVisitor(
                     element is ExpressionDef
             ) {
                 val tags = getTags(tree)
-                if (!tags.isEmpty()) {
+                if (tags.isNotEmpty()) {
                     var a = getAnnotation(element)
                     if (a == null) {
                         a = buildAnnotation()
@@ -408,7 +407,7 @@ open class CqlPreprocessorElmCommonVisitor(
         } else {
             if (libraryInfo.definition != null && libraryInfo.headerInterval != null) {
                 val tags = getTags(libraryInfo.header)
-                if (!tags.isEmpty()) {
+                if (tags.isNotEmpty()) {
                     var a = getAnnotation(libraryBuilder.library)
                     if (a == null) {
                         a = buildAnnotation()
@@ -785,7 +784,7 @@ open class CqlPreprocessorElmCommonVisitor(
                 val interimText = header.substring(startFrom, nextTag).trim { it <= ' ' }
                 return if (isStartingWithDigit(header, nextTag + 1)) { // next `@` is a date value
                     if (
-                        !interimText.isEmpty() && interimText != ":"
+                        interimText.isNotEmpty() && interimText != ":"
                     ) { // interim text has value, regards interim text
                         Pair.of(interimText, nextTag)
                     } else {
@@ -836,7 +835,7 @@ open class CqlPreprocessorElmCommonVisitor(
         }
 
         fun isValidIdentifier(tagName: String): Boolean {
-            for (i in 0 until tagName.length) {
+            for (i in tagName.indices) {
                 if (tagName[i] == '_') {
                     continue
                 }
@@ -865,7 +864,7 @@ open class CqlPreprocessorElmCommonVisitor(
         }
 
         fun getModelIdentifier(qualifiers: List<String?>?): String? {
-            return if (!qualifiers!!.isEmpty()) qualifiers[0] else null
+            return if (qualifiers!!.isNotEmpty()) qualifiers[0] else null
         }
 
         fun normalizeWhitespace(input: String): String {
