@@ -20,7 +20,7 @@ kotlin {
 
         jvmMain {
             dependencies {
-                api("com.strumenta:antlr-kotlin-runtime-jvm:1.0.0")
+                api("com.strumenta:antlr-kotlin-runtime-jvm:1.0.1")
             }
 
         }
