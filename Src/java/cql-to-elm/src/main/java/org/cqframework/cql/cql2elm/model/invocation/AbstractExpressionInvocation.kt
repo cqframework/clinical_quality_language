@@ -9,8 +9,8 @@ import org.hl7.elm.r1.Expression
  * The AbstractExpressionInvocation can be used to more simply make invocations for classes that
  * only extend Expression.
  */
-abstract class AbstractExpressionInvocation<E : Expression>
-protected constructor(override val expression: E) : Invocation {
+abstract class AbstractExpressionInvocation<E : Expression>(override val expression: E) :
+    Invocation {
 
     override var resultType: DataType?
         get() = expression.resultType
