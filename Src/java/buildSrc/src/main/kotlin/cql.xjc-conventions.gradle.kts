@@ -1,8 +1,5 @@
-import gradle.kotlin.dsl.accessors._0b32d33f6c69498be20e3f9cff448a61.compileJava
-import gradle.kotlin.dsl.accessors._0b32d33f6c69498be20e3f9cff448a61.compileKotlin
-
 plugins {
-    id("java-library")
+    kotlin("jvm")
 }
 
 val xjc by configurations.creating
@@ -38,10 +35,6 @@ tasks.compileJava {
 
 tasks.withType<XjcTask>().configureEach {
     outputDir = destDir
-}
-
-tasks.named("sourcesJar") {
-    dependsOn(tasks.withType<XjcTask>())
 }
 
 tasks.named("kotlinSourcesJar") {

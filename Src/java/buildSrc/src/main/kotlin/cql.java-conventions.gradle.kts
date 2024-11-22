@@ -5,15 +5,8 @@ plugins {
     id("signing")
     id("cql.sca-conventions")
     id("com.diffplug.spotless")
+    id("org.jetbrains.dokka")
     id("io.gitlab.arturbosch.detekt")
-}
-
-java {
-    withJavadocJar()
-    withSourcesJar()
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
 }
 
 kotlin {
@@ -64,6 +57,18 @@ tasks.jar {
         attributes["Specification-Title"] = "HL7 Clinical Quality Language (CQL)"
         attributes["Specification-Version"] = project.findProperty("specification.version") ?: ""
     }
+}
+
+tasks.register<Jar>("dokkaHtmlJar") {
+    dependsOn(tasks.dokkaHtml)
+    from(tasks.dokkaHtml.flatMap { it.outputDirectory })
+    archiveClassifier.set("html-docs")
+}
+
+tasks.register<Jar>("dokkaJavadocJar") {
+    dependsOn(tasks.dokkaJavadoc)
+    from(tasks.dokkaJavadoc.flatMap { it.outputDirectory })
+    archiveClassifier.set("javadoc")
 }
 
 jacoco {
