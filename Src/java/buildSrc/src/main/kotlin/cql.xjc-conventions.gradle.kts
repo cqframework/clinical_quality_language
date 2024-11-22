@@ -1,3 +1,6 @@
+import gradle.kotlin.dsl.accessors._0b32d33f6c69498be20e3f9cff448a61.compileJava
+import gradle.kotlin.dsl.accessors._0b32d33f6c69498be20e3f9cff448a61.compileKotlin
+
 plugins {
     id("java-library")
 }
@@ -25,6 +28,10 @@ dependencies {
 var buildDir = project.layout.buildDirectory.get().toString()
 val destDir = "${buildDir}/generated/sources/$name/main/java"
 
+tasks.compileKotlin {
+    dependsOn(tasks.withType<XjcTask>())
+}
+
 tasks.compileJava {
     dependsOn(tasks.withType<XjcTask>())
 }
@@ -34,6 +41,10 @@ tasks.withType<XjcTask>().configureEach {
 }
 
 tasks.named("sourcesJar") {
+    dependsOn(tasks.withType<XjcTask>())
+}
+
+tasks.named("kotlinSourcesJar") {
     dependsOn(tasks.withType<XjcTask>())
 }
 

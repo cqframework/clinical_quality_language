@@ -1,10 +1,11 @@
 plugins {
-    id("java")
+    kotlin("jvm")
     id("maven-publish")
     id("jacoco")
     id("signing")
     id("cql.sca-conventions")
     id("com.diffplug.spotless")
+    id("io.gitlab.arturbosch.detekt")
 }
 
 java {
@@ -15,6 +16,10 @@ java {
     }
 }
 
+kotlin {
+    jvmToolchain(17)
+}
+
 repositories {
     mavenLocal()
     mavenCentral()
@@ -23,6 +28,17 @@ repositories {
         mavenContent {
             snapshotsOnly()
         }
+    }
+}
+
+
+spotless {
+    java {
+        targetExclude("**/generated/**")
+        palantirJavaFormat()
+    }
+    kotlin {
+        ktfmt().kotlinlangStyle()
     }
 }
 
@@ -79,13 +95,6 @@ tasks.javadoc {
 tasks.withType<JavaCompile> {
     options.compilerArgs.add("-Xlint:unchecked")
     options.isDeprecation = true
-}
-
-spotless {
-    java {
-        targetExclude("**/generated/**")
-        palantirJavaFormat()
-    }
 }
 
 /*
