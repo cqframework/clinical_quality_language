@@ -1395,11 +1395,11 @@ public class LibraryBuilder {
 
     public OperatorResolution resolveCall(CallContext callContext) {
         OperatorResolution result = null;
-        if (callContext.getLibraryName() == null || callContext.getLibraryName().equals("")) {
+        if (callContext.getLibraryName() == null || callContext.getLibraryName().isEmpty()) {
             result = compiledLibrary.resolveCall(callContext, conversionMap);
             if (result == null) {
                 result = getSystemLibrary().resolveCall(callContext, conversionMap);
-                if (result == null && callContext.getAllowFluent()) {
+                if (result == null && callContext.isAllowFluent()) {
                     // attempt to resolve in each non-system included library, in order of inclusion, first resolution
                     // wins
                     for (var lib : libraries.values()) {
@@ -1456,13 +1456,13 @@ public class LibraryBuilder {
                     callContext.getOperatorName(), callContext.getSignature()));
         }
 
-        if (resolution.getOperator().getFluent() && !callContext.getAllowFluent()) {
+        if (resolution.getOperator().getFluent() && !callContext.isAllowFluent()) {
             throw new IllegalArgumentException(String.format(
                     "Operator %s with signature %s is a fluent function and can only be invoked with fluent syntax.",
                     callContext.getOperatorName(), callContext.getSignature()));
         }
 
-        if (callContext.getAllowFluent() && !resolution.getOperator().getFluent() && !resolution.getAllowFluent()) {
+        if (callContext.isAllowFluent() && !resolution.getOperator().getFluent() && !resolution.getAllowFluent()) {
             throw new IllegalArgumentException(String.format(
                     "Invocation of operator %s with signature %s uses fluent syntax, but the operator is not defined as a fluent function.",
                     callContext.getOperatorName(), callContext.getSignature()));

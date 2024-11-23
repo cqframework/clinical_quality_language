@@ -282,7 +282,7 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor<Object> {
             return false;
         }
 
-        Chunk chunk = new Chunk().withInterval(sourceInterval);
+        Chunk chunk = new Chunk(sourceInterval);
         chunks.push(chunk);
         return true;
     }
@@ -312,11 +312,8 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor<Object> {
                         // Add header information (comments prior to the definition)
                         BaseInfo definitionInfo = libraryInfo.resolveDefinition(tree);
                         if (definitionInfo != null && definitionInfo.getHeaderInterval() != null) {
-                            Chunk headerChunk = new Chunk()
-                                    .withInterval(definitionInfo.getHeaderInterval())
-                                    .withIsHeaderChunk(true);
-                            Chunk newChunk = new Chunk()
-                                    .withInterval(new org.antlr.v4.runtime.misc.Interval(
+                            Chunk headerChunk = new Chunk(definitionInfo.getHeaderInterval(), true);
+                            Chunk newChunk = new Chunk(new org.antlr.v4.runtime.misc.Interval(
                                             headerChunk.getInterval().a, chunk.getInterval().b));
                             newChunk.addChunk(headerChunk);
                             newChunk.setElement(chunk.getElement());
@@ -334,13 +331,10 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor<Object> {
                 }
             } else {
                 if (libraryInfo.getDefinition() != null && libraryInfo.getHeaderInterval() != null) {
-                    Chunk headerChunk = new Chunk()
-                            .withInterval(libraryInfo.getHeaderInterval())
-                            .withIsHeaderChunk(true);
+                    Chunk headerChunk = new Chunk(libraryInfo.getHeaderInterval(), true);
                     Chunk definitionChunk =
-                            new Chunk().withInterval(libraryInfo.getDefinition().getSourceInterval());
-                    Chunk newChunk = new Chunk()
-                            .withInterval(new org.antlr.v4.runtime.misc.Interval(
+                            new Chunk(libraryInfo.getDefinition().getSourceInterval());
+                    Chunk newChunk = new Chunk(new org.antlr.v4.runtime.misc.Interval(
                                     headerChunk.getInterval().a, definitionChunk.getInterval().b));
                     newChunk.addChunk(headerChunk);
                     newChunk.addChunk(definitionChunk);
