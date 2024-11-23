@@ -1,7 +1,6 @@
 import net.ltgt.gradle.errorprone.errorprone
 
 plugins {
-    id("java")
     id("net.ltgt.errorprone")
     id("checkstyle")
 }

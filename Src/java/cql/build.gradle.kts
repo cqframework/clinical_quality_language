@@ -1,7 +1,5 @@
 plugins {
     id("cql.java-conventions")
-    id("cql.kotlin-conventions")
-    id("application")
     id("antlr")
 }
 
@@ -9,10 +7,6 @@ dependencies {
     val version = project.findProperty("antlr.version")
     antlr("org.antlr:antlr4:${version}")
     api("org.antlr:antlr4-runtime:${version}")
-}
-
-application {
-    mainClass = "org.cqframework.cql.Application"
 }
 
 sourceSets {
@@ -32,10 +26,10 @@ tasks.generateGrammarSource {
     arguments = listOf("-visitor", "-package", "org.cqframework.cql.gen")
 }
 
-tasks.sourcesJar {
-    from(tasks.generateGrammarSource)
+tasks.compileKotlin {
+    dependsOn(tasks.generateGrammarSource)
 }
 
-tasks.compileKotlin {
+tasks.named("dokkaJavadocJar") {
     dependsOn(tasks.generateGrammarSource)
 }

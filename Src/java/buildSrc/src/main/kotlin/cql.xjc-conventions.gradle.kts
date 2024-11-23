@@ -1,5 +1,5 @@
 plugins {
-    id("java-library")
+    kotlin("jvm")
 }
 
 val xjc by configurations.creating
@@ -25,6 +25,10 @@ dependencies {
 var buildDir = project.layout.buildDirectory.get().toString()
 val destDir = "${buildDir}/generated/sources/$name/main/java"
 
+tasks.compileKotlin {
+    dependsOn(tasks.withType<XjcTask>())
+}
+
 tasks.compileJava {
     dependsOn(tasks.withType<XjcTask>())
 }
@@ -33,7 +37,7 @@ tasks.withType<XjcTask>().configureEach {
     outputDir = destDir
 }
 
-tasks.named("sourcesJar") {
+tasks.named("kotlinSourcesJar") {
     dependsOn(tasks.withType<XjcTask>())
 }
 
