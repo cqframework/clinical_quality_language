@@ -9,6 +9,12 @@ plugins {
 //    id("io.gitlab.arturbosch.detekt")
 }
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
+
 kotlin {
     jvmToolchain(17)
 }
@@ -76,6 +82,10 @@ jacoco {
 }
 
 tasks.withType<Test> {
+    configure<JacocoTaskExtension> {
+        excludes = listOf("org/hl7/fhir/**")
+    }
+
     useJUnitPlatform()
     testLogging {
         events("skipped", "failed")
