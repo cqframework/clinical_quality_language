@@ -220,8 +220,7 @@ public class CompiledLibrary {
         if (signature == null) {
             return resolveFunctionRef(identifier);
         } else {
-            CallContext cc = new CallContext(
-                    this.getIdentifier().getId(), identifier, false, false, false, signature);
+            CallContext cc = new CallContext(this.getIdentifier().getId(), identifier, false, false, false, signature);
             OperatorResolution resolution = resolveCall(cc, null);
             var results = new ArrayList<FunctionDef>();
             if (resolution != null) {

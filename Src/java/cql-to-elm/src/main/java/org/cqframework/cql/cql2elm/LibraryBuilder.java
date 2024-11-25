@@ -1280,12 +1280,7 @@ public class LibraryBuilder {
         }
 
         return new CallContext(
-                libraryName,
-                operatorName,
-                allowPromotionAndDemotion,
-                allowFluent,
-                mustResolve,
-                dataTypes);
+                libraryName, operatorName, allowPromotionAndDemotion, allowFluent, mustResolve, dataTypes);
     }
 
     public Invocation resolveInvocation(
