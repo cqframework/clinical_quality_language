@@ -20,11 +20,7 @@ class Signature(vararg types: DataType) {
             operandTypes.zip(other.operandTypes).all { it.first.isSuperTypeOf(it.second) }
     }
 
-    val containsChoices by lazy { hasChoices() }
-
-    private fun hasChoices(): Boolean {
-        return operandTypes.any { it is ChoiceType }
-    }
+    val containsChoices by lazy { operandTypes.any { it is ChoiceType } }
 
     fun isSubTypeOf(other: Signature): Boolean {
         return size == other.size &&
@@ -52,7 +48,8 @@ class Signature(vararg types: DataType) {
         return size == other.size &&
             run {
                 // Each operand must be a subtype or convertible
-                // if a conversion is required, store it in the conversions array
+                // Store the conversions for each operand
+                // If a conversion is not found, return false (not convertible)
                 for (i in operandTypes.indices) {
                     val first = operandTypes[i]
                     val second = other.operandTypes[i]
@@ -60,7 +57,7 @@ class Signature(vararg types: DataType) {
                         continue
                     }
 
-                    val conversion =
+                    conversions[i] =
                         conversionMap?.findConversion(
                             first,
                             second,
@@ -68,12 +65,10 @@ class Signature(vararg types: DataType) {
                             allowPromotionAndDemotion,
                             operatorMap
                         )
-                    if (conversion != null) {
-                        conversions[i] = conversion
-                        continue
-                    }
 
-                    return false
+                    if (conversions[i] == null) {
+                        return false
+                    }
                 }
 
                 return true
