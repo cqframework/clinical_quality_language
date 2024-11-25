@@ -138,8 +138,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     public Model getModel(NamespaceInfo modelNamespace, String modelName, String version, String localIdentifier) {
         if (modelName == null) {
             var defaultUsing = getLibraryInfo().getDefaultUsingDefinition();
-            modelName = defaultUsing.name;
-            version = defaultUsing.version;
+            modelName = defaultUsing.getName();
+            version = defaultUsing.getVersion();
         }
 
         var modelIdentifier = new ModelIdentifier().withId(modelName).withVersion(version);
@@ -247,7 +247,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 .withName(parseString(ctx.referentialIdentifier()))
                 .withElementType(parseTypeSpecifier(ctx.typeSpecifier()));
 
-        if (includeDeprecatedElements) {
+        if (getIncludeDeprecatedElements()) {
             result.setType(result.getElementType());
         }
 
@@ -584,7 +584,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         this.libraryBuilder.pushIdentifierScope();
         try {
             ExpressionDef expressionDef = internalVisitExpressionDefinition(ctx);
-            if (forwards.isEmpty() || !forwards.peek().name.equals(expressionDef.getName())) {
+            if (forwards.isEmpty() || !forwards.peek().getName().equals(expressionDef.getName())) {
                 if (definedExpressionDefinitions.contains(expressionDef.getName())) {
                     // ERROR:
                     throw new IllegalArgumentException(
@@ -4045,7 +4045,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         if (result == null) {
             ExpressionDefinitionInfo expressionInfo = getLibraryInfo().resolveExpressionReference(identifier);
             if (expressionInfo != null) {
-                String saveContext = saveCurrentContext(expressionInfo.context);
+                String saveContext = saveCurrentContext(expressionInfo.getContext());
                 try {
                     Stack<Chunk> saveChunks = chunks;
                     chunks = new Stack<Chunk>();
@@ -4055,7 +4055,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                             // ERROR:
                             throw new IllegalArgumentException(String.format(
                                     "Could not validate reference to expression %s because its definition contains errors.",
-                                    expressionInfo.name));
+                                    expressionInfo.getName()));
                         }
 
                         // Have to call the visit to get the outer processing to occur
@@ -4140,11 +4140,13 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
         // Find all functionDefinitionInfo instances with the given name
         // register each functionDefinitionInfo
-        if (libraryName == null || libraryName.equals("") || libraryName.equals(this.getLibraryInfo().libraryName)) {
+        if (libraryName == null
+                || libraryName.equals("")
+                || libraryName.equals(this.getLibraryInfo().getLibraryName())) {
             Iterable<FunctionDefinitionInfo> fdis = getLibraryInfo().resolveFunctionReference(functionName);
             if (fdis != null) {
                 for (FunctionDefinitionInfo fdi : fdis) {
-                    String saveContext = saveCurrentContext(fdi.context);
+                    String saveContext = saveCurrentContext(fdi.getContext());
                     try {
                         registerFunctionDefinition(fdi.getDefinition());
                     } finally {

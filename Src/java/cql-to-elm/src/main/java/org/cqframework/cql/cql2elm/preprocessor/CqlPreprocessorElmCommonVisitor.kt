@@ -39,16 +39,19 @@ import org.hl7.elm.r1.*
     "ReturnCount"
 )
 open class CqlPreprocessorElmCommonVisitor(
-    libraryBuilder: LibraryBuilder,
-    tokenStream: TokenStream
+    @JvmField protected val libraryBuilder: LibraryBuilder,
+    protected val tokenStream: TokenStream
 ) : cqlBaseVisitor<Any?>() {
-    @JvmField protected val of: IdObjectFactory
+    @JvmField
+    protected val of: IdObjectFactory =
+        Objects.requireNonNull(
+            libraryBuilder.objectFactory,
+            "libraryBuilder.objectFactory required"
+        )
     protected val af = ObjectFactory()
     protected var implicitContextCreated = false
     @JvmField protected var currentContext = "Unfiltered"
     @JvmField protected var chunks = Stack<Chunk>()
-    @JvmField protected val libraryBuilder: LibraryBuilder
-    protected val tokenStream: TokenStream
     var libraryInfo = LibraryInfo()
         protected set
 
@@ -69,17 +72,9 @@ open class CqlPreprocessorElmCommonVisitor(
     var isFromKeywordRequired = false
         private set
 
-    @JvmField var includeDeprecatedElements = false
+    var includeDeprecatedElements = false
 
     init {
-        this.libraryBuilder = Objects.requireNonNull(libraryBuilder, "libraryBuilder required")
-        this.tokenStream = Objects.requireNonNull(tokenStream, "tokenStream required")
-        of =
-            Objects.requireNonNull(
-                libraryBuilder.objectFactory,
-                "libraryBuilder.objectFactory required"
-            )
-
         // Don't talk to strangers. Except when you have to.
         setCompilerOptions(libraryBuilder.libraryManager.cqlCompilerOptions)
     }
@@ -91,7 +86,6 @@ open class CqlPreprocessorElmCommonVisitor(
     }
 
     override fun visit(tree: ParseTree): Any? {
-        Objects.requireNonNull(tree, "ParseTree required")
         val pushedChunk = pushChunk(tree)
         var o: Any? = null
         return try {
@@ -119,7 +113,7 @@ open class CqlPreprocessorElmCommonVisitor(
             } catch (e: CqlCompilerException) {
                 libraryBuilder.recordParsingException(e)
             } catch (@Suppress("TooGenericExceptionCaught") e: Exception) {
-                val ex: CqlCompilerException =
+                val ex =
                     if (e.message == null) {
                         CqlInternalException("Internal translator error.", getTrackBack(tree), e)
                     } else {
@@ -173,12 +167,12 @@ open class CqlPreprocessorElmCommonVisitor(
     }
 
     override fun visitChoiceTypeSpecifier(ctx: ChoiceTypeSpecifierContext): ChoiceTypeSpecifier {
-        val typeSpecifiers = ArrayList<TypeSpecifier?>()
+        val typeSpecifiers = ArrayList<TypeSpecifier>()
         val types = ArrayList<DataType>()
         for (typeSpecifierContext in ctx.typeSpecifier()) {
-            val typeSpecifier = parseTypeSpecifier(typeSpecifierContext)
+            val typeSpecifier = parseTypeSpecifier(typeSpecifierContext)!!
             typeSpecifiers.add(typeSpecifier)
-            types.add(typeSpecifier!!.resultType)
+            types.add(typeSpecifier.resultType)
         }
         val result = of.createChoiceTypeSpecifier().withChoice(typeSpecifiers)
         if (includeDeprecatedElements) {
@@ -219,12 +213,12 @@ open class CqlPreprocessorElmCommonVisitor(
         }
         if (ctx.operandDefinition() != null) {
             for (opdef in ctx.operandDefinition()) {
-                val typeSpecifier = parseTypeSpecifier(opdef.typeSpecifier())
+                val typeSpecifier = parseTypeSpecifier(opdef.typeSpecifier())!!
                 functionDef.operand.add(
                     of.createOperandDef()
                         .withName(parseString(opdef.referentialIdentifier()))
                         .withOperandTypeSpecifier(typeSpecifier)
-                        .withResultType(typeSpecifier!!.resultType) as OperandDef
+                        .withResultType(typeSpecifier.resultType) as OperandDef
                 )
             }
         }
@@ -242,11 +236,11 @@ open class CqlPreprocessorElmCommonVisitor(
         return if (pt == null) AccessModifier.PUBLIC else (visit(pt) as AccessModifier)
     }
 
-    protected fun parseQualifiers(ctx: NamedTypeSpecifierContext): List<String?> {
-        val qualifiers: MutableList<String?> = ArrayList()
+    protected fun parseQualifiers(ctx: NamedTypeSpecifierContext): List<String> {
+        val qualifiers = ArrayList<String>()
         if (ctx.qualifier() != null) {
             for (qualifierContext in ctx.qualifier()) {
-                val qualifier = parseString(qualifierContext)
+                val qualifier = parseString(qualifierContext)!!
                 qualifiers.add(qualifier)
             }
         }
@@ -257,8 +251,8 @@ open class CqlPreprocessorElmCommonVisitor(
         modelNamespace: NamespaceInfo?,
         modelName: String?,
         version: String?,
-        localIdentifier: String?
-    ): Model? {
+        localIdentifier: String
+    ): Model {
         var modelName = modelName
         var version = version
         if (modelName == null) {
@@ -435,9 +429,9 @@ open class CqlPreprocessorElmCommonVisitor(
         } else emptyList()
     }
 
-    private fun parseTags(header: String?): List<Tag> {
+    private fun parseTags(header: String): List<Tag> {
         val header =
-            header!!
+            header
                 .trim { it <= ' ' }
                 .split("\n[ \t]*\\*[ \t\\*]*".toRegex())
                 .dropLastWhile { it.isEmpty() }
@@ -469,9 +463,9 @@ open class CqlPreprocessorElmCommonVisitor(
         return tags
     }
 
-    private fun parseComments(header: String): String {
-        var header: String? = header
-        val result: MutableList<String> = ArrayList()
+    private fun parseComments(header: String?): String {
+        var header = header
+        val result = ArrayList<String>()
         if (header != null) {
             header = header.replace("\r\n", "\n")
             val lines = header.split("\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
@@ -503,7 +497,7 @@ open class CqlPreprocessorElmCommonVisitor(
                 }
             }
         }
-        return java.lang.String.join("\n", result)
+        return result.joinToString("\n")
     }
 
     fun enableAnnotations() {
@@ -622,8 +616,8 @@ open class CqlPreprocessorElmCommonVisitor(
         }
     }
 
-    private fun lookForTagName(header: String?, startFrom: Int): Pair<String, Int>? {
-        if (startFrom >= header!!.length) {
+    private fun lookForTagName(header: String, startFrom: Int): Pair<String, Int>? {
+        if (startFrom >= header.length) {
             return null
         }
         val start = header.indexOf("@", startFrom)
@@ -753,8 +747,8 @@ open class CqlPreprocessorElmCommonVisitor(
         // for @1980-12-01, it will potentially check to be treated as value date
         // it looks for parameter in double quotes, e.g. @parameter: "Measurement Interval"
         // [@2019,@2020]
-        fun lookForTagValue(header: String?, startFrom: Int): Pair<String, Int>? {
-            if (startFrom >= header!!.length) {
+        fun lookForTagValue(header: String, startFrom: Int): Pair<String, Int>? {
+            if (startFrom >= header.length) {
                 return null
             }
             val nextTag = header.indexOf('@', startFrom)
@@ -852,8 +846,8 @@ open class CqlPreprocessorElmCommonVisitor(
             return true
         }
 
-        fun getTypeIdentifier(qualifiers: List<String?>?, identifier: String?): String? {
-            if (qualifiers!!.size > 1) {
+        fun getTypeIdentifier(qualifiers: List<String>, identifier: String): String {
+            if (qualifiers.size > 1) {
                 var result: String? = null
                 for (i in 1 until qualifiers.size) {
                     result = if (result == null) qualifiers[i] else result + "." + qualifiers[i]
@@ -863,16 +857,16 @@ open class CqlPreprocessorElmCommonVisitor(
             return identifier
         }
 
-        fun getModelIdentifier(qualifiers: List<String?>?): String? {
-            return if (qualifiers!!.isNotEmpty()) qualifiers[0] else null
+        fun getModelIdentifier(qualifiers: List<String>): String? {
+            return if (qualifiers.isNotEmpty()) qualifiers[0] else null
         }
 
         fun normalizeWhitespace(input: String): String {
             return input.replace("\r\n", "\n")
         }
 
-        fun isStartingWithDigit(header: String?, index: Int): Boolean {
-            return index < header!!.length && Character.isDigit(header[index])
+        fun isStartingWithDigit(header: String, index: Int): Boolean {
+            return index < header.length && Character.isDigit(header[index])
         }
     }
 }

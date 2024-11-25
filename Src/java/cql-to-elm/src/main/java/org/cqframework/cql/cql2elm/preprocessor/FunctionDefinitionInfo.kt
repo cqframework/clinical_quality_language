@@ -4,16 +4,12 @@ import java.util.*
 import org.cqframework.cql.cql2elm.model.FunctionHeader
 import org.cqframework.cql.gen.cqlParser.FunctionDefinitionContext
 
-class FunctionDefinitionInfo : BaseInfo() {
-    var name: String? = null
-    @JvmField var context: String? = null
+class FunctionDefinitionInfo(
+    val name: String,
+    val context: String,
+    override val definition: FunctionDefinitionContext
+) : BaseInfo(definition) {
     var preCompileOutput: FunctionHeader? = null
-    override var definition: FunctionDefinitionContext? = null
-
-    fun withName(value: String?): FunctionDefinitionInfo {
-        name = value
-        return this
-    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

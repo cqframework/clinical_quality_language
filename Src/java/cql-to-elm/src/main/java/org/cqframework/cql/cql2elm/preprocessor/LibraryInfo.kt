@@ -8,63 +8,34 @@ import org.cqframework.cql.gen.cqlParser.LibraryDefinitionContext
 import org.hl7.elm.r1.OperandDef
 
 @Suppress("TooManyFunctions")
-class LibraryInfo : BaseInfo() {
-    var namespaceName: String? = null
-    @JvmField var libraryName: String? = null
-    var version: String? = null
+class LibraryInfo(
+    val namespaceName: String? = null,
+    val libraryName: String? = null,
+    val version: String? = null,
+    override val definition: LibraryDefinitionContext? = null
+) : BaseInfo(definition) {
+
     var defaultUsingDefinition: UsingDefinitionInfo? = null
-        private set
 
-    private val usingDefinitions: MutableMap<String?, UsingDefinitionInfo>
-    private val includeDefinitions: MutableMap<String?, IncludeDefinitionInfo>
-    private val codesystemDefinitions: MutableMap<String?, CodesystemDefinitionInfo>
-    private val valuesetDefinitions: MutableMap<String?, ValuesetDefinitionInfo>
-    private val codeDefinitions: MutableMap<String?, CodeDefinitionInfo>
-    private val conceptDefinitions: MutableMap<String?, ConceptDefinitionInfo>
-    private val parameterDefinitions: MutableMap<String?, ParameterDefinitionInfo>
-    private val expressionDefinitions: MutableMap<String?, ExpressionDefinitionInfo>
-    private val functionDefinitions: MutableMap<String?, MutableList<FunctionDefinitionInfo>>
-    private val contextDefinitions: MutableList<ContextDefinitionInfo>
-    private val definitions: MutableMap<Interval, BaseInfo>
+    private val usingDefinitions = LinkedHashMap<String, UsingDefinitionInfo>()
+    private val includeDefinitions = LinkedHashMap<String, IncludeDefinitionInfo>()
+    private val codesystemDefinitions = LinkedHashMap<String, CodesystemDefinitionInfo>()
+    private val valuesetDefinitions = LinkedHashMap<String, ValuesetDefinitionInfo>()
+    private val codeDefinitions = LinkedHashMap<String, CodeDefinitionInfo>()
+    private val conceptDefinitions = LinkedHashMap<String, ConceptDefinitionInfo>()
+    private val parameterDefinitions = LinkedHashMap<String, ParameterDefinitionInfo>()
+    private val expressionDefinitions = LinkedHashMap<String, ExpressionDefinitionInfo>()
+    private val functionDefinitions = LinkedHashMap<String, MutableList<FunctionDefinitionInfo>>()
+    private val contextDefinitions = ArrayList<ContextDefinitionInfo>()
+    private val definitions = HashMap<Interval, BaseInfo>()
 
-    init {
-        usingDefinitions = LinkedHashMap()
-        includeDefinitions = LinkedHashMap()
-        codesystemDefinitions = LinkedHashMap()
-        valuesetDefinitions = LinkedHashMap()
-        codeDefinitions = LinkedHashMap()
-        conceptDefinitions = LinkedHashMap()
-        parameterDefinitions = LinkedHashMap()
-        expressionDefinitions = LinkedHashMap()
-        functionDefinitions = LinkedHashMap()
-        contextDefinitions = ArrayList()
-        definitions = HashMap()
-    }
-
-    fun withLibraryName(value: String?): LibraryInfo {
-        libraryName = value
-        return this
-    }
-
-    fun withVersion(value: String?): LibraryInfo {
-        version = value
-        return this
-    }
-
-    private fun addDefinition(definition: BaseInfo?) {
-        if (definition?.definition != null) {
+    private fun addDefinition(definition: BaseInfo) {
+        if (definition.definition != null) {
             val sourceInterval = definition.definition?.sourceInterval
             if (sourceInterval != null) {
                 definitions[sourceInterval] = definition
             }
         }
-    }
-
-    override var definition: LibraryDefinitionContext? = null
-
-    fun withDefinition(value: LibraryDefinitionContext?): LibraryInfo {
-        this.definition = value
-        return this
     }
 
     fun addUsingDefinition(usingDefinition: UsingDefinitionInfo) {
@@ -77,11 +48,11 @@ class LibraryInfo : BaseInfo() {
         addDefinition(usingDefinition)
     }
 
-    fun resolveModelReference(identifier: String?): UsingDefinitionInfo? {
+    fun resolveModelReference(identifier: String): UsingDefinitionInfo? {
         return usingDefinitions[identifier]
     }
 
-    val defaultModelName: String?
+    val defaultModelName: String
         get() {
             val usingDefinitionInfo =
                 defaultUsingDefinition
@@ -96,11 +67,11 @@ class LibraryInfo : BaseInfo() {
         addDefinition(includeDefinition)
     }
 
-    fun resolveLibraryReference(identifier: String?): IncludeDefinitionInfo? {
+    fun resolveLibraryReference(identifier: String): IncludeDefinitionInfo? {
         return includeDefinitions[identifier]
     }
 
-    fun resolveLibraryName(identifier: String?): String? {
+    fun resolveLibraryName(identifier: String): String? {
         val includeDefinition = resolveLibraryReference(identifier)
         return includeDefinition?.localName
     }
@@ -110,11 +81,11 @@ class LibraryInfo : BaseInfo() {
         addDefinition(parameterDefinition)
     }
 
-    fun resolveParameterReference(identifier: String?): ParameterDefinitionInfo? {
+    fun resolveParameterReference(identifier: String): ParameterDefinitionInfo? {
         return parameterDefinitions[identifier]
     }
 
-    fun resolveParameterName(identifier: String?): String? {
+    fun resolveParameterName(identifier: String): String? {
         val parameterDefinition = resolveParameterReference(identifier)
         return parameterDefinition?.name
     }
@@ -124,7 +95,7 @@ class LibraryInfo : BaseInfo() {
         addDefinition(codesystemDefinition)
     }
 
-    fun resolveCodesystemReference(identifier: String?): CodesystemDefinitionInfo? {
+    fun resolveCodesystemReference(identifier: String): CodesystemDefinitionInfo? {
         return codesystemDefinitions[identifier]
     }
 
@@ -133,11 +104,11 @@ class LibraryInfo : BaseInfo() {
         addDefinition(valuesetDefinition)
     }
 
-    fun resolveValuesetReference(identifier: String?): ValuesetDefinitionInfo? {
+    fun resolveValuesetReference(identifier: String): ValuesetDefinitionInfo? {
         return valuesetDefinitions[identifier]
     }
 
-    fun resolveValuesetName(identifier: String?): String? {
+    fun resolveValuesetName(identifier: String): String? {
         val valuesetDefinition = resolveValuesetReference(identifier)
         return valuesetDefinition?.name
     }
@@ -147,7 +118,7 @@ class LibraryInfo : BaseInfo() {
         addDefinition(codeDefinition)
     }
 
-    fun resolveCodeReference(identifier: String?): CodeDefinitionInfo? {
+    fun resolveCodeReference(identifier: String): CodeDefinitionInfo? {
         return codeDefinitions[identifier]
     }
 
@@ -156,7 +127,7 @@ class LibraryInfo : BaseInfo() {
         addDefinition(conceptDefinition)
     }
 
-    fun resolveConceptReference(identifier: String?): ConceptDefinitionInfo? {
+    fun resolveConceptReference(identifier: String): ConceptDefinitionInfo? {
         return conceptDefinitions[identifier]
     }
 
@@ -165,11 +136,11 @@ class LibraryInfo : BaseInfo() {
         addDefinition(letStatement)
     }
 
-    fun resolveExpressionReference(identifier: String?): ExpressionDefinitionInfo? {
+    fun resolveExpressionReference(identifier: String): ExpressionDefinitionInfo? {
         return expressionDefinitions[identifier]
     }
 
-    fun resolveExpressionName(identifier: String?): String? {
+    fun resolveExpressionName(identifier: String): String? {
         val letStatement = resolveExpressionReference(identifier)
         return letStatement?.name
     }
@@ -184,11 +155,11 @@ class LibraryInfo : BaseInfo() {
         addDefinition(functionDefinition)
     }
 
-    fun resolveFunctionReference(identifier: String?): Iterable<FunctionDefinitionInfo>? {
+    fun resolveFunctionReference(identifier: String): Iterable<FunctionDefinitionInfo>? {
         return functionDefinitions[identifier]
     }
 
-    fun resolveFunctionName(identifier: String?): String? {
+    fun resolveFunctionName(identifier: String): String? {
         val functionDefinitions = resolveFunctionReference(identifier)
         if (functionDefinitions != null) {
             for (functionInfo in functionDefinitions) {
@@ -205,7 +176,7 @@ class LibraryInfo : BaseInfo() {
 
     fun resolveContext(ctx: ContextDefinitionContext): ContextDefinitionInfo? {
         for (cd in contextDefinitions) {
-            if (ctx.sourceInterval == cd.definition?.sourceInterval) {
+            if (ctx.sourceInterval == cd.definition.sourceInterval) {
                 return cd
             }
         }

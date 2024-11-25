@@ -21,18 +21,17 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
     private var lastSourceIndex = -1
 
     private fun processHeader(ctx: ParseTree, info: BaseInfo) {
-        val header: Interval?
         val sourceInterval = ctx.sourceInterval
         val beforeDefinition = sourceInterval.a - 1
         if (beforeDefinition >= lastSourceIndex) {
-            header = Interval(lastSourceIndex + 1, sourceInterval.a - 1)
+            val header = Interval(lastSourceIndex + 1, sourceInterval.a - 1)
             lastSourceIndex = sourceInterval.b
             info.headerInterval = header
             info.header = tokenStream.getText(header)
         }
     }
 
-    override fun visitLibrary(ctx: LibraryContext): Any {
+    override fun visitLibrary(ctx: LibraryContext): Any? {
         var lastResult: Any? = null
         // NOTE: Need to set the library identifier here so the builder can begin the translation
         // appropriately
@@ -61,68 +60,60 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
             }
 
             // Return last result (consistent with super implementation and helps w/ testing)
-            lastResult!!
+            lastResult
         } finally {
             libraryBuilder.endTranslation()
         }
     }
 
-    override fun visitLibraryDefinition(ctx: LibraryDefinitionContext): Any {
+    override fun visitLibraryDefinition(ctx: LibraryDefinitionContext): Any? {
         val identifiers = visit(ctx.qualifiedIdentifier()) as MutableList<String>
-        libraryInfo.libraryName = identifiers.removeAt(identifiers.size - 1)
-        if (identifiers.isNotEmpty()) {
-            libraryInfo.namespaceName = java.lang.String.join(".", identifiers)
-        }
-        if (ctx.versionSpecifier() != null) {
-            libraryInfo.version = visit(ctx.versionSpecifier()) as String
-        }
-        libraryInfo.definition = ctx
-        processHeader(ctx, libraryInfo)
-        return super.visitLibraryDefinition(ctx)!!
+        val libraryName = identifiers.removeAt(identifiers.size - 1)
+        val namespaceName = if (identifiers.isNotEmpty()) identifiers.joinToString(".") else null
+        val version =
+            if (ctx.versionSpecifier() != null) visit(ctx.versionSpecifier()) as String else null
+        val newLibraryInfo = LibraryInfo(namespaceName, libraryName, version, ctx)
+        libraryInfo = newLibraryInfo
+        processHeader(ctx, newLibraryInfo)
+        return super.visitLibraryDefinition(ctx)
     }
 
     override fun visitIncludeDefinition(ctx: IncludeDefinitionContext): Any {
-        val includeDefinition = IncludeDefinitionInfo()
         val identifiers = visit(ctx.qualifiedIdentifier()) as MutableList<String>
-        includeDefinition.name = identifiers.removeAt(identifiers.size - 1)
-        if (identifiers.isNotEmpty()) {
-            includeDefinition.namespaceName = java.lang.String.join(".", identifiers)
-        }
-        if (ctx.versionSpecifier() != null) {
-            includeDefinition.version = visit(ctx.versionSpecifier()) as String
-        }
-        if (ctx.localIdentifier() != null) {
-            includeDefinition.localName = parseString(ctx.localIdentifier())
-        } else {
-            includeDefinition.localName = includeDefinition.name
-        }
-        includeDefinition.definition = ctx
+        val name = identifiers.removeAt(identifiers.size - 1)
+        val namespaceName = if (identifiers.isNotEmpty()) identifiers.joinToString(".") else null
+        val version =
+            if (ctx.versionSpecifier() != null) visit(ctx.versionSpecifier()) as String else null
+        val localName =
+            if (ctx.localIdentifier() != null) parseString(ctx.localIdentifier())!! else name
+        val includeDefinition = IncludeDefinitionInfo(namespaceName, name, version, localName, ctx)
         processHeader(ctx, includeDefinition)
         libraryInfo.addIncludeDefinition(includeDefinition)
         return includeDefinition
     }
 
     override fun visitUsingDefinition(ctx: UsingDefinitionContext): Any {
-        val usingDefinition = UsingDefinitionInfo()
         val identifiers = visit(ctx.qualifiedIdentifier()) as MutableList<String>
-        val unqualifiedIdentifier: String = identifiers.removeAt(identifiers.size - 1)
-        usingDefinition.name = unqualifiedIdentifier
-        if (identifiers.isNotEmpty()) {
-            usingDefinition.namespaceName = java.lang.String.join(".", identifiers)
-        }
-        if (ctx.versionSpecifier() != null) {
-            usingDefinition.version = visit(ctx.versionSpecifier()) as String
-        }
-        if (ctx.localIdentifier() != null) {
-            usingDefinition.localName = parseString(ctx.localIdentifier())
-        } else {
-            usingDefinition.localName = usingDefinition.name
-        }
-        usingDefinition.definition = ctx
+        val unqualifiedIdentifier = identifiers.removeAt(identifiers.size - 1)
+        val namespaceNameForUsingDefinition =
+            if (identifiers.isNotEmpty()) identifiers.joinToString(".") else null
+        val version =
+            if (ctx.versionSpecifier() != null) visit(ctx.versionSpecifier()) as String else null
+        val localName =
+            if (ctx.localIdentifier() != null) parseString(ctx.localIdentifier())!!
+            else unqualifiedIdentifier
+        val usingDefinition =
+            UsingDefinitionInfo(
+                namespaceNameForUsingDefinition,
+                unqualifiedIdentifier,
+                version,
+                localName,
+                ctx
+            )
         processHeader(ctx, usingDefinition)
         libraryInfo.addUsingDefinition(usingDefinition)
         val namespaceName =
-            if (identifiers.isNotEmpty()) java.lang.String.join(".", identifiers)
+            if (identifiers.isNotEmpty()) identifiers.joinToString(".")
             else if (libraryBuilder.isWellKnownModelName(unqualifiedIdentifier)) null
             else if (libraryBuilder.namespaceInfo != null) libraryBuilder.namespaceInfo.name
             else null
@@ -133,7 +124,7 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
         }
         val localIdentifier =
             if (ctx.localIdentifier() == null) unqualifiedIdentifier
-            else parseString(ctx.localIdentifier())
+            else parseString(ctx.localIdentifier())!!
         require(localIdentifier == unqualifiedIdentifier) {
             String.format(
                 @Suppress("MaxLineLength")
@@ -158,45 +149,35 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
     }
 
     override fun visitCodesystemDefinition(ctx: CodesystemDefinitionContext): Any {
-        val codesystemDefinition = CodesystemDefinitionInfo()
-        codesystemDefinition.name = parseString(ctx.identifier())
-        codesystemDefinition.definition = ctx
+        val codesystemDefinition = CodesystemDefinitionInfo(parseString(ctx.identifier())!!, ctx)
         processHeader(ctx, codesystemDefinition)
         libraryInfo.addCodesystemDefinition(codesystemDefinition)
         return codesystemDefinition
     }
 
     override fun visitValuesetDefinition(ctx: ValuesetDefinitionContext): Any {
-        val valuesetDefinition = ValuesetDefinitionInfo()
-        valuesetDefinition.name = parseString(ctx.identifier())
-        valuesetDefinition.definition = ctx
+        val valuesetDefinition = ValuesetDefinitionInfo(parseString(ctx.identifier())!!, ctx)
         processHeader(ctx, valuesetDefinition)
         libraryInfo.addValuesetDefinition(valuesetDefinition)
         return valuesetDefinition
     }
 
     override fun visitCodeDefinition(ctx: CodeDefinitionContext): Any {
-        val codeDefinition = CodeDefinitionInfo()
-        codeDefinition.name = parseString(ctx.identifier())
-        codeDefinition.definition = ctx
+        val codeDefinition = CodeDefinitionInfo(parseString(ctx.identifier())!!, ctx)
         processHeader(ctx, codeDefinition)
         libraryInfo.addCodeDefinition(codeDefinition)
         return codeDefinition
     }
 
     override fun visitConceptDefinition(ctx: ConceptDefinitionContext): Any {
-        val conceptDefinition = ConceptDefinitionInfo()
-        conceptDefinition.name = parseString(ctx.identifier())
-        conceptDefinition.definition = ctx
+        val conceptDefinition = ConceptDefinitionInfo(parseString(ctx.identifier())!!, ctx)
         processHeader(ctx, conceptDefinition)
         libraryInfo.addConceptDefinition(conceptDefinition)
         return conceptDefinition
     }
 
     override fun visitParameterDefinition(ctx: ParameterDefinitionContext): Any {
-        val parameterDefinition = ParameterDefinitionInfo()
-        parameterDefinition.name = parseString(ctx.identifier())
-        parameterDefinition.definition = ctx
+        val parameterDefinition = ParameterDefinitionInfo(parseString(ctx.identifier())!!, ctx)
         processHeader(ctx, parameterDefinition)
         libraryInfo.addParameterDefinition(parameterDefinition)
         return parameterDefinition
@@ -205,21 +186,19 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
     override fun visitContextDefinition(ctx: ContextDefinitionContext): Any {
         val modelIdentifier =
             if (ctx.modelIdentifier() != null) parseString(ctx.modelIdentifier()) else null
-        val unqualifiedContext = parseString(ctx.identifier())
+        val unqualifiedContext = parseString(ctx.identifier())!!
         currentContext =
             if (!modelIdentifier.isNullOrEmpty()) {
                 "$modelIdentifier.$unqualifiedContext"
             } else {
-                unqualifiedContext!!
+                unqualifiedContext
             }
-        val contextDefinition = ContextDefinitionInfo()
-        contextDefinition.definition = ctx
+        val contextDefinition = ContextDefinitionInfo(ctx)
         processHeader(ctx, contextDefinition)
         libraryInfo.addContextDefinition(contextDefinition)
         if (!implicitContextCreated && unqualifiedContext != "Unfiltered") {
-            val expressionDefinition = ExpressionDefinitionInfo()
-            expressionDefinition.name = unqualifiedContext
-            expressionDefinition.context = currentContext
+            val expressionDefinition =
+                ExpressionDefinitionInfo(unqualifiedContext, currentContext, null)
             libraryInfo.addExpressionDefinition(expressionDefinition)
             implicitContextCreated = true
         }
@@ -227,20 +206,20 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
     }
 
     override fun visitExpressionDefinition(ctx: ExpressionDefinitionContext): Any {
-        val expressionDefinition = ExpressionDefinitionInfo()
-        expressionDefinition.name = parseString(ctx.identifier())
-        expressionDefinition.context = currentContext
-        expressionDefinition.definition = ctx
+        val expressionDefinition =
+            ExpressionDefinitionInfo(parseString(ctx.identifier())!!, currentContext, ctx)
         processHeader(ctx, expressionDefinition)
         libraryInfo.addExpressionDefinition(expressionDefinition)
         return expressionDefinition
     }
 
     override fun visitFunctionDefinition(ctx: FunctionDefinitionContext): Any {
-        val functionDefinition = FunctionDefinitionInfo()
-        functionDefinition.name = parseString(ctx.identifierOrFunctionIdentifier())
-        functionDefinition.context = currentContext
-        functionDefinition.definition = ctx
+        val functionDefinition =
+            FunctionDefinitionInfo(
+                parseString(ctx.identifierOrFunctionIdentifier())!!,
+                currentContext,
+                ctx
+            )
         processHeader(ctx, functionDefinition)
         libraryInfo.addFunctionDefinition(functionDefinition)
         return functionDefinition
@@ -248,9 +227,9 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
 
     override fun visitNamedTypeSpecifier(ctx: NamedTypeSpecifierContext): NamedTypeSpecifier {
         val qualifiers = parseQualifiers(ctx)
-        val modelIdentifier: String? = getModelIdentifier(qualifiers)
-        val identifier: String? =
-            getTypeIdentifier(qualifiers, parseString(ctx.referentialOrTypeNameIdentifier()))
+        val modelIdentifier = getModelIdentifier(qualifiers)
+        val identifier =
+            getTypeIdentifier(qualifiers, parseString(ctx.referentialOrTypeNameIdentifier())!!)
         val typeSpecifierKey = String.format("%s:%s", modelIdentifier, identifier)
         val resultType = libraryBuilder.resolveTypeName(modelIdentifier, identifier)
         if (null == resultType) {
@@ -290,12 +269,12 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
 
     override fun visitQualifiedIdentifier(ctx: QualifiedIdentifierContext): Any {
         // Return the list of qualified identifiers for resolution by the containing element
-        val identifiers: MutableList<String?> = ArrayList()
+        val identifiers = ArrayList<String>()
         for (qualifierContext in ctx.qualifier()) {
-            val qualifier = visit(qualifierContext!!) as String
+            val qualifier = visit(qualifierContext) as String
             identifiers.add(qualifier)
         }
-        val identifier = parseString(ctx.identifier())
+        val identifier = parseString(ctx.identifier())!!
         identifiers.add(identifier)
         return identifiers
     }
@@ -304,12 +283,12 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
         ctx: QualifiedIdentifierExpressionContext
     ): Any {
         // Return the list of qualified identifiers for resolution by the containing element
-        val identifiers: MutableList<String?> = ArrayList()
+        val identifiers = ArrayList<String>()
         for (qualifierContext in ctx.qualifierExpression()) {
-            val qualifier = visit(qualifierContext!!) as String
+            val qualifier = visit(qualifierContext) as String
             identifiers.add(qualifier)
         }
-        val identifier = parseString(ctx.referentialIdentifier())
+        val identifier = parseString(ctx.referentialIdentifier())!!
         identifiers.add(identifier)
         return identifiers
     }
