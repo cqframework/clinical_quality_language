@@ -231,10 +231,10 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor<Object> {
         final cqlParser.TypeSpecifierContext typeSpecifierContext = ctx.typeSpecifier();
 
         if (typeSpecifierContext != null) {
-            return FunctionHeader.withReturnType(fun, parseTypeSpecifier(typeSpecifierContext));
+            return new FunctionHeader(fun, parseTypeSpecifier(typeSpecifierContext));
+        } else {
+            return new FunctionHeader(fun);
         }
-
-        return FunctionHeader.noReturnType(fun);
     }
 
     protected TypeSpecifier parseTypeSpecifier(ParseTree pt) {

@@ -37,23 +37,23 @@ public class Model {
         }
     }
 
-    private ModelInfo info;
+    private final ModelInfo info;
 
     public ModelInfo getModelInfo() {
         return info;
     }
 
     private Map<String, DataType> index;
-    private Map<String, ClassType> classIndex;
-    private Map<String, DataType> nameIndex;
+    private final Map<String, ClassType> classIndex;
+    private final Map<String, DataType> nameIndex;
 
     protected Map<String, DataType> getNameIndex() {
         return nameIndex;
     }
 
-    private List<Conversion> conversions;
-    private List<ModelContext> contexts;
-    private String defaultContext;
+    private final List<Conversion> conversions;
+    private final List<ModelContext> contexts;
+    private final String defaultContext;
 
     public String getDefaultContext() {
         return defaultContext;
@@ -86,8 +86,7 @@ public class Model {
 
         // Resolve to a "default" context definition if the context name matches a type name exactly
         DataType contextType = resolveTypeName(contextName);
-        if (contextType instanceof ClassType) {
-            ClassType contextClassType = (ClassType) contextType;
+        if (contextType instanceof ClassType contextClassType) {
             String keyName = null;
             for (ClassTypeElement cte : contextClassType.getElements()) {
                 if (cte.getName().equals("id")) {

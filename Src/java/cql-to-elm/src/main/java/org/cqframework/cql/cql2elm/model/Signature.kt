@@ -7,6 +7,7 @@ import org.hl7.cql.model.InstantiationContext
 data class Signature(val operandTypes: List<DataType>) {
     constructor(vararg types: DataType) : this(listOf(*types))
 
+    val containsChoices by lazy { operandTypes.any { it is ChoiceType } }
     val size: Int
         get() = operandTypes.size
 
@@ -14,8 +15,6 @@ data class Signature(val operandTypes: List<DataType>) {
         return size == other.size &&
             operandTypes.zip(other.operandTypes).all { it.first.isSuperTypeOf(it.second) }
     }
-
-    val containsChoices by lazy { operandTypes.any { it is ChoiceType } }
 
     fun isSubTypeOf(other: Signature): Boolean {
         return size == other.size &&
@@ -44,7 +43,7 @@ data class Signature(val operandTypes: List<DataType>) {
             run {
                 // Each operand must be a subtype or convertible
                 // Store the conversions for each operand
-                // If a conversion is not found, return false (not convertible)
+                // If a conversion is needed and not found, return false (not convertible)
                 for (i in operandTypes.indices) {
                     val first = operandTypes[i]
                     val second = other.operandTypes[i]
@@ -71,16 +70,6 @@ data class Signature(val operandTypes: List<DataType>) {
     }
 
     override fun toString(): String {
-        val builder = StringBuilder()
-        builder.append("(")
-        for (i in operandTypes.indices) {
-            if (i > 0) {
-                builder.append(",")
-            }
-
-            builder.append(operandTypes[i].toString())
-        }
-        builder.append(")")
-        return builder.toString()
+        return "(" + operandTypes.joinToString { it.toString() } + ")"
     }
 }

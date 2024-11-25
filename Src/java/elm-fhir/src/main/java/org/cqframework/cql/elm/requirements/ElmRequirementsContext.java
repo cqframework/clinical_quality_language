@@ -695,7 +695,8 @@ public class ElmRequirementsContext {
     }
 
     public CompiledLibrary resolveLibrary(ElmRequirement libraryRef) {
-        return resolveLibrary(libraryRef.getLibraryIdentifier(), ((LibraryRef) libraryRef.getElement()).libraryName);
+        return resolveLibrary(
+                libraryRef.getLibraryIdentifier(), ((LibraryRef) libraryRef.getElement()).getLibraryName());
     }
 
     public IncludeDef resolveIncludeRef(VersionedIdentifier libraryIdentifier, String localLibraryName) {

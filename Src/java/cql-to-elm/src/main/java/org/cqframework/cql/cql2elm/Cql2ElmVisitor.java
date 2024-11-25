@@ -4163,7 +4163,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                                             .getId()))) {
                 Operator op = invocation.getResolution().getOperator();
                 FunctionHeader fh = getFunctionHeader(op);
-                if (!fh.getIsCompiled()) {
+                if (!fh.isCompiled()) {
                     cqlParser.FunctionDefinitionContext ctx = getFunctionDefinitionContext(fh);
                     String saveContext = saveCurrentContext(fh.getFunctionDef().getContext());
                     Stack<Chunk> saveChunks = chunks;
@@ -4432,7 +4432,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
             }
 
             fun.setContext(getCurrentContext());
-            fh.setIsCompiled();
+            fh.setCompiled(true);
 
             return fun;
         } finally {
