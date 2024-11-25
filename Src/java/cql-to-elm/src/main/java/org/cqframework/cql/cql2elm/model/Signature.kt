@@ -4,13 +4,8 @@ import org.hl7.cql.model.ChoiceType
 import org.hl7.cql.model.DataType
 import org.hl7.cql.model.InstantiationContext
 
-class Signature(vararg types: DataType) {
-    var operandTypes: List<DataType>
-        private set
-
-    init {
-        operandTypes = listOf(*types)
-    }
+data class Signature(val operandTypes: List<DataType>) {
+    constructor(vararg types: DataType) : this(listOf(*types))
 
     val size: Int
         get() = operandTypes.size
@@ -35,7 +30,7 @@ class Signature(vararg types: DataType) {
     }
 
     fun instantiate(context: InstantiationContext): Signature {
-        return Signature(*operandTypes.map { it.instantiate(context) }.toTypedArray())
+        return Signature(operandTypes.map { it.instantiate(context) })
     }
 
     fun isConvertibleTo(
@@ -73,21 +68,6 @@ class Signature(vararg types: DataType) {
 
                 return true
             }
-    }
-
-    override fun hashCode(): Int {
-        var result = 53
-        for (operandType in operandTypes) {
-            result += (39 * operandType.hashCode())
-        }
-
-        return result
-    }
-
-    override fun equals(other: Any?): Boolean {
-        return other is Signature &&
-            size == other.size &&
-            operandTypes.zip(other.operandTypes).all { it.first == it.second }
     }
 
     override fun toString(): String {

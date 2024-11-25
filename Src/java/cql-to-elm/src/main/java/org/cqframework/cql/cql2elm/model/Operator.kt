@@ -78,7 +78,7 @@ open class Operator(
             return Operator(
                     functionDef,
                     functionDef.name,
-                    Signature(*operandTypes.toTypedArray<DataType>()),
+                    Signature(operandTypes),
                     functionDef.resultType
                 )
                 .withAccessLevel(functionDef.accessLevel)

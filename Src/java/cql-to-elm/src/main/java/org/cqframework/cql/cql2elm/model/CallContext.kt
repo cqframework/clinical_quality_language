@@ -5,23 +5,23 @@ import org.hl7.cql.model.DataType
 class CallContext(
     val libraryName: String?,
     val operatorName: String,
-    private val allowPromotionAndDemotion: Boolean,
-    private val allowFluent: Boolean,
+    val allowPromotionAndDemotion: Boolean,
+    val allowFluent: Boolean,
     val mustResolve: Boolean,
-    vararg signature: DataType
+    operandTypes: List<DataType>
 ) {
+    constructor(
+    libraryName: String?,
+    operatorName: String,
+    allowPromotionAndDemotion: Boolean,
+    allowFluent: Boolean,
+    mustResolve: Boolean,
+    vararg operandTypes: DataType
+    ) : this(libraryName, operatorName, allowPromotionAndDemotion, allowFluent, mustResolve, operandTypes.toList())
+
     val signature: Signature
-
-    fun isAllowPromotionAndDemotion(): Boolean {
-        return allowPromotionAndDemotion
-    }
-
-    fun isAllowFluent(): Boolean {
-        return allowFluent
-    }
-
     init {
         require(operatorName.isNotEmpty()) { "operatorName is empty" }
-        this.signature = Signature(*signature)
+        this.signature = Signature(operandTypes)
     }
 }
