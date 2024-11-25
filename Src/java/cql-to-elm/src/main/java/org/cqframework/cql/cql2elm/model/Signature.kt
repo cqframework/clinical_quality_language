@@ -5,7 +5,7 @@ import org.hl7.cql.model.DataType
 import org.hl7.cql.model.InstantiationContext
 
 data class Signature(val operandTypes: List<DataType>) {
-    constructor(vararg types: DataType) : this(listOf(*types))
+    constructor(vararg types: DataType) : this(types.toList())
 
     val containsChoices by lazy { operandTypes.any { it is ChoiceType } }
     val size: Int
