@@ -13,15 +13,16 @@ we're focusing on providing minimal required narrative per definition.
 class Chunk(var interval: Interval, val isHeaderChunk: Boolean) {
     constructor(interval: Interval) : this(interval, false)
 
-
     var element: Element? = null
 
     private val chunks: MutableList<Chunk> = ArrayList()
+
     private fun ensureChunks() {
         if (chunks.isEmpty()) {
             chunks.add(Chunk(interval))
         }
     }
+
     fun getChunks(): List<Chunk> {
         ensureChunks()
         return chunks
@@ -32,14 +33,16 @@ class Chunk(var interval: Interval, val isHeaderChunk: Boolean) {
     }
 
     fun addChunk(chunk: Chunk) {
-        require(chunk.interval.a >= interval.a && chunk.interval.b <= interval.b) { "Child chunk cannot be added because it is not contained within the parent chunk." }
+        require(chunk.interval.a >= interval.a && chunk.interval.b <= interval.b) {
+            "Child chunk cannot be added because it is not contained within the parent chunk."
+        }
 
         ensureChunks()
         var chunkIndex = -1
         var targetChunk: Chunk? = null
         for (i in chunks.indices) {
-            if (chunk.interval.a >= chunks[i].interval.a
-                && chunk.interval.a <= chunks[i].interval.b
+            if (
+                chunk.interval.a >= chunks[i].interval.a && chunk.interval.a <= chunks[i].interval.b
             ) {
                 chunkIndex = i
                 targetChunk = chunks[chunkIndex]

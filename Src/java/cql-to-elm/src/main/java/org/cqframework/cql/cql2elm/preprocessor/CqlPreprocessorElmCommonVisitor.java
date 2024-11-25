@@ -314,7 +314,7 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor<Object> {
                         if (definitionInfo != null && definitionInfo.getHeaderInterval() != null) {
                             Chunk headerChunk = new Chunk(definitionInfo.getHeaderInterval(), true);
                             Chunk newChunk = new Chunk(new org.antlr.v4.runtime.misc.Interval(
-                                            headerChunk.getInterval().a, chunk.getInterval().b));
+                                    headerChunk.getInterval().a, chunk.getInterval().b));
                             newChunk.addChunk(headerChunk);
                             newChunk.setElement(chunk.getElement());
                             for (Chunk c : chunk.getChunks()) {
@@ -335,7 +335,7 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor<Object> {
                     Chunk definitionChunk =
                             new Chunk(libraryInfo.getDefinition().getSourceInterval());
                     Chunk newChunk = new Chunk(new org.antlr.v4.runtime.misc.Interval(
-                                    headerChunk.getInterval().a, definitionChunk.getInterval().b));
+                            headerChunk.getInterval().a, definitionChunk.getInterval().b));
                     newChunk.addChunk(headerChunk);
                     newChunk.addChunk(definitionChunk);
                     newChunk.setElement(chunk.getElement());

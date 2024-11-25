@@ -38,7 +38,7 @@ public class OperatorEntry {
         }
 
         public Signature getSignature() {
-            return operator.getSignature();
+            return operator.signature;
         }
 
         /*
@@ -77,7 +77,7 @@ public class OperatorEntry {
                 boolean allowPromotionAndDemotion,
                 boolean requireConversions) {
             Conversion[] conversions = getConversions(
-                    callSignature, operator.getSignature(), conversionMap, operatorMap, allowPromotionAndDemotion);
+                    callSignature, operator.signature, conversionMap, operatorMap, allowPromotionAndDemotion);
             OperatorResolution result = new OperatorResolution(operator, conversions);
             if (requireConversions && conversions == null) {
                 return null;
@@ -88,10 +88,10 @@ public class OperatorEntry {
         public List<OperatorResolution> resolve(
                 CallContext callContext, ConversionMap conversionMap, OperatorMap operatorMap) {
             List<OperatorResolution> results = null;
-            Signature invocationSignature = getInvocationSignature(callContext.getSignature(), operator.getSignature());
+            Signature invocationSignature = getInvocationSignature(callContext.getSignature(), operator.signature);
 
             // Attempt exact match against this signature
-            if (operator.getSignature().equals(invocationSignature)) {
+            if (operator.signature.equals(invocationSignature)) {
                 OperatorResolution result = getOperatorResolution(
                         operator,
                         callContext.getSignature(),
@@ -111,7 +111,7 @@ public class OperatorEntry {
             results = subSignatures.resolve(callContext, conversionMap, operatorMap);
 
             // If no subsignatures match, attempt subType match against this signature
-            if (results == null && operator.getSignature().isSuperTypeOf(invocationSignature)) {
+            if (results == null && operator.signature.isSuperTypeOf(invocationSignature)) {
                 OperatorResolution result = getOperatorResolution(
                         operator,
                         callContext.getSignature(),
@@ -179,14 +179,14 @@ public class OperatorEntry {
 
         @Override
         public int hashCode() {
-            return operator.getSignature().hashCode();
+            return operator.signature.hashCode();
         }
 
         @Override
         public boolean equals(Object o) {
             if (o instanceof SignatureNode) {
                 SignatureNode that = (SignatureNode) o;
-                return this.operator.getName().equals(that.operator.getName())
+                return this.operator.name.equals(that.operator.name)
                         && this.getSignature().equals(that.getSignature());
             }
 
@@ -206,7 +206,7 @@ public class OperatorEntry {
         }
 
         public boolean contains(Operator operator) {
-            boolean result = signatures.containsKey(operator.getSignature());
+            boolean result = signatures.containsKey(operator.signature);
             if (!result) {
                 for (SignatureNode n : signatures.values()) {
                     result = n.subSignatures.contains(operator);
@@ -227,7 +227,7 @@ public class OperatorEntry {
             if (signatures.containsKey(node.getSignature())) {
                 throw new IllegalArgumentException(String.format(
                         "Operator %s already has a registration for signature: %s.",
-                        node.operator.getName(), node.getSignature().toString()));
+                        node.operator.name, node.getSignature().toString()));
             }
 
             boolean added = false;
@@ -303,17 +303,17 @@ public class OperatorEntry {
     }
 
     private boolean containsGenericOperator(GenericOperator operator) {
-        return genericOperators.containsKey(operator.getSignature());
+        return genericOperators.containsKey(operator.signature);
     }
 
     private void addGenericOperator(GenericOperator operator) {
-        if (genericOperators.containsKey(operator.getSignature())) {
+        if (genericOperators.containsKey(operator.signature)) {
             throw new IllegalArgumentException(String.format(
                     "Operator %s already has a generic registration for signature: %s.",
-                    name, operator.getSignature().toString()));
+                    name, operator.signature.toString()));
         }
 
-        genericOperators.put(operator.getSignature(), operator);
+        genericOperators.put(operator.signature, operator);
     }
 
     private boolean allResultsUseConversion(List<OperatorResolution> results) {

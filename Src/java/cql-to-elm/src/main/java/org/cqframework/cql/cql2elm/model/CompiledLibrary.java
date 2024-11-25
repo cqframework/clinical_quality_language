@@ -101,17 +101,17 @@ public class CompiledLibrary {
                 if (!operator.getLibraryName().equals(this.identifier.getId())) {
                     throw new IllegalArgumentException(String.format(
                             "Operator %s cannot be registered in library %s because it is defined in library %s.",
-                            operator.getName(), this.identifier.getId(), operator.getLibraryName()));
+                            operator.name, this.identifier.getId(), operator.getLibraryName()));
                 }
             }
         }
     }
 
     private void ensureResultType(Operator operator) {
-        if (operator.getResultType() == null) {
+        if (operator.resultType == null) {
             throw new IllegalArgumentException(String.format(
                     "Operator %s cannot be registered in library %s because it does not have a result type defined.",
-                    operator.getName(), this.identifier.getId()));
+                    operator.name, this.identifier.getId()));
         }
     }
 
@@ -225,7 +225,7 @@ public class CompiledLibrary {
             OperatorResolution resolution = resolveCall(cc, null);
             var results = new ArrayList<FunctionDef>();
             if (resolution != null) {
-                results.add(resolution.getOperator().getFunctionDef());
+                results.add(resolution.getOperator().functionDef);
             }
             return results;
         }

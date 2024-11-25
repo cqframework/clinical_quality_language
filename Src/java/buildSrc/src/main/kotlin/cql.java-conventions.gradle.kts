@@ -6,7 +6,7 @@ plugins {
     id("cql.sca-conventions")
     id("com.diffplug.spotless")
     id("org.jetbrains.dokka")
-    id("io.gitlab.arturbosch.detekt")
+//    id("io.gitlab.arturbosch.detekt")
 }
 
 kotlin {
