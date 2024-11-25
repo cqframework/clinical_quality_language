@@ -13,6 +13,12 @@ kotlin {
     jvmToolchain(17)
 }
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
+
 repositories {
     mavenLocal()
     mavenCentral()
@@ -73,9 +79,14 @@ tasks.register<Jar>("dokkaJavadocJar") {
 
 jacoco {
     toolVersion = "0.8.11"
+
 }
 
 tasks.withType<Test> {
+    configure<JacocoTaskExtension> {
+        excludes = listOf("org/hl7/fhir/**")
+    }
+
     useJUnitPlatform()
     testLogging {
         events("skipped", "failed")
