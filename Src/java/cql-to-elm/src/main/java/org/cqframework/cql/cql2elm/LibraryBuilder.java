@@ -2488,10 +2488,7 @@ public class LibraryBuilder {
 
             if (element instanceof IncludeDef) {
                 checkLiteralContext();
-                LibraryRef libraryRef = new LibraryRef();
-                libraryRef.setLocalId(of.nextId());
-                libraryRef.setLibraryName(((IncludeDef) element).getLocalIdentifier());
-                return libraryRef;
+                return new LibraryRef(of.nextId(), ((IncludeDef) element).getLocalIdentifier());
             }
         }
 
