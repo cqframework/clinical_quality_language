@@ -328,7 +328,7 @@ public class OperatorEntry {
 
     public List<Signature> expandChoices(Signature callSignature) {
         ArrayList<Signature> signatures = new ArrayList<Signature>();
-        if (callSignature.containsChoices()) {
+        if (callSignature.getContainsChoices()) {
 
             ArrayList<ArrayList<DataType>> operandList = new ArrayList<ArrayList<DataType>>();
             for (DataType operand : callSignature.getOperandTypes()) {
