@@ -445,8 +445,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         String modelIdentifier = parseString(ctx.modelIdentifier());
         String unqualifiedIdentifier = parseString(ctx.identifier());
 
-        currentContext =
-                modelIdentifier != null ? modelIdentifier + "." + unqualifiedIdentifier : unqualifiedIdentifier;
+        setCurrentContext(
+                modelIdentifier != null ? modelIdentifier + "." + unqualifiedIdentifier : unqualifiedIdentifier);
 
         if (!isUnfilteredContext(unqualifiedIdentifier)) {
             ModelContext modelContext = libraryBuilder.resolveContextName(modelIdentifier, unqualifiedIdentifier);
@@ -481,7 +481,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
                         modelContextDefinition = of.createExpressionDef()
                                 .withName(unqualifiedIdentifier)
-                                .withContext(currentContext)
+                                .withContext(getCurrentContext())
                                 .withExpression(of.createSingletonFrom().withOperand(contextRetrieve));
                         track(modelContextDefinition, ctx);
                         ((ExpressionDef) modelContextDefinition).getExpression().setResultType(contextType);
@@ -492,7 +492,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 } else {
                     modelContextDefinition = of.createExpressionDef()
                             .withName(unqualifiedIdentifier)
-                            .withContext(currentContext)
+                            .withContext(getCurrentContext())
                             .withExpression(of.createNull());
                     track(modelContextDefinition, ctx);
                     ((ExpressionDef) modelContextDefinition)
@@ -507,13 +507,13 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
             }
         }
 
-        ContextDef contextDef = of.createContextDef().withName(currentContext);
+        ContextDef contextDef = of.createContextDef().withName(getCurrentContext());
         track(contextDef, ctx);
         if (libraryBuilder.isCompatibleWith("1.5")) {
             libraryBuilder.addContext(contextDef);
         }
 
-        return currentContext;
+        return getCurrentContext();
     }
 
     private boolean isImplicitContextExpressionDef(ExpressionDef def) {
@@ -545,7 +545,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         // hiding stack.
         if (def == null) {
             final ExpressionDef hollowExpressionDef =
-                    of.createExpressionDef().withName(identifier).withContext(currentContext);
+                    of.createExpressionDef().withName(identifier).withContext(getCurrentContext());
             libraryBuilder.pushIdentifier(identifier, hollowExpressionDef, IdentifierScope.GLOBAL);
         }
 
@@ -555,14 +555,14 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 removeImplicitContextExpressionDef(def);
                 def = null;
             }
-            libraryBuilder.pushExpressionContext(currentContext);
+            libraryBuilder.pushExpressionContext(getCurrentContext());
             try {
                 libraryBuilder.pushExpressionDefinition(identifier);
                 try {
                     def = of.createExpressionDef()
                             .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
                             .withName(identifier)
-                            .withContext(currentContext)
+                            .withContext(getCurrentContext())
                             .withExpression((Expression) visit(ctx.expression()));
                     if (def.getExpression() != null) {
                         def.setResultType(def.getExpression().getResultType());
@@ -4065,7 +4065,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                         forwards.pop();
                     }
                 } finally {
-                    currentContext = saveContext;
+                    setCurrentContext(saveContext);
                 }
             }
 
@@ -4150,7 +4150,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                     try {
                         registerFunctionDefinition(fdi.getDefinition());
                     } finally {
-                        this.currentContext = saveContext;
+                        this.setCurrentContext(saveContext);
                     }
                 }
             }
@@ -4184,7 +4184,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                         op.setResultType(fd.getResultType());
                         invocation.setResultType(op.getResultType());
                     } finally {
-                        currentContext = saveContext;
+                        setCurrentContext(saveContext);
                         this.chunks = saveChunks;
                     }
                 }
@@ -4401,7 +4401,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
             if (ctx.functionBody() != null) {
                 libraryBuilder.beginFunctionDef(fun);
                 try {
-                    libraryBuilder.pushExpressionContext(currentContext);
+                    libraryBuilder.pushExpressionContext(getCurrentContext());
                     try {
                         libraryBuilder.pushExpressionDefinition(fh.getMangledName());
                         try {
@@ -4442,7 +4442,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 op.setResultType(fun.getResultType());
             }
 
-            fun.setContext(currentContext);
+            fun.setContext(getCurrentContext());
             fh.setIsCompiled();
 
             return fun;

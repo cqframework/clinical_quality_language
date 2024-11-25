@@ -50,7 +50,7 @@ open class CqlPreprocessorElmCommonVisitor(
         )
     protected val af = ObjectFactory()
     protected var implicitContextCreated = false
-    @JvmField protected var currentContext = "Unfiltered"
+    protected var currentContext = "Unfiltered"
     @JvmField protected var chunks = Stack<Chunk>()
     var libraryInfo = LibraryInfo()
         protected set
