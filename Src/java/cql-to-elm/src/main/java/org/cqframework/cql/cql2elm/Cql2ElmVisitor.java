@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm;
 
+import static java.util.Objects.requireNonNull;
+
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.List;
@@ -20,8 +22,12 @@ import org.cqframework.cql.gen.cqlParser;
 import org.hl7.cql.model.*;
 import org.hl7.elm.r1.*;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
+    private static final Logger log = LoggerFactory.getLogger(Cql2ElmVisitor.class);
     private final SystemMethodResolver systemMethodResolver;
 
     private final Set<String> definedExpressionDefinitions = new HashSet<>();
@@ -37,7 +43,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
     public Cql2ElmVisitor(LibraryBuilder libraryBuilder, TokenStream tokenStream, LibraryInfo libraryInfo) {
         super(libraryBuilder, tokenStream);
-        this.setLibraryInfo(Objects.requireNonNull(libraryInfo, "libraryInfo required"));
+        this.setLibraryInfo(requireNonNull(libraryInfo, "libraryInfo required"));
         this.systemMethodResolver = new SystemMethodResolver(this, libraryBuilder);
     }
 
@@ -127,21 +133,13 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         return usingDef;
     }
 
-    public Model getModel() {
-        return getModel((String) null);
-    }
-
     public Model getModel(String modelName) {
         return getModel(null, modelName, null, null);
     }
 
+    @NotNull
     public Model getModel(NamespaceInfo modelNamespace, String modelName, String version, String localIdentifier) {
-        if (modelName == null) {
-            var defaultUsing = getLibraryInfo().getDefaultUsingDefinition();
-            modelName = defaultUsing.getName();
-            version = defaultUsing.getVersion();
-        }
-
+        requireNonNull(modelName, "modelName");
         var modelIdentifier = new ModelIdentifier().withId(modelName).withVersion(version);
         if (modelNamespace != null) {
             modelIdentifier.setSystem(modelNamespace.getUri());
@@ -4355,7 +4353,6 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                     String.format("Could not resolve function header for operator %s", op.getName()));
         }
         FunctionHeader result = getFunctionHeaderByDef(fd);
-        // FunctionHeader result = functionHeadersByDef.get(fd);
         if (result == null) {
             throw new IllegalArgumentException(
                     String.format("Could not resolve function header for operator %s", op.getName()));
@@ -4451,7 +4448,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 try {
                     libraryBuilder.popIdentifier();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.info("Error popping identifier: {}", e.getMessage());
                 }
             }
             // Intentionally do _not_ pop the function name, it needs to remain in global scope!
@@ -4506,25 +4503,23 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     }
 
     private TrackBack getTrackBack(TerminalNode node) {
-        TrackBack tb = new TrackBack(
+        return new TrackBack(
                 libraryBuilder.getLibraryIdentifier(),
                 node.getSymbol().getLine(),
                 node.getSymbol().getCharPositionInLine() + 1, // 1-based instead of 0-based
                 node.getSymbol().getLine(),
                 node.getSymbol().getCharPositionInLine()
                         + node.getSymbol().getText().length());
-        return tb;
     }
 
     private TrackBack getTrackBack(ParserRuleContext ctx) {
-        TrackBack tb = new TrackBack(
+        return new TrackBack(
                 libraryBuilder.getLibraryIdentifier(),
                 ctx.getStart().getLine(),
                 ctx.getStart().getCharPositionInLine() + 1, // 1-based instead of 0-based
                 ctx.getStop().getLine(),
                 ctx.getStop().getCharPositionInLine() + ctx.getStop().getText().length() // 1-based instead of 0-based
                 );
-        return tb;
     }
 
     private void decorate(Element element, TrackBack tb) {

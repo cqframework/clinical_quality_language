@@ -2,6 +2,8 @@
 
 package org.cqframework.cql.cql2elm.preprocessor
 
+import java.util.*
+import kotlin.collections.ArrayList
 import org.antlr.v4.runtime.Recognizer
 import org.antlr.v4.runtime.TokenStream
 import org.antlr.v4.runtime.misc.Interval
@@ -15,7 +17,7 @@ import org.cqframework.cql.gen.cqlParser.*
 import org.hl7.cql.model.NamespaceInfo
 import org.hl7.elm.r1.*
 
-@Suppress("TooManyFunctions", "ImplicitDefaultLocale")
+@Suppress("TooManyFunctions")
 class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) :
     CqlPreprocessorElmCommonVisitor(libraryBuilder, tokenStream) {
     private var lastSourceIndex = -1
@@ -113,10 +115,12 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
         processHeader(ctx, usingDefinition)
         libraryInfo.addUsingDefinition(usingDefinition)
         val namespaceName =
-            if (identifiers.isNotEmpty()) identifiers.joinToString(".")
-            else if (libraryBuilder.isWellKnownModelName(unqualifiedIdentifier)) null
-            else if (libraryBuilder.namespaceInfo != null) libraryBuilder.namespaceInfo.name
-            else null
+            when {
+                identifiers.isNotEmpty() -> identifiers.joinToString(".")
+                libraryBuilder.isWellKnownModelName(unqualifiedIdentifier) -> null
+                libraryBuilder.namespaceInfo != null -> libraryBuilder.namespaceInfo.name
+                else -> null
+            }
         var modelNamespace: NamespaceInfo? = null
         if (namespaceName != null) {
             val namespaceUri = libraryBuilder.resolveNamespaceUri(namespaceName, true)
@@ -127,6 +131,7 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
             else parseString(ctx.localIdentifier())!!
         require(localIdentifier == unqualifiedIdentifier) {
             String.format(
+                Locale.US,
                 @Suppress("MaxLineLength")
                 "Local identifiers for models must be the same as the name of the model in this release of the translator (Model %s, Called %s)",
                 unqualifiedIdentifier,
@@ -134,17 +139,15 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
             )
         }
 
-        // This should only be called once, from this class, and not from Cql2ElmVisitor otherwise
-        // there will be
-        // duplicate errors sometimes
-        @Suppress("UnusedPrivateProperty")
-        val model =
-            getModel(
-                modelNamespace,
-                unqualifiedIdentifier,
-                parseString(ctx.versionSpecifier()),
-                localIdentifier
-            )
+        // This has the side effect of initializing
+        // the model in the ModelManager
+        getModel(
+            modelNamespace,
+            unqualifiedIdentifier,
+            parseString(ctx.versionSpecifier()),
+            localIdentifier
+        )
+
         return usingDefinition
     }
 
@@ -230,7 +233,7 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
         val modelIdentifier = getModelIdentifier(qualifiers)
         val identifier =
             getTypeIdentifier(qualifiers, parseString(ctx.referentialOrTypeNameIdentifier())!!)
-        val typeSpecifierKey = String.format("%s:%s", modelIdentifier, identifier)
+        val typeSpecifierKey = String.format(Locale.US, "%s:%s", modelIdentifier, identifier)
         val resultType = libraryBuilder.resolveTypeName(modelIdentifier, identifier)
         if (null == resultType) {
             libraryBuilder.addNamedTypeSpecifierResult(
@@ -239,6 +242,7 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
             )
             throw CqlCompilerException(
                 String.format(
+                    Locale.US,
                     "Could not find type for model: %s and name: %s",
                     modelIdentifier,
                     identifier

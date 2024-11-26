@@ -35,7 +35,6 @@ import org.hl7.elm.r1.*
     "NestedBlockDepth",
     "TooManyFunctions",
     "ComplexCondition",
-    "ImplicitDefaultLocale",
     "ReturnCount"
 )
 open class CqlPreprocessorElmCommonVisitor(
@@ -94,6 +93,7 @@ open class CqlPreprocessorElmCommonVisitor(
                     if (element.localId == null) {
                         throw CqlInternalException(
                             String.format(
+                                Locale.US,
                                 "Internal translator error. 'localId' was not assigned for Element \"%s\"",
                                 element.javaClass.name
                             ),
@@ -345,7 +345,7 @@ open class CqlPreprocessorElmCommonVisitor(
                 }
             }
         }
-        if (!chunks.isEmpty()) {
+        if (chunks.isNotEmpty()) {
             chunks.peek().addChunk(chunk)
         }
     }
@@ -409,19 +409,18 @@ open class CqlPreprocessorElmCommonVisitor(
     }
 
     private fun getTags(header: String?): List<Tag> {
-        var header = header
-        if (header != null) {
-            header = parseComments(header)
-            return parseTags(header)
+        return when {
+            header != null -> parseTags(parseComments(header))
+            else -> emptyList()
         }
-        return emptyList()
     }
 
     private fun getTags(tree: ParseTree): List<Tag> {
         val bi = libraryInfo.resolveDefinition(tree)
-        return if (bi != null) {
-            getTags(bi.header)
-        } else emptyList()
+        return when {
+            bi != null -> getTags(bi.header)
+            else -> emptyList()
+        }
     }
 
     private fun parseTags(header: String): List<Tag> {
@@ -441,11 +440,9 @@ open class CqlPreprocessorElmCommonVisitor(
                     var t = af.createTag().withName(tagNamePair.left)
                     startFrom = tagNamePair.right
                     val tagValuePair = lookForTagValue(header, startFrom)
-                    if (tagValuePair != null) {
-                        if (tagValuePair.left.isNotEmpty()) {
-                            t = t.withValue(tagValuePair.left)
-                            startFrom = tagValuePair.right
-                        }
+                    if (tagValuePair != null && tagValuePair.left.isNotEmpty()) {
+                        t = t.withValue(tagValuePair.left)
+                        startFrom = tagValuePair.right
                     }
                     tags.add(t)
                 } else {
@@ -459,11 +456,11 @@ open class CqlPreprocessorElmCommonVisitor(
     }
 
     private fun parseComments(header: String?): String {
-        var header = header
         val result = ArrayList<String>()
         if (header != null) {
-            header = header.replace("\r\n", "\n")
-            val lines = header.split("\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            val normalized = header.replace("\r\n", "\n")
+            val lines =
+                normalized.split("\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             var inMultiline = false
             for (line in lines) {
                 if (!inMultiline) {
