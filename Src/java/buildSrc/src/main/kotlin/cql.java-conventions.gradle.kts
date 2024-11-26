@@ -9,6 +9,10 @@ plugins {
     id("io.gitlab.arturbosch.detekt")
 }
 
+kotlin {
+    jvmToolchain(17)
+}
+
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
