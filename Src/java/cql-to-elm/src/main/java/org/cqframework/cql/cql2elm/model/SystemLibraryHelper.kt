@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm.model
 
+import java.util.*
 import org.cqframework.cql.cql2elm.TypeBuilder
 import org.hl7.cql.model.IntervalType
 import org.hl7.cql.model.ListType
@@ -9,6 +10,7 @@ import org.hl7.elm.r1.FunctionDef
 import org.hl7.elm.r1.OperandDef
 import org.hl7.elm.r1.VersionedIdentifier
 
+@Suppress("LargeClass", "LongMethod")
 object SystemLibraryHelper {
     @JvmStatic
     fun load(systemModel: SystemModel, tb: TypeBuilder): CompiledLibrary {
@@ -2944,7 +2946,7 @@ object SystemLibraryHelper {
         var n = 0
         for (dataType in operator.signature.operandTypes) {
             n++
-            val od = OperandDef().withName(String.format("param%d", n))
+            val od = OperandDef().withName(String.format(Locale.US, "param%d", n))
             if (dataType is NamedType) {
                 od.operandType = tb.dataTypeToQName(dataType)
             } else {
@@ -2958,6 +2960,7 @@ object SystemLibraryHelper {
         systemLibrary.add(fd, operator)
     }
 
+    @Suppress("UnusedParameter")
     private fun add(systemLibrary: CompiledLibrary, tb: TypeBuilder, conversion: Conversion) {
         systemLibrary.add(conversion)
     }

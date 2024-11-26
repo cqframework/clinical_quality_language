@@ -16,6 +16,7 @@ import kotlin.math.max
  * NOTE: Deliberately not using Apache ComparableVersion to a) avoid dependencies on Maven and b)
  * allow for more flexible version strings used by MAT file naming conventions.
  */
+@Suppress("MagicNumber")
 data class Version(private val version: String) : Comparable<Version?> {
     init {
         initVersion()
@@ -51,10 +52,8 @@ data class Version(private val version: String) : Comparable<Version?> {
         }
     }
 
-    private fun compareTo(that: Version?, level: Int): Int {
-        if (that == null) return 1
+    private fun compareTo(that: Version, level: Int): Int {
         require(this.isComparable && that.isComparable) { "The versions are not comparable" }
-
         for (i in 0 until max(level, 4)) {
 
             val comparison =
@@ -90,17 +89,15 @@ data class Version(private val version: String) : Comparable<Version?> {
     }
 
     override fun compareTo(other: Version?): Int {
-        return compareTo(other, 4)
+        return if (other == null) 1 else compareTo(other, 4)
     }
 
     fun compatibleWith(that: Version?): Boolean {
-        if (that == null) return false
-
-        if (!isComparable || !that.isComparable) {
-            return matchStrictly(that)
+        return when {
+            that == null -> false
+            this.isComparable && that.isComparable -> compareTo(that, 2) >= 0
+            else -> matchStrictly(that)
         }
-
-        return compareTo(that, 2) >= 0
     }
 
     fun matchStrictly(that: Version): Boolean {

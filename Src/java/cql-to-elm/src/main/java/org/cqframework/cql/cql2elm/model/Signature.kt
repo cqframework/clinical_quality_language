@@ -61,11 +61,11 @@ data class Signature(val operandTypes: List<DataType>) {
                         )
 
                     if (conversions[i] == null) {
-                        return false
+                        return@run false
                     }
                 }
 
-                return true
+                return@run true
             }
     }
 

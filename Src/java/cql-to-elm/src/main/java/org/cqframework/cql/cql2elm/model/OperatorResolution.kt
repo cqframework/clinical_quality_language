@@ -14,8 +14,11 @@ data class OperatorResolution(var operator: Operator, val conversions: List<Conv
     fun hasConversions(): Boolean = conversions.isNotEmpty()
 
     /*
-    The versioned identifier (fully qualified, versioned, library identifier of the library in which the resolved operator
-    is defined. This is set by the library resolution to allow the calling context to understand the defined location
+    The versioned identifier
+    (fully qualified, versioned, library identifier of the library
+    in which the resolved operator is defined.)
+    This is set by the library resolution to allow the calling context
+    to understand the defined location
     of the resolved operator.
      */
     var libraryIdentifier: VersionedIdentifier? = null

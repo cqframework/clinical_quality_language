@@ -4,6 +4,7 @@ import org.hl7.cql.model.DataType
 import org.hl7.elm.r1.AccessModifier
 import org.hl7.elm.r1.FunctionDef
 
+@Suppress("LongParameterList")
 open class Operator(
     val name: String,
     var signature: Signature,

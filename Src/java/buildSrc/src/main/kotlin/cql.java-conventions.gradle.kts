@@ -6,17 +6,13 @@ plugins {
     id("cql.sca-conventions")
     id("com.diffplug.spotless")
     id("org.jetbrains.dokka")
-//    id("io.gitlab.arturbosch.detekt")
+    id("io.gitlab.arturbosch.detekt")
 }
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+        languageVersion = JavaLanguageVersion.of(17)
     }
-}
-
-kotlin {
-    jvmToolchain(17)
 }
 
 repositories {
@@ -29,7 +25,6 @@ repositories {
         }
     }
 }
-
 
 spotless {
     java {
@@ -79,6 +74,7 @@ tasks.register<Jar>("dokkaJavadocJar") {
 
 jacoco {
     toolVersion = "0.8.11"
+
 }
 
 tasks.withType<Test> {
