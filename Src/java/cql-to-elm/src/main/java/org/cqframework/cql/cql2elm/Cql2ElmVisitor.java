@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm;
 
+import static java.util.Objects.requireNonNull;
+
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.List;
@@ -20,8 +22,12 @@ import org.cqframework.cql.gen.cqlParser;
 import org.hl7.cql.model.*;
 import org.hl7.elm.r1.*;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
+    private static final Logger log = LoggerFactory.getLogger(Cql2ElmVisitor.class);
     private final SystemMethodResolver systemMethodResolver;
 
     private final Set<String> definedExpressionDefinitions = new HashSet<>();
@@ -37,7 +43,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
     public Cql2ElmVisitor(LibraryBuilder libraryBuilder, TokenStream tokenStream, LibraryInfo libraryInfo) {
         super(libraryBuilder, tokenStream);
-        this.libraryInfo = Objects.requireNonNull(libraryInfo, "libraryInfo required");
+        this.setLibraryInfo(requireNonNull(libraryInfo, "libraryInfo required"));
         this.systemMethodResolver = new SystemMethodResolver(this, libraryBuilder);
     }
 
@@ -127,21 +133,13 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         return usingDef;
     }
 
-    public Model getModel() {
-        return getModel((String) null);
-    }
-
     public Model getModel(String modelName) {
         return getModel(null, modelName, null, null);
     }
 
+    @NotNull
     public Model getModel(NamespaceInfo modelNamespace, String modelName, String version, String localIdentifier) {
-        if (modelName == null) {
-            var defaultUsing = libraryInfo.getDefaultUsingDefinition();
-            modelName = defaultUsing.getName();
-            version = defaultUsing.getVersion();
-        }
-
+        requireNonNull(modelName, "modelName");
         var modelIdentifier = new ModelIdentifier().withId(modelName).withVersion(version);
         if (modelNamespace != null) {
             modelIdentifier.setSystem(modelNamespace.getUri());
@@ -408,8 +406,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     @Override
     public NamedTypeSpecifier visitNamedTypeSpecifier(cqlParser.NamedTypeSpecifierContext ctx) {
         List<String> qualifiers = parseQualifiers(ctx);
-        String modelIdentifier = getModelIdentifier(qualifiers);
-        String identifier = getTypeIdentifier(qualifiers, parseString(ctx.referentialOrTypeNameIdentifier()));
+        String modelIdentifier = Companion.getModelIdentifier(qualifiers);
+        String identifier = Companion.getTypeIdentifier(qualifiers, parseString(ctx.referentialOrTypeNameIdentifier()));
 
         final ResultWithPossibleError<NamedTypeSpecifier> retrievedResult =
                 libraryBuilder.getNamedTypeSpecifierResult(String.format("%s:%s", modelIdentifier, identifier));
@@ -459,7 +457,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 if (libraryBuilder.hasUsings()) {
                     ModelInfo modelInfo = modelIdentifier == null
                             ? libraryBuilder
-                                    .getModel(libraryInfo.getDefaultModelName())
+                                    .getModel(getLibraryInfo().getDefaultModelName())
                                     .getModelInfo()
                             : libraryBuilder.getModel(modelIdentifier).getModelInfo();
                     // String contextTypeName = modelContext.getName();
@@ -2812,8 +2810,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     public Expression visitRetrieve(cqlParser.RetrieveContext ctx) {
         libraryBuilder.checkLiteralContext();
         List<String> qualifiers = parseQualifiers(ctx.namedTypeSpecifier());
-        String model = getModelIdentifier(qualifiers);
-        String label = getTypeIdentifier(
+        String model = Companion.getModelIdentifier(qualifiers);
+        String label = Companion.getTypeIdentifier(
                 qualifiers, parseString(ctx.namedTypeSpecifier().referentialOrTypeNameIdentifier()));
         DataType dataType = libraryBuilder.resolveTypeName(model, label);
         if (dataType == null) {
@@ -2910,7 +2908,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
         // Only expand a choice-valued code path if no comparator is specified
         // Otherwise, a code comparator will always choose a specific representation
-        boolean hasFHIRHelpers = libraryInfo.resolveLibraryName("FHIRHelpers") != null;
+        boolean hasFHIRHelpers = getLibraryInfo().resolveLibraryName("FHIRHelpers") != null;
         if (property != null && property.getResultType() instanceof ChoiceType && codeComparator == null) {
             for (DataType propertyType : ((ChoiceType) property.getResultType()).getTypes()) {
                 if (hasFHIRHelpers
@@ -4043,7 +4041,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         // and parameters
         Expression result = libraryBuilder.resolveIdentifier(identifier, false);
         if (result == null) {
-            ExpressionDefinitionInfo expressionInfo = libraryInfo.resolveExpressionReference(identifier);
+            ExpressionDefinitionInfo expressionInfo = getLibraryInfo().resolveExpressionReference(identifier);
             if (expressionInfo != null) {
                 String saveContext = saveCurrentContext(expressionInfo.getContext());
                 try {
@@ -4069,7 +4067,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 }
             }
 
-            ParameterDefinitionInfo parameterInfo = libraryInfo.resolveParameterReference(identifier);
+            ParameterDefinitionInfo parameterInfo = getLibraryInfo().resolveParameterReference(identifier);
             if (parameterInfo != null) {
                 visitParameterDefinition(parameterInfo.getDefinition());
             }
@@ -4140,8 +4138,10 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
         // Find all functionDefinitionInfo instances with the given name
         // register each functionDefinitionInfo
-        if (libraryName == null || libraryName.equals("") || libraryName.equals(this.libraryInfo.getLibraryName())) {
-            Iterable<FunctionDefinitionInfo> fdis = libraryInfo.resolveFunctionReference(functionName);
+        if (libraryName == null
+                || libraryName.equals("")
+                || libraryName.equals(this.getLibraryInfo().getLibraryName())) {
+            Iterable<FunctionDefinitionInfo> fdis = getLibraryInfo().resolveFunctionReference(functionName);
             if (fdis != null) {
                 for (FunctionDefinitionInfo fdi : fdis) {
                     String saveContext = saveCurrentContext(fdi.getContext());
@@ -4353,7 +4353,6 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                     String.format("Could not resolve function header for operator %s", op.getName()));
         }
         FunctionHeader result = getFunctionHeaderByDef(fd);
-        // FunctionHeader result = functionHeadersByDef.get(fd);
         if (result == null) {
             throw new IllegalArgumentException(
                     String.format("Could not resolve function header for operator %s", op.getName()));
@@ -4449,7 +4448,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 try {
                     libraryBuilder.popIdentifier();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.info("Error popping identifier: {}", e.getMessage());
                 }
             }
             // Intentionally do _not_ pop the function name, it needs to remain in global scope!
@@ -4504,25 +4503,23 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     }
 
     private TrackBack getTrackBack(TerminalNode node) {
-        TrackBack tb = new TrackBack(
+        return new TrackBack(
                 libraryBuilder.getLibraryIdentifier(),
                 node.getSymbol().getLine(),
                 node.getSymbol().getCharPositionInLine() + 1, // 1-based instead of 0-based
                 node.getSymbol().getLine(),
                 node.getSymbol().getCharPositionInLine()
                         + node.getSymbol().getText().length());
-        return tb;
     }
 
     private TrackBack getTrackBack(ParserRuleContext ctx) {
-        TrackBack tb = new TrackBack(
+        return new TrackBack(
                 libraryBuilder.getLibraryIdentifier(),
                 ctx.getStart().getLine(),
                 ctx.getStart().getCharPositionInLine() + 1, // 1-based instead of 0-based
                 ctx.getStop().getLine(),
                 ctx.getStop().getCharPositionInLine() + ctx.getStop().getText().length() // 1-based instead of 0-based
                 );
-        return tb;
     }
 
     private void decorate(Element element, TrackBack tb) {
