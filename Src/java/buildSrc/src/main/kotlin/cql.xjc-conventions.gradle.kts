@@ -1,8 +1,10 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
-    id("java-library")
+    kotlin("jvm")
 }
 
-val xjc by configurations.creating
+val xjc: Configuration by configurations.creating
 
 dependencies {
     xjc("codes.rafael.jaxb2_commons:jaxb2-basics-ant:3.0.0")
@@ -25,16 +27,21 @@ dependencies {
 var buildDir = project.layout.buildDirectory.get().toString()
 val destDir = "${buildDir}/generated/sources/$name/main/java"
 
-tasks.compileJava {
+tasks.withType<KotlinCompile>().configureEach {
+    dependsOn(tasks.withType<XjcTask>())
+}
+
+tasks.withType<JavaCompile>().configureEach {
     dependsOn(tasks.withType<XjcTask>())
 }
 
 tasks.withType<XjcTask>().configureEach {
     outputDir = destDir
+    outputs.dir(outputDir)
 }
 
-tasks.named("sourcesJar") {
-    dependsOn(tasks.withType<XjcTask>())
+tasks.withType<Delete>().configureEach {
+    delete(destDir)
 }
 
 sourceSets {
@@ -43,8 +50,4 @@ sourceSets {
             srcDir(destDir)
         }
     }
-}
-
-tasks.named<Delete>("clean") {
-    delete(destDir)
 }
