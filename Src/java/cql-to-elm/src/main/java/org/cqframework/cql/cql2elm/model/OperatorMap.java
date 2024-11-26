@@ -7,12 +7,12 @@ public class OperatorMap {
     private final Map<String, OperatorEntry> operators = new HashMap<>();
 
     public boolean containsOperator(Operator operator) {
-        OperatorEntry entry = getEntry(operator.name);
+        OperatorEntry entry = getEntry(operator.getName());
         return entry.containsOperator(operator);
     }
 
     public void addOperator(Operator operator) {
-        OperatorEntry entry = getEntry(operator.name);
+        OperatorEntry entry = getEntry(operator.getName());
         entry.addOperator(operator);
     }
 
@@ -61,8 +61,11 @@ public class OperatorMap {
             int lowestScore = Integer.MAX_VALUE;
             List<OperatorResolution> lowestScoringResults = new ArrayList<>();
             for (OperatorResolution resolution : results) {
-                Iterator<DataType> operands =
-                        resolution.getOperator().signature.getOperandTypes().iterator();
+                Iterator<DataType> operands = resolution
+                        .getOperator()
+                        .getSignature()
+                        .getOperandTypes()
+                        .iterator();
                 Iterator<DataType> callOperands =
                         callContext.getSignature().getOperandTypes().iterator();
                 Iterator<Conversion> conversions = resolution.hasConversions()
@@ -92,7 +95,8 @@ public class OperatorMap {
                 List<OperatorResolution> lowestTypeScoringResults = new ArrayList<>();
                 for (OperatorResolution resolution : lowestScoringResults) {
                     int typeScore = ConversionMap.ConversionScore.ExactMatch.score();
-                    for (DataType operand : resolution.getOperator().signature.getOperandTypes()) {
+                    for (DataType operand :
+                            resolution.getOperator().getSignature().getOperandTypes()) {
                         typeScore += ConversionMap.getTypePrecedenceScore(operand);
                     }
 
@@ -117,8 +121,8 @@ public class OperatorMap {
                             .append(" is ambiguous with: ");
                     for (OperatorResolution resolution : lowestScoringResults) {
                         message.append("\n  - ")
-                                .append(resolution.getOperator().name)
-                                .append(resolution.getOperator().signature);
+                                .append(resolution.getOperator().getName())
+                                .append(resolution.getOperator().getSignature());
                     }
                     throw new IllegalArgumentException(message.toString());
                 } else {

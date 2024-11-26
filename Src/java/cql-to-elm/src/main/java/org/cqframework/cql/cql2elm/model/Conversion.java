@@ -184,7 +184,7 @@ public class Conversion {
         //        }
 
         fromType = null;
-        for (DataType dataType : operator.signature.getOperandTypes()) {
+        for (DataType dataType : operator.getSignature().getOperandTypes()) {
             if (fromType != null) {
                 throw new IllegalArgumentException("Conversion operator must be unary.");
             }
@@ -196,7 +196,7 @@ public class Conversion {
             throw new IllegalArgumentException("Conversion operator must be unary.");
         }
 
-        toType = operator.resultType;
+        toType = operator.getResultType();
 
         this.operator = operator;
     }
@@ -211,7 +211,7 @@ public class Conversion {
 
     public List<Conversion> getAlternativeConversions() {
         if (alternativeConversions == null) {
-            alternativeConversions = new ArrayList<Conversion>();
+            alternativeConversions = new ArrayList<>();
         }
 
         return alternativeConversions;

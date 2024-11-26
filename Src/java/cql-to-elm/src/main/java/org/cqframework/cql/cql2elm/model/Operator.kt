@@ -5,85 +5,39 @@ import org.hl7.elm.r1.AccessModifier
 import org.hl7.elm.r1.FunctionDef
 
 open class Operator(
-    functionDef: FunctionDef?,
-    name: String?,
-    signature: Signature?,
-    resultType: DataType?
+    val name: String,
+    var signature: Signature,
+    var resultType: DataType?,
+    var functionDef: FunctionDef?,
+    var accessLevel: AccessModifier = AccessModifier.PUBLIC,
+    var fluent: Boolean = false,
+    var external: Boolean = false
 ) {
     constructor(
-        name: String?,
-        signature: Signature?,
+        name: String,
+        signature: Signature,
         resultType: DataType?
-    ) : this(null, name, signature, resultType)
+    ) : this(name, signature, resultType, null)
+
+    constructor(
+        functionDef: FunctionDef
+    ) : this(
+        functionDef.name,
+        Signature(functionDef.operand.map { it.resultType }),
+        functionDef.resultType,
+        functionDef,
+        functionDef.accessLevel,
+        functionDef.isFluent ?: false,
+        functionDef.isExternal ?: false
+    )
+
+    init {
+        require(name.isNotEmpty()) { "name is null or empty" }
+    }
 
     var libraryName: String? = null
         set(libraryName) {
-            require(!(libraryName == null || libraryName == "")) { "libraryName is null." }
-
+            require(!libraryName.isNullOrEmpty()) { "libraryName is null." }
             field = libraryName
         }
-
-    @JvmField var accessLevel: AccessModifier = AccessModifier.PUBLIC
-
-    fun withAccessLevel(accessLevel: AccessModifier): Operator {
-        this.accessLevel = accessLevel
-        return this
-    }
-
-    var fluent: Boolean = false
-
-    fun withFluent(isFluent: Boolean): Operator {
-        fluent = isFluent
-        return this
-    }
-
-    var external: Boolean = false
-
-    fun withExternal(isExternal: Boolean): Operator {
-        external = isExternal
-        return this
-    }
-
-    @JvmField var functionDef: FunctionDef?
-
-    fun withFunctionDef(functionDef: FunctionDef?): Operator {
-        this.functionDef = functionDef
-        return this
-    }
-
-    @JvmField val name: String
-
-    @JvmField val signature: Signature
-
-    @JvmField var resultType: DataType?
-
-    init {
-        require(!(name == null || name == "")) { "name is null or empty" }
-
-        requireNotNull(signature) { "signature is null" }
-
-        this.functionDef = functionDef
-        this.name = name
-        this.signature = signature
-        this.resultType = resultType
-    }
-
-    companion object {
-        @JvmStatic
-        fun fromFunctionDef(functionDef: FunctionDef): Operator {
-            val operandTypes: MutableList<DataType> = ArrayList()
-            for (operand in functionDef.operand) {
-                operandTypes.add(operand.resultType)
-            }
-            return Operator(
-                    functionDef,
-                    functionDef.name,
-                    Signature(operandTypes),
-                    functionDef.resultType
-                )
-                .withAccessLevel(functionDef.accessLevel)
-                .withFluent(if (functionDef.isFluent != null) functionDef.isFluent else false)
-                .withExternal(if (functionDef.isExternal != null) functionDef.isExternal else false)
-        }
-    }
 }

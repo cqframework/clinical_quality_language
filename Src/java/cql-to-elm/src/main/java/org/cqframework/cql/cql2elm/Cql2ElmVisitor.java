@@ -3575,8 +3575,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 if (o != null
                         && o.getLibraryName() != null
                         && o.getLibraryName().equals(functionRef.getLibraryName())
-                        && o.name != null
-                        && o.name.equals(functionRef.getName())) {
+                        && o.getName().equals(functionRef.getName())) {
                     return functionRef.getOperand().get(0);
                 }
             }
@@ -4170,8 +4169,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                     chunks = new Stack<Chunk>();
                     try {
                         FunctionDef fd = compileFunctionDefinition(ctx);
-                        op.resultType = fd.getResultType();
-                        invocation.setResultType(op.resultType);
+                        op.setResultType(fd.getResultType());
+                        invocation.setResultType(op.getResultType());
                     } finally {
                         setCurrentContext(saveContext);
                         this.chunks = saveChunks;
@@ -4295,14 +4294,14 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     private FunctionDef getFunctionDef(Operator op) {
         FunctionDef target = null;
         List<DataType> st = new ArrayList<>();
-        for (DataType dt : op.signature.getOperandTypes()) {
+        for (DataType dt : op.getSignature().getOperandTypes()) {
             st.add(dt);
         }
-        Iterable<FunctionDef> fds = libraryBuilder.getCompiledLibrary().resolveFunctionRef(op.name, st);
+        Iterable<FunctionDef> fds = libraryBuilder.getCompiledLibrary().resolveFunctionRef(op.getName(), st);
         for (FunctionDef fd : fds) {
-            if (fd.getOperand().size() == op.signature.getSize()) {
+            if (fd.getOperand().size() == op.getSignature().getSize()) {
                 Iterator<DataType> signatureTypes =
-                        op.signature.getOperandTypes().iterator();
+                        op.getSignature().getOperandTypes().iterator();
                 boolean signaturesMatch = true;
                 for (int i = 0; i < fd.getOperand().size(); i++) {
                     if (!DataTypes.equal(fd.getOperand().get(i).getResultType(), signatureTypes.next())) {
@@ -4313,8 +4312,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                     if (target == null) {
                         target = fd;
                     } else {
-                        throw new IllegalArgumentException(
-                                String.format("Internal error attempting to resolve function header for %s", op.name));
+                        throw new IllegalArgumentException(String.format(
+                                "Internal error attempting to resolve function header for %s", op.getName()));
                     }
                 }
             }
@@ -4341,13 +4340,13 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         FunctionDef fd = getFunctionDef(op);
         if (fd == null) {
             throw new IllegalArgumentException(
-                    String.format("Could not resolve function header for operator %s", op.name));
+                    String.format("Could not resolve function header for operator %s", op.getName()));
         }
         FunctionHeader result = getFunctionHeaderByDef(fd);
         // FunctionHeader result = functionHeadersByDef.get(fd);
         if (result == null) {
             throw new IllegalArgumentException(
-                    String.format("Could not resolve function header for operator %s", op.name));
+                    String.format("Could not resolve function header for operator %s", op.getName()));
         }
         return result;
     }
@@ -4381,7 +4380,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                     fh.getMangledName()));
         }
         libraryBuilder.pushIdentifier(fun.getName(), fun, IdentifierScope.GLOBAL);
-        final List<OperandDef> operand = op.functionDef.getOperand();
+        final List<OperandDef> operand = op.getFunctionDef().getOperand();
         for (OperandDef operandDef : operand) {
             libraryBuilder.pushIdentifier(operandDef.getName(), operandDef);
         }
@@ -4419,7 +4418,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 }
 
                 fun.setResultType(fun.getExpression().getResultType());
-                op.resultType = fun.getResultType();
+                op.setResultType(fun.getResultType());
             } else {
                 fun.setExternal(true);
                 if (resultType == null) {
@@ -4428,7 +4427,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                             "Function %s is marked external but does not declare a return type.", fun.getName()));
                 }
                 fun.setResultType(resultType.getResultType());
-                op.resultType = fun.getResultType();
+                op.setResultType(fun.getResultType());
             }
 
             fun.setContext(getCurrentContext());

@@ -1100,7 +1100,7 @@ public class LibraryBuilder {
 
     private int getTypeScore(OperatorResolution resolution) {
         int typeScore = ConversionMap.ConversionScore.ExactMatch.score();
-        for (DataType operand : resolution.getOperator().signature.getOperandTypes()) {
+        for (DataType operand : resolution.getOperator().getSignature().getOperandTypes()) {
             typeScore += ConversionMap.getTypePrecedenceScore(operand);
         }
 
@@ -1129,16 +1129,16 @@ public class LibraryBuilder {
                     } else {
                         // ERROR:
                         StringBuilder message = new StringBuilder("Call to operator ")
-                                .append(primary.getResolution().getOperator().name)
+                                .append(primary.getResolution().getOperator().getName())
                                 .append("/")
-                                .append(secondary.getResolution().getOperator().name)
+                                .append(secondary.getResolution().getOperator().getName())
                                 .append(" is ambiguous with: ")
                                 .append("\n  - ")
-                                .append(primary.getResolution().getOperator().name)
-                                .append(primary.getResolution().getOperator().signature)
+                                .append(primary.getResolution().getOperator().getName())
+                                .append(primary.getResolution().getOperator().getSignature())
                                 .append("\n  - ")
-                                .append(secondary.getResolution().getOperator().name)
-                                .append(secondary.getResolution().getOperator().signature);
+                                .append(secondary.getResolution().getOperator().getName())
+                                .append(secondary.getResolution().getOperator().getSignature());
                         throw new IllegalArgumentException(message.toString());
                     }
                 }
@@ -1302,7 +1302,7 @@ public class LibraryBuilder {
         List<Expression> convertedOperands = new ArrayList<>();
         Iterator<Expression> operandIterator = operands.iterator();
         Iterator<DataType> signatureTypes =
-                resolution.getOperator().signature.getOperandTypes().iterator();
+                resolution.getOperator().getSignature().getOperandTypes().iterator();
         Iterator<Conversion> conversionIterator =
                 resolution.hasConversions() ? resolution.getConversions().iterator() : null;
         while (operandIterator.hasNext()) {
@@ -1322,10 +1322,10 @@ public class LibraryBuilder {
 
         if (options.getSignatureLevel() == SignatureLevel.All
                 || (options.getSignatureLevel() == SignatureLevel.Differing
-                        && !resolution.getOperator().signature.equals(callContext.getSignature()))
+                        && !resolution.getOperator().getSignature().equals(callContext.getSignature()))
                 || (options.getSignatureLevel() == SignatureLevel.Overloads && resolution.getOperatorHasOverloads())) {
-            invocation.setSignature(
-                    dataTypesToTypeSpecifiers(resolution.getOperator().signature.getOperandTypes()));
+            invocation.setSignature(dataTypesToTypeSpecifiers(
+                    resolution.getOperator().getSignature().getOperandTypes()));
         } else if (resolution.getOperatorHasOverloads()
                 && !resolution.getOperator().getLibraryName().equals("System")) {
             // NOTE: Because system functions only deal with CQL system-defined types, and there is one and only one
@@ -1339,12 +1339,12 @@ public class LibraryBuilder {
                                     + "at runtime, consider setting the SignatureLevel to Overloads or All to ensure that the output includes sufficient "
                                     + "information to support correct overload selection at runtime.",
                             resolution.getOperator().getLibraryName(),
-                            resolution.getOperator().name,
+                            resolution.getOperator().getName(),
                             options.getSignatureLevel().name()),
                     invocation.getExpression());
         }
 
-        invocation.setResultType(resolution.getOperator().resultType);
+        invocation.setResultType(resolution.getOperator().getResultType());
         if (resolution.getLibraryIdentifier() != null) {
             resolution.setLibraryName(resolveIncludeAlias(resolution.getLibraryIdentifier()));
         }
@@ -1428,7 +1428,9 @@ public class LibraryBuilder {
 
         if (result != null) {
             checkAccessLevel(
-                    result.getOperator().getLibraryName(), result.getOperator().name, result.getOperator().accessLevel);
+                    result.getOperator().getLibraryName(),
+                    result.getOperator().getName(),
+                    result.getOperator().getAccessLevel());
         }
 
         return result;
@@ -1841,7 +1843,7 @@ public class LibraryBuilder {
         } else if (conversion.getOperator() != null) {
             FunctionRef functionRef = (FunctionRef) of.createFunctionRef()
                     .withLibraryName(conversion.getOperator().getLibraryName())
-                    .withName(conversion.getOperator().name)
+                    .withName(conversion.getOperator().getName())
                     .withOperand(expression);
 
             Invocation systemFunctionInvocation = systemFunctionResolver.resolveSystemFunction(functionRef);
@@ -2272,7 +2274,7 @@ public class LibraryBuilder {
                                             "Inconsistent target maps %s and %s for choice type %s",
                                             resultTargetMaps.get(resolution.getType()),
                                             resolution.getTargetMap(),
-                                            resolution.getType().toString()));
+                                            resolution.getType()));
                                 }
                             } else {
                                 resultTargetMaps.put(resolution.getType(), resolution.getTargetMap());

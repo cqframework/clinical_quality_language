@@ -78,7 +78,7 @@ public class CompiledLibrary {
     public void add(ExpressionDef expression) {
         if (expression instanceof FunctionDef) {
             // Register the operator signature
-            add((FunctionDef) expression, Operator.fromFunctionDef((FunctionDef) expression));
+            add((FunctionDef) expression, new Operator((FunctionDef) expression));
         } else {
             checkNamespace(expression.getName());
             namespace.put(expression.getName(), expression);
@@ -101,17 +101,17 @@ public class CompiledLibrary {
                 if (!operator.getLibraryName().equals(this.identifier.getId())) {
                     throw new IllegalArgumentException(String.format(
                             "Operator %s cannot be registered in library %s because it is defined in library %s.",
-                            operator.name, this.identifier.getId(), operator.getLibraryName()));
+                            operator.getName(), this.identifier.getId(), operator.getLibraryName()));
                 }
             }
         }
     }
 
     private void ensureResultType(Operator operator) {
-        if (operator.resultType == null) {
+        if (operator.getResultType() == null) {
             throw new IllegalArgumentException(String.format(
                     "Operator %s cannot be registered in library %s because it does not have a result type defined.",
-                    operator.name, this.identifier.getId()));
+                    operator.getName(), this.identifier.getId()));
         }
     }
 
@@ -123,7 +123,7 @@ public class CompiledLibrary {
     }
 
     public boolean contains(FunctionDef functionDef) {
-        return contains(Operator.fromFunctionDef(functionDef));
+        return contains(new Operator(functionDef));
     }
 
     public boolean contains(Operator operator) {
@@ -224,7 +224,7 @@ public class CompiledLibrary {
             OperatorResolution resolution = resolveCall(cc, null);
             var results = new ArrayList<FunctionDef>();
             if (resolution != null) {
-                results.add(resolution.getOperator().functionDef);
+                results.add(resolution.getOperator().getFunctionDef());
             }
             return results;
         }
