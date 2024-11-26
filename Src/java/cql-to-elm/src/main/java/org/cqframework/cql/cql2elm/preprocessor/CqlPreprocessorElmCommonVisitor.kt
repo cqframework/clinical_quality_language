@@ -44,10 +44,7 @@ open class CqlPreprocessorElmCommonVisitor(
 ) : cqlBaseVisitor<Any?>() {
     @JvmField
     protected val of: IdObjectFactory =
-        Objects.requireNonNull(
-            libraryBuilder.objectFactory,
-            "libraryBuilder.objectFactory required"
-        )
+        requireNotNull(libraryBuilder.objectFactory) { "libraryBuilder.objectFactory required" }
     protected val af = ObjectFactory()
     protected var implicitContextCreated = false
     protected var currentContext = "Unfiltered"
@@ -289,21 +286,20 @@ open class CqlPreprocessorElmCommonVisitor(
         }
         var chunk = chunks.pop()
         if (o is Element) {
-            val element = o
-            chunk.element = element
+            chunk.element = o
             if (tree !is LibraryContext) {
                 if (
-                    element is UsingDef ||
-                        element is IncludeDef ||
-                        element is CodeSystemDef ||
-                        element is ValueSetDef ||
-                        element is CodeDef ||
-                        element is ConceptDef ||
-                        element is ParameterDef ||
-                        element is ContextDef ||
-                        element is ExpressionDef
+                    o is UsingDef ||
+                        o is IncludeDef ||
+                        o is CodeSystemDef ||
+                        o is ValueSetDef ||
+                        o is CodeDef ||
+                        o is ConceptDef ||
+                        o is ParameterDef ||
+                        o is ContextDef ||
+                        o is ExpressionDef
                 ) {
-                    val a = getAnnotation(element)
+                    val a = getAnnotation(o)
                     if (a == null || a.s == null) {
                         // Add header information (comments prior to the definition)
                         val definitionInfo = libraryInfo.resolveDefinition(tree)
@@ -325,7 +321,7 @@ open class CqlPreprocessorElmCommonVisitor(
                             chunk = newChunk
                         }
                         a?.let { addNarrativeToAnnotation(it, chunk) }
-                            ?: element.annotation.add(buildAnnotation(chunk))
+                            ?: o.annotation.add(buildAnnotation(chunk))
                     }
                 }
             } else {
@@ -361,25 +357,24 @@ open class CqlPreprocessorElmCommonVisitor(
         if (o !is Element) {
             return
         }
-        val element = o
         if (tree !is LibraryContext) {
             if (
-                element is UsingDef ||
-                    element is IncludeDef ||
-                    element is CodeSystemDef ||
-                    element is ValueSetDef ||
-                    element is CodeDef ||
-                    element is ConceptDef ||
-                    element is ParameterDef ||
-                    element is ContextDef ||
-                    element is ExpressionDef
+                o is UsingDef ||
+                    o is IncludeDef ||
+                    o is CodeSystemDef ||
+                    o is ValueSetDef ||
+                    o is CodeDef ||
+                    o is ConceptDef ||
+                    o is ParameterDef ||
+                    o is ContextDef ||
+                    o is ExpressionDef
             ) {
                 val tags = getTags(tree)
                 if (tags.isNotEmpty()) {
-                    var a = getAnnotation(element)
+                    var a = getAnnotation(o)
                     if (a == null) {
                         a = buildAnnotation()
-                        element.annotation.add(a)
+                        o.annotation.add(a)
                     }
                     // If the definition was processed as a forward declaration, the tag processing
                     // will already
@@ -785,13 +780,13 @@ open class CqlPreprocessorElmCommonVisitor(
                         val nextSpace = header.indexOf(' ', nextTag)
                         val nextLine = header.indexOf("\n", nextTag)
                         val mul = nextSpace * nextLine
-                        var nextDelimeterIndex = header.length
+                        var nextDelimiterIndex = header.length
                         if (mul < 0) {
-                            nextDelimeterIndex = Math.max(nextLine, nextSpace)
+                            nextDelimiterIndex = Math.max(nextLine, nextSpace)
                         } else if (mul > 1) {
-                            nextDelimeterIndex = Math.min(nextLine, nextSpace)
+                            nextDelimiterIndex = Math.min(nextLine, nextSpace)
                         }
-                        Pair.of(header.substring(nextTag, nextDelimeterIndex), nextDelimeterIndex)
+                        Pair.of(header.substring(nextTag, nextDelimiterIndex), nextDelimiterIndex)
                     }
                 } else { // next `@` is not date
                     Pair.of(interimText, nextTag)

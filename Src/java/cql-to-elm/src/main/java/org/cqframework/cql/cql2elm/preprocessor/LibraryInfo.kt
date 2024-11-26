@@ -2,10 +2,8 @@ package org.cqframework.cql.cql2elm.preprocessor
 
 import org.antlr.v4.runtime.misc.Interval
 import org.antlr.v4.runtime.tree.ParseTree
-import org.cqframework.cql.cql2elm.ResultWithPossibleError
 import org.cqframework.cql.gen.cqlParser.ContextDefinitionContext
 import org.cqframework.cql.gen.cqlParser.LibraryDefinitionContext
-import org.hl7.elm.r1.OperandDef
 
 @Suppress("TooManyFunctions")
 class LibraryInfo(
@@ -185,48 +183,5 @@ class LibraryInfo(
 
     fun resolveDefinition(pt: ParseTree): BaseInfo? {
         return definitions[pt.sourceInterval]
-    }
-
-    companion object {
-        @Suppress("UnusedPrivateMember")
-        private fun isFunctionDefInfoAlreadyPresent(
-            existingFunctionDefInfo: ResultWithPossibleError<FunctionDefinitionInfo>,
-            functionDefinition: ResultWithPossibleError<FunctionDefinitionInfo>
-        ): Boolean {
-            // equals/hashCode only goes so far because we don't control the entire class hierarchy
-            return matchesFunctionDefInfos(existingFunctionDefInfo, functionDefinition)
-        }
-
-        @Suppress("ReturnCount")
-        private fun matchesFunctionDefInfos(
-            existingInfo: ResultWithPossibleError<FunctionDefinitionInfo>?,
-            newInfo: ResultWithPossibleError<FunctionDefinitionInfo>
-        ): Boolean {
-            if (existingInfo == null) {
-                return false
-            }
-            if (existingInfo.hasError() || newInfo.hasError()) {
-                return existingInfo.hasError() && newInfo.hasError()
-            }
-            val existingOperands =
-                existingInfo.underlyingResultIfExists.preCompileOutput!!.functionDef.operand
-            val newOperands =
-                newInfo.underlyingResultIfExists.preCompileOutput!!.functionDef.operand
-            if (existingOperands.size != newOperands.size) {
-                return false
-            }
-            for (index in existingOperands.indices) {
-                val existingOperand = existingOperands[index]
-                val newOperand = newOperands[index]
-                if (!matchesOperands(existingOperand, newOperand)) {
-                    return false
-                }
-            }
-            return true
-        }
-
-        private fun matchesOperands(existingOperand: OperandDef, newOperand: OperandDef): Boolean {
-            return existingOperand.resultType == newOperand.resultType
-        }
     }
 }

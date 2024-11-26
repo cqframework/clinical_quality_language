@@ -1,34 +1,9 @@
 package org.cqframework.cql.cql2elm.preprocessor
 
-import java.util.*
-import org.cqframework.cql.cql2elm.model.FunctionHeader
 import org.cqframework.cql.gen.cqlParser.FunctionDefinitionContext
 
-class FunctionDefinitionInfo(
+data class FunctionDefinitionInfo(
     val name: String,
     val context: String,
     override val definition: FunctionDefinitionContext
-) : BaseInfo(definition) {
-    var preCompileOutput: FunctionHeader? = null
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || javaClass != other.javaClass) return false
-        val that = other as FunctionDefinitionInfo
-        return name == that.name &&
-            context == that.context &&
-            preCompileOutput == that.preCompileOutput
-    }
-
-    override fun hashCode(): Int {
-        return Objects.hash(name, context, preCompileOutput)
-    }
-
-    override fun toString(): String {
-        return StringJoiner(", ", FunctionDefinitionInfo::class.java.simpleName + "[", "]")
-            .add("name='$name'")
-            .add("context='$context'")
-            .add("preCompileOutput=$preCompileOutput")
-            .toString()
-    }
-}
+) : BaseInfo(definition)
