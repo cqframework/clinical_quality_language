@@ -206,10 +206,8 @@ public class CompiledLibrary {
     public Iterable<FunctionDef> resolveFunctionRef(String identifier) {
         var results = new ArrayList<FunctionDef>();
         for (ExpressionDef ed : getLibrary().getStatements().getDef()) {
-            if (ed instanceof FunctionDef) {
-                if (ed.getName().equals(identifier)) {
-                    results.add((FunctionDef) ed);
-                }
+            if (ed instanceof FunctionDef && ed.getName().equals(identifier)) {
+                results.add((FunctionDef) ed);
             }
         }
 
@@ -233,7 +231,7 @@ public class CompiledLibrary {
     public OperatorResolution resolveCall(CallContext callContext, ConversionMap conversionMap) {
         OperatorResolution resolution = operators.resolveOperator(callContext, conversionMap);
 
-        if (resolution != null && resolution.getOperator() != null) {
+        if (resolution != null) {
             // For backwards compatibility, a library can indicate that functions it exports are allowed to be invoked
             // with fluent syntax. This is used in FHIRHelpers to allow fluent resolution, which is implicit in 1.4.
             if (callContext.getAllowFluent() && !resolution.getOperator().getFluent()) {
