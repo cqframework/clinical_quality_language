@@ -15,7 +15,7 @@ open class Model(val modelInfo: ModelInfo, modelManager: ModelManager?) {
     private val contexts: MutableList<ModelContext> = ArrayList()
 
     private val nameIndex: MutableMap<String, DataType> = HashMap()
-    private val defaultContext: String
+    private val defaultContext: String?
 
     init {
 
