@@ -35,7 +35,7 @@ data class Version(private val version: String) : Comparable<Version?> {
         private set
 
     private fun initVersion() {
-        val parts = this.version.split("[.\\-]".toRegex()).dropLastWhile { it.isEmpty() }
+        val parts = versionPartPattern.split(version).dropLastWhile { it.isEmpty() }
         for (i in 0 until max(parts.size, 4)) {
             var part = if (i < parts.size) parts[i] else ""
             if (part.startsWith("v")) {
@@ -92,6 +92,8 @@ data class Version(private val version: String) : Comparable<Version?> {
         return if (other == null) 1 else compareTo(other, 4)
     }
 
+    // Two versions are compatible if the major version matches and the minor version of the
+    // current version is greater than or equal to the minor version of the other version
     fun compatibleWith(that: Version?): Boolean {
         return when {
             that == null -> false
@@ -131,5 +133,6 @@ data class Version(private val version: String) : Comparable<Version?> {
 
     companion object {
         private val isUnsignedInteger: Pattern = Pattern.compile("[0-9]+")
+        private val versionPartPattern = Pattern.compile("[.\\-]")
     }
 }
