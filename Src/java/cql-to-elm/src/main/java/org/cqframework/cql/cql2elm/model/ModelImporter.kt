@@ -753,8 +753,7 @@ class ModelImporter(modelInfo: ModelInfo?, modelManager: ModelManager?) {
                 definition.element.forEach {
                     if (it.elementTypeSpecifier is BoundParameterTypeSpecifier) {
                         val name: String =
-                            (it.elementTypeSpecifier as BoundParameterTypeSpecifier)
-                                .parameterName
+                            (it.elementTypeSpecifier as BoundParameterTypeSpecifier).parameterName
                         val paramIndex: Int = boundParameters.indexOf(name)
                         if (paramIndex >= 0) {
                             boundParameters.removeAt(paramIndex)
