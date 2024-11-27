@@ -1,7 +1,8 @@
 package org.cqframework.cql.cql2elm.model
 
 import java.util.*
-import java.util.function.Consumer
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 import org.cqframework.cql.cql2elm.ModelManager
 import org.hl7.cql.model.ChoiceType
 import org.hl7.cql.model.ClassType
@@ -738,35 +739,28 @@ class ModelImporter(modelInfo: ModelInfo?, modelManager: ModelManager?) {
         val coveredParameters: MutableList<String> = ArrayList()
         val boundParameters: MutableList<String> = ArrayList()
 
-        (type!!.baseType as ClassType)
-            .genericParameters
-            .forEach(
-                Consumer { typeParameter: TypeParameter ->
-                    val parameterName: String = typeParameter.identifier
-                    if (type.getGenericParameterByIdentifier(parameterName, true) != null) {
-                        coveredParameters.add(parameterName)
-                    } else {
-                        boundParameters.add(parameterName)
-                    }
-                }
-            )
+        (type!!.baseType as ClassType).genericParameters.forEach {
+            val parameterName: String = it.identifier
+            if (type.getGenericParameterByIdentifier(parameterName, true) != null) {
+                coveredParameters.add(parameterName)
+            } else {
+                boundParameters.add(parameterName)
+            }
+        }
 
         if (boundParameters.size > 0) {
             if (definition.element != null) {
-                definition.element.forEach(
-                    Consumer { classInfoElement: ClassInfoElement ->
-                        if (classInfoElement.elementTypeSpecifier is BoundParameterTypeSpecifier) {
-                            val name: String =
-                                (classInfoElement.elementTypeSpecifier
-                                        as BoundParameterTypeSpecifier)
-                                    .parameterName
-                            val paramIndex: Int = boundParameters.indexOf(name)
-                            if (paramIndex >= 0) {
-                                boundParameters.removeAt(paramIndex)
-                            }
+                definition.element.forEach {
+                    if (it.elementTypeSpecifier is BoundParameterTypeSpecifier) {
+                        val name: String =
+                            (it.elementTypeSpecifier as BoundParameterTypeSpecifier)
+                                .parameterName
+                        val paramIndex: Int = boundParameters.indexOf(name)
+                        if (paramIndex >= 0) {
+                            boundParameters.removeAt(paramIndex)
                         }
                     }
-                )
+                }
                 if (boundParameters.size > 0) {
                     throw RuntimeException("Unknown symbols $boundParameters")
                 }
