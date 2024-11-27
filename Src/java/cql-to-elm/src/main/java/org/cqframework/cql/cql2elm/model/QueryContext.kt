@@ -5,6 +5,7 @@ import org.hl7.cql.model.ListType
 import org.hl7.elm.r1.AliasedQuerySource
 import org.hl7.elm.r1.LetClause
 
+@Suppress("TooManyFunctions")
 class QueryContext {
     private val sources = HashMap<String, AliasedQuerySource>()
     private val lets = HashMap<String, LetClause>()
