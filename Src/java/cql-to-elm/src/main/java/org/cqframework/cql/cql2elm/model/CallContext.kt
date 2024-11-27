@@ -30,6 +30,6 @@ class CallContext(
 
     init {
         require(operatorName.isNotEmpty()) { "operatorName is empty" }
-        this.signature = Signature(operandTypes)
+        signature = Signature(operandTypes)
     }
 }
