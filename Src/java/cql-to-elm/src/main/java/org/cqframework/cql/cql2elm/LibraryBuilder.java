@@ -1280,12 +1280,7 @@ public class LibraryBuilder {
         }
 
         return new CallContext(
-                libraryName,
-                operatorName,
-                allowPromotionAndDemotion,
-                allowFluent,
-                mustResolve,
-                dataTypes.toArray(new DataType[dataTypes.size()]));
+                libraryName, operatorName, allowPromotionAndDemotion, allowFluent, mustResolve, dataTypes);
     }
 
     public Invocation resolveInvocation(
@@ -1384,7 +1379,7 @@ public class LibraryBuilder {
                 false,
                 fd.isFluent() != null && fd.isFluent(),
                 false,
-                dataTypes.toArray(new DataType[dataTypes.size()]));
+                dataTypes);
         // Resolve exact, no conversion map
         OperatorResolution resolution = compiledLibrary.resolveCall(callContext, null);
         if (resolution != null) {
@@ -1395,7 +1390,7 @@ public class LibraryBuilder {
 
     public OperatorResolution resolveCall(CallContext callContext) {
         OperatorResolution result = null;
-        if (callContext.getLibraryName() == null || callContext.getLibraryName().equals("")) {
+        if (callContext.getLibraryName() == null || callContext.getLibraryName().isEmpty()) {
             result = compiledLibrary.resolveCall(callContext, conversionMap);
             if (result == null) {
                 result = getSystemLibrary().resolveCall(callContext, conversionMap);
@@ -2279,19 +2274,11 @@ public class LibraryBuilder {
                                             "Inconsistent target maps %s and %s for choice type %s",
                                             resultTargetMaps.get(resolution.getType()),
                                             resolution.getTargetMap(),
-                                            resolution.getType().toString()));
+                                            resolution.getType()));
                                 }
                             } else {
                                 resultTargetMaps.put(resolution.getType(), resolution.getTargetMap());
                             }
-                        }
-
-                        if (name == null) {
-                            name = resolution.getName();
-                        } else if (!name.equals(resolution.getName())) {
-                            throw new IllegalArgumentException(String.format(
-                                    "Inconsistent property resolution for choice type %s (was %s, is %s)",
-                                    choice.toString(), name, resolution.getName()));
                         }
 
                         if (name == null) {
@@ -2310,9 +2297,7 @@ public class LibraryBuilder {
                 }
 
                 if (resultTypes.size() == 1) {
-                    for (DataType resultType : resultTypes) {
-                        return new PropertyResolution(resultType, name, resultTargetMaps);
-                    }
+                    return new PropertyResolution(resultTypes.iterator().next(), name, resultTargetMaps);
                 }
             } else if (currentType instanceof ListType && listTraversal) {
                 // NOTE: FHIRPath path traversal support
@@ -2495,10 +2480,7 @@ public class LibraryBuilder {
 
             if (element instanceof IncludeDef) {
                 checkLiteralContext();
-                LibraryRef libraryRef = new LibraryRef();
-                libraryRef.setLocalId(of.nextId());
-                libraryRef.setLibraryName(((IncludeDef) element).getLocalIdentifier());
-                return libraryRef;
+                return new LibraryRef(of.nextId(), ((IncludeDef) element).getLocalIdentifier());
             }
         }
 
@@ -3171,7 +3153,7 @@ public class LibraryBuilder {
         if (inUnfilteredContext()) {
             // If we are in the source clause of a query, indicate that the source references patient context
             if (inQueryContext() && getScope().getQueries().peek().inSourceClause()) {
-                getScope().getQueries().peek().referenceSpecificContext();
+                getScope().getQueries().peek().setReferencesSpecificContextValue(true);
             }
 
             DataType resultType = expressionDef.getResultType();

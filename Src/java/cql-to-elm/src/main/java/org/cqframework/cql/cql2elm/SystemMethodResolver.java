@@ -51,8 +51,8 @@ public class SystemMethodResolver {
 
     private AliasedQuerySource enterQueryContext(Expression target) {
         QueryContext queryContext = new QueryContext();
-        queryContext.setIsImplicit(
-                true); // Set to an implicit context to allow for implicit resolution of property names
+        queryContext.setImplicit(true);
+        // Set to an implicit context to allow for implicit resolution of property names
         List<AliasedQuerySource> sources = new ArrayList<>();
         AliasedQuerySource source =
                 of.createAliasedQuerySource().withExpression(target).withAlias("$this");

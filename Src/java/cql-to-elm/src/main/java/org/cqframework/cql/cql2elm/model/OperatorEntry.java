@@ -278,7 +278,7 @@ public class OperatorEntry {
 
             if (results != null && signatureCount > 1) {
                 for (OperatorResolution result : results) {
-                    result.setOperatorHasOverloads();
+                    result.setOperatorHasOverloads(true);
                 }
             }
 
@@ -318,7 +318,7 @@ public class OperatorEntry {
 
     private boolean allResultsUseConversion(List<OperatorResolution> results) {
         for (OperatorResolution resolution : results) {
-            if (!resolution.hasConversions()) {
+            if (resolution.getConversions().isEmpty()) {
                 return false;
             }
         }
@@ -328,7 +328,7 @@ public class OperatorEntry {
 
     public List<Signature> expandChoices(Signature callSignature) {
         ArrayList<Signature> signatures = new ArrayList<Signature>();
-        if (callSignature.containsChoices()) {
+        if (callSignature.getContainsChoices()) {
 
             ArrayList<ArrayList<DataType>> operandList = new ArrayList<ArrayList<DataType>>();
             for (DataType operand : callSignature.getOperandTypes()) {
@@ -385,9 +385,7 @@ public class OperatorEntry {
             }
         }
 
-        List<OperatorResolution> results = signatures.resolve(callContext, conversionMap, operatorMap);
-
-        return results;
+        return signatures.resolve(callContext, conversionMap, operatorMap);
     }
 
     private List<Operator> instantiate(

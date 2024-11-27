@@ -4,6 +4,7 @@ plugins {
 }
 
 dependencies {
+    api(project(":cql-to-elm"))
     api(project(":elm"))
     api(project(":model"))
 }

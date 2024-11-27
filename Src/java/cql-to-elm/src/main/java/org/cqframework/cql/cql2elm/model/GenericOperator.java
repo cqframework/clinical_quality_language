@@ -18,7 +18,7 @@ public class GenericOperator extends Operator {
         Collections.addAll(this.typeParameters, typeParameters);
     }
 
-    private List<TypeParameter> typeParameters = new ArrayList<>();
+    private final List<TypeParameter> typeParameters = new ArrayList<>();
 
     public Iterable<TypeParameter> getTypeParameters() {
         return this.typeParameters;
@@ -45,15 +45,13 @@ public class GenericOperator extends Operator {
         }
 
         if (parameters != null) {
-            for (Map.Entry<TypeParameter, DataType> entry : parameters.entrySet()) {
-                typeMap.put(entry.getKey(), entry.getValue());
-            }
+            typeMap.putAll(parameters);
         }
 
         InstantiationContextImpl context =
                 new InstantiationContextImpl(typeMap, operatorMap, conversionMap, allowPromotionAndDemotion);
 
-        Boolean instantiable = getSignature().isInstantiable(callSignature, context);
+        boolean instantiable = getSignature().isInstantiable(callSignature, context);
         if (instantiable) {
             Operator result = new Operator(
                     getName(),

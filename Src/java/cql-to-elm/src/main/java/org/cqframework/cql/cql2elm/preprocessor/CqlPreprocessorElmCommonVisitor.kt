@@ -220,9 +220,11 @@ open class CqlPreprocessorElmCommonVisitor(
             }
         }
         val typeSpecifierContext = ctx.typeSpecifier()
-        return if (typeSpecifierContext != null) {
-            FunctionHeader.withReturnType(functionDef, parseTypeSpecifier(typeSpecifierContext))
-        } else FunctionHeader.noReturnType(functionDef)
+        return if (typeSpecifierContext == null) {
+            FunctionHeader(functionDef)
+        } else {
+            FunctionHeader(functionDef, parseTypeSpecifier(typeSpecifierContext))
+        }
     }
 
     protected fun parseTypeSpecifier(pt: ParseTree?): TypeSpecifier? {
@@ -274,7 +276,7 @@ open class CqlPreprocessorElmCommonVisitor(
         if (sourceInterval.b < sourceInterval.a) {
             return false
         }
-        val chunk = Chunk().withInterval(sourceInterval)
+        val chunk = Chunk(sourceInterval)
         chunks.push(chunk)
         return true
     }
@@ -304,18 +306,11 @@ open class CqlPreprocessorElmCommonVisitor(
                         // Add header information (comments prior to the definition)
                         val definitionInfo = libraryInfo.resolveDefinition(tree)
                         if (definitionInfo?.headerInterval != null) {
-                            val headerChunk =
-                                Chunk()
-                                    .withInterval(definitionInfo.headerInterval)
-                                    .withIsHeaderChunk(true)
-                            val newChunk =
-                                Chunk()
-                                    .withInterval(
-                                        Interval(headerChunk.interval.a, chunk.interval.b)
-                                    )
+                            val headerChunk = Chunk(definitionInfo.headerInterval!!, true)
+                            val newChunk = Chunk(Interval(headerChunk.interval.a, chunk.interval.b))
                             newChunk.addChunk(headerChunk)
                             newChunk.element = chunk.element
-                            for (c in chunk.chunks) {
+                            for (c in chunk.getChunks()) {
                                 newChunk.addChunk(c)
                             }
                             chunk = newChunk
@@ -326,15 +321,10 @@ open class CqlPreprocessorElmCommonVisitor(
                 }
             } else {
                 if (libraryInfo.definition != null && libraryInfo.headerInterval != null) {
-                    val headerChunk =
-                        Chunk().withInterval(libraryInfo.headerInterval).withIsHeaderChunk(true)
-                    val definitionChunk =
-                        Chunk().withInterval(libraryInfo.definition?.sourceInterval)
+                    val headerChunk = Chunk(libraryInfo.headerInterval!!, true)
+                    val definitionChunk = Chunk(libraryInfo.definition?.sourceInterval!!)
                     val newChunk =
-                        Chunk()
-                            .withInterval(
-                                Interval(headerChunk.interval.a, definitionChunk.interval.b)
-                            )
+                        Chunk(Interval(headerChunk.interval.a, definitionChunk.interval.b))
                     newChunk.addChunk(headerChunk)
                     newChunk.addChunk(definitionChunk)
                     newChunk.element = chunk.element
@@ -517,11 +507,11 @@ open class CqlPreprocessorElmCommonVisitor(
     private fun buildNarrative(chunk: Chunk): Narrative {
         val narrative = af.createNarrative()
         if (chunk.element != null) {
-            narrative.r = chunk.element.localId
+            narrative.r = chunk.element!!.localId
         }
         if (chunk.hasChunks()) {
             var currentNarrative: Narrative? = null
-            for (childChunk in chunk.chunks) {
+            for (childChunk in chunk.getChunks()) {
                 val chunkNarrative = buildNarrative(childChunk)
                 if (hasChunks(chunkNarrative)) {
                     if (currentNarrative != null) {

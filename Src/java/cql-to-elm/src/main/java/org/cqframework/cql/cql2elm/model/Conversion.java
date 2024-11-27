@@ -211,7 +211,7 @@ public class Conversion {
 
     public List<Conversion> getAlternativeConversions() {
         if (alternativeConversions == null) {
-            alternativeConversions = new ArrayList<Conversion>();
+            alternativeConversions = new ArrayList<>();
         }
 
         return alternativeConversions;

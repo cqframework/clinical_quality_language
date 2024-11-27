@@ -20,7 +20,7 @@ import org.hl7.elm.r1.ValueSetDef;
  */
 public class ResolvedIdentifierContext {
     private final String identifier;
-    private final Element nullableElement;
+    private final Element element;
 
     private enum ResolvedIdentifierMatchType {
         EXACT,
@@ -41,13 +41,13 @@ public class ResolvedIdentifierContext {
     private ResolvedIdentifierContext(
             String identifier, Element nullableElement, ResolvedIdentifierMatchType matchType) {
         this.identifier = identifier;
-        this.nullableElement = nullableElement;
+        this.element = nullableElement;
         this.matchType = matchType;
     }
 
     public Optional<Element> getExactMatchElement() {
         if (isExactMatch()) {
-            return Optional.ofNullable(nullableElement);
+            return Optional.ofNullable(element);
         }
 
         return Optional.empty();
@@ -58,8 +58,8 @@ public class ResolvedIdentifierContext {
     }
 
     public Optional<String> warnCaseInsensitiveIfApplicable() {
-        if (nullableElement != null && !isExactMatch()) {
-            return getName(nullableElement)
+        if (element != null && !isExactMatch()) {
+            return getName(element)
                     .map(name ->
                             String.format("Could not find identifier: [%s].  Did you mean [%s]?", identifier, name));
         }
@@ -72,8 +72,8 @@ public class ResolvedIdentifierContext {
     }
 
     public <T extends Element> Optional<T> getElementOfType(Class<T> clazz) {
-        if (clazz.isInstance(nullableElement)) {
-            return Optional.of(clazz.cast(nullableElement));
+        if (clazz.isInstance(element)) {
+            return Optional.of(clazz.cast(element));
         }
 
         return Optional.empty();
@@ -89,20 +89,20 @@ public class ResolvedIdentifierContext {
         }
         ResolvedIdentifierContext that = (ResolvedIdentifierContext) other;
         return Objects.equals(identifier, that.identifier)
-                && Objects.equals(nullableElement, that.nullableElement)
+                && Objects.equals(element, that.element)
                 && matchType == that.matchType;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(identifier, nullableElement, matchType);
+        return Objects.hash(identifier, element, matchType);
     }
 
     @Override
     public String toString() {
         return new StringJoiner(", ", ResolvedIdentifierContext.class.getSimpleName() + "[", "]")
                 .add("identifier='" + identifier + "'")
-                .add("nullableElement=" + nullableElement)
+                .add("nullableElement=" + element)
                 .add("matchType=" + matchType)
                 .toString();
     }

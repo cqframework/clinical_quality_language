@@ -1905,6 +1905,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     public Object visitTimingExpression(cqlParser.TimingExpressionContext ctx) {
         Expression left = parseExpression(ctx.expression(0));
         Expression right = parseExpression(ctx.expression(1));
+        requireNonNull(left, "left expression of timing operator can not be null");
+        requireNonNull(right, "right expression of timing operator can not be null");
         TimingOperatorContext timingOperatorContext = new TimingOperatorContext(left, right);
         timingOperators.push(timingOperatorContext);
         try {
@@ -3582,7 +3584,6 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 if (o != null
                         && o.getLibraryName() != null
                         && o.getLibraryName().equals(functionRef.getLibraryName())
-                        && o.getName() != null
                         && o.getName().equals(functionRef.getName())) {
                     return functionRef.getOperand().get(0);
                 }
@@ -4172,7 +4173,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                                             .getId()))) {
                 Operator op = invocation.getResolution().getOperator();
                 FunctionHeader fh = getFunctionHeader(op);
-                if (!fh.getIsCompiled()) {
+                if (!fh.isCompiled()) {
                     cqlParser.FunctionDefinitionContext ctx = getFunctionDefinitionContext(fh);
                     String saveContext = saveCurrentContext(fh.getFunctionDef().getContext());
                     Stack<Chunk> saveChunks = chunks;
@@ -4440,7 +4441,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
             }
 
             fun.setContext(getCurrentContext());
-            fh.setIsCompiled();
+            fh.setCompiled(true);
 
             return fun;
         } finally {

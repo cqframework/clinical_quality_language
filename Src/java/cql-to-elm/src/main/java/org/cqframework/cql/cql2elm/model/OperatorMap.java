@@ -4,7 +4,7 @@ import java.util.*;
 import org.hl7.cql.model.*;
 
 public class OperatorMap {
-    private Map<String, OperatorEntry> operators = new HashMap<>();
+    private final Map<String, OperatorEntry> operators = new HashMap<>();
 
     public boolean containsOperator(Operator operator) {
         OperatorEntry entry = getEntry(operator.getName());
@@ -17,7 +17,7 @@ public class OperatorMap {
     }
 
     private OperatorEntry getEntry(String operatorName) {
-        if (operatorName == null || operatorName.equals("")) {
+        if (operatorName == null || operatorName.isEmpty()) {
             throw new IllegalArgumentException("operatorName is null or empty.");
         }
 

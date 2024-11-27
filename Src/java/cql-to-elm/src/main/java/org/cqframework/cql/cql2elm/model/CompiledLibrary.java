@@ -78,7 +78,7 @@ public class CompiledLibrary {
     public void add(ExpressionDef expression) {
         if (expression instanceof FunctionDef) {
             // Register the operator signature
-            add((FunctionDef) expression, Operator.fromFunctionDef((FunctionDef) expression));
+            add((FunctionDef) expression, new Operator((FunctionDef) expression));
         } else {
             checkNamespace(expression.getName());
             namespace.put(expression.getName(), expression);
@@ -123,7 +123,7 @@ public class CompiledLibrary {
     }
 
     public boolean contains(FunctionDef functionDef) {
-        return contains(Operator.fromFunctionDef(functionDef));
+        return contains(new Operator(functionDef));
     }
 
     public boolean contains(Operator operator) {
@@ -206,10 +206,8 @@ public class CompiledLibrary {
     public Iterable<FunctionDef> resolveFunctionRef(String identifier) {
         var results = new ArrayList<FunctionDef>();
         for (ExpressionDef ed : getLibrary().getStatements().getDef()) {
-            if (ed instanceof FunctionDef) {
-                if (ed.getName().equals(identifier)) {
-                    results.add((FunctionDef) ed);
-                }
+            if (ed instanceof FunctionDef && ed.getName().equals(identifier)) {
+                results.add((FunctionDef) ed);
             }
         }
 
@@ -220,8 +218,7 @@ public class CompiledLibrary {
         if (signature == null) {
             return resolveFunctionRef(identifier);
         } else {
-            CallContext cc = new CallContext(
-                    this.getIdentifier().getId(), identifier, false, false, false, signature.toArray(new DataType[0]));
+            CallContext cc = new CallContext(this.getIdentifier().getId(), identifier, false, false, false, signature);
             OperatorResolution resolution = resolveCall(cc, null);
             var results = new ArrayList<FunctionDef>();
             if (resolution != null) {
@@ -234,7 +231,7 @@ public class CompiledLibrary {
     public OperatorResolution resolveCall(CallContext callContext, ConversionMap conversionMap) {
         OperatorResolution resolution = operators.resolveOperator(callContext, conversionMap);
 
-        if (resolution != null && resolution.getOperator() != null) {
+        if (resolution != null) {
             // For backwards compatibility, a library can indicate that functions it exports are allowed to be invoked
             // with fluent syntax. This is used in FHIRHelpers to allow fluent resolution, which is implicit in 1.4.
             if (callContext.getAllowFluent() && !resolution.getOperator().getFluent()) {
