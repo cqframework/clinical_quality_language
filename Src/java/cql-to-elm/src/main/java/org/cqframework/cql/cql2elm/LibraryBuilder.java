@@ -2288,14 +2288,6 @@ public class LibraryBuilder {
                                     "Inconsistent property resolution for choice type %s (was %s, is %s)",
                                     choice.toString(), name, resolution.getName()));
                         }
-
-                        if (name == null) {
-                            name = resolution.getName();
-                        } else if (!name.equals(resolution.getName())) {
-                            throw new IllegalArgumentException(String.format(
-                                    "Inconsistent property resolution for choice type %s (was %s, is %s)",
-                                    choice.toString(), name, resolution.getName()));
-                        }
                     }
                 }
 
@@ -2305,9 +2297,7 @@ public class LibraryBuilder {
                 }
 
                 if (resultTypes.size() == 1) {
-                    for (DataType resultType : resultTypes) {
-                        return new PropertyResolution(resultType, name, resultTargetMaps);
-                    }
+                    return new PropertyResolution(resultTypes.iterator().next(), name, resultTargetMaps);
                 }
             } else if (currentType instanceof ListType && listTraversal) {
                 // NOTE: FHIRPath path traversal support

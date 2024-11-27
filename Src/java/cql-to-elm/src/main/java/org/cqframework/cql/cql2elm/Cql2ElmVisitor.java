@@ -1905,6 +1905,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
     public Object visitTimingExpression(cqlParser.TimingExpressionContext ctx) {
         Expression left = parseExpression(ctx.expression(0));
         Expression right = parseExpression(ctx.expression(1));
+        requireNonNull(left, "left expression of timing operator can not be null");
+        requireNonNull(right, "right expression of timing operator can not be null");
         TimingOperatorContext timingOperatorContext = new TimingOperatorContext(left, right);
         timingOperators.push(timingOperatorContext);
         try {
@@ -1921,32 +1923,32 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         TimingOperatorContext timingOperator = timingOperators.peek();
         ParseTree firstChild = ctx.getChild(0);
         if ("starts".equals(firstChild.getText())) {
-            Start start = of.createStart().withOperand(timingOperator.left);
+            Start start = of.createStart().withOperand(timingOperator.getLeft());
             track(start, firstChild);
             libraryBuilder.resolveUnaryCall("System", "Start", start);
-            timingOperator.left = start;
+            timingOperator.setLeft(start);
         }
 
         if ("ends".equals(firstChild.getText())) {
-            End end = of.createEnd().withOperand(timingOperator.left);
+            End end = of.createEnd().withOperand(timingOperator.getLeft());
             track(end, firstChild);
             libraryBuilder.resolveUnaryCall("System", "End", end);
-            timingOperator.left = end;
+            timingOperator.setLeft(end);
         }
 
         ParseTree lastChild = ctx.getChild(ctx.getChildCount() - 1);
         if ("start".equals(lastChild.getText())) {
-            Start start = of.createStart().withOperand(timingOperator.right);
+            Start start = of.createStart().withOperand(timingOperator.getRight());
             track(start, lastChild);
             libraryBuilder.resolveUnaryCall("System", "Start", start);
-            timingOperator.right = start;
+            timingOperator.setRight(start);
         }
 
         if ("end".equals(lastChild.getText())) {
-            End end = of.createEnd().withOperand(timingOperator.right);
+            End end = of.createEnd().withOperand(timingOperator.getRight());
             track(end, lastChild);
             libraryBuilder.resolveUnaryCall("System", "End", end);
-            timingOperator.right = end;
+            timingOperator.setRight(end);
         }
 
         String operatorName = null;
@@ -1996,7 +1998,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
             }
         }
 
-        operator = operator.withOperand(timingOperator.left, timingOperator.right);
+        operator = operator.withOperand(timingOperator.getLeft(), timingOperator.getRight());
         libraryBuilder.resolveBinaryCall("System", operatorName, operator, true, allowPromotionAndDemotion);
 
         return operator;
@@ -2015,19 +2017,19 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
             }
 
             if ("start".equals(pt.getText())) {
-                Start start = of.createStart().withOperand(timingOperator.right);
+                Start start = of.createStart().withOperand(timingOperator.getRight());
                 track(start, pt);
                 libraryBuilder.resolveUnaryCall("System", "Start", start);
-                timingOperator.right = start;
+                timingOperator.setRight(start);
                 isRightPoint = true;
                 continue;
             }
 
             if ("end".equals(pt.getText())) {
-                End end = of.createEnd().withOperand(timingOperator.right);
+                End end = of.createEnd().withOperand(timingOperator.getRight());
                 track(end, pt);
                 libraryBuilder.resolveUnaryCall("System", "End", end);
-                timingOperator.right = end;
+                timingOperator.setRight(end);
                 isRightPoint = true;
                 continue;
             }
@@ -2047,26 +2049,28 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         if (isRightPoint) {
             if (isProper) {
                 return libraryBuilder.resolveProperContains(
-                        timingOperator.left,
-                        timingOperator.right,
+                        timingOperator.getLeft(),
+                        timingOperator.getRight(),
                         parseComparableDateTimePrecision(dateTimePrecision, false));
             }
 
             return libraryBuilder.resolveContains(
-                    timingOperator.left,
-                    timingOperator.right,
+                    timingOperator.getLeft(),
+                    timingOperator.getRight(),
                     parseComparableDateTimePrecision(dateTimePrecision, false));
         }
 
         if (isProper) {
             return libraryBuilder.resolveProperIncludes(
-                    timingOperator.left,
-                    timingOperator.right,
+                    timingOperator.getLeft(),
+                    timingOperator.getRight(),
                     parseComparableDateTimePrecision(dateTimePrecision, false));
         }
 
         return libraryBuilder.resolveIncludes(
-                timingOperator.left, timingOperator.right, parseComparableDateTimePrecision(dateTimePrecision, false));
+                timingOperator.getLeft(),
+                timingOperator.getRight(),
+                parseComparableDateTimePrecision(dateTimePrecision, false));
     }
 
     @Override
@@ -2078,19 +2082,19 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         TimingOperatorContext timingOperator = timingOperators.peek();
         for (ParseTree pt : ctx.children) {
             if ("starts".equals(pt.getText())) {
-                Start start = of.createStart().withOperand(timingOperator.left);
+                Start start = of.createStart().withOperand(timingOperator.getLeft());
                 track(start, pt);
                 libraryBuilder.resolveUnaryCall("System", "Start", start);
-                timingOperator.left = start;
+                timingOperator.setLeft(start);
                 isLeftPoint = true;
                 continue;
             }
 
             if ("ends".equals(pt.getText())) {
-                End end = of.createEnd().withOperand(timingOperator.left);
+                End end = of.createEnd().withOperand(timingOperator.getLeft());
                 track(end, pt);
                 libraryBuilder.resolveUnaryCall("System", "End", end);
-                timingOperator.left = end;
+                timingOperator.setLeft(end);
                 isLeftPoint = true;
                 continue;
             }
@@ -2115,26 +2119,28 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         if (isLeftPoint) {
             if (isProper) {
                 return libraryBuilder.resolveProperIn(
-                        timingOperator.left,
-                        timingOperator.right,
+                        timingOperator.getLeft(),
+                        timingOperator.getRight(),
                         parseComparableDateTimePrecision(dateTimePrecision, false));
             }
 
             return libraryBuilder.resolveIn(
-                    timingOperator.left,
-                    timingOperator.right,
+                    timingOperator.getLeft(),
+                    timingOperator.getRight(),
                     parseComparableDateTimePrecision(dateTimePrecision, false));
         }
 
         if (isProper) {
             return libraryBuilder.resolveProperIncludedIn(
-                    timingOperator.left,
-                    timingOperator.right,
+                    timingOperator.getLeft(),
+                    timingOperator.getRight(),
                     parseComparableDateTimePrecision(dateTimePrecision, false));
         }
 
         return libraryBuilder.resolveIncludedIn(
-                timingOperator.left, timingOperator.right, parseComparableDateTimePrecision(dateTimePrecision, false));
+                timingOperator.getLeft(),
+                timingOperator.getRight(),
+                parseComparableDateTimePrecision(dateTimePrecision, false));
     }
 
     @Override
@@ -2174,34 +2180,34 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         boolean isInclusive = false;
         for (ParseTree child : ctx.children) {
             if ("starts".equals(child.getText())) {
-                Start start = of.createStart().withOperand(timingOperator.left);
+                Start start = of.createStart().withOperand(timingOperator.getLeft());
                 track(start, child);
                 libraryBuilder.resolveUnaryCall("System", "Start", start);
-                timingOperator.left = start;
+                timingOperator.setLeft(start);
                 continue;
             }
 
             if ("ends".equals(child.getText())) {
-                End end = of.createEnd().withOperand(timingOperator.left);
+                End end = of.createEnd().withOperand(timingOperator.getLeft());
                 track(end, child);
                 libraryBuilder.resolveUnaryCall("System", "End", end);
-                timingOperator.left = end;
+                timingOperator.setLeft(end);
                 continue;
             }
 
             if ("start".equals(child.getText())) {
-                Start start = of.createStart().withOperand(timingOperator.right);
+                Start start = of.createStart().withOperand(timingOperator.getRight());
                 track(start, child);
                 libraryBuilder.resolveUnaryCall("System", "Start", start);
-                timingOperator.right = start;
+                timingOperator.setRight(start);
                 continue;
             }
 
             if ("end".equals(child.getText())) {
-                End end = of.createEnd().withOperand(timingOperator.right);
+                End end = of.createEnd().withOperand(timingOperator.getRight());
                 track(end, child);
                 libraryBuilder.resolveUnaryCall("System", "End", end);
-                timingOperator.right = end;
+                timingOperator.setRight(end);
                 continue;
             }
         }
@@ -2226,7 +2232,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
             if (isInclusive) {
                 if (isBefore) {
                     SameOrBefore sameOrBefore =
-                            of.createSameOrBefore().withOperand(timingOperator.left, timingOperator.right);
+                            of.createSameOrBefore().withOperand(timingOperator.getLeft(), timingOperator.getRight());
                     if (dateTimePrecision != null) {
                         sameOrBefore.setPrecision(parseComparableDateTimePrecision(dateTimePrecision));
                     }
@@ -2235,7 +2241,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
                 } else {
                     SameOrAfter sameOrAfter =
-                            of.createSameOrAfter().withOperand(timingOperator.left, timingOperator.right);
+                            of.createSameOrAfter().withOperand(timingOperator.getLeft(), timingOperator.getRight());
                     if (dateTimePrecision != null) {
                         sameOrAfter.setPrecision(parseComparableDateTimePrecision(dateTimePrecision));
                     }
@@ -2244,7 +2250,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 }
             } else {
                 if (isBefore) {
-                    Before before = of.createBefore().withOperand(timingOperator.left, timingOperator.right);
+                    Before before = of.createBefore().withOperand(timingOperator.getLeft(), timingOperator.getRight());
                     if (dateTimePrecision != null) {
                         before.setPrecision(parseComparableDateTimePrecision(dateTimePrecision));
                     }
@@ -2252,7 +2258,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                     return before;
 
                 } else {
-                    After after = of.createAfter().withOperand(timingOperator.left, timingOperator.right);
+                    After after = of.createAfter().withOperand(timingOperator.getLeft(), timingOperator.getRight());
                     if (dateTimePrecision != null) {
                         after.setPrecision(parseComparableDateTimePrecision(dateTimePrecision));
                     }
@@ -2263,31 +2269,31 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         } else {
             Quantity quantity = (Quantity) visit(ctx.quantityOffset().quantity());
 
-            if (timingOperator.left.getResultType() instanceof IntervalType) {
+            if (timingOperator.getLeft().getResultType() instanceof IntervalType) {
                 if (isBefore) {
-                    End end = of.createEnd().withOperand(timingOperator.left);
-                    track(end, timingOperator.left);
+                    End end = of.createEnd().withOperand(timingOperator.getLeft());
+                    track(end, timingOperator.getLeft());
                     libraryBuilder.resolveUnaryCall("System", "End", end);
-                    timingOperator.left = end;
+                    timingOperator.setLeft(end);
                 } else {
-                    Start start = of.createStart().withOperand(timingOperator.left);
-                    track(start, timingOperator.left);
+                    Start start = of.createStart().withOperand(timingOperator.getLeft());
+                    track(start, timingOperator.getLeft());
                     libraryBuilder.resolveUnaryCall("System", "Start", start);
-                    timingOperator.left = start;
+                    timingOperator.setLeft(start);
                 }
             }
 
-            if (timingOperator.right.getResultType() instanceof IntervalType) {
+            if (timingOperator.getRight().getResultType() instanceof IntervalType) {
                 if (isBefore) {
-                    Start start = of.createStart().withOperand(timingOperator.right);
-                    track(start, timingOperator.right);
+                    Start start = of.createStart().withOperand(timingOperator.getRight());
+                    track(start, timingOperator.getRight());
                     libraryBuilder.resolveUnaryCall("System", "Start", start);
-                    timingOperator.right = start;
+                    timingOperator.setRight(start);
                 } else {
-                    End end = of.createEnd().withOperand(timingOperator.right);
-                    track(end, timingOperator.right);
+                    End end = of.createEnd().withOperand(timingOperator.getRight());
+                    track(end, timingOperator.getRight());
                     libraryBuilder.resolveUnaryCall("System", "End", end);
-                    timingOperator.right = end;
+                    timingOperator.setRight(end);
                 }
             }
 
@@ -2297,18 +2303,18 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 // For a Before, subtract the quantity from the right operand
                 // For an After, add the quantity to the right operand
                 if (isBefore) {
-                    Subtract subtract = of.createSubtract().withOperand(timingOperator.right, quantity);
-                    track(subtract, timingOperator.right);
+                    Subtract subtract = of.createSubtract().withOperand(timingOperator.getRight(), quantity);
+                    track(subtract, timingOperator.getRight());
                     libraryBuilder.resolveBinaryCall("System", "Subtract", subtract);
-                    timingOperator.right = subtract;
+                    timingOperator.setRight(subtract);
                 } else {
-                    Add add = of.createAdd().withOperand(timingOperator.right, quantity);
-                    track(add, timingOperator.right);
+                    Add add = of.createAdd().withOperand(timingOperator.getRight(), quantity);
+                    track(add, timingOperator.getRight());
                     libraryBuilder.resolveBinaryCall("System", "Add", add);
-                    timingOperator.right = add;
+                    timingOperator.setRight(add);
                 }
 
-                SameAs sameAs = of.createSameAs().withOperand(timingOperator.left, timingOperator.right);
+                SameAs sameAs = of.createSameAs().withOperand(timingOperator.getLeft(), timingOperator.getRight());
                 if (dateTimePrecision != null) {
                     sameAs.setPrecision(parseComparableDateTimePrecision(dateTimePrecision));
                 }
@@ -2327,22 +2333,22 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                         // For a Before, subtract the quantity from the right operand
                         // For an After, add the quantity to the right operand
                         if (isBefore) {
-                            Subtract subtract = of.createSubtract().withOperand(timingOperator.right, quantity);
-                            track(subtract, timingOperator.right);
+                            Subtract subtract = of.createSubtract().withOperand(timingOperator.getRight(), quantity);
+                            track(subtract, timingOperator.getRight());
                             libraryBuilder.resolveBinaryCall("System", "Subtract", subtract);
-                            timingOperator.right = subtract;
+                            timingOperator.setRight(subtract);
 
                             if (!isOffsetInclusive) {
-                                Before before =
-                                        of.createBefore().withOperand(timingOperator.left, timingOperator.right);
+                                Before before = of.createBefore()
+                                        .withOperand(timingOperator.getLeft(), timingOperator.getRight());
                                 if (dateTimePrecision != null) {
                                     before.setPrecision(parseComparableDateTimePrecision(dateTimePrecision));
                                 }
                                 libraryBuilder.resolveBinaryCall("System", "Before", before, true, true);
                                 return before;
                             } else {
-                                SameOrBefore sameOrBefore =
-                                        of.createSameOrBefore().withOperand(timingOperator.left, timingOperator.right);
+                                SameOrBefore sameOrBefore = of.createSameOrBefore()
+                                        .withOperand(timingOperator.getLeft(), timingOperator.getRight());
                                 if (dateTimePrecision != null) {
                                     sameOrBefore.setPrecision(parseComparableDateTimePrecision(dateTimePrecision));
                                 }
@@ -2350,21 +2356,22 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                                 return sameOrBefore;
                             }
                         } else {
-                            Add add = of.createAdd().withOperand(timingOperator.right, quantity);
-                            track(add, timingOperator.right);
+                            Add add = of.createAdd().withOperand(timingOperator.getRight(), quantity);
+                            track(add, timingOperator.getRight());
                             libraryBuilder.resolveBinaryCall("System", "Add", add);
-                            timingOperator.right = add;
+                            timingOperator.setRight(add);
 
                             if (!isOffsetInclusive) {
-                                After after = of.createAfter().withOperand(timingOperator.left, timingOperator.right);
+                                After after = of.createAfter()
+                                        .withOperand(timingOperator.getLeft(), timingOperator.getRight());
                                 if (dateTimePrecision != null) {
                                     after.setPrecision(parseComparableDateTimePrecision(dateTimePrecision));
                                 }
                                 libraryBuilder.resolveBinaryCall("System", "After", after, true, true);
                                 return after;
                             } else {
-                                SameOrAfter sameOrAfter =
-                                        of.createSameOrAfter().withOperand(timingOperator.left, timingOperator.right);
+                                SameOrAfter sameOrAfter = of.createSameOrAfter()
+                                        .withOperand(timingOperator.getLeft(), timingOperator.getRight());
                                 if (dateTimePrecision != null) {
                                     sameOrAfter.setPrecision(parseComparableDateTimePrecision(dateTimePrecision));
                                 }
@@ -2380,7 +2387,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                         // For After, construct an interval from right to right + quantity
                         Expression lowerBound = null;
                         Expression upperBound = null;
-                        Expression right = timingOperator.right;
+                        Expression right = timingOperator.getRight();
                         if (isBefore) {
                             lowerBound = of.createSubtract().withOperand(right, quantity);
                             track(lowerBound, right);
@@ -2402,7 +2409,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                                 : libraryBuilder.createInterval(lowerBound, isInclusive, upperBound, isOffsetInclusive);
 
                         track(interval, ctx.quantityOffset());
-                        In in = of.createIn().withOperand(timingOperator.left, interval);
+                        In in = of.createIn().withOperand(timingOperator.getLeft(), interval);
                         if (dateTimePrecision != null) {
                             in.setPrecision(parseComparableDateTimePrecision(dateTimePrecision));
                         }
@@ -2460,34 +2467,34 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         boolean isProper = false;
         for (ParseTree child : ctx.children) {
             if ("starts".equals(child.getText())) {
-                Start start = of.createStart().withOperand(timingOperator.left);
+                Start start = of.createStart().withOperand(timingOperator.getLeft());
                 track(start, child);
                 libraryBuilder.resolveUnaryCall("System", "Start", start);
-                timingOperator.left = start;
+                timingOperator.setLeft(start);
                 continue;
             }
 
             if ("ends".equals(child.getText())) {
-                End end = of.createEnd().withOperand(timingOperator.left);
+                End end = of.createEnd().withOperand(timingOperator.getLeft());
                 track(end, child);
                 libraryBuilder.resolveUnaryCall("System", "End", end);
-                timingOperator.left = end;
+                timingOperator.setLeft(end);
                 continue;
             }
 
             if ("start".equals(child.getText())) {
-                Start start = of.createStart().withOperand(timingOperator.right);
+                Start start = of.createStart().withOperand(timingOperator.getRight());
                 track(start, child);
                 libraryBuilder.resolveUnaryCall("System", "Start", start);
-                timingOperator.right = start;
+                timingOperator.setRight(start);
                 continue;
             }
 
             if ("end".equals(child.getText())) {
-                End end = of.createEnd().withOperand(timingOperator.right);
+                End end = of.createEnd().withOperand(timingOperator.getRight());
                 track(end, child);
                 libraryBuilder.resolveUnaryCall("System", "End", end);
-                timingOperator.right = end;
+                timingOperator.setRight(end);
                 continue;
             }
 
@@ -2501,16 +2508,16 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         Expression lowerBound = null;
         Expression upperBound = null;
         Expression initialBound = null;
-        if (timingOperator.right.getResultType() instanceof IntervalType) {
-            lowerBound = of.createStart().withOperand(timingOperator.right);
+        if (timingOperator.getRight().getResultType() instanceof IntervalType) {
+            lowerBound = of.createStart().withOperand(timingOperator.getRight());
             track(lowerBound, ctx.quantity());
             libraryBuilder.resolveUnaryCall("System", "Start", (Start) lowerBound);
-            upperBound = of.createEnd().withOperand(timingOperator.right);
+            upperBound = of.createEnd().withOperand(timingOperator.getRight());
             track(upperBound, ctx.quantity());
             libraryBuilder.resolveUnaryCall("System", "End", (End) upperBound);
         } else {
-            lowerBound = timingOperator.right;
-            upperBound = timingOperator.right;
+            lowerBound = timingOperator.getRight();
+            upperBound = timingOperator.getRight();
             initialBound = lowerBound;
         }
 
@@ -2525,7 +2532,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         Interval interval = libraryBuilder.createInterval(lowerBound, !isProper, upperBound, !isProper);
         track(interval, ctx.quantity());
 
-        In in = of.createIn().withOperand(timingOperator.left, interval);
+        In in = of.createIn().withOperand(timingOperator.getLeft(), interval);
         libraryBuilder.resolveBinaryCall("System", "In", in);
 
         // if the within is not proper and the interval is being constructed from a
@@ -2575,7 +2582,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
             }
         }
 
-        operator.withOperand(timingOperators.peek().left, timingOperators.peek().right);
+        operator.withOperand(
+                timingOperators.peek().getLeft(), timingOperators.peek().getRight());
         libraryBuilder.resolveBinaryCall("System", operatorName, operator);
         return operator;
     }
@@ -2607,7 +2615,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
             }
         }
 
-        operator.withOperand(timingOperators.peek().left, timingOperators.peek().right);
+        operator.withOperand(
+                timingOperators.peek().getLeft(), timingOperators.peek().getRight());
         libraryBuilder.resolveBinaryCall("System", operatorName, operator);
         return operator;
     }
@@ -2621,7 +2630,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         Starts starts = (dateTimePrecision != null
                         ? of.createStarts().withPrecision(parseComparableDateTimePrecision(dateTimePrecision))
                         : of.createStarts())
-                .withOperand(timingOperators.peek().left, timingOperators.peek().right);
+                .withOperand(
+                        timingOperators.peek().getLeft(), timingOperators.peek().getRight());
 
         libraryBuilder.resolveBinaryCall("System", "Starts", starts);
         return starts;
@@ -2636,7 +2646,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         Ends ends = (dateTimePrecision != null
                         ? of.createEnds().withPrecision(parseComparableDateTimePrecision(dateTimePrecision))
                         : of.createEnds())
-                .withOperand(timingOperators.peek().left, timingOperators.peek().right);
+                .withOperand(
+                        timingOperators.peek().getLeft(), timingOperators.peek().getRight());
 
         libraryBuilder.resolveBinaryCall("System", "Ends", ends);
         return ends;
