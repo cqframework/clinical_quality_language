@@ -3153,7 +3153,7 @@ public class LibraryBuilder {
         if (inUnfilteredContext()) {
             // If we are in the source clause of a query, indicate that the source references patient context
             if (inQueryContext() && getScope().getQueries().peek().inSourceClause()) {
-                getScope().getQueries().peek().referenceSpecificContext();
+                getScope().getQueries().peek().setReferencesSpecificContextValue(true);
             }
 
             DataType resultType = expressionDef.getResultType();
