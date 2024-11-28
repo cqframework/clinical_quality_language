@@ -33,13 +33,7 @@ class OperatorMap {
                 mustResolve = false,
                 operandTypes = signature
             )
-        try {
-            resolveOperator(call, null) ?: return false
-        } catch (e: Exception) {
-            return false
-        }
-
-        return true
+        return resolveOperator(call, null) != null
     }
 
     // Returns true if the given type supports the operations necessary to be the point type of an
@@ -50,6 +44,7 @@ class OperatorMap {
             supportsOperator("System", "Successor", type)
     }
 
+    @Suppress("LongMethod", "CyclomaticComplexMethod", "NestedBlockDepth")
     fun resolveOperator(
         callContext: CallContext,
         conversionMap: ConversionMap?

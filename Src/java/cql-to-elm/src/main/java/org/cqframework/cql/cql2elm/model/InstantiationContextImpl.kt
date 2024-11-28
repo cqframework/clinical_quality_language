@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm.model
 
+import java.util.*
+import kotlin.collections.ArrayList
 import org.hl7.cql.model.DataType
 import org.hl7.cql.model.InstantiationContext
 import org.hl7.cql.model.IntervalType
@@ -7,6 +9,13 @@ import org.hl7.cql.model.ListType
 import org.hl7.cql.model.SimpleType
 import org.hl7.cql.model.TypeParameter
 
+@Suppress(
+    "ForbiddenComment",
+    "ReturnCount",
+    "ComplexCondition",
+    "NestedBlockDepth",
+    "CyclomaticComplexMethod"
+)
 class InstantiationContextImpl(
     private val typeMap: MutableMap<TypeParameter, DataType?>,
     private val operatorMap: OperatorMap,
@@ -17,6 +26,7 @@ class InstantiationContextImpl(
     var conversionScore: Int = 0
         private set
 
+    @Suppress("LongMethod")
     override fun isInstantiable(parameter: TypeParameter, callType: DataType): Boolean {
         // If the type is not yet bound, bind it to the call type.
         val boundType = typeMap[parameter]
@@ -100,7 +110,8 @@ class InstantiationContextImpl(
 
                 // Find the first supertype that is a supertype of both types
                 /*
-                // This code doesn't play well with generic signatures... it ends up treating everything like an Any, resulting in all sorts of surprising resolutions
+                // This code doesn't play well with generic signatures... it ends up treating everything like an Any,
+                // resulting in all sorts of surprising resolutions
                 DataType boundCommonSuperType = boundType.getCommonSuperTypeOf(callType);
                 DataType callCommonSuperType = callType.getCommonSuperTypeOf(boundType);
                 if (boundCommonSuperType != null && callCommonSuperType != null) {
@@ -134,7 +145,11 @@ class InstantiationContextImpl(
         val result =
             typeMap[parameter]
                 ?: throw IllegalArgumentException(
-                    String.format("Could not resolve type parameter %s.", parameter.identifier)
+                    String.format(
+                        Locale.US,
+                        "Could not resolve type parameter %s.",
+                        parameter.identifier
+                    )
                 )
 
         return result

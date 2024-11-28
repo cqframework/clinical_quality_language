@@ -8,7 +8,9 @@ import org.hl7.cql.model.DataType
 import org.hl7.cql.model.IntervalType
 import org.hl7.cql.model.ListType
 
+@Suppress("TooManyFunctions")
 class ConversionMap {
+    @Suppress("MagicNumber")
     enum class TypePrecedenceScore(private val score: Int) {
         Simple(1),
         Tuple(2),
@@ -23,6 +25,7 @@ class ConversionMap {
         }
     }
 
+    @Suppress("MagicNumber")
     enum class ConversionScore(private val score: Int) {
         ExactMatch(0),
         SubType(1),
@@ -257,6 +260,7 @@ class ConversionMap {
         }
     }
 
+    @Suppress("UnusedParameter")
     fun ensureGenericConversionInstantiated(
         fromType: DataType,
         toType: DataType,
@@ -287,6 +291,7 @@ class ConversionMap {
         return operatorsInstantiated
     }
 
+    @Suppress("NestedBlockDepth")
     private fun internalFindConversion(
         fromType: DataType,
         toType: DataType,
@@ -297,8 +302,8 @@ class ConversionMap {
         for (conversion in getAllConversions(fromType)) {
             if ((!isImplicit || conversion.isImplicit)) {
                 if (conversion.toType.isSuperTypeOf(toType) || conversion.toType.isGeneric) {
-                    // Lower score is better. If the conversion matches the target type exactly, the
-                    // score is 0.
+                    // Lower score is better. If the conversion matches the target type exactly,
+                    // the score is 0.
                     // If the conversion is generic, the score is 1 (because that will be
                     // instantiated to an exact
                     // match)
@@ -331,6 +336,7 @@ class ConversionMap {
         return result
     }
 
+    @Suppress("CyclomaticComplexMethod")
     fun findConversion(
         fromType: DataType,
         toType: DataType,
@@ -338,10 +344,9 @@ class ConversionMap {
         allowPromotionAndDemotion: Boolean,
         operatorMap: OperatorMap
     ): Conversion? {
-        var result = findCompatibleConversion(fromType, toType)
-        if (result == null) {
-            result = internalFindConversion(fromType, toType, isImplicit)
-        }
+        var result =
+            findCompatibleConversion(fromType, toType)
+                ?: internalFindConversion(fromType, toType, isImplicit)
 
         if (result == null) {
             if (ensureGenericConversionInstantiated(fromType, toType, isImplicit, operatorMap)) {
@@ -354,66 +359,59 @@ class ConversionMap {
             // If the from type is a list and the target type is a singleton (potentially with a
             // compatible conversion),
             // Convert by invoking a singleton
-            if (
-                fromType is ListType &&
-                    toType !is ListType &&
-                    (allowPromotionAndDemotion || isListDemotionEnabled)
-            ) {
-                result = findListDemotion(fromType, toType, operatorMap)
-            }
+            result =
+                when {
+                    fromType is ListType &&
+                        toType !is ListType &&
+                        (allowPromotionAndDemotion || isListDemotionEnabled) ->
+                        findListDemotion(fromType, toType, operatorMap)
+                    fromType !is ListType &&
+                        toType is ListType &&
+                        (allowPromotionAndDemotion || isListPromotionEnabled) ->
+                        findListPromotion(fromType, toType, operatorMap)
+                    fromType is IntervalType &&
+                        toType !is IntervalType &&
+                        (allowPromotionAndDemotion || isIntervalDemotionEnabled) ->
+                        findIntervalDemotion(fromType, toType, operatorMap)
+                    fromType !is IntervalType &&
+                        toType is IntervalType &&
+                        (allowPromotionAndDemotion || isIntervalPromotionEnabled) ->
+                        findIntervalPromotion(fromType, toType, operatorMap)
 
-            if (
-                fromType !is ListType &&
-                    toType is ListType &&
-                    (allowPromotionAndDemotion || isListPromotionEnabled)
-            ) {
-                result = findListPromotion(fromType, toType, operatorMap)
-            }
+                    // If the from type is a choice, attempt to find a conversion from one of the
+                    // choice
+                    // types
+                    fromType is ChoiceType ->
+                        findChoiceConversion(
+                            fromType,
+                            toType,
+                            allowPromotionAndDemotion,
+                            operatorMap
+                        )
 
-            if (
-                fromType is IntervalType &&
-                    toType !is IntervalType &&
-                    (allowPromotionAndDemotion || isIntervalDemotionEnabled)
-            ) {
-                result = findIntervalDemotion(fromType, toType, operatorMap)
-            }
+                    // If the target type is a choice,
+                    // attempt to find a conversion to
+                    // one of the choice types
+                    fromType !is ChoiceType && toType is ChoiceType ->
+                        findTargetChoiceConversion(
+                            fromType,
+                            toType,
+                            allowPromotionAndDemotion,
+                            operatorMap
+                        )
 
-            if (
-                fromType !is IntervalType &&
-                    toType is IntervalType &&
-                    (allowPromotionAndDemotion || isIntervalPromotionEnabled)
-            ) {
-                result = findIntervalPromotion(fromType, toType, operatorMap)
-            }
+                    // If both types are lists,
+                    // attempt to find a conversion between the element
+                    // types
+                    fromType is ListType && toType is ListType ->
+                        findListConversion(fromType, toType, operatorMap)
 
-            // If the from type is a choice, attempt to find a conversion from one of the choice
-            // types
-            if (fromType is ChoiceType) {
-                result =
-                    findChoiceConversion(fromType, toType, allowPromotionAndDemotion, operatorMap)
-            }
-
-            // If the target type is a choice, attempt to find a conversion to one of the choice
-            // types
-            if (fromType !is ChoiceType && toType is ChoiceType) {
-                result =
-                    findTargetChoiceConversion(
-                        fromType,
-                        toType,
-                        allowPromotionAndDemotion,
-                        operatorMap
-                    )
-            }
-
-            // If both types are lists, attempt to find a conversion between the element types
-            if (fromType is ListType && toType is ListType) {
-                result = findListConversion(fromType, toType, operatorMap)
-            }
-
-            // If both types are intervals, attempt to find a conversion between the point types
-            if (fromType is IntervalType && toType is IntervalType) {
-                result = findIntervalConversion(fromType, toType, operatorMap)
-            }
+                    // If both types are intervals, attempt to find a conversion between the point
+                    // types
+                    fromType is IntervalType && toType is IntervalType ->
+                        findIntervalConversion(fromType, toType, operatorMap)
+                    else -> null
+                }
         }
 
         return result
