@@ -30,7 +30,7 @@ class CompiledLibrary {
 
     private fun checkNamespace(identifier: String) {
         val existingResolvedIdentifierContext = resolve(identifier)
-        existingResolvedIdentifierContext.exactMatchElement.ifPresent { element: Element? ->
+        existingResolvedIdentifierContext.exactMatchElement.ifPresent {
             throw IllegalArgumentException(
                 String.format(
                     Locale.US,
@@ -147,7 +147,7 @@ class CompiledLibrary {
 
     fun resolve(identifier: String): ResolvedIdentifierContext {
         if (namespace.containsKey(identifier)) {
-            return ResolvedIdentifierContext.exactMatch(identifier, namespace[identifier])
+            return ResolvedIdentifierContext.exactMatch(identifier, namespace[identifier]!!)
         }
 
         return namespace.entries
@@ -159,11 +159,11 @@ class CompiledLibrary {
             .orElse(ResolvedIdentifierContext.caseInsensitiveMatch(identifier, null))
     }
 
-    fun resolveUsingRef(identifier: String): UsingDef {
+    fun resolveUsingRef(identifier: String): UsingDef? {
         return resolveIdentifier(identifier, UsingDef::class.java)
     }
 
-    fun resolveIncludeRef(identifier: String): IncludeDef {
+    fun resolveIncludeRef(identifier: String): IncludeDef? {
         return resolveIdentifier(identifier, IncludeDef::class.java)
     }
 
@@ -177,31 +177,31 @@ class CompiledLibrary {
         }
     }
 
-    fun resolveCodeSystemRef(identifier: String): CodeSystemDef {
+    fun resolveCodeSystemRef(identifier: String): CodeSystemDef? {
         return resolveIdentifier(identifier, CodeSystemDef::class.java)
     }
 
-    fun resolveValueSetRef(identifier: String): ValueSetDef {
+    fun resolveValueSetRef(identifier: String): ValueSetDef? {
         return resolveIdentifier(identifier, ValueSetDef::class.java)
     }
 
-    fun resolveCodeRef(identifier: String): CodeDef {
+    fun resolveCodeRef(identifier: String): CodeDef? {
         return resolveIdentifier(identifier, CodeDef::class.java)
     }
 
-    fun resolveConceptRef(identifier: String): ConceptDef {
+    fun resolveConceptRef(identifier: String): ConceptDef? {
         return resolveIdentifier(identifier, ConceptDef::class.java)
     }
 
-    fun resolveParameterRef(identifier: String): ParameterDef {
+    fun resolveParameterRef(identifier: String): ParameterDef? {
         return resolveIdentifier(identifier, ParameterDef::class.java)
     }
 
-    fun resolveExpressionRef(identifier: String): ExpressionDef {
+    fun resolveExpressionRef(identifier: String): ExpressionDef? {
         return resolveIdentifier(identifier, ExpressionDef::class.java)
     }
 
-    private fun <T : Element?> resolveIdentifier(identifier: String, clazz: Class<T>): T {
+    private fun <T : Element> resolveIdentifier(identifier: String, clazz: Class<T>): T? {
         return resolve(identifier).resolveIdentifier(clazz)
     }
 
@@ -223,8 +223,15 @@ class CompiledLibrary {
         if (signature == null) {
             return resolveFunctionRef(functionName)
         } else {
-            val cc: CallContext =
-                CallContext(this.identifier!!.id, functionName, false, false, false, signature)
+            val cc =
+                CallContext(
+                    this.identifier!!.id,
+                    functionName,
+                    allowPromotionAndDemotion = false,
+                    allowFluent = false,
+                    mustResolve = false,
+                    operandTypes = signature
+                )
             val resolution = resolveCall(cc, null)
             val results = ArrayList<FunctionDef?>()
             if (resolution != null) {
@@ -263,11 +270,11 @@ class CompiledLibrary {
     private val annotation: Annotation?
         get() = library?.annotation?.firstOrNull { it is Annotation } as Annotation?
 
-    fun getTag(tagName: String): String? {
+    private fun getTag(tagName: String): String? {
         return annotation?.t?.firstOrNull { it.name == tagName }?.value
     }
 
-    fun getBooleanTag(tagName: String): Boolean {
+    private fun getBooleanTag(tagName: String): Boolean {
         return getTag(tagName)?.toBoolean() ?: false
     }
 }
