@@ -160,16 +160,16 @@ public class LibraryBuilder {
             this.listTraversal = false;
         }
         if (options.getOptions().contains(CqlCompilerOptions.Options.DisableListDemotion)) {
-            this.getConversionMap().disableListDemotion();
+            this.getConversionMap().setListDemotionEnabled(false);
         }
         if (options.getOptions().contains(CqlCompilerOptions.Options.DisableListPromotion)) {
-            this.getConversionMap().disableListPromotion();
+            this.getConversionMap().setListPromotionEnabled(false);
         }
         if (options.getOptions().contains(CqlCompilerOptions.Options.EnableIntervalDemotion)) {
-            this.getConversionMap().enableIntervalDemotion();
+            this.getConversionMap().setIntervalDemotionEnabled(true);
         }
         if (options.getOptions().contains(CqlCompilerOptions.Options.EnableIntervalPromotion)) {
-            this.getConversionMap().enableIntervalPromotion();
+            this.getConversionMap().setIntervalPromotionEnabled(true);
         }
         setCompatibilityLevel(options.getCompatibilityLevel());
         this.cqlToElmInfo.setTranslatorOptions(options.toString());
