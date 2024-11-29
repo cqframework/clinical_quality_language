@@ -2393,10 +2393,9 @@ public class LibraryBuilder {
         }
 
         final ResolvedIdentifierContext resolvedIdentifierContext = resolve(identifier);
-        final Optional<Element> optElement = resolvedIdentifierContext.getExactMatchElement();
+        final var element = resolvedIdentifierContext.getExactMatchElement();
 
-        if (optElement.isPresent()) {
-            final Element element = optElement.get();
+        if (element != null) {
             if (element instanceof ExpressionDef) {
                 checkLiteralContext();
                 ExpressionRef expressionRef = of.createExpressionRef().withName(((ExpressionDef) element).getName());
@@ -2500,11 +2499,12 @@ public class LibraryBuilder {
 
         if (mustResolve) {
             // ERROR:
-            final String exceptionMessage = resolvedIdentifierContext
-                    .warnCaseInsensitiveIfApplicable()
-                    .orElse(String.format("Could not resolve identifier %s in the current library.", identifier));
+            var message = resolvedIdentifierContext.warnCaseInsensitiveIfApplicable();
+            if (message == null) {
+                message = String.format("Could not resolve identifier %s in the current library.", identifier);
+            }
 
-            throw new IllegalArgumentException(exceptionMessage);
+            throw new IllegalArgumentException(message);
         }
 
         return null;
@@ -2933,11 +2933,9 @@ public class LibraryBuilder {
 
             ResolvedIdentifierContext resolvedIdentifierContext = referencedLibrary.resolve(memberIdentifier);
 
-            final Optional<Element> optElement = resolvedIdentifierContext.getExactMatchElement();
+            final var element = resolvedIdentifierContext.getExactMatchElement();
 
-            if (optElement.isPresent()) {
-                final Element element = optElement.get();
-
+            if (element != null) {
                 if (element instanceof ExpressionDef) {
                     checkAccessLevel(libraryName, memberIdentifier, ((ExpressionDef) element).getAccessLevel());
                     Expression result = of.createExpressionRef()

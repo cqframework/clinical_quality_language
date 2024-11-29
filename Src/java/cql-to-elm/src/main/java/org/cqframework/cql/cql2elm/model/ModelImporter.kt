@@ -52,29 +52,16 @@ import org.hl7.elm_modelinfo.r1.TypeSpecifier
     "ReturnCount",
     "UnusedParameter"
 )
-class ModelImporter(modelInfo: ModelInfo?, modelManager: ModelManager?) {
-    private val modelInfo: ModelInfo
-    private val modelManager: ModelManager?
-    private val modelIndex: MutableMap<String, Model>
-    private val typeInfoIndex: MutableMap<String, TypeInfo>
-    private val resolvedTypes: MutableMap<String, DataType>
-    private val dataTypes: MutableList<DataType>
-    val conversions: MutableList<Conversion>
-    val contexts: MutableList<ModelContext>
+class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
+    private val modelIndex: MutableMap<String, Model> = HashMap()
+    private val typeInfoIndex: MutableMap<String, TypeInfo> = HashMap()
+    private val resolvedTypes: MutableMap<String, DataType> = HashMap()
+    private val dataTypes: MutableList<DataType> = ArrayList()
+    val conversions: MutableList<Conversion> = ArrayList()
+    val contexts: MutableList<ModelContext> = ArrayList()
     private var defaultContext: ModelContext? = null
 
     init {
-        requireNotNull(modelInfo) { "modelInfo is null" }
-
-        this.modelInfo = modelInfo
-        this.modelManager = modelManager
-        this.modelIndex = HashMap()
-        this.typeInfoIndex = HashMap()
-        this.resolvedTypes = HashMap()
-        this.dataTypes = ArrayList()
-        this.conversions = ArrayList()
-        this.contexts = ArrayList()
-
         if (modelManager != null) {
             // Import required models
             for (requiredModel in modelInfo.requiredModelInfo) {

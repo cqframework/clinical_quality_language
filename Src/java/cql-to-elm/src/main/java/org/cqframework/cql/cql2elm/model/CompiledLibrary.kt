@@ -30,7 +30,7 @@ class CompiledLibrary {
 
     private fun checkNamespace(identifier: String) {
         val existingResolvedIdentifierContext = resolve(identifier)
-        existingResolvedIdentifierContext.exactMatchElement.ifPresent {
+        existingResolvedIdentifierContext.exactMatchElement?.let {
             throw IllegalArgumentException(
                 String.format(
                     Locale.US,
