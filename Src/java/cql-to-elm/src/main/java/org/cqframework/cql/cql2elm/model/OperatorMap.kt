@@ -62,7 +62,7 @@ class OperatorMap {
                 val operands = resolution.operator.signature.operandTypes
                 val callOperands = callContext.signature.operandTypes
                 val conversions = if (resolution.hasConversions()) resolution.conversions else null
-                var score = ConversionMap.ConversionScore.ExactMatch.score()
+                var score = ConversionMap.ConversionScore.ExactMatch.score
                 for (i in operands.indices) {
                     val operand = operands[i]
                     val callOperand = callOperands[i]
@@ -85,7 +85,7 @@ class OperatorMap {
                 var lowestTypeScore = Int.MAX_VALUE
                 val lowestTypeScoringResults: MutableList<OperatorResolution> = ArrayList()
                 for (resolution in lowestScoringResults) {
-                    var typeScore = ConversionMap.ConversionScore.ExactMatch.score()
+                    var typeScore = ConversionMap.ConversionScore.ExactMatch.score
                     for (operand in resolution.operator.signature.operandTypes) {
                         typeScore += ConversionMap.getTypePrecedenceScore(operand)
                     }

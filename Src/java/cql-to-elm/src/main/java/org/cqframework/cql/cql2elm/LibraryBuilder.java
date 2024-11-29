@@ -1099,7 +1099,7 @@ public class LibraryBuilder {
     }
 
     private int getTypeScore(OperatorResolution resolution) {
-        int typeScore = ConversionMap.ConversionScore.ExactMatch.score();
+        int typeScore = ConversionMap.ConversionScore.ExactMatch.getScore();
         for (DataType operand : resolution.getOperator().getSignature().getOperandTypes()) {
             typeScore += ConversionMap.getTypePrecedenceScore(operand);
         }

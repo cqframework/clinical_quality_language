@@ -103,10 +103,8 @@ class ModelImporter(modelInfo: ModelInfo?, modelManager: ModelManager?) {
         for (t in this.modelInfo.typeInfo) {
             if (t is SimpleTypeInfo) {
                 typeInfoIndex[ensureUnqualified(t.name)] = t
-            } else if (t is ClassInfo) {
-                if (t.name != null) {
-                    typeInfoIndex[ensureUnqualified(t.name)] = t
-                }
+            } else if (t is ClassInfo && t.name != null) {
+                typeInfoIndex[ensureUnqualified(t.name)] = t
             }
         }
 
@@ -120,9 +118,7 @@ class ModelImporter(modelInfo: ModelInfo?, modelManager: ModelManager?) {
             val functionName =
                 if (qualifierIndex >= 0) c.functionName.substring(qualifierIndex + 1) else null
             val operator = Operator(functionName!!, Signature(fromType!!), toType)
-            if (libraryName != null) {
-                operator.libraryName = libraryName
-            }
+            operator.libraryName = libraryName
 
             // All conversions loaded as part of a model are implicit
             val conversion = Conversion(operator, true)
@@ -150,7 +146,7 @@ class ModelImporter(modelInfo: ModelInfo?, modelManager: ModelManager?) {
         // For backwards compatibility with model info files that don't specify contexts, create a
         // default context based
         // on the patient class information if it's present
-        if (contexts.size == 0 && this.modelInfo.patientClassName != null) {
+        if (contexts.isEmpty() && this.modelInfo.patientClassName != null) {
             val contextType = resolveTypeName(this.modelInfo.patientClassName)
             if (contextType is ClassType) {
                 val modelContext =
@@ -191,8 +187,7 @@ class ModelImporter(modelInfo: ModelInfo?, modelManager: ModelManager?) {
 
     private fun casify(
         typeName: String,
-        caseSensitive: Boolean =
-            if (modelInfo.isCaseSensitive != null) modelInfo.isCaseSensitive else false
+        caseSensitive: Boolean = modelInfo.isCaseSensitive ?: false
     ): String {
         return if (caseSensitive) typeName.lowercase(Locale.getDefault()) else typeName
     }
@@ -453,22 +448,28 @@ class ModelImporter(modelInfo: ModelInfo?, modelManager: ModelManager?) {
         for (parameterInfo in parameterInfoList) {
             val constraint = parameterInfo.constraint
             var typeConstraint: TypeParameterConstraint? = null
-            if (constraint.equals(TypeParameterConstraint.NONE.name, ignoreCase = true)) {
-                typeConstraint = TypeParameterConstraint.NONE
-            } else if (constraint.equals(TypeParameterConstraint.CLASS.name, ignoreCase = true)) {
-                typeConstraint = TypeParameterConstraint.CLASS
-            } else if (constraint.equals(TypeParameterConstraint.TUPLE.name, ignoreCase = true)) {
-                typeConstraint = TypeParameterConstraint.TUPLE
-            } else if (constraint.equals(TypeParameterConstraint.VALUE.name, ignoreCase = true)) {
-                typeConstraint = TypeParameterConstraint.VALUE
-            } else if (constraint.equals(TypeParameterConstraint.CHOICE.name, ignoreCase = true)) {
-                typeConstraint = TypeParameterConstraint.CHOICE
-            } else if (
-                constraint.equals(TypeParameterConstraint.INTERVAL.name, ignoreCase = true)
-            ) {
-                typeConstraint = TypeParameterConstraint.INTERVAL
-            } else if (constraint.equals(TypeParameterConstraint.TYPE.name, ignoreCase = true)) {
-                typeConstraint = TypeParameterConstraint.TYPE
+            when {
+                constraint.equals(TypeParameterConstraint.NONE.name, ignoreCase = true) -> {
+                    typeConstraint = TypeParameterConstraint.NONE
+                }
+                constraint.equals(TypeParameterConstraint.CLASS.name, ignoreCase = true) -> {
+                    typeConstraint = TypeParameterConstraint.CLASS
+                }
+                constraint.equals(TypeParameterConstraint.TUPLE.name, ignoreCase = true) -> {
+                    typeConstraint = TypeParameterConstraint.TUPLE
+                }
+                constraint.equals(TypeParameterConstraint.VALUE.name, ignoreCase = true) -> {
+                    typeConstraint = TypeParameterConstraint.VALUE
+                }
+                constraint.equals(TypeParameterConstraint.CHOICE.name, ignoreCase = true) -> {
+                    typeConstraint = TypeParameterConstraint.CHOICE
+                }
+                constraint.equals(TypeParameterConstraint.INTERVAL.name, ignoreCase = true) -> {
+                    typeConstraint = TypeParameterConstraint.INTERVAL
+                }
+                constraint.equals(TypeParameterConstraint.TYPE.name, ignoreCase = true) -> {
+                    typeConstraint = TypeParameterConstraint.TYPE
+                }
             }
             genericParameters.add(
                 TypeParameter(
@@ -707,7 +708,7 @@ class ModelImporter(modelInfo: ModelInfo?, modelManager: ModelManager?) {
 
     private fun resolveChoiceType(t: ChoiceTypeInfo): ChoiceType {
         val types = ArrayList<DataType?>()
-        if (t.choice != null && t.choice.size > 0) {
+        if (t.choice != null && t.choice.isNotEmpty()) {
             for (typeSpecifier in t.choice) {
                 types.add(resolveTypeSpecifier(typeSpecifier))
             }
@@ -748,7 +749,7 @@ class ModelImporter(modelInfo: ModelInfo?, modelManager: ModelManager?) {
             }
         }
 
-        if (boundParameters.size > 0) {
+        if (boundParameters.isNotEmpty()) {
             if (definition.element != null) {
                 definition.element.forEach {
                     if (it.elementTypeSpecifier is BoundParameterTypeSpecifier) {
@@ -760,7 +761,7 @@ class ModelImporter(modelInfo: ModelInfo?, modelManager: ModelManager?) {
                         }
                     }
                 }
-                if (boundParameters.size > 0) {
+                if (boundParameters.isNotEmpty()) {
                     throw RuntimeException("Unknown symbols $boundParameters")
                 }
             } else {

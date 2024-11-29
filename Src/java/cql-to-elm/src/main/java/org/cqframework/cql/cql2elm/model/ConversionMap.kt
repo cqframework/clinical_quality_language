@@ -11,22 +11,18 @@ import org.hl7.cql.model.ListType
 @Suppress("TooManyFunctions")
 class ConversionMap {
     @Suppress("MagicNumber")
-    enum class TypePrecedenceScore(private val score: Int) {
+    enum class TypePrecedenceScore(val score: Int) {
         Simple(1),
         Tuple(2),
         Class(3),
         Interval(4),
         List(5),
         Choice(6),
-        Other(7);
-
-        fun score(): Int {
-            return score
-        }
+        Other(7)
     }
 
     @Suppress("MagicNumber")
-    enum class ConversionScore(private val score: Int) {
+    enum class ConversionScore(val score: Int) {
         ExactMatch(0),
         SubType(1),
         Compatible(2),
@@ -36,11 +32,7 @@ class ConversionMap {
         IntervalPromotion(6),
         ListDemotion(7),
         IntervalDemotion(8),
-        ListPromotion(9);
-
-        fun score(): Int {
-            return score
-        }
+        ListPromotion(9)
     }
 
     private val map: MutableMap<DataType, MutableList<Conversion>> = HashMap()
@@ -103,7 +95,7 @@ class ConversionMap {
     /*
     Returns conversions for the given type, or any supertype, recursively
      */
-    fun getAllConversions(fromType: DataType?): List<Conversion> {
+    private fun getAllConversions(fromType: DataType?): List<Conversion> {
         val conversions: MutableList<Conversion> = ArrayList()
         var currentType = fromType
         while (currentType != null) {
@@ -113,7 +105,7 @@ class ConversionMap {
         return conversions
     }
 
-    fun findCompatibleConversion(fromType: DataType, toType: DataType): Conversion? {
+    private fun findCompatibleConversion(fromType: DataType, toType: DataType): Conversion? {
         if (fromType.isCompatibleWith(toType)) {
             return Conversion(fromType, toType)
         }
@@ -121,7 +113,7 @@ class ConversionMap {
         return null
     }
 
-    fun findChoiceConversion(
+    private fun findChoiceConversion(
         fromType: ChoiceType,
         toType: DataType,
         allowPromotionAndDemotion: Boolean,
@@ -143,7 +135,7 @@ class ConversionMap {
         return result
     }
 
-    fun findTargetChoiceConversion(
+    private fun findTargetChoiceConversion(
         fromType: DataType,
         toType: ChoiceType,
         allowPromotionAndDemotion: Boolean,
@@ -158,16 +150,22 @@ class ConversionMap {
         return null
     }
 
-    fun findListConversion(
+    private fun findListConversion(
         fromType: ListType,
         toType: ListType,
         operatorMap: OperatorMap
     ): Conversion? {
-        return findConversion(fromType.elementType, toType.elementType, true, false, operatorMap)
+        return findConversion(
+                fromType.elementType,
+                toType.elementType,
+                isImplicit = true,
+                allowPromotionAndDemotion = false,
+                operatorMap = operatorMap
+            )
             ?.let { Conversion(fromType, toType, it) }
     }
 
-    fun findIntervalConversion(
+    private fun findIntervalConversion(
         fromType: IntervalType,
         toType: IntervalType,
         operatorMap: OperatorMap
@@ -182,7 +180,7 @@ class ConversionMap {
             ?.let { Conversion(fromType, toType, it) }
     }
 
-    fun findListDemotion(
+    private fun findListDemotion(
         fromType: ListType,
         toType: DataType,
         operatorMap: OperatorMap
@@ -202,7 +200,7 @@ class ConversionMap {
         }
     }
 
-    fun findListPromotion(
+    private fun findListPromotion(
         fromType: DataType,
         toType: ListType,
         operatorMap: OperatorMap
@@ -221,7 +219,7 @@ class ConversionMap {
         }
     }
 
-    fun findIntervalDemotion(
+    private fun findIntervalDemotion(
         fromType: IntervalType,
         toType: DataType,
         operatorMap: OperatorMap
@@ -241,7 +239,7 @@ class ConversionMap {
         }
     }
 
-    fun findIntervalPromotion(
+    private fun findIntervalPromotion(
         fromType: DataType,
         toType: IntervalType,
         operatorMap: OperatorMap
@@ -261,7 +259,7 @@ class ConversionMap {
     }
 
     @Suppress("UnusedParameter")
-    fun ensureGenericConversionInstantiated(
+    private fun ensureGenericConversionInstantiated(
         fromType: DataType,
         toType: DataType,
         isImplicit: Boolean,
@@ -291,7 +289,7 @@ class ConversionMap {
         return operatorsInstantiated
     }
 
-    @Suppress("NestedBlockDepth")
+    @Suppress("NestedBlockDepth", "ComplexCondition")
     private fun internalFindConversion(
         fromType: DataType,
         toType: DataType,
@@ -300,36 +298,37 @@ class ConversionMap {
         var result: Conversion? = null
         var score = Int.MAX_VALUE
         for (conversion in getAllConversions(fromType)) {
-            if ((!isImplicit || conversion.isImplicit)) {
-                if (conversion.toType.isSuperTypeOf(toType) || conversion.toType.isGeneric) {
-                    // Lower score is better. If the conversion matches the target type exactly,
-                    // the score is 0.
-                    // If the conversion is generic, the score is 1 (because that will be
-                    // instantiated to an exact
-                    // match)
-                    // If the conversion is a super type, it should only be used if an exact match
-                    // cannot be found.
-                    // If the score is equal to an existing, it indicates a duplicate conversion
-                    val newScore =
-                        ((if (conversion.fromType == fromType) 0
-                        else (if (conversion.fromType.isGeneric) 1 else 2)) +
-                            (if (conversion.toType == toType) 0
-                            else (if (conversion.toType.isGeneric) 1 else 2)))
-                    if (newScore < score) {
-                        result = conversion
-                        score = newScore
-                    } else
-                        require(newScore != score) {
-                            // ERROR
-                            String.format(
-                                Locale.US,
-                                "Ambiguous implicit conversion from %s to %s or %s.",
-                                fromType.toString(),
-                                result!!.toType.toString(),
-                                conversion.toType.toString()
-                            )
-                        }
-                }
+            if (
+                (!isImplicit || conversion.isImplicit) &&
+                    (conversion.toType.isSuperTypeOf(toType) || conversion.toType.isGeneric)
+            ) {
+                // Lower score is better. If the conversion matches the target type exactly,
+                // the score is 0.
+                // If the conversion is generic, the score is 1 (because that will be
+                // instantiated to an exact
+                // match)
+                // If the conversion is a super type, it should only be used if an exact match
+                // cannot be found.
+                // If the score is equal to an existing, it indicates a duplicate conversion
+                val newScore =
+                    ((if (conversion.fromType == fromType) 0
+                    else (if (conversion.fromType.isGeneric) 1 else 2)) +
+                        (if (conversion.toType == toType) 0
+                        else (if (conversion.toType.isGeneric) 1 else 2)))
+                if (newScore < score) {
+                    result = conversion
+                    score = newScore
+                } else
+                    require(newScore != score) {
+                        // ERROR
+                        String.format(
+                            Locale.US,
+                            "Ambiguous implicit conversion from %s to %s or %s.",
+                            fromType.toString(),
+                            result!!.toType.toString(),
+                            conversion.toType.toString()
+                        )
+                    }
             }
         }
 
@@ -348,10 +347,11 @@ class ConversionMap {
             findCompatibleConversion(fromType, toType)
                 ?: internalFindConversion(fromType, toType, isImplicit)
 
-        if (result == null) {
-            if (ensureGenericConversionInstantiated(fromType, toType, isImplicit, operatorMap)) {
-                result = internalFindConversion(fromType, toType, isImplicit)
-            }
+        if (
+            result == null &&
+                ensureGenericConversionInstantiated(fromType, toType, isImplicit, operatorMap)
+        ) {
+            result = internalFindConversion(fromType, toType, isImplicit)
         }
 
         if (result == null) {
@@ -421,13 +421,13 @@ class ConversionMap {
         @JvmStatic
         fun getTypePrecedenceScore(operand: DataType): Int {
             return when (operand.javaClass.simpleName) {
-                "SimpleType" -> TypePrecedenceScore.Simple.score()
-                "TupleType" -> TypePrecedenceScore.Tuple.score()
-                "ClassType" -> TypePrecedenceScore.Class.score()
-                "IntervalType" -> TypePrecedenceScore.Interval.score()
-                "ListType" -> TypePrecedenceScore.List.score()
-                "ChoiceType" -> TypePrecedenceScore.Choice.score()
-                else -> TypePrecedenceScore.Other.score()
+                "SimpleType" -> TypePrecedenceScore.Simple.score
+                "TupleType" -> TypePrecedenceScore.Tuple.score
+                "ClassType" -> TypePrecedenceScore.Class.score
+                "IntervalType" -> TypePrecedenceScore.Interval.score
+                "ListType" -> TypePrecedenceScore.List.score
+                "ChoiceType" -> TypePrecedenceScore.Choice.score
+                else -> TypePrecedenceScore.Other.score
             }
         }
 
@@ -437,9 +437,9 @@ class ConversionMap {
             conversion: Conversion?
         ): Int {
             return when {
-                operand == callOperand -> ConversionScore.ExactMatch.score()
-                operand.isSuperTypeOf(callOperand) -> ConversionScore.SubType.score()
-                callOperand.isCompatibleWith(operand) -> ConversionScore.Compatible.score()
+                operand == callOperand -> ConversionScore.ExactMatch.score
+                operand.isSuperTypeOf(callOperand) -> ConversionScore.SubType.score
+                callOperand.isCompatibleWith(operand) -> ConversionScore.Compatible.score
                 conversion != null -> conversion.score
                 else ->
                     throw IllegalArgumentException(

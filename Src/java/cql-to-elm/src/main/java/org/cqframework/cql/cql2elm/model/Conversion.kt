@@ -119,19 +119,19 @@ class Conversion(
         get() {
             val nestedScore = conversion?.score ?: 0
             return when {
-                isCast -> Cast.score() + nestedScore
-                isIntervalDemotion -> IntervalDemotion.score() + nestedScore
-                isListDemotion -> ListDemotion.score() + nestedScore
-                isIntervalPromotion -> IntervalPromotion.score() + nestedScore
-                isListPromotion -> ListPromotion.score() + nestedScore
-                isListConversion && toType.elementType() is SimpleType ->
-                    SimpleConversion.score() + nestedScore
-                isListConversion -> ComplexConversion.score() + nestedScore
-                isIntervalConversion && toType.pointType() is SimpleType ->
-                    SimpleConversion.score() + nestedScore
-                isIntervalConversion -> ComplexConversion.score() + nestedScore
-                toType is ClassType -> ComplexConversion.score() + nestedScore
-                else -> SimpleConversion.score() + nestedScore
+                isCast -> Cast.score + nestedScore
+                isIntervalDemotion -> IntervalDemotion.score + nestedScore
+                isListDemotion -> ListDemotion.score + nestedScore
+                isIntervalPromotion -> IntervalPromotion.score + nestedScore
+                isListPromotion -> ListPromotion.score + nestedScore
+                isListConversion && toType is ListType && toType.elementType is SimpleType ->
+                    SimpleConversion.score + nestedScore
+                isListConversion -> ComplexConversion.score + nestedScore
+                isIntervalConversion && toType is IntervalType && toType.pointType is SimpleType ->
+                    SimpleConversion.score + nestedScore
+                isIntervalConversion -> ComplexConversion.score + nestedScore
+                toType is ClassType -> ComplexConversion.score + nestedScore
+                else -> SimpleConversion.score + nestedScore
             }
         }
 
@@ -170,16 +170,6 @@ class Conversion(
         fun ensureResultType(operator: Operator): DataType {
             requireNotNull(operator.resultType) { "Conversion operator must have a result type." }
             return operator.resultType!!
-        }
-
-        fun DataType.elementType(): DataType {
-            require(this is ListType) { "DataType is not a List type." }
-            return this.elementType
-        }
-
-        fun DataType.pointType(): DataType {
-            require(this is IntervalType) { "DataType is not a Interval type." }
-            return this.pointType
         }
     }
 }
