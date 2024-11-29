@@ -2,16 +2,16 @@ package org.cqframework.cql.cql2elm.model
 
 import org.hl7.elm.r1.VersionedIdentifier
 
-data class OperatorResolution(var operator: Operator, val conversions: List<Conversion>) {
+data class OperatorResolution(var operator: Operator, val conversions: List<Conversion?>) {
     constructor(
         operator: Operator,
-        conversions: Array<Conversion>?
+        conversions: Array<Conversion?>?
     ) : this(operator, conversions?.toList() ?: emptyList())
 
     var score: Int = 0
     var allowFluent: Boolean = false
 
-    fun hasConversions(): Boolean = conversions.isNotEmpty()
+    fun hasConversions(): Boolean = conversions.filterNotNull().isNotEmpty()
 
     /*
     The versioned identifier

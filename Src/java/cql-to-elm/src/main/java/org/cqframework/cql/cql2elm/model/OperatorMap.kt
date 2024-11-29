@@ -33,7 +33,8 @@ class OperatorMap {
                 mustResolve = false,
                 operandTypes = signature
             )
-        return resolveOperator(call, null) != null
+        // Intentionally empty ConversionMap since we're only checking for support
+        return resolveOperator(call, ConversionMap()) != null
     }
 
     // Returns true if the given type supports the operations necessary to be the point type of an
@@ -47,7 +48,7 @@ class OperatorMap {
     @Suppress("LongMethod", "CyclomaticComplexMethod", "NestedBlockDepth")
     fun resolveOperator(
         callContext: CallContext,
-        conversionMap: ConversionMap?
+        conversionMap: ConversionMap
     ): OperatorResolution? {
         val entry = getEntry(callContext.operatorName)
         val results = entry.resolve(callContext, this, conversionMap)
@@ -55,7 +56,7 @@ class OperatorMap {
         // Score each resolution and return the lowest score
         // Duplicate scores indicate ambiguous match
         var result: OperatorResolution? = null
-        if (results != null) {
+        if (results.isNotEmpty()) {
             var lowestScore = Int.MAX_VALUE
             var lowestScoringResults: MutableList<OperatorResolution> = ArrayList()
             for (resolution in results) {

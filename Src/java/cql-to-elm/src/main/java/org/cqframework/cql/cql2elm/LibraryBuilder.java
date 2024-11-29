@@ -1381,7 +1381,7 @@ public class LibraryBuilder {
                 false,
                 dataTypes);
         // Resolve exact, no conversion map
-        OperatorResolution resolution = compiledLibrary.resolveCall(callContext, null);
+        OperatorResolution resolution = compiledLibrary.resolveCall(callContext, conversionMap);
         if (resolution != null) {
             return resolution.getOperator();
         }

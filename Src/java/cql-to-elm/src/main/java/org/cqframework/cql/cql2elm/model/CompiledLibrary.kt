@@ -220,28 +220,29 @@ class CompiledLibrary {
         functionName: String,
         signature: List<DataType>?
     ): Iterable<FunctionDef?> {
-        if (signature == null) {
-            return resolveFunctionRef(functionName)
-        } else {
-            val cc =
-                CallContext(
-                    this.identifier!!.id,
-                    functionName,
-                    allowPromotionAndDemotion = false,
-                    allowFluent = false,
-                    mustResolve = false,
-                    operandTypes = signature
-                )
-            val resolution = resolveCall(cc, null)
-            val results = ArrayList<FunctionDef?>()
-            if (resolution != null) {
-                results.add(resolution.operator.functionDef)
+        return when (signature) {
+            null -> resolveFunctionRef(functionName)
+            else -> {
+                val cc =
+                    CallContext(
+                        this.identifier!!.id,
+                        functionName,
+                        allowPromotionAndDemotion = false,
+                        allowFluent = false,
+                        mustResolve = false,
+                        operandTypes = signature
+                    )
+                val resolution = resolveCall(cc, ConversionMap())
+                val results = ArrayList<FunctionDef?>()
+                if (resolution != null) {
+                    results.add(resolution.operator.functionDef)
+                }
+                results
             }
-            return results
         }
     }
 
-    fun resolveCall(callContext: CallContext, conversionMap: ConversionMap?): OperatorResolution? {
+    fun resolveCall(callContext: CallContext, conversionMap: ConversionMap): OperatorResolution? {
         val resolution = operatorMap.resolveOperator(callContext, conversionMap)
 
         if (resolution != null) {
