@@ -92,21 +92,18 @@ class CompiledLibrary {
     }
 
     private fun ensureLibrary(operator: Operator) {
-        // Functions can be defined in an anonymous library
-        if (this.identifier != null && identifier!!.id != null) {
-            if (operator.libraryName == null) {
-                operator.libraryName = identifier!!.id
-            } else {
-                require(operator.libraryName == identifier!!.id) {
-                    String.format(
-                        Locale.US,
-                        "Operator %s cannot be registered in library %s because it is defined in library %s.",
-                        operator.name,
-                        identifier!!.id,
-                        operator.libraryName
-                    )
-                }
-            }
+        // The operator must be defined in the library in which it is registered
+        // If the operator is not defined in a library, it is assumed to be defined in this library
+        // If this library has no identifier, the operator must not have an identifier
+        operator.libraryName = operator.libraryName ?: identifier?.id
+        require(operator.libraryName == identifier?.id) {
+            String.format(
+                Locale.US,
+                "Operator %s cannot be registered in library %s because it is defined in library %s.",
+                operator.name,
+                identifier?.id ?: "<anonymous>",
+                operator.libraryName
+            )
         }
     }
 
@@ -117,14 +114,13 @@ class CompiledLibrary {
                 Locale.US,
                 "Operator %s cannot be registered in library %s because it does not have a result type defined.",
                 operator.name,
-                identifier!!.id
+                identifier?.id ?: "<anonymous>"
             )
         }
     }
 
     fun add(functionDef: FunctionDef, operator: Operator) {
         ensureLibrary(operator)
-        // ensureResultType(operator);
         operatorMap.addOperator(operator)
         functionDefs[operator] = functionDef
     }

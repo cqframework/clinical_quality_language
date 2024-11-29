@@ -37,8 +37,4 @@ open class Operator(
     }
 
     var libraryName: String? = null
-        set(libraryName) {
-            require(!libraryName.isNullOrEmpty()) { "libraryName is null." }
-            field = libraryName
-        }
 }

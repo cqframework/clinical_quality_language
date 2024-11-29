@@ -11,6 +11,10 @@ class OperatorEntry(val name: String) {
     private val signatures = SignatureNodes()
     private val genericOperators: MutableMap<Signature, GenericOperator> = HashMap()
 
+    init {
+        require(name.isNotEmpty()) { "name is empty" }
+    }
+
     private class SignatureNode(val operator: Operator) {
         val signature: Signature
             get() = operator.signature
