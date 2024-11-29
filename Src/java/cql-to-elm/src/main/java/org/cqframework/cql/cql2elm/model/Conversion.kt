@@ -109,7 +109,7 @@ class Conversion(
             "Alternative conversions can only be used with choice types"
         }
 
-        // TODO: Should also guard against adding an alternative that is not one of the component
+        // Should also guard against adding an alternative that is not one of the component
         // types of the fromType
         // This should never happen though with current usage
         alternativeConversions.add(alternativeConversion)
@@ -173,19 +173,13 @@ class Conversion(
         }
 
         fun DataType.elementType(): DataType {
-            return if (this is ListType) {
-                this.elementType
-            } else {
-                throw IllegalArgumentException("DataType is not a List type.")
-            }
+            require(this is ListType) { "DataType is not a List type." }
+            return this.elementType
         }
 
         fun DataType.pointType(): DataType {
-            return if (this is IntervalType) {
-                this.pointType
-            } else {
-                throw IllegalArgumentException("DataType is not a Interval type.")
-            }
+            require(this is IntervalType) { "DataType is not a Interval type." }
+            return this.pointType
         }
     }
 }

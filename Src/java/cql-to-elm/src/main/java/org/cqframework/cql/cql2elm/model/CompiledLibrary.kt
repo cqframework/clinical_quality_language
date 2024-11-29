@@ -147,7 +147,7 @@ class CompiledLibrary {
 
     fun resolve(identifier: String): ResolvedIdentifierContext {
         if (namespace.containsKey(identifier)) {
-            return ResolvedIdentifierContext.exactMatch(identifier, namespace[identifier]!!)
+            return ResolvedIdentifierContext.exactMatch(identifier, namespace[identifier])
         }
 
         return namespace.entries
@@ -263,7 +263,7 @@ class CompiledLibrary {
         return resolution
     }
 
-    fun getConversions(): Iterable<Conversion> {
+    fun getConversions(): List<Conversion> {
         return conversions
     }
 
