@@ -88,8 +88,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 .withVersion(parseString(ctx.versionSpecifier()));
         if (!identifiers.isEmpty()) {
             vid.setSystem(libraryBuilder.resolveNamespaceUri(String.join(".", identifiers), true));
-        } else if (libraryBuilder.getNamespaceInfo() != null) {
-            vid.setSystem(libraryBuilder.getNamespaceInfo().getUri());
+        } else if (libraryBuilder.namespaceInfo != null) {
+            vid.setSystem(libraryBuilder.namespaceInfo.getUri());
         }
         libraryBuilder.setLibraryIdentifier(vid);
 
@@ -105,9 +105,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 ? String.join(".", identifiers)
                 : libraryBuilder.isWellKnownModelName(unqualifiedIdentifier)
                         ? null
-                        : (libraryBuilder.getNamespaceInfo() != null
-                                ? libraryBuilder.getNamespaceInfo().getName()
-                                : null);
+                        : (libraryBuilder.namespaceInfo != null ? libraryBuilder.namespaceInfo.getName() : null);
 
         String path = null;
         NamespaceInfo modelNamespace = null;
@@ -163,9 +161,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         String unqualifiedIdentifier = identifiers.remove(identifiers.size() - 1);
         String namespaceName = !identifiers.isEmpty()
                 ? String.join(".", identifiers)
-                : (libraryBuilder.getNamespaceInfo() != null
-                        ? libraryBuilder.getNamespaceInfo().getName()
-                        : null);
+                : (libraryBuilder.namespaceInfo != null ? libraryBuilder.namespaceInfo.getName() : null);
         String path = getLibraryPath(namespaceName, unqualifiedIdentifier);
         IncludeDef library = of.createIncludeDef()
                 .withLocalIdentifier(
@@ -185,9 +181,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                     ? String.join(".", identifiers)
                     : libraryBuilder.isWellKnownLibraryName(unqualifiedIdentifier)
                             ? null
-                            : (libraryBuilder.getNamespaceInfo() != null
-                                    ? libraryBuilder.getNamespaceInfo().getName()
-                                    : null);
+                            : (libraryBuilder.namespaceInfo != null ? libraryBuilder.namespaceInfo.getName() : null);
             path = getLibraryPath(namespaceName, unqualifiedIdentifier);
             library = of.createIncludeDef()
                     .withLocalIdentifier(
@@ -3577,10 +3571,8 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
             if (functionRef.getOperand().size() == 1
                     && functionRef.getResultType() != null
                     && functionRef.getOperand().get(0).getResultType() != null) {
-                Operator o = this.libraryBuilder
-                        .getConversionMap()
-                        .getConversionOperator(
-                                functionRef.getOperand().get(0).getResultType(), functionRef.getResultType());
+                Operator o = this.libraryBuilder.conversionMap.getConversionOperator(
+                        functionRef.getOperand().get(0).getResultType(), functionRef.getResultType());
                 if (o != null
                         && o.getLibraryName() != null
                         && o.getLibraryName().equals(functionRef.getLibraryName())
@@ -4168,7 +4160,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                                     .getOperator()
                                     .getLibraryName()
                                     .equals(libraryBuilder
-                                            .getCompiledLibrary()
+                                            .compiledLibrary
                                             .getIdentifier()
                                             .getId()))) {
                 Operator op = invocation.getResolution().getOperator();
@@ -4308,7 +4300,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         for (DataType dt : op.getSignature().getOperandTypes()) {
             st.add(dt);
         }
-        Iterable<FunctionDef> fds = libraryBuilder.getCompiledLibrary().resolveFunctionRef(op.getName(), st);
+        Iterable<FunctionDef> fds = libraryBuilder.compiledLibrary.resolveFunctionRef(op.getName(), st);
         for (FunctionDef fd : fds) {
             if (fd.getOperand().size() == op.getSignature().getSize()) {
                 Iterator<DataType> signatureTypes =
@@ -4373,7 +4365,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
     public void registerFunctionDefinition(cqlParser.FunctionDefinitionContext ctx) {
         FunctionHeader fh = getFunctionHeader(ctx);
-        if (!libraryBuilder.getCompiledLibrary().contains(fh.getFunctionDef())) {
+        if (!libraryBuilder.compiledLibrary.contains(fh.getFunctionDef())) {
             libraryBuilder.addExpression(fh.getFunctionDef());
         }
     }
