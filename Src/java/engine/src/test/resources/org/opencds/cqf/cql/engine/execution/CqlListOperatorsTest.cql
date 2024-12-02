@@ -215,8 +215,8 @@ define ProperContainsTimeTrue: { @T15:59:59, @T20:59:59.999, @T20:59:49.999 } pr
 define ProperContainsTimeNull: { @T15:59:59.999, @T20:59:59.999, @T20:59:49.999 } properly includes @T15:59:59
 
 //ProperIn
-define ProperInNullRightFalse: null properly included in {'s', 'u', 'n'}
-define ProperInNullRightTrue: null properly included in {'s', 'u', 'n', null}
+define ProperInNullRightFalse: null as String properly included in {'s', 'u', 'n'}
+define ProperInNullRightTrue: null as String properly included in {'s', 'u', 'n', null}
 define ProperInTimeTrue: @T15:59:59 properly included in { @T15:59:59, @T20:59:59.999, @T20:59:49.999 }
 define ProperInTimeNull: @T15:59:59 properly included in { @T15:59:59.999, @T20:59:59.999, @T20:59:49.999 }
 

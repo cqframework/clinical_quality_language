@@ -1,0 +1,7 @@
+plugins {
+    id("cql.library-conventions")
+}
+
+dependencies {
+    api(project(":elm"))
+}
