@@ -703,7 +703,8 @@ class R4TypeConverterTests {
 
     @Test
     void toCqlTypeIterable() {
-        assertThrows(IllegalArgumentException.class, () -> typeConverter.toCqlType(new ArrayList<>()));
+        var list = new ArrayList<>();
+        assertThrows(IllegalArgumentException.class, () -> typeConverter.toCqlType(list));
     }
 
     @Test
@@ -748,33 +749,33 @@ class R4TypeConverterTests {
 
     @Test
     void primitiveFhirTypeToCqlType() {
-        Boolean expectedBoolean = false;
-        Boolean actualBoolean = typeConverter.toCqlBoolean(new BooleanType(false));
-        assertEquals(expectedBoolean, actualBoolean);
+        Boolean actualBoolean = typeConverter.toCqlBoolean(new org.hl7.fhir.r5.model.BooleanType(false));
+        assertFalse(actualBoolean);
 
-        expectedBoolean = typeConverter.toCqlBoolean(null);
-        assertNull(expectedBoolean);
+        actualBoolean = typeConverter.toCqlBoolean(null);
+        assertNull(actualBoolean);
 
         Integer expectedInteger = 5;
-        Integer actualInteger = typeConverter.toCqlInteger(new IntegerType(5));
+        Integer actualInteger = typeConverter.toCqlInteger(new org.hl7.fhir.r5.model.IntegerType(5));
         assertEquals(expectedInteger, actualInteger);
 
         expectedInteger = typeConverter.toCqlInteger(null);
         assertNull(expectedInteger);
 
         String expectedString = "5";
-        String actualString = typeConverter.toCqlString(new StringType("5"));
+        String actualString = typeConverter.toCqlString(new org.hl7.fhir.r5.model.StringType("5"));
         assertEquals(expectedString, actualString);
 
-        expectedString = typeConverter.toCqlString(null);
-        assertNull(expectedString);
+        actualString = typeConverter.toCqlString(null);
+        assertNull(actualString);
 
         BigDecimal expectedDecimal = new BigDecimal("2.0");
-        BigDecimal actualDecimal = typeConverter.toCqlDecimal(new DecimalType(new BigDecimal("2.0")));
+        BigDecimal actualDecimal =
+                typeConverter.toCqlDecimal(new org.hl7.fhir.r5.model.DecimalType(new BigDecimal("2.0")));
         assertEquals(expectedDecimal, actualDecimal);
 
-        expectedDecimal = typeConverter.toCqlDecimal(null);
-        assertNull(expectedDecimal);
+        actualDecimal = typeConverter.toCqlDecimal(null);
+        assertNull(actualDecimal);
     }
 
     @Test

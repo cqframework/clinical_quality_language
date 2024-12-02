@@ -705,7 +705,8 @@ class R5TypeConverterTests {
 
     @Test
     void toCqlTypeIterable() {
-        assertThrows(IllegalArgumentException.class, () -> typeConverter.toCqlType(new ArrayList<>()));
+        var list = new ArrayList<>();
+        assertThrows(IllegalArgumentException.class, () -> typeConverter.toCqlType(list));
     }
 
     @Test
@@ -750,12 +751,11 @@ class R5TypeConverterTests {
 
     @Test
     void primitiveFhirTypeToCqlType() {
-        Boolean expectedBoolean = false;
         Boolean actualBoolean = typeConverter.toCqlBoolean(new BooleanType(false));
-        assertEquals(expectedBoolean, actualBoolean);
+        assertFalse(actualBoolean);
 
-        expectedBoolean = typeConverter.toCqlBoolean(null);
-        assertNull(expectedBoolean);
+        actualBoolean = typeConverter.toCqlBoolean(null);
+        assertNull(actualBoolean);
 
         Integer expectedInteger = 5;
         Integer actualInteger = typeConverter.toCqlInteger(new IntegerType(5));
@@ -768,15 +768,15 @@ class R5TypeConverterTests {
         String actualString = typeConverter.toCqlString(new StringType("5"));
         assertEquals(expectedString, actualString);
 
-        expectedString = typeConverter.toCqlString(null);
-        assertNull(expectedString);
+        actualString = typeConverter.toCqlString(null);
+        assertNull(actualString);
 
         BigDecimal expectedDecimal = new BigDecimal("2.0");
         BigDecimal actualDecimal = typeConverter.toCqlDecimal(new DecimalType(new BigDecimal("2.0")));
         assertEquals(expectedDecimal, actualDecimal);
 
-        expectedDecimal = typeConverter.toCqlDecimal(null);
-        assertNull(expectedDecimal);
+        actualDecimal = typeConverter.toCqlDecimal(null);
+        assertNull(actualDecimal);
     }
 
     @Test
