@@ -961,7 +961,14 @@ class R5TypeConverterTests {
     }
 
     @Test
-    void longToFhirInteger64() {
+    void fhirToCqlLong() {
+        var fhirType = new Integer64Type(5L);
+        var actual = typeConverter.toCqlType(fhirType);
+        assertEquals(5L, actual);
+    }
+
+    @Test
+    void fhirToFhirInteger64() {
         var expected = new Integer64Type(5L);
         var actual = typeConverter.toFhirInteger64(5L);
         assertEquals(expected.getValue(), actual.getValue());
