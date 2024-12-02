@@ -961,9 +961,15 @@ class R5TypeConverterTests {
     }
 
     @Test
+    void nullToCqlLong() {
+        var actual = typeConverter.toCqlLong(null);
+        assertNull(actual);
+    }
+
+    @Test
     void fhirToCqlLong() {
         var fhirType = new Integer64Type(5L);
-        var actual = typeConverter.toCqlType(fhirType);
+        var actual = typeConverter.toCqlLong(fhirType);
         assertEquals(5L, actual);
     }
 
