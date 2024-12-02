@@ -44,6 +44,11 @@ class Dstu3FhirTypeConverter extends BaseFhirTypeConverter {
     }
 
     @Override
+    public IPrimitiveType<Long> toFhirInteger64(Long value) {
+        throw new IllegalArgumentException("FHIR DSTU3 does not support Long/Integer64 values");
+    }
+
+    @Override
     public IPrimitiveType<BigDecimal> toFhirDecimal(BigDecimal value) {
         if (value == null) {
             return null;
