@@ -45,6 +45,15 @@ class R5FhirTypeConverter extends BaseFhirTypeConverter {
     }
 
     @Override
+    public IPrimitiveType<Long> toFhirInteger64(Long value) {
+        if (value == null) {
+            return null;
+        }
+
+        return new Integer64Type(value);
+    }
+
+    @Override
     public IPrimitiveType<BigDecimal> toFhirDecimal(BigDecimal value) {
         if (value == null) {
             return null;
@@ -367,7 +376,7 @@ class R5FhirTypeConverter extends BaseFhirTypeConverter {
         return new Concept()
                 .withDisplay(codeableConcept.getText())
                 .withCodes(codeableConcept.getCoding().stream()
-                        .map(x -> toCqlCode(x))
+                        .map(this::toCqlCode)
                         .collect(Collectors.toList()));
     }
 

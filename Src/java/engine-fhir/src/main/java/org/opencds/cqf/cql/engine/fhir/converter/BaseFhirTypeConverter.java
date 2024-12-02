@@ -87,6 +87,8 @@ abstract class BaseFhirTypeConverter implements FhirTypeConverter {
                 return toFhirBoolean((Boolean) value);
             case "Integer":
                 return toFhirInteger((Integer) value);
+            case "Long":
+                return toFhirInteger64((Long) value);
             case "BigDecimal":
                 return toFhirDecimal((BigDecimal) value);
             case "Date":
@@ -245,25 +247,19 @@ abstract class BaseFhirTypeConverter implements FhirTypeConverter {
     }
 
     @Override
-    public Boolean isCqlType(Object value) {
+    public boolean isCqlType(Object value) {
         Objects.requireNonNull(value, "value can not be null");
 
         if (value instanceof Iterable<?>) {
             throw new IllegalArgumentException("isCqlType can not be used for Iterables");
         }
 
-        if (value instanceof CqlType) {
-            return true;
-        }
-
-        if (value instanceof BigDecimal
+        return value instanceof BigDecimal
                 || value instanceof String
                 || value instanceof Integer
-                || value instanceof Boolean) {
-            return true;
-        }
-
-        return false;
+                || value instanceof Boolean
+                || value instanceof Long
+                || value instanceof CqlType;
     }
 
     @Override
@@ -277,7 +273,7 @@ abstract class BaseFhirTypeConverter implements FhirTypeConverter {
             } else if (isCqlType(value)) {
                 converted.add(value);
             } else if (isFhirType(value)) {
-                converted.add(toCqlType((IBase) value));
+                converted.add(toCqlType(value));
             } else {
                 throw new IllegalArgumentException(String.format(
                         "Unknown type encountered during conversion %s",
@@ -316,6 +312,8 @@ abstract class BaseFhirTypeConverter implements FhirTypeConverter {
                 return toCqlBoolean((IPrimitiveType<Boolean>) value);
             case "IntegerType":
                 return toCqlInteger((IPrimitiveType<Integer>) value);
+            case "Integer64Type":
+                return toCqlLong((IPrimitiveType<Long>) value);
             case "DecimalType":
                 return toCqlDecimal((IPrimitiveType<BigDecimal>) value);
             case "DateType":
@@ -366,6 +364,15 @@ abstract class BaseFhirTypeConverter implements FhirTypeConverter {
 
     @Override
     public Integer toCqlInteger(IPrimitiveType<Integer> value) {
+        if (value == null) {
+            return null;
+        }
+
+        return value.getValue();
+    }
+
+    @Override
+    public Long toCqlLong(IPrimitiveType<Long> value) {
         if (value == null) {
             return null;
         }
