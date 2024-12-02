@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -978,5 +979,12 @@ class R5TypeConverterTests {
         var expected = new Integer64Type(5L);
         var actual = typeConverter.toFhirInteger64(5L);
         assertEquals(expected.getValue(), actual.getValue());
+    }
+
+    @Test
+    void longToFhirType() {
+        var actual = typeConverter.toFhirType(5L);
+        assertInstanceOf(Integer64Type.class, actual);
+        assertEquals(5L, ((Integer64Type) actual).getValue());
     }
 }
