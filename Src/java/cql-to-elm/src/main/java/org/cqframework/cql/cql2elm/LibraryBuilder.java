@@ -160,16 +160,16 @@ public class LibraryBuilder {
             this.listTraversal = false;
         }
         if (options.getOptions().contains(CqlCompilerOptions.Options.DisableListDemotion)) {
-            this.getConversionMap().disableListDemotion();
+            this.getConversionMap().setListDemotionEnabled(false);
         }
         if (options.getOptions().contains(CqlCompilerOptions.Options.DisableListPromotion)) {
-            this.getConversionMap().disableListPromotion();
+            this.getConversionMap().setListPromotionEnabled(false);
         }
         if (options.getOptions().contains(CqlCompilerOptions.Options.EnableIntervalDemotion)) {
-            this.getConversionMap().enableIntervalDemotion();
+            this.getConversionMap().setIntervalDemotionEnabled(true);
         }
         if (options.getOptions().contains(CqlCompilerOptions.Options.EnableIntervalPromotion)) {
-            this.getConversionMap().enableIntervalPromotion();
+            this.getConversionMap().setIntervalPromotionEnabled(true);
         }
         setCompatibilityLevel(options.getCompatibilityLevel());
         this.cqlToElmInfo.setTranslatorOptions(options.toString());
@@ -1099,7 +1099,7 @@ public class LibraryBuilder {
     }
 
     private int getTypeScore(OperatorResolution resolution) {
-        int typeScore = ConversionMap.ConversionScore.ExactMatch.score();
+        int typeScore = ConversionMap.ConversionScore.ExactMatch.getScore();
         for (DataType operand : resolution.getOperator().getSignature().getOperandTypes()) {
             typeScore += ConversionMap.getTypePrecedenceScore(operand);
         }
@@ -1381,7 +1381,7 @@ public class LibraryBuilder {
                 false,
                 dataTypes);
         // Resolve exact, no conversion map
-        OperatorResolution resolution = compiledLibrary.resolveCall(callContext, null);
+        OperatorResolution resolution = compiledLibrary.resolveCall(callContext, conversionMap);
         if (resolution != null) {
             return resolution.getOperator();
         }
@@ -2393,10 +2393,9 @@ public class LibraryBuilder {
         }
 
         final ResolvedIdentifierContext resolvedIdentifierContext = resolve(identifier);
-        final Optional<Element> optElement = resolvedIdentifierContext.getExactMatchElement();
+        final var element = resolvedIdentifierContext.getExactMatchElement();
 
-        if (optElement.isPresent()) {
-            final Element element = optElement.get();
+        if (element != null) {
             if (element instanceof ExpressionDef) {
                 checkLiteralContext();
                 ExpressionRef expressionRef = of.createExpressionRef().withName(((ExpressionDef) element).getName());
@@ -2500,11 +2499,12 @@ public class LibraryBuilder {
 
         if (mustResolve) {
             // ERROR:
-            final String exceptionMessage = resolvedIdentifierContext
-                    .warnCaseInsensitiveIfApplicable()
-                    .orElse(String.format("Could not resolve identifier %s in the current library.", identifier));
+            var message = resolvedIdentifierContext.warnCaseInsensitiveIfApplicable();
+            if (message == null) {
+                message = String.format("Could not resolve identifier %s in the current library.", identifier);
+            }
 
-            throw new IllegalArgumentException(exceptionMessage);
+            throw new IllegalArgumentException(message);
         }
 
         return null;
@@ -2933,11 +2933,9 @@ public class LibraryBuilder {
 
             ResolvedIdentifierContext resolvedIdentifierContext = referencedLibrary.resolve(memberIdentifier);
 
-            final Optional<Element> optElement = resolvedIdentifierContext.getExactMatchElement();
+            final var element = resolvedIdentifierContext.getExactMatchElement();
 
-            if (optElement.isPresent()) {
-                final Element element = optElement.get();
-
+            if (element != null) {
                 if (element instanceof ExpressionDef) {
                     checkAccessLevel(libraryName, memberIdentifier, ((ExpressionDef) element).getAccessLevel());
                     Expression result = of.createExpressionRef()

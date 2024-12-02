@@ -224,10 +224,6 @@ public class ModelManager {
             } else {
                 model = new Model(modelInfo, this);
             }
-        } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException(String.format(
-                    "Could not load model information for model %s, version %s.",
-                    identifier.getId(), identifier.getVersion()));
         } finally {
             popLoading(modelPath);
         }
