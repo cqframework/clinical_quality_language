@@ -20,8 +20,11 @@ import org.cqframework.cql.gen.cqlParser;
 import org.hl7.cql.model.*;
 import org.hl7.elm.r1.*;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
+    private static final Logger log = LoggerFactory.getLogger(Cql2ElmVisitor.class);
     private final SystemMethodResolver systemMethodResolver;
 
     private final Set<String> definedExpressionDefinitions = new HashSet<>();
@@ -4449,7 +4452,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 try {
                     libraryBuilder.popIdentifier();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.warn("error popping identifier", e);
                 }
             }
             // Intentionally do _not_ pop the function name, it needs to remain in global scope!
