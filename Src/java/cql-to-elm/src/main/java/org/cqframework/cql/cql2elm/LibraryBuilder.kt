@@ -70,7 +70,7 @@ class LibraryBuilder(
     // All exceptions
     val exceptions: MutableList<CqlCompilerException> = ArrayList()
 
-    private val models: MutableMap<String, Model?> = LinkedHashMap()
+    private val models = LinkedHashMap<String, Model>()
     private val nameTypeSpecifiers:
         MutableMap<String, ResultWithPossibleError<NamedTypeSpecifier?>> =
         HashMap()
@@ -248,15 +248,15 @@ class LibraryBuilder(
         }
     }
 
-    private fun loadConversionMap(model: Model?) {
-        for (conversion in model!!.getConversions()) {
+    private fun loadConversionMap(model: Model) {
+        for (conversion in model.getConversions()) {
             conversionMap.add(conversion)
         }
     }
 
     private fun buildUsingDef(
         modelIdentifier: ModelIdentifier,
-        model: Model?,
+        model: Model,
         localIdentifier: String
     ): UsingDef {
         val usingDef =
@@ -264,7 +264,7 @@ class LibraryBuilder(
                 .createUsingDef()
                 .withLocalIdentifier(localIdentifier)
                 .withVersion(modelIdentifier.version)
-                .withUri(model!!.modelInfo.url)
+                .withUri(model.modelInfo.url)
         // TODO: Needs to write xmlns and schemalocation to the resulting ELM XML document...
         addUsing(usingDef)
         return usingDef
@@ -272,7 +272,7 @@ class LibraryBuilder(
 
     fun hasUsings(): Boolean {
         for (model in models.values) {
-            if (model!!.modelInfo.name != "System") {
+            if (model.modelInfo.name != "System") {
                 return true
             }
         }
@@ -291,8 +291,8 @@ class LibraryBuilder(
     fun resolveLabel(modelName: String?, label: String): ClassType? {
         var result: ClassType? = null
         if (modelName == null || (modelName == "")) {
-            for (model: Model? in models.values) {
-                val modelResult: ClassType? = model!!.resolveLabel(label)
+            for (model in models.values) {
+                val modelResult: ClassType? = model.resolveLabel(label)
                 if (modelResult != null) {
                     if (result != null) {
                         throw IllegalArgumentException(
@@ -327,8 +327,8 @@ class LibraryBuilder(
             }
 
             // Otherwise, resolve across all models and throw for ambiguous resolution
-            for (model: Model? in models.values) {
-                val modelResult: ModelContext? = model!!.resolveContextName(contextName)
+            for (model in models.values) {
+                val modelResult: ModelContext? = model.resolveContextName(contextName)
                 if (modelResult != null) {
                     if (result != null) {
                         throw IllegalArgumentException(
@@ -368,8 +368,8 @@ class LibraryBuilder(
                 }
 
                 // Otherwise, resolve across all models and throw for ambiguous resolution
-                for (model: Model? in models.values) {
-                    val modelResult: DataType? = model!!.resolveTypeName(typeName)
+                for (model in models.values) {
+                    val modelResult: DataType? = model.resolveTypeName(typeName)
                     if (modelResult != null) {
                         if (result != null) {
                             throw IllegalArgumentException(
@@ -595,9 +595,8 @@ class LibraryBuilder(
                 err.startChar = e.locator.startChar
                 err.endChar = e.locator.endChar
             }
-            if (e.cause != null && e.cause is CqlIncludeException) {
-                val incEx = e.cause as CqlIncludeException?
-                err.targetIncludeLibrarySystem = incEx!!.librarySystem
+            (e.cause as? CqlIncludeException)?.let { incEx ->
+                err.targetIncludeLibrarySystem = incEx.librarySystem
                 err.targetIncludeLibraryId = incEx.libraryId
                 err.targetIncludeLibraryVersionId = incEx.versionId
                 err.errorType = ErrorType.INCLUDE
@@ -875,12 +874,12 @@ class LibraryBuilder(
     fun resolveNaryCall(
         libraryName: String?,
         operatorName: String,
-        expression: NaryExpression?
+        expression: NaryExpression
     ): Expression? {
         return resolveCall(
             libraryName,
             operatorName,
-            NaryExpressionInvocation(expression!!),
+            NaryExpressionInvocation(expression),
             false,
             false
         )
@@ -1158,9 +1157,9 @@ class LibraryBuilder(
         return resolveBinaryInvocation("System", "ProperContains", properContains)
     }
 
-    private fun getTypeScore(resolution: OperatorResolution?): Int {
+    private fun getTypeScore(resolution: OperatorResolution): Int {
         var typeScore = ConversionMap.ConversionScore.ExactMatch.score
-        for (operand in resolution!!.operator.signature.operandTypes) {
+        for (operand in resolution.operator.signature.operandTypes) {
             typeScore += ConversionMap.getTypePrecedenceScore(operand)
         }
         return typeScore
@@ -1176,8 +1175,8 @@ class LibraryBuilder(
                     return primary.expression
                 }
                 if (primary.resolution!!.score == secondary.resolution!!.score) {
-                    val primaryTypeScore = getTypeScore(primary.resolution)
-                    val secondaryTypeScore = getTypeScore(secondary.resolution)
+                    val primaryTypeScore = getTypeScore(primary.resolution!!)
+                    val secondaryTypeScore = getTypeScore(secondary.resolution!!)
                     return if (secondaryTypeScore < primaryTypeScore) {
                         secondary.expression
                     } else if (primaryTypeScore < secondaryTypeScore) {
@@ -1797,10 +1796,10 @@ class LibraryBuilder(
         return resolveToList(expression)
     }
 
-    fun resolveToList(expression: Expression?): Expression {
+    fun resolveToList(expression: Expression): Expression {
         // Use a ToList operator here to avoid duplicate evaluation of the operand.
         val toList = objectFactory.createToList().withOperand(expression)
-        toList.resultType = ListType(expression!!.resultType)
+        toList.resultType = ListType(expression.resultType)
         return toList
     }
 
@@ -1836,10 +1835,10 @@ class LibraryBuilder(
     // constructing an
     // interval
     // with null boundaries
-    fun resolveToInterval(expression: Expression?): Expression {
+    fun resolveToInterval(expression: Expression): Expression {
         val condition = objectFactory.createIf()
         condition.condition = buildIsNull(expression)
-        condition.then = buildNull(IntervalType(expression!!.resultType))
+        condition.then = buildNull(IntervalType(expression.resultType))
         val toInterval =
             objectFactory
                 .createInterval()
@@ -2245,20 +2244,20 @@ class LibraryBuilder(
         return first
     }
 
-    fun ensureCompatible(expression: Expression?, targetType: DataType?): Expression? {
+    fun ensureCompatible(expression: Expression, targetType: DataType?): Expression? {
         if (targetType == null) {
             return objectFactory.createNull()
         }
-        return if (!targetType.isSuperTypeOf(expression!!.resultType)) {
+        return if (!targetType.isSuperTypeOf(expression.resultType)) {
             convertExpression(expression, targetType, true)
         } else expression
     }
 
-    fun enforceCompatible(expression: Expression?, targetType: DataType?): Expression? {
+    fun enforceCompatible(expression: Expression, targetType: DataType?): Expression? {
         if (targetType == null) {
             return objectFactory.createNull()
         }
-        return if (!targetType.isSuperTypeOf(expression!!.resultType)) {
+        return if (!targetType.isSuperTypeOf(expression.resultType)) {
             convertExpression(expression, targetType, false)
         } else expression
     }

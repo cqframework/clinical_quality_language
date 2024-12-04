@@ -372,7 +372,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
         return invocation
     }
 
-    private val patientBirthDateProperty: Expression?
+    private val patientBirthDateProperty: Expression
         get() {
             val source = builder.resolveIdentifier("Patient", true)!!
             val birthDateProperty = builder.defaultModel!!.modelInfo.patientBirthDatePropertyName
@@ -382,11 +382,11 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
                 property.resultType = builder.resolvePath(source.resultType, property.path)
                 property
             } else {
-                val resolution = builder.resolveProperty(source.resultType, birthDateProperty)
+                val resolution = builder.resolveProperty(source.resultType, birthDateProperty)!!
                 var result =
                     builder.buildProperty(
                         source,
-                        resolution!!.name,
+                        resolution.name,
                         resolution.isSearch,
                         resolution.type
                     ) as Expression
@@ -718,29 +718,21 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
     }
 
     companion object {
-        @Suppress("ReturnCount")
         private fun resolveAgeRelatedFunctionPrecision(
             functionRef: FunctionRef
         ): DateTimePrecision {
             val name = functionRef.name
-            if (name.contains("Years")) {
-                return DateTimePrecision.YEAR
-            } else if (name.contains("Months")) {
-                return DateTimePrecision.MONTH
-            } else if (name.contains("Weeks")) {
-                return DateTimePrecision.WEEK
-            } else if (name.contains("Days")) {
-                return DateTimePrecision.DAY
-            } else if (name.contains("Hours")) {
-                return DateTimePrecision.HOUR
-            } else if (name.contains("Minutes")) {
-                return DateTimePrecision.MINUTE
-            } else if (name.contains("Second")) {
-                return DateTimePrecision.SECOND
-            } else if (name.contains("Milliseconds")) {
-                return DateTimePrecision.MILLISECOND
+            return when {
+                name.contains("Years") -> DateTimePrecision.YEAR
+                name.contains("Months") -> DateTimePrecision.MONTH
+                name.contains("Weeks") -> DateTimePrecision.WEEK
+                name.contains("Days") -> DateTimePrecision.DAY
+                name.contains("Hours") -> DateTimePrecision.HOUR
+                name.contains("Minutes") -> DateTimePrecision.MINUTE
+                name.contains("Second") -> DateTimePrecision.SECOND
+                name.contains("Milliseconds") -> DateTimePrecision.MILLISECOND
+                else -> throw IllegalArgumentException("Unknown precision '$name'.")
             }
-            throw IllegalArgumentException(String.format("Unknown precision '%s'.", name))
         }
     }
 }
