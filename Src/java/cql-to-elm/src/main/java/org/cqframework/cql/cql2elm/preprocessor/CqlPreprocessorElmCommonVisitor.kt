@@ -6,11 +6,11 @@ import jakarta.xml.bind.JAXBElement
 import java.io.Serializable
 import java.util.*
 import javax.xml.namespace.QName
-import org.antlr.v4.runtime.ParserRuleContext
-import org.antlr.v4.runtime.TokenStream
-import org.antlr.v4.runtime.misc.Interval
-import org.antlr.v4.runtime.tree.ParseTree
-import org.antlr.v4.runtime.tree.TerminalNode
+import org.antlr.v4.kotlinruntime.ParserRuleContext
+import org.antlr.v4.kotlinruntime.TokenStream
+import org.antlr.v4.kotlinruntime.misc.Interval
+import org.antlr.v4.kotlinruntime.tree.ParseTree
+import org.antlr.v4.kotlinruntime.tree.TerminalNode
 import org.apache.commons.lang3.tuple.Pair
 import org.cqframework.cql.cql2elm.*
 import org.cqframework.cql.cql2elm.model.Chunk
@@ -37,7 +37,7 @@ import org.hl7.elm.r1.*
     "ComplexCondition",
     "ReturnCount"
 )
-open class CqlPreprocessorElmCommonVisitor(
+abstract class CqlPreprocessorElmCommonVisitor(
     @JvmField protected val libraryBuilder: LibraryBuilder,
     protected val tokenStream: TokenStream
 ) : cqlBaseVisitor<Any?>() {
@@ -302,7 +302,7 @@ open class CqlPreprocessorElmCommonVisitor(
                         // Add header information (comments prior to the definition)
                         val definitionInfo = libraryInfo.resolveDefinition(tree)
                         if (definitionInfo?.headerInterval != null) {
-                            val headerChunk = Chunk(definitionInfo.headerInterval!!, true)
+                            val headerChunk = Chunk(definitionInfo?.headerInterval!!, true)
                             val newChunk = Chunk(Interval(headerChunk.interval.a, chunk.interval.b))
                             newChunk.addChunk(headerChunk)
                             newChunk.element = chunk.element
@@ -561,11 +561,11 @@ open class CqlPreprocessorElmCommonVisitor(
     private fun getTrackBack(ctx: ParserRuleContext): TrackBack {
         return TrackBack(
             libraryBuilder.libraryIdentifier,
-            ctx.getStart().line,
-            ctx.getStart().charPositionInLine + 1, // 1-based instead of 0-based
-            ctx.getStop().line,
-            ctx.getStop().charPositionInLine +
-                ctx.getStop().text.length // 1-based instead of 0-based
+            ctx.start?.line ?: 0,
+            (ctx.start?.charPositionInLine ?: 0) + 1, // 1-based instead of 0-based
+            ctx.stop?.line ?: 0,
+            (ctx.stop?.charPositionInLine ?: 0) +
+                (ctx.stop?.text?.length ?: 0) // 1-based instead of 0-based
         )
     }
 

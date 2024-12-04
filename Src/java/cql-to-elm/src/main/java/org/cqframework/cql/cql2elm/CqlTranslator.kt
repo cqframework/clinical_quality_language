@@ -3,8 +3,8 @@
 package org.cqframework.cql.cql2elm
 
 import java.io.*
-import org.antlr.v4.runtime.CharStream
-import org.antlr.v4.runtime.CharStreams
+import org.antlr.v4.kotlinruntime.CharStream
+import org.antlr.v4.kotlinruntime.CharStreams
 import org.cqframework.cql.cql2elm.model.CompiledLibrary
 import org.cqframework.cql.elm.serializing.ElmLibraryWriterFactory
 import org.hl7.cql.model.*
@@ -93,14 +93,14 @@ class CqlTranslator(
     companion object {
 
         @JvmStatic
-        fun fromText(cqlText: String?, libraryManager: LibraryManager): CqlTranslator {
+        fun fromText(cqlText: String, libraryManager: LibraryManager): CqlTranslator {
             return CqlTranslator(null, null, CharStreams.fromString(cqlText), libraryManager)
         }
 
         @JvmStatic
         fun fromText(
             namespaceInfo: NamespaceInfo?,
-            cqlText: String?,
+            cqlText: String,
             libraryManager: LibraryManager
         ): CqlTranslator {
             return CqlTranslator(
@@ -115,7 +115,7 @@ class CqlTranslator(
         fun fromText(
             namespaceInfo: NamespaceInfo?,
             sourceInfo: VersionedIdentifier?,
-            cqlText: String?,
+            cqlText: String,
             libraryManager: LibraryManager
         ): CqlTranslator {
             return CqlTranslator(
@@ -130,7 +130,7 @@ class CqlTranslator(
         @Throws(IOException::class)
         fun fromStream(
             namespaceInfo: NamespaceInfo?,
-            cqlStream: InputStream?,
+            cqlStream: InputStream,
             libraryManager: LibraryManager
         ): CqlTranslator {
             return CqlTranslator(
@@ -143,7 +143,7 @@ class CqlTranslator(
 
         @JvmStatic
         @Throws(IOException::class)
-        fun fromStream(cqlStream: InputStream?, libraryManager: LibraryManager): CqlTranslator {
+        fun fromStream(cqlStream: InputStream, libraryManager: LibraryManager): CqlTranslator {
             return CqlTranslator(null, null, CharStreams.fromStream(cqlStream), libraryManager)
         }
 
@@ -152,7 +152,7 @@ class CqlTranslator(
         fun fromStream(
             namespaceInfo: NamespaceInfo?,
             sourceInfo: VersionedIdentifier?,
-            cqlStream: InputStream?,
+            cqlStream: InputStream,
             libraryManager: LibraryManager
         ): CqlTranslator {
             return CqlTranslator(

@@ -5,8 +5,8 @@ package org.cqframework.cql.cql2elm
 import java.io.*
 import java.util.*
 import java.util.stream.Collectors
-import org.antlr.v4.runtime.*
-import org.antlr.v4.runtime.tree.ParseTree
+import org.antlr.v4.kotlinruntime.*
+import org.antlr.v4.kotlinruntime.tree.ParseTree
 import org.cqframework.cql.cql2elm.elm.ElmEdit
 import org.cqframework.cql.cql2elm.elm.ElmEditor
 import org.cqframework.cql.cql2elm.elm.IElmEdit
@@ -88,14 +88,11 @@ class CqlCompiler(
         private fun extractLibraryIdentifier(parser: cqlParser): VersionedIdentifier? {
             var context: RuleContext? = parser.context
             while (context != null && context !is LibraryContext) {
-                context = context.parent
+                context = context.getParent()
             }
             if (context is LibraryContext) {
                 val ldc = context.libraryDefinition()
-                if (
-                    ldc?.qualifiedIdentifier() != null &&
-                        ldc.qualifiedIdentifier().identifier() != null
-                ) {
+                if (ldc?.qualifiedIdentifier() != null) {
                     return VersionedIdentifier()
                         .withId(
                             StringEscapeUtils.unescapeCql(
@@ -108,11 +105,11 @@ class CqlCompiler(
         }
 
         override fun syntaxError(
-            recognizer: Recognizer<*, *>?,
+            recognizer: Recognizer<*, *>,
             offendingSymbol: Any?,
             line: Int,
             charPositionInLine: Int,
-            msg: String?,
+            msg: String,
             e: RecognitionException?
         ) {
             var libraryIdentifier = builder.libraryIdentifier
@@ -148,20 +145,20 @@ class CqlCompiler(
     }
 
     @Throws(IOException::class)
-    fun run(cqlFile: File?): Library? {
+    fun run(cqlFile: File): Library? {
         return run(CharStreams.fromStream(FileInputStream(cqlFile)))
     }
 
-    fun run(cqlText: String?): Library? {
+    fun run(cqlText: String): Library? {
         return run(CharStreams.fromString(cqlText))
     }
 
     @Throws(IOException::class)
-    fun run(inputStream: InputStream?): Library? {
+    fun run(inputStream: InputStream): Library? {
         return run(CharStreams.fromStream(inputStream))
     }
 
-    fun run(charStream: CharStream?): Library? {
+    fun run(charStream: CharStream): Library? {
         exceptions = ArrayList()
         errors = ArrayList()
         warnings = ArrayList()

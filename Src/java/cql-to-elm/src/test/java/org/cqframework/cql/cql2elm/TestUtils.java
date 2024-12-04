@@ -9,11 +9,11 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.Optional;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.TokenStream;
-import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.kotlinruntime.CharStream;
+import org.antlr.v4.kotlinruntime.CharStreams;
+import org.antlr.v4.kotlinruntime.CommonTokenStream;
+import org.antlr.v4.kotlinruntime.TokenStream;
+import org.antlr.v4.kotlinruntime.tree.ParseTree;
 import org.cqframework.cql.cql2elm.CqlCompilerException.ErrorSeverity;
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
@@ -32,7 +32,7 @@ public class TestUtils {
 
     public static Cql2ElmVisitor visitFile(String fileName, boolean inClassPath) throws IOException {
         InputStream is = inClassPath ? TestUtils.class.getResourceAsStream(fileName) : new FileInputStream(fileName);
-        TokenStream tokens = parseCharStream(CharStreams.fromStream(is));
+        TokenStream tokens = parseCharStream(CharStreams.INSTANCE.fromStream(is));
         ParseTree tree = parseTokenStream(tokens);
         Cql2ElmVisitor visitor = createElmTranslatorVisitor(tokens, tree);
         visitor.visit(tree);

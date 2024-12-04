@@ -1,6 +1,6 @@
 package org.cqframework.cql.cql2elm.model
 
-import org.antlr.v4.runtime.misc.Interval
+import org.antlr.v4.kotlinruntime.misc.Interval
 import org.hl7.elm.r1.Element
 
 /*

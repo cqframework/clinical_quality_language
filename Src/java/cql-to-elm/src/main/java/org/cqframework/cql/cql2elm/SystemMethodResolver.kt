@@ -100,7 +100,7 @@ class SystemMethodResolver(
         val source = enterQueryContext(target)
         return try {
             checkArgumentCount(ctx, functionName, 1)
-            var where = visitor.visit(ctx!!.expression(0)) as Expression?
+            var where = visitor.visit(ctx!!.expression(0)!!) as Expression?
             if (visitor.dateRangeOptimization) {
                 where = visitor.optimizeDateRangeInQuery(where, source)
             }
@@ -122,7 +122,7 @@ class SystemMethodResolver(
             builder.pushTypeSpecifierContext()
             val typeArgument: Expression? =
                 try {
-                    visitor.visit(ctx!!.expression(0)) as Expression?
+                    visitor.visit(ctx!!.expression(0)!!) as Expression?
                 } finally {
                     builder.popTypeSpecifierContext()
                 }
@@ -164,7 +164,7 @@ class SystemMethodResolver(
         return try {
             val isSingular = source.resultType !is ListType
             checkArgumentCount(ctx, functionName, 1)
-            val select = visitor.visit(ctx!!.expression(0)) as Expression?
+            val select = visitor.visit(ctx!!.expression(0)!!) as Expression?
             val repeat = of.createRepeat()
             repeat.source = target
             repeat.element = select
@@ -195,7 +195,7 @@ class SystemMethodResolver(
         return try {
             isSingular = source.resultType !is ListType
             checkArgumentCount(ctx, functionName, 1)
-            val select = visitor.visit(ctx!!.expression(0)) as Expression?
+            val select = visitor.visit(ctx!!.expression(0)!!) as Expression?
             val queryContext = builder.peekQueryContext()
             val let = of.createLetClause().withExpression(select).withIdentifier("\$a")
             let.resultType = select!!.resultType
@@ -312,7 +312,7 @@ class SystemMethodResolver(
             "combine" -> {
                 checkArgumentCount(ctx, functionName, 1)
                 val elements: MutableList<Expression?> = ArrayList()
-                val argument = visitor.visit(ctx!!.expression(0)) as Expression?
+                val argument = visitor.visit(ctx!!.expression(0)!!) as Expression?
                 elements.add(target)
                 elements.add(argument)
                 val elementType =
@@ -328,7 +328,7 @@ class SystemMethodResolver(
             "contains" -> {
                 checkArgumentCount(ctx, functionName, 1)
                 var params: MutableList<Expression?> = ArrayList()
-                val argument = visitor.visit(ctx!!.expression(0)) as Expression?
+                val argument = visitor.visit(ctx!!.expression(0)!!) as Expression?
                 params.add(argument)
                 params.add(target)
                 val result = builder.resolveFunction(null, "PositionOf", params)
@@ -407,9 +407,10 @@ class SystemMethodResolver(
                     params.add(result)
                     result = builder.resolveFunction(null, "SingletonFrom", params)
                 }
-                val thenExpression = visitor.visit(ctx!!.expression(0)) as Expression?
+                val thenExpression = visitor.visit(ctx!!.expression(0)!!) as Expression?
                 val elseExpression =
-                    if (ctx.expression().size == 2) visitor.visit(ctx.expression(1)) as Expression?
+                    if (ctx.expression().size == 2)
+                        visitor.visit(ctx.expression(1)!!) as Expression?
                     else of.createNull()
                 result =
                     of.createIf()
@@ -421,7 +422,7 @@ class SystemMethodResolver(
             "indexOf" -> {
                 checkArgumentCount(ctx, functionName, 1)
                 val params: MutableList<Expression?> = ArrayList()
-                val argument = visitor.visit(ctx!!.expression(0)) as Expression?
+                val argument = visitor.visit(ctx!!.expression(0)!!) as Expression?
                 params.add(argument)
                 params.add(target)
                 builder.resolveFunction(null, "PositionOf", params)
@@ -433,7 +434,7 @@ class SystemMethodResolver(
                 builder.pushTypeSpecifierContext()
                 val typeArgument: Expression? =
                     try {
-                        visitor.visit(ctx!!.expression(0)) as Expression?
+                        visitor.visit(ctx!!.expression(0)!!) as Expression?
                     } finally {
                         builder.popTypeSpecifierContext()
                     }
@@ -455,7 +456,7 @@ class SystemMethodResolver(
             "lastIndexOf" -> {
                 checkArgumentCount(ctx, functionName, 1)
                 val params: MutableList<Expression?> = ArrayList()
-                val argument = visitor.visit(ctx!!.expression(0)) as Expression?
+                val argument = visitor.visit(ctx!!.expression(0)!!) as Expression?
                 params.add(argument)
                 params.add(target)
                 builder.resolveFunction(null, "LastPositionOf", params)
@@ -510,7 +511,7 @@ class SystemMethodResolver(
                 params.add(builder.createLiteral(true))
                 params.add(builder.createLiteral("TRACE"))
                 params.add(builder.createLiteral("Trace"))
-                params.add(visitor.visit(ctx!!.expression(0)) as Expression?)
+                params.add(visitor.visit(ctx!!.expression(0)!!) as Expression?)
                 builder.resolveFunction(null, "Message", params)
             }
             "truncate" -> builder.resolveFunction(null, "Truncate", getParams(target, ctx))

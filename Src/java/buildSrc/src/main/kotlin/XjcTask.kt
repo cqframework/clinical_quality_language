@@ -1,7 +1,7 @@
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.*
-import org.gradle.process.ExecOperations
-import javax.inject.Inject
+import org.gradle.process.ExecOperations;
+import javax.inject.Inject;
 
 open class XjcTask @Inject constructor(
     private val execOperations: ExecOperations
@@ -17,7 +17,6 @@ open class XjcTask @Inject constructor(
 
     @OutputDirectory
     lateinit var outputDir: String
-
 
     @TaskAction
     fun generate() {

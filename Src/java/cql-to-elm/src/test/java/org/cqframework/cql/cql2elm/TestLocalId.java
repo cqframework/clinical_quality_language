@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.kotlinruntime.CharStreams;
+import org.antlr.v4.kotlinruntime.CommonTokenStream;
 import org.cqframework.cql.cql2elm.CqlCompilerOptions.Options;
 import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessor;
 import org.cqframework.cql.elm.IdObjectFactory;
@@ -69,7 +69,7 @@ class TestLocalId {
         var libraryBuilder = new LibraryBuilder(libraryManager, brokenFactory);
 
         // Simplest possible library, just to trigger a missing id error.
-        cqlLexer lexer = new cqlLexer(CharStreams.fromString("library Test\ndefine \"One\": 1"));
+        cqlLexer lexer = new cqlLexer(CharStreams.INSTANCE.fromString("library Test\ndefine \"One\": 1"));
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         cqlParser parser = new cqlParser(tokens);
         parser.setBuildParseTree(true);

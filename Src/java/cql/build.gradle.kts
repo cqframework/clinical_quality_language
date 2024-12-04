@@ -1,36 +1,37 @@
+import com.strumenta.antlrkotlin.gradle.AntlrKotlinTask
+import org.jetbrains.kotlin.gradle.tasks.AbstractKotlinCompile
+
 plugins {
-    id("cql.java-conventions")
-    id("antlr")
+    id("cql.kotlin-multiplatform-conventions")
+    id("com.strumenta.antlr-kotlin") version "1.0.1"
 }
 
-dependencies {
-    val version = project.findProperty("antlr.version")
-    antlr("org.antlr:antlr4:${version}")
-    api("org.antlr:antlr4-runtime:${version}")
-}
-
-sourceSets {
-    main {
-        antlr {
-            setSrcDirs(listOf("../../grammar"))
-        }
-        java {
-            srcDir("build/generated/sources/antlr/main/java")
+kotlin {
+    sourceSets {
+        commonMain {
+            kotlin {
+                srcDir("build/generated/sources/antlr/main/kotlin")
+            }
+            dependencies {
+                api("com.strumenta:antlr-kotlin-runtime:1.0.1")
+            }
         }
     }
 }
 
-tasks.generateGrammarSource {
-    val buildDir = layout.buildDirectory.get().toString()
-    outputDirectory = file("${buildDir}/generated/sources/antlr/main/java/org/cqframework/cql/gen")
-    arguments = listOf("-visitor", "-package", "org.cqframework.cql.gen")
+val generateKotlinGrammarSource = tasks.register<AntlrKotlinTask>("generateKotlinGrammarSource") {
+    dependsOn("cleanGenerateKotlinGrammarSource")
+    source = fileTree("../../grammar")
+    packageName = "org.cqframework.cql.gen"
+    arguments = listOf("-visitor")
+    outputDirectory = file("build/generated/sources/antlr/main/kotlin/${packageName!!.replace(".", "/")}")
     outputs.dirs(outputDirectory)
 }
 
-tasks.compileKotlin {
-    dependsOn(tasks.generateGrammarSource)
+tasks.withType<AbstractKotlinCompile<*>> {
+    dependsOn(generateKotlinGrammarSource)
 }
 
 tasks.named("dokkaJavadocJar") {
-    dependsOn(tasks.generateGrammarSource)
+    dependsOn(generateKotlinGrammarSource)
 }

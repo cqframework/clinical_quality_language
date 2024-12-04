@@ -1,7 +1,7 @@
 package org.cqframework.cql.cql2elm.preprocessor
 
-import org.antlr.v4.runtime.misc.Interval
-import org.antlr.v4.runtime.tree.ParseTree
+import org.antlr.v4.kotlinruntime.misc.Interval
+import org.antlr.v4.kotlinruntime.tree.ParseTree
 
 open class BaseInfo(open val definition: ParseTree?) {
     var header: String? = null

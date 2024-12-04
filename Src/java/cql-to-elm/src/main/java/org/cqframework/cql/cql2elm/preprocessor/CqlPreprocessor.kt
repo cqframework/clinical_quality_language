@@ -4,11 +4,11 @@ package org.cqframework.cql.cql2elm.preprocessor
 
 import java.util.*
 import kotlin.collections.ArrayList
-import org.antlr.v4.runtime.Recognizer
-import org.antlr.v4.runtime.TokenStream
-import org.antlr.v4.runtime.misc.Interval
-import org.antlr.v4.runtime.tree.ParseTree
-import org.antlr.v4.runtime.tree.TerminalNode
+import org.antlr.v4.kotlinruntime.Recognizer
+import org.antlr.v4.kotlinruntime.TokenStream
+import org.antlr.v4.kotlinruntime.misc.Interval
+import org.antlr.v4.kotlinruntime.tree.ParseTree
+import org.antlr.v4.kotlinruntime.tree.TerminalNode
 import org.cqframework.cql.cql2elm.CqlCompilerException
 import org.cqframework.cql.cql2elm.LibraryBuilder
 import org.cqframework.cql.cql2elm.ResultWithPossibleError
@@ -54,7 +54,7 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
                 if (terminalNode != null && terminalNode.symbol.type == Recognizer.EOF) {
                     continue
                 }
-                val childResult = visit(tree)
+                val childResult = visit(tree!!)
                 // Only set the last result if we received something useful
                 if (childResult != null) {
                     lastResult = childResult
@@ -74,7 +74,7 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
         val libraryName = identifiers.removeAt(identifiers.size - 1)
         val namespaceName = if (identifiers.isNotEmpty()) identifiers.joinToString(".") else null
         val version =
-            if (ctx.versionSpecifier() != null) visit(ctx.versionSpecifier()) as String else null
+            if (ctx.versionSpecifier() != null) visit(ctx.versionSpecifier()!!) as String else null
         val newLibraryInfo = LibraryInfo(namespaceName, libraryName, version, ctx)
         libraryInfo = newLibraryInfo
         processHeader(ctx, newLibraryInfo)
@@ -87,7 +87,7 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
         val name = identifiers.removeAt(identifiers.size - 1)
         val namespaceName = if (identifiers.isNotEmpty()) identifiers.joinToString(".") else null
         val version =
-            if (ctx.versionSpecifier() != null) visit(ctx.versionSpecifier()) as String else null
+            if (ctx.versionSpecifier() != null) visit(ctx.versionSpecifier()!!) as String else null
         val localName =
             if (ctx.localIdentifier() != null) parseString(ctx.localIdentifier())!! else name
         val includeDefinition = IncludeDefinitionInfo(namespaceName, name, version, localName, ctx)
@@ -103,7 +103,7 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
         val namespaceNameForUsingDefinition =
             if (identifiers.isNotEmpty()) identifiers.joinToString(".") else null
         val version =
-            if (ctx.versionSpecifier() != null) visit(ctx.versionSpecifier()) as String else null
+            if (ctx.versionSpecifier() != null) visit(ctx.versionSpecifier()!!) as String else null
         val localName =
             if (ctx.localIdentifier() != null) parseString(ctx.localIdentifier())!!
             else unqualifiedIdentifier
@@ -267,7 +267,7 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
     override fun visitTerminal(node: TerminalNode): Any {
         var text = node.text
         val tokenType = node.symbol.type
-        if (cqlLexer.STRING == tokenType || cqlLexer.QUOTEDIDENTIFIER == tokenType) {
+        if (cqlLexer.Tokens.STRING == tokenType || cqlLexer.Tokens.QUOTEDIDENTIFIER == tokenType) {
             // chop off leading and trailing ' or "
             text = text.substring(1, text.length - 1)
         }
@@ -298,5 +298,9 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
         val identifier = parseString(ctx.referentialIdentifier())!!
         identifiers.add(identifier)
         return identifiers
+    }
+
+    override fun defaultResult(): Any? {
+        return null
     }
 }
