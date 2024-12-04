@@ -282,11 +282,11 @@ class Cql2ElmVisitor(
 
     override fun visitCodesystemIdentifier(ctx: CodesystemIdentifierContext): CodeSystemRef {
         val libraryName = parseString(ctx.libraryIdentifier())
-        val name = parseString(ctx.identifier())
+        val name = parseString(ctx.identifier())!!
         val def: CodeSystemDef?
         if (libraryName != null) {
             def = libraryBuilder.resolveLibrary(libraryName).resolveCodeSystemRef(name)
-            libraryBuilder.checkAccessLevel(libraryName, name, def.accessLevel)
+            libraryBuilder.checkAccessLevel(libraryName, name, def!!.accessLevel)
         } else {
             def = libraryBuilder.resolveCodeSystemRef(name)
         }
@@ -302,11 +302,11 @@ class Cql2ElmVisitor(
 
     override fun visitCodeIdentifier(ctx: CodeIdentifierContext): CodeRef {
         val libraryName = parseString(ctx.libraryIdentifier())
-        val name = parseString(ctx.identifier())
+        val name = parseString(ctx.identifier())!!
         val def: CodeDef?
         if (libraryName != null) {
             def = libraryBuilder.resolveLibrary(libraryName).resolveCodeRef(name)
-            libraryBuilder.checkAccessLevel(libraryName, name, def.accessLevel)
+            libraryBuilder.checkAccessLevel(libraryName, name, def!!.accessLevel)
         } else {
             def = libraryBuilder.resolveCodeRef(name)
         }
@@ -427,10 +427,10 @@ class Cql2ElmVisitor(
 
     override fun visitContextDefinition(ctx: ContextDefinitionContext): Any {
         val modelIdentifier: String? = parseString(ctx.modelIdentifier())
-        val unqualifiedIdentifier: String? = parseString(ctx.identifier())
+        val unqualifiedIdentifier = parseString(ctx.identifier())!!
         currentContext =
             if (modelIdentifier != null) "$modelIdentifier.$unqualifiedIdentifier"
-            else (unqualifiedIdentifier)!!
+            else (unqualifiedIdentifier)
         if (!isUnfilteredContext(unqualifiedIdentifier)) {
             val modelContext: ModelContext? =
                 libraryBuilder.resolveContextName(modelIdentifier, unqualifiedIdentifier)
@@ -4205,7 +4205,7 @@ class Cql2ElmVisitor(
                     result.resolution!!.operator != null &&
                     (result.resolution!!.operator.libraryName == null ||
                         (result.resolution!!.operator.libraryName ==
-                            libraryBuilder.compiledLibrary.identifier.id))
+                            libraryBuilder.compiledLibrary.identifier!!.id))
             ) {
                 val op = result.resolution!!.operator
                 val fh = getFunctionHeader(op)
@@ -4356,7 +4356,7 @@ class Cql2ElmVisitor(
         }
         val fds = libraryBuilder.compiledLibrary.resolveFunctionRef(op.name, st)
         for (fd in fds) {
-            if (fd.operand.size == op.signature.size) {
+            if (fd!!.operand.size == op.signature.size) {
                 val signatureTypes = op.signature.operandTypes.iterator()
                 var signaturesMatch = true
                 for (i in fd.operand.indices) {

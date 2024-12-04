@@ -104,14 +104,14 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
                         val dateConversion =
                             builder.findConversion(
                                 op.resultType,
-                                builder.resolveTypeName("System", "Date"),
+                                builder.resolveTypeName("System", "Date")!!,
                                 true,
                                 false
                             )
                         val dateTimeConversion =
                             builder.findConversion(
                                 op.resultType,
-                                builder.resolveTypeName("System", "DateTime"),
+                                builder.resolveTypeName("System", "DateTime")!!,
                                 true,
                                 false
                             )

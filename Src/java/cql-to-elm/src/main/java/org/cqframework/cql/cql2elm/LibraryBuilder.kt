@@ -249,7 +249,7 @@ class LibraryBuilder(
     }
 
     private fun loadConversionMap(model: Model?) {
-        for (conversion in model!!.conversions) {
+        for (conversion in model!!.getConversions()) {
             conversionMap.add(conversion)
         }
     }
@@ -288,7 +288,7 @@ class LibraryBuilder(
     }
 
     @Suppress("NestedBlockDepth")
-    fun resolveLabel(modelName: String?, label: String?): ClassType? {
+    fun resolveLabel(modelName: String?, label: String): ClassType? {
         var result: ClassType? = null
         if (modelName == null || (modelName == "")) {
             for (model: Model? in models.values) {
@@ -314,7 +314,7 @@ class LibraryBuilder(
     }
 
     @Suppress("NestedBlockDepth")
-    fun resolveContextName(modelName: String?, contextName: String?): ModelContext? {
+    fun resolveContextName(modelName: String?, contextName: String): ModelContext? {
         // Attempt to resolve as a label first
         var result: ModelContext? = null
         if (modelName == null || (modelName == "")) {
@@ -349,12 +349,12 @@ class LibraryBuilder(
         return result
     }
 
-    fun resolveTypeName(typeName: String?): DataType? {
+    fun resolveTypeName(typeName: String): DataType? {
         return resolveTypeName(null, typeName)
     }
 
     @Suppress("NestedBlockDepth")
-    fun resolveTypeName(modelName: String?, typeName: String?): DataType? {
+    fun resolveTypeName(modelName: String?, typeName: String): DataType? {
         // Attempt to resolve as a label first
         var result: DataType? = resolveLabel(modelName, typeName)
         if (result == null) {
@@ -419,8 +419,8 @@ class LibraryBuilder(
     private fun isFHIRHelpers(library: CompiledLibrary?): Boolean {
         return (library != null) &&
             (library.identifier != null) &&
-            (library.identifier.id != null) &&
-            (library.identifier.id == "FHIRHelpers")
+            (library.identifier!!.id != null) &&
+            (library.identifier!!.id == "FHIRHelpers")
     }
 
     fun resolveTypeSpecifier(typeSpecifier: String?): DataType? {
@@ -489,13 +489,13 @@ class LibraryBuilder(
     }
 
     private fun loadSystemLibrary() {
-        val systemLibrary = load(systemModel!!, typeBuilder)
-        libraries[systemLibrary.identifier.id] = systemLibrary
+        val systemLibrary = load(systemModel, typeBuilder)
+        libraries[systemLibrary.identifier!!.id] = systemLibrary
         loadConversionMap(systemLibrary)
     }
 
     private fun loadConversionMap(library: CompiledLibrary) {
-        for (conversion in library.conversions) {
+        for (conversion in library.getConversions()) {
             conversionMap.add(conversion)
         }
     }
@@ -684,7 +684,7 @@ class LibraryBuilder(
         loadConversionMap(referencedLibrary)
     }
 
-    fun addParameter(paramDef: ParameterDef?) {
+    fun addParameter(paramDef: ParameterDef) {
         if (library.parameters == null) {
             library.parameters = objectFactory.createLibraryParameters()
         }
@@ -692,7 +692,7 @@ class LibraryBuilder(
         compiledLibrary.add(paramDef)
     }
 
-    fun addCodeSystem(cs: CodeSystemDef?) {
+    fun addCodeSystem(cs: CodeSystemDef) {
         if (library.codeSystems == null) {
             library.codeSystems = objectFactory.createLibraryCodeSystems()
         }
@@ -700,7 +700,7 @@ class LibraryBuilder(
         compiledLibrary.add(cs)
     }
 
-    fun addValueSet(vs: ValueSetDef?) {
+    fun addValueSet(vs: ValueSetDef) {
         if (library.valueSets == null) {
             library.valueSets = objectFactory.createLibraryValueSets()
         }
@@ -708,7 +708,7 @@ class LibraryBuilder(
         compiledLibrary.add(vs)
     }
 
-    fun addCode(cd: CodeDef?) {
+    fun addCode(cd: CodeDef) {
         if (library.codes == null) {
             library.codes = objectFactory.createLibraryCodes()
         }
@@ -716,7 +716,7 @@ class LibraryBuilder(
         compiledLibrary.add(cd)
     }
 
-    fun addConcept(cd: ConceptDef?) {
+    fun addConcept(cd: ConceptDef) {
         if (library.concepts == null) {
             library.concepts = objectFactory.createLibraryConcepts()
         }
@@ -724,14 +724,14 @@ class LibraryBuilder(
         compiledLibrary.add(cd)
     }
 
-    fun addContext(cd: ContextDef?) {
+    fun addContext(cd: ContextDef) {
         if (library.contexts == null) {
             library.contexts = objectFactory.createLibraryContexts()
         }
         library.contexts.def.add(cd)
     }
 
-    fun addExpression(expDef: ExpressionDef?) {
+    fun addExpression(expDef: ExpressionDef) {
         if (library.statements == null) {
             library.statements = objectFactory.createLibraryStatements()
         }
@@ -739,18 +739,18 @@ class LibraryBuilder(
         compiledLibrary.add(expDef)
     }
 
-    fun removeExpression(expDef: ExpressionDef?) {
+    fun removeExpression(expDef: ExpressionDef) {
         if (library.statements != null) {
             library.statements.def.remove(expDef)
             compiledLibrary.remove(expDef)
         }
     }
 
-    fun resolve(identifier: String?): ResolvedIdentifierContext {
+    fun resolve(identifier: String): ResolvedIdentifierContext {
         return compiledLibrary.resolve(identifier)
     }
 
-    fun resolveIncludeRef(identifier: String?): IncludeDef? {
+    fun resolveIncludeRef(identifier: String): IncludeDef? {
         return compiledLibrary.resolveIncludeRef(identifier)
     }
 
@@ -758,35 +758,35 @@ class LibraryBuilder(
         return compiledLibrary.resolveIncludeAlias(libraryIdentifier)
     }
 
-    fun resolveCodeSystemRef(identifier: String?): CodeSystemDef? {
+    fun resolveCodeSystemRef(identifier: String): CodeSystemDef? {
         return compiledLibrary.resolveCodeSystemRef(identifier)
     }
 
-    fun resolveValueSetRef(identifier: String?): ValueSetDef? {
+    fun resolveValueSetRef(identifier: String): ValueSetDef? {
         return compiledLibrary.resolveValueSetRef(identifier)
     }
 
-    fun resolveCodeRef(identifier: String?): CodeDef? {
+    fun resolveCodeRef(identifier: String): CodeDef? {
         return compiledLibrary.resolveCodeRef(identifier)
     }
 
-    fun resolveConceptRef(identifier: String?): ConceptDef? {
+    fun resolveConceptRef(identifier: String): ConceptDef? {
         return compiledLibrary.resolveConceptRef(identifier)
     }
 
-    fun resolveParameterRef(identifier: String?): ParameterDef? {
+    fun resolveParameterRef(identifier: String): ParameterDef? {
         checkLiteralContext()
         return compiledLibrary.resolveParameterRef(identifier)
     }
 
-    fun resolveExpressionRef(identifier: String?): ExpressionDef? {
+    fun resolveExpressionRef(identifier: String): ExpressionDef? {
         checkLiteralContext()
         return compiledLibrary.resolveExpressionRef(identifier)
     }
 
     fun findConversion(
-        fromType: DataType?,
-        toType: DataType?,
+        fromType: DataType,
+        toType: DataType,
         implicit: Boolean,
         allowPromotionAndDemotion: Boolean
     ): Conversion? {
@@ -1475,7 +1475,7 @@ class LibraryBuilder(
     }
 
     fun resolveFunctionDefinition(fd: FunctionDef): Operator? {
-        val libraryName = compiledLibrary.identifier.id
+        val libraryName = compiledLibrary.identifier!!.id
         val operatorName = fd.name
         val dataTypes: MutableList<DataType> = ArrayList()
         for (operand in fd.operand) {
@@ -1490,7 +1490,7 @@ class LibraryBuilder(
         }
         val callContext =
             CallContext(
-                compiledLibrary.identifier.id,
+                compiledLibrary.identifier!!.id,
                 fd.name,
                 false,
                 fd.isFluent != null && fd.isFluent,
@@ -1715,11 +1715,11 @@ class LibraryBuilder(
 
     @JvmOverloads
     fun convertExpression(
-        expression: Expression?,
-        targetType: DataType?,
+        expression: Expression,
+        targetType: DataType,
         implicit: Boolean = true
     ): Expression {
-        val conversion = findConversion(expression!!.resultType, targetType, implicit, false)
+        val conversion = findConversion(expression.resultType, targetType, implicit, false)
         if (conversion != null) {
             return convertExpression(expression, conversion)
         }
@@ -1749,7 +1749,7 @@ class LibraryBuilder(
                                 .createAliasRef()
                                 .withName("X")
                                 .withResultType(fromType.elementType) as AliasRef,
-                            conversion.conversion
+                            conversion.conversion!!
                         )
                     )
                     .withResultType(toType) as ReturnClause
@@ -1868,7 +1868,7 @@ class LibraryBuilder(
                         .withSource(expression)
                         .withPath("low")
                         .withResultType(fromType.pointType) as Property,
-                    conversion.conversion
+                    conversion.conversion!!
                 )
             )
             .withLowClosedExpression(
@@ -2012,7 +2012,7 @@ class LibraryBuilder(
                             .withWhen(buildIs(expression, conversion.conversion.fromType))
                             .withThen(result)
                     )
-                    for (alternative: Conversion in conversion.alternativeConversions) {
+                    for (alternative: Conversion in conversion.getAlternativeConversions()) {
                         caseResult.withCaseItem(
                             objectFactory
                                 .createCaseItem()
@@ -2265,7 +2265,7 @@ class LibraryBuilder(
         } else expression
     }
 
-    fun createLiteral(value: String?, type: String?): Literal {
+    fun createLiteral(value: String?, type: String): Literal {
         val resultType = resolveTypeName("System", type)
         val result =
             objectFactory
@@ -2766,12 +2766,16 @@ class LibraryBuilder(
         }
         if (mustResolve) {
             // ERROR:
-            var message = resolvedIdentifierContext.warnCaseInsensitiveIfApplicable();
+            var message = resolvedIdentifierContext.warnCaseInsensitiveIfApplicable()
             if (message == null) {
-                message = String.format("Could not resolve identifier %s in the current library.", identifier);
+                message =
+                    String.format(
+                        "Could not resolve identifier %s in the current library.",
+                        identifier
+                    )
             }
 
-            throw IllegalArgumentException(message);
+            throw IllegalArgumentException(message)
         }
         return null
     }
@@ -2879,7 +2883,7 @@ class LibraryBuilder(
         return result
     }
 
-    private fun ensureLibraryIncluded(libraryName: String?, sourceContext: Expression?) {
+    private fun ensureLibraryIncluded(libraryName: String, sourceContext: Expression?) {
         var includeDef = compiledLibrary.resolveIncludeRef(libraryName)
         if (includeDef == null) {
             val modelMapping = getModelMapping(sourceContext)
@@ -3358,7 +3362,7 @@ class LibraryBuilder(
                 String.format(
                     "Could not resolve identifier %s in library %s.",
                     memberIdentifier,
-                    referencedLibrary.identifier.id
+                    referencedLibrary.identifier!!.id
                 )
             )
         } else if (left is AliasRef) {

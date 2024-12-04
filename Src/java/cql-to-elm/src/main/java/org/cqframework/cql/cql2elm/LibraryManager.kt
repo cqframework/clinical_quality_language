@@ -144,14 +144,14 @@ constructor(
             result = compiler.compiledLibrary
             if (
                 (libraryIdentifier.version != null &&
-                    libraryIdentifier.version != result!!.identifier.version)
+                    libraryIdentifier.version != result!!.identifier!!.version)
             ) {
                 throw CqlIncludeException(
                     String.format(
                         "Library %s was included as version %s, but version %s of the library was found.",
                         libraryPath,
                         libraryIdentifier.version,
-                        result.identifier.version
+                        result.identifier!!.version
                     ),
                     libraryIdentifier.system,
                     libraryIdentifier.id,
@@ -189,11 +189,10 @@ constructor(
     }
 
     private fun sortStatements(compiledLibrary: CompiledLibrary?) {
-        if (compiledLibrary == null || compiledLibrary.library.statements == null) {
+        if (compiledLibrary == null || compiledLibrary.library!!.statements == null) {
             return
         }
-        compiledLibrary.library.statements.def.sortBy { it.name
-        }
+        compiledLibrary.library!!.statements.def.sortBy { it.name }
     }
 
     private fun tryCompiledLibraryElm(

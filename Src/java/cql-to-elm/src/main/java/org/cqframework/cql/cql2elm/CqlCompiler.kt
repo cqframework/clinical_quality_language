@@ -76,7 +76,7 @@ class CqlCompiler(
         get() {
             val result = HashMap<VersionedIdentifier, Library>()
             libraryManager.compiledLibraries.forEach { (id, compiledLibrary) ->
-                result[id] = compiledLibrary.library
+                result[id] = compiledLibrary.library!!
             }
             return result
         }
