@@ -565,7 +565,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
             (ctx.start?.charPositionInLine ?: 0) + 1, // 1-based instead of 0-based
             ctx.stop?.line ?: 0,
             (ctx.stop?.charPositionInLine ?: 0) +
-                    (ctx.stop?.text?.length ?: 0) // 1-based instead of 0-based
+                (ctx.stop?.text?.length ?: 0) // 1-based instead of 0-based
         )
     }
 

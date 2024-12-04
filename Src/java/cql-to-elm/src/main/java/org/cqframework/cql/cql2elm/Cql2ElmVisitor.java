@@ -57,7 +57,6 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
         return null;
     }
 
-
     @Override
     public Object visitLibrary(cqlParser.LibraryContext ctx) {
         Object lastResult = null;
