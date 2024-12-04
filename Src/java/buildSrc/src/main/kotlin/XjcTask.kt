@@ -1,7 +1,6 @@
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.*
 import org.gradle.process.ExecOperations;
-
 import javax.inject.Inject;
 
 open class XjcTask @Inject constructor(

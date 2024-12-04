@@ -14,7 +14,3 @@ sonar {
 repositories {
     mavenCentral()
 }
-
-kotlin {
-    jvmToolchain(17)
-}

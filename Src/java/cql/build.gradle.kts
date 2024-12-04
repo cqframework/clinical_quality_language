@@ -33,8 +33,13 @@ val generateKotlinGrammarSource = tasks.register<AntlrKotlinTask>("generateKotli
     packageName = "org.cqframework.cql.gen"
     arguments = listOf("-visitor")
     outputDirectory = file("build/generated/sources/antlr/main/kotlin/${packageName!!.replace(".", "/")}")
+    outputs.dirs(outputDirectory)
 }
 
 tasks.withType<AbstractKotlinCompile<*>> {
+    dependsOn(generateKotlinGrammarSource)
+}
+
+tasks.named("dokkaJavadocJar") {
     dependsOn(generateKotlinGrammarSource)
 }

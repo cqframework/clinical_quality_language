@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -36,6 +37,7 @@ import org.hl7.fhir.r5.model.DecimalType;
 import org.hl7.fhir.r5.model.Encounter;
 import org.hl7.fhir.r5.model.IdType;
 import org.hl7.fhir.r5.model.InstantType;
+import org.hl7.fhir.r5.model.Integer64Type;
 import org.hl7.fhir.r5.model.IntegerType;
 import org.hl7.fhir.r5.model.Parameters;
 import org.hl7.fhir.r5.model.Parameters.ParametersParameterComponent;
@@ -133,17 +135,13 @@ class R5TypeConverterTests {
 
     @Test
     void nullIsFhirType() {
-        assertThrows(NullPointerException.class, () -> {
-            typeConverter.isFhirType(null);
-        });
+        assertThrows(NullPointerException.class, () -> typeConverter.isFhirType(null));
     }
 
     @Test
     void iterableIsFhirType() {
         var value = new ArrayList<>();
-        assertThrows(IllegalArgumentException.class, () -> {
-            typeConverter.isFhirType(value);
-        });
+        assertThrows(IllegalArgumentException.class, () -> typeConverter.isFhirType(value));
     }
 
     @Test
@@ -158,23 +156,19 @@ class R5TypeConverterTests {
         assertThat(actual, instanceOf(IdType.class));
 
         actual = typeConverter.toFhirType(null);
-        assertNull(null);
+        assertNull(actual);
     }
 
     @Test
     void toFhirTypeIterable() {
         var value = new ArrayList<>();
-        assertThrows(IllegalArgumentException.class, () -> {
-            typeConverter.toFhirType(value);
-        });
+        assertThrows(IllegalArgumentException.class, () -> typeConverter.toFhirType(value));
     }
 
     @Test
     void toFhirTypeNotCql() {
         var offset = ZoneOffset.ofHours(3);
-        assertThrows(IllegalArgumentException.class, () -> {
-            typeConverter.toFhirType(offset);
-        });
+        assertThrows(IllegalArgumentException.class, () -> typeConverter.toFhirType(offset));
     }
 
     @Test
@@ -233,8 +227,8 @@ class R5TypeConverterTests {
         expectedString = typeConverter.toFhirString(null);
         assertNull(expectedString);
 
-        IPrimitiveType<BigDecimal> expectedDecimal = new DecimalType(new BigDecimal(2.0));
-        IPrimitiveType<BigDecimal> actualDecimal = typeConverter.toFhirDecimal(new BigDecimal(2.0));
+        IPrimitiveType<BigDecimal> expectedDecimal = new DecimalType(new BigDecimal("2.0"));
+        IPrimitiveType<BigDecimal> actualDecimal = typeConverter.toFhirDecimal(new BigDecimal("2.0"));
         assertEquals(expectedDecimal.getValue(), actualDecimal.getValue());
 
         expectedDecimal = typeConverter.toFhirDecimal(null);
@@ -338,9 +332,7 @@ class R5TypeConverterTests {
 
     @Test
     void objectToFhirAny() {
-        assertThrows(NotImplementedException.class, () -> {
-            typeConverter.toFhirAny("Huh");
-        });
+        assertThrows(NotImplementedException.class, () -> typeConverter.toFhirAny("Huh"));
     }
 
     @Test
@@ -454,9 +446,7 @@ class R5TypeConverterTests {
     @Test
     void invalidIntervalToFhirPeriod() {
         var interval = new Interval(5, true, 6, true);
-        assertThrows(IllegalArgumentException.class, () -> {
-            typeConverter.toFhirPeriod(interval);
-        });
+        assertThrows(IllegalArgumentException.class, () -> typeConverter.toFhirPeriod(interval));
     }
 
     @Test
@@ -480,15 +470,13 @@ class R5TypeConverterTests {
         assertTrue(expected.equalsDeep(actual));
 
         actual = (Range) typeConverter.toFhirRange(null);
-        assertNull(null);
+        assertNull(actual);
     }
 
     @Test
     void invalidIntervalToFhirRange() {
         var interval = new Interval(5, true, 6, true);
-        assertThrows(IllegalArgumentException.class, () -> {
-            typeConverter.toFhirRange(interval);
-        });
+        assertThrows(IllegalArgumentException.class, () -> typeConverter.toFhirRange(interval));
     }
 
     @Test
@@ -526,9 +514,7 @@ class R5TypeConverterTests {
     void invalidIntervalToFhirInterval() {
         var interval = new Interval(5, true, 6, true);
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            typeConverter.toFhirInterval(interval);
-        });
+        assertThrows(IllegalArgumentException.class, () -> typeConverter.toFhirInterval(interval));
     }
 
     private static List<ParametersParameterComponent> getPartsByName(ParametersParameterComponent ppc, String name) {
@@ -714,22 +700,19 @@ class R5TypeConverterTests {
         assertThat(actual, instanceOf(Interval.class));
 
         actual = typeConverter.toCqlType(null);
-        assertNull(null);
+        assertNull(actual);
     }
 
     @Test
     void toCqlTypeIterable() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            typeConverter.toCqlType(new ArrayList<>());
-        });
+        var list = new ArrayList<>();
+        assertThrows(IllegalArgumentException.class, () -> typeConverter.toCqlType(list));
     }
 
     @Test
     void toCqlTypeNotCql() {
         var offset = ZoneOffset.ofHours(3);
-        assertThrows(IllegalArgumentException.class, () -> {
-            typeConverter.toCqlType(offset);
-        });
+        assertThrows(IllegalArgumentException.class, () -> typeConverter.toCqlType(offset));
     }
 
     @Test
@@ -768,12 +751,11 @@ class R5TypeConverterTests {
 
     @Test
     void primitiveFhirTypeToCqlType() {
-        Boolean expectedBoolean = false;
         Boolean actualBoolean = typeConverter.toCqlBoolean(new BooleanType(false));
-        assertEquals(expectedBoolean, actualBoolean);
+        assertFalse(actualBoolean);
 
-        expectedBoolean = typeConverter.toCqlBoolean(null);
-        assertNull(expectedBoolean);
+        actualBoolean = typeConverter.toCqlBoolean(null);
+        assertNull(actualBoolean);
 
         Integer expectedInteger = 5;
         Integer actualInteger = typeConverter.toCqlInteger(new IntegerType(5));
@@ -786,15 +768,15 @@ class R5TypeConverterTests {
         String actualString = typeConverter.toCqlString(new StringType("5"));
         assertEquals(expectedString, actualString);
 
-        expectedString = typeConverter.toCqlString(null);
-        assertNull(expectedString);
+        actualString = typeConverter.toCqlString(null);
+        assertNull(actualString);
 
-        BigDecimal expectedDecimal = new BigDecimal(2.0);
-        BigDecimal actualDecimal = typeConverter.toCqlDecimal(new DecimalType(new BigDecimal(2.0)));
+        BigDecimal expectedDecimal = new BigDecimal("2.0");
+        BigDecimal actualDecimal = typeConverter.toCqlDecimal(new DecimalType(new BigDecimal("2.0")));
         assertEquals(expectedDecimal, actualDecimal);
 
-        expectedDecimal = typeConverter.toCqlDecimal(null);
-        assertNull(expectedDecimal);
+        actualDecimal = typeConverter.toCqlDecimal(null);
+        assertNull(actualDecimal);
     }
 
     @Test
@@ -865,9 +847,7 @@ class R5TypeConverterTests {
     @Test
     void objectToCqlType() {
         var id = new IdType();
-        assertThrows(NotImplementedException.class, () -> {
-            typeConverter.toCqlAny(id);
-        });
+        assertThrows(NotImplementedException.class, () -> typeConverter.toCqlAny(id));
     }
 
     @Test
@@ -934,7 +914,7 @@ class R5TypeConverterTests {
         assertTrue(expected.equal(actual));
 
         actual = typeConverter.toCqlInterval(null);
-        assertNull(null);
+        assertNull(actual);
     }
 
     @Test
@@ -956,15 +936,13 @@ class R5TypeConverterTests {
         assertTrue(expected.equal(actual));
 
         actual = typeConverter.toCqlInterval(null);
-        assertNull(null);
+        assertNull(actual);
     }
 
     @Test
     void invalidTypeToCqlInterval() {
         var attachment = new Attachment();
-        assertThrows(IllegalArgumentException.class, () -> {
-            typeConverter.toCqlInterval(attachment);
-        });
+        assertThrows(IllegalArgumentException.class, () -> typeConverter.toCqlInterval(attachment));
     }
 
     @Test
@@ -973,8 +951,40 @@ class R5TypeConverterTests {
         assertNull(expected);
 
         var p = new Patient();
-        assertThrows(NotImplementedException.class, () -> {
-            typeConverter.toCqlTuple(p);
-        });
+        assertThrows(NotImplementedException.class, () -> typeConverter.toCqlTuple(p));
+    }
+
+    @Test
+    void longToCqlLong() {
+        Long expected = 5L;
+        var actual = typeConverter.toCqlType(expected);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void nullToCqlLong() {
+        var actual = typeConverter.toCqlLong(null);
+        assertNull(actual);
+    }
+
+    @Test
+    void fhirToCqlLong() {
+        var fhirType = new Integer64Type(5L);
+        var actual = typeConverter.toCqlLong(fhirType);
+        assertEquals(5L, actual);
+    }
+
+    @Test
+    void fhirToFhirInteger64() {
+        var expected = new Integer64Type(5L);
+        var actual = typeConverter.toFhirInteger64(5L);
+        assertEquals(expected.getValue(), actual.getValue());
+    }
+
+    @Test
+    void longToFhirType() {
+        var actual = typeConverter.toFhirType(5L);
+        assertInstanceOf(Integer64Type.class, actual);
+        assertEquals(5L, ((Integer64Type) actual).getValue());
     }
 }

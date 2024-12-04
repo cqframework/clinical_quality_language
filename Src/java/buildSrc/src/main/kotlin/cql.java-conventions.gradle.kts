@@ -1,15 +1,19 @@
 plugins {
-    id("java")
+    kotlin("jvm")
     id("maven-publish")
     id("jacoco")
     id("signing")
     id("cql.sca-conventions")
     id("com.diffplug.spotless")
+    id("org.jetbrains.dokka")
+    id("io.gitlab.arturbosch.detekt")
+}
+
+kotlin {
+    jvmToolchain(17)
 }
 
 java {
-    withJavadocJar()
-    withSourcesJar()
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
     }
@@ -23,6 +27,16 @@ repositories {
         mavenContent {
             snapshotsOnly()
         }
+    }
+}
+
+spotless {
+    java {
+        targetExclude("**/generated/**")
+        palantirJavaFormat()
+    }
+    kotlin {
+        ktfmt().kotlinlangStyle()
     }
 }
 
@@ -50,11 +64,28 @@ tasks.jar {
     }
 }
 
+tasks.register<Jar>("dokkaHtmlJar") {
+    dependsOn(tasks.dokkaHtml)
+    from(tasks.dokkaHtml.flatMap { it.outputDirectory })
+    archiveClassifier.set("html-docs")
+}
+
+tasks.register<Jar>("dokkaJavadocJar") {
+    dependsOn(tasks.dokkaJavadoc)
+    from(tasks.dokkaJavadoc.flatMap { it.outputDirectory })
+    archiveClassifier.set("javadoc")
+}
+
 jacoco {
     toolVersion = "0.8.11"
+
 }
 
 tasks.withType<Test> {
+    configure<JacocoTaskExtension> {
+        excludes = listOf("org/hl7/fhir/**")
+    }
+
     useJUnitPlatform()
     testLogging {
         events("skipped", "failed")
@@ -79,13 +110,6 @@ tasks.javadoc {
 tasks.withType<JavaCompile> {
     options.compilerArgs.add("-Xlint:unchecked")
     options.isDeprecation = true
-}
-
-spotless {
-    java {
-        targetExclude("**/generated/**")
-        palantirJavaFormat()
-    }
 }
 
 /*

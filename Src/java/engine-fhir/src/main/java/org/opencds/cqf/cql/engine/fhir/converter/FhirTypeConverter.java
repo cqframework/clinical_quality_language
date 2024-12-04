@@ -89,6 +89,13 @@ public interface FhirTypeConverter {
     public IPrimitiveType<Integer> toFhirInteger(Integer value);
 
     /**
+     * Converts a Long to a FHIR Integer64
+     * @param value the value to convert
+     * @return a FHIR Integer64
+     */
+    public IPrimitiveType<Long> toFhirInteger64(Long value);
+
+    /**
      * Converts a BigDecimal to a FHIR Decimal
      *
      * @param value the value to convert
@@ -233,7 +240,7 @@ public interface FhirTypeConverter {
      * @return true if value is a CQL type, false otherwise
      * @throws NullPointerException if value is null
      */
-    public Boolean isCqlType(Object value);
+    public boolean isCqlType(Object value);
 
     /**
      * Converts an Object to a CQL type.
@@ -277,6 +284,13 @@ public interface FhirTypeConverter {
      * @return an Integer
      */
     public Integer toCqlInteger(IPrimitiveType<Integer> value);
+
+    /**
+     * Converts a FHIR Integer64 to a CQL Long
+     * @param value the value to convert
+     * @return a Long
+     */
+    public Long toCqlLong(IPrimitiveType<Long> value);
 
     /**
      * Converts a FHIR Decimal to a CQL Decimal

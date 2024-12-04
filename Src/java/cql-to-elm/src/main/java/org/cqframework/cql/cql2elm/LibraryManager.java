@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -271,8 +272,7 @@ public class LibraryManager {
             return;
         }
 
-        compiledLibrary.getLibrary().getStatements().getDef().sort((a, b) -> a.getName()
-                .compareTo(b.getName()));
+        compiledLibrary.getLibrary().getStatements().getDef().sort(Comparator.comparing(ExpressionDef::getName));
     }
 
     private CompiledLibrary tryCompiledLibraryElm(VersionedIdentifier libraryIdentifier, CqlCompilerOptions options) {

@@ -160,16 +160,16 @@ public class LibraryBuilder {
             this.listTraversal = false;
         }
         if (options.getOptions().contains(CqlCompilerOptions.Options.DisableListDemotion)) {
-            this.getConversionMap().disableListDemotion();
+            this.getConversionMap().setListDemotionEnabled(false);
         }
         if (options.getOptions().contains(CqlCompilerOptions.Options.DisableListPromotion)) {
-            this.getConversionMap().disableListPromotion();
+            this.getConversionMap().setListPromotionEnabled(false);
         }
         if (options.getOptions().contains(CqlCompilerOptions.Options.EnableIntervalDemotion)) {
-            this.getConversionMap().enableIntervalDemotion();
+            this.getConversionMap().setIntervalDemotionEnabled(true);
         }
         if (options.getOptions().contains(CqlCompilerOptions.Options.EnableIntervalPromotion)) {
-            this.getConversionMap().enableIntervalPromotion();
+            this.getConversionMap().setIntervalPromotionEnabled(true);
         }
         setCompatibilityLevel(options.getCompatibilityLevel());
         this.cqlToElmInfo.setTranslatorOptions(options.toString());
@@ -1099,7 +1099,7 @@ public class LibraryBuilder {
     }
 
     private int getTypeScore(OperatorResolution resolution) {
-        int typeScore = ConversionMap.ConversionScore.ExactMatch.score();
+        int typeScore = ConversionMap.ConversionScore.ExactMatch.getScore();
         for (DataType operand : resolution.getOperator().getSignature().getOperandTypes()) {
             typeScore += ConversionMap.getTypePrecedenceScore(operand);
         }
@@ -1280,12 +1280,7 @@ public class LibraryBuilder {
         }
 
         return new CallContext(
-                libraryName,
-                operatorName,
-                allowPromotionAndDemotion,
-                allowFluent,
-                mustResolve,
-                dataTypes.toArray(new DataType[dataTypes.size()]));
+                libraryName, operatorName, allowPromotionAndDemotion, allowFluent, mustResolve, dataTypes);
     }
 
     public Invocation resolveInvocation(
@@ -1384,9 +1379,9 @@ public class LibraryBuilder {
                 false,
                 fd.isFluent() != null && fd.isFluent(),
                 false,
-                dataTypes.toArray(new DataType[dataTypes.size()]));
+                dataTypes);
         // Resolve exact, no conversion map
-        OperatorResolution resolution = compiledLibrary.resolveCall(callContext, null);
+        OperatorResolution resolution = compiledLibrary.resolveCall(callContext, conversionMap);
         if (resolution != null) {
             return resolution.getOperator();
         }
@@ -1395,7 +1390,7 @@ public class LibraryBuilder {
 
     public OperatorResolution resolveCall(CallContext callContext) {
         OperatorResolution result = null;
-        if (callContext.getLibraryName() == null || callContext.getLibraryName().equals("")) {
+        if (callContext.getLibraryName() == null || callContext.getLibraryName().isEmpty()) {
             result = compiledLibrary.resolveCall(callContext, conversionMap);
             if (result == null) {
                 result = getSystemLibrary().resolveCall(callContext, conversionMap);
@@ -2279,19 +2274,11 @@ public class LibraryBuilder {
                                             "Inconsistent target maps %s and %s for choice type %s",
                                             resultTargetMaps.get(resolution.getType()),
                                             resolution.getTargetMap(),
-                                            resolution.getType().toString()));
+                                            resolution.getType()));
                                 }
                             } else {
                                 resultTargetMaps.put(resolution.getType(), resolution.getTargetMap());
                             }
-                        }
-
-                        if (name == null) {
-                            name = resolution.getName();
-                        } else if (!name.equals(resolution.getName())) {
-                            throw new IllegalArgumentException(String.format(
-                                    "Inconsistent property resolution for choice type %s (was %s, is %s)",
-                                    choice.toString(), name, resolution.getName()));
                         }
 
                         if (name == null) {
@@ -2310,9 +2297,7 @@ public class LibraryBuilder {
                 }
 
                 if (resultTypes.size() == 1) {
-                    for (DataType resultType : resultTypes) {
-                        return new PropertyResolution(resultType, name, resultTargetMaps);
-                    }
+                    return new PropertyResolution(resultTypes.iterator().next(), name, resultTargetMaps);
                 }
             } else if (currentType instanceof ListType && listTraversal) {
                 // NOTE: FHIRPath path traversal support
@@ -2408,10 +2393,9 @@ public class LibraryBuilder {
         }
 
         final ResolvedIdentifierContext resolvedIdentifierContext = resolve(identifier);
-        final Optional<Element> optElement = resolvedIdentifierContext.getExactMatchElement();
+        final var element = resolvedIdentifierContext.getExactMatchElement();
 
-        if (optElement.isPresent()) {
-            final Element element = optElement.get();
+        if (element != null) {
             if (element instanceof ExpressionDef) {
                 checkLiteralContext();
                 ExpressionRef expressionRef = of.createExpressionRef().withName(((ExpressionDef) element).getName());
@@ -2495,10 +2479,7 @@ public class LibraryBuilder {
 
             if (element instanceof IncludeDef) {
                 checkLiteralContext();
-                LibraryRef libraryRef = new LibraryRef();
-                libraryRef.setLocalId(of.nextId());
-                libraryRef.setLibraryName(((IncludeDef) element).getLocalIdentifier());
-                return libraryRef;
+                return new LibraryRef(of.nextId(), ((IncludeDef) element).getLocalIdentifier());
             }
         }
 
@@ -2518,11 +2499,12 @@ public class LibraryBuilder {
 
         if (mustResolve) {
             // ERROR:
-            final String exceptionMessage = resolvedIdentifierContext
-                    .warnCaseInsensitiveIfApplicable()
-                    .orElse(String.format("Could not resolve identifier %s in the current library.", identifier));
+            var message = resolvedIdentifierContext.warnCaseInsensitiveIfApplicable();
+            if (message == null) {
+                message = String.format("Could not resolve identifier %s in the current library.", identifier);
+            }
 
-            throw new IllegalArgumentException(exceptionMessage);
+            throw new IllegalArgumentException(message);
         }
 
         return null;
@@ -2951,11 +2933,9 @@ public class LibraryBuilder {
 
             ResolvedIdentifierContext resolvedIdentifierContext = referencedLibrary.resolve(memberIdentifier);
 
-            final Optional<Element> optElement = resolvedIdentifierContext.getExactMatchElement();
+            final var element = resolvedIdentifierContext.getExactMatchElement();
 
-            if (optElement.isPresent()) {
-                final Element element = optElement.get();
-
+            if (element != null) {
                 if (element instanceof ExpressionDef) {
                     checkAccessLevel(libraryName, memberIdentifier, ((ExpressionDef) element).getAccessLevel());
                     Expression result = of.createExpressionRef()
@@ -3171,7 +3151,7 @@ public class LibraryBuilder {
         if (inUnfilteredContext()) {
             // If we are in the source clause of a query, indicate that the source references patient context
             if (inQueryContext() && getScope().getQueries().peek().inSourceClause()) {
-                getScope().getQueries().peek().referenceSpecificContext();
+                getScope().getQueries().peek().setReferencesSpecificContextValue(true);
             }
 
             DataType resultType = expressionDef.getResultType();
