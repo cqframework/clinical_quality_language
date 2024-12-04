@@ -4449,7 +4449,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 try {
                     libraryBuilder.popIdentifier();
                 } catch (Exception e) {
-                    log.info("Error popping identifier: {}", e.getMessage());
+                    log.warn("error popping identifier", e);
                 }
             }
             // Intentionally do _not_ pop the function name, it needs to remain in global scope!
