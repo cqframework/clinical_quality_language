@@ -89,7 +89,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
                 "AgeInWeeksAt",
                 "AgeInDaysAt" -> {
                     checkNumberOfOperands(functionRef, 1)
-                    val ops: MutableList<Expression?> = ArrayList()
+                    val ops = ArrayList<Expression>()
                     var op = functionRef.operand[0]
                     // If the op is not a Date or DateTime, attempt to get it to convert it to a
                     // Date or DateTime
@@ -158,7 +158,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
                 "AgeInMinutesAt",
                 "AgeInSecondsAt",
                 "AgeInMillisecondsAt" -> {
-                    val ops: MutableList<Expression?> = ArrayList()
+                    val ops = ArrayList<Expression>()
                     ops.add(patientBirthDateProperty)
                     ops.addAll(functionRef.operand)
                     return resolveCalculateAgeAt(
@@ -353,7 +353,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
 
     // Age-Related Function Support
     private fun resolveCalculateAge(
-        e: Expression?,
+        e: Expression,
         p: DateTimePrecision
     ): UnaryExpressionInvocation<CalculateAge> {
         val operator = of.createCalculateAge().withPrecision(p).withOperand(e)
@@ -363,7 +363,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
     }
 
     private fun resolveCalculateAgeAt(
-        e: List<Expression?>,
+        e: List<Expression>,
         p: DateTimePrecision
     ): BinaryExpressionInvocation<CalculateAgeAt> {
         val operator = of.createCalculateAgeAt().withPrecision(p).withOperand(e)
@@ -651,7 +651,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
     }
 
     // General Function Support
-    private fun <T : Expression?> createExpression(functionRef: FunctionRef): T {
+    private fun <T : Expression> createExpression(functionRef: FunctionRef): T {
         return try {
             of.javaClass.getMethod("create" + functionRef.name).invoke(of) as T
         } catch (@Suppress("TooGenericExceptionCaught") e: Exception) {

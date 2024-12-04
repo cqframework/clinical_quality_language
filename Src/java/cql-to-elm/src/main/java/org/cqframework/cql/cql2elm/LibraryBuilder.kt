@@ -2244,7 +2244,7 @@ class LibraryBuilder(
         return first
     }
 
-    fun ensureCompatible(expression: Expression, targetType: DataType?): Expression? {
+    fun ensureCompatible(expression: Expression, targetType: DataType?): Expression {
         if (targetType == null) {
             return objectFactory.createNull()
         }
@@ -2253,7 +2253,7 @@ class LibraryBuilder(
         } else expression
     }
 
-    fun enforceCompatible(expression: Expression, targetType: DataType?): Expression? {
+    fun enforceCompatible(expression: Expression, targetType: DataType?): Expression {
         if (targetType == null) {
             return objectFactory.createNull()
         }
