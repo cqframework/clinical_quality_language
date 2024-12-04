@@ -32,7 +32,7 @@ public class Environment {
     private final Map<String, DataProvider> dataProviders = new HashMap<>();
     private final TerminologyProvider terminologyProvider;
 
-    private Map<String, DataProvider> packageMap = new HashMap<>();
+    private final Map<String, DataProvider> packageMap = new HashMap<>();
 
     // External function provider
 
@@ -74,7 +74,7 @@ public class Environment {
     // part of the LibraryManager?
     //
 
-    private Map<VersionedIdentifier, ExternalFunctionProvider> externalFunctionProviders = new HashMap<>();
+    private final Map<VersionedIdentifier, ExternalFunctionProvider> externalFunctionProviders = new HashMap<>();
 
     public void registerExternalFunctionProvider(VersionedIdentifier identifier, ExternalFunctionProvider provider) {
         externalFunctionProviders.put(identifier, provider);
@@ -133,7 +133,7 @@ public class Environment {
             return null;
         }
 
-        Class<? extends Object> clazz = left.getClass();
+        Class<?> clazz = left.getClass();
 
         DataProvider dataProvider = resolveDataProvider(clazz.getPackage().getName());
         return dataProvider.objectEqual(left, right);
@@ -148,7 +148,7 @@ public class Environment {
             return false;
         }
 
-        Class<? extends Object> clazz = left.getClass();
+        Class<?> clazz = left.getClass();
 
         DataProvider dataProvider = resolveDataProvider(clazz.getPackage().getName());
         return dataProvider.objectEquivalent(left, right);
@@ -165,7 +165,7 @@ public class Environment {
             return;
         }
 
-        Class<? extends Object> clazz = target.getClass();
+        Class<?> clazz = target.getClass();
 
         DataProvider dataProvider = resolveDataProvider(clazz.getPackage().getName());
         dataProvider.setValue(target, path, value);
@@ -298,7 +298,7 @@ public class Environment {
         return argumentType == null || operandType.isAssignableFrom(argumentType);
     }
 
-    public boolean matchesTypes(FunctionDef functionDef, List<? extends Object> arguments) {
+    public boolean matchesTypes(FunctionDef functionDef, List<?> arguments) {
         boolean isMatch = true;
 
         var operands = functionDef.getOperand();

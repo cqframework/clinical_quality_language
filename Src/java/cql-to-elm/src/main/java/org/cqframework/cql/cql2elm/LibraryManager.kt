@@ -192,8 +192,7 @@ constructor(
         if (compiledLibrary == null || compiledLibrary.library.statements == null) {
             return
         }
-        compiledLibrary.library.statements.def.sortWith { a: ExpressionDef, b: ExpressionDef ->
-            a.name.compareTo(b.name)
+        compiledLibrary.library.statements.def.sortBy { it.name
         }
     }
 

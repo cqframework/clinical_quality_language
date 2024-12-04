@@ -250,15 +250,6 @@ class ModelManager {
                 } else {
                     Model(modelInfo, this)
                 }
-            } catch (@Suppress("SwallowedException") e: ClassNotFoundException) {
-                throw IllegalArgumentException(
-                    @Suppress("ImplicitDefaultLocale")
-                    String.format(
-                        "Could not load model information for model %s, version %s.",
-                        identifier.id,
-                        identifier.version
-                    )
-                )
             } finally {
                 popLoading(modelPath)
             }

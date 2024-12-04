@@ -119,16 +119,16 @@ class LibraryBuilder(
             listTraversal = false
         }
         if (options.options.contains(CqlCompilerOptions.Options.DisableListDemotion)) {
-            conversionMap.disableListDemotion()
+            conversionMap.isListDemotionEnabled = false
         }
         if (options.options.contains(CqlCompilerOptions.Options.DisableListPromotion)) {
-            conversionMap.disableListPromotion()
+            conversionMap.isListPromotionEnabled = false
         }
         if (options.options.contains(CqlCompilerOptions.Options.EnableIntervalDemotion)) {
-            conversionMap.enableIntervalDemotion()
+            conversionMap.isIntervalDemotionEnabled = true
         }
         if (options.options.contains(CqlCompilerOptions.Options.EnableIntervalPromotion)) {
-            conversionMap.enableIntervalPromotion()
+            conversionMap.isIntervalPromotionEnabled = true
         }
         compatibilityLevel = options.compatibilityLevel
         cqlToElmInfo.translatorOptions = options.toString()
@@ -1159,7 +1159,7 @@ class LibraryBuilder(
     }
 
     private fun getTypeScore(resolution: OperatorResolution?): Int {
-        var typeScore = ConversionMap.ConversionScore.ExactMatch.score()
+        var typeScore = ConversionMap.ConversionScore.ExactMatch.score
         for (operand in resolution!!.operator.signature.operandTypes) {
             typeScore += ConversionMap.getTypePrecedenceScore(operand)
         }
@@ -1498,7 +1498,7 @@ class LibraryBuilder(
                 dataTypes
             )
         // Resolve exact, no conversion map
-        return compiledLibrary.resolveCall(callContext, null)?.operator
+        return compiledLibrary.resolveCall(callContext, conversionMap)?.operator
     }
 
     @Suppress("NestedBlockDepth")
@@ -2639,9 +2639,8 @@ class LibraryBuilder(
             return operandRef
         }
         val resolvedIdentifierContext: ResolvedIdentifierContext = resolve(identifier)
-        val optElement: Optional<Element> = resolvedIdentifierContext.exactMatchElement
-        if (optElement.isPresent) {
-            val element: Element = optElement.get()
+        val element = resolvedIdentifierContext.exactMatchElement
+        if (element != null) {
             if (element is ExpressionDef) {
                 checkLiteralContext()
                 val expressionRef: ExpressionRef =
@@ -2767,16 +2766,12 @@ class LibraryBuilder(
         }
         if (mustResolve) {
             // ERROR:
-            val exceptionMessage: String =
-                resolvedIdentifierContext
-                    .warnCaseInsensitiveIfApplicable()
-                    .orElse(
-                        String.format(
-                            "Could not resolve identifier %s in the current library.",
-                            identifier
-                        )
-                    )
-            throw IllegalArgumentException(exceptionMessage)
+            var message = resolvedIdentifierContext.warnCaseInsensitiveIfApplicable();
+            if (message == null) {
+                message = String.format("Could not resolve identifier %s in the current library.", identifier);
+            }
+
+            throw IllegalArgumentException(message);
         }
         return null
     }
@@ -3291,9 +3286,8 @@ class LibraryBuilder(
             val referencedLibrary: CompiledLibrary = resolveLibrary(libraryName)
             val resolvedIdentifierContext: ResolvedIdentifierContext =
                 referencedLibrary.resolve(memberIdentifier)
-            val optElement: Optional<Element> = resolvedIdentifierContext.exactMatchElement
-            if (optElement.isPresent) {
-                val element: Element = optElement.get()
+            val element = resolvedIdentifierContext.exactMatchElement
+            if (element != null) {
                 if (element is ExpressionDef) {
                     checkAccessLevel(libraryName, memberIdentifier, element.accessLevel)
                     val result: Expression =

@@ -252,17 +252,13 @@ open class CqlPreprocessorElmCommonVisitor(
         version: String?,
         localIdentifier: String
     ): Model {
-        var modelName = modelName
-        var version = version
-        if (modelName == null) {
-            val defaultUsing = libraryInfo.defaultUsingDefinition
-            modelName = defaultUsing?.name
-            version = defaultUsing?.version
-        }
-        val modelIdentifier = ModelIdentifier().withId(modelName).withVersion(version)
-        if (modelNamespace != null) {
-            modelIdentifier.system = modelNamespace.uri
-        }
+        val modelId = modelName ?: libraryInfo.defaultUsingDefinition?.name
+        val modelVersion = version ?: libraryInfo.defaultUsingDefinition?.version
+        val modelIdentifier =
+            ModelIdentifier()
+                .withId(modelId)
+                .withVersion(modelVersion)
+                .withSystem(modelNamespace?.uri)
         return libraryBuilder.getModel(modelIdentifier, localIdentifier)
     }
 

@@ -68,6 +68,7 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun visitLibraryDefinition(ctx: LibraryDefinitionContext): Any? {
         val identifiers = visit(ctx.qualifiedIdentifier()) as MutableList<String>
         val libraryName = identifiers.removeAt(identifiers.size - 1)
@@ -80,6 +81,7 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
         return super.visitLibraryDefinition(ctx)
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun visitIncludeDefinition(ctx: IncludeDefinitionContext): Any {
         val identifiers = visit(ctx.qualifiedIdentifier()) as MutableList<String>
         val name = identifiers.removeAt(identifiers.size - 1)
@@ -94,6 +96,7 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
         return includeDefinition
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun visitUsingDefinition(ctx: UsingDefinitionContext): Any {
         val identifiers = visit(ctx.qualifiedIdentifier()) as MutableList<String>
         val unqualifiedIdentifier = identifiers.removeAt(identifiers.size - 1)
