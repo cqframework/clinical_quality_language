@@ -45,6 +45,11 @@ class R4FhirTypeConverter extends BaseFhirTypeConverter {
     }
 
     @Override
+    public IPrimitiveType<Long> toFhirInteger64(Long value) {
+        throw new IllegalArgumentException("FHIR R4 does not support Long/Integer64 values");
+    }
+
+    @Override
     public IPrimitiveType<BigDecimal> toFhirDecimal(BigDecimal value) {
         if (value == null) {
             return null;

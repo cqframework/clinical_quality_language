@@ -4500,7 +4500,7 @@ class Cql2ElmVisitor(
                 try {
                     libraryBuilder.popIdentifier()
                 } catch (e: Exception) {
-                    log.info("Error popping identifier: {}", e.message)
+                    log.warn("Error popping identifier", e)
                 }
             }
             // Intentionally do _not_ pop the function name, it needs to remain in global scope!
