@@ -1979,9 +1979,7 @@ class LibraryBuilder(
                     conversion.fromType.isCompatibleWith(conversion.toType))
         ) {
             if (conversion.fromType is ChoiceType && conversion.toType is ChoiceType) {
-                if (
-                    (conversion.fromType as ChoiceType).isSubSetOf(conversion.toType as ChoiceType)
-                ) {
+                if (conversion.fromType.isSubSetOf(conversion.toType)) {
                     // conversion between compatible choice types requires no cast (i.e.
                     // choice<Integer, String> can be
                     // safely passed to choice<Integer, String, DateTime>
@@ -2428,8 +2426,8 @@ class LibraryBuilder(
         val identifiers: Array<String> =
             path.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         for (i in identifiers.indices) {
-            val resolution: PropertyResolution? = resolveProperty(sourceType, identifiers[i])
-            sourceType = resolution!!.type
+            val resolution = resolveProperty(sourceType, identifiers[i])!!
+            sourceType = resolution.type
             // Actually, this doesn't matter for this call, we're just resolving the type...
             // if (!resolution.getTargetMap().equals(identifiers[i])) {
             //    throw new IllegalArgumentException(String.format("Identifier %s references an
@@ -2502,7 +2500,7 @@ class LibraryBuilder(
                 val resultTargetMaps: MutableMap<DataType, String> = HashMap()
                 var name: String? = null
                 for (choice: DataType in currentType.types) {
-                    val resolution: PropertyResolution? = resolveProperty(choice, identifier, false)
+                    val resolution = resolveProperty(choice, identifier, false)
                     if (resolution != null) {
                         resultTypes.add(resolution.type)
                         if (resolution.targetMap != null) {
@@ -2550,9 +2548,8 @@ class LibraryBuilder(
             } else if (currentType is ListType && listTraversal) {
                 // NOTE: FHIRPath path traversal support
                 // Resolve property as a list of items of property of the element type
-                val resolution: PropertyResolution? =
-                    resolveProperty(currentType.elementType, identifier)
-                return PropertyResolution(ListType(resolution!!.type), (resolution.targetMap)!!)
+                val resolution = resolveProperty(currentType.elementType, identifier)!!
+                return PropertyResolution(ListType(resolution.type), (resolution.targetMap)!!)
             }
             if (currentType.baseType != null) {
                 currentType = currentType.baseType
@@ -2750,16 +2747,16 @@ class LibraryBuilder(
         // the identifier may be resolved as an implicit property reference on that context.
         val parameterRef: ParameterRef? = resolveImplicitContext()
         if (parameterRef != null) {
-            val resolution: PropertyResolution? =
-                resolveProperty(parameterRef.resultType, identifier, false)
+            val resolution = resolveProperty(parameterRef.resultType, identifier, false)
             if (resolution != null) {
-                var contextAccessor: Expression? =
+                var contextAccessor =
                     buildProperty(
                         parameterRef,
                         resolution.name,
                         resolution.isSearch,
                         resolution.type
                     )
+                        as Expression
                 contextAccessor = applyTargetMap(contextAccessor, resolution.targetMap)
                 return contextAccessor
             }
@@ -2913,7 +2910,7 @@ class LibraryBuilder(
     }
 
     @Suppress("LongMethod", "CyclomaticComplexMethod", "NestedBlockDepth", "ThrowsCount")
-    fun applyTargetMap(source: Expression?, targetMap: String?): Expression? {
+    fun applyTargetMap(source: Expression, targetMap: String?): Expression {
         var targetMap: String? = targetMap
         if (targetMap == null || (targetMap == "null")) {
             return source
@@ -3267,7 +3264,7 @@ class LibraryBuilder(
     }
 
     @Suppress("LongMethod", "NestedBlockDepth")
-    fun resolveAccessor(left: Expression, memberIdentifier: String): Expression? {
+    fun resolveAccessor(left: Expression, memberIdentifier: String): Expression {
         // if left is a LibraryRef
         // if right is an identifier
         // right may be an ExpressionRef, a CodeSystemRef, a ValueSetRef, a CodeRef, a ConceptRef,
@@ -3366,25 +3363,24 @@ class LibraryBuilder(
                 )
             )
         } else if (left is AliasRef) {
-            val resolution: PropertyResolution? =
-                resolveProperty(left.getResultType(), memberIdentifier)
+            val resolution = resolveProperty(left.getResultType(), memberIdentifier)!!
             val result: Expression =
-                buildProperty(left.name, resolution!!.name, resolution.isSearch, resolution.type)
+                buildProperty(left.name, resolution.name, resolution.isSearch, resolution.type)
             return applyTargetMap(result, resolution.targetMap)
         } else if (left.resultType is ListType && listTraversal) {
             // NOTE: FHIRPath path traversal support
             // Resolve property access of a list of items as a query:
             // listValue.property ::= listValue X where X.property is not null return all X.property
             val listType: ListType = left.resultType as ListType
-            val resolution: PropertyResolution? =
-                resolveProperty(listType.elementType, memberIdentifier)
-            var accessor: Expression? =
+            val resolution = resolveProperty(listType.elementType, memberIdentifier)!!
+            var accessor =
                 buildProperty(
                     objectFactory.createAliasRef().withName("\$this"),
-                    resolution!!.name,
+                    resolution.name,
                     resolution.isSearch,
                     resolution.type
                 )
+                    as Expression
             accessor = applyTargetMap(accessor, resolution.targetMap)
             val not: Expression = buildIsNotNull(accessor)
 
@@ -3419,9 +3415,10 @@ class LibraryBuilder(
             }
             return query
         } else {
-            val resolution: PropertyResolution? = resolveProperty(left.resultType, memberIdentifier)
-            var result: Expression? =
-                buildProperty(left, resolution!!.name, resolution.isSearch, resolution.type)
+            val resolution = resolveProperty(left.resultType, memberIdentifier)!!
+            var result =
+                buildProperty(left, resolution.name, resolution.isSearch, resolution.type)
+                    as Expression
             result = applyTargetMap(result, resolution.targetMap)
             return result
         }

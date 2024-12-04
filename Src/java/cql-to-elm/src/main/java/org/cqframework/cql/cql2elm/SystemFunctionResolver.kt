@@ -383,13 +383,13 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
                 property
             } else {
                 val resolution = builder.resolveProperty(source.resultType, birthDateProperty)
-                var result: Expression? =
+                var result =
                     builder.buildProperty(
                         source,
                         resolution!!.name,
                         resolution.isSearch,
                         resolution.type
-                    )
+                    ) as Expression
                 result = builder.applyTargetMap(result, resolution.targetMap)
                 result
             }
