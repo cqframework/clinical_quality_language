@@ -2973,13 +2973,13 @@ class LibraryBuilder(
             }
             return when (c.caseItem.size) {
                 0 -> {
-                    buildNull(source!!.resultType)
+                    buildNull(source.resultType)
                 }
                 1 -> {
                     c.caseItem[0].then
                 }
                 else -> {
-                    c.setElse(buildNull(source!!.resultType))
+                    c.setElse(buildNull(source.resultType))
                     c.resultType = source.resultType
                     c
                 }
@@ -3001,10 +3001,10 @@ class LibraryBuilder(
             }
             val functionArgument: String =
                 targetMap.substring(invocationStart + 1, targetMap.lastIndexOf(')'))
-            val argumentSource: Expression? =
+            val argumentSource =
                 if ((functionArgument == "%value")) source
                 else applyTargetMap(source, functionArgument)
-            if (argumentSource!!.resultType is ListType) {
+            if (argumentSource.resultType is ListType) {
                 val query: Query =
                     objectFactory
                         .createQuery()
@@ -3026,7 +3026,7 @@ class LibraryBuilder(
                 query.setReturn(
                     objectFactory.createReturnClause().withDistinct(false).withExpression(fr)
                 )
-                query.resultType = source!!.resultType
+                query.resultType = source.resultType
                 return query
             } else {
                 val fr: FunctionRef =
@@ -3035,7 +3035,7 @@ class LibraryBuilder(
                         .withLibraryName(libraryName)
                         .withName(functionName)
                         .withOperand(argumentSource)
-                fr.resultType = source!!.resultType
+                fr.resultType = source.resultType
                 return fr
                 // This doesn't quite work because the US.Core types aren't subtypes of FHIR types,
                 // or they are defined as System types and not FHIR types
@@ -3059,7 +3059,7 @@ class LibraryBuilder(
                             String.format(
                                 "Cannot expand target map %s for non-property-accessor type %s",
                                 targetMap,
-                                source!!.javaClass.simpleName
+                                source.javaClass.simpleName
                             )
                         )
                     }
@@ -3225,7 +3225,7 @@ class LibraryBuilder(
                 //    result = of.createProperty().withSource(result).withPath(path);
                 // }
             }
-            if (source!!.resultType !is ListType) {
+            if (source.resultType !is ListType) {
                 // Use a singleton from since the source of the query is a list
                 result = objectFactory.createSingletonFrom().withOperand(result)
             }
@@ -3236,7 +3236,7 @@ class LibraryBuilder(
             // If the source is a list, the mapping is expected to apply to every element in the
             // list
             // ((source $this return all $this.value)
-            if (source!!.resultType is ListType) {
+            if (source.resultType is ListType) {
                 val s: AliasedQuerySource =
                     objectFactory
                         .createAliasedQuerySource()
@@ -3406,7 +3406,7 @@ class LibraryBuilder(
                             .withDistinct(false)
                             .withExpression(accessor)
                     )
-            query.resultType = ListType(accessor!!.resultType)
+            query.resultType = ListType(accessor.resultType)
             if (accessor.resultType is ListType) {
                 val result: Flatten = objectFactory.createFlatten().withOperand(query)
                 result.resultType = accessor.resultType
