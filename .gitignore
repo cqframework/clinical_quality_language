@@ -9,6 +9,7 @@ cql-all.ipr
 .DS_STORE
 out
 .project
+.kotlin
 .classpath
 .settings
 build
