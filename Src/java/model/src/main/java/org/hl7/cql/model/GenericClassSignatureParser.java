@@ -118,7 +118,8 @@ public class GenericClassSignatureParser {
                             baseTypeClass.getGenericParameters().get(index).getIdentifier();
                     System.out.println(boundType + " replaces param " + myParam);
                     for (ClassTypeElement baseClassField : baseClassFields) {
-                        ClassTypeElement myElement = new ClassTypeElement(baseClassField.getName(), boundType);
+                        ClassTypeElement myElement =
+                                new ClassTypeElement(baseClassField.getName(), boundType, false, false, null);
                         genericClassType.addElement(myElement);
                     }
                 }
@@ -209,7 +210,8 @@ public class GenericClassSignatureParser {
                         if (((TypeParameter) classTypeElement.getType())
                                 .getIdentifier()
                                 .equalsIgnoreCase(typeParameter.getIdentifier())) {
-                            ClassTypeElement newElement = new ClassTypeElement(classTypeElement.getName(), boundParam);
+                            ClassTypeElement newElement =
+                                    new ClassTypeElement(classTypeElement.getName(), boundParam, false, false, null);
                             newType.addElement(newElement);
                         }
                     }

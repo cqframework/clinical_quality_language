@@ -183,7 +183,7 @@ public class ModelImporter {
                     cie.setTypeSpecifier(elementTypeSpecifier);
                 }
             }
-            if (element.isProhibited()) {
+            if (element.getProhibited()) {
                 cie.setProhibited(true);
             }
             result.getElement().add(cie);
@@ -536,8 +536,8 @@ public class ModelImporter {
                             classType.addElement(new ClassTypeElement(
                                     name.toString(),
                                     element.getType(),
-                                    element.isProhibited(),
-                                    element.isOneBased(),
+                                    element.getProhibited(),
+                                    element.getOneBased(),
                                     null));
                     }
                 }

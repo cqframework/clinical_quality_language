@@ -73,17 +73,13 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
                             .withId(requiredModel.name)
                             .withVersion(requiredModel.version)
                     )
-                if (model != null) {
-                    modelIndex[requiredModel.name] = model
-                }
+                modelIndex[requiredModel.name] = model
             }
 
             // Ensure System model is registered
             if (!modelIndex.containsKey("System")) {
                 val systemModel = modelManager.resolveModel(ModelIdentifier().withId("System"))
-                if (systemModel != null) {
-                    modelIndex["System"] = systemModel
-                }
+                modelIndex["System"] = systemModel
             }
         }
 
@@ -497,7 +493,13 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
                 elementType = resolveTypeName("System.Any")
             }
             elements.add(
-                ClassTypeElement(e.name, elementType, e.isProhibited, e.isOneBased, e.target)
+                ClassTypeElement(
+                    e.name,
+                    elementType!!,
+                    e.isProhibited ?: false,
+                    e.isOneBased ?: false,
+                    e.target
+                )
             )
         }
         return elements

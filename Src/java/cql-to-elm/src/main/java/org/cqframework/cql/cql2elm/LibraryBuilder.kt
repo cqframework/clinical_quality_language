@@ -2463,7 +2463,7 @@ class LibraryBuilder(
                 } else {
                     for (e: ClassTypeElement in classType.elements) {
                         if ((e.name == identifier)) {
-                            if (e.isProhibited) {
+                            if (e.prohibited) {
                                 throw IllegalArgumentException(
                                     String.format(
                                         "Element %s cannot be referenced because it is marked prohibited in type %s.",

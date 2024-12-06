@@ -11,7 +11,7 @@ public class ClassType extends DataType implements NamedType {
             Collection<TypeParameter> parameters) {
         super(baseType);
 
-        if (name == null || name.equals("")) {
+        if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("name is null");
         }
 
@@ -49,11 +49,11 @@ public class ClassType extends DataType implements NamedType {
     }
 
     public String getNamespace() {
-        if (this.name != null) {
-            int qualifierIndex = this.name.indexOf(
-                    '.'); // TODO Should this not be the last occurrence rather than the first occurrence?
+        if (this.getName() != null) {
+            int qualifierIndex = this.getName()
+                    .indexOf('.'); // TODO Should this not be the last occurrence rather than the first occurrence?
             if (qualifierIndex > 0) {
-                return this.name.substring(0, qualifierIndex);
+                return this.getName().substring(0, qualifierIndex);
             }
         }
 
@@ -61,15 +61,15 @@ public class ClassType extends DataType implements NamedType {
     }
 
     public String getSimpleName() {
-        if (this.name != null) {
-            int qualifierIndex = this.name.indexOf(
-                    '.'); // TODO Should this not be the last occurrence rather than the first occurrence?
+        if (this.getName() != null) {
+            int qualifierIndex = this.getName()
+                    .indexOf('.'); // TODO Should this not be the last occurrence rather than the first occurrence?
             if (qualifierIndex > 0) {
-                return this.name.substring(qualifierIndex + 1);
+                return this.getName().substring(qualifierIndex + 1);
             }
         }
 
-        return this.name;
+        return this.getName();
     }
 
     private String identifier;
@@ -353,14 +353,14 @@ public class ClassType extends DataType implements NamedType {
 
     @Override
     public int hashCode() {
-        return this.name.hashCode();
+        return this.getName().hashCode();
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof ClassType) {
             ClassType that = (ClassType) o;
-            return this.name.equals(that.name);
+            return this.getName().equals(that.getName());
         }
 
         return false;
@@ -368,12 +368,12 @@ public class ClassType extends DataType implements NamedType {
 
     @Override
     public String toString() {
-        return this.name;
+        return this.getName();
     }
 
     @Override
     public String toLabel() {
-        return this.label == null ? this.name : this.label;
+        return this.label == null ? this.getName() : this.label;
     }
 
     private TupleType tupleType;
@@ -394,7 +394,7 @@ public class ClassType extends DataType implements NamedType {
         }
 
         for (ClassTypeElement element : classType.getElements()) {
-            if (!element.isProhibited()) {
+            if (!element.getProhibited()) {
                 TupleTypeElement tupleElement = new TupleTypeElement(element.getName(), element.getType());
                 elements.put(tupleElement.getName(), tupleElement);
             }
@@ -465,7 +465,7 @@ public class ClassType extends DataType implements NamedType {
         ClassType result = new ClassType(getName(), getBaseType());
         for (int i = 0; i < elements.size(); i++) {
             result.addElement(new ClassTypeElement(
-                    elements.get(i).getName(), elements.get(i).getType().instantiate(context)));
+                    elements.get(i).getName(), elements.get(i).getType().instantiate(context), false, false, null));
         }
 
         return result;

@@ -363,9 +363,7 @@ class Cql2ElmVisitor(
                 .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
                 .withName(parseString(ctx.identifier()))
                 .withId(parseString(ctx.codeId()))
-        if (ctx.codesystemIdentifier() != null) {
-            cd.codeSystem = visit(ctx.codesystemIdentifier()) as CodeSystemRef?
-        }
+        cd.codeSystem = visit(ctx.codesystemIdentifier()) as CodeSystemRef?
         if (ctx.displayClause() != null) {
             cd.display = parseString(ctx.displayClause()!!.STRING())
         }
@@ -380,10 +378,8 @@ class Cql2ElmVisitor(
             of.createConceptDef()
                 .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
                 .withName(parseString(ctx.identifier()))
-        if (ctx.codeIdentifier() != null) {
-            for (ci in ctx.codeIdentifier()) {
-                cd.code.add(visit(ci) as CodeRef?)
-            }
+        for (ci in ctx.codeIdentifier()) {
+            cd.code.add(visit(ci) as CodeRef?)
         }
         if (ctx.displayClause() != null) {
             cd.display = parseString(ctx.displayClause()!!.STRING())
@@ -3452,10 +3448,8 @@ class Cql2ElmVisitor(
                     }
                 }
                 val qicx: MutableList<RelationshipClause?> = ArrayList()
-                if (ctx.queryInclusionClause() != null) {
-                    for (queryInclusionClauseContext in ctx.queryInclusionClause()) {
-                        qicx.add(visit(queryInclusionClauseContext) as RelationshipClause?)
-                    }
+                for (queryInclusionClauseContext in ctx.queryInclusionClause()) {
+                    qicx.add(visit(queryInclusionClauseContext) as RelationshipClause?)
                 }
                 var where =
                     if (ctx.whereClause() != null) visit(ctx.whereClause()!!) as Expression?
@@ -3998,10 +3992,8 @@ class Cql2ElmVisitor(
                 )
         }
         val sortItems: MutableList<SortByItem?> = ArrayList()
-        if (ctx.sortByItem() != null) {
-            for (sortByItemContext in ctx.sortByItem()) {
-                sortItems.add(visit(sortByItemContext) as SortByItem?)
-            }
+        for (sortByItemContext in ctx.sortByItem()) {
+            sortItems.add(visit(sortByItemContext) as SortByItem?)
         }
         return of.createSortClause().withBy(sortItems)
     }
@@ -4208,7 +4200,6 @@ class Cql2ElmVisitor(
         if (result is FunctionRefInvocation) {
             if (
                 result.resolution != null &&
-                    result.resolution!!.operator != null &&
                     (result.resolution!!.operator.libraryName == null ||
                         (result.resolution!!.operator.libraryName ==
                             libraryBuilder.compiledLibrary.identifier!!.id))
@@ -4236,9 +4227,6 @@ class Cql2ElmVisitor(
             // operator compile is working as
             // expected
             require(result != null) { "Internal error: could not resolve function" }
-            require(result.expression != null) {
-                "Internal error: could not resolve invocation expression"
-            }
             require(result.expression.resultType != null) {
                 "Internal error: could not determine result type"
             }
@@ -4260,7 +4248,7 @@ class Cql2ElmVisitor(
 
                 // NOTE: FHIRPath method invocation
                 // If the target is an expression, resolve as a method invocation
-                if (target is Expression && isMethodInvocationEnabled) {
+                if (isMethodInvocationEnabled) {
                     return systemMethodResolver.resolveMethod(
                         target,
                         (identifier)!!,
@@ -4607,7 +4595,7 @@ class Cql2ElmVisitor(
     }
 
     private fun track(trackable: Trackable?, from: Element): TrackBack? {
-        val tb = if (from.trackbacks.size > 0) from.trackbacks[0] else null
+        val tb = if (from.trackbacks.isNotEmpty()) from.trackbacks[0] else null
         if (tb != null) {
             trackable!!.trackbacks.add(tb)
         }
