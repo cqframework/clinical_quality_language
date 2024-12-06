@@ -26,7 +26,7 @@ class ElmEditTest {
 
     private static class ExtChoiceTypeSpecifier extends ChoiceTypeSpecifier {
         public List<TypeSpecifier> getType() {
-            return type;
+            return _type;
         }
     }
 }
