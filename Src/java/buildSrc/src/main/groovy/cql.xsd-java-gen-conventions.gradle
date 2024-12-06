@@ -1,0 +1,39 @@
+plugins {
+    id "com.github.node-gradle.node"
+}
+
+dependencies {
+    api 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.1'
+    api 'codes.rafael.jaxb2_commons:jaxb2-basics-runtime:3.0.0'
+}
+
+node {
+    nodeProjectDir = file('../../js/xsd-java-gen')
+}
+
+var outDir = "${buildDir}/generated/sources/$name/main/java"
+
+task runXsdJavaGen(type: NodeTask) {
+    dependsOn npmInstall
+    script = file('../../js/xsd-java-gen/generate.js')
+}
+
+compileJava {
+    dependsOn runXsdJavaGen
+}
+
+sourcesJar {
+    dependsOn runXsdJavaGen
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir(outDir)
+        }
+    }
+}
+
+clean {
+    delete outDir
+}

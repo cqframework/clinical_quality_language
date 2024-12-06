@@ -1,0 +1,9 @@
+{
+  "name": "xsd-java-gen",
+  "devDependencies": {
+    "prettier": "^3.4.2"
+  },
+  "dependencies": {
+    "xml-js": "^1.6.11"
+  }
+}
