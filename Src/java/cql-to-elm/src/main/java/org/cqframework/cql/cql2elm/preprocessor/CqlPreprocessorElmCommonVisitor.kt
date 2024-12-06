@@ -175,7 +175,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
         if (includeDeprecatedElements) {
             result.type.addAll(typeSpecifiers)
         }
-        val choiceType = ChoiceType(types)
+        val choiceType = ChoiceType(types.flattenChoices())
         result.resultType = choiceType
         return result
     }

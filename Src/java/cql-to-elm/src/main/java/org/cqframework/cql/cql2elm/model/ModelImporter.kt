@@ -22,6 +22,7 @@ import org.hl7.cql.model.TupleType
 import org.hl7.cql.model.TupleTypeElement
 import org.hl7.cql.model.TypeParameter
 import org.hl7.cql.model.TypeParameter.TypeParameterConstraint
+import org.hl7.cql.model.flattenChoices
 import org.hl7.elm_modelinfo.r1.BoundParameterTypeSpecifier
 import org.hl7.elm_modelinfo.r1.ChoiceTypeInfo
 import org.hl7.elm_modelinfo.r1.ChoiceTypeSpecifier
@@ -242,12 +243,12 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
         }
 
         if (typeSpecifier is ChoiceTypeSpecifier) {
-            val choices: MutableList<DataType?> = ArrayList()
+            val choices: MutableList<DataType> = ArrayList()
             for (choice in typeSpecifier.choice) {
-                val choiceType = resolveTypeSpecifier(choice)
+                val choiceType = resolveTypeSpecifier(choice)!!
                 choices.add(choiceType)
             }
-            return ChoiceType(choices)
+            return ChoiceType(choices.flattenChoices())
         }
 
         return null
@@ -694,17 +695,17 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
     }
 
     private fun resolveChoiceType(t: ChoiceTypeInfo): ChoiceType {
-        val types = ArrayList<DataType?>()
+        val types = ArrayList<DataType>()
         if (t.choice != null && t.choice.isNotEmpty()) {
             for (typeSpecifier in t.choice) {
-                types.add(resolveTypeSpecifier(typeSpecifier))
+                types.add(resolveTypeSpecifier(typeSpecifier)!!)
             }
         } else {
             for (typeSpecifier in t.type) {
-                types.add(resolveTypeSpecifier(typeSpecifier))
+                types.add(resolveTypeSpecifier(typeSpecifier)!!)
             }
         }
-        return ChoiceType(types)
+        return ChoiceType(types.flattenChoices())
     }
 
     /**

@@ -430,30 +430,34 @@ class LibraryBuilder(
         // simpleTypeSpecifier: (identifier '.')? identifier
         // intervalTypeSpecifier: 'interval' '<' typeSpecifier '>'
         // listTypeSpecifier: 'list' '<' typeSpecifier '>'
-        return if (typeSpecifier.lowercase(Locale.getDefault()).startsWith("interval<")) {
-            val pointType =
-                resolveTypeSpecifier(
-                    typeSpecifier.substring(
-                        typeSpecifier.indexOf('<') + 1,
-                        typeSpecifier.lastIndexOf('>')
+        when {
+            typeSpecifier.lowercase(Locale.getDefault()).startsWith("interval<") -> {
+                val pointType =
+                    resolveTypeSpecifier(
+                        typeSpecifier.substring(
+                            typeSpecifier.indexOf('<') + 1,
+                            typeSpecifier.lastIndexOf('>')
+                        )
                     )
-                )
-            IntervalType(pointType)
-        } else if (typeSpecifier.lowercase(Locale.getDefault()).startsWith("list<")) {
-            val elementType =
-                resolveTypeName(
-                    typeSpecifier.substring(
-                        typeSpecifier.indexOf('<') + 1,
-                        typeSpecifier.lastIndexOf('>')
-                    )
-                )
-            ListType(elementType)
-        } else if (typeSpecifier.indexOf(".") >= 0) {
-            val modelName = typeSpecifier.substring(0, typeSpecifier.indexOf("."))
-            val typeName = typeSpecifier.substring(typeSpecifier.indexOf(".") + 1)
-            resolveTypeName(modelName, typeName)
-        } else {
-            resolveTypeName(typeSpecifier)
+                return IntervalType(pointType)
+            }
+            else ->
+                return if (typeSpecifier.lowercase(Locale.getDefault()).startsWith("list<")) {
+                    val elementType =
+                        resolveTypeName(
+                            typeSpecifier.substring(
+                                typeSpecifier.indexOf('<') + 1,
+                                typeSpecifier.lastIndexOf('>')
+                            )
+                        )
+                    ListType(elementType)
+                } else if (typeSpecifier.indexOf(".") >= 0) {
+                    val modelName = typeSpecifier.substring(0, typeSpecifier.indexOf("."))
+                    val typeName = typeSpecifier.substring(typeSpecifier.indexOf(".") + 1)
+                    resolveTypeName(modelName, typeName)
+                } else {
+                    resolveTypeName(typeSpecifier)
+                }
         }
     }
 
@@ -469,10 +473,7 @@ class LibraryBuilder(
         val usingDef = resolveUsingRef(modelName)
         if (usingDef == null && modelName == "FHIR") {
             // Special case for FHIR-derived models that include FHIR Helpers
-            val model = modelManager.resolveModelByUri("http://hl7.org/fhir")
-            if (model != null) {
-                return model
-            }
+            return modelManager.resolveModelByUri("http://hl7.org/fhir")
         }
         requireNotNull(usingDef) { String.format("Could not resolve model name %s", modelName) }
         return getModel(usingDef)
@@ -2238,8 +2239,8 @@ class LibraryBuilder(
         if (compatibleType != null) {
             return compatibleType
         }
-        if (!second.isSubTypeOf(first)) {
-            return ChoiceType(listOf(first, second))
+        if (!second.isSubTypeOf(first) && first != null) {
+            return ChoiceType(listOf(first, second).flattenChoices())
         }
 
         // The above construction of a choice type guarantees this will never be hit
@@ -2538,7 +2539,11 @@ class LibraryBuilder(
 
                 // The result type is a choice of all the resolved types
                 if (resultTypes.size > 1) {
-                    return PropertyResolution(ChoiceType(resultTypes), name!!, resultTargetMaps)
+                    return PropertyResolution(
+                        ChoiceType(resultTypes.flattenChoices()),
+                        name!!,
+                        resultTargetMaps
+                    )
                 }
                 if (resultTypes.size == 1) {
                     return PropertyResolution(
@@ -3008,43 +3013,48 @@ class LibraryBuilder(
             val argumentSource: Expression? =
                 if ((functionArgument == "%value")) source
                 else applyTargetMap(source, functionArgument)
-            if (argumentSource!!.resultType is ListType) {
-                val query: Query =
-                    objectFactory
-                        .createQuery()
-                        .withSource(
-                            objectFactory
-                                .createAliasedQuerySource()
-                                .withExpression(argumentSource)
-                                .withAlias("\$this")
-                        )
-                val fr: FunctionRef =
-                    objectFactory
-                        .createFunctionRef()
-                        .withLibraryName(libraryName)
-                        .withName(functionName)
-                        .withOperand(objectFactory.createAliasRef().withName("\$this"))
-                // This doesn't quite work because the US.Core types aren't subtypes of FHIR types.
-                // resolveCall(libraryName, functionName, new FunctionRefInvocation(fr), false,
-                // false);
-                query.setReturn(
-                    objectFactory.createReturnClause().withDistinct(false).withExpression(fr)
-                )
-                query.resultType = source!!.resultType
-                return query
-            } else {
-                val fr: FunctionRef =
-                    objectFactory
-                        .createFunctionRef()
-                        .withLibraryName(libraryName)
-                        .withName(functionName)
-                        .withOperand(argumentSource)
-                fr.resultType = source!!.resultType
-                return fr
-                // This doesn't quite work because the US.Core types aren't subtypes of FHIR types,
-                // or they are defined as System types and not FHIR types
-                // return resolveCall(libraryName, functionName, new FunctionRefInvocation(fr),
-                // false, false);
+            when (argumentSource!!.resultType) {
+                is ListType -> {
+                    val query: Query =
+                        objectFactory
+                            .createQuery()
+                            .withSource(
+                                objectFactory
+                                    .createAliasedQuerySource()
+                                    .withExpression(argumentSource)
+                                    .withAlias("\$this")
+                            )
+                    val fr: FunctionRef =
+                        objectFactory
+                            .createFunctionRef()
+                            .withLibraryName(libraryName)
+                            .withName(functionName)
+                            .withOperand(objectFactory.createAliasRef().withName("\$this"))
+                    // This doesn't quite work because the US.Core types aren't subtypes of FHIR
+                    // types.
+                    // resolveCall(libraryName, functionName, new FunctionRefInvocation(fr), false,
+                    // false);
+                    query.setReturn(
+                        objectFactory.createReturnClause().withDistinct(false).withExpression(fr)
+                    )
+                    query.resultType = source!!.resultType
+                    return query
+                }
+                else -> {
+                    val fr: FunctionRef =
+                        objectFactory
+                            .createFunctionRef()
+                            .withLibraryName(libraryName)
+                            .withName(functionName)
+                            .withOperand(argumentSource)
+                    fr.resultType = source!!.resultType
+                    return fr
+                    // This doesn't quite work because the US.Core types aren't subtypes of FHIR
+                    // types,
+                    // or they are defined as System types and not FHIR types
+                    // return resolveCall(libraryName, functionName, new FunctionRefInvocation(fr),
+                    // false, false);
+                }
             }
         } else if (targetMap.contains("[")) {
             val indexerStart: Int = targetMap.indexOf("[")

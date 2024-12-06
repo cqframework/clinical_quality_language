@@ -1,5 +1,7 @@
 package org.cqframework.cql.elm.requirements;
 
+import static org.hl7.cql.model.ChoiceTypeKt.flattenChoices;
+
 import java.util.ArrayList;
 import javax.xml.namespace.QName;
 import org.cqframework.cql.cql2elm.LibraryManager;
@@ -151,11 +153,11 @@ public class TypeResolver {
     }
 
     private DataType resolveChoiceTypeSpecifier(ChoiceTypeSpecifier typeSpecifier) {
-        ArrayList<DataType> choiceTypes = new ArrayList<DataType>();
+        var choiceTypes = new ArrayList<DataType>();
         for (TypeSpecifier choiceType : typeSpecifier.getChoice()) {
             choiceTypes.add(resolveTypeSpecifier(choiceType));
         }
-        return new ChoiceType(choiceTypes);
+        return new ChoiceType(flattenChoices(choiceTypes));
     }
 
     public DataType resolveTypeName(String modelName, String typeName) {
