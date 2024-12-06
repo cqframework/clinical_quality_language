@@ -22,9 +22,7 @@ class VersionTest {
     void versionValidateCompareToThrows() {
         Version version = new Version("0.0.1");
         Version versionThat = new Version("0.0a.1");
-        assertThrows(IllegalArgumentException.class, () -> {
-            version.compareTo(versionThat);
-        });
+        assertThrows(IllegalArgumentException.class, () -> version.compareTo(versionThat));
     }
 
     @Test
@@ -51,9 +49,9 @@ class VersionTest {
     @Test
     void matVersions() {
         Version version = new Version("v1-0-0-QDM-5-6");
-        assertTrue(version.getMajorVersion() == 1);
-        assertTrue(version.getMinorVersion() == 0);
-        assertTrue(version.getPatchVersion() == 0);
+        assertEquals(1, version.getMajorVersion());
+        assertEquals(0, version.getMinorVersion());
+        assertEquals(0, version.getPatchVersion());
         assertEquals("QDM-5-6", version.getBuildVersion());
     }
 

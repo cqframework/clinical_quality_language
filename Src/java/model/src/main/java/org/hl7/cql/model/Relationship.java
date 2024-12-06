@@ -1,27 +1,26 @@
 package org.hl7.cql.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Bryn on 3/20/2019.
  */
 public class Relationship {
-    public Relationship(ModelContext context, Iterable<String> relatedKeys) {
+    public Relationship(ModelContext context, List<String> relatedKeys) {
         this.context = context;
-        for (String key : relatedKeys) {
-            this.relatedKeys.add(key);
-        }
+        this.relatedKeys.addAll(relatedKeys);
     }
 
-    private ModelContext context;
+    private final ModelContext context;
 
     public ModelContext getContext() {
         return context;
     }
 
-    private ArrayList<String> relatedKeys = new ArrayList<>();
+    private final ArrayList<String> relatedKeys = new ArrayList<>();
 
-    public Iterable<String> getRelatedKeys() {
+    public List<String> getRelatedKeys() {
         return relatedKeys;
     }
 }

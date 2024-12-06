@@ -11,6 +11,7 @@ out
 .project
 .classpath
 .settings
+.kotlin
 build
 target
 bin
@@ -27,4 +28,5 @@ node_modules
 .nyc_output
 coverage
 gen
+.kotlin
 
