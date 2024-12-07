@@ -138,7 +138,7 @@ public class TypeResolver {
         TupleType tupleType = new TupleType();
         for (TupleElementDefinition element : typeSpecifier.getElement()) {
             TupleTypeElement tupleElement =
-                    new TupleTypeElement(element.getName(), resolveTypeSpecifier(element.getElementType()));
+                    new TupleTypeElement(element.getName(), resolveTypeSpecifier(element.getElementType()), false);
             tupleType.addElement(tupleElement);
         }
         return tupleType;

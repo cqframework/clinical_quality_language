@@ -208,16 +208,15 @@ abstract class CqlPreprocessorElmCommonVisitor(
             libraryBuilder.checkCompatibilityLevel("Fluent functions", "1.5")
             functionDef.isFluent = true
         }
-        if (ctx.operandDefinition() != null) {
-            for (opdef in ctx.operandDefinition()) {
-                val typeSpecifier = parseTypeSpecifier(opdef.typeSpecifier())!!
-                functionDef.operand.add(
-                    of.createOperandDef()
-                        .withName(parseString(opdef.referentialIdentifier()))
-                        .withOperandTypeSpecifier(typeSpecifier)
-                        .withResultType(typeSpecifier.resultType) as OperandDef
-                )
-            }
+
+        for (opdef in ctx.operandDefinition()) {
+            val typeSpecifier = parseTypeSpecifier(opdef.typeSpecifier())!!
+            functionDef.operand.add(
+                of.createOperandDef()
+                    .withName(parseString(opdef.referentialIdentifier()))
+                    .withOperandTypeSpecifier(typeSpecifier)
+                    .withResultType(typeSpecifier.resultType) as OperandDef
+            )
         }
         val typeSpecifierContext = ctx.typeSpecifier()
         return if (typeSpecifierContext == null) {
@@ -237,11 +236,9 @@ abstract class CqlPreprocessorElmCommonVisitor(
 
     protected fun parseQualifiers(ctx: NamedTypeSpecifierContext): List<String> {
         val qualifiers = ArrayList<String>()
-        if (ctx.qualifier() != null) {
-            for (qualifierContext in ctx.qualifier()) {
-                val qualifier = parseString(qualifierContext)!!
-                qualifiers.add(qualifier)
-            }
+        for (qualifierContext in ctx.qualifier()) {
+            val qualifier = parseString(qualifierContext)!!
+            qualifiers.add(qualifier)
         }
         return qualifiers
     }

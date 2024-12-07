@@ -35,7 +35,7 @@ public class TupleType extends DataType {
     private List<TupleTypeElement> getSortedElements() {
         if (sortedElements == null) {
             sortedElements = new ArrayList<>(elements);
-            Collections.sort(sortedElements, (left, right) -> left.getName().compareTo(right.getName()));
+            sortedElements.sort((left, right) -> left.getName().compareTo(right.getName()));
         }
 
         return sortedElements;
@@ -208,7 +208,7 @@ public class TupleType extends DataType {
         TupleType result = new TupleType();
         for (int i = 0; i < elements.size(); i++) {
             result.addElement(new TupleTypeElement(
-                    elements.get(i).getName(), elements.get(i).getType().instantiate(context)));
+                    elements.get(i).getName(), elements.get(i).getType().instantiate(context), false));
         }
 
         return result;

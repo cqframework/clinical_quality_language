@@ -514,7 +514,7 @@ class LibraryBuilder(
             )
     }
 
-    fun resolveNamespaceUri(namespaceName: String?, mustResolve: Boolean): String? {
+    fun resolveNamespaceUri(namespaceName: String, mustResolve: Boolean): String? {
         val namespaceUri = libraryManager.namespaceManager.resolveNamespaceUri(namespaceName)
         require(!(namespaceUri == null && mustResolve)) {
             String.format("Could not resolve namespace name %s", namespaceName)

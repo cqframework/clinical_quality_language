@@ -135,7 +135,7 @@ constructor(
                     )
             val compiler =
                 CqlCompiler(
-                    namespaceManager.getNamespaceInfoFromUri(libraryIdentifier.system),
+                    libraryIdentifier.system?.let { namespaceManager.getNamespaceInfoFromUri(it) },
                     libraryIdentifier,
                     this
                 )

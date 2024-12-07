@@ -232,7 +232,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
                 val element =
                     TupleTypeElement(
                         specifierElement.name,
-                        resolveTypeSpecifier(specifierElement.elementType)
+                        resolveTypeSpecifier(specifierElement.elementType)!!
                     )
                 tupleType.addElement(element)
             }
@@ -399,7 +399,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
     ): Collection<TupleTypeElement> {
         val elements: MutableList<TupleTypeElement> = ArrayList()
         for (e in infoElements) {
-            elements.add(TupleTypeElement(e.name, resolveTypeNameOrSpecifier(e)))
+            elements.add(TupleTypeElement(e.name, resolveTypeNameOrSpecifier(e)!!))
         }
         return elements
     }
@@ -584,7 +584,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
     }
 
     private fun resolveClassTypeSearch(t: ClassType?, s: SearchInfo): SearchType {
-        return SearchType(s.name, s.path, resolveTypeNameOrSpecifier(s.type, s.typeSpecifier))
+        return SearchType(s.name, s.path, resolveTypeNameOrSpecifier(s.type, s.typeSpecifier)!!)
     }
 
     private fun resolveClassType(t: ClassInfo): ClassType {

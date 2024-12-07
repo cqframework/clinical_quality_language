@@ -395,7 +395,7 @@ public class ClassType extends DataType implements NamedType {
 
         for (ClassTypeElement element : classType.getElements()) {
             if (!element.getProhibited()) {
-                TupleTypeElement tupleElement = new TupleTypeElement(element.getName(), element.getType());
+                TupleTypeElement tupleElement = new TupleTypeElement(element.getName(), element.getType(), false);
                 elements.put(tupleElement.getName(), tupleElement);
             }
         }

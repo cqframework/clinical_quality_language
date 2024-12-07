@@ -123,7 +123,7 @@ class Cql2ElmVisitor(
         if (namespaceName != null) {
             val namespaceUri = libraryBuilder.resolveNamespaceUri(namespaceName, true)
             path = NamespaceManager.getPath(namespaceUri, unqualifiedIdentifier)
-            modelNamespace = NamespaceInfo(namespaceName, namespaceUri)
+            modelNamespace = NamespaceInfo(namespaceName, namespaceUri!!)
         } else {
             path = unqualifiedIdentifier
         }
@@ -158,7 +158,7 @@ class Cql2ElmVisitor(
         return libraryBuilder.getModel(modelIdentifier, localIdentifier)
     }
 
-    private fun getLibraryPath(namespaceName: String?, unqualifiedIdentifier: String): String {
+    private fun getLibraryPath(namespaceName: String?, unqualifiedIdentifier: String): String? {
         if (namespaceName != null) {
             val namespaceUri = libraryBuilder.resolveNamespaceUri(namespaceName, true)
             return NamespaceManager.getPath(namespaceUri, unqualifiedIdentifier)
@@ -173,7 +173,7 @@ class Cql2ElmVisitor(
             if (identifiers.isNotEmpty()) java.lang.String.join(".", identifiers)
             else if (libraryBuilder.namespaceInfo != null) libraryBuilder.namespaceInfo.name
             else null
-        var path: String = getLibraryPath(namespaceName, unqualifiedIdentifier)
+        var path = getLibraryPath(namespaceName, unqualifiedIdentifier)
         var library =
             of.createIncludeDef()
                 .withLocalIdentifier(
