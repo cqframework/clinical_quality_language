@@ -1934,6 +1934,7 @@ public class DataRequirementsProcessorTest {
         actualModuleDefinitionLibrary.setDate(null);
         expectedModuleDefinitionLibrary.setDate(null);
 
+        parser.setPrettyPrint(true);
         var jsonExpected = parser.encodeResourceToString(expectedModuleDefinitionLibrary);
         var jsonActual = parser.encodeResourceToString(actualModuleDefinitionLibrary);
 
