@@ -482,7 +482,7 @@ class LibraryBuilder(
     fun getModel(usingDef: UsingDef): Model {
         return getModel(
             ModelIdentifier(
-                id = NamespaceManager.getNamePart(usingDef.uri),
+                id = NamespaceManager.getNamePart(usingDef.uri)!!,
                 system = NamespaceManager.getUriPart(usingDef.uri),
                 version = usingDef.version
             ),

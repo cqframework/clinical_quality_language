@@ -2,6 +2,8 @@ package org.cqframework.cql.cql2elm
 
 import java.io.InputStream
 import java.nio.file.Path
+import java.util.*
+import kotlin.collections.ArrayList
 import org.hl7.cql.model.NamespaceAware
 import org.hl7.cql.model.NamespaceManager
 import org.hl7.elm.r1.VersionedIdentifier
@@ -28,16 +30,14 @@ internal class DefaultLibrarySourceLoader : LibrarySourceLoader, NamespaceAware,
     private var path: Path? = null
 
     override fun setPath(path: Path) {
-        if (path == null || !path.toFile().isDirectory) {
-            throw IllegalArgumentException(
-                @Suppress("ImplicitDefaultLocale")
-                String.format("path '%s' is not a valid directory", path)
-            )
+        require(path.toFile().isDirectory) {
+            String.format(Locale.US, "path '%s' is not a valid directory", path)
         }
+
         this.path = path
-        for (provider: LibrarySourceProvider? in getProviders()) {
+        for (provider in getProviders()) {
             if (provider is PathAware) {
-                (provider as PathAware).setPath(path)
+                provider.setPath(path)
             }
         }
     }
@@ -60,14 +60,13 @@ internal class DefaultLibrarySourceLoader : LibrarySourceLoader, NamespaceAware,
     }
 
     override fun getLibrarySource(libraryIdentifier: VersionedIdentifier): InputStream {
-        require(!libraryIdentifier.id.isNullOrEmpty()) { "libraryIdentifier Id is null." }
         var source: InputStream? = null
         for (provider: LibrarySourceProvider in getProviders()) {
             val localSource: InputStream? = provider.getLibrarySource(libraryIdentifier)
             if (localSource != null) {
                 require(source == null) {
-                    @Suppress("ImplicitDefaultLocale")
                     String.format(
+                        Locale.US,
                         "Multiple sources found for library %s, version %s.",
                         libraryIdentifier.id,
                         libraryIdentifier.version
