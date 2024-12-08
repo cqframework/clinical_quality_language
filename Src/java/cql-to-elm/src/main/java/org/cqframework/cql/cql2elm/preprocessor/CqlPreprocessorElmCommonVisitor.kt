@@ -252,10 +252,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
         val modelId = modelName ?: libraryInfo.defaultUsingDefinition?.name
         val modelVersion = version ?: libraryInfo.defaultUsingDefinition?.version
         val modelIdentifier =
-            ModelIdentifier()
-                .withId(modelId)
-                .withVersion(modelVersion)
-                .withSystem(modelNamespace?.uri)
+            ModelIdentifier(id = modelId!!, version = modelVersion, system = modelNamespace?.uri)
         return libraryBuilder.getModel(modelIdentifier, localIdentifier)
     }
 

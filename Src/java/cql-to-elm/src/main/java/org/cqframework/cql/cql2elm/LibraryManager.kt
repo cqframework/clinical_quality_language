@@ -32,7 +32,7 @@ constructor(
         READ_WRITE
     }
 
-    var namespaceManager = modelManager.getNamespaceManager()
+    var namespaceManager = modelManager.namespaceManager
     var compiledLibraries: MutableMap<VersionedIdentifier, CompiledLibrary> =
         libraryCache ?: HashMap()
     val librarySourceLoader: LibrarySourceLoader = PriorityLibrarySourceLoader()

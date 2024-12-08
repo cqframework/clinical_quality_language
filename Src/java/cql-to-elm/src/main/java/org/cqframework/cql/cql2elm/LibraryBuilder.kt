@@ -467,7 +467,7 @@ class LibraryBuilder(
 
     val systemModel: SystemModel
         get() = // TODO: Support loading different versions of the system library
-        getModel(ModelIdentifier().withId("System"), "System") as SystemModel
+        getModel(ModelIdentifier("System"), "System") as SystemModel
 
     fun getModel(modelName: String): Model {
         val usingDef = resolveUsingRef(modelName)
@@ -481,10 +481,11 @@ class LibraryBuilder(
 
     fun getModel(usingDef: UsingDef): Model {
         return getModel(
-            ModelIdentifier()
-                .withSystem(NamespaceManager.getUriPart(usingDef.uri))
-                .withId(NamespaceManager.getNamePart(usingDef.uri))
-                .withVersion(usingDef.version),
+            ModelIdentifier(
+                id = NamespaceManager.getNamePart(usingDef.uri),
+                system = NamespaceManager.getUriPart(usingDef.uri),
+                version = usingDef.version
+            ),
             usingDef.localIdentifier
         )
     }

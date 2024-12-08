@@ -115,7 +115,7 @@ class TestDstu3ModelResolver {
     void resolveModelInfoTests() {
         ModelResolver resolver = new Dstu3FhirModelResolver(FhirContext.forCached(FhirVersionEnum.DSTU3));
         ModelManager mm = new ModelManager();
-        Model m = mm.resolveModel(new ModelIdentifier().withId("FHIR").withVersion("3.0.0"));
+        Model m = mm.resolveModel(new ModelIdentifier("FHIR", null, "3.0.0"));
 
         List<TypeInfo> typeInfos = m.getModelInfo().getTypeInfo();
 

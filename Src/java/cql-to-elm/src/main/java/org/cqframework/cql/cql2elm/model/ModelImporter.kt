@@ -68,17 +68,18 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
             for (requiredModel in modelInfo.requiredModelInfo) {
                 val model =
                     modelManager.resolveModel(
-                        ModelIdentifier()
-                            .withSystem(NamespaceManager.getUriPart(requiredModel.url))
-                            .withId(requiredModel.name)
-                            .withVersion(requiredModel.version)
+                        ModelIdentifier(
+                            system = NamespaceManager.getUriPart(requiredModel.url),
+                            id = requiredModel.name,
+                            version = requiredModel.version,
+                        )
                     )
                 modelIndex[requiredModel.name] = model
             }
 
             // Ensure System model is registered
             if (!modelIndex.containsKey("System")) {
-                val systemModel = modelManager.resolveModel(ModelIdentifier().withId("System"))
+                val systemModel = modelManager.resolveModel(ModelIdentifier("System"))
                 modelIndex["System"] = systemModel
             }
         }

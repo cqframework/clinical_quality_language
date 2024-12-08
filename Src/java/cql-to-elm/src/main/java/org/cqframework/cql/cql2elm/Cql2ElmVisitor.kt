@@ -144,17 +144,14 @@ class Cql2ElmVisitor(
         return usingDef
     }
 
-    public override fun getModel(
+    override fun getModel(
         modelNamespace: NamespaceInfo?,
         modelName: String?,
         version: String?,
         localIdentifier: String
     ): Model {
-        Objects.requireNonNull(modelName, "modelName")
-        val modelIdentifier = ModelIdentifier().withId(modelName).withVersion(version)
-        if (modelNamespace != null) {
-            modelIdentifier.system = modelNamespace.uri
-        }
+        val modelIdentifier =
+            ModelIdentifier(id = modelName!!, version = version, system = modelNamespace?.uri)
         return libraryBuilder.getModel(modelIdentifier, localIdentifier)
     }
 

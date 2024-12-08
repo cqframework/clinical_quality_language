@@ -11,7 +11,7 @@ import org.hl7.cql.model.*
 /** Created by Bryn on 12/29/2016. */
 @Suppress("TooManyFunctions")
 class ModelManager {
-    private val namespaceManager: NamespaceManager
+    val namespaceManager: NamespaceManager
     private var path: Path? = null
     var modelInfoLoader: ModelInfoLoader? = null
         private set
@@ -31,10 +31,6 @@ class ModelManager {
 
     /** @param globalCache cache for Models by ModelIdentifier. Expected to be thread-safe. */
     constructor(globalCache: MutableMap<ModelIdentifier, Model?>) {
-        Objects.requireNonNull<Map<ModelIdentifier, Model?>>(
-            globalCache,
-            "globalCache can not be null."
-        )
         namespaceManager = NamespaceManager()
         this.globalCache = globalCache
         initialize()
@@ -48,10 +44,6 @@ class ModelManager {
     }
 
     constructor(path: Path?, globalCache: MutableMap<ModelIdentifier, Model?>) {
-        Objects.requireNonNull<Map<ModelIdentifier, Model?>>(
-            globalCache,
-            "globalCache can not be null."
-        )
         namespaceManager = NamespaceManager()
         this.globalCache = globalCache
         this.path = path
@@ -69,10 +61,6 @@ class ModelManager {
         enableDefaultModelInfoLoading: Boolean,
         globalCache: MutableMap<ModelIdentifier, Model?>
     ) {
-        Objects.requireNonNull<Map<ModelIdentifier, Model?>>(
-            globalCache,
-            "globalCache can not be null."
-        )
         namespaceManager = NamespaceManager()
         this.globalCache = globalCache
         isDefaultModelInfoLoadingEnabled = enableDefaultModelInfoLoading
@@ -92,10 +80,6 @@ class ModelManager {
         path: Path?,
         globalCache: MutableMap<ModelIdentifier, Model?>
     ) {
-        Objects.requireNonNull<Map<ModelIdentifier, Model?>>(
-            globalCache,
-            "globalCache can not be null."
-        )
         namespaceManager = NamespaceManager()
         this.globalCache = globalCache
         this.path = path
@@ -113,10 +97,6 @@ class ModelManager {
         namespaceManager: NamespaceManager,
         globalCache: MutableMap<ModelIdentifier, Model?>
     ) {
-        Objects.requireNonNull<Map<ModelIdentifier, Model?>>(
-            globalCache,
-            "globalCache can not be null."
-        )
         this.namespaceManager = namespaceManager
         this.globalCache = globalCache
         initialize()
@@ -134,10 +114,6 @@ class ModelManager {
         path: Path?,
         globalCache: MutableMap<ModelIdentifier, Model?>
     ) {
-        Objects.requireNonNull<Map<ModelIdentifier, Model?>>(
-            globalCache,
-            "globalCache can not be null."
-        )
         this.namespaceManager = namespaceManager
         this.globalCache = globalCache
         this.path = path
@@ -156,10 +132,6 @@ class ModelManager {
         enableDefaultModelInfoLoading: Boolean,
         globalCache: MutableMap<ModelIdentifier, Model?>
     ) {
-        Objects.requireNonNull<Map<ModelIdentifier, Model?>>(
-            globalCache,
-            "globalCache can not be null."
-        )
         this.namespaceManager = namespaceManager
         this.globalCache = globalCache
         isDefaultModelInfoLoadingEnabled = enableDefaultModelInfoLoading
@@ -184,10 +156,6 @@ class ModelManager {
         path: Path?,
         globalCache: MutableMap<ModelIdentifier, Model?>
     ) {
-        Objects.requireNonNull<Map<ModelIdentifier, Model?>>(
-            globalCache,
-            "globalCache can not be null."
-        )
         this.namespaceManager = namespaceManager
         this.globalCache = globalCache
         this.path = path
@@ -201,10 +169,6 @@ class ModelManager {
         if (path != null) {
             modelInfoLoader!!.setPath(path)
         }
-    }
-
-    fun getNamespaceManager(): NamespaceManager {
-        return namespaceManager
     }
 
     /**
@@ -234,12 +198,9 @@ class ModelManager {
             }
     }
 
-    private fun buildModel(identifier: ModelIdentifier?): Model? {
+    private fun buildModel(identifier: ModelIdentifier): Model? {
         val model: Model?
-        requireNotNull(identifier) { "Model identifier is required" }
-        require(!(identifier.id == null || identifier.id == "")) {
-            "Model identifier Id is required"
-        }
+        require(identifier.id.isNotEmpty()) { "Model identifier Id is required" }
         val modelPath = NamespaceManager.getPath(identifier.system, identifier.id)
         pushLoading(modelPath)
         model =
@@ -258,7 +219,7 @@ class ModelManager {
 
     private fun pushLoading(modelId: String) {
         require(!loadingModels.contains(modelId)) {
-            @Suppress("ImplicitDefaultLocale") String.format("Circular model reference %s", modelId)
+            String.format(Locale.US, "Circular model reference %s", modelId)
         }
         loadingModels.add(modelId)
     }
@@ -269,7 +230,7 @@ class ModelManager {
 
     @JvmOverloads
     fun resolveModel(modelName: String, version: String? = null): Model {
-        return resolveModel(ModelIdentifier().withId(modelName).withVersion(version))
+        return resolveModel(ModelIdentifier(modelName, version = version))
     }
 
     /**
@@ -301,8 +262,8 @@ class ModelManager {
             !(modelIdentifier.version != null &&
                 modelIdentifier.version != model!!.modelInfo.version)
         ) {
-            @Suppress("ImplicitDefaultLocale")
             String.format(
+                Locale.US,
                 "Could not load model information for model %s, version %s because version %s is already loaded.",
                 modelIdentifier.id,
                 modelIdentifier.version,
