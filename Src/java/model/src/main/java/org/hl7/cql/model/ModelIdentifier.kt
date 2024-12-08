@@ -11,4 +11,8 @@ data class ModelIdentifier(
     @XmlAttribute(name = "id") var id: String,
     @XmlAttribute(name = "system") var system: String? = null,
     @XmlAttribute(name = "version") var version: String? = null
-)
+) {
+    init {
+        require(id.isNotEmpty()) { "id is required" }
+    }
+}

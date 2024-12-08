@@ -167,7 +167,7 @@ class ModelManager {
         modelInfoLoader = ModelInfoLoader()
         modelInfoLoader!!.setNamespaceManager(namespaceManager)
         if (path != null) {
-            modelInfoLoader!!.setPath(path)
+            modelInfoLoader!!.setPath(path!!)
         }
     }
 

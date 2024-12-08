@@ -15,20 +15,19 @@ internal class DefaultLibrarySourceLoader : LibrarySourceLoader, NamespaceAware,
     private val providers: MutableList<LibrarySourceProvider> = ArrayList()
     var initialized: Boolean = false
 
-    override fun registerProvider(provider: LibrarySourceProvider?) {
-        require(provider != null) { "provider is null." }
-        if (provider is NamespaceAware) {
-            (provider as NamespaceAware).setNamespaceManager(namespaceManager)
+    override fun registerProvider(provider: LibrarySourceProvider) {
+        if (namespaceManager != null && provider is NamespaceAware) {
+            provider.setNamespaceManager(namespaceManager!!)
         }
-        if (provider is PathAware) {
-            (provider as PathAware).setPath(path)
+        if (path != null && provider is PathAware) {
+            provider.setPath(path!!)
         }
         providers.add(provider)
     }
 
     private var path: Path? = null
 
-    override fun setPath(path: Path?) {
+    override fun setPath(path: Path) {
         if (path == null || !path.toFile().isDirectory) {
             throw IllegalArgumentException(
                 @Suppress("ImplicitDefaultLocale")
@@ -60,8 +59,7 @@ internal class DefaultLibrarySourceLoader : LibrarySourceLoader, NamespaceAware,
         return providers
     }
 
-    override fun getLibrarySource(libraryIdentifier: VersionedIdentifier?): InputStream {
-        require(libraryIdentifier != null) { "libraryIdentifier is null." }
+    override fun getLibrarySource(libraryIdentifier: VersionedIdentifier): InputStream {
         require(!libraryIdentifier.id.isNullOrEmpty()) { "libraryIdentifier Id is null." }
         var source: InputStream? = null
         for (provider: LibrarySourceProvider in getProviders()) {

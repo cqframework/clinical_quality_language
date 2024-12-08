@@ -2,6 +2,8 @@ package org.cqframework.cql.cql2elm
 
 import java.io.InputStream
 import java.nio.file.Path
+import java.util.*
+import kotlin.collections.ArrayList
 import org.hl7.cql.model.NamespaceAware
 import org.hl7.cql.model.NamespaceManager
 import org.hl7.elm.r1.VersionedIdentifier
@@ -15,23 +17,22 @@ class PriorityLibrarySourceLoader : LibrarySourceLoader, NamespaceAware, PathAwa
     private val providers: MutableList<LibrarySourceProvider> = ArrayList()
     private var initialized = false
 
-    override fun registerProvider(provider: LibrarySourceProvider?) {
-        requireNotNull(provider) { "provider is null." }
-        if (provider is NamespaceAware) {
-            (provider as NamespaceAware).setNamespaceManager(namespaceManager)
+    override fun registerProvider(provider: LibrarySourceProvider) {
+        if (provider is NamespaceAware && namespaceManager != null) {
+            provider.setNamespaceManager(namespaceManager!!)
         }
+
         if (path != null && provider is PathAware) {
-            (provider as PathAware).setPath(path)
+            provider.setPath(path!!)
         }
         providers.add(provider)
     }
 
     private var path: Path? = null
 
-    override fun setPath(path: Path?) {
-        require(!(path == null || !path.toFile().isDirectory)) {
-            @Suppress("ImplicitDefaultLocale")
-            String.format("path '%s' is not a valid directory", path)
+    override fun setPath(path: Path) {
+        require(path.toFile().isDirectory) {
+            String.format(Locale.US, "path '%s' is not a valid directory", path)
         }
         this.path = path
         for (provider in getProviders()) {
@@ -58,12 +59,12 @@ class PriorityLibrarySourceLoader : LibrarySourceLoader, NamespaceAware, PathAwa
         return providers
     }
 
-    override fun getLibrarySource(libraryIdentifier: VersionedIdentifier?): InputStream? {
+    override fun getLibrarySource(libraryIdentifier: VersionedIdentifier): InputStream? {
         return getLibraryContent(libraryIdentifier, LibraryContentType.CQL)
     }
 
     override fun getLibraryContent(
-        libraryIdentifier: VersionedIdentifier?,
+        libraryIdentifier: VersionedIdentifier,
         type: LibraryContentType
     ): InputStream? {
         validateInput(libraryIdentifier, type)
