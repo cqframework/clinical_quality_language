@@ -10,7 +10,7 @@ import org.hl7.elm.r1.VersionedIdentifier
 
 /**
  * Used by LibraryManager to manage a set of library source providers that resolve library includes
- * within CQL. Package private since its not intended to be used outside the context of the
+ * within CQL. Package private since it's not intended to be used outside the context of the
  * instantiating LibraryManager instance.
  */
 class PriorityLibrarySourceLoader : LibrarySourceLoader, NamespaceAware, PathAware {
@@ -18,7 +18,7 @@ class PriorityLibrarySourceLoader : LibrarySourceLoader, NamespaceAware, PathAwa
     private var initialized = false
 
     override fun registerProvider(provider: LibrarySourceProvider) {
-        if (provider is NamespaceAware && namespaceManager != null) {
+        if (namespaceManager != null && provider is NamespaceAware) {
             provider.setNamespaceManager(namespaceManager!!)
         }
 
@@ -37,7 +37,7 @@ class PriorityLibrarySourceLoader : LibrarySourceLoader, NamespaceAware, PathAwa
         this.path = path
         for (provider in getProviders()) {
             if (provider is PathAware) {
-                (provider as PathAware).setPath(path)
+                provider.setPath(path)
             }
         }
     }
@@ -67,10 +67,9 @@ class PriorityLibrarySourceLoader : LibrarySourceLoader, NamespaceAware, PathAwa
         libraryIdentifier: VersionedIdentifier,
         type: LibraryContentType
     ): InputStream? {
-        validateInput(libraryIdentifier, type)
         var content: InputStream?
         for (provider in getProviders()) {
-            content = provider.getLibraryContent(libraryIdentifier!!, type)
+            content = provider.getLibraryContent(libraryIdentifier, type)
             if (content != null) {
                 return content
             }
@@ -84,16 +83,8 @@ class PriorityLibrarySourceLoader : LibrarySourceLoader, NamespaceAware, PathAwa
         this.namespaceManager = namespaceManager
         for (provider in getProviders()) {
             if (provider is NamespaceAware) {
-                (provider as NamespaceAware).setNamespaceManager(namespaceManager)
+                provider.setNamespaceManager(namespaceManager)
             }
-        }
-    }
-
-    private fun validateInput(libraryIdentifier: VersionedIdentifier?, type: LibraryContentType?) {
-        requireNotNull(type) { "libraryContentType is null." }
-        requireNotNull(libraryIdentifier) { "libraryIdentifier is null." }
-        require(!(libraryIdentifier.id == null || libraryIdentifier.id == "")) {
-            "libraryIdentifier Id is null."
         }
     }
 }
