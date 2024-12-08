@@ -119,7 +119,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
             val modelContext =
                 ModelContext(
                     c.name,
-                    contextType as ClassType?,
+                    contextType,
                     c.keyElement.split(";".toRegex()).dropLastWhile { it.isEmpty() },
                     c.birthDateElement
                 )
@@ -136,7 +136,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
                 val modelContext =
                     ModelContext(
                         contextType.simpleName,
-                        contextType as ClassType?,
+                        contextType,
                         mutableListOf("id"),
                         this.modelInfo.patientBirthDatePropertyName
                     )

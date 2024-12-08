@@ -73,8 +73,8 @@ open class Model(val modelInfo: ModelInfo, modelManager: ModelManager?) {
 
             return ModelContext(
                 contextName,
-                contextType as ClassType?,
-                if (keyName != null) listOf(keyName) else null,
+                contextType,
+                if (keyName != null) listOf(keyName) else emptyList(),
                 null
             )
         }
