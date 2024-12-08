@@ -90,13 +90,5 @@ data class ChoiceType(val types: Set<DataType>) : DataType() {
     }
 }
 
-fun Iterable<DataType>.flattenChoices(): Set<DataType> {
-    return this.flatMap {
-            if (it is ChoiceType) {
-                it.types
-            } else {
-                setOf(it)
-            }
-        }
-        .toSet()
-}
+fun Iterable<DataType>.flattenChoices(): Set<DataType> =
+    flatMap { (it as? ChoiceType)?.types ?: setOf(it) }.toSet()
