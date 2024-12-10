@@ -2,7 +2,7 @@ package org.hl7.cql.model;
 
 import java.util.*;
 
-public class ClassType extends DataType implements NamedType {
+public class ClassType extends BaseDataType implements NamedType {
 
     public ClassType(
             String name,

@@ -2,7 +2,7 @@ package org.hl7.cql.model;
 
 import java.util.*;
 
-public class TupleType extends DataType {
+public class TupleType extends BaseDataType {
     private List<TupleTypeElement> elements = new ArrayList<TupleTypeElement>();
     private List<TupleTypeElement> sortedElements = null;
 

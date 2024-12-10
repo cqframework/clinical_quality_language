@@ -1,7 +1,7 @@
 package org.hl7.cql.model
 
 /** Created by Bryn on 11/8/2016. */
-data class ChoiceType(val types: Set<DataType>) : DataType() {
+data class ChoiceType(val types: Set<DataType>) : BaseDataType() {
     init {
         require(types.isNotEmpty()) { "A choice type must have at least one type." }
         require(types.none { it is ChoiceType }) {

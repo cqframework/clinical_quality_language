@@ -1,6 +1,6 @@
 package org.hl7.cql.model;
 
-public class TypeParameter extends DataType {
+public class TypeParameter extends BaseDataType {
     public enum TypeParameterConstraint {
         /**
          * Indicates the type parameter has no constraint and be bound to any type

@@ -2,6 +2,8 @@
 
 package org.cqframework.cql.cql2elm
 
+import java.util.*
+import kotlin.collections.ArrayList
 import org.cqframework.cql.cql2elm.model.Invocation
 import org.cqframework.cql.cql2elm.model.invocation.*
 import org.cqframework.cql.cql2elm.model.invocation.DateInvocation.Companion.setDateFieldsFromOperands
@@ -10,7 +12,7 @@ import org.cqframework.cql.cql2elm.model.invocation.TimeInvocation.Companion.set
 import org.cqframework.cql.elm.IdObjectFactory
 import org.hl7.elm.r1.*
 
-@Suppress("LargeClass", "TooManyFunctions", "ImplicitDefaultLocale")
+@Suppress("LargeClass", "TooManyFunctions")
 class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFactory?) {
     private val of = builder.objectFactory
 
@@ -116,35 +118,39 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
                                 false
                             )
                         op =
-                            if (dateConversion != null && dateTimeConversion != null) {
-                                if (dateConversion.score == dateTimeConversion.score) {
+                            when {
+                                dateConversion != null && dateTimeConversion != null -> {
+                                    require(dateConversion.score != dateTimeConversion.score) {
+                                        "Ambiguous implicit conversion from %s to %s or %s."
+                                            .format(
+                                                Locale.US,
+                                                op.resultType.toString(),
+                                                dateConversion.toType.toString(),
+                                                dateTimeConversion.toType.toString()
+                                            )
+                                    }
+
+                                    if (dateConversion.score < dateTimeConversion.score) {
+                                        builder.convertExpression(op, dateConversion)
+                                    } else {
+                                        builder.convertExpression(op, dateTimeConversion)
+                                    }
+                                }
+                                dateConversion != null ->
+                                    builder.convertExpression(op, dateConversion)
+                                dateTimeConversion != null ->
+                                    builder.convertExpression(op, dateTimeConversion)
+                                else -> {
                                     // ERROR
                                     throw IllegalArgumentException(
                                         String.format(
-                                            "Ambiguous implicit conversion from %s to %s or %s.",
-                                            op.resultType.toString(),
-                                            dateConversion.toType.toString(),
-                                            dateTimeConversion.toType.toString()
+                                            Locale.US,
+                                            "Could not resolve call to operator %s with argument of type %s.",
+                                            functionRef.name,
+                                            op.resultType.toString()
                                         )
                                     )
-                                } else if (dateConversion.score < dateTimeConversion.score) {
-                                    builder.convertExpression(op, dateConversion)
-                                } else {
-                                    builder.convertExpression(op, dateTimeConversion)
                                 }
-                            } else if (dateConversion != null) {
-                                builder.convertExpression(op, dateConversion)
-                            } else if (dateTimeConversion != null) {
-                                builder.convertExpression(op, dateTimeConversion)
-                            } else {
-                                // ERROR
-                                throw IllegalArgumentException(
-                                    String.format(
-                                        "Could not resolve call to operator %s with argument of type %s.",
-                                        functionRef.name,
-                                        op.resultType.toString()
-                                    )
-                                )
                             }
                     }
                     ops.add(builder.enforceCompatible(patientBirthDateProperty, op.resultType))
@@ -640,6 +646,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
             else ->
                 throw IllegalArgumentException(
                     String.format(
+                        Locale.US,
                         "Could not resolve call to system operator %s. Unknown conversion type.",
                         functionRef.name
                     )
@@ -656,7 +663,11 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
             of.javaClass.getMethod("create" + functionRef.name).invoke(of) as T
         } catch (@Suppress("TooGenericExceptionCaught") e: Exception) {
             throw CqlInternalException(
-                String.format("Could not create instance of Element \"%s\"", functionRef.name),
+                String.format(
+                    Locale.US,
+                    "Could not create instance of Element \"%s\"",
+                    functionRef.name
+                ),
                 if (functionRef.trackbacks.isNotEmpty()) functionRef.trackbacks[0] else null,
                 e
             )
@@ -710,6 +721,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
     private fun checkNumberOfOperands(functionRef: FunctionRef, expectedOperands: Int) {
         require(functionRef.operand.size == expectedOperands) {
             String.format(
+                Locale.US,
                 "Could not resolve call to system operator %s.  Expected %d arguments.",
                 functionRef.name,
                 expectedOperands
@@ -718,29 +730,24 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
     }
 
     companion object {
-        @Suppress("ReturnCount")
         private fun resolveAgeRelatedFunctionPrecision(
             functionRef: FunctionRef
         ): DateTimePrecision {
             val name = functionRef.name
-            if (name.contains("Years")) {
-                return DateTimePrecision.YEAR
-            } else if (name.contains("Months")) {
-                return DateTimePrecision.MONTH
-            } else if (name.contains("Weeks")) {
-                return DateTimePrecision.WEEK
-            } else if (name.contains("Days")) {
-                return DateTimePrecision.DAY
-            } else if (name.contains("Hours")) {
-                return DateTimePrecision.HOUR
-            } else if (name.contains("Minutes")) {
-                return DateTimePrecision.MINUTE
-            } else if (name.contains("Second")) {
-                return DateTimePrecision.SECOND
-            } else if (name.contains("Milliseconds")) {
-                return DateTimePrecision.MILLISECOND
+            return when {
+                name.contains("Years") -> DateTimePrecision.YEAR
+                name.contains("Months") -> DateTimePrecision.MONTH
+                name.contains("Weeks") -> DateTimePrecision.WEEK
+                name.contains("Days") -> DateTimePrecision.DAY
+                name.contains("Hours") -> DateTimePrecision.HOUR
+                name.contains("Minutes") -> DateTimePrecision.MINUTE
+                name.contains("Second") -> DateTimePrecision.SECOND
+                name.contains("Milliseconds") -> DateTimePrecision.MILLISECOND
+                else ->
+                    throw IllegalArgumentException(
+                        String.format(Locale.US, "Unknown precision '%s'.", name)
+                    )
             }
-            throw IllegalArgumentException(String.format("Unknown precision '%s'.", name))
         }
     }
 }

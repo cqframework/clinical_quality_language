@@ -1,6 +1,6 @@
 package org.hl7.cql.model;
 
-public class ListType extends DataType {
+public class ListType extends BaseDataType {
     private DataType elementType;
 
     public ListType(DataType elementType) {

@@ -1,6 +1,6 @@
 package org.hl7.cql.model;
 
-public class IntervalType extends DataType {
+public class IntervalType extends BaseDataType {
     private DataType pointType;
 
     public IntervalType(DataType pointType) {

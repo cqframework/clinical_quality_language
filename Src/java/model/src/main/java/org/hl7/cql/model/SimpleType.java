@@ -1,6 +1,6 @@
 package org.hl7.cql.model;
 
-public class SimpleType extends DataType implements NamedType {
+public class SimpleType extends BaseDataType implements NamedType {
     private String name;
 
     public SimpleType(String name, DataType baseType) {
