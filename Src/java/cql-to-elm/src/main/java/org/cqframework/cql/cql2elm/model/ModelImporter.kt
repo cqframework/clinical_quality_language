@@ -268,7 +268,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
                 resolveTypeName(
                     typeName.substring(typeName.indexOf('<') + 1, typeName.lastIndexOf('>'))
                 )
-            return ListType(elementType)
+            return ListType(elementType!!)
         }
 
         var result = lookupType(typeName)
@@ -692,7 +692,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
     }
 
     private fun resolveListType(t: ListTypeInfo): ListType {
-        val result = ListType(resolveTypeNameOrSpecifier(t.elementType, t.elementTypeSpecifier))
+        val result = ListType(resolveTypeNameOrSpecifier(t.elementType, t.elementTypeSpecifier)!!)
         return result
     }
 

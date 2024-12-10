@@ -449,7 +449,7 @@ class LibraryBuilder(
                                 typeSpecifier.lastIndexOf('>')
                             )
                         )
-                    ListType(elementType)
+                    ListType(elementType!!)
                 } else if (typeSpecifier.indexOf(".") >= 0) {
                     val modelName = typeSpecifier.substring(0, typeSpecifier.indexOf("."))
                     val typeName = typeSpecifier.substring(typeSpecifier.indexOf(".") + 1)

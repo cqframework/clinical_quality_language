@@ -316,7 +316,7 @@ class SystemMethodResolver(
                 elements.add(target)
                 elements.add(argument)
                 val elementType =
-                    builder.ensureCompatibleTypes(target.resultType, argument!!.resultType)
+                    builder.ensureCompatibleTypes(target.resultType, argument!!.resultType)!!
                 val list = of.createList()
                 list.resultType = ListType(elementType)
                 list.element.add(builder.ensureCompatible(target, elementType))

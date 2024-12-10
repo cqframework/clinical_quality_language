@@ -280,7 +280,7 @@ class Cql2ElmVisitor(
         if (libraryBuilder.isCompatibleWith("1.5")) {
             cs.resultType = libraryBuilder.resolveTypeName("System", "CodeSystem")
         } else {
-            cs.resultType = ListType(libraryBuilder.resolveTypeName("System", "Code"))
+            cs.resultType = ListType(libraryBuilder.resolveTypeName("System", "Code")!!)
         }
         libraryBuilder.addCodeSystem(cs)
         libraryBuilder.pushIdentifier(cs.name, cs, IdentifierScope.GLOBAL)
@@ -353,7 +353,7 @@ class Cql2ElmVisitor(
         if (libraryBuilder.isCompatibleWith("1.5")) {
             vs.resultType = libraryBuilder.resolveTypeName("System", "ValueSet")
         } else {
-            vs.resultType = ListType(libraryBuilder.resolveTypeName("System", "Code"))
+            vs.resultType = ListType(libraryBuilder.resolveTypeName("System", "Code")!!)
         }
         libraryBuilder.addValueSet(vs)
         libraryBuilder.pushIdentifier(vs.name, vs, IdentifierScope.GLOBAL)
@@ -759,7 +759,7 @@ class Cql2ElmVisitor(
             }
         }
         if (listType == null) {
-            listType = ListType(elementType)
+            listType = ListType(elementType!!)
         }
         list.resultType = listType
         return list
@@ -3047,7 +3047,7 @@ class Cql2ElmVisitor(
                             null
                         )
                     retrieves.add(mrRetrieve)
-                    mrRetrieve.resultType = ListType(namedType as DataType?)
+                    mrRetrieve.resultType = ListType(namedType as DataType)
                     val mDataType: DataType? = libraryBuilder.resolveTypeName(model, "Medication")
                     val mClassType = mDataType as ClassType
                     val mNamedType: NamedType = mClassType
@@ -3065,7 +3065,7 @@ class Cql2ElmVisitor(
                             null
                         )
                     retrieves.add(mRetrieve)
-                    mRetrieve.resultType = ListType(namedType as DataType?)
+                    mRetrieve.resultType = ListType(namedType as DataType)
                     val q: Query = of.createQuery()
                     val aqs: AliasedQuerySource =
                         of.createAliasedQuerySource().withExpression(mrRetrieve).withAlias("MR")
@@ -3146,7 +3146,7 @@ class Cql2ElmVisitor(
                             terminology
                         )
                     retrieves.add(retrieve)
-                    retrieve.resultType = ListType(namedType as DataType?)
+                    retrieve.resultType = ListType(namedType as DataType)
                     result =
                         if (result == null) {
                             retrieve
@@ -3179,7 +3179,7 @@ class Cql2ElmVisitor(
                     terminology
                 )
             retrieves.add(retrieve)
-            retrieve.resultType = ListType(namedType as DataType?)
+            retrieve.resultType = ListType(namedType as DataType)
             result = retrieve
         }
         return result
