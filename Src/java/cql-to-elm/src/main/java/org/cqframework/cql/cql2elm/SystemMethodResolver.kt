@@ -6,6 +6,7 @@ import java.util.*
 import org.cqframework.cql.cql2elm.model.QueryContext
 import org.cqframework.cql.gen.cqlParser
 import org.hl7.cql.model.*
+import org.hl7.cql.model.ChoiceType.Companion.flattenChoices
 import org.hl7.elm.r1.*
 
 /** Created by Bryn on 12/27/2016. */
@@ -303,7 +304,7 @@ class SystemMethodResolver(
                 val dataTypes: MutableSet<DataType> = HashSet()
                 gatherChildTypes(target.resultType, false, dataTypes)
                 if (dataTypes.size == 1) {
-                    children.resultType = ListType(dataTypes.toTypedArray()[0])
+                    children.resultType = ListType(dataTypes.iterator().next())
                 } else {
                     children.resultType = ListType(ChoiceType(dataTypes.toList().flattenChoices()))
                 }

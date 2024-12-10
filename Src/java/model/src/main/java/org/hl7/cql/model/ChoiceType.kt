@@ -1,5 +1,7 @@
 package org.hl7.cql.model
 
+import org.hl7.cql.model.DataType.Companion.ANY
+
 /** Created by Bryn on 11/8/2016. */
 data class ChoiceType(val types: Set<DataType>) : BaseDataType() {
     init {
@@ -71,11 +73,7 @@ data class ChoiceType(val types: Set<DataType>) : BaseDataType() {
         return sb.toString()
     }
 
-    override fun isGeneric(): Boolean {
-        // It hardly makes sense for a choice type to have generics....
-        // ignoring in instantiation semantics for now
-        return types.any { it.isGeneric }
-    }
+    override val isGeneric: Boolean = types.any { it.isGeneric }
 
     override fun isInstantiable(callType: DataType, context: InstantiationContext): Boolean {
         // Call isInstantiable recursively to make sure that type parameters (if present) are bound
@@ -88,7 +86,9 @@ data class ChoiceType(val types: Set<DataType>) : BaseDataType() {
     override fun instantiate(context: InstantiationContext): DataType {
         return this
     }
-}
 
-fun Iterable<DataType>.flattenChoices(): Set<DataType> =
-    flatMap { (it as? ChoiceType)?.types ?: setOf(it) }.toSet()
+    companion object {
+        fun Iterable<DataType>.flattenChoices(): Set<DataType> =
+            flatMap { (it as? ChoiceType)?.types ?: setOf(it) }.toSet()
+    }
+}

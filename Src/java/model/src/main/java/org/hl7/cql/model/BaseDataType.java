@@ -1,15 +1,15 @@
 package org.hl7.cql.model;
 
 public abstract class BaseDataType implements DataType {
-    public BaseDataType() {
+    protected BaseDataType() {
         this(DataType.ANY);
     }
 
-    public BaseDataType(DataType baseType) {
+    protected BaseDataType(DataType baseType) {
         this.baseType = baseType != null ? baseType : DataType.ANY;
     }
 
-    private DataType baseType;
+    private final DataType baseType;
 
     @Override
     public DataType getBaseType() {
@@ -53,14 +53,14 @@ public abstract class BaseDataType implements DataType {
     @Override
     public DataType getCommonSuperTypeOf(DataType other) {
         DataType currentType = this;
-        while (currentType != null) {
+        while (currentType != ANY) {
             if (currentType.isSuperTypeOf(other)) {
                 return currentType;
             }
             currentType = currentType.getBaseType();
         }
 
-        return null;
+        return ANY;
     }
 
     // Note that this is not how implicit/explicit conversions are defined, the notion of

@@ -5,6 +5,7 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import org.cqframework.cql.cql2elm.ModelManager
 import org.hl7.cql.model.ChoiceType
+import org.hl7.cql.model.ChoiceType.Companion.flattenChoices
 import org.hl7.cql.model.ClassType
 import org.hl7.cql.model.ClassTypeElement
 import org.hl7.cql.model.DataType
@@ -22,7 +23,6 @@ import org.hl7.cql.model.TupleType
 import org.hl7.cql.model.TupleTypeElement
 import org.hl7.cql.model.TypeParameter
 import org.hl7.cql.model.TypeParameter.TypeParameterConstraint
-import org.hl7.cql.model.flattenChoices
 import org.hl7.elm_modelinfo.r1.BoundParameterTypeSpecifier
 import org.hl7.elm_modelinfo.r1.ChoiceTypeInfo
 import org.hl7.elm_modelinfo.r1.ChoiceTypeSpecifier
@@ -380,7 +380,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
                     )
                 result.target = t.target
             }
-            resolvedTypes[casify(result!!.name)] = result
+            resolvedTypes[casify(result.name)] = result
         }
 
         return result

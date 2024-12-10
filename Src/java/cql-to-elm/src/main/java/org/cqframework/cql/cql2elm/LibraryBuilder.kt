@@ -12,6 +12,7 @@ import org.cqframework.cql.cql2elm.model.invocation.*
 import org.cqframework.cql.elm.IdObjectFactory
 import org.cqframework.cql.elm.tracking.Trackable
 import org.hl7.cql.model.*
+import org.hl7.cql.model.ChoiceType.Companion.flattenChoices
 import org.hl7.cql_annotations.r1.*
 import org.hl7.cql_annotations.r1.ObjectFactory
 import org.hl7.elm.r1.*
@@ -1021,7 +1022,7 @@ class LibraryBuilder(
         if (
             right is ValueSetRef ||
                 (isCompatibleWith("1.5") &&
-                    right.resultType.isCompatibleWith(resolveTypeName("System", "ValueSet")) &&
+                    right.resultType.isCompatibleWith(resolveTypeName("System", "ValueSet")!!) &&
                     right.resultType != resolveTypeName("System", "Any"))
         ) {
             if (left.resultType is ListType) {
@@ -1047,7 +1048,7 @@ class LibraryBuilder(
         if (
             right is CodeSystemRef ||
                 (isCompatibleWith("1.5") &&
-                    right.resultType.isCompatibleWith(resolveTypeName("System", "CodeSystem")) &&
+                    right.resultType.isCompatibleWith(resolveTypeName("System", "CodeSystem")!!) &&
                     right.resultType != resolveTypeName("System", "Any"))
         ) {
             if (left.resultType is ListType) {
@@ -2240,7 +2241,7 @@ class LibraryBuilder(
         if (compatibleType != null) {
             return compatibleType
         }
-        if (!second.isSubTypeOf(first) && first != null) {
+        if (first != null && !second.isSubTypeOf(first)) {
             return ChoiceType(listOf(first, second).flattenChoices())
         }
 

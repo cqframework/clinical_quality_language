@@ -3050,7 +3050,7 @@ class Cql2ElmVisitor(
                         mCodeComparator =
                             if (
                                 terminology.resultType.isSubTypeOf(
-                                    libraryBuilder.resolveTypeName("System", "Vocabulary")
+                                    libraryBuilder.resolveTypeName("System", "Vocabulary")!!
                                 )
                             )
                                 "in"
@@ -3165,12 +3165,12 @@ class Cql2ElmVisitor(
                             if (
                                 (propertyType != null &&
                                     propertyType.isSubTypeOf(
-                                        libraryBuilder.resolveTypeName("System", "Vocabulary")
+                                        libraryBuilder.resolveTypeName("System", "Vocabulary")!!
                                     ))
                             ) {
                                 if (
                                     terminology.resultType.isSubTypeOf(
-                                        libraryBuilder.resolveTypeName("System", "Vocabulary")
+                                        libraryBuilder.resolveTypeName("System", "Vocabulary")!!
                                     )
                                 )
                                     "~"
@@ -3178,7 +3178,7 @@ class Cql2ElmVisitor(
                             } else {
                                 if (
                                     terminology.resultType.isSubTypeOf(
-                                        libraryBuilder.resolveTypeName("System", "Vocabulary")
+                                        libraryBuilder.resolveTypeName("System", "Vocabulary")!!
                                     )
                                 )
                                     "in"
@@ -3263,7 +3263,7 @@ class Cql2ElmVisitor(
                                     equivalent.operand[1]
                                         .resultType
                                         .isSubTypeOf(
-                                            libraryBuilder.resolveTypeName("System", "Vocabulary")
+                                            libraryBuilder.resolveTypeName("System", "Vocabulary")!!
                                         ))))
                         ) {
                             retrieve.codes = libraryBuilder.resolveToList(equivalent.operand[1])
@@ -3285,7 +3285,7 @@ class Cql2ElmVisitor(
                                     equal.operand[1]
                                         .resultType
                                         .isSubTypeOf(
-                                            libraryBuilder.resolveTypeName("System", "Vocabulary")
+                                            libraryBuilder.resolveTypeName("System", "Vocabulary")!!
                                         ))))
                         ) {
                             retrieve.codes = libraryBuilder.resolveToList(equal.operand[1])
@@ -3362,7 +3362,7 @@ class Cql2ElmVisitor(
                 if (
                     ((libraryBuilder.isCompatibleWith("1.5") &&
                         !(terminology.resultType.isSubTypeOf(
-                            libraryBuilder.resolveTypeName("System", "Vocabulary")
+                            libraryBuilder.resolveTypeName("System", "Vocabulary")!!
                         ))) ||
                         (!libraryBuilder.isCompatibleWith("1.5") &&
                             terminology.resultType !is ListType))
@@ -3771,7 +3771,9 @@ class Cql2ElmVisitor(
      * @return `true` if the RHS supports refactoring to a `Retrieve`, `false` otherwise.
      */
     private fun isRHSEligibleForDateRangeOptimization(rhs: Expression): Boolean {
-        return (rhs.resultType.isSubTypeOf(libraryBuilder.resolveTypeName("System", "DateTime")) ||
+        return (rhs.resultType.isSubTypeOf(
+            libraryBuilder.resolveTypeName("System", "DateTime")!!
+        ) ||
             rhs.resultType.isSubTypeOf(
                 IntervalType(libraryBuilder.resolveTypeName("System", "DateTime"))
             ))

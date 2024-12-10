@@ -98,9 +98,9 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
                     // If the op can be converted to both a Date and a DateTime, throw an ambiguous
                     // error
                     if (
-                        !(op.resultType.isSubTypeOf(builder.resolveTypeName("System", "Date")) ||
+                        !(op.resultType.isSubTypeOf(builder.resolveTypeName("System", "Date")!!) ||
                             op.resultType.isSubTypeOf(
-                                builder.resolveTypeName("System", "DateTime")
+                                builder.resolveTypeName("System", "DateTime")!!
                             ))
                     ) {
                         val dateConversion =

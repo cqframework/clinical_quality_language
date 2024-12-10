@@ -1,7 +1,6 @@
 package org.cqframework.cql.tools.xsd2modelinfo;
 
 import static org.cqframework.cql.tools.xsd2modelinfo.ModelImporterOptions.ChoiceTypePolicy.USE_CHOICE;
-import static org.hl7.cql.model.ChoiceTypeKt.flattenChoices;
 
 import jakarta.xml.bind.JAXB;
 import java.io.IOException;
@@ -637,7 +636,7 @@ public class ModelImporter {
                 }
 
                 if (elementName != null && !elementName.isEmpty()) {
-                    ChoiceType choiceType = new ChoiceType(flattenChoices(choices));
+                    ChoiceType choiceType = new ChoiceType(ChoiceType.Companion.flattenChoices(choices));
                     ClassTypeElement element = new ClassTypeElement(elementName, choiceType, false, false, null);
                     elements.add(element);
                     choiceCreated = true;
