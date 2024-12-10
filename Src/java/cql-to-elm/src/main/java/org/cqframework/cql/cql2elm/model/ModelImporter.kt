@@ -212,7 +212,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
                     typeSpecifier.pointType,
                     typeSpecifier.pointTypeSpecifier
                 )
-            return IntervalType(pointType)
+            return IntervalType(pointType!!)
         }
 
         if (typeSpecifier is ListTypeSpecifier) {
@@ -262,7 +262,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
                 resolveTypeName(
                     typeName.substring(typeName.indexOf('<') + 1, typeName.lastIndexOf('>'))
                 )
-            return IntervalType(pointType)
+            return IntervalType(pointType!!)
         } else if (typeName.lowercase(Locale.getDefault()).startsWith("list<")) {
             val elementType =
                 resolveTypeName(
@@ -687,7 +687,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
     }
 
     private fun resolveIntervalType(t: IntervalTypeInfo): IntervalType {
-        val result = IntervalType(resolveTypeNameOrSpecifier(t.pointType, t.pointTypeSpecifier))
+        val result = IntervalType(resolveTypeNameOrSpecifier(t.pointType, t.pointTypeSpecifier)!!)
         return result
     }
 

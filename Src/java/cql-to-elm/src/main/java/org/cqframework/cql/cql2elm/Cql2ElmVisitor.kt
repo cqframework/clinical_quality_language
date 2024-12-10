@@ -3833,7 +3833,7 @@ class Cql2ElmVisitor(
             libraryBuilder.resolveTypeName("System", "DateTime")!!
         ) ||
             rhs.resultType.isSubTypeOf(
-                IntervalType(libraryBuilder.resolveTypeName("System", "DateTime"))
+                IntervalType(libraryBuilder.resolveTypeName("System", "DateTime")!!)
             ))
 
         // BTR: The only requirement for the optimization is that the expression be of

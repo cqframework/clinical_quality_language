@@ -438,7 +438,7 @@ class LibraryBuilder(
                             typeSpecifier.lastIndexOf('>')
                         )
                     )
-                return IntervalType(pointType)
+                return IntervalType(pointType!!)
             }
             else ->
                 return if (typeSpecifier.lowercase(Locale.getDefault()).startsWith("list<")) {
@@ -2411,7 +2411,7 @@ class LibraryBuilder(
                 .withHighClosed(highClosed)
         val pointType: DataType? =
             ensureCompatibleTypes(result.low.resultType, result.high.resultType)
-        result.resultType = IntervalType(pointType)
+        result.resultType = IntervalType(pointType!!)
         result.low = ensureCompatible(result.low, pointType)
         result.high = ensureCompatible(result.high, pointType)
         return result
