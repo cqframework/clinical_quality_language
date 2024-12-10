@@ -187,9 +187,6 @@ public class GenericClassSignatureParser {
         } else {
             String genericTypeName = boundGenericSignature.substring(0, boundGenericSignature.indexOf('<'));
             resolvedType = (ClassType) resolveType(genericTypeName);
-            if (resolvedType == null) {
-                throw new RuntimeException("Unknown type " + genericTypeName);
-            }
             ClassType newType = new ClassType(escapeNestedAngleBrackets(boundGenericSignature), resolvedType);
             String parameters = boundGenericSignature.substring(
                     boundGenericSignature.indexOf('<') + 1, boundGenericSignature.lastIndexOf('>'));

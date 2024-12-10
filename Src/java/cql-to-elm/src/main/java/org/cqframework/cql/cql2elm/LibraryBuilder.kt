@@ -2463,7 +2463,7 @@ class LibraryBuilder(
                 val classType: ClassType = currentType
                 if (identifier.startsWith("?") && isCompatibleWith("1.5")) {
                     val searchPath: String = identifier.substring(1)
-                    for (s: SearchType in classType.searches) {
+                    for (s: SearchType in classType.getSearches()) {
                         if ((s.name == searchPath)) {
                             return PropertyResolution(s)
                         }

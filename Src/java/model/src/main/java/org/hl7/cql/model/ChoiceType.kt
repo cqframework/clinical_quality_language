@@ -17,21 +17,8 @@ data class ChoiceType private constructor(val types: Set<DataType>) : BaseDataTy
     }
 
     fun isSubSetOf(other: ChoiceType): Boolean {
-        for (type in types) {
-            var currentIsSubType = false
-            for (otherType in other.types) {
-                currentIsSubType = type.isSubTypeOf(otherType)
-                if (currentIsSubType) {
-                    break
-                }
-            }
-
-            if (!currentIsSubType) {
-                return false
-            }
-        }
-
-        return true
+        // every type in this choice is a subtype of some type in the other choice
+        return types.all { x -> other.types.any { x.isSubTypeOf(it) } }
     }
 
     fun isSuperSetOf(other: ChoiceType): Boolean {
@@ -52,19 +39,7 @@ data class ChoiceType private constructor(val types: Set<DataType>) : BaseDataTy
     }
 
     override fun toString(): String {
-        val sb = StringBuilder()
-        sb.append("choice<")
-        var first = true
-        for (type in types) {
-            if (first) {
-                first = false
-            } else {
-                sb.append(",")
-            }
-            sb.append(type.toString())
-        }
-        sb.append(">")
-        return sb.toString()
+        return types.joinToString(",", "choice<", ">")
     }
 
     override val isGeneric: Boolean = types.any { it.isGeneric }

@@ -766,9 +766,8 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
      * @param type
      * @return True if the parent of class 'type' is a generic class.
      */
-    fun isParentGeneric(type: ClassType?): Boolean {
-        val baseType = type!!.baseType
-        return baseType != null && baseType is ClassType && baseType.isGeneric
+    fun isParentGeneric(type: ClassType): Boolean {
+        return type.baseType is ClassType && type.baseType.isGeneric
     }
 
     /**

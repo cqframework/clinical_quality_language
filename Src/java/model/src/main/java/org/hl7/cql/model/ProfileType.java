@@ -1,6 +1,7 @@
 package org.hl7.cql.model;
 
-import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by Bryn on 8/22/2016.
@@ -24,19 +25,11 @@ import java.util.Collection;
  * a detailed discussion of this change.
  */
 public class ProfileType extends ClassType {
-    public ProfileType(String name, DataType baseType, Collection<ClassTypeElement> elements) {
-        super(name, baseType, elements);
-    }
-
-    public ProfileType() {
-        super();
-    }
-
-    public ProfileType(String name) {
-        super(name);
+    public ProfileType(String name, DataType baseType, List<ClassTypeElement> elements) {
+        super(name, baseType, elements, Collections.emptyList());
     }
 
     public ProfileType(String name, DataType baseType) {
-        super(name, baseType);
+        this(name, baseType, Collections.emptyList());
     }
 }

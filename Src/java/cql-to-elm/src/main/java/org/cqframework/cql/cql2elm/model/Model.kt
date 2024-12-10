@@ -33,7 +33,7 @@ open class Model(val modelInfo: ModelInfo, modelManager: ModelManager?) {
 
         for (t in index.values) {
             if (t is ClassType && t.label != null) {
-                classIndex[casify(t.label)] = t
+                classIndex[casify(t.label!!)] = t
             }
 
             if (t is NamedType) {
