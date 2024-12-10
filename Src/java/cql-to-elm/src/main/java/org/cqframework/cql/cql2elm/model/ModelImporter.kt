@@ -431,30 +431,32 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
         val genericParameters: MutableList<TypeParameter> = ArrayList()
         for (parameterInfo in parameterInfoList) {
             val constraint = parameterInfo.constraint
-            var typeConstraint: TypeParameterConstraint? = null
-            when {
-                constraint.equals(TypeParameterConstraint.NONE.name, ignoreCase = true) -> {
-                    typeConstraint = TypeParameterConstraint.NONE
+            val typeConstraint =
+                when {
+                    constraint.equals(TypeParameterConstraint.NONE.name, ignoreCase = true) -> {
+                        TypeParameterConstraint.NONE
+                    }
+                    constraint.equals(TypeParameterConstraint.CLASS.name, ignoreCase = true) -> {
+                        TypeParameterConstraint.CLASS
+                    }
+                    constraint.equals(TypeParameterConstraint.TUPLE.name, ignoreCase = true) -> {
+                        TypeParameterConstraint.TUPLE
+                    }
+                    constraint.equals(TypeParameterConstraint.VALUE.name, ignoreCase = true) -> {
+                        TypeParameterConstraint.VALUE
+                    }
+                    constraint.equals(TypeParameterConstraint.CHOICE.name, ignoreCase = true) -> {
+                        TypeParameterConstraint.CHOICE
+                    }
+                    constraint.equals(TypeParameterConstraint.INTERVAL.name, ignoreCase = true) -> {
+                        TypeParameterConstraint.INTERVAL
+                    }
+                    constraint.equals(TypeParameterConstraint.TYPE.name, ignoreCase = true) -> {
+                        TypeParameterConstraint.TYPE
+                    }
+                    else -> TypeParameterConstraint.NONE
                 }
-                constraint.equals(TypeParameterConstraint.CLASS.name, ignoreCase = true) -> {
-                    typeConstraint = TypeParameterConstraint.CLASS
-                }
-                constraint.equals(TypeParameterConstraint.TUPLE.name, ignoreCase = true) -> {
-                    typeConstraint = TypeParameterConstraint.TUPLE
-                }
-                constraint.equals(TypeParameterConstraint.VALUE.name, ignoreCase = true) -> {
-                    typeConstraint = TypeParameterConstraint.VALUE
-                }
-                constraint.equals(TypeParameterConstraint.CHOICE.name, ignoreCase = true) -> {
-                    typeConstraint = TypeParameterConstraint.CHOICE
-                }
-                constraint.equals(TypeParameterConstraint.INTERVAL.name, ignoreCase = true) -> {
-                    typeConstraint = TypeParameterConstraint.INTERVAL
-                }
-                constraint.equals(TypeParameterConstraint.TYPE.name, ignoreCase = true) -> {
-                    typeConstraint = TypeParameterConstraint.TYPE
-                }
-            }
+
             genericParameters.add(
                 TypeParameter(
                     parameterInfo.name,
