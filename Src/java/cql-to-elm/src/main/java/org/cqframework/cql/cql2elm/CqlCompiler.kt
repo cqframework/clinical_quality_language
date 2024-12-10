@@ -131,8 +131,7 @@ class CqlCompiler(
                 if (offendingSymbol is CommonToken) {
                     builder.recordParsingException(
                         CqlSyntaxException(
-                            @Suppress("ImplicitDefaultLocale")
-                            String.format("Syntax error at %s", offendingSymbol.text),
+                            String.format(Locale.US, "Syntax error at %s", offendingSymbol.text),
                             trackback,
                             e
                         )

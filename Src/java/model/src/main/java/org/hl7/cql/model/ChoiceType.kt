@@ -2,6 +2,7 @@ package org.hl7.cql.model
 
 import org.hl7.cql.model.DataType.Companion.ANY
 
+@ConsistentCopyVisibility
 /** Created by Bryn on 11/8/2016. */
 data class ChoiceType private constructor(val types: Set<DataType>) : BaseDataType() {
     constructor(types: Iterable<DataType>) : this(types.flattenChoices())

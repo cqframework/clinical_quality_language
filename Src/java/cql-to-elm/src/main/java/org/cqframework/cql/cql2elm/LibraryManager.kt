@@ -3,6 +3,10 @@
 package org.cqframework.cql.cql2elm
 
 import java.io.*
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
+import kotlin.collections.HashSet
 import org.apache.commons.lang3.StringUtils
 import org.cqframework.cql.cql2elm.model.CompiledLibrary
 import org.cqframework.cql.elm.serializing.ElmLibraryReaderFactory
@@ -18,7 +22,7 @@ import org.slf4j.LoggerFactory
  * Manages a set of CQL libraries. As new library references are encountered during compilation, the
  * corresponding source is obtained via librarySourceLoader, compiled and cached for later use.
  */
-@Suppress("TooManyFunctions", "ImplicitDefaultLocale")
+@Suppress("TooManyFunctions")
 class LibraryManager
 @JvmOverloads
 constructor(
@@ -125,6 +129,7 @@ constructor(
                 librarySourceLoader.getLibrarySource(libraryIdentifier)
                     ?: throw CqlIncludeException(
                         String.format(
+                            Locale.US,
                             "Could not load source for library %s, version %s.",
                             libraryIdentifier.id,
                             libraryIdentifier.version
@@ -148,6 +153,7 @@ constructor(
             ) {
                 throw CqlIncludeException(
                     String.format(
+                        Locale.US,
                         "Library %s was included as version %s, but version %s of the library was found.",
                         libraryPath,
                         libraryIdentifier.version,
@@ -161,6 +167,7 @@ constructor(
         } catch (e: IOException) {
             throw CqlIncludeException(
                 String.format(
+                    Locale.US,
                     "Errors occurred translating library %s, version %s.",
                     libraryPath,
                     libraryIdentifier.version
@@ -174,6 +181,7 @@ constructor(
         if (result == null) {
             throw CqlIncludeException(
                 String.format(
+                    Locale.US,
                     "Could not load source for library %s, version %s.",
                     libraryPath,
                     libraryIdentifier.version

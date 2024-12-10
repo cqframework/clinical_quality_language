@@ -36,8 +36,8 @@ class ModelInfoLoader : NamespaceAware, PathAware {
             }
         }
         requireNotNull(modelInfo) {
-            @Suppress("ImplicitDefaultLocale")
             String.format(
+                Locale.US,
                 "Could not resolve model info provider for model %s, version %s.",
                 if (modelIdentifier.system == null) modelIdentifier.id
                 else NamespaceManager.getPath(modelIdentifier.system, modelIdentifier.id),

@@ -275,8 +275,7 @@ class ModelManager {
     fun resolveModelByUri(namespaceUri: String): Model {
         return modelsByUri[namespaceUri]
             ?: throw IllegalArgumentException(
-                @Suppress("ImplicitDefaultLocale")
-                String.format("Could not resolve model with namespace %s", namespaceUri)
+                String.format(Locale.US, "Could not resolve model with namespace %s", namespaceUri)
             )
     }
 }

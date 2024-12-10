@@ -17,14 +17,7 @@ import org.hl7.cql_annotations.r1.ObjectFactory
 import org.hl7.elm.r1.*
 
 /** Created by Bryn on 12/29/2016. */
-@Suppress(
-    "LargeClass",
-    "TooManyFunctions",
-    "ImplicitDefaultLocale",
-    "ForbiddenComment",
-    "ReturnCount",
-    "MaxLineLength"
-)
+@Suppress("LargeClass", "TooManyFunctions", "ForbiddenComment", "ReturnCount", "MaxLineLength")
 class LibraryBuilder(
     @JvmField
     val namespaceInfo: NamespaceInfo?, // Note: allowed to be null, implies global namespace
@@ -177,6 +170,7 @@ class LibraryBuilder(
         }
         require(isCompatibleWith(sinceCompatibilityLevel)) {
             String.format(
+                Locale.US,
                 "Feature %s was introduced in version %s and so cannot be used at compatibility level %s",
                 featureName,
                 sinceCompatibilityLevel,
@@ -223,6 +217,7 @@ class LibraryBuilder(
         ) {
             throw IllegalArgumentException(
                 String.format(
+                    Locale.US,
                     "Could not load model information for model %s, version %s because version %s is already loaded.",
                     modelIdentifier.id,
                     modelIdentifier.version,
@@ -297,6 +292,7 @@ class LibraryBuilder(
                     if (result != null) {
                         throw IllegalArgumentException(
                             String.format(
+                                Locale.US,
                                 "Label %s is ambiguous between %s and %s.",
                                 label,
                                 result.label,
@@ -333,6 +329,7 @@ class LibraryBuilder(
                     if (result != null) {
                         throw IllegalArgumentException(
                             String.format(
+                                Locale.US,
                                 "Context name %s is ambiguous between %s and %s.",
                                 contextName,
                                 result.name,
@@ -374,6 +371,7 @@ class LibraryBuilder(
                         if (result != null) {
                             throw IllegalArgumentException(
                                 String.format(
+                                    Locale.US,
                                     "Type name %s is ambiguous between %s and %s.",
                                     typeName,
                                     (result as NamedType).name,
@@ -405,6 +403,7 @@ class LibraryBuilder(
                     if (!isCompatibleWith("1.5") && !isFHIRHelpers(compiledLibrary)) {
                         throw IllegalArgumentException(
                             String.format(
+                                Locale.US,
                                 "The type %s was introduced in CQL 1.5 and cannot be referenced at compatibility level %s",
                                 (result as NamedType).name,
                                 compatibilityLevel
@@ -475,7 +474,9 @@ class LibraryBuilder(
             // Special case for FHIR-derived models that include FHIR Helpers
             return modelManager.resolveModelByUri("http://hl7.org/fhir")
         }
-        requireNotNull(usingDef) { String.format("Could not resolve model name %s", modelName) }
+        requireNotNull(usingDef) {
+            String.format(Locale.US, "Could not resolve model name %s", modelName)
+        }
         return getModel(usingDef)
     }
 
@@ -511,14 +512,14 @@ class LibraryBuilder(
         }
         return libraries[identifier]
             ?: throw IllegalArgumentException(
-                String.format("Could not resolve library name %s.", identifier)
+                String.format(Locale.US, "Could not resolve library name %s.", identifier)
             )
     }
 
     fun resolveNamespaceUri(namespaceName: String, mustResolve: Boolean): String? {
         val namespaceUri = libraryManager.namespaceManager.resolveNamespaceUri(namespaceName)
         require(!(namespaceUri == null && mustResolve)) {
-            String.format("Could not resolve namespace name %s", namespaceName)
+            String.format(Locale.US, "Could not resolve namespace name %s", namespaceName)
         }
         return namespaceUri
     }
@@ -566,7 +567,7 @@ class LibraryBuilder(
                 errorSeverity == CqlCompilerException.ErrorSeverity.Error
             else ->
                 throw IllegalArgumentException(
-                    String.format("Unknown error severity %s", errorSeverity.toString())
+                    String.format(Locale.US, "Unknown error severity %s", errorSeverity.toString())
                 )
         }
     }
@@ -1370,6 +1371,7 @@ class LibraryBuilder(
         for (operand in operands) {
             require(!(operand == null || operand.resultType == null)) {
                 String.format(
+                    Locale.US,
                     "Could not determine signature for invocation of operator %s%s.",
                     if (libraryName == null) "" else "$libraryName.",
                     operatorName
@@ -1483,6 +1485,7 @@ class LibraryBuilder(
         for (operand in fd.operand) {
             require(!(operand == null || operand.resultType == null)) {
                 String.format(
+                    Locale.US,
                     "Could not determine signature for invocation of operator %s%s.",
                     if (libraryName == null) "" else "$libraryName.",
                     operatorName
@@ -1562,6 +1565,7 @@ class LibraryBuilder(
         requireNotNull(resolution) {
             // ERROR:
             String.format(
+                Locale.US,
                 "Could not resolve call to operator %s with signature %s.",
                 callContext.operatorName,
                 callContext.signature
@@ -1570,6 +1574,7 @@ class LibraryBuilder(
         if (resolution.operator.fluent && !callContext.allowFluent) {
             throw IllegalArgumentException(
                 String.format(
+                    Locale.US,
                     "Operator %s with signature %s is a fluent function and can only be invoked with fluent syntax.",
                     callContext.operatorName,
                     callContext.signature
@@ -1579,6 +1584,7 @@ class LibraryBuilder(
         if (callContext.allowFluent && !resolution.operator.fluent && !resolution.allowFluent) {
             throw IllegalArgumentException(
                 String.format(
+                    Locale.US,
                     "Invocation of operator %s with signature %s uses fluent syntax, but the operator is not defined as a fluent function.",
                     callContext.operatorName,
                     callContext.signature
@@ -1599,6 +1605,7 @@ class LibraryBuilder(
             // ERROR:
             throw CqlSemanticException(
                 String.format(
+                    Locale.US,
                     "Identifier %s in library %s is marked private and cannot be referenced from another library.",
                     objectName,
                     libraryName
@@ -2467,6 +2474,7 @@ class LibraryBuilder(
                             if (e.prohibited) {
                                 throw IllegalArgumentException(
                                     String.format(
+                                        Locale.US,
                                         "Element %s cannot be referenced because it is marked prohibited in type %s.",
                                         e.name,
                                         currentType.name
@@ -2492,7 +2500,11 @@ class LibraryBuilder(
                         PropertyResolution((resolveTypeName("System", "Boolean"))!!, identifier)
                     else -> // ERROR:
                     throw IllegalArgumentException(
-                            String.format("Invalid interval property name %s.", identifier)
+                            String.format(
+                                Locale.US,
+                                "Invalid interval property name %s.",
+                                identifier
+                            )
                         )
                 }
             } else if (currentType is ChoiceType) {
@@ -2512,6 +2524,7 @@ class LibraryBuilder(
                                 if (resultTargetMaps[resolution.type] != resolution.targetMap) {
                                     throw IllegalArgumentException(
                                         String.format(
+                                            Locale.US,
                                             "Inconsistent target maps %s and %s for choice type %s",
                                             resultTargetMaps[resolution.type],
                                             resolution.targetMap,
@@ -2528,6 +2541,7 @@ class LibraryBuilder(
                         } else if (name != resolution.name) {
                             throw IllegalArgumentException(
                                 String.format(
+                                    Locale.US,
                                     "Inconsistent property resolution for choice type %s (was %s, is %s)",
                                     choice.toString(),
                                     name,
@@ -2565,7 +2579,12 @@ class LibraryBuilder(
         if (mustResolve) {
             // ERROR:
             throw IllegalArgumentException(
-                String.format("Member %s not found for type %s.", identifier, sourceType?.toLabel())
+                String.format(
+                    Locale.US,
+                    "Member %s not found for type %s.",
+                    identifier,
+                    sourceType?.toLabel()
+                )
             )
         }
         return null
@@ -2652,6 +2671,7 @@ class LibraryBuilder(
                     // ERROR:
                     throw IllegalArgumentException(
                         String.format(
+                            Locale.US,
                             "Could not validate reference to expression %s because its definition contains errors.",
                             expressionRef.name
                         )
@@ -2668,6 +2688,7 @@ class LibraryBuilder(
                     // ERROR:
                     throw IllegalArgumentException(
                         String.format(
+                            Locale.US,
                             "Could not validate reference to parameter %s because its definition contains errors.",
                             parameterRef.name
                         )
@@ -2684,6 +2705,7 @@ class LibraryBuilder(
                     // ERROR:
                     throw IllegalArgumentException(
                         String.format(
+                            Locale.US,
                             "Could not validate reference to valueset %s because its definition contains errors.",
                             valuesetRef.name
                         )
@@ -2703,6 +2725,7 @@ class LibraryBuilder(
                     // ERROR:
                     throw IllegalArgumentException(
                         String.format(
+                            Locale.US,
                             "Could not validate reference to codesystem %s because its definition contains errors.",
                             codesystemRef.name
                         )
@@ -2718,6 +2741,7 @@ class LibraryBuilder(
                     // ERROR:
                     throw IllegalArgumentException(
                         String.format(
+                            Locale.US,
                             "Could not validate reference to code %s because its definition contains errors.",
                             codeRef.name
                         )
@@ -2733,6 +2757,7 @@ class LibraryBuilder(
                     // ERROR:
                     throw IllegalArgumentException(
                         String.format(
+                            Locale.US,
                             "Could not validate reference to concept %s because its definition contains error.",
                             conceptRef.name
                         )
@@ -2772,6 +2797,7 @@ class LibraryBuilder(
             if (message == null) {
                 message =
                     String.format(
+                        Locale.US,
                         "Could not resolve identifier %s in the current library.",
                         identifier
                     )
@@ -2808,6 +2834,7 @@ class LibraryBuilder(
                     // ERROR:
                     throw IllegalArgumentException(
                         String.format(
+                            Locale.US,
                             "Could not validate reference to parameter %s because its definition contains errors.",
                             parameterRef.name
                         )
@@ -2863,6 +2890,7 @@ class LibraryBuilder(
                     if (result != null) {
                         reportWarning(
                             String.format(
+                                Locale.US,
                                 "Duplicate mapped model %s:%s%s",
                                 model.modelInfo.name,
                                 model.modelInfo.targetUrl,
@@ -2957,7 +2985,11 @@ class LibraryBuilder(
                     val splitIndex: Int = typeCase.indexOf(':')
                     if (splitIndex <= 0) {
                         throw IllegalArgumentException(
-                            String.format("Malformed type case in targetMap %s", targetMap)
+                            String.format(
+                                Locale.US,
+                                "Malformed type case in targetMap %s",
+                                targetMap
+                            )
                         )
                     }
                     val typeCaseElement: String = typeCase.substring(0, splitIndex)
@@ -3068,6 +3100,7 @@ class LibraryBuilder(
                     if (source !is Property) {
                         throw IllegalArgumentException(
                             String.format(
+                                Locale.US,
                                 "Cannot expand target map %s for non-property-accessor type %s",
                                 targetMap,
                                 source!!.javaClass.simpleName
@@ -3083,6 +3116,7 @@ class LibraryBuilder(
                         } else {
                             throw IllegalArgumentException(
                                 String.format(
+                                    Locale.US,
                                     "Cannot resolve %%parent reference in targetMap %s",
                                     targetMap
                                 )
@@ -3107,6 +3141,7 @@ class LibraryBuilder(
                 if (indexerItems.size != 2) {
                     throw IllegalArgumentException(
                         String.format(
+                            Locale.US,
                             "Invalid indexer item %s in targetMap %s",
                             indexerItem,
                             targetMap
@@ -3269,7 +3304,7 @@ class LibraryBuilder(
             }
         }
         throw IllegalArgumentException(
-            String.format("TargetMapping not implemented: %s", targetMap)
+            String.format(Locale.US, "TargetMapping not implemented: %s", targetMap)
         )
     }
 
@@ -3367,6 +3402,7 @@ class LibraryBuilder(
             // ERROR:
             throw IllegalArgumentException(
                 String.format(
+                    Locale.US,
                     "Could not resolve identifier %s in library %s.",
                     memberIdentifier,
                     referencedLibrary.identifier!!.id
@@ -3552,6 +3588,7 @@ class LibraryBuilder(
         }
         throw IllegalArgumentException(
             String.format(
+                Locale.US,
                 "Invalid context reference from %s context to %s context.",
                 currentExpressionContext(),
                 expressionDef.context
@@ -3684,12 +3721,14 @@ class LibraryBuilder(
         val elementString = lookupElementWarning(trackable)
         return if (trackable is Literal) {
             String.format(
+                Locale.US,
                 "You used a string literal: [%s] here that matches an identifier in scope: [%s]. Did you mean to use the identifier instead?",
                 identifierParam,
                 matchedIdentifier
             )
         } else
             String.format(
+                Locale.US,
                 "%s identifier [%s] is hiding another identifier of the same name.",
                 elementString,
                 identifierParam
@@ -3739,6 +3778,7 @@ class LibraryBuilder(
             // ERROR:
             throw IllegalArgumentException(
                 String.format(
+                    Locale.US,
                     "Cannot resolve reference to expression or function %s because it results in a circular reference.",
                     identifier
                 )

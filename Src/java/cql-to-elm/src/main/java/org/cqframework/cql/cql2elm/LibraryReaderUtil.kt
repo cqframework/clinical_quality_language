@@ -6,6 +6,7 @@ import java.io.*
 import java.net.URI
 import java.net.URISyntaxException
 import java.net.URL
+import java.util.*
 import javax.xml.transform.Source
 import javax.xml.transform.stream.StreamSource
 
@@ -42,8 +43,11 @@ object LibraryReaderUtil {
             return json
         }
         throw CqlCompilerException(
-            @Suppress("ImplicitDefaultLocale")
-            String.format("Could not determine access path for input of type %s.", json!!.javaClass)
+            String.format(
+                Locale.US,
+                "Could not determine access path for input of type %s.",
+                json!!.javaClass
+            )
         )
     }
 }

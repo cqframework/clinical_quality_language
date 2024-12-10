@@ -40,8 +40,8 @@ class SystemMethodResolver(
             actualCount = ctx.expression().size
         }
         require(actualCount == expectedCount) {
-            @Suppress("ImplicitDefaultLocale")
             String.format(
+                Locale.US,
                 "Expected %s argument for method %s.",
                 Integer.valueOf(expectedCount).toString(),
                 functionName

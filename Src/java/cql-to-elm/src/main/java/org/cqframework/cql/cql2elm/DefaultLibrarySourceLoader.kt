@@ -77,8 +77,8 @@ internal class DefaultLibrarySourceLoader : LibrarySourceLoader, NamespaceAware,
         }
         if (source == null) {
             throw IllegalArgumentException(
-                @Suppress("ImplicitDefaultLocale")
                 String.format(
+                    Locale.US,
                     "Could not load source for library %s, version %s.",
                     libraryIdentifier.id,
                     libraryIdentifier.version

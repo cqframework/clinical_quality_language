@@ -39,7 +39,6 @@ import org.slf4j.LoggerFactory
     "TooManyFunctions",
     "ComplexCondition",
     "TooGenericExceptionCaught",
-    "ImplicitDefaultLocale",
     "ReturnCount",
     "ThrowsCount",
     "MaxLineLength",
@@ -132,6 +131,7 @@ class Cql2ElmVisitor(
             else parseString(ctx.localIdentifier())!!
         require(localIdentifier == unqualifiedIdentifier) {
             String.format(
+                Locale.US,
                 "Local identifiers for models must be the same as the name of the model in this release of the translator (Model %s, Called %s)",
                 unqualifiedIdentifier,
                 localIdentifier
@@ -227,7 +227,11 @@ class Cql2ElmVisitor(
             }
         }
         requireNotNull(paramType) {
-            String.format("Could not determine parameter type for parameter %s.", param.name)
+            String.format(
+                Locale.US,
+                "Could not determine parameter type for parameter %s.",
+                param.name
+            )
         }
         param.resultType = paramType
         if (param.default != null) {
@@ -258,6 +262,7 @@ class Cql2ElmVisitor(
             else ->
                 throw IllegalArgumentException(
                     String.format(
+                        Locale.US,
                         "Unknown access modifier %s.",
                         ctx.text.lowercase(Locale.getDefault())
                     )
@@ -294,7 +299,7 @@ class Cql2ElmVisitor(
         }
         requireNotNull(def) {
             // ERROR:
-            String.format("Could not resolve reference to code system %s.", name)
+            String.format(Locale.US, "Could not resolve reference to code system %s.", name)
         }
         return of.createCodeSystemRef()
             .withLibraryName(libraryName)
@@ -315,7 +320,7 @@ class Cql2ElmVisitor(
         if (def == null) {
             // ERROR:
             throw IllegalArgumentException(
-                String.format("Could not resolve reference to code %s.", name)
+                String.format(Locale.US, "Could not resolve reference to code %s.", name)
             )
         }
         return of.createCodeRef()
@@ -337,6 +342,7 @@ class Cql2ElmVisitor(
                     visit(codesystem) as CodeSystemRef?
                         ?: throw IllegalArgumentException(
                             String.format(
+                                Locale.US,
                                 "Could not resolve reference to code system %s.",
                                 codesystem.text
                             )
@@ -393,7 +399,7 @@ class Cql2ElmVisitor(
             getTypeIdentifier(qualifiers, parseString(ctx.referentialOrTypeNameIdentifier())!!)
         val retrievedResult =
             libraryBuilder.getNamedTypeSpecifierResult(
-                String.format("%s:%s", modelIdentifier, identifier)
+                String.format(Locale.US, "%s:%s", modelIdentifier, identifier)
             )
         if (retrievedResult != null) {
             return if (retrievedResult.hasError()) {
@@ -404,6 +410,7 @@ class Cql2ElmVisitor(
             libraryBuilder.resolveTypeName(modelIdentifier, identifier)
                 ?: throw CqlCompilerException(
                     String.format(
+                        Locale.US,
                         "Could not find type for model: %s and name: %s",
                         modelIdentifier,
                         identifier
@@ -570,6 +577,7 @@ class Cql2ElmVisitor(
                     // ERROR:
                     throw IllegalArgumentException(
                         String.format(
+                            Locale.US,
                             "Identifier %s is already in use in this library.",
                             expressionDef.name
                         )
@@ -774,7 +782,7 @@ class Cql2ElmVisitor(
                 var millisecond = -1
                 if (hour < 0 || hour > 24) {
                     throw IllegalArgumentException(
-                        String.format("Invalid hour in time literal (%s).", input)
+                        String.format(Locale.US, "Invalid hour in time literal (%s).", input)
                     )
                 }
                 result.hour = libraryBuilder.createLiteral(hour)
@@ -782,7 +790,7 @@ class Cql2ElmVisitor(
                     minute = matcher.group(3).toInt()
                     if ((minute < 0) || (minute >= 60) || (hour == 24 && minute > 0)) {
                         throw IllegalArgumentException(
-                            String.format("Invalid minute in time literal (%s).", input)
+                            String.format(Locale.US, "Invalid minute in time literal (%s).", input)
                         )
                     }
                     result.minute = libraryBuilder.createLiteral(minute)
@@ -791,7 +799,7 @@ class Cql2ElmVisitor(
                     second = matcher.group(5).toInt()
                     if ((second < 0) || (second >= 60) || (hour == 24 && second > 0)) {
                         throw IllegalArgumentException(
-                            String.format("Invalid second in time literal (%s).", input)
+                            String.format(Locale.US, "Invalid second in time literal (%s).", input)
                         )
                     }
                     result.second = libraryBuilder.createLiteral(second)
@@ -800,7 +808,11 @@ class Cql2ElmVisitor(
                     millisecond = matcher.group(7).toInt()
                     if (millisecond < 0 || (hour == 24 && millisecond > 0)) {
                         throw IllegalArgumentException(
-                            String.format("Invalid millisecond in time literal (%s).", input)
+                            String.format(
+                                Locale.US,
+                                "Invalid millisecond in time literal (%s).",
+                                input
+                            )
                         )
                     }
                     result.millisecond = libraryBuilder.createLiteral(millisecond)
@@ -810,6 +822,7 @@ class Cql2ElmVisitor(
             } catch (e: RuntimeException) {
                 throw IllegalArgumentException(
                     String.format(
+                        Locale.US,
                         "Invalid time input (%s). Use ISO 8601 time representation (hh:mm:ss.fff).",
                         input
                     ),
@@ -819,6 +832,7 @@ class Cql2ElmVisitor(
         } else {
             throw IllegalArgumentException(
                 String.format(
+                    Locale.US,
                     "Invalid time input (%s). Use ISO 8601 time representation (hh:mm:ss.fff).",
                     input
                 )
@@ -898,7 +912,11 @@ class Cql2ElmVisitor(
                     month = matcher.group(5).toInt()
                     if (month < 0 || month > 12) {
                         throw IllegalArgumentException(
-                            String.format("Invalid month in date/time literal (%s).", input)
+                            String.format(
+                                Locale.US,
+                                "Invalid month in date/time literal (%s).",
+                                input
+                            )
                         )
                     }
                     result.month = libraryBuilder.createLiteral(month)
@@ -916,7 +934,11 @@ class Cql2ElmVisitor(
                     }
                     if (day < 0 || day > maxDay) {
                         throw IllegalArgumentException(
-                            String.format("Invalid day in date/time literal (%s).", input)
+                            String.format(
+                                Locale.US,
+                                "Invalid day in date/time literal (%s).",
+                                input
+                            )
                         )
                     }
                     result.day = libraryBuilder.createLiteral(day)
@@ -925,7 +947,11 @@ class Cql2ElmVisitor(
                     hour = matcher.group(13).toInt()
                     if (hour < 0 || hour > 24) {
                         throw IllegalArgumentException(
-                            String.format("Invalid hour in date/time literal (%s).", input)
+                            String.format(
+                                Locale.US,
+                                "Invalid hour in date/time literal (%s).",
+                                input
+                            )
                         )
                     }
                     result.hour = libraryBuilder.createLiteral(hour)
@@ -934,7 +960,11 @@ class Cql2ElmVisitor(
                     minute = matcher.group(15).toInt()
                     if ((minute < 0) || (minute >= 60) || (hour == 24 && minute > 0)) {
                         throw IllegalArgumentException(
-                            String.format("Invalid minute in date/time literal (%s).", input)
+                            String.format(
+                                Locale.US,
+                                "Invalid minute in date/time literal (%s).",
+                                input
+                            )
                         )
                     }
                     result.minute = libraryBuilder.createLiteral(minute)
@@ -943,7 +973,11 @@ class Cql2ElmVisitor(
                     second = matcher.group(17).toInt()
                     if ((second < 0) || (second >= 60) || (hour == 24 && second > 0)) {
                         throw IllegalArgumentException(
-                            String.format("Invalid second in date/time literal (%s).", input)
+                            String.format(
+                                Locale.US,
+                                "Invalid second in date/time literal (%s).",
+                                input
+                            )
                         )
                     }
                     result.second = libraryBuilder.createLiteral(second)
@@ -952,7 +986,11 @@ class Cql2ElmVisitor(
                     millisecond = matcher.group(19).toInt()
                     if (millisecond < 0 || (hour == 24 && millisecond > 0)) {
                         throw IllegalArgumentException(
-                            String.format("Invalid millisecond in date/time literal (%s).", input)
+                            String.format(
+                                Locale.US,
+                                "Invalid millisecond in date/time literal (%s).",
+                                input
+                            )
                         )
                     }
                     result.millisecond = libraryBuilder.createLiteral(millisecond)
@@ -967,6 +1005,7 @@ class Cql2ElmVisitor(
                         if (hourOffset < 0 || hourOffset > 14) {
                             throw IllegalArgumentException(
                                 String.format(
+                                    Locale.US,
                                     "Timezone hour offset is out of range in date/time literal (%s).",
                                     input
                                 )
@@ -980,6 +1019,7 @@ class Cql2ElmVisitor(
                         ) {
                             throw IllegalArgumentException(
                                 String.format(
+                                    Locale.US,
                                     "Timezone minute offset is out of range in date/time literal (%s).",
                                     input
                                 )
@@ -995,6 +1035,7 @@ class Cql2ElmVisitor(
                             if (hourOffset < 0 || hourOffset > 14) {
                                 throw IllegalArgumentException(
                                     String.format(
+                                        Locale.US,
                                         "Timezone hour offset is out of range in date/time literal (%s).",
                                         input
                                     )
@@ -1025,6 +1066,7 @@ class Cql2ElmVisitor(
             } catch (e: RuntimeException) {
                 throw IllegalArgumentException(
                     String.format(
+                        Locale.US,
                         "Invalid date-time input (%s). Use ISO 8601 date time representation (yyyy-MM-ddThh:mm:ss.fff(Z|(+/-hh:mm)).",
                         input
                     ),
@@ -1034,6 +1076,7 @@ class Cql2ElmVisitor(
         } else {
             throw IllegalArgumentException(
                 String.format(
+                    Locale.US,
                     "Invalid date-time input (%s). Use ISO 8601 date time representation (yyyy-MM-ddThh:mm:ss.fff(Z|+/-hh:mm)).",
                     input
                 )
@@ -1084,7 +1127,7 @@ class Cql2ElmVisitor(
             BigDecimal(value)
         } catch (@Suppress("SwallowedException") e: Exception) {
             throw IllegalArgumentException(
-                String.format("Could not parse number literal: %s", value)
+                String.format(Locale.US, "Could not parse number literal: %s", value)
             )
         }
     }
@@ -1151,7 +1194,7 @@ class Cql2ElmVisitor(
             }
             else ->
                 throw IllegalArgumentException(
-                    String.format("Unsupported operator: %s.", ctx.getChild(1)!!.text)
+                    String.format(Locale.US, "Unsupported operator: %s.", ctx.getChild(1)!!.text)
                 )
         }
         exp!!.withOperand(
@@ -1200,7 +1243,7 @@ class Cql2ElmVisitor(
             }
             else ->
                 throw IllegalArgumentException(
-                    String.format("Unsupported operator: %s.", ctx.getChild(1)!!.text)
+                    String.format(Locale.US, "Unsupported operator: %s.", ctx.getChild(1)!!.text)
                 )
         }
         if (exp is BinaryExpression) {
@@ -1268,7 +1311,10 @@ class Cql2ElmVisitor(
             "maximum" -> {
                 libraryBuilder.buildMaximum(targetType!!.resultType)
             }
-            else -> throw IllegalArgumentException(String.format("Unknown extent: %s", extent))
+            else ->
+                throw IllegalArgumentException(
+                    String.format(Locale.US, "Unknown extent: %s", extent)
+                )
         }
     }
 
@@ -1336,7 +1382,7 @@ class Cql2ElmVisitor(
             "milliseconds" -> DateTimePrecision.MILLISECOND
             else ->
                 throw IllegalArgumentException(
-                    String.format("Unknown precision '%s'.", dateTimePrecision)
+                    String.format(Locale.US, "Unknown precision '%s'.", dateTimePrecision)
                 )
         }
     }
@@ -1382,7 +1428,9 @@ class Cql2ElmVisitor(
             "week" ->
                 throw IllegalArgumentException("Date/time values do not have a week component.")
             else ->
-                throw IllegalArgumentException(String.format("Unknown precision '%s'.", component))
+                throw IllegalArgumentException(
+                    String.format(Locale.US, "Unknown precision '%s'.", component)
+                )
         }
         libraryBuilder.resolveUnaryCall("System", operatorName, result!!)
         return result
@@ -1573,7 +1621,7 @@ class Cql2ElmVisitor(
                     return contains
                 }
         }
-        throw IllegalArgumentException(String.format("Unknown operator: %s", operator))
+        throw IllegalArgumentException(String.format(Locale.US, "Unknown operator: %s", operator))
     }
 
     override fun visitAndExpression(ctx: AndExpressionContext): And? {
@@ -1684,7 +1732,7 @@ class Cql2ElmVisitor(
             }
             else ->
                 throw IllegalArgumentException(
-                    String.format("Unknown operator: %s", ctx.getChild(1)!!.text)
+                    String.format(Locale.US, "Unknown operator: %s", ctx.getChild(1)!!.text)
                 )
         }
         exp.withOperand(parseExpression(ctx.expression(0)), parseExpression(ctx.expression(1)))
@@ -1742,6 +1790,7 @@ class Cql2ElmVisitor(
             // ERROR:
             throw IllegalArgumentException(
                 String.format(
+                    Locale.US,
                     "Identifier %s is a library and cannot be used as an expression.",
                     result.libraryName
                 )
@@ -1792,6 +1841,7 @@ class Cql2ElmVisitor(
                         ?: // ERROR:
                         throw IllegalArgumentException(
                             String.format(
+                                Locale.US,
                                 "Could not resolve conversion from type %s to type %s.",
                                 operand.resultType,
                                 targetType.resultType
@@ -1869,7 +1919,7 @@ class Cql2ElmVisitor(
             }
             else ->
                 throw IllegalArgumentException(
-                    String.format("Unknown boolean test predicate %s.", lastChild)
+                    String.format(Locale.US, "Unknown boolean test predicate %s.", lastChild)
                 )
         }
         if ("not" == nextToLast) {
@@ -1971,6 +2021,7 @@ class Cql2ElmVisitor(
                 else ->
                     throw IllegalArgumentException(
                         String.format(
+                            Locale.US,
                             "Unknown relative qualifier: '%s'.",
                             ctx.relativeQualifier()!!.text
                         )
@@ -2795,7 +2846,7 @@ class Cql2ElmVisitor(
             }
         }
         throw IllegalArgumentException(
-            String.format("Unknown aggregate operator %s.", ctx.getChild(0)!!.text)
+            String.format(Locale.US, "Unknown aggregate operator %s.", ctx.getChild(0)!!.text)
         )
     }
 
@@ -2851,7 +2902,7 @@ class Cql2ElmVisitor(
             }
         }
         throw IllegalArgumentException(
-            String.format("Unknown aggregate set operator %s.", ctx.getChild(0)!!.text)
+            String.format(Locale.US, "Unknown aggregate set operator %s.", ctx.getChild(0)!!.text)
         )
     }
 
@@ -2868,12 +2919,16 @@ class Cql2ElmVisitor(
             libraryBuilder.resolveTypeName(model, label)
                 ?: // ERROR:
                 throw IllegalArgumentException(
-                    String.format("Could not resolve type name %s.", label)
+                    String.format(Locale.US, "Could not resolve type name %s.", label)
                 )
         if (dataType !is ClassType || !dataType.isRetrievable) {
             // ERROR:
             throw IllegalArgumentException(
-                String.format("Specified data type %s does not support retrieval.", label)
+                String.format(
+                    Locale.US,
+                    "Specified data type %s does not support retrieval.",
+                    label
+                )
             )
         }
         val classType: ClassType = dataType
@@ -2933,6 +2988,7 @@ class Cql2ElmVisitor(
                     propertyException =
                         CqlSemanticException(
                             String.format(
+                                Locale.US,
                                 "Could not resolve code path %s for the type of the retrieve %s.",
                                 codePath,
                                 namedType.name
@@ -3216,6 +3272,7 @@ class Cql2ElmVisitor(
                                 libraryBuilder.recordParsingException(
                                     CqlSemanticException(
                                         String.format(
+                                            Locale.US,
                                             "Unexpected membership operator %s in retrieve",
                                             inExpression.javaClass.simpleName
                                         ),
@@ -3298,6 +3355,7 @@ class Cql2ElmVisitor(
                         libraryBuilder.recordParsingException(
                             CqlSemanticException(
                                 String.format(
+                                    Locale.US,
                                     "Unknown code comparator %s in retrieve",
                                     codeComparator
                                 ),
@@ -3646,7 +3704,7 @@ class Cql2ElmVisitor(
             } else if (property.source != null) {
                 val subPath = getPropertyPath(property.source, alias)
                 if (subPath != null) {
-                    return String.format("%s.%s", subPath, property.path)
+                    return String.format(Locale.US, "%s.%s", subPath, property.path)
                 }
             }
         }
@@ -4092,6 +4150,7 @@ class Cql2ElmVisitor(
                             // ERROR:
                             throw IllegalArgumentException(
                                 String.format(
+                                    Locale.US,
                                     "Could not validate reference to expression %s because its definition contains errors.",
                                     expressionInfo.name
                                 )
@@ -4258,6 +4317,7 @@ class Cql2ElmVisitor(
                 if (!isMethodInvocationEnabled) {
                     throw CqlCompilerException(
                         String.format(
+                            Locale.US,
                             "The identifier %s could not be resolved as an invocation because method-style invocation is disabled.",
                             identifier
                         ),
@@ -4265,7 +4325,7 @@ class Cql2ElmVisitor(
                     )
                 }
                 throw IllegalArgumentException(
-                    String.format("Invalid invocation target: %s", target.javaClass.name)
+                    String.format(Locale.US, "Invalid invocation target: %s", target.javaClass.name)
                 )
             } finally {
                 libraryBuilder.pushExpressionTarget(target)
@@ -4364,6 +4424,7 @@ class Cql2ElmVisitor(
                         } else {
                             throw IllegalArgumentException(
                                 String.format(
+                                    Locale.US,
                                     "Internal error attempting to resolve function header for %s",
                                     op.name
                                 )
@@ -4392,11 +4453,19 @@ class Cql2ElmVisitor(
         val fd =
             getFunctionDef(op)
                 ?: throw IllegalArgumentException(
-                    String.format("Could not resolve function header for operator %s", op.name)
+                    String.format(
+                        Locale.US,
+                        "Could not resolve function header for operator %s",
+                        op.name
+                    )
                 )
         return getFunctionHeaderByDef(fd)
             ?: throw IllegalArgumentException(
-                String.format("Could not resolve function header for operator %s", op.name)
+                String.format(
+                    Locale.US,
+                    "Could not resolve function header for operator %s",
+                    op.name
+                )
             )
     }
 
@@ -4404,6 +4473,7 @@ class Cql2ElmVisitor(
         return functionDefinitions[fh]
             ?: throw IllegalArgumentException(
                 String.format(
+                    Locale.US,
                     "Could not resolve function definition context for function header %s",
                     fh.functionDef.name
                 )
@@ -4425,6 +4495,7 @@ class Cql2ElmVisitor(
             libraryBuilder.resolveFunctionDefinition(fh.functionDef)
                 ?: throw IllegalArgumentException(
                     String.format(
+                        Locale.US,
                         "Internal error: Could not resolve operator map entry for function header %s",
                         fh.mangledName
                     )
@@ -4461,6 +4532,7 @@ class Cql2ElmVisitor(
                         // ERROR:
                         throw IllegalArgumentException(
                             String.format(
+                                Locale.US,
                                 "Function %s has declared return type %s but the function body returns incompatible type %s.",
                                 functionDef.name,
                                 resultType.resultType,
@@ -4477,6 +4549,7 @@ class Cql2ElmVisitor(
                     // ERROR:
                     throw IllegalArgumentException(
                         String.format(
+                            Locale.US,
                             "Function %s is marked external but does not declare a return type.",
                             functionDef.name
                         )
