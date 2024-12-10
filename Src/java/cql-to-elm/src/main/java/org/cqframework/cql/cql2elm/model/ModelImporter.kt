@@ -5,7 +5,6 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import org.cqframework.cql.cql2elm.ModelManager
 import org.hl7.cql.model.ChoiceType
-import org.hl7.cql.model.ChoiceType.Companion.flattenChoices
 import org.hl7.cql.model.ClassType
 import org.hl7.cql.model.ClassTypeElement
 import org.hl7.cql.model.DataType
@@ -245,7 +244,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
                 val choiceType = resolveTypeSpecifier(choice)!!
                 choices.add(choiceType)
             }
-            return ChoiceType(choices.flattenChoices())
+            return ChoiceType(choices)
         }
 
         return null
@@ -708,7 +707,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
                 types.add(resolveTypeSpecifier(typeSpecifier)!!)
             }
         }
-        return ChoiceType(types.flattenChoices())
+        return ChoiceType(types)
     }
 
     /**

@@ -3,19 +3,16 @@ package org.hl7.cql.model
 import org.hl7.cql.model.DataType.Companion.ANY
 
 /** Created by Bryn on 11/8/2016. */
-data class ChoiceType(val types: Set<DataType>) : BaseDataType() {
+data class ChoiceType private constructor(val types: Set<DataType>) : BaseDataType() {
+    constructor(types: Iterable<DataType>) : this(types.flattenChoices())
+
+    constructor(vararg types: DataType) : this(types.toList().flattenChoices())
+
     init {
         require(types.isNotEmpty()) { "A choice type must have at least one type." }
         require(types.none { it is ChoiceType }) {
             "A choice type cannot contain another choice type."
         }
-    }
-
-    override fun isSubTypeOf(other: DataType): Boolean {
-        // Choice types do not follow the is-a relationship, they use the is-compatible relationship
-        // instead, defined
-        // using subset/superset
-        return super.isSubTypeOf(other)
     }
 
     fun isSubSetOf(other: ChoiceType): Boolean {
@@ -34,10 +31,6 @@ data class ChoiceType(val types: Set<DataType>) : BaseDataType() {
         }
 
         return true
-    }
-
-    override fun isSuperTypeOf(other: DataType): Boolean {
-        return super.isSuperTypeOf(other)
     }
 
     fun isSuperSetOf(other: ChoiceType): Boolean {
@@ -88,7 +81,7 @@ data class ChoiceType(val types: Set<DataType>) : BaseDataType() {
     }
 
     companion object {
-        fun Iterable<DataType>.flattenChoices(): Set<DataType> =
+        private fun Iterable<DataType>.flattenChoices(): Set<DataType> =
             flatMap { (it as? ChoiceType)?.types ?: setOf(it) }.toSet()
     }
 }

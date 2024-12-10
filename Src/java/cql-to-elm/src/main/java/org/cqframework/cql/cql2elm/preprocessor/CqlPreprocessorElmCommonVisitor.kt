@@ -22,7 +22,6 @@ import org.cqframework.cql.elm.tracking.Trackable
 import org.cqframework.cql.gen.cqlBaseVisitor
 import org.cqframework.cql.gen.cqlParser.*
 import org.hl7.cql.model.*
-import org.hl7.cql.model.ChoiceType.Companion.flattenChoices
 import org.hl7.cql_annotations.r1.Annotation
 import org.hl7.cql_annotations.r1.Narrative
 import org.hl7.cql_annotations.r1.ObjectFactory
@@ -176,7 +175,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
         if (includeDeprecatedElements) {
             result.type.addAll(typeSpecifiers)
         }
-        val choiceType = ChoiceType(types.flattenChoices())
+        val choiceType = ChoiceType(types)
         result.resultType = choiceType
         return result
     }

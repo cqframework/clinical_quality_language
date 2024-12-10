@@ -636,7 +636,7 @@ public class ModelImporter {
                 }
 
                 if (elementName != null && !elementName.isEmpty()) {
-                    ChoiceType choiceType = new ChoiceType(ChoiceType.Companion.flattenChoices(choices));
+                    ChoiceType choiceType = new ChoiceType(choices);
                     ClassTypeElement element = new ClassTypeElement(elementName, choiceType, false, false, null);
                     elements.add(element);
                     choiceCreated = true;

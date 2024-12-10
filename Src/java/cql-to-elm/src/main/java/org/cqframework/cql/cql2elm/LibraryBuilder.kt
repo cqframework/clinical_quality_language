@@ -12,7 +12,6 @@ import org.cqframework.cql.cql2elm.model.invocation.*
 import org.cqframework.cql.elm.IdObjectFactory
 import org.cqframework.cql.elm.tracking.Trackable
 import org.hl7.cql.model.*
-import org.hl7.cql.model.ChoiceType.Companion.flattenChoices
 import org.hl7.cql_annotations.r1.*
 import org.hl7.cql_annotations.r1.ObjectFactory
 import org.hl7.elm.r1.*
@@ -2242,7 +2241,7 @@ class LibraryBuilder(
             return compatibleType
         }
         if (first != null && !second.isSubTypeOf(first)) {
-            return ChoiceType(listOf(first, second).flattenChoices())
+            return ChoiceType(first, second)
         }
 
         // The above construction of a choice type guarantees this will never be hit
@@ -2541,11 +2540,7 @@ class LibraryBuilder(
 
                 // The result type is a choice of all the resolved types
                 if (resultTypes.size > 1) {
-                    return PropertyResolution(
-                        ChoiceType(resultTypes.flattenChoices()),
-                        name!!,
-                        resultTargetMaps
-                    )
+                    return PropertyResolution(ChoiceType(resultTypes), name!!, resultTargetMaps)
                 }
                 if (resultTypes.size == 1) {
                     return PropertyResolution(

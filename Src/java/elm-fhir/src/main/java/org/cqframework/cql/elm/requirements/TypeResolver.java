@@ -155,7 +155,7 @@ public class TypeResolver {
         for (TypeSpecifier choiceType : typeSpecifier.getChoice()) {
             choiceTypes.add(resolveTypeSpecifier(choiceType));
         }
-        return new ChoiceType(ChoiceType.Companion.flattenChoices(choiceTypes));
+        return new ChoiceType(choiceTypes);
     }
 
     public DataType resolveTypeName(String modelName, String typeName) {
