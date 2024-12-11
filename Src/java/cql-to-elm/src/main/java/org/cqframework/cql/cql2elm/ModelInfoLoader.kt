@@ -1,6 +1,8 @@
 package org.cqframework.cql.cql2elm
 
 import java.nio.file.Path
+import java.util.*
+import kotlin.collections.ArrayList
 import org.hl7.cql.model.ModelIdentifier
 import org.hl7.cql.model.ModelInfoProvider
 import org.hl7.cql.model.NamespaceAware
@@ -26,7 +28,6 @@ class ModelInfoLoader : NamespaceAware, PathAware {
     }
 
     fun getModelInfo(modelIdentifier: ModelIdentifier): ModelInfo {
-        checkModelIdentifier(modelIdentifier)
         var modelInfo: ModelInfo? = null
         for (provider in getProviders()) {
             modelInfo = provider.load(modelIdentifier)
@@ -35,8 +36,8 @@ class ModelInfoLoader : NamespaceAware, PathAware {
             }
         }
         requireNotNull(modelInfo) {
-            @Suppress("ImplicitDefaultLocale")
             String.format(
+                Locale.US,
                 "Could not resolve model info provider for model %s, version %s.",
                 if (modelIdentifier.system == null) modelIdentifier.id
                 else NamespaceManager.getPath(modelIdentifier.system, modelIdentifier.id),
@@ -47,18 +48,14 @@ class ModelInfoLoader : NamespaceAware, PathAware {
     }
 
     @JvmOverloads
-    fun registerModelInfoProvider(provider: ModelInfoProvider?, priority: Boolean = false) {
-        requireNotNull(provider) { "Provider is null" }
-        if (namespaceManager != null) {
-            if (provider is NamespaceAware) {
-                (provider as NamespaceAware).setNamespaceManager(namespaceManager)
-            }
+    fun registerModelInfoProvider(provider: ModelInfoProvider, priority: Boolean = false) {
+        if (namespaceManager != null && provider is NamespaceAware) {
+            provider.setNamespaceManager(namespaceManager!!)
         }
-        if (path != null) {
-            if (provider is PathAware) {
-                (provider as PathAware).setPath(path)
-            }
+        if (path != null && provider is PathAware) {
+            provider.setPath(path!!)
         }
+
         if (priority) {
             providers.add(0, provider)
         } else {
@@ -75,13 +72,6 @@ class ModelInfoLoader : NamespaceAware, PathAware {
         initialized = false
     }
 
-    private fun checkModelIdentifier(modelIdentifier: ModelIdentifier?) {
-        requireNotNull(modelIdentifier) { "modelIdentifier is null." }
-        require(!(modelIdentifier.id == null || modelIdentifier.id == "")) {
-            "modelIdentifier Id is null or empty."
-        }
-    }
-
     override fun setNamespaceManager(namespaceManager: NamespaceManager) {
         this.namespaceManager = namespaceManager
         for (provider in getProviders()) {
@@ -91,15 +81,14 @@ class ModelInfoLoader : NamespaceAware, PathAware {
         }
     }
 
-    override fun setPath(path: Path?) {
-        require(!(path == null || !path.toFile().isDirectory)) {
-            @Suppress("ImplicitDefaultLocale")
-            String.format("path '%s' is not a valid directory", path)
+    override fun setPath(path: Path) {
+        require(path.toFile().isDirectory) {
+            String.format(Locale.US, "path '%s' is not a valid directory", path)
         }
         this.path = path
         for (provider in getProviders()) {
             if (provider is PathAware) {
-                (provider as PathAware).setPath(path)
+                provider.setPath(path)
             }
         }
     }

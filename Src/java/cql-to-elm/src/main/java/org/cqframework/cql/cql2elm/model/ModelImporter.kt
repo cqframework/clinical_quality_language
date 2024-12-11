@@ -67,22 +67,19 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
             for (requiredModel in modelInfo.requiredModelInfo) {
                 val model =
                     modelManager.resolveModel(
-                        ModelIdentifier()
-                            .withSystem(NamespaceManager.getUriPart(requiredModel.url))
-                            .withId(requiredModel.name)
-                            .withVersion(requiredModel.version)
+                        ModelIdentifier(
+                            system = NamespaceManager.getUriPart(requiredModel.url),
+                            id = requiredModel.name,
+                            version = requiredModel.version,
+                        )
                     )
-                if (model != null) {
-                    modelIndex[requiredModel.name] = model
-                }
+                modelIndex[requiredModel.name] = model
             }
 
             // Ensure System model is registered
             if (!modelIndex.containsKey("System")) {
-                val systemModel = modelManager.resolveModel(ModelIdentifier().withId("System"))
-                if (systemModel != null) {
-                    modelIndex["System"] = systemModel
-                }
+                val systemModel = modelManager.resolveModel(ModelIdentifier("System"))
+                modelIndex["System"] = systemModel
             }
         }
 
@@ -122,7 +119,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
             val modelContext =
                 ModelContext(
                     c.name,
-                    contextType as ClassType?,
+                    contextType,
                     c.keyElement.split(";".toRegex()).dropLastWhile { it.isEmpty() },
                     c.birthDateElement
                 )
@@ -139,7 +136,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
                 val modelContext =
                     ModelContext(
                         contextType.simpleName,
-                        contextType as ClassType?,
+                        contextType,
                         mutableListOf("id"),
                         this.modelInfo.patientBirthDatePropertyName
                     )
@@ -215,7 +212,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
                     typeSpecifier.pointType,
                     typeSpecifier.pointTypeSpecifier
                 )
-            return IntervalType(pointType)
+            return IntervalType(pointType!!)
         }
 
         if (typeSpecifier is ListTypeSpecifier) {
@@ -235,16 +232,16 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
                 val element =
                     TupleTypeElement(
                         specifierElement.name,
-                        resolveTypeSpecifier(specifierElement.elementType)
+                        resolveTypeSpecifier(specifierElement.elementType)!!
                     )
                 tupleType.addElement(element)
             }
         }
 
         if (typeSpecifier is ChoiceTypeSpecifier) {
-            val choices: MutableList<DataType?> = ArrayList()
+            val choices: MutableList<DataType> = ArrayList()
             for (choice in typeSpecifier.choice) {
-                val choiceType = resolveTypeSpecifier(choice)
+                val choiceType = resolveTypeSpecifier(choice)!!
                 choices.add(choiceType)
             }
             return ChoiceType(choices)
@@ -265,13 +262,13 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
                 resolveTypeName(
                     typeName.substring(typeName.indexOf('<') + 1, typeName.lastIndexOf('>'))
                 )
-            return IntervalType(pointType)
+            return IntervalType(pointType!!)
         } else if (typeName.lowercase(Locale.getDefault()).startsWith("list<")) {
             val elementType =
                 resolveTypeName(
                     typeName.substring(typeName.indexOf('<') + 1, typeName.lastIndexOf('>'))
                 )
-            return ListType(elementType)
+            return ListType(elementType!!)
         }
 
         var result = lookupType(typeName)
@@ -378,11 +375,11 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
                 result =
                     SimpleType(
                         qualifiedTypeName,
-                        resolveTypeNameOrSpecifier(t.baseType, t.baseTypeSpecifier)
+                        resolveTypeNameOrSpecifier(t.baseType, t.baseTypeSpecifier),
+                        t.target
                     )
-                result.target = t.target
             }
-            resolvedTypes[casify(result!!.name)] = result
+            resolvedTypes[casify(result.name)] = result
         }
 
         return result
@@ -402,13 +399,13 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
     ): Collection<TupleTypeElement> {
         val elements: MutableList<TupleTypeElement> = ArrayList()
         for (e in infoElements) {
-            elements.add(TupleTypeElement(e.name, resolveTypeNameOrSpecifier(e)))
+            elements.add(TupleTypeElement(e.name, resolveTypeNameOrSpecifier(e)!!))
         }
         return elements
     }
 
     private fun resolveTupleType(t: TupleTypeInfo): TupleType {
-        val result = TupleType(resolveTupleTypeElements(t.element))
+        val result = TupleType(resolveTupleTypeElements(t.element).toMutableList())
         return result
     }
 
@@ -434,30 +431,32 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
         val genericParameters: MutableList<TypeParameter> = ArrayList()
         for (parameterInfo in parameterInfoList) {
             val constraint = parameterInfo.constraint
-            var typeConstraint: TypeParameterConstraint? = null
-            when {
-                constraint.equals(TypeParameterConstraint.NONE.name, ignoreCase = true) -> {
-                    typeConstraint = TypeParameterConstraint.NONE
+            val typeConstraint =
+                when {
+                    constraint.equals(TypeParameterConstraint.NONE.name, ignoreCase = true) -> {
+                        TypeParameterConstraint.NONE
+                    }
+                    constraint.equals(TypeParameterConstraint.CLASS.name, ignoreCase = true) -> {
+                        TypeParameterConstraint.CLASS
+                    }
+                    constraint.equals(TypeParameterConstraint.TUPLE.name, ignoreCase = true) -> {
+                        TypeParameterConstraint.TUPLE
+                    }
+                    constraint.equals(TypeParameterConstraint.VALUE.name, ignoreCase = true) -> {
+                        TypeParameterConstraint.VALUE
+                    }
+                    constraint.equals(TypeParameterConstraint.CHOICE.name, ignoreCase = true) -> {
+                        TypeParameterConstraint.CHOICE
+                    }
+                    constraint.equals(TypeParameterConstraint.INTERVAL.name, ignoreCase = true) -> {
+                        TypeParameterConstraint.INTERVAL
+                    }
+                    constraint.equals(TypeParameterConstraint.TYPE.name, ignoreCase = true) -> {
+                        TypeParameterConstraint.TYPE
+                    }
+                    else -> TypeParameterConstraint.NONE
                 }
-                constraint.equals(TypeParameterConstraint.CLASS.name, ignoreCase = true) -> {
-                    typeConstraint = TypeParameterConstraint.CLASS
-                }
-                constraint.equals(TypeParameterConstraint.TUPLE.name, ignoreCase = true) -> {
-                    typeConstraint = TypeParameterConstraint.TUPLE
-                }
-                constraint.equals(TypeParameterConstraint.VALUE.name, ignoreCase = true) -> {
-                    typeConstraint = TypeParameterConstraint.VALUE
-                }
-                constraint.equals(TypeParameterConstraint.CHOICE.name, ignoreCase = true) -> {
-                    typeConstraint = TypeParameterConstraint.CHOICE
-                }
-                constraint.equals(TypeParameterConstraint.INTERVAL.name, ignoreCase = true) -> {
-                    typeConstraint = TypeParameterConstraint.INTERVAL
-                }
-                constraint.equals(TypeParameterConstraint.TYPE.name, ignoreCase = true) -> {
-                    typeConstraint = TypeParameterConstraint.TYPE
-                }
-            }
+
             genericParameters.add(
                 TypeParameter(
                     parameterInfo.name,
@@ -496,7 +495,13 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
                 elementType = resolveTypeName("System.Any")
             }
             elements.add(
-                ClassTypeElement(e.name, elementType, e.isProhibited, e.isOneBased, e.target)
+                ClassTypeElement(
+                    e.name,
+                    elementType!!,
+                    e.isProhibited ?: false,
+                    e.isOneBased ?: false,
+                    e.target
+                )
             )
         }
         return elements
@@ -581,7 +586,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
     }
 
     private fun resolveClassTypeSearch(t: ClassType?, s: SearchInfo): SearchType {
-        return SearchType(s.name, s.path, resolveTypeNameOrSpecifier(s.type, s.typeSpecifier))
+        return SearchType(s.name, s.path, resolveTypeNameOrSpecifier(s.type, s.typeSpecifier)!!)
     }
 
     private fun resolveClassType(t: ClassInfo): ClassType {
@@ -684,24 +689,24 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
     }
 
     private fun resolveIntervalType(t: IntervalTypeInfo): IntervalType {
-        val result = IntervalType(resolveTypeNameOrSpecifier(t.pointType, t.pointTypeSpecifier))
+        val result = IntervalType(resolveTypeNameOrSpecifier(t.pointType, t.pointTypeSpecifier)!!)
         return result
     }
 
     private fun resolveListType(t: ListTypeInfo): ListType {
-        val result = ListType(resolveTypeNameOrSpecifier(t.elementType, t.elementTypeSpecifier))
+        val result = ListType(resolveTypeNameOrSpecifier(t.elementType, t.elementTypeSpecifier)!!)
         return result
     }
 
     private fun resolveChoiceType(t: ChoiceTypeInfo): ChoiceType {
-        val types = ArrayList<DataType?>()
+        val types = ArrayList<DataType>()
         if (t.choice != null && t.choice.isNotEmpty()) {
             for (typeSpecifier in t.choice) {
-                types.add(resolveTypeSpecifier(typeSpecifier))
+                types.add(resolveTypeSpecifier(typeSpecifier)!!)
             }
         } else {
             for (typeSpecifier in t.type) {
-                types.add(resolveTypeSpecifier(typeSpecifier))
+                types.add(resolveTypeSpecifier(typeSpecifier)!!)
             }
         }
         return ChoiceType(types)
@@ -763,9 +768,8 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
      * @param type
      * @return True if the parent of class 'type' is a generic class.
      */
-    fun isParentGeneric(type: ClassType?): Boolean {
-        val baseType = type!!.baseType
-        return baseType != null && baseType is ClassType && baseType.isGeneric
+    fun isParentGeneric(type: ClassType): Boolean {
+        return type.baseType is ClassType && type.baseType.isGeneric
     }
 
     /**
@@ -777,7 +781,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
      * @return
      */
     private fun handleGenericType(genericSignature: String, baseType: String): ClassType {
-        val parser = GenericClassSignatureParser(genericSignature, baseType, null, resolvedTypes)
+        val parser = GenericClassSignatureParser(genericSignature, baseType, resolvedTypes)
         val genericClassType = parser.parseGenericSignature()
 
         return genericClassType

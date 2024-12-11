@@ -1930,10 +1930,14 @@ public class DataRequirementsProcessorTest {
                 (org.hl7.fhir.r5.model.Library) parser.parseResource(
                         DataRequirementsProcessorTest.class.getResourceAsStream(pathToExpectedModuleDefinitionLibrary));
         assertNotNull(expectedModuleDefinitionLibrary);
-        // outputModuleDefinitionLibrary(actualModuleDefinitionLibrary);
         actualModuleDefinitionLibrary.setDate(null);
         expectedModuleDefinitionLibrary.setDate(null);
-        assertTrue(actualModuleDefinitionLibrary.equalsDeep(expectedModuleDefinitionLibrary));
+
+        parser.setPrettyPrint(true);
+        var jsonExpected = parser.encodeResourceToString(expectedModuleDefinitionLibrary);
+        var jsonActual = parser.encodeResourceToString(actualModuleDefinitionLibrary);
+
+        assertEquals(jsonExpected, jsonActual);
     }
 
     @Test

@@ -12,7 +12,7 @@ class GenericClassSignatureParserTest {
 
     @Test
     void parseTest1() {
-        GenericClassSignatureParser genericClassSignatureParser = new GenericClassSignatureParser("MyType<M,N>", null);
+        GenericClassSignatureParser genericClassSignatureParser = new GenericClassSignatureParser("MyType<M,N>");
         if (genericClassSignatureParser.isValidGenericSignature()) {
             ClassType signature = genericClassSignatureParser.parseGenericSignature();
             assertThat(signature.getName(), is("MyType"));
@@ -26,7 +26,7 @@ class GenericClassSignatureParserTest {
 
     @Test
     void parseTest2() {
-        ClassType collectionType = new ClassType("Collection", null, null);
+        ClassType collectionType = new ClassType("Collection", null);
         Map<String, DataType> resolvedTypes = new HashMap<>();
         resolvedTypes.put("Collection", collectionType);
         GenericClassSignatureParser genericClassSignatureParser =
@@ -50,8 +50,8 @@ class GenericClassSignatureParserTest {
 
     @Test
     void parseTest3() {
-        ClassType collectionType = new ClassType("Collection", null, null);
-        ClassType objectType = new ClassType("Object", null, null);
+        ClassType collectionType = new ClassType("Collection", null);
+        ClassType objectType = new ClassType("Object", null);
         Map<String, DataType> resolvedTypes = new HashMap<>();
         resolvedTypes.put("Collection", collectionType);
         resolvedTypes.put("Object", objectType);
@@ -82,7 +82,7 @@ class GenericClassSignatureParserTest {
     @Test
     void parseTest4() {
         try {
-            ClassType collectionType = new ClassType("Collection", null, null);
+            ClassType collectionType = new ClassType("Collection", null);
             Map<String, DataType> resolvedTypes = new HashMap<>();
             resolvedTypes.put("Collection", collectionType);
             GenericClassSignatureParser genericClassSignatureParser =
@@ -96,10 +96,10 @@ class GenericClassSignatureParserTest {
 
     @Test
     void parseTest5() {
-        ClassType objectType = new ClassType("Object", null, null);
-        ClassType listType = new ClassType("List", null, null);
+        ClassType objectType = new ClassType("Object", null);
+        ClassType listType = new ClassType("List", null);
         listType.addGenericParameter(new TypeParameter("T"));
-        listType.getElements().add(new ClassTypeElement("elements", new TypeParameter("T")));
+        listType.getElements().add(new ClassTypeElement("elements", new TypeParameter("T"), false, false, null));
         Map<String, DataType> resolvedTypes = new HashMap<>();
         resolvedTypes.put("Object", objectType);
         resolvedTypes.put("List", listType);
@@ -125,16 +125,16 @@ class GenericClassSignatureParserTest {
 
     @Test
     void parseTest6() {
-        ClassType objectType = new ClassType("Object", null, null);
-        SimpleType stringType = new SimpleType("String", null);
-        ClassType listType = new ClassType("List", null, null);
+        ClassType objectType = new ClassType("Object", null);
+        SimpleType stringType = new SimpleType("String");
+        ClassType listType = new ClassType("List", null);
         listType.addGenericParameter(new TypeParameter("T"));
-        listType.getElements().add(new ClassTypeElement("elements", new TypeParameter("T")));
-        ClassType mapType = new ClassType("Map", null, null);
+        listType.getElements().add(new ClassTypeElement("elements", new TypeParameter("T"), false, false, null));
+        ClassType mapType = new ClassType("Map", null);
         mapType.addGenericParameter(new TypeParameter("K"));
         mapType.addGenericParameter(new TypeParameter("V"));
-        mapType.addElement(new ClassTypeElement("keys", new TypeParameter("K")));
-        mapType.addElement(new ClassTypeElement("values", new TypeParameter("V")));
+        mapType.addElement(new ClassTypeElement("keys", new TypeParameter("K"), false, false, null));
+        mapType.addElement(new ClassTypeElement("values", new TypeParameter("V"), false, false, null));
         Map<String, DataType> resolvedTypes = new HashMap<>();
         resolvedTypes.put("Object", objectType);
         resolvedTypes.put("String", stringType);
@@ -162,16 +162,16 @@ class GenericClassSignatureParserTest {
 
     @Test
     void parseTest7() {
-        SimpleType integerType = new SimpleType("Integer", null);
-        SimpleType stringType = new SimpleType("String", null);
-        ClassType listType = new ClassType("List", null, null);
+        SimpleType integerType = new SimpleType("Integer");
+        SimpleType stringType = new SimpleType("String");
+        ClassType listType = new ClassType("List", null);
         listType.addGenericParameter(new TypeParameter("T"));
-        listType.getElements().add(new ClassTypeElement("elements", new TypeParameter("T")));
-        ClassType mapType = new ClassType("Map", null, null);
+        listType.getElements().add(new ClassTypeElement("elements", new TypeParameter("T"), false, false, null));
+        ClassType mapType = new ClassType("Map", null);
         mapType.addGenericParameter(new TypeParameter("K"));
         mapType.addGenericParameter(new TypeParameter("V"));
-        mapType.addElement(new ClassTypeElement("keys", new TypeParameter("K")));
-        mapType.addElement(new ClassTypeElement("values", new TypeParameter("V")));
+        mapType.addElement(new ClassTypeElement("keys", new TypeParameter("K"), false, false, null));
+        mapType.addElement(new ClassTypeElement("values", new TypeParameter("V"), false, false, null));
         Map<String, DataType> resolvedTypes = new HashMap<>();
         resolvedTypes.put("Integer", integerType);
         resolvedTypes.put("String", stringType);

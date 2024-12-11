@@ -2,6 +2,8 @@ package org.cqframework.cql.cql2elm
 
 import java.io.InputStream
 import java.nio.file.Path
+import java.util.*
+import kotlin.collections.ArrayList
 import org.hl7.cql.model.NamespaceAware
 import org.hl7.cql.model.NamespaceManager
 import org.hl7.elm.r1.VersionedIdentifier
@@ -15,30 +17,27 @@ internal class DefaultLibrarySourceLoader : LibrarySourceLoader, NamespaceAware,
     private val providers: MutableList<LibrarySourceProvider> = ArrayList()
     var initialized: Boolean = false
 
-    override fun registerProvider(provider: LibrarySourceProvider?) {
-        require(provider != null) { "provider is null." }
-        if (provider is NamespaceAware) {
-            (provider as NamespaceAware).setNamespaceManager(namespaceManager)
+    override fun registerProvider(provider: LibrarySourceProvider) {
+        if (namespaceManager != null && provider is NamespaceAware) {
+            provider.setNamespaceManager(namespaceManager!!)
         }
-        if (provider is PathAware) {
-            (provider as PathAware).setPath(path)
+        if (path != null && provider is PathAware) {
+            provider.setPath(path!!)
         }
         providers.add(provider)
     }
 
     private var path: Path? = null
 
-    override fun setPath(path: Path?) {
-        if (path == null || !path.toFile().isDirectory) {
-            throw IllegalArgumentException(
-                @Suppress("ImplicitDefaultLocale")
-                String.format("path '%s' is not a valid directory", path)
-            )
+    override fun setPath(path: Path) {
+        require(path.toFile().isDirectory) {
+            String.format(Locale.US, "path '%s' is not a valid directory", path)
         }
+
         this.path = path
-        for (provider: LibrarySourceProvider? in getProviders()) {
+        for (provider in getProviders()) {
             if (provider is PathAware) {
-                (provider as PathAware).setPath(path)
+                provider.setPath(path)
             }
         }
     }
@@ -60,16 +59,14 @@ internal class DefaultLibrarySourceLoader : LibrarySourceLoader, NamespaceAware,
         return providers
     }
 
-    override fun getLibrarySource(libraryIdentifier: VersionedIdentifier?): InputStream {
-        require(libraryIdentifier != null) { "libraryIdentifier is null." }
-        require(!libraryIdentifier.id.isNullOrEmpty()) { "libraryIdentifier Id is null." }
+    override fun getLibrarySource(libraryIdentifier: VersionedIdentifier): InputStream {
         var source: InputStream? = null
         for (provider: LibrarySourceProvider in getProviders()) {
             val localSource: InputStream? = provider.getLibrarySource(libraryIdentifier)
             if (localSource != null) {
                 require(source == null) {
-                    @Suppress("ImplicitDefaultLocale")
                     String.format(
+                        Locale.US,
                         "Multiple sources found for library %s, version %s.",
                         libraryIdentifier.id,
                         libraryIdentifier.version
@@ -80,8 +77,8 @@ internal class DefaultLibrarySourceLoader : LibrarySourceLoader, NamespaceAware,
         }
         if (source == null) {
             throw IllegalArgumentException(
-                @Suppress("ImplicitDefaultLocale")
                 String.format(
+                    Locale.US,
                     "Could not load source for library %s, version %s.",
                     libraryIdentifier.id,
                     libraryIdentifier.version

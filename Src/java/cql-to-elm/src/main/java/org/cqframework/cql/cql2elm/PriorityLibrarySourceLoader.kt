@@ -2,41 +2,42 @@ package org.cqframework.cql.cql2elm
 
 import java.io.InputStream
 import java.nio.file.Path
+import java.util.*
+import kotlin.collections.ArrayList
 import org.hl7.cql.model.NamespaceAware
 import org.hl7.cql.model.NamespaceManager
 import org.hl7.elm.r1.VersionedIdentifier
 
 /**
  * Used by LibraryManager to manage a set of library source providers that resolve library includes
- * within CQL. Package private since its not intended to be used outside the context of the
+ * within CQL. Package private since it's not intended to be used outside the context of the
  * instantiating LibraryManager instance.
  */
 class PriorityLibrarySourceLoader : LibrarySourceLoader, NamespaceAware, PathAware {
     private val providers: MutableList<LibrarySourceProvider> = ArrayList()
     private var initialized = false
 
-    override fun registerProvider(provider: LibrarySourceProvider?) {
-        requireNotNull(provider) { "provider is null." }
-        if (provider is NamespaceAware) {
-            (provider as NamespaceAware).setNamespaceManager(namespaceManager)
+    override fun registerProvider(provider: LibrarySourceProvider) {
+        if (namespaceManager != null && provider is NamespaceAware) {
+            provider.setNamespaceManager(namespaceManager!!)
         }
+
         if (path != null && provider is PathAware) {
-            (provider as PathAware).setPath(path)
+            provider.setPath(path!!)
         }
         providers.add(provider)
     }
 
     private var path: Path? = null
 
-    override fun setPath(path: Path?) {
-        require(!(path == null || !path.toFile().isDirectory)) {
-            @Suppress("ImplicitDefaultLocale")
-            String.format("path '%s' is not a valid directory", path)
+    override fun setPath(path: Path) {
+        require(path.toFile().isDirectory) {
+            String.format(Locale.US, "path '%s' is not a valid directory", path)
         }
         this.path = path
         for (provider in getProviders()) {
             if (provider is PathAware) {
-                (provider as PathAware).setPath(path)
+                provider.setPath(path)
             }
         }
     }
@@ -58,18 +59,17 @@ class PriorityLibrarySourceLoader : LibrarySourceLoader, NamespaceAware, PathAwa
         return providers
     }
 
-    override fun getLibrarySource(libraryIdentifier: VersionedIdentifier?): InputStream? {
+    override fun getLibrarySource(libraryIdentifier: VersionedIdentifier): InputStream? {
         return getLibraryContent(libraryIdentifier, LibraryContentType.CQL)
     }
 
     override fun getLibraryContent(
-        libraryIdentifier: VersionedIdentifier?,
+        libraryIdentifier: VersionedIdentifier,
         type: LibraryContentType
     ): InputStream? {
-        validateInput(libraryIdentifier, type)
         var content: InputStream?
         for (provider in getProviders()) {
-            content = provider.getLibraryContent(libraryIdentifier!!, type)
+            content = provider.getLibraryContent(libraryIdentifier, type)
             if (content != null) {
                 return content
             }
@@ -83,16 +83,8 @@ class PriorityLibrarySourceLoader : LibrarySourceLoader, NamespaceAware, PathAwa
         this.namespaceManager = namespaceManager
         for (provider in getProviders()) {
             if (provider is NamespaceAware) {
-                (provider as NamespaceAware).setNamespaceManager(namespaceManager)
+                provider.setNamespaceManager(namespaceManager)
             }
-        }
-    }
-
-    private fun validateInput(libraryIdentifier: VersionedIdentifier?, type: LibraryContentType?) {
-        requireNotNull(type) { "libraryContentType is null." }
-        requireNotNull(libraryIdentifier) { "libraryIdentifier is null." }
-        require(!(libraryIdentifier.id == null || libraryIdentifier.id == "")) {
-            "libraryIdentifier Id is null."
         }
     }
 }

@@ -1,6 +1,7 @@
 package org.cqframework.fhir.npm;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -117,13 +118,11 @@ public class NpmPackageManagerTests implements ILoggingService {
                 .parseResource(NpmPackageManagerTests.class.getResourceAsStream("testig.xml"));
         ImplementationGuide ig = (ImplementationGuide) convertor.convertResource(igResource);
         NpmPackageManager pm = new NpmPackageManager(ig);
-        assertTrue(pm.getNpmList().size() >= 1);
+        assertFalse(pm.getNpmList().isEmpty());
 
         LibraryLoader reader = new LibraryLoader("5.0");
         NpmModelInfoProvider mp = new NpmModelInfoProvider(pm.getNpmList(), reader, this);
-        ModelInfo mi = mp.load(new ModelIdentifier()
-                .withSystem("http://hl7.org/fhir/us/qicore")
-                .withId("QICore"));
+        ModelInfo mi = mp.load(new ModelIdentifier("QICore", "http://hl7.org/fhir/us/qicore", null));
         assertNotNull(mi);
         assertEquals("QICore", mi.getName());
     }

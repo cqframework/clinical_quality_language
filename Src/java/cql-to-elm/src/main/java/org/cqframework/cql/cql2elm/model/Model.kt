@@ -33,7 +33,7 @@ open class Model(val modelInfo: ModelInfo, modelManager: ModelManager?) {
 
         for (t in index.values) {
             if (t is ClassType && t.label != null) {
-                classIndex[casify(t.label)] = t
+                classIndex[casify(t.label!!)] = t
             }
 
             if (t is NamedType) {
@@ -73,8 +73,8 @@ open class Model(val modelInfo: ModelInfo, modelManager: ModelManager?) {
 
             return ModelContext(
                 contextName,
-                contextType as ClassType?,
-                if (keyName != null) listOf(keyName) else null,
+                contextType,
+                if (keyName != null) listOf(keyName) else emptyList(),
                 null
             )
         }

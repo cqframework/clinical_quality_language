@@ -3,7 +3,7 @@ package org.hl7.cql.model;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Arrays;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 class ChoiceTypeTests {
@@ -11,9 +11,9 @@ class ChoiceTypeTests {
     @Test
     void choiceTypeIsCompatible() {
         ChoiceType first = new ChoiceType(
-                Arrays.asList(new SimpleType("Period"), new SimpleType("Interval"), new SimpleType("DateTime")));
+                Set.of(new SimpleType("Period"), new SimpleType("Interval"), new SimpleType("DateTime")));
 
-        ChoiceType second = new ChoiceType(Arrays.asList(new SimpleType("Period"), new SimpleType("DateTime")));
+        ChoiceType second = new ChoiceType(Set.of(new SimpleType("Period"), new SimpleType("DateTime")));
 
         assertTrue(first.isCompatibleWith(second));
         assertTrue(second.isCompatibleWith(first));
@@ -27,9 +27,9 @@ class ChoiceTypeTests {
     @Test
     void choiceTypeIsNotCompatible() {
         ChoiceType first = new ChoiceType(
-                Arrays.asList(new SimpleType("Period"), new SimpleType("Interval"), new SimpleType("DateTime")));
+                Set.of(new SimpleType("Period"), new SimpleType("Interval"), new SimpleType("DateTime")));
 
-        ChoiceType second = new ChoiceType(Arrays.asList(new SimpleType("Integer"), new SimpleType("String")));
+        ChoiceType second = new ChoiceType(Set.of(new SimpleType("Integer"), new SimpleType("String")));
 
         assertFalse(first.isCompatibleWith(second));
         assertFalse(second.isCompatibleWith(first));

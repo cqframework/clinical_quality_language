@@ -17,19 +17,18 @@ import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReaderFactory
 // form
 // <major>[.<minor>[.<patch>]]
 // Usage outside these boundaries will result in errors or incorrect behavior.
-@Suppress("ImplicitDefaultLocale")
 class DefaultModelInfoProvider : ModelInfoProvider, PathAware {
     constructor()
 
-    constructor(path: Path?) {
-        setPath(path)
+    constructor(path: Path) {
+        this.setPath(path)
     }
 
     private var path: Path? = null
 
-    override fun setPath(path: Path?) {
-        require(!(path == null || !path.toFile().isDirectory)) {
-            String.format("path '%s' is not a valid directory", path)
+    override fun setPath(path: Path) {
+        require(path.toFile().isDirectory) {
+            String.format(Locale.US, "path '%s' is not a valid directory", path)
         }
         this.path = path
     }
@@ -50,6 +49,7 @@ class DefaultModelInfoProvider : ModelInfoProvider, PathAware {
             val modelPath =
                 currentPath.resolve(
                     String.format(
+                        Locale.US,
                         "%s-modelinfo%s.xml",
                         modelName.lowercase(Locale.getDefault()),
                         if (modelVersion != null) "-$modelVersion" else ""
@@ -111,10 +111,11 @@ class DefaultModelInfoProvider : ModelInfoProvider, PathAware {
             }
             try {
                 val inputStream: InputStream = FileInputStream(modelFile)
-                return ModelInfoReaderFactory.getReader("application/xml").read(inputStream)
+                return ModelInfoReaderFactory.getReader("application/xml")?.read(inputStream)
             } catch (e: IOException) {
                 throw IllegalArgumentException(
                     String.format(
+                        Locale.US,
                         "Could not load definition for model info %s.",
                         modelIdentifier.id
                     ),

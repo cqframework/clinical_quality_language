@@ -17,6 +17,7 @@ import org.hl7.elm.r1.ValueSetDef
  * well as the type of matching done to retrieve the element, whether case-sensitive or
  * case-insensitive.
  */
+@ExposedCopyVisibility
 data class ResolvedIdentifierContext
 private constructor(
     private val identifier: String,
