@@ -231,7 +231,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitElement(elm: Element, context: C): T
+    fun visitElement(elm: Element, context: C): T?
 
     /**
      * Visit a TypeSpecifier. This method will be called for every node in the tree that is a
@@ -241,7 +241,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitTypeSpecifier(elm: TypeSpecifier, context: C): T
+    fun visitTypeSpecifier(elm: TypeSpecifier, context: C): T?
 
     /**
      * Visit a NamedTypeSpecifier. This method will be called for every node in the tree that is a
@@ -251,7 +251,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitNamedTypeSpecifier(elm: NamedTypeSpecifier, context: C): T
+    fun visitNamedTypeSpecifier(elm: NamedTypeSpecifier, context: C): T?
 
     /**
      * Visit an IntervalTypeSpecifier. This method will be called for every node in the tree that is
@@ -261,7 +261,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitIntervalTypeSpecifier(elm: IntervalTypeSpecifier, context: C): T
+    fun visitIntervalTypeSpecifier(elm: IntervalTypeSpecifier, context: C): T?
 
     /**
      * Visit a ListTypeSpecifier. This method will be called for every node in the tree that is a
@@ -271,7 +271,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitListTypeSpecifier(elm: ListTypeSpecifier, context: C): T
+    fun visitListTypeSpecifier(elm: ListTypeSpecifier, context: C): T?
 
     /**
      * Visit a TupleElementDefinition. This method will be called for every node in the tree that is
@@ -281,7 +281,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitTupleElementDefinition(elm: TupleElementDefinition, context: C): T
+    fun visitTupleElementDefinition(elm: TupleElementDefinition, context: C): T?
 
     /**
      * Visit a TupleTypeSpecifier. This method will be called for every node in the tree that is a
@@ -291,7 +291,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitTupleTypeSpecifier(elm: TupleTypeSpecifier, context: C): T
+    fun visitTupleTypeSpecifier(elm: TupleTypeSpecifier, context: C): T?
 
     /**
      * Visit a ChoiceTypeSpecifier. This method will be called for every node in the tree that is a
@@ -301,7 +301,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitChoiceTypeSpecifier(elm: ChoiceTypeSpecifier, context: C): T
+    fun visitChoiceTypeSpecifier(elm: ChoiceTypeSpecifier, context: C): T?
 
     /**
      * Visit an Expression. This method will be called for every node in the tree that is an
@@ -311,7 +311,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitExpression(elm: Expression, context: C): T
+    fun visitExpression(elm: Expression, context: C): T?
 
     /**
      * Visit an UnaryExpression. This method will be called for every node in the tree that is a
@@ -321,7 +321,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitUnaryExpression(elm: UnaryExpression, context: C): T
+    fun visitUnaryExpression(elm: UnaryExpression, context: C): T?
 
     /**
      * Visit an OperatorExpression. This method will be called for every node in the tree that is an
@@ -331,7 +331,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitOperatorExpression(elm: OperatorExpression, context: C): T
+    fun visitOperatorExpression(elm: OperatorExpression, context: C): T?
 
     /**
      * Visit a BinaryExpression. This method will be called for every node in the tree that is a
@@ -341,7 +341,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitBinaryExpression(elm: BinaryExpression, context: C): T
+    fun visitBinaryExpression(elm: BinaryExpression, context: C): T?
 
     /**
      * Visit a TernaryExpression. This method will be called for every node in the tree that is a
@@ -351,7 +351,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitTernaryExpression(elm: TernaryExpression, context: C): T
+    fun visitTernaryExpression(elm: TernaryExpression, context: C): T?
 
     /**
      * Visit a NaryExpression. This method will be called for every node in the tree that is a
@@ -361,7 +361,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitNaryExpression(elm: NaryExpression, context: C): T
+    fun visitNaryExpression(elm: NaryExpression, context: C): T?
 
     /**
      * Visit an ExpressionDef. This method will be called for every node in the tree that is a
@@ -371,7 +371,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitExpressionDef(elm: ExpressionDef, context: C): T
+    fun visitExpressionDef(elm: ExpressionDef, context: C): T?
 
     /**
      * Visit a FunctionDef. This method will be called for every node in the tree that is a
@@ -381,7 +381,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitFunctionDef(elm: FunctionDef, context: C): T
+    fun visitFunctionDef(elm: FunctionDef, context: C): T?
 
     /**
      * Visit an ExpressionRef. This method will be called for every node in the tree that is a
@@ -391,7 +391,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitExpressionRef(elm: ExpressionRef, context: C): T
+    fun visitExpressionRef(elm: ExpressionRef, context: C): T?
 
     /**
      * Visit a FunctionRef. This method will be called for every node in the tree that is a
@@ -401,7 +401,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitFunctionRef(elm: FunctionRef, context: C): T
+    fun visitFunctionRef(elm: FunctionRef, context: C): T?
 
     /**
      * Visit a ParameterDef. This method will be called for every node in the tree that is a
@@ -411,7 +411,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitParameterDef(elm: ParameterDef, context: C): T
+    fun visitParameterDef(elm: ParameterDef, context: C): T?
 
     /**
      * Visit a ParameterRef. This method will be called for every node in the tree that is a
@@ -421,7 +421,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitParameterRef(elm: ParameterRef, context: C): T
+    fun visitParameterRef(elm: ParameterRef, context: C): T?
 
     /**
      * Visit an OperandDef. This method will be called for every node in the tree that is a
@@ -431,7 +431,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitOperandDef(elm: OperandDef, context: C): T
+    fun visitOperandDef(elm: OperandDef, context: C): T?
 
     /**
      * Visit an OperandRef. This method will be called for every node in the tree that is a
@@ -441,7 +441,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitOperandRef(elm: OperandRef, context: C): T
+    fun visitOperandRef(elm: OperandRef, context: C): T?
 
     /**
      * Visit an IdentifierRef. This method will be called for every node in the tree that is a
@@ -451,7 +451,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitIdentifierRef(elm: IdentifierRef, context: C): T
+    fun visitIdentifierRef(elm: IdentifierRef, context: C): T?
 
     /**
      * Visit a Literal. This method will be called for every node in the tree that is a Literal.
@@ -460,7 +460,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitLiteral(elm: Literal, context: C): T
+    fun visitLiteral(elm: Literal, context: C): T?
 
     /**
      * Visit a TupleElement. This method will be called for every node in the tree that is a
@@ -470,7 +470,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitTupleElement(elm: TupleElement, context: C): T
+    fun visitTupleElement(elm: TupleElement, context: C): T?
 
     /**
      * Visit a Tuple. This method will be called for every node in the tree that is a Tuple.
@@ -479,7 +479,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitTuple(elm: Tuple, context: C): T
+    fun visitTuple(elm: Tuple, context: C): T?
 
     /**
      * Visit an InstanceElement. This method will be called for every node in the tree that is a
@@ -489,7 +489,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitInstanceElement(elm: InstanceElement, context: C): T
+    fun visitInstanceElement(elm: InstanceElement, context: C): T?
 
     /**
      * Visit an Instance. This method will be called for every node in the tree that is an Instance.
@@ -498,7 +498,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitInstance(elm: Instance, context: C): T
+    fun visitInstance(elm: Instance, context: C): T?
 
     /**
      * Visit an Interval. This method will be called for every node in the tree that is an Interval.
@@ -507,7 +507,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitInterval(elm: Interval, context: C): T
+    fun visitInterval(elm: Interval, context: C): T?
 
     /**
      * Visit a List. This method will be called for every node in the tree that is a List.
@@ -516,7 +516,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitList(elm: List, context: C): T
+    fun visitList(elm: List, context: C): T?
 
     /**
      * Visit an And. This method will be called for every node in the tree that is an And.
@@ -525,7 +525,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitAnd(elm: And, context: C): T
+    fun visitAnd(elm: And, context: C): T?
 
     /**
      * Visit an Or. This method will be called for every node in the tree that is an Or.
@@ -534,7 +534,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitOr(elm: Or, context: C): T
+    fun visitOr(elm: Or, context: C): T?
 
     /**
      * Visit a Xor. This method will be called for every node in the tree that is a Xor.
@@ -543,7 +543,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitXor(elm: Xor, context: C): T
+    fun visitXor(elm: Xor, context: C): T?
 
     /**
      * Visit an Implies. This method will be called for every node in the tree that is an Implies.
@@ -552,7 +552,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitImplies(elm: Implies, context: C): T
+    fun visitImplies(elm: Implies, context: C): T?
 
     /**
      * Visit a Not. This method will be called for every node in the tree that is a Not.
@@ -561,7 +561,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitNot(elm: Not, context: C): T
+    fun visitNot(elm: Not, context: C): T?
 
     /**
      * Visit an If. This method will be called for every node in the tree that is an If.
@@ -570,7 +570,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitIf(elm: If, context: C): T
+    fun visitIf(elm: If, context: C): T?
 
     /**
      * Visit a CaseItem. This method will be called for every node in the tree that is a CaseItem.
@@ -579,7 +579,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitCaseItem(elm: CaseItem, context: C): T
+    fun visitCaseItem(elm: CaseItem, context: C): T?
 
     /**
      * Visit a Case. This method will be called for every node in the tree that is a Case.
@@ -588,7 +588,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitCase(elm: Case, context: C): T
+    fun visitCase(elm: Case, context: C): T?
 
     /**
      * Visit a Null. This method will be called for every node in the tree that is a Null.
@@ -597,7 +597,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitNull(elm: Null, context: C): T
+    fun visitNull(elm: Null, context: C): T?
 
     /**
      * Visit an IsNull. This method will be called for every node in the tree that is an IsNull.
@@ -606,7 +606,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitIsNull(elm: IsNull, context: C): T
+    fun visitIsNull(elm: IsNull, context: C): T?
 
     /**
      * Visit an IsTrue. This method will be called for every node in the tree that is an IsTrue.
@@ -615,7 +615,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitIsTrue(elm: IsTrue, context: C): T
+    fun visitIsTrue(elm: IsTrue, context: C): T?
 
     /**
      * Visit an IsFalse. This method will be called for every node in the tree that is an IsFalse.
@@ -624,7 +624,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitIsFalse(elm: IsFalse, context: C): T
+    fun visitIsFalse(elm: IsFalse, context: C): T?
 
     /**
      * Visit a Coalesce. This method will be called for every node in the tree that is a Coalesce.
@@ -633,7 +633,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitCoalesce(elm: Coalesce, context: C): T
+    fun visitCoalesce(elm: Coalesce, context: C): T?
 
     /**
      * Visit an Is. This method will be called for every node in the tree that is an Is.
@@ -642,7 +642,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitIs(elm: Is, context: C): T
+    fun visitIs(elm: Is, context: C): T?
 
     /**
      * Visit an As. This method will be called for every node in the tree that is an As.
@@ -651,7 +651,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitAs(elm: As, context: C): T
+    fun visitAs(elm: As, context: C): T?
 
     /**
      * Visit a Convert. This method will be called for every node in the tree that is a Convert.
@@ -660,7 +660,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitConvert(elm: Convert, context: C): T
+    fun visitConvert(elm: Convert, context: C): T?
 
     /**
      * Visit a CanConvert. This method will be called for every node in the tree that is a
@@ -670,7 +670,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitCanConvert(elm: CanConvert, context: C): T
+    fun visitCanConvert(elm: CanConvert, context: C): T?
 
     /**
      * Visit a ConvertsToBoolean. This method will be called for every node in the tree that is a
@@ -680,7 +680,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitConvertsToBoolean(elm: ConvertsToBoolean, context: C): T
+    fun visitConvertsToBoolean(elm: ConvertsToBoolean, context: C): T?
 
     /**
      * Visit a ToBoolean. This method will be called for every node in the tree that is a ToBoolean.
@@ -689,7 +689,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitToBoolean(elm: ToBoolean, context: C): T
+    fun visitToBoolean(elm: ToBoolean, context: C): T?
 
     /**
      * Visit a ToChars. This method will be called for every node in the tree that is a ToChars.
@@ -698,7 +698,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitToChars(elm: ToChars, context: C): T
+    fun visitToChars(elm: ToChars, context: C): T?
 
     /**
      * Visit a ToConcept. This method will be called for every node in the tree that is a ToConcept.
@@ -707,7 +707,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitToConcept(elm: ToConcept, context: C): T
+    fun visitToConcept(elm: ToConcept, context: C): T?
 
     /**
      * Visit a ConvertsToDate. This method will be called for every node in the tree that is a
@@ -717,7 +717,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitConvertsToDate(elm: ConvertsToDate, context: C): T
+    fun visitConvertsToDate(elm: ConvertsToDate, context: C): T?
 
     /**
      * Visit a ToDate. This method will be called for every node in the tree that is a ToDate.
@@ -726,7 +726,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitToDate(elm: ToDate, context: C): T
+    fun visitToDate(elm: ToDate, context: C): T?
 
     /**
      * Visit a ConvertsToDateTime. This method will be called for every node in the tree that is a
@@ -736,7 +736,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitConvertsToDateTime(elm: ConvertsToDateTime, context: C): T
+    fun visitConvertsToDateTime(elm: ConvertsToDateTime, context: C): T?
 
     /**
      * Visit a ToDateTime. This method will be called for every node in the tree that is a
@@ -746,7 +746,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitToDateTime(elm: ToDateTime, context: C): T
+    fun visitToDateTime(elm: ToDateTime, context: C): T?
 
     /**
      * Visit a ConvertsToLong. This method will be called for every node in the tree that is a
@@ -756,7 +756,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitConvertsToLong(elm: ConvertsToLong, context: C): T
+    fun visitConvertsToLong(elm: ConvertsToLong, context: C): T?
 
     /**
      * Visit a ToLong. This method will be called for every node in the tree that is a ToLong.
@@ -765,7 +765,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitToLong(elm: ToLong, context: C): T
+    fun visitToLong(elm: ToLong, context: C): T?
 
     /**
      * Visit a ConvertsToDecimal. This method will be called for every node in the tree that is a
@@ -775,7 +775,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitConvertsToDecimal(elm: ConvertsToDecimal, context: C): T
+    fun visitConvertsToDecimal(elm: ConvertsToDecimal, context: C): T?
 
     /**
      * Visit a ToDecimal. This method will be called for every node in the tree that is a ToDecimal.
@@ -784,7 +784,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitToDecimal(elm: ToDecimal, context: C): T
+    fun visitToDecimal(elm: ToDecimal, context: C): T?
 
     /**
      * Visit a ConvertsToInteger. This method will be called for every node in the tree that is a
@@ -794,7 +794,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitConvertsToInteger(elm: ConvertsToInteger, context: C): T
+    fun visitConvertsToInteger(elm: ConvertsToInteger, context: C): T?
 
     /**
      * Visit a ToInteger. This method will be called for every node in the tree that is a ToInteger.
@@ -803,7 +803,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitToInteger(elm: ToInteger, context: C): T
+    fun visitToInteger(elm: ToInteger, context: C): T?
 
     /**
      * Visit a ToList. This method will be called for every node in the tree that is a ToList.
@@ -812,7 +812,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitToList(elm: ToList, context: C): T
+    fun visitToList(elm: ToList, context: C): T?
 
     /**
      * Visit a ConvertQuantity. This method will be called for every node in the tree that is a
@@ -822,7 +822,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitConvertQuantity(elm: ConvertQuantity, context: C): T
+    fun visitConvertQuantity(elm: ConvertQuantity, context: C): T?
 
     /**
      * Visit a CanConvertQuantity. This method will be called for every node in the tree that is a
@@ -832,7 +832,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitCanConvertQuantity(elm: CanConvertQuantity, context: C): T
+    fun visitCanConvertQuantity(elm: CanConvertQuantity, context: C): T?
 
     /**
      * Visit a ConvertsToQuantity. This method will be called for every node in the tree that is a
@@ -842,7 +842,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitConvertsToQuantity(elm: ConvertsToQuantity, context: C): T
+    fun visitConvertsToQuantity(elm: ConvertsToQuantity, context: C): T?
 
     /**
      * Visit a ToQuantity. This method will be called for every node in the tree that is a
@@ -852,7 +852,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitToQuantity(elm: ToQuantity, context: C): T
+    fun visitToQuantity(elm: ToQuantity, context: C): T?
 
     /**
      * Visit a ConvertsToRatio. This method will be called for every node in the tree that is a
@@ -862,7 +862,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitConvertsToRatio(elm: ConvertsToRatio, context: C): T
+    fun visitConvertsToRatio(elm: ConvertsToRatio, context: C): T?
 
     /**
      * Visit a Ratio. This method will be called for every node in the tree that is a Ratio.
@@ -871,7 +871,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitToRatio(elm: ToRatio, context: C): T
+    fun visitToRatio(elm: ToRatio, context: C): T?
 
     /**
      * Visit a ConvertsToString. This method will be called for every node in the tree that is a
@@ -881,7 +881,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitConvertsToString(elm: ConvertsToString, context: C): T
+    fun visitConvertsToString(elm: ConvertsToString, context: C): T?
 
     /**
      * Visit a ToString. This method will be called for every node in the tree that is a ToString.
@@ -890,7 +890,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitToString(elm: ToString, context: C): T
+    fun visitToString(elm: ToString, context: C): T?
 
     /**
      * Visit a ConvertsToTime. This method will be called for every node in the tree that is a
@@ -900,7 +900,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitConvertsToTime(elm: ConvertsToTime, context: C): T
+    fun visitConvertsToTime(elm: ConvertsToTime, context: C): T?
 
     /**
      * Visit a ToTime. This method will be called for every node in the tree that is a ToTime.
@@ -909,7 +909,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitToTime(elm: ToTime, context: C): T
+    fun visitToTime(elm: ToTime, context: C): T?
 
     /**
      * Visit an Equal. This method will be called for every node in the tree that is an Equal.
@@ -918,7 +918,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitEqual(elm: Equal, context: C): T
+    fun visitEqual(elm: Equal, context: C): T?
 
     /**
      * Visit an Equivalent. This method will be called for every node in the tree that is an
@@ -928,7 +928,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitEquivalent(elm: Equivalent, context: C): T
+    fun visitEquivalent(elm: Equivalent, context: C): T?
 
     /**
      * Visit a NotEqual. This method will be called for every node in the tree that is a NotEqual.
@@ -937,7 +937,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitNotEqual(elm: NotEqual, context: C): T
+    fun visitNotEqual(elm: NotEqual, context: C): T?
 
     /**
      * Visit a Less. This method will be called for every node in the tree that is a Less.
@@ -946,7 +946,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitLess(elm: Less, context: C): T
+    fun visitLess(elm: Less, context: C): T?
 
     /**
      * Visit a Greater. This method will be called for every node in the tree that is a Greater.
@@ -955,7 +955,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitGreater(elm: Greater, context: C): T
+    fun visitGreater(elm: Greater, context: C): T?
 
     /**
      * Visit a LessOrEqual. This method will be called for every node in the tree that is a
@@ -965,7 +965,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitLessOrEqual(elm: LessOrEqual, context: C): T
+    fun visitLessOrEqual(elm: LessOrEqual, context: C): T?
 
     /**
      * Visit a GreaterOrEqual. This method will be called for every node in the tree that is a
@@ -975,7 +975,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitGreaterOrEqual(elm: GreaterOrEqual, context: C): T
+    fun visitGreaterOrEqual(elm: GreaterOrEqual, context: C): T?
 
     /**
      * Visit an Add. This method will be called for every node in the tree that is an Add.
@@ -984,7 +984,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitAdd(elm: Add, context: C): T
+    fun visitAdd(elm: Add, context: C): T?
 
     /**
      * Visit a Subtract. This method will be called for every node in the tree that is a Subtract.
@@ -993,7 +993,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitSubtract(elm: Subtract, context: C): T
+    fun visitSubtract(elm: Subtract, context: C): T?
 
     /**
      * Visit a Multiply. This method will be called for every node in the tree that is a Multiply.
@@ -1002,7 +1002,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitMultiply(elm: Multiply, context: C): T
+    fun visitMultiply(elm: Multiply, context: C): T?
 
     /**
      * Visit a Divide. This method will be called for every node in the tree that is a Divide.
@@ -1011,7 +1011,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitDivide(elm: Divide, context: C): T
+    fun visitDivide(elm: Divide, context: C): T?
 
     /**
      * Visit a TruncatedDivide. This method will be called for every node in the tree that is a
@@ -1021,7 +1021,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitTruncatedDivide(elm: TruncatedDivide, context: C): T
+    fun visitTruncatedDivide(elm: TruncatedDivide, context: C): T?
 
     /**
      * Visit a Modulo. This method will be called for every node in the tree that is a Modulo.
@@ -1030,7 +1030,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitModulo(elm: Modulo, context: C): T
+    fun visitModulo(elm: Modulo, context: C): T?
 
     /**
      * Visit a Ceiling. This method will be called for every node in the tree that is a Ceiling.
@@ -1039,7 +1039,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitCeiling(elm: Ceiling, context: C): T
+    fun visitCeiling(elm: Ceiling, context: C): T?
 
     /**
      * Visit a Floor. This method will be called for every node in the tree that is a Floor.
@@ -1048,7 +1048,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitFloor(elm: Floor, context: C): T
+    fun visitFloor(elm: Floor, context: C): T?
 
     /**
      * Visit a Truncate. This method will be called for every node in the tree that is a Truncate.
@@ -1057,7 +1057,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitTruncate(elm: Truncate, context: C): T
+    fun visitTruncate(elm: Truncate, context: C): T?
 
     /**
      * Visit an Abs. This method will be called for every node in the tree that is an Abs.
@@ -1066,7 +1066,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitAbs(elm: Abs, context: C): T
+    fun visitAbs(elm: Abs, context: C): T?
 
     /**
      * Visit a Negate. This method will be called for every node in the tree that is a Negate.
@@ -1075,7 +1075,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitNegate(elm: Negate, context: C): T
+    fun visitNegate(elm: Negate, context: C): T?
 
     /**
      * Visit a Round. This method will be called for every node in the tree that is a Round.
@@ -1084,7 +1084,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitRound(elm: Round, context: C): T
+    fun visitRound(elm: Round, context: C): T?
 
     /**
      * Visit a Ln. This method will be called for every node in the tree that is a Ln.
@@ -1093,7 +1093,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitLn(elm: Ln, context: C): T
+    fun visitLn(elm: Ln, context: C): T?
 
     /**
      * Visit an Exp. This method will be called for every node in the tree that is an Exp.
@@ -1102,7 +1102,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitExp(elm: Exp, context: C): T
+    fun visitExp(elm: Exp, context: C): T?
 
     /**
      * Visit a Log. This method will be called for every node in the tree that is a Log.
@@ -1111,7 +1111,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitLog(elm: Log, context: C): T
+    fun visitLog(elm: Log, context: C): T?
 
     /**
      * Visit a Power. This method will be called for every node in the tree that is a Power.
@@ -1120,7 +1120,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitPower(elm: Power, context: C): T
+    fun visitPower(elm: Power, context: C): T?
 
     /**
      * Visit a Successor. This method will be called for every node in the tree that is a Successor.
@@ -1129,7 +1129,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitSuccessor(elm: Successor, context: C): T
+    fun visitSuccessor(elm: Successor, context: C): T?
 
     /**
      * Visit a Predecessor. This method will be called for every node in the tree that is a
@@ -1139,7 +1139,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitPredecessor(elm: Predecessor, context: C): T
+    fun visitPredecessor(elm: Predecessor, context: C): T?
 
     /**
      * Visit a MinValue. This method will be called for every node in the tree that is a MinValue.
@@ -1148,7 +1148,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitMinValue(elm: MinValue, context: C): T
+    fun visitMinValue(elm: MinValue, context: C): T?
 
     /**
      * Visit a MaxValue. This method will be called for every node in the tree that is a MaxValue.
@@ -1157,7 +1157,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitMaxValue(elm: MaxValue, context: C): T
+    fun visitMaxValue(elm: MaxValue, context: C): T?
 
     /**
      * Visit a Precision. This method will be called for every node in the tree that is a Precision.
@@ -1166,7 +1166,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitPrecision(elm: Precision, context: C): T
+    fun visitPrecision(elm: Precision, context: C): T?
 
     /**
      * Visit a LowBoundary. This method will be called for every node in the tree that is a
@@ -1176,7 +1176,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitLowBoundary(elm: LowBoundary, context: C): T
+    fun visitLowBoundary(elm: LowBoundary, context: C): T?
 
     /**
      * Visit a HighBoundary. This method will be called for every node in the tree that is a
@@ -1186,7 +1186,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitHighBoundary(elm: HighBoundary, context: C): T
+    fun visitHighBoundary(elm: HighBoundary, context: C): T?
 
     /**
      * Visit a Concatenate. This method will be called for every node in the tree that is a
@@ -1196,7 +1196,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitConcatenate(elm: Concatenate, context: C): T
+    fun visitConcatenate(elm: Concatenate, context: C): T?
 
     /**
      * Visit a Combine. This method will be called for every node in the tree that is a Combine.
@@ -1205,7 +1205,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitCombine(elm: Combine, context: C): T
+    fun visitCombine(elm: Combine, context: C): T?
 
     /**
      * Visit a Split. This method will be called for every node in the tree that is a Split.
@@ -1214,7 +1214,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitSplit(elm: Split, context: C): T
+    fun visitSplit(elm: Split, context: C): T?
 
     /**
      * Visit a SplitOnMatches. This method will be called for every node in the tree that is a
@@ -1224,7 +1224,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitSplitOnMatches(elm: SplitOnMatches, context: C): T
+    fun visitSplitOnMatches(elm: SplitOnMatches, context: C): T?
 
     /**
      * Visit a Length. This method will be called for every node in the tree that is a Length.
@@ -1233,7 +1233,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitLength(elm: Length, context: C): T
+    fun visitLength(elm: Length, context: C): T?
 
     /**
      * Visit an Upper. This method will be called for every node in the tree that is an Upper.
@@ -1242,7 +1242,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitUpper(elm: Upper, context: C): T
+    fun visitUpper(elm: Upper, context: C): T?
 
     /**
      * Visit a Lower. This method will be called for every node in the tree that is a Lower.
@@ -1251,7 +1251,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitLower(elm: Lower, context: C): T
+    fun visitLower(elm: Lower, context: C): T?
 
     /**
      * Visit an Indexer. This method will be called for every node in the tree that is an Indexer.
@@ -1260,7 +1260,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitIndexer(elm: Indexer, context: C): T
+    fun visitIndexer(elm: Indexer, context: C): T?
 
     /**
      * Visit a PositionOf. This method will be called for every node in the tree that is a
@@ -1270,7 +1270,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitPositionOf(elm: PositionOf, context: C): T
+    fun visitPositionOf(elm: PositionOf, context: C): T?
 
     /**
      * Visit a LastPositionOf. This method will be called for every node in the tree that is a
@@ -1280,7 +1280,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitLastPositionOf(elm: LastPositionOf, context: C): T
+    fun visitLastPositionOf(elm: LastPositionOf, context: C): T?
 
     /**
      * Visit a Substring. This method will be called for every node in the tree that is a Substring.
@@ -1289,7 +1289,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitSubstring(elm: Substring, context: C): T
+    fun visitSubstring(elm: Substring, context: C): T?
 
     /**
      * Visit a StartsWith. This method will be called for every node in the tree that is a
@@ -1299,7 +1299,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitStartsWith(elm: StartsWith, context: C): T
+    fun visitStartsWith(elm: StartsWith, context: C): T?
 
     /**
      * Visit an EndsWith. This method will be called for every node in the tree that is an EndsWith.
@@ -1308,7 +1308,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitEndsWith(elm: EndsWith, context: C): T
+    fun visitEndsWith(elm: EndsWith, context: C): T?
 
     /**
      * Visit a Matches. This method will be called for every node in the tree that is a Matches.
@@ -1317,7 +1317,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitMatches(elm: Matches, context: C): T
+    fun visitMatches(elm: Matches, context: C): T?
 
     /**
      * Visit a ReplaceMatches. This method will be called for every node in the tree that is a
@@ -1327,7 +1327,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitReplaceMatches(elm: ReplaceMatches, context: C): T
+    fun visitReplaceMatches(elm: ReplaceMatches, context: C): T?
 
     /**
      * Visit a DurationBetween. This method will be called for every node in the tree that is a
@@ -1337,7 +1337,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitDurationBetween(elm: DurationBetween, context: C): T
+    fun visitDurationBetween(elm: DurationBetween, context: C): T?
 
     /**
      * Visit a DifferenceBetween. This method will be called for every node in the tree that is a
@@ -1347,7 +1347,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitDifferenceBetween(elm: DifferenceBetween, context: C): T
+    fun visitDifferenceBetween(elm: DifferenceBetween, context: C): T?
 
     /**
      * Visit a DateFrom. This method will be called for every node in the tree that is a DateFrom.
@@ -1356,7 +1356,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitDateFrom(elm: DateFrom, context: C): T
+    fun visitDateFrom(elm: DateFrom, context: C): T?
 
     /**
      * Visit a TimeFrom. This method will be called for every node in the tree that is a TimeFrom.
@@ -1365,7 +1365,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitTimeFrom(elm: TimeFrom, context: C): T
+    fun visitTimeFrom(elm: TimeFrom, context: C): T?
 
     /**
      * Visit a TimezoneFrom. This method will be called for every node in the tree that is a
@@ -1375,7 +1375,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitTimezoneFrom(elm: TimezoneFrom, context: C): T
+    fun visitTimezoneFrom(elm: TimezoneFrom, context: C): T?
 
     /**
      * Visit a TimezoneOffsetFrom. This method will be called for every node in the tree that is a
@@ -1385,7 +1385,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitTimezoneOffsetFrom(elm: TimezoneOffsetFrom, context: C): T
+    fun visitTimezoneOffsetFrom(elm: TimezoneOffsetFrom, context: C): T?
 
     /**
      * Visit a DateTimeComponentFrom. This method will be called for every node in the tree that is
@@ -1395,7 +1395,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitDateTimeComponentFrom(elm: DateTimeComponentFrom, context: C): T
+    fun visitDateTimeComponentFrom(elm: DateTimeComponentFrom, context: C): T?
 
     /**
      * Visit a TimeOfDay. This method will be called for every node in the tree that is a TimeOfDay.
@@ -1404,7 +1404,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitTimeOfDay(elm: TimeOfDay, context: C): T
+    fun visitTimeOfDay(elm: TimeOfDay, context: C): T?
 
     /**
      * Visit a Today. This method will be called for every node in the tree that is a Today.
@@ -1413,7 +1413,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitToday(elm: Today, context: C): T
+    fun visitToday(elm: Today, context: C): T?
 
     /**
      * Visit a Now. This method will be called for every node in the tree that is a Now.
@@ -1422,7 +1422,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitNow(elm: Now, context: C): T
+    fun visitNow(elm: Now, context: C): T?
 
     /**
      * Visit a DateTime. This method will be called for every node in the tree that is a DateTime.
@@ -1431,7 +1431,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitDateTime(elm: DateTime, context: C): T
+    fun visitDateTime(elm: DateTime, context: C): T?
 
     /**
      * Visit a Date. This method will be called for every node in the tree that is a Date.
@@ -1440,7 +1440,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitDate(elm: Date, context: C): T
+    fun visitDate(elm: Date, context: C): T?
 
     /**
      * Visit a Time. This method will be called for every node in the tree that is a Time.
@@ -1449,7 +1449,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitTime(elm: Time, context: C): T
+    fun visitTime(elm: Time, context: C): T?
 
     /**
      * Visit a SameAs. This method will be called for every node in the tree that is a SameAs.
@@ -1458,7 +1458,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitSameAs(elm: SameAs, context: C): T
+    fun visitSameAs(elm: SameAs, context: C): T?
 
     /**
      * Visit a SameOrBefore. This method will be called for every node in the tree that is a
@@ -1468,7 +1468,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitSameOrBefore(elm: SameOrBefore, context: C): T
+    fun visitSameOrBefore(elm: SameOrBefore, context: C): T?
 
     /**
      * Visit a SameOrAfter. This method will be called for every node in the tree that is a
@@ -1478,7 +1478,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitSameOrAfter(elm: SameOrAfter, context: C): T
+    fun visitSameOrAfter(elm: SameOrAfter, context: C): T?
 
     /**
      * Visit a Width. This method will be called for every node in the tree that is a Width.
@@ -1487,7 +1487,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitWidth(elm: Width, context: C): T
+    fun visitWidth(elm: Width, context: C): T?
 
     /**
      * Visit a Size. This method will be called for every node in the tree that is a Size.
@@ -1496,7 +1496,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitSize(elm: Size, context: C): T
+    fun visitSize(elm: Size, context: C): T?
 
     /**
      * Visit a PointFrom. This method will be called for every node in the tree that is a PointFrom.
@@ -1505,7 +1505,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitPointFrom(elm: PointFrom, context: C): T
+    fun visitPointFrom(elm: PointFrom, context: C): T?
 
     /**
      * Visit a Start. This method will be called for every node in the tree that is a Start.
@@ -1514,7 +1514,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitStart(elm: Start, context: C): T
+    fun visitStart(elm: Start, context: C): T?
 
     /**
      * Visit an End. This method will be called for every node in the tree that is an End.
@@ -1523,7 +1523,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitEnd(elm: End, context: C): T
+    fun visitEnd(elm: End, context: C): T?
 
     /**
      * Visit a Contains. This method will be called for every node in the tree that is a Contains.
@@ -1532,7 +1532,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitContains(elm: Contains, context: C): T
+    fun visitContains(elm: Contains, context: C): T?
 
     /**
      * Visit a ProperContains. This method will be called for every node in the tree that is a
@@ -1542,7 +1542,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitProperContains(elm: ProperContains, context: C): T
+    fun visitProperContains(elm: ProperContains, context: C): T?
 
     /**
      * Visit an In. This method will be called for every node in the tree that is an In.
@@ -1551,7 +1551,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitIn(elm: In, context: C): T
+    fun visitIn(elm: In, context: C): T?
 
     /**
      * Visit a ProperIn. This method will be called for every node in the tree that is a ProperIn.
@@ -1560,7 +1560,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitProperIn(elm: ProperIn, context: C): T
+    fun visitProperIn(elm: ProperIn, context: C): T?
 
     /**
      * Visit an Includes. This method will be called for every node in the tree that is an Includes.
@@ -1569,7 +1569,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitIncludes(elm: Includes, context: C): T
+    fun visitIncludes(elm: Includes, context: C): T?
 
     /**
      * Visit an IncludedIn. This method will be called for every node in the tree that is a
@@ -1579,7 +1579,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitIncludedIn(elm: IncludedIn, context: C): T
+    fun visitIncludedIn(elm: IncludedIn, context: C): T?
 
     /**
      * Visit a ProperIncludes. This method will be called for every node in the tree that is a
@@ -1589,7 +1589,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitProperIncludes(elm: ProperIncludes, context: C): T
+    fun visitProperIncludes(elm: ProperIncludes, context: C): T?
 
     /**
      * Visit a ProperIncludedIn. This method will be called for every node in the tree that is a
@@ -1599,7 +1599,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitProperIncludedIn(elm: ProperIncludedIn, context: C): T
+    fun visitProperIncludedIn(elm: ProperIncludedIn, context: C): T?
 
     /**
      * Visit a Before. This method will be called for every node in the tree that is a Before.
@@ -1608,7 +1608,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitBefore(elm: Before, context: C): T
+    fun visitBefore(elm: Before, context: C): T?
 
     /**
      * Visit an After. This method will be called for every node in the tree that is an After.
@@ -1617,7 +1617,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitAfter(elm: After, context: C): T
+    fun visitAfter(elm: After, context: C): T?
 
     /**
      * Visit a Meets. This method will be called for every node in the tree that is a Meets.
@@ -1626,7 +1626,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitMeets(elm: Meets, context: C): T
+    fun visitMeets(elm: Meets, context: C): T?
 
     /**
      * Visit a MeetsBefore. This method will be called for every node in the tree that is a
@@ -1636,7 +1636,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitMeetsBefore(elm: MeetsBefore, context: C): T
+    fun visitMeetsBefore(elm: MeetsBefore, context: C): T?
 
     /**
      * Visit a MeetsAfter. This method will be called for every node in the tree that is a
@@ -1646,7 +1646,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitMeetsAfter(elm: MeetsAfter, context: C): T
+    fun visitMeetsAfter(elm: MeetsAfter, context: C): T?
 
     /**
      * Visit an Overlaps. This method will be called for every node in the tree that is an Overlaps.
@@ -1655,7 +1655,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitOverlaps(elm: Overlaps, context: C): T
+    fun visitOverlaps(elm: Overlaps, context: C): T?
 
     /**
      * Visit an OverlapsBefore. This method will be called for every node in the tree that is a
@@ -1665,7 +1665,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitOverlapsBefore(elm: OverlapsBefore, context: C): T
+    fun visitOverlapsBefore(elm: OverlapsBefore, context: C): T?
 
     /**
      * Visit an OverlapsAfter. This method will be called for every node in the tree that is a
@@ -1675,7 +1675,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitOverlapsAfter(elm: OverlapsAfter, context: C): T
+    fun visitOverlapsAfter(elm: OverlapsAfter, context: C): T?
 
     /**
      * Visit a Starts. This method will be called for every node in the tree that is a Starts.
@@ -1684,7 +1684,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitStarts(elm: Starts, context: C): T
+    fun visitStarts(elm: Starts, context: C): T?
 
     /**
      * Visit an Ends. This method will be called for every node in the tree that is an Ends.
@@ -1693,7 +1693,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitEnds(elm: Ends, context: C): T
+    fun visitEnds(elm: Ends, context: C): T?
 
     /**
      * Visit a Collapse. This method will be called for every node in the tree that is a Collapse.
@@ -1702,7 +1702,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitCollapse(elm: Collapse, context: C): T
+    fun visitCollapse(elm: Collapse, context: C): T?
 
     /**
      * Visit an Expand. This method will be called for every node in the tree that is an Expand.
@@ -1711,7 +1711,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitExpand(elm: Expand, context: C): T
+    fun visitExpand(elm: Expand, context: C): T?
 
     /**
      * Visit a Union. This method will be called for every node in the tree that is a Union.
@@ -1720,7 +1720,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitUnion(elm: Union, context: C): T
+    fun visitUnion(elm: Union, context: C): T?
 
     /**
      * Visit an Intersect. This method will be called for every node in the tree that is an
@@ -1730,7 +1730,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitIntersect(elm: Intersect, context: C): T
+    fun visitIntersect(elm: Intersect, context: C): T?
 
     /**
      * Visit an Except. This method will be called for every node in the tree that is an Except.
@@ -1739,7 +1739,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitExcept(elm: Except, context: C): T
+    fun visitExcept(elm: Except, context: C): T?
 
     /**
      * Visit a Literal. This method will be called for every node in the tree that is a Literal.
@@ -1748,7 +1748,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitExists(elm: Exists, context: C): T
+    fun visitExists(elm: Exists, context: C): T?
 
     /**
      * Visit a Times. This method will be called for every node in the tree that is a Times.
@@ -1757,7 +1757,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitTimes(elm: Times, context: C): T
+    fun visitTimes(elm: Times, context: C): T?
 
     /**
      * Visit a Filter. This method will be called for every node in the tree that is a Filter.
@@ -1766,7 +1766,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitFilter(elm: Filter, context: C): T
+    fun visitFilter(elm: Filter, context: C): T?
 
     /**
      * Visit a First. This method will be called for every node in the tree that is a First.
@@ -1775,7 +1775,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitFirst(elm: First, context: C): T
+    fun visitFirst(elm: First, context: C): T?
 
     /**
      * Visit a Last. This method will be called for every node in the tree that is a Last.
@@ -1784,7 +1784,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitLast(elm: Last, context: C): T
+    fun visitLast(elm: Last, context: C): T?
 
     /**
      * Visit a Slice. This method will be called for every node in the tree that is a Slice.
@@ -1793,7 +1793,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitSlice(elm: Slice, context: C): T
+    fun visitSlice(elm: Slice, context: C): T?
 
     /**
      * Visit a Children. This method will be called for every node in the tree that is a Children.
@@ -1802,7 +1802,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitChildren(elm: Children, context: C): T
+    fun visitChildren(elm: Children, context: C): T?
 
     /**
      * Visit a Descendents. This method will be called for every node in the tree that is a
@@ -1812,7 +1812,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitDescendents(elm: Descendents, context: C): T
+    fun visitDescendents(elm: Descendents, context: C): T?
 
     /**
      * Visit a Message. This method will be called for every node in the tree that is a Message.
@@ -1821,7 +1821,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitMessage(elm: Message, context: C): T
+    fun visitMessage(elm: Message, context: C): T?
 
     /**
      * Visit an IndexOf. This method will be called for every node in the tree that is an IndexOf.
@@ -1830,7 +1830,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitIndexOf(elm: IndexOf, context: C): T
+    fun visitIndexOf(elm: IndexOf, context: C): T?
 
     /**
      * Visit a Flatten. This method will be called for every node in the tree that is a Flatten.
@@ -1839,7 +1839,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitFlatten(elm: Flatten, context: C): T
+    fun visitFlatten(elm: Flatten, context: C): T?
 
     /**
      * Visit a Sort. This method will be called for every node in the tree that is a Sort.
@@ -1848,7 +1848,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitSort(elm: Sort, context: C): T
+    fun visitSort(elm: Sort, context: C): T?
 
     /**
      * Visit a ForEach. This method will be called for every node in the tree that is a ForEach.
@@ -1857,7 +1857,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitForEach(elm: ForEach, context: C): T
+    fun visitForEach(elm: ForEach, context: C): T?
 
     /**
      * Visit a Repeat. This method will be called for every node in the tree that is a Repeat.
@@ -1866,7 +1866,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitRepeat(elm: Repeat, context: C): T
+    fun visitRepeat(elm: Repeat, context: C): T?
 
     /**
      * Visit a Distinct. This method will be called for every node in the tree that is a Distinct.
@@ -1875,7 +1875,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitDistinct(elm: Distinct, context: C): T
+    fun visitDistinct(elm: Distinct, context: C): T?
 
     /**
      * Visit a Current. This method will be called for every node in the tree that is a Current.
@@ -1884,7 +1884,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitCurrent(elm: Current, context: C): T
+    fun visitCurrent(elm: Current, context: C): T?
 
     /**
      * Visit an Iteration. This method will be called for every node in the tree that is an
@@ -1894,7 +1894,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitIteration(elm: Iteration, context: C): T
+    fun visitIteration(elm: Iteration, context: C): T?
 
     /**
      * Visit a Total. This method will be called for every node in the tree that is a Total.
@@ -1903,7 +1903,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitTotal(elm: Total, context: C): T
+    fun visitTotal(elm: Total, context: C): T?
 
     /**
      * Visit a SingletonFrom. This method will be called for every node in the tree that is a
@@ -1913,7 +1913,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitSingletonFrom(elm: SingletonFrom, context: C): T
+    fun visitSingletonFrom(elm: SingletonFrom, context: C): T?
 
     /**
      * Visit an AggregateExpression. This method will be called for every node in the tree that is a
@@ -1923,7 +1923,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitAggregateExpression(elm: AggregateExpression, context: C): T
+    fun visitAggregateExpression(elm: AggregateExpression, context: C): T?
 
     /**
      * Visit an Aggregate. This method will be called for every node in the tree that is an
@@ -1933,7 +1933,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitAggregate(elm: Aggregate, context: C): T
+    fun visitAggregate(elm: Aggregate, context: C): T?
 
     /**
      * Visit a Count. This method will be called for every node in the tree that is a Count.
@@ -1942,7 +1942,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitCount(elm: Count, context: C): T
+    fun visitCount(elm: Count, context: C): T?
 
     /**
      * Visit a Sum. This method will be called for every node in the tree that is a Sum.
@@ -1951,7 +1951,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitSum(elm: Sum, context: C): T
+    fun visitSum(elm: Sum, context: C): T?
 
     /**
      * Visit a Product. This method will be called for every node in the tree that is a Product.
@@ -1960,7 +1960,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitProduct(elm: Product, context: C): T
+    fun visitProduct(elm: Product, context: C): T?
 
     /**
      * Visit a GeometricMean. This method will be called for every node in the tree that is a
@@ -1970,7 +1970,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitGeometricMean(elm: GeometricMean, context: C): T
+    fun visitGeometricMean(elm: GeometricMean, context: C): T?
 
     /**
      * Visit a Min. This method will be called for every node in the tree that is a Min.
@@ -1979,7 +1979,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitMin(elm: Min, context: C): T
+    fun visitMin(elm: Min, context: C): T?
 
     /**
      * Visit a Max. This method will be called for every node in the tree that is a Max.
@@ -1988,7 +1988,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitMax(elm: Max, context: C): T
+    fun visitMax(elm: Max, context: C): T?
 
     /**
      * Visit an Avg. This method will be called for every node in the tree that is an Avg.
@@ -1997,7 +1997,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitAvg(elm: Avg, context: C): T
+    fun visitAvg(elm: Avg, context: C): T?
 
     /**
      * Visit a Median. This method will be called for every node in the tree that is a Median.
@@ -2006,7 +2006,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitMedian(elm: Median, context: C): T
+    fun visitMedian(elm: Median, context: C): T?
 
     /**
      * Visit a Mode. This method will be called for every node in the tree that is a Mode.
@@ -2015,7 +2015,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitMode(elm: Mode, context: C): T
+    fun visitMode(elm: Mode, context: C): T?
 
     /**
      * Visit a Variance. This method will be called for every node in the tree that is a Variance.
@@ -2024,7 +2024,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitVariance(elm: Variance, context: C): T
+    fun visitVariance(elm: Variance, context: C): T?
 
     /**
      * Visit a PopulationVariance. This method will be called for every node in the tree that is a
@@ -2034,7 +2034,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitPopulationVariance(elm: PopulationVariance, context: C): T
+    fun visitPopulationVariance(elm: PopulationVariance, context: C): T?
 
     /**
      * Visit a StdDev. This method will be called for every node in the tree that is a StdDev.
@@ -2043,7 +2043,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitStdDev(elm: StdDev, context: C): T
+    fun visitStdDev(elm: StdDev, context: C): T?
 
     /**
      * Visit a PopulationStdDev. This method will be called for every node in the tree that is a
@@ -2053,7 +2053,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitPopulationStdDev(elm: PopulationStdDev, context: C): T
+    fun visitPopulationStdDev(elm: PopulationStdDev, context: C): T?
 
     /**
      * Visit an AllTrue. This method will be called for every node in the tree that is an AllTrue.
@@ -2062,7 +2062,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitAllTrue(elm: AllTrue, context: C): T
+    fun visitAllTrue(elm: AllTrue, context: C): T?
 
     /**
      * Visit an AnyTrue. This method will be called for every node in the tree that is an AnyTrue.
@@ -2071,7 +2071,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitAnyTrue(elm: AnyTrue, context: C): T
+    fun visitAnyTrue(elm: AnyTrue, context: C): T?
 
     /**
      * Visit a Property. This method will be called for every node in the tree that is a Property.
@@ -2080,7 +2080,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitProperty(elm: Property, context: C): T
+    fun visitProperty(elm: Property, context: C): T?
 
     /**
      * Visit an AliasedQuerySource. This method will be called for every node in the tree that is a
@@ -2090,7 +2090,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitAliasedQuerySource(elm: AliasedQuerySource, context: C): T
+    fun visitAliasedQuerySource(elm: AliasedQuerySource, context: C): T?
 
     /**
      * Visit a LetClause. This method will be called for every node in the tree that is a LetClause.
@@ -2099,7 +2099,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitLetClause(elm: LetClause, context: C): T
+    fun visitLetClause(elm: LetClause, context: C): T?
 
     /**
      * Visit a RelationshipClause. This method will be called for every node in the tree that is a
@@ -2109,7 +2109,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitRelationshipClause(elm: RelationshipClause, context: C): T
+    fun visitRelationshipClause(elm: RelationshipClause, context: C): T?
 
     /**
      * Visit a With. This method will be called for every node in the tree that is a With.
@@ -2118,7 +2118,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitWith(elm: With, context: C): T
+    fun visitWith(elm: With, context: C): T?
 
     /**
      * Visit a Without. This method will be called for every node in the tree that is a Without.
@@ -2127,7 +2127,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitWithout(elm: Without, context: C): T
+    fun visitWithout(elm: Without, context: C): T?
 
     /**
      * Visit a SortByItem. This method will be called for every node in the tree that is a
@@ -2137,7 +2137,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitSortByItem(elm: SortByItem, context: C): T
+    fun visitSortByItem(elm: SortByItem, context: C): T?
 
     /**
      * Visit a ByDirection. This method will be called for every node in the tree that is a
@@ -2147,7 +2147,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitByDirection(elm: ByDirection, context: C): T
+    fun visitByDirection(elm: ByDirection, context: C): T?
 
     /**
      * Visit a ByColumn. This method will be called for every node in the tree that is a ByColumn.
@@ -2156,7 +2156,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitByColumn(elm: ByColumn, context: C): T
+    fun visitByColumn(elm: ByColumn, context: C): T?
 
     /**
      * Visit a ByExpression. This method will be called for every node in the tree that is a
@@ -2166,7 +2166,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitByExpression(elm: ByExpression, context: C): T
+    fun visitByExpression(elm: ByExpression, context: C): T?
 
     /**
      * Visit a SortClause. This method will be called for every node in the tree that is a
@@ -2176,7 +2176,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitSortClause(elm: SortClause, context: C): T
+    fun visitSortClause(elm: SortClause, context: C): T?
 
     /**
      * Visit an AggregateClause. This method will be called for every node in the tree that is an
@@ -2186,7 +2186,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitAggregateClause(elm: AggregateClause, context: C): T
+    fun visitAggregateClause(elm: AggregateClause, context: C): T?
 
     /**
      * Visit a ReturnClause. This method will be called for every node in the tree that is a
@@ -2196,7 +2196,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitReturnClause(elm: ReturnClause, context: C): T
+    fun visitReturnClause(elm: ReturnClause, context: C): T?
 
     /**
      * Visit a Query. This method will be called for every node in the tree that is a Query.
@@ -2205,7 +2205,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitQuery(elm: Query, context: C): T
+    fun visitQuery(elm: Query, context: C): T?
 
     /**
      * Visit an AliasRef. This method will be called for every node in the tree that is an AliasRef.
@@ -2214,7 +2214,7 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitAliasRef(elm: AliasRef, context: C): T
+    fun visitAliasRef(elm: AliasRef, context: C): T?
 
     /**
      * Visit a QueryLetRef. This method will be called for every node in the tree that is a
@@ -2224,5 +2224,5 @@ interface ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitQueryLetRef(elm: QueryLetRef, context: C): T
+    fun visitQueryLetRef(elm: QueryLetRef, context: C): T?
 }

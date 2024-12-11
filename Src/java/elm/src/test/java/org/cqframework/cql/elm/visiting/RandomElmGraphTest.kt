@@ -77,9 +77,9 @@ class RandomElmGraphTest {
         val elementsDuplicated = HashMap<Int, Element>()
         val countingVisitor =
             FunctionalElmVisitor(
-                BiFunction<Trackable?, HashMap<Int, Element>, Int> {
+                BiFunction<Trackable?, HashMap<Int, Element>, Int?> {
                     x: Trackable?,
-                    y: HashMap<Int, Element>? ->
+                    _: HashMap<Int, Element>? ->
                     if (x is Element) {
                         val hash = System.identityHashCode(x)
                         if (!elementsVisited.containsKey(hash)) {

@@ -44,7 +44,7 @@ interface ElmClinicalVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitCodeFilterElement(elm: CodeFilterElement, context: C): T
+    fun visitCodeFilterElement(elm: CodeFilterElement, context: C): T?
 
     /**
      * Visit a DateFilterElement. This method will be called for every node in the tree that is a
@@ -54,7 +54,7 @@ interface ElmClinicalVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitDateFilterElement(elm: DateFilterElement, context: C): T
+    fun visitDateFilterElement(elm: DateFilterElement, context: C): T?
 
     /**
      * Visit an OtherFilterElement. This method will be called for every node in the tree that is an
@@ -64,7 +64,7 @@ interface ElmClinicalVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitOtherFilterElement(elm: OtherFilterElement, context: C): T
+    fun visitOtherFilterElement(elm: OtherFilterElement, context: C): T?
 
     /**
      * Visit an IncludeElement. This method will be called for every node in the tree that is an
@@ -74,7 +74,7 @@ interface ElmClinicalVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitIncludeElement(elm: IncludeElement, context: C): T
+    fun visitIncludeElement(elm: IncludeElement, context: C): T?
 
     /**
      * Visit a Retrieve. This method will be called for every node in the tree that is a Retrieve.
@@ -83,7 +83,7 @@ interface ElmClinicalVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitRetrieve(elm: Retrieve, context: C): T
+    fun visitRetrieve(elm: Retrieve, context: C): T?
 
     /**
      * Visit a Search. This method will be called for every node in the tree that is a Search.
@@ -92,7 +92,7 @@ interface ElmClinicalVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitSearch(elm: Search, context: C): T
+    fun visitSearch(elm: Search, context: C): T?
 
     /**
      * Visit a CodeSystemDef. This method will be called for every node in the tree that is a
@@ -102,7 +102,7 @@ interface ElmClinicalVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitCodeSystemDef(elm: CodeSystemDef, context: C): T
+    fun visitCodeSystemDef(elm: CodeSystemDef, context: C): T?
 
     /**
      * Visit a ValueSetDef. This method will be called for every node in the tree that is a
@@ -112,7 +112,7 @@ interface ElmClinicalVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitValueSetDef(elm: ValueSetDef, context: C): T
+    fun visitValueSetDef(elm: ValueSetDef, context: C): T?
 
     /**
      * Visit a CodeDef. This method will be called for every node in the tree that is a CodeDef.
@@ -121,7 +121,7 @@ interface ElmClinicalVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitCodeDef(elm: CodeDef, context: C): T
+    fun visitCodeDef(elm: CodeDef, context: C): T?
 
     /**
      * Visit an ConceptDef. This method will be called for every node in the tree that is an
@@ -131,7 +131,7 @@ interface ElmClinicalVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitConceptDef(elm: ConceptDef, context: C): T
+    fun visitConceptDef(elm: ConceptDef, context: C): T?
 
     /**
      * Visit a CodeSystemRef. This method will be called for every node in the tree that is a
@@ -141,7 +141,7 @@ interface ElmClinicalVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitCodeSystemRef(elm: CodeSystemRef, context: C): T
+    fun visitCodeSystemRef(elm: CodeSystemRef, context: C): T?
 
     /**
      * Visit a ValueSetRef. This method will be called for every node in the tree that is a
@@ -151,7 +151,7 @@ interface ElmClinicalVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitValueSetRef(elm: ValueSetRef, context: C): T
+    fun visitValueSetRef(elm: ValueSetRef, context: C): T?
 
     /**
      * Visit a CodeRef. This method will be called for every node in the tree that is a CodeRef.
@@ -160,7 +160,7 @@ interface ElmClinicalVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitCodeRef(elm: CodeRef, context: C): T
+    fun visitCodeRef(elm: CodeRef, context: C): T?
 
     /**
      * Visit a ConceptRef. This method will be called for every node in the tree that is a
@@ -170,7 +170,7 @@ interface ElmClinicalVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitConceptRef(elm: ConceptRef, context: C): T
+    fun visitConceptRef(elm: ConceptRef, context: C): T?
 
     /**
      * Visit a Code. This method will be called for every node in the tree that is a Code.
@@ -179,7 +179,7 @@ interface ElmClinicalVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitCode(elm: Code, context: C): T
+    fun visitCode(elm: Code, context: C): T?
 
     /**
      * Visit a Concept. This method will be called for every node in the tree that is a Concept.
@@ -188,7 +188,7 @@ interface ElmClinicalVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitConcept(elm: Concept, context: C): T
+    fun visitConcept(elm: Concept, context: C): T?
 
     /**
      * Visit a InCodeSystem. This method will be called for every node in the tree that is a
@@ -198,7 +198,7 @@ interface ElmClinicalVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitInCodeSystem(elm: InCodeSystem, context: C): T
+    fun visitInCodeSystem(elm: InCodeSystem, context: C): T?
 
     /**
      * Visit an AnyInCodeSystem. This method will be called for every node in the tree that is an
@@ -208,7 +208,7 @@ interface ElmClinicalVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitAnyInCodeSystem(elm: AnyInCodeSystem, context: C): T
+    fun visitAnyInCodeSystem(elm: AnyInCodeSystem, context: C): T?
 
     /**
      * Visit a InValueSet. This method will be called for every node in the tree that is a
@@ -218,7 +218,7 @@ interface ElmClinicalVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitInValueSet(elm: InValueSet, context: C): T
+    fun visitInValueSet(elm: InValueSet, context: C): T?
 
     /**
      * Visit an AnyInValueSet. This method will be called for every node in the tree that is an
@@ -228,7 +228,7 @@ interface ElmClinicalVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitAnyInValueSet(elm: AnyInValueSet, context: C): T
+    fun visitAnyInValueSet(elm: AnyInValueSet, context: C): T?
 
     /**
      * Visit a Subsumes. This method will be called for every node in the tree that is a Subsumes.
@@ -237,7 +237,7 @@ interface ElmClinicalVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitSubsumes(elm: Subsumes, context: C): T
+    fun visitSubsumes(elm: Subsumes, context: C): T?
 
     /**
      * Visit an SubsumedBy. This method will be called for every node in the tree that is an
@@ -247,7 +247,7 @@ interface ElmClinicalVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitSubsumedBy(elm: SubsumedBy, context: C): T
+    fun visitSubsumedBy(elm: SubsumedBy, context: C): T?
 
     /**
      * Visit a Quantity. This method will be called for every node in the tree that is a Quantity.
@@ -256,7 +256,7 @@ interface ElmClinicalVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitQuantity(elm: Quantity, context: C): T
+    fun visitQuantity(elm: Quantity, context: C): T?
 
     /**
      * Visit a Ratio. This method will be called for every node in the tree that is a Ratio.
@@ -265,7 +265,7 @@ interface ElmClinicalVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitRatio(elm: Ratio, context: C): T
+    fun visitRatio(elm: Ratio, context: C): T?
 
     /**
      * Visit a CalculateAge. This method will be called for every node in the tree that is a
@@ -275,7 +275,7 @@ interface ElmClinicalVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitCalculateAge(elm: CalculateAge, context: C): T
+    fun visitCalculateAge(elm: CalculateAge, context: C): T?
 
     /**
      * Visit a CalculateAgeAt. This method will be called for every node in the tree that is a
@@ -285,5 +285,5 @@ interface ElmClinicalVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitCalculateAgeAt(elm: CalculateAgeAt, context: C): T
+    fun visitCalculateAgeAt(elm: CalculateAgeAt, context: C): T?
 }

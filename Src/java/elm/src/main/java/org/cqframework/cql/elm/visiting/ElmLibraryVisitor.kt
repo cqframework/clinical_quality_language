@@ -21,7 +21,7 @@ interface ElmLibraryVisitor<T, C> : ElmClinicalVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitLibrary(elm: Library, context: C): T
+    fun visitLibrary(elm: Library, context: C): T?
 
     /**
      * Visit a UsingDef. This method will be called for every node in the tree that is a UsingDef.
@@ -30,7 +30,7 @@ interface ElmLibraryVisitor<T, C> : ElmClinicalVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitUsingDef(elm: UsingDef, context: C): T
+    fun visitUsingDef(elm: UsingDef, context: C): T?
 
     /**
      * Visit a IncludeDef. This method will be called for every node in the tree that is a
@@ -40,7 +40,7 @@ interface ElmLibraryVisitor<T, C> : ElmClinicalVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitIncludeDef(elm: IncludeDef, context: C): T
+    fun visitIncludeDef(elm: IncludeDef, context: C): T?
 
     /**
      * Visit a ContextDef. This method will be called for every node in the tree that is a
@@ -50,5 +50,5 @@ interface ElmLibraryVisitor<T, C> : ElmClinicalVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitContextDef(elm: ContextDef, context: C): T
+    fun visitContextDef(elm: ContextDef, context: C): T?
 }

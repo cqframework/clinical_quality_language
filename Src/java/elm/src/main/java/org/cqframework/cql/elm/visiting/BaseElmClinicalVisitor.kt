@@ -46,7 +46,7 @@ import org.hl7.elm.r1.ValueSetRef
  */
 @Suppress("TooManyFunctions")
 abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinicalVisitor<T, C> {
-    override fun visitElement(elm: Element, context: C): T {
+    override fun visitElement(elm: Element, context: C): T?? {
         return when (elm) {
             is ExpressionDef -> visitExpressionDef(elm, context)
             is CodeDef -> visitCodeDef(elm, context)
@@ -69,7 +69,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitExpression(elm: Expression, context: C): T {
+    override fun visitExpression(elm: Expression, context: C): T?? {
         return when (elm) {
             is FunctionRef -> visitFunctionRef(elm, context)
             is ExpressionRef -> visitExpressionRef(elm, context)
@@ -94,7 +94,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitOperatorExpression(elm: OperatorExpression, context: C): T {
+    override fun visitOperatorExpression(elm: OperatorExpression, context: C): T?? {
         return when (elm) {
             is InCodeSystem -> visitInCodeSystem(elm, context)
             is AnyInCodeSystem -> visitAnyInCodeSystem(elm, context)
@@ -112,7 +112,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitUnaryExpression(elm: UnaryExpression, context: C): T {
+    override fun visitUnaryExpression(elm: UnaryExpression, context: C): T?? {
         if (elm is ExpandValueSet) return visitExpandValueSet(elm, context)
         return if (elm is CalculateAge) visitCalculateAge(elm, context)
         else super.visitUnaryExpression(elm, context)
@@ -126,7 +126,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitBinaryExpression(elm: BinaryExpression, context: C): T {
+    override fun visitBinaryExpression(elm: BinaryExpression, context: C): T?? {
         return when (elm) {
             is CalculateAgeAt -> visitCalculateAgeAt(elm, context)
             is Subsumes -> visitSubsumes(elm, context)
@@ -143,7 +143,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    open fun visitExpandValueSet(elm: ExpandValueSet, context: C): T {
+    open fun visitExpandValueSet(elm: ExpandValueSet, context: C): T?? {
         return visitFields(elm, context)
     }
 
@@ -155,7 +155,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitCodeFilterElement(elm: CodeFilterElement, context: C): T {
+    override fun visitCodeFilterElement(elm: CodeFilterElement, context: C): T? {
         var result = visitFields(elm, context)
         if (elm.value != null) {
             val childResult = visitExpression(elm.value, context)
@@ -173,7 +173,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitDateFilterElement(elm: DateFilterElement, context: C): T {
+    override fun visitDateFilterElement(elm: DateFilterElement, context: C): T? {
         var result = visitFields(elm, context)
 
         if (elm.value != null) {
@@ -192,7 +192,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitOtherFilterElement(elm: OtherFilterElement, context: C): T {
+    override fun visitOtherFilterElement(elm: OtherFilterElement, context: C): T? {
         var result = visitFields(elm, context)
 
         if (elm.value != null) {
@@ -211,7 +211,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitIncludeElement(elm: IncludeElement, context: C): T {
+    override fun visitIncludeElement(elm: IncludeElement, context: C): T? {
         return visitFields(elm, context)
     }
 
@@ -222,7 +222,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitRetrieve(elm: Retrieve, context: C): T {
+    override fun visitRetrieve(elm: Retrieve, context: C): T? {
         var result = visitFields(elm, context)
 
         for (cfe in elm.codeFilter) {
@@ -272,7 +272,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitProperty(elm: Property, context: C): T {
+    override fun visitProperty(elm: Property, context: C): T?? {
         if (elm is Search) {
             return visitSearch(elm, context)
         }
@@ -286,7 +286,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitSearch(elm: Search, context: C): T {
+    override fun visitSearch(elm: Search, context: C): T? {
         var result = visitFields(elm, context)
 
         if (elm.source != null) {
@@ -305,7 +305,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitCodeSystemDef(elm: CodeSystemDef, context: C): T {
+    override fun visitCodeSystemDef(elm: CodeSystemDef, context: C): T? {
         var result = visitFields(elm, context)
         if (elm.accessLevel != null) {
             val childResult = visitAccessModifier(elm.accessLevel, context)
@@ -323,7 +323,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitValueSetDef(elm: ValueSetDef, context: C): T {
+    override fun visitValueSetDef(elm: ValueSetDef, context: C): T? {
         var result = visitFields(elm, context)
 
         if (elm.accessLevel != null) {
@@ -345,7 +345,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitCodeDef(elm: CodeDef, context: C): T {
+    override fun visitCodeDef(elm: CodeDef, context: C): T? {
         var result = visitFields(elm, context)
 
         if (elm.accessLevel != null) {
@@ -368,7 +368,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitConceptDef(elm: ConceptDef, context: C): T {
+    override fun visitConceptDef(elm: ConceptDef, context: C): T? {
         var result = visitFields(elm, context)
 
         if (elm.accessLevel != null) {
@@ -391,7 +391,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitCodeSystemRef(elm: CodeSystemRef, context: C): T {
+    override fun visitCodeSystemRef(elm: CodeSystemRef, context: C): T? {
         return visitFields(elm, context)
     }
 
@@ -403,7 +403,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitValueSetRef(elm: ValueSetRef, context: C): T {
+    override fun visitValueSetRef(elm: ValueSetRef, context: C): T? {
         return visitFields(elm, context)
     }
 
@@ -414,7 +414,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitCodeRef(elm: CodeRef, context: C): T {
+    override fun visitCodeRef(elm: CodeRef, context: C): T? {
         return visitFields(elm, context)
     }
 
@@ -426,7 +426,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitConceptRef(elm: ConceptRef, context: C): T {
+    override fun visitConceptRef(elm: ConceptRef, context: C): T? {
         return visitFields(elm, context)
     }
 
@@ -437,7 +437,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitCode(elm: Code, context: C): T {
+    override fun visitCode(elm: Code, context: C): T? {
         var result = visitFields(elm, context)
 
         if (elm.system != null) {
@@ -455,7 +455,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitConcept(elm: Concept, context: C): T {
+    override fun visitConcept(elm: Concept, context: C): T? {
         var result = visitFields(elm, context)
 
         for (c in elm.code) {
@@ -474,7 +474,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitInCodeSystem(elm: InCodeSystem, context: C): T {
+    override fun visitInCodeSystem(elm: InCodeSystem, context: C): T? {
         var result = visitFields(elm, context)
 
         if (elm.code != null) {
@@ -501,7 +501,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitAnyInCodeSystem(elm: AnyInCodeSystem, context: C): T {
+    override fun visitAnyInCodeSystem(elm: AnyInCodeSystem, context: C): T? {
         var result = visitFields(elm, context)
 
         if (elm.codes != null) {
@@ -528,7 +528,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitInValueSet(elm: InValueSet, context: C): T {
+    override fun visitInValueSet(elm: InValueSet, context: C): T? {
         var result = visitFields(elm, context)
 
         if (elm.code != null) {
@@ -555,7 +555,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitAnyInValueSet(elm: AnyInValueSet, context: C): T {
+    override fun visitAnyInValueSet(elm: AnyInValueSet, context: C): T? {
         var result = visitFields(elm, context)
 
         if (elm.codes != null) {
@@ -581,7 +581,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitSubsumes(elm: Subsumes, context: C): T {
+    override fun visitSubsumes(elm: Subsumes, context: C): T? {
         return visitFields(elm, context)
     }
 
@@ -593,7 +593,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitSubsumedBy(elm: SubsumedBy, context: C): T {
+    override fun visitSubsumedBy(elm: SubsumedBy, context: C): T? {
         return visitFields(elm, context)
     }
 
@@ -604,7 +604,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitQuantity(elm: Quantity, context: C): T {
+    override fun visitQuantity(elm: Quantity, context: C): T? {
         return visitFields(elm, context)
     }
 
@@ -615,7 +615,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitRatio(elm: Ratio, context: C): T {
+    override fun visitRatio(elm: Ratio, context: C): T? {
         var result = visitFields(elm, context)
 
         if (elm.denominator != null) {
@@ -638,7 +638,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitCalculateAge(elm: CalculateAge, context: C): T {
+    override fun visitCalculateAge(elm: CalculateAge, context: C): T? {
         return visitFields(elm, context)
     }
 
@@ -650,7 +650,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitCalculateAgeAt(elm: CalculateAgeAt, context: C): T {
+    override fun visitCalculateAgeAt(elm: CalculateAgeAt, context: C): T? {
         return visitFields(elm, context)
     }
 }
