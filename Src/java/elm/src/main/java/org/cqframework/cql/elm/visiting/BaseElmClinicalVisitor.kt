@@ -575,7 +575,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
     }
 
     /**
-     * Visit an Subsumes. This method will be called for every node in the tree that is an Subsumes.
+     * Visit a Subsumes. This method will be called for every node in the tree that is a Subsumes.
      *
      * @param elm the ELM tree
      * @param context the context passed to the visitor
