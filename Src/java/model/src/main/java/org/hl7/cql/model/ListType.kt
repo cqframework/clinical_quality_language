@@ -28,8 +28,7 @@ data class ListType(val elementType: DataType) : BaseDataType() {
         return String.format(Locale.US, "List of %s", elementType.toLabel())
     }
 
-    override val isGeneric: Boolean
-        get() = elementType.isGeneric
+    override val isGeneric: Boolean = elementType.isGeneric
 
     override fun isInstantiable(callType: DataType, context: InstantiationContext): Boolean {
         return when (callType) {

@@ -54,12 +54,9 @@ constructor(
         }
     }
 
-    override fun toString(): String {
-        return identifier
-    }
+    override fun toString(): String = identifier
 
-    override val isGeneric: Boolean
-        get() = true
+    override val isGeneric: Boolean = true
 
     override fun isInstantiable(callType: DataType, context: InstantiationContext): Boolean {
         return context.isInstantiable(this, callType)

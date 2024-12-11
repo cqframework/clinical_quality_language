@@ -375,9 +375,9 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
                 result =
                     SimpleType(
                         qualifiedTypeName,
-                        resolveTypeNameOrSpecifier(t.baseType, t.baseTypeSpecifier)
+                        resolveTypeNameOrSpecifier(t.baseType, t.baseTypeSpecifier),
+                        t.target
                     )
-                result.target = t.target
             }
             resolvedTypes[casify(result.name)] = result
         }
@@ -405,7 +405,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
     }
 
     private fun resolveTupleType(t: TupleTypeInfo): TupleType {
-        val result = TupleType(resolveTupleTypeElements(t.element))
+        val result = TupleType(resolveTupleTypeElements(t.element).toMutableList())
         return result
     }
 

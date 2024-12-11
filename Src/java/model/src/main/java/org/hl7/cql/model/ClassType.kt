@@ -226,16 +226,11 @@ constructor(
         return false
     }
 
-    override fun toString(): String {
-        return this.name
-    }
+    override fun toString(): String = name
 
-    override fun toLabel(): String {
-        return if (this.label == null) this.name else label!!
-    }
+    override fun toLabel(): String = label ?: name
 
-    val tupleType: TupleType
-        get() = buildTupleType()
+    val tupleType: TupleType = buildTupleType()
 
     private fun addTupleElements(
         classType: ClassType,
@@ -260,7 +255,7 @@ constructor(
 
         addTupleElements(this, tupleElements)
 
-        return TupleType(tupleElements.values)
+        return TupleType(tupleElements.values.toMutableList())
     }
 
     override fun isCompatibleWith(other: DataType): Boolean {
@@ -277,8 +272,7 @@ constructor(
         return super.isCompatibleWith(other)
     }
 
-    override val isGeneric: Boolean
-        get() = genericParameters.isNotEmpty()
+    override val isGeneric: Boolean = genericParameters.isNotEmpty()
 
     override fun isInstantiable(callType: DataType, context: InstantiationContext): Boolean {
         return if (callType is ClassType && callType.elements.size == elements.size) {
