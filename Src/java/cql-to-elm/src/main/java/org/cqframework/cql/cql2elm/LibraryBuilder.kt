@@ -589,9 +589,9 @@ class LibraryBuilder(
             err.errorSeverity = toErrorSeverity(e.severity)
             if (e.locator != null) {
                 if (e.locator.library != null) {
-                    err.librarySystem = e.locator.library.system
-                    err.libraryId = e.locator.library.id
-                    err.libraryVersion = e.locator.library.version
+                    err.librarySystem = e.locator.library?.system
+                    err.libraryId = e.locator.library?.id
+                    err.libraryVersion = e.locator.library?.version
                 }
                 err.startLine = e.locator.startLine
                 err.endLine = e.locator.endLine
