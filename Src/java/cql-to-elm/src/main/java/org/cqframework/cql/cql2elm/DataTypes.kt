@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm
 
+import java.util.*
 import org.hl7.cql.model.DataType
 
 object DataTypes {
@@ -7,8 +8,8 @@ object DataTypes {
     fun verifyType(actualType: DataType?, expectedType: DataType?) {
         require(subTypeOf(actualType, expectedType)) {
             // ERROR:
-            @Suppress("ImplicitDefaultLocale")
             String.format(
+                Locale.US,
                 "Expected an expression of type '%s', but found an expression of type '%s'.",
                 if (expectedType != null) expectedType.toLabel() else "<unknown>",
                 if (actualType != null) actualType.toLabel() else "<unknown>"
@@ -25,8 +26,8 @@ object DataTypes {
                 compatibleWith(sourceType, targetType)
         ) {
             // ERROR:
-            @Suppress("ImplicitDefaultLocale")
             String.format(
+                Locale.US,
                 "Expression of type '%s' cannot be cast as a value of type '%s'.",
                 if (sourceType != null) sourceType.toLabel() else "<unknown>",
                 if (targetType != null) targetType.toLabel() else "<unknown>"

@@ -40,8 +40,8 @@ class SystemMethodResolver(
             actualCount = ctx.expression().size
         }
         require(actualCount == expectedCount) {
-            @Suppress("ImplicitDefaultLocale")
             String.format(
+                Locale.US,
                 "Expected %s argument for method %s.",
                 Integer.valueOf(expectedCount).toString(),
                 functionName
@@ -231,7 +231,7 @@ class SystemMethodResolver(
     private fun gatherChildTypes(
         dataType: DataType,
         recurse: Boolean,
-        dataTypes: MutableSet<DataType?>
+        dataTypes: MutableSet<DataType>
     ) {
         if (dataType is ClassType) {
             for (element in dataType.elements) {
@@ -260,7 +260,7 @@ class SystemMethodResolver(
                 gatherChildTypes(elementType, recurse, dataTypes)
             }
         } else {
-            dataTypes.add(builder.resolveTypeName("System.Any"))
+            dataTypes.add(builder.resolveTypeName("System.Any")!!)
         }
     }
 
@@ -300,10 +300,10 @@ class SystemMethodResolver(
                 checkArgumentCount(ctx, functionName, 0)
                 val children = of.createChildren()
                 children.source = target
-                val dataTypes: MutableSet<DataType?> = HashSet()
+                val dataTypes: MutableSet<DataType> = HashSet()
                 gatherChildTypes(target.resultType, false, dataTypes)
                 if (dataTypes.size == 1) {
-                    children.resultType = ListType(dataTypes.toTypedArray()[0])
+                    children.resultType = ListType(dataTypes.iterator().next())
                 } else {
                     children.resultType = ListType(ChoiceType(dataTypes))
                 }
@@ -316,7 +316,7 @@ class SystemMethodResolver(
                 elements.add(target)
                 elements.add(argument)
                 val elementType =
-                    builder.ensureCompatibleTypes(target.resultType, argument!!.resultType)
+                    builder.ensureCompatibleTypes(target.resultType, argument!!.resultType)!!
                 val list = of.createList()
                 list.resultType = ListType(elementType)
                 list.element.add(builder.ensureCompatible(target, elementType))
@@ -358,7 +358,7 @@ class SystemMethodResolver(
                 checkArgumentCount(ctx, functionName, 0)
                 val descendents = of.createDescendents()
                 descendents.source = target
-                val dataTypes: MutableSet<DataType?> = HashSet()
+                val dataTypes: MutableSet<DataType> = HashSet()
                 gatherChildTypes(target.resultType, true, dataTypes)
                 if (dataTypes.size == 1) {
                     descendents.resultType = ListType(dataTypes.toTypedArray()[0])

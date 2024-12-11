@@ -40,7 +40,8 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
         val identifier =
             VersionedIdentifier().withId(libraryInfo.libraryName).withVersion(libraryInfo.version)
         if (libraryInfo.namespaceName != null) {
-            identifier.system = libraryBuilder.resolveNamespaceUri(libraryInfo.namespaceName, true)
+            identifier.system =
+                libraryBuilder.resolveNamespaceUri(libraryInfo.namespaceName!!, true)
         } else if (libraryBuilder.namespaceInfo != null) {
             identifier.system = libraryBuilder.namespaceInfo.uri
         }
@@ -127,7 +128,7 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
         var modelNamespace: NamespaceInfo? = null
         if (namespaceName != null) {
             val namespaceUri = libraryBuilder.resolveNamespaceUri(namespaceName, true)
-            modelNamespace = NamespaceInfo(namespaceName, namespaceUri)
+            modelNamespace = NamespaceInfo(namespaceName, namespaceUri!!)
         }
         val localIdentifier =
             if (ctx.localIdentifier() == null) unqualifiedIdentifier

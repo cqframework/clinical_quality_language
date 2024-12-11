@@ -2,6 +2,8 @@ package org.cqframework.cql.cql2elm
 
 import java.io.ByteArrayInputStream
 import java.io.InputStream
+import java.util.*
+import kotlin.collections.ArrayList
 import org.hl7.elm.r1.VersionedIdentifier
 
 /**
@@ -28,8 +30,8 @@ class StringLibrarySourceProvider(private val libraries: List<String>) : Library
         }
         if (matches.size > 1) {
             throw IllegalArgumentException(
-                @Suppress("ImplicitDefaultLocale")
                 String.format(
+                    Locale.US,
                     "Multiple libraries for id : %s resolved.%nEnsure that there are no duplicates in the input set.",
                     libraryIdentifier.toString()
                 )

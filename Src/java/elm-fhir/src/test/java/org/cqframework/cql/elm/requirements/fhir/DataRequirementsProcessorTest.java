@@ -1933,7 +1933,14 @@ public class DataRequirementsProcessorTest {
         // outputModuleDefinitionLibrary(actualModuleDefinitionLibrary);
         actualModuleDefinitionLibrary.setDate(null);
         expectedModuleDefinitionLibrary.setDate(null);
-        assertTrue(actualModuleDefinitionLibrary.equalsDeep(expectedModuleDefinitionLibrary));
+
+        parser.setPrettyPrint(true);
+        var jsonExpected = parser.encodeResourceToString(expectedModuleDefinitionLibrary);
+        var jsonActual = parser.encodeResourceToString(actualModuleDefinitionLibrary);
+
+        assertEquals(jsonExpected, jsonActual);
+
+        // assertTrue(actualModuleDefinitionLibrary.equalsDeep(expectedModuleDefinitionLibrary));
     }
 
     @Test

@@ -2,7 +2,9 @@
 
 package org.cqframework.cql.cql2elm
 
+import java.util.*
 import javax.xml.namespace.QName
+import kotlin.collections.ArrayList
 import org.cqframework.cql.cql2elm.model.Model
 import org.cqframework.cql.elm.IdObjectFactory
 import org.hl7.cql.model.*
@@ -71,8 +73,7 @@ class TypeBuilder(private val of: IdObjectFactory, private val mr: ModelResolver
             }
             else -> {
                 throw IllegalArgumentException(
-                    @Suppress("ImplicitDefaultLocale")
-                    String.format("Could not convert type %s to a type specifier.", type)
+                    String.format(Locale.US, "Could not convert type %s to a type specifier.", type)
                 )
             }
         }

@@ -4,6 +4,7 @@ package org.cqframework.cql.cql2elm
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import java.io.*
+import java.util.*
 
 object CqlTranslatorOptionsMapper {
     private val om: ObjectMapper = ObjectMapper()
@@ -15,8 +16,10 @@ object CqlTranslatorOptionsMapper {
             fr = FileReader(fileName)
             return fromReader(fr)
         } catch (@Suppress("SwallowedException") e: IOException) {
-            @Suppress("TooGenericExceptionThrown", "ImplicitDefaultLocale")
-            throw RuntimeException(String.format("Errors occurred reading options: %s", e.message))
+            @Suppress("TooGenericExceptionThrown")
+            throw RuntimeException(
+                String.format(Locale.US, "Errors occurred reading options: %s", e.message)
+            )
         }
     }
 
@@ -25,8 +28,10 @@ object CqlTranslatorOptionsMapper {
         try {
             return om.readValue(reader, CqlTranslatorOptions::class.java)
         } catch (@Suppress("SwallowedException") e: IOException) {
-            @Suppress("TooGenericExceptionThrown", "ImplicitDefaultLocale")
-            throw RuntimeException(String.format("Errors occurred reading options: %s", e.message))
+            @Suppress("TooGenericExceptionThrown")
+            throw RuntimeException(
+                String.format(Locale.US, "Errors occurred reading options: %s", e.message)
+            )
         }
     }
 
@@ -37,8 +42,10 @@ object CqlTranslatorOptionsMapper {
             fw = FileWriter(fileName)
             toWriter(fw, options)
         } catch (@Suppress("SwallowedException") e: IOException) {
-            @Suppress("TooGenericExceptionThrown", "ImplicitDefaultLocale")
-            throw RuntimeException(String.format("Errors occurred writing options: %s", e.message))
+            @Suppress("TooGenericExceptionThrown")
+            throw RuntimeException(
+                String.format(Locale.US, "Errors occurred writing options: %s", e.message)
+            )
         }
     }
 
@@ -48,8 +55,10 @@ object CqlTranslatorOptionsMapper {
         try {
             om.writeValue(writer, options)
         } catch (@Suppress("SwallowedException") e: IOException) {
-            @Suppress("TooGenericExceptionThrown", "ImplicitDefaultLocale")
-            throw RuntimeException(String.format("Errors occurred writing options: %s", e.message))
+            @Suppress("TooGenericExceptionThrown")
+            throw RuntimeException(
+                String.format(Locale.US, "Errors occurred writing options: %s", e.message)
+            )
         }
     }
 }

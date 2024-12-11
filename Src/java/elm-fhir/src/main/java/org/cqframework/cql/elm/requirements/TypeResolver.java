@@ -136,7 +136,7 @@ public class TypeResolver {
         TupleType tupleType = new TupleType();
         for (TupleElementDefinition element : typeSpecifier.getElement()) {
             TupleTypeElement tupleElement =
-                    new TupleTypeElement(element.getName(), resolveTypeSpecifier(element.getElementType()));
+                    new TupleTypeElement(element.getName(), resolveTypeSpecifier(element.getElementType()), false);
             tupleType.addElement(tupleElement);
         }
         return tupleType;
@@ -151,7 +151,7 @@ public class TypeResolver {
     }
 
     private DataType resolveChoiceTypeSpecifier(ChoiceTypeSpecifier typeSpecifier) {
-        ArrayList<DataType> choiceTypes = new ArrayList<DataType>();
+        var choiceTypes = new ArrayList<DataType>();
         for (TypeSpecifier choiceType : typeSpecifier.getChoice()) {
             choiceTypes.add(resolveTypeSpecifier(choiceType));
         }

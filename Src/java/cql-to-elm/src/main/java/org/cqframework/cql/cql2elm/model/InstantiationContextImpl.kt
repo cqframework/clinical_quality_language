@@ -154,7 +154,7 @@ class InstantiationContextImpl(
         return result
     }
 
-    override fun getIntervalConversionTargets(callType: DataType): Iterable<IntervalType> {
+    override fun getIntervalConversionTargets(callType: DataType): List<IntervalType> {
         val results = ArrayList<IntervalType>()
         for (c in conversionMap.getConversions(callType)) {
             if (c.toType is IntervalType) {
@@ -202,7 +202,7 @@ class InstantiationContextImpl(
         return results
     }
 
-    override fun getListConversionTargets(callType: DataType): Iterable<ListType> {
+    override fun getListConversionTargets(callType: DataType): List<ListType> {
         val results = ArrayList<ListType>()
         for (c in conversionMap.getConversions(callType)) {
             if (c.toType is ListType) {
@@ -250,7 +250,7 @@ class InstantiationContextImpl(
         return results
     }
 
-    override fun getSimpleConversionTargets(callType: DataType): Iterable<SimpleType> {
+    override fun getSimpleConversionTargets(callType: DataType): List<SimpleType> {
         val results = ArrayList<SimpleType>()
         for (c in conversionMap.getConversions(callType)) {
             if (c.toType is SimpleType) {

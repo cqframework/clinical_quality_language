@@ -4,6 +4,7 @@ package org.cqframework.cql.cql2elm
 
 import java.io.*
 import java.nio.file.Path
+import java.util.*
 import org.cqframework.cql.cql2elm.model.Version
 import org.hl7.elm.r1.VersionedIdentifier
 
@@ -13,19 +14,16 @@ import org.hl7.elm.r1.VersionedIdentifier
 // form
 // <major>[.<minor>[.<patch>]]
 // Usage outside these boundaries will result in errors or incorrect behavior.
-@Suppress("ImplicitDefaultLocale")
-class DefaultLibrarySourceProvider(path: Path?) : LibrarySourceProvider, PathAware {
+class DefaultLibrarySourceProvider(path: Path) : LibrarySourceProvider, PathAware {
     private var path: Path? = null
 
     init {
-        setPath(path)
+        this.setPath(path)
     }
 
-    override fun setPath(path: Path?) {
-        if (path == null || !path.toFile().isDirectory) {
-            throw IllegalArgumentException(
-                String.format("path '%s' is not a valid directory", path)
-            )
+    override fun setPath(path: Path) {
+        require(path.toFile().isDirectory) {
+            String.format(Locale.US, "path '%s' is not a valid directory", path)
         }
         this.path = path
     }
@@ -38,6 +36,7 @@ class DefaultLibrarySourceProvider(path: Path?) : LibrarySourceProvider, PathAwa
             val libraryPath: Path =
                 currentPath.resolve(
                     String.format(
+                        Locale.US,
                         "%s%s.cql",
                         libraryName,
                         if (libraryIdentifier.version != null) ("-" + libraryIdentifier.version)
@@ -107,7 +106,11 @@ class DefaultLibrarySourceProvider(path: Path?) : LibrarySourceProvider, PathAwa
                 }
             } catch (e: FileNotFoundException) {
                 throw IllegalArgumentException(
-                    String.format("Could not load source for library %s.", libraryIdentifier.id),
+                    String.format(
+                        Locale.US,
+                        "Could not load source for library %s.",
+                        libraryIdentifier.id
+                    ),
                     e
                 )
             }

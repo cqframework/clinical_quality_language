@@ -7,12 +7,12 @@ import org.hl7.elm.r1.VersionedIdentifier
 interface LibrarySourceLoader {
     fun clearProviders()
 
-    fun getLibrarySource(libraryIdentifier: VersionedIdentifier?): InputStream?
+    fun getLibrarySource(libraryIdentifier: VersionedIdentifier): InputStream?
 
-    fun registerProvider(provider: LibrarySourceProvider?)
+    fun registerProvider(provider: LibrarySourceProvider)
 
     fun getLibraryContent(
-        libraryIdentifier: VersionedIdentifier?,
+        libraryIdentifier: VersionedIdentifier,
         type: LibraryContentType
     ): InputStream? {
         if (LibraryContentType.CQL == type) {
@@ -22,7 +22,7 @@ interface LibrarySourceLoader {
     }
 
     fun isLibraryContentAvailable(
-        libraryIdentifier: VersionedIdentifier?,
+        libraryIdentifier: VersionedIdentifier,
         type: LibraryContentType
     ): Boolean {
         if (LibraryContentType.CQL == type) {

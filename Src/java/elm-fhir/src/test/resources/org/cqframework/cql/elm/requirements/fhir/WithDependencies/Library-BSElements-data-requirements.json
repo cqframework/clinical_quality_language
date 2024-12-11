@@ -65,7 +65,7 @@
     "dateFilter": [ {
       "path": "effective",
       "valuePeriod": {
-        "start": "2022-07-20T00:00:00Z",
+        "start": "2022-07-20T00:00:00.000Z",
         "end": "2023-01-15T23:59:59.999Z"
       }
     } ]
@@ -85,7 +85,7 @@
     "dateFilter": [ {
       "path": "effective",
       "valuePeriod": {
-        "start": "2022-07-20T00:00:00Z",
+        "start": "2022-07-20T00:00:00.000Z",
         "end": "2023-01-15T23:59:59.999Z"
       }
     } ]
@@ -105,7 +105,7 @@
     "dateFilter": [ {
       "path": "effective",
       "valuePeriod": {
-        "start": "2022-01-16T00:00:00Z",
+        "start": "2022-01-16T00:00:00.000Z",
         "end": "2023-01-15T23:59:59.999Z"
       }
     } ]
@@ -125,7 +125,7 @@
     "dateFilter": [ {
       "path": "effective",
       "valuePeriod": {
-        "start": "2022-07-20T00:00:00Z",
+        "start": "2022-07-20T00:00:00.000Z",
         "end": "2023-01-15T23:59:59.999Z"
       }
     } ]
@@ -145,7 +145,7 @@
     "dateFilter": [ {
       "path": "effective",
       "valuePeriod": {
-        "start": "2022-01-16T00:00:00Z",
+        "start": "2022-01-16T00:00:00.000Z",
         "end": "2023-01-15T23:59:59.999Z"
       }
     } ]
