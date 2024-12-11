@@ -11,7 +11,6 @@ import org.antlr.v4.kotlinruntime.TokenStream
 import org.antlr.v4.kotlinruntime.misc.Interval
 import org.antlr.v4.kotlinruntime.tree.ParseTree
 import org.antlr.v4.kotlinruntime.tree.TerminalNode
-import org.apache.commons.lang3.tuple.Pair
 import org.cqframework.cql.cql2elm.*
 import org.cqframework.cql.cql2elm.model.Chunk
 import org.cqframework.cql.cql2elm.model.FunctionHeader
@@ -584,6 +583,14 @@ abstract class CqlPreprocessorElmCommonVisitor(
             } else {
                 element.resultTypeSpecifier =
                     libraryBuilder.dataTypeToTypeSpecifier(element.resultType)
+            }
+        }
+    }
+
+    data class Pair<L, R>(val left: L, val right: R) {
+        companion object {
+            fun <L, R> of(left: L, right: R): Pair<L, R> {
+                return Pair(left, right)
             }
         }
     }

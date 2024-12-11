@@ -5,7 +5,6 @@ package org.cqframework.cql.cql2elm
 import java.math.BigDecimal
 import java.util.*
 import javax.xml.namespace.QName
-import org.apache.commons.lang3.StringUtils
 import org.cqframework.cql.cql2elm.model.*
 import org.cqframework.cql.cql2elm.model.SystemLibraryHelper.load
 import org.cqframework.cql.cql2elm.model.invocation.*
@@ -1558,7 +1557,7 @@ class LibraryBuilder(
     }
 
     private fun isInterFunctionAccess(f1: String, f2: String?): Boolean {
-        return if (StringUtils.isNoneBlank(f1) && StringUtils.isNoneBlank(f2)) {
+        return if (f1.isNotBlank() && !f2.isNullOrBlank()) {
             !f1.equals(f2, ignoreCase = true)
         } else false
     }
