@@ -39,4 +39,15 @@ class StringLibrarySourceProvider(private val libraries: List<String>) : Library
         }
         return if (matches.size == 1) ByteArrayInputStream(matches[0].toByteArray()) else null
     }
+
+    override fun getLibraryContent(
+        libraryIdentifier: VersionedIdentifier,
+        type: LibraryContentType
+    ): InputStream? {
+        if (LibraryContentType.CQL == type) {
+            return getLibrarySource(libraryIdentifier)
+        }
+
+        return null
+    }
 }

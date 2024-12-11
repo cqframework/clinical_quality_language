@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import org.cqframework.cql.cql2elm.LibraryContentType;
 import org.cqframework.cql.cql2elm.LibrarySourceProvider;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.fhir.r5.context.ILoggingService;
@@ -63,6 +64,15 @@ public class NpmLibrarySourceProvider implements LibrarySourceProvider {
                                 "Exceptions occurred attempting to load npm library source for %s",
                                 identifier.toString()));
             }
+        }
+
+        return null;
+    }
+
+    @Override
+    public InputStream getLibraryContent(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
+        if (LibraryContentType.CQL == type) {
+            return getLibrarySource(libraryIdentifier);
         }
 
         return null;

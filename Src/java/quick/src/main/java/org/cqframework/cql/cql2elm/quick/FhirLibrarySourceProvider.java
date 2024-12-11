@@ -1,6 +1,7 @@
 package org.cqframework.cql.cql2elm.quick;
 
 import java.io.InputStream;
+import org.cqframework.cql.cql2elm.LibraryContentType;
 import org.cqframework.cql.cql2elm.LibrarySourceProvider;
 import org.hl7.cql.model.NamespaceAware;
 import org.hl7.cql.model.NamespaceInfo;
@@ -38,5 +39,14 @@ public class FhirLibrarySourceProvider implements LibrarySourceProvider, Namespa
     @Override
     public void setNamespaceManager(NamespaceManager namespaceManager) {
         this.namespaceManager = namespaceManager;
+    }
+
+    @Override
+    public InputStream getLibraryContent(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
+        if (LibraryContentType.CQL == type) {
+            return getLibrarySource(libraryIdentifier);
+        }
+
+        return null;
     }
 }

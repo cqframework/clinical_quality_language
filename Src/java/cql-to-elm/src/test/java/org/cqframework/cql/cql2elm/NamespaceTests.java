@@ -40,6 +40,15 @@ class NamespaceTests {
                     libraryIdentifier.getVersion() != null ? ("-" + libraryIdentifier.getVersion()) : "");
             return org.cqframework.cql.cql2elm.NamespaceTests.class.getResourceAsStream(libraryFileName);
         }
+
+        @Override
+        public InputStream getLibraryContent(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
+            if (LibraryContentType.CQL == type) {
+                return getLibrarySource(libraryIdentifier);
+            }
+
+            return null;
+        }
     }
 
     @BeforeAll
