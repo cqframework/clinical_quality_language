@@ -13,8 +13,8 @@ constructor(val elements: MutableList<TupleTypeElement> = mutableListOf()) : Bas
         this.elements.addAll(elements)
     }
 
-    val sortedElements: List<TupleTypeElement> =
-        elements.sortedWith { l, r -> l.name.compareTo(r.name) }
+    val sortedElements: List<TupleTypeElement>
+        get() = elements.sortedWith { l, r -> l.name.compareTo(r.name) }
 
     override fun isSubTypeOf(other: DataType): Boolean {
         return when {
@@ -46,7 +46,8 @@ constructor(val elements: MutableList<TupleTypeElement> = mutableListOf()) : Bas
         } else super.isCompatibleWith(other)
     }
 
-    override val isGeneric: Boolean = elements.any { it.type.isGeneric }
+    override val isGeneric: Boolean
+        get() = elements.any { it.type.isGeneric }
 
     override fun isInstantiable(callType: DataType, context: InstantiationContext): Boolean {
         // Call isInstantiable recursively to make sure that type parameters (if present) are bound

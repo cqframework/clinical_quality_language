@@ -230,7 +230,8 @@ constructor(
 
     override fun toLabel(): String = label ?: name
 
-    val tupleType: TupleType = buildTupleType()
+    val tupleType: TupleType
+        get() = buildTupleType()
 
     private fun addTupleElements(
         classType: ClassType,
@@ -272,7 +273,8 @@ constructor(
         return super.isCompatibleWith(other)
     }
 
-    override val isGeneric: Boolean = genericParameters.isNotEmpty()
+    override val isGeneric: Boolean
+        get() = genericParameters.isNotEmpty()
 
     override fun isInstantiable(callType: DataType, context: InstantiationContext): Boolean {
         return if (callType is ClassType && callType.elements.size == elements.size) {
