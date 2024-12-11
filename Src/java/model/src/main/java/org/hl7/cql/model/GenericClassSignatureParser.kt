@@ -1,7 +1,5 @@
 package org.hl7.cql.model
 
-import org.apache.commons.lang3.StringUtils
-
 /**
  * The GenericClassSignatureParser is a convenience class for the parsing of generic signature and
  * the creation of the corresponding CQL DataTypes, namely, GenericClassType and
@@ -12,18 +10,16 @@ import org.apache.commons.lang3.StringUtils
 @Suppress("MagicNumber", "TooGenericExceptionThrown", "TooManyFunctions", "NestedBlockDepth")
 class GenericClassSignatureParser(
     /** A generic signature such as List&lt;T&gt; or a bound signature such as List&lt;Person&gt; */
-    var genericSignature: String,
+    private var genericSignature: String,
     /** The base type for the class type or the profile. */
     var baseType: String?,
-    /** The name of a bound type such as PersonList = List&lt;Person&gt; */
-    var boundGenericTypeName: String?,
     private val resolvedTypes: MutableMap<String, DataType>
 ) {
     @JvmOverloads
     constructor(
         genericSignature: String,
         resolvedTypes: MutableMap<String, DataType> = HashMap()
-    ) : this(genericSignature, null, null, resolvedTypes)
+    ) : this(genericSignature, null, resolvedTypes)
 
     /**
      * Parses a generic type declaration such as Map&lt;K,V&gt;.
@@ -44,16 +40,15 @@ class GenericClassSignatureParser(
                 escapeNestedCommas(parameters).split(",".toRegex()).dropLastWhile { it.isEmpty() }
         }
         var baseTypeName = baseType
-        var baseTypeParameters: Array<String>? = null
+        var baseTypeParameters: List<String>? = null
         if (baseType != null && baseType!!.contains("<")) {
             baseTypeName = baseType!!.substring(0, baseType!!.indexOf('<'))
             val baseTypeParameterString =
                 baseType!!.substring(baseType!!.indexOf('<') + 1, baseType!!.lastIndexOf('>'))
             baseTypeParameters =
-                escapeNestedCommas(baseTypeParameterString)
-                    .split(",".toRegex())
-                    .dropLastWhile { it.isEmpty() }
-                    .toTypedArray()
+                escapeNestedCommas(baseTypeParameterString).split(",".toRegex()).dropLastWhile {
+                    it.isEmpty()
+                }
         }
         val baseDataType = resolveTypeName(baseTypeName)
         val genericClassType = ClassType(genericTypeName, baseDataType)
@@ -62,7 +57,6 @@ class GenericClassSignatureParser(
             genericClassType.addGenericParameter(paramType)
         }
         if (baseTypeParameters != null) {
-            var index = 0
             for (baseTypeParameter in baseTypeParameters) {
                 if (
                     baseTypeParameter.length == 1 &&
@@ -73,14 +67,18 @@ class GenericClassSignatureParser(
                     val boundType = resolveTypeName(unescapeNestedCommas(baseTypeParameter))
                     val baseTypeClass = baseDataType as ClassType?
                     val baseClassFields: List<ClassTypeElement> = baseTypeClass!!.elements
-                    val myParam = baseTypeClass.genericParameters[index].identifier
-                    println(boundType.toString() + " replaces param " + myParam)
                     for ((name) in baseClassFields) {
-                        val myElement = ClassTypeElement(name, boundType!!, false, false, null)
+                        val myElement =
+                            ClassTypeElement(
+                                name,
+                                boundType!!,
+                                prohibited = false,
+                                oneBased = false,
+                                target = null
+                            )
                         genericClassType.addElement(myElement)
                     }
                 }
-                index++
             }
         }
         return genericClassType
@@ -93,14 +91,9 @@ class GenericClassSignatureParser(
      * @return Type parameter for this parameter for this string declaration.
      */
     private fun handleParameterDeclaration(parameterString: String): TypeParameter {
-        val paramComponents =
-            parameterString.split("\\s+".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        val paramComponents = parameterString.split("\\s+".toRegex()).dropLastWhile { it.isEmpty() }
         return if (paramComponents.size == 1) {
-            TypeParameter(
-                StringUtils.trim(parameterString),
-                TypeParameter.TypeParameterConstraint.NONE,
-                null
-            )
+            TypeParameter(parameterString.trim(), TypeParameter.TypeParameterConstraint.NONE, null)
         } else if (paramComponents.size == 3) {
             if (paramComponents[1].equals(EXTENDS, ignoreCase = true)) {
                 TypeParameter(
@@ -158,35 +151,33 @@ class GenericClassSignatureParser(
                     boundGenericSignature.lastIndexOf('>')
                 )
             val params =
-                escapeNestedCommas(parameters)
-                    .split(",".toRegex())
-                    .dropLastWhile { it.isEmpty() }
-                    .toTypedArray()
-            var index = 0
-            for (param in params) {
-                var param = param
-                var boundParam: DataType? = null
-                param = unescapeNestedCommas(param)
+                escapeNestedCommas(parameters).split(",".toRegex()).dropLastWhile { it.isEmpty() }
+            for ((index, param) in params.withIndex()) {
+                var boundParam: DataType?
+                val unescaped = unescapeNestedCommas(param)
                 boundParam =
-                    if (isValidGenericSignature(param)) {
-                        handleBoundType(param)
+                    if (isValidGenericSignature(unescaped)) {
+                        handleBoundType(unescaped)
                     } else {
-                        resolveType(param)
+                        resolveType(unescaped)
                     }
                 val typeParameter = resolvedType.genericParameters[index]
                 for ((name, type) in resolvedType.elements) {
-                    if (type is TypeParameter) {
-                        if (
-                            (type as TypeParameter)
-                                .identifier
-                                .equals(typeParameter.identifier, ignoreCase = true)
-                        ) {
-                            val newElement = ClassTypeElement(name, boundParam, false, false, null)
-                            newType.addElement(newElement)
-                        }
+                    if (
+                        type is TypeParameter &&
+                            type.identifier.equals(typeParameter.identifier, ignoreCase = true)
+                    ) {
+                        val newElement =
+                            ClassTypeElement(
+                                name,
+                                boundParam,
+                                prohibited = false,
+                                oneBased = false,
+                                target = null
+                            )
+                        newType.addElement(newElement)
                     }
                 }
-                index++
             }
             resolvedTypes[newType.name] = newType
             return newType
@@ -207,7 +198,7 @@ class GenericClassSignatureParser(
      * @param genericSignature
      * @return True if the generic signature is valid
      */
-    fun isValidGenericSignature(genericSignature: String?): Boolean {
+    private fun isValidGenericSignature(genericSignature: String?): Boolean {
         return areBracketsPaired(genericSignature) &&
             closingBracketsComeAfterOpeningBrackets(genericSignature)
     }
@@ -215,47 +206,21 @@ class GenericClassSignatureParser(
     /**
      * Counts the number of &lt; in this signature.
      *
-     * @param signatureString
-     * @return
-     */
-    /**
-     * Counts the number of &lt; in this signature.
-     *
      * @return
      */
     private fun openBracketCount(signatureString: String? = genericSignature): Int {
-        var matchCount = 0
-        if (signatureString != null) {
-            matchCount = StringUtils.countMatches(signatureString, OPEN_BRACKET)
-        }
-        return matchCount
+        return signatureString?.count { it == OPEN_BRACKET } ?: 0
     }
 
-    /**
-     * Counts the number of &gt; in this signature.
-     *
-     * @param signatureString
-     * @return
-     */
     /**
      * Counts the number of &gt; in this signature.
      *
      * @return
      */
     private fun closeBracketCount(signatureString: String? = genericSignature): Int {
-        var matchCount = 0
-        if (signatureString != null) {
-            matchCount = StringUtils.countMatches(signatureString, CLOSE_BRACKET)
-        }
-        return matchCount
+        return signatureString?.count { it == CLOSE_BRACKET } ?: 0
     }
 
-    /**
-     * Method returns if the number of &lt; matches the number of &gt;
-     *
-     * @param signatureString
-     * @return
-     */
     /**
      * Method returns if the number of &lt; matches the number of &gt;
      *
@@ -271,12 +236,6 @@ class GenericClassSignatureParser(
         return paired
     }
 
-    /**
-     * Simple check to make sure that closing brackets come after opening brackets.
-     *
-     * @param signatureString
-     * @return
-     */
     /**
      * Simple check to make sure that closing brackets come after opening brackets.
      *

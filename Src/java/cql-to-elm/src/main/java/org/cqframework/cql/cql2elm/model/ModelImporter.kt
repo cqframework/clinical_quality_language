@@ -781,7 +781,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
      * @return
      */
     private fun handleGenericType(genericSignature: String, baseType: String): ClassType {
-        val parser = GenericClassSignatureParser(genericSignature, baseType, null, resolvedTypes)
+        val parser = GenericClassSignatureParser(genericSignature, baseType, resolvedTypes)
         val genericClassType = parser.parseGenericSignature()
 
         return genericClassType
