@@ -125,8 +125,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a IntervalTypeSpecifier. This method will be called for
-     * every node in the tree that is a IntervalTypeSpecifier.
+     * Visit  an IntervalTypeSpecifier. This method will be called for
+     * every node in the tree that is  an IntervalTypeSpecifier.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -309,8 +309,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a UnaryExpression. This method will be called for
-     * every node in the tree that is a UnaryExpression.
+     * Visit  an UnaryExpression. This method will be called for
+     * every node in the tree that is  an UnaryExpression.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -483,8 +483,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a ExpressionDef. This method will be called for
-     * every node in the tree that is a ExpressionDef.
+     * Visit  an ExpressionDef. This method will be called for
+     * every node in the tree that is  an ExpressionDef.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -519,7 +519,7 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
 
     /**
      * Visit AccessModifier. This method will be called for
-     * every node in the tree that is a AccessModifier.
+     * every node in the tree that is  an AccessModifier.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -531,8 +531,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a ExpressionRef. This method will be called for
-     * every node in the tree that is a ExpressionRef.
+     * Visit  an ExpressionRef. This method will be called for
+     * every node in the tree that is  an ExpressionRef.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -607,8 +607,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a OperandDef. This method will be called for
-     * every node in the tree that is a OperandDef.
+     * Visit  an OperandDef. This method will be called for
+     * every node in the tree that is  an OperandDef.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -626,8 +626,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a OperandRef. This method will be called for
-     * every node in the tree that is a OperandRef.
+     * Visit  an OperandRef. This method will be called for
+     * every node in the tree that is  an OperandRef.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -638,8 +638,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a IdentifierRef. This method will be called for
-     * every node in the tree that is a IdentifierRef.
+     * Visit  an IdentifierRef. This method will be called for
+     * every node in the tree that is  an IdentifierRef.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -700,8 +700,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a InstanceElement. This method will be called for
-     * every node in the tree that is a InstanceElement.
+     * Visit  an InstanceElement. This method will be called for
+     * every node in the tree that is  an InstanceElement.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -719,8 +719,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a Instance. This method will be called for
-     * every node in the tree that is a Instance.
+     * Visit  an Instance. This method will be called for
+     * every node in the tree that is  an Instance.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -738,8 +738,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a Interval. This method will be called for
-     * every node in the tree that is a Interval.
+     * Visit  an Interval. This method will be called for
+     * every node in the tree that is  an Interval.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -793,8 +793,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a And. This method will be called for
-     * every node in the tree that is a And.
+     * Visit  an And. This method will be called for
+     * every node in the tree that is  an And.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -805,8 +805,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a Or. This method will be called for
-     * every node in the tree that is a Or.
+     * Visit  an Or. This method will be called for
+     * every node in the tree that is  an Or.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -829,8 +829,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a Implies. This method will be called for
-     * every node in the tree that is a Implies.
+     * Visit  an Implies. This method will be called for
+     * every node in the tree that is  an Implies.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -853,8 +853,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a If. This method will be called for
-     * every node in the tree that is a If.
+     * Visit  an If. This method will be called for
+     * every node in the tree that is  an If.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -944,8 +944,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a IsNull. This method will be called for
-     * every node in the tree that is a IsNull.
+     * Visit  an IsNull. This method will be called for
+     * every node in the tree that is  an IsNull.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -956,8 +956,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a IsTrue. This method will be called for
-     * every node in the tree that is a IsTrue.
+     * Visit  an IsTrue. This method will be called for
+     * every node in the tree that is  an IsTrue.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -968,8 +968,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a IsFalse. This method will be called for
-     * every node in the tree that is a IsFalse.
+     * Visit  an IsFalse. This method will be called for
+     * every node in the tree that is  an IsFalse.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -992,8 +992,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a Is. This method will be called for
-     * every node in the tree that is a Is.
+     * Visit  an Is. This method will be called for
+     * every node in the tree that is  an Is.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -1011,8 +1011,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a As. This method will be called for
-     * every node in the tree that is a As.
+     * Visit  an As. This method will be called for
+     * every node in the tree that is  an As.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -1368,8 +1368,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a Equal. This method will be called for
-     * every node in the tree that is a Equal.
+     * Visit  an Equal. This method will be called for
+     * every node in the tree that is  an Equal.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -1380,8 +1380,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a Equivalent. This method will be called for
-     * every node in the tree that is a Equivalent.
+     * Visit  an Equivalent. This method will be called for
+     * every node in the tree that is  an Equivalent.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -1452,8 +1452,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a Add. This method will be called for
-     * every node in the tree that is a Add.
+     * Visit  an Add. This method will be called for
+     * every node in the tree that is  an Add.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -1560,8 +1560,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a Abs. This method will be called for
-     * every node in the tree that is a Abs.
+     * Visit  an Abs. This method will be called for
+     * every node in the tree that is  an Abs.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -1619,8 +1619,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a Exp. This method will be called for
-     * every node in the tree that is a Exp.
+     * Visit  an Exp. This method will be called for
+     * every node in the tree that is  an Exp.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -1832,8 +1832,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a Upper. This method will be called for
-     * every node in the tree that is a Upper.
+     * Visit  an Upper. This method will be called for
+     * every node in the tree that is  an Upper.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -1856,8 +1856,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a Indexer. This method will be called for
-     * every node in the tree that is a Indexer.
+     * Visit  an Indexer. This method will be called for
+     * every node in the tree that is  an Indexer.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -1953,8 +1953,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a EndsWith. This method will be called for
-     * every node in the tree that is a EndsWith.
+     * Visit  an EndsWith. This method will be called for
+     * every node in the tree that is  an EndsWith.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -2298,8 +2298,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a End. This method will be called for
-     * every node in the tree that is a End.
+     * Visit  an End. This method will be called for
+     * every node in the tree that is  an End.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -2334,8 +2334,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a In. This method will be called for
-     * every node in the tree that is a In.
+     * Visit  an In. This method will be called for
+     * every node in the tree that is  an In.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -2358,8 +2358,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a Includes. This method will be called for
-     * every node in the tree that is a Includes.
+     * Visit  an Includes. This method will be called for
+     * every node in the tree that is  an Includes.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -2370,8 +2370,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a IncludedIn. This method will be called for
-     * every node in the tree that is a IncludedIn.
+     * Visit  an IncludedIn. This method will be called for
+     * every node in the tree that is  an IncludedIn.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -2418,8 +2418,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a After. This method will be called for
-     * every node in the tree that is a After.
+     * Visit  an After. This method will be called for
+     * every node in the tree that is  an After.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -2466,8 +2466,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a Overlaps. This method will be called for
-     * every node in the tree that is a Overlaps.
+     * Visit  an Overlaps. This method will be called for
+     * every node in the tree that is  an Overlaps.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -2478,8 +2478,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a OverlapsBefore. This method will be called for
-     * every node in the tree that is a OverlapsBefore.
+     * Visit  an OverlapsBefore. This method will be called for
+     * every node in the tree that is  an OverlapsBefore.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -2490,8 +2490,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a OverlapsAfter. This method will be called for
-     * every node in the tree that is a OverlapsAfter.
+     * Visit  an OverlapsAfter. This method will be called for
+     * every node in the tree that is  an OverlapsAfter.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -2514,8 +2514,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a Ends. This method will be called for
-     * every node in the tree that is a Ends.
+     * Visit  an Ends. This method will be called for
+     * every node in the tree that is  an Ends.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -2538,8 +2538,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a Expand. This method will be called for
-     * every node in the tree that is a Expand.
+     * Visit  an Expand. This method will be called for
+     * every node in the tree that is  an Expand.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -2550,8 +2550,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a Union. This method will be called for
-     * every node in the tree that is a Union.
+     * Visit  a Union. This method will be called for
+     * every node in the tree that is  a Union.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -2562,8 +2562,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a Intersect. This method will be called for
-     * every node in the tree that is a Intersect.
+     * Visit  an Intersect. This method will be called for
+     * every node in the tree that is  an Intersect.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -2574,8 +2574,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a Except. This method will be called for
-     * every node in the tree that is a Except.
+     * Visit  an Except. This method will be called for
+     * every node in the tree that is  an Except.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -2586,8 +2586,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a Exists. This method will be called for
-     * every node in the tree that is a Exists.
+     * Visit  an Exists. This method will be called for
+     * every node in the tree that is  an Exists.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -2771,8 +2771,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a IndexOf. This method will be called for
-     * every node in the tree that is a IndexOf.
+     * Visit  an IndexOf. This method will be called for
+     * every node in the tree that is  an IndexOf.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -2935,8 +2935,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a AggregateExpression. This method will be called for
-     * every node in the tree that is a AggregateExpression.
+     * Visit  an AggregateExpression. This method will be called for
+     * every node in the tree that is  an AggregateExpression.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -3060,8 +3060,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a Avg. This method will be called for
-     * every node in the tree that is a Avg.
+     * Visit  an Avg. This method will be called for
+     * every node in the tree that is  an Avg.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -3144,8 +3144,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a AllTrue. This method will be called for
-     * every node in the tree that is a AllTrue.
+     * Visit  an AllTrue. This method will be called for
+     * every node in the tree that is  an AllTrue.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -3156,8 +3156,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a AnyTrue. This method will be called for
-     * every node in the tree that is a AnyTrue.
+     * Visit  an AnyTrue. This method will be called for
+     * every node in the tree that is  an AnyTrue.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -3187,8 +3187,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a AliasedQuerySource. This method will be called for
-     * every node in the tree that is a AliasedQuerySource.
+     * Visit  an AliasedQuerySource. This method will be called for
+     * every node in the tree that is  an AliasedQuerySource.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -3347,7 +3347,7 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a AggregateClause. This method will be called for
+     * Visit  an AggregateClause. This method will be called for
      * every node in the tree that is an AggregateClause.
      *
      * @param elm     the ELM tree
@@ -3436,8 +3436,8 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a AliasRef. This method will be called for
-     * every node in the tree that is a AliasRef.
+     * Visit  an AliasRef. This method will be called for
+     * every node in the tree that is  an AliasRef.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -3530,7 +3530,7 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visits the fields of a UnaryExpression
+     * Visits the fields of  an UnaryExpression
      *
      * @param elm
      * @param context
