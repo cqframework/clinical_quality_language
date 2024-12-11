@@ -24,7 +24,7 @@ open class Operator(
         functionDef: FunctionDef
     ) : this(
         functionDef.name,
-        Signature(functionDef.operand.map { it.resultType }),
+        Signature(functionDef.operand.map { it.resultType!! }),
         functionDef.resultType,
         functionDef,
         functionDef.accessLevel,

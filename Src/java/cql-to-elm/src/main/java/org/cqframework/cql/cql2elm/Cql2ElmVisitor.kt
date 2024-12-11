@@ -221,7 +221,7 @@ class Cql2ElmVisitor(
         }
         if (param.default != null) {
             if (paramType != null) {
-                libraryBuilder.verifyType(param.default.resultType, paramType)
+                libraryBuilder.verifyType(param.default.resultType!!, paramType)
             } else {
                 paramType = param.default.resultType
             }
@@ -476,7 +476,7 @@ class Cql2ElmVisitor(
                                 )
                         track(modelContextDefinition, ctx)
                         modelContextDefinition.expression.resultType = contextType
-                        modelContextDefinition.setResultType(contextType)
+                        modelContextDefinition.resultType = contextType
                         libraryBuilder.addExpression(modelContextDefinition)
                         contextDefinitions[modelContext.name] = modelContextDefinition
                     }
@@ -489,9 +489,7 @@ class Cql2ElmVisitor(
                     track(modelContextDefinition, ctx)
                     modelContextDefinition.expression.resultType =
                         libraryBuilder.resolveTypeName("System", "Any")
-                    modelContextDefinition.setResultType(
-                        modelContextDefinition.expression.resultType
-                    )
+                    modelContextDefinition.resultType = modelContextDefinition.expression.resultType
                     libraryBuilder.addExpression(modelContextDefinition)
                     contextDefinitions[modelContext.name] = modelContextDefinition
                 }
@@ -635,7 +633,7 @@ class Cql2ElmVisitor(
         val tupleType = TupleType()
         for (elementContext in ctx.tupleElementSelector()) {
             val element = visit(elementContext) as TupleElement
-            tupleType.addElement(TupleTypeElement(element.name, element.resultType))
+            tupleType.addElement(TupleTypeElement(element.name, element.resultType!!))
             tuple.element.add(element)
         }
         tuple.resultType = tupleType
@@ -701,7 +699,7 @@ class Cql2ElmVisitor(
             val listTypeSpecifier =
                 of.createListTypeSpecifier().withElementType(elementTypeSpecifier)
             track(listTypeSpecifier, ctx.typeSpecifier()!!)
-            listType = ListType(elementTypeSpecifier.resultType)
+            listType = ListType(elementTypeSpecifier.resultType!!)
             listTypeSpecifier.resultType = listType
         }
         var elementType = elementTypeSpecifier?.resultType
@@ -714,7 +712,7 @@ class Cql2ElmVisitor(
                     ?: @Suppress("TooGenericExceptionThrown")
                     throw RuntimeException("Element failed to parse")
             if (elementType != null) {
-                libraryBuilder.verifyType(element.resultType, elementType)
+                libraryBuilder.verifyType(element.resultType!!, elementType)
             } else {
                 if (initialInferredElementType == null) {
                     initialInferredElementType = element.resultType
@@ -746,9 +744,9 @@ class Cql2ElmVisitor(
             elementType = inferredElementType ?: libraryBuilder.resolveTypeName("System", "Any")
         }
         for (element in elements) {
-            if (!elementType!!.isSuperTypeOf(element.resultType)) {
+            if (!elementType!!.isSuperTypeOf(element.resultType!!)) {
                 val conversion =
-                    libraryBuilder.findConversion(element.resultType, elementType, true, false)
+                    libraryBuilder.findConversion(element.resultType!!, elementType, true, false)
                 if (conversion != null) {
                     list.element.add(libraryBuilder.convertExpression(element, conversion))
                 } else {
@@ -1252,10 +1250,10 @@ class Cql2ElmVisitor(
                 parseExpression(ctx.expressionTerm(1))
             )
             libraryBuilder.resolveBinaryCall("System", operatorName, (exp as BinaryExpression?)!!)
-            if (exp.getResultType() === libraryBuilder.resolveTypeName("System", "String")) {
+            if (exp.resultType === libraryBuilder.resolveTypeName("System", "String")) {
                 val concatenate: Concatenate = of.createConcatenate()
                 concatenate.operand.addAll(exp.operand)
-                concatenate.resultType = exp.getResultType()
+                concatenate.resultType = exp.resultType
                 exp = concatenate
             }
         } else {
@@ -1833,8 +1831,8 @@ class Cql2ElmVisitor(
             if (!equal(operand!!.resultType, targetType!!.resultType)) {
                 val conversion: Conversion =
                     libraryBuilder.findConversion(
-                        operand.resultType,
-                        targetType.resultType,
+                        operand.resultType!!,
+                        targetType.resultType!!,
                         false,
                         true
                     )
@@ -2753,7 +2751,7 @@ class Cql2ElmVisitor(
         val resultType: DataType? =
             libraryBuilder.ensureCompatibleTypes(
                 ifObject.then.resultType,
-                ifObject.getElse().resultType
+                ifObject.getElse().resultType!!
             )
         ifObject.resultType = resultType
         ifObject.then = libraryBuilder.ensureCompatible(ifObject.then, resultType)
@@ -2785,7 +2783,7 @@ class Cql2ElmVisitor(
                     resultType =
                         libraryBuilder.ensureCompatibleTypes(
                             resultType,
-                            result.getElse().resultType
+                            result.getElse().resultType!!
                         )
                 } else {
                     result.comparand = parseExpression(pt)
@@ -2795,8 +2793,8 @@ class Cql2ElmVisitor(
                 val caseItem = visit(pt) as CaseItem
                 if (result.comparand != null) {
                     libraryBuilder.verifyType(
-                        caseItem.getWhen().resultType,
-                        result.comparand.resultType
+                        caseItem.getWhen().resultType!!,
+                        result.comparand.resultType!!
                     )
                 } else {
                     verifyType(
@@ -2808,7 +2806,7 @@ class Cql2ElmVisitor(
                     if (resultType == null) {
                         caseItem.then.resultType
                     } else {
-                        libraryBuilder.ensureCompatibleTypes(resultType, caseItem.then.resultType)
+                        libraryBuilder.ensureCompatibleTypes(resultType, caseItem.then.resultType!!)
                     }
                 result.caseItem.add(caseItem)
             }
@@ -3105,7 +3103,7 @@ class Cql2ElmVisitor(
                     } else if (libraryBuilder.isCompatibleWith("1.5")) {
                         mCodeComparator =
                             if (
-                                terminology.resultType.isSubTypeOf(
+                                terminology.resultType!!.isSubTypeOf(
                                     libraryBuilder.resolveTypeName("System", "Vocabulary")!!
                                 )
                             )
@@ -3225,7 +3223,7 @@ class Cql2ElmVisitor(
                                     ))
                             ) {
                                 if (
-                                    terminology.resultType.isSubTypeOf(
+                                    terminology.resultType!!.isSubTypeOf(
                                         libraryBuilder.resolveTypeName("System", "Vocabulary")!!
                                     )
                                 )
@@ -3233,7 +3231,7 @@ class Cql2ElmVisitor(
                                 else "contains"
                             } else {
                                 if (
-                                    terminology.resultType.isSubTypeOf(
+                                    terminology.resultType!!.isSubTypeOf(
                                         libraryBuilder.resolveTypeName("System", "Vocabulary")!!
                                     )
                                 )
@@ -3318,7 +3316,7 @@ class Cql2ElmVisitor(
                             !((equivalent.operand[1].resultType is ListType ||
                                 (libraryBuilder.isCompatibleWith("1.5") &&
                                     equivalent.operand[1]
-                                        .resultType
+                                        .resultType!!
                                         .isSubTypeOf(
                                             libraryBuilder.resolveTypeName("System", "Vocabulary")!!
                                         ))))
@@ -3340,7 +3338,7 @@ class Cql2ElmVisitor(
                             !((equal.operand[1].resultType is ListType ||
                                 (libraryBuilder.isCompatibleWith("1.5") &&
                                     equal.operand[1]
-                                        .resultType
+                                        .resultType!!
                                         .isSubTypeOf(
                                             libraryBuilder.resolveTypeName("System", "Vocabulary")!!
                                         ))))
@@ -3419,7 +3417,7 @@ class Cql2ElmVisitor(
                 // retrieve typing
                 if (
                     ((libraryBuilder.isCompatibleWith("1.5") &&
-                        !(terminology.resultType.isSubTypeOf(
+                        !(terminology.resultType!!.isSubTypeOf(
                             libraryBuilder.resolveTypeName("System", "Vocabulary")!!
                         ))) ||
                         (!libraryBuilder.isCompatibleWith("1.5") &&
@@ -3536,7 +3534,7 @@ class Cql2ElmVisitor(
                         element.value.resultType =
                             sourceType // Doesn't use the fluent API to avoid casting
                         element.resultType = element.value.resultType
-                        returnType.addElement(TupleTypeElement(element.name, element.resultType))
+                        returnType.addElement(TupleTypeElement(element.name, element.resultType!!))
                         returnExpression.element.add(element)
                     }
                     returnExpression.resultType =
@@ -3730,8 +3728,8 @@ class Cql2ElmVisitor(
             ) {
                 val o: Operator? =
                     libraryBuilder.conversionMap.getConversionOperator(
-                        functionRef.operand[0].resultType,
-                        functionRef.resultType
+                        functionRef.operand[0].resultType!!,
+                        functionRef.resultType!!
                     )
                 if (
                     ((o != null) &&
@@ -3829,10 +3827,10 @@ class Cql2ElmVisitor(
      * @return `true` if the RHS supports refactoring to a `Retrieve`, `false` otherwise.
      */
     private fun isRHSEligibleForDateRangeOptimization(rhs: Expression): Boolean {
-        return (rhs.resultType.isSubTypeOf(
+        return (rhs.resultType!!.isSubTypeOf(
             libraryBuilder.resolveTypeName("System", "DateTime")!!
         ) ||
-            rhs.resultType.isSubTypeOf(
+            rhs.resultType!!.isSubTypeOf(
                 IntervalType(libraryBuilder.resolveTypeName("System", "DateTime")!!)
             ))
 
@@ -3962,7 +3960,7 @@ class Cql2ElmVisitor(
         returnClause.expression = parseExpression(ctx.expression())
         returnClause.resultType =
             if (libraryBuilder.peekQueryContext().isSingular) returnClause.expression.resultType
-            else ListType(returnClause.expression.resultType)
+            else ListType(returnClause.expression.resultType!!)
         return returnClause
     }
 
@@ -4011,7 +4009,7 @@ class Cql2ElmVisitor(
         aggregateClause.expression = parseExpression(ctx.expression())
         aggregateClause.resultType = aggregateClause.expression.resultType
         if (aggregateClause.starting == null) {
-            accumulator.setResultType(aggregateClause.resultType)
+            accumulator.resultType = aggregateClause.resultType
             aggregateClause.starting = accumulator
         }
         return aggregateClause
@@ -4033,7 +4031,7 @@ class Cql2ElmVisitor(
             of.createByColumn()
                 .withPath(sortExpression.name)
                 .withDirection(parseSortDirection(ctx.sortDirection()))
-                .withResultType(sortExpression.getResultType()) as SortByItem
+                .withResultType(sortExpression.resultType) as SortByItem
         } else
             of.createByExpression()
                 .withExpression(sortExpression)

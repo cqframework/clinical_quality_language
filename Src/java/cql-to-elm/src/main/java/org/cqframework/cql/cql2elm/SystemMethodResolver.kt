@@ -174,7 +174,7 @@ class SystemMethodResolver(
             // may include the result
             // of invoking the element expression on intermediate results
             if (isSingular) {
-                repeat.resultType = ListType(select!!.resultType)
+                repeat.resultType = ListType(select!!.resultType!!)
             } else {
                 repeat.resultType = select!!.resultType
             }
@@ -214,7 +214,7 @@ class SystemMethodResolver(
             letRef.resultType = select.resultType
             returnClause.expression = letRef
             returnClause.resultType =
-                if (isSingular) letRef.resultType else ListType(letRef.resultType)
+                if (isSingular) letRef.resultType else ListType(letRef.resultType!!)
             val query = createQuery(source, let, where, returnClause)
             if (!isSingular && isListResult) {
                 params = ArrayList()
@@ -281,7 +281,7 @@ class SystemMethodResolver(
                 val returnClause = of.createReturnClause()
                 returnClause.expression = builder.createLiteral(java.lang.Boolean.valueOf(true))
                 if (query.resultType is ListType) {
-                    returnClause.resultType = ListType(returnClause.expression.resultType)
+                    returnClause.resultType = ListType(returnClause.expression.resultType!!)
                 } else {
                     returnClause.resultType = returnClause.expression.resultType
                 }
@@ -301,7 +301,7 @@ class SystemMethodResolver(
                 val children = of.createChildren()
                 children.source = target
                 val dataTypes: MutableSet<DataType> = HashSet()
-                gatherChildTypes(target.resultType, false, dataTypes)
+                gatherChildTypes(target.resultType!!, false, dataTypes)
                 if (dataTypes.size == 1) {
                     children.resultType = ListType(dataTypes.iterator().next())
                 } else {
@@ -316,7 +316,7 @@ class SystemMethodResolver(
                 elements.add(target)
                 elements.add(argument)
                 val elementType =
-                    builder.ensureCompatibleTypes(target.resultType, argument!!.resultType)!!
+                    builder.ensureCompatibleTypes(target.resultType, argument!!.resultType!!)!!
                 val list = of.createList()
                 list.resultType = ListType(elementType)
                 list.element.add(builder.ensureCompatible(target, elementType))
@@ -359,7 +359,7 @@ class SystemMethodResolver(
                 val descendents = of.createDescendents()
                 descendents.source = target
                 val dataTypes: MutableSet<DataType> = HashSet()
-                gatherChildTypes(target.resultType, true, dataTypes)
+                gatherChildTypes(target.resultType!!, true, dataTypes)
                 if (dataTypes.size == 1) {
                     descendents.resultType = ListType(dataTypes.toTypedArray()[0])
                 } else {
