@@ -28,7 +28,7 @@ class CqlTranslator(
         compiler.run(`is`)
     }
 
-    private fun toXml(library: Library?): String {
+    private fun toXml(library: Library): String {
         return try {
             convertToXml(library)
         } catch (e: IOException) {
@@ -36,7 +36,7 @@ class CqlTranslator(
         }
     }
 
-    private fun toJson(library: Library?): String {
+    private fun toJson(library: Library): String {
         return try {
             convertToJson(library)
         } catch (e: IOException) {
@@ -48,11 +48,11 @@ class CqlTranslator(
     }
 
     fun toXml(): String {
-        return toXml(compiler.library)
+        return toXml(compiler.library!!)
     }
 
     fun toJson(): String {
-        return toJson(compiler.library)
+        return toJson(compiler.library!!)
     }
 
     fun toELM(): Library? {
@@ -251,7 +251,7 @@ class CqlTranslator(
         }
 
         @Throws(IOException::class)
-        fun convertToXml(library: Library?): String {
+        fun convertToXml(library: Library): String {
             val writer = StringWriter()
             ElmLibraryWriterFactory.getWriter(LibraryContentType.XML.mimeType())
                 .write(library, writer)
@@ -260,7 +260,7 @@ class CqlTranslator(
 
         @JvmStatic
         @Throws(IOException::class)
-        fun convertToJson(library: Library?): String {
+        fun convertToJson(library: Library): String {
             val writer = StringWriter()
             ElmLibraryWriterFactory.getWriter(LibraryContentType.JSON.mimeType())
                 .write(library, writer)
