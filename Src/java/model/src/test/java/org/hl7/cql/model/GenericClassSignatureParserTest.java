@@ -12,7 +12,7 @@ class GenericClassSignatureParserTest {
 
     @Test
     void parseTest1() {
-        GenericClassSignatureParser genericClassSignatureParser = new GenericClassSignatureParser("MyType<M,N>", null);
+        GenericClassSignatureParser genericClassSignatureParser = new GenericClassSignatureParser("MyType<M,N>");
         if (genericClassSignatureParser.isValidGenericSignature()) {
             ClassType signature = genericClassSignatureParser.parseGenericSignature();
             assertThat(signature.getName(), is("MyType"));
