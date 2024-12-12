@@ -1,39 +1,21 @@
 package org.hl7.cql.model
 
-@Suppress("TooManyFunctions")
-data class TupleType
-@JvmOverloads
-constructor(val elements: MutableList<TupleTypeElement> = mutableListOf()) : BaseDataType() {
+import java.util.SortedSet
 
-    fun addElement(element: TupleTypeElement) {
-        elements.add(element)
-    }
+class TupleType private constructor(val elements: SortedSet<TupleTypeElement>) : BaseDataType() {
 
-    fun addElements(elements: Collection<TupleTypeElement>) {
-        this.elements.addAll(elements)
-    }
-
-    val sortedElements: List<TupleTypeElement>
-        get() = elements.sortedWith { l, r -> l.name.compareTo(r.name) }
+    constructor(elements: Iterable<TupleTypeElement>) : this(elements.sortedByName())
 
     override fun isSubTypeOf(other: DataType): Boolean {
-        return when {
-            other is TupleType ->
-                sortedElements.size == other.sortedElements.size &&
-                    sortedElements.zip(other.sortedElements).all { it.first.isSubTypeOf(it.second) }
-            else -> super.isSubTypeOf(other)
-        }
+        return if (other is TupleType) {
+            elements.zipAll(other.elements) { a, b -> a.isSubTypeOf(b) }
+        } else super.isSubTypeOf(other)
     }
 
     override fun isSuperTypeOf(other: DataType): Boolean {
-        return when {
-            other is TupleType ->
-                sortedElements.size == other.sortedElements.size &&
-                    sortedElements.zip(other.sortedElements).all {
-                        it.first.isSuperTypeOf(it.second)
-                    }
-            else -> super.isSuperTypeOf(other)
-        }
+        return if (other is TupleType) {
+            elements.zipAll(other.elements) { a, b -> a.isSuperTypeOf(b) }
+        } else super.isSuperTypeOf(other)
     }
 
     override fun toString(): String = elements.joinToString(",", "tuple{", "}")
@@ -46,19 +28,16 @@ constructor(val elements: MutableList<TupleTypeElement> = mutableListOf()) : Bas
         } else super.isCompatibleWith(other)
     }
 
-    override val isGeneric: Boolean
-        get() = elements.any { it.type.isGeneric }
+    override val isGeneric: Boolean = elements.any { it.type.isGeneric }
 
     override fun isInstantiable(callType: DataType, context: InstantiationContext): Boolean {
         // Call isInstantiable recursively to make sure that type parameters (if present) are bound
         return when (callType) {
             DataType.ANY -> elements.all { it.type.isInstantiable(callType, context) }
             is TupleType -> {
-                sortedElements.size == callType.sortedElements.size &&
-                    sortedElements.zip(callType.sortedElements).all {
-                        it.first.name == it.second.name &&
-                            it.first.type.isInstantiable(it.second.type, context)
-                    }
+                elements.zipAll(callType.elements) { a, b ->
+                    a.type.isInstantiable(b.type, context)
+                }
             }
             else -> false
         }
@@ -69,24 +48,31 @@ constructor(val elements: MutableList<TupleTypeElement> = mutableListOf()) : Bas
             TupleType(
                 elements
                     .map { TupleTypeElement(it.name, it.type.instantiate(context), false) }
-                    .toMutableList()
+                    .sortedByName()
             )
         } else this
     }
 
-    override fun hashCode(): Int {
-        var result = 13
-        for (e in elements) {
-            result += (37 * e.hashCode())
-        }
-
-        return result
-    }
-
     override fun equals(other: Any?): Boolean {
         return if (other is TupleType) {
-            sortedElements.size == other.sortedElements.size &&
-                sortedElements.zip(other.sortedElements).all { it.first == it.second }
+            elements.zipAll(other.elements) { a, b -> a == b }
         } else false
+    }
+
+    override fun hashCode(): Int {
+        return javaClass.hashCode()
+    }
+
+    companion object {
+        private fun Iterable<TupleTypeElement>.sortedByName(): SortedSet<TupleTypeElement> {
+            return toSortedSet(compareBy { it.name })
+        }
+
+        private fun Collection<TupleTypeElement>.zipAll(
+            other: Collection<TupleTypeElement>,
+            predicate: (a: TupleTypeElement, b: TupleTypeElement) -> Boolean
+        ): Boolean {
+            return size == other.size && zip(other).all { predicate(it.first, it.second) }
+        }
     }
 }

@@ -151,14 +151,14 @@ abstract class CqlPreprocessorElmCommonVisitor(
     }
 
     override fun visitTupleTypeSpecifier(ctx: TupleTypeSpecifierContext): Any {
-        val resultType = TupleType()
+        val elements = mutableListOf<TupleTypeElement>()
         val typeSpecifier = of.createTupleTypeSpecifier()
         for (definitionContext in ctx.tupleElementDefinition()) {
             val element = visit(definitionContext) as TupleElementDefinition
-            resultType.addElement(TupleTypeElement(element.name, element.elementType.resultType!!))
+            elements.add(TupleTypeElement(element.name, element.elementType.resultType!!))
             typeSpecifier.element.add(element)
         }
-        typeSpecifier.resultType = resultType
+        typeSpecifier.resultType = TupleType(elements)
         return typeSpecifier
     }
 

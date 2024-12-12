@@ -133,13 +133,13 @@ public class TypeResolver {
     }
 
     private DataType resolveTupleTypeSpecifier(TupleTypeSpecifier typeSpecifier) {
-        TupleType tupleType = new TupleType();
+        var elements = new ArrayList<TupleTypeElement>();
         for (TupleElementDefinition element : typeSpecifier.getElement()) {
             TupleTypeElement tupleElement =
                     new TupleTypeElement(element.getName(), resolveTypeSpecifier(element.getElementType()), false);
-            tupleType.addElement(tupleElement);
+            elements.add(tupleElement);
         }
-        return tupleType;
+        return new TupleType(elements);
     }
 
     private DataType resolveIntervalTypeSpecifier(IntervalTypeSpecifier typeSpecifier) {

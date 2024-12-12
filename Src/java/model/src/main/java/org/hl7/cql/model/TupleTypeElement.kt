@@ -1,7 +1,5 @@
 package org.hl7.cql.model
 
-import java.util.*
-
 data class TupleTypeElement(
     val name: String,
     val type: DataType,
@@ -11,19 +9,13 @@ data class TupleTypeElement(
         require(name.isNotEmpty()) { "name is required" }
     }
 
-    fun isSubTypeOf(that: TupleTypeElement): Boolean {
-        return this.name == that.name && type.isSubTypeOf(that.type)
-    }
+    fun isSubTypeOf(that: TupleTypeElement): Boolean =
+        this.name == that.name && type.isSubTypeOf(that.type)
 
-    fun isSuperTypeOf(that: TupleTypeElement): Boolean {
-        return this.name == that.name && type.isSuperTypeOf(that.type)
-    }
+    fun isSuperTypeOf(that: TupleTypeElement): Boolean =
+        this.name == that.name && type.isSuperTypeOf(that.type)
 
-    override fun toString(): String {
-        return String.format(Locale.US, "%s:%s", this.name, type.toString())
-    }
+    override fun toString(): String = "${name}:${this.type}"
 
-    fun toLabel(): String {
-        return String.format(Locale.US, "%s: %s", this.name, type.toLabel())
-    }
+    fun toLabel(): String = "${name}: ${this.type}"
 }

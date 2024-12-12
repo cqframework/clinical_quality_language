@@ -630,13 +630,13 @@ class Cql2ElmVisitor(
 
     override fun visitTupleSelector(ctx: TupleSelectorContext): Any? {
         val tuple = of.createTuple()
-        val tupleType = TupleType()
+        val elements = mutableListOf<TupleTypeElement>()
         for (elementContext in ctx.tupleElementSelector()) {
             val element = visit(elementContext) as TupleElement
-            tupleType.addElement(TupleTypeElement(element.name, element.resultType!!))
+            elements.add(TupleTypeElement(element.name, element.resultType!!))
             tuple.element.add(element)
         }
-        tuple.resultType = tupleType
+        tuple.resultType = TupleType(elements)
         return tuple
     }
 
@@ -3522,7 +3522,7 @@ class Cql2ElmVisitor(
                 if (agg == null && ret == null && sources.size > 1) {
                     ret = of.createReturnClause().withDistinct(true)
                     val returnExpression = of.createTuple()
-                    val returnType = TupleType()
+                    val elements = mutableListOf<TupleTypeElement>()
                     for (aqs: AliasedQuerySource in sources) {
                         val element =
                             of.createTupleElement()
@@ -3534,9 +3534,10 @@ class Cql2ElmVisitor(
                         element.value.resultType =
                             sourceType // Doesn't use the fluent API to avoid casting
                         element.resultType = element.value.resultType
-                        returnType.addElement(TupleTypeElement(element.name, element.resultType!!))
+                        elements.add(TupleTypeElement(element.name, element.resultType!!))
                         returnExpression.element.add(element)
                     }
+                    val returnType = TupleType(elements)
                     returnExpression.resultType =
                         if (queryContext.isSingular) returnType else ListType(returnType)
                     ret.expression = returnExpression

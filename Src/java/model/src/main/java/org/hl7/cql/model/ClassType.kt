@@ -80,7 +80,7 @@ constructor(
     }
 
     fun findSearch(searchPath: String): SearchType? {
-        return searches.firstOrNull() { it.name == searchPath }
+        return searches.firstOrNull { it.name == searchPath }
     }
 
     /**
@@ -230,8 +230,7 @@ constructor(
 
     override fun toLabel(): String = label ?: name
 
-    val tupleType: TupleType
-        get() = buildTupleType()
+    val tupleType: TupleType by lazy { buildTupleType() }
 
     private fun addTupleElements(
         classType: ClassType,
@@ -253,10 +252,8 @@ constructor(
 
     private fun buildTupleType(): TupleType {
         val tupleElements = LinkedHashMap<String, TupleTypeElement>()
-
         addTupleElements(this, tupleElements)
-
-        return TupleType(tupleElements.values.toMutableList())
+        return TupleType(tupleElements.values)
     }
 
     override fun isCompatibleWith(other: DataType): Boolean {
