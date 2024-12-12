@@ -21,8 +21,7 @@ public class ElmXmlLibraryWriter implements ElmLibraryWriter {
     @Override
     public String writeAsString(Library library) {
         try {
-            LibraryWrapper wrapper = new LibraryWrapper();
-            wrapper.setLibrary(library);
+            LibraryWrapper wrapper = new LibraryWrapper(library);
             return ElmXmlMapper.getMapper().writeValueAsString(wrapper);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

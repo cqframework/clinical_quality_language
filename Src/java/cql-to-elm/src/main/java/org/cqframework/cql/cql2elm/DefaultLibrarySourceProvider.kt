@@ -117,4 +117,15 @@ class DefaultLibrarySourceProvider(path: Path) : LibrarySourceProvider, PathAwar
         }
         return null
     }
+
+    override fun getLibraryContent(
+        libraryIdentifier: VersionedIdentifier,
+        type: LibraryContentType
+    ): InputStream? {
+        if (LibraryContentType.CQL == type) {
+            return getLibrarySource(libraryIdentifier)
+        }
+
+        return null
+    }
 }

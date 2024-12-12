@@ -11,7 +11,6 @@ import org.antlr.v4.kotlinruntime.TokenStream
 import org.antlr.v4.kotlinruntime.misc.Interval
 import org.antlr.v4.kotlinruntime.tree.ParseTree
 import org.antlr.v4.kotlinruntime.tree.TerminalNode
-import org.apache.commons.lang3.tuple.Pair
 import org.cqframework.cql.cql2elm.*
 import org.cqframework.cql.cql2elm.model.Chunk
 import org.cqframework.cql.cql2elm.model.FunctionHeader
@@ -156,7 +155,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
         val typeSpecifier = of.createTupleTypeSpecifier()
         for (definitionContext in ctx.tupleElementDefinition()) {
             val element = visit(definitionContext) as TupleElementDefinition
-            resultType.addElement(TupleTypeElement(element.name, element.elementType.resultType))
+            resultType.addElement(TupleTypeElement(element.name, element.elementType.resultType!!))
             typeSpecifier.element.add(element)
         }
         typeSpecifier.resultType = resultType
@@ -169,7 +168,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
         for (typeSpecifierContext in ctx.typeSpecifier()) {
             val typeSpecifier = parseTypeSpecifier(typeSpecifierContext)!!
             typeSpecifiers.add(typeSpecifier)
-            types.add(typeSpecifier.resultType)
+            types.add(typeSpecifier.resultType!!)
         }
         val result = of.createChoiceTypeSpecifier().withChoice(typeSpecifiers)
         if (includeDeprecatedElements) {
@@ -185,7 +184,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
     ): IntervalTypeSpecifier {
         val result =
             of.createIntervalTypeSpecifier().withPointType(parseTypeSpecifier(ctx.typeSpecifier()))
-        val intervalType = IntervalType(result.pointType.resultType)
+        val intervalType = IntervalType(result.pointType.resultType!!)
         result.resultType = intervalType
         return result
     }
@@ -193,7 +192,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
     override fun visitListTypeSpecifier(ctx: ListTypeSpecifierContext): ListTypeSpecifier {
         val result =
             of.createListTypeSpecifier().withElementType(parseTypeSpecifier(ctx.typeSpecifier()))
-        val listType = ListType(result.elementType.resultType)
+        val listType = ListType(result.elementType.resultType!!)
         result.resultType = listType
         return result
     }
@@ -584,6 +583,14 @@ abstract class CqlPreprocessorElmCommonVisitor(
             } else {
                 element.resultTypeSpecifier =
                     libraryBuilder.dataTypeToTypeSpecifier(element.resultType)
+            }
+        }
+    }
+
+    data class Pair<L, R>(val left: L, val right: R) {
+        companion object {
+            fun <L, R> of(left: L, right: R): Pair<L, R> {
+                return Pair(left, right)
             }
         }
     }

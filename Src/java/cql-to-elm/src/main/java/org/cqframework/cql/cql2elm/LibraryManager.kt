@@ -7,7 +7,6 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
-import org.apache.commons.lang3.StringUtils
 import org.cqframework.cql.cql2elm.model.CompiledLibrary
 import org.cqframework.cql.elm.serializing.ElmLibraryReaderFactory
 import org.fhir.ucum.UcumEssenceService
@@ -368,7 +367,7 @@ constructor(
     }
 
     private fun isVersionCompatible(library: Library): Boolean {
-        if (!StringUtils.isEmpty(cqlCompilerOptions.compatibilityLevel)) {
+        if (cqlCompilerOptions.compatibilityLevel.isNotBlank()) {
             if (library.annotation != null) {
                 val version: String? = CompilerOptions.getCompilerVersion(library)
                 if (version != null) {

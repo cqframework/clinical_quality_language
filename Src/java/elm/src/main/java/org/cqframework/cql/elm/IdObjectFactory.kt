@@ -657,10 +657,6 @@ open class IdObjectFactory : ObjectFactory() {
         return super.createInstance().withLocalId(nextId())
     }
 
-    // @Override
-    // public InstanceElement createInstanceElement() {
-    //     return super.createInstanceElement().withLocalId(nextId());
-    // }
     override fun createIntersect(): Intersect {
         return super.createIntersect().withLocalId(nextId())
     }
@@ -725,42 +721,6 @@ open class IdObjectFactory : ObjectFactory() {
         return super.createLibrary(value)
     }
 
-    // @Override
-    // public CodeSystems createLibraryCodeSystems() {
-    //     return super.createLibraryCodeSystems().withLocalId(nextId());
-    // }
-    // @Override
-    // public Codes createLibraryCodes() {
-    //     return super.createLibraryCodes().withLocalId(nextId());
-    // }
-    // @Override
-    // public Concepts createLibraryConcepts() {
-    //     return super.createLibraryConcepts().withLocalId(nextId());
-    // }
-    // @Override
-    // public Contexts createLibraryContexts() {
-    //     return super.createLibraryContexts().withLocalId(nextId());
-    // }
-    // @Override
-    // public Includes createLibraryIncludes() {
-    //     return super.createLibraryIncludes().withLocalId(nextId());
-    // }
-    // @Override
-    // public Parameters createLibraryParameters() {
-    //     return super.createLibraryParameters().withLocalId(nextId());
-    // }
-    // @Override
-    // public Statements createLibraryStatements() {
-    //     return super.createLibraryStatements().withLocalId(nextId());
-    // }
-    // @Override
-    // public Usings createLibraryUsings() {
-    //     return super.createLibraryUsings().withLocalId(nextId());
-    // }
-    // @Override
-    // public ValueSets createLibraryValueSets() {
-    //     return super.createLibraryValueSets().withLocalId(nextId());
-    // }
     override fun createList(): List {
         return super.createList().withLocalId(nextId())
     }
@@ -1173,10 +1133,6 @@ open class IdObjectFactory : ObjectFactory() {
         return super.createTuple().withLocalId(nextId())
     }
 
-    // @Override
-    // public TupleElement createTupleElement() {
-    //     return super.createTupleElement().withLocalId(nextId());
-    // }
     override fun createTupleElementDefinition(): TupleElementDefinition {
         return super.createTupleElementDefinition().withLocalId(nextId())
     }
@@ -1209,10 +1165,6 @@ open class IdObjectFactory : ObjectFactory() {
         return super.createVariance().withLocalId(nextId())
     }
 
-    // @Override
-    // public VersionedIdentifier createVersionedIdentifier() {
-    //     return super.createVersionedIdentifier().withLocalId(nextId());
-    // }
     override fun createWidth(): Width {
         return super.createWidth().withLocalId(nextId())
     }

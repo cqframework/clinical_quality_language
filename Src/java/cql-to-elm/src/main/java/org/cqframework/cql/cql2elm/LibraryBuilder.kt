@@ -5,7 +5,6 @@ package org.cqframework.cql.cql2elm
 import java.math.BigDecimal
 import java.util.*
 import javax.xml.namespace.QName
-import org.apache.commons.lang3.StringUtils
 import org.cqframework.cql.cql2elm.model.*
 import org.cqframework.cql.cql2elm.model.SystemLibraryHelper.load
 import org.cqframework.cql.cql2elm.model.invocation.*
@@ -589,9 +588,9 @@ class LibraryBuilder(
             err.errorSeverity = toErrorSeverity(e.severity)
             if (e.locator != null) {
                 if (e.locator.library != null) {
-                    err.librarySystem = e.locator.library.system
-                    err.libraryId = e.locator.library.id
-                    err.libraryVersion = e.locator.library.version
+                    err.librarySystem = e.locator.library?.system
+                    err.libraryId = e.locator.library?.id
+                    err.libraryVersion = e.locator.library?.version
                 }
                 err.startLine = e.locator.startLine
                 err.endLine = e.locator.endLine
@@ -954,13 +953,13 @@ class LibraryBuilder(
                             .createAs()
                             .withOperand(left)
                             .withAsTypeSpecifier(dataTypeToTypeSpecifier(targetType))
-                    left.setResultType(targetType)
+                    left.resultType = targetType
                     right =
                         objectFactory
                             .createAs()
                             .withOperand(right)
                             .withAsTypeSpecifier(dataTypeToTypeSpecifier(targetType))
-                    right.setResultType(targetType)
+                    right.resultType = targetType
                 }
             }
         }
@@ -1022,7 +1021,7 @@ class LibraryBuilder(
         if (
             right is ValueSetRef ||
                 (isCompatibleWith("1.5") &&
-                    right.resultType.isCompatibleWith(resolveTypeName("System", "ValueSet")!!) &&
+                    right.resultType!!.isCompatibleWith(resolveTypeName("System", "ValueSet")!!) &&
                     right.resultType != resolveTypeName("System", "Any"))
         ) {
             if (left.resultType is ListType) {
@@ -1048,7 +1047,9 @@ class LibraryBuilder(
         if (
             right is CodeSystemRef ||
                 (isCompatibleWith("1.5") &&
-                    right.resultType.isCompatibleWith(resolveTypeName("System", "CodeSystem")!!) &&
+                    right.resultType!!.isCompatibleWith(
+                        resolveTypeName("System", "CodeSystem")!!
+                    ) &&
                     right.resultType != resolveTypeName("System", "Any"))
         ) {
             if (left.resultType is ListType) {
@@ -1377,7 +1378,7 @@ class LibraryBuilder(
                     operatorName
                 )
             }
-            dataTypes.add(operand.resultType)
+            dataTypes.add(operand.resultType!!)
         }
         return CallContext(
             libraryName,
@@ -1491,7 +1492,7 @@ class LibraryBuilder(
                     operatorName
                 )
             }
-            dataTypes.add(operand.resultType)
+            dataTypes.add(operand.resultType!!)
         }
         val callContext =
             CallContext(
@@ -1556,7 +1557,7 @@ class LibraryBuilder(
     }
 
     private fun isInterFunctionAccess(f1: String, f2: String?): Boolean {
-        return if (StringUtils.isNoneBlank(f1) && StringUtils.isNoneBlank(f2)) {
+        return if (f1.isNotBlank() && !f2.isNullOrBlank()) {
             !f1.equals(f2, ignoreCase = true)
         } else false
     }
@@ -1728,7 +1729,7 @@ class LibraryBuilder(
         targetType: DataType,
         implicit: Boolean = true
     ): Expression {
-        val conversion = findConversion(expression.resultType, targetType, implicit, false)
+        val conversion = findConversion(expression.resultType!!, targetType, implicit, false)
         if (conversion != null) {
             return convertExpression(expression, conversion)
         }
@@ -1809,7 +1810,7 @@ class LibraryBuilder(
     fun resolveToList(expression: Expression?): Expression {
         // Use a ToList operator here to avoid duplicate evaluation of the operand.
         val toList = objectFactory.createToList().withOperand(expression)
-        toList.resultType = ListType(expression!!.resultType)
+        toList.resultType = ListType(expression!!.resultType!!)
         return toList
     }
 
@@ -1848,7 +1849,7 @@ class LibraryBuilder(
     fun resolveToInterval(expression: Expression?): Expression {
         val condition = objectFactory.createIf()
         condition.condition = buildIsNull(expression)
-        condition.then = buildNull(IntervalType(expression!!.resultType))
+        condition.then = buildNull(IntervalType(expression!!.resultType!!))
         val toInterval =
             objectFactory
                 .createInterval()
@@ -1856,7 +1857,7 @@ class LibraryBuilder(
                 .withHigh(expression)
                 .withLowClosed(true)
                 .withHighClosed(true)
-        toInterval.resultType = IntervalType(expression.resultType)
+        toInterval.resultType = IntervalType(expression.resultType!!)
         condition.setElse(toInterval)
         condition.resultType = resolveTypeName("System", "Boolean")
         return condition
@@ -2260,7 +2261,7 @@ class LibraryBuilder(
         if (targetType == null) {
             return objectFactory.createNull()
         }
-        return if (!targetType.isSuperTypeOf(expression!!.resultType)) {
+        return if (!targetType.isSuperTypeOf(expression!!.resultType!!)) {
             convertExpression(expression, targetType, true)
         } else expression
     }
@@ -2269,7 +2270,7 @@ class LibraryBuilder(
         if (targetType == null) {
             return objectFactory.createNull()
         }
-        return if (!targetType.isSuperTypeOf(expression!!.resultType)) {
+        return if (!targetType.isSuperTypeOf(expression!!.resultType!!)) {
             convertExpression(expression, targetType, false)
         } else expression
     }
@@ -2410,7 +2411,7 @@ class LibraryBuilder(
                 .withHigh(high)
                 .withHighClosed(highClosed)
         val pointType: DataType? =
-            ensureCompatibleTypes(result.low.resultType, result.high.resultType)
+            ensureCompatibleTypes(result.low.resultType, result.high.resultType!!)
         result.resultType = IntervalType(pointType!!)
         result.low = ensureCompatible(result.low, pointType)
         result.high = ensureCompatible(result.high, pointType)
@@ -2683,7 +2684,7 @@ class LibraryBuilder(
                 checkLiteralContext()
                 val parameterRef: ParameterRef =
                     objectFactory.createParameterRef().withName(element.name)
-                parameterRef.resultType = element.getResultType()
+                parameterRef.resultType = element.resultType
                 if (parameterRef.resultType == null) {
                     // ERROR:
                     throw IllegalArgumentException(
@@ -2700,7 +2701,7 @@ class LibraryBuilder(
                 checkLiteralContext()
                 val valuesetRef: ValueSetRef =
                     objectFactory.createValueSetRef().withName(element.name)
-                valuesetRef.resultType = element.getResultType()
+                valuesetRef.resultType = element.resultType
                 if (valuesetRef.resultType == null) {
                     // ERROR:
                     throw IllegalArgumentException(
@@ -2720,7 +2721,7 @@ class LibraryBuilder(
                 checkLiteralContext()
                 val codesystemRef: CodeSystemRef =
                     objectFactory.createCodeSystemRef().withName(element.name)
-                codesystemRef.resultType = element.getResultType()
+                codesystemRef.resultType = element.resultType
                 if (codesystemRef.resultType == null) {
                     // ERROR:
                     throw IllegalArgumentException(
@@ -2736,7 +2737,7 @@ class LibraryBuilder(
             if (element is CodeDef) {
                 checkLiteralContext()
                 val codeRef: CodeRef = objectFactory.createCodeRef().withName(element.name)
-                codeRef.resultType = element.getResultType()
+                codeRef.resultType = element.resultType
                 if (codeRef.resultType == null) {
                     // ERROR:
                     throw IllegalArgumentException(
@@ -2752,7 +2753,7 @@ class LibraryBuilder(
             if (element is ConceptDef) {
                 checkLiteralContext()
                 val conceptRef: ConceptRef = objectFactory.createConceptRef().withName(element.name)
-                conceptRef.resultType = element.getResultType()
+                conceptRef.resultType = element.resultType
                 if (conceptRef.resultType == null) {
                     // ERROR:
                     throw IllegalArgumentException(
@@ -3351,7 +3352,7 @@ class LibraryBuilder(
                             .createParameterRef()
                             .withLibraryName(libraryName)
                             .withName(memberIdentifier)
-                    result.resultType = element.getResultType()
+                    result.resultType = element.resultType
                     return result
                 }
                 if (element is ValueSetDef) {
@@ -3361,7 +3362,7 @@ class LibraryBuilder(
                             .createValueSetRef()
                             .withLibraryName(libraryName)
                             .withName(memberIdentifier)
-                    result.resultType = element.getResultType()
+                    result.resultType = element.resultType
                     if (isCompatibleWith("1.5")) {
                         result.isPreserve = true
                     }
@@ -3374,7 +3375,7 @@ class LibraryBuilder(
                             .createCodeSystemRef()
                             .withLibraryName(libraryName)
                             .withName(memberIdentifier)
-                    result.resultType = element.getResultType()
+                    result.resultType = element.resultType
                     return result
                 }
                 if (element is CodeDef) {
@@ -3384,7 +3385,7 @@ class LibraryBuilder(
                             .createCodeRef()
                             .withLibraryName(libraryName)
                             .withName(memberIdentifier)
-                    result.resultType = element.getResultType()
+                    result.resultType = element.resultType
                     return result
                 }
                 if (element is ConceptDef) {
@@ -3394,7 +3395,7 @@ class LibraryBuilder(
                             .createConceptRef()
                             .withLibraryName(libraryName)
                             .withName(memberIdentifier)
-                    result.resultType = element.getResultType()
+                    result.resultType = element.resultType
                     return result
                 }
             }
@@ -3409,8 +3410,7 @@ class LibraryBuilder(
                 )
             )
         } else if (left is AliasRef) {
-            val resolution: PropertyResolution? =
-                resolveProperty(left.getResultType(), memberIdentifier)
+            val resolution: PropertyResolution? = resolveProperty(left.resultType, memberIdentifier)
             val result: Expression =
                 buildProperty(left.name, resolution!!.name, resolution.isSearch, resolution.type)
             return applyTargetMap(result, resolution.targetMap)
@@ -3454,7 +3454,7 @@ class LibraryBuilder(
                             .withDistinct(false)
                             .withExpression(accessor)
                     )
-            query.resultType = ListType(accessor!!.resultType)
+            query.resultType = ListType(accessor!!.resultType!!)
             if (accessor.resultType is ListType) {
                 val result: Flatten = objectFactory.createFlatten().withOperand(query)
                 result.resultType = accessor.resultType
@@ -3579,7 +3579,7 @@ class LibraryBuilder(
             if (inQueryContext() && scope.queries.peek().inSourceClause()) {
                 scope.queries.peek().referencesSpecificContextValue = true
             }
-            val resultType: DataType = expressionDef.resultType
+            val resultType: DataType = expressionDef.resultType!!
             return if (resultType !is ListType) {
                 ListType(resultType)
             } else {
