@@ -1,6 +1,7 @@
 plugins {
     id("cql.library-conventions")
-    id("cql.xjc-conventions")
+    id("cql.xjc-temp-conventions")
+    id("cql.xsd-kotlin-gen-conventions")
 }
 
 tasks.register<XjcTask>("generateModel") {
