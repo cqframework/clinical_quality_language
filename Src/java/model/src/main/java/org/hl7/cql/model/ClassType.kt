@@ -19,7 +19,7 @@ constructor(
     var genericParameters: MutableList<TypeParameter> = mutableListOf()
 ) : BaseDataType(baseType), NamedType {
     init {
-        require(name.isNotEmpty()) { "A class type must have a name." }
+        require(name.isNotEmpty()) { "name can not be empty" }
     }
 
     override val namespace: String
@@ -142,7 +142,7 @@ constructor(
     }
 
     val sortedElements: List<ClassTypeElement>
-        get() = elements.sortedWith { o1, o2 -> o1.name.compareTo(o2.name) }
+        get() = elements.sortedWith(compareBy { it.name })
 
     private var baseElementMap: LinkedHashMap<String, ClassTypeElement>? = null
         get() {

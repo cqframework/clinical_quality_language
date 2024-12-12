@@ -6,7 +6,7 @@ data class TupleTypeElement(
     private val oneBased: Boolean = false
 ) {
     init {
-        require(name.isNotEmpty()) { "name is required" }
+        require(name.isNotEmpty()) { "name can not be empty" }
     }
 
     fun isSubTypeOf(that: TupleTypeElement): Boolean =
@@ -15,7 +15,7 @@ data class TupleTypeElement(
     fun isSuperTypeOf(that: TupleTypeElement): Boolean =
         this.name == that.name && type.isSuperTypeOf(that.type)
 
-    override fun toString(): String = "${name}:${this.type}"
+    override fun toString(): String = "${name}:${type}"
 
-    fun toLabel(): String = "${name}: ${this.type}"
+    fun toLabel(): String = "${name}: ${type}"
 }

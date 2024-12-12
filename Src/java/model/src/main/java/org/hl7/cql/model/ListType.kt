@@ -1,32 +1,23 @@
 package org.hl7.cql.model
 
-import java.util.*
 import org.hl7.cql.model.DataType.Companion.ANY
 
 data class ListType(val elementType: DataType) : BaseDataType() {
     override fun isSubTypeOf(other: DataType): Boolean {
         return if (other is ListType) {
             elementType.isSubTypeOf(other.elementType)
-        } else {
-            super.isSubTypeOf(other)
-        }
+        } else super.isSubTypeOf(other)
     }
 
     override fun isSuperTypeOf(other: DataType): Boolean {
         return if (other is ListType) {
             elementType.isSuperTypeOf(other.elementType)
-        } else {
-            super.isSuperTypeOf(other)
-        }
+        } else super.isSuperTypeOf(other)
     }
 
-    override fun toString(): String {
-        return String.format(Locale.US, "list<%s>", elementType.toString())
-    }
+    override fun toString(): String = "list<${elementType}>"
 
-    override fun toLabel(): String {
-        return String.format(Locale.US, "List of %s", elementType.toLabel())
-    }
+    override fun toLabel(): String = "List of ${elementType.toLabel()}"
 
     override val isGeneric: Boolean = elementType.isGeneric
 
@@ -39,13 +30,8 @@ data class ListType(val elementType: DataType) : BaseDataType() {
                     context.getListConversionTargets(callType).filter {
                         elementType.isInstantiable(it.elementType, context)
                     }
-                require(instantiableElements.size <= 1) {
-                    String.format(
-                        Locale.US,
-                        "Ambiguous generic instantiation involving %s to %s.",
-                        callType.toString(),
-                        instantiableElements.toString()
-                    )
+                check(instantiableElements.size <= 1) {
+                    "Ambiguous generic instantiation involving $callType to $instantiableElements"
                 }
 
                 instantiableElements.isNotEmpty()

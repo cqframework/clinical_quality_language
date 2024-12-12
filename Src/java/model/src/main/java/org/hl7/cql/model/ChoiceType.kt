@@ -16,14 +16,11 @@ data class ChoiceType private constructor(val types: Set<DataType>) : BaseDataTy
         }
     }
 
-    fun isSubSetOf(other: ChoiceType): Boolean {
-        // every type in this choice is a subtype of some type in the other choice
-        return types.all { x -> other.types.any { x.isSubTypeOf(it) } }
-    }
+    // every type in this choice is a subtype of some type in the other choice
+    fun isSubSetOf(other: ChoiceType): Boolean =
+        types.all { x -> other.types.any { x.isSubTypeOf(it) } }
 
-    fun isSuperSetOf(other: ChoiceType): Boolean {
-        return other.isSubSetOf(this)
-    }
+    fun isSuperSetOf(other: ChoiceType): Boolean = other.isSubSetOf(this)
 
     override fun isCompatibleWith(other: DataType): Boolean {
         // This type is compatible with the other type if
@@ -38,9 +35,7 @@ data class ChoiceType private constructor(val types: Set<DataType>) : BaseDataTy
         }
     }
 
-    override fun toString(): String {
-        return types.joinToString(",", "choice<", ">")
-    }
+    override fun toString(): String = types.joinToString(",", "choice<", ">")
 
     override val isGeneric: Boolean = types.any { it.isGeneric }
 

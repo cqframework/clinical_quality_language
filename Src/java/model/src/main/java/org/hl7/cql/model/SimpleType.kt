@@ -1,7 +1,5 @@
 package org.hl7.cql.model
 
-import java.util.*
-
 data class SimpleType
 @JvmOverloads
 constructor(
@@ -44,13 +42,8 @@ constructor(
             this.isSuperTypeOf(callType) -> true
             else -> {
                 val instantiableElements = context.getSimpleConversionTargets(callType)
-                require(instantiableElements.size <= 1) {
-                    String.format(
-                        Locale.US,
-                        "Ambiguous generic instantiation involving %s to %s.",
-                        callType.toString(),
-                        instantiableElements.toString()
-                    )
+                check(instantiableElements.size <= 1) {
+                    "Ambiguous generic instantiation involving $callType to $instantiableElements"
                 }
 
                 instantiableElements.isNotEmpty()
@@ -58,7 +51,5 @@ constructor(
         }
     }
 
-    override fun instantiate(context: InstantiationContext): DataType {
-        return this
-    }
+    override fun instantiate(context: InstantiationContext): DataType = this
 }

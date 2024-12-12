@@ -13,6 +13,6 @@ data class ModelIdentifier(
     @XmlAttribute(name = "version") var version: String? = null
 ) {
     init {
-        require(id.isNotEmpty()) { "id is required" }
+        require(id.isNotEmpty()) { "id can not be empty" }
     }
 }

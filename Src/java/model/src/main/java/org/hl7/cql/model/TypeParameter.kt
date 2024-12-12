@@ -8,7 +8,12 @@ constructor(
     val constraintType: DataType? = null
 ) : BaseDataType() {
     init {
-        require(identifier.isNotEmpty()) { "identifier is empty" }
+        require(identifier.isNotEmpty()) { "identifier can not be empty" }
+        if (constraint == TypeParameterConstraint.TYPE) {
+            require(constraintType != null) {
+                "constraintType must be provided when constraint is TYPE"
+            }
+        }
     }
 
     enum class TypeParameterConstraint {
@@ -58,11 +63,8 @@ constructor(
 
     override val isGeneric: Boolean = true
 
-    override fun isInstantiable(callType: DataType, context: InstantiationContext): Boolean {
-        return context.isInstantiable(this, callType)
-    }
+    override fun isInstantiable(callType: DataType, context: InstantiationContext): Boolean =
+        context.isInstantiable(this, callType)
 
-    override fun instantiate(context: InstantiationContext): DataType {
-        return context.instantiate(this)
-    }
+    override fun instantiate(context: InstantiationContext): DataType = context.instantiate(this)
 }
