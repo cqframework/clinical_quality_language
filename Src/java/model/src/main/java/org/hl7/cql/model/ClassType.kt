@@ -19,7 +19,7 @@ constructor(
     var genericParameters: MutableList<TypeParameter> = mutableListOf()
 ) : BaseDataType(baseType), NamedType {
     init {
-        require(name.isNotEmpty()) { "A class type must have a name." }
+        require(name.isNotEmpty()) { "name can not be empty" }
     }
 
     override val namespace: String
@@ -80,7 +80,7 @@ constructor(
     }
 
     fun findSearch(searchPath: String): SearchType? {
-        return searches.firstOrNull() { it.name == searchPath }
+        return searches.firstOrNull { it.name == searchPath }
     }
 
     /**
@@ -142,7 +142,7 @@ constructor(
     }
 
     val sortedElements: List<ClassTypeElement>
-        get() = elements.sortedWith { o1, o2 -> o1.name.compareTo(o2.name) }
+        get() = elements.sortedWith(compareBy { it.name })
 
     private var baseElementMap: LinkedHashMap<String, ClassTypeElement>? = null
         get() {
@@ -230,8 +230,7 @@ constructor(
 
     override fun toLabel(): String = label ?: name
 
-    val tupleType: TupleType
-        get() = buildTupleType()
+    val tupleType: TupleType by lazy { buildTupleType() }
 
     private fun addTupleElements(
         classType: ClassType,
@@ -253,10 +252,8 @@ constructor(
 
     private fun buildTupleType(): TupleType {
         val tupleElements = LinkedHashMap<String, TupleTypeElement>()
-
         addTupleElements(this, tupleElements)
-
-        return TupleType(tupleElements.values.toMutableList())
+        return TupleType(tupleElements.values)
     }
 
     override fun isCompatibleWith(other: DataType): Boolean {

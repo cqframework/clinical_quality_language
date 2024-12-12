@@ -93,7 +93,7 @@ class GenericClassSignatureParser(
     private fun handleParameterDeclaration(parameterString: String): TypeParameter {
         val paramComponents = parameterString.split("\\s+".toRegex()).dropLastWhile { it.isEmpty() }
         return if (paramComponents.size == 1) {
-            TypeParameter(parameterString.trim(), TypeParameter.TypeParameterConstraint.NONE, null)
+            TypeParameter(parameterString.trim(), TypeParameter.TypeParameterConstraint.NONE)
         } else if (paramComponents.size == 3) {
             if (paramComponents[1].equals(EXTENDS, ignoreCase = true)) {
                 TypeParameter(
@@ -138,49 +138,53 @@ class GenericClassSignatureParser(
     private fun handleBoundType(boundGenericSignature: String): DataType {
         var resolvedType =
             resolvedTypes[escapeNestedAngleBrackets(boundGenericSignature)] as? ClassType
-        if (resolvedType != null) {
-            return resolvedType
-        } else {
-            val genericTypeName =
-                boundGenericSignature.substring(0, boundGenericSignature.indexOf('<'))
-            resolvedType = resolveType(genericTypeName) as ClassType
-            val newType = ClassType(escapeNestedAngleBrackets(boundGenericSignature), resolvedType)
-            val parameters =
-                boundGenericSignature.substring(
-                    boundGenericSignature.indexOf('<') + 1,
-                    boundGenericSignature.lastIndexOf('>')
-                )
-            val params =
-                escapeNestedCommas(parameters).split(",".toRegex()).dropLastWhile { it.isEmpty() }
-            for ((index, param) in params.withIndex()) {
-                var boundParam: DataType?
-                val unescaped = unescapeNestedCommas(param)
-                boundParam =
-                    if (isValidGenericSignature(unescaped)) {
-                        handleBoundType(unescaped)
-                    } else {
-                        resolveType(unescaped)
+        return when {
+            resolvedType != null -> resolvedType
+            else -> {
+                val genericTypeName =
+                    boundGenericSignature.substring(0, boundGenericSignature.indexOf('<'))
+                resolvedType = resolveType(genericTypeName) as ClassType
+                val newType =
+                    ClassType(escapeNestedAngleBrackets(boundGenericSignature), resolvedType)
+                val parameters =
+                    boundGenericSignature.substring(
+                        boundGenericSignature.indexOf('<') + 1,
+                        boundGenericSignature.lastIndexOf('>')
+                    )
+                val params =
+                    escapeNestedCommas(parameters).split(",".toRegex()).dropLastWhile {
+                        it.isEmpty()
                     }
-                val typeParameter = resolvedType.genericParameters[index]
-                for ((name, type) in resolvedType.elements) {
-                    if (
-                        type is TypeParameter &&
-                            type.identifier.equals(typeParameter.identifier, ignoreCase = true)
-                    ) {
-                        val newElement =
-                            ClassTypeElement(
-                                name,
-                                boundParam,
-                                prohibited = false,
-                                oneBased = false,
-                                target = null
-                            )
-                        newType.addElement(newElement)
+                for ((index, param) in params.withIndex()) {
+                    var boundParam: DataType?
+                    val unescaped = unescapeNestedCommas(param)
+                    boundParam =
+                        if (isValidGenericSignature(unescaped)) {
+                            handleBoundType(unescaped)
+                        } else {
+                            resolveType(unescaped)
+                        }
+                    val typeParameter = resolvedType.genericParameters[index]
+                    for ((name, type) in resolvedType.elements) {
+                        if (
+                            type is TypeParameter &&
+                                type.identifier.equals(typeParameter.identifier, ignoreCase = true)
+                        ) {
+                            val newElement =
+                                ClassTypeElement(
+                                    name,
+                                    boundParam,
+                                    prohibited = false,
+                                    oneBased = false,
+                                    target = null
+                                )
+                            newType.addElement(newElement)
+                        }
                     }
                 }
+                resolvedTypes[newType.name] = newType
+                newType
             }
-            resolvedTypes[newType.name] = newType
-            return newType
         }
     }
 
@@ -260,12 +264,10 @@ class GenericClassSignatureParser(
         var openBracketCount = 0
         for (index in signatureCharArray.indices) {
             val c = signatureCharArray[index]
-            if (c == '<') {
-                openBracketCount++
-            } else if (c == '>') {
-                openBracketCount--
-            } else if (c == ',' && openBracketCount > 0) {
-                signatureCharArray[index] = '|'
+            when {
+                c == '<' -> openBracketCount++
+                c == '>' -> openBracketCount--
+                c == ',' && openBracketCount > 0 -> signatureCharArray[index] = '|'
             }
         }
         return String(signatureCharArray)

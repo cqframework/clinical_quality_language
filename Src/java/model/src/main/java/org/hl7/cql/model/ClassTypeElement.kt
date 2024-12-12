@@ -11,26 +11,22 @@ data class ClassTypeElement(
 ) {
 
     init {
-        require(name.isNotEmpty()) { "A class type element must have a name." }
+        require(name.isNotEmpty()) { "name can not be empty" }
     }
 
-    fun isSubTypeOf(that: ClassTypeElement): Boolean {
-        return this.name == that.name && type.isSubTypeOf(that.type)
-    }
+    fun isSubTypeOf(that: ClassTypeElement): Boolean =
+        this.name == that.name && type.isSubTypeOf(that.type)
 
-    fun isSuperTypeOf(that: ClassTypeElement): Boolean {
-        return this.name == that.name && type.isSuperTypeOf(that.type)
-    }
+    fun isSuperTypeOf(that: ClassTypeElement): Boolean =
+        this.name == that.name && type.isSuperTypeOf(that.type)
 
     override fun toString(): String {
-        return String.format(
-            Locale.US,
-            "%s:%s%s%s%s",
-            this.name,
-            type.toString(),
-            if (this.prohibited) " (prohibited)" else "",
-            if (this.oneBased) " (one-based)" else "",
-            if (this.target != null) " (target: " + this.target + ")" else ""
-        )
+        return "$name:$type$%s%s%s"
+            .format(
+                Locale.US,
+                if (this.prohibited) " (prohibited)" else "",
+                if (this.oneBased) " (one-based)" else "",
+                if (this.target != null) " (target: " + this.target + ")" else ""
+            )
     }
 }

@@ -1,35 +1,25 @@
 package org.hl7.cql.model
 
-import java.util.*
 import org.hl7.cql.model.DataType.Companion.ANY
 
 data class IntervalType(val pointType: DataType) : BaseDataType() {
     override fun isSubTypeOf(other: DataType): Boolean {
         return if (other is IntervalType) {
             return pointType.isSubTypeOf(other.pointType)
-        } else {
-            super.isSubTypeOf(other)
-        }
+        } else super.isSubTypeOf(other)
     }
 
     override fun isSuperTypeOf(other: DataType): Boolean {
         return if (other is IntervalType) {
             return pointType.isSuperTypeOf(other.pointType)
-        } else {
-            super.isSuperTypeOf(other)
-        }
+        } else super.isSuperTypeOf(other)
     }
 
-    override fun toString(): String {
-        return String.format(Locale.US, "interval<%s>", pointType.toString())
-    }
+    override fun toString(): String = "interval<$pointType>"
 
-    override fun toLabel(): String {
-        return String.format(Locale.US, "Interval of %s", pointType.toLabel())
-    }
+    override fun toLabel(): String = "Interval of ${pointType.toLabel()}"
 
-    override val isGeneric: Boolean
-        get() = pointType.isGeneric
+    override val isGeneric: Boolean = pointType.isGeneric
 
     override fun isInstantiable(callType: DataType, context: InstantiationContext): Boolean {
         return when (callType) {
@@ -40,13 +30,8 @@ data class IntervalType(val pointType: DataType) : BaseDataType() {
                     context.getIntervalConversionTargets(callType).filter {
                         pointType.isInstantiable(it.pointType, context)
                     }
-                require(instantiableElements.size <= 1) {
-                    String.format(
-                        Locale.US,
-                        "Ambiguous generic instantiation involving %s to %s.",
-                        callType.toString(),
-                        instantiableElements.toString()
-                    )
+                check(instantiableElements.size <= 1) {
+                    "Ambiguous generic instantiation involving $callType to $instantiableElements"
                 }
 
                 instantiableElements.isNotEmpty()

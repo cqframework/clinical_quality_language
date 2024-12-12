@@ -3,9 +3,7 @@ package org.hl7.cql.model
 abstract class BaseDataType protected constructor(baseType: DataType? = DataType.ANY) : DataType {
     override val baseType: DataType = baseType ?: DataType.ANY
 
-    override fun toLabel(): String {
-        return toString()
-    }
+    override fun toLabel(): String = toString()
 
     override fun isSubTypeOf(other: DataType): Boolean {
         var currentType: DataType = this
@@ -51,11 +49,11 @@ abstract class BaseDataType protected constructor(baseType: DataType? = DataType
     // type compatibility is used to support implicit casting, such as casting a "null"
     // literal to any other type, or casting a class to an equivalent tuple.
     override fun isCompatibleWith(other: DataType): Boolean {
-        return when {
+        return when (other) {
             // Any data type is compatible with itself
-            this == other -> true
+            this -> true
             // A type is compatible with a choice type if it is a subtype of one of the choice types
-            other is ChoiceType -> other.types.any { this.isSubTypeOf(it) }
+            is ChoiceType -> other.types.any { this.isSubTypeOf(it) }
             else -> false
         }
     }

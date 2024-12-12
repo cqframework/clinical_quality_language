@@ -227,15 +227,16 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
         }
 
         if (typeSpecifier is TupleTypeSpecifier) {
-            val tupleType = TupleType()
+            val elements = mutableListOf<TupleTypeElement>()
             for (specifierElement in typeSpecifier.element) {
                 val element =
                     TupleTypeElement(
                         specifierElement.name,
                         resolveTypeSpecifier(specifierElement.elementType)!!
                     )
-                tupleType.addElement(element)
+                elements.add(element)
             }
+            return TupleType(elements)
         }
 
         if (typeSpecifier is ChoiceTypeSpecifier) {

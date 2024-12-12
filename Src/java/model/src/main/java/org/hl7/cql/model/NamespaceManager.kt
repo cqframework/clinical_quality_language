@@ -1,6 +1,5 @@
 package org.hl7.cql.model
 
-import java.util.*
 import kotlin.collections.HashMap
 
 class NamespaceManager {
@@ -25,15 +24,11 @@ class NamespaceManager {
         require(namespaceName.isNotEmpty()) { "namespaceName is required" }
         require(namespaceUri.isNotEmpty()) { "namespaceUri is required" }
         check(!namespaces.containsKey(namespaceName)) {
-            String.format(Locale.US, "A namespace named %s is already defined.", namespaceName)
+            "A namespace named $namespaceName is already defined."
         }
 
         check(!reverseNamespaces.containsKey(namespaceUri)) {
-            String.format(
-                Locale.US,
-                "A namespace name for uri %s is already defined.",
-                namespaceUri
-            )
+            "A namespace name for uri $namespaceUri is already defined."
         }
 
         namespaces[namespaceName] = namespaceUri
@@ -51,8 +46,7 @@ class NamespaceManager {
     companion object {
         @JvmStatic
         fun getPath(namespaceUri: String?, name: String): String {
-            return namespaceUri?.let { String.format(Locale.US, "%s/%s", namespaceUri, name) }
-                ?: name
+            return namespaceUri?.let { "$it/$name" } ?: name
         }
 
         @JvmStatic
