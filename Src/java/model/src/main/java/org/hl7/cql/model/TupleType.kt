@@ -60,7 +60,11 @@ class TupleType private constructor(val elements: SortedSet<TupleTypeElement>) :
     }
 
     override fun hashCode(): Int {
-        return javaClass.hashCode()
+        var result = 13
+        for (e in elements) {
+            result = 37 * result + e.hashCode()
+        }
+        return result
     }
 
     companion object {
