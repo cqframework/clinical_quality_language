@@ -68,15 +68,12 @@ class TupleType private constructor(val elements: SortedSet<TupleTypeElement>) :
     }
 
     companion object {
-        private fun Iterable<TupleTypeElement>.sortedByName(): SortedSet<TupleTypeElement> {
-            return toSortedSet(compareBy { it.name })
-        }
+        private fun Iterable<TupleTypeElement>.sortedByName(): SortedSet<TupleTypeElement> =
+            toSortedSet(compareBy { it.name })
 
         private fun Collection<TupleTypeElement>.zipAll(
             other: Collection<TupleTypeElement>,
             predicate: (a: TupleTypeElement, b: TupleTypeElement) -> Boolean
-        ): Boolean {
-            return size == other.size && zip(other).all { predicate(it.first, it.second) }
-        }
+        ): Boolean = size == other.size && zip(other).all { predicate(it.first, it.second) }
     }
 }
