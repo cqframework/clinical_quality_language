@@ -7,6 +7,6 @@ class InvalidRedeclarationException(
     IllegalArgumentException(
         """${classType.name}.${redeclared.name} cannot be redeclared
             with type ${redeclared.type} because it is not a subtype
-            of the original element type ${original.type} in class ${classType.name}"""
+            of the original element type ${original.type}"""
             .trimIndent()
     )
