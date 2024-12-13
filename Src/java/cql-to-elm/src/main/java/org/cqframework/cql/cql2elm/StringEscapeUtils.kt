@@ -1,99 +1,80 @@
-@file:Suppress("WildcardImport")
-
 package org.cqframework.cql.cql2elm
-
-import org.apache.commons.text.translate.*
 
 /** Created by Bryn on 3/22/2017. */
 object StringEscapeUtils {
-    /**
-     * Mapping to escape the CQL control characters.
-     *
-     * Namely: `\n \t \f \r`
-     *
-     * @return the mapping table
-     */
-    @Suppress("FunctionNaming")
-    fun CQL_CTRL_CHARS_ESCAPE(): Map<CharSequence, CharSequence> {
-        return HashMap(CQL_CTRL_CHARS_ESCAPE)
-    }
 
-    private val CQL_CTRL_CHARS_ESCAPE: Map<CharSequence, CharSequence> =
-        object : HashMap<CharSequence, CharSequence>() {
-            init {
-                put("\n", "\\n")
-                put("\t", "\\t")
-                put("\u000c", "\\f")
-                put("\r", "\\r")
-            }
-        }
-
-    /**
-     * Reverse of [.CQL_CTRL_CHARS_ESCAPE] for unescaping purposes.
-     *
-     * @return the mapping table
-     */
-    @Suppress("FunctionNaming")
-    fun CQL_CTRL_CHARS_UNESCAPE(): Map<CharSequence, CharSequence> {
-        return HashMap(CQL_CTRL_CHARS_UNESCAPE)
-    }
-
-    private val CQL_CTRL_CHARS_UNESCAPE: Map<CharSequence, CharSequence> =
-        object : HashMap<CharSequence, CharSequence>() {
-            init {
-                put("\\n", "\n")
-                put("\\t", "\t")
-                put("\\f", "\u000c")
-                put("\\r", "\r")
-            }
-        }
-    @Suppress("MagicNumber")
-    val ESCAPE_CQL: CharSequenceTranslator =
-        LookupTranslator(
-                object : HashMap<CharSequence?, CharSequence?>() {
-                    init {
-                        put("\"", "\\\"")
-                        put("\\", "\\\\")
-                        put("'", "\\'")
-                    }
-                }
-            )
-            .with(LookupTranslator(CQL_CTRL_CHARS_ESCAPE()))
-            .with(JavaUnicodeEscaper.outsideOf(32, 0x7f))
-    val UNESCAPE_CQL: CharSequenceTranslator =
-        AggregateTranslator(
-            UnicodeUnescaper(),
-            LookupTranslator(CQL_CTRL_CHARS_UNESCAPE()),
-            LookupTranslator(
-                object : HashMap<CharSequence?, CharSequence?>() {
-                    init {
-                        put("\\\\", "\\")
-                        put("\\\"", "\"")
-                        put("\\'", "\'")
-                        put("\\`", "`")
-                        put("\\/", "/")
-                        put("\\", "")
-                    }
-                }
-            )
+    // CQL supports the following escape characters in both strings and identifiers:
+    // \" - double-quote
+    // \' - single-quote
+    // \` - backtick
+    // \\ - backslash
+    // \/ - slash
+    // \f - form feed
+    // \n - newline
+    // \r - carriage return
+    // \t - tab
+    // \\u - unicode hex representation (e.g. \u0020)
+    private val UNESCAPE_MAP: Map<CharSequence, Char> =
+        mapOf(
+            "\\\"" to '\"',
+            "\\'" to '\'',
+            "\\`" to '`',
+            "\\\\" to '\\',
+            "\\/" to '/',
+            "\\f" to '\u000c',
+            "\\n" to '\n',
+            "\\r" to '\r',
+            "\\t" to '\t'
+            // unicode escapes are handled separately
         )
 
-    fun escapeCql(input: String?): String {
-        return ESCAPE_CQL.translate(input)
+    private val ESCAPE_MAP: Map<Char, CharSequence> =
+        UNESCAPE_MAP.entries.associate { it.value to it.key }
+
+    // Longer escape sequences should be matched first to avoid partial matches
+    private val MULTI_CHAR_UNESCAPE = UNESCAPE_MAP.keys.sortedByDescending { it.length }
+    private val UNESCAPE_REGEX =
+        Regex(
+            MULTI_CHAR_UNESCAPE.joinToString("|") { Regex.escape(it.toString()) } +
+                // Unicode escape sequence
+                "|\\\\u[0-9a-fA-F]{4}"
+        )
+
+    fun escapeCql(input: String): String {
+        return buildString {
+            for (char in input) {
+                append(
+                    // Use the mapped escape sequence or
+                    // default to Unicode for non-printable characters
+                    ESCAPE_MAP[char]
+                        ?: if (char.isISOControl() || char !in '\u0020'..'\u007E') {
+                            "\\u%04x".format(char.code)
+                        } else {
+                            char
+                        }
+                )
+            }
+        }
     }
 
-    fun unescapeCql(input: String?): String? {
-        // CQL supports the following escape characters in both strings and identifiers:
-        // \" - double-quote
-        // \' - single-quote
-        // \` - backtick
-        // \\ - backslash
-        // \/ - slash
-        // \f - form feed
-        // \n - newline
-        // \r - carriage return
-        // \t - tab
-        // \\u - unicode hex representation (e.g. \u0020)
-        return UNESCAPE_CQL.translate(input)
+    private const val HEX_RADIX = 16
+
+    fun unescapeCql(input: String): String {
+        return UNESCAPE_REGEX.replace(input) { matchResult ->
+            val match = matchResult.value
+            when {
+                // Handle standard escape sequences
+                match in UNESCAPE_MAP ->
+                    UNESCAPE_MAP[match]?.toString()
+                        ?: throw IllegalArgumentException("Invalid escape sequence: $match")
+                match.startsWith("\\u") -> {
+                    // Handle Unicode escapes
+                    val hex = match.substring(2)
+
+                    hex.toInt(HEX_RADIX).toChar().toString()
+                }
+                else -> throw IllegalArgumentException("Invalid escape sequence: $match")
+            }
+        }
     }
 }
