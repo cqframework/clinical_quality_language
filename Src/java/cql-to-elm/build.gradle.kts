@@ -7,7 +7,6 @@ dependencies {
     api(project(":model"))
     api(project(":elm"))
     api("org.fhir:ucum:1.0.8")
-    api("org.apache.commons:commons-text:1.10.0")
 
     // TODO: This dependencies are required due the the fact that the CqlTranslatorOptionsMapper lives
     // in the cql-to-elm project. Ideally, we"d factor out all serialization dependencies into common

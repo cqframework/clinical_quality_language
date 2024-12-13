@@ -5,6 +5,7 @@ plugins {
 dependencies {
     api(project(":elm"))
     api(project(":cql-to-elm"))
+    api("org.apache.commons:commons-text:1.10.0")
 
     testImplementation(project(":model-jackson"))
     testImplementation(project(":elm-jackson"))
