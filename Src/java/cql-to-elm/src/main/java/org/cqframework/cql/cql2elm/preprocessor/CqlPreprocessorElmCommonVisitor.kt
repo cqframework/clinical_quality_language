@@ -636,7 +636,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
     }
 
     protected fun parseString(pt: ParseTree?): String? {
-        return StringEscapeUtils.unescapeCql(if (pt == null) null else visit(pt) as String)
+        return if (pt == null) null else StringEscapeUtils.unescapeCql(visit(pt) as String)
     }
 
     fun enableLocators() {
