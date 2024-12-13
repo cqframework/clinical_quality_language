@@ -49,7 +49,7 @@ object StringEscapeUtils {
                     // default to Unicode for non-printable characters
                     // '\u0020'..'\u007E' are printable ASCII characters
                     ESCAPE_MAP[char]
-                        ?: if (char.isISOControl() || char !in '\u0020'..'\u007E') {
+                        ?: if (char !in '\u0020'..'\u007E') {
                             "\\u%04x".format(char.code)
                         } else {
                             char
