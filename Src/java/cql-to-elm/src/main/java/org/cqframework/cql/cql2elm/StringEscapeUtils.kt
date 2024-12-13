@@ -40,6 +40,7 @@ object StringEscapeUtils {
                 "|\\\\u[0-9a-fA-F]{4}"
         )
 
+    @JvmStatic
     fun escapeCql(input: String): String {
         return buildString {
             for (char in input) {
@@ -59,6 +60,7 @@ object StringEscapeUtils {
 
     private const val HEX_RADIX = 16
 
+    @JvmStatic
     fun unescapeCql(input: String): String {
         return UNESCAPE_REGEX.replace(input) { matchResult ->
             val match = matchResult.value
@@ -67,10 +69,10 @@ object StringEscapeUtils {
                 match in UNESCAPE_MAP ->
                     UNESCAPE_MAP[match]?.toString()
                         ?: throw IllegalArgumentException("Invalid escape sequence: $match")
-                match.startsWith("\\u") -> {
-                    // Handle Unicode escapes
-                    val hex = match.substring(2)
 
+                // Handle Unicode escapes
+                match.startsWith("\\u") -> {
+                    val hex = match.substring(2)
                     hex.toInt(HEX_RADIX).toChar().toString()
                 }
                 else -> throw IllegalArgumentException("Invalid escape sequence: $match")
