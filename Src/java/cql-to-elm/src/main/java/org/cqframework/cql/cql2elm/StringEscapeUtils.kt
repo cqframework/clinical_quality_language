@@ -67,9 +67,7 @@ object StringEscapeUtils {
             val match = matchResult.value
             when {
                 // Handle standard escape sequences
-                match in UNESCAPE_MAP ->
-                    UNESCAPE_MAP[match]?.toString()
-                        ?: throw IllegalArgumentException("Invalid escape sequence: $match")
+                match in UNESCAPE_MAP -> UNESCAPE_MAP[match].toString()
 
                 // Handle Unicode escapes
                 match.startsWith("\\u") -> {
