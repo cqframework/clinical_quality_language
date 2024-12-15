@@ -2,6 +2,7 @@ package org.cqframework.cql.cql2elm.model.invocation
 
 import org.cqframework.cql.cql2elm.model.Invocation
 import org.cqframework.cql.cql2elm.model.OperatorResolution
+import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.hl7.cql.model.DataType
 import org.hl7.elm.r1.Expression
 

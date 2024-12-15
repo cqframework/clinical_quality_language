@@ -5,9 +5,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import org.cqframework.cql.elm.visiting.BaseElmLibraryVisitor;
-import org.hl7.cql.model.IntervalType;
-import org.hl7.cql.model.ListType;
 import org.hl7.elm.r1.*;
+import org.jetbrains.annotations.NotNull;
 import org.opencds.cqf.cql.engine.elm.executing.*;
 import org.opencds.cqf.cql.engine.runtime.TemporalHelper;
 
@@ -173,22 +172,7 @@ public class EvaluationVisitor extends BaseElmLibraryVisitor<Object, State> {
         Object leftResult = visitExpression(left, state);
         Object rightResult = visitExpression(right, state);
 
-        // This will attempt to use the declared result types from the ELM to determine which type of Union
-        // to perform. If the types are not declared, it will fall back to checking the values of the result.
-        if (left.getResultType() instanceof ListType
-                || right.getResultType() instanceof ListType
-                || elm.getResultType() instanceof ListType) {
-            return UnionEvaluator.unionIterable((Iterable<?>) leftResult, (Iterable<?>) rightResult, state);
-        } else if (left.getResultType() instanceof IntervalType
-                || right.getResultType() instanceof IntervalType
-                || elm.getResultType() instanceof IntervalType) {
-            return UnionEvaluator.unionInterval(
-                    (org.opencds.cqf.cql.engine.runtime.Interval) leftResult,
-                    (org.opencds.cqf.cql.engine.runtime.Interval) rightResult,
-                    state);
-        } else {
-            return UnionEvaluator.union(left, right, state);
-        }
+        return UnionEvaluator.union(leftResult, rightResult, state);
     }
 
     @Override
@@ -1362,5 +1346,10 @@ public class EvaluationVisitor extends BaseElmLibraryVisitor<Object, State> {
     @Override
     public Object visitQuery(Query elm, State state) {
         return QueryEvaluator.internalEvaluate(elm, state, this);
+    }
+
+    @Override
+    protected Object defaultResult(@NotNull Element elm, State context) {
+        return null;
     }
 }

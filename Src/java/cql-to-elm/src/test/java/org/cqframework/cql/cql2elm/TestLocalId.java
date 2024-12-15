@@ -8,12 +8,12 @@ import org.antlr.v4.kotlinruntime.CharStreams;
 import org.antlr.v4.kotlinruntime.CommonTokenStream;
 import org.cqframework.cql.cql2elm.CqlCompilerOptions.Options;
 import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessor;
+import org.cqframework.cql.cql2elm.tracking.Trackable;
 import org.cqframework.cql.elm.IdObjectFactory;
 import org.cqframework.cql.elm.utility.Visitors;
 import org.cqframework.cql.elm.visiting.FunctionalElmVisitor;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
-import org.hl7.elm.r1.Element;
 import org.junit.jupiter.api.Test;
 
 // This test compiles a few example libraries and ensures
@@ -22,17 +22,13 @@ class TestLocalId {
 
     // This visitor checks that all nodes the graph have a localId
     static FunctionalElmVisitor<Void, String> idChecker = Visitors.from((node, libraryName) -> {
-        if (node instanceof Element) {
-            var locator = node.getTrackbacks().isEmpty()
-                    ? "<unknown>"
-                    : node.getTrackbacks().get(0).toLocator();
-            assertNotNull(
-                    String.format(
-                            "node %s in library %s is missing localId at %s",
-                            node.getClass().getName(), libraryName, locator),
-                    ((Element) node).getLocalId());
-        }
-
+        var trackbacks = Trackable.INSTANCE.getTrackbacks(node);
+        var locator = trackbacks.isEmpty() ? "<unknown>" : trackbacks.get(0).toLocator();
+        assertNotNull(
+                node.getLocalId(),
+                String.format(
+                        "node %s in library %s is missing localId at %s",
+                        node.getClass().getName(), libraryName, locator));
         return null;
     });
 

@@ -2,11 +2,10 @@ package org.cqframework.cql.elm.visiting
 
 import java.lang.reflect.Field
 import java.nio.charset.StandardCharsets
-import java.util.function.BiFunction
 import javax.xml.namespace.QName
-import org.cqframework.cql.elm.tracking.Trackable
 import org.hl7.cql_annotations.r1.Narrative
 import org.hl7.elm.r1.AccessModifier
+import org.hl7.elm.r1.Date
 import org.hl7.elm.r1.Element
 import org.hl7.elm.r1.Library
 import org.hl7.elm.r1.TypeSpecifier
@@ -38,20 +37,20 @@ class RandomElmGraphTest {
 
                     // Debugging for specific types and paths
                     // that aren't being visited.
-                    // if (t instanceof ConvertsToDate || t instanceof SplitOnMatches || t
-                    // instanceof DateFrom) {
-                    //     printContext((Element) t, context);
-                    // }
+                    if (t is Date) {
+                        printContext(t, context)
+                    }
                     return t
                 }
 
                 private fun printContext(t: Element, context: RandomizerContext) {
                     System.err.printf(
-                        "Type: %s, Parent: %s, Path: %s, Hash: %s%n",
+                        "Type: %s, Hash: %s, Parent: %s, Parent Hash: %s, Path: %s%n",
                         t.javaClass.simpleName,
+                        System.identityHashCode(t),
                         context.currentObject.javaClass.simpleName,
-                        context.currentField,
-                        System.identityHashCode(t)
+                        System.identityHashCode(context.currentObject),
+                        context.currentField
                     )
                 }
             }
@@ -76,24 +75,18 @@ class RandomElmGraphTest {
         val elementsVisited = HashMap<Int, Element>()
         val elementsDuplicated = HashMap<Int, Element>()
         val countingVisitor =
-            FunctionalElmVisitor(
-                BiFunction<Trackable?, HashMap<Int, Element>, Int?> {
-                    x: Trackable?,
-                    _: HashMap<Int, Element>? ->
-                    if (x is Element) {
-                        val hash = System.identityHashCode(x)
-                        if (!elementsVisited.containsKey(hash)) {
-                            elementsVisited[hash] = x
-                            return@BiFunction 1
-                        }
-                        elementsDuplicated[hash] = x
-                        return@BiFunction 0
+            FunctionalElmVisitor<Int, HashMap<Int, Element>>(
+                { x, _ ->
+                    val hash = System.identityHashCode(x)
+                    if (!elementsVisited.containsKey(hash)) {
+                        elementsVisited[hash] = x
+                        return@FunctionalElmVisitor 1
                     }
-                    0
-                }
-            ) { a: Int?, b: Int? ->
-                Integer.sum(a!!, b!!)
-            }
+                    elementsDuplicated[hash] = x
+                    return@FunctionalElmVisitor 0
+                },
+                { a, b -> a + b }
+            )
 
         val visitorCount = countingVisitor.visitLibrary(randomElm, elementsVisited)
 

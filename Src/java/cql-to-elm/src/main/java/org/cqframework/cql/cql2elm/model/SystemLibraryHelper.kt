@@ -2,6 +2,7 @@ package org.cqframework.cql.cql2elm.model
 
 import java.util.*
 import org.cqframework.cql.cql2elm.TypeBuilder
+import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.hl7.cql.model.IntervalType
 import org.hl7.cql.model.ListType
 import org.hl7.cql.model.NamedType

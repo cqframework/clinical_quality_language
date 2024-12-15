@@ -1,6 +1,7 @@
 package org.cqframework.cql.elm.evaluation;
 
 import java.math.BigDecimal;
+import org.cqframework.cql.cql2elm.tracking.Trackable;
 import org.cqframework.cql.elm.requirements.ElmRequirementsContext;
 import org.hl7.cql.model.IntervalType;
 import org.hl7.elm.r1.*;
@@ -32,9 +33,10 @@ public class ElmAnalysisHelper {
 
         // In the special case that the value is directly a parameter ref, use the parameter extension mechanism
         if (value instanceof ParameterRef) {
-            if (context.getTypeResolver().isIntervalType(value.getResultType())) {
+            var valueResultType = Trackable.INSTANCE.getResultType(value);
+            if (context.getTypeResolver().isIntervalType(valueResultType)) {
                 Extension e = toExpression(context, (ParameterRef) value);
-                org.hl7.cql.model.DataType pointType = ((IntervalType) value.getResultType()).getPointType();
+                org.hl7.cql.model.DataType pointType = ((IntervalType) valueResultType).getPointType();
                 if (context.getTypeResolver().isDateTimeType(pointType)
                         || context.getTypeResolver().isDateType(pointType)) {
                     Period period = new Period();
@@ -52,47 +54,46 @@ public class ElmAnalysisHelper {
                 }
             }
             // Boolean, Integer, Decimal, String, Quantity, Date, DateTime, Time, Coding, CodeableConcept
-            else if (context.getTypeResolver().isBooleanType(value.getResultType())) {
+            else if (context.getTypeResolver().isBooleanType(valueResultType)) {
                 BooleanType result = new BooleanType();
                 result.addExtension(toExpression(context, (ParameterRef) value));
                 return result;
-            } else if (context.getTypeResolver().isIntegerType(value.getResultType())) {
+            } else if (context.getTypeResolver().isIntegerType(valueResultType)) {
                 IntegerType result = new IntegerType();
                 result.addExtension(toExpression(context, (ParameterRef) value));
                 return result;
-            } else if (context.getTypeResolver().isDecimalType(value.getResultType())) {
+            } else if (context.getTypeResolver().isDecimalType(valueResultType)) {
                 DecimalType result = new DecimalType();
                 result.addExtension(toExpression(context, (ParameterRef) value));
                 return result;
-            } else if (context.getTypeResolver().isQuantityType(value.getResultType())) {
+            } else if (context.getTypeResolver().isQuantityType(valueResultType)) {
                 Quantity result = new Quantity();
                 result.addExtension(toExpression(context, (ParameterRef) value));
                 return result;
-            } else if (context.getTypeResolver().isCodeType(value.getResultType())) {
+            } else if (context.getTypeResolver().isCodeType(valueResultType)) {
                 Coding result = new Coding();
                 result.addExtension(toExpression(context, (ParameterRef) value));
                 return result;
 
-            } else if (context.getTypeResolver().isConceptType(value.getResultType())) {
+            } else if (context.getTypeResolver().isConceptType(valueResultType)) {
                 CodeableConcept result = new CodeableConcept();
                 result.addExtension(toExpression(context, (ParameterRef) value));
                 return result;
-            } else if (context.getTypeResolver().isDateType(value.getResultType())) {
+            } else if (context.getTypeResolver().isDateType(valueResultType)) {
                 DateType result = new DateType();
                 result.addExtension(toExpression(context, (ParameterRef) value));
                 return result;
-            } else if (context.getTypeResolver().isDateTimeType(value.getResultType())) {
+            } else if (context.getTypeResolver().isDateTimeType(valueResultType)) {
                 DateTimeType result = new DateTimeType();
                 result.addExtension(toExpression(context, (ParameterRef) value));
                 return result;
-            } else if (context.getTypeResolver().isTimeType(value.getResultType())) {
+            } else if (context.getTypeResolver().isTimeType(valueResultType)) {
                 TimeType result = new TimeType();
                 result.addExtension(toExpression(context, (ParameterRef) value));
                 return result;
             } else {
                 throw new IllegalArgumentException(String.format(
-                        "toFhirValue not implemented for parameter of type %s",
-                        value.getResultType().toString()));
+                        "toFhirValue not implemented for parameter of type %s", valueResultType.toString()));
             }
         }
 
@@ -103,15 +104,16 @@ public class ElmAnalysisHelper {
                     .setStartElement(toFhirDateTimeValue(context, ((Interval) value).getLow()))
                     .setEndElement(toFhirDateTimeValue(context, ((Interval) value).getHigh()));
         } else if (value instanceof Literal) {
-            if (context.getTypeResolver().isDateTimeType(value.getResultType())) {
+            var valueResultType = Trackable.INSTANCE.getResultType(value);
+            if (context.getTypeResolver().isDateTimeType(valueResultType)) {
                 return new DateTimeType(((Literal) value).getValue());
-            } else if (context.getTypeResolver().isDateType(value.getResultType())) {
+            } else if (context.getTypeResolver().isDateType(valueResultType)) {
                 return new DateType(((Literal) value).getValue());
-            } else if (context.getTypeResolver().isIntegerType(value.getResultType())) {
+            } else if (context.getTypeResolver().isIntegerType(valueResultType)) {
                 return new IntegerType(((Literal) value).getValue());
-            } else if (context.getTypeResolver().isDecimalType(value.getResultType())) {
+            } else if (context.getTypeResolver().isDecimalType(valueResultType)) {
                 return new DecimalType(((Literal) value).getValue());
-            } else if (context.getTypeResolver().isStringType(value.getResultType())) {
+            } else if (context.getTypeResolver().isStringType(valueResultType)) {
                 return new StringType(((Literal) value).getValue());
             }
         } else if (value instanceof DateTime) {

@@ -1,8 +1,6 @@
 package org.cqframework.cql.elm.visiting
 
-import org.cqframework.cql.elm.tracking.Trackable
 import org.hl7.elm.r1.Abs
-import org.hl7.elm.r1.AccessModifier
 import org.hl7.elm.r1.Add
 import org.hl7.elm.r1.After
 import org.hl7.elm.r1.Aggregate
@@ -250,9 +248,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      *
      * @return
      */
-    protected open fun defaultResult(elm: Trackable?, context: C): T? {
-        return null
-    }
+    protected abstract fun defaultResult(elm: Element, context: C): T
 
     /**
      * Provides for aggregation behavior of the results of a visit. Default behavior returns the
@@ -262,7 +258,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param nextResult Next result to be aggregated
      * @return The result of aggregating the nextResult into aggregate
      */
-    protected open fun aggregateResult(aggregate: T?, nextResult: T?): T? {
+    protected open fun aggregateResult(aggregate: T, nextResult: T): T {
         return nextResult
     }
 
@@ -274,7 +270,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitElement(elm: Element, context: C): T? {
+    override fun visitElement(elm: Element, context: C): T {
         return when (elm) {
             is Expression -> visitExpression(elm, context)
             is CaseItem -> visitCaseItem(elm, context)
@@ -297,7 +293,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitTypeSpecifier(elm: TypeSpecifier, context: C): T? {
+    override fun visitTypeSpecifier(elm: TypeSpecifier, context: C): T {
         return when (elm) {
             is NamedTypeSpecifier -> visitNamedTypeSpecifier(elm, context)
             is IntervalTypeSpecifier -> visitIntervalTypeSpecifier(elm, context)
@@ -318,7 +314,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    fun visitParameterTypeSpecifier(elm: ParameterTypeSpecifier?, context: C): T? {
+    fun visitParameterTypeSpecifier(elm: ParameterTypeSpecifier, context: C): T {
         return defaultResult(elm, context)
     }
 
@@ -330,7 +326,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitNamedTypeSpecifier(elm: NamedTypeSpecifier, context: C): T? {
+    override fun visitNamedTypeSpecifier(elm: NamedTypeSpecifier, context: C): T {
         return defaultResult(elm, context)
     }
 
@@ -342,7 +338,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitIntervalTypeSpecifier(elm: IntervalTypeSpecifier, context: C): T? {
+    override fun visitIntervalTypeSpecifier(elm: IntervalTypeSpecifier, context: C): T {
         var result = defaultResult(elm, context)
 
         if (elm.pointType != null) {
@@ -361,7 +357,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitListTypeSpecifier(elm: ListTypeSpecifier, context: C): T? {
+    override fun visitListTypeSpecifier(elm: ListTypeSpecifier, context: C): T {
         var result = defaultResult(elm, context)
 
         if (elm.elementType != null) {
@@ -380,7 +376,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitTupleElementDefinition(elm: TupleElementDefinition, context: C): T? {
+    override fun visitTupleElementDefinition(elm: TupleElementDefinition, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.elementType != null) {
@@ -404,7 +400,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitTupleTypeSpecifier(elm: TupleTypeSpecifier, context: C): T? {
+    override fun visitTupleTypeSpecifier(elm: TupleTypeSpecifier, context: C): T {
         var result = defaultResult(elm, context)
 
         for (element in elm.element) {
@@ -422,7 +418,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitChoiceTypeSpecifier(elm: ChoiceTypeSpecifier, context: C): T? {
+    override fun visitChoiceTypeSpecifier(elm: ChoiceTypeSpecifier, context: C): T {
         var result = defaultResult(elm, context)
 
         for (choice in elm.choice) {
@@ -446,7 +442,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitExpression(elm: Expression, context: C): T? {
+    override fun visitExpression(elm: Expression, context: C): T {
         return when (elm) {
             is AliasRef -> visitAliasRef(elm, context)
             is Case -> visitCase(elm, context)
@@ -487,7 +483,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitOperatorExpression(elm: OperatorExpression, context: C): T? {
+    override fun visitOperatorExpression(elm: OperatorExpression, context: C): T {
         return when (elm) {
             is Round -> visitRound(elm, context)
             is Combine -> visitCombine(elm, context)
@@ -528,7 +524,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitUnaryExpression(elm: UnaryExpression, context: C): T? {
+    override fun visitUnaryExpression(elm: UnaryExpression, context: C): T {
         return when (elm) {
             is Abs -> visitAbs(elm, context)
             is As -> visitAs(elm, context)
@@ -603,7 +599,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitBinaryExpression(elm: BinaryExpression, context: C): T? {
+    override fun visitBinaryExpression(elm: BinaryExpression, context: C): T {
         return when (elm) {
             is Add -> visitAdd(elm, context)
             is After -> visitAfter(elm, context)
@@ -673,7 +669,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitTernaryExpression(elm: TernaryExpression, context: C): T? {
+    override fun visitTernaryExpression(elm: TernaryExpression, context: C): T {
         if (elm is ReplaceMatches) return visitReplaceMatches(elm, context)
         else throw IllegalArgumentException("Unknown TernaryExpression type: " + elm.javaClass.name)
     }
@@ -686,7 +682,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitNaryExpression(elm: NaryExpression, context: C): T? {
+    override fun visitNaryExpression(elm: NaryExpression, context: C): T {
         return when (elm) {
             is Coalesce -> visitCoalesce(elm, context)
             is Concatenate -> visitConcatenate(elm, context)
@@ -706,7 +702,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitExpressionDef(elm: ExpressionDef, context: C): T? {
+    override fun visitExpressionDef(elm: ExpressionDef, context: C): T {
         if (elm is FunctionDef) {
             return visitFunctionDef(elm, context)
         }
@@ -722,7 +718,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitFunctionDef(elm: FunctionDef, context: C): T? {
+    override fun visitFunctionDef(elm: FunctionDef, context: C): T {
         var result = visitFields(elm, context)
 
         for (operand in elm.operand) {
@@ -734,20 +730,6 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
     }
 
     /**
-     * Visit AccessModifier. This method will be called for every node in the tree that is an
-     * AccessModifier.
-     *
-     * @param elm the ELM tree
-     * @param context the context passed to the visitor
-     * @return the visitor result
-     */
-    @Suppress("UnusedParameter")
-    fun visitAccessModifier(elm: AccessModifier?, context: C): T? {
-        // NOTE: AccessModifier isn't trackable?
-        return defaultResult(null, context)
-    }
-
-    /**
      * Visit an ExpressionRef. This method will be called for every node in the tree that is an
      * ExpressionRef.
      *
@@ -755,7 +737,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitExpressionRef(elm: ExpressionRef, context: C): T? {
+    override fun visitExpressionRef(elm: ExpressionRef, context: C): T {
         if (elm is FunctionRef) {
             return visitFunctionRef(elm, context)
         }
@@ -771,7 +753,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitFunctionRef(elm: FunctionRef, context: C): T? {
+    override fun visitFunctionRef(elm: FunctionRef, context: C): T {
         var result = visitFields(elm, context)
 
         for (element in elm.operand) {
@@ -795,7 +777,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitParameterDef(elm: ParameterDef, context: C): T? {
+    override fun visitParameterDef(elm: ParameterDef, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.parameterTypeSpecifier != null) {
@@ -819,7 +801,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitParameterRef(elm: ParameterRef, context: C): T? {
+    override fun visitParameterRef(elm: ParameterRef, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -831,7 +813,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitOperandDef(elm: OperandDef, context: C): T? {
+    override fun visitOperandDef(elm: OperandDef, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.operandTypeSpecifier != null) {
@@ -850,7 +832,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitOperandRef(elm: OperandRef, context: C): T? {
+    override fun visitOperandRef(elm: OperandRef, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -862,7 +844,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitIdentifierRef(elm: IdentifierRef, context: C): T? {
+    override fun visitIdentifierRef(elm: IdentifierRef, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -873,27 +855,8 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitLiteral(elm: Literal, context: C): T? {
+    override fun visitLiteral(elm: Literal, context: C): T {
         return visitFields(elm, context)
-    }
-
-    /**
-     * Visit a TupleElement. This method will be called for every node in the tree that is a
-     * TupleElement.
-     *
-     * @param elm the ELM tree
-     * @param context the context passed to the visitor
-     * @return the visitor result
-     */
-    override fun visitTupleElement(elm: TupleElement, context: C): T? {
-        var result = defaultResult(elm, context)
-
-        if (elm.value != null) {
-            val childResult = visitExpression(elm.value, context)
-            result = aggregateResult(result, childResult)
-        }
-
-        return result
     }
 
     /**
@@ -903,34 +866,33 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitTuple(elm: Tuple, context: C): T? {
+    override fun visitTuple(elm: Tuple, context: C): T {
         var result = visitFields(elm, context)
 
         for (element in elm.element) {
-            val childResult = visitTupleElement(element, context)
-            result = aggregateResult(result, childResult)
+            if (element.value != null) {
+                val childResult = visitExpression(element.value, context)
+                result = aggregateResult(result, childResult)
+            }
         }
 
         return result
     }
 
     /**
-     * Visit an InstanceElement. This method will be called for every node in the tree that is an
-     * InstanceElement.
+     * Visit a TupleElement. this method will be called for every node in the tree that is a
+     * TupleElement.
      *
-     * @param elm the ELM tree
+     * NOTE: TupleElement is not an Element, so it is not visited by the visitElement method. By
+     * default, this method visits the "value" of the TupleElement. If the "value" null, it is not
+     * visited
+     *
+     * @param tupleElement the TupleElement to visit
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitInstanceElement(elm: InstanceElement, context: C): T? {
-        var result = defaultResult(elm, context)
-
-        if (elm.value != null) {
-            val childResult = visitExpression(elm.value, context)
-            result = aggregateResult(result, childResult)
-        }
-
-        return result
+    override fun visitTupleElement(tupleElement: TupleElement, context: C): T {
+        return visitExpression(tupleElement.value, context)
     }
 
     /**
@@ -940,15 +902,32 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitInstance(elm: Instance, context: C): T? {
+    override fun visitInstance(elm: Instance, context: C): T {
         var result = visitFields(elm, context)
 
         for (element in elm.element) {
-            val childResult = visitInstanceElement(element, context)
-            result = aggregateResult(result, childResult)
+            if (element.value != null) {
+                val childResult = visitExpression(element.value, context)
+                result = aggregateResult(result, childResult)
+            }
         }
 
         return result
+    }
+
+    /**
+     * Visit an InstanceElement. this method will be called for every node in the tree that is an
+     * InstanceElement.
+     *
+     * NOTE: InstanceElement is not an Element, so it is not visited by the visitElement method. By
+     * default, this method visits the "value" of the InstanceElement.
+     *
+     * @param instanceElement the InstanceElement to visit
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    override fun visitInstanceElement(instanceElement: InstanceElement, context: C): T {
+        return visitExpression(instanceElement.value, context)
     }
 
     /**
@@ -958,7 +937,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitInterval(elm: Interval, context: C): T? {
+    override fun visitInterval(elm: Interval, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.low != null) {
@@ -988,7 +967,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitList(elm: List, context: C): T? {
+    override fun visitList(elm: List, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.typeSpecifier != null) {
@@ -1011,7 +990,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitAnd(elm: And, context: C): T? {
+    override fun visitAnd(elm: And, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1022,7 +1001,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitOr(elm: Or, context: C): T? {
+    override fun visitOr(elm: Or, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1033,7 +1012,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitXor(elm: Xor, context: C): T? {
+    override fun visitXor(elm: Xor, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1044,7 +1023,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitImplies(elm: Implies, context: C): T? {
+    override fun visitImplies(elm: Implies, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1055,7 +1034,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitNot(elm: Not, context: C): T? {
+    override fun visitNot(elm: Not, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1066,7 +1045,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitIf(elm: If, context: C): T? {
+    override fun visitIf(elm: If, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.condition != null) {
@@ -1092,7 +1071,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitCaseItem(elm: CaseItem, context: C): T? {
+    override fun visitCaseItem(elm: CaseItem, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.getWhen() != null) {
@@ -1114,7 +1093,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitCase(elm: Case, context: C): T? {
+    override fun visitCase(elm: Case, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.comparand != null) {
@@ -1142,7 +1121,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitNull(elm: Null, context: C): T? {
+    override fun visitNull(elm: Null, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1153,7 +1132,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitIsNull(elm: IsNull, context: C): T? {
+    override fun visitIsNull(elm: IsNull, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1164,7 +1143,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitIsTrue(elm: IsTrue, context: C): T? {
+    override fun visitIsTrue(elm: IsTrue, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1175,7 +1154,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitIsFalse(elm: IsFalse, context: C): T? {
+    override fun visitIsFalse(elm: IsFalse, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1186,7 +1165,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitCoalesce(elm: Coalesce, context: C): T? {
+    override fun visitCoalesce(elm: Coalesce, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1197,7 +1176,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitIs(elm: Is, context: C): T? {
+    override fun visitIs(elm: Is, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.isTypeSpecifier != null) {
@@ -1215,7 +1194,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitAs(elm: As, context: C): T? {
+    override fun visitAs(elm: As, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.asTypeSpecifier != null) {
@@ -1233,7 +1212,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitConvert(elm: Convert, context: C): T? {
+    override fun visitConvert(elm: Convert, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.toTypeSpecifier != null) {
@@ -1252,7 +1231,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitCanConvert(elm: CanConvert, context: C): T? {
+    override fun visitCanConvert(elm: CanConvert, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.toTypeSpecifier != null) {
@@ -1271,7 +1250,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitConvertsToBoolean(elm: ConvertsToBoolean, context: C): T? {
+    override fun visitConvertsToBoolean(elm: ConvertsToBoolean, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1282,7 +1261,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitToBoolean(elm: ToBoolean, context: C): T? {
+    override fun visitToBoolean(elm: ToBoolean, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1293,7 +1272,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitToChars(elm: ToChars, context: C): T? {
+    override fun visitToChars(elm: ToChars, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1304,7 +1283,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitToConcept(elm: ToConcept, context: C): T? {
+    override fun visitToConcept(elm: ToConcept, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1316,7 +1295,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitConvertsToDate(elm: ConvertsToDate, context: C): T? {
+    override fun visitConvertsToDate(elm: ConvertsToDate, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1327,7 +1306,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitToDate(elm: ToDate, context: C): T? {
+    override fun visitToDate(elm: ToDate, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1339,7 +1318,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitConvertsToDateTime(elm: ConvertsToDateTime, context: C): T? {
+    override fun visitConvertsToDateTime(elm: ConvertsToDateTime, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1351,7 +1330,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitToDateTime(elm: ToDateTime, context: C): T? {
+    override fun visitToDateTime(elm: ToDateTime, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1363,7 +1342,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitConvertsToLong(elm: ConvertsToLong, context: C): T? {
+    override fun visitConvertsToLong(elm: ConvertsToLong, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1374,7 +1353,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitToLong(elm: ToLong, context: C): T? {
+    override fun visitToLong(elm: ToLong, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1386,7 +1365,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitConvertsToDecimal(elm: ConvertsToDecimal, context: C): T? {
+    override fun visitConvertsToDecimal(elm: ConvertsToDecimal, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1397,7 +1376,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitToDecimal(elm: ToDecimal, context: C): T? {
+    override fun visitToDecimal(elm: ToDecimal, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1409,7 +1388,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitConvertsToInteger(elm: ConvertsToInteger, context: C): T? {
+    override fun visitConvertsToInteger(elm: ConvertsToInteger, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1420,7 +1399,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitToInteger(elm: ToInteger, context: C): T? {
+    override fun visitToInteger(elm: ToInteger, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1431,7 +1410,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitToList(elm: ToList, context: C): T? {
+    override fun visitToList(elm: ToList, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1443,7 +1422,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitConvertQuantity(elm: ConvertQuantity, context: C): T? {
+    override fun visitConvertQuantity(elm: ConvertQuantity, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1455,7 +1434,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitCanConvertQuantity(elm: CanConvertQuantity, context: C): T? {
+    override fun visitCanConvertQuantity(elm: CanConvertQuantity, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1467,7 +1446,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitConvertsToQuantity(elm: ConvertsToQuantity, context: C): T? {
+    override fun visitConvertsToQuantity(elm: ConvertsToQuantity, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1479,7 +1458,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitToQuantity(elm: ToQuantity, context: C): T? {
+    override fun visitToQuantity(elm: ToQuantity, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1491,7 +1470,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitConvertsToRatio(elm: ConvertsToRatio, context: C): T? {
+    override fun visitConvertsToRatio(elm: ConvertsToRatio, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1502,7 +1481,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitToRatio(elm: ToRatio, context: C): T? {
+    override fun visitToRatio(elm: ToRatio, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1514,7 +1493,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitConvertsToString(elm: ConvertsToString, context: C): T? {
+    override fun visitConvertsToString(elm: ConvertsToString, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1525,7 +1504,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitToString(elm: ToString, context: C): T? {
+    override fun visitToString(elm: ToString, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1537,7 +1516,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitConvertsToTime(elm: ConvertsToTime, context: C): T? {
+    override fun visitConvertsToTime(elm: ConvertsToTime, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1548,7 +1527,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitToTime(elm: ToTime, context: C): T? {
+    override fun visitToTime(elm: ToTime, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1559,7 +1538,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitEqual(elm: Equal, context: C): T? {
+    override fun visitEqual(elm: Equal, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1571,7 +1550,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitEquivalent(elm: Equivalent, context: C): T? {
+    override fun visitEquivalent(elm: Equivalent, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1582,7 +1561,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitNotEqual(elm: NotEqual, context: C): T? {
+    override fun visitNotEqual(elm: NotEqual, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1593,7 +1572,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitLess(elm: Less, context: C): T? {
+    override fun visitLess(elm: Less, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1604,7 +1583,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitGreater(elm: Greater, context: C): T? {
+    override fun visitGreater(elm: Greater, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1616,7 +1595,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitLessOrEqual(elm: LessOrEqual, context: C): T? {
+    override fun visitLessOrEqual(elm: LessOrEqual, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1628,7 +1607,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitGreaterOrEqual(elm: GreaterOrEqual, context: C): T? {
+    override fun visitGreaterOrEqual(elm: GreaterOrEqual, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1639,7 +1618,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitAdd(elm: Add, context: C): T? {
+    override fun visitAdd(elm: Add, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1650,7 +1629,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitSubtract(elm: Subtract, context: C): T? {
+    override fun visitSubtract(elm: Subtract, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1661,7 +1640,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitMultiply(elm: Multiply, context: C): T? {
+    override fun visitMultiply(elm: Multiply, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1672,7 +1651,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitDivide(elm: Divide, context: C): T? {
+    override fun visitDivide(elm: Divide, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1684,7 +1663,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitTruncatedDivide(elm: TruncatedDivide, context: C): T? {
+    override fun visitTruncatedDivide(elm: TruncatedDivide, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1695,7 +1674,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitModulo(elm: Modulo, context: C): T? {
+    override fun visitModulo(elm: Modulo, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1706,7 +1685,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitCeiling(elm: Ceiling, context: C): T? {
+    override fun visitCeiling(elm: Ceiling, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1717,7 +1696,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitFloor(elm: Floor, context: C): T? {
+    override fun visitFloor(elm: Floor, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1728,7 +1707,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitTruncate(elm: Truncate, context: C): T? {
+    override fun visitTruncate(elm: Truncate, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1739,7 +1718,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitAbs(elm: Abs, context: C): T? {
+    override fun visitAbs(elm: Abs, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1750,7 +1729,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitNegate(elm: Negate, context: C): T? {
+    override fun visitNegate(elm: Negate, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1761,7 +1740,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitRound(elm: Round, context: C): T? {
+    override fun visitRound(elm: Round, context: C): T {
         var result = visitFields(elm, context)
         if (elm.operand != null) {
             val childResult = visitExpression(elm.operand, context)
@@ -1783,7 +1762,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitLn(elm: Ln, context: C): T? {
+    override fun visitLn(elm: Ln, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1794,7 +1773,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitExp(elm: Exp, context: C): T? {
+    override fun visitExp(elm: Exp, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1805,7 +1784,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitLog(elm: Log, context: C): T? {
+    override fun visitLog(elm: Log, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1816,7 +1795,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitPower(elm: Power, context: C): T? {
+    override fun visitPower(elm: Power, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1827,7 +1806,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitSuccessor(elm: Successor, context: C): T? {
+    override fun visitSuccessor(elm: Successor, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1839,7 +1818,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitPredecessor(elm: Predecessor, context: C): T? {
+    override fun visitPredecessor(elm: Predecessor, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1850,7 +1829,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitMinValue(elm: MinValue, context: C): T? {
+    override fun visitMinValue(elm: MinValue, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1861,7 +1840,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitMaxValue(elm: MaxValue, context: C): T? {
+    override fun visitMaxValue(elm: MaxValue, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1872,7 +1851,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitPrecision(elm: Precision, context: C): T? {
+    override fun visitPrecision(elm: Precision, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1884,7 +1863,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitLowBoundary(elm: LowBoundary, context: C): T? {
+    override fun visitLowBoundary(elm: LowBoundary, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1896,7 +1875,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitHighBoundary(elm: HighBoundary, context: C): T? {
+    override fun visitHighBoundary(elm: HighBoundary, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1908,7 +1887,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitConcatenate(elm: Concatenate, context: C): T? {
+    override fun visitConcatenate(elm: Concatenate, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1919,7 +1898,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitCombine(elm: Combine, context: C): T? {
+    override fun visitCombine(elm: Combine, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.source != null) {
@@ -1941,7 +1920,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitSplit(elm: Split, context: C): T? {
+    override fun visitSplit(elm: Split, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.stringToSplit != null) {
@@ -1964,7 +1943,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitSplitOnMatches(elm: SplitOnMatches, context: C): T? {
+    override fun visitSplitOnMatches(elm: SplitOnMatches, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.stringToSplit != null) {
@@ -1986,7 +1965,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitLength(elm: Length, context: C): T? {
+    override fun visitLength(elm: Length, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -1997,7 +1976,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitUpper(elm: Upper, context: C): T? {
+    override fun visitUpper(elm: Upper, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2008,7 +1987,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitLower(elm: Lower, context: C): T? {
+    override fun visitLower(elm: Lower, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2019,7 +1998,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitIndexer(elm: Indexer, context: C): T? {
+    override fun visitIndexer(elm: Indexer, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2031,7 +2010,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitPositionOf(elm: PositionOf, context: C): T? {
+    override fun visitPositionOf(elm: PositionOf, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.pattern != null) {
@@ -2054,7 +2033,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitLastPositionOf(elm: LastPositionOf, context: C): T? {
+    override fun visitLastPositionOf(elm: LastPositionOf, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.pattern != null) {
@@ -2076,7 +2055,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitSubstring(elm: Substring, context: C): T? {
+    override fun visitSubstring(elm: Substring, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.stringToSub != null) {
@@ -2103,7 +2082,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitStartsWith(elm: StartsWith, context: C): T? {
+    override fun visitStartsWith(elm: StartsWith, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2114,7 +2093,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitEndsWith(elm: EndsWith, context: C): T? {
+    override fun visitEndsWith(elm: EndsWith, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2125,7 +2104,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitMatches(elm: Matches, context: C): T? {
+    override fun visitMatches(elm: Matches, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2137,7 +2116,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitReplaceMatches(elm: ReplaceMatches, context: C): T? {
+    override fun visitReplaceMatches(elm: ReplaceMatches, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2149,7 +2128,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitDurationBetween(elm: DurationBetween, context: C): T? {
+    override fun visitDurationBetween(elm: DurationBetween, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2161,7 +2140,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitDifferenceBetween(elm: DifferenceBetween, context: C): T? {
+    override fun visitDifferenceBetween(elm: DifferenceBetween, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2172,7 +2151,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitDateFrom(elm: DateFrom, context: C): T? {
+    override fun visitDateFrom(elm: DateFrom, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2183,7 +2162,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitTimeFrom(elm: TimeFrom, context: C): T? {
+    override fun visitTimeFrom(elm: TimeFrom, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2195,7 +2174,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitTimezoneFrom(elm: TimezoneFrom, context: C): T? {
+    override fun visitTimezoneFrom(elm: TimezoneFrom, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2207,7 +2186,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitTimezoneOffsetFrom(elm: TimezoneOffsetFrom, context: C): T? {
+    override fun visitTimezoneOffsetFrom(elm: TimezoneOffsetFrom, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2219,7 +2198,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitDateTimeComponentFrom(elm: DateTimeComponentFrom, context: C): T? {
+    override fun visitDateTimeComponentFrom(elm: DateTimeComponentFrom, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2230,7 +2209,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitTimeOfDay(elm: TimeOfDay, context: C): T? {
+    override fun visitTimeOfDay(elm: TimeOfDay, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2241,7 +2220,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitToday(elm: Today, context: C): T? {
+    override fun visitToday(elm: Today, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2252,7 +2231,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitNow(elm: Now, context: C): T? {
+    override fun visitNow(elm: Now, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2263,7 +2242,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitDateTime(elm: DateTime, context: C): T? {
+    override fun visitDateTime(elm: DateTime, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.year != null) {
@@ -2309,7 +2288,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitDate(elm: Date, context: C): T? {
+    override fun visitDate(elm: Date, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.year != null) {
@@ -2335,7 +2314,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitTime(elm: Time, context: C): T? {
+    override fun visitTime(elm: Time, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.hour != null) {
@@ -2365,7 +2344,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitSameAs(elm: SameAs, context: C): T? {
+    override fun visitSameAs(elm: SameAs, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2377,7 +2356,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitSameOrBefore(elm: SameOrBefore, context: C): T? {
+    override fun visitSameOrBefore(elm: SameOrBefore, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2389,7 +2368,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitSameOrAfter(elm: SameOrAfter, context: C): T? {
+    override fun visitSameOrAfter(elm: SameOrAfter, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2400,7 +2379,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitWidth(elm: Width, context: C): T? {
+    override fun visitWidth(elm: Width, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2411,7 +2390,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitSize(elm: Size, context: C): T? {
+    override fun visitSize(elm: Size, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2422,7 +2401,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitPointFrom(elm: PointFrom, context: C): T? {
+    override fun visitPointFrom(elm: PointFrom, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2433,7 +2412,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitStart(elm: Start, context: C): T? {
+    override fun visitStart(elm: Start, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2444,7 +2423,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitEnd(elm: End, context: C): T? {
+    override fun visitEnd(elm: End, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2455,7 +2434,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitContains(elm: Contains, context: C): T? {
+    override fun visitContains(elm: Contains, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2467,7 +2446,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitProperContains(elm: ProperContains, context: C): T? {
+    override fun visitProperContains(elm: ProperContains, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2478,7 +2457,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitIn(elm: In, context: C): T? {
+    override fun visitIn(elm: In, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2489,7 +2468,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitProperIn(elm: ProperIn, context: C): T? {
+    override fun visitProperIn(elm: ProperIn, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2500,7 +2479,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitIncludes(elm: Includes, context: C): T? {
+    override fun visitIncludes(elm: Includes, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2512,7 +2491,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitIncludedIn(elm: IncludedIn, context: C): T? {
+    override fun visitIncludedIn(elm: IncludedIn, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2524,7 +2503,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitProperIncludes(elm: ProperIncludes, context: C): T? {
+    override fun visitProperIncludes(elm: ProperIncludes, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2536,7 +2515,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitProperIncludedIn(elm: ProperIncludedIn, context: C): T? {
+    override fun visitProperIncludedIn(elm: ProperIncludedIn, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2547,7 +2526,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitBefore(elm: Before, context: C): T? {
+    override fun visitBefore(elm: Before, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2558,7 +2537,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitAfter(elm: After, context: C): T? {
+    override fun visitAfter(elm: After, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2569,7 +2548,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitMeets(elm: Meets, context: C): T? {
+    override fun visitMeets(elm: Meets, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2581,7 +2560,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitMeetsBefore(elm: MeetsBefore, context: C): T? {
+    override fun visitMeetsBefore(elm: MeetsBefore, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2593,7 +2572,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitMeetsAfter(elm: MeetsAfter, context: C): T? {
+    override fun visitMeetsAfter(elm: MeetsAfter, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2604,7 +2583,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitOverlaps(elm: Overlaps, context: C): T? {
+    override fun visitOverlaps(elm: Overlaps, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2616,7 +2595,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitOverlapsBefore(elm: OverlapsBefore, context: C): T? {
+    override fun visitOverlapsBefore(elm: OverlapsBefore, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2628,7 +2607,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitOverlapsAfter(elm: OverlapsAfter, context: C): T? {
+    override fun visitOverlapsAfter(elm: OverlapsAfter, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2639,7 +2618,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitStarts(elm: Starts, context: C): T? {
+    override fun visitStarts(elm: Starts, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2650,7 +2629,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitEnds(elm: Ends, context: C): T? {
+    override fun visitEnds(elm: Ends, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2661,7 +2640,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitCollapse(elm: Collapse, context: C): T? {
+    override fun visitCollapse(elm: Collapse, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2672,7 +2651,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitExpand(elm: Expand, context: C): T? {
+    override fun visitExpand(elm: Expand, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2683,7 +2662,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitUnion(elm: Union, context: C): T? {
+    override fun visitUnion(elm: Union, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2695,7 +2674,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitIntersect(elm: Intersect, context: C): T? {
+    override fun visitIntersect(elm: Intersect, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2706,7 +2685,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitExcept(elm: Except, context: C): T? {
+    override fun visitExcept(elm: Except, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2717,7 +2696,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitExists(elm: Exists, context: C): T? {
+    override fun visitExists(elm: Exists, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2728,7 +2707,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitTimes(elm: Times, context: C): T? {
+    override fun visitTimes(elm: Times, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2739,7 +2718,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitFilter(elm: Filter, context: C): T? {
+    override fun visitFilter(elm: Filter, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.source != null) {
@@ -2761,7 +2740,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitFirst(elm: First, context: C): T? {
+    override fun visitFirst(elm: First, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.source != null) {
@@ -2779,7 +2758,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitLast(elm: Last, context: C): T? {
+    override fun visitLast(elm: Last, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.source != null) {
@@ -2797,7 +2776,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitSlice(elm: Slice, context: C): T? {
+    override fun visitSlice(elm: Slice, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.source != null) {
@@ -2823,7 +2802,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitChildren(elm: Children, context: C): T? {
+    override fun visitChildren(elm: Children, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.source != null) {
@@ -2842,7 +2821,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitDescendents(elm: Descendents, context: C): T? {
+    override fun visitDescendents(elm: Descendents, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.source != null) {
@@ -2860,7 +2839,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitMessage(elm: Message, context: C): T? {
+    override fun visitMessage(elm: Message, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.source != null) {
@@ -2894,7 +2873,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitIndexOf(elm: IndexOf, context: C): T? {
+    override fun visitIndexOf(elm: IndexOf, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.source != null) {
@@ -2916,7 +2895,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitFlatten(elm: Flatten, context: C): T? {
+    override fun visitFlatten(elm: Flatten, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -2927,7 +2906,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitSort(elm: Sort, context: C): T? {
+    override fun visitSort(elm: Sort, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.source != null) {
@@ -2949,7 +2928,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitForEach(elm: ForEach, context: C): T? {
+    override fun visitForEach(elm: ForEach, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.source != null) {
@@ -2971,7 +2950,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitRepeat(elm: Repeat, context: C): T? {
+    override fun visitRepeat(elm: Repeat, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.source != null) {
@@ -2993,7 +2972,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitDistinct(elm: Distinct, context: C): T? {
+    override fun visitDistinct(elm: Distinct, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -3004,7 +2983,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitCurrent(elm: Current, context: C): T? {
+    override fun visitCurrent(elm: Current, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -3016,7 +2995,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitIteration(elm: Iteration, context: C): T? {
+    override fun visitIteration(elm: Iteration, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -3027,7 +3006,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitTotal(elm: Total, context: C): T? {
+    override fun visitTotal(elm: Total, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -3039,7 +3018,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitSingletonFrom(elm: SingletonFrom, context: C): T? {
+    override fun visitSingletonFrom(elm: SingletonFrom, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -3051,7 +3030,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitAggregateExpression(elm: AggregateExpression, context: C): T? {
+    override fun visitAggregateExpression(elm: AggregateExpression, context: C): T {
         return when (elm) {
             is Aggregate -> visitAggregate(elm, context)
             is Count -> visitCount(elm, context)
@@ -3084,7 +3063,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitAggregate(elm: Aggregate, context: C): T? {
+    override fun visitAggregate(elm: Aggregate, context: C): T {
         var result = visitFields(elm as AggregateExpression, context)
 
         if (elm.initialValue != null) {
@@ -3106,7 +3085,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitCount(elm: Count, context: C): T? {
+    override fun visitCount(elm: Count, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -3117,7 +3096,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitSum(elm: Sum, context: C): T? {
+    override fun visitSum(elm: Sum, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -3128,7 +3107,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitProduct(elm: Product, context: C): T? {
+    override fun visitProduct(elm: Product, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -3140,7 +3119,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitGeometricMean(elm: GeometricMean, context: C): T? {
+    override fun visitGeometricMean(elm: GeometricMean, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -3151,7 +3130,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitMin(elm: Min, context: C): T? {
+    override fun visitMin(elm: Min, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -3162,7 +3141,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitMax(elm: Max, context: C): T? {
+    override fun visitMax(elm: Max, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -3173,7 +3152,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitAvg(elm: Avg, context: C): T? {
+    override fun visitAvg(elm: Avg, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -3184,7 +3163,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitMedian(elm: Median, context: C): T? {
+    override fun visitMedian(elm: Median, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -3195,7 +3174,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitMode(elm: Mode, context: C): T? {
+    override fun visitMode(elm: Mode, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -3206,7 +3185,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitVariance(elm: Variance, context: C): T? {
+    override fun visitVariance(elm: Variance, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -3218,7 +3197,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitPopulationVariance(elm: PopulationVariance, context: C): T? {
+    override fun visitPopulationVariance(elm: PopulationVariance, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -3229,7 +3208,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitStdDev(elm: StdDev, context: C): T? {
+    override fun visitStdDev(elm: StdDev, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -3241,7 +3220,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitPopulationStdDev(elm: PopulationStdDev, context: C): T? {
+    override fun visitPopulationStdDev(elm: PopulationStdDev, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -3252,7 +3231,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitAllTrue(elm: AllTrue, context: C): T? {
+    override fun visitAllTrue(elm: AllTrue, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -3263,7 +3242,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitAnyTrue(elm: AnyTrue, context: C): T? {
+    override fun visitAnyTrue(elm: AnyTrue, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -3274,7 +3253,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitProperty(elm: Property, context: C): T? {
+    override fun visitProperty(elm: Property, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.source != null) {
@@ -3293,7 +3272,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitAliasedQuerySource(elm: AliasedQuerySource, context: C): T? {
+    override fun visitAliasedQuerySource(elm: AliasedQuerySource, context: C): T {
         if (elm is RelationshipClause) {
             return visitRelationshipClause(elm, context)
         }
@@ -3308,7 +3287,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitLetClause(elm: LetClause, context: C): T? {
+    override fun visitLetClause(elm: LetClause, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.expression != null) {
@@ -3327,7 +3306,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitRelationshipClause(elm: RelationshipClause, context: C): T? {
+    override fun visitRelationshipClause(elm: RelationshipClause, context: C): T {
         return when (elm) {
             is With -> {
                 visitWith(elm, context)
@@ -3350,7 +3329,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitWith(elm: With, context: C): T? {
+    override fun visitWith(elm: With, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -3361,7 +3340,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitWithout(elm: Without, context: C): T? {
+    override fun visitWithout(elm: Without, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -3373,7 +3352,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitSortByItem(elm: SortByItem, context: C): T? {
+    override fun visitSortByItem(elm: SortByItem, context: C): T {
         return when (elm) {
             is ByDirection -> {
                 visitByDirection(elm, context)
@@ -3396,7 +3375,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitByDirection(elm: ByDirection, context: C): T? {
+    override fun visitByDirection(elm: ByDirection, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -3407,7 +3386,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitByColumn(elm: ByColumn, context: C): T? {
+    override fun visitByColumn(elm: ByColumn, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -3419,7 +3398,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitByExpression(elm: ByExpression, context: C): T? {
+    override fun visitByExpression(elm: ByExpression, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.expression != null) {
@@ -3438,7 +3417,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitSortClause(elm: SortClause, context: C): T? {
+    override fun visitSortClause(elm: SortClause, context: C): T {
         var result = visitFields(elm, context)
 
         for (sbi in elm.by) {
@@ -3457,7 +3436,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitAggregateClause(elm: AggregateClause, context: C): T? {
+    override fun visitAggregateClause(elm: AggregateClause, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.expression != null) {
@@ -3480,7 +3459,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitReturnClause(elm: ReturnClause, context: C): T? {
+    override fun visitReturnClause(elm: ReturnClause, context: C): T {
         var result = visitFields(elm, context)
 
         if (elm.expression != null) {
@@ -3498,7 +3477,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitQuery(elm: Query, context: C): T? {
+    override fun visitQuery(elm: Query, context: C): T {
         var result = visitFields(elm, context)
 
         for (source in elm.source) {
@@ -3544,7 +3523,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitAliasRef(elm: AliasRef, context: C): T? {
+    override fun visitAliasRef(elm: AliasRef, context: C): T {
         return visitFields(elm, context)
     }
 
@@ -3556,11 +3535,11 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitQueryLetRef(elm: QueryLetRef, context: C): T? {
+    override fun visitQueryLetRef(elm: QueryLetRef, context: C): T {
         return visitFields(elm, context)
     }
 
-    protected fun visitFields(elm: Element, context: C): T? {
+    protected fun visitFields(elm: Element, context: C): T {
         var result = defaultResult(elm, context)
 
         if (elm.resultTypeSpecifier != null) {
@@ -3571,11 +3550,11 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         return result
     }
 
-    protected fun visitFields(elm: Expression, context: C): T? {
+    protected fun visitFields(elm: Expression, context: C): T {
         return visitFields(elm as Element, context)
     }
 
-    protected fun visitFields(elm: RelationshipClause, context: C): T? {
+    protected fun visitFields(elm: RelationshipClause, context: C): T {
         var result = visitFields(elm as AliasedQuerySource, context)
 
         if (elm.suchThat != null) {
@@ -3593,7 +3572,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context
      * @return
      */
-    protected fun visitFields(elm: AggregateExpression, context: C): T? {
+    protected fun visitFields(elm: AggregateExpression, context: C): T {
         var result = visitFields(elm as Expression, context)
 
         if (elm.source != null) {
@@ -3616,13 +3595,9 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context
      * @return
      */
-    protected fun visitFields(elm: ExpressionDef, context: C): T? {
+    protected fun visitFields(elm: ExpressionDef, context: C): T {
         var result = visitFields(elm as Element, context)
 
-        if (elm.accessLevel != null) {
-            val childResult = visitAccessModifier(elm.accessLevel, context)
-            result = aggregateResult(result, childResult)
-        }
         if (elm.expression != null) {
             val childResult = visitExpression(elm.expression, context)
             result = aggregateResult(result, childResult)
@@ -3638,7 +3613,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context
      * @return
      */
-    protected fun visitFields(elm: UnaryExpression, context: C): T? {
+    protected fun visitFields(elm: UnaryExpression, context: C): T {
         var result = visitFields(elm as OperatorExpression, context)
 
         if (elm.operand != null) {
@@ -3656,7 +3631,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context
      * @return
      */
-    protected fun visitFields(elm: NaryExpression, context: C): T? {
+    protected fun visitFields(elm: NaryExpression, context: C): T {
         var result = visitFields(elm as OperatorExpression, context)
 
         for (e in elm.operand) {
@@ -3674,7 +3649,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context
      * @return
      */
-    protected fun visitFields(elm: TernaryExpression, context: C): T? {
+    protected fun visitFields(elm: TernaryExpression, context: C): T {
         var result = visitFields(elm as OperatorExpression, context)
 
         for (s in elm.operand) {
@@ -3692,7 +3667,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context
      * @return
      */
-    protected fun visitFields(elm: OperatorExpression, context: C): T? {
+    protected fun visitFields(elm: OperatorExpression, context: C): T {
         var result = visitFields(elm as Expression, context)
 
         for (s in elm.signature) {
@@ -3710,7 +3685,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @param context
      * @return
      */
-    protected open fun visitFields(elm: BinaryExpression, context: C): T? {
+    protected open fun visitFields(elm: BinaryExpression, context: C): T {
         var result = visitFields(elm as OperatorExpression, context)
 
         for (e in elm.operand) {
@@ -3721,7 +3696,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         return result
     }
 
-    protected open fun visitFields(elm: AliasedQuerySource, context: C): T? {
+    protected open fun visitFields(elm: AliasedQuerySource, context: C): T {
         var result = visitFields(elm as Element, context)
 
         if (elm.expression != null) {

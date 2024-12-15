@@ -7,9 +7,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationModule;
 import org.cqframework.cql.elm.serializing.jackson.mixins.CqlToElmBaseMixIn;
-import org.cqframework.cql.elm.serializing.jackson.mixins.TrackableMixIn;
 import org.cqframework.cql.elm.serializing.jackson.mixins.TypeSpecifierMixIn;
-import org.cqframework.cql.elm.tracking.Trackable;
 import org.hl7.cql_annotations.r1.CqlToElmBase;
 import org.hl7.elm.r1.TypeSpecifier;
 
@@ -22,7 +20,6 @@ public class ElmJsonMapper {
             .defaultPropertyInclusion(JsonInclude.Value.construct(
                     JsonInclude.Include.CUSTOM, JsonInclude.Include.NON_EMPTY, NoEmptyListsFilter.class, Void.class))
             .addModule(new JakartaXmlBindAnnotationModule())
-            .addMixIn(Trackable.class, TrackableMixIn.class)
             .addMixIn(TypeSpecifier.class, TypeSpecifierMixIn.class)
             .addMixIn(CqlToElmBase.class, CqlToElmBaseMixIn.class)
             .build();

@@ -15,7 +15,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-import org.cqframework.cql.elm.tracking.TrackBack;
+import org.cqframework.cql.cql2elm.tracking.TrackBack;
+import org.cqframework.cql.cql2elm.tracking.Trackable;
 import org.hamcrest.Matchers;
 import org.hl7.cql.model.IntervalType;
 import org.hl7.cql.model.SimpleType;
@@ -344,8 +345,10 @@ class TranslationTests {
         ProperContains properContains = (ProperContains) test.getExpression();
         assertThat(properContains.getOperand().get(0), instanceOf(Interval.class));
         Interval interval = (Interval) properContains.getOperand().get(0);
-        assertThat(interval.getResultType(), instanceOf(IntervalType.class));
-        IntervalType intervalType = (IntervalType) interval.getResultType();
+
+        var intervalResultType = Trackable.INSTANCE.getResultType(interval);
+        assertThat(intervalResultType, instanceOf(IntervalType.class));
+        IntervalType intervalType = (IntervalType) intervalResultType;
         assertThat(intervalType.getPointType(), instanceOf(SimpleType.class));
         SimpleType pointType = (SimpleType) intervalType.getPointType();
         assertThat(pointType.getName(), equalTo("System.Integer"));
@@ -359,8 +362,10 @@ class TranslationTests {
         properContains = (ProperContains) test.getExpression();
         assertThat(properContains.getOperand().get(0), instanceOf(Interval.class));
         interval = (Interval) properContains.getOperand().get(0);
-        assertThat(interval.getResultType(), instanceOf(IntervalType.class));
-        intervalType = (IntervalType) interval.getResultType();
+
+        intervalResultType = Trackable.INSTANCE.getResultType(interval);
+        assertThat(intervalResultType, instanceOf(IntervalType.class));
+        intervalType = (IntervalType) intervalResultType;
         assertThat(intervalType.getPointType(), instanceOf(SimpleType.class));
         pointType = (SimpleType) intervalType.getPointType();
         assertThat(pointType.getName(), equalTo("System.Integer"));
@@ -374,8 +379,10 @@ class TranslationTests {
         properContains = (ProperContains) test.getExpression();
         assertThat(properContains.getOperand().get(0), instanceOf(Interval.class));
         interval = (Interval) properContains.getOperand().get(0);
-        assertThat(interval.getResultType(), instanceOf(IntervalType.class));
-        intervalType = (IntervalType) interval.getResultType();
+
+        intervalResultType = Trackable.INSTANCE.getResultType(interval);
+        assertThat(intervalResultType, instanceOf(IntervalType.class));
+        intervalType = (IntervalType) intervalResultType;
         assertThat(intervalType.getPointType(), instanceOf(SimpleType.class));
         pointType = (SimpleType) intervalType.getPointType();
         assertThat(pointType.getName(), equalTo("System.Any"));
@@ -386,8 +393,9 @@ class TranslationTests {
         properContains = (ProperContains) test.getExpression();
         assertThat(properContains.getOperand().get(0), instanceOf(Interval.class));
         interval = (Interval) properContains.getOperand().get(0);
-        assertThat(interval.getResultType(), instanceOf(IntervalType.class));
-        intervalType = (IntervalType) interval.getResultType();
+        intervalResultType = Trackable.INSTANCE.getResultType(interval);
+        assertThat(intervalResultType, instanceOf(IntervalType.class));
+        intervalType = (IntervalType) intervalResultType;
         assertThat(intervalType.getPointType(), instanceOf(SimpleType.class));
         pointType = (SimpleType) intervalType.getPointType();
         assertThat(pointType.getName(), equalTo("System.Any"));
@@ -398,8 +406,10 @@ class TranslationTests {
         properContains = (ProperContains) test.getExpression();
         assertThat(properContains.getOperand().get(0), instanceOf(Interval.class));
         interval = (Interval) properContains.getOperand().get(0);
-        assertThat(interval.getResultType(), instanceOf(IntervalType.class));
-        intervalType = (IntervalType) interval.getResultType();
+
+        intervalResultType = Trackable.INSTANCE.getResultType(interval);
+        assertThat(intervalResultType, instanceOf(IntervalType.class));
+        intervalType = (IntervalType) intervalResultType;
         assertThat(intervalType.getPointType(), instanceOf(SimpleType.class));
         pointType = (SimpleType) intervalType.getPointType();
         assertThat(pointType.getName(), equalTo("System.Integer"));

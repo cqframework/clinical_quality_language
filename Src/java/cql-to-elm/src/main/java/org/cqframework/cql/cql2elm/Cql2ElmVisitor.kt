@@ -21,8 +21,10 @@ import org.cqframework.cql.cql2elm.model.invocation.*
 import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorElmCommonVisitor
 import org.cqframework.cql.cql2elm.preprocessor.ExpressionDefinitionInfo
 import org.cqframework.cql.cql2elm.preprocessor.LibraryInfo
-import org.cqframework.cql.elm.tracking.TrackBack
-import org.cqframework.cql.elm.tracking.Trackable
+import org.cqframework.cql.cql2elm.tracking.TrackBack
+import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
+import org.cqframework.cql.cql2elm.tracking.Trackable.trackbacks
+import org.cqframework.cql.cql2elm.tracking.Trackable.withResultType
 import org.cqframework.cql.gen.cqlLexer
 import org.cqframework.cql.gen.cqlParser
 import org.cqframework.cql.gen.cqlParser.*
@@ -624,7 +626,6 @@ class Cql2ElmVisitor(
             of.createTupleElement()
                 .withName(parseString(ctx.referentialIdentifier()))
                 .withValue(parseExpression(ctx.expression()))
-        result.resultType = result.value.resultType
         return result
     }
 
@@ -633,7 +634,7 @@ class Cql2ElmVisitor(
         val elements = mutableListOf<TupleTypeElement>()
         for (elementContext in ctx.tupleElementSelector()) {
             val element = visit(elementContext) as TupleElement
-            elements.add(TupleTypeElement(element.name, element.resultType!!))
+            elements.add(TupleTypeElement(element.name, element.value.resultType!!))
             tuple.element.add(element)
         }
         tuple.resultType = TupleType(elements)
@@ -645,7 +646,6 @@ class Cql2ElmVisitor(
             of.createInstanceElement()
                 .withName(parseString(ctx.referentialIdentifier()))
                 .withValue(parseExpression(ctx.expression()))
-        result.resultType = result.value.resultType
         return result
     }
 
@@ -3533,8 +3533,7 @@ class Cql2ElmVisitor(
                             else aqs.resultType
                         element.value.resultType =
                             sourceType // Doesn't use the fluent API to avoid casting
-                        element.resultType = element.value.resultType
-                        elements.add(TupleTypeElement(element.name, element.resultType!!))
+                        elements.add(TupleTypeElement(element.name, element.value.resultType!!))
                         returnExpression.element.add(element)
                     }
                     val returnType = TupleType(elements)
@@ -4544,14 +4543,12 @@ class Cql2ElmVisitor(
                 op.resultType = functionDef.resultType
             } else {
                 functionDef.isExternal = true
-                if (resultType == null) {
+                requireNotNull(resultType) {
                     // ERROR:
-                    throw IllegalArgumentException(
-                        String.format(
-                            Locale.US,
-                            "Function %s is marked external but does not declare a return type.",
-                            functionDef.name
-                        )
+                    String.format(
+                        Locale.US,
+                        "Function %s is marked external but does not declare a return type.",
+                        functionDef.name
                     )
                 }
                 functionDef.resultType = resultType.resultType
@@ -4654,7 +4651,7 @@ class Cql2ElmVisitor(
         }
     }
 
-    private fun track(trackable: Trackable?, pt: ParseTree): TrackBack? {
+    private fun track(trackable: Element?, pt: ParseTree): TrackBack? {
         val tb = getTrackBack(pt)
         if (tb != null) {
             trackable!!.trackbacks.add(tb)
@@ -4665,13 +4662,13 @@ class Cql2ElmVisitor(
         return tb
     }
 
-    private fun track(trackable: Trackable?, from: Element): TrackBack? {
+    private fun track(element: Element?, from: Element): TrackBack? {
         val tb = if (from.trackbacks.isNotEmpty()) from.trackbacks[0] else null
         if (tb != null) {
-            trackable!!.trackbacks.add(tb)
+            element!!.trackbacks.add(tb)
         }
-        if (trackable is Element) {
-            decorate(trackable, tb)
+        if (element is Element) {
+            decorate(element, tb)
         }
         return tb
     }

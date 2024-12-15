@@ -16,6 +16,7 @@ import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.LibraryBuilder;
 import org.cqframework.cql.cql2elm.TestUtils;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
+import org.cqframework.cql.cql2elm.tracking.Trackable;
 import org.hl7.cql.model.ChoiceType;
 import org.hl7.cql.model.ClassType;
 import org.hl7.cql.model.DataType;
@@ -208,7 +209,7 @@ class BaseTest {
     private void assertResultType(
             CompiledLibrary translatedLibrary, String expressionName, String namespace, String name) {
         ExpressionDef ed = translatedLibrary.resolveExpressionRef(expressionName);
-        DataType resultType = ed.getExpression().getResultType();
+        DataType resultType = Trackable.INSTANCE.getResultType(ed.getExpression());
         assertThat(resultType, instanceOf(ClassType.class));
         ClassType resultClassType = (ClassType) resultType;
         assertThat(resultClassType.getNamespace(), equalTo(namespace));
@@ -225,7 +226,7 @@ class BaseTest {
         assertResultType(translatedLibrary, "TestElementModifierExtensions", "FHIR", "Extension");
 
         ExpressionDef ed = translatedLibrary.resolveExpressionRef("TestChoiceConverts");
-        DataType resultType = ed.getExpression().getResultType();
+        DataType resultType = Trackable.INSTANCE.getResultType(ed.getExpression());
         assertThat(resultType, instanceOf(ChoiceType.class));
         assertThat(
                 resultType.toString(),

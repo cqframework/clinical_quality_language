@@ -23,7 +23,7 @@ class FunctionalElmVisitorTest {
         library.getStatements().getDef().add(new ExpressionDef());
 
         var result = trackableCounter.visitLibrary(library, null);
-        assertEquals(4 + 3, result.intValue()); // ELM elements + implicit access modifiers
+        assertEquals(4, result.intValue()); // ELM elements
 
         // set up visitor that counts all visited ELM elements
         var elmCounter =
@@ -32,11 +32,11 @@ class FunctionalElmVisitorTest {
         result = elmCounter.visitLibrary(library, null);
         assertEquals(4, result.intValue());
 
-        var maxFiveCounter = new FunctionalElmVisitor<Integer, Void>(
-                (elm, context) -> 1, (aggregate, nextResult) -> aggregate >= 5 ? aggregate : aggregate + nextResult);
+        var maxThreeCounter = new FunctionalElmVisitor<Integer, Void>(
+                (elm, context) -> 1, (aggregate, nextResult) -> aggregate >= 3 ? aggregate : aggregate + nextResult);
 
-        result = maxFiveCounter.visitLibrary(library, null);
-        assertEquals(5, result.intValue());
+        result = maxThreeCounter.visitLibrary(library, null);
+        assertEquals(3, result.intValue());
     }
 
     @Test

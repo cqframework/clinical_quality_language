@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import javax.xml.namespace.QName;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.model.Model;
+import org.cqframework.cql.cql2elm.tracking.Trackable;
 import org.hl7.cql.model.*;
 import org.hl7.elm.r1.*;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
@@ -107,8 +108,9 @@ public class TypeResolver {
         }
 
         // If the typeSpecifier already has a type, use it
-        if (typeSpecifier.getResultType() != null) {
-            return typeSpecifier.getResultType();
+        var resultType = Trackable.INSTANCE.getResultType(typeSpecifier);
+        if (resultType != null) {
+            return resultType;
         }
 
         if (typeSpecifier instanceof NamedTypeSpecifier) {
