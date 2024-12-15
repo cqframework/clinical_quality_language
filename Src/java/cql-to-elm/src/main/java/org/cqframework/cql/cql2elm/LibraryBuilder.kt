@@ -1718,7 +1718,7 @@ class LibraryBuilder(
         return invocation
     }
 
-    fun verifyComparable(dataType: DataType?) {
+    fun verifyComparable(dataType: DataType) {
         val left = objectFactory.createLiteral().withResultType(dataType) as Expression
         val right = objectFactory.createLiteral().withResultType(dataType) as Expression
         val comparison: BinaryExpression = objectFactory.createLess().withOperand(left, right)
@@ -2368,14 +2368,8 @@ class LibraryBuilder(
     }
 
     private fun validateUcumUnit(unit: String) {
-        if (libraryManager.ucumService != null) {
-            val ucumService = libraryManager.ucumService
-            val message = ucumService?.validate(unit)
-            if (message != null) {
-                // ERROR:
-                throw IllegalArgumentException(message)
-            }
-        }
+        val message = libraryManager.ucumService?.validate(unit)
+        require(message == null) { message!! }
     }
 
     fun createQuantity(value: BigDecimal?, unit: String): Quantity {

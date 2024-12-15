@@ -642,10 +642,9 @@ class Cql2ElmVisitor(
     }
 
     override fun visitInstanceElementSelector(ctx: InstanceElementSelectorContext): Any? {
-        val result =
-            of.createInstanceElement()
-                .withName(parseString(ctx.referentialIdentifier()))
-                .withValue(parseExpression(ctx.expression()))
+        val name = parseString(ctx.referentialIdentifier())
+        val exp = parseExpression(ctx.expression())
+        val result = of.createInstanceElement().withName(name).withValue(exp)
         return result
     }
 
@@ -3576,9 +3575,11 @@ class Cql2ElmVisitor(
                                     // result element
                                     // type
                                     // of the query context
-                                    libraryBuilder.verifyComparable(queryContext.resultElementType)
+                                    libraryBuilder.verifyComparable(
+                                        queryContext.resultElementType!!
+                                    )
                                 } else {
-                                    libraryBuilder.verifyComparable(sortByItem.resultType)
+                                    libraryBuilder.verifyComparable(sortByItem.resultType!!)
                                 }
                             }
                         } finally {
