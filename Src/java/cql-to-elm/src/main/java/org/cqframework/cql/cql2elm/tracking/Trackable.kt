@@ -13,37 +13,33 @@ import org.hl7.elm.r1.Element
  * In Java use Trackable.INSTANCE to access the same functionality.
  */
 object Trackable {
-    private fun Any.refHash(): Int = System.identityHashCode(this)
-
-    private val trackerIdsByElement = HashMap<Int, UUID>()
+    private val trackerIdsByElement = WeakIdentityHashMap<Element, UUID>()
     var Element.trackerId: UUID
-        get() = trackerIdsByElement.getOrPut(this.refHash()) { UUID.randomUUID() }
+        get() = trackerIdsByElement.getOrPut(this) { UUID.randomUUID() }
         set(value) {
-            trackerIdsByElement[this.refHash()] = value
+            trackerIdsByElement[this] = value
         }
 
-    private val trackbacksByElement = HashMap<Int, MutableList<TrackBack>>()
+    private val trackbacksByElement = WeakIdentityHashMap<Element, MutableList<TrackBack>>()
     var Element.trackbacks: MutableList<TrackBack>
-        get() = trackbacksByElement.getOrPut(this.refHash()) { ArrayList() }
+        get() = trackbacksByElement.getOrPut(this) { ArrayList() }
         set(value) {
-            trackbacksByElement[this.refHash()] = value
+            trackbacksByElement[this] = value
         }
 
-    private val resultTypesByElement = HashMap<Int, DataType?>()
+    private val resultTypesByElement = WeakIdentityHashMap<Element, DataType?>()
     var Element.resultType: DataType?
-        get() = resultTypesByElement[this.refHash()]
+        get() = resultTypesByElement[this]
         set(value) {
-            resultTypesByElement[this.refHash()] = value
+            if (value == null) {
+                resultTypesByElement.remove(this)
+            } else {
+                resultTypesByElement[this] = value
+            }
         }
 
     fun <T : Element> T.withResultType(resultType: DataType?): T {
         this.resultType = resultType
         return this
-    }
-
-    fun clear() {
-        trackerIdsByElement.clear()
-        trackbacksByElement.clear()
-        resultTypesByElement.clear()
     }
 }
