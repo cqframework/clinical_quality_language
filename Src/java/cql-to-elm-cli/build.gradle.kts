@@ -13,6 +13,7 @@ dependencies {
     implementation(project(":qdm"))
     implementation(project(":model-jaxb"))
     implementation(project(":elm-jaxb"))
+    implementation(project(":ucum"))
     implementation("net.sf.jopt-simple:jopt-simple:4.7")
     implementation("org.slf4j:slf4j-simple:1.7.36")
     implementation("org.glassfish.jaxb:jaxb-runtime:4.0.5")
