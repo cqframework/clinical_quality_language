@@ -1,7 +1,6 @@
 package org.cqframework.cql.elm.visiting
 
 import java.util.function.BiFunction
-import org.cqframework.cql.elm.tracking.Trackable
 
 /**
  * This is a base class for visitors that apply functions to all the visited ELM elements. Useful
@@ -9,15 +8,15 @@ import org.cqframework.cql.elm.tracking.Trackable
  * type.
  */
 class FunctionalElmVisitor<T, C>(
-    private val defaultResult: BiFunction<Trackable?, C, T?>,
-    private val aggregateResult: BiFunction<T?, T?, T?>
+    private val defaultResult: BiFunction<org.hl7.elm.r1.Element, C, T>,
+    private val aggregateResult: BiFunction<T, T, T>
 ) : BaseElmLibraryVisitor<T, C>() {
 
-    public override fun defaultResult(elm: Trackable?, context: C): T? {
+    public override fun defaultResult(elm: org.hl7.elm.r1.Element, context: C): T {
         return defaultResult.apply(elm, context)
     }
 
-    public override fun aggregateResult(aggregate: T?, nextResult: T?): T? {
+    public override fun aggregateResult(aggregate: T, nextResult: T): T {
         return aggregateResult.apply(aggregate, nextResult)
     }
 }

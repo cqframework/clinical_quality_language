@@ -1,6 +1,6 @@
 package org.cqframework.cql.cql2elm
 
-import org.cqframework.cql.elm.tracking.TrackBack
+import org.cqframework.cql.cql2elm.tracking.TrackBack
 
 /** Created by Bryn on 5/20/2017. */
 class CqlInternalException : CqlCompilerException {

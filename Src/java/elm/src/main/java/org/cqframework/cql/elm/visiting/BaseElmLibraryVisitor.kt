@@ -17,7 +17,7 @@ abstract class BaseElmLibraryVisitor<T, C> :
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitElement(elm: Element, context: C): T? =
+    override fun visitElement(elm: Element, context: C): T =
         when (elm) {
             is IncludeDef -> visitIncludeDef(elm, context)
             is ContextDef -> visitContextDef(elm, context)
@@ -33,7 +33,7 @@ abstract class BaseElmLibraryVisitor<T, C> :
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitLibrary(elm: Library, context: C): T? {
+    override fun visitLibrary(elm: Library, context: C): T {
         var result = visitFields(elm, context)
         elm.usings?.def?.forEach {
             val childResult = visitUsingDef(it, context)
@@ -90,7 +90,7 @@ abstract class BaseElmLibraryVisitor<T, C> :
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitUsingDef(elm: UsingDef, context: C): T? = visitFields(elm, context)
+    override fun visitUsingDef(elm: UsingDef, context: C): T = visitFields(elm, context)
 
     /**
      * Visit a IncludeDef. This method will be called for every node in the tree that is a
@@ -100,7 +100,7 @@ abstract class BaseElmLibraryVisitor<T, C> :
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitIncludeDef(elm: IncludeDef, context: C): T? = visitFields(elm, context)
+    override fun visitIncludeDef(elm: IncludeDef, context: C): T = visitFields(elm, context)
 
     /**
      * Visit a ContextDef. This method will be called for every node in the tree that is a
@@ -110,5 +110,5 @@ abstract class BaseElmLibraryVisitor<T, C> :
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    override fun visitContextDef(elm: ContextDef, context: C): T? = visitFields(elm, context)
+    override fun visitContextDef(elm: ContextDef, context: C): T = visitFields(elm, context)
 }

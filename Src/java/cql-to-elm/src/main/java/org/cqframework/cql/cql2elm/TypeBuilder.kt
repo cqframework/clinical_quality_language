@@ -6,6 +6,7 @@ import java.util.*
 import javax.xml.namespace.QName
 import kotlin.collections.ArrayList
 import org.cqframework.cql.cql2elm.model.Model
+import org.cqframework.cql.cql2elm.tracking.Trackable.withResultType
 import org.cqframework.cql.elm.IdObjectFactory
 import org.hl7.cql.model.*
 import org.hl7.elm.r1.ParameterTypeSpecifier

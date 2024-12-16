@@ -15,9 +15,11 @@ import org.cqframework.cql.cql2elm.*
 import org.cqframework.cql.cql2elm.model.Chunk
 import org.cqframework.cql.cql2elm.model.FunctionHeader
 import org.cqframework.cql.cql2elm.model.Model
+import org.cqframework.cql.cql2elm.tracking.TrackBack
+import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
+import org.cqframework.cql.cql2elm.tracking.Trackable.trackbacks
+import org.cqframework.cql.cql2elm.tracking.Trackable.withResultType
 import org.cqframework.cql.elm.IdObjectFactory
-import org.cqframework.cql.elm.tracking.TrackBack
-import org.cqframework.cql.elm.tracking.Trackable
 import org.cqframework.cql.gen.cqlBaseVisitor
 import org.cqframework.cql.gen.cqlParser.*
 import org.hl7.cql.model.*
@@ -88,13 +90,12 @@ abstract class CqlPreprocessorElmCommonVisitor(
             try {
                 o = super.visit(tree)
                 if (o is Element) {
-                    val element = o
-                    if (element.localId == null) {
+                    if (o.localId == null) {
                         throw CqlInternalException(
                             String.format(
                                 Locale.US,
                                 "Internal translator error. 'localId' was not assigned for Element \"%s\"",
-                                element.javaClass.name
+                                o.javaClass.name
                             ),
                             getTrackBack(tree)
                         )
@@ -127,7 +128,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
                 }
                 o = of.createNull()
             }
-            if (o is Trackable && tree !is LibraryContext) {
+            if (o is Element && tree !is LibraryContext) {
                 track(o, tree)
             }
             o
@@ -295,7 +296,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
                         // Add header information (comments prior to the definition)
                         val definitionInfo = libraryInfo.resolveDefinition(tree)
                         if (definitionInfo?.headerInterval != null) {
-                            val headerChunk = Chunk(definitionInfo?.headerInterval!!, true)
+                            val headerChunk = Chunk(definitionInfo.headerInterval!!, true)
                             val newChunk = Chunk(Interval(headerChunk.interval.a, chunk.interval.b))
                             newChunk.addChunk(headerChunk)
                             newChunk.element = chunk.element
@@ -562,14 +563,13 @@ abstract class CqlPreprocessorElmCommonVisitor(
         )
     }
 
-    private fun track(trackable: Trackable, pt: ParseTree): TrackBack? {
+    private fun track(element: Element, pt: ParseTree): TrackBack? {
         val tb = getTrackBack(pt)
         if (tb != null) {
-            trackable.trackbacks.add(tb)
+            element.trackbacks.add(tb)
         }
-        if (trackable is Element) {
-            decorate(trackable, tb)
-        }
+
+        decorate(element, tb)
         return tb
     }
 

@@ -8,6 +8,7 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
 import org.cqframework.cql.cql2elm.model.CompiledLibrary
+import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.cqframework.cql.cql2elm.ucum.UcumService
 import org.cqframework.cql.cql2elm.ucum.UcumServiceFactory
 import org.cqframework.cql.elm.serializing.ElmLibraryReaderFactory
@@ -345,12 +346,10 @@ constructor(
     }
 
     private fun isVersionCompatible(library: Library): Boolean {
-        if (cqlCompilerOptions.compatibilityLevel.isNotBlank()) {
-            if (library.annotation != null) {
-                val version: String? = CompilerOptions.getCompilerVersion(library)
-                if (version != null) {
-                    return (version == cqlCompilerOptions.compatibilityLevel)
-                }
+        if (cqlCompilerOptions.compatibilityLevel.isNotBlank() && library.annotation != null) {
+            val version: String? = CompilerOptions.getCompilerVersion(library)
+            if (version != null) {
+                return (version == cqlCompilerOptions.compatibilityLevel)
             }
         }
         return false
@@ -365,12 +364,13 @@ constructor(
             return result
         }
 
-        override fun equals(obj: Any?): Boolean {
-            if (this === obj) return true
-            if (obj == null) return false
-            if (javaClass != obj.javaClass) return false
-            val other: FunctionSig = obj as FunctionSig
-            return (other.name == name) && other.numArguments == numArguments
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other == null) return false
+            if (other is FunctionSig) {
+                return (other.name == name) && other.numArguments == numArguments
+            }
+            return false
         }
     }
 

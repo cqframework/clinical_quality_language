@@ -15,6 +15,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
+import org.cqframework.cql.cql2elm.tracking.Trackable;
 import org.hl7.cql_annotations.r1.CqlToElmError;
 import org.hl7.elm.r1.*;
 import org.junit.jupiter.api.AfterAll;
@@ -565,9 +566,9 @@ class LibraryTests {
 
         assertEquals("calledFunc", functionRef.getName());
         assertEquals(1, functionRef.getOperand().size());
-        assertEquals(
-                "System.Decimal",
-                functionRef.getOperand().get(0).getResultType().toString());
+        var operand = functionRef.getOperand().get(0);
+        var resultType = Trackable.INSTANCE.getResultType(operand);
+        assertEquals("System.Decimal", resultType.toString());
     }
 
     @Test
@@ -592,9 +593,9 @@ class LibraryTests {
 
         assertEquals("calledFunc", functionRef.getName());
         assertEquals(1, functionRef.getOperand().size());
-        assertEquals(
-                "System.Decimal",
-                functionRef.getOperand().get(0).getResultType().toString());
+        var operand = functionRef.getOperand().get(0);
+        var resultType = Trackable.INSTANCE.getResultType(operand);
+        assertEquals("System.Decimal", resultType.toString());
     }
 
     @Test
@@ -619,12 +620,14 @@ class LibraryTests {
 
         assertEquals("callee", functionRef.getName());
         assertEquals(3, functionRef.getOperand().size());
-        assertEquals(
-                "System.Decimal",
-                functionRef.getOperand().get(0).getResultType().toString());
-        assertEquals(
-                "System.Decimal",
-                functionRef.getOperand().get(1).getResultType().toString());
+
+        var operand = functionRef.getOperand().get(0);
+        var resultType = Trackable.INSTANCE.getResultType(operand);
+        assertEquals("System.Decimal", resultType.toString());
+
+        operand = functionRef.getOperand().get(1);
+        resultType = Trackable.INSTANCE.getResultType(operand);
+        assertEquals("System.Decimal", resultType.toString());
     }
 
     @Test
@@ -656,9 +659,10 @@ class LibraryTests {
 
         assertEquals("calledFunc", functionRef.getName());
         assertEquals(1, functionRef.getOperand().size());
-        assertEquals(
-                "System.Decimal",
-                functionRef.getOperand().get(0).getResultType().toString());
+
+        var operand = functionRef.getOperand().get(0);
+        var resultType = Trackable.INSTANCE.getResultType(operand);
+        assertEquals("System.Decimal", resultType.toString());
     }
 
     @Test
@@ -683,12 +687,14 @@ class LibraryTests {
 
         assertEquals("callee", functionRef.getName());
         assertEquals(2, functionRef.getOperand().size());
-        assertEquals(
-                "System.Decimal",
-                functionRef.getOperand().get(0).getResultType().toString());
-        assertEquals(
-                "System.Decimal",
-                functionRef.getOperand().get(1).getResultType().toString());
+
+        var operand = functionRef.getOperand().get(0);
+        var resultType = Trackable.INSTANCE.getResultType(operand);
+        assertEquals("System.Decimal", resultType.toString());
+
+        operand = functionRef.getOperand().get(1);
+        resultType = Trackable.INSTANCE.getResultType(operand);
+        assertEquals("System.Decimal", resultType.toString());
     }
 
     @Test

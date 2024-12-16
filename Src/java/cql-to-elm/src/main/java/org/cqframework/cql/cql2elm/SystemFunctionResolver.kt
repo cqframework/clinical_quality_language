@@ -9,6 +9,8 @@ import org.cqframework.cql.cql2elm.model.invocation.*
 import org.cqframework.cql.cql2elm.model.invocation.DateInvocation.Companion.setDateFieldsFromOperands
 import org.cqframework.cql.cql2elm.model.invocation.DateTimeInvocation.Companion.setDateTimeFieldsFromOperands
 import org.cqframework.cql.cql2elm.model.invocation.TimeInvocation.Companion.setTimeFieldsFromOperands
+import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
+import org.cqframework.cql.cql2elm.tracking.Trackable.trackbacks
 import org.cqframework.cql.elm.IdObjectFactory
 import org.hl7.elm.r1.*
 

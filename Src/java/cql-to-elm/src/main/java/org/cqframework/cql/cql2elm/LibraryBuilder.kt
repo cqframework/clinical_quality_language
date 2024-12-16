@@ -8,8 +8,10 @@ import javax.xml.namespace.QName
 import org.cqframework.cql.cql2elm.model.*
 import org.cqframework.cql.cql2elm.model.SystemLibraryHelper.load
 import org.cqframework.cql.cql2elm.model.invocation.*
+import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
+import org.cqframework.cql.cql2elm.tracking.Trackable.trackbacks
+import org.cqframework.cql.cql2elm.tracking.Trackable.withResultType
 import org.cqframework.cql.elm.IdObjectFactory
-import org.cqframework.cql.elm.tracking.Trackable
 import org.hl7.cql.model.*
 import org.hl7.cql_annotations.r1.*
 import org.hl7.cql_annotations.r1.ObjectFactory
@@ -1716,7 +1718,7 @@ class LibraryBuilder(
         return invocation
     }
 
-    fun verifyComparable(dataType: DataType?) {
+    fun verifyComparable(dataType: DataType) {
         val left = objectFactory.createLiteral().withResultType(dataType) as Expression
         val right = objectFactory.createLiteral().withResultType(dataType) as Expression
         val comparison: BinaryExpression = objectFactory.createLess().withOperand(left, right)
@@ -1767,14 +1769,9 @@ class LibraryBuilder(
             .withResultType(toType) as Query
     }
 
-    private fun reportWarning(message: String, expression: Trackable?) {
+    private fun reportWarning(message: String, expression: Element?) {
         val trackback =
-            if (
-                expression != null &&
-                    expression.trackbacks != null &&
-                    expression.trackbacks.isNotEmpty()
-            )
-                expression.trackbacks[0]
+            if (expression != null && expression.trackbacks.isNotEmpty()) expression.trackbacks[0]
             else null
         val warning =
             CqlSemanticException(message, CqlCompilerException.ErrorSeverity.Warning, trackback)
@@ -2371,14 +2368,8 @@ class LibraryBuilder(
     }
 
     private fun validateUcumUnit(unit: String) {
-        if (libraryManager.ucumService != null) {
-            val ucumService = libraryManager.ucumService
-            val message = ucumService?.validate(unit)
-            if (message != null) {
-                // ERROR:
-                throw IllegalArgumentException(message)
-            }
-        }
+        val message = libraryManager.ucumService?.validate(unit)
+        require(message == null) { message!! }
     }
 
     fun createQuantity(value: BigDecimal?, unit: String): Quantity {
@@ -3639,12 +3630,12 @@ class LibraryBuilder(
      *
      * @param identifier The identifier belonging to the parameter, expression, function, alias,
      *   etc, to be evaluated.
-     * @param trackable The construct trackable, for example [ExpressionRef].
+     * @param element The construct trackable, for example [ExpressionRef].
      */
     @JvmOverloads
     fun pushIdentifier(
         identifier: String,
-        trackable: Trackable?,
+        element: Element?,
         scope: IdentifierScope = IdentifierScope.LOCAL
     ) {
         val localMatch =
@@ -3656,16 +3647,16 @@ class LibraryBuilder(
             val matchedContext = if (globalMatch.isPresent) globalMatch.get() else localMatch.get()
             val matchedOnFunctionOverloads =
                 matchedContext.trackableSubclass == FunctionDef::class.java &&
-                    trackable is FunctionDef
+                    element is FunctionDef
             if (!matchedOnFunctionOverloads) {
                 reportWarning(
-                    resolveWarningMessage(matchedContext.identifier, identifier, trackable),
-                    trackable
+                    resolveWarningMessage(matchedContext.identifier, identifier, element),
+                    element
                 )
             }
         }
-        if (shouldAddIdentifierContext(trackable)) {
-            val trackableOrNull: Class<out Trackable>? = trackable?.javaClass
+        if (shouldAddIdentifierContext(element)) {
+            val trackableOrNull: Class<out Element>? = element?.javaClass
             // Sometimes the underlying Trackable doesn't resolve in the calling code
             if (scope == IdentifierScope.GLOBAL) {
                 globalIdentifiers.push(IdentifierContext(identifier, trackableOrNull))
@@ -3709,17 +3700,17 @@ class LibraryBuilder(
 
     // TODO:  consider other structures that should only trigger a readonly check of identifier
     // hiding
-    private fun shouldAddIdentifierContext(trackable: Trackable?): Boolean {
-        return trackable !is Literal
+    private fun shouldAddIdentifierContext(element: Element?): Boolean {
+        return element !is Literal
     }
 
     private fun resolveWarningMessage(
         matchedIdentifier: String?,
         identifierParam: String,
-        trackable: Trackable?
+        element: Element?
     ): String {
-        val elementString = lookupElementWarning(trackable)
-        return if (trackable is Literal) {
+        val elementString = lookupElementWarning(element)
+        return if (element is Literal) {
             String.format(
                 Locale.US,
                 "You used a string literal: [%s] here that matches an identifier in scope: [%s]. Did you mean to use the identifier instead?",

@@ -4,6 +4,7 @@ package org.cqframework.cql.cql2elm
 
 import java.util.*
 import org.cqframework.cql.cql2elm.model.QueryContext
+import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.cqframework.cql.gen.cqlParser
 import org.hl7.cql.model.*
 import org.hl7.elm.r1.*

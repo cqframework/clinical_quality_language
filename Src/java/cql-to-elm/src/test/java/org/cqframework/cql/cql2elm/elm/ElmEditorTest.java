@@ -1,6 +1,7 @@
 package org.cqframework.cql.cql2elm.elm;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 import org.hl7.elm.r1.ChoiceTypeSpecifier;
@@ -20,18 +21,17 @@ class ElmEditorTest {
     @Test
     void edit() {
         editor.edit(new Library());
-        assertEquals(editCount, 1);
+        assertEquals(1, editCount);
     }
 
     @Test
     void applyEdits1() {
-        editor.applyEdits(null);
-        assertEquals(editCount, 0);
+        assertThrows(NullPointerException.class, () -> editor.applyEdits(null));
     }
 
     @Test
     void applyEdits2() {
         editor.applyEdits(new ChoiceTypeSpecifier());
-        assertEquals(editCount, 1);
+        assertEquals(1, editCount);
     }
 }
