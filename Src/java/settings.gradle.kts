@@ -27,10 +27,10 @@ include(
     "quick",
     "cql-to-elm",
     "cql-to-elm-cli",
+    "cql-to-elm-jackson",
     "elm-fhir",
     "ucum",
     "tools:cql-formatter",
     "tools:cql-parsetree",
     "tools:xsd-to-modelinfo"
 )
-include("ucum")

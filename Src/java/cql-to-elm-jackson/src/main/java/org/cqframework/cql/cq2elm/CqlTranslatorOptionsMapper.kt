@@ -1,13 +1,18 @@
 @file:Suppress("WildcardImport")
 
-package org.cqframework.cql.cql2elm
+package org.cqframework.cql.cq2elm
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import java.io.*
 import java.util.*
+import org.cqframework.cql.cql2elm.CqlTranslatorOptions
 
 object CqlTranslatorOptionsMapper {
-    private val om: ObjectMapper = ObjectMapper()
+    private val om: ObjectMapper =
+        ObjectMapper()
+            .setMixIns(
+                mapOf(CqlTranslatorOptions::class.java to CqlTranslatorOptionsMixin::class.java)
+            )
 
     @JvmStatic
     fun fromFile(fileName: String?): CqlTranslatorOptions {

@@ -6,12 +6,6 @@ dependencies {
     api(project(":cql"))
     api(project(":model"))
     api(project(":elm"))
-
-    // TODO: This dependencies are required due the the fact that the CqlTranslatorOptionsMapper lives
-    // in the cql-to-elm project. Ideally, we"d factor out all serialization dependencies into common
-    // libraries such that we could swap out jackson for something else. In the meantime, these are
-    // "implementation" dependencies so that they are not exported downstream.
-    implementation("com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations:${project.findProperty("jackson.version")}")
     testImplementation(project(":elm-jackson"))
     testImplementation(project(":model-jackson"))
     testImplementation(project(":quick"))

@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm
 
-import com.fasterxml.jackson.annotation.JsonUnwrapped
 import java.util.*
 
 class CqlTranslatorOptions {
@@ -10,7 +9,7 @@ class CqlTranslatorOptions {
         COFFEE
     }
 
-    @JsonUnwrapped var cqlCompilerOptions: CqlCompilerOptions? = null
+    var cqlCompilerOptions: CqlCompilerOptions? = null
     var formats: Set<Format>? = null
 
     fun withCqlCompilerOptions(cqlCompilerOptions: CqlCompilerOptions?): CqlTranslatorOptions {
