@@ -10,6 +10,8 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.*;
+
+import org.cqframework.cql.cql2elm.tracking.Trackable;
 import org.fhir.ucum.UcumException;
 import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.VersionedIdentifier;
@@ -121,6 +123,7 @@ public abstract class TestFhirPath {
             CompositeDataProvider provider,
             FhirModelResolver<?, ?, ?, ?, ?, ?, ?, ?> resolver)
             throws UcumException {
+        Trackable.INSTANCE.clear();
         String cql = null;
         IBaseResource resource = null;
         if (test.getInputfile() != null) {

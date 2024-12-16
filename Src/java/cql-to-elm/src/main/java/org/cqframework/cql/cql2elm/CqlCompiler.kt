@@ -13,6 +13,7 @@ import org.cqframework.cql.cql2elm.elm.IElmEdit
 import org.cqframework.cql.cql2elm.model.CompiledLibrary
 import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessor
 import org.cqframework.cql.cql2elm.tracking.TrackBack
+import org.cqframework.cql.cql2elm.tracking.Trackable
 import org.cqframework.cql.elm.IdObjectFactory
 import org.cqframework.cql.gen.cqlLexer
 import org.cqframework.cql.gen.cqlParser
