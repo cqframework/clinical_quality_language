@@ -1,8 +1,6 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
-import java.math.BigDecimal;
-import org.fhir.ucum.Decimal;
-import org.fhir.ucum.UcumService;
+import org.cqframework.cql.cql2elm.ucum.UcumService;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.runtime.Quantity;
 
@@ -37,13 +35,9 @@ public class ConvertQuantityEvaluator {
                 return null;
             }
             try {
-                Decimal result = ucumService.convert(
-                        new Decimal(String.valueOf(((Quantity) argument).getValue())),
-                        ((Quantity) argument).getUnit(),
-                        (String) unit);
-                return new Quantity()
-                        .withValue(new BigDecimal(result.asDecimal()))
-                        .withUnit((String) unit);
+                var result = ucumService.convert(
+                        ((Quantity) argument).getValue(), ((Quantity) argument).getUnit(), (String) unit);
+                return new Quantity().withValue(result).withUnit((String) unit);
             } catch (Exception e) {
                 return null;
             }

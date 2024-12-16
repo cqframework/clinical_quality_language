@@ -9,14 +9,11 @@ import kotlin.collections.HashMap
 import kotlin.collections.HashSet
 import org.cqframework.cql.cql2elm.model.CompiledLibrary
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
+import org.cqframework.cql.cql2elm.ucum.UcumService
+import org.cqframework.cql.cql2elm.ucum.UcumServiceFactory
 import org.cqframework.cql.elm.serializing.ElmLibraryReaderFactory
-import org.fhir.ucum.UcumEssenceService
-import org.fhir.ucum.UcumException
-import org.fhir.ucum.UcumService
 import org.hl7.cql.model.NamespaceManager
 import org.hl7.elm.r1.*
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
 /**
  * Manages a set of CQL libraries. As new library references are encountered during compilation, the
@@ -40,26 +37,7 @@ constructor(
     var compiledLibraries: MutableMap<VersionedIdentifier, CompiledLibrary> =
         libraryCache ?: HashMap()
     val librarySourceLoader: LibrarySourceLoader = PriorityLibrarySourceLoader()
-    var ucumService: UcumService? = null
-        get() {
-            if (field == null) {
-                field = defaultUcumService
-            }
-            return field
-        }
-
-    @get:Synchronized
-    private val defaultUcumService: UcumService?
-        get() {
-            try {
-                return UcumEssenceService(
-                    UcumEssenceService::class.java.getResourceAsStream("/ucum-essence.xml")
-                )
-            } catch (e: UcumException) {
-                logger.warn("Error creating shared UcumService", e)
-            }
-            return null
-        }
+    val ucumService: UcumService by lazy { UcumServiceFactory.load() }
 
     /*
      * A "well-known" library name is one that is allowed to resolve without a
@@ -397,7 +375,6 @@ constructor(
     }
 
     companion object {
-        private val logger: Logger = LoggerFactory.getLogger(LibraryManager::class.java)
         private val supportedContentTypes: Array<LibraryContentType> =
             arrayOf(LibraryContentType.JSON, LibraryContentType.XML, LibraryContentType.CQL)
     }

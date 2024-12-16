@@ -28,9 +28,9 @@ include(
     "cql-to-elm",
     "cql-to-elm-cli",
     "elm-fhir",
+    "ucum",
     "tools:cql-formatter",
     "tools:cql-parsetree",
     "tools:xsd-to-modelinfo"
 )
-
-
+include("ucum")
