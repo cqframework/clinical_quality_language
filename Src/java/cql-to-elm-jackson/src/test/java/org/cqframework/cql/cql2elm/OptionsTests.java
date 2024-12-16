@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import org.cqframework.cql.cq2elm.CqlTranslatorOptionsMapper;
 import org.junit.jupiter.api.Test;
 
 class OptionsTests {

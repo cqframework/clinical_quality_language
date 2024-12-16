@@ -265,7 +265,7 @@ public class Main {
                             options.has(validateUnits),
                             options.has(disableDefaultModelInfoLoad),
                             signatureLevel,
-                            options.has(compatibilityLevel) ? options.valueOf(compatibilityLevel) : null));
+                            options.has(compatibilityLevel) ? options.valueOf(compatibilityLevel) : "1.5"));
         }
     }
 }

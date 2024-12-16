@@ -9,6 +9,7 @@ application {
 
 dependencies {
     implementation(project(":cql-to-elm"))
+    implementation(project(":cql-to-elm-jackson"))
     implementation(project(":quick"))
     implementation(project(":qdm"))
     implementation(project(":model-jaxb"))
