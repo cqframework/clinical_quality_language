@@ -33,8 +33,7 @@ data class DefaultUcumService private constructor(private val ucumService: UcumS
                         }
                     }
             } catch (e: org.fhir.ucum.UcumException) {
-                @Suppress("TooGenericExceptionThrown")
-                throw RuntimeException(
+                throw IllegalStateException(
                     """Failed to create UCUM service. 
                     Please ensure the 'ucum-essence.xml' file is available on the classpath.
                     The 'ucum' module is a reference implementation that can be used for this purpose.""",
