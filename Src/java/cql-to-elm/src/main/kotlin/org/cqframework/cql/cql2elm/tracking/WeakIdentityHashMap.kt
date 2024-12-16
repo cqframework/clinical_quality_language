@@ -1,9 +1,8 @@
 package org.cqframework.cql.cql2elm.tracking
 
 import java.lang.ref.WeakReference
-import java.util.concurrent.ConcurrentHashMap
 
-const val DEFAULT_CLEANUP_THRESHOLD = 1000
+const val DEFAULT_CLEANUP_THRESHOLD = 10000
 
 /**
  * This is a map that uses weak references for keys. This means that if the key is no longer
@@ -13,7 +12,7 @@ const val DEFAULT_CLEANUP_THRESHOLD = 1000
  */
 internal class WeakIdentityHashMap<K : Any, V> {
 
-    private val backingMap = ConcurrentHashMap<WeakKey<K>, V>()
+    private val backingMap = HashMap<WeakKey<K>, V>()
     private var operationCount = 0
     private val cleanupThreshold = DEFAULT_CLEANUP_THRESHOLD
 
