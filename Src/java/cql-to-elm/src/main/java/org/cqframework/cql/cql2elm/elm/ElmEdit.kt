@@ -2,7 +2,6 @@ package org.cqframework.cql.cql2elm.elm
 
 import org.hl7.cql_annotations.r1.Annotation
 import org.hl7.cql_annotations.r1.CqlToElmBase
-import org.hl7.elm.r1.ChoiceTypeSpecifier
 import org.hl7.elm.r1.Element
 
 enum class ElmEdit : IElmEdit {
@@ -53,9 +52,9 @@ enum class ElmEdit : IElmEdit {
         // this edit is needed to "protect" the downstream JSON serialization if it can be done
         // without data loss.
         override fun edit(element: Element) {
-            if (element is ChoiceTypeSpecifier && element.type!!.isEmpty()) {
-                element.type = null
-            }
+            //            if (element is ChoiceTypeSpecifier && element.type!!.isEmpty()) {
+            //                element.type = null
+            //            }
         }
     }
 }

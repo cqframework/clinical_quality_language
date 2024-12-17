@@ -18,6 +18,6 @@ class ElmJsonLibraryWriter : ElmLibraryWriter {
     }
 
     override fun writeAsString(library: Library): String {
-        return Json.encodeToString(Library.serializer(), library)
+        return Json.encodeToString(LibraryWrapper.serializer(), LibraryWrapper(library))
     }
 }

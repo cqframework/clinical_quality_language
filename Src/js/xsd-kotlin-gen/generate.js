@@ -129,6 +129,9 @@ function addContextualAnnotationIfNecessary(type) {
     if (type === 'java.math.BigDecimal') {
         return `@kotlinx.serialization.Serializable(org.cql.BigDecimalSerializer::class)`;
     }
+    if (type === 'QName') {
+        return `@kotlinx.serialization.Serializable(org.cql.QnameSerializer::class)`;
+    }
 
     return ''
 }
@@ -213,12 +216,15 @@ function processXsd(xsdPath, config, mode) {
 
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
+import kotlinx.serialization.modules.contextual
 
 object Serializer {
 
    fun createSerializer(): kotlinx.serialization.modules.SerializersModule {
    
     return kotlinx.serialization.modules.SerializersModule {
+        // contextual(org.cql.QNameSerializerForJson)
+    
       ${[...getAllParentClasses(config)].reverse().map((parentClass) => {
           
           
@@ -441,7 +447,9 @@ function processElements(elements, config, mode) {
                 element.type === "element" && element.name === "xs:element"
               );
             }),
-          ];
+          ].filter((field) => {
+              return !((element.attributes.name === 'TupleElementDefinition' || element.attributes.name === 'ChoiceTypeSpecifier') && field.attributes.name === 'type');
+          });
 
           const attributesFields = [
             ...attributes,
@@ -474,6 +482,7 @@ function processElements(elements, config, mode) {
 
               if (isList) {
                 return `
+                            ${config.packageName === 'org.hl7.elm_modelinfo.r1' ? '' : `@kotlinx.serialization.SerialName(${JSON.stringify(name)})`}
                             @nl.adaptivity.xmlutil.serialization.XmlSerialName(${JSON.stringify(name)}, ${JSON.stringify(config.namespaceUri)}, "")
                             var ${makeFieldName(field.attributes.name)}: MutableList<${type}?>? = null
                                get() {
@@ -487,7 +496,12 @@ function processElements(elements, config, mode) {
 
 
               return `
+                            ${config.packageName === 'org.hl7.elm_modelinfo.r1' ? '' : `@kotlinx.serialization.SerialName(${JSON.stringify(name)})`}
                             @nl.adaptivity.xmlutil.serialization.XmlSerialName(${JSON.stringify(name)}, ${JSON.stringify(config.namespaceUri)}, "")
+                            ${
+                  // type === 'nl.adaptivity.xmlutil.SerializableQName' ? '@kotlinx.serialization.Contextual' : '@kotlinx.serialization.Serializable'
+                  ''
+              }
                             var ${makeFieldName(field.attributes.name)}: ${type}? = null
                         `;
             };
@@ -551,6 +565,7 @@ package ${config.packageName}
 
 @OptIn(kotlinx.serialization.ExperimentalSerializationApi::class, nl.adaptivity.xmlutil.ExperimentalXmlUtilApi::class)
 @kotlinx.serialization.Serializable
+${config.packageName === 'org.hl7.elm_modelinfo.r1' ? '' : `@kotlinx.serialization.SerialName(${JSON.stringify(makeLocalName(element.attributes.name))})`}
 @nl.adaptivity.xmlutil.serialization.XmlSerialName(${JSON.stringify(makeLocalName(element.attributes.name))}, ${ JSON.stringify(config.namespaceUri)}, "")
 ${element.attributes.abstract === "true" ? "abstract" : "open"} class ${element.attributes.name} ${extendsClass ? `: ${extendsClass}()` : ""} {
 
@@ -595,6 +610,10 @@ ${attributesFields
 
       return `
             ${type === field.attributes.type ? '@nl.adaptivity.xmlutil.serialization.XmlElement(false)' : ''}
+            ${
+              // type === 'nl.adaptivity.xmlutil.SerializableQName' ? '@kotlinx.serialization.Contextual' : '@kotlinx.serialization.Serializable'
+          ''
+          }
             var ${makeFieldName(field.attributes.name)}: ${addContextualAnnotationIfNecessary(type)} ${type}? = null
                 get() {
                    return field ?: ${defaultValue}
@@ -607,6 +626,10 @@ ${attributesFields
 
     return `
         ${type === field.attributes.type ? '@nl.adaptivity.xmlutil.serialization.XmlElement(false)' : ''}
+        ${
+          // type === 'nl.adaptivity.xmlutil.SerializableQName' ? '@kotlinx.serialization.Contextual' : '@kotlinx.serialization.Serializable'
+        ''
+      }
         var ${makeFieldName(field.attributes.name)}: ${addContextualAnnotationIfNecessary(type)} ${type}? = null
       
         ${extraForBoolean}

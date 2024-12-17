@@ -249,9 +249,9 @@ class Cql2ElmVisitor(
             of.createTupleElementDefinition()
                 .withName(parseString(ctx.referentialIdentifier()))
                 .withElementType(parseTypeSpecifier(ctx.typeSpecifier()))
-        if (includeDeprecatedElements) {
-            result.type = result.elementType
-        }
+        //        if (includeDeprecatedElements) {
+        //            result.type = result.elementType
+        //        }
         return result
     }
 

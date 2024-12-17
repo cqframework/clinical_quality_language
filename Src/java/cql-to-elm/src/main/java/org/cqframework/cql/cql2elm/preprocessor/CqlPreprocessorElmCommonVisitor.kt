@@ -144,9 +144,9 @@ abstract class CqlPreprocessorElmCommonVisitor(
             of.createTupleElementDefinition()
                 .withName(parseString(ctx.referentialIdentifier()))
                 .withElementType(parseTypeSpecifier(ctx.typeSpecifier()))
-        if (includeDeprecatedElements) {
-            result.type = result.elementType
-        }
+        //        if (includeDeprecatedElements) {
+        //            result.type = result.elementType
+        //        }
         return result
     }
 
@@ -173,9 +173,9 @@ abstract class CqlPreprocessorElmCommonVisitor(
             types.add(typeSpecifier.resultType!!)
         }
         val result = of.createChoiceTypeSpecifier().withChoice(typeSpecifiers)
-        if (includeDeprecatedElements) {
-            result.type!!.addAll(typeSpecifiers)
-        }
+        //        if (includeDeprecatedElements) {
+        //            result.type!!.addAll(typeSpecifiers)
+        //        }
         val choiceType = ChoiceType(types)
         result.resultType = choiceType
         return result

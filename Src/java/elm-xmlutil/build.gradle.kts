@@ -1,5 +1,6 @@
 plugins {
     id("cql.library-conventions")
+    kotlin("plugin.serialization")
 }
 
 dependencies {

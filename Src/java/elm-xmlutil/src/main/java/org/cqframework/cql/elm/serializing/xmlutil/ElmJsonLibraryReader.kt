@@ -10,6 +10,9 @@ import java.net.URL
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.contextual
+import kotlinx.serialization.modules.plus
 import org.cqframework.cql.elm.serializing.ElmLibraryReader
 import org.hl7.elm.r1.Library
 
@@ -33,12 +36,35 @@ class ElmJsonLibraryReader : ElmLibraryReader {
     }
 
     override fun read(string: String): Library {
-        return Json.decodeFromString(Library.serializer(), string)
+        val m = org.hl7.elm.r1.Serializer.createSerializer() +
+                    org.hl7.cql_annotations.r1.Serializer.createSerializer()
+//        val m =SerializersModule {
+////            contextual(QNameSerializerForJson)
+//            org.hl7.elm.r1.Serializer.createSerializer()
+//            org.hl7.cql_annotations.r1.Serializer.createSerializer()
+//        }
+////            // SerializersModule { contextual(QNameSerializer) } +
+////                org.hl7.elm.r1.Serializer.createSerializer() +
+////                org.hl7.cql_annotations.r1.Serializer.createSerializer()
+
+        val json = Json { serializersModule = m
+        explicitNulls = false
+        }
+
+        return json.decodeFromString(LibraryWrapper.serializer(), string).library
     }
 
     @OptIn(ExperimentalSerializationApi::class)
     override fun read(inputStream: InputStream): Library {
-        return Json.decodeFromStream<Library>(inputStream)
+        val m = org.hl7.elm.r1.Serializer.createSerializer() +
+                org.hl7.cql_annotations.r1.Serializer.createSerializer()
+
+
+
+        val json = Json { serializersModule = m
+            explicitNulls = false }
+
+        return json.decodeFromStream<LibraryWrapper>(inputStream).library
     }
 
     override fun read(reader: Reader): Library {

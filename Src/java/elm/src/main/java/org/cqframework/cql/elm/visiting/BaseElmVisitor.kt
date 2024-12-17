@@ -388,10 +388,10 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
             result = aggregateResult(result, childResult)
         }
 
-        if (elm.type != null) {
-            val childResult = visitTypeSpecifier(elm.type!!, context)
-            result = aggregateResult(result, childResult)
-        }
+        //        if (elm.type != null) {
+        //            val childResult = visitTypeSpecifier(elm.type!!, context)
+        //            result = aggregateResult(result, childResult)
+        //        }
 
         return result
     }
@@ -430,10 +430,10 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
             result = aggregateResult(result, childResult)
         }
 
-        for (type in elm.type!!) {
-            val childResult = visitTypeSpecifier(type!!, context)
-            result = aggregateResult(result, childResult)
-        }
+        //        for (type in elm.type!!) {
+        //            val childResult = visitTypeSpecifier(type!!, context)
+        //            result = aggregateResult(result, childResult)
+        //        }
 
         return result
     }

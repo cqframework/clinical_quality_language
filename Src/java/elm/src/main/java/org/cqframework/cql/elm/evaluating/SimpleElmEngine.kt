@@ -231,12 +231,12 @@ class SimpleElmEngine {
                         val leftElement = leftArg.element!![i]
                         val rightElement = rightArg.element!![i]
                         if (
-                            !typeSpecifiersEqual(leftElement!!.type, rightElement!!.type) ||
-                                !typeSpecifiersEqual(
-                                    leftElement.elementType,
-                                    rightElement.elementType
-                                ) ||
-                                !stringsEqual(leftElement.name, rightElement.name)
+                            //                            !typeSpecifiersEqual(leftElement!!.type,
+                            // rightElement!!.type) ||
+                            !typeSpecifiersEqual(
+                                leftElement!!.elementType,
+                                rightElement!!.elementType
+                            ) || !stringsEqual(leftElement.name, rightElement.name)
                         ) {
                             return false
                         }
@@ -256,19 +256,19 @@ class SimpleElmEngine {
             if (right is ChoiceTypeSpecifier) {
                 val leftArg = left
                 val rightArg = right
-                if (
-                    leftArg.type != null &&
-                        rightArg.type != null &&
-                        leftArg.type!!.size == rightArg.type!!.size
-                ) {
-                    for (i in leftArg.type!!.indices) {
-                        val leftType = leftArg.type!![i]
-                        val rightType = rightArg.type!![i]
-                        if (!typeSpecifiersEqual(leftType, rightType)) {
-                            return false
-                        }
-                    }
-                }
+                //                if (
+                //                    leftArg.type != null &&
+                //                        rightArg.type != null &&
+                //                        leftArg.type!!.size == rightArg.type!!.size
+                //                ) {
+                //                    for (i in leftArg.type!!.indices) {
+                //                        val leftType = leftArg.type!![i]
+                //                        val rightType = rightArg.type!![i]
+                //                        if (!typeSpecifiersEqual(leftType, rightType)) {
+                //                            return false
+                //                        }
+                //                    }
+                //                }
 
                 if (
                     leftArg.choice != null &&

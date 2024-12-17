@@ -7,6 +7,10 @@ import java.io.InputStream
 import java.io.Reader
 import java.net.URI
 import java.net.URL
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.contextual
+import kotlinx.serialization.modules.plus
+import nl.adaptivity.xmlutil.QNameSerializer
 import nl.adaptivity.xmlutil.serialization.XML
 import nl.adaptivity.xmlutil.xmlStreaming
 import org.hl7.elm_modelinfo.r1.*
@@ -21,6 +25,8 @@ class XmlModelInfoReader : ModelInfoReader {
     }
 
     override fun read(src: Reader): ModelInfo {
+//        val serializersModule =
+//            SerializersModule { contextual(QNameSerializer) } + Serializer.createSerializer()
         val serializersModule = Serializer.createSerializer()
         val xml =
             XML(serializersModule) {
