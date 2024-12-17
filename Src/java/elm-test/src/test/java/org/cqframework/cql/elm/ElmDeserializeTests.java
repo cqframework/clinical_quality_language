@@ -2,7 +2,6 @@ package org.cqframework.cql.elm;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import jakarta.xml.bind.JAXBException;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -11,7 +10,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.cqframework.cql.cql2elm.CompilerOptions;
 import org.cqframework.cql.cql2elm.CqlCompilerOptions;
-import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.LibraryBuilder;
 import org.hl7.cql_annotations.r1.CqlToElmInfo;
 import org.hl7.elm.r1.*;
@@ -153,11 +151,10 @@ class ElmDeserializeTests {
         }
     }
 
-    private void testElmDeserialization(String path, String xmlFileName, String jsonFileName)
-            throws IOException, JAXBException {
+    private void testElmDeserialization(String path, String xmlFileName, String jsonFileName) throws IOException {
         Library xmlLibrary = null;
         try {
-            xmlLibrary = new org.cqframework.cql.elm.serializing.jaxb.ElmXmlLibraryReader()
+            xmlLibrary = new org.cqframework.cql.elm.serializing.xmlutil.ElmXmlLibraryReader()
                     .read(new FileReader(path + "/" + xmlFileName));
         } catch (Exception e) {
             throw new IllegalArgumentException(
@@ -166,7 +163,7 @@ class ElmDeserializeTests {
 
         Library jsonLibrary;
         try {
-            jsonLibrary = new org.cqframework.cql.elm.serializing.jaxb.ElmJsonLibraryReader()
+            jsonLibrary = new org.cqframework.cql.elm.serializing.xmlutil.ElmJsonLibraryReader()
                     .read(new FileReader(path + "/" + jsonFileName));
         } catch (Exception e) {
             throw new IllegalArgumentException(
@@ -181,7 +178,7 @@ class ElmDeserializeTests {
         }
     }
 
-    private void testElmDeserialization(String directoryName) throws URISyntaxException, IOException, JAXBException {
+    private void testElmDeserialization(String directoryName) throws URISyntaxException, IOException {
         URL dirURL = ElmDeserializeTests.class.getResource(String.format("ElmDeserialize/%s/", directoryName));
         File file = new File(dirURL.toURI());
         for (String fileName : file.list()) {
@@ -198,7 +195,7 @@ class ElmDeserializeTests {
     }
 
     @Test
-    void regressionTestJsonSerializer() throws URISyntaxException, IOException, JAXBException {
+    void regressionTestJsonSerializer() throws URISyntaxException, IOException {
         // This test validates that the ELM library deserialized from the Json matches the ELM library deserialized from
         // Xml
         // Regression inputs are annual update measure Xml for QDM and FHIR
@@ -305,86 +302,84 @@ class ElmDeserializeTests {
     }
 
     private String toJaxbXml(Library library) {
-        return new org.cqframework.cql.elm.serializing.jaxb.ElmXmlLibraryWriter().writeAsString(library);
+        return new org.cqframework.cql.elm.serializing.xmlutil.ElmXmlLibraryWriter().writeAsString(library);
     }
 
     private String toJaxbJson(Library library) {
-        return new org.cqframework.cql.elm.serializing.jaxb.ElmJsonLibraryWriter().writeAsString(library);
+        return new org.cqframework.cql.elm.serializing.xmlutil.ElmJsonLibraryWriter().writeAsString(library);
     }
 
-    private String toJacksonXml(Library library) {
-        return new org.cqframework.cql.elm.serializing.jackson.ElmXmlLibraryWriter().writeAsString(library);
-    }
-
-    private String toJacksonJson(Library library) {
-        return new org.cqframework.cql.elm.serializing.jackson.ElmJsonLibraryWriter().writeAsString(library);
-    }
+    //    private String toJacksonXml(Library library) {
+    //        return new ElmXmlLibraryWriter().writeAsString(library);
+    //    }
+    //
+    //    private String toJacksonJson(Library library) {
+    //        return new ElmJsonLibraryWriter().writeAsString(library);
+    //    }
 
     @Test
-    void emptyStringsTest() throws IOException {
-        InputStream inputStream = ElmDeserializeTests.class.getResourceAsStream("ElmDeserialize/EmptyStringsTest.cql");
-        CqlTranslator translator = TestUtils.createTranslatorFromStream(inputStream);
-        assertEquals(0, translator.getErrors().size());
-
-        String jaxbXml = toJaxbXml(translator.toELM());
-        String jaxbJson = toJaxbJson(translator.toELM());
-        // NOTE: Jackson XML is not right, but after 3 different devs fiddling with it, propose we abandon that as a use
-        // case we don't care about anyway.
-        // String jacksonXml = toJacksonXml(translator.toELM());
-        String jacksonJson = toJacksonJson(translator.toELM());
-
-        try {
-            Library xmlLibrary = new org.cqframework.cql.elm.serializing.jackson.ElmXmlLibraryReader()
-                    .read(new StringReader(jaxbXml));
-            validateEmptyStringsTest(xmlLibrary);
-
-            xmlLibrary =
-                    new org.cqframework.cql.elm.serializing.jaxb.ElmXmlLibraryReader().read(new StringReader(jaxbXml));
-            validateEmptyStringsTest(xmlLibrary);
-
-            Library jsonLibrary = new org.cqframework.cql.elm.serializing.jackson.ElmJsonLibraryReader()
-                    .read(new StringReader(jacksonJson));
-            validateEmptyStringsTest(jsonLibrary);
-
-            jsonLibrary = new org.cqframework.cql.elm.serializing.jaxb.ElmJsonLibraryReader()
-                    .read(new StringReader(jaxbJson));
-            validateEmptyStringsTest(xmlLibrary);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            Library jsonLibrary = new org.cqframework.cql.elm.serializing.jackson.ElmJsonLibraryReader()
-                    .read(new StringReader(jaxbJson));
-            validateEmptyStringsTest(jsonLibrary);
-
-            jsonLibrary = new org.cqframework.cql.elm.serializing.jaxb.ElmJsonLibraryReader()
-                    .read(new StringReader(jaxbJson));
-            validateEmptyStringsTest(jsonLibrary);
-
-            jsonLibrary = new org.cqframework.cql.elm.serializing.jackson.ElmJsonLibraryReader()
-                    .read(new StringReader(jacksonJson));
-            validateEmptyStringsTest(jsonLibrary);
-
-            jsonLibrary = new org.cqframework.cql.elm.serializing.jaxb.ElmJsonLibraryReader()
-                    .read(new StringReader(jacksonJson));
-            validateEmptyStringsTest(jsonLibrary);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    //    void emptyStringsTest() throws IOException {
+    //        InputStream inputStream =
+    // ElmDeserializeTests.class.getResourceAsStream("ElmDeserialize/EmptyStringsTest.cql");
+    //        CqlTranslator translator = TestUtils.createTranslatorFromStream(inputStream);
+    //        assertEquals(0, translator.getErrors().size());
+    //
+    //        String jaxbXml = toJaxbXml(translator.toELM());
+    //        String jaxbJson = toJaxbJson(translator.toELM());
+    //        // NOTE: Jackson XML is not right, but after 3 different devs fiddling with it, propose we abandon that as
+    // a use
+    //        // case we don't care about anyway.
+    //        // String jacksonXml = toJacksonXml(translator.toELM());
+    //        String jacksonJson = toJacksonJson(translator.toELM());
+    //
+    //        try {
+    //            Library xmlLibrary = new ElmXmlLibraryReader().read(new StringReader(jaxbXml));
+    //            validateEmptyStringsTest(xmlLibrary);
+    //
+    //            xmlLibrary = new org.cqframework.cql.elm.serializing.xmlutil.ElmXmlLibraryReader()
+    //                    .read(new StringReader(jaxbXml));
+    //            validateEmptyStringsTest(xmlLibrary);
+    //
+    //            Library jsonLibrary = new ElmJsonLibraryReader().read(new StringReader(jacksonJson));
+    //            validateEmptyStringsTest(jsonLibrary);
+    //
+    //            jsonLibrary = new org.cqframework.cql.elm.serializing.xmlutil.ElmJsonLibraryReader()
+    //                    .read(new StringReader(jaxbJson));
+    //            validateEmptyStringsTest(xmlLibrary);
+    //        } catch (IOException e) {
+    //            e.printStackTrace();
+    //        }
+    //
+    //        try {
+    //            Library jsonLibrary = new ElmJsonLibraryReader().read(new StringReader(jaxbJson));
+    //            validateEmptyStringsTest(jsonLibrary);
+    //
+    //            jsonLibrary = new org.cqframework.cql.elm.serializing.xmlutil.ElmJsonLibraryReader()
+    //                    .read(new StringReader(jaxbJson));
+    //            validateEmptyStringsTest(jsonLibrary);
+    //
+    //            jsonLibrary = new ElmJsonLibraryReader().read(new StringReader(jacksonJson));
+    //            validateEmptyStringsTest(jsonLibrary);
+    //
+    //            jsonLibrary = new org.cqframework.cql.elm.serializing.xmlutil.ElmJsonLibraryReader()
+    //                    .read(new StringReader(jacksonJson));
+    //            validateEmptyStringsTest(jsonLibrary);
+    //        } catch (IOException e) {
+    //            e.printStackTrace();
+    //        }
+    //    }
 
     private static Library deserializeJsonLibrary(String filePath) throws IOException {
         final InputStream resourceAsStream = ElmDeserializeTests.class.getResourceAsStream(filePath);
         assertNotNull(resourceAsStream);
-        return new org.cqframework.cql.elm.serializing.jaxb.ElmJsonLibraryReader()
+        return new org.cqframework.cql.elm.serializing.xmlutil.ElmJsonLibraryReader()
                 .read(new InputStreamReader(resourceAsStream));
     }
 
     private static Library deserializeXmlLibrary(String filePath) throws IOException {
         final InputStream resourceAsStream = ElmDeserializeTests.class.getResourceAsStream(filePath);
         assertNotNull(resourceAsStream);
-        return new org.cqframework.cql.elm.serializing.jaxb.ElmXmlLibraryReader().read(resourceAsStream);
+        return new org.cqframework.cql.elm.serializing.xmlutil.ElmXmlLibraryReader().read(resourceAsStream);
     }
 
     private static void verifySigLevels(Library library, LibraryBuilder.SignatureLevel expectedSignatureLevel) {

@@ -32,7 +32,7 @@ class DefaultLibrarySourceProvider(path: Path) : LibrarySourceProvider, PathAwar
     override fun getLibrarySource(libraryIdentifier: VersionedIdentifier): InputStream? {
         val currentPath = path
         if (currentPath != null) {
-            val libraryName: String = libraryIdentifier.id
+            val libraryName: String = libraryIdentifier.id!!
             val libraryPath: Path =
                 currentPath.resolve(
                     String.format(
@@ -52,7 +52,7 @@ class DefaultLibrarySourceProvider(path: Path) : LibrarySourceProvider, PathAwar
                 var mostRecent: Version? = null
                 val requestedVersion: Version? =
                     if (libraryIdentifier.version == null) null
-                    else Version(libraryIdentifier.version)
+                    else Version(libraryIdentifier.version!!)
                 for (file: File in currentPath.toFile().listFiles(filter)) {
                     var fileName: String = file.name
                     val indexOfExtension: Int = fileName.lastIndexOf(".")

@@ -158,7 +158,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
     override fun visitCodeFilterElement(elm: CodeFilterElement, context: C): T? {
         var result = visitFields(elm, context)
         if (elm.value != null) {
-            val childResult = visitExpression(elm.value, context)
+            val childResult = visitExpression(elm.value!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -177,7 +177,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
         var result = visitFields(elm, context)
 
         if (elm.value != null) {
-            val childResult = visitExpression(elm.value, context)
+            val childResult = visitExpression(elm.value!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -196,7 +196,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
         var result = visitFields(elm, context)
 
         if (elm.value != null) {
-            val childResult = visitExpression(elm.value, context)
+            val childResult = visitExpression(elm.value!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -225,40 +225,40 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
     override fun visitRetrieve(elm: Retrieve, context: C): T? {
         var result = visitFields(elm, context)
 
-        for (cfe in elm.codeFilter) {
-            val childResult = visitCodeFilterElement(cfe, context)
+        for (cfe in elm.codeFilter!!) {
+            val childResult = visitCodeFilterElement(cfe!!, context)
             result = aggregateResult(result, childResult)
         }
 
         if (elm.codes != null) {
-            val childResult = visitExpression(elm.codes, context)
+            val childResult = visitExpression(elm.codes!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.context != null) {
-            val childResult = visitExpression(elm.context, context)
+            val childResult = visitExpression(elm.context!!, context)
             result = aggregateResult(result, childResult)
         }
-        for (dfe in elm.dateFilter) {
-            val childResult = visitDateFilterElement(dfe, context)
+        for (dfe in elm.dateFilter!!) {
+            val childResult = visitDateFilterElement(dfe!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.dateRange != null) {
-            val childResult = visitExpression(elm.dateRange, context)
+            val childResult = visitExpression(elm.dateRange!!, context)
             result = aggregateResult(result, childResult)
         }
 
         if (elm.id != null) {
-            val childResult = visitExpression(elm.id, context)
+            val childResult = visitExpression(elm.id!!, context)
             result = aggregateResult(result, childResult)
         }
 
-        for (ie in elm.include) {
-            val childResult = visitIncludeElement(ie, context)
+        for (ie in elm.include!!) {
+            val childResult = visitIncludeElement(ie!!, context)
             result = aggregateResult(result, childResult)
         }
 
-        for (ofe in elm.otherFilter) {
-            val childResult = visitOtherFilterElement(ofe, context)
+        for (ofe in elm.otherFilter!!) {
+            val childResult = visitOtherFilterElement(ofe!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -290,7 +290,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
         var result = visitFields(elm, context)
 
         if (elm.source != null) {
-            val childResult = visitExpression(elm.source, context)
+            val childResult = visitExpression(elm.source!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -330,8 +330,8 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
             val childResult = visitAccessModifier(elm.accessLevel, context)
             result = aggregateResult(result, childResult)
         }
-        for (codeSystemRef in elm.codeSystem) {
-            val childResult = visitCodeSystemRef(codeSystemRef, context)
+        for (codeSystemRef in elm.codeSystem!!) {
+            val childResult = visitCodeSystemRef(codeSystemRef!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -353,7 +353,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
             result = aggregateResult(result, childResult)
         }
         if (elm.codeSystem != null) {
-            val childResult: T? = visitCodeSystemRef(elm.codeSystem, context)
+            val childResult: T? = visitCodeSystemRef(elm.codeSystem!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -375,8 +375,8 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
             val childResult = visitAccessModifier(elm.accessLevel, context)
             result = aggregateResult(result, childResult)
         }
-        for (cr in elm.code) {
-            val childResult = visitCodeRef(cr, context)
+        for (cr in elm.code!!) {
+            val childResult = visitCodeRef(cr!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -441,7 +441,7 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
         var result = visitFields(elm, context)
 
         if (elm.system != null) {
-            val childResult: T? = visitCodeSystemRef(elm.system, context)
+            val childResult: T? = visitCodeSystemRef(elm.system!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -458,8 +458,8 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
     override fun visitConcept(elm: Concept, context: C): T? {
         var result = visitFields(elm, context)
 
-        for (c in elm.code) {
-            val childResult = visitCode(c, context)
+        for (c in elm.code!!) {
+            val childResult = visitCode(c!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -478,15 +478,15 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
         var result = visitFields(elm, context)
 
         if (elm.code != null) {
-            val childResult = visitExpression(elm.code, context)
+            val childResult = visitExpression(elm.code!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.codesystem != null) {
-            val childResult: T? = visitCodeSystemRef(elm.codesystem, context)
+            val childResult: T? = visitCodeSystemRef(elm.codesystem!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.codesystemExpression != null) {
-            val childResult = visitExpression(elm.codesystemExpression, context)
+            val childResult = visitExpression(elm.codesystemExpression!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -505,15 +505,15 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
         var result = visitFields(elm, context)
 
         if (elm.codes != null) {
-            val childResult = visitExpression(elm.codes, context)
+            val childResult = visitExpression(elm.codes!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.codesystem != null) {
-            val childResult: T? = visitCodeSystemRef(elm.codesystem, context)
+            val childResult: T? = visitCodeSystemRef(elm.codesystem!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.codesystemExpression != null) {
-            val childResult = visitExpression(elm.codesystemExpression, context)
+            val childResult = visitExpression(elm.codesystemExpression!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -532,15 +532,15 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
         var result = visitFields(elm, context)
 
         if (elm.code != null) {
-            val childResult = visitExpression(elm.code, context)
+            val childResult = visitExpression(elm.code!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.valueset != null) {
-            val childResult: T? = visitValueSetRef(elm.valueset, context)
+            val childResult: T? = visitValueSetRef(elm.valueset!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.valuesetExpression != null) {
-            val childResult = visitExpression(elm.valuesetExpression, context)
+            val childResult = visitExpression(elm.valuesetExpression!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -559,15 +559,15 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
         var result = visitFields(elm, context)
 
         if (elm.codes != null) {
-            val childResult = visitExpression(elm.codes, context)
+            val childResult = visitExpression(elm.codes!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.valueset != null) {
-            val childResult: T? = visitValueSetRef(elm.valueset, context)
+            val childResult: T? = visitValueSetRef(elm.valueset!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.valuesetExpression != null) {
-            val childResult = visitExpression(elm.valuesetExpression, context)
+            val childResult = visitExpression(elm.valuesetExpression!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -619,11 +619,11 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
         var result = visitFields(elm, context)
 
         if (elm.denominator != null) {
-            val childResult: T? = visitQuantity(elm.denominator, context)
+            val childResult: T? = visitQuantity(elm.denominator!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.numerator != null) {
-            val childResult: T? = visitQuantity(elm.numerator, context)
+            val childResult: T? = visitQuantity(elm.numerator!!, context)
             result = aggregateResult(result, childResult)
         }
 

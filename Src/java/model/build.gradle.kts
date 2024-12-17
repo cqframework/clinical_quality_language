@@ -8,3 +8,8 @@ tasks.register<XjcTask>("generateModel") {
     schema = "${projectDir}/../../cql-lm/schema/model/modelinfo.xsd"
     extraArgs = listOf("-npa")
 }
+
+dependencies {
+    // circular dependency
+    testImplementation(project(":model-xmlutil"))
+}

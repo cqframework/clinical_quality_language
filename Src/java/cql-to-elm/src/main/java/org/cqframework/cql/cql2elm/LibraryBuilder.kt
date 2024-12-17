@@ -146,7 +146,7 @@ class LibraryBuilder(
     init {
         cqlToElmInfo.translatorVersion =
             LibraryBuilder::class.java.getPackage().implementationVersion
-        library.annotation.add(cqlToElmInfo)
+        library.annotation!!.add(cqlToElmInfo)
         setCompilerOptions(options)
         compiledLibrary.library = library
     }
@@ -277,7 +277,7 @@ class LibraryBuilder(
         if (library.usings == null) {
             library.usings = objectFactory.createLibraryUsings()
         }
-        library.usings.def.add(usingDef)
+        library.usings!!.def!!.add(usingDef)
         compiledLibrary.add(usingDef)
     }
 
@@ -486,13 +486,13 @@ class LibraryBuilder(
                 system = NamespaceManager.getUriPart(usingDef.uri),
                 version = usingDef.version
             ),
-            usingDef.localIdentifier
+            usingDef.localIdentifier!!
         )
     }
 
     private fun loadSystemLibrary() {
         val systemLibrary = load(systemModel, typeBuilder)
-        libraries[systemLibrary.identifier!!.id] = systemLibrary
+        libraries[systemLibrary.identifier!!.id!!] = systemLibrary
         loadConversionMap(systemLibrary)
     }
 
@@ -604,18 +604,18 @@ class LibraryBuilder(
                 err.targetIncludeLibraryVersionId = incEx.versionId
                 err.errorType = ErrorType.INCLUDE
             }
-            library.annotation.add(err)
+            library.annotation!!.add(err)
         }
     }
 
     private val libraryName: String
         get() {
-            var libraryName = library.identifier.id
+            var libraryName = library.identifier!!!!.id
             if (libraryName == null) {
                 libraryName = "Anonymous"
             }
-            if (library.identifier.system != null) {
-                libraryName = library.identifier.system + "/" + libraryName
+            if (library.identifier!!.system != null) {
+                libraryName = library.identifier!!.system + "/" + libraryName
             }
             return libraryName
         }
@@ -648,13 +648,13 @@ class LibraryBuilder(
     }
 
     fun addInclude(includeDef: IncludeDef) {
-        require(!(library.identifier == null || library.identifier.id == null)) {
+        require(!(library.identifier == null || library.identifier!!.id == null)) {
             "Unnamed libraries cannot reference other libraries."
         }
         if (library.includes == null) {
             library.includes = objectFactory.createLibraryIncludes()
         }
-        library.includes.def.add(includeDef)
+        library.includes!!.def!!.add(includeDef)
         compiledLibrary.add(includeDef)
         val libraryIdentifier =
             VersionedIdentifier()
@@ -680,9 +680,9 @@ class LibraryBuilder(
                 currentNamespaceUri != null && currentNamespaceUri != libraryIdentifier.system
         ) {
             includeDef.path =
-                NamespaceManager.getPath(libraryIdentifier.system, libraryIdentifier.id)
+                NamespaceManager.getPath(libraryIdentifier.system, libraryIdentifier.id!!)
         }
-        libraries[includeDef.localIdentifier] = referencedLibrary
+        libraries[includeDef.localIdentifier!!] = referencedLibrary
         loadConversionMap(referencedLibrary)
     }
 
@@ -690,7 +690,7 @@ class LibraryBuilder(
         if (library.parameters == null) {
             library.parameters = objectFactory.createLibraryParameters()
         }
-        library.parameters.def.add(paramDef)
+        library.parameters!!.def!!.add(paramDef)
         compiledLibrary.add(paramDef)
     }
 
@@ -698,7 +698,7 @@ class LibraryBuilder(
         if (library.codeSystems == null) {
             library.codeSystems = objectFactory.createLibraryCodeSystems()
         }
-        library.codeSystems.def.add(cs)
+        library.codeSystems!!.def!!.add(cs)
         compiledLibrary.add(cs)
     }
 
@@ -706,7 +706,7 @@ class LibraryBuilder(
         if (library.valueSets == null) {
             library.valueSets = objectFactory.createLibraryValueSets()
         }
-        library.valueSets.def.add(vs)
+        library.valueSets!!.def!!.add(vs)
         compiledLibrary.add(vs)
     }
 
@@ -714,7 +714,7 @@ class LibraryBuilder(
         if (library.codes == null) {
             library.codes = objectFactory.createLibraryCodes()
         }
-        library.codes.def.add(cd)
+        library.codes!!.def!!.add(cd)
         compiledLibrary.add(cd)
     }
 
@@ -722,7 +722,7 @@ class LibraryBuilder(
         if (library.concepts == null) {
             library.concepts = objectFactory.createLibraryConcepts()
         }
-        library.concepts.def.add(cd)
+        library.concepts!!.def!!.add(cd)
         compiledLibrary.add(cd)
     }
 
@@ -730,20 +730,20 @@ class LibraryBuilder(
         if (library.contexts == null) {
             library.contexts = objectFactory.createLibraryContexts()
         }
-        library.contexts.def.add(cd)
+        library.contexts!!.def!!.add(cd)
     }
 
     fun addExpression(expDef: ExpressionDef) {
         if (library.statements == null) {
             library.statements = objectFactory.createLibraryStatements()
         }
-        library.statements.def.add(expDef)
+        library.statements!!.def!!.add(expDef)
         compiledLibrary.add(expDef)
     }
 
     fun removeExpression(expDef: ExpressionDef) {
         if (library.statements != null) {
-            library.statements.def.remove(expDef)
+            library.statements!!.def!!.remove(expDef)
             compiledLibrary.remove(expDef)
         }
     }
@@ -972,11 +972,11 @@ class LibraryBuilder(
         var right = right
         if (left is Union) {
             val leftUnion = left
-            val leftUnionLeft = leftUnion.operand[0]
-            val leftUnionRight = leftUnion.operand[1]
+            val leftUnionLeft = leftUnion.operand!![0]
+            val leftUnionRight = leftUnion.operand!![1]
             if (leftUnionLeft is Union && leftUnionRight !is Union) {
                 left = leftUnionLeft
-                right = resolveUnion(leftUnionRight, right)
+                right = resolveUnion(leftUnionRight!!, right)
             }
         }
 
@@ -993,11 +993,11 @@ class LibraryBuilder(
         var right = right
         if (left is Intersect) {
             val leftIntersect = left
-            val leftIntersectLeft = leftIntersect.operand[0]
-            val leftIntersectRight = leftIntersect.operand[1]
+            val leftIntersectLeft = leftIntersect.operand!![0]
+            val leftIntersectRight = leftIntersect.operand!![1]
             if (leftIntersectLeft is Intersect && leftIntersectRight !is Intersect) {
                 left = leftIntersectLeft
-                right = resolveIntersect(leftIntersectRight, right)
+                right = resolveIntersect(leftIntersectRight!!, right)
             }
         }
 
@@ -1483,7 +1483,7 @@ class LibraryBuilder(
         val libraryName = compiledLibrary.identifier!!.id
         val operatorName = fd.name
         val dataTypes: MutableList<DataType> = ArrayList()
-        for (operand in fd.operand) {
+        for (operand in fd.operand!!) {
             require(!(operand == null || operand.resultType == null)) {
                 String.format(
                     Locale.US,
@@ -1497,9 +1497,9 @@ class LibraryBuilder(
         val callContext =
             CallContext(
                 compiledLibrary.identifier!!.id,
-                fd.name,
+                fd.name!!,
                 false,
-                fd.isFluent != null && fd.isFluent,
+                fd.isFluent() != null && fd.isFluent()!!,
                 false,
                 dataTypes
             )
@@ -1601,7 +1601,7 @@ class LibraryBuilder(
     ) {
         if (
             accessModifier == AccessModifier.PRIVATE &&
-                isInterFunctionAccess(library.identifier.id, libraryName)
+                isInterFunctionAccess(library.identifier!!.id!!, libraryName)
         ) {
             // ERROR:
             throw CqlSemanticException(
@@ -1631,7 +1631,7 @@ class LibraryBuilder(
         val functionRef =
             objectFactory.createFunctionRef().withLibraryName(libraryName).withName(functionName)
         for (param in paramList) {
-            functionRef.operand.add(param)
+            functionRef.operand!!.add(param)
         }
         return functionRef
     }
@@ -1652,7 +1652,7 @@ class LibraryBuilder(
         functionRef =
             resolveCall(
                 functionRef.libraryName,
-                functionRef.name,
+                functionRef.name!!,
                 invocation,
                 false,
                 allowPromotionAndDemotion,
@@ -1702,7 +1702,7 @@ class LibraryBuilder(
             functionRef =
                 resolveCall(
                     functionRef.libraryName,
-                    functionRef.name,
+                    functionRef.name!!,
                     invocation,
                     mustResolve,
                     allowPromotionAndDemotion,
@@ -1858,7 +1858,7 @@ class LibraryBuilder(
                 .withLowClosed(true)
                 .withHighClosed(true)
         toInterval.resultType = IntervalType(expression.resultType!!)
-        condition.setElse(toInterval)
+        condition.`else` = (toInterval)
         condition.resultType = resolveTypeName("System", "Boolean")
         return condition
     }
@@ -2065,7 +2065,7 @@ class LibraryBuilder(
                 }
                 resolveCall(
                     functionRef.libraryName,
-                    functionRef.name,
+                    functionRef.name!!,
                     FunctionRefInvocation(functionRef),
                     false,
                     false
@@ -2171,9 +2171,9 @@ class LibraryBuilder(
         if (asExpression.operand is Case) {
             val c = asExpression.operand as Case
             if (isTypeCase(c)) {
-                for (ci in c.caseItem) {
-                    if (DataTypes.equal(asExpression.resultType, ci.then.resultType)) {
-                        return ci.then
+                for (ci in c.caseItem!!) {
+                    if (DataTypes.equal(asExpression.resultType, ci!!.then!!.resultType)) {
+                        return ci.then!!
                     }
                 }
             }
@@ -2185,15 +2185,15 @@ class LibraryBuilder(
         if (c.comparand != null) {
             return false
         }
-        for (ci in c.caseItem) {
-            if (ci.getWhen() !is Is) {
+        for (ci in c.caseItem!!) {
+            if (ci!!.`when` !is Is) {
                 return false
             }
-            if (ci.then.resultType == null) {
+            if (ci.then!!.resultType == null) {
                 return false
             }
         }
-        if (c.getElse() !is Null) {
+        if (c.`else` !is Null) {
             return false
         }
         return c.resultType is ChoiceType
@@ -2411,7 +2411,7 @@ class LibraryBuilder(
                 .withHigh(high)
                 .withHighClosed(highClosed)
         val pointType: DataType? =
-            ensureCompatibleTypes(result.low.resultType, result.high.resultType!!)
+            ensureCompatibleTypes(result.low!!.resultType, result.high!!.resultType!!)
         result.resultType = IntervalType(pointType!!)
         result.low = ensureCompatible(result.low, pointType)
         result.high = ensureCompatible(result.high, pointType)
@@ -2713,7 +2713,7 @@ class LibraryBuilder(
                     )
                 }
                 if (isCompatibleWith("1.5")) {
-                    valuesetRef.isPreserve = true
+                    valuesetRef.preserve = true
                 }
                 return valuesetRef
             }
@@ -2884,9 +2884,9 @@ class LibraryBuilder(
     @Suppress("NestedBlockDepth")
     private fun getModelMapping(sourceContext: Expression?): VersionedIdentifier? {
         var result: VersionedIdentifier? = null
-        if (library.usings != null && library.usings.def != null) {
-            for (usingDef in library.usings.def) {
-                val model = getModel(usingDef)
+        if (library.usings != null && library.usings!!.def != null) {
+            for (usingDef in library.usings!!.def!!) {
+                val model = getModel(usingDef!!)
                 if (model.modelInfo.targetUrl != null) {
                     if (result != null) {
                         reportWarning(
@@ -2932,9 +2932,9 @@ class LibraryBuilder(
     }
 
     private fun applyTargetModelMaps() {
-        if (library.usings != null && library.usings.def != null) {
-            for (usingDef in library.usings.def) {
-                val model = getModel(usingDef)
+        if (library.usings != null && library.usings!!.def != null) {
+            for (usingDef in library.usings!!.def!!) {
+                val model = getModel(usingDef!!)
                 if (model.modelInfo.targetUrl != null) {
                     usingDef.uri = model.modelInfo.targetUrl
                     usingDef.version = model.modelInfo.targetVersion
@@ -3006,19 +3006,19 @@ class LibraryBuilder(
                                     .withIsType(dataTypeToQName(typeCaseType))
                             )
                             .withThen(applyTargetMap(source, typeCaseMap))
-                    ci.then.resultType = typeCaseType
-                    c.caseItem.add(ci)
+                    ci.then!!.resultType = typeCaseType
+                    c.caseItem!!.add(ci)
                 }
             }
-            return when (c.caseItem.size) {
+            return when (c.caseItem!!.size) {
                 0 -> {
                     buildNull(source!!.resultType)
                 }
                 1 -> {
-                    c.caseItem[0].then
+                    c.caseItem!![0]!!.then
                 }
                 else -> {
-                    c.setElse(buildNull(source!!.resultType))
+                    c.`else` = (buildNull(source!!.resultType))
                     c.resultType = source.resultType
                     c
                 }
@@ -3064,9 +3064,8 @@ class LibraryBuilder(
                     // types.
                     // resolveCall(libraryName, functionName, new FunctionRefInvocation(fr), false,
                     // false);
-                    query.setReturn(
-                        objectFactory.createReturnClause().withDistinct(false).withExpression(fr)
-                    )
+                    query.`return` =
+                        (objectFactory.createReturnClause().withDistinct(false).withExpression(fr))
                     query.resultType = source!!.resultType
                     return query
                 }
@@ -3113,7 +3112,7 @@ class LibraryBuilder(
                         if (sourceProperty.source != null) {
                             sourceProperty.source
                         } else if (sourceProperty.scope != null) {
-                            resolveIdentifier(sourceProperty.scope, true)
+                            resolveIdentifier(sourceProperty.scope!!, true)
                         } else {
                             throw IllegalArgumentException(
                                 String.format(
@@ -3185,7 +3184,7 @@ class LibraryBuilder(
                         left =
                             resolveCall(
                                 ref.libraryName,
-                                ref.name,
+                                ref.name!!,
                                 FunctionRefInvocation(ref),
                                 false,
                                 false
@@ -3208,7 +3207,7 @@ class LibraryBuilder(
                     left =
                         resolveCall(
                             ref.libraryName,
-                            ref.name,
+                            ref.name!!,
                             FunctionRefInvocation(ref),
                             false,
                             false
@@ -3226,7 +3225,7 @@ class LibraryBuilder(
                     left =
                         resolveCall(
                             ref.libraryName,
-                            ref.name,
+                            ref.name!!,
                             FunctionRefInvocation(ref),
                             false,
                             false
@@ -3253,8 +3252,8 @@ class LibraryBuilder(
                     targetPath = targetPath.substring(1)
                 }
                 if (targetPath.isNotEmpty()) {
-                    query.setReturn(
-                        objectFactory
+                    query.`return` =
+                        (objectFactory
                             .createReturnClause()
                             .withDistinct(false)
                             .withExpression(
@@ -3262,8 +3261,7 @@ class LibraryBuilder(
                                     .createProperty()
                                     .withSource(objectFactory.createAliasRef().withName("\$this"))
                                     .withPath(targetPath)
-                            )
-                    )
+                            ))
                 }
 
                 // The value reference should go inside the query, rather than being applied as a
@@ -3336,7 +3334,7 @@ class LibraryBuilder(
             val element = resolvedIdentifierContext.exactMatchElement
             if (element != null) {
                 if (element is ExpressionDef) {
-                    checkAccessLevel(libraryName, memberIdentifier, element.accessLevel)
+                    checkAccessLevel(libraryName, memberIdentifier, element.accessLevel!!)
                     val result: Expression =
                         objectFactory
                             .createExpressionRef()
@@ -3346,7 +3344,7 @@ class LibraryBuilder(
                     return result
                 }
                 if (element is ParameterDef) {
-                    checkAccessLevel(libraryName, memberIdentifier, element.accessLevel)
+                    checkAccessLevel(libraryName, memberIdentifier, element.accessLevel!!)
                     val result: Expression =
                         objectFactory
                             .createParameterRef()
@@ -3356,7 +3354,7 @@ class LibraryBuilder(
                     return result
                 }
                 if (element is ValueSetDef) {
-                    checkAccessLevel(libraryName, memberIdentifier, element.accessLevel)
+                    checkAccessLevel(libraryName, memberIdentifier, element.accessLevel!!)
                     val result: ValueSetRef =
                         objectFactory
                             .createValueSetRef()
@@ -3364,12 +3362,12 @@ class LibraryBuilder(
                             .withName(memberIdentifier)
                     result.resultType = element.resultType
                     if (isCompatibleWith("1.5")) {
-                        result.isPreserve = true
+                        result.preserve = true
                     }
                     return result
                 }
                 if (element is CodeSystemDef) {
-                    checkAccessLevel(libraryName, memberIdentifier, element.accessLevel)
+                    checkAccessLevel(libraryName, memberIdentifier, element.accessLevel!!)
                     val result: CodeSystemRef =
                         objectFactory
                             .createCodeSystemRef()
@@ -3379,7 +3377,7 @@ class LibraryBuilder(
                     return result
                 }
                 if (element is CodeDef) {
-                    checkAccessLevel(libraryName, memberIdentifier, element.accessLevel)
+                    checkAccessLevel(libraryName, memberIdentifier, element.accessLevel!!)
                     val result: CodeRef =
                         objectFactory
                             .createCodeRef()
@@ -3389,7 +3387,7 @@ class LibraryBuilder(
                     return result
                 }
                 if (element is ConceptDef) {
-                    checkAccessLevel(libraryName, memberIdentifier, element.accessLevel)
+                    checkAccessLevel(libraryName, memberIdentifier, element.accessLevel!!)
                     val result: ConceptRef =
                         objectFactory
                             .createConceptRef()
@@ -3541,8 +3539,8 @@ class LibraryBuilder(
 
     private fun resolveOperandRef(identifier: String): OperandRef? {
         if (!functionDefs.empty()) {
-            for (operand in functionDefs.peek().operand) {
-                if (operand.name == identifier) {
+            for (operand in functionDefs.peek().operand!!) {
+                if (operand!!.name == identifier) {
                     return objectFactory
                         .createOperandRef()
                         .withName(identifier)

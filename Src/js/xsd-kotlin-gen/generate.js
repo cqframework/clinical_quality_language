@@ -5,6 +5,10 @@ function firstLetterToUpperCase(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+function firstLetterToLowerCase(string) {
+    return string.charAt(0).toLowerCase() + string.slice(1);
+}
+
 function getParentFields(parentClass, config) {
   const parent = config.classes[parentClass];
 
@@ -39,26 +43,94 @@ function getParentAttributes(parentClass, config) {
   return [];
 }
 
+function getAllParentClasses(config) {
+    return Object.entries(config.classes).filter(([k,v]) => {
+
+        return k !== config.autoExtend && Object.values(config.classes).some(_ => k === _.extendsClass)
+    }).map(([k,v]) => {
+        return {
+            className: k,
+            isAbstract: v.isAbstract
+        }
+    })
+
+    // return [
+    //     ...new Set(Object.values(config.classes).map(_ => _.extendsClass).filter(_ => _ && _ !== config.autoExtend))
+    // ]
+}
+
+function getAllChildClasses(parentClass, config) {
+
+    return Object.entries(config.classes).filter(([k, v]) => v.extendsClass === parentClass).flatMap(([k, v]) => {
+        return [
+            {
+                className: k,
+                isAbstract: v.isAbstract
+            },
+            ...getAllChildClasses(k, config)
+        ]
+    })
+}
+
+function isExtendedByAny(someClass, config) {
+
+    for (const [className, v] of Object.entries(config.classes)) {
+        if (v.extendsClass === someClass) {
+        return true;
+        }
+    }
+
+    return false;
+}
+
+function addPolymorphicAnnotationIfNecessary(className, config) {
+    if (isExtendedByAny(className, config)) {
+        return `@kotlinx.serialization.Polymorphic`;
+    }
+
+    return '';
+}
+
 function getType(rawType) {
   return (
     {
       "xs:string": "String",
-      "xs:int": "Integer",
+      "xs:int": "Int",
       "xs:anySimpleType": "String",
       "xs:boolean": "Boolean",
-      "xs:integer": "Integer",
+      "xs:integer": "Int",
       "xs:decimal": "java.math.BigDecimal",
       "xs:dateTime": "String",
       "xs:time": "String",
       "xs:date": "String",
       "xs:base64Binary": "String",
       "xs:anyURI": "String",
-      "xs:QName": "javax.xml.namespace.QName", // "String",
+      "xs:QName": 'nl.adaptivity.xmlutil.SerializableQName', // "javax.xml.namespace.QName", // "String",
       "xs:token": "String",
       "xs:NCName": "String",
       "xs:ID": "String",
     }[rawType] || rawType
   );
+}
+
+function makeLocalName(name) {
+
+if ([
+ "ModelInfo",
+ "Library",
+    ].includes(name)) {
+    return firstLetterToLowerCase(name);
+}
+
+    return name;
+}
+
+function addContextualAnnotationIfNecessary(type) {
+    if (type === 'java.math.BigDecimal') {
+        return `@kotlinx.serialization.Serializable(org.cql.BigDecimalSerializer::class)`;
+    }
+
+    return ''
 }
 
 function parse(filePath) {
@@ -119,28 +191,71 @@ const configs = [
   },
 ];
 
+function makeFieldName(name) {
+    // if (['else', 'default', 'return'].includes(name)) {
+    //     return `_${name}`
+    // }
+    if (['else', 'default', 'return', "when"].includes(name)) {
+        return `\`${name}\``;
+    }
+    return name;
+}
+
 function processXsd(xsdPath, config, mode) {
   const result = parse(xsdPath);
 
   processElements(result.elements, config, mode);
 
   fs.writeFileSync(
-    `${config.outputDir}/ObjectFactory.java`,
-    `package ${config.packageName};
+      `${config.outputDir}/Serializer.kt`,
 
-public class ObjectFactory {
+      `package ${config.packageName};
 
-    private final static javax.xml.namespace.QName _${firstLetterToUpperCase(config.scope)}${firstLetterToUpperCase(config.localPart)}_QNAME = new javax.xml.namespace.QName(${JSON.stringify(config.namespaceUri)}, ${JSON.stringify(config.localPart)});
+import kotlinx.serialization.modules.polymorphic
+import kotlinx.serialization.modules.subclass
 
-    public ObjectFactory() {
-    }
+object Serializer {
+
+   fun createSerializer(): kotlinx.serialization.modules.SerializersModule {
+   
+    return kotlinx.serialization.modules.SerializersModule {
+      ${[...getAllParentClasses(config)].reverse().map((parentClass) => {
+          
+          
+          
+          
+          return `polymorphic(${config.packageName}.${parentClass.className}::class) {
+               ${getAllChildClasses(parentClass.className, config).filter(childClass => !childClass.isAbstract).map((childClass) => {
+                     return `subclass(${config.packageName}.${childClass.className}::class)`
+                }).join('\n')}
+            }`
+          
+          
+      }).join('\n')}
+   
+   }
+   
+   }
+
+}
+      
+      `
+  )
+
+  fs.writeFileSync(
+    `${config.outputDir}/ObjectFactory.kt`,
+
+      //   private final static nl.adaptivity.xmlutil.QNameKt _${firstLetterToUpperCase(config.scope)}${firstLetterToUpperCase(config.localPart)}_QNAME = new nl.adaptivity.xmlutil.QNameKt(${JSON.stringify(config.namespaceUri)}, ${JSON.stringify(config.localPart)});
+    `package ${config.packageName}
+
+open class ObjectFactory {
     
     ${Object.entries(config.classes)
       .filter(([className, v]) => !v.isAbstract)
       .map(([className, v]) => {
         return `
-            public ${className} create${className}() {
-                return new ${className}();
+            open fun create${className}(): ${className} {
+                return ${className}()
             }
             
             ${v.fields
@@ -150,8 +265,8 @@ public class ObjectFactory {
                 if (innerSequence) {
                   return `
 
-                            public ${className}.${firstLetterToUpperCase(field.attributes.name)} create${className}${firstLetterToUpperCase(field.attributes.name)}() {
-                                return new ${className}.${firstLetterToUpperCase(field.attributes.name)}();
+                            open fun  create${className}${firstLetterToUpperCase(field.attributes.name)}(): ${className}.${firstLetterToUpperCase(field.attributes.name)}{
+                                return ${className}.${firstLetterToUpperCase(field.attributes.name)}()
                             }
                         `;
                 }
@@ -163,12 +278,14 @@ public class ObjectFactory {
       })
       .join("\n")}
 
-    public jakarta.xml.bind.JAXBElement<${firstLetterToUpperCase(config.scope) || firstLetterToUpperCase(config.localPart)}> create${firstLetterToUpperCase(config.scope)}${firstLetterToUpperCase(config.localPart)}(${firstLetterToUpperCase(config.scope) || firstLetterToUpperCase(config.localPart)} value) {
-        return new jakarta.xml.bind.JAXBElement<${firstLetterToUpperCase(config.scope) || firstLetterToUpperCase(config.localPart)}>(_${firstLetterToUpperCase(config.scope)}${firstLetterToUpperCase(config.localPart)}_QNAME, ${firstLetterToUpperCase(config.scope) || firstLetterToUpperCase(config.localPart)}.class, null, value);
-    }
+
 
 }
 `,
+
+      //     public jakarta.xml.bind.JAXBElement<${firstLetterToUpperCase(config.scope) || firstLetterToUpperCase(config.localPart)}> create${firstLetterToUpperCase(config.scope)}${firstLetterToUpperCase(config.localPart)}(${firstLetterToUpperCase(config.scope) || firstLetterToUpperCase(config.localPart)} value) {
+      //         return new jakarta.xml.bind.JAXBElement<${firstLetterToUpperCase(config.scope) || firstLetterToUpperCase(config.localPart)}>(_${firstLetterToUpperCase(config.scope)}${firstLetterToUpperCase(config.localPart)}_QNAME, ${firstLetterToUpperCase(config.scope) || firstLetterToUpperCase(config.localPart)}.class, null, value);
+      //     }
   );
 }
 
@@ -193,14 +310,47 @@ function getIsList(field) {
   );
 }
 
+function renderWith (field, className, type, override = 'open') {
+    const isList = getIsList(field);
+
+    if (isList) {
+        return `
+                            ${override} fun with${firstLetterToUpperCase(field.attributes.name)}(vararg values: ${type}?): ${className} {
+                                if (values != null) {
+                                    for (value in values) {
+                                        this.${makeFieldName(field.attributes.name)}!!.add(value)
+                                    }
+                                }
+                                return this
+                            }
+
+                            ${override} fun with${firstLetterToUpperCase(field.attributes.name)}(values: Collection<${type}?>?): ${className} {
+                                if (values != null) {
+                                    this.${makeFieldName(field.attributes.name)}!!.addAll(values)
+                                }
+                                return this
+                            }
+                        `;
+    }
+
+    return `
+                            ${override} fun with${firstLetterToUpperCase(field.attributes.name)}(value: ${type}?):  ${className} {
+                                this.${makeFieldName(field.attributes.name)} = value
+                                return this
+                            }
+
+
+                        `;
+};
+
 function processElements(elements, config, mode) {
   if (elements) {
     for (const element of elements) {
       switch (element.name) {
         case "xs:schema":
-          console.log(
-            `Processing xs:schema ${element.attributes.targetNamespace}`,
-          );
+          // console.log(
+          //   `Processing xs:schema ${element.attributes.targetNamespace}`,
+          // );
           processElements(element.elements, config, mode);
           continue;
 
@@ -314,70 +464,31 @@ function processElements(elements, config, mode) {
           }
 
           if (mode === "WRITE_FILES") {
-            const renderWith = (field, className, type) => {
-              const isList = getIsList(field);
 
-              if (isList) {
-                return `
-                            public ${className} with${firstLetterToUpperCase(field.attributes.name)}(${type}... values) {
-                                if (values!= null) {
-                                    for (${type} value: values) {
-                                        get${firstLetterToUpperCase(field.attributes.name)}().add(value);
-                                    }
-                                }
-                                return this;
-                            }
-
-                            public ${className} with${firstLetterToUpperCase(field.attributes.name)}(java.util.Collection<${type}> values) {
-                                if (values!= null) {
-                                    get${firstLetterToUpperCase(field.attributes.name)}().addAll(values);
-                                }
-                                return this;
-                            }
-                        `;
-              }
-
-              return `
-                            public ${className} with${firstLetterToUpperCase(field.attributes.name)}(${type} value) {
-                                set${firstLetterToUpperCase(field.attributes.name)}(value);
-                                return this;
-                            }
-
-
-                        `;
-            };
 
             const renderGetSet = (field, className, type) => {
               const isList = getIsList(field);
 
+
+                const name = field.attributes.name === 'content' && config.namespaceUri === 'urn:hl7-org:cql-annotations:r1' ? 's' : field.attributes.name;
+
               if (isList) {
                 return `
-                            protected java.util.List<${type}> _${field.attributes.name};
-
-                            public java.util.List<${type}> get${firstLetterToUpperCase(field.attributes.name)}() {
-                                if (_${field.attributes.name} == null) {
-                                    _${field.attributes.name} = new java.util.ArrayList<${type}>();
-                                }
-                                return _${field.attributes.name};
-                            }
-                            
-                            public void set${firstLetterToUpperCase(field.attributes.name)}(java.util.List<${type}> value) {
-                                this._${field.attributes.name} = value;
-                            }
+                            @nl.adaptivity.xmlutil.serialization.XmlSerialName(${JSON.stringify(name)}, ${JSON.stringify(config.namespaceUri)}, "")
+                            var ${makeFieldName(field.attributes.name)}: MutableList<${type}?>? = null
+                               get() {
+                                   if (field == null) {
+                                        field = ArrayList();
+                                    }
+                                    return field;
+                               }
                         `;
               }
 
+
               return `
-                            protected ${type} _${field.attributes.name};
-
-                            public ${type} get${firstLetterToUpperCase(field.attributes.name)}() {
-                                return _${field.attributes.name};
-                            }
-
-                            public void set${firstLetterToUpperCase(field.attributes.name)}(${type} value) {
-                                this._${field.attributes.name} = value;
-                            }
-
+                            @nl.adaptivity.xmlutil.serialization.XmlSerialName(${JSON.stringify(name)}, ${JSON.stringify(config.namespaceUri)}, "")
+                            var ${makeFieldName(field.attributes.name)}: ${type}? = null
                         `;
             };
 
@@ -387,8 +498,10 @@ function processElements(elements, config, mode) {
               if (innerSequence) {
                 return `
 
-                                public static class ${firstLetterToUpperCase(field.attributes.name)}
-                                    ${config.autoExtend ? `extends ${config.autoExtend}` : ""}
+                                @OptIn(kotlinx.serialization.ExperimentalSerializationApi::class)
+                                @kotlinx.serialization.Serializable
+                                class ${firstLetterToUpperCase(field.attributes.name)}
+                                    ${config.autoExtend ? `: ${config.autoExtend}()` : ""}
                                 {
 
                                 ${(innerSequence.elements || [])
@@ -421,14 +534,25 @@ function processElements(elements, config, mode) {
                         `;
             };
 
-            console.log(`Processing xs:complexType ${element.attributes.name}`);
+            // console.log(`Processing xs:complexType ${element.attributes.name}`);
+
+
+            // ${element.attributes.name === 'Library' ? `
+              //
+              // @nl.adaptivity.xmlutil.serialization.XmlNamespaceDeclSpec("urn:hl7-org:elm:r1;t=urn:hl7-org:elm-types:r1;xsi=http://www.w3.org/2001/XMLSchema-instance;xsd=http://www.w3.org/2001/XMLSchema;quick=http://hl7.org/fhir;a=urn:hl7-org:cql-annotations:r1")
+              //
+              // ` : ''}
+
 
             fs.writeFileSync(
-              `${config.outputDir}/${element.attributes.name}.java`,
+              `${config.outputDir}/${element.attributes.name}.kt`,
               `
-package ${config.packageName};
+package ${config.packageName}
 
-public ${element.attributes.abstract === "true" ? "abstract" : ""} class ${element.attributes.name} ${extendsClass ? `extends ${extendsClass}` : ""} {
+@OptIn(kotlinx.serialization.ExperimentalSerializationApi::class, nl.adaptivity.xmlutil.ExperimentalXmlUtilApi::class)
+@kotlinx.serialization.Serializable
+@nl.adaptivity.xmlutil.serialization.XmlSerialName(${JSON.stringify(makeLocalName(element.attributes.name))}, ${ JSON.stringify(config.namespaceUri)}, "")
+${element.attributes.abstract === "true" ? "abstract" : "open"} class ${element.attributes.name} ${extendsClass ? `: ${extendsClass}()` : ""} {
 
 ${fields
   .map((field) => {
@@ -438,41 +562,55 @@ ${fields
 
 ${getParentFields(config.classes[element.attributes.name]?.extendsClass, config)
   .map((field) => {
-    return renderWith(field, element.attributes.name, field.attributes.type);
+    return renderWith(field, element.attributes.name, field.attributes.type, 'override');
   })
   .join("\n")}
 
 ${attributesFields
   .map((field) => {
-    const type = getType(field.attributes.type);
+      const type = getType(field.attributes.type);
+
+
+      const extraForBoolean = type === "Boolean" ? `
+       fun is${firstLetterToUpperCase(field.attributes.name)}(): Boolean? {
+         return this.${makeFieldName(field.attributes.name)}
+       }
+    
+    ` : '';
+      
+      const extraForWith = `
+        open fun with${firstLetterToUpperCase(field.attributes.name)}(value: ${type}?): ${element.attributes.name} {
+            this.${makeFieldName(field.attributes.name)} = value
+            return this
+        }
+      `;
+
+      if (field.attributes.default) {
+
+          const defaultValue = {
+              "xs:boolean": field.attributes.default,
+              "xs:anyURI": JSON.stringify(field.attributes.default),
+              AccessModifier: `AccessModifier.${field.attributes.default.toUpperCase()}`,
+          }[field.attributes.type]
+
+      return `
+            ${type === field.attributes.type ? '@nl.adaptivity.xmlutil.serialization.XmlElement(false)' : ''}
+            var ${makeFieldName(field.attributes.name)}: ${addContextualAnnotationIfNecessary(type)} ${type}? = null
+                get() {
+                   return field ?: ${defaultValue}
+                }
+                
+                ${extraForBoolean}
+                ${extraForWith}
+        `;
+  }
 
     return `
-        protected ${type} _${field.attributes.name};
-
-
-        public ${type === "Boolean" && field.attributes.default ? "boolean" : type} ${type === "Boolean" ? "is" : "get"}${firstLetterToUpperCase(field.attributes.name)}() {
-            ${
-              field.attributes.default
-                ? `if (_${field.attributes.name} == null) { return ${
-                    {
-                      "xs:boolean": field.attributes.default,
-                      "xs:anyURI": JSON.stringify(field.attributes.default),
-                      AccessModifier: `AccessModifier.${field.attributes.default.toUpperCase()}`,
-                    }[field.attributes.type]
-                  }; }`
-                : ""
-            }
-            return _${field.attributes.name};
-        }
-
-        public void set${firstLetterToUpperCase(field.attributes.name)}(${type} value) {
-            this._${field.attributes.name} = value;
-        }
-
-        public ${element.attributes.name} with${firstLetterToUpperCase(field.attributes.name)}(${type} value) {
-            set${firstLetterToUpperCase(field.attributes.name)}(value);
-            return this;
-        }
+        ${type === field.attributes.type ? '@nl.adaptivity.xmlutil.serialization.XmlElement(false)' : ''}
+        var ${makeFieldName(field.attributes.name)}: ${addContextualAnnotationIfNecessary(type)} ${type}? = null
+      
+        ${extraForBoolean}
+        ${extraForWith}
     `;
   })
   .join("\n")}
@@ -486,16 +624,16 @@ ${getParentAttributes(
       field,
       element.attributes.name,
       getType(field.attributes.type),
+        'override',
     );
   })
   .join("\n")}
   
   
-  @Override
-  public boolean equals(Object that) {
-    if (that instanceof ${element.attributes.name}) {
+  override fun equals(that: Any?): Boolean {
+    if (that is ${element.attributes.name}) {
     
-      ${element.attributes.name} that_ = (${element.attributes.name}) that;
+      val that_ = that;
       
       ${
         extension && extension.attributes.base
@@ -510,7 +648,7 @@ ${getParentAttributes(
       ${fields
         .map((field) => {
           return `
-          if (!java.util.Objects.equals(this.get${firstLetterToUpperCase(field.attributes.name)}(), that_.get${firstLetterToUpperCase(field.attributes.name)}())) {
+          if (this.${makeFieldName(field.attributes.name)} != that_.${makeFieldName(field.attributes.name)}) {
                 return false;
           }
 `;
@@ -519,10 +657,8 @@ ${getParentAttributes(
         
         ${attributesFields
           .map((field) => {
-            const isBoolean = field.attributes.type === "xs:boolean";
-
             return `
-            if (!java.util.Objects.equals(this.${isBoolean ? "is" : "get"}${firstLetterToUpperCase(field.attributes.name)}(), that_.${isBoolean ? "is" : "get"}${firstLetterToUpperCase(field.attributes.name)}())) {
+            if (this.${makeFieldName(field.attributes.name)} != that_.${makeFieldName(field.attributes.name)}) {
                 return false;
           }
 `;
@@ -538,9 +674,8 @@ ${getParentAttributes(
     
   }
   
-  @Override
-    public int hashCode() {
-        return 1;
+  override fun hashCode(): Int {
+        return 1
     }
 
 
@@ -557,50 +692,53 @@ ${getParentAttributes(
           }
 
           if (mode === "WRITE_FILES") {
-            console.log(`Processing xs:simpleType ${element.attributes.name}`);
+            // console.log(`Processing xs:simpleType ${element.attributes.name}`);
             fs.writeFileSync(
-              `${config.outputDir}/${element.attributes.name}.java`,
+              `${config.outputDir}/${element.attributes.name}.kt`,
               `
-package ${config.packageName};
+package ${config.packageName}
 
-public enum ${element.attributes.name} {
+@OptIn(kotlinx.serialization.ExperimentalSerializationApi::class)
+@kotlinx.serialization.Serializable
+enum class ${element.attributes.name}(private val value: String) {
 ${element.elements[element.elements.length - 1].elements
   .map((element) => {
-    return `${element.attributes.value.toUpperCase()}(${JSON.stringify(element.attributes.value)})`;
+    return `
+        @kotlinx.serialization.SerialName(${JSON.stringify(element.attributes.value)})
+        ${element.attributes.value.toUpperCase()}(${JSON.stringify(element.attributes.value)})
+    `;
   })
   .join(",\n")};
-  
-  private final String value;
-  
-  ${element.attributes.name}(String v) {
-        value = v;
+
+   
+    fun value(): String {
+        return value
     }
 
-    public String value() {
-        return value;
-    }
-  
-    public static ${element.attributes.name} fromValue(String v) {
-        for (${element.attributes.name} c: ${element.attributes.name}.values()) {
-            if (c.value.equals(v)) {
-                return c;
+    companion object {
+        fun fromValue(v: String): ${element.attributes.name} {
+            for (c in entries) {
+                if (c.value == v) {
+                    return c
+                }
             }
+            throw IllegalArgumentException(v)
         }
-        throw new IllegalArgumentException(v);
     }
-  
+
   
 }
 `,
+
             );
           }
 
           continue;
 
         case "xs:include":
-          console.log(
-            `Processing xs:include ${element.attributes.schemaLocation}`,
-          );
+          // console.log(
+          //   `Processing xs:include ${element.attributes.schemaLocation}`,
+          // );
           processXsd(includes[element.attributes.schemaLocation], config, mode);
 
           continue;

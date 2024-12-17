@@ -3,20 +3,21 @@ package org.hl7.cql.model;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-import jakarta.xml.bind.JAXB;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.hl7.elm_modelinfo.r1.*;
+import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReaderFactory;
 import org.junit.jupiter.api.Test;
 
 public class ModelInfoComparerTest {
 
     @Test
-    void compareModelInfo() {
-        ModelInfo a =
-                JAXB.unmarshal(ModelInfoComparerTest.class.getResourceAsStream("a-modelinfo.xml"), ModelInfo.class);
-        ModelInfo b =
-                JAXB.unmarshal(ModelInfoComparerTest.class.getResourceAsStream("b-modelinfo.xml"), ModelInfo.class);
+    void compareModelInfo() throws IOException {
+        ModelInfo a = ModelInfoReaderFactory.getReader("application/xml")
+                .read(ModelInfoComparerTest.class.getResourceAsStream("a-modelinfo.xml"));
+        ModelInfo b = ModelInfoReaderFactory.getReader("application/xml")
+                .read(ModelInfoComparerTest.class.getResourceAsStream("b-modelinfo.xml"));
 
         ModelInfoCompareContext differences = new ModelInfoCompareContext();
         compareModelInfo(differences, a, b);
@@ -35,11 +36,11 @@ public class ModelInfoComparerTest {
 
     // @Test
     // Not an actual test, Used to determine differences between current and updated model info from the MAT team
-    public void compareMATModelInfo() {
-        ModelInfo a = JAXB.unmarshal(
-                ModelInfoComparerTest.class.getResourceAsStream("fhir-modelinfo-4.0.1.xml"), ModelInfo.class);
-        ModelInfo b = JAXB.unmarshal(
-                ModelInfoComparerTest.class.getResourceAsStream("mat-fhir-modelinfo-4.0.1.xml"), ModelInfo.class);
+    public void compareMATModelInfo() throws IOException {
+        ModelInfo a = ModelInfoReaderFactory.getReader("application/xml")
+                .read(ModelInfoComparerTest.class.getResourceAsStream("fhir-modelinfo-4.0.1.xml"));
+        ModelInfo b = ModelInfoReaderFactory.getReader("application/xml")
+                .read(ModelInfoComparerTest.class.getResourceAsStream("mat-fhir-modelinfo-4.0.1.xml"));
 
         ModelInfoCompareContext differences = new ModelInfoCompareContext();
         compareModelInfo(differences, a, b);
@@ -47,11 +48,11 @@ public class ModelInfoComparerTest {
     }
 
     @Test
-    void compareNewModelInfo() {
-        ModelInfo a = JAXB.unmarshal(
-                ModelInfoComparerTest.class.getResourceAsStream("fhir-modelinfo-4.0.1.xml"), ModelInfo.class);
-        ModelInfo b = JAXB.unmarshal(
-                ModelInfoComparerTest.class.getResourceAsStream("new-fhir-modelinfo-4.0.1.xml"), ModelInfo.class);
+    void compareNewModelInfo() throws IOException {
+        ModelInfo a = ModelInfoReaderFactory.getReader("application/xml")
+                .read(ModelInfoComparerTest.class.getResourceAsStream("fhir-modelinfo-4.0.1.xml"));
+        ModelInfo b = ModelInfoReaderFactory.getReader("application/xml")
+                .read(ModelInfoComparerTest.class.getResourceAsStream("new-fhir-modelinfo-4.0.1.xml"));
 
         ModelInfoCompareContext differences = new ModelInfoCompareContext();
         compareModelInfo(differences, a, b);
@@ -68,12 +69,11 @@ public class ModelInfoComparerTest {
     }
 
     @Test
-    void compareMetadataModelInfo() {
-        ModelInfo a = JAXB.unmarshal(
-                ModelInfoComparerTest.class.getResourceAsStream("fhir-modelinfo-4.0.1-1.5.1.xml"), ModelInfo.class);
-        ModelInfo b = JAXB.unmarshal(
-                ModelInfoComparerTest.class.getResourceAsStream("fhir-modelinfo-4.0.1-with-metadata.xml"),
-                ModelInfo.class);
+    void compareMetadataModelInfo() throws IOException {
+        ModelInfo a = ModelInfoReaderFactory.getReader("application/xml")
+                .read(ModelInfoComparerTest.class.getResourceAsStream("fhir-modelinfo-4.0.1-1.5.1.xml"));
+        ModelInfo b = ModelInfoReaderFactory.getReader("application/xml")
+                .read(ModelInfoComparerTest.class.getResourceAsStream("fhir-modelinfo-4.0.1-with-metadata.xml"));
 
         ModelInfoCompareContext differences = new ModelInfoCompareContext();
         compareModelInfo(differences, a, b);

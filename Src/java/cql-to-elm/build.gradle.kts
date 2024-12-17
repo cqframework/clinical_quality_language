@@ -14,8 +14,8 @@ dependencies {
     // libraries such that we could swap out jackson for something else. In the meantime, these are
     // "implementation" dependencies so that they are not exported downstream.
     implementation("com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations:${project.findProperty("jackson.version")}")
-    testImplementation(project(":elm-jackson"))
-    testImplementation(project(":model-jackson"))
+    testImplementation(project(":elm-xmlutil"))
+    testImplementation(project(":model-xmlutil"))
     testImplementation(project(":quick"))
     testImplementation(project(":qdm"))
     testImplementation("com.github.reinert:jjschema:1.16")

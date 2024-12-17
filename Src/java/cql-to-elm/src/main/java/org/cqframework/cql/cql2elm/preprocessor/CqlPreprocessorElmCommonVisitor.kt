@@ -155,8 +155,10 @@ abstract class CqlPreprocessorElmCommonVisitor(
         val typeSpecifier = of.createTupleTypeSpecifier()
         for (definitionContext in ctx.tupleElementDefinition()) {
             val element = visit(definitionContext) as TupleElementDefinition
-            resultType.addElement(TupleTypeElement(element.name, element.elementType.resultType!!))
-            typeSpecifier.element.add(element)
+            resultType.addElement(
+                TupleTypeElement(element.name!!, element.elementType!!.resultType!!)
+            )
+            typeSpecifier.element!!.add(element)
         }
         typeSpecifier.resultType = resultType
         return typeSpecifier
@@ -172,7 +174,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
         }
         val result = of.createChoiceTypeSpecifier().withChoice(typeSpecifiers)
         if (includeDeprecatedElements) {
-            result.type.addAll(typeSpecifiers)
+            result.type!!.addAll(typeSpecifiers)
         }
         val choiceType = ChoiceType(types)
         result.resultType = choiceType
@@ -184,7 +186,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
     ): IntervalTypeSpecifier {
         val result =
             of.createIntervalTypeSpecifier().withPointType(parseTypeSpecifier(ctx.typeSpecifier()))
-        val intervalType = IntervalType(result.pointType.resultType!!)
+        val intervalType = IntervalType(result.pointType!!.resultType!!)
         result.resultType = intervalType
         return result
     }
@@ -192,7 +194,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
     override fun visitListTypeSpecifier(ctx: ListTypeSpecifierContext): ListTypeSpecifier {
         val result =
             of.createListTypeSpecifier().withElementType(parseTypeSpecifier(ctx.typeSpecifier()))
-        val listType = ListType(result.elementType.resultType!!)
+        val listType = ListType(result.elementType!!.resultType!!)
         result.resultType = listType
         return result
     }
@@ -205,12 +207,12 @@ abstract class CqlPreprocessorElmCommonVisitor(
                 .withContext(currentContext)
         if (ctx.fluentModifier() != null) {
             libraryBuilder.checkCompatibilityLevel("Fluent functions", "1.5")
-            functionDef.isFluent = true
+            functionDef.fluent = true
         }
 
         for (opdef in ctx.operandDefinition()) {
             val typeSpecifier = parseTypeSpecifier(opdef.typeSpecifier())!!
-            functionDef.operand.add(
+            functionDef.operand!!.add(
                 of.createOperandDef()
                     .withName(parseString(opdef.referentialIdentifier()))
                     .withOperandTypeSpecifier(typeSpecifier)
@@ -305,7 +307,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
                             chunk = newChunk
                         }
                         a?.let { addNarrativeToAnnotation(it, chunk) }
-                            ?: o.annotation.add(buildAnnotation(chunk))
+                            ?: o.annotation!!.add(buildAnnotation(chunk))
                     }
                 }
             } else {
@@ -320,7 +322,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
                     chunk = newChunk
                     val a = getAnnotation(libraryBuilder.library)
                     a?.let { addNarrativeToAnnotation(it, chunk) }
-                        ?: libraryBuilder.library.annotation.add(buildAnnotation(chunk))
+                        ?: libraryBuilder.library.annotation!!.add(buildAnnotation(chunk))
                 }
             }
         }
@@ -353,7 +355,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
                     var a = getAnnotation(o)
                     if (a == null) {
                         a = buildAnnotation()
-                        o.annotation.add(a)
+                        o.annotation!!.add(a)
                     }
                     // If the definition was processed as a forward declaration, the tag processing
                     // will already
@@ -367,8 +369,8 @@ abstract class CqlPreprocessorElmCommonVisitor(
                     // tags, and there is currently nothing that would add tags other than being
                     // processed from
                     // comments
-                    if (a.t.isEmpty()) {
-                        a.t.addAll(tags)
+                    if (a.t!!.isEmpty()) {
+                        a.t!!.addAll(tags)
                     }
                 }
             }
@@ -379,9 +381,9 @@ abstract class CqlPreprocessorElmCommonVisitor(
                     var a = getAnnotation(libraryBuilder.library)
                     if (a == null) {
                         a = buildAnnotation()
-                        libraryBuilder.library.annotation.add(a)
+                        libraryBuilder.library.annotation!!.add(a)
                     }
-                    a.t.addAll(tags)
+                    a.t!!.addAll(tags)
                 }
             }
         }
@@ -504,15 +506,15 @@ abstract class CqlPreprocessorElmCommonVisitor(
                 val chunkNarrative = buildNarrative(childChunk)
                 if (hasChunks(chunkNarrative)) {
                     if (currentNarrative != null) {
-                        narrative.content.add(wrapNarrative(currentNarrative))
+                        narrative.content!!.add(wrapNarrative(currentNarrative))
                         currentNarrative = null
                     }
-                    narrative.content.add(wrapNarrative(chunkNarrative))
+                    narrative.content!!.add(wrapNarrative(chunkNarrative))
                 } else {
                     if (currentNarrative == null) {
                         currentNarrative = chunkNarrative
                     } else {
-                        currentNarrative.content.addAll(chunkNarrative.content)
+                        currentNarrative.content!!.addAll(chunkNarrative.content!!)
                         if (currentNarrative.r == null) {
                             currentNarrative.r = chunkNarrative.r
                         }
@@ -520,7 +522,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
                 }
             }
             if (currentNarrative != null) {
-                narrative.content.add(wrapNarrative(currentNarrative))
+                narrative.content!!.add(wrapNarrative(currentNarrative))
             }
         } else {
             var chunkContent = tokenStream.getText(chunk.interval)
@@ -528,13 +530,13 @@ abstract class CqlPreprocessorElmCommonVisitor(
                 chunkContent = chunkContent.trimStart()
             }
             chunkContent = normalizeWhitespace(chunkContent)
-            narrative.content.add(chunkContent)
+            narrative.content!!.add(chunkContent)
         }
         return narrative
     }
 
     private fun hasChunks(narrative: Narrative): Boolean {
-        for (c in narrative.content) {
+        for (c in narrative.content!!) {
             if (c !is String) {
                 return true
             }
@@ -627,7 +629,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
     }
 
     private fun getAnnotation(element: Element): Annotation? {
-        for (o in element.annotation) {
+        for (o in element.annotation!!) {
             if (o is Annotation) {
                 return o
             }

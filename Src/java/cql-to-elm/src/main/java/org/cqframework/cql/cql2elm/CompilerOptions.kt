@@ -21,12 +21,12 @@ object CompilerOptions {
         if (library.annotation.isNullOrEmpty()) {
             return null
         }
-        val compilerOptions = getCompilerOptions(library.annotation)
+        val compilerOptions = getCompilerOptions(library.annotation!!)
         return parseCompilerOptions(compilerOptions)
     }
 
-    private fun getCompilerOptions(annotations: List<CqlToElmBase>): String? {
-        for (base: CqlToElmBase in annotations) {
+    private fun getCompilerOptions(annotations: List<CqlToElmBase?>): String? {
+        for (base: CqlToElmBase? in annotations) {
             if (base is CqlToElmInfo) {
                 if (base.translatorOptions != null) {
                     return base.translatorOptions
@@ -77,11 +77,11 @@ object CompilerOptions {
         if (library.annotation.isNullOrEmpty()) {
             return null
         }
-        return getCompilerVersion(library.annotation)
+        return getCompilerVersion(library.annotation!!)
     }
 
-    private fun getCompilerVersion(annotations: List<CqlToElmBase>): String? {
-        for (o: CqlToElmBase in annotations) {
+    private fun getCompilerVersion(annotations: List<CqlToElmBase?>): String? {
+        for (o: CqlToElmBase? in annotations) {
             if (o is CqlToElmInfo) {
                 return o.translatorVersion
             }

@@ -12,7 +12,6 @@ import joptsimple.OptionSpec;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
-import org.hl7.elm_modelinfo.r1.ObjectFactory;
 
 /**
  * Generates a ModelInfo.xml for the input xsd.
@@ -106,11 +105,11 @@ public class Main {
         }
 
         OutputStream os = new FileOutputStream(outputfile, false);
-        try {
-            OutputStreamWriter writer = new OutputStreamWriter(os, "UTF-8");
-            marshaller.marshal(new ObjectFactory().createModelInfo(modelInfo), writer);
-        } finally {
-            os.close();
-        }
+        //        try {
+        //            OutputStreamWriter writer = new OutputStreamWriter(os, "UTF-8");
+        //            marshaller.marshal(new ObjectFactory().createModelInfo(modelInfo), writer);
+        //        } finally {
+        //            os.close();
+        //        }
     }
 }

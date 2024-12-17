@@ -6,8 +6,8 @@ dependencies {
     api(project(":elm"))
     api(project(":cql-to-elm"))
 
-    testImplementation(project(":model-jackson"))
-    testImplementation(project(":elm-jackson"))
+    testImplementation(project(":model-xmlutil"))
+    testImplementation(project(":elm-xmlutil"))
     testImplementation("org.mockito:mockito-core:5.4.0")
 }
 

@@ -64,16 +64,16 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
     init {
         if (modelManager != null) {
             // Import required models
-            for (requiredModel in modelInfo.requiredModelInfo) {
+            for (requiredModel in modelInfo.requiredModelInfo!!) {
                 val model =
                     modelManager.resolveModel(
                         ModelIdentifier(
-                            system = NamespaceManager.getUriPart(requiredModel.url),
-                            id = requiredModel.name,
+                            system = NamespaceManager.getUriPart(requiredModel!!.url),
+                            id = requiredModel.name!!,
                             version = requiredModel.version,
                         )
                     )
-                modelIndex[requiredModel.name] = model
+                modelIndex[requiredModel.name!!] = model
             }
 
             // Ensure System model is registered
@@ -84,23 +84,23 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
         }
 
         // Import model types
-        for (t in this.modelInfo.typeInfo) {
+        for (t in this.modelInfo.typeInfo!!) {
             if (t is SimpleTypeInfo) {
-                typeInfoIndex[ensureUnqualified(t.name)] = t
+                typeInfoIndex[ensureUnqualified(t.name!!)] = t
             } else if (t is ClassInfo && t.name != null) {
-                typeInfoIndex[ensureUnqualified(t.name)] = t
+                typeInfoIndex[ensureUnqualified(t.name!!)] = t
             }
         }
 
         // Import model conversions
-        for (c in this.modelInfo.conversionInfo) {
-            val fromType = resolveTypeNameOrSpecifier(c.fromType, c.fromTypeSpecifier)
+        for (c in this.modelInfo.conversionInfo!!) {
+            val fromType = resolveTypeNameOrSpecifier(c!!.fromType, c.fromTypeSpecifier)
             val toType = resolveTypeNameOrSpecifier(c.toType, c.toTypeSpecifier)
-            val qualifierIndex = c.functionName.indexOf('.')
+            val qualifierIndex = c.functionName!!.indexOf('.')
             val libraryName =
-                if (qualifierIndex >= 0) c.functionName.substring(0, qualifierIndex) else null
+                if (qualifierIndex >= 0) c.functionName!!.substring(0, qualifierIndex) else null
             val functionName =
-                if (qualifierIndex >= 0) c.functionName.substring(qualifierIndex + 1) else null
+                if (qualifierIndex >= 0) c.functionName!!.substring(qualifierIndex + 1) else null
             val operator = Operator(functionName!!, Signature(fromType!!), toType)
             operator.libraryName = libraryName
 
@@ -110,17 +110,17 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
         }
 
         // Import model contexts
-        for (c in this.modelInfo.contextInfo) {
-            val contextType = resolveTypeSpecifier(c.contextType)
+        for (c in this.modelInfo.contextInfo!!) {
+            val contextType = resolveTypeSpecifier(c!!.contextType!!)
             require(contextType is ClassType) {
                 // ERROR:
                 String.format(Locale.US, "Model context %s must be a class type.", c.name)
             }
             val modelContext =
                 ModelContext(
-                    c.name,
+                    c.name!!,
                     contextType,
-                    c.keyElement.split(";".toRegex()).dropLastWhile { it.isEmpty() },
+                    c.keyElement!!.split(";".toRegex()).dropLastWhile { it.isEmpty() },
                     c.birthDateElement
                 )
 
@@ -131,7 +131,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
         // default context based
         // on the patient class information if it's present
         if (contexts.isEmpty() && this.modelInfo.patientClassName != null) {
-            val contextType = resolveTypeName(this.modelInfo.patientClassName)
+            val contextType = resolveTypeName(this.modelInfo.patientClassName!!)
             if (contextType is ClassType) {
                 val modelContext =
                     ModelContext(
@@ -145,8 +145,8 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
             }
         }
 
-        for (t in this.modelInfo.typeInfo) {
-            val type = resolveTypeInfo(t)
+        for (t in this.modelInfo.typeInfo!!) {
+            val type = resolveTypeInfo(t!!)
             if (type != null) {
                 dataTypes.add(type)
             }
@@ -171,7 +171,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
 
     private fun casify(
         typeName: String,
-        caseSensitive: Boolean = modelInfo.isCaseSensitive ?: false
+        caseSensitive: Boolean = modelInfo.isCaseSensitive() ?: false
     ): String {
         return if (caseSensitive) typeName.lowercase(Locale.getDefault()) else typeName
     }
@@ -228,11 +228,11 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
 
         if (typeSpecifier is TupleTypeSpecifier) {
             val tupleType = TupleType()
-            for (specifierElement in typeSpecifier.element) {
+            for (specifierElement in typeSpecifier.element!!) {
                 val element =
                     TupleTypeElement(
-                        specifierElement.name,
-                        resolveTypeSpecifier(specifierElement.elementType)!!
+                        specifierElement!!.name!!,
+                        resolveTypeSpecifier(specifierElement.elementType!!)!!
                     )
                 tupleType.addElement(element)
             }
@@ -240,8 +240,8 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
 
         if (typeSpecifier is ChoiceTypeSpecifier) {
             val choices: MutableList<DataType> = ArrayList()
-            for (choice in typeSpecifier.choice) {
-                val choiceType = resolveTypeSpecifier(choice)!!
+            for (choice in typeSpecifier.choice!!) {
+                val choiceType = resolveTypeSpecifier(choice!!)!!
                 choices.add(choiceType)
             }
             return ChoiceType(choices)
@@ -357,7 +357,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
     }
 
     private fun resolveSimpleType(t: SimpleTypeInfo): SimpleType {
-        val qualifiedTypeName = ensureQualified(t.name)
+        val qualifiedTypeName = ensureQualified(t.name!!)
         val lookupType = lookupType(qualifiedTypeName)
         require(lookupType !is ClassType) {
             String.format(
@@ -399,13 +399,17 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
     ): Collection<TupleTypeElement> {
         val elements: MutableList<TupleTypeElement> = ArrayList()
         for (e in infoElements) {
-            elements.add(TupleTypeElement(e.name, resolveTypeNameOrSpecifier(e)!!))
+            elements.add(TupleTypeElement(e.name!!, resolveTypeNameOrSpecifier(e)!!))
         }
         return elements
     }
 
     private fun resolveTupleType(t: TupleTypeInfo): TupleType {
-        val result = TupleType(resolveTupleTypeElements(t.element).toMutableList())
+        val result =
+            TupleType(
+                resolveTupleTypeElements(t.element as Collection<TupleTypeInfoElement>)
+                    .toMutableList()
+            )
         return result
     }
 
@@ -459,9 +463,9 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
 
             genericParameters.add(
                 TypeParameter(
-                    parameterInfo.name,
+                    parameterInfo.name!!,
                     typeConstraint,
-                    resolveTypeName(parameterInfo.constraintType)
+                    resolveTypeName(parameterInfo.constraintType!!)
                 )
             )
         }
@@ -496,10 +500,10 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
             }
             elements.add(
                 ClassTypeElement(
-                    e.name,
+                    e.name!!,
                     elementType!!,
-                    e.isProhibited ?: false,
-                    e.isOneBased ?: false,
+                    e.isProhibited() ?: false,
+                    e.isOneBased() ?: false,
                     e.target
                 )
             )
@@ -537,12 +541,12 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
         val boundType: DataType?
         val boundParameterTypeSpecifier = e.elementTypeSpecifier as BoundParameterTypeSpecifier
         val parameterName = boundParameterTypeSpecifier.parameterName
-        val genericParameter = classType!!.getGenericParameterByIdentifier(parameterName)
+        val genericParameter = classType!!.getGenericParameterByIdentifier(parameterName!!)
 
         if (genericParameter == null) {
             throw RuntimeException("Unknown symbol $parameterName")
         } else {
-            boundType = resolveTypeName(boundParameterTypeSpecifier.boundType)
+            boundType = resolveTypeName(boundParameterTypeSpecifier.boundType!!)
         }
 
         return boundType
@@ -581,17 +585,21 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
             )
         }
         elementType =
-            TypeParameter(parameterTypeSpecifier.parameterName, TypeParameterConstraint.TYPE, null)
+            TypeParameter(
+                parameterTypeSpecifier.parameterName!!,
+                TypeParameterConstraint.TYPE,
+                null
+            )
         return elementType
     }
 
     private fun resolveClassTypeSearch(t: ClassType?, s: SearchInfo): SearchType {
-        return SearchType(s.name, s.path, resolveTypeNameOrSpecifier(s.type, s.typeSpecifier)!!)
+        return SearchType(s.name!!, s.path!!, resolveTypeNameOrSpecifier(s.type, s.typeSpecifier)!!)
     }
 
     private fun resolveClassType(t: ClassInfo): ClassType {
         requireNotNull(t.name) { "Class definition must have a name." }
-        val qualifiedName = ensureQualified(t.name)
+        val qualifiedName = ensureQualified(t.name!!)
         var result = lookupType(qualifiedName) as ClassType?
 
         if (result == null) {
@@ -599,17 +607,17 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
                 if (t is ProfileInfo) {
                     ProfileType(
                         qualifiedName,
-                        resolveTypeNameOrSpecifier(t.getBaseType(), t.getBaseTypeSpecifier())
+                        resolveTypeNameOrSpecifier(t.baseType, t.baseTypeSpecifier)
                     )
                 } else {
                     // Added to support generic notation in ModelInfo file for class type names
                     // (e.g., MyGeneric<T>) and
                     // base classes (e.g., Map<String,Person>).
-                    if (t.name.contains("<")) {
-                        handleGenericType(t.name, t.baseType)
+                    if (t.name!!.contains("<")) {
+                        handleGenericType(t.name!!, t.baseType!!)
                     } else {
-                        if (t.baseType != null && t.baseType.contains("<")) {
-                            handleGenericType(t.name, t.baseType)
+                        if (t.baseType != null && t.baseType!!.contains("<")) {
+                            handleGenericType(t.name!!, t.baseType!!)
                         } else {
                             ClassType(
                                 qualifiedName,
@@ -622,16 +630,20 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
             resolvedTypes[casify(result.name)] = result
 
             if (t.parameter != null) {
-                result.addGenericParameter(resolveGenericParameterDeclarations(t.parameter))
+                result.addGenericParameter(
+                    resolveGenericParameterDeclarations(t.parameter as List<TypeParameterInfo>)
+                )
             }
 
             if (t.element != null) {
-                result.addElements(resolveClassTypeElements(result, t.element))
+                result.addElements(
+                    resolveClassTypeElements(result, t.element as List<ClassInfoElement>)
+                )
             }
 
             if (t.search != null) {
-                for (si in t.search) {
-                    result.addSearch(resolveClassTypeSearch(result, si))
+                for (si in t.search!!) {
+                    result.addSearch(resolveClassTypeSearch(result, si!!))
                 }
             }
 
@@ -640,7 +652,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
             // have all been bound to concrete types (no remaining degrees of freedom) and is not
             // expressed in generic
             // notation in the model-info file.
-            if (isParentGeneric(result) && !t.baseType.contains("<")) {
+            if (isParentGeneric(result) && !t.baseType!!.contains("<")) {
                 validateFreeAndBoundParameters(result, t)
             }
 
@@ -648,7 +660,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
                 identifier = t.identifier
                 label = t.label
                 target = t.target
-                isRetrievable = t.isRetrievable
+                isRetrievable = t.isRetrievable()!!
                 primaryCodePath = t.primaryCodePath
             }
         }
@@ -669,22 +681,22 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
     }
 
     private fun resolveRelationship(relationshipInfo: RelationshipInfo): Relationship {
-        val modelContext = resolveContext(relationshipInfo.context)
+        val modelContext = resolveContext(relationshipInfo.context!!)
         val relationship =
             Relationship(
                 modelContext,
-                relationshipInfo.relatedKeyElement.split(";").dropLastWhile { it.isEmpty() }
+                relationshipInfo.relatedKeyElement!!.split(";").dropLastWhile { it.isEmpty() }
             )
         return relationship
     }
 
     private fun importRelationships(c: ClassInfo, t: ClassType) {
-        for (r in c.contextRelationship) {
-            t.addRelationship(resolveRelationship(r))
+        for (r in c.contextRelationship!!) {
+            t.addRelationship(resolveRelationship(r!!))
         }
 
-        for (r in c.targetContextRelationship) {
-            t.addTargetRelationship(resolveRelationship(r))
+        for (r in c.targetContextRelationship!!) {
+            t.addTargetRelationship(resolveRelationship(r!!))
         }
     }
 
@@ -700,13 +712,13 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
 
     private fun resolveChoiceType(t: ChoiceTypeInfo): ChoiceType {
         val types = ArrayList<DataType>()
-        if (t.choice != null && t.choice.isNotEmpty()) {
-            for (typeSpecifier in t.choice) {
-                types.add(resolveTypeSpecifier(typeSpecifier)!!)
+        if (t.choice != null && t.choice!!.isNotEmpty()) {
+            for (typeSpecifier in t.choice!!) {
+                types.add(resolveTypeSpecifier(typeSpecifier!!)!!)
             }
         } else {
-            for (typeSpecifier in t.type) {
-                types.add(resolveTypeSpecifier(typeSpecifier)!!)
+            for (typeSpecifier in t.type!!) {
+                types.add(resolveTypeSpecifier(typeSpecifier!!)!!)
             }
         }
         return ChoiceType(types)
@@ -743,10 +755,10 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
 
         if (boundParameters.isNotEmpty()) {
             if (definition.element != null) {
-                definition.element.forEach {
-                    if (it.elementTypeSpecifier is BoundParameterTypeSpecifier) {
+                definition.element!!.forEach {
+                    if (it!!.elementTypeSpecifier is BoundParameterTypeSpecifier) {
                         val name: String =
-                            (it.elementTypeSpecifier as BoundParameterTypeSpecifier).parameterName
+                            (it.elementTypeSpecifier as BoundParameterTypeSpecifier).parameterName!!
                         val paramIndex: Int = boundParameters.indexOf(name)
                         if (paramIndex >= 0) {
                             boundParameters.removeAt(paramIndex)
