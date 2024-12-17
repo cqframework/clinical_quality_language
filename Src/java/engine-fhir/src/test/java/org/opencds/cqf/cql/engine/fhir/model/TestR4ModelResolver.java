@@ -162,7 +162,7 @@ class TestR4ModelResolver {
     void modelInfo400Tests() {
         ModelResolver resolver = new R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4));
         ModelManager mm = new ModelManager();
-        Model m = mm.resolveModel(new ModelIdentifier().withId("FHIR").withVersion("4.0.1"));
+        Model m = mm.resolveModel(new ModelIdentifier("FHIR", null, "4.0.1"));
 
         List<TypeInfo> typeInfos = m.getModelInfo().getTypeInfo();
 
@@ -198,7 +198,7 @@ class TestR4ModelResolver {
     void modelInfo401Tests() throws Exception {
         ModelResolver resolver = new R4FhirModelResolver(FhirContext.forCached(FhirVersionEnum.R4));
         ModelManager mm = new ModelManager();
-        Model m = mm.resolveModel(new ModelIdentifier().withId("FHIR").withVersion("4.0.1"));
+        Model m = mm.resolveModel(new ModelIdentifier("FHIR", null, "4.0.1"));
 
         List<TypeInfo> typeInfos = m.getModelInfo().getTypeInfo();
 

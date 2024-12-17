@@ -7,6 +7,7 @@ import javax.xml.namespace.QName;
 import org.cqframework.cql.cql2elm.*;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.cqframework.cql.cql2elm.model.LibraryRef;
+import org.cqframework.cql.cql2elm.tracking.Trackable;
 import org.cqframework.cql.elm.IdObjectFactory;
 import org.hl7.cql.model.ClassType;
 import org.hl7.cql.model.DataType;
@@ -429,8 +430,9 @@ public class ElmRequirementsContext {
             // to be constructed
             if (signature.size() != functionRef.getOperand().size()) {
                 for (Expression e : functionRef.getOperand()) {
-                    if (e.getResultType() != null) {
-                        signature.add(e.getResultType());
+                    var resultType = Trackable.INSTANCE.getResultType(e);
+                    if (resultType != null) {
+                        signature.add(resultType);
                     } else if (e.getResultTypeName() != null) {
                         signature.add(typeResolver.resolveTypeName(e.getResultTypeName()));
                     } else if (e.getResultTypeSpecifier() != null) {
@@ -599,17 +601,18 @@ public class ElmRequirementsContext {
             Property qualifiedProperty = new Property();
             qualifiedProperty.setSource(sourceProperty.getSource());
             qualifiedProperty.setScope(sourceProperty.getScope());
-            qualifiedProperty.setResultType(property.getResultType());
             qualifiedProperty.setResultTypeName(property.getResultTypeName());
             qualifiedProperty.setResultTypeSpecifier(property.getResultTypeSpecifier());
             qualifiedProperty.setLocalId(sourceProperty.getLocalId());
             qualifiedProperty.setPath(sourceProperty.getPath() + "." + property.getPath());
+            Trackable.INSTANCE.setResultType(qualifiedProperty, Trackable.INSTANCE.getResultType(property));
             return reportProperty(qualifiedProperty);
         } else {
             QName typeName = getType(property.getSource());
             if (typeName != null) {
-                ElmDataRequirement requirement = getDataRequirementForTypeName(
-                        typeName, getProfiledType(property.getSource().getResultType()));
+                var sourceResultType = Trackable.INSTANCE.getResultType(property.getSource());
+                ElmDataRequirement requirement =
+                        getDataRequirementForTypeName(typeName, getProfiledType(sourceResultType));
                 if (requirement != null) {
                     ElmPropertyRequirement propertyRequirement = new ElmPropertyRequirement(
                             getCurrentLibraryIdentifier(), property, property.getSource(), false);

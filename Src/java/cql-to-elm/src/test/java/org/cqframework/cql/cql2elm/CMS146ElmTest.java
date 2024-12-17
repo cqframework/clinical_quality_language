@@ -13,7 +13,8 @@ import java.util.stream.Collectors;
 import javax.xml.namespace.QName;
 import org.cqframework.cql.cql2elm.CqlCompilerException.ErrorSeverity;
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
-import org.cqframework.cql.elm.tracking.TrackBack;
+import org.cqframework.cql.cql2elm.tracking.TrackBack;
+import org.cqframework.cql.cql2elm.tracking.Trackable;
 import org.hl7.cql_annotations.r1.CqlToElmBase;
 import org.hl7.cql_annotations.r1.CqlToElmInfo;
 import org.hl7.elm.r1.*;
@@ -202,11 +203,14 @@ public class CMS146ElmTest {
                 default:
                     fail("Unknown source data criteria: " + dc);
             }
-            assertThat(dc.getTrackerId(), notNullValue());
+
+            var trackerId = Trackable.INSTANCE.getTrackerId(dc);
+            var trackbacks = Trackable.INSTANCE.getTrackbacks(dc);
+            assertThat(trackerId, notNullValue());
             // TODO: some objects get multiple trackers when they shouldn't
             // assertThat(dc.getTrackbacks().size(), is(1));
 
-            TrackBack tb = dc.getTrackbacks().iterator().next();
+            TrackBack tb = trackbacks.iterator().next();
             assertThat(
                     tb.getLibrary(),
                     is(of.createVersionedIdentifier().withId("CMS146").withVersion("2")));
@@ -237,10 +241,13 @@ public class CMS146ElmTest {
                 default:
                     fail("Unknown valueset: " + vs);
             }
-            assertThat(vs.getTrackerId(), notNullValue());
-            assertThat(vs.getTrackbacks().size(), is(1));
 
-            TrackBack tb = vs.getTrackbacks().iterator().next();
+            var trackerId = Trackable.INSTANCE.getTrackerId(vs);
+            var trackbacks = Trackable.INSTANCE.getTrackbacks(vs);
+            assertThat(trackerId, notNullValue());
+            assertThat(trackbacks.size(), is(1));
+
+            TrackBack tb = trackbacks.iterator().next();
             assertThat(
                     tb.getLibrary(),
                     is(of.createVersionedIdentifier().withId("CMS146").withVersion("2")));
@@ -289,10 +296,13 @@ public class CMS146ElmTest {
                 default:
                     fail("Unknown variable: " + ls.getName());
             }
-            assertThat(ls.getTrackerId(), notNullValue());
-            assertThat(ls.getTrackbacks().size(), is(1));
 
-            TrackBack tb = ls.getTrackbacks().iterator().next();
+            var trackerId = Trackable.INSTANCE.getTrackerId(ls);
+            var trackbacks = Trackable.INSTANCE.getTrackbacks(ls);
+            assertThat(trackerId, notNullValue());
+            assertThat(trackbacks.size(), is(1));
+
+            TrackBack tb = trackbacks.iterator().next();
             assertThat(
                     tb.getLibrary(),
                     is(of.createVersionedIdentifier().withId("CMS146").withVersion("2")));

@@ -33,10 +33,8 @@ public class NpmModelInfoProvider implements ModelInfoProvider {
         // VersionedIdentifier.version: Version of the model
         for (NpmPackage p : packages) {
             try {
-                var identifier = new ModelIdentifier()
-                        .withId(modelIdentifier.getId())
-                        .withVersion(modelIdentifier.getVersion())
-                        .withSystem(modelIdentifier.getSystem());
+                var identifier = new ModelIdentifier(
+                        modelIdentifier.getId(), modelIdentifier.getSystem(), modelIdentifier.getVersion());
 
                 if (identifier.getSystem() == null) {
                     identifier.setSystem(p.canonical());

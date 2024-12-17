@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 import java.util.stream.Collectors;
-import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.tree.*;
+import org.antlr.v4.kotlinruntime.*;
+import org.antlr.v4.kotlinruntime.tree.*;
 import org.cqframework.cql.gen.cqlBaseVisitor;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
@@ -22,7 +22,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
     private static List<CommentToken> comments = new ArrayList<>();
 
     public static FormatResult getFormattedOutput(InputStream is) throws IOException {
-        CharStream in = CharStreams.fromStream(is);
+        CharStream in = CharStreams.INSTANCE.fromStream(is);
         cqlLexer lexer = new cqlLexer(in);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         tokens.fill();
@@ -1448,6 +1448,11 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
         while (numComments > 0) {
             comments.remove(--numComments);
         }
+    }
+
+    @Override
+    protected Object defaultResult() {
+        return null;
     }
 
     private static class CommentToken {

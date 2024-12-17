@@ -100,7 +100,6 @@ const configs = [
       __dirname +
       "/../../java/elm/build/generated/sources/elm/main/java/org/hl7/elm/r1",
     packageName: "org.hl7.elm.r1",
-    autoExtend: "org.cqframework.cql.elm.tracking.Trackable",
     classes: {},
     scope: "",
     namespaceUri: "urn:hl7-org:elm:r1",

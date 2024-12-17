@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import javax.xml.namespace.QName;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.model.Model;
+import org.cqframework.cql.cql2elm.tracking.Trackable;
 import org.hl7.cql.model.*;
 import org.hl7.elm.r1.*;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
@@ -107,8 +108,9 @@ public class TypeResolver {
         }
 
         // If the typeSpecifier already has a type, use it
-        if (typeSpecifier.getResultType() != null) {
-            return typeSpecifier.getResultType();
+        var resultType = Trackable.INSTANCE.getResultType(typeSpecifier);
+        if (resultType != null) {
+            return resultType;
         }
 
         if (typeSpecifier instanceof NamedTypeSpecifier) {
@@ -133,13 +135,13 @@ public class TypeResolver {
     }
 
     private DataType resolveTupleTypeSpecifier(TupleTypeSpecifier typeSpecifier) {
-        TupleType tupleType = new TupleType();
+        var elements = new ArrayList<TupleTypeElement>();
         for (TupleElementDefinition element : typeSpecifier.getElement()) {
             TupleTypeElement tupleElement =
-                    new TupleTypeElement(element.getName(), resolveTypeSpecifier(element.getElementType()));
-            tupleType.addElement(tupleElement);
+                    new TupleTypeElement(element.getName(), resolveTypeSpecifier(element.getElementType()), false);
+            elements.add(tupleElement);
         }
-        return tupleType;
+        return new TupleType(elements);
     }
 
     private DataType resolveIntervalTypeSpecifier(IntervalTypeSpecifier typeSpecifier) {
@@ -151,7 +153,7 @@ public class TypeResolver {
     }
 
     private DataType resolveChoiceTypeSpecifier(ChoiceTypeSpecifier typeSpecifier) {
-        ArrayList<DataType> choiceTypes = new ArrayList<DataType>();
+        var choiceTypes = new ArrayList<DataType>();
         for (TypeSpecifier choiceType : typeSpecifier.getChoice()) {
             choiceTypes.add(resolveTypeSpecifier(choiceType));
         }

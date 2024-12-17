@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.cqframework.cql.cql2elm.tracking.Trackable;
 import org.hl7.cql.model.ChoiceType;
 import org.hl7.cql.model.DataType;
 import org.hl7.cql.model.NamedType;
@@ -22,6 +23,16 @@ public class SemanticTests {
     @Test
     void translations() throws IOException {
         runSemanticTest("TranslationTests.cql");
+    }
+
+    @Test
+    void convert() throws IOException {
+        runSemanticTest("ConvertTest.cql");
+    }
+
+    @Test
+    void inCodeSystem() throws IOException {
+        runSemanticTest("InCodeSystemTest.cql");
     }
 
     @Test
@@ -146,8 +157,9 @@ public class SemanticTests {
         }
 
         ExpressionDef def = defs.get("TestIf");
-        assertThat(def.getResultType(), instanceOf(ChoiceType.class));
-        ChoiceType choiceType = (ChoiceType) def.getResultType();
+        var defResultType = Trackable.INSTANCE.getResultType(def);
+        assertThat(defResultType, instanceOf(ChoiceType.class));
+        ChoiceType choiceType = (ChoiceType) defResultType;
         DataType type = null;
         for (DataType dt : choiceType.getTypes()) {
             if (type == null) {
@@ -161,8 +173,9 @@ public class SemanticTests {
         }
 
         def = defs.get("TestCase");
-        assertThat(def.getResultType(), instanceOf(ChoiceType.class));
-        choiceType = (ChoiceType) def.getResultType();
+        defResultType = Trackable.INSTANCE.getResultType(def);
+        assertThat(defResultType, instanceOf(ChoiceType.class));
+        choiceType = (ChoiceType) defResultType;
         type = null;
         for (DataType dt : choiceType.getTypes()) {
             if (type == null) {
@@ -715,9 +728,10 @@ public class SemanticTests {
 
         ExpressionDef caseDef = defs.get("Cases");
 
-        assertThat(caseDef.getResultType(), instanceOf(ChoiceType.class));
+        var defResultType = Trackable.INSTANCE.getResultType(caseDef);
+        assertThat(defResultType, instanceOf(ChoiceType.class));
 
-        ChoiceType choiceType = (ChoiceType) caseDef.getResultType();
+        ChoiceType choiceType = (ChoiceType) defResultType;
 
         Set<String> expectedChoiceTypes = new HashSet<>();
         expectedChoiceTypes.add("System.String");
@@ -744,9 +758,10 @@ public class SemanticTests {
         }
 
         ExpressionDef ifDef = defs.get("If");
-        assertThat(ifDef.getResultType(), instanceOf(ChoiceType.class));
+        var defResultType = Trackable.INSTANCE.getResultType(ifDef);
+        assertThat(defResultType, instanceOf(ChoiceType.class));
 
-        ChoiceType choiceType = (ChoiceType) ifDef.getResultType();
+        ChoiceType choiceType = (ChoiceType) defResultType;
 
         Set<String> expectedChoiceTypes = new HashSet<>();
         expectedChoiceTypes.add("System.String");

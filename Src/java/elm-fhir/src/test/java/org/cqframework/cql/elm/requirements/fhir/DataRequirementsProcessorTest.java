@@ -1930,10 +1930,14 @@ public class DataRequirementsProcessorTest {
                 (org.hl7.fhir.r5.model.Library) parser.parseResource(
                         DataRequirementsProcessorTest.class.getResourceAsStream(pathToExpectedModuleDefinitionLibrary));
         assertNotNull(expectedModuleDefinitionLibrary);
-        // outputModuleDefinitionLibrary(actualModuleDefinitionLibrary);
         actualModuleDefinitionLibrary.setDate(null);
         expectedModuleDefinitionLibrary.setDate(null);
-        assertTrue(actualModuleDefinitionLibrary.equalsDeep(expectedModuleDefinitionLibrary));
+
+        parser.setPrettyPrint(true);
+        var jsonExpected = parser.encodeResourceToString(expectedModuleDefinitionLibrary);
+        var jsonActual = parser.encodeResourceToString(actualModuleDefinitionLibrary);
+
+        assertEquals(jsonExpected, jsonActual);
     }
 
     @Test
@@ -2267,13 +2271,13 @@ public class DataRequirementsProcessorTest {
                     dr2.getExtension().get(0).getUrl());
             assertEquals("pathognomonic", ((Coding) dr2.getExtension().get(0).getValue()).getCode());
 
-            DataRequirement dr5 = moduleDefinitionLibrary.getDataRequirement().get(5);
-            assertEquals(Enumerations.FHIRTypes.DEVICEREQUEST, dr5.getType());
+            DataRequirement dr6 = moduleDefinitionLibrary.getDataRequirement().get(6);
+            assertEquals(Enumerations.FHIRTypes.DEVICEREQUEST, dr6.getType());
             assertEquals(
                     "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinence",
-                    dr5.getExtension().get(0).getUrl());
+                    dr6.getExtension().get(0).getUrl());
             assertEquals(
-                    "strongly-positive", ((Coding) dr5.getExtension().get(0).getValue()).getCode());
+                    "strongly-positive", ((Coding) dr6.getExtension().get(0).getValue()).getCode());
 
             FhirContext context = getFhirContext();
             IParser parser = context.newJsonParser();
