@@ -129,9 +129,6 @@ function addContextualAnnotationIfNecessary(type) {
     if (type === 'java.math.BigDecimal') {
         return `@kotlinx.serialization.Serializable(org.cql.BigDecimalSerializer::class)`;
     }
-    if (type === 'QName') {
-        return `@kotlinx.serialization.Serializable(org.cql.QnameSerializer::class)`;
-    }
 
     return ''
 }
