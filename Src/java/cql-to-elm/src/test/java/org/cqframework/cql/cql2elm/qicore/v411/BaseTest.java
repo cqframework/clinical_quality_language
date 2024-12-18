@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.LibraryBuilder;
 import org.cqframework.cql.cql2elm.TestUtils;
+import org.hl7.cql.model.ClassType;
+import org.hl7.cql.model.ListType;
 import org.hl7.elm.r1.*;
 import org.junit.jupiter.api.Test;
 
@@ -370,12 +372,38 @@ public class BaseTest {
         assertThat(r.getTemplateId(), is("http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medication"));
         assertThat(r.getCodeProperty() == null, is(true));
         assertThat(r.getCodes() == null, is(true));
+        assertThat(r.getResultType(), instanceOf(ListType.class));
+        assertThat(((ListType) r.getResultType()).getElementType(), instanceOf(ClassType.class));
+        assertThat(((ClassType) ((ListType) r.getResultType()).getElementType()).getName(), is("QICore.Medication"));
         assertThat(w.getSuchThat(), instanceOf(And.class));
         And a = (And) w.getSuchThat();
         assertThat(a.getOperand().get(0), instanceOf(Equal.class));
+        Equal eq = (Equal) a.getOperand().get(0);
+        assertThat(eq.getOperand().get(0), instanceOf(Property.class));
+        Property p = (Property) eq.getOperand().get(0);
+        assertThat(p.getScope(), is("M"));
+        assertThat(p.getPath(), is("id.value"));
+        assertThat(eq.getOperand().get(1), instanceOf(Last.class));
+        Last l = (Last) eq.getOperand().get(1);
+        assertThat(l.getSource(), instanceOf(Split.class));
+        Split s = (Split) l.getSource();
+        assertThat(s.getStringToSplit(), instanceOf(Property.class));
+        p = (Property) s.getStringToSplit();
+        assertThat(p.getScope(), is("MR"));
+        assertThat(p.getPath(), is("medication.reference.value"));
+        // assertThat(s.getSeparator(), is("/"));
         assertThat(a.getOperand().get(1), instanceOf(InValueSet.class));
         InValueSet ivs = (InValueSet) a.getOperand().get(1);
         assertThat(ivs.getValueset().getName(), is("Antithrombotic Therapy"));
+        assertThat(ivs.getCode(), instanceOf(FunctionRef.class));
+        FunctionRef fr = (FunctionRef) ivs.getCode();
+        assertThat(fr.getLibraryName(), is("FHIRHelpers"));
+        assertThat(fr.getName(), is("ToConcept"));
+        assertThat(fr.getOperand().size(), is(1));
+        assertThat(fr.getOperand().get(0), instanceOf(Property.class));
+        p = (Property) fr.getOperand().get(0);
+        assertThat(p.getScope(), is("M"));
+        assertThat(p.getPath(), is("code"));
     }
 
     @Test

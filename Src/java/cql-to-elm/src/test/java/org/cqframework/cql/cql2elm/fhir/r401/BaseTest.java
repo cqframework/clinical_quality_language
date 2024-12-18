@@ -3,6 +3,7 @@ package org.cqframework.cql.cql2elm.fhir.r401;
 import static org.cqframework.cql.cql2elm.TestUtils.visitFile;
 import static org.cqframework.cql.cql2elm.TestUtils.visitFileLibrary;
 import static org.cqframework.cql.cql2elm.matchers.QuickDataType.quickDataType;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -16,10 +17,7 @@ import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.LibraryBuilder;
 import org.cqframework.cql.cql2elm.TestUtils;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
-import org.hl7.cql.model.ChoiceType;
-import org.hl7.cql.model.ClassType;
-import org.hl7.cql.model.DataType;
-import org.hl7.cql.model.NamespaceInfo;
+import org.hl7.cql.model.*;
 import org.hl7.elm.r1.*;
 import org.junit.jupiter.api.Test;
 
@@ -906,5 +904,106 @@ class BaseTest {
                 contains(
                         String.format(
                                 "You used a string literal: [Encounter] here that matches an identifier in scope: [Encounter]. Did you mean to use the identifier instead?")));
+    }
+
+    @Test
+    void medicationRequest() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestMedicationRequest.cql", 0);
+        Library library = translator.toELM();
+        Map<String, ExpressionDef> defs = new HashMap<>();
+
+        if (library.getStatements() != null) {
+            for (ExpressionDef def : library.getStatements().getDef()) {
+                defs.put(def.getName(), def);
+            }
+        }
+
+        ExpressionDef def = defs.get("Antithrombotic Therapy at Discharge");
+        assertThat(def, notNullValue());
+        assertThat(def.getExpression(), instanceOf(Query.class));
+        Query q = (Query) def.getExpression();
+        assertThat(q.getSource().size(), is(1));
+        assertThat(q.getSource().get(0).getExpression(), instanceOf(Retrieve.class));
+        Retrieve r = (Retrieve) q.getSource().get(0).getExpression();
+        assertThat(r.getTemplateId(), is("http://hl7.org/fhir/StructureDefinition/MedicationRequest"));
+        assertThat(r.getCodeProperty(), is("medication"));
+        assertThat(r.getCodeComparator(), is("in"));
+        assertThat(r.getCodes(), instanceOf(ValueSetRef.class));
+        ValueSetRef vsr = (ValueSetRef) r.getCodes();
+        assertThat(vsr.getName(), is("Antithrombotic Therapy"));
+
+        def = defs.get("Antithrombotic Therapy at Discharge (2)");
+        assertThat(def, notNullValue());
+        assertThat(def.getExpression(), instanceOf(Union.class));
+        Union u = (Union) def.getExpression();
+        assertThat(u.getOperand().size(), is(2));
+        assertThat(u.getOperand().get(0), instanceOf(Retrieve.class));
+        r = (Retrieve) u.getOperand().get(0);
+        assertThat(r.getTemplateId(), is("http://hl7.org/fhir/StructureDefinition/MedicationRequest"));
+        assertThat(r.getCodeProperty(), is("medication"));
+        assertThat(r.getCodeComparator(), is("in"));
+        assertThat(r.getCodes(), instanceOf(ValueSetRef.class));
+        vsr = (ValueSetRef) r.getCodes();
+        assertThat(vsr.getName(), is("Antithrombotic Therapy"));
+
+        assertThat(u.getOperand().get(1), instanceOf(Query.class));
+        q = (Query) u.getOperand().get(1);
+        assertThat(q.getSource().size(), is(1));
+        assertThat(q.getSource().get(0).getExpression(), instanceOf(Retrieve.class));
+        r = (Retrieve) q.getSource().get(0).getExpression();
+        assertThat(r.getTemplateId(), is("http://hl7.org/fhir/StructureDefinition/MedicationRequest"));
+        assertThat(r.getCodeProperty() == null, is(true));
+        assertThat(r.getCodes() == null, is(true));
+        assertThat(q.getRelationship(), notNullValue());
+        assertThat(q.getRelationship().size(), is(1));
+        assertThat(q.getRelationship().get(0), instanceOf(With.class));
+        With w = (With) q.getRelationship().get(0);
+        assertThat(w.getExpression(), instanceOf(Retrieve.class));
+        r = (Retrieve) w.getExpression();
+        assertThat(r.getTemplateId(), is("http://hl7.org/fhir/StructureDefinition/Medication"));
+        assertThat(r.getCodeProperty() == null, is(true));
+        assertThat(r.getCodes() == null, is(true));
+        assertThat(r.getResultType(), instanceOf(ListType.class));
+        assertThat(((ListType) r.getResultType()).getElementType(), instanceOf(ClassType.class));
+        assertThat(((ClassType) ((ListType) r.getResultType()).getElementType()).getName(), is("FHIR.Medication"));
+        assertThat(w.getSuchThat(), instanceOf(And.class));
+        And a = (And) w.getSuchThat();
+        assertThat(a.getOperand().get(0), instanceOf(Equal.class));
+        Equal eq = (Equal) a.getOperand().get(0);
+        assertThat(eq.getOperand().get(0), instanceOf(FunctionRef.class));
+        FunctionRef fr = (FunctionRef) eq.getOperand().get(0);
+        assertThat(fr.getLibraryName(), is("FHIRHelpers"));
+        assertThat(fr.getName(), is("ToString"));
+        assertThat(fr.getOperand().size(), is(1));
+        assertThat(fr.getOperand().get(0), instanceOf(Property.class));
+        Property p = (Property) fr.getOperand().get(0);
+        assertThat(p.getScope(), is("M"));
+        assertThat(p.getPath(), is("id"));
+        assertThat(eq.getOperand().get(1), instanceOf(Last.class));
+        Last l = (Last) eq.getOperand().get(1);
+        assertThat(l.getSource(), instanceOf(Split.class));
+        Split s = (Split) l.getSource();
+        assertThat(s.getStringToSplit(), instanceOf(FunctionRef.class));
+        fr = (FunctionRef) s.getStringToSplit();
+        assertThat(fr.getLibraryName(), is("FHIRHelpers"));
+        assertThat(fr.getName(), is("ToString"));
+        assertThat(fr.getOperand().size(), is(1));
+        assertThat(fr.getOperand().get(0), instanceOf(Property.class));
+        p = (Property) fr.getOperand().get(0);
+        assertThat(p.getScope(), is("MR"));
+        assertThat(p.getPath(), is("medication.reference"));
+        // assertThat(s.getSeparator(), is("/"));
+        assertThat(a.getOperand().get(1), instanceOf(InValueSet.class));
+        InValueSet ivs = (InValueSet) a.getOperand().get(1);
+        assertThat(ivs.getValueset().getName(), is("Antithrombotic Therapy"));
+        assertThat(ivs.getCode(), instanceOf(FunctionRef.class));
+        fr = (FunctionRef) ivs.getCode();
+        assertThat(fr.getLibraryName(), is("FHIRHelpers"));
+        assertThat(fr.getName(), is("ToConcept"));
+        assertThat(fr.getOperand().size(), is(1));
+        assertThat(fr.getOperand().get(0), instanceOf(Property.class));
+        p = (Property) fr.getOperand().get(0);
+        assertThat(p.getScope(), is("M"));
+        assertThat(p.getPath(), is("code"));
     }
 }
