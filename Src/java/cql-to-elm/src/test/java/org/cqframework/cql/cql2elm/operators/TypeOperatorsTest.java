@@ -74,8 +74,8 @@ class TypeOperatorsTest {
         assertThat(def, hasTypeAndResult(Is.class, "System.Boolean"));
         Is is = (Is) def.getExpression();
         assertThat(is.getOperand(), instanceOf(Null.class));
-        assertThat(is.getIsTypeSpecifier(), instanceOf(NamedTypeSpecifier.class));
-        NamedTypeSpecifier spec = (NamedTypeSpecifier) is.getIsTypeSpecifier();
+        assertThat(is.isTypeSpecifier(), instanceOf(NamedTypeSpecifier.class));
+        NamedTypeSpecifier spec = (NamedTypeSpecifier) is.isTypeSpecifier();
         assertThat(spec.getName(), is(new QName("urn:hl7-org:elm-types:r1", "Boolean")));
 
         var resultType = Trackable.INSTANCE.getResultType(spec);
