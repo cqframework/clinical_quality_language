@@ -22,8 +22,10 @@ If the code argument is null, the result is null.
 
 public class InValueSetEvaluator {
     public static Object inValueSet(Object code, Object valueset, State state) {
-
-        if (code == null || valueset == null) {
+        if (code == null) {
+            return false;
+        }
+        if (valueset == null) {
             return null;
         }
 

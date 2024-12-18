@@ -6,6 +6,10 @@ import org.opencds.cqf.cql.engine.execution.State;
 public class AnyInValueSetEvaluator {
 
     public static Object internalEvaluate(Object codes, ValueSetRef valueSetRef, Object valueset, State state) {
+        if (codes == null) {
+            return false;
+        }
+
         Object vs = null;
         if (valueSetRef != null) {
             vs = ValueSetRefEvaluator.toValueSet(state, valueSetRef);
@@ -13,7 +17,9 @@ public class AnyInValueSetEvaluator {
             vs = valueset;
         }
 
-        if (codes == null || vs == null) return null;
+        if (vs == null) {
+            return null;
+        }
 
         if (codes instanceof Iterable) {
             Object result;
