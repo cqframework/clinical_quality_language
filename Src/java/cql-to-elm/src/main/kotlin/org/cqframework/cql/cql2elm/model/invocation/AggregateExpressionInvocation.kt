@@ -8,15 +8,15 @@ class AggregateExpressionInvocation<A : AggregateExpression>(expression: A) :
     AbstractExpressionInvocation<A>(expression) {
 
     override var operands: List<Expression>
-        get() = listOf(expression.source)
+        get() = listOf(expression.source!!)
         set(operands) {
             require(operands.size == 1) { "Unary operator expected." }
             expression.source = operands[0]
         }
 
     override var signature: List<TypeSpecifier>
-        get() = expression.signature
+        get() = expression.signature as List<TypeSpecifier>
         set(signature) {
-            expression.signature = signature
+            expression.signature = signature as MutableList<TypeSpecifier?>
         }
 }

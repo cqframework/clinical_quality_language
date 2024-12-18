@@ -282,11 +282,11 @@ class SystemMethodResolver(
                 val returnClause = of.createReturnClause()
                 returnClause.expression = builder.createLiteral(java.lang.Boolean.valueOf(true))
                 if (query.resultType is ListType) {
-                    returnClause.resultType = ListType(returnClause.expression.resultType!!)
+                    returnClause.resultType = ListType(returnClause.expression!!.resultType!!)
                 } else {
-                    returnClause.resultType = returnClause.expression.resultType
+                    returnClause.resultType = returnClause.expression!!.resultType
                 }
-                query.setReturn(returnClause)
+                query.`return` = (returnClause)
                 query.resultType = returnClause.resultType
                 val params: MutableList<Expression?> = ArrayList()
                 params.add(query)
@@ -320,8 +320,8 @@ class SystemMethodResolver(
                     builder.ensureCompatibleTypes(target.resultType, argument!!.resultType!!)!!
                 val list = of.createList()
                 list.resultType = ListType(elementType)
-                list.element.add(builder.ensureCompatible(target, elementType))
-                list.element.add(builder.ensureCompatible(argument, elementType))
+                list.element!!.add(builder.ensureCompatible(target, elementType))
+                list.element!!.add(builder.ensureCompatible(argument, elementType))
                 val params = ArrayList<Expression?>()
                 params.add(list)
                 builder.resolveFunction(null, "Flatten", params)

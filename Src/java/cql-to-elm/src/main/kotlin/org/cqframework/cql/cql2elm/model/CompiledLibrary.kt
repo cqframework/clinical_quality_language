@@ -42,38 +42,38 @@ class CompiledLibrary {
     }
 
     fun add(using: UsingDef) {
-        checkNamespace(using.localIdentifier)
-        namespace[using.localIdentifier] = using
+        checkNamespace(using.localIdentifier!!)
+        namespace[using.localIdentifier!!] = using
     }
 
     fun add(include: IncludeDef) {
-        checkNamespace(include.localIdentifier)
-        namespace[include.localIdentifier] = include
+        checkNamespace(include.localIdentifier!!)
+        namespace[include.localIdentifier!!] = include
     }
 
     fun add(codesystem: CodeSystemDef) {
-        checkNamespace(codesystem.name)
-        namespace[codesystem.name] = codesystem
+        checkNamespace(codesystem.name!!)
+        namespace[codesystem.name!!] = codesystem
     }
 
     fun add(valueset: ValueSetDef) {
-        checkNamespace(valueset.name)
-        namespace[valueset.name] = valueset
+        checkNamespace(valueset.name!!)
+        namespace[valueset.name!!] = valueset
     }
 
     fun add(code: CodeDef) {
-        checkNamespace(code.name)
-        namespace[code.name] = code
+        checkNamespace(code.name!!)
+        namespace[code.name!!] = code
     }
 
     fun add(concept: ConceptDef) {
-        checkNamespace(concept.name)
-        namespace[concept.name] = concept
+        checkNamespace(concept.name!!)
+        namespace[concept.name!!] = concept
     }
 
     fun add(parameter: ParameterDef) {
-        checkNamespace(parameter.name)
-        namespace[parameter.name] = parameter
+        checkNamespace(parameter.name!!)
+        namespace[parameter.name!!] = parameter
     }
 
     fun add(expression: ExpressionDef) {
@@ -81,8 +81,8 @@ class CompiledLibrary {
             // Register the operator signature
             add(expression, Operator(expression))
         } else {
-            checkNamespace(expression.name)
-            namespace[expression.name] = expression
+            checkNamespace(expression.name!!)
+            namespace[expression.name!!] = expression
         }
     }
 
@@ -166,8 +166,8 @@ class CompiledLibrary {
     fun resolveIncludeAlias(identifier: VersionedIdentifier?): String? {
         return when {
             identifier != null && library?.includes?.def != null -> {
-                val libraryPath = NamespaceManager.getPath(identifier.system, identifier.id)
-                library!!.includes.def.firstOrNull { it.path == libraryPath }?.localIdentifier
+                val libraryPath = NamespaceManager.getPath(identifier.system, identifier.id!!)
+                library!!.includes!!.def!!.firstOrNull { it!!.path == libraryPath }?.localIdentifier
             }
             else -> null
         }
@@ -203,8 +203,8 @@ class CompiledLibrary {
 
     fun resolveFunctionRef(identifier: String): Iterable<FunctionDef> {
         val results = ArrayList<FunctionDef>()
-        for (ed in library!!.statements.def) {
-            if (ed is FunctionDef && ed.getName() == identifier) {
+        for (ed in library!!.statements!!.def!!) {
+            if (ed is FunctionDef && ed.name == identifier) {
                 results.add(ed)
             }
         }
@@ -268,7 +268,7 @@ class CompiledLibrary {
         get() = library?.annotation?.firstOrNull { it is Annotation } as Annotation?
 
     private fun getTag(tagName: String): String? {
-        return annotation?.t?.firstOrNull { it.name == tagName }?.value
+        return annotation?.t?.firstOrNull { it!!.name == tagName }?.value
     }
 
     private fun getBooleanTag(tagName: String): Boolean {

@@ -2954,7 +2954,7 @@ object SystemLibraryHelper {
                 od.operandTypeSpecifier = tb.dataTypeToTypeSpecifier(dataType)
             }
             od.resultType = dataType
-            fd.operand.add(od)
+            fd.operand!!.add(od)
         }
         operator.functionDef = fd
 

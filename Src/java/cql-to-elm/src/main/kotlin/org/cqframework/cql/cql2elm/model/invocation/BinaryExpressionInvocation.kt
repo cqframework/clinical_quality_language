@@ -6,9 +6,9 @@ import org.hl7.elm.r1.Expression
 class BinaryExpressionInvocation<B : BinaryExpression>(expression: B) :
     OperatorExpressionInvocation<B>(expression) {
     override var operands: List<Expression>
-        get() = expression.operand
+        get() = expression.operand as List<Expression>
         set(operands) {
             require(operands.size == 2) { "BinaryExpression requires two operands." }
-            expression.operand = operands
+            expression.operand = operands as MutableList<Expression?>
         }
 }

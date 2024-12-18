@@ -21,7 +21,7 @@ object CompilerOptions {
         if (library.annotation.isNullOrEmpty()) {
             return null
         }
-        val compilerOptions = getCompilerOptions(library.annotation)
+        val compilerOptions = getCompilerOptions(library.annotation as List<CqlToElmBase>)
         return parseCompilerOptions(compilerOptions)
     }
 
@@ -77,7 +77,7 @@ object CompilerOptions {
         if (library.annotation.isNullOrEmpty()) {
             return null
         }
-        return getCompilerVersion(library.annotation)
+        return getCompilerVersion(library.annotation as List<CqlToElmBase>)
     }
 
     private fun getCompilerVersion(annotations: List<CqlToElmBase>): String? {

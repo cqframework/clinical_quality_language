@@ -5,7 +5,7 @@ import org.hl7.elm.r1.First
 
 class FirstInvocation(expression: First) : OperatorExpressionInvocation<First>(expression) {
     override var operands: List<Expression>
-        get() = listOf(expression.source)
+        get() = listOf(expression.source!!)
         set(operands) {
             require(operands.size == 1) { "Unary operator expected." }
             expression.source = operands[0]
