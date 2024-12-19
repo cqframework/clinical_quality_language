@@ -3,17 +3,50 @@ package org.opencds.cqf.cql.engine.fhir.data;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import org.cqframework.cql.cql2elm.CqlCompilerOptions;
+import org.cqframework.cql.cql2elm.LibraryBuilder;
+import org.cqframework.cql.cql2elm.LibraryManager;
+import org.cqframework.cql.cql2elm.ModelManager;
+import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider;
 import org.junit.jupiter.api.Test;
+import org.opencds.cqf.cql.engine.exception.CqlException;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
+import org.opencds.cqf.cql.engine.execution.Environment;
 
 class TestFHIRHelpers extends FhirExecutionTestBase {
 
     @Test
-    void test() {
+    void testWithUnambiguousCompilerOptions() {
+        // Test with non-ambiguous compiler options. Should pass.
+        var compilerOptions = CqlCompilerOptions.defaultOptions();
+        compilerOptions.setSignatureLevel(LibraryBuilder.SignatureLevel.Overloads);
+        var modelManager = new ModelManager();
+        var libraryManager = new LibraryManager(modelManager, compilerOptions);
+        libraryManager.getLibrarySourceLoader().clearProviders();
+        libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
+        libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
 
-        CqlEngine engine = getEngine();
+        var engine = new CqlEngine(new Environment(libraryManager));
         engine.getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);
+
+        runTest(engine);
+    }
+
+    @Test
+    void standardCompilerOptions() {
+        // Test with standard compiler options. Should throw an Exception as of the
+        // time this test is written because the default compiler options produce
+        // ambiguous ELM output. This test is intended to fail, and if we change the
+        // compiler options to be non-ambiguous, this test should be updated to expect
+        // a different (presumably passing) result.
+        var engine = getEngine();
+        engine.getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);
+        assertThrows(CqlException.class, () -> runTest(engine));
+    }
+
+    void runTest(CqlEngine engine) {
         var results = engine.evaluate(library.getIdentifier());
 
         // Primitives
