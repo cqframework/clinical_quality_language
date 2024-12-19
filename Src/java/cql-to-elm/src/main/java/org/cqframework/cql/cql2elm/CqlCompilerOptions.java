@@ -29,7 +29,7 @@ public class CqlCompilerOptions {
     private boolean enableCqlOnly = false;
     private String compatibilityLevel = "1.5";
     private CqlCompilerException.ErrorSeverity errorLevel = CqlCompilerException.ErrorSeverity.Info;
-    private LibraryBuilder.SignatureLevel signatureLevel = LibraryBuilder.SignatureLevel.None;
+    private LibraryBuilder.SignatureLevel signatureLevel = LibraryBuilder.SignatureLevel.Overloads;
     private boolean analyzeDataRequirements = false;
     private boolean collapseDataRequirements = false;
 
