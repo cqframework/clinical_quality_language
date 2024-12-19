@@ -5409,7 +5409,25 @@
         <element name="performer" description="(QI-Core)(USCDI) Who is responsible for the observation" definition="Who was responsible for asserting the observed value as &quot;true&quot;." mustSupport="true">
             <elementTypeSpecifier xsi:type="ListTypeSpecifier" elementType="QICore.Reference"/>
         </element>
-        <element name="value" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)" description="(QI-Core)(USCDI) Actual result" definition="The information determined as a result of making the observation, if the information has a simple value." comment="An observation may have; 1)  a single value here, 2)  both a value and a set of related or component values,  or 3)  only a set of related or component values. If a value is present, the datatype for this element should be determined by Observation.code.  A CodeableConcept with just a text would be used instead of a string if the field was usually coded, or if the type associated with the Observation.code defines a coded value.  For additional guidance, see the [Notes section](http://hl7.org/fhir/R4/observation.html#notes) below." mustSupport="true"/>
+        <element name="value" target="FHIRHelpers.ToValue(%value)" description="(QI-Core)(USCDI) Actual result" definition="The information determined as a result of making the observation, if the information has a simple value." comment="Used when observation has a set of component observations. An observation may have both a value (e.g. an  Apgar score)  and component observations (the observations from which the Apgar score was derived). If a value is present, the datatype for this element should be determined by Observation.code. A CodeableConcept with just a text would be used instead of a string if the field was usually coded, or if the type associated with the Observation.code defines a coded value.  For additional guidance, see the [Notes section](http://hl7.org/fhir/R4/observation.html#notes) below." mustSupport="true">
+            <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
+                <choice xsi:type="NamedTypeSpecifier" namespace="System" name="Quantity"/>
+                <choice xsi:type="NamedTypeSpecifier" namespace="System" name="Concept"/>
+                <choice xsi:type="NamedTypeSpecifier" namespace="System" name="String"/>
+                <choice xsi:type="NamedTypeSpecifier" namespace="System" name="Boolean"/>
+                <choice xsi:type="NamedTypeSpecifier" namespace="System" name="Integer"/>
+                <choice xsi:type="IntervalTypeSpecifier">
+                    <pointTypeSpecifier xsi:type="NamedTypeSpecifier" namespace="System" name="Quantity"/>
+                </choice>
+                <choice xsi:type="NamedTypeSpecifier" namespace="System" name="Ratio"/>
+                <choice xsi:type="NamedTypeSpecifier" namespace="QICore" name="SampledData"/>
+                <choice xsi:type="NamedTypeSpecifier" namespace="System" name="Time"/>
+                <choice xsi:type="NamedTypeSpecifier" namespace="System" name="DateTime"/>
+                <choice xsi:type="IntervalTypeSpecifier">
+                    <pointTypeSpecifier xsi:type="NamedTypeSpecifier" namespace="System" name="DateTime"/>
+                </choice>
+            </elementTypeSpecifier>
+        </element>
         <element name="dataAbsentReason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)" description="Why the result is missing" definition="Provides a reason why the expected value in the element Observation.value[x] is missing." comment="Null or exceptional values can be represented two ways in FHIR Observations.  One way is to simply include them in the value set and represent the exceptions in the value.  For example, measurement values for a serology test could be  &quot;detected&quot;, &quot;not detected&quot;, &quot;inconclusive&quot;, or  &quot;specimen unsatisfactory&quot;.   &#10;&#10;The alternate way is to use the value element for actual observations and use the explicit dataAbsentReason element to record exceptional values.  For example, the dataAbsentReason code &quot;error&quot; could be used when the measurement was not completed. Note that an observation may only be reported if there are values to report. For example differential cell counts values may be reported only when &gt; 0.  Because of these options, use-case agreements are required to interpret general observations for null or exceptional values.">
             <binding name="ObservationValueAbsentReason" description="Codes specifying why the result (`Observation.value[x]`) is missing." strength="Extensible"/>
         </element>

@@ -2743,6 +2743,22 @@ public class LibraryBuilder {
             String functionArgument = targetMap.substring(invocationStart + 1, targetMap.lastIndexOf(')'));
             Expression argumentSource =
                     functionArgument.equals("%value") ? source : applyTargetMap(source, functionArgument);
+
+            // NOTE: This is needed to work around the mapping for ToInterval
+            // FHIRHelpers defines multiple overloads of ToInterval, but the type mapping
+            // does not have the type of the source data type.
+            // All the mappings for ToInterval use FHIR.Period, so this is safe to assume
+            // In addition, no other FHIRHelpers functions use overloads (except ToString and ToDateTime,
+            // but those mappings expand the value element directly, rather than invoking the FHIRHelpers function)
+            TypeSpecifier argumentSignature = null;
+            if (this.options.getSignatureLevel() != SignatureLevel.None) {
+                if (qualifiedFunctionName.equals("FHIRHelpers.ToInterval")) {
+                    NamedTypeSpecifier namedTypeSpecifier =
+                            new NamedTypeSpecifier().withName(dataTypeToQName(resolveTypeName("FHIR", "Period")));
+                    argumentSignature = namedTypeSpecifier;
+                }
+            }
+
             if (argumentSource.getResultType() instanceof ListType) {
                 Query query = of.createQuery()
                         .withSource(of.createAliasedQuerySource()
@@ -2752,6 +2768,11 @@ public class LibraryBuilder {
                         .withLibraryName(libraryName)
                         .withName(functionName)
                         .withOperand(of.createAliasRef().withName("$this"));
+
+                if (argumentSignature != null) {
+                    fr.getSignature().add(argumentSignature);
+                }
+
                 // This doesn't quite work because the US.Core types aren't subtypes of FHIR types.
                 // resolveCall(libraryName, functionName, new FunctionRefInvocation(fr), false, false);
                 query.setReturn(of.createReturnClause().withDistinct(false).withExpression(fr));
@@ -2763,6 +2784,11 @@ public class LibraryBuilder {
                         .withName(functionName)
                         .withOperand(argumentSource);
                 fr.setResultType(source.getResultType());
+
+                if (argumentSignature != null) {
+                    fr.getSignature().add(argumentSignature);
+                }
+
                 return fr;
                 // This doesn't quite work because the US.Core types aren't subtypes of FHIR types,
                 // or they are defined as System types and not FHIR types
