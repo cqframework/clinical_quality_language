@@ -178,11 +178,6 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
             result = aggregateResult(result, childResult);
         }
 
-        if (elm.getType() != null) {
-            T childResult = visitTypeSpecifier(elm.getType(), context);
-            result = aggregateResult(result, childResult);
-        }
-
         return result;
     }
 
@@ -217,11 +212,6 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
 
         for (var choice : elm.getChoice()) {
             T childResult = visitTypeSpecifier(choice, context);
-            result = aggregateResult(result, childResult);
-        }
-
-        for (var type : elm.getType()) {
-            T childResult = visitTypeSpecifier(type, context);
             result = aggregateResult(result, childResult);
         }
 

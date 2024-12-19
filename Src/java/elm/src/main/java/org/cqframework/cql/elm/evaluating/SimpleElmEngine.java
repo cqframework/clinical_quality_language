@@ -160,8 +160,7 @@ public class SimpleElmEngine {
                                 leftArg.getElement().get(i);
                         TupleElementDefinition rightElement =
                                 rightArg.getElement().get(i);
-                        if (!typeSpecifiersEqual(leftElement.getType(), rightElement.getType())
-                                || !typeSpecifiersEqual(leftElement.getElementType(), rightElement.getElementType())
+                        if (!typeSpecifiersEqual(leftElement.getElementType(), rightElement.getElementType())
                                 || !stringsEqual(leftElement.getName(), rightElement.getName())) {
                             return false;
                         }
@@ -181,12 +180,12 @@ public class SimpleElmEngine {
             if (right instanceof ChoiceTypeSpecifier) {
                 ChoiceTypeSpecifier leftArg = (ChoiceTypeSpecifier) left;
                 ChoiceTypeSpecifier rightArg = (ChoiceTypeSpecifier) right;
-                if (leftArg.getType() != null
-                        && rightArg.getType() != null
-                        && leftArg.getType().size() == rightArg.getType().size()) {
-                    for (int i = 0; i < leftArg.getType().size(); i++) {
-                        TypeSpecifier leftType = leftArg.getType().get(i);
-                        TypeSpecifier rightType = rightArg.getType().get(i);
+                if (leftArg.getChoice() != null
+                        && rightArg.getChoice() != null
+                        && leftArg.getChoice().size() == rightArg.getChoice().size()) {
+                    for (int i = 0; i < leftArg.getChoice().size(); i++) {
+                        TypeSpecifier leftType = leftArg.getChoice().get(i);
+                        TypeSpecifier rightType = rightArg.getChoice().get(i);
                         if (!typeSpecifiersEqual(leftType, rightType)) {
                             return false;
                         }

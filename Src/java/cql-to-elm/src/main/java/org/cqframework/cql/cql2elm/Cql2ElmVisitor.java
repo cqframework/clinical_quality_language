@@ -250,10 +250,6 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 .withName(parseString(ctx.referentialIdentifier()))
                 .withElementType(parseTypeSpecifier(ctx.typeSpecifier()));
 
-        if (getIncludeDeprecatedElements()) {
-            result.setType(result.getElementType());
-        }
-
         return result;
     }
 
