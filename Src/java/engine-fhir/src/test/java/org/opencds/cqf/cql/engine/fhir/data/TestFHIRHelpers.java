@@ -36,7 +36,8 @@ class TestFHIRHelpers extends FhirExecutionTestBase {
         var badOptionsEngine = new CqlEngine(new Environment(libraryManager));
         badOptionsEngine.getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);
 
-        assertThrows(CqlException.class, () -> badOptionsEngine.evaluate(library.getIdentifier()));
+        var identifier = library.getIdentifier();
+        assertThrows(CqlException.class, () -> badOptionsEngine.evaluate(identifier));
     }
 
     @Test
