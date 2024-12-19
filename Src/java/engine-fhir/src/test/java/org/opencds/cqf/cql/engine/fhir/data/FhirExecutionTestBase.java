@@ -83,10 +83,7 @@ public abstract class FhirExecutionTestBase {
         r4Provider = new CompositeDataProvider(r4ModelResolver, r4RetrieveProvider);
 
         modelManager = new ModelManager();
-        var compilerOptions = new CqlCompilerOptions(
-                CqlCompilerException.ErrorSeverity.Info,
-                LibraryBuilder.SignatureLevel.All,
-                CqlCompilerOptions.Options.EnableDateRangeOptimization);
+        var compilerOptions = CqlCompilerOptions.defaultOptions();
         libraryManager = new LibraryManager(modelManager, compilerOptions);
         libraryManager.getLibrarySourceLoader().clearProviders();
         libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());

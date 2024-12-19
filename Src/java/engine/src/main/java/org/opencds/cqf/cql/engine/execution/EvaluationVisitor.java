@@ -187,7 +187,7 @@ public class EvaluationVisitor extends BaseElmLibraryVisitor<Object, State> {
                     (org.opencds.cqf.cql.engine.runtime.Interval) rightResult,
                     state);
         } else {
-            return UnionEvaluator.union(left, right, state);
+            return UnionEvaluator.union(leftResult, rightResult, state);
         }
     }
 
