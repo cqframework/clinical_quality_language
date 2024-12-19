@@ -2919,16 +2919,19 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                 if (hasFHIRHelpers
                         && propertyType instanceof NamedType
                         && ((NamedType) propertyType).getSimpleName().equals("Reference")
-                        && namedType.getSimpleName().equals("MedicationRequest")) {
+                        && (namedType.getSimpleName().equals("MedicationRequest")
+                                || namedType.getSimpleName().equals("MedicationAdministration")
+                                || namedType.getSimpleName().equals("MedicationDispense")
+                                || namedType.getSimpleName().equals("MedicationStatement"))) {
                     // TODO: This is a model-specific special case to support QICore
                     // This functionality needs to be generalized to a retrieve mapping in the model
-                    // info
-                    // But that requires a model info change (to represent references, right now the
-                    // model info only
-                    // includes context relationships)
-                    // The reference expands to [MedicationRequest] MR with [Medication] M such that
-                    // M.id =
-                    // Last(Split(MR.medication.reference, '/')) and M.code in <valueset>
+                    // info. But that requires a model info change (to represent references, right
+                    // now the model info only includes context relationships)
+                    // The reference expands to
+                    //   [MedicationRequest] MR
+                    //     with [Medication] M
+                    //       such that M.id = Last(Split(MR.medication.reference, '/'))
+                    //         and M.code in <valueset>
                     Retrieve mrRetrieve = buildRetrieve(
                             ctx, useStrictRetrieveTyping, namedType, classType, null, null, null, null, null, null);
                     retrieves.add(mrRetrieve);
@@ -2939,7 +2942,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                     Retrieve mRetrieve = buildRetrieve(
                             ctx, useStrictRetrieveTyping, mNamedType, mClassType, null, null, null, null, null, null);
                     retrieves.add(mRetrieve);
-                    mRetrieve.setResultType(new ListType((DataType) namedType));
+                    mRetrieve.setResultType(new ListType(mDataType));
                     Query q = of.createQuery();
                     AliasedQuerySource aqs = of.createAliasedQuerySource()
                             .withExpression(mrRetrieve)
@@ -2968,9 +2971,27 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
                     Equal e = of.createEqual().withOperand(idProperty, last);
                     libraryBuilder.resolveBinaryCall("System", "Equal", e);
 
+                    // Apply target mapping if this is a profile-informed model info
+                    if (DataTypes.equal(idType, libraryBuilder.resolveTypeName("System", "String"))) {
+                        idProperty.setPath("id.value");
+                    }
+                    if (DataTypes.equal(refType, libraryBuilder.resolveTypeName("System", "String"))) {
+                        refProperty.setPath("medication.reference.value");
+                    }
+
                     DataType mCodeType = libraryBuilder.resolvePath((DataType) mNamedType, "code");
-                    Property mProperty = of.createProperty().withPath("code");
-                    mProperty.setResultType(mCodeType);
+                    Property mProperty = libraryBuilder.buildProperty("M", "code", false, mCodeType);
+                    Expression mCodeProperty = mProperty;
+
+                    // Apply target mapping if this is a profile-informed model info
+                    if (DataTypes.equal(mCodeType, libraryBuilder.resolveTypeName("System", "Concept"))) {
+                        FunctionRef toConcept = of.createFunctionRef()
+                                .withLibraryName("FHIRHelpers")
+                                .withName("ToConcept")
+                                .withOperand(mCodeProperty);
+                        toConcept.setResultType(mCodeType);
+                        mCodeProperty = toConcept;
+                    }
                     String mCodeComparator = "~";
                     if (terminology.getResultType() instanceof ListType) {
                         mCodeComparator = "in";
@@ -2985,9 +3006,9 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
 
                     Expression terminologyComparison = null;
                     if (mCodeComparator.equals("in")) {
-                        terminologyComparison = libraryBuilder.resolveIn(mProperty, terminology);
+                        terminologyComparison = libraryBuilder.resolveIn(mCodeProperty, terminology);
                     } else {
-                        BinaryExpression equivalent = of.createEquivalent().withOperand(mProperty, terminology);
+                        BinaryExpression equivalent = of.createEquivalent().withOperand(mCodeProperty, terminology);
                         libraryBuilder.resolveBinaryCall("System", "Equivalent", equivalent);
                         terminologyComparison = equivalent;
                     }

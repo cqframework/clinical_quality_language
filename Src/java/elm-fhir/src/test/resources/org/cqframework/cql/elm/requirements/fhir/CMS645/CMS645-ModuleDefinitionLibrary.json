@@ -45,17 +45,21 @@
         "valueString": "G10002"
       }, {
         "url": "targetProperty",
-        "valueString": "medication"
+        "valueString": "medication.reference.value"
       } ]
     } ],
     "type": "Medication",
     "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medication" ],
-    "mustSupport": [ "id" ]
+    "mustSupport": [ "id.value", "code" ],
+    "codeFilter": [ {
+      "path": "code",
+      "valueSet": "tbd"
+    } ]
   }, {
     "id": "G10002",
     "type": "MedicationRequest",
     "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationrequest" ],
-    "mustSupport": [ "medication.reference", "status", "status.value", "intent", "intent.value", "doNotPerform", "doNotPerform.value", "dosageInstruction" ]
+    "mustSupport": [ "medication.reference.value", "status", "status.value", "intent", "intent.value", "doNotPerform", "doNotPerform.value", "dosageInstruction" ]
   }, {
     "type": "MedicationRequest",
     "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationrequest" ],
