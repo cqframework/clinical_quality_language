@@ -50,7 +50,6 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor<Object> {
     private boolean fromKeywordRequired = false;
 
     private final List<Expression> expressions = new ArrayList<>();
-    private boolean includeDeprecatedElements = false;
 
     public CqlPreprocessorElmCommonVisitor(LibraryBuilder libraryBuilder, TokenStream tokenStream) {
         this.libraryBuilder = Objects.requireNonNull(libraryBuilder, "libraryBuilder required");
@@ -152,10 +151,6 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor<Object> {
                 .withName(parseString(ctx.referentialIdentifier()))
                 .withElementType(parseTypeSpecifier(ctx.typeSpecifier()));
 
-        if (includeDeprecatedElements) {
-            result.setType(result.getElementType());
-        }
-
         return result;
     }
 
@@ -185,9 +180,6 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor<Object> {
             types.add(typeSpecifier.getResultType());
         }
         ChoiceTypeSpecifier result = of.createChoiceTypeSpecifier().withChoice(typeSpecifiers);
-        if (includeDeprecatedElements) {
-            result.getType().addAll(typeSpecifiers);
-        }
         ChoiceType choiceType = new ChoiceType(types);
         result.setResultType(choiceType);
         return result;
@@ -882,14 +874,6 @@ public class CqlPreprocessorElmCommonVisitor extends cqlBaseVisitor<Object> {
 
     public void disableFromKeywordRequired() {
         fromKeywordRequired = false;
-    }
-
-    public boolean getIncludeDeprecatedElements() {
-        return includeDeprecatedElements;
-    }
-
-    public void setIncludeDeprecatedElements(boolean includeDeprecatedElements) {
-        this.includeDeprecatedElements = includeDeprecatedElements;
     }
 
     private void setCompilerOptions(CqlCompilerOptions options) {

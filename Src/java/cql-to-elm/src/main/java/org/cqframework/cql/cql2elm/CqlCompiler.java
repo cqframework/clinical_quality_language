@@ -235,8 +235,7 @@ public class CqlCompiler {
         var edits = allNonNull(
                 !options.contains(EnableAnnotations) ? ElmEdit.REMOVE_ANNOTATION : null,
                 !options.contains(EnableResultTypes) ? ElmEdit.REMOVE_RESULT_TYPE : null,
-                !options.contains(EnableLocators) ? ElmEdit.REMOVE_LOCATOR : null,
-                ElmEdit.REMOVE_CHOICE_TYPE_SPECIFIER_TYPE_IF_EMPTY);
+                !options.contains(EnableLocators) ? ElmEdit.REMOVE_LOCATOR : null);
 
         new ElmEditor(edits).edit(library);
 
