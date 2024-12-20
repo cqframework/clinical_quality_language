@@ -14,7 +14,7 @@ enum class ElmEdit : IElmEdit {
     REMOVE_ANNOTATION {
         override fun edit(element: Element) {
             element.localId = null
-            element.annotation?.let { removeAnnotations(it) }
+            element.annotation?.let { removeAnnotations(it as MutableList<CqlToElmBase>) }
         }
 
         private fun removeAnnotations(annotations: MutableList<CqlToElmBase>) {
@@ -25,7 +25,7 @@ enum class ElmEdit : IElmEdit {
                     // Remove narrative but _not_ tags
                     // Tags are necessary for `allowFluent` compiler resolution
                     // to work correctly
-                    if (x.t.isEmpty()) {
+                    if (x.t!!.isEmpty()) {
                         annotations.removeAt(i)
                     }
                 }
@@ -53,7 +53,7 @@ enum class ElmEdit : IElmEdit {
         // this edit is needed to "protect" the downstream JSON serialization if it can be done
         // without data loss.
         override fun edit(element: Element) {
-            if (element is ChoiceTypeSpecifier && element.type.isEmpty()) {
+            if (element is ChoiceTypeSpecifier && element.type!!.isEmpty()) {
                 element.type = null
             }
         }

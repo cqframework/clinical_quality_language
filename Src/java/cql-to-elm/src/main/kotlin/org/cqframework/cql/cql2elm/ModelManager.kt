@@ -252,7 +252,7 @@ class ModelManager {
             globalCache[modelIdentifier] = model
             checkModelVersion(modelIdentifier, model)
             models[modelPath] = model
-            modelsByUri[model!!.modelInfo.url] = model
+            modelsByUri[model!!.modelInfo.url!!] = model
         }
         return model
     }

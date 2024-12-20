@@ -7,8 +7,8 @@ import org.hl7.elm.r1.TypeSpecifier
 abstract class OperatorExpressionInvocation<O : OperatorExpression>(expression: O) :
     AbstractExpressionInvocation<O>(expression) {
     override var signature: List<@JvmSuppressWildcards TypeSpecifier>
-        get() = expression.signature
+        get() = expression.signature as List<TypeSpecifier>
         set(signature) {
-            expression.signature = signature
+            expression.signature = signature as MutableList<TypeSpecifier?>
         }
 }

@@ -12,7 +12,7 @@ import org.hl7.elm.r1.VersionedIdentifier
  */
 class StringLibrarySourceProvider(private val libraries: List<String>) : LibrarySourceProvider {
     override fun getLibrarySource(libraryIdentifier: VersionedIdentifier): InputStream? {
-        val id: String = libraryIdentifier.id
+        val id: String = libraryIdentifier.id!!
         val version: String? = libraryIdentifier.version
         val maybeQuotedIdPattern = "(\"$id\"|$id)"
         var matchText = "(?s).*library\\s+\"?$maybeQuotedIdPattern"

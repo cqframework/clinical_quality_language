@@ -14,9 +14,10 @@ data class FunctionHeader(val functionDef: FunctionDef, val resultType: TypeSpec
         val sb = StringBuilder()
         sb.append(functionDef.name)
         sb.append("_")
-        for (od in functionDef.operand) {
+        for (od in functionDef.operand!!) {
             sb.append(
-                if (od.operandTypeSpecifier != null) od.operandTypeSpecifier.toString() else "void"
+                if (od!!.operandTypeSpecifier != null) od.operandTypeSpecifier.toString()
+                else "void"
             )
         }
         sb.append("_")

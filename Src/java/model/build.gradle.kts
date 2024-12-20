@@ -1,9 +1,15 @@
 plugins {
     id("cql.library-conventions")
-    id("cql.xjc-conventions")
+    id("cql.xjc-temp-conventions")
+    id("cql.xsd-kotlin-gen-conventions")
 }
 
 tasks.register<XjcTask>("generateModel") {
     schema = "${projectDir}/../../cql-lm/schema/model/modelinfo.xsd"
     extraArgs = listOf("-npa")
+}
+
+dependencies {
+    // circular dependency
+    testImplementation(project(":model-xmlutil"))
 }

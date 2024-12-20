@@ -6,5 +6,5 @@ dependencies {
     api(project(":elm"))
     testImplementation(project(":cql-to-elm"))
     testImplementation(project(":ucum"))
-    testImplementation(project(":model-jaxb"))
+    testImplementation(project(":model-xmlutil"))
 }

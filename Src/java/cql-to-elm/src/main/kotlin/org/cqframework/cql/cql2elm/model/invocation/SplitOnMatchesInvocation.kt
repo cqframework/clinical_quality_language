@@ -6,7 +6,7 @@ import org.hl7.elm.r1.SplitOnMatches
 class SplitOnMatchesInvocation(expression: SplitOnMatches) :
     OperatorExpressionInvocation<SplitOnMatches>(expression) {
     override var operands: List<Expression>
-        get() = listOf(expression.stringToSplit, expression.separatorPattern)
+        get() = listOf(expression.stringToSplit!!, expression.separatorPattern!!)
         set(operands) {
             require(operands.size == 2) { "SplitOnMatches operator requires two operands." }
             expression.stringToSplit = operands[0]
