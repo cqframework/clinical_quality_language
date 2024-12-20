@@ -246,7 +246,9 @@ class ModelManager {
         if (model == null && globalCache.containsKey(modelIdentifier)) {
             model = globalCache[modelIdentifier]
             models[modelPath] = model
+            modelsByUri[model!!.modelInfo.url] = model
         }
+
         if (model == null) {
             model = buildModel(modelIdentifier)
             globalCache[modelIdentifier] = model

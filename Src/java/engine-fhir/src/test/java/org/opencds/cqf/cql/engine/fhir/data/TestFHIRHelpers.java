@@ -3,16 +3,46 @@ package org.opencds.cqf.cql.engine.fhir.data;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import org.cqframework.cql.cql2elm.CqlCompilerOptions;
+import org.cqframework.cql.cql2elm.LibraryBuilder;
+import org.cqframework.cql.cql2elm.LibraryManager;
+import org.cqframework.cql.cql2elm.ModelManager;
+import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider;
 import org.junit.jupiter.api.Test;
+import org.opencds.cqf.cql.engine.exception.CqlException;
 import org.opencds.cqf.cql.engine.execution.CqlEngine;
+import org.opencds.cqf.cql.engine.execution.Environment;
 
 class TestFHIRHelpers extends FhirExecutionTestBase {
 
     @Test
-    void test() {
+    void testWithAmbiguousCompilerOptions() {
+        // This tests the behavior of the engine when the compiler
+        // options are set to allow ambiguous overloads
+        // It's expected that the engine will throw an exception
+        //
+        // If we update the FHIRHelpers content to not have ambiguous overloads
+        // the results of this test will change
+        var compilerOptions = CqlCompilerOptions.defaultOptions();
+        compilerOptions.setSignatureLevel(LibraryBuilder.SignatureLevel.None);
+        var modelManager = new ModelManager();
+        var libraryManager = new LibraryManager(modelManager, compilerOptions);
+        libraryManager.getLibrarySourceLoader().clearProviders();
+        libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
+        libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
 
-        CqlEngine engine = getEngine();
+        var badOptionsEngine = new CqlEngine(new Environment(libraryManager));
+        badOptionsEngine.getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);
+
+        var identifier = library.getIdentifier();
+        assertThrows(CqlException.class, () -> badOptionsEngine.evaluate(identifier));
+    }
+
+    @Test
+    void testFhirHelpers() {
+        var engine = getEngine();
         engine.getEnvironment().registerDataProvider("http://hl7.org/fhir", r4Provider);
         var results = engine.evaluate(library.getIdentifier());
 

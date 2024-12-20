@@ -251,9 +251,6 @@ class Cql2ElmVisitor(
             of.createTupleElementDefinition()
                 .withName(parseString(ctx.referentialIdentifier()))
                 .withElementType(parseTypeSpecifier(ctx.typeSpecifier()))
-        if (includeDeprecatedElements) {
-            result.type = result.elementType
-        }
         return result
     }
 
@@ -3019,7 +3016,10 @@ class Cql2ElmVisitor(
                     (hasFHIRHelpers &&
                         propertyType is NamedType &&
                         ((propertyType as NamedType).simpleName == "Reference") &&
-                        (namedType.simpleName == "MedicationRequest"))
+                        ((namedType.simpleName == "MedicationRequest" ||
+                            namedType.simpleName == "MedicationAdministration" ||
+                            namedType.simpleName == "MedicationDispense" ||
+                            namedType.simpleName == "MedicationStatement")))
                 ) {
                     // TODO: This is a model-specific special case to support QICore
                     // This functionality needs to be generalized to a retrieve mapping in the model
@@ -3062,7 +3062,7 @@ class Cql2ElmVisitor(
                             null
                         )
                     retrieves.add(mRetrieve)
-                    mRetrieve.resultType = ListType(namedType as DataType)
+                    mRetrieve.resultType = ListType(mDataType)
                     val q: Query = of.createQuery()
                     val aqs: AliasedQuerySource =
                         of.createAliasedQuerySource().withExpression(mrRetrieve).withAlias("MR")
@@ -3092,10 +3092,34 @@ class Cql2ElmVisitor(
                     libraryBuilder.resolveCall("System", "Last", LastInvocation(last))
                     val e: Equal = of.createEqual().withOperand(idProperty, last)
                     libraryBuilder.resolveBinaryCall("System", "Equal", e)
+
+                    // Apply target mapping if this is a profile-informed model info
+                    if (
+                        DataTypes.equal(idType, libraryBuilder.resolveTypeName("System", "String"))
+                    ) {
+                        idProperty.path = "id.value"
+                    }
+                    if (
+                        DataTypes.equal(refType, libraryBuilder.resolveTypeName("System", "String"))
+                    ) {
+                        refProperty.path = "medication.reference.value"
+                    }
                     val mCodeType: DataType? =
                         libraryBuilder.resolvePath(mNamedType as DataType?, "code")
-                    val mProperty: Property = of.createProperty().withPath("code")
-                    mProperty.resultType = mCodeType
+                    val mProperty = libraryBuilder.buildProperty("M", "code", false, mCodeType)
+                    var mCodeProperty: Expression = mProperty
+
+                    // Apply target mapping if this is a profile-informed model info
+                    if (equal(mCodeType, libraryBuilder.resolveTypeName("System", "Concept"))) {
+                        val toConcept =
+                            of.createFunctionRef()
+                                .withLibraryName("FHIRHelpers")
+                                .withName("ToConcept")
+                                .withOperand(mCodeProperty)
+                        toConcept.resultType = mCodeType
+                        mCodeProperty = toConcept
+                    }
+
                     var mCodeComparator = "~"
                     if (terminology!!.resultType is ListType) {
                         mCodeComparator = "in"
@@ -3111,10 +3135,10 @@ class Cql2ElmVisitor(
                     }
                     val terminologyComparison: Expression =
                         if ((mCodeComparator == "in")) {
-                            libraryBuilder.resolveIn(mProperty, (terminology))
+                            libraryBuilder.resolveIn(mCodeProperty, (terminology))
                         } else {
                             val equivalent: BinaryExpression =
-                                of.createEquivalent().withOperand(mProperty, terminology)
+                                of.createEquivalent().withOperand(mCodeProperty, terminology)
                             libraryBuilder.resolveBinaryCall("System", "Equivalent", equivalent)
                             equivalent
                         }

@@ -87,7 +87,7 @@ class CqlCompilerOptions {
      *
      * @param signatureLevel
      */
-    var signatureLevel: SignatureLevel = SignatureLevel.None
+    var signatureLevel: SignatureLevel = SignatureLevel.Overloads
     /**
      * Return instance of CqlTranslatorOptions analyzeDataRequirements boolean
      *
