@@ -2753,6 +2753,22 @@ public class LibraryBuilder {
             TypeSpecifier argumentSignature = null;
             if (this.options.getSignatureLevel() != SignatureLevel.None) {
                 if (qualifiedFunctionName.equals("FHIRHelpers.ToInterval")) {
+                    // Force loading of the FHIR model, as it's an implicit
+                    // dependency of the the target mapping here.
+                    var fhirVersion = "4.0.1";
+                    var qiCoreModel = this.getModel("QICore");
+                    if (qiCoreModel != null) {
+                        var version = qiCoreModel.getModelInfo().getVersion();
+                        if (version.equals("3.3.0")) {
+                            fhirVersion = "4.0.0";
+                        } else if (version.startsWith("3")) {
+                            fhirVersion = "3.0.1";
+                        }
+                    }
+
+                    // Force the FHIR model to be loaded.
+                    this.modelManager.resolveModel("FHIR", fhirVersion);
+
                     NamedTypeSpecifier namedTypeSpecifier =
                             new NamedTypeSpecifier().withName(dataTypeToQName(resolveTypeName("FHIR", "Period")));
                     argumentSignature = namedTypeSpecifier;
