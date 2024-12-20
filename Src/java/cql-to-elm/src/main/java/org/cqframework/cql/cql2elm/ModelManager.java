@@ -268,7 +268,8 @@ public class ModelManager {
 
         if (model == null && this.globalCache.containsKey(modelIdentifier)) {
             model = this.globalCache.get(modelIdentifier);
-            this.models.put(modelPath, model);
+            models.put(modelPath, model);
+            modelsByUri.put(model.getModelInfo().getUrl(), model);
         }
 
         if (model == null) {
