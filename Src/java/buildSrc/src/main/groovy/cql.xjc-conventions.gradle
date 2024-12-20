@@ -17,7 +17,7 @@ dependencies {
     xjc 'org.glassfish.jaxb:jaxb-xjc:3.0.2'
     xjc 'org.glassfish.jaxb:jaxb-runtime:4.0.3'
     xjc 'org.eclipse.persistence:org.eclipse.persistence.moxy:4.0.2'
-    xjc 'org.slf4j:slf4j-simple:1.7.36'
+    xjc 'org.slf4j:slf4j-simple:2.0.13'
     api 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.1'
     api 'codes.rafael.jaxb2_commons:jaxb2-basics-runtime:3.0.0'
 }
