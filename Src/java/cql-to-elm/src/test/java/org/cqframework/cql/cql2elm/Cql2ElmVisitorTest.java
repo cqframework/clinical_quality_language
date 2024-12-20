@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
-import org.cqframework.cql.elm.tracking.Trackable;
+import org.cqframework.cql.cql2elm.tracking.Trackable;
 import org.hl7.elm.r1.*;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -1228,12 +1228,15 @@ class Cql2ElmVisitorTest {
         assertThat(patient.getExpression(), instanceOf(Literal.class));
     }
 
-    private void assertTrackable(Trackable t) {
+    private void assertTrackable(Element t) {
         if (t == null) {
             return;
         }
-        assertThat(t.getTrackbacks(), not(empty()));
-        assertThat(t.getTrackbacks().get(0), notNullValue());
-        assertThat(t.getTrackerId(), notNullValue());
+
+        var trackbacks = Trackable.INSTANCE.getTrackbacks(t);
+        var trackerId = Trackable.INSTANCE.getTrackerId(t);
+        assertThat(trackbacks, not(empty()));
+        assertThat(trackbacks.get(0), notNullValue());
+        assertThat(trackerId, notNullValue());
     }
 }
