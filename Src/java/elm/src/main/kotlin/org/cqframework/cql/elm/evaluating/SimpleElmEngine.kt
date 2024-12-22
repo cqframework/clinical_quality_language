@@ -225,15 +225,15 @@ class SimpleElmEngine {
                 if (
                     leftArg.element != null &&
                         rightArg.element != null &&
-                        leftArg.element.size == rightArg.element.size
+                        leftArg.element!!.size == rightArg.element!!.size
                 ) {
-                    for (i in leftArg.element.indices) {
-                        val leftElement = leftArg.element[i]
-                        val rightElement = rightArg.element[i]
+                    for (i in leftArg.element!!.indices) {
+                        val leftElement = leftArg.element!![i]
+                        val rightElement = rightArg.element!![i]
                         if (
                             !typeSpecifiersEqual(
-                                leftElement.elementType,
-                                rightElement.elementType
+                                leftElement!!.elementType,
+                                rightElement!!.elementType
                             ) ||
                                 !typeSpecifiersEqual(
                                     leftElement.elementType,
@@ -262,11 +262,11 @@ class SimpleElmEngine {
                 if (
                     leftArg.choice != null &&
                         rightArg.choice != null &&
-                        leftArg.choice.size == rightArg.choice.size
+                        leftArg.choice!!.size == rightArg.choice!!.size
                 ) {
-                    for (i in leftArg.choice.indices) {
-                        val leftType = leftArg.choice[i]
-                        val rightType = rightArg.choice[i]
+                    for (i in leftArg.choice!!.indices) {
+                        val leftType = leftArg.choice!![i]
+                        val rightType = rightArg.choice!![i]
                         if (!typeSpecifiersEqual(leftType, rightType)) {
                             return false
                         }
@@ -276,11 +276,11 @@ class SimpleElmEngine {
                 if (
                     leftArg.choice != null &&
                         rightArg.choice != null &&
-                        leftArg.choice.size == rightArg.choice.size
+                        leftArg.choice!!.size == rightArg.choice!!.size
                 ) {
-                    for (i in leftArg.choice.indices) {
-                        val leftType = leftArg.choice[i]
-                        val rightType = rightArg.choice[i]
+                    for (i in leftArg.choice!!.indices) {
+                        val leftType = leftArg.choice!![i]
+                        val rightType = rightArg.choice!![i]
                         if (!typeSpecifiersEqual(leftType, rightType)) {
                             return false
                         }
@@ -371,13 +371,13 @@ class SimpleElmEngine {
                     rightInterval.lowClosedExpression
                 ) &&
                     dateTimesEqual(leftInterval.low, rightInterval.low) &&
-                    leftInterval.isLowClosed == rightInterval.isLowClosed &&
+                    leftInterval.isLowClosed() == rightInterval.isLowClosed() &&
                     booleansEqual(
                         leftInterval.highClosedExpression,
                         rightInterval.highClosedExpression
                     ) &&
                     dateTimesEqual(leftInterval.high, rightInterval.high) &&
-                    leftInterval.isHighClosed == rightInterval.isHighClosed
+                    leftInterval.isHighClosed() == rightInterval.isHighClosed()
             }
 
             return false
@@ -453,8 +453,8 @@ class SimpleElmEngine {
                 val leftConcept = left
                 val rightConcept = right
                 if (leftConcept.code != null && rightConcept.code != null) {
-                    for (lc in leftConcept.code) {
-                        for (rc in rightConcept.code) {
+                    for (lc in leftConcept.code!!) {
+                        for (rc in rightConcept.code!!) {
                             if (codesEqual(lc, rc)) {
                                 return true
                             }
@@ -471,9 +471,9 @@ class SimpleElmEngine {
                 val leftList = left
                 val rightList = right
                 // TODO: Potentially use a hashSet to avoid order-dependence here
-                if (leftList.element.size == rightList.element.size) {
-                    for (i in leftList.element.indices) {
-                        if (!codesEqual(leftList.element[i], rightList.element[i])) {
+                if (leftList.element!!.size == rightList.element!!.size) {
+                    for (i in leftList.element!!.indices) {
+                        if (!codesEqual(leftList.element!![i], rightList.element!![i])) {
                             return false
                         }
                     }
@@ -651,20 +651,20 @@ class SimpleElmEngine {
                     return false
                 }
 
-                if (!expressionsEqual(leftArg.getElse(), rightArg.getElse())) {
+                if (!expressionsEqual(leftArg.`else`, rightArg.`else`)) {
                     return false
                 }
 
                 if (
                     leftArg.caseItem != null &&
                         rightArg.caseItem != null &&
-                        (leftArg.caseItem.size == rightArg.caseItem.size)
+                        (leftArg.caseItem!!.size == rightArg.caseItem!!.size)
                 ) {
-                    for (i in leftArg.caseItem.indices) {
-                        val leftCaseItem = leftArg.caseItem[i]
-                        val rightCaseItem = rightArg.caseItem[i]
+                    for (i in leftArg.caseItem!!.indices) {
+                        val leftCaseItem = leftArg.caseItem!![i]
+                        val rightCaseItem = rightArg.caseItem!![i]
                         if (
-                            !expressionsEqual(leftCaseItem.getWhen(), rightCaseItem.getWhen()) ||
+                            !expressionsEqual(leftCaseItem!!.`when`, rightCaseItem!!.`when`) ||
                                 !expressionsEqual(leftCaseItem.then, rightCaseItem.then)
                         ) {
                             return false
@@ -757,7 +757,7 @@ class SimpleElmEngine {
                 val rightArg = right
                 return expressionsEqual(leftArg.condition, rightArg.condition) &&
                     expressionsEqual(leftArg.then, rightArg.then) &&
-                    expressionsEqual(leftArg.getElse(), rightArg.getElse())
+                    expressionsEqual(leftArg.`else`, rightArg.`else`)
             }
 
             return false
@@ -775,13 +775,13 @@ class SimpleElmEngine {
                 if (
                     leftArg.element != null &&
                         rightArg.element != null &&
-                        leftArg.element.size == rightArg.element.size
+                        leftArg.element!!.size == rightArg.element!!.size
                 ) {
-                    for (i in leftArg.element.indices) {
-                        val leftElement = leftArg.element[i]
-                        val rightElement = rightArg.element[i]
+                    for (i in leftArg.element!!.indices) {
+                        val leftElement = leftArg.element!![i]
+                        val rightElement = rightArg.element!![i]
                         if (
-                            !stringsEqual(leftElement.name, rightElement.name) ||
+                            !stringsEqual(leftElement!!.name, rightElement!!.name) ||
                                 !expressionsEqual(leftElement.value, rightElement.value)
                         ) {
                             return false
@@ -918,10 +918,12 @@ class SimpleElmEngine {
 
     fun operandsEqual(left: FunctionRef, right: FunctionRef): Boolean {
         if (
-            left.operand != null && right.operand != null && left.operand.size == right.operand.size
+            left.operand != null &&
+                right.operand != null &&
+                left.operand!!.size == right.operand!!.size
         ) {
-            for (i in left.operand.indices) {
-                if (!expressionsEqual(left.operand[i], right.operand[i])) {
+            for (i in left.operand!!.indices) {
+                if (!expressionsEqual(left.operand!![i], right.operand!![i])) {
                     return false
                 }
             }
@@ -934,10 +936,12 @@ class SimpleElmEngine {
 
     fun operandsEqual(left: BinaryExpression, right: BinaryExpression): Boolean {
         if (
-            left.operand != null && right.operand != null && left.operand.size == right.operand.size
+            left.operand != null &&
+                right.operand != null &&
+                left.operand!!.size == right.operand!!.size
         ) {
-            for (i in left.operand.indices) {
-                if (!expressionsEqual(left.operand[i], right.operand[i])) {
+            for (i in left.operand!!.indices) {
+                if (!expressionsEqual(left.operand!![i], right.operand!![i])) {
                     return false
                 }
             }
@@ -950,10 +954,12 @@ class SimpleElmEngine {
 
     fun operandsEqual(left: TernaryExpression, right: TernaryExpression): Boolean {
         if (
-            left.operand != null && right.operand != null && left.operand.size == right.operand.size
+            left.operand != null &&
+                right.operand != null &&
+                left.operand!!.size == right.operand!!.size
         ) {
-            for (i in left.operand.indices) {
-                if (!expressionsEqual(left.operand[i], right.operand[i])) {
+            for (i in left.operand!!.indices) {
+                if (!expressionsEqual(left.operand!![i], right.operand!![i])) {
                     return false
                 }
             }
@@ -966,10 +972,12 @@ class SimpleElmEngine {
 
     fun operandsEqual(left: NaryExpression, right: NaryExpression): Boolean {
         if (
-            left.operand != null && right.operand != null && left.operand.size == right.operand.size
+            left.operand != null &&
+                right.operand != null &&
+                left.operand!!.size == right.operand!!.size
         ) {
-            for (i in left.operand.indices) {
-                if (!expressionsEqual(left.operand[i], right.operand[i])) {
+            for (i in left.operand!!.indices) {
+                if (!expressionsEqual(left.operand!![i], right.operand!![i])) {
                     return false
                 }
             }
@@ -1279,7 +1287,7 @@ class SimpleElmEngine {
                 val rightArg = right
                 return qnamesEqual(leftArg.asType, rightArg.asType) &&
                     typeSpecifiersEqual(leftArg.asTypeSpecifier, rightArg.asTypeSpecifier) &&
-                    leftArg.isStrict == rightArg.isStrict
+                    leftArg.isStrict() == rightArg.isStrict()
             }
         }
         // Ceiling

@@ -15,6 +15,8 @@ dependencies {
     implementation("ru.vyarus:gradle-animalsniffer-plugin:1.7.2")
     implementation("com.github.spotbugs.snom:spotbugs-gradle-plugin:5.0.14")
     implementation("com.diffplug.spotless:spotless-plugin-gradle:6.25.0")
+    implementation("com.github.node-gradle:gradle-node-plugin:7.1.0")
+    implementation("org.jetbrains.kotlin:kotlin-serialization:2.0.20")
 }
 
 kotlin {

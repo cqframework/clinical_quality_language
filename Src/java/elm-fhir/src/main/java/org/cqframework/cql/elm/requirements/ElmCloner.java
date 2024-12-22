@@ -107,7 +107,7 @@ public class ElmCloner {
         clonedElm.setRelatedDataType(elm.getRelatedDataType());
         clonedElm.setRelatedProperty(elm.getRelatedProperty());
         clonedElm.setRelatedSearch(elm.getRelatedSearch());
-        clonedElm.setIsReverse(elm.isIsReverse());
+        clonedElm.withIsReverse(elm.isIsReverse());
         return clonedElm;
     }
 

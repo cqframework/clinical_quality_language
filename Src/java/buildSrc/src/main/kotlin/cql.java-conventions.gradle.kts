@@ -36,6 +36,7 @@ spotless {
         palantirJavaFormat()
     }
     kotlin {
+        targetExclude("**/generated/**")
         ktfmt().kotlinlangStyle()
     }
 }

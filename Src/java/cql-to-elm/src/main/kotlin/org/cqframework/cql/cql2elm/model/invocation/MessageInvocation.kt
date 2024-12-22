@@ -7,11 +7,11 @@ class MessageInvocation(expression: Message) : OperatorExpressionInvocation<Mess
     override var operands: List<Expression>
         get() =
             listOf(
-                expression.source,
-                expression.condition,
-                expression.code,
-                expression.severity,
-                expression.message
+                expression.source!!,
+                expression.condition!!,
+                expression.code!!,
+                expression.severity!!,
+                expression.message!!
             )
         @Suppress("MagicNumber")
         set(operands) {

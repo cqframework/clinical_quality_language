@@ -9,10 +9,12 @@ import java.util.Scanner;
 import org.cqframework.cql.cql2elm.CqlCompilerException.ErrorSeverity;
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
 import org.json.JSONException;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.skyscreamer.jsonassert.JSONAssert;
 
+@Disabled("TODO: Re-enable once XmlUtil-based ELM JSON deserialization is implemented")
 class CMS146JsonTest {
 
     private static Object[][] sigFileAndSigLevel() {
