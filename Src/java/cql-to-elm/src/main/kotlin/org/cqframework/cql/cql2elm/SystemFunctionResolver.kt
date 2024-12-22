@@ -662,9 +662,9 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
     }
 
     // General Function Support
-    private fun <T : Expression?> createExpression(functionRef: FunctionRef): T {
+    private inline fun <reified T : Expression?> createExpression(functionRef: FunctionRef): T {
         return try {
-            of.javaClass.getMethod("create" + functionRef.name).invoke(of) as T
+            T::class.java.cast(of.javaClass.getMethod("create" + functionRef.name).invoke(of))
         } catch (@Suppress("TooGenericExceptionCaught") e: Exception) {
             throw CqlInternalException(
                 String.format(

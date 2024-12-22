@@ -1,4 +1,4 @@
-package org.cqframework.cql.cql2elm.json;
+package org.cqframework.cql.cql2elm;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -8,14 +8,13 @@ import com.github.reinert.jjschema.v1.JsonSchemaV4Factory;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import org.cqframework.cql.cql2elm.CqlCompilerOptions;
 import org.junit.jupiter.api.Test;
 
 class CqlTranslatorOptionsToJsonSchema {
     private static final String separator = System.getProperty("file.separator");
     private static final String JSON_LOC = "src" + separator + "test" + separator + "resources"
             + separator + "org" + separator + "cqframework" + separator + "cql" + separator + "cql2elm" + separator
-            + "json" + separator + "CqlTranslatorOptions.json";
+            + "CqlTranslatorOptions.json";
 
     @Test
     void BuildJsonSchemaFromCqlTranslatorOptions() {

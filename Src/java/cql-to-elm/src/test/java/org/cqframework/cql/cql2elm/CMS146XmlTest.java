@@ -1,8 +1,5 @@
 package org.cqframework.cql.cql2elm;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -13,6 +10,7 @@ import org.cqframework.cql.cql2elm.CqlCompilerException.ErrorSeverity;
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.xmlunit.assertj.XmlAssert;
 
 class CMS146XmlTest {
 
@@ -37,7 +35,8 @@ class CMS146XmlTest {
                 new LibraryManager(
                         modelManager, new CqlCompilerOptions(ErrorSeverity.Warning, expectedSignatureLevel)));
         final String actualXml = translator.toXml().trim();
-        assertThat(actualXml, equalTo(expectedXml));
+
+        XmlAssert.assertThat(actualXml).and(expectedXml).ignoreWhitespace().areIdentical();
     }
 
     private static String getXml(String name) throws IOException {
