@@ -2,6 +2,7 @@ package org.opencds.cqf.cql.engine.execution;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -12,9 +13,16 @@ class TestUnion extends CqlTestBase {
     @Test
     void union() {
         var results = engine.evaluate(toElmIdentifier("TestUnion"));
-        var value = results.forExpression("NullAndNull").value();
+
+        var value = results.forExpression("NullAndNullList").value();
         assertNotNull(value);
         assertTrue(((List<?>) value).isEmpty());
+
+        value = results.forExpression("NullAndNullInterval").value();
+        assertNull(value);
+
+        value = results.forExpression("NullAndNullUntyped").value();
+        assertNull(value);
 
         value = results.forExpression("NullAndEmpty").value();
         assertNotNull(value);

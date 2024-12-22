@@ -4,7 +4,6 @@ package org.cqframework.cql.cql2elm
 
 import java.io.*
 import java.util.*
-import java.util.stream.Collectors
 import org.antlr.v4.kotlinruntime.*
 import org.antlr.v4.kotlinruntime.tree.ParseTree
 import org.cqframework.cql.cql2elm.elm.ElmEdit
@@ -208,8 +207,7 @@ class CqlCompiler(
                 else null),
                 (if (!options.contains(CqlCompilerOptions.Options.EnableLocators))
                     ElmEdit.REMOVE_LOCATOR
-                else null),
-                ElmEdit.REMOVE_CHOICE_TYPE_SPECIFIER_TYPE_IF_EMPTY
+                else null)
             )
         ElmEditor(edits).edit(library!!)
         compiledLibrary = builder.compiledLibrary
@@ -222,9 +220,6 @@ class CqlCompiler(
     }
 
     private fun allNonNull(vararg ts: IElmEdit?): List<IElmEdit> {
-        return Arrays.stream(ts)
-            .filter { x: IElmEdit? -> x != null }
-            .map { it!! }
-            .collect(Collectors.toList())
+        return ts.filterNotNull()
     }
 }

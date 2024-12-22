@@ -13,29 +13,27 @@ import org.hl7.elm.r1.Element
  * In Java use Trackable.INSTANCE to access the same functionality.
  */
 object Trackable {
-    private val trackerIdsByElement = WeakIdentityHashMap<Element, UUID>()
-    var Element.trackerId: UUID
-        get() = trackerIdsByElement.getOrPut(this) { UUID.randomUUID() }
-        set(value) {
-            trackerIdsByElement[this] = value
-        }
 
-    private val trackbacksByElement = WeakIdentityHashMap<Element, MutableList<TrackBack>>()
-    var Element.trackbacks: MutableList<TrackBack>
-        get() = trackbacksByElement.getOrPut(this) { ArrayList() }
-        set(value) {
-            trackbacksByElement[this] = value
-        }
+    private data class ExtensionProperties(
+        val trackerId: UUID = UUID.randomUUID(),
+        val trackbacks: MutableList<TrackBack> = arrayListOf(),
+        var resultType: DataType? = null
+    )
 
-    private val resultTypesByElement = WeakIdentityHashMap<Element, DataType?>()
+    private val extensionPropertiesByElement = WeakIdentityHashMap<Element, ExtensionProperties>()
+    private val Element.extensions: ExtensionProperties
+        get() = extensionPropertiesByElement.getOrPut(this) { ExtensionProperties() }
+
+    val Element.trackerId: UUID
+        get() = this.extensions.trackerId
+
+    val Element.trackbacks: MutableList<TrackBack>
+        get() = this.extensions.trackbacks
+
     var Element.resultType: DataType?
-        get() = resultTypesByElement[this]
+        get() = this.extensions.resultType
         set(value) {
-            if (value == null) {
-                resultTypesByElement.remove(this)
-            } else {
-                resultTypesByElement[this] = value
-            }
+            this.extensions.resultType = value
         }
 
     fun <T : Element> T.withResultType(resultType: DataType?): T {

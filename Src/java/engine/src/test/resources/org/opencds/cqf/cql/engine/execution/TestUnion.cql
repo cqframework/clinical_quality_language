@@ -1,8 +1,19 @@
 library TestUnion
 
 // expect {}
-define "NullAndNull":
+define "NullAndNullList":
     null as List<Integer> union null as List<Integer>
+
+// expect null
+define "NullAndNullInterval":
+    null as Interval<Integer> union null as Interval<Integer>
+
+// expect null
+// Based on the CQL conversion precedence rules,
+// the compiler _should have_ inferred this as Intervals
+// and not Lists.
+define "NullAndNullUntyped":
+    null union null
 
 // expect {}
 define "NullAndEmpty":

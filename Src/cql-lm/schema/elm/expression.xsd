@@ -88,11 +88,6 @@
 		<xs:complexContent>
 			<xs:extension base="Element">
 				<xs:sequence>
-					<xs:element name="type" type="TypeSpecifier" minOccurs="0" maxOccurs="1">
-						<xs:annotation>
-							<xs:documentation>This element is deprecated. New implementations should use the new elementType element.</xs:documentation>
-						</xs:annotation>
-					</xs:element>
 					<xs:element name="elementType" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 				<xs:attribute name="name" type="xs:string" use="required"/>
@@ -118,11 +113,6 @@
 		<xs:complexContent>
 			<xs:extension base="TypeSpecifier">
 				<xs:sequence>
-					<xs:element name="type" type="TypeSpecifier" minOccurs="0" maxOccurs="unbounded">
-						<xs:annotation>
-							<xs:documentation>This element is deprecated. New implementations should use the new choice element.</xs:documentation>
-						</xs:annotation>
-					</xs:element>
 					<xs:element name="choice" type="TypeSpecifier" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>

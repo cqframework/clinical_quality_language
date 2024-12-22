@@ -20,6 +20,7 @@ dependencies {
 }
 
 node {
+    download = true
     nodeProjectDir.set(file("../../js/xsd-kotlin-gen"))
 }
 

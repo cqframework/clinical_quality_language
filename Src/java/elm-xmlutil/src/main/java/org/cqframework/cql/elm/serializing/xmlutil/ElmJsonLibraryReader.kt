@@ -7,6 +7,7 @@ import java.io.InputStream
 import java.io.Reader
 import java.net.URI
 import java.net.URL
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import kotlinx.serialization.modules.plus
@@ -44,6 +45,7 @@ class ElmJsonLibraryReader : ElmLibraryReader {
         return json.decodeFromString(LibraryWrapper.serializer(), string).library
     }
 
+    @OptIn(ExperimentalSerializationApi::class)
     override fun read(inputStream: InputStream): Library {
         return json.decodeFromStream<LibraryWrapper>(inputStream).library
     }

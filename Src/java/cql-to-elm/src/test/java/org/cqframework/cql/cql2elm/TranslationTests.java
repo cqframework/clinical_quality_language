@@ -478,4 +478,38 @@ class TranslationTests {
                 errors.stream().map(Throwable::getMessage).collect(Collectors.toList());
         assertThat(errorMessages, contains("Specified data type DomainResource does not support retrieval."));
     }
+
+    @Test
+    void mappingExpansionsRespectSignatureLevel() throws IOException {
+        // See: https://github.com/cqframework/clinical_quality_language/issues/1475
+        final CqlTranslator translator = TestUtils.runSemanticTest(
+                "MappingExpansionsRespectSignatureLevel.cql", 0, LibraryBuilder.SignatureLevel.Overloads);
+        /*
+        ExpressionDef: EncounterPeriod
+          expression is Query
+            return
+              expression is FunctionRef
+                name FHIRHelpers.ToInterval
+                signature is NamedTypeSpecifier FHIR.Period
+         */
+
+        Library compiledLibrary = translator.getTranslatedLibrary().getLibrary();
+        List<ExpressionDef> statements = compiledLibrary.getStatements().getDef();
+
+        assertThat(statements.size(), is(2));
+        ExpressionDef encounterPeriod = statements.get(1);
+        assertThat(encounterPeriod.getName(), is("EncounterPeriod"));
+        assertThat(encounterPeriod.getExpression(), instanceOf(Query.class));
+        Query query = (Query) encounterPeriod.getExpression();
+        assertThat(query.getReturn().getExpression(), instanceOf(FunctionRef.class));
+        FunctionRef functionRef = (FunctionRef) query.getReturn().getExpression();
+        assertThat(functionRef.getLibraryName(), is("FHIRHelpers"));
+        assertThat(functionRef.getName(), is("ToInterval"));
+        assertThat(functionRef.getSignature(), notNullValue());
+        assertThat(functionRef.getSignature().size(), is(1));
+        assertThat(functionRef.getSignature().get(0), instanceOf(NamedTypeSpecifier.class));
+        NamedTypeSpecifier namedTypeSpecifier =
+                (NamedTypeSpecifier) functionRef.getSignature().get(0);
+        assertThat(namedTypeSpecifier.getName().getLocalPart(), is("Period"));
+    }
 }
