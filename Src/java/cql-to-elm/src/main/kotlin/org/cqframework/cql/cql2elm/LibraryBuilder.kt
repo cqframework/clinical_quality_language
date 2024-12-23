@@ -419,7 +419,7 @@ class LibraryBuilder(
         // simpleTypeSpecifier: (identifier '.')? identifier
         // intervalTypeSpecifier: 'interval' '<' typeSpecifier '>'
         // listTypeSpecifier: 'list' '<' typeSpecifier '>'
-        when {
+        return when {
             typeSpecifier.lowercase(Locale.getDefault()).startsWith("interval<") -> {
                 val pointType =
                     resolveTypeSpecifier(
@@ -428,10 +428,10 @@ class LibraryBuilder(
                             typeSpecifier.lastIndexOf('>')
                         )
                     )
-                return IntervalType(pointType!!)
+                IntervalType(pointType!!)
             }
             else ->
-                return if (typeSpecifier.lowercase(Locale.getDefault()).startsWith("list<")) {
+                if (typeSpecifier.lowercase(Locale.getDefault()).startsWith("list<")) {
                     val elementType =
                         resolveTypeName(
                             typeSpecifier.substring(
@@ -1619,14 +1619,12 @@ class LibraryBuilder(
                 callContext.signature
             )
         }
-        if (resolution.operator.fluent && !callContext.allowFluent) {
-            throw IllegalArgumentException(
-                String.format(
-                    Locale.US,
-                    "Operator %s with signature %s is a fluent function and can only be invoked with fluent syntax.",
-                    callContext.operatorName,
-                    callContext.signature
-                )
+        require(!(resolution.operator.fluent && !callContext.allowFluent)) {
+            String.format(
+                Locale.US,
+                "Operator %s with signature %s is a fluent function and can only be invoked with fluent syntax.",
+                callContext.operatorName,
+                callContext.signature
             )
         }
         require(
@@ -1927,7 +1925,7 @@ class LibraryBuilder(
                         .createProperty()
                         .withSource(expression)
                         .withPath("low")
-                        .withResultType(fromType.pointType) as Property,
+                        .withResultType(fromType.pointType),
                     conversion.conversion!!
                 )
             )
@@ -1936,7 +1934,7 @@ class LibraryBuilder(
                     .createProperty()
                     .withSource(expression)
                     .withPath("lowClosed")
-                    .withResultType(resolveTypeName("System", "Boolean")) as Property
+                    .withResultType(resolveTypeName("System", "Boolean"))
             )
             .withHigh(
                 convertExpression(
@@ -1944,7 +1942,7 @@ class LibraryBuilder(
                         .createProperty()
                         .withSource(expression)
                         .withPath("high")
-                        .withResultType(fromType.pointType) as Property,
+                        .withResultType(fromType.pointType),
                     conversion.conversion
                 )
             )
@@ -1953,9 +1951,9 @@ class LibraryBuilder(
                     .createProperty()
                     .withSource(expression)
                     .withPath("highClosed")
-                    .withResultType(resolveTypeName("System", "Boolean")) as Property
+                    .withResultType(resolveTypeName("System", "Boolean"))
             )
-            .withResultType(toType) as Interval
+            .withResultType(toType)
     }
 
     fun buildAs(expression: Expression?, asType: DataType?): As {
@@ -2038,168 +2036,179 @@ class LibraryBuilder(
                 (conversion.fromType.isSuperTypeOf(conversion.toType) ||
                     conversion.fromType.isCompatibleWith(conversion.toType))
         ) {
-            if (conversion.fromType is ChoiceType && conversion.toType is ChoiceType) {
-                if ((conversion.fromType).isSubSetOf(conversion.toType)) {
-                    // conversion between compatible choice types requires no cast (i.e.
-                    // choice<Integer, String> can be
-                    // safely passed to choice<Integer, String, DateTime>
-                    return expression
-                }
-                // Otherwise, the choice is narrowing and a run-time As is required (to use only the
-                // expected target
-                // types)
+            // Otherwise, the choice is narrowing and a run-time As is required (to use only the
+            // expected target
+            // types)
+            if (
+                conversion.fromType is ChoiceType &&
+                    conversion.toType is ChoiceType &&
+                    (conversion.fromType).isSubSetOf(conversion.toType)
+            ) {
+                // conversion between compatible choice types requires no cast (i.e.
+                // choice<Integer, String> can be
+                // safely passed to choice<Integer, String, DateTime>
+                return expression
             }
             val castedOperand = buildAs(expression, conversion.toType)
             collapseTypeCase(castedOperand)
         } else
             @Suppress("ComplexCondition")
-            if (
+            when {
                 conversion.isCast &&
                     conversion.conversion != null &&
                     (conversion.fromType.isSuperTypeOf(conversion.conversion.fromType) ||
-                        conversion.fromType.isCompatibleWith(conversion.conversion.fromType))
-            ) {
-                val castedOperand = buildAs(expression, conversion.conversion.fromType)
-                var result = convertExpression(castedOperand, conversion.conversion)
-                if (conversion.hasAlternativeConversions()) {
-                    val caseResult = objectFactory.createCase()
-                    caseResult.resultType = result.resultType
-                    caseResult.withCaseItem(
-                        objectFactory
-                            .createCaseItem()
-                            .withWhen(buildIs(expression, conversion.conversion.fromType))
-                            .withThen(result)
-                    )
-                    for (alternative: Conversion in conversion.getAlternativeConversions()) {
+                        conversion.fromType.isCompatibleWith(conversion.conversion.fromType)) -> {
+                    val castedOperand = buildAs(expression, conversion.conversion.fromType)
+                    var result = convertExpression(castedOperand, conversion.conversion)
+                    if (conversion.hasAlternativeConversions()) {
+                        val caseResult = objectFactory.createCase()
+                        caseResult.resultType = result.resultType
                         caseResult.withCaseItem(
                             objectFactory
                                 .createCaseItem()
-                                .withWhen(buildIs(expression, alternative.fromType))
-                                .withThen(
-                                    convertExpression(
-                                        buildAs(expression, alternative.fromType),
-                                        alternative
-                                    )
-                                )
+                                .withWhen(buildIs(expression, conversion.conversion.fromType))
+                                .withThen(result)
                         )
-                    }
-                    caseResult.withElse(buildNull(result.resultType))
-                    result = caseResult
-                }
-                result
-            } else if (conversion.isListConversion) {
-                convertListExpression(expression, conversion)
-            } else if (conversion.isListDemotion) {
-                demoteListExpression(expression, conversion)
-            } else if (conversion.isListPromotion) {
-                promoteListExpression(expression, conversion)
-            } else if (conversion.isIntervalConversion) {
-                convertIntervalExpression(expression, conversion)
-            } else if (conversion.isIntervalDemotion) {
-                demoteIntervalExpression(expression, conversion)
-            } else if (conversion.isIntervalPromotion) {
-                promoteIntervalExpression(expression, conversion)
-            } else if (conversion.operator != null) {
-                val functionRef =
-                    objectFactory
-                        .createFunctionRef()
-                        .withLibraryName(conversion.operator.libraryName)
-                        .withName(conversion.operator.name)
-                        .withOperand(expression) as FunctionRef
-                val systemFunctionInvocation =
-                    systemFunctionResolver.resolveSystemFunction(functionRef)
-                if (systemFunctionInvocation != null) {
-                    return systemFunctionInvocation.expression
-                }
-                resolveCall(
-                    functionRef.libraryName,
-                    functionRef.name,
-                    FunctionRefInvocation(functionRef),
-                    allowPromotionAndDemotion = false,
-                    allowFluent = false
-                )
-                functionRef
-            } else {
-                when (conversion.toType) {
-                    resolveTypeName("System", "Boolean") -> {
-                        objectFactory
-                            .createToBoolean()
-                            .withOperand(expression)
-                            .withResultType(conversion.toType)
-                    }
-                    resolveTypeName("System", "Integer") -> {
-                        objectFactory
-                            .createToInteger()
-                            .withOperand(expression)
-                            .withResultType(conversion.toType)
-                    }
-                    resolveTypeName("System", "Long") -> {
-                        objectFactory
-                            .createToLong()
-                            .withOperand(expression)
-                            .withResultType(conversion.toType)
-                    }
-                    resolveTypeName("System", "Decimal") -> {
-                        objectFactory
-                            .createToDecimal()
-                            .withOperand(expression)
-                            .withResultType(conversion.toType)
-                    }
-                    resolveTypeName("System", "String") -> {
-                        objectFactory
-                            .createToString()
-                            .withOperand(expression)
-                            .withResultType(conversion.toType)
-                    }
-                    resolveTypeName("System", "Date") -> {
-                        objectFactory
-                            .createToDate()
-                            .withOperand(expression)
-                            .withResultType(conversion.toType)
-                    }
-                    resolveTypeName("System", "DateTime") -> {
-                        objectFactory
-                            .createToDateTime()
-                            .withOperand(expression)
-                            .withResultType(conversion.toType)
-                    }
-                    resolveTypeName("System", "Time") -> {
-                        objectFactory
-                            .createToTime()
-                            .withOperand(expression)
-                            .withResultType(conversion.toType)
-                    }
-                    resolveTypeName("System", "Quantity") -> {
-                        objectFactory
-                            .createToQuantity()
-                            .withOperand(expression)
-                            .withResultType(conversion.toType)
-                    }
-                    resolveTypeName("System", "Ratio") -> {
-                        objectFactory
-                            .createToRatio()
-                            .withOperand(expression)
-                            .withResultType(conversion.toType)
-                    }
-                    resolveTypeName("System", "Concept") -> {
-                        objectFactory
-                            .createToConcept()
-                            .withOperand(expression)
-                            .withResultType(conversion.toType)
-                    }
-                    else -> {
-                        val convertedOperand =
-                            objectFactory
-                                .createConvert()
-                                .withOperand(expression)
-                                .withResultType(conversion.toType) as Convert
-                        if (convertedOperand.resultType is NamedType) {
-                            convertedOperand.toType = dataTypeToQName(convertedOperand.resultType)
-                        } else {
-                            convertedOperand.toTypeSpecifier =
-                                dataTypeToTypeSpecifier(convertedOperand.resultType)
+                        for (alternative: Conversion in conversion.getAlternativeConversions()) {
+                            caseResult.withCaseItem(
+                                objectFactory
+                                    .createCaseItem()
+                                    .withWhen(buildIs(expression, alternative.fromType))
+                                    .withThen(
+                                        convertExpression(
+                                            buildAs(expression, alternative.fromType),
+                                            alternative
+                                        )
+                                    )
+                            )
                         }
-                        convertedOperand
+                        caseResult.withElse(buildNull(result.resultType))
+                        result = caseResult
+                    }
+                    result
+                }
+                conversion.isListConversion -> {
+                    convertListExpression(expression, conversion)
+                }
+                conversion.isListDemotion -> {
+                    demoteListExpression(expression, conversion)
+                }
+                conversion.isListPromotion -> {
+                    promoteListExpression(expression, conversion)
+                }
+                conversion.isIntervalConversion -> {
+                    convertIntervalExpression(expression, conversion)
+                }
+                conversion.isIntervalDemotion -> {
+                    demoteIntervalExpression(expression, conversion)
+                }
+                conversion.isIntervalPromotion -> {
+                    promoteIntervalExpression(expression, conversion)
+                }
+                conversion.operator != null -> {
+                    val functionRef =
+                        objectFactory
+                            .createFunctionRef()
+                            .withLibraryName(conversion.operator.libraryName)
+                            .withName(conversion.operator.name)
+                            .withOperand(expression) as FunctionRef
+                    val systemFunctionInvocation =
+                        systemFunctionResolver.resolveSystemFunction(functionRef)
+                    if (systemFunctionInvocation != null) {
+                        return systemFunctionInvocation.expression
+                    }
+                    resolveCall(
+                        functionRef.libraryName,
+                        functionRef.name,
+                        FunctionRefInvocation(functionRef),
+                        allowPromotionAndDemotion = false,
+                        allowFluent = false
+                    )
+                    functionRef
+                }
+                else -> {
+                    when (conversion.toType) {
+                        resolveTypeName("System", "Boolean") -> {
+                            objectFactory
+                                .createToBoolean()
+                                .withOperand(expression)
+                                .withResultType(conversion.toType)
+                        }
+                        resolveTypeName("System", "Integer") -> {
+                            objectFactory
+                                .createToInteger()
+                                .withOperand(expression)
+                                .withResultType(conversion.toType)
+                        }
+                        resolveTypeName("System", "Long") -> {
+                            objectFactory
+                                .createToLong()
+                                .withOperand(expression)
+                                .withResultType(conversion.toType)
+                        }
+                        resolveTypeName("System", "Decimal") -> {
+                            objectFactory
+                                .createToDecimal()
+                                .withOperand(expression)
+                                .withResultType(conversion.toType)
+                        }
+                        resolveTypeName("System", "String") -> {
+                            objectFactory
+                                .createToString()
+                                .withOperand(expression)
+                                .withResultType(conversion.toType)
+                        }
+                        resolveTypeName("System", "Date") -> {
+                            objectFactory
+                                .createToDate()
+                                .withOperand(expression)
+                                .withResultType(conversion.toType)
+                        }
+                        resolveTypeName("System", "DateTime") -> {
+                            objectFactory
+                                .createToDateTime()
+                                .withOperand(expression)
+                                .withResultType(conversion.toType)
+                        }
+                        resolveTypeName("System", "Time") -> {
+                            objectFactory
+                                .createToTime()
+                                .withOperand(expression)
+                                .withResultType(conversion.toType)
+                        }
+                        resolveTypeName("System", "Quantity") -> {
+                            objectFactory
+                                .createToQuantity()
+                                .withOperand(expression)
+                                .withResultType(conversion.toType)
+                        }
+                        resolveTypeName("System", "Ratio") -> {
+                            objectFactory
+                                .createToRatio()
+                                .withOperand(expression)
+                                .withResultType(conversion.toType)
+                        }
+                        resolveTypeName("System", "Concept") -> {
+                            objectFactory
+                                .createToConcept()
+                                .withOperand(expression)
+                                .withResultType(conversion.toType)
+                        }
+                        else -> {
+                            val convertedOperand =
+                                objectFactory
+                                    .createConvert()
+                                    .withOperand(expression)
+                                    .withResultType(conversion.toType) as Convert
+                            if (convertedOperand.resultType is NamedType) {
+                                convertedOperand.toType =
+                                    dataTypeToQName(convertedOperand.resultType)
+                            } else {
+                                convertedOperand.toTypeSpecifier =
+                                    dataTypeToTypeSpecifier(convertedOperand.resultType)
+                            }
+                            convertedOperand
+                        }
                     }
                 }
             }
@@ -2510,114 +2519,121 @@ class LibraryBuilder(
     ): PropertyResolution? {
         var currentType: DataType? = sourceType
         while (currentType != null) {
-            if (currentType is ClassType) {
-                val classType: ClassType = currentType
-                if (identifier.startsWith("?") && isCompatibleWith("1.5")) {
-                    val searchPath: String = identifier.substring(1)
-                    for (s: SearchType in classType.getSearches()) {
-                        if ((s.name == searchPath)) {
-                            return PropertyResolution(s)
+            when {
+                currentType is ClassType -> {
+                    val classType: ClassType = currentType
+                    if (identifier.startsWith("?") && isCompatibleWith("1.5")) {
+                        val searchPath: String = identifier.substring(1)
+                        for (s: SearchType in classType.getSearches()) {
+                            if ((s.name == searchPath)) {
+                                return PropertyResolution(s)
+                            }
+                        }
+                    } else {
+                        for (e: ClassTypeElement in classType.elements) {
+                            if ((e.name == identifier)) {
+                                require(!e.prohibited) {
+                                    String.format(
+                                        Locale.US,
+                                        "Element %s cannot be referenced because it is marked prohibited in type %s.",
+                                        e.name,
+                                        (currentType as ClassType).name
+                                    )
+                                }
+                                return PropertyResolution(e)
+                            }
                         }
                     }
-                } else {
-                    for (e: ClassTypeElement in classType.elements) {
+                }
+                currentType is TupleType -> {
+                    for (e: TupleTypeElement in currentType.elements) {
                         if ((e.name == identifier)) {
-                            require(!e.prohibited) {
-                                String.format(
-                                    Locale.US,
-                                    "Element %s cannot be referenced because it is marked prohibited in type %s.",
-                                    e.name,
-                                    (currentType as ClassType).name
-                                )
-                            }
                             return PropertyResolution(e)
                         }
                     }
                 }
-            } else if (currentType is TupleType) {
-                for (e: TupleTypeElement in currentType.elements) {
-                    if ((e.name == identifier)) {
-                        return PropertyResolution(e)
-                    }
-                }
-            } else if (currentType is IntervalType) {
-                return when (identifier) {
-                    "low",
-                    "high" -> PropertyResolution(currentType.pointType, identifier)
-                    "lowClosed",
-                    "highClosed" ->
-                        PropertyResolution((resolveTypeName("System", "Boolean"))!!, identifier)
-                    else -> // ERROR:
-                    throw IllegalArgumentException(
-                            String.format(
-                                Locale.US,
-                                "Invalid interval property name %s.",
-                                identifier
-                            )
-                        )
-                }
-            } else if (currentType is ChoiceType) {
-                // TODO: Issue a warning if the property does not resolve against every type in the
-                // choice
-
-                // Resolve the property against each type in the choice
-                val resultTypes: MutableSet<DataType> = HashSet()
-                val resultTargetMaps: MutableMap<DataType, String> = HashMap()
-                var name: String? = null
-                for (choice: DataType in currentType.types) {
-                    val resolution: PropertyResolution? = resolveProperty(choice, identifier, false)
-                    if (resolution != null) {
-                        resultTypes.add(resolution.type)
-                        if (resolution.targetMap != null) {
-                            if (resultTargetMaps.containsKey(resolution.type)) {
-                                if (resultTargetMaps[resolution.type] != resolution.targetMap) {
-                                    throw IllegalArgumentException(
-                                        String.format(
-                                            Locale.US,
-                                            "Inconsistent target maps %s and %s for choice type %s",
-                                            resultTargetMaps[resolution.type],
-                                            resolution.targetMap,
-                                            resolution.type
-                                        )
-                                    )
-                                }
-                            } else {
-                                resultTargetMaps[resolution.type] = resolution.targetMap
-                            }
-                        }
-                        if (name == null) {
-                            name = resolution.name
-                        } else if (name != resolution.name) {
-                            throw IllegalArgumentException(
+                currentType is IntervalType -> {
+                    return when (identifier) {
+                        "low",
+                        "high" -> PropertyResolution(currentType.pointType, identifier)
+                        "lowClosed",
+                        "highClosed" ->
+                            PropertyResolution((resolveTypeName("System", "Boolean"))!!, identifier)
+                        else -> // ERROR:
+                        throw IllegalArgumentException(
                                 String.format(
                                     Locale.US,
-                                    "Inconsistent property resolution for choice type %s (was %s, is %s)",
-                                    choice.toString(),
-                                    name,
-                                    resolution.name
+                                    "Invalid interval property name %s.",
+                                    identifier
                                 )
                             )
-                        }
                     }
                 }
+                currentType is ChoiceType -> {
+                    // TODO: Issue a warning if the property does not resolve against every type in
+                    // the
+                    // choice
 
-                // The result type is a choice of all the resolved types
-                if (resultTypes.size > 1) {
-                    return PropertyResolution(ChoiceType(resultTypes), name!!, resultTargetMaps)
+                    // Resolve the property against each type in the choice
+                    val resultTypes: MutableSet<DataType> = HashSet()
+                    val resultTargetMaps: MutableMap<DataType, String> = HashMap()
+                    var name: String? = null
+                    for (choice: DataType in currentType.types) {
+                        val resolution: PropertyResolution? =
+                            resolveProperty(choice, identifier, false)
+                        if (resolution != null) {
+                            resultTypes.add(resolution.type)
+                            if (resolution.targetMap != null) {
+                                if (resultTargetMaps.containsKey(resolution.type)) {
+                                    if (resultTargetMaps[resolution.type] != resolution.targetMap) {
+                                        throw IllegalArgumentException(
+                                            String.format(
+                                                Locale.US,
+                                                "Inconsistent target maps %s and %s for choice type %s",
+                                                resultTargetMaps[resolution.type],
+                                                resolution.targetMap,
+                                                resolution.type
+                                            )
+                                        )
+                                    }
+                                } else {
+                                    resultTargetMaps[resolution.type] = resolution.targetMap
+                                }
+                            }
+                            if (name == null) {
+                                name = resolution.name
+                            } else
+                                require(name == resolution.name) {
+                                    String.format(
+                                        Locale.US,
+                                        "Inconsistent property resolution for choice type %s (was %s, is %s)",
+                                        choice.toString(),
+                                        name,
+                                        resolution.name
+                                    )
+                                }
+                        }
+                    }
+
+                    // The result type is a choice of all the resolved types
+                    if (resultTypes.size > 1) {
+                        return PropertyResolution(ChoiceType(resultTypes), name!!, resultTargetMaps)
+                    }
+                    if (resultTypes.size == 1) {
+                        return PropertyResolution(
+                            resultTypes.iterator().next(),
+                            name!!,
+                            resultTargetMaps
+                        )
+                    }
                 }
-                if (resultTypes.size == 1) {
-                    return PropertyResolution(
-                        resultTypes.iterator().next(),
-                        name!!,
-                        resultTargetMaps
-                    )
+                currentType is ListType && listTraversal -> {
+                    // NOTE: FHIRPath path traversal support
+                    // Resolve property as a list of items of property of the element type
+                    val resolution: PropertyResolution? =
+                        resolveProperty(currentType.elementType, identifier)
+                    return PropertyResolution(ListType(resolution!!.type), (resolution.targetMap)!!)
                 }
-            } else if (currentType is ListType && listTraversal) {
-                // NOTE: FHIRPath path traversal support
-                // Resolve property as a list of items of property of the element type
-                val resolution: PropertyResolution? =
-                    resolveProperty(currentType.elementType, identifier)
-                return PropertyResolution(ListType(resolution!!.type), (resolution.targetMap)!!)
             }
             if (currentType.baseType != DataType.ANY) {
                 currentType = currentType.baseType
@@ -3009,236 +3025,279 @@ class LibraryBuilder(
         // If there is a trailing qualified path, the query is wrapped in a singletonFrom and a
         // property access
         // Any other target map results in an exception
-        if (targetMap.contains(";")) {
-            val typeCases: Array<String> =
-                targetMap.split(";".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            val c: Case = objectFactory.createCase()
-            for (typeCase: String in typeCases) {
-                if (typeCase.isNotEmpty()) {
-                    val splitIndex: Int = typeCase.indexOf(':')
-                    require(splitIndex > 0) {
-                        String.format(Locale.US, "Malformed type case in targetMap %s", targetMap)
-                    }
-                    val typeCaseElement: String = typeCase.substring(0, splitIndex)
-                    val typeCaseType: DataType? = resolveTypeName(typeCaseElement)
-                    val typeCaseMap: String = typeCase.substring(splitIndex + 1)
-                    val ci: CaseItem =
-                        objectFactory
-                            .createCaseItem()
-                            .withWhen(
-                                objectFactory
-                                    .createIs()
-                                    .withOperand(applyTargetMap(source, typeCaseMap))
-                                    .withIsType(dataTypeToQName(typeCaseType))
-                            )
-                            .withThen(applyTargetMap(source, typeCaseMap))
-                    ci.then.resultType = typeCaseType
-                    c.caseItem.add(ci)
-                }
-            }
-            return when (c.caseItem.size) {
-                0 -> {
-                    buildNull(source!!.resultType)
-                }
-                1 -> {
-                    c.caseItem[0].then
-                }
-                else -> {
-                    c.setElse(buildNull(source!!.resultType))
-                    c.resultType = source.resultType
-                    c
-                }
-            }
-        } else if (targetMap.contains("(")) {
-            val invocationStart: Int = targetMap.indexOf("(")
-            val qualifiedFunctionName: String = targetMap.substring(0, invocationStart)
-            val nameParts: Array<String> =
-                qualifiedFunctionName
-                    .split("\\.".toRegex())
-                    .dropLastWhile { it.isEmpty() }
-                    .toTypedArray()
-            var libraryName: String? = null
-            var functionName: String? = qualifiedFunctionName
-            if (nameParts.size == 2) {
-                libraryName = nameParts[0]
-                functionName = nameParts[1]
-                ensureLibraryIncluded(libraryName, source)
-            }
-            val functionArgument: String =
-                targetMap.substring(invocationStart + 1, targetMap.lastIndexOf(')'))
-            val argumentSource: Expression? =
-                if ((functionArgument == "%value")) source
-                else applyTargetMap(source, functionArgument)
-
-            // NOTE: This is needed to work around the mapping for ToInterval
-            // FHIRHelpers defines multiple overloads of ToInterval, but the type mapping
-            // does not have the type of the source data type.
-            // All the mappings for ToInterval use FHIR.Period, so this is safe to assume
-            // In addition, no other FHIRHelpers functions use overloads (except ToString and
-            // ToDateTime,
-            // but those mappings expand the value element directly, rather than invoking the
-            // FHIRHelpers function)
-            var argumentSignature: TypeSpecifier? = null
-            if (options.signatureLevel != SignatureLevel.None) {
-                if (qualifiedFunctionName == "FHIRHelpers.ToInterval") {
-                    // Force loading of the FHIR model, as it's an implicit
-                    // dependency of the the target mapping here.
-                    var fhirVersion = "4.0.1"
-                    val qiCoreModel = this.getModel("QICore")
-                    val version = qiCoreModel.modelInfo.version
-                    if (version == "3.3.0") {
-                        fhirVersion = "4.0.0"
-                    } else if (version.startsWith("3")) {
-                        fhirVersion = "3.0.1"
-                    }
-
-                    // Force the FHIR model to be loaded.
-                    modelManager.resolveModel("FHIR", fhirVersion)
-
-                    val namedTypeSpecifier =
-                        NamedTypeSpecifier()
-                            .withName(dataTypeToQName(resolveTypeName("FHIR", "Period")))
-                    argumentSignature = namedTypeSpecifier
-                }
-            }
-
-            when (argumentSource!!.resultType) {
-                is ListType -> {
-                    val query: Query =
-                        objectFactory
-                            .createQuery()
-                            .withSource(
-                                objectFactory
-                                    .createAliasedQuerySource()
-                                    .withExpression(argumentSource)
-                                    .withAlias("\$this")
-                            )
-                    val fr: FunctionRef =
-                        objectFactory
-                            .createFunctionRef()
-                            .withLibraryName(libraryName)
-                            .withName(functionName)
-                            .withOperand(objectFactory.createAliasRef().withName("\$this"))
-
-                    if (argumentSignature != null) {
-                        fr.getSignature().add(argumentSignature)
-                    }
-
-                    // This doesn't quite work because the US.Core types aren't subtypes of FHIR
-                    // types.
-                    // resolveCall(libraryName, functionName, new FunctionRefInvocation(fr), false,
-                    // false);
-                    query.setReturn(
-                        objectFactory.createReturnClause().withDistinct(false).withExpression(fr)
-                    )
-                    query.resultType = source!!.resultType
-                    return query
-                }
-                else -> {
-                    val fr: FunctionRef =
-                        objectFactory
-                            .createFunctionRef()
-                            .withLibraryName(libraryName)
-                            .withName(functionName)
-                            .withOperand(argumentSource)
-                    fr.resultType = source!!.resultType
-
-                    if (argumentSignature != null) {
-                        fr.getSignature().add(argumentSignature)
-                    }
-
-                    return fr
-                    // This doesn't quite work because the US.Core types aren't subtypes of FHIR
-                    // types,
-                    // or they are defined as System types and not FHIR types
-                    // return resolveCall(libraryName, functionName, new FunctionRefInvocation(fr),
-                    // false, false);
-                }
-            }
-        } else if (targetMap.contains("[")) {
-            val indexerStart: Int = targetMap.indexOf("[")
-            val indexerEnd: Int = targetMap.indexOf("]")
-            val indexer: String = targetMap.substring(indexerStart + 1, indexerEnd)
-            val indexerPath: String = targetMap.substring(0, indexerStart)
-            var result: Expression? = null
-
-            // Apply sourcePaths to get to the indexer
-            val indexerPaths: Array<String> =
-                indexerPath.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            for (path: String in indexerPaths) {
-                if ((path == "%parent")) {
-                    require(source is Property) {
-                        String.format(
-                            Locale.US,
-                            "Cannot expand target map %s for non-property-accessor type %s",
-                            targetMap,
-                            source!!.javaClass.simpleName
-                        )
-                    }
-                    val sourceProperty: Property = source
-                    result =
-                        if (sourceProperty.source != null) {
-                            sourceProperty.source
-                        } else if (sourceProperty.scope != null) {
-                            resolveIdentifier(sourceProperty.scope, true)
-                        } else {
-                            throw IllegalArgumentException(
-                                String.format(
-                                    Locale.US,
-                                    "Cannot resolve %%parent reference in targetMap %s",
-                                    targetMap
-                                )
+        when {
+            targetMap.contains(";") -> {
+                val typeCases: Array<String> =
+                    targetMap.split(";".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                val c: Case = objectFactory.createCase()
+                for (typeCase: String in typeCases) {
+                    if (typeCase.isNotEmpty()) {
+                        val splitIndex: Int = typeCase.indexOf(':')
+                        require(splitIndex > 0) {
+                            String.format(
+                                Locale.US,
+                                "Malformed type case in targetMap %s",
+                                targetMap
                             )
                         }
-                } else {
-                    val p: Property =
-                        objectFactory.createProperty().withSource(result).withPath(path)
-                    result = p
+                        val typeCaseElement: String = typeCase.substring(0, splitIndex)
+                        val typeCaseType: DataType? = resolveTypeName(typeCaseElement)
+                        val typeCaseMap: String = typeCase.substring(splitIndex + 1)
+                        val ci: CaseItem =
+                            objectFactory
+                                .createCaseItem()
+                                .withWhen(
+                                    objectFactory
+                                        .createIs()
+                                        .withOperand(applyTargetMap(source, typeCaseMap))
+                                        .withIsType(dataTypeToQName(typeCaseType))
+                                )
+                                .withThen(applyTargetMap(source, typeCaseMap))
+                        ci.then.resultType = typeCaseType
+                        c.caseItem.add(ci)
+                    }
+                }
+                return when (c.caseItem.size) {
+                    0 -> {
+                        buildNull(source!!.resultType)
+                    }
+                    1 -> {
+                        c.caseItem[0].then
+                    }
+                    else -> {
+                        c.setElse(buildNull(source!!.resultType))
+                        c.resultType = source.resultType
+                        c
+                    }
                 }
             }
-
-            // Build a query with the current result as source and the indexer content as criteria
-            // in the where clause
-            val querySource: AliasedQuerySource =
-                objectFactory.createAliasedQuerySource().withExpression(result).withAlias("\$this")
-            var criteria: Expression? = null
-            for (indexerItem: String in
-                indexer.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
-                val indexerItems: Array<String> =
-                    indexerItem.split("=".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                require(indexerItems.size == 2) {
-                    String.format(
-                        Locale.US,
-                        "Invalid indexer item %s in targetMap %s",
-                        indexerItem,
-                        targetMap
-                    )
-                }
-                var left: Expression? = null
-                for (path: String in
-                    indexerItems[0]
+            targetMap.contains("(") -> {
+                val invocationStart: Int = targetMap.indexOf("(")
+                val qualifiedFunctionName: String = targetMap.substring(0, invocationStart)
+                val nameParts: Array<String> =
+                    qualifiedFunctionName
                         .split("\\.".toRegex())
                         .dropLastWhile { it.isEmpty() }
-                        .toTypedArray()) {
-                    left =
-                        if (left == null) {
-                            objectFactory.createProperty().withScope("\$this").withPath(path)
-                        } else {
-                            objectFactory.createProperty().withSource(left).withPath(path)
+                        .toTypedArray()
+                var libraryName: String? = null
+                var functionName: String? = qualifiedFunctionName
+                if (nameParts.size == 2) {
+                    libraryName = nameParts[0]
+                    functionName = nameParts[1]
+                    ensureLibraryIncluded(libraryName, source)
+                }
+                val functionArgument: String =
+                    targetMap.substring(invocationStart + 1, targetMap.lastIndexOf(')'))
+                val argumentSource: Expression? =
+                    if ((functionArgument == "%value")) source
+                    else applyTargetMap(source, functionArgument)
+
+                // NOTE: This is needed to work around the mapping for ToInterval
+                // FHIRHelpers defines multiple overloads of ToInterval, but the type mapping
+                // does not have the type of the source data type.
+                // All the mappings for ToInterval use FHIR.Period, so this is safe to assume
+                // In addition, no other FHIRHelpers functions use overloads (except ToString and
+                // ToDateTime,
+                // but those mappings expand the value element directly, rather than invoking the
+                // FHIRHelpers function)
+                var argumentSignature: TypeSpecifier? = null
+                if (options.signatureLevel != SignatureLevel.None) {
+                    if (qualifiedFunctionName == "FHIRHelpers.ToInterval") {
+                        // Force loading of the FHIR model, as it's an implicit
+                        // dependency of the the target mapping here.
+                        var fhirVersion = "4.0.1"
+                        val qiCoreModel = this.getModel("QICore")
+                        val version = qiCoreModel.modelInfo.version
+                        if (version == "3.3.0") {
+                            fhirVersion = "4.0.0"
+                        } else if (version.startsWith("3")) {
+                            fhirVersion = "3.0.1"
                         }
+
+                        // Force the FHIR model to be loaded.
+                        modelManager.resolveModel("FHIR", fhirVersion)
+
+                        val namedTypeSpecifier =
+                            NamedTypeSpecifier()
+                                .withName(dataTypeToQName(resolveTypeName("FHIR", "Period")))
+                        argumentSignature = namedTypeSpecifier
+                    }
+                }
+
+                when (argumentSource!!.resultType) {
+                    is ListType -> {
+                        val query: Query =
+                            objectFactory
+                                .createQuery()
+                                .withSource(
+                                    objectFactory
+                                        .createAliasedQuerySource()
+                                        .withExpression(argumentSource)
+                                        .withAlias("\$this")
+                                )
+                        val fr: FunctionRef =
+                            objectFactory
+                                .createFunctionRef()
+                                .withLibraryName(libraryName)
+                                .withName(functionName)
+                                .withOperand(objectFactory.createAliasRef().withName("\$this"))
+
+                        if (argumentSignature != null) {
+                            fr.getSignature().add(argumentSignature)
+                        }
+
+                        // This doesn't quite work because the US.Core types aren't subtypes of FHIR
+                        // types.
+                        // resolveCall(libraryName, functionName, new FunctionRefInvocation(fr),
+                        // false,
+                        // false);
+                        query.setReturn(
+                            objectFactory
+                                .createReturnClause()
+                                .withDistinct(false)
+                                .withExpression(fr)
+                        )
+                        query.resultType = source!!.resultType
+                        return query
+                    }
+                    else -> {
+                        val fr: FunctionRef =
+                            objectFactory
+                                .createFunctionRef()
+                                .withLibraryName(libraryName)
+                                .withName(functionName)
+                                .withOperand(argumentSource)
+                        fr.resultType = source!!.resultType
+
+                        if (argumentSignature != null) {
+                            fr.getSignature().add(argumentSignature)
+                        }
+
+                        return fr
+                        // This doesn't quite work because the US.Core types aren't subtypes of FHIR
+                        // types,
+                        // or they are defined as System types and not FHIR types
+                        // return resolveCall(libraryName, functionName, new
+                        // FunctionRefInvocation(fr),
+                        // false, false);
+                    }
+                }
+            }
+            targetMap.contains("[") -> {
+                val indexerStart: Int = targetMap.indexOf("[")
+                val indexerEnd: Int = targetMap.indexOf("]")
+                val indexer: String = targetMap.substring(indexerStart + 1, indexerEnd)
+                val indexerPath: String = targetMap.substring(0, indexerStart)
+                var result: Expression? = null
+
+                // Apply sourcePaths to get to the indexer
+                val indexerPaths: Array<String> =
+                    indexerPath.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                for (path: String in indexerPaths) {
+                    if ((path == "%parent")) {
+                        require(source is Property) {
+                            String.format(
+                                Locale.US,
+                                "Cannot expand target map %s for non-property-accessor type %s",
+                                targetMap,
+                                source!!.javaClass.simpleName
+                            )
+                        }
+                        val sourceProperty: Property = source
+                        result =
+                            if (sourceProperty.source != null) {
+                                sourceProperty.source
+                            } else if (sourceProperty.scope != null) {
+                                resolveIdentifier(sourceProperty.scope, true)
+                            } else {
+                                throw IllegalArgumentException(
+                                    String.format(
+                                        Locale.US,
+                                        "Cannot resolve %%parent reference in targetMap %s",
+                                        targetMap
+                                    )
+                                )
+                            }
+                    } else {
+                        val p: Property =
+                            objectFactory.createProperty().withSource(result).withPath(path)
+                        result = p
+                    }
+                }
+
+                // Build a query with the current result as source and the indexer content as
+                // criteria
+                // in the where clause
+                val querySource: AliasedQuerySource =
+                    objectFactory
+                        .createAliasedQuerySource()
+                        .withExpression(result)
+                        .withAlias("\$this")
+                var criteria: Expression? = null
+                for (indexerItem: String in
+                    indexer.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
+                    val indexerItems: Array<String> =
+                        indexerItem
+                            .split("=".toRegex())
+                            .dropLastWhile { it.isEmpty() }
+                            .toTypedArray()
+                    require(indexerItems.size == 2) {
+                        String.format(
+                            Locale.US,
+                            "Invalid indexer item %s in targetMap %s",
+                            indexerItem,
+                            targetMap
+                        )
+                    }
+                    var left: Expression? = null
+                    for (path: String in
+                        indexerItems[0]
+                            .split("\\.".toRegex())
+                            .dropLastWhile { it.isEmpty() }
+                            .toTypedArray()) {
+                        left =
+                            if (left == null) {
+                                objectFactory.createProperty().withScope("\$this").withPath(path)
+                            } else {
+                                objectFactory.createProperty().withSource(left).withPath(path)
+                            }
+
+                        // HACK: Workaround the fact that we don't have type information for the
+                        // mapping
+                        // expansions...
+                        if ((path == "coding")) {
+                            left =
+                                objectFactory
+                                    .createFirst()
+                                    .withSource(left)
+                                    .withResultType(
+                                        this.getModel("FHIR").resolveTypeName("FHIR.coding")
+                                    )
+                        }
+                        if ((path == "url")) {
+                            // HACK: This special cases FHIR model resolution
+                            left!!.resultType = this.getModel("FHIR").resolveTypeName("FHIR.uri")
+                            val ref: FunctionRef =
+                                objectFactory
+                                    .createFunctionRef()
+                                    .withLibraryName("FHIRHelpers")
+                                    .withName("ToString")
+                                    .withOperand(left)
+                            left =
+                                resolveCall(
+                                    ref.libraryName,
+                                    ref.name,
+                                    FunctionRefInvocation(ref),
+                                    allowPromotionAndDemotion = false,
+                                    allowFluent = false
+                                )
+                        }
+                    }
 
                     // HACK: Workaround the fact that we don't have type information for the mapping
                     // expansions...
-                    if ((path == "coding")) {
-                        left =
-                            objectFactory
-                                .createFirst()
-                                .withSource(left)
-                                .withResultType(
-                                    this.getModel("FHIR").resolveTypeName("FHIR.coding")
-                                )
-                    }
-                    if ((path == "url")) {
+                    // These hacks will be removed when addressed by the model info
+                    if ((indexerItems[0] == "code.coding.system")) {
                         // HACK: This special cases FHIR model resolution
                         left!!.resultType = this.getModel("FHIR").resolveTypeName("FHIR.uri")
                         val ref: FunctionRef =
@@ -3256,117 +3315,101 @@ class LibraryBuilder(
                                 allowFluent = false
                             )
                     }
-                }
-
-                // HACK: Workaround the fact that we don't have type information for the mapping
-                // expansions...
-                // These hacks will be removed when addressed by the model info
-                if ((indexerItems[0] == "code.coding.system")) {
-                    // HACK: This special cases FHIR model resolution
-                    left!!.resultType = this.getModel("FHIR").resolveTypeName("FHIR.uri")
-                    val ref: FunctionRef =
-                        objectFactory
-                            .createFunctionRef()
-                            .withLibraryName("FHIRHelpers")
-                            .withName("ToString")
-                            .withOperand(left)
-                    left =
-                        resolveCall(
-                            ref.libraryName,
-                            ref.name,
-                            FunctionRefInvocation(ref),
-                            allowPromotionAndDemotion = false,
-                            allowFluent = false
-                        )
-                }
-                if ((indexerItems[0] == "code.coding.code")) {
-                    // HACK: This special cases FHIR model resolution
-                    left!!.resultType = this.getModel("FHIR").resolveTypeName("FHIR.code")
-                    val ref: FunctionRef =
-                        objectFactory
-                            .createFunctionRef()
-                            .withLibraryName("FHIRHelpers")
-                            .withName("ToString")
-                            .withOperand(left)
-                    left =
-                        resolveCall(
-                            ref.libraryName,
-                            ref.name,
-                            FunctionRefInvocation(ref),
-                            allowPromotionAndDemotion = false,
-                            allowFluent = false
-                        )
-                }
-                val rightValue: String = indexerItems[1].substring(1, indexerItems[1].length - 1)
-                val right: Expression =
-                    this.createLiteral(StringEscapeUtils.unescapeCql(rightValue))
-                val criteriaItem: Expression = objectFactory.createEqual().withOperand(left, right)
-                criteria =
-                    if (criteria == null) {
-                        criteriaItem
-                    } else {
-                        objectFactory.createAnd().withOperand(criteria, criteriaItem)
-                    }
-            }
-            val query: Query =
-                objectFactory.createQuery().withSource(querySource).withWhere(criteria)
-            result = query
-            if (indexerEnd + 1 < targetMap.length) {
-                // There are additional paths following the indexer, apply them
-                var targetPath: String = targetMap.substring(indexerEnd + 1)
-                if (targetPath.startsWith(".")) {
-                    targetPath = targetPath.substring(1)
-                }
-                if (targetPath.isNotEmpty()) {
-                    query.setReturn(
-                        objectFactory
-                            .createReturnClause()
-                            .withDistinct(false)
-                            .withExpression(
-                                objectFactory
-                                    .createProperty()
-                                    .withSource(objectFactory.createAliasRef().withName("\$this"))
-                                    .withPath(targetPath)
+                    if ((indexerItems[0] == "code.coding.code")) {
+                        // HACK: This special cases FHIR model resolution
+                        left!!.resultType = this.getModel("FHIR").resolveTypeName("FHIR.code")
+                        val ref: FunctionRef =
+                            objectFactory
+                                .createFunctionRef()
+                                .withLibraryName("FHIRHelpers")
+                                .withName("ToString")
+                                .withOperand(left)
+                        left =
+                            resolveCall(
+                                ref.libraryName,
+                                ref.name,
+                                FunctionRefInvocation(ref),
+                                allowPromotionAndDemotion = false,
+                                allowFluent = false
                             )
-                    )
+                    }
+                    val rightValue: String =
+                        indexerItems[1].substring(1, indexerItems[1].length - 1)
+                    val right: Expression =
+                        this.createLiteral(StringEscapeUtils.unescapeCql(rightValue))
+                    val criteriaItem: Expression =
+                        objectFactory.createEqual().withOperand(left, right)
+                    criteria =
+                        if (criteria == null) {
+                            criteriaItem
+                        } else {
+                            objectFactory.createAnd().withOperand(criteria, criteriaItem)
+                        }
                 }
+                val query: Query =
+                    objectFactory.createQuery().withSource(querySource).withWhere(criteria)
+                result = query
+                if (indexerEnd + 1 < targetMap.length) {
+                    // There are additional paths following the indexer, apply them
+                    var targetPath: String = targetMap.substring(indexerEnd + 1)
+                    if (targetPath.startsWith(".")) {
+                        targetPath = targetPath.substring(1)
+                    }
+                    if (targetPath.isNotEmpty()) {
+                        query.setReturn(
+                            objectFactory
+                                .createReturnClause()
+                                .withDistinct(false)
+                                .withExpression(
+                                    objectFactory
+                                        .createProperty()
+                                        .withSource(
+                                            objectFactory.createAliasRef().withName("\$this")
+                                        )
+                                        .withPath(targetPath)
+                                )
+                        )
+                    }
 
-                // The value reference should go inside the query, rather than being applied as a
-                // property outside of it
-                // for (String path : targetPath.split("\\.")) {
-                //    result = of.createProperty().withSource(result).withPath(path);
-                // }
+                    // The value reference should go inside the query, rather than being applied as
+                    // a
+                    // property outside of it
+                    // for (String path : targetPath.split("\\.")) {
+                    //    result = of.createProperty().withSource(result).withPath(path);
+                    // }
+                }
+                if (source!!.resultType !is ListType) {
+                    // Use a singleton from since the source of the query is a list
+                    result = objectFactory.createSingletonFrom().withOperand(result)
+                }
+                result!!.resultType = source.resultType
+                return result
             }
-            if (source!!.resultType !is ListType) {
-                // Use a singleton from since the source of the query is a list
-                result = objectFactory.createSingletonFrom().withOperand(result)
-            }
-            result!!.resultType = source.resultType
-            return result
-        } else if (targetMap.startsWith("%value.")) {
-            val propertyName: String = targetMap.substring(@Suppress("MagicNumber") 7)
-            // If the source is a list, the mapping is expected to apply to every element in the
-            // list
-            // ((source $this return all $this.value)
-            if (source!!.resultType is ListType) {
-                val s: AliasedQuerySource =
-                    objectFactory
-                        .createAliasedQuerySource()
-                        .withExpression(source)
-                        .withAlias("\$this")
-                val p: Property =
-                    objectFactory.createProperty().withScope("\$this").withPath(propertyName)
-                p.resultType = (source.resultType as ListType).elementType
-                val r: ReturnClause =
-                    objectFactory.createReturnClause().withDistinct(false).withExpression(p)
-                val q: Query = objectFactory.createQuery().withSource(s).withReturn(r)
-                q.resultType = source.resultType
-                return q
-            } else {
-                val p: Property =
-                    objectFactory.createProperty().withSource(source).withPath(propertyName)
-                p.resultType = source.resultType
-                return p
+            targetMap.startsWith("%value.") -> {
+                val propertyName: String = targetMap.substring(@Suppress("MagicNumber") 7)
+                // If the source is a list, the mapping is expected to apply to every element in the
+                // list
+                // ((source $this return all $this.value)
+                if (source!!.resultType is ListType) {
+                    val s: AliasedQuerySource =
+                        objectFactory
+                            .createAliasedQuerySource()
+                            .withExpression(source)
+                            .withAlias("\$this")
+                    val p: Property =
+                        objectFactory.createProperty().withScope("\$this").withPath(propertyName)
+                    p.resultType = (source.resultType as ListType).elementType
+                    val r: ReturnClause =
+                        objectFactory.createReturnClause().withDistinct(false).withExpression(p)
+                    val q: Query = objectFactory.createQuery().withSource(s).withReturn(r)
+                    q.resultType = source.resultType
+                    return q
+                } else {
+                    val p: Property =
+                        objectFactory.createProperty().withSource(source).withPath(propertyName)
+                    p.resultType = source.resultType
+                    return p
+                }
             }
         }
         throw IllegalArgumentException(
@@ -3374,7 +3417,7 @@ class LibraryBuilder(
         )
     }
 
-    @Suppress("LongMethod", "NestedBlockDepth")
+    @Suppress("LongMethod", "NestedBlockDepth", "CyclomaticComplexMethod")
     fun resolveAccessor(left: Expression, memberIdentifier: String): Expression? {
         // if left is a LibraryRef
         // if right is an identifier
@@ -3393,145 +3436,161 @@ class LibraryBuilder(
         // return a new Identifier with left as a qualifier
         // else
         // throws an error as an unresolved identifier
-        if (left is LibraryRef) {
-            val libraryName: String? = left.libraryName
-            val referencedLibrary: CompiledLibrary = resolveLibrary(libraryName)
-            val resolvedIdentifierContext: ResolvedIdentifierContext =
-                referencedLibrary.resolve(memberIdentifier)
-            val element = resolvedIdentifierContext.exactMatchElement
-            if (element != null) {
-                if (element is ExpressionDef) {
-                    checkAccessLevel(libraryName, memberIdentifier, element.accessLevel)
-                    val result: Expression =
-                        objectFactory
-                            .createExpressionRef()
-                            .withLibraryName(libraryName)
-                            .withName(memberIdentifier)
-                    result.resultType = getExpressionDefResultType(element)
-                    return result
-                }
-                if (element is ParameterDef) {
-                    checkAccessLevel(libraryName, memberIdentifier, element.accessLevel)
-                    val result: Expression =
-                        objectFactory
-                            .createParameterRef()
-                            .withLibraryName(libraryName)
-                            .withName(memberIdentifier)
-                    result.resultType = element.resultType
-                    return result
-                }
-                if (element is ValueSetDef) {
-                    checkAccessLevel(libraryName, memberIdentifier, element.accessLevel)
-                    val result: ValueSetRef =
-                        objectFactory
-                            .createValueSetRef()
-                            .withLibraryName(libraryName)
-                            .withName(memberIdentifier)
-                    result.resultType = element.resultType
-                    if (isCompatibleWith("1.5")) {
-                        result.isPreserve = true
+        when {
+            left is LibraryRef -> {
+                val libraryName: String? = left.libraryName
+                val referencedLibrary: CompiledLibrary = resolveLibrary(libraryName)
+                val resolvedIdentifierContext: ResolvedIdentifierContext =
+                    referencedLibrary.resolve(memberIdentifier)
+                val element = resolvedIdentifierContext.exactMatchElement
+                if (element != null) {
+                    if (element is ExpressionDef) {
+                        checkAccessLevel(libraryName, memberIdentifier, element.accessLevel)
+                        val result: Expression =
+                            objectFactory
+                                .createExpressionRef()
+                                .withLibraryName(libraryName)
+                                .withName(memberIdentifier)
+                        result.resultType = getExpressionDefResultType(element)
+                        return result
                     }
-                    return result
+                    if (element is ParameterDef) {
+                        checkAccessLevel(libraryName, memberIdentifier, element.accessLevel)
+                        val result: Expression =
+                            objectFactory
+                                .createParameterRef()
+                                .withLibraryName(libraryName)
+                                .withName(memberIdentifier)
+                        result.resultType = element.resultType
+                        return result
+                    }
+                    if (element is ValueSetDef) {
+                        checkAccessLevel(libraryName, memberIdentifier, element.accessLevel)
+                        val result: ValueSetRef =
+                            objectFactory
+                                .createValueSetRef()
+                                .withLibraryName(libraryName)
+                                .withName(memberIdentifier)
+                        result.resultType = element.resultType
+                        if (isCompatibleWith("1.5")) {
+                            result.isPreserve = true
+                        }
+                        return result
+                    }
+                    if (element is CodeSystemDef) {
+                        checkAccessLevel(libraryName, memberIdentifier, element.accessLevel)
+                        val result: CodeSystemRef =
+                            objectFactory
+                                .createCodeSystemRef()
+                                .withLibraryName(libraryName)
+                                .withName(memberIdentifier)
+                        result.resultType = element.resultType
+                        return result
+                    }
+                    if (element is CodeDef) {
+                        checkAccessLevel(libraryName, memberIdentifier, element.accessLevel)
+                        val result: CodeRef =
+                            objectFactory
+                                .createCodeRef()
+                                .withLibraryName(libraryName)
+                                .withName(memberIdentifier)
+                        result.resultType = element.resultType
+                        return result
+                    }
+                    if (element is ConceptDef) {
+                        checkAccessLevel(libraryName, memberIdentifier, element.accessLevel)
+                        val result: ConceptRef =
+                            objectFactory
+                                .createConceptRef()
+                                .withLibraryName(libraryName)
+                                .withName(memberIdentifier)
+                        result.resultType = element.resultType
+                        return result
+                    }
                 }
-                if (element is CodeSystemDef) {
-                    checkAccessLevel(libraryName, memberIdentifier, element.accessLevel)
-                    val result: CodeSystemRef =
-                        objectFactory
-                            .createCodeSystemRef()
-                            .withLibraryName(libraryName)
-                            .withName(memberIdentifier)
-                    result.resultType = element.resultType
-                    return result
-                }
-                if (element is CodeDef) {
-                    checkAccessLevel(libraryName, memberIdentifier, element.accessLevel)
-                    val result: CodeRef =
-                        objectFactory
-                            .createCodeRef()
-                            .withLibraryName(libraryName)
-                            .withName(memberIdentifier)
-                    result.resultType = element.resultType
-                    return result
-                }
-                if (element is ConceptDef) {
-                    checkAccessLevel(libraryName, memberIdentifier, element.accessLevel)
-                    val result: ConceptRef =
-                        objectFactory
-                            .createConceptRef()
-                            .withLibraryName(libraryName)
-                            .withName(memberIdentifier)
-                    result.resultType = element.resultType
-                    return result
-                }
-            }
 
-            // ERROR:
-            throw IllegalArgumentException(
-                String.format(
-                    Locale.US,
-                    "Could not resolve identifier %s in library %s.",
-                    memberIdentifier,
-                    referencedLibrary.identifier!!.id
-                )
-            )
-        } else if (left is AliasRef) {
-            val resolution: PropertyResolution? = resolveProperty(left.resultType, memberIdentifier)
-            val result: Expression =
-                buildProperty(left.name, resolution!!.name, resolution.isSearch, resolution.type)
-            return applyTargetMap(result, resolution.targetMap)
-        } else if (left.resultType is ListType && listTraversal) {
-            // NOTE: FHIRPath path traversal support
-            // Resolve property access of a list of items as a query:
-            // listValue.property ::= listValue X where X.property is not null return all X.property
-            val listType: ListType = left.resultType as ListType
-            val resolution: PropertyResolution? =
-                resolveProperty(listType.elementType, memberIdentifier)
-            var accessor: Expression? =
-                buildProperty(
-                    objectFactory.createAliasRef().withName("\$this"),
-                    resolution!!.name,
-                    resolution.isSearch,
-                    resolution.type
-                )
-            accessor = applyTargetMap(accessor, resolution.targetMap)
-            val not: Expression = buildIsNotNull(accessor)
-
-            // Recreate property, it needs to be accessed twice
-            accessor =
-                buildProperty(
-                    objectFactory.createAliasRef().withName("\$this"),
-                    resolution.name,
-                    resolution.isSearch,
-                    resolution.type
-                )
-            accessor = applyTargetMap(accessor, resolution.targetMap)
-            val source: AliasedQuerySource =
-                objectFactory.createAliasedQuerySource().withExpression(left).withAlias("\$this")
-            source.resultType = left.resultType
-            val query: Query =
-                objectFactory
-                    .createQuery()
-                    .withSource(source)
-                    .withWhere(not)
-                    .withReturn(
-                        objectFactory
-                            .createReturnClause()
-                            .withDistinct(false)
-                            .withExpression(accessor)
+                // ERROR:
+                throw IllegalArgumentException(
+                    String.format(
+                        Locale.US,
+                        "Could not resolve identifier %s in library %s.",
+                        memberIdentifier,
+                        referencedLibrary.identifier!!.id
                     )
-            query.resultType = ListType(accessor!!.resultType!!)
-            if (accessor.resultType is ListType) {
-                val result: Flatten = objectFactory.createFlatten().withOperand(query)
-                result.resultType = accessor.resultType
+                )
+            }
+            left is AliasRef -> {
+                val resolution: PropertyResolution? =
+                    resolveProperty(left.resultType, memberIdentifier)
+                val result: Expression =
+                    buildProperty(
+                        left.name,
+                        resolution!!.name,
+                        resolution.isSearch,
+                        resolution.type
+                    )
+                return applyTargetMap(result, resolution.targetMap)
+            }
+            left.resultType is ListType && listTraversal -> {
+                // NOTE: FHIRPath path traversal support
+                // Resolve property access of a list of items as a query:
+                // listValue.property ::= listValue X where X.property is not null return all
+                // X.property
+                val listType: ListType = left.resultType as ListType
+                val resolution: PropertyResolution? =
+                    resolveProperty(listType.elementType, memberIdentifier)
+                var accessor: Expression? =
+                    buildProperty(
+                        objectFactory.createAliasRef().withName("\$this"),
+                        resolution!!.name,
+                        resolution.isSearch,
+                        resolution.type
+                    )
+                accessor = applyTargetMap(accessor, resolution.targetMap)
+                val not: Expression = buildIsNotNull(accessor)
+
+                // Recreate property, it needs to be accessed twice
+                accessor =
+                    buildProperty(
+                        objectFactory.createAliasRef().withName("\$this"),
+                        resolution.name,
+                        resolution.isSearch,
+                        resolution.type
+                    )
+                accessor = applyTargetMap(accessor, resolution.targetMap)
+                val source: AliasedQuerySource =
+                    objectFactory
+                        .createAliasedQuerySource()
+                        .withExpression(left)
+                        .withAlias("\$this")
+                source.resultType = left.resultType
+                val query: Query =
+                    objectFactory
+                        .createQuery()
+                        .withSource(source)
+                        .withWhere(not)
+                        .withReturn(
+                            objectFactory
+                                .createReturnClause()
+                                .withDistinct(false)
+                                .withExpression(accessor)
+                        )
+                query.resultType = ListType(accessor!!.resultType!!)
+                if (accessor.resultType is ListType) {
+                    val result: Flatten = objectFactory.createFlatten().withOperand(query)
+                    result.resultType = accessor.resultType
+                    return result
+                }
+                return query
+            }
+            else -> {
+                val resolution: PropertyResolution? =
+                    resolveProperty(left.resultType, memberIdentifier)
+                var result: Expression? =
+                    buildProperty(left, resolution!!.name, resolution.isSearch, resolution.type)
+                result = applyTargetMap(result, resolution.targetMap)
                 return result
             }
-            return query
-        } else {
-            val resolution: PropertyResolution? = resolveProperty(left.resultType, memberIdentifier)
-            var result: Expression? =
-                buildProperty(left, resolution!!.name, resolution.isSearch, resolution.type)
-            result = applyTargetMap(result, resolution.targetMap)
-            return result
         }
     }
 
