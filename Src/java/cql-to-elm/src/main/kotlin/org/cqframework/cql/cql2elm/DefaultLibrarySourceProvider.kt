@@ -45,7 +45,7 @@ class DefaultLibrarySourceProvider(path: Path) : LibrarySourceProvider, PathAwar
                 )
             var libraryFile: File? = libraryPath.toFile()
             if (libraryFile?.exists() != true) {
-                val filter = FilenameFilter { path, name ->
+                val filter = FilenameFilter { _, name ->
                     name.startsWith(libraryName) && name.endsWith(".cql")
                 }
                 var mostRecentFile: File? = null
@@ -53,7 +53,7 @@ class DefaultLibrarySourceProvider(path: Path) : LibrarySourceProvider, PathAwar
                 val requestedVersion: Version? =
                     if (libraryIdentifier.version == null) null
                     else Version(libraryIdentifier.version)
-                for (file: File in currentPath.toFile().listFiles(filter)) {
+                for (file: File in currentPath.toFile().listFiles(filter)!!) {
                     var fileName: String = file.name
                     val indexOfExtension: Int = fileName.lastIndexOf(".")
                     if (indexOfExtension >= 0) {
@@ -72,9 +72,9 @@ class DefaultLibrarySourceProvider(path: Path) : LibrarySourceProvider, PathAwar
                             @Suppress("ComplexCondition")
                             if (
                                 (mostRecent == null ||
-                                    (((version.isComparable) &&
+                                    ((version.isComparable) &&
                                         (mostRecent.isComparable) &&
-                                        (version.compareTo(mostRecent) > 0))))
+                                        (version > mostRecent)))
                             ) {
                                 mostRecent = version
                                 mostRecentFile = file

@@ -17,10 +17,8 @@ import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReaderFactory
 // form
 // <major>[.<minor>[.<patch>]]
 // Usage outside these boundaries will result in errors or incorrect behavior.
-class DefaultModelInfoProvider : ModelInfoProvider, PathAware {
-    constructor()
-
-    constructor(path: Path) {
+class DefaultModelInfoProvider() : ModelInfoProvider, PathAware {
+    constructor(path: Path) : this() {
         this.setPath(path)
     }
 

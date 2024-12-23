@@ -6,18 +6,6 @@ import org.cqframework.cql.cql2elm.tracking.TrackBack
 class CqlSemanticException : CqlCompilerException {
     constructor(message: String?) : super(message)
 
-    constructor(message: String?, severity: ErrorSeverity) : super(message, severity)
-
-    constructor(message: String?, cause: Throwable?) : super(message, cause)
-
-    constructor(
-        message: String?,
-        severity: ErrorSeverity,
-        cause: Throwable?
-    ) : super(message, severity, cause)
-
-    constructor(message: String?, locator: TrackBack?) : super(message, locator)
-
     constructor(
         message: String?,
         severity: ErrorSeverity,

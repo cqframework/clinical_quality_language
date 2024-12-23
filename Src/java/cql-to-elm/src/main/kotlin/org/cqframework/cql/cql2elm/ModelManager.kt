@@ -16,12 +16,18 @@ class ModelManager {
     var modelInfoLoader: ModelInfoLoader? = null
         private set
 
-    private val models: MutableMap<String, Model?> = HashMap()
+    private val models: MutableMap<String, Model> = HashMap()
     private val loadingModels: MutableSet<String> = HashSet()
-    private val modelsByUri: MutableMap<String, Model?> = HashMap()
-    private val globalCache: MutableMap<ModelIdentifier, Model?>
-    var isDefaultModelInfoLoadingEnabled = true
-        private set
+    private val modelsByUri: MutableMap<String, Model> = HashMap()
+
+    /**
+     * The global cache is by @{org.hl7.cql.model.ModelIdentifier}, while the local cache is by
+     * name. This is because the translator expects the ModelManager to only permit loading of a
+     * single version of a given Model in a single translation context, while the global cache is
+     * for all versions of Models
+     */
+    private val globalCache: MutableMap<ModelIdentifier, Model>
+    private var isDefaultModelInfoLoadingEnabled = true
 
     constructor() {
         namespaceManager = NamespaceManager()
@@ -30,7 +36,7 @@ class ModelManager {
     }
 
     /** @param globalCache cache for Models by ModelIdentifier. Expected to be thread-safe. */
-    constructor(globalCache: MutableMap<ModelIdentifier, Model?>) {
+    constructor(globalCache: MutableMap<ModelIdentifier, Model>) {
         namespaceManager = NamespaceManager()
         this.globalCache = globalCache
         initialize()
@@ -43,7 +49,7 @@ class ModelManager {
         initialize()
     }
 
-    constructor(path: Path?, globalCache: MutableMap<ModelIdentifier, Model?>) {
+    constructor(path: Path?, globalCache: MutableMap<ModelIdentifier, Model>) {
         namespaceManager = NamespaceManager()
         this.globalCache = globalCache
         this.path = path
@@ -59,7 +65,7 @@ class ModelManager {
 
     constructor(
         enableDefaultModelInfoLoading: Boolean,
-        globalCache: MutableMap<ModelIdentifier, Model?>
+        globalCache: MutableMap<ModelIdentifier, Model>
     ) {
         namespaceManager = NamespaceManager()
         this.globalCache = globalCache
@@ -78,7 +84,7 @@ class ModelManager {
     constructor(
         enableDefaultModelInfoLoading: Boolean,
         path: Path?,
-        globalCache: MutableMap<ModelIdentifier, Model?>
+        globalCache: MutableMap<ModelIdentifier, Model>
     ) {
         namespaceManager = NamespaceManager()
         this.globalCache = globalCache
@@ -95,7 +101,7 @@ class ModelManager {
 
     constructor(
         namespaceManager: NamespaceManager,
-        globalCache: MutableMap<ModelIdentifier, Model?>
+        globalCache: MutableMap<ModelIdentifier, Model>
     ) {
         this.namespaceManager = namespaceManager
         this.globalCache = globalCache
@@ -112,7 +118,7 @@ class ModelManager {
     constructor(
         namespaceManager: NamespaceManager,
         path: Path?,
-        globalCache: MutableMap<ModelIdentifier, Model?>
+        globalCache: MutableMap<ModelIdentifier, Model>
     ) {
         this.namespaceManager = namespaceManager
         this.globalCache = globalCache
@@ -130,7 +136,7 @@ class ModelManager {
     constructor(
         namespaceManager: NamespaceManager,
         enableDefaultModelInfoLoading: Boolean,
-        globalCache: MutableMap<ModelIdentifier, Model?>
+        globalCache: MutableMap<ModelIdentifier, Model>
     ) {
         this.namespaceManager = namespaceManager
         this.globalCache = globalCache
@@ -154,7 +160,7 @@ class ModelManager {
         namespaceManager: NamespaceManager,
         enableDefaultModelInfoLoading: Boolean,
         path: Path?,
-        globalCache: MutableMap<ModelIdentifier, Model?>
+        globalCache: MutableMap<ModelIdentifier, Model>
     ) {
         this.namespaceManager = namespaceManager
         this.globalCache = globalCache
@@ -169,16 +175,6 @@ class ModelManager {
         if (path != null) {
             modelInfoLoader!!.setPath(path!!)
         }
-    }
-
-    /**
-     * The global cache is by @{org.hl7.cql.model.ModelIdentifier}, while the local cache is by
-     * name. This is because the translator expects the ModelManager to only permit loading of a
-     * single version of a given Model in a single translation context, while the global cache is
-     * for all versions of Models
-     */
-    fun getGlobalCache(): Map<ModelIdentifier, Model?> {
-        return globalCache
     }
 
     /*
@@ -245,16 +241,16 @@ class ModelManager {
         model?.let { checkModelVersion(modelIdentifier, it) }
         if (model == null && globalCache.containsKey(modelIdentifier)) {
             model = globalCache[modelIdentifier]
-            models[modelPath] = model
-            modelsByUri[model!!.modelInfo.url] = model
+            models[modelPath] = model!!
+            modelsByUri[model.modelInfo.url] = model
         }
 
         if (model == null) {
             model = buildModel(modelIdentifier)
-            globalCache[modelIdentifier] = model
+            globalCache[modelIdentifier] = model!!
             checkModelVersion(modelIdentifier, model)
             models[modelPath] = model
-            modelsByUri[model!!.modelInfo.url] = model
+            modelsByUri[model.modelInfo.url] = model
         }
         return model
     }

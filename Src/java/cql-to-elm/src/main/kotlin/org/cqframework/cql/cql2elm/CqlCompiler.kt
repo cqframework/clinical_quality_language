@@ -68,9 +68,6 @@ class CqlCompiler(
         return retrieves
     }
 
-    val compiledLibraries: Map<VersionedIdentifier, CompiledLibrary>
-        get() = libraryManager.compiledLibraries
-
     val libraries: Map<VersionedIdentifier, Library>
         get() {
             val result = HashMap<VersionedIdentifier, Library>()

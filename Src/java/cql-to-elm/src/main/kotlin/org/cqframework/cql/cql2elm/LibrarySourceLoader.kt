@@ -20,14 +20,4 @@ interface LibrarySourceLoader {
         }
         return null
     }
-
-    fun isLibraryContentAvailable(
-        libraryIdentifier: VersionedIdentifier,
-        type: LibraryContentType
-    ): Boolean {
-        if (LibraryContentType.CQL == type) {
-            return getLibrarySource(libraryIdentifier) != null
-        }
-        return false
-    }
 }

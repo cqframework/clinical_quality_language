@@ -44,9 +44,6 @@ constructor(
      * namespace in a namespace-aware context
      */
     fun isWellKnownLibraryName(unqualifiedIdentifier: String?): Boolean {
-        if (unqualifiedIdentifier == null) {
-            return false
-        }
         return when (unqualifiedIdentifier) {
             "FHIRHelpers" -> true
             else -> false
@@ -54,24 +51,24 @@ constructor(
     }
 
     fun resolveLibrary(
-        libraryIdentifier: VersionedIdentifier?,
+        libraryIdentifier: VersionedIdentifier,
         cacheMode: CacheMode
     ): CompiledLibrary {
         return this.resolveLibrary(libraryIdentifier, ArrayList(), cacheMode)
     }
 
-    fun canResolveLibrary(libraryIdentifier: VersionedIdentifier?): Boolean {
-        val lib = this.resolveLibrary(libraryIdentifier)
-        return lib != null
+    fun canResolveLibrary(libraryIdentifier: VersionedIdentifier): Boolean {
+        // This throws an exception if the library cannot be resolved
+        this.resolveLibrary(libraryIdentifier)
+        return true
     }
 
     @JvmOverloads
     fun resolveLibrary(
-        libraryIdentifier: VersionedIdentifier?,
+        libraryIdentifier: VersionedIdentifier,
         errors: MutableList<CqlCompilerException> = ArrayList(),
         cacheMode: CacheMode = CacheMode.READ_WRITE
     ): CompiledLibrary {
-        require(libraryIdentifier != null) { "libraryIdentifier is null." }
         require(!libraryIdentifier.id.isNullOrEmpty()) { "libraryIdentifier Id is null." }
         var library: CompiledLibrary?
         if (cacheMode != CacheMode.NONE) {
@@ -328,8 +325,8 @@ constructor(
     }
 
     @Suppress("NestedBlockDepth")
-    fun hasSignature(library: Library?): Boolean {
-        if (library != null && library.statements != null) {
+    private fun hasSignature(library: Library): Boolean {
+        if (library.statements != null) {
             // Just a quick top-level scan for signatures. To fully verify we'd have to
             // recurse all
             // the way down. At that point, let's just translate.

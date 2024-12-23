@@ -234,34 +234,39 @@ class SystemMethodResolver(
         recurse: Boolean,
         dataTypes: MutableSet<DataType>
     ) {
-        if (dataType is ClassType) {
-            for (element in dataType.elements) {
-                val elementType =
-                    if (element.type is ListType) (element.type as ListType).elementType
-                    else element.type
-                dataTypes.add(elementType)
-                if (recurse) {
-                    gatherChildTypes(elementType, recurse, dataTypes)
+        when (dataType) {
+            is ClassType -> {
+                for (element in dataType.elements) {
+                    val elementType =
+                        if (element.type is ListType) (element.type as ListType).elementType
+                        else element.type
+                    dataTypes.add(elementType)
+                    if (recurse) {
+                        gatherChildTypes(elementType, true, dataTypes)
+                    }
                 }
             }
-        } else if (dataType is TupleType) {
-            for (element in dataType.elements) {
-                val elementType =
-                    if (element.type is ListType) (element.type as ListType).elementType
-                    else element.type
-                dataTypes.add(elementType)
-                if (recurse) {
-                    gatherChildTypes(elementType, recurse, dataTypes)
+            is TupleType -> {
+                for (element: TupleTypeElement in dataType.elements) {
+                    val elementType =
+                        if (element.type is ListType) (element.type as ListType).elementType
+                        else element.type
+                    dataTypes.add(elementType)
+                    if (recurse) {
+                        gatherChildTypes(elementType, true, dataTypes)
+                    }
                 }
             }
-        } else if (dataType is ListType) {
-            val elementType = dataType.elementType
-            dataTypes.add(elementType)
-            if (recurse) {
-                gatherChildTypes(elementType, recurse, dataTypes)
+            is ListType -> {
+                val elementType = dataType.elementType
+                dataTypes.add(elementType)
+                if (recurse) {
+                    gatherChildTypes(elementType, true, dataTypes)
+                }
             }
-        } else {
-            dataTypes.add(builder.resolveTypeName("System.Any")!!)
+            else -> {
+                dataTypes.add(builder.resolveTypeName("System.Any")!!)
+            }
         }
     }
 
@@ -527,8 +532,8 @@ class SystemMethodResolver(
                     functionName,
                     getParams(target, ctx),
                     mustResolve,
-                    false,
-                    true
+                    allowPromotionAndDemotion = false,
+                    allowFluent = true
                 )
             }
         }

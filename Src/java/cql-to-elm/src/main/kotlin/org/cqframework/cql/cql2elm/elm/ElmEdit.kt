@@ -21,7 +21,7 @@ enum class ElmEdit : IElmEdit {
                 val x = annotations[i]
                 if (x is Annotation) {
                     x.s = null
-                    // Remove narrative but _not_ tags
+                    // Remove narrative but _not_ tags.
                     // Tags are necessary for `allowFluent` compiler resolution
                     // to work correctly
                     if (x.t.isEmpty()) {

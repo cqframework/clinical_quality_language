@@ -69,8 +69,7 @@ class LibraryBuilder(
         MutableMap<String, ResultWithPossibleError<NamedTypeSpecifier?>> =
         HashMap()
     private val libraries: MutableMap<String, CompiledLibrary> = LinkedHashMap()
-    private val systemFunctionResolver: SystemFunctionResolver =
-        SystemFunctionResolver(this, objectFactory)
+    private val systemFunctionResolver: SystemFunctionResolver = SystemFunctionResolver(this)
     private val expressionContext = Stack<String>()
     private val expressionDefinitions = ExpressionDefinitionContextStack()
     private val functionDefs = Stack<FunctionDef>()
@@ -213,17 +212,15 @@ class LibraryBuilder(
             // Add the model using def to the output
             buildUsingDef(modelIdentifier, model, localIdentifier)
         }
-        if (
-            (modelIdentifier.version != null && modelIdentifier.version != model.modelInfo.version)
+        require(
+            !(modelIdentifier.version != null && modelIdentifier.version != model.modelInfo.version)
         ) {
-            throw IllegalArgumentException(
-                String.format(
-                    Locale.US,
-                    "Could not load model information for model %s, version %s because version %s is already loaded.",
-                    modelIdentifier.id,
-                    modelIdentifier.version,
-                    model.modelInfo.version
-                )
+            String.format(
+                Locale.US,
+                "Could not load model information for model %s, version %s because version %s is already loaded.",
+                modelIdentifier.id,
+                modelIdentifier.version,
+                model.modelInfo.version
             )
         }
         return model
@@ -284,21 +281,19 @@ class LibraryBuilder(
     }
 
     @Suppress("NestedBlockDepth")
-    fun resolveLabel(modelName: String?, label: String): ClassType? {
+    private fun resolveLabel(modelName: String?, label: String): ClassType? {
         var result: ClassType? = null
         if (modelName == null || (modelName == "")) {
             for (model: Model? in models.values) {
                 val modelResult: ClassType? = model!!.resolveLabel(label)
                 if (modelResult != null) {
-                    if (result != null) {
-                        throw IllegalArgumentException(
-                            String.format(
-                                Locale.US,
-                                "Label %s is ambiguous between %s and %s.",
-                                label,
-                                result.label,
-                                modelResult.label
-                            )
+                    require(result == null) {
+                        String.format(
+                            Locale.US,
+                            "Label %s is ambiguous between %s and %s.",
+                            label,
+                            (result as ClassType).label,
+                            modelResult.label
                         )
                     }
                     result = modelResult
@@ -327,15 +322,13 @@ class LibraryBuilder(
             for (model: Model? in models.values) {
                 val modelResult: ModelContext? = model!!.resolveContextName(contextName)
                 if (modelResult != null) {
-                    if (result != null) {
-                        throw IllegalArgumentException(
-                            String.format(
-                                Locale.US,
-                                "Context name %s is ambiguous between %s and %s.",
-                                contextName,
-                                result.name,
-                                modelResult.name
-                            )
+                    require(result == null) {
+                        String.format(
+                            Locale.US,
+                            "Context name %s is ambiguous between %s and %s.",
+                            contextName,
+                            (result as ModelContext).name,
+                            modelResult.name
                         )
                     }
                     result = modelResult
@@ -369,15 +362,13 @@ class LibraryBuilder(
                 for (model: Model? in models.values) {
                     val modelResult: DataType? = model!!.resolveTypeName(typeName)
                     if (modelResult != null) {
-                        if (result != null) {
-                            throw IllegalArgumentException(
-                                String.format(
-                                    Locale.US,
-                                    "Type name %s is ambiguous between %s and %s.",
-                                    typeName,
-                                    (result as NamedType).name,
-                                    (modelResult as NamedType).name
-                                )
+                        require(result == null) {
+                            String.format(
+                                Locale.US,
+                                "Type name %s is ambiguous between %s and %s.",
+                                typeName,
+                                (result as NamedType).name,
+                                (modelResult as NamedType).name
                             )
                         }
                         result = modelResult
@@ -401,14 +392,12 @@ class LibraryBuilder(
                     // This really should be
                     // being done with preprocessor directives,
                     // but that's a whole other project in and of itself.
-                    if (!isCompatibleWith("1.5") && !isFHIRHelpers(compiledLibrary)) {
-                        throw IllegalArgumentException(
-                            String.format(
-                                Locale.US,
-                                "The type %s was introduced in CQL 1.5 and cannot be referenced at compatibility level %s",
-                                (result as NamedType).name,
-                                compatibilityLevel
-                            )
+                    require(!(!isCompatibleWith("1.5") && !isFHIRHelpers(compiledLibrary))) {
+                        String.format(
+                            Locale.US,
+                            "The type %s was introduced in CQL 1.5 and cannot be referenced at compatibility level %s",
+                            (result as NamedType).name,
+                            compatibilityLevel
                         )
                     }
             }
@@ -481,7 +470,7 @@ class LibraryBuilder(
         return getModel(usingDef)
     }
 
-    fun getModel(usingDef: UsingDef): Model {
+    private fun getModel(usingDef: UsingDef): Model {
         return getModel(
             ModelIdentifier(
                 id = NamespaceManager.getNamePart(usingDef.uri)!!,
@@ -504,7 +493,7 @@ class LibraryBuilder(
         }
     }
 
-    val systemLibrary: CompiledLibrary
+    private val systemLibrary: CompiledLibrary
         get() = resolveLibrary("System")
 
     fun resolveLibrary(identifier: String?): CompiledLibrary {
@@ -590,9 +579,9 @@ class LibraryBuilder(
             err.errorSeverity = toErrorSeverity(e.severity)
             if (e.locator != null) {
                 if (e.locator.library != null) {
-                    err.librarySystem = e.locator.library?.system
-                    err.libraryId = e.locator.library?.id
-                    err.libraryVersion = e.locator.library?.version
+                    err.librarySystem = e.locator.library.system
+                    err.libraryId = e.locator.library.id
+                    err.libraryVersion = e.locator.library.version
                 }
                 err.startLine = e.locator.startLine
                 err.endLine = e.locator.endLine
@@ -758,7 +747,7 @@ class LibraryBuilder(
         return compiledLibrary.resolveIncludeRef(identifier)
     }
 
-    fun resolveIncludeAlias(libraryIdentifier: VersionedIdentifier): String? {
+    private fun resolveIncludeAlias(libraryIdentifier: VersionedIdentifier): String? {
         return compiledLibrary.resolveIncludeAlias(libraryIdentifier)
     }
 
@@ -812,8 +801,8 @@ class LibraryBuilder(
             libraryName,
             operatorName,
             UnaryExpressionInvocation(expression),
-            false,
-            false
+            allowPromotionAndDemotion = false,
+            allowFluent = false
         )
     }
 
@@ -871,8 +860,8 @@ class LibraryBuilder(
             libraryName,
             operatorName,
             TernaryExpressionInvocation(expression),
-            false,
-            false
+            allowPromotionAndDemotion = false,
+            allowFluent = false
         )
     }
 
@@ -885,8 +874,8 @@ class LibraryBuilder(
             libraryName,
             operatorName,
             NaryExpressionInvocation(expression!!),
-            false,
-            false
+            allowPromotionAndDemotion = false,
+            allowFluent = false
         )
     }
 
@@ -899,8 +888,8 @@ class LibraryBuilder(
             libraryName,
             operatorName,
             AggregateExpressionInvocation(expression),
-            false,
-            false
+            allowPromotionAndDemotion = false,
+            allowFluent = false
         )
     }
 
@@ -1094,7 +1083,7 @@ class LibraryBuilder(
         return result?.expression
     }
 
-    fun resolveInInvocation(
+    private fun resolveInInvocation(
         left: Expression?,
         right: Expression?,
         dateTimePrecision: DateTimePrecision?
@@ -1113,7 +1102,7 @@ class LibraryBuilder(
         return result?.expression
     }
 
-    fun resolveProperInInvocation(
+    private fun resolveProperInInvocation(
         left: Expression?,
         right: Expression?,
         dateTimePrecision: DateTimePrecision?
@@ -1132,7 +1121,7 @@ class LibraryBuilder(
         return result?.expression
     }
 
-    fun resolveContainsInvocation(
+    private fun resolveContainsInvocation(
         left: Expression?,
         right: Expression?,
         dateTimePrecision: DateTimePrecision?
@@ -1151,7 +1140,7 @@ class LibraryBuilder(
         return result?.expression
     }
 
-    fun resolveProperContainsInvocation(
+    private fun resolveProperContainsInvocation(
         left: Expression?,
         right: Expression?,
         dateTimePrecision: DateTimePrecision?
@@ -1219,11 +1208,23 @@ class LibraryBuilder(
         val includes =
             objectFactory.createIncludes().withOperand(left, right).withPrecision(dateTimePrecision)
         val includesInvocation =
-            resolveBinaryInvocation("System", "Includes", includes, false, false)
+            resolveBinaryInvocation(
+                "System",
+                "Includes",
+                includes,
+                mustResolve = false,
+                allowPromotionAndDemotion = false
+            )
         val contains =
             objectFactory.createContains().withOperand(left, right).withPrecision(dateTimePrecision)
         val containsInvocation =
-            resolveBinaryInvocation("System", "Contains", contains, false, false)
+            resolveBinaryInvocation(
+                "System",
+                "Contains",
+                contains,
+                mustResolve = false,
+                allowPromotionAndDemotion = false
+            )
         return lowestScoringInvocation(includesInvocation, containsInvocation)
             ?: resolveBinaryCall("System", "Includes", includes)
 
@@ -1241,14 +1242,26 @@ class LibraryBuilder(
                 .withOperand(left, right)
                 .withPrecision(dateTimePrecision)
         val properIncludesInvocation =
-            resolveBinaryInvocation("System", "ProperIncludes", properIncludes, false, false)
+            resolveBinaryInvocation(
+                "System",
+                "ProperIncludes",
+                properIncludes,
+                mustResolve = false,
+                allowPromotionAndDemotion = false
+            )
         val properContains =
             objectFactory
                 .createProperContains()
                 .withOperand(left, right)
                 .withPrecision(dateTimePrecision)
         val properContainsInvocation =
-            resolveBinaryInvocation("System", "ProperContains", properContains, false, false)
+            resolveBinaryInvocation(
+                "System",
+                "ProperContains",
+                properContains,
+                mustResolve = false,
+                allowPromotionAndDemotion = false
+            )
         return lowestScoringInvocation(properIncludesInvocation, properContainsInvocation)
             ?: resolveBinaryCall("System", "ProperIncludes", properIncludes)
 
@@ -1266,10 +1279,23 @@ class LibraryBuilder(
                 .withOperand(left, right)
                 .withPrecision(dateTimePrecision)
         val includedInInvocation =
-            resolveBinaryInvocation("System", "IncludedIn", includedIn, false, false)
+            resolveBinaryInvocation(
+                "System",
+                "IncludedIn",
+                includedIn,
+                mustResolve = false,
+                allowPromotionAndDemotion = false
+            )
         val inExpression =
             objectFactory.createIn().withOperand(left, right).withPrecision(dateTimePrecision)
-        val inInvocation = resolveBinaryInvocation("System", "In", inExpression, false, false)
+        val inInvocation =
+            resolveBinaryInvocation(
+                "System",
+                "In",
+                inExpression,
+                mustResolve = false,
+                allowPromotionAndDemotion = false
+            )
         return lowestScoringInvocation(includedInInvocation, inInvocation)
             ?: resolveBinaryCall("System", "IncludedIn", includedIn)
 
@@ -1287,11 +1313,23 @@ class LibraryBuilder(
                 .withOperand(left, right)
                 .withPrecision(dateTimePrecision)
         val properIncludedInInvocation =
-            resolveBinaryInvocation("System", "ProperIncludedIn", properIncludedIn, false, false)
+            resolveBinaryInvocation(
+                "System",
+                "ProperIncludedIn",
+                properIncludedIn,
+                mustResolve = false,
+                allowPromotionAndDemotion = false
+            )
         val properIn =
             objectFactory.createProperIn().withOperand(left, right).withPrecision(dateTimePrecision)
         val properInInvocation =
-            resolveBinaryInvocation("System", "ProperIn", properIn, false, false)
+            resolveBinaryInvocation(
+                "System",
+                "ProperIn",
+                properIn,
+                mustResolve = false,
+                allowPromotionAndDemotion = false
+            )
         return lowestScoringInvocation(properIncludedInInvocation, properInInvocation)
             ?: resolveBinaryCall("System", "ProperIncludedIn", properIncludedIn)
 
@@ -1303,10 +1341,17 @@ class LibraryBuilder(
         operatorName: String,
         invocation: Invocation
     ): Expression? {
-        return resolveCall(libraryName, operatorName, invocation, true, false, false)
+        return resolveCall(
+            libraryName,
+            operatorName,
+            invocation,
+            mustResolve = true,
+            allowPromotionAndDemotion = false,
+            allowFluent = false
+        )
     }
 
-    fun resolveCall(
+    private fun resolveCall(
         libraryName: String?,
         operatorName: String,
         invocation: Invocation,
@@ -1324,7 +1369,7 @@ class LibraryBuilder(
     }
 
     @Suppress("LongParameterList")
-    fun resolveCall(
+    private fun resolveCall(
         libraryName: String?,
         operatorName: String,
         invocation: Invocation,
@@ -1362,7 +1407,7 @@ class LibraryBuilder(
     }
 
     @Suppress("LongParameterList")
-    fun buildCallContext(
+    private fun buildCallContext(
         libraryName: String?,
         operatorName: String,
         operands: Iterable<Expression?>,
@@ -1510,7 +1555,7 @@ class LibraryBuilder(
     }
 
     @Suppress("NestedBlockDepth")
-    fun resolveCall(callContext: CallContext): OperatorResolution? {
+    private fun resolveCall(callContext: CallContext): OperatorResolution? {
         var result: OperatorResolution?
         if (callContext.libraryName.isNullOrEmpty()) {
             result = compiledLibrary.resolveCall(callContext, conversionMap)
@@ -1564,7 +1609,7 @@ class LibraryBuilder(
         } else false
     }
 
-    fun checkOperator(callContext: CallContext, resolution: OperatorResolution?) {
+    private fun checkOperator(callContext: CallContext, resolution: OperatorResolution?) {
         requireNotNull(resolution) {
             // ERROR:
             String.format(
@@ -1584,14 +1629,14 @@ class LibraryBuilder(
                 )
             )
         }
-        if (callContext.allowFluent && !resolution.operator.fluent && !resolution.allowFluent) {
-            throw IllegalArgumentException(
-                String.format(
-                    Locale.US,
-                    "Invocation of operator %s with signature %s uses fluent syntax, but the operator is not defined as a fluent function.",
-                    callContext.operatorName,
-                    callContext.signature
-                )
+        require(
+            !(callContext.allowFluent && !resolution.operator.fluent && !resolution.allowFluent)
+        ) {
+            String.format(
+                Locale.US,
+                "Invocation of operator %s with signature %s uses fluent syntax, but the operator is not defined as a fluent function.",
+                callContext.operatorName,
+                callContext.signature
             )
         }
     }
@@ -1622,7 +1667,15 @@ class LibraryBuilder(
         functionName: String?,
         paramList: Iterable<Expression?>
     ): Expression? {
-        return resolveFunction(libraryName, functionName, paramList, true, false, false)?.expression
+        return resolveFunction(
+                libraryName,
+                functionName,
+                paramList,
+                mustResolve = true,
+                allowPromotionAndDemotion = false,
+                allowFluent = false
+            )
+            ?.expression
     }
 
     private fun buildFunctionRef(
@@ -1749,7 +1802,7 @@ class LibraryBuilder(
                     .createAliasedQuerySource()
                     .withAlias("X")
                     .withExpression(expression)
-                    .withResultType(fromType) as AliasedQuerySource
+                    .withResultType(fromType)
             )
             .withReturn(
                 objectFactory
@@ -1760,13 +1813,13 @@ class LibraryBuilder(
                             objectFactory
                                 .createAliasRef()
                                 .withName("X")
-                                .withResultType(fromType.elementType) as AliasRef,
+                                .withResultType(fromType.elementType),
                             conversion.conversion!!
                         )
                     )
-                    .withResultType(toType) as ReturnClause
+                    .withResultType(toType)
             )
-            .withResultType(toType) as Query
+            .withResultType(toType)
     }
 
     private fun reportWarning(message: String, expression: Element?) {
@@ -1843,7 +1896,7 @@ class LibraryBuilder(
     // constructing an
     // interval
     // with null boundaries
-    fun resolveToInterval(expression: Expression?): Expression {
+    private fun resolveToInterval(expression: Expression?): Expression {
         val condition = objectFactory.createIf()
         condition.condition = buildIsNull(expression)
         condition.then = buildNull(IntervalType(expression!!.resultType!!))
@@ -1930,7 +1983,7 @@ class LibraryBuilder(
     }
 
     fun buildNull(nullType: DataType?): Null {
-        val result = objectFactory.createNull().withResultType(nullType) as Null
+        val result = objectFactory.createNull().withResultType(nullType)
         if (nullType is NamedType) {
             result.resultTypeName = dataTypeToQName(nullType)
         } else {
@@ -1939,13 +1992,13 @@ class LibraryBuilder(
         return result
     }
 
-    fun buildIsNull(expression: Expression?): IsNull {
+    private fun buildIsNull(expression: Expression?): IsNull {
         val isNull = objectFactory.createIsNull().withOperand(expression)
         isNull.resultType = resolveTypeName("System", "Boolean")
         return isNull
     }
 
-    fun buildIsNotNull(expression: Expression?): Not {
+    private fun buildIsNotNull(expression: Expression?): Not {
         val isNull = buildIsNull(expression)
         val not = objectFactory.createNot().withOperand(isNull)
         not.resultType = resolveTypeName("System", "Boolean")
@@ -1986,9 +2039,7 @@ class LibraryBuilder(
                     conversion.fromType.isCompatibleWith(conversion.toType))
         ) {
             if (conversion.fromType is ChoiceType && conversion.toType is ChoiceType) {
-                if (
-                    (conversion.fromType as ChoiceType).isSubSetOf(conversion.toType as ChoiceType)
-                ) {
+                if ((conversion.fromType).isSubSetOf(conversion.toType)) {
                     // conversion between compatible choice types requires no cast (i.e.
                     // choice<Integer, String> can be
                     // safely passed to choice<Integer, String, DateTime>
@@ -2064,8 +2115,8 @@ class LibraryBuilder(
                     functionRef.libraryName,
                     functionRef.name,
                     FunctionRefInvocation(functionRef),
-                    false,
-                    false
+                    allowPromotionAndDemotion = false,
+                    allowFluent = false
                 )
                 functionRef
             } else {
@@ -2074,67 +2125,67 @@ class LibraryBuilder(
                         objectFactory
                             .createToBoolean()
                             .withOperand(expression)
-                            .withResultType(conversion.toType) as Expression
+                            .withResultType(conversion.toType)
                     }
                     resolveTypeName("System", "Integer") -> {
                         objectFactory
                             .createToInteger()
                             .withOperand(expression)
-                            .withResultType(conversion.toType) as Expression
+                            .withResultType(conversion.toType)
                     }
                     resolveTypeName("System", "Long") -> {
                         objectFactory
                             .createToLong()
                             .withOperand(expression)
-                            .withResultType(conversion.toType) as Expression
+                            .withResultType(conversion.toType)
                     }
                     resolveTypeName("System", "Decimal") -> {
                         objectFactory
                             .createToDecimal()
                             .withOperand(expression)
-                            .withResultType(conversion.toType) as Expression
+                            .withResultType(conversion.toType)
                     }
                     resolveTypeName("System", "String") -> {
                         objectFactory
                             .createToString()
                             .withOperand(expression)
-                            .withResultType(conversion.toType) as Expression
+                            .withResultType(conversion.toType)
                     }
                     resolveTypeName("System", "Date") -> {
                         objectFactory
                             .createToDate()
                             .withOperand(expression)
-                            .withResultType(conversion.toType) as Expression
+                            .withResultType(conversion.toType)
                     }
                     resolveTypeName("System", "DateTime") -> {
                         objectFactory
                             .createToDateTime()
                             .withOperand(expression)
-                            .withResultType(conversion.toType) as Expression
+                            .withResultType(conversion.toType)
                     }
                     resolveTypeName("System", "Time") -> {
                         objectFactory
                             .createToTime()
                             .withOperand(expression)
-                            .withResultType(conversion.toType) as Expression
+                            .withResultType(conversion.toType)
                     }
                     resolveTypeName("System", "Quantity") -> {
                         objectFactory
                             .createToQuantity()
                             .withOperand(expression)
-                            .withResultType(conversion.toType) as Expression
+                            .withResultType(conversion.toType)
                     }
                     resolveTypeName("System", "Ratio") -> {
                         objectFactory
                             .createToRatio()
                             .withOperand(expression)
-                            .withResultType(conversion.toType) as Expression
+                            .withResultType(conversion.toType)
                     }
                     resolveTypeName("System", "Concept") -> {
                         objectFactory
                             .createToConcept()
                             .withOperand(expression)
-                            .withResultType(conversion.toType) as Expression
+                            .withResultType(conversion.toType)
                     }
                     else -> {
                         val convertedOperand =
@@ -2200,7 +2251,13 @@ class LibraryBuilder(
         if (expectedType.isSuperTypeOf(actualType) || actualType.isCompatibleWith(expectedType)) {
             return
         }
-        val conversion = findConversion(actualType, expectedType, true, false)
+        val conversion =
+            findConversion(
+                actualType,
+                expectedType,
+                implicit = true,
+                allowPromotionAndDemotion = false
+            )
         if (conversion != null) {
             return
         }
@@ -2228,11 +2285,13 @@ class LibraryBuilder(
         // eliminate choices
         // based on convertibility
         if (!(first is ChoiceType || second is ChoiceType)) {
-            var conversion = findConversion(second, first, true, false)
+            var conversion =
+                findConversion(second, first, implicit = true, allowPromotionAndDemotion = false)
             if (conversion != null) {
                 return first
             }
-            conversion = findConversion(first, second, true, false)
+            conversion =
+                findConversion(first, second, implicit = true, allowPromotionAndDemotion = false)
             if (conversion != null) {
                 return second
             }
@@ -2254,7 +2313,7 @@ class LibraryBuilder(
         return first
     }
 
-    fun ensureCompatible(expression: Expression?, targetType: DataType?): Expression? {
+    fun ensureCompatible(expression: Expression?, targetType: DataType?): Expression {
         if (targetType == null) {
             return objectFactory.createNull()
         }
@@ -2263,7 +2322,7 @@ class LibraryBuilder(
         } else expression
     }
 
-    fun enforceCompatible(expression: Expression?, targetType: DataType?): Expression? {
+    fun enforceCompatible(expression: Expression?, targetType: DataType?): Expression {
         if (targetType == null) {
             return objectFactory.createNull()
         }
@@ -2272,7 +2331,7 @@ class LibraryBuilder(
         } else expression
     }
 
-    fun createLiteral(value: String?, type: String): Literal {
+    private fun createLiteral(value: String?, type: String): Literal {
         val resultType = resolveTypeName("System", type)
         val result =
             objectFactory
@@ -2322,7 +2381,7 @@ class LibraryBuilder(
         return result
     }
 
-    fun validateUnit(unit: String) {
+    private fun validateUnit(unit: String) {
         when (unit) {
             "year",
             "years",
@@ -2368,7 +2427,7 @@ class LibraryBuilder(
     }
 
     private fun validateUcumUnit(unit: String) {
-        val message = libraryManager.ucumService?.validate(unit)
+        val message = libraryManager.ucumService.validate(unit)
         require(message == null) { message!! }
     }
 
@@ -2413,7 +2472,7 @@ class LibraryBuilder(
         return typeBuilder.dataTypeToQName(type)
     }
 
-    fun dataTypesToTypeSpecifiers(types: List<DataType>): List<TypeSpecifier> {
+    private fun dataTypesToTypeSpecifiers(types: List<DataType>): List<TypeSpecifier> {
         return typeBuilder.dataTypesToTypeSpecifiers(types)
     }
 
@@ -2463,14 +2522,12 @@ class LibraryBuilder(
                 } else {
                     for (e: ClassTypeElement in classType.elements) {
                         if ((e.name == identifier)) {
-                            if (e.prohibited) {
-                                throw IllegalArgumentException(
-                                    String.format(
-                                        Locale.US,
-                                        "Element %s cannot be referenced because it is marked prohibited in type %s.",
-                                        e.name,
-                                        currentType.name
-                                    )
+                            require(!e.prohibited) {
+                                String.format(
+                                    Locale.US,
+                                    "Element %s cannot be referenced because it is marked prohibited in type %s.",
+                                    e.name,
+                                    (currentType as ClassType).name
                                 )
                             }
                             return PropertyResolution(e)
@@ -2562,21 +2619,19 @@ class LibraryBuilder(
                     resolveProperty(currentType.elementType, identifier)
                 return PropertyResolution(ListType(resolution!!.type), (resolution.targetMap)!!)
             }
-            if (currentType.baseType != null) {
+            if (currentType.baseType != DataType.ANY) {
                 currentType = currentType.baseType
             } else {
                 break
             }
         }
-        if (mustResolve) {
+        require(!mustResolve) {
             // ERROR:
-            throw IllegalArgumentException(
-                String.format(
-                    Locale.US,
-                    "Member %s not found for type %s.",
-                    identifier,
-                    sourceType?.toLabel()
-                )
+            String.format(
+                Locale.US,
+                "Member %s not found for type %s.",
+                identifier,
+                sourceType?.toLabel()
             )
         }
         return null
@@ -2659,14 +2714,12 @@ class LibraryBuilder(
                 val expressionRef: ExpressionRef =
                     objectFactory.createExpressionRef().withName(element.name)
                 expressionRef.resultType = getExpressionDefResultType(element)
-                if (expressionRef.resultType == null) {
+                requireNotNull(expressionRef.resultType) {
                     // ERROR:
-                    throw IllegalArgumentException(
-                        String.format(
-                            Locale.US,
-                            "Could not validate reference to expression %s because its definition contains errors.",
-                            expressionRef.name
-                        )
+                    String.format(
+                        Locale.US,
+                        "Could not validate reference to expression %s because its definition contains errors.",
+                        expressionRef.name
                     )
                 }
                 return expressionRef
@@ -2676,14 +2729,12 @@ class LibraryBuilder(
                 val parameterRef: ParameterRef =
                     objectFactory.createParameterRef().withName(element.name)
                 parameterRef.resultType = element.resultType
-                if (parameterRef.resultType == null) {
+                requireNotNull(parameterRef.resultType) {
                     // ERROR:
-                    throw IllegalArgumentException(
-                        String.format(
-                            Locale.US,
-                            "Could not validate reference to parameter %s because its definition contains errors.",
-                            parameterRef.name
-                        )
+                    String.format(
+                        Locale.US,
+                        "Could not validate reference to parameter %s because its definition contains errors.",
+                        parameterRef.name
                     )
                 }
                 return parameterRef
@@ -2693,14 +2744,12 @@ class LibraryBuilder(
                 val valuesetRef: ValueSetRef =
                     objectFactory.createValueSetRef().withName(element.name)
                 valuesetRef.resultType = element.resultType
-                if (valuesetRef.resultType == null) {
+                requireNotNull(valuesetRef.resultType) {
                     // ERROR:
-                    throw IllegalArgumentException(
-                        String.format(
-                            Locale.US,
-                            "Could not validate reference to valueset %s because its definition contains errors.",
-                            valuesetRef.name
-                        )
+                    String.format(
+                        Locale.US,
+                        "Could not validate reference to valueset %s because its definition contains errors.",
+                        valuesetRef.name
                     )
                 }
                 if (isCompatibleWith("1.5")) {
@@ -2713,14 +2762,12 @@ class LibraryBuilder(
                 val codesystemRef: CodeSystemRef =
                     objectFactory.createCodeSystemRef().withName(element.name)
                 codesystemRef.resultType = element.resultType
-                if (codesystemRef.resultType == null) {
+                requireNotNull(codesystemRef.resultType) {
                     // ERROR:
-                    throw IllegalArgumentException(
-                        String.format(
-                            Locale.US,
-                            "Could not validate reference to codesystem %s because its definition contains errors.",
-                            codesystemRef.name
-                        )
+                    String.format(
+                        Locale.US,
+                        "Could not validate reference to codesystem %s because its definition contains errors.",
+                        codesystemRef.name
                     )
                 }
                 return codesystemRef
@@ -2729,14 +2776,12 @@ class LibraryBuilder(
                 checkLiteralContext()
                 val codeRef: CodeRef = objectFactory.createCodeRef().withName(element.name)
                 codeRef.resultType = element.resultType
-                if (codeRef.resultType == null) {
+                requireNotNull(codeRef.resultType) {
                     // ERROR:
-                    throw IllegalArgumentException(
-                        String.format(
-                            Locale.US,
-                            "Could not validate reference to code %s because its definition contains errors.",
-                            codeRef.name
-                        )
+                    String.format(
+                        Locale.US,
+                        "Could not validate reference to code %s because its definition contains errors.",
+                        codeRef.name
                     )
                 }
                 return codeRef
@@ -2745,14 +2790,12 @@ class LibraryBuilder(
                 checkLiteralContext()
                 val conceptRef: ConceptRef = objectFactory.createConceptRef().withName(element.name)
                 conceptRef.resultType = element.resultType
-                if (conceptRef.resultType == null) {
+                requireNotNull(conceptRef.resultType) {
                     // ERROR:
-                    throw IllegalArgumentException(
-                        String.format(
-                            Locale.US,
-                            "Could not validate reference to concept %s because its definition contains error.",
-                            conceptRef.name
-                        )
+                    String.format(
+                        Locale.US,
+                        "Could not validate reference to concept %s because its definition contains error.",
+                        conceptRef.name
                     )
                 }
                 return conceptRef
@@ -2822,14 +2865,12 @@ class LibraryBuilder(
                 val parameterRef: ParameterRef =
                     objectFactory.createParameterRef().withName(contextParameter.name)
                 parameterRef.resultType = contextParameter.resultType
-                if (parameterRef.resultType == null) {
+                requireNotNull(parameterRef.resultType) {
                     // ERROR:
-                    throw IllegalArgumentException(
-                        String.format(
-                            Locale.US,
-                            "Could not validate reference to parameter %s because its definition contains errors.",
-                            parameterRef.name
-                        )
+                    String.format(
+                        Locale.US,
+                        "Could not validate reference to parameter %s because its definition contains errors.",
+                        parameterRef.name
                     )
                 }
                 return parameterRef
@@ -2975,14 +3016,8 @@ class LibraryBuilder(
             for (typeCase: String in typeCases) {
                 if (typeCase.isNotEmpty()) {
                     val splitIndex: Int = typeCase.indexOf(':')
-                    if (splitIndex <= 0) {
-                        throw IllegalArgumentException(
-                            String.format(
-                                Locale.US,
-                                "Malformed type case in targetMap %s",
-                                targetMap
-                            )
-                        )
+                    require(splitIndex > 0) {
+                        String.format(Locale.US, "Malformed type case in targetMap %s", targetMap)
                     }
                     val typeCaseElement: String = typeCase.substring(0, splitIndex)
                     val typeCaseType: DataType? = resolveTypeName(typeCaseElement)
@@ -3045,18 +3080,16 @@ class LibraryBuilder(
             // FHIRHelpers function)
             var argumentSignature: TypeSpecifier? = null
             if (options.signatureLevel != SignatureLevel.None) {
-                if (qualifiedFunctionName.equals("FHIRHelpers.ToInterval")) {
+                if (qualifiedFunctionName == "FHIRHelpers.ToInterval") {
                     // Force loading of the FHIR model, as it's an implicit
                     // dependency of the the target mapping here.
                     var fhirVersion = "4.0.1"
                     val qiCoreModel = this.getModel("QICore")
-                    if (qiCoreModel != null) {
-                        val version = qiCoreModel.modelInfo.version
-                        if (version == "3.3.0") {
-                            fhirVersion = "4.0.0"
-                        } else if (version.startsWith("3")) {
-                            fhirVersion = "3.0.1"
-                        }
+                    val version = qiCoreModel.modelInfo.version
+                    if (version == "3.3.0") {
+                        fhirVersion = "4.0.0"
+                    } else if (version.startsWith("3")) {
+                        fhirVersion = "3.0.1"
                     }
 
                     // Force the FHIR model to be loaded.
@@ -3134,14 +3167,12 @@ class LibraryBuilder(
                 indexerPath.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             for (path: String in indexerPaths) {
                 if ((path == "%parent")) {
-                    if (source !is Property) {
-                        throw IllegalArgumentException(
-                            String.format(
-                                Locale.US,
-                                "Cannot expand target map %s for non-property-accessor type %s",
-                                targetMap,
-                                source!!.javaClass.simpleName
-                            )
+                    require(source is Property) {
+                        String.format(
+                            Locale.US,
+                            "Cannot expand target map %s for non-property-accessor type %s",
+                            targetMap,
+                            source!!.javaClass.simpleName
                         )
                     }
                     val sourceProperty: Property = source
@@ -3175,14 +3206,12 @@ class LibraryBuilder(
                 indexer.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
                 val indexerItems: Array<String> =
                     indexerItem.split("=".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                if (indexerItems.size != 2) {
-                    throw IllegalArgumentException(
-                        String.format(
-                            Locale.US,
-                            "Invalid indexer item %s in targetMap %s",
-                            indexerItem,
-                            targetMap
-                        )
+                require(indexerItems.size == 2) {
+                    String.format(
+                        Locale.US,
+                        "Invalid indexer item %s in targetMap %s",
+                        indexerItem,
+                        targetMap
                     )
                 }
                 var left: Expression? = null
@@ -3207,7 +3236,7 @@ class LibraryBuilder(
                                 .withSource(left)
                                 .withResultType(
                                     this.getModel("FHIR").resolveTypeName("FHIR.coding")
-                                ) as Expression
+                                )
                     }
                     if ((path == "url")) {
                         // HACK: This special cases FHIR model resolution
@@ -3223,8 +3252,8 @@ class LibraryBuilder(
                                 ref.libraryName,
                                 ref.name,
                                 FunctionRefInvocation(ref),
-                                false,
-                                false
+                                allowPromotionAndDemotion = false,
+                                allowFluent = false
                             )
                     }
                 }
@@ -3240,14 +3269,14 @@ class LibraryBuilder(
                             .createFunctionRef()
                             .withLibraryName("FHIRHelpers")
                             .withName("ToString")
-                            .withOperand(left) as FunctionRef
+                            .withOperand(left)
                     left =
                         resolveCall(
                             ref.libraryName,
                             ref.name,
                             FunctionRefInvocation(ref),
-                            false,
-                            false
+                            allowPromotionAndDemotion = false,
+                            allowFluent = false
                         )
                 }
                 if ((indexerItems[0] == "code.coding.code")) {
@@ -3264,8 +3293,8 @@ class LibraryBuilder(
                             ref.libraryName,
                             ref.name,
                             FunctionRefInvocation(ref),
-                            false,
-                            false
+                            allowPromotionAndDemotion = false,
+                            allowFluent = false
                         )
                 }
                 val rightValue: String = indexerItems[1].substring(1, indexerItems[1].length - 1)
@@ -3582,7 +3611,7 @@ class LibraryBuilder(
                     return objectFactory
                         .createOperandRef()
                         .withName(identifier)
-                        .withResultType(operand.resultType) as OperandRef
+                        .withResultType(operand.resultType)
                 }
             }
         }
@@ -3636,26 +3665,7 @@ class LibraryBuilder(
         GLOBAL,
         LOCAL
     }
-    /**
-     * Add an identifier to the deque to indicate that we are considering it for consideration for
-     * identifier hiding and adding a compiler warning if this is the case.
-     *
-     * For example, if an alias within an expression body has the same name as a parameter,
-     * execution would have added the parameter identifier and the next execution would consider an
-     * alias with the same name, thus resulting in a warning.
-     *
-     * Exact case matching as well as case-insensitive matching are considered. If known, the type
-     * of the structure in question will be considered in crafting the warning message, as per the
-     * [Element] parameter.
-     *
-     * Also, special case function overloads so that only a single overloaded function name is taken
-     * into account.
-     *
-     * @param identifier The identifier belonging to the parameter, expression, function, alias,
-     *   etc, to be evaluated.
-     * @param trackable The construct trackable, for example [ExpressionRef].
-     * @param scope the scope of the current identifier
-     */
+
     /**
      * Add an identifier to the deque to indicate that we are considering it for consideration for
      * identifier hiding and adding a compiler warning if this is the case.
@@ -3684,7 +3694,7 @@ class LibraryBuilder(
         scope: IdentifierScope = IdentifierScope.LOCAL
     ) {
         val localMatch =
-            if (!localIdentifierStack.isEmpty())
+            if (localIdentifierStack.isNotEmpty())
                 findMatchingIdentifierContext(localIdentifierStack.peek(), identifier)
             else Optional.empty()
         val globalMatch = findMatchingIdentifierContext(globalIdentifiers, identifier)
@@ -3743,8 +3753,6 @@ class LibraryBuilder(
         localIdentifierStack.pop()
     }
 
-    // TODO:  consider other structures that should only trigger a readonly check of identifier
-    // hiding
     private fun shouldAddIdentifierContext(element: Element?): Boolean {
         return element !is Literal
     }
@@ -3793,7 +3801,7 @@ class LibraryBuilder(
     }
 
     fun determineRootCause(): Exception? {
-        if (!expressionDefinitions.isEmpty()) {
+        if (expressionDefinitions.isNotEmpty()) {
             val currentContext = expressionDefinitions.peek()
             if (currentContext != null) {
                 return currentContext.rootCause
@@ -3803,21 +3811,19 @@ class LibraryBuilder(
     }
 
     fun setRootCause(rootCause: Exception?) {
-        if (!expressionDefinitions.isEmpty()) {
+        if (expressionDefinitions.isNotEmpty()) {
             val currentContext = expressionDefinitions.peek()
             currentContext?.rootCause = rootCause
         }
     }
 
     fun pushExpressionDefinition(identifier: String) {
-        if (expressionDefinitions.contains(identifier)) {
+        require(!expressionDefinitions.contains(identifier)) {
             // ERROR:
-            throw IllegalArgumentException(
-                String.format(
-                    Locale.US,
-                    "Cannot resolve reference to expression or function %s because it results in a circular reference.",
-                    identifier
-                )
+            String.format(
+                Locale.US,
+                "Cannot resolve reference to expression or function %s because it results in a circular reference.",
+                identifier
             )
         }
         expressionDefinitions.push(ExpressionDefinitionContext(identifier))
@@ -3844,22 +3850,22 @@ class LibraryBuilder(
         expressionContext.pop()
     }
 
-    fun currentExpressionContext(): String {
+    private fun currentExpressionContext(): String {
         check(!expressionContext.empty()) { "Expression context stack is empty." }
         return expressionContext.peek()
     }
 
-    fun inSpecificContext(): Boolean {
+    private fun inSpecificContext(): Boolean {
         return !inUnfilteredContext()
     }
 
-    fun inUnfilteredContext(): Boolean {
+    private fun inUnfilteredContext(): Boolean {
         return currentExpressionContext() == "Unfiltered" ||
             isCompatibilityLevel3 && currentExpressionContext() == "Population"
     }
 
-    fun inQueryContext(): Boolean {
-        return hasScope() && scope.queries.size > 0
+    private fun inQueryContext(): Boolean {
+        return hasScope() && scope.queries.isNotEmpty()
     }
 
     fun pushQueryContext(context: QueryContext) {
@@ -3883,7 +3889,7 @@ class LibraryBuilder(
     }
 
     fun hasExpressionTarget(): Boolean {
-        return hasScope() && !scope.targets.isEmpty()
+        return hasScope() && scope.targets.isNotEmpty()
     }
 
     fun beginFunctionDef(functionDef: FunctionDef) {
@@ -3903,7 +3909,7 @@ class LibraryBuilder(
         literalContext--
     }
 
-    fun inLiteralContext(): Boolean {
+    private fun inLiteralContext(): Boolean {
         return literalContext > 0
     }
 
@@ -3922,52 +3928,27 @@ class LibraryBuilder(
         typeSpecifierContext--
     }
 
-    fun inTypeSpecifierContext(): Boolean {
+    private fun inTypeSpecifierContext(): Boolean {
         return typeSpecifierContext > 0
     }
 
     companion object {
         private fun lookupElementWarning(element: Any?): String {
-            // TODO:  this list is not exhaustive and may need to be updated
-            when (element) {
-                is ExpressionDef -> {
-                    return "An expression"
-                }
-                is ParameterDef -> {
-                    return "A parameter"
-                }
-                is ValueSetDef -> {
-                    return "A valueset"
-                }
-                is CodeSystemDef -> {
-                    return "A codesystem"
-                }
-                is CodeDef -> {
-                    return "A code"
-                }
-                is ConceptDef -> {
-                    return "A concept"
-                }
-                is IncludeDef -> {
-                    return "An include"
-                }
-                is AliasedQuerySource -> {
-                    return "An alias"
-                }
-                is LetClause -> {
-                    return "A let"
-                }
-                is OperandDef -> {
-                    return "An operand"
-                }
-                is UsingDef -> {
-                    return "A using"
-                }
-                is Literal -> {
-                    return "A literal"
-                }
+            return when (element) {
+                is ExpressionDef -> "An expression"
+                is ParameterDef -> "A parameter"
+                is ValueSetDef -> "A valueset"
+                is CodeSystemDef -> "A codesystem"
+                is CodeDef -> "A code"
+                is ConceptDef -> "A concept"
+                is IncludeDef -> "An include"
+                is AliasedQuerySource -> "An alias"
+                is LetClause -> "A let"
+                is OperandDef -> "An operand"
+                is UsingDef -> "A using"
+                is Literal -> "A literal"
                 // default message if no match is made:
-                else -> return "An [unknown structure]"
+                else -> "An [unknown structure]"
             }
         }
     }

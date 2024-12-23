@@ -28,13 +28,11 @@ class StringLibrarySourceProvider(private val libraries: List<String>) : Library
                 matches.add(library)
             }
         }
-        if (matches.size > 1) {
-            throw IllegalArgumentException(
-                String.format(
-                    Locale.US,
-                    "Multiple libraries for id : %s resolved.%nEnsure that there are no duplicates in the input set.",
-                    libraryIdentifier.toString()
-                )
+        require(matches.size <= 1) {
+            String.format(
+                Locale.US,
+                "Multiple libraries for id : %s resolved.%nEnsure that there are no duplicates in the input set.",
+                libraryIdentifier.toString()
             )
         }
         return if (matches.size == 1) ByteArrayInputStream(matches[0].toByteArray()) else null

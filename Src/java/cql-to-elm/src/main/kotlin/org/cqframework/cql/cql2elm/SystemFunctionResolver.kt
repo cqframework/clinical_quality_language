@@ -11,11 +11,10 @@ import org.cqframework.cql.cql2elm.model.invocation.DateTimeInvocation.Companion
 import org.cqframework.cql.cql2elm.model.invocation.TimeInvocation.Companion.setTimeFieldsFromOperands
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.cqframework.cql.cql2elm.tracking.Trackable.trackbacks
-import org.cqframework.cql.elm.IdObjectFactory
 import org.hl7.elm.r1.*
 
 @Suppress("LargeClass", "TooManyFunctions")
-class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFactory?) {
+class SystemFunctionResolver(private val builder: LibraryBuilder) {
     private val of = builder.objectFactory
 
     @Suppress("LongMethod", "CyclomaticComplexMethod", "NestedBlockDepth", "ReturnCount")
@@ -111,15 +110,15 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
                             builder.findConversion(
                                 op.resultType!!,
                                 builder.resolveTypeName("System", "Date")!!,
-                                true,
-                                false
+                                implicit = true,
+                                allowPromotionAndDemotion = false
                             )
                         val dateTimeConversion =
                             builder.findConversion(
                                 op.resultType!!,
                                 builder.resolveTypeName("System", "DateTime")!!,
-                                true,
-                                false
+                                implicit = true,
+                                allowPromotionAndDemotion = false
                             )
                         op =
                             when {
