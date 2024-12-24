@@ -8,8 +8,6 @@ import org.junit.jupiter.api.Test;
 public class ElmXmlutilTest {
 
     @Test
-    @Disabled(
-            "TODO: Polymorphic serializer for class org.hl7.elm.r1.ChoiceTypeSpecifier (Kotlin reflection is not available) has property 'type' that conflicts with JSON class discriminator. You can either change class discriminator in JsonConfiguration, rename property with @SerialName annotation or fall back to array polymorphism")
     void deserializeReserializeElmJson() {
         var elm =
                 """
