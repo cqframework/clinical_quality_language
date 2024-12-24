@@ -2,7 +2,6 @@
 
 package org.cqframework.cql.cql2elm
 
-import java.util.*
 import kotlin.collections.ArrayList
 import org.cqframework.cql.cql2elm.model.Invocation
 import org.cqframework.cql.cql2elm.model.invocation.*
@@ -124,12 +123,11 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
                             when {
                                 dateConversion != null && dateTimeConversion != null -> {
                                     require(dateConversion.score != dateTimeConversion.score) {
-                                        "Ambiguous implicit conversion from %s to %s or %s."
-                                            .format(
-                                                op.resultType.toString(),
-                                                dateConversion.toType.toString(),
-                                                dateTimeConversion.toType.toString()
-                                            )
+                                        """Ambiguous implicit conversion from
+                                            |${op.resultType} to ${dateConversion.toType}
+                                            |or ${dateTimeConversion}."""
+                                            .trimMargin()
+                                            .replace("\n", "")
                                     }
 
                                     if (dateConversion.score < dateTimeConversion.score) {
@@ -711,7 +709,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
 
     private fun checkNumberOfOperands(functionRef: FunctionRef, expectedOperands: Int) {
         require(functionRef.operand.size == expectedOperands) {
-            "Could not resolve call to system operator ${functionRef.name}.  Expected ${expectedOperands} arguments."
+            "Could not resolve call to system operator ${functionRef.name}.  Expected $expectedOperands arguments."
         }
     }
 

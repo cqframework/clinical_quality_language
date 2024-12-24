@@ -1,7 +1,5 @@
 package org.hl7.cql.model
 
-import java.util.*
-
 data class ClassTypeElement(
     val name: String,
     val type: DataType,
@@ -21,11 +19,11 @@ data class ClassTypeElement(
         this.name == that.name && type.isSuperTypeOf(that.type)
 
     override fun toString(): String {
-        return "$name:$type$%s%s%s"
-            .format(
-                if (this.prohibited) " (prohibited)" else "",
-                if (this.oneBased) " (one-based)" else "",
-                if (this.target != null) " (target: " + this.target + ")" else ""
-            )
+        return """$name:$type
+            |${if (this.prohibited) " (prohibited)" else ""}
+            |${if (this.oneBased) " (one-based)" else ""}
+            |${if (this.target != null) " (target: " + this.target + ")" else ""}"""
+            .trimMargin()
+            .replace("\n", "")
     }
 }

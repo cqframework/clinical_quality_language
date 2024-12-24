@@ -50,7 +50,8 @@ object StringEscapeUtils {
                     // '\u0020'..'\u007E' are printable ASCII characters
                     ESCAPE_MAP[char]
                         ?: if (char !in '\u0020'..'\u007E') {
-                            "\\u%04x".format(char.code)
+                            @Suppress("MagicNumber")
+                            "\\u${char.code.toString(HEX_RADIX).padStart(4, '0')}"
                         } else {
                             char
                         }
