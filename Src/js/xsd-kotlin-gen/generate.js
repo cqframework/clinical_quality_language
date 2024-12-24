@@ -319,10 +319,8 @@ function renderWith (field, className, type, override = 'open') {
     if (isList) {
         return `
                             ${override} fun with${firstLetterToUpperCase(field.attributes.name)}(vararg values: ${type}?): ${className} {
-                                if (values != null) {
-                                    for (value in values) {
-                                        this.${makeFieldName(field.attributes.name)}!!.add(value)
-                                    }
+                                for (value in values) {
+                                    this.${makeFieldName(field.attributes.name)}!!.add(value)
                                 }
                                 return this
                             }

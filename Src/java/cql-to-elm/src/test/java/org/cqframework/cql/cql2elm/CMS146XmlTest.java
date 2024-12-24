@@ -13,7 +13,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.xmlunit.assertj.XmlAssert;
 
-@Disabled("TODO: These are failing due to the namespaces not matching. Previously, these were in a a package-info.java file.")
+@Disabled(
+        "TODO: These are failing due to the namespaces not matching. Previously, these were in a a package-info.java file.")
 class CMS146XmlTest {
 
     private static Object[][] sigFileAndSigLevel() {
