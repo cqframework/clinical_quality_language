@@ -15,6 +15,7 @@ import javax.xml.namespace.QName;
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.ModelManager;
+import org.cqframework.cql.cql2elm.tracking.Trackable;
 import org.hl7.elm.r1.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -46,7 +47,9 @@ class TypeOperatorsTest {
         assertThat(as.getAsTypeSpecifier(), instanceOf(NamedTypeSpecifier.class));
         NamedTypeSpecifier spec = (NamedTypeSpecifier) as.getAsTypeSpecifier();
         assertThat(spec.getName(), is(new QName("urn:hl7-org:elm-types:r1", "Boolean")));
-        assertThat(spec.getResultType().toString(), is("System.Boolean"));
+
+        var resultType = Trackable.INSTANCE.getResultType(spec);
+        assertThat(resultType.toString(), is("System.Boolean"));
         // assertThat(as.getAsType(), is(new QName("urn:hl7-org:elm-types:r1", "Boolean")));
     }
 
@@ -59,7 +62,9 @@ class TypeOperatorsTest {
         assertThat(as.getAsTypeSpecifier(), instanceOf(NamedTypeSpecifier.class));
         NamedTypeSpecifier spec = (NamedTypeSpecifier) as.getAsTypeSpecifier();
         assertThat(spec.getName(), is(new QName("urn:hl7-org:elm-types:r1", "Boolean")));
-        assertThat(spec.getResultType().toString(), is("System.Boolean"));
+
+        var resultType = Trackable.INSTANCE.getResultType(spec);
+        assertThat(resultType.toString(), is("System.Boolean"));
         // assertThat(as.getAsType(), is(new QName("urn:hl7-org:elm-types:r1", "Boolean")));
     }
 
@@ -72,7 +77,9 @@ class TypeOperatorsTest {
         assertThat(is.getIsTypeSpecifier(), instanceOf(NamedTypeSpecifier.class));
         NamedTypeSpecifier spec = (NamedTypeSpecifier) is.getIsTypeSpecifier();
         assertThat(spec.getName(), is(new QName("urn:hl7-org:elm-types:r1", "Boolean")));
-        assertThat(spec.getResultType().toString(), is("System.Boolean"));
+
+        var resultType = Trackable.INSTANCE.getResultType(spec);
+        assertThat(resultType.toString(), is("System.Boolean"));
         // assertThat(is.getIsType(), is(new QName("urn:hl7-org:elm-types:r1", "Boolean")));
     }
 
@@ -643,7 +650,9 @@ class TypeOperatorsTest {
         assertThat(toConcept.getOperand(), instanceOf(ExpressionRef.class));
         ExpressionRef ref = (ExpressionRef) toConcept.getOperand();
         assertThat(ref.getName(), is("MyCode"));
-        assertThat(ref.getResultType().toString(), is("System.Code"));
+
+        var resultType = Trackable.INSTANCE.getResultType(ref);
+        assertThat(resultType.toString(), is("System.Code"));
         // validateTyping(toConcept, new QName("urn:hl7-org:elm-types:r1", "Concept"));
 
         def = defs.get("CodesToConcept");
@@ -652,7 +661,9 @@ class TypeOperatorsTest {
         assertThat(toConcept.getOperand(), instanceOf(ExpressionRef.class));
         ref = (ExpressionRef) toConcept.getOperand();
         assertThat(ref.getName(), is("MyCodes"));
-        assertThat(ref.getResultType().toString(), is("list<System.Code>"));
+
+        resultType = Trackable.INSTANCE.getResultType(ref);
+        assertThat(resultType.toString(), is("list<System.Code>"));
         // validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Concept"));
     }
 
@@ -664,7 +675,9 @@ class TypeOperatorsTest {
         assertThat(convert.getOperand(), instanceOf(ExpressionRef.class));
         ExpressionRef ref = (ExpressionRef) convert.getOperand();
         assertThat(ref.getName(), is("MyCode"));
-        assertThat(ref.getResultType().toString(), is("System.Code"));
+
+        var resultType = Trackable.INSTANCE.getResultType(ref);
+        assertThat(resultType.toString(), is("System.Code"));
         // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Concept")));
         // assertThat(convert.getToTypeSpecifier(), nullValue());
 
@@ -674,7 +687,9 @@ class TypeOperatorsTest {
         assertThat(convert.getOperand(), instanceOf(ExpressionRef.class));
         ref = (ExpressionRef) convert.getOperand();
         assertThat(ref.getName(), is("MyCodes"));
-        assertThat(ref.getResultType().toString(), is("list<System.Code>"));
+
+        resultType = Trackable.INSTANCE.getResultType(ref);
+        assertThat(resultType.toString(), is("list<System.Code>"));
         // assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Concept")));
         // assertThat(convert.getToTypeSpecifier(), nullValue());
     }

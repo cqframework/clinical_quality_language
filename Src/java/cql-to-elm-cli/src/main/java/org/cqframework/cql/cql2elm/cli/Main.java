@@ -18,7 +18,7 @@ import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
 import org.cqframework.cql.cql2elm.*;
 import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider;
-import org.cqframework.cql.elm.tracking.TrackBack;
+import org.cqframework.cql.cql2elm.tracking.TrackBack;
 import org.hl7.cql.model.ModelIdentifier;
 import org.hl7.cql.model.ModelInfoProvider;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
@@ -265,7 +265,7 @@ public class Main {
                             options.has(validateUnits),
                             options.has(disableDefaultModelInfoLoad),
                             signatureLevel,
-                            options.has(compatibilityLevel) ? options.valueOf(compatibilityLevel) : null));
+                            options.has(compatibilityLevel) ? options.valueOf(compatibilityLevel) : "1.5"));
         }
     }
 }

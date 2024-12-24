@@ -3,7 +3,9 @@ package org.opencds.cqf.cql.engine.execution;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Map;
+import org.cqframework.cql.cql2elm.LibraryContentType;
 import org.cqframework.cql.cql2elm.LibrarySourceProvider;
+import org.hl7.elm.r1.VersionedIdentifier;
 
 /**
  * This class provides CQL content for a given VersionedIdentifier based on a
@@ -21,5 +23,14 @@ public class MapLibrarySourceProvider implements LibrarySourceProvider {
     public InputStream getLibrarySource(org.hl7.elm.r1.VersionedIdentifier libraryIdentifier) {
         String text = this.libraries.get(libraryIdentifier);
         return new ByteArrayInputStream(text.getBytes());
+    }
+
+    @Override
+    public InputStream getLibraryContent(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
+        if (LibraryContentType.CQL == type) {
+            return getLibrarySource(libraryIdentifier);
+        }
+
+        return null;
     }
 }
