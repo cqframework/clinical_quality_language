@@ -20,7 +20,6 @@ import org.hl7.cql_annotations.r1.CqlToElmError;
 import org.hl7.elm.r1.*;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -513,7 +512,6 @@ class LibraryTests {
     }
 
     @Test
-    @Disabled("This fails")
     void forwardDeclarationsNormalType() throws IOException {
         final CqlTranslator translator =
                 TestUtils.createTranslatorFromStream("LibraryTests/TestForwardDeclarationNormalType.cql");
@@ -525,7 +523,6 @@ class LibraryTests {
     }
 
     @Test
-    @Disabled("This fails")
     void forwardDeclarationsGenericType() throws IOException {
         final CqlTranslator translator =
                 TestUtils.createTranslatorFromStream("LibraryTests/TestForwardDeclarationGenericType.cql");
