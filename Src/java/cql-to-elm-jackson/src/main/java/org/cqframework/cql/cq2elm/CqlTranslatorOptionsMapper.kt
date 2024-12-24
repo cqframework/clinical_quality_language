@@ -22,9 +22,7 @@ object CqlTranslatorOptionsMapper {
             return fromReader(fr)
         } catch (@Suppress("SwallowedException") e: IOException) {
             @Suppress("TooGenericExceptionThrown")
-            throw RuntimeException(
-                String.format(Locale.US, "Errors occurred reading options: %s", e.message)
-            )
+            throw RuntimeException("Errors occurred reading options: ${e.message}", e)
         }
     }
 
@@ -34,9 +32,7 @@ object CqlTranslatorOptionsMapper {
             return om.readValue(reader, CqlTranslatorOptions::class.java)
         } catch (@Suppress("SwallowedException") e: IOException) {
             @Suppress("TooGenericExceptionThrown")
-            throw RuntimeException(
-                String.format(Locale.US, "Errors occurred reading options: %s", e.message)
-            )
+            throw RuntimeException("Errors occurred reading options: ${e.message}", e)
         }
     }
 
@@ -48,9 +44,7 @@ object CqlTranslatorOptionsMapper {
             toWriter(fw, options)
         } catch (@Suppress("SwallowedException") e: IOException) {
             @Suppress("TooGenericExceptionThrown")
-            throw RuntimeException(
-                String.format(Locale.US, "Errors occurred writing options: %s", e.message)
-            )
+            throw RuntimeException("Errors occurred writing options: ${e.message}", e)
         }
     }
 
@@ -61,9 +55,7 @@ object CqlTranslatorOptionsMapper {
             om.writeValue(writer, options)
         } catch (@Suppress("SwallowedException") e: IOException) {
             @Suppress("TooGenericExceptionThrown")
-            throw RuntimeException(
-                String.format(Locale.US, "Errors occurred writing options: %s", e.message)
-            )
+            throw RuntimeException("Errors occurred writing options: ${e.message}", e)
         }
     }
 }

@@ -29,11 +29,9 @@ class StringLibrarySourceProvider(private val libraries: List<String>) : Library
             }
         }
         require(matches.size <= 1) {
-            String.format(
-                Locale.US,
-                "Multiple libraries for id : %s resolved.%nEnsure that there are no duplicates in the input set.",
-                libraryIdentifier.toString()
-            )
+            """"Multiple libraries for id : ${libraryIdentifier.toString()} resolved.
+                    Ensure that there are no duplicates in the input set."""
+                .trimMargin()
         }
         return if (matches.size == 1) ByteArrayInputStream(matches[0].toByteArray()) else null
     }

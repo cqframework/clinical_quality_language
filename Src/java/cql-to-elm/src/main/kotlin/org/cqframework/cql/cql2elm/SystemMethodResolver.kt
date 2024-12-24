@@ -41,12 +41,7 @@ class SystemMethodResolver(
             actualCount = ctx.expression().size
         }
         require(actualCount == expectedCount) {
-            String.format(
-                Locale.US,
-                "Expected %s argument for method %s.",
-                Integer.valueOf(expectedCount).toString(),
-                functionName
-            )
+            "Expected ${Integer.valueOf(expectedCount)} argument for method $functionName."
         }
     }
 

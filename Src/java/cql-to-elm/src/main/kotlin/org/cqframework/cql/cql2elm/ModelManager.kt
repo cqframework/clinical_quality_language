@@ -214,9 +214,7 @@ class ModelManager {
     }
 
     private fun pushLoading(modelId: String) {
-        require(!loadingModels.contains(modelId)) {
-            String.format(Locale.US, "Circular model reference %s", modelId)
-        }
+        require(!loadingModels.contains(modelId)) { "Circular model reference $modelId" }
         loadingModels.add(modelId)
     }
 
@@ -260,20 +258,15 @@ class ModelManager {
             !(modelIdentifier.version != null &&
                 modelIdentifier.version != model!!.modelInfo.version)
         ) {
-            String.format(
-                Locale.US,
-                "Could not load model information for model %s, version %s because version %s is already loaded.",
-                modelIdentifier.id,
-                modelIdentifier.version,
-                model!!.modelInfo.version
-            )
+            "Could not load model information for model ${modelIdentifier.id}, version ${modelIdentifier.version}" +
+                " because version ${model!!.modelInfo.version} is already loaded."
         }
     }
 
     fun resolveModelByUri(namespaceUri: String): Model {
         return modelsByUri[namespaceUri]
             ?: throw IllegalArgumentException(
-                String.format(Locale.US, "Could not resolve model with namespace %s", namespaceUri)
+                "Could not resolve model with namespace $namespaceUri"
             )
     }
 }

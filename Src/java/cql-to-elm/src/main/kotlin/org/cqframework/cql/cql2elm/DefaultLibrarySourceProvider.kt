@@ -22,9 +22,7 @@ class DefaultLibrarySourceProvider(path: Path) : LibrarySourceProvider, PathAwar
     }
 
     override fun setPath(path: Path) {
-        require(path.toFile().isDirectory) {
-            String.format(Locale.US, "path '%s' is not a valid directory", path)
-        }
+        require(path.toFile().isDirectory) { "path '$path' is not a valid directory" }
         this.path = path
     }
 
@@ -35,13 +33,10 @@ class DefaultLibrarySourceProvider(path: Path) : LibrarySourceProvider, PathAwar
             val libraryName: String = libraryIdentifier.id
             val libraryPath: Path =
                 currentPath.resolve(
-                    String.format(
-                        Locale.US,
-                        "%s%s.cql",
-                        libraryName,
+                    "$libraryName${
                         if (libraryIdentifier.version != null) ("-" + libraryIdentifier.version)
                         else ""
-                    )
+                    }.cql"
                 )
             var libraryFile: File? = libraryPath.toFile()
             if (libraryFile?.exists() != true) {
@@ -106,11 +101,7 @@ class DefaultLibrarySourceProvider(path: Path) : LibrarySourceProvider, PathAwar
                 }
             } catch (e: FileNotFoundException) {
                 throw IllegalArgumentException(
-                    String.format(
-                        Locale.US,
-                        "Could not load source for library %s.",
-                        libraryIdentifier.id
-                    ),
+                    "Could not load source for library ${libraryIdentifier.id}.",
                     e
                 )
             }

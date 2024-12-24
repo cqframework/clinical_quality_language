@@ -3,7 +3,6 @@
 package org.cqframework.cql.cql2elm
 
 import java.io.*
-import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
@@ -103,12 +102,8 @@ constructor(
             val cqlSource: InputStream =
                 librarySourceLoader.getLibrarySource(libraryIdentifier)
                     ?: throw CqlIncludeException(
-                        String.format(
-                            Locale.US,
-                            "Could not load source for library %s, version %s.",
-                            libraryIdentifier.id,
-                            libraryIdentifier.version
-                        ),
+                        """Could not load source for library ${libraryIdentifier.id},
+                                 version ${libraryIdentifier.version}.""",
                         libraryIdentifier.system,
                         libraryIdentifier.id,
                         libraryIdentifier.version
@@ -127,13 +122,8 @@ constructor(
                     libraryIdentifier.version != result!!.identifier!!.version)
             ) {
                 throw CqlIncludeException(
-                    String.format(
-                        Locale.US,
-                        "Library %s was included as version %s, but version %s of the library was found.",
-                        libraryPath,
-                        libraryIdentifier.version,
-                        result.identifier!!.version
-                    ),
+                    """Library $libraryPath was included as version ${libraryIdentifier.version}, 
+                        but version ${result.identifier!!.version} of the library was found.""",
                     libraryIdentifier.system,
                     libraryIdentifier.id,
                     libraryIdentifier.version
@@ -141,12 +131,7 @@ constructor(
             }
         } catch (e: IOException) {
             throw CqlIncludeException(
-                String.format(
-                    Locale.US,
-                    "Errors occurred translating library %s, version %s.",
-                    libraryPath,
-                    libraryIdentifier.version
-                ),
+                "Errors occurred translating library $libraryPath, version ${libraryIdentifier.version}.",
                 libraryIdentifier.system,
                 libraryIdentifier.id,
                 libraryIdentifier.version,
@@ -155,12 +140,7 @@ constructor(
         }
         if (result == null) {
             throw CqlIncludeException(
-                String.format(
-                    Locale.US,
-                    "Could not load source for library %s, version %s.",
-                    libraryPath,
-                    libraryIdentifier.version
-                ),
+                "Could not load source for library $libraryPath, version ${libraryIdentifier.version}.",
                 libraryIdentifier.system,
                 libraryIdentifier.id,
                 libraryIdentifier.version

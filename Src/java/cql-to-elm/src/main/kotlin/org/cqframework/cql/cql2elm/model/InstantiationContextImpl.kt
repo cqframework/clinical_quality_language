@@ -144,11 +144,7 @@ class InstantiationContextImpl(
         val result =
             typeMap[parameter]
                 ?: throw IllegalArgumentException(
-                    String.format(
-                        Locale.US,
-                        "Could not resolve type parameter %s.",
-                        parameter.identifier
-                    )
+                    "Could not resolve type parameter ${parameter.identifier}."
                 )
 
         return result

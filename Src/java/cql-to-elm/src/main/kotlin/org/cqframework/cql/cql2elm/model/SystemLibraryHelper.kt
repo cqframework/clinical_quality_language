@@ -2947,7 +2947,7 @@ object SystemLibraryHelper {
         var n = 0
         for (dataType in operator.signature.operandTypes) {
             n++
-            val od = OperandDef().withName(String.format(Locale.US, "param%d", n))
+            val od = OperandDef().withName("param${n}")
             if (dataType is NamedType) {
                 od.operandType = tb.dataTypeToQName(dataType)
             } else {

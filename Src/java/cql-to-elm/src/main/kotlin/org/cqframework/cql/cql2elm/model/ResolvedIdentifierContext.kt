@@ -40,12 +40,7 @@ private constructor(
     fun warnCaseInsensitiveIfApplicable(): String? {
         if (element != null && !isExactMatch) {
             return getName(element)?.let {
-                String.format(
-                    Locale.US,
-                    "Could not find identifier: [%s].  Did you mean [%s]?",
-                    identifier,
-                    it
-                )
+                "Could not find identifier: [$identifier].  Did you mean [$it]?"
             }
         }
 

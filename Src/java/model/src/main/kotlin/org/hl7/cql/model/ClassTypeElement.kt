@@ -23,7 +23,6 @@ data class ClassTypeElement(
     override fun toString(): String {
         return "$name:$type$%s%s%s"
             .format(
-                Locale.US,
                 if (this.prohibited) " (prohibited)" else "",
                 if (this.oneBased) " (one-based)" else "",
                 if (this.target != null) " (target: " + this.target + ")" else ""

@@ -31,9 +31,7 @@ class PriorityLibrarySourceLoader : LibrarySourceLoader, NamespaceAware, PathAwa
     private var path: Path? = null
 
     override fun setPath(path: Path) {
-        require(path.toFile().isDirectory) {
-            String.format(Locale.US, "path '%s' is not a valid directory", path)
-        }
+        require(path.toFile().isDirectory) { "path '$path' is not a valid directory" }
         this.path = path
         for (provider in getProviders()) {
             if (provider is PathAware) {

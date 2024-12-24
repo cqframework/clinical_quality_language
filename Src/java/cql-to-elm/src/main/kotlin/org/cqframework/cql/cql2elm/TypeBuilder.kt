@@ -73,9 +73,7 @@ class TypeBuilder(private val of: IdObjectFactory, private val mr: ModelResolver
                 return typeParameterToTypeSpecifier(type)
             }
             else -> {
-                throw IllegalArgumentException(
-                    String.format(Locale.US, "Could not convert type %s to a type specifier.", type)
-                )
+                throw IllegalArgumentException("Could not convert type $type to a type specifier.")
             }
         }
     }

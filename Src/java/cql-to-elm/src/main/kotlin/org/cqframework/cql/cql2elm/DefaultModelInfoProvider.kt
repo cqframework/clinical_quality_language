@@ -25,9 +25,7 @@ class DefaultModelInfoProvider() : ModelInfoProvider, PathAware {
     private var path: Path? = null
 
     override fun setPath(path: Path) {
-        require(path.toFile().isDirectory) {
-            String.format(Locale.US, "path '%s' is not a valid directory", path)
-        }
+        require(path.toFile().isDirectory) { "path '$path' is not a valid directory" }
         this.path = path
     }
 
@@ -46,18 +44,12 @@ class DefaultModelInfoProvider() : ModelInfoProvider, PathAware {
             val modelVersion = modelIdentifier.version
             val modelPath =
                 currentPath.resolve(
-                    String.format(
-                        Locale.US,
-                        "%s-modelinfo%s.xml",
-                        modelName.lowercase(Locale.getDefault()),
-                        if (modelVersion != null) "-$modelVersion" else ""
-                    )
+                    "${modelName.lowercase()}-modelinfo${if (modelVersion != null) "-$modelVersion" else ""}.xml"
                 )
             var modelFile: File? = modelPath.toFile()
             if (modelFile?.exists() != true) {
                 val filter = FilenameFilter { path, name ->
-                    name.startsWith(modelName.lowercase(Locale.getDefault()) + "-modelinfo") &&
-                        name.endsWith(".xml")
+                    name.startsWith(modelName.lowercase() + "-modelinfo") && name.endsWith(".xml")
                 }
                 var mostRecentFile: File? = null
                 var mostRecent: Version? = null
@@ -112,11 +104,7 @@ class DefaultModelInfoProvider() : ModelInfoProvider, PathAware {
                 return ModelInfoReaderFactory.getReader("application/xml")?.read(inputStream)
             } catch (e: IOException) {
                 throw IllegalArgumentException(
-                    String.format(
-                        Locale.US,
-                        "Could not load definition for model info %s.",
-                        modelIdentifier.id
-                    ),
+                    "Could not load definition for model info ${modelIdentifier.id}.",
                     e
                 )
             }

@@ -171,13 +171,7 @@ class LibraryBuilder(
             "Internal Translator Error: feature name is required to perform a compatibility check"
         }
         require(isCompatibleWith(sinceCompatibilityLevel)) {
-            String.format(
-                Locale.US,
-                "Feature %s was introduced in version %s and so cannot be used at compatibility level %s",
-                featureName,
-                sinceCompatibilityLevel,
-                compatibilityLevel
-            )
+            "Feature $featureName was introduced in version $sinceCompatibilityLevel and so cannot be used at compatibility level $compatibilityLevel"
         }
     }
 
@@ -217,13 +211,7 @@ class LibraryBuilder(
         require(
             !(modelIdentifier.version != null && modelIdentifier.version != model.modelInfo.version)
         ) {
-            String.format(
-                Locale.US,
-                "Could not load model information for model %s, version %s because version %s is already loaded.",
-                modelIdentifier.id,
-                modelIdentifier.version,
-                model.modelInfo.version
-            )
+            "Could not load model information for model ${modelIdentifier.id}, version ${modelIdentifier.version} because version ${model.modelInfo.version} is already loaded."
         }
         return model
     }
@@ -290,13 +278,7 @@ class LibraryBuilder(
                 val modelResult: ClassType? = model!!.resolveLabel(label)
                 if (modelResult != null) {
                     require(result == null) {
-                        String.format(
-                            Locale.US,
-                            "Label %s is ambiguous between %s and %s.",
-                            label,
-                            (result as ClassType).label,
-                            modelResult.label
-                        )
+                        "Label $label is ambiguous between ${(result as ClassType).label} and ${modelResult.label}."
                     }
                     result = modelResult
                 }
@@ -325,13 +307,7 @@ class LibraryBuilder(
                 val modelResult: ModelContext? = model!!.resolveContextName(contextName)
                 if (modelResult != null) {
                     require(result == null) {
-                        String.format(
-                            Locale.US,
-                            "Context name %s is ambiguous between %s and %s.",
-                            contextName,
-                            (result as ModelContext).name,
-                            modelResult.name
-                        )
+                        "Context name $contextName is ambiguous between ${(result as ModelContext).name} and ${modelResult.name}."
                     }
                     result = modelResult
                 }
@@ -365,13 +341,7 @@ class LibraryBuilder(
                     val modelResult: DataType? = model!!.resolveTypeName(typeName)
                     if (modelResult != null) {
                         require(result == null) {
-                            String.format(
-                                Locale.US,
-                                "Type name %s is ambiguous between %s and %s.",
-                                typeName,
-                                (result as NamedType).name,
-                                (modelResult as NamedType).name
-                            )
+                            "Type name $typeName is ambiguous between ${(result as NamedType).name} and ${(modelResult as NamedType).name}."
                         }
                         result = modelResult
                     }
@@ -395,12 +365,7 @@ class LibraryBuilder(
                     // being done with preprocessor directives,
                     // but that's a whole other project in and of itself.
                     require(!(!isCompatibleWith("1.5") && !isFHIRHelpers(compiledLibrary))) {
-                        String.format(
-                            Locale.US,
-                            "The type %s was introduced in CQL 1.5 and cannot be referenced at compatibility level %s",
-                            (result as NamedType).name,
-                            compatibilityLevel
-                        )
+                        "The type ${(result as NamedType).name} was introduced in CQL 1.5 and cannot be referenced at compatibility level $compatibilityLevel"
                     }
             }
         }
@@ -466,9 +431,7 @@ class LibraryBuilder(
             // Special case for FHIR-derived models that include FHIR Helpers
             return modelManager.resolveModelByUri("http://hl7.org/fhir")
         }
-        requireNotNull(usingDef) {
-            String.format(Locale.US, "Could not resolve model name %s", modelName)
-        }
+        requireNotNull(usingDef) { "Could not resolve model name $modelName" }
         return getModel(usingDef)
     }
 
@@ -503,15 +466,13 @@ class LibraryBuilder(
             checkLiteralContext()
         }
         return libraries[identifier]
-            ?: throw IllegalArgumentException(
-                String.format(Locale.US, "Could not resolve library name %s.", identifier)
-            )
+            ?: throw IllegalArgumentException("Could not resolve library name $identifier.")
     }
 
     fun resolveNamespaceUri(namespaceName: String, mustResolve: Boolean): String? {
         val namespaceUri = libraryManager.namespaceManager.resolveNamespaceUri(namespaceName)
         require(!(namespaceUri == null && mustResolve)) {
-            String.format(Locale.US, "Could not resolve namespace name %s", namespaceName)
+            "Could not resolve namespace name $namespaceName"
         }
         return namespaceUri
     }
@@ -557,10 +518,7 @@ class LibraryBuilder(
                     errorSeverity == CqlCompilerException.ErrorSeverity.Error)
             CqlCompilerException.ErrorSeverity.Error ->
                 errorSeverity == CqlCompilerException.ErrorSeverity.Error
-            else ->
-                throw IllegalArgumentException(
-                    String.format(Locale.US, "Unknown error severity %s", errorSeverity.toString())
-                )
+            else -> throw IllegalArgumentException("Unknown error severity $errorSeverity")
         }
     }
 
@@ -1405,12 +1363,7 @@ class LibraryBuilder(
         val dataTypes: MutableList<DataType> = ArrayList()
         for (operand in operands) {
             require(!(operand == null || operand.resultType == null)) {
-                String.format(
-                    Locale.US,
-                    "Could not determine signature for invocation of operator %s%s.",
-                    if (libraryName == null) "" else "$libraryName.",
-                    operatorName
-                )
+                "Could not determine signature for invocation of operator ${if (libraryName == null) "" else "$libraryName."}$operatorName."
             }
             dataTypes.add(operand.resultType!!)
         }
@@ -1482,15 +1435,17 @@ class LibraryBuilder(
             // resolution with system functions
             // WARNING:
             reportWarning(
-                String.format(
-                    "The function %s.%s has multiple overloads and due to the SignatureLevel setting (%s), " +
-                        "the overload signature is not being included in the output. This may result in ambiguous function resolution " +
-                        "at runtime, consider setting the SignatureLevel to Overloads or All to ensure that the output includes sufficient " +
-                        "information to support correct overload selection at runtime.",
-                    resolution.operator.libraryName,
-                    resolution.operator.name,
-                    options.signatureLevel.name
-                ),
+                """
+                    The function ${resolution.operator.libraryName}.${resolution.operator.name} has multiple overloads
+                    and due to the SignatureLevel setting (${options.signatureLevel.name}),
+                    the overload signature is not being included in the output.
+                    This may result in ambiguous function resolution
+                    at runtime, consider setting the SignatureLevel to Overloads or All
+                    to ensure that the output includes sufficient
+                    information to support correct overload selection at runtime.
+                """
+                    .trimIndent()
+                    .replace("\n", " "),
                 invocation.expression
             )
         }
@@ -1519,12 +1474,7 @@ class LibraryBuilder(
         val dataTypes: MutableList<DataType> = ArrayList()
         for (operand in fd.operand) {
             require(!(operand == null || operand.resultType == null)) {
-                String.format(
-                    Locale.US,
-                    "Could not determine signature for invocation of operator %s%s.",
-                    if (libraryName == null) "" else "$libraryName.",
-                    operatorName
-                )
+                "Could not determine signature for invocation of operator ${if (libraryName == null) "" else "$libraryName."}$operatorName."
             }
             dataTypes.add(operand.resultType!!)
         }
@@ -1599,30 +1549,15 @@ class LibraryBuilder(
     private fun checkOperator(callContext: CallContext, resolution: OperatorResolution?) {
         requireNotNull(resolution) {
             // ERROR:
-            String.format(
-                Locale.US,
-                "Could not resolve call to operator %s with signature %s.",
-                callContext.operatorName,
-                callContext.signature
-            )
+            "Could not resolve call to operator ${callContext.operatorName} with signature ${callContext.signature}."
         }
         require(!(resolution.operator.fluent && !callContext.allowFluent)) {
-            String.format(
-                Locale.US,
-                "Operator %s with signature %s is a fluent function and can only be invoked with fluent syntax.",
-                callContext.operatorName,
-                callContext.signature
-            )
+            "Operator ${callContext.operatorName} with signature ${callContext.signature} is a fluent function and can only be invoked with fluent syntax."
         }
         require(
             !(callContext.allowFluent && !resolution.operator.fluent && !resolution.allowFluent)
         ) {
-            String.format(
-                Locale.US,
-                "Invocation of operator %s with signature %s uses fluent syntax, but the operator is not defined as a fluent function.",
-                callContext.operatorName,
-                callContext.signature
-            )
+            "Invocation of operator ${callContext.operatorName} with signature ${callContext.signature} uses fluent syntax, but the operator is not defined as a fluent function."
         }
     }
 
@@ -1637,12 +1572,7 @@ class LibraryBuilder(
         ) {
             // ERROR:
             throw CqlSemanticException(
-                String.format(
-                    Locale.US,
-                    "Identifier %s in library %s is marked private and cannot be referenced from another library.",
-                    objectName,
-                    libraryName
-                )
+                "Identifier $objectName in library $libraryName is marked private and cannot be referenced from another library."
             )
         }
     }
@@ -2519,12 +2449,7 @@ class LibraryBuilder(
                         for (e: ClassTypeElement in classType.elements) {
                             if ((e.name == identifier)) {
                                 require(!e.prohibited) {
-                                    String.format(
-                                        Locale.US,
-                                        "Element %s cannot be referenced because it is marked prohibited in type %s.",
-                                        e.name,
-                                        (currentType as ClassType).name
-                                    )
+                                    "Element ${e.name} cannot be referenced because it is marked prohibited in type ${(currentType as ClassType).name}."
                                 }
                                 return PropertyResolution(e)
                             }
@@ -2547,11 +2472,7 @@ class LibraryBuilder(
                             PropertyResolution((resolveTypeName("System", "Boolean"))!!, identifier)
                         else -> // ERROR:
                         throw IllegalArgumentException(
-                                String.format(
-                                    Locale.US,
-                                    "Invalid interval property name %s.",
-                                    identifier
-                                )
+                                "Invalid interval property name $identifier."
                             )
                     }
                 }
@@ -2574,13 +2495,7 @@ class LibraryBuilder(
                                     require(
                                         resultTargetMaps[resolution.type] == resolution.targetMap
                                     ) {
-                                        String.format(
-                                            Locale.US,
-                                            "Inconsistent target maps %s and %s for choice type %s",
-                                            resultTargetMaps[resolution.type],
-                                            resolution.targetMap,
-                                            resolution.type
-                                        )
+                                        "Inconsistent target maps ${resultTargetMaps[resolution.type]} and ${resolution.targetMap} for choice type ${resolution.type}"
                                     }
                                 } else {
                                     resultTargetMaps[resolution.type] = resolution.targetMap
@@ -2590,13 +2505,7 @@ class LibraryBuilder(
                                 name = resolution.name
                             } else
                                 require(name == resolution.name) {
-                                    String.format(
-                                        Locale.US,
-                                        "Inconsistent property resolution for choice type %s (was %s, is %s)",
-                                        choice.toString(),
-                                        name,
-                                        resolution.name
-                                    )
+                                    "Inconsistent property resolution for choice type $choice (was $name, is ${resolution.name})"
                                 }
                         }
                     }
@@ -2629,12 +2538,7 @@ class LibraryBuilder(
         }
         require(!mustResolve) {
             // ERROR:
-            String.format(
-                Locale.US,
-                "Member %s not found for type %s.",
-                identifier,
-                sourceType?.toLabel()
-            )
+            "Member $identifier not found for type ${sourceType?.toLabel()}."
         }
         return null
     }
@@ -2718,11 +2622,7 @@ class LibraryBuilder(
                 expressionRef.resultType = getExpressionDefResultType(element)
                 requireNotNull(expressionRef.resultType) {
                     // ERROR:
-                    String.format(
-                        Locale.US,
-                        "Could not validate reference to expression %s because its definition contains errors.",
-                        expressionRef.name
-                    )
+                    "Could not validate reference to expression ${expressionRef.name} because its definition contains errors."
                 }
                 return expressionRef
             }
@@ -2733,11 +2633,7 @@ class LibraryBuilder(
                 parameterRef.resultType = element.resultType
                 requireNotNull(parameterRef.resultType) {
                     // ERROR:
-                    String.format(
-                        Locale.US,
-                        "Could not validate reference to parameter %s because its definition contains errors.",
-                        parameterRef.name
-                    )
+                    "Could not validate reference to parameter ${parameterRef.name} because its definition contains errors."
                 }
                 return parameterRef
             }
@@ -2748,11 +2644,7 @@ class LibraryBuilder(
                 valuesetRef.resultType = element.resultType
                 requireNotNull(valuesetRef.resultType) {
                     // ERROR:
-                    String.format(
-                        Locale.US,
-                        "Could not validate reference to valueset %s because its definition contains errors.",
-                        valuesetRef.name
-                    )
+                    "Could not validate reference to valueset ${valuesetRef.name} because its definition contains errors."
                 }
                 if (isCompatibleWith("1.5")) {
                     valuesetRef.isPreserve = true
@@ -2766,11 +2658,7 @@ class LibraryBuilder(
                 codesystemRef.resultType = element.resultType
                 requireNotNull(codesystemRef.resultType) {
                     // ERROR:
-                    String.format(
-                        Locale.US,
-                        "Could not validate reference to codesystem %s because its definition contains errors.",
-                        codesystemRef.name
-                    )
+                    "Could not validate reference to codesystem ${codesystemRef.name} because its definition contains errors."
                 }
                 return codesystemRef
             }
@@ -2780,11 +2668,7 @@ class LibraryBuilder(
                 codeRef.resultType = element.resultType
                 requireNotNull(codeRef.resultType) {
                     // ERROR:
-                    String.format(
-                        Locale.US,
-                        "Could not validate reference to code %s because its definition contains errors.",
-                        codeRef.name
-                    )
+                    "Could not validate reference to code ${codeRef.name} because its definition contains errors."
                 }
                 return codeRef
             }
@@ -2794,11 +2678,7 @@ class LibraryBuilder(
                 conceptRef.resultType = element.resultType
                 requireNotNull(conceptRef.resultType) {
                     // ERROR:
-                    String.format(
-                        Locale.US,
-                        "Could not validate reference to concept %s because its definition contains error.",
-                        conceptRef.name
-                    )
+                    "Could not validate reference to concept ${conceptRef.name} because its definition contains error."
                 }
                 return conceptRef
             }
@@ -2832,12 +2712,7 @@ class LibraryBuilder(
             // ERROR:
             var message = resolvedIdentifierContext.warnCaseInsensitiveIfApplicable()
             if (message == null) {
-                message =
-                    String.format(
-                        Locale.US,
-                        "Could not resolve identifier %s in the current library.",
-                        identifier
-                    )
+                message = "Could not resolve identifier $identifier in the current library."
             }
 
             throw IllegalArgumentException(message)
@@ -2869,11 +2744,7 @@ class LibraryBuilder(
                 parameterRef.resultType = contextParameter.resultType
                 requireNotNull(parameterRef.resultType) {
                     // ERROR:
-                    String.format(
-                        Locale.US,
-                        "Could not validate reference to parameter %s because its definition contains errors.",
-                        parameterRef.name
-                    )
+                    "Could not validate reference to parameter ${parameterRef.name} because its definition contains errors."
                 }
                 return parameterRef
             }
@@ -2924,15 +2795,11 @@ class LibraryBuilder(
                 if (model.modelInfo.targetUrl != null) {
                     if (result != null) {
                         reportWarning(
-                            String.format(
-                                Locale.US,
-                                "Duplicate mapped model %s:%s%s",
-                                model.modelInfo.name,
-                                model.modelInfo.targetUrl,
+                            "Duplicate mapped model ${model.modelInfo.name}:${model.modelInfo.targetUrl}${
                                 if (model.modelInfo.targetVersion != null)
                                     "|" + model.modelInfo.targetVersion
                                 else ""
-                            ),
+                            }",
                             sourceContext
                         )
                     }
@@ -3019,13 +2886,7 @@ class LibraryBuilder(
                 for (typeCase: String in typeCases) {
                     if (typeCase.isNotEmpty()) {
                         val splitIndex: Int = typeCase.indexOf(':')
-                        require(splitIndex > 0) {
-                            String.format(
-                                Locale.US,
-                                "Malformed type case in targetMap %s",
-                                targetMap
-                            )
-                        }
+                        require(splitIndex > 0) { "Malformed type case in targetMap $targetMap" }
                         val typeCaseElement: String = typeCase.substring(0, splitIndex)
                         val typeCaseType: DataType? = resolveTypeName(typeCaseElement)
                         val typeCaseMap: String = typeCase.substring(splitIndex + 1)
@@ -3183,28 +3044,17 @@ class LibraryBuilder(
                 for (path: String in indexerPaths) {
                     if ((path == "%parent")) {
                         require(source is Property) {
-                            String.format(
-                                Locale.US,
-                                "Cannot expand target map %s for non-property-accessor type %s",
-                                targetMap,
-                                source!!.javaClass.simpleName
-                            )
+                            "Cannot expand target map $targetMap for non-property-accessor type ${source!!.javaClass.simpleName}"
                         }
                         val sourceProperty: Property = source
                         result =
-                            if (sourceProperty.source != null) {
-                                sourceProperty.source
-                            } else if (sourceProperty.scope != null) {
-                                resolveIdentifier(sourceProperty.scope, true)
-                            } else {
-                                throw IllegalArgumentException(
-                                    String.format(
-                                        Locale.US,
-                                        "Cannot resolve %%parent reference in targetMap %s",
-                                        targetMap
-                                    )
-                                )
-                            }
+                            sourceProperty.source
+                                ?: sourceProperty.scope?.let {
+                                    resolveIdentifier(sourceProperty.scope, true)
+                                }
+                        requireNotNull(result) {
+                            "Cannot resolve %%parent reference in targetMap $targetMap"
+                        }
                     } else {
                         val p: Property =
                             objectFactory.createProperty().withSource(result).withPath(path)
@@ -3229,12 +3079,7 @@ class LibraryBuilder(
                             .dropLastWhile { it.isEmpty() }
                             .toTypedArray()
                     require(indexerItems.size == 2) {
-                        String.format(
-                            Locale.US,
-                            "Invalid indexer item %s in targetMap %s",
-                            indexerItem,
-                            targetMap
-                        )
+                        "Invalid indexer item $indexerItem in targetMap $targetMap"
                     }
                     var left: Expression? = null
                     for (path: String in
@@ -3399,9 +3244,7 @@ class LibraryBuilder(
                 }
             }
         }
-        throw IllegalArgumentException(
-            String.format(Locale.US, "TargetMapping not implemented: %s", targetMap)
-        )
+        throw IllegalArgumentException("TargetMapping not implemented: $targetMap")
     }
 
     @Suppress("LongMethod", "NestedBlockDepth", "CyclomaticComplexMethod")
@@ -3498,12 +3341,7 @@ class LibraryBuilder(
 
                 // ERROR:
                 throw IllegalArgumentException(
-                    String.format(
-                        Locale.US,
-                        "Could not resolve identifier %s in library %s.",
-                        memberIdentifier,
-                        referencedLibrary.identifier!!.id
-                    )
+                    "Could not resolve identifier $memberIdentifier in library ${referencedLibrary.identifier!!.id}."
                 )
             }
             left is AliasRef -> {
@@ -3695,12 +3533,7 @@ class LibraryBuilder(
             }
         }
         throw IllegalArgumentException(
-            String.format(
-                Locale.US,
-                "Invalid context reference from %s context to %s context.",
-                currentExpressionContext(),
-                expressionDef.context
-            )
+            "Invalid context reference from ${currentExpressionContext()} context to ${expressionDef.context} context."
         )
     }
 
@@ -3807,19 +3640,9 @@ class LibraryBuilder(
     ): String {
         val elementString = lookupElementWarning(element)
         return if (element is Literal) {
-            String.format(
-                Locale.US,
-                "You used a string literal: [%s] here that matches an identifier in scope: [%s]. Did you mean to use the identifier instead?",
-                identifierParam,
-                matchedIdentifier
-            )
+            "You used a string literal: [$identifierParam] here that matches an identifier in scope: [$matchedIdentifier]. Did you mean to use the identifier instead?"
         } else
-            String.format(
-                Locale.US,
-                "%s identifier [%s] is hiding another identifier of the same name.",
-                elementString,
-                identifierParam
-            )
+            "$elementString identifier [$identifierParam] is hiding another identifier of the same name."
     }
 
     private inner class Scope {
@@ -3863,11 +3686,7 @@ class LibraryBuilder(
     fun pushExpressionDefinition(identifier: String) {
         require(!expressionDefinitions.contains(identifier)) {
             // ERROR:
-            String.format(
-                Locale.US,
-                "Cannot resolve reference to expression or function %s because it results in a circular reference.",
-                identifier
-            )
+            "Cannot resolve reference to expression or function $identifier because it results in a circular reference."
         }
         expressionDefinitions.push(ExpressionDefinitionContext(identifier))
     }

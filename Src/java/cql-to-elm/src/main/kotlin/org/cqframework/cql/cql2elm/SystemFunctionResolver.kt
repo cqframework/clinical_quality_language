@@ -126,7 +126,6 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
                                     require(dateConversion.score != dateTimeConversion.score) {
                                         "Ambiguous implicit conversion from %s to %s or %s."
                                             .format(
-                                                Locale.US,
                                                 op.resultType.toString(),
                                                 dateConversion.toType.toString(),
                                                 dateTimeConversion.toType.toString()
@@ -146,12 +145,9 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
                                 else -> {
                                     // ERROR
                                     throw IllegalArgumentException(
-                                        String.format(
-                                            Locale.US,
-                                            "Could not resolve call to operator %s with argument of type %s.",
-                                            functionRef.name,
-                                            op.resultType.toString()
-                                        )
+                                        """Could not resolve call to operator ${functionRef.name}
+                                           with argument of type ${op.resultType.toString()}."""
+                                            .trimIndent()
                                     )
                                 }
                             }
@@ -648,11 +644,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
             "ToConcept" -> convert.toType = builder.dataTypeToQName(sm.concept)
             else ->
                 throw IllegalArgumentException(
-                    String.format(
-                        Locale.US,
-                        "Could not resolve call to system operator %s. Unknown conversion type.",
-                        functionRef.name
-                    )
+                    "Could not resolve call to system operator ${functionRef.name}. Unknown conversion type."
                 )
         }
         val invocation = ConvertInvocation(convert)
@@ -666,11 +658,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
             T::class.java.cast(of.javaClass.getMethod("create" + functionRef.name).invoke(of))
         } catch (@Suppress("TooGenericExceptionCaught") e: Exception) {
             throw CqlInternalException(
-                String.format(
-                    Locale.US,
-                    "Could not create instance of Element \"%s\"",
-                    functionRef.name
-                ),
+                "Could not create instance of Element \"${functionRef.name}\"",
                 if (functionRef.trackbacks.isNotEmpty()) functionRef.trackbacks[0] else null,
                 e
             )
@@ -723,12 +711,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
 
     private fun checkNumberOfOperands(functionRef: FunctionRef, expectedOperands: Int) {
         require(functionRef.operand.size == expectedOperands) {
-            String.format(
-                Locale.US,
-                "Could not resolve call to system operator %s.  Expected %d arguments.",
-                functionRef.name,
-                expectedOperands
-            )
+            "Could not resolve call to system operator ${functionRef.name}.  Expected ${expectedOperands} arguments."
         }
     }
 
@@ -746,10 +729,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
                 name.contains("Minutes") -> DateTimePrecision.MINUTE
                 name.contains("Second") -> DateTimePrecision.SECOND
                 name.contains("Milliseconds") -> DateTimePrecision.MILLISECOND
-                else ->
-                    throw IllegalArgumentException(
-                        String.format(Locale.US, "Unknown precision '%s'.", name)
-                    )
+                else -> throw IllegalArgumentException("Unknown precision '$name'.")
             }
         }
     }

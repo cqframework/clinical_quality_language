@@ -9,12 +9,8 @@ object DataTypes {
     fun verifyType(actualType: DataType?, expectedType: DataType?) {
         require(subTypeOf(actualType, expectedType)) {
             // ERROR:
-            String.format(
-                Locale.US,
-                "Expected an expression of type '%s', but found an expression of type '%s'.",
-                expectedType?.toLabel() ?: UNKNOWN,
-                actualType?.toLabel() ?: UNKNOWN
-            )
+            "Expected an expression of type '${expectedType?.toLabel() ?: UNKNOWN}'," +
+                "but found an expression of type '${actualType?.toLabel() ?: UNKNOWN}'."
         }
     }
 
@@ -26,12 +22,8 @@ object DataTypes {
                 compatibleWith(sourceType, targetType)
         ) {
             // ERROR:
-            String.format(
-                Locale.US,
-                "Expression of type '%s' cannot be cast as a value of type '%s'.",
-                sourceType?.toLabel() ?: UNKNOWN,
-                targetType?.toLabel() ?: UNKNOWN
-            )
+            "Expression of type '${sourceType?.toLabel() ?: UNKNOWN}'" +
+                " cannot be cast as a value of type '${targetType?.toLabel() ?: UNKNOWN}'."
         }
     }
 
