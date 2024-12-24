@@ -755,9 +755,9 @@ abstract class CqlPreprocessorElmCommonVisitor(
                         val mul = nextSpace * nextLine
                         var nextDelimiterIndex = header.length
                         if (mul < 0) {
-                            nextDelimiterIndex = Math.max(nextLine, nextSpace)
+                            nextDelimiterIndex = nextLine.coerceAtLeast(nextSpace)
                         } else if (mul > 1) {
-                            nextDelimiterIndex = Math.min(nextLine, nextSpace)
+                            nextDelimiterIndex = nextLine.coerceAtMost(nextSpace)
                         }
                         Pair.of(header.substring(nextTag, nextDelimiterIndex), nextDelimiterIndex)
                     }

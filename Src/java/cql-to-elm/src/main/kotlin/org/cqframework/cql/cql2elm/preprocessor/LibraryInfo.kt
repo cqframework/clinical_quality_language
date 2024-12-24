@@ -153,7 +153,7 @@ class LibraryInfo(
         addDefinition(functionDefinition)
     }
 
-    fun resolveFunctionReference(identifier: String): Iterable<FunctionDefinitionInfo>? {
+    fun resolveFunctionReference(identifier: String): List<FunctionDefinitionInfo>? {
         return functionDefinitions[identifier]
     }
 

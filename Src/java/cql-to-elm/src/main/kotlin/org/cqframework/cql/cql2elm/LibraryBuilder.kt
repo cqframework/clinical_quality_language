@@ -17,6 +17,8 @@ import org.hl7.cql_annotations.r1.*
 import org.hl7.cql_annotations.r1.ObjectFactory
 import org.hl7.elm.r1.*
 
+private const val FP_THIS = "\$this"
+
 /** Created by Bryn on 12/29/2016. */
 @Suppress("LargeClass", "TooManyFunctions", "ForbiddenComment", "ReturnCount", "MaxLineLength")
 class LibraryBuilder(
@@ -32,7 +34,7 @@ class LibraryBuilder(
         None,
 
         /*
-        Indicates signatures will only be included in invocations if the declared signature of the resolve operator is different than the invocation signature
+        Indicates signatures will only be included in invocations if the declared signature of the resolve operator is different from the invocation signature
          */
         Differing,
 
@@ -599,22 +601,8 @@ class LibraryBuilder(
         }
     }
 
-    private val libraryName: String
-        get() {
-            var libraryName = library.identifier.id
-            if (libraryName == null) {
-                libraryName = "Anonymous"
-            }
-            if (library.identifier.system != null) {
-                libraryName = library.identifier.system + "/" + libraryName
-            }
-            return libraryName
-        }
-
     fun beginTranslation() {
         loadSystemLibrary()
-
-        // libraryManager.beginCompilation(getLibraryName());
     }
 
     var libraryIdentifier: VersionedIdentifier?
@@ -626,7 +614,6 @@ class LibraryBuilder(
 
     fun endTranslation() {
         applyTargetModelMaps()
-        // libraryManager.endCompilation(getLibraryName());
     }
 
     fun canResolveLibrary(includeDef: IncludeDef): Boolean {
@@ -660,7 +647,7 @@ class LibraryBuilder(
 
         // Note that translation of a referenced library may result in implicit specification of the
         // namespace
-        // In this case, the referencedLibrary will have a namespaceUri different than the currently
+        // In this case, the referencedLibrary will have a namespaceUri different from the currently
         // resolved
         // namespaceUri
         // of the IncludeDef.
@@ -1743,9 +1730,8 @@ class LibraryBuilder(
             functionRef = buildFunctionRef(libraryName, functionName, paramList)
             invocation = FunctionRefInvocation(functionRef)
             if (!allowFluent) {
-                // Only attempt to resolve as a system function if this is not a fluent call or it
-                // is a required
-                // resolution
+                // Only attempt to resolve as a system function if
+                // this is not a fluent call, or it is a required resolution
                 val systemFunction = systemFunctionResolver.resolveSystemFunction(functionRef)
                 if (systemFunction != null) {
                     return systemFunction
@@ -2585,15 +2571,15 @@ class LibraryBuilder(
                             resultTypes.add(resolution.type)
                             if (resolution.targetMap != null) {
                                 if (resultTargetMaps.containsKey(resolution.type)) {
-                                    if (resultTargetMaps[resolution.type] != resolution.targetMap) {
-                                        throw IllegalArgumentException(
-                                            String.format(
-                                                Locale.US,
-                                                "Inconsistent target maps %s and %s for choice type %s",
-                                                resultTargetMaps[resolution.type],
-                                                resolution.targetMap,
-                                                resolution.type
-                                            )
+                                    require(
+                                        resultTargetMaps[resolution.type] == resolution.targetMap
+                                    ) {
+                                        String.format(
+                                            Locale.US,
+                                            "Inconsistent target maps %s and %s for choice type %s",
+                                            resultTargetMaps[resolution.type],
+                                            resolution.targetMap,
+                                            resolution.type
                                         )
                                     }
                                 } else {
@@ -3101,27 +3087,28 @@ class LibraryBuilder(
                 // but those mappings expand the value element directly, rather than invoking the
                 // FHIRHelpers function)
                 var argumentSignature: TypeSpecifier? = null
-                if (options.signatureLevel != SignatureLevel.None) {
-                    if (qualifiedFunctionName == "FHIRHelpers.ToInterval") {
-                        // Force loading of the FHIR model, as it's an implicit
-                        // dependency of the the target mapping here.
-                        var fhirVersion = "4.0.1"
-                        val qiCoreModel = this.getModel("QICore")
-                        val version = qiCoreModel.modelInfo.version
-                        if (version == "3.3.0") {
-                            fhirVersion = "4.0.0"
-                        } else if (version.startsWith("3")) {
-                            fhirVersion = "3.0.1"
-                        }
-
-                        // Force the FHIR model to be loaded.
-                        modelManager.resolveModel("FHIR", fhirVersion)
-
-                        val namedTypeSpecifier =
-                            NamedTypeSpecifier()
-                                .withName(dataTypeToQName(resolveTypeName("FHIR", "Period")))
-                        argumentSignature = namedTypeSpecifier
+                if (
+                    options.signatureLevel != SignatureLevel.None &&
+                        qualifiedFunctionName == "FHIRHelpers.ToInterval"
+                ) {
+                    // Force loading of the FHIR model, as it's an implicit
+                    // dependency of the target mapping here.
+                    var fhirVersion = "4.0.1"
+                    val qiCoreModel = this.getModel("QICore")
+                    val version = qiCoreModel.modelInfo.version
+                    if (version == "3.3.0") {
+                        fhirVersion = "4.0.0"
+                    } else if (version.startsWith("3")) {
+                        fhirVersion = "3.0.1"
                     }
+
+                    // Force the FHIR model to be loaded.
+                    modelManager.resolveModel("FHIR", fhirVersion)
+
+                    val namedTypeSpecifier =
+                        NamedTypeSpecifier()
+                            .withName(dataTypeToQName(resolveTypeName("FHIR", "Period")))
+                    argumentSignature = namedTypeSpecifier
                 }
 
                 when (argumentSource!!.resultType) {
@@ -3133,14 +3120,14 @@ class LibraryBuilder(
                                     objectFactory
                                         .createAliasedQuerySource()
                                         .withExpression(argumentSource)
-                                        .withAlias("\$this")
+                                        .withAlias(FP_THIS)
                                 )
                         val fr: FunctionRef =
                             objectFactory
                                 .createFunctionRef()
                                 .withLibraryName(libraryName)
                                 .withName(functionName)
-                                .withOperand(objectFactory.createAliasRef().withName("\$this"))
+                                .withOperand(objectFactory.createAliasRef().withName(FP_THIS))
 
                         if (argumentSignature != null) {
                             fr.getSignature().add(argumentSignature)
@@ -3232,7 +3219,7 @@ class LibraryBuilder(
                     objectFactory
                         .createAliasedQuerySource()
                         .withExpression(result)
-                        .withAlias("\$this")
+                        .withAlias(FP_THIS)
                 var criteria: Expression? = null
                 for (indexerItem: String in
                     indexer.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
@@ -3257,7 +3244,7 @@ class LibraryBuilder(
                             .toTypedArray()) {
                         left =
                             if (left == null) {
-                                objectFactory.createProperty().withScope("\$this").withPath(path)
+                                objectFactory.createProperty().withScope(FP_THIS).withPath(path)
                             } else {
                                 objectFactory.createProperty().withSource(left).withPath(path)
                             }
@@ -3364,7 +3351,7 @@ class LibraryBuilder(
                                     objectFactory
                                         .createProperty()
                                         .withSource(
-                                            objectFactory.createAliasRef().withName("\$this")
+                                            objectFactory.createAliasRef().withName(FP_THIS)
                                         )
                                         .withPath(targetPath)
                                 )
@@ -3395,9 +3382,9 @@ class LibraryBuilder(
                         objectFactory
                             .createAliasedQuerySource()
                             .withExpression(source)
-                            .withAlias("\$this")
+                            .withAlias(FP_THIS)
                     val p: Property =
-                        objectFactory.createProperty().withScope("\$this").withPath(propertyName)
+                        objectFactory.createProperty().withScope(FP_THIS).withPath(propertyName)
                     p.resultType = (source.resultType as ListType).elementType
                     val r: ReturnClause =
                         objectFactory.createReturnClause().withDistinct(false).withExpression(p)
@@ -3541,7 +3528,7 @@ class LibraryBuilder(
                     resolveProperty(listType.elementType, memberIdentifier)
                 var accessor: Expression? =
                     buildProperty(
-                        objectFactory.createAliasRef().withName("\$this"),
+                        objectFactory.createAliasRef().withName(FP_THIS),
                         resolution!!.name,
                         resolution.isSearch,
                         resolution.type
@@ -3552,17 +3539,14 @@ class LibraryBuilder(
                 // Recreate property, it needs to be accessed twice
                 accessor =
                     buildProperty(
-                        objectFactory.createAliasRef().withName("\$this"),
+                        objectFactory.createAliasRef().withName(FP_THIS),
                         resolution.name,
                         resolution.isSearch,
                         resolution.type
                     )
                 accessor = applyTargetMap(accessor, resolution.targetMap)
                 val source: AliasedQuerySource =
-                    objectFactory
-                        .createAliasedQuerySource()
-                        .withExpression(left)
-                        .withAlias("\$this")
+                    objectFactory.createAliasedQuerySource().withExpression(left).withAlias(FP_THIS)
                 source.resultType = left.resultType
                 val query: Query =
                     objectFactory
@@ -3598,7 +3582,7 @@ class LibraryBuilder(
         if (inQueryContext()) {
             val query = peekQueryContext()
             if (query.inSortClause() && !query.isSingular) {
-                if (identifier == "\$this") {
+                if (identifier == FP_THIS) {
                     val result = objectFactory.createIdentifierRef().withName(identifier)
                     result.resultType = query.resultElementType
                     return result
@@ -3632,9 +3616,9 @@ class LibraryBuilder(
         if (inQueryContext()) {
             val query = peekQueryContext()
             if (query.isImplicit) {
-                val source = resolveAlias("\$this")
+                val source = resolveAlias(FP_THIS)
                 if (source != null) {
-                    val aliasRef = objectFactory.createAliasRef().withName("\$this")
+                    val aliasRef = objectFactory.createAliasRef().withName(FP_THIS)
                     if (source.resultType is ListType) {
                         aliasRef.resultType = (source.resultType as ListType).elementType
                     } else {
@@ -3743,7 +3727,7 @@ class LibraryBuilder(
      * Default scope is [IdentifierScope.LOCAL]
      *
      * @param identifier The identifier belonging to the parameter, expression, function, alias,
-     *   etc, to be evaluated.
+     *   etc., to be evaluated.
      * @param element The construct trackable, for example [ExpressionRef].
      */
     @JvmOverloads
