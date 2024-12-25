@@ -112,7 +112,6 @@ public class NpmPackageManagerTests implements ILoggingService {
     }
 
     @Test
-    @Disabled("Returning an empty ModelInfo from the NpmModelInfoProvider. Appears to be a serialization issue.")
     void modelInfoProviderLocal() {
         Resource igResource = (Resource) FhirContext.forR4Cached()
                 .newXmlParser()

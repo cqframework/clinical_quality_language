@@ -323,7 +323,7 @@ public class ElmXmlutilTest {
     void deserializeReserializeElmXml() {
         var elm =
                 """
-<?xml version="1.1" encoding="UTF-8"?><library xmlns="urn:hl7-org:elm:r1"><identifier id="PropertyTest"/></library>""";
+<?xml version="1.1" encoding="UTF-8"?><library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1"><identifier id="PropertyTest"/></library>""";
         var lib = new ElmXmlLibraryReader().read(elm);
         var libReserialized = new ElmXmlLibraryWriter().writeAsString(lib);
         assertEquals(elm, libReserialized);

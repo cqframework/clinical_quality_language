@@ -21,6 +21,7 @@ class ElmJsonLibraryReader : ElmLibraryReader {
     val json = Json {
         serializersModule = module
         explicitNulls = false
+        ignoreUnknownKeys = true
     }
 
     override fun read(file: File): Library {

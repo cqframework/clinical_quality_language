@@ -154,6 +154,17 @@ const includes = {
   "expression.xsd": __dirname + "/../../cql-lm/schema/elm/expression.xsd",
 };
 
+/*
+  @XmlNs(prefix = "", namespaceURI = "urn:hl7-org:elm:r1"),
+  @XmlNs(prefix = "t", namespaceURI = "urn:hl7-org:elm-types:r1"),
+  @XmlNs(prefix = "xsi", namespaceURI = "http://www.w3.org/2001/XMLSchema-instance"),
+  @XmlNs(prefix = "xsd", namespaceURI = "http://www.w3.org/2001/XMLSchema"),
+  @XmlNs(prefix = "fhir", namespaceURI = "http://hl7.org/fhir"),
+  @XmlNs(prefix = "qdm43", namespaceURI = "urn:healthit-gov:qdm:v4_3"),
+  @XmlNs(prefix = "qdm53", namespaceURI = "urn:healthit-gov:qdm:v5_3"),
+  @XmlNs(prefix = "a", namespaceURI = "urn:hl7-org:cql-annotations:r1")
+*/
+
 const configs = [
   {
     xsd: __dirname + "/../../cql-lm/schema/model/modelinfo.xsd",
@@ -165,6 +176,9 @@ const configs = [
     scope: "",
     namespaceUri: "urn:hl7-org:elm-modelinfo:r1",
     localPart: "modelInfo",
+    namespacePrefixes: [ 
+      "xsi=http://www.w3.org/2001/XMLSchema-instance",
+      "xsd=http://www.w3.org/2001/XMLSchema"]
   },
   {
     xsd: __dirname + "/../../cql-lm/schema/elm/library.xsd",
@@ -177,6 +191,15 @@ const configs = [
     scope: "",
     namespaceUri: "urn:hl7-org:elm:r1",
     localPart: "library",
+    namespacePrefixes: [ 
+      "t=urn:hl7-org:elm-types:r1",
+      "xsi=http://www.w3.org/2001/XMLSchema-instance",
+      "xsd=http://www.w3.org/2001/XMLSchema",
+      "fhir=http://hl7.org/fhir",
+      "a=urn:hl7-org:cql-annotations:r1",
+      // "qdm53=urn:healthit-gov:qdm:v5_3",
+      // "qdm43=urn:healthit-gov:qdm:v4_3"
+       ]
   },
   {
     xsd: __dirname + "/../../cql-lm/schema/elm/cqlannotations.xsd",
@@ -188,6 +211,10 @@ const configs = [
     scope: "narrative",
     namespaceUri: "urn:hl7-org:cql-annotations:r1",
     localPart: "s",
+    namespacePrefixes: [ 
+      "xsi=http://www.w3.org/2001/XMLSchema-instance",
+      "xsd=http://www.w3.org/2001/XMLSchema"
+]
   },
 ];
 
@@ -559,6 +586,7 @@ function processElements(elements, config, mode) {
               `
 package ${config.packageName}
 
+${element.attributes.name === 'Library' || element.attributes.name === 'ModelInfo' ? `@nl.adaptivity.xmlutil.serialization.XmlNamespaceDeclSpec("${config.namespacePrefixes.join(";")}")` : ''}
 @OptIn(kotlinx.serialization.ExperimentalSerializationApi::class, nl.adaptivity.xmlutil.ExperimentalXmlUtilApi::class)
 @kotlinx.serialization.Serializable
 ${config.packageName === 'org.hl7.elm_modelinfo.r1' ? '' : `@kotlinx.serialization.SerialName(${JSON.stringify(makeLocalName(element.attributes.name))})`}

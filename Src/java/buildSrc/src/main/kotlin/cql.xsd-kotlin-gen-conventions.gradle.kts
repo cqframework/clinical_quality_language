@@ -9,9 +9,6 @@ plugins {
 }
 
 dependencies {
-    api("jakarta.xml.bind:jakarta.xml.bind-api:4.0.1")
-    api("codes.rafael.jaxb2_commons:jaxb2-basics-runtime:3.0.0")
-
     implementation("io.github.pdvrieze.xmlutil:core:0.90.3")
     implementation("io.github.pdvrieze.xmlutil:serialization:0.90.3")
     implementation("io.github.pdvrieze.xmlutil:serialization-jvm:0.90.3")

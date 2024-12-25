@@ -1,6 +1,5 @@
 package org.cqframework.fhir.npm;
 
-import jakarta.xml.bind.JAXB;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,6 +7,7 @@ import java.util.List;
 import org.hl7.cql.model.ModelIdentifier;
 import org.hl7.cql.model.ModelInfoProvider;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
+import org.hl7.elm_modelinfo.r1.serializing.xmlutil.XmlModelInfoReader;
 import org.hl7.fhir.r5.context.ILoggingService;
 import org.hl7.fhir.r5.model.Library;
 import org.hl7.fhir.utilities.npm.NpmPackage;
@@ -51,7 +51,8 @@ public class NpmModelInfoProvider implements ModelInfoProvider {
                                 modelIdentifier.setSystem(identifier.getSystem());
                             }
                             InputStream is = new ByteArrayInputStream(a.getData());
-                            return JAXB.unmarshal(is, ModelInfo.class);
+                            var reader = new XmlModelInfoReader();
+                            return reader.read(is);
                         }
                     }
                 }
