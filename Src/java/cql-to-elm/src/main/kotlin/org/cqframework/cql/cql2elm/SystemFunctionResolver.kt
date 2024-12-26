@@ -2,7 +2,6 @@
 
 package org.cqframework.cql.cql2elm
 
-import java.util.*
 import kotlin.collections.ArrayList
 import org.cqframework.cql.cql2elm.model.Invocation
 import org.cqframework.cql.cql2elm.model.invocation.*
@@ -11,11 +10,10 @@ import org.cqframework.cql.cql2elm.model.invocation.DateTimeInvocation.Companion
 import org.cqframework.cql.cql2elm.model.invocation.TimeInvocation.Companion.setTimeFieldsFromOperands
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.cqframework.cql.cql2elm.tracking.Trackable.trackbacks
-import org.cqframework.cql.elm.IdObjectFactory
 import org.hl7.elm.r1.*
 
 @Suppress("LargeClass", "TooManyFunctions")
-class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFactory?) {
+class SystemFunctionResolver(private val builder: LibraryBuilder) {
     private val of = builder.objectFactory
 
     @Suppress("LongMethod", "CyclomaticComplexMethod", "NestedBlockDepth", "ReturnCount")
@@ -111,27 +109,25 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
                             builder.findConversion(
                                 op.resultType!!,
                                 builder.resolveTypeName("System", "Date")!!,
-                                true,
-                                false
+                                implicit = true,
+                                allowPromotionAndDemotion = false
                             )
                         val dateTimeConversion =
                             builder.findConversion(
                                 op.resultType!!,
                                 builder.resolveTypeName("System", "DateTime")!!,
-                                true,
-                                false
+                                implicit = true,
+                                allowPromotionAndDemotion = false
                             )
                         op =
                             when {
                                 dateConversion != null && dateTimeConversion != null -> {
                                     require(dateConversion.score != dateTimeConversion.score) {
-                                        "Ambiguous implicit conversion from %s to %s or %s."
-                                            .format(
-                                                Locale.US,
-                                                op.resultType.toString(),
-                                                dateConversion.toType.toString(),
-                                                dateTimeConversion.toType.toString()
-                                            )
+                                        """Ambiguous implicit conversion from
+                                            |${op.resultType} to ${dateConversion.toType}
+                                            |or ${dateTimeConversion}."""
+                                            .trimMargin()
+                                            .replace("\n", "")
                                     }
 
                                     if (dateConversion.score < dateTimeConversion.score) {
@@ -147,17 +143,14 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
                                 else -> {
                                     // ERROR
                                     throw IllegalArgumentException(
-                                        String.format(
-                                            Locale.US,
-                                            "Could not resolve call to operator %s with argument of type %s.",
-                                            functionRef.name,
-                                            op.resultType.toString()
-                                        )
+                                        """Could not resolve call to operator ${functionRef.name}
+                                           with argument of type ${op.resultType.toString()}."""
+                                            .trimIndent()
                                     )
                                 }
                             }
                     }
-                    ops.add(builder.enforceCompatible(patientBirthDateProperty, op.resultType)!!)
+                    ops.add(builder.enforceCompatible(patientBirthDateProperty, op.resultType))
                     ops.add(op)
                     return resolveCalculateAgeAt(
                         ops,
@@ -649,11 +642,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
             "ToConcept" -> convert.toType = builder.dataTypeToQName(sm.concept)
             else ->
                 throw IllegalArgumentException(
-                    String.format(
-                        Locale.US,
-                        "Could not resolve call to system operator %s. Unknown conversion type.",
-                        functionRef.name
-                    )
+                    "Could not resolve call to system operator ${functionRef.name}. Unknown conversion type."
                 )
         }
         val invocation = ConvertInvocation(convert)
@@ -667,11 +656,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
             T::class.java.cast(of.javaClass.getMethod("create" + functionRef.name).invoke(of))
         } catch (@Suppress("TooGenericExceptionCaught") e: Exception) {
             throw CqlInternalException(
-                String.format(
-                    Locale.US,
-                    "Could not create instance of Element \"%s\"",
-                    functionRef.name
-                ),
+                "Could not create instance of Element \"${functionRef.name}\"",
                 if (functionRef.trackbacks.isNotEmpty()) functionRef.trackbacks[0] else null,
                 e
             )
@@ -724,12 +709,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
 
     private fun checkNumberOfOperands(functionRef: FunctionRef, expectedOperands: Int) {
         require(functionRef.operand.size == expectedOperands) {
-            String.format(
-                Locale.US,
-                "Could not resolve call to system operator %s.  Expected %d arguments.",
-                functionRef.name,
-                expectedOperands
-            )
+            "Could not resolve call to system operator ${functionRef.name}.  Expected $expectedOperands arguments."
         }
     }
 
@@ -747,10 +727,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
                 name.contains("Minutes") -> DateTimePrecision.MINUTE
                 name.contains("Second") -> DateTimePrecision.SECOND
                 name.contains("Milliseconds") -> DateTimePrecision.MILLISECOND
-                else ->
-                    throw IllegalArgumentException(
-                        String.format(Locale.US, "Unknown precision '%s'.", name)
-                    )
+                else -> throw IllegalArgumentException("Unknown precision '$name'.")
             }
         }
     }

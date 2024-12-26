@@ -38,7 +38,7 @@ object CompilerOptions {
 
     /**
      * Parses a string representing CQL compiler Options into an EnumSet. The string is expected to
-     * be a comma delimited list of values from the CqlCompiler.Options enumeration. For example
+     * be a comma-delimited list of values from the CqlCompiler.Options enumeration. For example
      * "EnableListPromotion, EnableListDemotion".
      *
      * @param compilerOptions the string to parse

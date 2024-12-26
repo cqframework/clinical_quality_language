@@ -1,23 +1,18 @@
 package org.cqframework.cql.cql2elm
 
-import java.util.*
 import org.hl7.cql.model.DataType
 
+private const val UNKNOWN = "<unknown>"
+
 object DataTypes {
-    @JvmStatic
     fun verifyType(actualType: DataType?, expectedType: DataType?) {
         require(subTypeOf(actualType, expectedType)) {
             // ERROR:
-            String.format(
-                Locale.US,
-                "Expected an expression of type '%s', but found an expression of type '%s'.",
-                if (expectedType != null) expectedType.toLabel() else "<unknown>",
-                if (actualType != null) actualType.toLabel() else "<unknown>"
-            )
+            "Expected an expression of type '${expectedType?.toLabel() ?: UNKNOWN}'," +
+                "but found an expression of type '${actualType?.toLabel() ?: UNKNOWN}'."
         }
     }
 
-    @JvmStatic
     fun verifyCast(targetType: DataType?, sourceType: DataType?) {
         // Casting can be used for compatible types as well as subtypes and supertypes
         require(
@@ -26,30 +21,24 @@ object DataTypes {
                 compatibleWith(sourceType, targetType)
         ) {
             // ERROR:
-            String.format(
-                Locale.US,
-                "Expression of type '%s' cannot be cast as a value of type '%s'.",
-                if (sourceType != null) sourceType.toLabel() else "<unknown>",
-                if (targetType != null) targetType.toLabel() else "<unknown>"
-            )
+            "Expression of type '${sourceType?.toLabel() ?: UNKNOWN}'" +
+                " cannot be cast as a value of type '${targetType?.toLabel() ?: UNKNOWN}'."
         }
     }
 
-    @JvmStatic
     fun equal(a: DataType?, b: DataType?): Boolean {
         return a != null && b != null && a == b
     }
 
-    fun compatibleWith(a: DataType?, b: DataType?): Boolean {
+    private fun compatibleWith(a: DataType?, b: DataType?): Boolean {
         return a != null && b != null && a.isCompatibleWith(b)
     }
 
-    @JvmStatic
     fun subTypeOf(a: DataType?, b: DataType?): Boolean {
         return a != null && b != null && a.isSubTypeOf(b)
     }
 
-    fun superTypeOf(a: DataType?, b: DataType?): Boolean {
+    private fun superTypeOf(a: DataType?, b: DataType?): Boolean {
         return a != null && b != null && a.isSuperTypeOf(b)
     }
 }

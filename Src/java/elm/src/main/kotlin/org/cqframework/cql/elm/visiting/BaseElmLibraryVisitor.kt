@@ -36,47 +36,47 @@ abstract class BaseElmLibraryVisitor<T, C> :
     override fun visitLibrary(elm: Library, context: C): T {
         var result = visitFields(elm, context)
         elm.usings?.def?.forEach {
-            val childResult = visitUsingDef(it!!, context)
+            val childResult = visitUsingDef(it, context)
             result = aggregateResult(result, childResult)
         }
 
         elm.includes?.def?.forEach {
-            val childResult = visitIncludeDef(it!!, context)
+            val childResult = visitIncludeDef(it, context)
             result = aggregateResult(result, childResult)
         }
 
         elm.codeSystems?.def?.forEach {
-            val childResult = visitCodeSystemDef(it!!, context)
+            val childResult = visitCodeSystemDef(it, context)
             result = aggregateResult(result, childResult)
         }
 
         elm.valueSets?.def?.forEach {
-            val childResult = visitValueSetDef(it!!, context)
+            val childResult = visitValueSetDef(it, context)
             result = aggregateResult(result, childResult)
         }
 
         elm.codes?.def?.forEach {
-            val childResult = visitElement(it!!, context)
+            val childResult = visitElement(it, context)
             result = aggregateResult(result, childResult)
         }
 
         elm.concepts?.def?.forEach {
-            val childResult = visitConceptDef(it!!, context)
+            val childResult = visitConceptDef(it, context)
             result = aggregateResult(result, childResult)
         }
 
         elm.parameters?.def?.forEach {
-            val childResult = visitParameterDef(it!!, context)
+            val childResult = visitParameterDef(it, context)
             result = aggregateResult(result, childResult)
         }
 
         elm.contexts?.def?.forEach {
-            val childResult = visitContextDef(it!!, context)
+            val childResult = visitContextDef(it, context)
             result = aggregateResult(result, childResult)
         }
 
         elm.statements?.def?.forEach {
-            val childResult = visitExpressionDef(it!!, context)
+            val childResult = visitExpressionDef(it, context)
             result = aggregateResult(result, childResult)
         }
 

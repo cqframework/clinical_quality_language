@@ -2,7 +2,6 @@ package org.cqframework.cql.cql2elm
 
 import java.io.InputStream
 import java.nio.file.Path
-import java.util.*
 import kotlin.collections.ArrayList
 import org.hl7.cql.model.NamespaceAware
 import org.hl7.cql.model.NamespaceManager
@@ -10,12 +9,12 @@ import org.hl7.elm.r1.VersionedIdentifier
 
 /**
  * Used by LibraryManager to manage a set of library source providers that resolve library includes
- * within CQL. Package private since its not intended to be used outside the context of the
+ * within CQL. Package private since it's not intended to be used outside the context of the
  * instantiating LibraryManager instance.
  */
 internal class DefaultLibrarySourceLoader : LibrarySourceLoader, NamespaceAware, PathAware {
     private val providers: MutableList<LibrarySourceProvider> = ArrayList()
-    var initialized: Boolean = false
+    private var initialized: Boolean = false
 
     override fun registerProvider(provider: LibrarySourceProvider) {
         if (namespaceManager != null && provider is NamespaceAware) {
@@ -30,9 +29,7 @@ internal class DefaultLibrarySourceLoader : LibrarySourceLoader, NamespaceAware,
     private var path: Path? = null
 
     override fun setPath(path: Path) {
-        require(path.toFile().isDirectory) {
-            String.format(Locale.US, "path '%s' is not a valid directory", path)
-        }
+        require(path.toFile().isDirectory) { "path '$path' is not a valid directory" }
 
         this.path = path
         for (provider in getProviders()) {
@@ -65,25 +62,13 @@ internal class DefaultLibrarySourceLoader : LibrarySourceLoader, NamespaceAware,
             val localSource: InputStream? = provider.getLibrarySource(libraryIdentifier)
             if (localSource != null) {
                 require(source == null) {
-                    String.format(
-                        Locale.US,
-                        "Multiple sources found for library %s, version %s.",
-                        libraryIdentifier.id,
-                        libraryIdentifier.version
-                    )
+                    "Multiple sources found for library ${libraryIdentifier.id}, version ${libraryIdentifier.version}."
                 }
                 source = localSource
             }
         }
-        if (source == null) {
-            throw IllegalArgumentException(
-                String.format(
-                    Locale.US,
-                    "Could not load source for library %s, version %s.",
-                    libraryIdentifier.id,
-                    libraryIdentifier.version
-                )
-            )
+        requireNotNull(source) {
+            "Could not load source for library ${libraryIdentifier.id}, version ${libraryIdentifier.version}."
         }
         return source
     }

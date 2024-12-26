@@ -15,7 +15,7 @@ data class TupleTypeElement(
     fun isSuperTypeOf(that: TupleTypeElement): Boolean =
         this.name == that.name && type.isSuperTypeOf(that.type)
 
-    override fun toString(): String = "${name}:${type}"
+    override fun toString(): String = "$name:$type"
 
-    fun toLabel(): String = "${name}: ${type}"
+    fun toLabel(): String = "$name: $type"
 }

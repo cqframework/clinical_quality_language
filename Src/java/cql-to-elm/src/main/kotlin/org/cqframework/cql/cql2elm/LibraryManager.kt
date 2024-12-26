@@ -3,7 +3,6 @@
 package org.cqframework.cql.cql2elm
 
 import java.io.*
-import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
@@ -44,9 +43,6 @@ constructor(
      * namespace in a namespace-aware context
      */
     fun isWellKnownLibraryName(unqualifiedIdentifier: String?): Boolean {
-        if (unqualifiedIdentifier == null) {
-            return false
-        }
         return when (unqualifiedIdentifier) {
             "FHIRHelpers" -> true
             else -> false
@@ -54,24 +50,24 @@ constructor(
     }
 
     fun resolveLibrary(
-        libraryIdentifier: VersionedIdentifier?,
+        libraryIdentifier: VersionedIdentifier,
         cacheMode: CacheMode
     ): CompiledLibrary {
         return this.resolveLibrary(libraryIdentifier, ArrayList(), cacheMode)
     }
 
-    fun canResolveLibrary(libraryIdentifier: VersionedIdentifier?): Boolean {
-        val lib = this.resolveLibrary(libraryIdentifier)
-        return lib != null
+    fun canResolveLibrary(libraryIdentifier: VersionedIdentifier): Boolean {
+        // This throws an exception if the library cannot be resolved
+        this.resolveLibrary(libraryIdentifier)
+        return true
     }
 
     @JvmOverloads
     fun resolveLibrary(
-        libraryIdentifier: VersionedIdentifier?,
+        libraryIdentifier: VersionedIdentifier,
         errors: MutableList<CqlCompilerException> = ArrayList(),
         cacheMode: CacheMode = CacheMode.READ_WRITE
     ): CompiledLibrary {
-        require(libraryIdentifier != null) { "libraryIdentifier is null." }
         require(!libraryIdentifier.id.isNullOrEmpty()) { "libraryIdentifier Id is null." }
         var library: CompiledLibrary?
         if (cacheMode != CacheMode.NONE) {
@@ -106,12 +102,8 @@ constructor(
             val cqlSource: InputStream =
                 librarySourceLoader.getLibrarySource(libraryIdentifier)
                     ?: throw CqlIncludeException(
-                        String.format(
-                            Locale.US,
-                            "Could not load source for library %s, version %s.",
-                            libraryIdentifier.id,
-                            libraryIdentifier.version
-                        ),
+                        """Could not load source for library ${libraryIdentifier.id},
+                                 version ${libraryIdentifier.version}.""",
                         libraryIdentifier.system,
                         libraryIdentifier.id!!,
                         libraryIdentifier.version
@@ -130,13 +122,8 @@ constructor(
                     libraryIdentifier.version != result!!.identifier!!.version)
             ) {
                 throw CqlIncludeException(
-                    String.format(
-                        Locale.US,
-                        "Library %s was included as version %s, but version %s of the library was found.",
-                        libraryPath,
-                        libraryIdentifier.version,
-                        result.identifier!!.version
-                    ),
+                    """Library $libraryPath was included as version ${libraryIdentifier.version}, 
+                        but version ${result.identifier!!.version} of the library was found.""",
                     libraryIdentifier.system,
                     libraryIdentifier.id!!,
                     libraryIdentifier.version
@@ -144,12 +131,7 @@ constructor(
             }
         } catch (e: IOException) {
             throw CqlIncludeException(
-                String.format(
-                    Locale.US,
-                    "Errors occurred translating library %s, version %s.",
-                    libraryPath,
-                    libraryIdentifier.version
-                ),
+                "Errors occurred translating library $libraryPath, version ${libraryIdentifier.version}.",
                 libraryIdentifier.system!!,
                 libraryIdentifier.id!!,
                 libraryIdentifier.version,
@@ -158,15 +140,10 @@ constructor(
         }
         if (result == null) {
             throw CqlIncludeException(
-                String.format(
-                    Locale.US,
-                    "Could not load source for library %s, version %s.",
-                    libraryPath,
-                    libraryIdentifier.version
-                ),
+                "Could not load source for library $libraryPath.",
                 libraryIdentifier.system,
                 libraryIdentifier.id!!,
-                libraryIdentifier.version
+                null
             )
         } else {
             sortStatements(result)
@@ -328,8 +305,8 @@ constructor(
     }
 
     @Suppress("NestedBlockDepth")
-    fun hasSignature(library: Library?): Boolean {
-        if (library?.statements != null) {
+    private fun hasSignature(library: Library): Boolean {
+        if (library.statements != null) {
             // Just a quick top-level scan for signatures. To fully verify we'd have to
             // recurse all
             // the way down. At that point, let's just translate.

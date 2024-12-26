@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm.tracking
 
-import java.util.*
 import org.hl7.elm.r1.VersionedIdentifier
 
 data class TrackBack(
@@ -28,8 +27,7 @@ data class TrackBack(
     }
 
     fun toLocator(): String {
-        return if (startLine == endLine && startChar == endChar)
-            String.format(Locale.US, "%s:%s", startLine, startChar)
-        else String.format(Locale.US, "%s:%s-%s:%s", startLine, startChar, endLine, endChar)
+        return if (startLine == endLine && startChar == endChar) "$startLine:$startChar"
+        else "$startLine:$startChar-$endLine:$endChar"
     }
 }

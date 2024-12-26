@@ -225,8 +225,8 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
     override fun visitRetrieve(elm: Retrieve, context: C): T {
         var result = visitFields(elm, context)
 
-        for (cfe in elm.codeFilter!!) {
-            val childResult = visitCodeFilterElement(cfe!!, context)
+        for (cfe in elm.codeFilter) {
+            val childResult = visitCodeFilterElement(cfe, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -238,8 +238,8 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
             val childResult = visitExpression(elm.context!!, context)
             result = aggregateResult(result, childResult)
         }
-        for (dfe in elm.dateFilter!!) {
-            val childResult = visitDateFilterElement(dfe!!, context)
+        for (dfe in elm.dateFilter) {
+            val childResult = visitDateFilterElement(dfe, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.dateRange != null) {
@@ -252,13 +252,13 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
             result = aggregateResult(result, childResult)
         }
 
-        for (ie in elm.include!!) {
-            val childResult = visitIncludeElement(ie!!, context)
+        for (ie in elm.include) {
+            val childResult = visitIncludeElement(ie, context)
             result = aggregateResult(result, childResult)
         }
 
-        for (ofe in elm.otherFilter!!) {
-            val childResult = visitOtherFilterElement(ofe!!, context)
+        for (ofe in elm.otherFilter) {
+            val childResult = visitOtherFilterElement(ofe, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -319,8 +319,8 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
      */
     override fun visitValueSetDef(elm: ValueSetDef, context: C): T {
         var result = visitFields(elm, context)
-        for (codeSystemRef in elm.codeSystem!!) {
-            val childResult = visitCodeSystemRef(codeSystemRef!!, context)
+        for (codeSystemRef in elm.codeSystem) {
+            val childResult = visitCodeSystemRef(codeSystemRef, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -355,8 +355,8 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
     override fun visitConceptDef(elm: ConceptDef, context: C): T {
         var result = visitFields(elm, context)
 
-        for (cr in elm.code!!) {
-            val childResult = visitCodeRef(cr!!, context)
+        for (cr in elm.code) {
+            val childResult = visitCodeRef(cr, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -438,8 +438,8 @@ abstract class BaseElmClinicalVisitor<T, C> : BaseElmVisitor<T, C>(), ElmClinica
     override fun visitConcept(elm: Concept, context: C): T {
         var result = visitFields(elm, context)
 
-        for (c in elm.code!!) {
-            val childResult = visitCode(c!!, context)
+        for (c in elm.code) {
+            val childResult = visitCode(c, context)
             result = aggregateResult(result, childResult)
         }
 

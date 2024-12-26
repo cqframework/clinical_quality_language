@@ -91,8 +91,7 @@ etc.)
 class SimpleElmEngine {
     private fun literalsEqual(left: Literal?, right: Literal?): Boolean {
         return (left == null && right == null) ||
-            (left != null &&
-                left.valueType != null &&
+            (left?.valueType != null &&
                 left.valueType == right!!.valueType &&
                 stringsEqual(left.value, right.value))
     }
@@ -109,7 +108,7 @@ class SimpleElmEngine {
         return expressionsEqual(left, right)
     }
 
-    fun decimalsEqual(left: BigDecimal?, right: BigDecimal?): Boolean {
+    private fun decimalsEqual(left: BigDecimal?, right: BigDecimal?): Boolean {
         if (left == null && right == null) {
             return true
         }
@@ -121,7 +120,7 @@ class SimpleElmEngine {
         return left == right
     }
 
-    fun quantitiesEqual(left: Quantity?, right: Quantity?): Boolean {
+    private fun quantitiesEqual(left: Quantity?, right: Quantity?): Boolean {
         if (left == null && right == null) {
             return true
         }
@@ -149,7 +148,7 @@ class SimpleElmEngine {
         return (left == null && right == null) || (left != null && left == right)
     }
 
-    fun systemsEqual(left: CodeSystemRef?, right: CodeSystemRef?): Boolean {
+    private fun systemsEqual(left: CodeSystemRef?, right: CodeSystemRef?): Boolean {
         // TODO: Needs to do the comparison on the URI, but I don't want to have to resolve here
         return (left == null && right == null) ||
             (left != null &&
@@ -157,7 +156,7 @@ class SimpleElmEngine {
                 stringsEqual(left.name, right.name))
     }
 
-    fun valueSetsEqual(left: ValueSetRef?, right: ValueSetRef?): Boolean {
+    private fun valueSetsEqual(left: ValueSetRef?, right: ValueSetRef?): Boolean {
         // TODO: Needs to do the comparison on the URI, but I don't want to have to resolve here
         return (left == null && right == null) ||
             (left != null &&
@@ -220,26 +219,15 @@ class SimpleElmEngine {
         // TupleTypeSpecifier
         if (left is TupleTypeSpecifier) {
             if (right is TupleTypeSpecifier) {
-                val leftArg = left
-                val rightArg = right
-                if (
-                    leftArg.element != null &&
-                        rightArg.element != null &&
-                        leftArg.element!!.size == rightArg.element!!.size
-                ) {
-                    for (i in leftArg.element!!.indices) {
-                        val leftElement = leftArg.element!![i]
-                        val rightElement = rightArg.element!![i]
+                if (left.element.size == right.element.size) {
+                    for (i in left.element.indices) {
+                        val leftElement = left.element[i]
+                        val rightElement = right.element[i]
                         if (
                             !typeSpecifiersEqual(
-                                leftElement!!.elementType,
-                                rightElement!!.elementType
-                            ) ||
-                                !typeSpecifiersEqual(
-                                    leftElement.elementType,
-                                    rightElement.elementType
-                                ) ||
-                                !stringsEqual(leftElement.name, rightElement.name)
+                                leftElement.elementType,
+                                rightElement.elementType
+                            ) || !stringsEqual(leftElement.name, rightElement.name)
                         ) {
                             return false
                         }
@@ -257,30 +245,20 @@ class SimpleElmEngine {
         // ChoiceTypeSpecifier
         if (left is ChoiceTypeSpecifier) {
             if (right is ChoiceTypeSpecifier) {
-                val leftArg = left
-                val rightArg = right
-                if (
-                    leftArg.choice != null &&
-                        rightArg.choice != null &&
-                        leftArg.choice!!.size == rightArg.choice!!.size
-                ) {
-                    for (i in leftArg.choice!!.indices) {
-                        val leftType = leftArg.choice!![i]
-                        val rightType = rightArg.choice!![i]
+                if (left.choice.size == right.choice.size) {
+                    for (i in left.choice.indices) {
+                        val leftType = left.choice[i]
+                        val rightType = right.choice[i]
                         if (!typeSpecifiersEqual(leftType, rightType)) {
                             return false
                         }
                     }
                 }
 
-                if (
-                    leftArg.choice != null &&
-                        rightArg.choice != null &&
-                        leftArg.choice!!.size == rightArg.choice!!.size
-                ) {
-                    for (i in leftArg.choice!!.indices) {
-                        val leftType = leftArg.choice!![i]
-                        val rightType = rightArg.choice!![i]
+                if (left.choice.size == right.choice.size) {
+                    for (i in left.choice.indices) {
+                        val leftType = left.choice[i]
+                        val rightType = right.choice[i]
                         if (!typeSpecifiersEqual(leftType, rightType)) {
                             return false
                         }
@@ -299,7 +277,7 @@ class SimpleElmEngine {
         return false
     }
 
-    fun expressionsEqual(left: Expression?, right: Expression?): Boolean {
+    private fun expressionsEqual(left: Expression?, right: Expression?): Boolean {
         if (left == null && right == null) {
             return true
         }
@@ -318,12 +296,10 @@ class SimpleElmEngine {
 
         if (left is Date) {
             if (right is Date) {
-                val leftDate = left
-                val rightDate = right
 
-                return integersEqual(leftDate.year, rightDate.year) &&
-                    integersEqual(leftDate.month, rightDate.month) &&
-                    integersEqual(leftDate.day, rightDate.day)
+                return integersEqual(left.year, right.year) &&
+                    integersEqual(left.month, right.month) &&
+                    integersEqual(left.day, right.day)
             }
 
             return false
@@ -331,13 +307,11 @@ class SimpleElmEngine {
 
         if (left is Time) {
             if (right is Time) {
-                val leftTime = left
-                val rightTime = right
 
-                return integersEqual(leftTime.hour, rightTime.hour) &&
-                    integersEqual(leftTime.minute, rightTime.minute) &&
-                    integersEqual(leftTime.second, rightTime.second) &&
-                    integersEqual(leftTime.millisecond, rightTime.millisecond)
+                return integersEqual(left.hour, right.hour) &&
+                    integersEqual(left.minute, right.minute) &&
+                    integersEqual(left.second, right.second) &&
+                    integersEqual(left.millisecond, right.millisecond)
             }
 
             return false
@@ -345,17 +319,15 @@ class SimpleElmEngine {
 
         if (left is DateTime) {
             if (right is DateTime) {
-                val leftDateTime = left
-                val rightDateTime = right
 
-                return integersEqual(leftDateTime.year, rightDateTime.year) &&
-                    integersEqual(leftDateTime.month, rightDateTime.month) &&
-                    integersEqual(leftDateTime.day, rightDateTime.day) &&
-                    integersEqual(leftDateTime.hour, rightDateTime.hour) &&
-                    integersEqual(leftDateTime.minute, rightDateTime.minute) &&
-                    integersEqual(leftDateTime.second, rightDateTime.second) &&
-                    integersEqual(leftDateTime.millisecond, rightDateTime.millisecond) &&
-                    decimalsEqual(leftDateTime.timezoneOffset, rightDateTime.timezoneOffset)
+                return integersEqual(left.year, right.year) &&
+                    integersEqual(left.month, right.month) &&
+                    integersEqual(left.day, right.day) &&
+                    integersEqual(left.hour, right.hour) &&
+                    integersEqual(left.minute, right.minute) &&
+                    integersEqual(left.second, right.second) &&
+                    integersEqual(left.millisecond, right.millisecond) &&
+                    decimalsEqual(left.timezoneOffset, right.timezoneOffset)
             }
 
             return false
@@ -363,21 +335,13 @@ class SimpleElmEngine {
 
         if (left is Interval) {
             if (right is Interval) {
-                val leftInterval = left
-                val rightInterval = right
 
-                return booleansEqual(
-                    leftInterval.lowClosedExpression,
-                    rightInterval.lowClosedExpression
-                ) &&
-                    dateTimesEqual(leftInterval.low, rightInterval.low) &&
-                    leftInterval.isLowClosed() == rightInterval.isLowClosed() &&
-                    booleansEqual(
-                        leftInterval.highClosedExpression,
-                        rightInterval.highClosedExpression
-                    ) &&
-                    dateTimesEqual(leftInterval.high, rightInterval.high) &&
-                    leftInterval.isHighClosed() == rightInterval.isHighClosed()
+                return booleansEqual(left.lowClosedExpression, right.lowClosedExpression) &&
+                    dateTimesEqual(left.low, right.low) &&
+                    left.isLowClosed() == right.isLowClosed() &&
+                    booleansEqual(left.highClosedExpression, right.highClosedExpression) &&
+                    dateTimesEqual(left.high, right.high) &&
+                    left.isHighClosed() == right.isHighClosed()
             }
 
             return false
@@ -388,10 +352,8 @@ class SimpleElmEngine {
         // local parameter reference
         if (left is ParameterRef) {
             if (right is ParameterRef) {
-                val leftParameter = left
-                val rightParameter = right
-                return stringsEqual(leftParameter.libraryName, rightParameter.libraryName) &&
-                    stringsEqual(leftParameter.name, rightParameter.name)
+                return stringsEqual(left.libraryName, right.libraryName) &&
+                    stringsEqual(left.name, right.name)
             }
 
             return false
@@ -415,11 +377,9 @@ class SimpleElmEngine {
 
         if (left is ConceptRef) {
             if (right is ConceptRef) {
-                val leftConcept = left
-                val rightConcept = right
                 // TODO: Needs to do the comparison on the URI, but I don't want to resolve here
-                return stringsEqual(leftConcept.libraryName, rightConcept.libraryName) &&
-                    stringsEqual(leftConcept.name, rightConcept.name)
+                return stringsEqual(left.libraryName, right.libraryName) &&
+                    stringsEqual(left.name, right.name)
             }
 
             return false
@@ -427,11 +387,9 @@ class SimpleElmEngine {
 
         if (left is CodeRef) {
             if (right is CodeRef) {
-                val leftCode = left
-                val rightCode = right
                 // TODO: Needs to do the comparison on the URI, but I don't want to resolve here
-                return stringsEqual(leftCode.libraryName, rightCode.libraryName) &&
-                    stringsEqual(leftCode.name, rightCode.name)
+                return stringsEqual(left.libraryName, right.libraryName) &&
+                    stringsEqual(left.name, right.name)
             }
 
             return false
@@ -439,10 +397,8 @@ class SimpleElmEngine {
 
         if (left is Code) {
             if (right is Code) {
-                val leftCode = left
-                val rightCode = right
-                return stringsEqual(leftCode.code, rightCode.code) &&
-                    systemsEqual(leftCode.system, rightCode.system)
+                return stringsEqual(left.code, right.code) &&
+                    systemsEqual(left.system, right.system)
             }
 
             return false
@@ -450,14 +406,10 @@ class SimpleElmEngine {
 
         if (left is Concept) {
             if (right is Concept) {
-                val leftConcept = left
-                val rightConcept = right
-                if (leftConcept.code != null && rightConcept.code != null) {
-                    for (lc in leftConcept.code!!) {
-                        for (rc in rightConcept.code!!) {
-                            if (codesEqual(lc, rc)) {
-                                return true
-                            }
+                for (lc in left.code) {
+                    for (rc in right.code) {
+                        if (codesEqual(lc, rc)) {
+                            return true
                         }
                     }
                 }
@@ -467,15 +419,11 @@ class SimpleElmEngine {
         }
 
         if (left is List) {
-            if (right is List) {
-                val leftList = left
-                val rightList = right
-                // TODO: Potentially use a hashSet to avoid order-dependence here
-                if (leftList.element!!.size == rightList.element!!.size) {
-                    for (i in leftList.element!!.indices) {
-                        if (!codesEqual(leftList.element!![i], rightList.element!![i])) {
-                            return false
-                        }
+            // TODO: Potentially use a hashSet to avoid order-dependence here
+            if (right is List && left.element.size == right.element.size) {
+                for (i in left.element.indices) {
+                    if (!codesEqual(left.element[i], right.element[i])) {
+                        return false
                     }
                 }
             }
@@ -518,14 +466,9 @@ class SimpleElmEngine {
         // InCodeSystem
         if (left is InCodeSystem) {
             if (right is InCodeSystem) {
-                val inCodeSystemLeft = left
-                val inCodeSystemRight = right
-                return expressionsEqual(inCodeSystemLeft.code, inCodeSystemRight.code) &&
-                    systemsEqual(inCodeSystemLeft.codesystem, inCodeSystemRight.codesystem) &&
-                    expressionsEqual(
-                        inCodeSystemLeft.codesystemExpression,
-                        inCodeSystemRight.codesystemExpression
-                    )
+                return expressionsEqual(left.code, right.code) &&
+                    systemsEqual(left.codesystem, right.codesystem) &&
+                    expressionsEqual(left.codesystemExpression, right.codesystemExpression)
             }
 
             return false
@@ -534,14 +477,9 @@ class SimpleElmEngine {
         // AnyInCodeSystem
         if (left is AnyInCodeSystem) {
             if (right is AnyInCodeSystem) {
-                val anyInCodeSystemLeft = left
-                val anyInCodeSystemRight = right
-                return expressionsEqual(anyInCodeSystemLeft.codes, anyInCodeSystemRight.codes) &&
-                    systemsEqual(anyInCodeSystemLeft.codesystem, anyInCodeSystemRight.codesystem) &&
-                    expressionsEqual(
-                        anyInCodeSystemLeft.codesystemExpression,
-                        anyInCodeSystemRight.codesystemExpression
-                    )
+                return expressionsEqual(left.codes, right.codes) &&
+                    systemsEqual(left.codesystem, right.codesystem) &&
+                    expressionsEqual(left.codesystemExpression, right.codesystemExpression)
             }
 
             return false
@@ -550,11 +488,9 @@ class SimpleElmEngine {
         // InValueSet
         if (left is InValueSet) {
             if (right is InValueSet) {
-                val inLeft = left
-                val inRight = right
-                return expressionsEqual(inLeft.code, inRight.code) &&
-                    valueSetsEqual(inLeft.valueset, inRight.valueset) &&
-                    expressionsEqual(inLeft.valuesetExpression, inRight.valuesetExpression)
+                return expressionsEqual(left.code, right.code) &&
+                    valueSetsEqual(left.valueset, right.valueset) &&
+                    expressionsEqual(left.valuesetExpression, right.valuesetExpression)
             }
 
             return false
@@ -563,11 +499,9 @@ class SimpleElmEngine {
         // AnyInValueSet
         if (left is AnyInValueSet) {
             if (right is AnyInValueSet) {
-                val inLeft = left
-                val inRight = right
-                return expressionsEqual(inLeft.codes, inRight.codes) &&
-                    valueSetsEqual(inLeft.valueset, inRight.valueset) &&
-                    expressionsEqual(inLeft.valuesetExpression, inRight.valuesetExpression)
+                return expressionsEqual(left.codes, right.codes) &&
+                    valueSetsEqual(left.valueset, right.valueset) &&
+                    expressionsEqual(left.valuesetExpression, right.valuesetExpression)
             }
 
             return false
@@ -576,10 +510,8 @@ class SimpleElmEngine {
         // CalculateAge
         if (left is CalculateAge) {
             if (right is CalculateAge) {
-                val leftArg = left
-                val rightArg = right
-                return expressionsEqual(leftArg.operand, rightArg.operand) &&
-                    leftArg.precision == rightArg.precision
+                return expressionsEqual(left.operand, right.operand) &&
+                    left.precision == right.precision
             }
 
             return false
@@ -588,11 +520,7 @@ class SimpleElmEngine {
         // Subsumes
         if (left is Subsumes) {
             if (right is Subsumes) {
-                if (operandsEqual(left, right)) {
-                    return true
-                }
-
-                return false
+                return operandsEqual(left, right)
             }
 
             return false
@@ -601,11 +529,7 @@ class SimpleElmEngine {
         // SubsumedBy
         if (left is SubsumedBy) {
             if (right is SubsumedBy) {
-                if (operandsEqual(left, right)) {
-                    return true
-                }
-
-                return false
+                return operandsEqual(left, right)
             }
 
             return false
@@ -645,26 +569,20 @@ class SimpleElmEngine {
         // Case
         if (left is Case) {
             if (right is Case) {
-                val leftArg = left
-                val rightArg = right
-                if (!expressionsEqual(leftArg.comparand, rightArg.comparand)) {
+                if (!expressionsEqual(left.comparand, right.comparand)) {
                     return false
                 }
 
-                if (!expressionsEqual(leftArg.`else`, rightArg.`else`)) {
+                if (!expressionsEqual(left.`else`, right.`else`)) {
                     return false
                 }
 
-                if (
-                    leftArg.caseItem != null &&
-                        rightArg.caseItem != null &&
-                        (leftArg.caseItem!!.size == rightArg.caseItem!!.size)
-                ) {
-                    for (i in leftArg.caseItem!!.indices) {
-                        val leftCaseItem = leftArg.caseItem!![i]
-                        val rightCaseItem = rightArg.caseItem!![i]
+                if (left.caseItem.size == right.caseItem.size) {
+                    for (i in left.caseItem.indices) {
+                        val leftCaseItem = left.caseItem[i]
+                        val rightCaseItem = right.caseItem[i]
                         if (
-                            !expressionsEqual(leftCaseItem!!.`when`, rightCaseItem!!.`when`) ||
+                            !expressionsEqual(leftCaseItem.`when`, rightCaseItem.`when`) ||
                                 !expressionsEqual(leftCaseItem.then, rightCaseItem.then)
                         ) {
                             return false
@@ -690,23 +608,17 @@ class SimpleElmEngine {
         }
 
         // FunctionRef
-        if (left is FunctionRef) {
-            if (right is FunctionRef) {
-                val leftArg = left
-                val rightArg = right
-                return stringsEqual(leftArg.libraryName, rightArg.libraryName) &&
-                    stringsEqual(leftArg.name, rightArg.name) &&
-                    operandsEqual(leftArg, rightArg)
-            }
+        if (left is FunctionRef && right is FunctionRef) {
+            return stringsEqual(left.libraryName, right.libraryName) &&
+                stringsEqual(left.name, right.name) &&
+                operandsEqual(left, right)
         }
 
         // ExpressionRef
         if (left is ExpressionRef) {
             if (right is ExpressionRef) {
-                val leftArg = left
-                val rightArg = right
-                return stringsEqual(leftArg.libraryName, rightArg.libraryName) &&
-                    stringsEqual(leftArg.name, rightArg.name)
+                return stringsEqual(left.libraryName, right.libraryName) &&
+                    stringsEqual(left.name, right.name)
             }
 
             return false
@@ -715,11 +627,9 @@ class SimpleElmEngine {
         // Filter
         if (left is Filter) {
             if (right is Filter) {
-                val leftArg = left
-                val rightArg = right
-                return expressionsEqual(leftArg.source, rightArg.source) &&
-                    expressionsEqual(leftArg.condition, rightArg.condition) &&
-                    stringsEqual(leftArg.scope, rightArg.scope)
+                return expressionsEqual(left.source, right.source) &&
+                    expressionsEqual(left.condition, right.condition) &&
+                    stringsEqual(left.scope, right.scope)
             }
 
             return false
@@ -728,11 +638,9 @@ class SimpleElmEngine {
         // ForEach
         if (left is ForEach) {
             if (right is ForEach) {
-                val leftArg = left
-                val rightArg = right
-                return expressionsEqual(leftArg.source, rightArg.source) &&
-                    expressionsEqual(leftArg.element, rightArg.element) &&
-                    stringsEqual(leftArg.scope, rightArg.scope)
+                return expressionsEqual(left.source, right.source) &&
+                    expressionsEqual(left.element, right.element) &&
+                    stringsEqual(left.scope, right.scope)
             }
 
             return false
@@ -741,10 +649,8 @@ class SimpleElmEngine {
         // IdentifierRef
         if (left is IdentifierRef) {
             if (right is IdentifierRef) {
-                val leftArg = left
-                val rightArg = right
-                return stringsEqual(leftArg.libraryName, rightArg.libraryName) &&
-                    stringsEqual(leftArg.name, rightArg.name)
+                return stringsEqual(left.libraryName, right.libraryName) &&
+                    stringsEqual(left.name, right.name)
             }
 
             return false
@@ -753,11 +659,9 @@ class SimpleElmEngine {
         // If
         if (left is If) {
             if (right is If) {
-                val leftArg = left
-                val rightArg = right
-                return expressionsEqual(leftArg.condition, rightArg.condition) &&
-                    expressionsEqual(leftArg.then, rightArg.then) &&
-                    expressionsEqual(leftArg.`else`, rightArg.`else`)
+                return expressionsEqual(left.condition, right.condition) &&
+                    expressionsEqual(left.then, right.then) &&
+                    expressionsEqual(left.`else`, right.`else`)
             }
 
             return false
@@ -766,22 +670,16 @@ class SimpleElmEngine {
         // Instance
         if (left is Instance) {
             if (right is Instance) {
-                val leftArg = left
-                val rightArg = right
-                if (!qnamesEqual(leftArg.classType, rightArg.classType)) {
+                if (!qnamesEqual(left.classType, right.classType)) {
                     return false
                 }
 
-                if (
-                    leftArg.element != null &&
-                        rightArg.element != null &&
-                        leftArg.element!!.size == rightArg.element!!.size
-                ) {
-                    for (i in leftArg.element!!.indices) {
-                        val leftElement = leftArg.element!![i]
-                        val rightElement = rightArg.element!![i]
+                if (left.element.size == right.element.size) {
+                    for (i in left.element.indices) {
+                        val leftElement = left.element[i]
+                        val rightElement = right.element[i]
                         if (
-                            !stringsEqual(leftElement!!.name, rightElement!!.name) ||
+                            !stringsEqual(leftElement.name, rightElement.name) ||
                                 !expressionsEqual(leftElement.value, rightElement.value)
                         ) {
                             return false
@@ -826,11 +724,7 @@ class SimpleElmEngine {
 
         // Null
         if (left is Null) {
-            if (right is Null) {
-                return true
-            }
-
-            return false
+            return right is Null
         }
 
         // OperandRef
@@ -845,10 +739,7 @@ class SimpleElmEngine {
         // Property
         if (left is Property) {
             if (right is Property) {
-                val leftArg = left
-                val rightArg = right
-                return stringsEqual(leftArg.scope, rightArg.scope) &&
-                    stringsEqual(leftArg.path, rightArg.path)
+                return stringsEqual(left.scope, right.scope) && stringsEqual(left.path, right.path)
             }
 
             return false
@@ -857,8 +748,7 @@ class SimpleElmEngine {
         // Query
         if (left is Query) {
             if (right is Query) {
-                val leftArg = left
-                val rightArg = right
+                // TODO: Implement Query equality
             }
 
             return false
@@ -876,8 +766,7 @@ class SimpleElmEngine {
         // Repeat
         if (left is Repeat) {
             if (right is Repeat) {
-                val leftArg = left
-                val rightArg = right
+                // TODO: Implement Repeat equality
             }
 
             return false
@@ -886,8 +775,7 @@ class SimpleElmEngine {
         // Sort
         if (left is Sort) {
             if (right is Sort) {
-                val leftArg = left
-                val rightArg = right
+                // TODO: Implement Sort equality
             }
 
             return false
@@ -896,8 +784,7 @@ class SimpleElmEngine {
         // Total
         if (left is Total) {
             if (right is Total) {
-                val leftArg = left
-                val rightArg = right
+                // TODO: Implement Total equality
             }
 
             return false
@@ -906,8 +793,7 @@ class SimpleElmEngine {
         // Tuple
         if (left is Tuple) {
             if (right is Tuple) {
-                val leftArg = left
-                val rightArg = right
+                // TODO: Implement Tuple equality
             }
 
             return false
@@ -916,14 +802,10 @@ class SimpleElmEngine {
         return false
     }
 
-    fun operandsEqual(left: FunctionRef, right: FunctionRef): Boolean {
-        if (
-            left.operand != null &&
-                right.operand != null &&
-                left.operand!!.size == right.operand!!.size
-        ) {
-            for (i in left.operand!!.indices) {
-                if (!expressionsEqual(left.operand!![i], right.operand!![i])) {
+    private fun operandsEqual(left: FunctionRef, right: FunctionRef): Boolean {
+        if (left.operand.size == right.operand.size) {
+            for (i in left.operand.indices) {
+                if (!expressionsEqual(left.operand[i], right.operand[i])) {
                     return false
                 }
             }
@@ -934,14 +816,10 @@ class SimpleElmEngine {
         return false
     }
 
-    fun operandsEqual(left: BinaryExpression, right: BinaryExpression): Boolean {
-        if (
-            left.operand != null &&
-                right.operand != null &&
-                left.operand!!.size == right.operand!!.size
-        ) {
-            for (i in left.operand!!.indices) {
-                if (!expressionsEqual(left.operand!![i], right.operand!![i])) {
+    private fun operandsEqual(left: BinaryExpression, right: BinaryExpression): Boolean {
+        if (left.operand.size == right.operand.size) {
+            for (i in left.operand.indices) {
+                if (!expressionsEqual(left.operand[i], right.operand[i])) {
                     return false
                 }
             }
@@ -952,14 +830,10 @@ class SimpleElmEngine {
         return false
     }
 
-    fun operandsEqual(left: TernaryExpression, right: TernaryExpression): Boolean {
-        if (
-            left.operand != null &&
-                right.operand != null &&
-                left.operand!!.size == right.operand!!.size
-        ) {
-            for (i in left.operand!!.indices) {
-                if (!expressionsEqual(left.operand!![i], right.operand!![i])) {
+    private fun operandsEqual(left: TernaryExpression, right: TernaryExpression): Boolean {
+        if (left.operand.size == right.operand.size) {
+            for (i in left.operand.indices) {
+                if (!expressionsEqual(left.operand[i], right.operand[i])) {
                     return false
                 }
             }
@@ -970,14 +844,10 @@ class SimpleElmEngine {
         return false
     }
 
-    fun operandsEqual(left: NaryExpression, right: NaryExpression): Boolean {
-        if (
-            left.operand != null &&
-                right.operand != null &&
-                left.operand!!.size == right.operand!!.size
-        ) {
-            for (i in left.operand!!.indices) {
-                if (!expressionsEqual(left.operand!![i], right.operand!![i])) {
+    private fun operandsEqual(left: NaryExpression, right: NaryExpression): Boolean {
+        if (left.operand.size == right.operand.size) {
+            for (i in left.operand.indices) {
+                if (!expressionsEqual(left.operand[i], right.operand[i])) {
                     return false
                 }
             }
@@ -988,7 +858,10 @@ class SimpleElmEngine {
         return false
     }
 
-    fun operatorExpressionsEqual(left: OperatorExpression?, right: OperatorExpression?): Boolean {
+    private fun operatorExpressionsEqual(
+        left: OperatorExpression?,
+        right: OperatorExpression?
+    ): Boolean {
         if (left == null && right == null) {
             return true
         }
@@ -1040,10 +913,8 @@ class SimpleElmEngine {
         // Round
         if (left is Round) {
             if (right is Round) {
-                val leftArg = left
-                val rightArg = right
-                return expressionsEqual(leftArg.operand, rightArg.operand) &&
-                    expressionsEqual(leftArg.precision, rightArg.precision)
+                return expressionsEqual(left.operand, right.operand) &&
+                    expressionsEqual(left.precision, right.precision)
             }
 
             return false
@@ -1052,10 +923,8 @@ class SimpleElmEngine {
         // Combine
         if (left is Combine) {
             if (right is Combine) {
-                val leftArg = left
-                val rightArg = right
-                return expressionsEqual(leftArg.source, rightArg.source) &&
-                    expressionsEqual(leftArg.separator, rightArg.separator)
+                return expressionsEqual(left.source, right.source) &&
+                    expressionsEqual(left.separator, right.separator)
             }
 
             return false
@@ -1064,10 +933,8 @@ class SimpleElmEngine {
         // Split
         if (left is Split) {
             if (right is Split) {
-                val leftArg = left
-                val rightArg = right
-                return expressionsEqual(leftArg.stringToSplit, rightArg.stringToSplit) &&
-                    expressionsEqual(leftArg.separator, rightArg.separator)
+                return expressionsEqual(left.stringToSplit, right.stringToSplit) &&
+                    expressionsEqual(left.separator, right.separator)
             }
 
             return false
@@ -1076,10 +943,8 @@ class SimpleElmEngine {
         // SplitOnMatches
         if (left is SplitOnMatches) {
             if (right is SplitOnMatches) {
-                val leftArg = left
-                val rightArg = right
-                return expressionsEqual(leftArg.stringToSplit, rightArg.stringToSplit) &&
-                    expressionsEqual(leftArg.separatorPattern, rightArg.separatorPattern)
+                return expressionsEqual(left.stringToSplit, right.stringToSplit) &&
+                    expressionsEqual(left.separatorPattern, right.separatorPattern)
             }
 
             return false
@@ -1088,10 +953,8 @@ class SimpleElmEngine {
         // PositionOf
         if (left is PositionOf) {
             if (right is PositionOf) {
-                val leftArg = left
-                val rightArg = right
-                return expressionsEqual(leftArg.string, rightArg.string) &&
-                    expressionsEqual(leftArg.pattern, rightArg.pattern)
+                return expressionsEqual(left.string, right.string) &&
+                    expressionsEqual(left.pattern, right.pattern)
             }
 
             return false
@@ -1100,10 +963,8 @@ class SimpleElmEngine {
         // LastPositionOf
         if (left is LastPositionOf) {
             if (right is LastPositionOf) {
-                val leftArg = left
-                val rightArg = right
-                return expressionsEqual(leftArg.string, rightArg.string) &&
-                    expressionsEqual(leftArg.pattern, rightArg.pattern)
+                return expressionsEqual(left.string, right.string) &&
+                    expressionsEqual(left.pattern, right.pattern)
             }
 
             return false
@@ -1112,11 +973,9 @@ class SimpleElmEngine {
         // Substring
         if (left is Substring) {
             if (right is Substring) {
-                val leftArg = left
-                val rightArg = right
-                return expressionsEqual(leftArg.stringToSub, rightArg.stringToSub) &&
-                    expressionsEqual(leftArg.startIndex, rightArg.startIndex) &&
-                    expressionsEqual(leftArg.length, rightArg.length)
+                return expressionsEqual(left.stringToSub, right.stringToSub) &&
+                    expressionsEqual(left.startIndex, right.startIndex) &&
+                    expressionsEqual(left.length, right.length)
             }
 
             return false
@@ -1129,12 +988,10 @@ class SimpleElmEngine {
         // Time
         if (left is Time) {
             if (right is Time) {
-                val leftArg = left
-                val rightArg = right
-                return expressionsEqual(leftArg.hour, rightArg.hour) &&
-                    expressionsEqual(leftArg.minute, rightArg.minute) &&
-                    expressionsEqual(leftArg.second, rightArg.second) &&
-                    expressionsEqual(leftArg.millisecond, rightArg.millisecond)
+                return expressionsEqual(left.hour, right.hour) &&
+                    expressionsEqual(left.minute, right.minute) &&
+                    expressionsEqual(left.second, right.second) &&
+                    expressionsEqual(left.millisecond, right.millisecond)
             }
 
             return false
@@ -1143,11 +1000,9 @@ class SimpleElmEngine {
         // Date
         if (left is Date) {
             if (right is Date) {
-                val leftArg = left
-                val rightArg = right
-                return expressionsEqual(leftArg.year, rightArg.year) &&
-                    expressionsEqual(leftArg.month, rightArg.month) &&
-                    expressionsEqual(leftArg.day, rightArg.day)
+                return expressionsEqual(left.year, right.year) &&
+                    expressionsEqual(left.month, right.month) &&
+                    expressionsEqual(left.day, right.day)
             }
 
             return false
@@ -1156,16 +1011,14 @@ class SimpleElmEngine {
         // DateTime
         if (left is DateTime) {
             if (right is DateTime) {
-                val leftArg = left
-                val rightArg = right
-                return expressionsEqual(leftArg.year, rightArg.year) &&
-                    expressionsEqual(leftArg.month, rightArg.month) &&
-                    expressionsEqual(leftArg.day, rightArg.day) &&
-                    expressionsEqual(leftArg.hour, rightArg.hour) &&
-                    expressionsEqual(leftArg.minute, rightArg.minute) &&
-                    expressionsEqual(leftArg.second, rightArg.second) &&
-                    expressionsEqual(leftArg.millisecond, rightArg.millisecond) &&
-                    expressionsEqual(leftArg.timezoneOffset, rightArg.timezoneOffset)
+                return expressionsEqual(left.year, right.year) &&
+                    expressionsEqual(left.month, right.month) &&
+                    expressionsEqual(left.day, right.day) &&
+                    expressionsEqual(left.hour, right.hour) &&
+                    expressionsEqual(left.minute, right.minute) &&
+                    expressionsEqual(left.second, right.second) &&
+                    expressionsEqual(left.millisecond, right.millisecond) &&
+                    expressionsEqual(left.timezoneOffset, right.timezoneOffset)
             }
 
             return false
@@ -1174,10 +1027,8 @@ class SimpleElmEngine {
         // First
         if (left is First) {
             if (right is First) {
-                val leftArg = left
-                val rightArg = right
-                return expressionsEqual(leftArg.source, rightArg.source) &&
-                    stringsEqual(leftArg.orderBy, rightArg.orderBy)
+                return expressionsEqual(left.source, right.source) &&
+                    stringsEqual(left.orderBy, right.orderBy)
             }
 
             return false
@@ -1186,10 +1037,8 @@ class SimpleElmEngine {
         // Last
         if (left is Last) {
             if (right is Last) {
-                val leftArg = left
-                val rightArg = right
-                return expressionsEqual(leftArg.source, rightArg.source) &&
-                    stringsEqual(leftArg.orderBy, rightArg.orderBy)
+                return expressionsEqual(left.source, right.source) &&
+                    stringsEqual(left.orderBy, right.orderBy)
             }
 
             return false
@@ -1198,10 +1047,8 @@ class SimpleElmEngine {
         // IndexOf
         if (left is IndexOf) {
             if (right is IndexOf) {
-                val leftArg = left
-                val rightArg = right
-                return expressionsEqual(leftArg.source, rightArg.source) &&
-                    expressionsEqual(leftArg.element, rightArg.element)
+                return expressionsEqual(left.source, right.source) &&
+                    expressionsEqual(left.element, right.element)
             }
 
             return false
@@ -1210,11 +1057,9 @@ class SimpleElmEngine {
         // Slice
         if (left is Slice) {
             if (right is Slice) {
-                val leftArg = left
-                val rightArg = right
-                return expressionsEqual(leftArg.source, rightArg.source) &&
-                    expressionsEqual(leftArg.startIndex, rightArg.startIndex) &&
-                    expressionsEqual(leftArg.endIndex, rightArg.endIndex)
+                return expressionsEqual(left.source, right.source) &&
+                    expressionsEqual(left.startIndex, right.startIndex) &&
+                    expressionsEqual(left.endIndex, right.endIndex)
             }
 
             return false
@@ -1241,13 +1086,11 @@ class SimpleElmEngine {
         // Message
         if (left is Message) {
             if (right is Message) {
-                val leftArg = left
-                val rightArg = right
-                return expressionsEqual(leftArg.source, rightArg.source) &&
-                    expressionsEqual(leftArg.code, rightArg.code) &&
-                    expressionsEqual(leftArg.condition, rightArg.condition) &&
-                    expressionsEqual(leftArg.message, rightArg.message) &&
-                    expressionsEqual(leftArg.severity, rightArg.severity)
+                return expressionsEqual(left.source, right.source) &&
+                    expressionsEqual(left.code, right.code) &&
+                    expressionsEqual(left.condition, right.condition) &&
+                    expressionsEqual(left.message, right.message) &&
+                    expressionsEqual(left.severity, right.severity)
             }
 
             return false
@@ -1258,11 +1101,11 @@ class SimpleElmEngine {
         return true
     }
 
-    fun operandsEqual(left: UnaryExpression, right: UnaryExpression): Boolean {
+    private fun operandsEqual(left: UnaryExpression, right: UnaryExpression): Boolean {
         return expressionsEqual(left.operand, right.operand)
     }
 
-    fun unaryExpressionsEqual(left: UnaryExpression?, right: UnaryExpression?): Boolean {
+    private fun unaryExpressionsEqual(left: UnaryExpression?, right: UnaryExpression?): Boolean {
         if (left == null && right == null) {
             return true
         }
@@ -1281,23 +1124,17 @@ class SimpleElmEngine {
 
         // Abs
         // As
-        if (left is As) {
-            if (right is As) {
-                val leftArg = left
-                val rightArg = right
-                return qnamesEqual(leftArg.asType, rightArg.asType) &&
-                    typeSpecifiersEqual(leftArg.asTypeSpecifier, rightArg.asTypeSpecifier) &&
-                    leftArg.isStrict() == rightArg.isStrict()
-            }
+        if (left is As && right is As) {
+            return qnamesEqual(left.asType, right.asType) &&
+                typeSpecifiersEqual(left.asTypeSpecifier, right.asTypeSpecifier) &&
+                left.isStrict() == right.isStrict()
         }
         // Ceiling
         // CanConvert
         if (left is CanConvert) {
             if (right is CanConvert) {
-                val leftArg = left
-                val rightArg = right
-                return qnamesEqual(leftArg.toType, rightArg.toType) &&
-                    typeSpecifiersEqual(leftArg.toTypeSpecifier, rightArg.toTypeSpecifier)
+                return qnamesEqual(left.toType, right.toType) &&
+                    typeSpecifiersEqual(left.toTypeSpecifier, right.toTypeSpecifier)
             }
 
             return false
@@ -1305,10 +1142,8 @@ class SimpleElmEngine {
         // Convert
         if (left is Convert) {
             if (right is Convert) {
-                val leftArg = left
-                val rightArg = right
-                return qnamesEqual(leftArg.toType, rightArg.toType) &&
-                    typeSpecifiersEqual(leftArg.toTypeSpecifier, rightArg.toTypeSpecifier)
+                return qnamesEqual(left.toType, right.toType) &&
+                    typeSpecifiersEqual(left.toTypeSpecifier, right.toTypeSpecifier)
             }
 
             return false
@@ -1340,10 +1175,8 @@ class SimpleElmEngine {
         // Is
         if (left is Is) {
             if (right is Is) {
-                val leftArg = left
-                val rightArg = right
-                return qnamesEqual(leftArg.isType, rightArg.isType) &&
-                    typeSpecifiersEqual(leftArg.isTypeSpecifier, rightArg.isTypeSpecifier)
+                return qnamesEqual(left.isType, right.isType) &&
+                    typeSpecifiersEqual(left.isTypeSpecifier, right.isTypeSpecifier)
             }
             return false
         }
@@ -1388,7 +1221,7 @@ class SimpleElmEngine {
         return true
     }
 
-    fun binaryExpressionsEqual(left: BinaryExpression?, right: BinaryExpression?): Boolean {
+    private fun binaryExpressionsEqual(left: BinaryExpression?, right: BinaryExpression?): Boolean {
         if (left == null && right == null) {
             return true
         }
@@ -1462,7 +1295,10 @@ class SimpleElmEngine {
         return true
     }
 
-    fun ternaryExpressionsEqual(left: TernaryExpression?, right: TernaryExpression?): Boolean {
+    private fun ternaryExpressionsEqual(
+        left: TernaryExpression?,
+        right: TernaryExpression?
+    ): Boolean {
         if (left == null && right == null) {
             return true
         }
@@ -1483,7 +1319,7 @@ class SimpleElmEngine {
         return true
     }
 
-    fun naryExpressionsEqual(left: NaryExpression?, right: NaryExpression?): Boolean {
+    private fun naryExpressionsEqual(left: NaryExpression?, right: NaryExpression?): Boolean {
         if (left == null && right == null) {
             return true
         }
@@ -1508,7 +1344,7 @@ class SimpleElmEngine {
         return false
     }
 
-    fun aggregateExpressionsEqual(
+    private fun aggregateExpressionsEqual(
         left: AggregateExpression?,
         right: AggregateExpression?
     ): Boolean {
@@ -1529,13 +1365,9 @@ class SimpleElmEngine {
         }
 
         // Aggregate
-        if (left is Aggregate) {
-            if (right is Aggregate) {
-                val leftArg = left
-                val rightArg = right
-                return expressionsEqual(leftArg.initialValue, rightArg.initialValue) &&
-                    expressionsEqual(leftArg.iteration, rightArg.iteration)
-            }
+        if (left is Aggregate && right is Aggregate) {
+            return expressionsEqual(left.initialValue, right.initialValue) &&
+                expressionsEqual(left.iteration, right.iteration)
         }
 
         // Count

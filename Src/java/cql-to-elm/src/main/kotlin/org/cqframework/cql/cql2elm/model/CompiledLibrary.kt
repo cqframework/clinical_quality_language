@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm.model
 
-import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import org.hl7.cql.model.DataType
@@ -32,11 +31,7 @@ class CompiledLibrary {
         val existingResolvedIdentifierContext = resolve(identifier)
         existingResolvedIdentifierContext.exactMatchElement?.let {
             throw IllegalArgumentException(
-                String.format(
-                    Locale.US,
-                    "Identifier %s is already in use in this library.",
-                    identifier
-                )
+                "Identifier $identifier is already in use in this library."
             )
         }
     }
@@ -97,25 +92,16 @@ class CompiledLibrary {
         // If this library has no identifier, the operator must not have an identifier
         operator.libraryName = operator.libraryName ?: identifier?.id
         require(operator.libraryName == identifier?.id) {
-            String.format(
-                Locale.US,
-                "Operator %s cannot be registered in library %s because it is defined in library %s.",
-                operator.name,
-                identifier?.id ?: "<anonymous>",
-                operator.libraryName
-            )
+            "Operator ${operator.name} cannot be registered in library ${identifier?.id ?: "<anonymous>"}" +
+                "because it is defined in library ${operator.libraryName}."
         }
     }
 
     @Suppress("UnusedPrivateMember")
     private fun ensureResultType(operator: Operator) {
         requireNotNull(operator.resultType) {
-            String.format(
-                Locale.US,
-                "Operator %s cannot be registered in library %s because it does not have a result type defined.",
-                operator.name,
-                identifier?.id ?: "<anonymous>"
-            )
+            """Operator ${operator.name} cannot be registered in library ${identifier?.id ?: "<anonymous>"}
+                    because it does not have a result type defined."""
         }
     }
 

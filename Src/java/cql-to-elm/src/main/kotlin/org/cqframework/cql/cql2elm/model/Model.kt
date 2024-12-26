@@ -83,12 +83,7 @@ open class Model(val modelInfo: ModelInfo, modelManager: ModelManager?) {
         // then throw an error
         require(!mustResolve) {
             // ERROR:
-            String.format(
-                Locale.US,
-                "Could not resolve context name %s in model %s.",
-                contextName,
-                modelInfo.name
-            )
+            "Could not resolve context name $contextName in model ${modelInfo.name}."
         }
 
         return null

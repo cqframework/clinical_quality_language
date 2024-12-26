@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm.model
 
-import java.util.*
 import org.cqframework.cql.cql2elm.TypeBuilder
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.hl7.cql.model.IntervalType
@@ -2947,7 +2946,7 @@ object SystemLibraryHelper {
         var n = 0
         for (dataType in operator.signature.operandTypes) {
             n++
-            val od = OperandDef().withName(String.format(Locale.US, "param%d", n))
+            val od = OperandDef().withName("param${n}")
             if (dataType is NamedType) {
                 od.operandType = tb.dataTypeToQName(dataType)
             } else {

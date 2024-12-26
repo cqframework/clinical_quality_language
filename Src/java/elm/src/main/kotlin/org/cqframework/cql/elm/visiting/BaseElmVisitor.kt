@@ -398,8 +398,8 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
     override fun visitTupleTypeSpecifier(elm: TupleTypeSpecifier, context: C): T {
         var result = defaultResult(elm, context)
 
-        for (element in elm.element!!) {
-            val childResult = visitTupleElementDefinition(element!!, context)
+        for (element in elm.element) {
+            val childResult = visitTupleElementDefinition(element, context)
             result = aggregateResult(result, childResult)
         }
         return result
@@ -416,8 +416,8 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
     override fun visitChoiceTypeSpecifier(elm: ChoiceTypeSpecifier, context: C): T {
         var result = defaultResult(elm, context)
 
-        for (choice in elm.choice!!) {
-            val childResult = visitTypeSpecifier(choice!!, context)
+        for (choice in elm.choice) {
+            val childResult = visitTypeSpecifier(choice, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -711,8 +711,8 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
     override fun visitFunctionDef(elm: FunctionDef, context: C): T {
         var result = visitFields(elm, context)
 
-        for (operand in elm.operand!!) {
-            val childResult = visitOperandDef(operand!!, context)
+        for (operand in elm.operand) {
+            val childResult = visitOperandDef(operand, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -746,13 +746,13 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
     override fun visitFunctionRef(elm: FunctionRef, context: C): T {
         var result = visitFields(elm, context)
 
-        for (element in elm.operand!!) {
-            val childResult = visitExpression(element!!, context)
+        for (element in elm.operand) {
+            val childResult = visitExpression(element, context)
             result = aggregateResult(result, childResult)
         }
 
-        for (s in elm.signature!!) {
-            val childResult = visitTypeSpecifier(s!!, context)
+        for (s in elm.signature) {
+            val childResult = visitTypeSpecifier(s, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -859,8 +859,8 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
     override fun visitTuple(elm: Tuple, context: C): T {
         var result = visitFields(elm, context)
 
-        for (element in elm.element!!) {
-            if (element!!.value != null) {
+        for (element in elm.element) {
+            if (element.value != null) {
                 val childResult = visitExpression(element.value!!, context)
                 result = aggregateResult(result, childResult)
             }
@@ -895,8 +895,8 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
     override fun visitInstance(elm: Instance, context: C): T {
         var result = visitFields(elm, context)
 
-        for (element in elm.element!!) {
-            if (element!!.value != null) {
+        for (element in elm.element) {
+            if (element.value != null) {
                 val childResult = visitExpression(element.value!!, context)
                 result = aggregateResult(result, childResult)
             }
@@ -965,8 +965,8 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
             result = aggregateResult(result, childResult)
         }
 
-        for (element in elm.element!!) {
-            val childResult = visitExpression(element!!, context)
+        for (element in elm.element) {
+            val childResult = visitExpression(element, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -1091,8 +1091,8 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
             result = aggregateResult(result, childResult)
         }
 
-        for (ci in elm.caseItem!!) {
-            val childResult = visitCaseItem(ci!!, context)
+        for (ci in elm.caseItem) {
+            val childResult = visitCaseItem(ci, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -2903,8 +2903,8 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
             val childResult = visitExpression(elm.source!!, context)
             result = aggregateResult(result, childResult)
         }
-        for (sbi in elm.by!!) {
-            val childResult = visitSortByItem(sbi!!, context)
+        for (sbi in elm.by) {
+            val childResult = visitSortByItem(sbi, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -3410,8 +3410,8 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
     override fun visitSortClause(elm: SortClause, context: C): T {
         var result = visitFields(elm, context)
 
-        for (sbi in elm.by!!) {
-            val childResult = visitSortByItem(sbi!!, context)
+        for (sbi in elm.by) {
+            val childResult = visitSortByItem(sbi, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -3470,17 +3470,17 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
     override fun visitQuery(elm: Query, context: C): T {
         var result = visitFields(elm, context)
 
-        for (source in elm.source!!) {
-            val childResult = visitAliasedQuerySource(source!!, context)
+        for (source in elm.source) {
+            val childResult = visitAliasedQuerySource(source, context)
             result = aggregateResult(result, childResult)
         }
-        for (let in elm.let!!) {
-            val childResult = visitLetClause(let!!, context)
+        for (let in elm.let) {
+            val childResult = visitLetClause(let, context)
             result = aggregateResult(result, childResult)
         }
 
-        for (r in elm.relationship!!) {
-            val childResult = visitRelationshipClause(r!!, context)
+        for (r in elm.relationship) {
+            val childResult = visitRelationshipClause(r, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -3570,8 +3570,8 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
             result = aggregateResult(result, childResult)
         }
 
-        for (s in elm.signature!!) {
-            val childResult = visitTypeSpecifier(s!!, context)
+        for (s in elm.signature) {
+            val childResult = visitTypeSpecifier(s, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -3624,8 +3624,8 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
     protected fun visitFields(elm: NaryExpression, context: C): T {
         var result = visitFields(elm as OperatorExpression, context)
 
-        for (e in elm.operand!!) {
-            val childResult = visitExpression(e!!, context)
+        for (e in elm.operand) {
+            val childResult = visitExpression(e, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -3642,8 +3642,8 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
     protected fun visitFields(elm: TernaryExpression, context: C): T {
         var result = visitFields(elm as OperatorExpression, context)
 
-        for (s in elm.operand!!) {
-            val childResult = visitExpression(s!!, context)
+        for (s in elm.operand) {
+            val childResult = visitExpression(s, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -3660,8 +3660,8 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
     protected fun visitFields(elm: OperatorExpression, context: C): T {
         var result = visitFields(elm as Expression, context)
 
-        for (s in elm.signature!!) {
-            val childResult = visitTypeSpecifier(s!!, context)
+        for (s in elm.signature) {
+            val childResult = visitTypeSpecifier(s, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -3678,8 +3678,8 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
     protected open fun visitFields(elm: BinaryExpression, context: C): T {
         var result = visitFields(elm as OperatorExpression, context)
 
-        for (e in elm.operand!!) {
-            val childResult = visitExpression(e!!, context)
+        for (e in elm.operand) {
+            val childResult = visitExpression(e, context)
             result = aggregateResult(result, childResult)
         }
 

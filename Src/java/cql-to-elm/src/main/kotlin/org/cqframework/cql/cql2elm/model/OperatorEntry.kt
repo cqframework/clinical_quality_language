@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm.model
 
-import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import org.hl7.cql.model.ChoiceType
@@ -224,12 +223,7 @@ class OperatorEntry(val name: String) {
             requireNotNull(node) { "node is null." }
 
             require(!signatures.containsKey(node.signature)) {
-                String.format(
-                    Locale.US,
-                    "Operator %s already has a registration for signature: %s.",
-                    node.operator.name,
-                    node.signature.toString()
-                )
+                "Operator ${node.operator.name} already has a registration for signature: ${node.signature}."
             }
 
             var added = false
@@ -307,12 +301,7 @@ class OperatorEntry(val name: String) {
 
     private fun addGenericOperator(operator: GenericOperator) {
         require(!genericOperators.containsKey(operator.signature)) {
-            String.format(
-                Locale.US,
-                "Operator %s already has a generic registration for signature: %s.",
-                name,
-                operator.signature.toString()
-            )
+            "Operator $name already has a generic registration for signature: ${operator.signature}."
         }
 
         genericOperators[operator.signature] = operator

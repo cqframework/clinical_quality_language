@@ -2,7 +2,6 @@
 
 package org.cqframework.cql.cql2elm
 
-import java.util.*
 import javax.xml.namespace.QName
 import kotlin.collections.ArrayList
 import org.cqframework.cql.cql2elm.model.Model
@@ -55,7 +54,7 @@ class TypeBuilder(private val of: IdObjectFactory, private val mr: ModelResolver
             is NamedType -> {
                 return of.createNamedTypeSpecifier()
                     .withName(dataTypeToQName(type))
-                    .withResultType(type) as TypeSpecifier
+                    .withResultType(type)
             }
             is ListType -> {
                 return listTypeToTypeSpecifier(type)
@@ -73,9 +72,7 @@ class TypeBuilder(private val of: IdObjectFactory, private val mr: ModelResolver
                 return typeParameterToTypeSpecifier(type)
             }
             else -> {
-                throw IllegalArgumentException(
-                    String.format(Locale.US, "Could not convert type %s to a type specifier.", type)
-                )
+                throw IllegalArgumentException("Could not convert type $type to a type specifier.")
             }
         }
     }
@@ -83,25 +80,24 @@ class TypeBuilder(private val of: IdObjectFactory, private val mr: ModelResolver
     private fun listTypeToTypeSpecifier(type: ListType): TypeSpecifier {
         return of.createListTypeSpecifier()
             .withElementType(dataTypeToTypeSpecifier(type.elementType))
-            .withResultType(type) as TypeSpecifier
+            .withResultType(type)
     }
 
     private fun intervalTypeToTypeSpecifier(type: IntervalType): TypeSpecifier {
         return of.createIntervalTypeSpecifier()
             .withPointType(dataTypeToTypeSpecifier(type.pointType))
-            .withResultType(type) as TypeSpecifier
+            .withResultType(type)
     }
 
     private fun tupleTypeToTypeSpecifier(type: TupleType): TypeSpecifier {
-        @Suppress("SpreadOperator")
         return of.createTupleTypeSpecifier()
-            .withElement(*tupleTypeElementsToTupleElementDefinitions(type.elements))
-            .withResultType(type) as TypeSpecifier
+            .withElement(tupleTypeElementsToTupleElementDefinitions(type.elements))
+            .withResultType(type)
     }
 
     private fun tupleTypeElementsToTupleElementDefinitions(
         elements: Iterable<TupleTypeElement>
-    ): Array<TupleElementDefinition> {
+    ): List<TupleElementDefinition> {
         val definitions: MutableList<TupleElementDefinition> = ArrayList()
         for (element: TupleTypeElement in elements) {
             definitions.add(
@@ -110,22 +106,21 @@ class TypeBuilder(private val of: IdObjectFactory, private val mr: ModelResolver
                     .withElementType(dataTypeToTypeSpecifier(element.type))
             )
         }
-        return definitions.toTypedArray<TupleElementDefinition>()
+        return definitions
     }
 
     private fun choiceTypeToTypeSpecifier(type: ChoiceType): TypeSpecifier {
-        @Suppress("SpreadOperator")
         return of.createChoiceTypeSpecifier()
-            .withChoice(*choiceTypeTypesToTypeSpecifiers(type))
-            .withResultType(type) as TypeSpecifier
+            .withChoice(choiceTypeTypesToTypeSpecifiers(type))
+            .withResultType(type)
     }
 
-    private fun choiceTypeTypesToTypeSpecifiers(choiceType: ChoiceType): Array<TypeSpecifier> {
+    private fun choiceTypeTypesToTypeSpecifiers(choiceType: ChoiceType): List<TypeSpecifier> {
         val specifiers: MutableList<TypeSpecifier> = ArrayList()
         for (type: DataType in choiceType.types) {
             specifiers.add(dataTypeToTypeSpecifier(type))
         }
-        return specifiers.toTypedArray<TypeSpecifier>()
+        return specifiers
     }
 
     private fun typeParameterToTypeSpecifier(type: TypeParameter): TypeSpecifier {

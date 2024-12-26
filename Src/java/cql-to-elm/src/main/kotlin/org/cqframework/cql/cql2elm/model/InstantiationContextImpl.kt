@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm.model
 
-import java.util.*
 import kotlin.collections.ArrayList
 import org.hl7.cql.model.DataType
 import org.hl7.cql.model.InstantiationContext
@@ -144,11 +143,7 @@ class InstantiationContextImpl(
         val result =
             typeMap[parameter]
                 ?: throw IllegalArgumentException(
-                    String.format(
-                        Locale.US,
-                        "Could not resolve type parameter %s.",
-                        parameter.identifier
-                    )
+                    "Could not resolve type parameter ${parameter.identifier}."
                 )
 
         return result

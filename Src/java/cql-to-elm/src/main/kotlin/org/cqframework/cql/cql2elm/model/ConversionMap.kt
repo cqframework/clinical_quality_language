@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm.model
 
-import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import org.hl7.cql.model.ChoiceType
@@ -64,24 +63,14 @@ class ConversionMap {
         if (conversion.isGeneric) {
             val conversions = genericConversions
             check(!hasConversion(conversion, conversions)) {
-                String.format(
-                    Locale.US,
-                    "Conversion from %s to %s is already defined.",
-                    conversion.fromType.toString(),
-                    conversion.toType.toString()
-                )
+                "Conversion from ${conversion.fromType} to ${conversion.toType} is already defined."
             }
 
             conversions.add(conversion)
         } else {
             val conversions = getConversions(conversion.fromType)
             check(!hasConversion(conversion, conversions)) {
-                String.format(
-                    Locale.US,
-                    "Conversion from %s to %s is already defined.",
-                    conversion.fromType.toString(),
-                    conversion.toType.toString()
-                )
+                "Conversion from ${conversion.fromType} to ${conversion.toType} is already defined."
             }
 
             conversions.add(conversion)
@@ -321,13 +310,7 @@ class ConversionMap {
                 } else
                     require(newScore != score) {
                         // ERROR
-                        String.format(
-                            Locale.US,
-                            "Ambiguous implicit conversion from %s to %s or %s.",
-                            fromType.toString(),
-                            result!!.toType.toString(),
-                            conversion.toType.toString()
-                        )
+                        "Ambiguous implicit conversion from $fromType to ${result!!.toType} or ${conversion.toType}."
                     }
             }
         }

@@ -42,10 +42,8 @@ abstract class CqlPreprocessorElmCommonVisitor(
     @JvmField protected val libraryBuilder: LibraryBuilder,
     protected val tokenStream: TokenStream
 ) : cqlBaseVisitor<Any?>() {
-    @JvmField
-    protected val of: IdObjectFactory =
-        requireNotNull(libraryBuilder.objectFactory) { "libraryBuilder.objectFactory required" }
-    protected val af = ObjectFactory()
+    @JvmField protected val of: IdObjectFactory = libraryBuilder.objectFactory
+    private val af = ObjectFactory()
     protected var implicitContextCreated = false
     protected var currentContext = "Unfiltered"
     @JvmField protected var chunks = Stack<Chunk>()
@@ -87,17 +85,11 @@ abstract class CqlPreprocessorElmCommonVisitor(
             // ERROR:
             try {
                 o = super.visit(tree)
-                if (o is Element) {
-                    if (o.localId == null) {
-                        throw CqlInternalException(
-                            String.format(
-                                Locale.US,
-                                "Internal translator error. 'localId' was not assigned for Element \"%s\"",
-                                o.javaClass.name
-                            ),
-                            getTrackBack(tree)
-                        )
-                    }
+                if (o is Element && o.localId == null) {
+                    throw CqlInternalException(
+                        "Internal translator error. 'localId' was not assigned for Element \"${o.javaClass.name}\"",
+                        getTrackBack(tree)
+                    )
                 }
             } catch (e: CqlIncludeException) {
                 val translatorException = CqlCompilerException(e.message, getTrackBack(tree), e)
@@ -285,7 +277,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
                         o is ExpressionDef
                 ) {
                     val a = getAnnotation(o)
-                    if (a == null || a.s == null) {
+                    if (a?.s == null) {
                         // Add header information (comments prior to the definition)
                         val definitionInfo = libraryInfo.resolveDefinition(tree)
                         if (definitionInfo?.headerInterval != null) {

@@ -73,9 +73,6 @@ class CqlTranslator(
     val libraries: Map<VersionedIdentifier, Library?>
         get() = compiler.libraries
 
-    val translatedLibraries: Map<VersionedIdentifier, CompiledLibrary?>
-        get() = compiler.compiledLibraries
-
     val exceptions: List<CqlCompilerException?>?
         // public Map<String, String> getLibrariesAsXML() {
         get() = compiler.exceptions
@@ -95,35 +92,6 @@ class CqlTranslator(
         @JvmStatic
         fun fromText(cqlText: String, libraryManager: LibraryManager): CqlTranslator {
             return CqlTranslator(null, null, CharStreams.fromString(cqlText), libraryManager)
-        }
-
-        @JvmStatic
-        fun fromText(
-            namespaceInfo: NamespaceInfo?,
-            cqlText: String,
-            libraryManager: LibraryManager
-        ): CqlTranslator {
-            return CqlTranslator(
-                namespaceInfo,
-                null,
-                CharStreams.fromString(cqlText),
-                libraryManager
-            )
-        }
-
-        @JvmStatic
-        fun fromText(
-            namespaceInfo: NamespaceInfo?,
-            sourceInfo: VersionedIdentifier?,
-            cqlText: String,
-            libraryManager: LibraryManager
-        ): CqlTranslator {
-            return CqlTranslator(
-                namespaceInfo,
-                sourceInfo,
-                CharStreams.fromString(cqlText),
-                libraryManager
-            )
         }
 
         @JvmStatic
@@ -220,7 +188,7 @@ class CqlTranslator(
         fun fromFile(
             namespaceInfo: NamespaceInfo?,
             sourceInfo: VersionedIdentifier?,
-            cqlFile: File?,
+            cqlFile: File,
             libraryManager: LibraryManager
         ): CqlTranslator {
             return CqlTranslator(

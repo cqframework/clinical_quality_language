@@ -2,7 +2,6 @@ package org.cqframework.cql.cql2elm
 
 import java.io.InputStream
 import java.nio.file.Path
-import java.util.*
 import kotlin.collections.ArrayList
 import org.hl7.cql.model.NamespaceAware
 import org.hl7.cql.model.NamespaceManager
@@ -31,9 +30,7 @@ class PriorityLibrarySourceLoader : LibrarySourceLoader, NamespaceAware, PathAwa
     private var path: Path? = null
 
     override fun setPath(path: Path) {
-        require(path.toFile().isDirectory) {
-            String.format(Locale.US, "path '%s' is not a valid directory", path)
-        }
+        require(path.toFile().isDirectory) { "path '$path' is not a valid directory" }
         this.path = path
         for (provider in getProviders()) {
             if (provider is PathAware) {

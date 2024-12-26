@@ -20,7 +20,7 @@ class NamespaceManager {
         addNamespace(namespaceInfo.name, namespaceInfo.uri)
     }
 
-    fun addNamespace(namespaceName: String, namespaceUri: String) {
+    private fun addNamespace(namespaceName: String, namespaceUri: String) {
         require(namespaceName.isNotEmpty()) { "namespaceName is required" }
         require(namespaceUri.isNotEmpty()) { "namespaceUri is required" }
         check(!namespaces.containsKey(namespaceName)) {

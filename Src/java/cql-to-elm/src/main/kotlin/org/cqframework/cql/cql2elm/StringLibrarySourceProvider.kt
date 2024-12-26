@@ -2,7 +2,6 @@ package org.cqframework.cql.cql2elm
 
 import java.io.ByteArrayInputStream
 import java.io.InputStream
-import java.util.*
 import kotlin.collections.ArrayList
 import org.hl7.elm.r1.VersionedIdentifier
 
@@ -28,14 +27,10 @@ class StringLibrarySourceProvider(private val libraries: List<String>) : Library
                 matches.add(library)
             }
         }
-        if (matches.size > 1) {
-            throw IllegalArgumentException(
-                String.format(
-                    Locale.US,
-                    "Multiple libraries for id : %s resolved.%nEnsure that there are no duplicates in the input set.",
-                    libraryIdentifier.toString()
-                )
-            )
+        require(matches.size <= 1) {
+            """"Multiple libraries for id : $libraryIdentifier resolved.
+                    Ensure that there are no duplicates in the input set."""
+                .trimMargin()
         }
         return if (matches.size == 1) ByteArrayInputStream(matches[0].toByteArray()) else null
     }

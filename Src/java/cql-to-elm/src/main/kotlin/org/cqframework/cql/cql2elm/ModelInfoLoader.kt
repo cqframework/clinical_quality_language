@@ -1,7 +1,6 @@
 package org.cqframework.cql.cql2elm
 
 import java.nio.file.Path
-import java.util.*
 import kotlin.collections.ArrayList
 import org.hl7.cql.model.ModelIdentifier
 import org.hl7.cql.model.ModelInfoProvider
@@ -36,13 +35,10 @@ class ModelInfoLoader : NamespaceAware, PathAware {
             }
         }
         requireNotNull(modelInfo) {
-            String.format(
-                Locale.US,
-                "Could not resolve model info provider for model %s, version %s.",
+            "Could not resolve model info provider for model ${
                 if (modelIdentifier.system == null) modelIdentifier.id
-                else NamespaceManager.getPath(modelIdentifier.system, modelIdentifier.id),
-                modelIdentifier.version
-            )
+                else NamespaceManager.getPath(modelIdentifier.system, modelIdentifier.id)
+            }, version ${modelIdentifier.version}."
         }
         return modelInfo
     }
@@ -82,9 +78,7 @@ class ModelInfoLoader : NamespaceAware, PathAware {
     }
 
     override fun setPath(path: Path) {
-        require(path.toFile().isDirectory) {
-            String.format(Locale.US, "path '%s' is not a valid directory", path)
-        }
+        require(path.toFile().isDirectory) { "path '$path' is not a valid directory" }
         this.path = path
         for (provider in getProviders()) {
             if (provider is PathAware) {

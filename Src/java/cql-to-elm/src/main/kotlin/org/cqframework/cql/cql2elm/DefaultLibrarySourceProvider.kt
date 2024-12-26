@@ -4,7 +4,6 @@ package org.cqframework.cql.cql2elm
 
 import java.io.*
 import java.nio.file.Path
-import java.util.*
 import org.cqframework.cql.cql2elm.model.Version
 import org.hl7.elm.r1.VersionedIdentifier
 
@@ -22,9 +21,7 @@ class DefaultLibrarySourceProvider(path: Path) : LibrarySourceProvider, PathAwar
     }
 
     override fun setPath(path: Path) {
-        require(path.toFile().isDirectory) {
-            String.format(Locale.US, "path '%s' is not a valid directory", path)
-        }
+        require(path.toFile().isDirectory) { "path '$path' is not a valid directory" }
         this.path = path
     }
 
@@ -35,17 +32,14 @@ class DefaultLibrarySourceProvider(path: Path) : LibrarySourceProvider, PathAwar
             val libraryName: String = libraryIdentifier.id!!
             val libraryPath: Path =
                 currentPath.resolve(
-                    String.format(
-                        Locale.US,
-                        "%s%s.cql",
-                        libraryName,
+                    "$libraryName${
                         if (libraryIdentifier.version != null) ("-" + libraryIdentifier.version)
                         else ""
-                    )
+                    }.cql"
                 )
             var libraryFile: File? = libraryPath.toFile()
             if (libraryFile?.exists() != true) {
-                val filter = FilenameFilter { path, name ->
+                val filter = FilenameFilter { _, name ->
                     name.startsWith(libraryName) && name.endsWith(".cql")
                 }
                 var mostRecentFile: File? = null
@@ -53,7 +47,7 @@ class DefaultLibrarySourceProvider(path: Path) : LibrarySourceProvider, PathAwar
                 val requestedVersion: Version? =
                     if (libraryIdentifier.version == null) null
                     else Version(libraryIdentifier.version!!)
-                for (file: File in currentPath.toFile().listFiles(filter)) {
+                for (file: File in currentPath.toFile().listFiles(filter)!!) {
                     var fileName: String = file.name
                     val indexOfExtension: Int = fileName.lastIndexOf(".")
                     if (indexOfExtension >= 0) {
@@ -72,9 +66,9 @@ class DefaultLibrarySourceProvider(path: Path) : LibrarySourceProvider, PathAwar
                             @Suppress("ComplexCondition")
                             if (
                                 (mostRecent == null ||
-                                    (((version.isComparable) &&
+                                    ((version.isComparable) &&
                                         (mostRecent.isComparable) &&
-                                        (version.compareTo(mostRecent) > 0))))
+                                        (version > mostRecent)))
                             ) {
                                 mostRecent = version
                                 mostRecentFile = file
@@ -106,11 +100,7 @@ class DefaultLibrarySourceProvider(path: Path) : LibrarySourceProvider, PathAwar
                 }
             } catch (e: FileNotFoundException) {
                 throw IllegalArgumentException(
-                    String.format(
-                        Locale.US,
-                        "Could not load source for library %s.",
-                        libraryIdentifier.id
-                    ),
+                    "Could not load source for library ${libraryIdentifier.id}.",
                     e
                 )
             }

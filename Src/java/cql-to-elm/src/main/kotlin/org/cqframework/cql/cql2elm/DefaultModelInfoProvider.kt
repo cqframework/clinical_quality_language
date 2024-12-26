@@ -4,7 +4,6 @@ package org.cqframework.cql.cql2elm
 
 import java.io.*
 import java.nio.file.Path
-import java.util.*
 import org.cqframework.cql.cql2elm.model.Version
 import org.hl7.cql.model.ModelIdentifier
 import org.hl7.cql.model.ModelInfoProvider
@@ -17,19 +16,15 @@ import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReaderFactory
 // form
 // <major>[.<minor>[.<patch>]]
 // Usage outside these boundaries will result in errors or incorrect behavior.
-class DefaultModelInfoProvider : ModelInfoProvider, PathAware {
-    constructor()
-
-    constructor(path: Path) {
+class DefaultModelInfoProvider() : ModelInfoProvider, PathAware {
+    constructor(path: Path) : this() {
         this.setPath(path)
     }
 
     private var path: Path? = null
 
     override fun setPath(path: Path) {
-        require(path.toFile().isDirectory) {
-            String.format(Locale.US, "path '%s' is not a valid directory", path)
-        }
+        require(path.toFile().isDirectory) { "path '$path' is not a valid directory" }
         this.path = path
     }
 
@@ -48,24 +43,18 @@ class DefaultModelInfoProvider : ModelInfoProvider, PathAware {
             val modelVersion = modelIdentifier.version
             val modelPath =
                 currentPath.resolve(
-                    String.format(
-                        Locale.US,
-                        "%s-modelinfo%s.xml",
-                        modelName.lowercase(Locale.getDefault()),
-                        if (modelVersion != null) "-$modelVersion" else ""
-                    )
+                    "${modelName.lowercase()}-modelinfo${if (modelVersion != null) "-$modelVersion" else ""}.xml"
                 )
-            var modelFile: File? = modelPath.toFile()
-            if (modelFile?.exists() != true) {
-                val filter = FilenameFilter { path, name ->
-                    name.startsWith(modelName.lowercase(Locale.getDefault()) + "-modelinfo") &&
-                        name.endsWith(".xml")
+            var modelFile = modelPath.toFile()
+            if (!modelFile.exists()) {
+                val filter = FilenameFilter { _, name ->
+                    name.startsWith(modelName.lowercase() + "-modelinfo") && name.endsWith(".xml")
                 }
                 var mostRecentFile: File? = null
                 var mostRecent: Version? = null
                 try {
                     val requestedVersion = if (modelVersion == null) null else Version(modelVersion)
-                    for (file in currentPath.toFile().listFiles(filter)) {
+                    for (file in currentPath.toFile().listFiles(filter)!!) {
                         var fileName = file.name
                         val indexOfExtension = fileName.lastIndexOf(".")
                         if (indexOfExtension >= 0) {
@@ -87,7 +76,7 @@ class DefaultModelInfoProvider : ModelInfoProvider, PathAware {
                                     mostRecent == null ||
                                         version.isComparable &&
                                             mostRecent.isComparable &&
-                                            version.compareTo(mostRecent) > 0
+                                            version > mostRecent
                                 ) {
                                     mostRecent = version
                                     mostRecentFile = file
@@ -102,7 +91,7 @@ class DefaultModelInfoProvider : ModelInfoProvider, PathAware {
                             }
                         }
                     }
-                    modelFile = mostRecentFile
+                    modelFile = mostRecentFile!!
                 } catch (@Suppress("SwallowedException") e: IllegalArgumentException) {
                     // do nothing, if the version can't be understood as a semantic version, don't
                     // allow unspecified
@@ -114,11 +103,7 @@ class DefaultModelInfoProvider : ModelInfoProvider, PathAware {
                 return ModelInfoReaderFactory.getReader("application/xml")?.read(inputStream)
             } catch (e: IOException) {
                 throw IllegalArgumentException(
-                    String.format(
-                        Locale.US,
-                        "Could not load definition for model info %s.",
-                        modelIdentifier.id
-                    ),
+                    "Could not load definition for model info ${modelIdentifier.id}.",
                     e
                 )
             }

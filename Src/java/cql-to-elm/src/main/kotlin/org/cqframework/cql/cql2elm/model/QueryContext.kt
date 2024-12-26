@@ -48,7 +48,7 @@ class QueryContext {
         lets[let.identifier!!] = let
     }
 
-    fun removeLetClause(let: LetClause) {
+    private fun removeLetClause(let: LetClause) {
         lets.remove(let.identifier)
     }
 

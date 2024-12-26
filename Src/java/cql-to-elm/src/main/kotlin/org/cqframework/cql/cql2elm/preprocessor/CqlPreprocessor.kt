@@ -2,7 +2,6 @@
 
 package org.cqframework.cql.cql2elm.preprocessor
 
-import java.util.*
 import kotlin.collections.ArrayList
 import org.antlr.v4.kotlinruntime.Recognizer
 import org.antlr.v4.kotlinruntime.TokenStream
@@ -135,13 +134,8 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
             if (ctx.localIdentifier() == null) unqualifiedIdentifier
             else parseString(ctx.localIdentifier())!!
         require(localIdentifier == unqualifiedIdentifier) {
-            String.format(
-                Locale.US,
-                @Suppress("MaxLineLength")
-                "Local identifiers for models must be the same as the name of the model in this release of the translator (Model %s, Called %s)",
-                unqualifiedIdentifier,
-                localIdentifier
-            )
+            """Local identifiers for models must be the same as the name of the model 
+                in this release of the translator (Model $unqualifiedIdentifier, Called $localIdentifier)"""
         }
 
         // This has the side effect of initializing
@@ -238,7 +232,7 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
         val modelIdentifier = getModelIdentifier(qualifiers)
         val identifier =
             getTypeIdentifier(qualifiers, parseString(ctx.referentialOrTypeNameIdentifier())!!)
-        val typeSpecifierKey = String.format(Locale.US, "%s:%s", modelIdentifier, identifier)
+        val typeSpecifierKey = "$modelIdentifier:$identifier"
         val resultType = libraryBuilder.resolveTypeName(modelIdentifier, identifier)
         if (null == resultType) {
             libraryBuilder.addNamedTypeSpecifierResult(
@@ -246,12 +240,7 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
                 ResultWithPossibleError.withError()
             )
             throw CqlCompilerException(
-                String.format(
-                    Locale.US,
-                    "Could not find type for model: %s and name: %s",
-                    modelIdentifier,
-                    identifier
-                )
+                "Could not find type for model: $modelIdentifier and name: $identifier"
             )
         }
         val result =

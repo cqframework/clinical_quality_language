@@ -114,7 +114,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
             val contextType = resolveTypeSpecifier(c.contextType!!)
             require(contextType is ClassType) {
                 // ERROR:
-                String.format(Locale.US, "Model context %s must be a class type.", c.name)
+                "Model context ${c.name} must be a class type."
             }
             val modelContext =
                 ModelContext(
@@ -202,7 +202,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
                 qualifier = modelInfo.name
             }
 
-            val qualifiedTypeName = String.format(Locale.US, "%s.%s", qualifier, typeSpecifier.name)
+            val qualifiedTypeName = "$qualifier.${typeSpecifier.name}"
             return resolveTypeName(qualifiedTypeName)
         }
 
@@ -277,11 +277,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
             val typeInfo =
                 lookupTypeInfo(ensureUnqualified(typeName))
                     ?: throw IllegalArgumentException(
-                        String.format(
-                            Locale.US,
-                            "Could not resolve type info for type name %s.",
-                            typeName
-                        )
+                        "Could not resolve type info for type name $typeName."
                     )
 
             result = resolveTypeInfo(typeInfo)
@@ -338,9 +334,9 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
     // qualified with the
     // model name
     private fun ensureQualified(name: String): String {
-        val qualifier = String.format(Locale.US, "%s.", modelInfo.name)
+        val qualifier = "${modelInfo.name}."
         if (!name.startsWith(qualifier)) {
-            return String.format(Locale.US, "%s%s", qualifier, name)
+            return "$qualifier$name"
         }
 
         return name
@@ -350,7 +346,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
     // qualified with the
     // model name
     private fun ensureUnqualified(name: String): String {
-        if (name.startsWith(String.format(Locale.US, "%s.", modelInfo.name))) {
+        if (name.startsWith("${modelInfo.name}.")) {
             return name.substring(name.indexOf('.') + 1)
         }
 
@@ -361,11 +357,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
         val qualifiedTypeName = ensureQualified(t.name!!)
         val lookupType = lookupType(qualifiedTypeName)
         require(lookupType !is ClassType) {
-            String.format(
-                Locale.US,
-                "Expected instance of SimpleType but found instance of %s instead.",
-                lookupType
-            )
+            "Expected instance of SimpleType but found instance of $lookupType instead."
         }
 
         var result = lookupType(qualifiedTypeName) as SimpleType?
@@ -670,9 +662,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
             }
         }
 
-        throw IllegalArgumentException(
-            String.format(Locale.US, "Could not resolve context name %s.", contextName)
-        )
+        throw IllegalArgumentException("Could not resolve context name $contextName.")
     }
 
     private fun resolveRelationship(relationshipInfo: RelationshipInfo): Relationship {
