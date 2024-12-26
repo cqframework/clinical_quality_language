@@ -167,7 +167,7 @@ class CompiledLibrary {
         return when {
             identifier != null && library?.includes?.def != null -> {
                 val libraryPath = NamespaceManager.getPath(identifier.system, identifier.id!!)
-                library!!.includes!!.def!!.firstOrNull { it!!.path == libraryPath }?.localIdentifier
+                library!!.includes!!.def.firstOrNull { it.path == libraryPath }?.localIdentifier
             }
             else -> null
         }
@@ -203,7 +203,7 @@ class CompiledLibrary {
 
     fun resolveFunctionRef(identifier: String): Iterable<FunctionDef> {
         val results = ArrayList<FunctionDef>()
-        for (ed in library!!.statements!!.def!!) {
+        for (ed in library!!.statements!!.def) {
             if (ed is FunctionDef && ed.name == identifier) {
                 results.add(ed)
             }
@@ -268,7 +268,7 @@ class CompiledLibrary {
         get() = library?.annotation?.firstOrNull { it is Annotation } as Annotation?
 
     private fun getTag(tagName: String): String? {
-        return annotation?.t?.firstOrNull { it!!.name == tagName }?.value
+        return annotation?.t?.firstOrNull { it.name == tagName }?.value
     }
 
     private fun getBooleanTag(tagName: String): Boolean {

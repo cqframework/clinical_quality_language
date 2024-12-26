@@ -6,8 +6,8 @@ import org.hl7.elm.r1.TernaryExpression
 class TernaryExpressionInvocation<T : TernaryExpression>(expression: T) :
     OperatorExpressionInvocation<T>(expression) {
     override var operands: List<Expression>
-        get() = expression.operand as List<Expression>
+        get() = expression.operand
         set(operands) {
-            expression.operand = operands as MutableList<Expression?>
+            expression.operand = operands.toMutableList()
         }
 }

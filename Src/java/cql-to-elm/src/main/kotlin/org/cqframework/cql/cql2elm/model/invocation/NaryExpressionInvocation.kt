@@ -6,8 +6,8 @@ import org.hl7.elm.r1.NaryExpression
 class NaryExpressionInvocation(expression: NaryExpression) :
     OperatorExpressionInvocation<NaryExpression>(expression) {
     override var operands: List<Expression>
-        get() = expression.operand as List<Expression>
+        get() = expression.operand
         set(operands) {
-            expression.operand = operands as MutableList<Expression?>
+            expression.operand = operands.toMutableList()
         }
 }

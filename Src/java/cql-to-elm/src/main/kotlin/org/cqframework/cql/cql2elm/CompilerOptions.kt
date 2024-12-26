@@ -18,7 +18,7 @@ object CompilerOptions {
      */
     @JvmStatic
     fun getCompilerOptions(library: Library): Set<CqlCompilerOptions.Options>? {
-        if (library.annotation.isNullOrEmpty()) {
+        if (library.annotation.isEmpty()) {
             return null
         }
         val compilerOptions = getCompilerOptions(library.annotation as List<CqlToElmBase>)
@@ -74,7 +74,7 @@ object CompilerOptions {
      */
     @JvmStatic
     fun getCompilerVersion(library: Library): String? {
-        if (library.annotation.isNullOrEmpty()) {
+        if (library.annotation.isEmpty()) {
             return null
         }
         return getCompilerVersion(library.annotation as List<CqlToElmBase>)

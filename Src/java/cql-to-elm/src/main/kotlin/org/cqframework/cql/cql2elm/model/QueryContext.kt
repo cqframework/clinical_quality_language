@@ -44,12 +44,6 @@ class QueryContext {
         }
     }
 
-    fun addLetClauses(lets: Collection<LetClause>) {
-        for (let in lets) {
-            addLetClause(let)
-        }
-    }
-
     fun addLetClause(let: LetClause) {
         lets[let.identifier!!] = let
     }

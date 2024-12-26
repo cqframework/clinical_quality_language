@@ -178,7 +178,7 @@ constructor(
         if (compiledLibrary == null || compiledLibrary.library!!.statements == null) {
             return
         }
-        compiledLibrary.library!!.statements!!.def!!.sortBy { it!!.name }
+        compiledLibrary.library!!.statements!!.def.sortBy { it.name }
     }
 
     private fun tryCompiledLibraryElm(
@@ -233,41 +233,41 @@ constructor(
             if (library.identifier != null) {
                 compiledLibrary.identifier = library.identifier
             }
-            if (library.usings != null && library.usings!!.def != null) {
-                for (usingDef: UsingDef? in library.usings!!.def!!) {
+            if (library.usings != null) {
+                for (usingDef: UsingDef? in library.usings!!.def) {
                     compiledLibrary.add(usingDef!!)
                 }
             }
-            if (library.includes != null && library.includes!!.def != null) {
-                for (includeDef: IncludeDef? in library.includes!!.def!!) {
+            if (library.includes != null) {
+                for (includeDef: IncludeDef? in library.includes!!.def) {
                     compiledLibrary.add(includeDef!!)
                 }
             }
-            if (library.codeSystems != null && library.codeSystems!!.def != null) {
-                for (codeSystemDef: CodeSystemDef? in library.codeSystems!!.def!!) {
+            if (library.codeSystems != null) {
+                for (codeSystemDef: CodeSystemDef? in library.codeSystems!!.def) {
                     compiledLibrary.add(codeSystemDef!!)
                 }
             }
-            for (valueSetDef: ValueSetDef? in library.valueSets!!.def!!) {
-                compiledLibrary.add(valueSetDef!!)
+            for (valueSetDef in library.valueSets!!.def) {
+                compiledLibrary.add(valueSetDef)
             }
-            if (library.codes != null && library.codes!!.def != null) {
-                for (codeDef: CodeDef? in library.codes!!.def!!) {
+            if (library.codes != null) {
+                for (codeDef: CodeDef? in library.codes!!.def) {
                     compiledLibrary.add(codeDef!!)
                 }
             }
-            if (library.concepts != null && library.concepts!!.def != null) {
-                for (conceptDef: ConceptDef? in library.concepts!!.def!!) {
+            if (library.concepts != null) {
+                for (conceptDef: ConceptDef? in library.concepts!!.def) {
                     compiledLibrary.add(conceptDef!!)
                 }
             }
-            if (library.parameters != null && library.parameters!!.def != null) {
-                for (parameterDef: ParameterDef? in library.parameters!!.def!!) {
+            if (library.parameters != null) {
+                for (parameterDef: ParameterDef? in library.parameters!!.def) {
                     compiledLibrary.add(parameterDef!!)
                 }
             }
-            if (library.statements != null && library.statements!!.def != null) {
-                for (expressionDef: ExpressionDef? in library.statements!!.def!!) {
+            if (library.statements != null) {
+                for (expressionDef: ExpressionDef? in library.statements!!.def) {
 
                     // to do implement an ElmTypeInferencingVisitor; make sure that the resultType
                     // is set for each node
@@ -313,10 +313,10 @@ constructor(
             return false
         }
         val functionNames: MutableSet<FunctionSig> = HashSet()
-        for (ed: ExpressionDef? in library.statements!!.def!!) {
+        for (ed: ExpressionDef? in library.statements!!.def) {
             if (ed is FunctionDef) {
                 val fd: FunctionDef = ed
-                val sig = FunctionSig(fd.name!!, if (fd.operand == null) 0 else fd.operand!!.size)
+                val sig = FunctionSig(fd.name!!, fd.operand.size)
                 if (functionNames.contains(sig)) {
                     return true
                 } else {
@@ -329,14 +329,14 @@ constructor(
 
     @Suppress("NestedBlockDepth")
     fun hasSignature(library: Library?): Boolean {
-        if (library != null && library.statements != null) {
+        if (library?.statements != null) {
             // Just a quick top-level scan for signatures. To fully verify we'd have to
             // recurse all
             // the way down. At that point, let's just translate.
-            for (ed: ExpressionDef? in library.statements!!.def!!) {
+            for (ed: ExpressionDef? in library.statements!!.def) {
                 if (ed!!.expression is FunctionRef) {
                     val fr: FunctionRef = ed.expression as FunctionRef
-                    if (fr.signature != null && fr.signature!!.isNotEmpty()) {
+                    if (fr.signature.isNotEmpty()) {
                         return true
                     }
                 }
@@ -346,7 +346,7 @@ constructor(
     }
 
     private fun isVersionCompatible(library: Library): Boolean {
-        if (cqlCompilerOptions.compatibilityLevel.isNotBlank() && library.annotation != null) {
+        if (cqlCompilerOptions.compatibilityLevel.isNotBlank()) {
             val version: String? = CompilerOptions.getCompilerVersion(library)
             if (version != null) {
                 return (version == cqlCompilerOptions.compatibilityLevel)

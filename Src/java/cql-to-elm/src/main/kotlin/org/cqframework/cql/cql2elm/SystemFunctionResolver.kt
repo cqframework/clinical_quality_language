@@ -93,16 +93,16 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
                 "AgeInWeeksAt",
                 "AgeInDaysAt" -> {
                     checkNumberOfOperands(functionRef, 1)
-                    val ops: MutableList<Expression?> = ArrayList()
-                    var op = functionRef.operand!![0]
+                    val ops: MutableList<Expression> = ArrayList()
+                    var op = functionRef.operand[0]
                     // If the op is not a Date or DateTime, attempt to get it to convert it to a
                     // Date or DateTime
                     // If the op can be converted to both a Date and a DateTime, throw an ambiguous
                     // error
                     if (
-                        !(op!!
-                            .resultType!!
-                            .isSubTypeOf(builder.resolveTypeName("System", "Date")!!) ||
+                        !(op.resultType!!.isSubTypeOf(
+                            builder.resolveTypeName("System", "Date")!!
+                        ) ||
                             op.resultType!!.isSubTypeOf(
                                 builder.resolveTypeName("System", "DateTime")!!
                             ))
@@ -128,7 +128,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
                                         "Ambiguous implicit conversion from %s to %s or %s."
                                             .format(
                                                 Locale.US,
-                                                op!!.resultType.toString(),
+                                                op.resultType.toString(),
                                                 dateConversion.toType.toString(),
                                                 dateTimeConversion.toType.toString()
                                             )
@@ -157,7 +157,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
                                 }
                             }
                     }
-                    ops.add(builder.enforceCompatible(patientBirthDateProperty, op.resultType))
+                    ops.add(builder.enforceCompatible(patientBirthDateProperty, op.resultType)!!)
                     ops.add(op)
                     return resolveCalculateAgeAt(
                         ops,
@@ -168,9 +168,9 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
                 "AgeInMinutesAt",
                 "AgeInSecondsAt",
                 "AgeInMillisecondsAt" -> {
-                    val ops: MutableList<Expression?> = ArrayList()
-                    ops.add(patientBirthDateProperty)
-                    ops.addAll(functionRef.operand!!)
+                    val ops: MutableList<Expression> = ArrayList()
+                    ops.add(patientBirthDateProperty!!)
+                    ops.addAll(functionRef.operand)
                     return resolveCalculateAgeAt(
                         ops,
                         resolveAgeRelatedFunctionPrecision(functionRef)
@@ -186,7 +186,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
                 "CalculateAgeInMilliseconds" -> {
                     checkNumberOfOperands(functionRef, 1)
                     return resolveCalculateAge(
-                        functionRef.operand!![0],
+                        functionRef.operand[0],
                         resolveAgeRelatedFunctionPrecision(functionRef)
                     )
                 }
@@ -199,7 +199,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
                 "CalculateAgeInSecondsAt",
                 "CalculateAgeInMillisecondsAt" -> {
                     return resolveCalculateAgeAt(
-                        functionRef.operand!!,
+                        functionRef.operand,
                         resolveAgeRelatedFunctionPrecision(functionRef)
                     )
                 }
@@ -373,7 +373,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
     }
 
     private fun resolveCalculateAgeAt(
-        e: List<Expression?>,
+        e: List<Expression>,
         p: DateTimePrecision
     ): BinaryExpressionInvocation<CalculateAgeAt> {
         val operator = of.createCalculateAgeAt().withPrecision(p).withOperand(e)
@@ -407,12 +407,12 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
 
     // Arithmetic Function Support
     private fun resolveRound(functionRef: FunctionRef): RoundInvocation {
-        require(!(functionRef.operand!!.isEmpty() || functionRef.operand!!.size > 2)) {
+        require(!(functionRef.operand.isEmpty() || functionRef.operand.size > 2)) {
             "Could not resolve call to system operator Round.  Expected 1 or 2 arguments."
         }
-        val round = of.createRound().withOperand(functionRef.operand!![0])
-        if (functionRef.operand!!.size == 2) {
-            round.precision = functionRef.operand!![1]
+        val round = of.createRound().withOperand(functionRef.operand[0])
+        if (functionRef.operand.size == 2) {
+            round.precision = functionRef.operand[1]
         }
         val invocation = RoundInvocation(round)
         builder.resolveInvocation("System", "Round", RoundInvocation(round))
@@ -472,8 +472,8 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
     private fun resolveIndexOf(functionRef: FunctionRef): IndexOfInvocation {
         checkNumberOfOperands(functionRef, 2)
         val indexOf = of.createIndexOf()
-        indexOf.source = functionRef.operand!![0]
-        indexOf.element = functionRef.operand!![1]
+        indexOf.source = functionRef.operand[0]
+        indexOf.element = functionRef.operand[1]
         val invocation = IndexOfInvocation(indexOf)
         builder.resolveInvocation("System", "IndexOf", invocation)
         return invocation
@@ -482,7 +482,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
     private fun resolveFirst(functionRef: FunctionRef): FirstInvocation {
         checkNumberOfOperands(functionRef, 1)
         val first = of.createFirst()
-        first.source = functionRef.operand!![0]
+        first.source = functionRef.operand[0]
         val invocation = FirstInvocation(first)
         builder.resolveInvocation("System", "First", invocation)
         return invocation
@@ -491,7 +491,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
     private fun resolveLast(functionRef: FunctionRef): LastInvocation {
         checkNumberOfOperands(functionRef, 1)
         val last = of.createLast()
-        last.source = functionRef.operand!![0]
+        last.source = functionRef.operand[0]
         val invocation = LastInvocation(last)
         builder.resolveInvocation("System", "Last", invocation)
         return invocation
@@ -500,9 +500,9 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
     private fun resolveSkip(functionRef: FunctionRef): SkipInvocation {
         checkNumberOfOperands(functionRef, 2)
         val slice = of.createSlice()
-        slice.source = functionRef.operand!![0]
-        slice.startIndex = functionRef.operand!![1]
-        slice.endIndex = builder.buildNull(functionRef.operand!![1]!!.resultType)
+        slice.source = functionRef.operand[0]
+        slice.startIndex = functionRef.operand[1]
+        slice.endIndex = builder.buildNull(functionRef.operand[1].resultType)
         val invocation = SkipInvocation(slice)
         builder.resolveInvocation("System", "Skip", invocation)
         return invocation
@@ -511,10 +511,10 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
     private fun resolveTake(functionRef: FunctionRef): TakeInvocation {
         checkNumberOfOperands(functionRef, 2)
         val slice = of.createSlice()
-        slice.source = functionRef.operand!![0]
+        slice.source = functionRef.operand[0]
         slice.startIndex = builder.createLiteral(0)
         val coalesce =
-            of.createCoalesce().withOperand(functionRef.operand!![1], builder.createLiteral(0))
+            of.createCoalesce().withOperand(functionRef.operand[1], builder.createLiteral(0))
         val naryInvocation = NaryExpressionInvocation(coalesce)
         builder.resolveInvocation("System", "Coalesce", naryInvocation)
         slice.endIndex = coalesce
@@ -526,7 +526,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
     private fun resolveTail(functionRef: FunctionRef): TailInvocation {
         checkNumberOfOperands(functionRef, 1)
         val slice = of.createSlice()
-        slice.source = functionRef.operand!![0]
+        slice.source = functionRef.operand[0]
         slice.startIndex = builder.createLiteral(1)
         slice.endIndex = builder.buildNull(builder.resolveTypeName("System", "Integer"))
         val invocation = TailInvocation(slice)
@@ -536,12 +536,12 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
 
     // String Function Support
     private fun resolveCombine(functionRef: FunctionRef): CombineInvocation {
-        require(!(functionRef.operand!!.isEmpty() || functionRef.operand!!.size > 2)) {
+        require(!(functionRef.operand.isEmpty() || functionRef.operand.size > 2)) {
             "Could not resolve call to system operator Combine.  Expected 1 or 2 arguments."
         }
-        val combine = of.createCombine().withSource(functionRef.operand!![0])
-        if (functionRef.operand!!.size == 2) {
-            combine.separator = functionRef.operand!![1]
+        val combine = of.createCombine().withSource(functionRef.operand[0])
+        if (functionRef.operand.size == 2) {
+            combine.separator = functionRef.operand[1]
         }
         val invocation = CombineInvocation(combine)
         builder.resolveInvocation("System", "Combine", invocation)
@@ -552,8 +552,8 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
         checkNumberOfOperands(functionRef, 2)
         val split =
             of.createSplit()
-                .withStringToSplit(functionRef.operand!![0])
-                .withSeparator(functionRef.operand!![1])
+                .withStringToSplit(functionRef.operand[0])
+                .withSeparator(functionRef.operand[1])
         val invocation = SplitInvocation(split)
         builder.resolveInvocation("System", "Split", invocation)
         return invocation
@@ -563,8 +563,8 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
         checkNumberOfOperands(functionRef, 2)
         val splitOnMatches =
             of.createSplitOnMatches()
-                .withStringToSplit(functionRef.operand!![0])
-                .withSeparatorPattern(functionRef.operand!![1])
+                .withStringToSplit(functionRef.operand[0])
+                .withSeparatorPattern(functionRef.operand[1])
         val invocation = SplitOnMatchesInvocation(splitOnMatches)
         builder.resolveInvocation("System", "SplitOnMatches", invocation)
         return invocation
@@ -574,8 +574,8 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
         checkNumberOfOperands(functionRef, 2)
         val pos =
             of.createPositionOf()
-                .withPattern(functionRef.operand!![0])
-                .withString(functionRef.operand!![1])
+                .withPattern(functionRef.operand[0])
+                .withString(functionRef.operand[1])
         val invocation = PositionOfInvocation(pos)
         builder.resolveInvocation("System", "PositionOf", invocation)
         return invocation
@@ -585,8 +585,8 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
         checkNumberOfOperands(functionRef, 2)
         val pos =
             of.createLastPositionOf()
-                .withPattern(functionRef.operand!![0])
-                .withString(functionRef.operand!![1])
+                .withPattern(functionRef.operand[0])
+                .withString(functionRef.operand[1])
         val invocation = LastPositionOfInvocation(pos)
         builder.resolveInvocation("System", "LastPositionOf", invocation)
         return invocation
@@ -594,16 +594,16 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
 
     private fun resolveSubstring(functionRef: FunctionRef): SubstringInvocation {
         @Suppress("MagicNumber")
-        require(!(functionRef.operand!!.size < 2 || functionRef.operand!!.size > 3)) {
+        require(!(functionRef.operand.size < 2 || functionRef.operand.size > 3)) {
             "Could not resolve call to system operator Substring.  Expected 2 or 3 arguments."
         }
         val substring =
             of.createSubstring()
-                .withStringToSub(functionRef.operand!![0])
-                .withStartIndex(functionRef.operand!![1])
+                .withStringToSub(functionRef.operand[0])
+                .withStartIndex(functionRef.operand[1])
         @Suppress("MagicNumber")
-        if (functionRef.operand!!.size == 3) {
-            substring.length = functionRef.operand!![2]
+        if (functionRef.operand.size == 3) {
+            substring.length = functionRef.operand[2]
         }
         val invocation = SubstringInvocation(substring)
         builder.resolveInvocation("System", "Substring", invocation)
@@ -613,17 +613,17 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
     // Error Functions
     private fun resolveMessage(functionRef: FunctionRef): MessageInvocation {
         @Suppress("MagicNumber")
-        require(functionRef.operand!!.size == 5) {
+        require(functionRef.operand.size == 5) {
             "Could not resolve call to system operator Message. Expected 5 arguments."
         }
         @Suppress("MagicNumber")
         val message =
             of.createMessage()
-                .withSource(functionRef.operand!![0])
-                .withCondition(functionRef.operand!![1])
-                .withCode(functionRef.operand!![2])
-                .withSeverity(functionRef.operand!![3])
-                .withMessage(functionRef.operand!![4])
+                .withSource(functionRef.operand[0])
+                .withCondition(functionRef.operand[1])
+                .withCode(functionRef.operand[2])
+                .withSeverity(functionRef.operand[3])
+                .withMessage(functionRef.operand[4])
         val invocation = MessageInvocation(message)
         builder.resolveInvocation("System", "Message", invocation)
         return invocation
@@ -633,7 +633,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
     @Suppress("UnusedPrivateMember")
     private fun resolveConvert(functionRef: FunctionRef): ConvertInvocation {
         checkNumberOfOperands(functionRef, 1)
-        val convert = of.createConvert().withOperand(functionRef.operand!![0])
+        val convert = of.createConvert().withOperand(functionRef.operand[0])
         val sm = builder.systemModel
         when (functionRef.name) {
             "ToString" -> convert.toType = builder.dataTypeToQName(sm.string)
@@ -681,7 +681,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
     private fun resolveUnary(functionRef: FunctionRef): UnaryExpressionInvocation<*> {
         val operator = createExpression<UnaryExpression>(functionRef)
         checkNumberOfOperands(functionRef, 1)
-        operator.operand = functionRef.operand!![0]
+        operator.operand = functionRef.operand[0]
         val invocation = UnaryExpressionInvocation(operator)
         builder.resolveInvocation("System", functionRef.name!!, invocation)
         return invocation
@@ -690,7 +690,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
     private fun resolveBinary(functionRef: FunctionRef): BinaryExpressionInvocation<*> {
         val operator = createExpression<BinaryExpression>(functionRef)
         checkNumberOfOperands(functionRef, 2)
-        operator.operand!!.addAll(functionRef.operand!!)
+        operator.operand.addAll(functionRef.operand)
         val invocation = BinaryExpressionInvocation(operator)
         builder.resolveInvocation("System", functionRef.name!!, invocation)
         return invocation
@@ -699,7 +699,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
     private fun resolveTernary(functionRef: FunctionRef): TernaryExpressionInvocation<*> {
         val operator = createExpression<TernaryExpression>(functionRef)
         @Suppress("MagicNumber") checkNumberOfOperands(functionRef, 3)
-        operator.operand!!.addAll(functionRef.operand!!)
+        operator.operand.addAll(functionRef.operand)
         val invocation = TernaryExpressionInvocation(operator)
         builder.resolveInvocation("System", functionRef.name!!, invocation)
         return invocation
@@ -707,7 +707,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
 
     private fun resolveNary(functionRef: FunctionRef): NaryExpressionInvocation {
         val operator = createExpression<NaryExpression>(functionRef)
-        operator.operand!!.addAll(functionRef.operand!!)
+        operator.operand.addAll(functionRef.operand)
         val invocation = NaryExpressionInvocation(operator)
         builder.resolveInvocation("System", functionRef.name!!, invocation)
         return invocation
@@ -716,14 +716,14 @@ class SystemFunctionResolver(private val builder: LibraryBuilder, of: IdObjectFa
     private fun resolveAggregate(functionRef: FunctionRef): AggregateExpressionInvocation<*> {
         val operator = createExpression<AggregateExpression>(functionRef)
         checkNumberOfOperands(functionRef, 1)
-        operator.source = functionRef.operand!![0]
+        operator.source = functionRef.operand[0]
         val invocation = AggregateExpressionInvocation(operator)
         builder.resolveInvocation("System", functionRef.name!!, invocation)
         return invocation
     }
 
     private fun checkNumberOfOperands(functionRef: FunctionRef, expectedOperands: Int) {
-        require(functionRef.operand!!.size == expectedOperands) {
+        require(functionRef.operand.size == expectedOperands) {
             String.format(
                 Locale.US,
                 "Could not resolve call to system operator %s.  Expected %d arguments.",

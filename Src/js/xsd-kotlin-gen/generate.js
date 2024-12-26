@@ -345,17 +345,13 @@ function renderWith (field, className, type, override = 'open') {
 
     if (isList) {
         return `
-                            ${override} fun with${firstLetterToUpperCase(field.attributes.name)}(vararg values: ${type}?): ${className} {
-                                for (value in values) {
-                                    this.${makeFieldName(field.attributes.name)}!!.add(value)
-                                }
+                            ${override} fun with${firstLetterToUpperCase(field.attributes.name)}(vararg values: ${type}): ${className} {
+                                this.${makeFieldName(field.attributes.name)} = values.toMutableList()
                                 return this
                             }
 
-                            ${override} fun with${firstLetterToUpperCase(field.attributes.name)}(values: Collection<${type}?>?): ${className} {
-                                if (values != null) {
-                                    this.${makeFieldName(field.attributes.name)}!!.addAll(values)
-                                }
+                            ${override} fun with${firstLetterToUpperCase(field.attributes.name)}(values: Collection<${type}>): ${className} {
+                                this.${makeFieldName(field.attributes.name)} = values.toMutableList()
                                 return this
                             }
                         `;
@@ -501,19 +497,26 @@ function processElements(elements, config, mode) {
               const isList = getIsList(field);
 
 
-                const name = field.attributes.name === 'content' && config.namespaceUri === 'urn:hl7-org:cql-annotations:r1' ? 's' : field.attributes.name;
+              const name = field.attributes.name === 'content' && config.namespaceUri === 'urn:hl7-org:cql-annotations:r1' ? 's' : field.attributes.name;
+              const fieldName = makeFieldName(field.attributes.name);
 
               if (isList) {
                 return `
                             ${config.packageName === 'org.hl7.elm_modelinfo.r1' ? '' : `@kotlinx.serialization.SerialName(${JSON.stringify(name)})`}
                             @nl.adaptivity.xmlutil.serialization.XmlSerialName(${JSON.stringify(name)}, ${JSON.stringify(config.namespaceUri)}, "")
-                            var ${makeFieldName(field.attributes.name)}: MutableList<${type}?>? = null
+                            private var _${fieldName}: MutableList<${type}>? = null
+
+                            var ${fieldName}: MutableList<${type}>
                                get() {
-                                   if (field == null) {
-                                        field = ArrayList();
+                                   if (_${fieldName} == null) {
+                                        _${fieldName} = ArrayList();
                                     }
-                                    return field;
+                                    return _${fieldName}!!
                                }
+
+                              set(value) {
+                                  _${fieldName} = value
+                              }
                         `;
               }
 

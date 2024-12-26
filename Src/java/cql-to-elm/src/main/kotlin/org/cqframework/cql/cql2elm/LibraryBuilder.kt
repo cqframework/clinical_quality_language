@@ -148,7 +148,7 @@ class LibraryBuilder(
     init {
         cqlToElmInfo.translatorVersion =
             LibraryBuilder::class.java.getPackage().implementationVersion
-        library.annotation!!.add(cqlToElmInfo)
+        library.annotation.add(cqlToElmInfo)
         setCompilerOptions(options)
         compiledLibrary.library = library
     }
@@ -279,7 +279,7 @@ class LibraryBuilder(
         if (library.usings == null) {
             library.usings = objectFactory.createLibraryUsings()
         }
-        library.usings!!.def!!.add(usingDef)
+        library.usings!!.def.add(usingDef)
         compiledLibrary.add(usingDef)
     }
 
@@ -590,9 +590,9 @@ class LibraryBuilder(
             err.errorSeverity = toErrorSeverity(e.severity)
             if (e.locator != null) {
                 if (e.locator.library != null) {
-                    err.librarySystem = e.locator.library?.system
-                    err.libraryId = e.locator.library?.id
-                    err.libraryVersion = e.locator.library?.version
+                    err.librarySystem = e.locator.library.system
+                    err.libraryId = e.locator.library.id
+                    err.libraryVersion = e.locator.library.version
                 }
                 err.startLine = e.locator.startLine
                 err.endLine = e.locator.endLine
@@ -606,13 +606,13 @@ class LibraryBuilder(
                 err.targetIncludeLibraryVersionId = incEx.versionId
                 err.errorType = ErrorType.INCLUDE
             }
-            library.annotation!!.add(err)
+            library.annotation.add(err)
         }
     }
 
     private val libraryName: String
         get() {
-            var libraryName = library.identifier!!!!.id
+            var libraryName = library.identifier!!.id
             if (libraryName == null) {
                 libraryName = "Anonymous"
             }
@@ -656,7 +656,7 @@ class LibraryBuilder(
         if (library.includes == null) {
             library.includes = objectFactory.createLibraryIncludes()
         }
-        library.includes!!.def!!.add(includeDef)
+        library.includes!!.def.add(includeDef)
         compiledLibrary.add(includeDef)
         val libraryIdentifier =
             VersionedIdentifier()
@@ -692,7 +692,7 @@ class LibraryBuilder(
         if (library.parameters == null) {
             library.parameters = objectFactory.createLibraryParameters()
         }
-        library.parameters!!.def!!.add(paramDef)
+        library.parameters!!.def.add(paramDef)
         compiledLibrary.add(paramDef)
     }
 
@@ -700,7 +700,7 @@ class LibraryBuilder(
         if (library.codeSystems == null) {
             library.codeSystems = objectFactory.createLibraryCodeSystems()
         }
-        library.codeSystems!!.def!!.add(cs)
+        library.codeSystems!!.def.add(cs)
         compiledLibrary.add(cs)
     }
 
@@ -708,7 +708,7 @@ class LibraryBuilder(
         if (library.valueSets == null) {
             library.valueSets = objectFactory.createLibraryValueSets()
         }
-        library.valueSets!!.def!!.add(vs)
+        library.valueSets!!.def.add(vs)
         compiledLibrary.add(vs)
     }
 
@@ -716,7 +716,7 @@ class LibraryBuilder(
         if (library.codes == null) {
             library.codes = objectFactory.createLibraryCodes()
         }
-        library.codes!!.def!!.add(cd)
+        library.codes!!.def.add(cd)
         compiledLibrary.add(cd)
     }
 
@@ -724,7 +724,7 @@ class LibraryBuilder(
         if (library.concepts == null) {
             library.concepts = objectFactory.createLibraryConcepts()
         }
-        library.concepts!!.def!!.add(cd)
+        library.concepts!!.def.add(cd)
         compiledLibrary.add(cd)
     }
 
@@ -732,20 +732,20 @@ class LibraryBuilder(
         if (library.contexts == null) {
             library.contexts = objectFactory.createLibraryContexts()
         }
-        library.contexts!!.def!!.add(cd)
+        library.contexts!!.def.add(cd)
     }
 
     fun addExpression(expDef: ExpressionDef) {
         if (library.statements == null) {
             library.statements = objectFactory.createLibraryStatements()
         }
-        library.statements!!.def!!.add(expDef)
+        library.statements!!.def.add(expDef)
         compiledLibrary.add(expDef)
     }
 
     fun removeExpression(expDef: ExpressionDef) {
         if (library.statements != null) {
-            library.statements!!.def!!.remove(expDef)
+            library.statements!!.def.remove(expDef)
             compiledLibrary.remove(expDef)
         }
     }
@@ -974,11 +974,11 @@ class LibraryBuilder(
         var right = right
         if (left is Union) {
             val leftUnion = left
-            val leftUnionLeft = leftUnion.operand!![0]
-            val leftUnionRight = leftUnion.operand!![1]
+            val leftUnionLeft = leftUnion.operand[0]
+            val leftUnionRight = leftUnion.operand[1]
             if (leftUnionLeft is Union && leftUnionRight !is Union) {
                 left = leftUnionLeft
-                right = resolveUnion(leftUnionRight!!, right)
+                right = resolveUnion(leftUnionRight, right)
             }
         }
 
@@ -995,11 +995,11 @@ class LibraryBuilder(
         var right = right
         if (left is Intersect) {
             val leftIntersect = left
-            val leftIntersectLeft = leftIntersect.operand!![0]
-            val leftIntersectRight = leftIntersect.operand!![1]
+            val leftIntersectLeft = leftIntersect.operand[0]
+            val leftIntersectRight = leftIntersect.operand[1]
             if (leftIntersectLeft is Intersect && leftIntersectRight !is Intersect) {
                 left = leftIntersectLeft
-                right = resolveIntersect(leftIntersectRight!!, right)
+                right = resolveIntersect(leftIntersectRight, right)
             }
         }
 
@@ -1078,7 +1078,7 @@ class LibraryBuilder(
         return inExpression
     }
 
-    fun resolveContains(left: Expression?, right: Expression?): Expression {
+    fun resolveContains(left: Expression, right: Expression): Expression {
         // TODO: Add terminology overloads
         val contains = objectFactory.createContains().withOperand(left, right)
         resolveBinaryCall("System", "Contains", contains)
@@ -1086,8 +1086,8 @@ class LibraryBuilder(
     }
 
     fun resolveIn(
-        left: Expression?,
-        right: Expression?,
+        left: Expression,
+        right: Expression,
         dateTimePrecision: DateTimePrecision?
     ): Expression? {
         val result = resolveInInvocation(left, right, dateTimePrecision)
@@ -1095,8 +1095,8 @@ class LibraryBuilder(
     }
 
     fun resolveInInvocation(
-        left: Expression?,
-        right: Expression?,
+        left: Expression,
+        right: Expression,
         dateTimePrecision: DateTimePrecision?
     ): Invocation? {
         val inExpression =
@@ -1105,8 +1105,8 @@ class LibraryBuilder(
     }
 
     fun resolveProperIn(
-        left: Expression?,
-        right: Expression?,
+        left: Expression,
+        right: Expression,
         dateTimePrecision: DateTimePrecision?
     ): Expression? {
         val result = resolveProperInInvocation(left, right, dateTimePrecision)
@@ -1114,8 +1114,8 @@ class LibraryBuilder(
     }
 
     fun resolveProperInInvocation(
-        left: Expression?,
-        right: Expression?,
+        left: Expression,
+        right: Expression,
         dateTimePrecision: DateTimePrecision?
     ): Invocation? {
         val properIn =
@@ -1124,8 +1124,8 @@ class LibraryBuilder(
     }
 
     fun resolveContains(
-        left: Expression?,
-        right: Expression?,
+        left: Expression,
+        right: Expression,
         dateTimePrecision: DateTimePrecision?
     ): Expression? {
         val result = resolveContainsInvocation(left, right, dateTimePrecision)
@@ -1133,8 +1133,8 @@ class LibraryBuilder(
     }
 
     fun resolveContainsInvocation(
-        left: Expression?,
-        right: Expression?,
+        left: Expression,
+        right: Expression,
         dateTimePrecision: DateTimePrecision?
     ): Invocation? {
         val contains =
@@ -1143,8 +1143,8 @@ class LibraryBuilder(
     }
 
     fun resolveProperContains(
-        left: Expression?,
-        right: Expression?,
+        left: Expression,
+        right: Expression,
         dateTimePrecision: DateTimePrecision?
     ): Expression? {
         val result = resolveProperContainsInvocation(left, right, dateTimePrecision)
@@ -1152,8 +1152,8 @@ class LibraryBuilder(
     }
 
     fun resolveProperContainsInvocation(
-        left: Expression?,
-        right: Expression?,
+        left: Expression,
+        right: Expression,
         dateTimePrecision: DateTimePrecision?
     ): Invocation? {
         val properContains =
@@ -1212,8 +1212,8 @@ class LibraryBuilder(
     }
 
     fun resolveIncludes(
-        left: Expression?,
-        right: Expression?,
+        left: Expression,
+        right: Expression,
         dateTimePrecision: DateTimePrecision?
     ): Expression? {
         val includes =
@@ -1231,8 +1231,8 @@ class LibraryBuilder(
     }
 
     fun resolveProperIncludes(
-        left: Expression?,
-        right: Expression?,
+        left: Expression,
+        right: Expression,
         dateTimePrecision: DateTimePrecision?
     ): Expression? {
         val properIncludes =
@@ -1256,8 +1256,8 @@ class LibraryBuilder(
     }
 
     fun resolveIncludedIn(
-        left: Expression?,
-        right: Expression?,
+        left: Expression,
+        right: Expression,
         dateTimePrecision: DateTimePrecision?
     ): Expression? {
         val includedIn =
@@ -1277,8 +1277,8 @@ class LibraryBuilder(
     }
 
     fun resolveProperIncludedIn(
-        left: Expression?,
-        right: Expression?,
+        left: Expression,
+        right: Expression,
         dateTimePrecision: DateTimePrecision?
     ): Expression? {
         val properIncludedIn =
@@ -1485,8 +1485,8 @@ class LibraryBuilder(
         val libraryName = compiledLibrary.identifier!!.id
         val operatorName = fd.name
         val dataTypes: MutableList<DataType> = ArrayList()
-        for (operand in fd.operand!!) {
-            require(!(operand == null || operand.resultType == null)) {
+        for (operand in fd.operand) {
+            requireNotNull(operand.resultType) {
                 String.format(
                     Locale.US,
                     "Could not determine signature for invocation of operator %s%s.",
@@ -1619,21 +1619,21 @@ class LibraryBuilder(
 
     fun resolveFunction(
         libraryName: String?,
-        functionName: String?,
-        paramList: Iterable<Expression?>
+        functionName: String,
+        paramList: List<Expression>
     ): Expression? {
         return resolveFunction(libraryName, functionName, paramList, true, false, false)?.expression
     }
 
     private fun buildFunctionRef(
         libraryName: String?,
-        functionName: String?,
-        paramList: Iterable<Expression?>
+        functionName: String,
+        paramList: Iterable<Expression>
     ): FunctionRef {
         val functionRef =
             objectFactory.createFunctionRef().withLibraryName(libraryName).withName(functionName)
         for (param in paramList) {
-            functionRef.operand!!.add(param)
+            functionRef.operand.add(param)
         }
         return functionRef
     }
@@ -1641,8 +1641,8 @@ class LibraryBuilder(
     @Suppress("LongParameterList")
     fun resolveFunction(
         libraryName: String?,
-        functionName: String?,
-        paramList: Iterable<Expression?>,
+        functionName: String,
+        paramList: List<Expression>,
         mustResolve: Boolean,
         allowPromotionAndDemotion: Boolean,
         allowFluent: Boolean
@@ -2013,14 +2013,14 @@ class LibraryBuilder(
                 if (conversion.hasAlternativeConversions()) {
                     val caseResult = objectFactory.createCase()
                     caseResult.resultType = result.resultType
-                    caseResult.withCaseItem(
+                    caseResult.caseItem.add(
                         objectFactory
                             .createCaseItem()
                             .withWhen(buildIs(expression, conversion.conversion.fromType))
                             .withThen(result)
                     )
                     for (alternative: Conversion in conversion.getAlternativeConversions()) {
-                        caseResult.withCaseItem(
+                        caseResult.caseItem.add(
                             objectFactory
                                 .createCaseItem()
                                 .withWhen(buildIs(expression, alternative.fromType))
@@ -2168,8 +2168,8 @@ class LibraryBuilder(
         if (asExpression.operand is Case) {
             val c = asExpression.operand as Case
             if (isTypeCase(c)) {
-                for (ci in c.caseItem!!) {
-                    if (DataTypes.equal(asExpression.resultType, ci!!.then!!.resultType)) {
+                for (ci in c.caseItem) {
+                    if (DataTypes.equal(asExpression.resultType, ci.then!!.resultType)) {
                         return ci.then!!
                     }
                 }
@@ -2182,8 +2182,8 @@ class LibraryBuilder(
         if (c.comparand != null) {
             return false
         }
-        for (ci in c.caseItem!!) {
-            if (ci!!.`when` !is Is) {
+        for (ci in c.caseItem) {
+            if (ci.`when` !is Is) {
                 return false
             }
             if (ci.then!!.resultType == null) {
@@ -2368,7 +2368,7 @@ class LibraryBuilder(
     }
 
     private fun validateUcumUnit(unit: String) {
-        val message = libraryManager.ucumService?.validate(unit)
+        val message = libraryManager.ucumService.validate(unit)
         require(message == null) { message!! }
     }
 
@@ -2875,9 +2875,9 @@ class LibraryBuilder(
     @Suppress("NestedBlockDepth")
     private fun getModelMapping(sourceContext: Expression?): VersionedIdentifier? {
         var result: VersionedIdentifier? = null
-        if (library.usings != null && library.usings!!.def != null) {
-            for (usingDef in library.usings!!.def!!) {
-                val model = getModel(usingDef!!)
+        if (library.usings != null) {
+            for (usingDef in library.usings!!.def) {
+                val model = getModel(usingDef)
                 if (model.modelInfo.targetUrl != null) {
                     if (result != null) {
                         reportWarning(
@@ -2923,9 +2923,9 @@ class LibraryBuilder(
     }
 
     private fun applyTargetModelMaps() {
-        if (library.usings != null && library.usings!!.def != null) {
-            for (usingDef in library.usings!!.def!!) {
-                val model = getModel(usingDef!!)
+        if (library.usings != null) {
+            for (usingDef in library.usings!!.def) {
+                val model = getModel(usingDef)
                 if (model.modelInfo.targetUrl != null) {
                     usingDef.uri = model.modelInfo.targetUrl
                     usingDef.version = model.modelInfo.targetVersion
@@ -2998,15 +2998,15 @@ class LibraryBuilder(
                             )
                             .withThen(applyTargetMap(source, typeCaseMap))
                     ci.then!!.resultType = typeCaseType
-                    c.caseItem!!.add(ci)
+                    c.caseItem.add(ci)
                 }
             }
-            return when (c.caseItem!!.size) {
+            return when (c.caseItem.size) {
                 0 -> {
                     buildNull(source!!.resultType)
                 }
                 1 -> {
-                    c.caseItem!![0]!!.then
+                    c.caseItem[0].then
                 }
                 else -> {
                     c.`else` = (buildNull(source!!.resultType))
@@ -3086,7 +3086,7 @@ class LibraryBuilder(
                             .withOperand(objectFactory.createAliasRef().withName("\$this"))
 
                     if (argumentSignature != null) {
-                        fr.signature!!.add(argumentSignature)
+                        fr.signature.add(argumentSignature)
                     }
 
                     // This doesn't quite work because the US.Core types aren't subtypes of FHIR
@@ -3108,7 +3108,7 @@ class LibraryBuilder(
                     fr.resultType = source!!.resultType
 
                     if (argumentSignature != null) {
-                        fr.signature!!.add(argumentSignature)
+                        fr.signature.add(argumentSignature)
                     }
 
                     return fr
@@ -3208,7 +3208,7 @@ class LibraryBuilder(
                     }
                     if ((path == "url")) {
                         // HACK: This special cases FHIR model resolution
-                        left!!.resultType = this.getModel("FHIR").resolveTypeName("FHIR.uri")
+                        left.resultType = this.getModel("FHIR").resolveTypeName("FHIR.uri")
                         val ref: FunctionRef =
                             objectFactory
                                 .createFunctionRef()
@@ -3268,7 +3268,8 @@ class LibraryBuilder(
                 val rightValue: String = indexerItems[1].substring(1, indexerItems[1].length - 1)
                 val right: Expression =
                     this.createLiteral(StringEscapeUtils.unescapeCql(rightValue))
-                val criteriaItem: Expression = objectFactory.createEqual().withOperand(left, right)
+                val criteriaItem: Expression =
+                    objectFactory.createEqual().withOperand(left!!, right)
                 criteria =
                     if (criteria == null) {
                         criteriaItem
@@ -3308,7 +3309,7 @@ class LibraryBuilder(
                 // Use a singleton from since the source of the query is a list
                 result = objectFactory.createSingletonFrom().withOperand(result)
             }
-            result!!.resultType = source.resultType
+            result.resultType = source.resultType
             return result
         } else if (targetMap.startsWith("%value.")) {
             val propertyName: String = targetMap.substring(@Suppress("MagicNumber") 7)
@@ -3573,8 +3574,8 @@ class LibraryBuilder(
 
     private fun resolveOperandRef(identifier: String): OperandRef? {
         if (!functionDefs.empty()) {
-            for (operand in functionDefs.peek().operand!!) {
-                if (operand!!.name == identifier) {
+            for (operand in functionDefs.peek().operand) {
+                if (operand.name == identifier) {
                     return objectFactory
                         .createOperandRef()
                         .withName(identifier)

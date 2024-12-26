@@ -8,15 +8,15 @@ import org.hl7.elm.r1.TypeSpecifier
 class FunctionRefInvocation(expression: FunctionRef) :
     AbstractExpressionInvocation<FunctionRef>(expression) {
     override var operands: List<Expression>
-        get() = expression.operand as List<Expression>
+        get() = expression.operand
         set(operands) {
-            expression.operand = operands as MutableList<Expression?>
+            expression.operand = operands.toMutableList()
         }
 
     override var signature: List<TypeSpecifier>
-        get() = expression.signature as List<TypeSpecifier>
+        get() = expression.signature
         set(signature) {
-            expression.signature = signature as MutableList<TypeSpecifier?>
+            expression.signature = signature.toMutableList()
         }
 
     override var resolution: OperatorResolution?

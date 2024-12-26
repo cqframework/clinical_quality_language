@@ -15,8 +15,8 @@ class AggregateExpressionInvocation<A : AggregateExpression>(expression: A) :
         }
 
     override var signature: List<TypeSpecifier>
-        get() = expression.signature as List<TypeSpecifier>
+        get() = expression.signature
         set(signature) {
-            expression.signature = signature as MutableList<TypeSpecifier?>
+            expression.signature = signature.toMutableList()
         }
 }
