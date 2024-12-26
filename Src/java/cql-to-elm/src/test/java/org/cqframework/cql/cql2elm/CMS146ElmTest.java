@@ -41,14 +41,14 @@ public class CMS146ElmTest {
         of = new ObjectFactory();
     }
 
-    public static Object[][] primeNumbers() {
+    public static Object[][] signatureLevels() {
         return new Object[][] {
             {SignatureLevel.None}, {SignatureLevel.Differing}, {SignatureLevel.Overloads}, {SignatureLevel.All}
         };
     }
 
     @ParameterizedTest
-    @MethodSource("primeNumbers")
+    @MethodSource("signatureLevels")
     void signatureLevels(SignatureLevel signatureLevel) throws IOException {
         final ModelManager modelManager = new ModelManager();
         final CqlTranslator translator = CqlTranslator.fromStream(
