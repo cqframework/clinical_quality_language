@@ -415,7 +415,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
     // DateTime Function Support
     private fun resolveDateTime(functionRef: FunctionRef): DateTimeInvocation {
         val dt = of.createDateTime()
-        setDateTimeFieldsFromOperands(dt, functionRef.operand as List<Expression>)
+        setDateTimeFieldsFromOperands(dt, functionRef.operand)
         val invocation = DateTimeInvocation(dt)
         builder.resolveInvocation("System", "DateTime", invocation)
         return invocation
@@ -423,7 +423,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
 
     private fun resolveDate(functionRef: FunctionRef): DateInvocation {
         val d = of.createDate()
-        setDateFieldsFromOperands(d, functionRef.operand as List<Expression>)
+        setDateFieldsFromOperands(d, functionRef.operand)
         val invocation = DateInvocation(d)
         builder.resolveInvocation("System", "Date", invocation)
         return invocation
@@ -431,7 +431,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
 
     private fun resolveTime(functionRef: FunctionRef): TimeInvocation {
         val t = of.createTime()
-        setTimeFieldsFromOperands(t, functionRef.operand as List<Expression>)
+        setTimeFieldsFromOperands(t, functionRef.operand)
         val invocation = TimeInvocation(t)
         builder.resolveInvocation("System", "Time", invocation)
         return invocation

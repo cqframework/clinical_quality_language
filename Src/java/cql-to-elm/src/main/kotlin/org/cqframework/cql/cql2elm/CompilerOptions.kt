@@ -21,7 +21,7 @@ object CompilerOptions {
         if (library.annotation.isEmpty()) {
             return null
         }
-        val compilerOptions = getCompilerOptions(library.annotation as List<CqlToElmBase>)
+        val compilerOptions = getCompilerOptions(library.annotation)
         return parseCompilerOptions(compilerOptions)
     }
 
@@ -52,11 +52,7 @@ object CompilerOptions {
         val optionSet: EnumSet<CqlCompilerOptions.Options> =
             EnumSet.noneOf(CqlCompilerOptions.Options::class.java)
         val options =
-            compilerOptions
-                .trim { it <= ' ' }
-                .split(",".toRegex())
-                .dropLastWhile { it.isEmpty() }
-                .toTypedArray()
+            compilerOptions.trim { it <= ' ' }.split(",".toRegex()).dropLastWhile { it.isEmpty() }
         for (option in options) {
             optionSet.add(CqlCompilerOptions.Options.valueOf(option))
         }
@@ -77,7 +73,7 @@ object CompilerOptions {
         if (library.annotation.isEmpty()) {
             return null
         }
-        return getCompilerVersion(library.annotation as List<CqlToElmBase>)
+        return getCompilerVersion(library.annotation)
     }
 
     private fun getCompilerVersion(annotations: List<CqlToElmBase>): String? {
