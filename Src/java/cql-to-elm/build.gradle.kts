@@ -17,6 +17,4 @@ dependencies {
     testImplementation(project(":qdm"))
     testImplementation(project(":ucum"))
     testImplementation("com.tngtech.archunit:archunit:1.2.1")
-    testImplementation("org.xmlunit:xmlunit-assertj:2.10.0")
-    testImplementation("org.skyscreamer:jsonassert:1.5.1")
 }

@@ -1,4 +1,4 @@
-package org.cqframework.cql.cql2elm;
+package org.cqframework.cql.elm.serializing.jaxb;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,13 +7,18 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 import org.cqframework.cql.cql2elm.CqlCompilerException.ErrorSeverity;
+import org.cqframework.cql.cql2elm.CqlCompilerOptions;
+import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
+import org.cqframework.cql.cql2elm.LibraryManager;
+import org.cqframework.cql.cql2elm.ModelManager;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.xmlunit.assertj.XmlAssert;
 
-@Disabled("TODO: These are very close now, just a few differences in the XML that's generated.")
+@Disabled(
+        "Replaced with a direct count of signatures in CMS146SignatureTest.java. Keeping to use for serialization tests.")
 class CMS146XmlTest {
 
     private static Object[][] sigFileAndSigLevel() {
@@ -38,7 +43,7 @@ class CMS146XmlTest {
                         modelManager, new CqlCompilerOptions(ErrorSeverity.Warning, expectedSignatureLevel)));
         final String actualXml = translator.toXml().trim();
 
-        XmlAssert.assertThat(actualXml).and(expectedXml).ignoreWhitespace().areSimilar();
+        XmlAssert.assertThat(actualXml).and(expectedXml).ignoreWhitespace().areIdentical();
     }
 
     private static String getXml(String name) throws IOException {

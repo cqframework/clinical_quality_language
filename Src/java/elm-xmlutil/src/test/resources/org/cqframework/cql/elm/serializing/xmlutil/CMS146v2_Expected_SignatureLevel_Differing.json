@@ -1,0 +1,821 @@
+{
+  "library" : {
+    "annotation" : [ {
+      "translatorOptions" : "",
+      "signatureLevel" : "Differing",
+      "type" : "CqlToElmInfo"
+    }, {
+      "libraryId" : "CMS146",
+      "libraryVersion" : "2",
+      "startLine" : 22,
+      "startChar" : 5,
+      "endLine" : 22,
+      "endChar" : 54,
+      "message" : "Could not resolve code path medication.code for the type of the retrieve QUICK.MedicationPrescription.",
+      "errorType" : "semantic",
+      "errorSeverity" : "warning",
+      "type" : "CqlToElmError"
+    }, {
+      "libraryId" : "CMS146",
+      "libraryVersion" : "2",
+      "startLine" : 22,
+      "startChar" : 5,
+      "endLine" : 22,
+      "endChar" : 54,
+      "message" : "Could not resolve membership operator for terminology target of the retrieve.",
+      "errorType" : "semantic",
+      "errorSeverity" : "warning",
+      "type" : "CqlToElmError"
+    } ],
+    "identifier" : {
+      "id" : "CMS146",
+      "version" : "2"
+    },
+    "schemaIdentifier" : {
+      "id" : "urn:hl7-org:elm",
+      "version" : "r1"
+    },
+    "usings" : {
+      "def" : [ {
+        "localIdentifier" : "System",
+        "uri" : "urn:hl7-org:elm-types:r1",
+        "annotation" : [ ]
+      }, {
+        "localIdentifier" : "QUICK",
+        "uri" : "http://hl7.org/fhir",
+        "annotation" : [ ]
+      } ]
+    },
+    "parameters" : {
+      "def" : [ {
+        "name" : "MeasurementPeriod",
+        "accessLevel" : "Public",
+        "annotation" : [ ],
+        "default" : {
+          "lowClosed" : true,
+          "highClosed" : false,
+          "type" : "Interval",
+          "annotation" : [ ],
+          "low" : {
+            "type" : "DateTime",
+            "annotation" : [ ],
+            "signature" : [ ],
+            "year" : {
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "2013",
+              "type" : "Literal",
+              "annotation" : [ ]
+            },
+            "month" : {
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "1",
+              "type" : "Literal",
+              "annotation" : [ ]
+            },
+            "day" : {
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "1",
+              "type" : "Literal",
+              "annotation" : [ ]
+            },
+            "hour" : {
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "0",
+              "type" : "Literal",
+              "annotation" : [ ]
+            },
+            "minute" : {
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "0",
+              "type" : "Literal",
+              "annotation" : [ ]
+            },
+            "second" : {
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "0",
+              "type" : "Literal",
+              "annotation" : [ ]
+            },
+            "millisecond" : {
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "0",
+              "type" : "Literal",
+              "annotation" : [ ]
+            }
+          },
+          "high" : {
+            "type" : "DateTime",
+            "annotation" : [ ],
+            "signature" : [ ],
+            "year" : {
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "2014",
+              "type" : "Literal",
+              "annotation" : [ ]
+            },
+            "month" : {
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "1",
+              "type" : "Literal",
+              "annotation" : [ ]
+            },
+            "day" : {
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "1",
+              "type" : "Literal",
+              "annotation" : [ ]
+            },
+            "hour" : {
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "0",
+              "type" : "Literal",
+              "annotation" : [ ]
+            },
+            "minute" : {
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "0",
+              "type" : "Literal",
+              "annotation" : [ ]
+            },
+            "second" : {
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "0",
+              "type" : "Literal",
+              "annotation" : [ ]
+            },
+            "millisecond" : {
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "0",
+              "type" : "Literal",
+              "annotation" : [ ]
+            }
+          }
+        }
+      } ]
+    },
+    "valueSets" : {
+      "def" : [ {
+        "name" : "Acute Pharyngitis",
+        "id" : "2.16.840.1.113883.3.464.1003.102.12.1011",
+        "accessLevel" : "Public",
+        "annotation" : [ ],
+        "codeSystem" : [ ]
+      }, {
+        "name" : "Acute Tonsillitis",
+        "id" : "2.16.840.1.113883.3.464.1003.102.12.1012",
+        "accessLevel" : "Public",
+        "annotation" : [ ],
+        "codeSystem" : [ ]
+      }, {
+        "name" : "Ambulatory/ED Visit",
+        "id" : "2.16.840.1.113883.3.464.1003.101.12.1061",
+        "accessLevel" : "Public",
+        "annotation" : [ ],
+        "codeSystem" : [ ]
+      }, {
+        "name" : "Antibiotic Medications",
+        "id" : "2.16.840.1.113883.3.464.1003.196.12.1001",
+        "accessLevel" : "Public",
+        "annotation" : [ ],
+        "codeSystem" : [ ]
+      }, {
+        "name" : "Group A Streptococcus Test",
+        "id" : "2.16.840.1.113883.3.464.1003.198.12.1012",
+        "accessLevel" : "Public",
+        "annotation" : [ ],
+        "codeSystem" : [ ]
+      } ]
+    },
+    "contexts" : {
+      "def" : [ {
+        "name" : "Patient",
+        "annotation" : [ ]
+      } ]
+    },
+    "statements" : {
+      "def" : [ {
+        "name" : "Patient",
+        "context" : "Patient",
+        "annotation" : [ ],
+        "expression" : {
+          "type" : "SingletonFrom",
+          "annotation" : [ ],
+          "signature" : [ ],
+          "operand" : {
+            "dataType" : "{http://hl7.org/fhir}Patient",
+            "templateId" : "patient-qicore-qicore-patient",
+            "type" : "Retrieve",
+            "annotation" : [ ],
+            "include" : [ ],
+            "codeFilter" : [ ],
+            "dateFilter" : [ ],
+            "otherFilter" : [ ]
+          }
+        }
+      }, {
+        "name" : "InDemographic",
+        "context" : "Patient",
+        "accessLevel" : "Public",
+        "annotation" : [ ],
+        "expression" : {
+          "type" : "And",
+          "annotation" : [ ],
+          "signature" : [ ],
+          "operand" : [ {
+            "type" : "GreaterOrEqual",
+            "annotation" : [ ],
+            "signature" : [ ],
+            "operand" : [ {
+              "precision" : "Year",
+              "type" : "CalculateAgeAt",
+              "annotation" : [ ],
+              "signature" : [ ],
+              "operand" : [ {
+                "path" : "birthDate",
+                "type" : "Property",
+                "annotation" : [ ],
+                "source" : {
+                  "name" : "Patient",
+                  "type" : "ExpressionRef",
+                  "annotation" : [ ]
+                }
+              }, {
+                "type" : "Start",
+                "annotation" : [ ],
+                "signature" : [ ],
+                "operand" : {
+                  "name" : "MeasurementPeriod",
+                  "type" : "ParameterRef",
+                  "annotation" : [ ]
+                }
+              } ]
+            }, {
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "2",
+              "type" : "Literal",
+              "annotation" : [ ]
+            } ]
+          }, {
+            "type" : "Less",
+            "annotation" : [ ],
+            "signature" : [ ],
+            "operand" : [ {
+              "precision" : "Year",
+              "type" : "CalculateAgeAt",
+              "annotation" : [ ],
+              "signature" : [ ],
+              "operand" : [ {
+                "path" : "birthDate",
+                "type" : "Property",
+                "annotation" : [ ],
+                "source" : {
+                  "name" : "Patient",
+                  "type" : "ExpressionRef",
+                  "annotation" : [ ]
+                }
+              }, {
+                "type" : "Start",
+                "annotation" : [ ],
+                "signature" : [ ],
+                "operand" : {
+                  "name" : "MeasurementPeriod",
+                  "type" : "ParameterRef",
+                  "annotation" : [ ]
+                }
+              } ]
+            }, {
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "18",
+              "type" : "Literal",
+              "annotation" : [ ]
+            } ]
+          } ]
+        }
+      }, {
+        "name" : "Pharyngitis",
+        "context" : "Patient",
+        "accessLevel" : "Public",
+        "annotation" : [ ],
+        "expression" : {
+          "type" : "Union",
+          "annotation" : [ ],
+          "signature" : [ ],
+          "operand" : [ {
+            "dataType" : "{http://hl7.org/fhir}Condition",
+            "templateId" : "condition-qicore-qicore-condition",
+            "codeProperty" : "code",
+            "codeComparator" : "in",
+            "type" : "Retrieve",
+            "annotation" : [ ],
+            "codes" : {
+              "name" : "Acute Pharyngitis",
+              "preserve" : true,
+              "type" : "ValueSetRef",
+              "annotation" : [ ]
+            },
+            "include" : [ ],
+            "codeFilter" : [ ],
+            "dateFilter" : [ ],
+            "otherFilter" : [ ]
+          }, {
+            "dataType" : "{http://hl7.org/fhir}Condition",
+            "templateId" : "condition-qicore-qicore-condition",
+            "codeProperty" : "code",
+            "codeComparator" : "in",
+            "type" : "Retrieve",
+            "annotation" : [ ],
+            "codes" : {
+              "name" : "Acute Tonsillitis",
+              "preserve" : true,
+              "type" : "ValueSetRef",
+              "annotation" : [ ]
+            },
+            "include" : [ ],
+            "codeFilter" : [ ],
+            "dateFilter" : [ ],
+            "otherFilter" : [ ]
+          } ]
+        }
+      }, {
+        "name" : "Antibiotics",
+        "context" : "Patient",
+        "accessLevel" : "Public",
+        "annotation" : [ ],
+        "expression" : {
+          "dataType" : "{http://hl7.org/fhir}MedicationPrescription",
+          "templateId" : "medicationprescription-qicore-qicore-medicationprescription",
+          "codeProperty" : "medication.code",
+          "codeComparator" : "in",
+          "type" : "Retrieve",
+          "annotation" : [ ],
+          "codes" : {
+            "name" : "Antibiotic Medications",
+            "preserve" : true,
+            "type" : "ValueSetRef",
+            "annotation" : [ ]
+          },
+          "include" : [ ],
+          "codeFilter" : [ ],
+          "dateFilter" : [ ],
+          "otherFilter" : [ ]
+        }
+      }, {
+        "name" : "TargetEncounters",
+        "context" : "Patient",
+        "accessLevel" : "Public",
+        "annotation" : [ ],
+        "expression" : {
+          "type" : "Query",
+          "annotation" : [ ],
+          "source" : [ {
+            "alias" : "E",
+            "annotation" : [ ],
+            "expression" : {
+              "dataType" : "{http://hl7.org/fhir}Encounter",
+              "templateId" : "encounter-qicore-qicore-encounter",
+              "codeProperty" : "type",
+              "codeComparator" : "in",
+              "type" : "Retrieve",
+              "annotation" : [ ],
+              "codes" : {
+                "name" : "Ambulatory/ED Visit",
+                "preserve" : true,
+                "type" : "ValueSetRef",
+                "annotation" : [ ]
+              },
+              "include" : [ ],
+              "codeFilter" : [ ],
+              "dateFilter" : [ ],
+              "otherFilter" : [ ]
+            }
+          } ],
+          "let" : [ ],
+          "relationship" : [ {
+            "alias" : "P",
+            "type" : "With",
+            "annotation" : [ ],
+            "expression" : {
+              "name" : "Pharyngitis",
+              "type" : "ExpressionRef",
+              "annotation" : [ ]
+            },
+            "suchThat" : {
+              "type" : "OverlapsAfter",
+              "annotation" : [ ],
+              "signature" : [ ],
+              "operand" : [ {
+                "lowClosed" : true,
+                "highClosed" : true,
+                "type" : "Interval",
+                "annotation" : [ ],
+                "low" : {
+                  "path" : "onsetDateTime",
+                  "scope" : "P",
+                  "type" : "Property",
+                  "annotation" : [ ]
+                },
+                "high" : {
+                  "path" : "abatementDate",
+                  "scope" : "P",
+                  "type" : "Property",
+                  "annotation" : [ ]
+                }
+              }, {
+                "path" : "period",
+                "scope" : "E",
+                "type" : "Property",
+                "annotation" : [ ]
+              } ]
+            }
+          }, {
+            "alias" : "A",
+            "type" : "With",
+            "annotation" : [ ],
+            "expression" : {
+              "name" : "Antibiotics",
+              "type" : "ExpressionRef",
+              "annotation" : [ ]
+            },
+            "suchThat" : {
+              "type" : "And",
+              "annotation" : [ ],
+              "signature" : [ ],
+              "operand" : [ {
+                "type" : "In",
+                "annotation" : [ ],
+                "signature" : [ ],
+                "operand" : [ {
+                  "path" : "dateWritten",
+                  "scope" : "A",
+                  "type" : "Property",
+                  "annotation" : [ ]
+                }, {
+                  "lowClosed" : false,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "annotation" : [ ],
+                  "low" : {
+                    "type" : "Start",
+                    "annotation" : [ ],
+                    "signature" : [ ],
+                    "operand" : {
+                      "path" : "period",
+                      "scope" : "E",
+                      "type" : "Property",
+                      "annotation" : [ ]
+                    }
+                  },
+                  "high" : {
+                    "type" : "Add",
+                    "annotation" : [ ],
+                    "signature" : [ ],
+                    "operand" : [ {
+                      "type" : "Start",
+                      "annotation" : [ ],
+                      "signature" : [ ],
+                      "operand" : {
+                        "path" : "period",
+                        "scope" : "E",
+                        "type" : "Property",
+                        "annotation" : [ ]
+                      }
+                    }, {
+                      "value" : 3,
+                      "unit" : "days",
+                      "type" : "Quantity",
+                      "annotation" : [ ]
+                    } ]
+                  }
+                } ]
+              }, {
+                "type" : "Not",
+                "annotation" : [ ],
+                "signature" : [ ],
+                "operand" : {
+                  "type" : "IsNull",
+                  "annotation" : [ ],
+                  "signature" : [ {
+                    "name" : "{urn:hl7-org:elm-types:r1}Any",
+                    "type" : "NamedTypeSpecifier",
+                    "annotation" : [ ]
+                  } ],
+                  "operand" : {
+                    "type" : "Start",
+                    "annotation" : [ ],
+                    "signature" : [ ],
+                    "operand" : {
+                      "path" : "period",
+                      "scope" : "E",
+                      "type" : "Property",
+                      "annotation" : [ ]
+                    }
+                  }
+                }
+              } ]
+            }
+          } ],
+          "where" : {
+            "type" : "IncludedIn",
+            "annotation" : [ ],
+            "signature" : [ ],
+            "operand" : [ {
+              "path" : "period",
+              "scope" : "E",
+              "type" : "Property",
+              "annotation" : [ ]
+            }, {
+              "name" : "MeasurementPeriod",
+              "type" : "ParameterRef",
+              "annotation" : [ ]
+            } ]
+          }
+        }
+      }, {
+        "name" : "TargetDiagnoses",
+        "context" : "Patient",
+        "accessLevel" : "Public",
+        "annotation" : [ ],
+        "expression" : {
+          "type" : "Query",
+          "annotation" : [ ],
+          "source" : [ {
+            "alias" : "P",
+            "annotation" : [ ],
+            "expression" : {
+              "name" : "Pharyngitis",
+              "type" : "ExpressionRef",
+              "annotation" : [ ]
+            }
+          } ],
+          "let" : [ ],
+          "relationship" : [ {
+            "alias" : "E",
+            "type" : "With",
+            "annotation" : [ ],
+            "expression" : {
+              "name" : "TargetEncounters",
+              "type" : "ExpressionRef",
+              "annotation" : [ ]
+            },
+            "suchThat" : {
+              "type" : "OverlapsAfter",
+              "annotation" : [ ],
+              "signature" : [ ],
+              "operand" : [ {
+                "lowClosed" : true,
+                "highClosed" : true,
+                "type" : "Interval",
+                "annotation" : [ ],
+                "low" : {
+                  "path" : "onsetDateTime",
+                  "scope" : "P",
+                  "type" : "Property",
+                  "annotation" : [ ]
+                },
+                "high" : {
+                  "path" : "abatementDate",
+                  "scope" : "P",
+                  "type" : "Property",
+                  "annotation" : [ ]
+                }
+              }, {
+                "path" : "period",
+                "scope" : "E",
+                "type" : "Property",
+                "annotation" : [ ]
+              } ]
+            }
+          } ]
+        }
+      }, {
+        "name" : "HasPriorAntibiotics",
+        "context" : "Patient",
+        "accessLevel" : "Public",
+        "annotation" : [ ],
+        "expression" : {
+          "type" : "Exists",
+          "annotation" : [ ],
+          "signature" : [ ],
+          "operand" : {
+            "type" : "Query",
+            "annotation" : [ ],
+            "source" : [ {
+              "alias" : "A",
+              "annotation" : [ ],
+              "expression" : {
+                "name" : "Antibiotics",
+                "type" : "ExpressionRef",
+                "annotation" : [ ]
+              }
+            } ],
+            "let" : [ ],
+            "relationship" : [ {
+              "alias" : "D",
+              "type" : "With",
+              "annotation" : [ ],
+              "expression" : {
+                "name" : "TargetDiagnoses",
+                "type" : "ExpressionRef",
+                "annotation" : [ ]
+              },
+              "suchThat" : {
+                "type" : "And",
+                "annotation" : [ ],
+                "signature" : [ ],
+                "operand" : [ {
+                  "type" : "In",
+                  "annotation" : [ ],
+                  "signature" : [ ],
+                  "operand" : [ {
+                    "path" : "dateWritten",
+                    "scope" : "A",
+                    "type" : "Property",
+                    "annotation" : [ ]
+                  }, {
+                    "lowClosed" : true,
+                    "highClosed" : false,
+                    "type" : "Interval",
+                    "annotation" : [ ],
+                    "low" : {
+                      "type" : "Subtract",
+                      "annotation" : [ ],
+                      "signature" : [ ],
+                      "operand" : [ {
+                        "path" : "onsetDateTime",
+                        "scope" : "D",
+                        "type" : "Property",
+                        "annotation" : [ ]
+                      }, {
+                        "value" : 30,
+                        "unit" : "days",
+                        "type" : "Quantity",
+                        "annotation" : [ ]
+                      } ]
+                    },
+                    "high" : {
+                      "path" : "onsetDateTime",
+                      "scope" : "D",
+                      "type" : "Property",
+                      "annotation" : [ ]
+                    }
+                  } ]
+                }, {
+                  "type" : "Not",
+                  "annotation" : [ ],
+                  "signature" : [ ],
+                  "operand" : {
+                    "type" : "IsNull",
+                    "annotation" : [ ],
+                    "signature" : [ {
+                      "name" : "{urn:hl7-org:elm-types:r1}Any",
+                      "type" : "NamedTypeSpecifier",
+                      "annotation" : [ ]
+                    } ],
+                    "operand" : {
+                      "path" : "onsetDateTime",
+                      "scope" : "D",
+                      "type" : "Property",
+                      "annotation" : [ ]
+                    }
+                  }
+                } ]
+              }
+            } ]
+          }
+        }
+      }, {
+        "name" : "HasTargetEncounter",
+        "context" : "Patient",
+        "accessLevel" : "Public",
+        "annotation" : [ ],
+        "expression" : {
+          "type" : "Exists",
+          "annotation" : [ ],
+          "signature" : [ ],
+          "operand" : {
+            "name" : "TargetEncounters",
+            "type" : "ExpressionRef",
+            "annotation" : [ ]
+          }
+        }
+      }, {
+        "name" : "InInitialPopulation",
+        "context" : "Patient",
+        "accessLevel" : "Public",
+        "annotation" : [ ],
+        "expression" : {
+          "type" : "And",
+          "annotation" : [ ],
+          "signature" : [ ],
+          "operand" : [ {
+            "name" : "InDemographic",
+            "type" : "ExpressionRef",
+            "annotation" : [ ]
+          }, {
+            "name" : "HasTargetEncounter",
+            "type" : "ExpressionRef",
+            "annotation" : [ ]
+          } ]
+        }
+      }, {
+        "name" : "InDenominator",
+        "context" : "Patient",
+        "accessLevel" : "Public",
+        "annotation" : [ ],
+        "expression" : {
+          "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
+          "value" : "true",
+          "type" : "Literal",
+          "annotation" : [ ]
+        }
+      }, {
+        "name" : "InDenominatorExclusions",
+        "context" : "Patient",
+        "accessLevel" : "Public",
+        "annotation" : [ ],
+        "expression" : {
+          "name" : "HasPriorAntibiotics",
+          "type" : "ExpressionRef",
+          "annotation" : [ ]
+        }
+      }, {
+        "name" : "InNumerator",
+        "context" : "Patient",
+        "accessLevel" : "Public",
+        "annotation" : [ ],
+        "expression" : {
+          "type" : "Exists",
+          "annotation" : [ ],
+          "signature" : [ ],
+          "operand" : {
+            "type" : "Query",
+            "annotation" : [ ],
+            "source" : [ {
+              "alias" : "R",
+              "annotation" : [ ],
+              "expression" : {
+                "dataType" : "{http://hl7.org/fhir}Observation",
+                "templateId" : "observation-qicore-qicore-observation",
+                "codeProperty" : "code",
+                "codeComparator" : "in",
+                "type" : "Retrieve",
+                "annotation" : [ ],
+                "codes" : {
+                  "name" : "Group A Streptococcus Test",
+                  "preserve" : true,
+                  "type" : "ValueSetRef",
+                  "annotation" : [ ]
+                },
+                "include" : [ ],
+                "codeFilter" : [ ],
+                "dateFilter" : [ ],
+                "otherFilter" : [ ]
+              }
+            } ],
+            "let" : [ ],
+            "relationship" : [ ],
+            "where" : {
+              "type" : "And",
+              "annotation" : [ ],
+              "signature" : [ ],
+              "operand" : [ {
+                "type" : "In",
+                "annotation" : [ ],
+                "signature" : [ ],
+                "operand" : [ {
+                  "path" : "issued",
+                  "scope" : "R",
+                  "type" : "Property",
+                  "annotation" : [ ]
+                }, {
+                  "name" : "MeasurementPeriod",
+                  "type" : "ParameterRef",
+                  "annotation" : [ ]
+                } ]
+              }, {
+                "type" : "Not",
+                "annotation" : [ ],
+                "signature" : [ ],
+                "operand" : {
+                  "type" : "IsNull",
+                  "annotation" : [ ],
+                  "signature" : [ {
+                    "name" : "{urn:hl7-org:elm-types:r1}Any",
+                    "type" : "NamedTypeSpecifier",
+                    "annotation" : [ ]
+                  } ],
+                  "operand" : {
+                    "path" : "valueQuantity",
+                    "scope" : "R",
+                    "type" : "Property",
+                    "annotation" : [ ]
+                  }
+                }
+              } ]
+            }
+          }
+        }
+      } ]
+    }
+  }
+}
