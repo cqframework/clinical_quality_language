@@ -8,6 +8,7 @@ import com.github.reinert.jjschema.v1.JsonSchemaV4Factory;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+
 import org.junit.jupiter.api.Test;
 
 class CqlTranslatorOptionsToJsonSchema {

@@ -2,7 +2,6 @@ package org.cqframework.cql.cql2elm
 
 import java.io.ByteArrayInputStream
 import java.io.InputStream
-import java.util.*
 import kotlin.collections.ArrayList
 import org.hl7.elm.r1.VersionedIdentifier
 
@@ -12,7 +11,7 @@ import org.hl7.elm.r1.VersionedIdentifier
  */
 class StringLibrarySourceProvider(private val libraries: List<String>) : LibrarySourceProvider {
     override fun getLibrarySource(libraryIdentifier: VersionedIdentifier): InputStream? {
-        val id: String = libraryIdentifier.id
+        val id: String = libraryIdentifier.id!!
         val version: String? = libraryIdentifier.version
         val maybeQuotedIdPattern = "(\"$id\"|$id)"
         var matchText = "(?s).*library\\s+\"?$maybeQuotedIdPattern"
@@ -29,7 +28,7 @@ class StringLibrarySourceProvider(private val libraries: List<String>) : Library
             }
         }
         require(matches.size <= 1) {
-            """"Multiple libraries for id : ${libraryIdentifier.toString()} resolved.
+            """"Multiple libraries for id : $libraryIdentifier resolved.
                     Ensure that there are no duplicates in the input set."""
                 .trimMargin()
         }

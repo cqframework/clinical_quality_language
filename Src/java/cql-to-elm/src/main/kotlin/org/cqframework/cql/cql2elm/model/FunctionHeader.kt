@@ -2,6 +2,7 @@ package org.cqframework.cql.cql2elm.model
 
 import java.util.*
 import org.hl7.elm.r1.FunctionDef
+import org.hl7.elm.r1.NamedTypeSpecifier
 import org.hl7.elm.r1.TypeSpecifier
 
 /** POJO for the result of a pre compile operation (AKA: partial compile of function headers) */
@@ -16,7 +17,11 @@ data class FunctionHeader(val functionDef: FunctionDef, val resultType: TypeSpec
         sb.append("_")
         for (od in functionDef.operand) {
             sb.append(
-                if (od.operandTypeSpecifier != null) od.operandTypeSpecifier.toString() else "void"
+                when {
+                    od.operandTypeSpecifier is NamedTypeSpecifier ->
+                        (od.operandTypeSpecifier as NamedTypeSpecifier).name
+                    else -> od.operandTypeSpecifier.toString()
+                }
             )
         }
         sb.append("_")

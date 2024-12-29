@@ -2,7 +2,6 @@
 
 package org.cqframework.cql.cql2elm.preprocessor
 
-import java.util.*
 import kotlin.collections.ArrayList
 import org.antlr.v4.kotlinruntime.Recognizer
 import org.antlr.v4.kotlinruntime.TokenStream

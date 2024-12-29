@@ -13,7 +13,7 @@ enum class ElmEdit : IElmEdit {
     REMOVE_ANNOTATION {
         override fun edit(element: Element) {
             element.localId = null
-            element.annotation?.let { removeAnnotations(it) }
+            removeAnnotations(element.annotation)
         }
 
         private fun removeAnnotations(annotations: MutableList<CqlToElmBase>) {

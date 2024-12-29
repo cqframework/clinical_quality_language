@@ -1,9 +1,5 @@
 package org.cqframework.cql.tools.xsd2modelinfo;
 
-import jakarta.xml.bind.JAXB;
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Marshaller;
 import java.io.*;
 import javax.xml.transform.stream.StreamSource;
 import joptsimple.OptionParser;
@@ -12,13 +8,13 @@ import joptsimple.OptionSpec;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
-import org.hl7.elm_modelinfo.r1.ObjectFactory;
+import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReaderFactory;
 
 /**
  * Generates a ModelInfo.xml for the input xsd.
  */
 public class Main {
-    public static void main(String[] args) throws IOException, JAXBException {
+    public static void main(String[] args) throws IOException {
         OptionParser parser = new OptionParser();
         OptionSpec<File> schemaOpt =
                 parser.accepts("schema").withRequiredArg().ofType(File.class).required();
@@ -81,15 +77,11 @@ public class Main {
         if (configOpt != null) {
             File configFile = configOpt.value(options);
             if (configFile != null) {
-                config = JAXB.unmarshal(configFile, ModelInfo.class);
+                config = ModelInfoReaderFactory.getReader("application/xml").read(configFile);
             }
         }
 
         ModelInfo modelInfo = ModelImporter.fromXsd(schema, importerOptions, config);
-
-        JAXBContext jc = JAXBContext.newInstance(ModelInfo.class);
-        Marshaller marshaller = jc.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
         File outputfile;
         if (!options.has(outputOpt) || outputOpt.value(options).isDirectory()) {
@@ -108,7 +100,8 @@ public class Main {
         OutputStream os = new FileOutputStream(outputfile, false);
         try {
             OutputStreamWriter writer = new OutputStreamWriter(os, "UTF-8");
-            marshaller.marshal(new ObjectFactory().createModelInfo(modelInfo), writer);
+            // TODO: implement ModelInfo writer
+            // marshaller.marshal(new ObjectFactory().createModelInfo(modelInfo), writer);
         } finally {
             os.close();
         }

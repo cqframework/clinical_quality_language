@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm
 
-import java.util.*
 import org.hl7.cql.model.DataType
 
 private const val UNKNOWN = "<unknown>"

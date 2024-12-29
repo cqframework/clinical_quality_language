@@ -2,7 +2,6 @@ package org.cqframework.cql.cql2elm
 
 import java.io.InputStream
 import java.nio.file.Path
-import java.util.*
 import kotlin.collections.ArrayList
 import org.hl7.cql.model.NamespaceAware
 import org.hl7.cql.model.NamespaceManager

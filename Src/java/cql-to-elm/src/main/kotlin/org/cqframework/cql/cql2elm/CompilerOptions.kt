@@ -18,7 +18,7 @@ object CompilerOptions {
      */
     @JvmStatic
     fun getCompilerOptions(library: Library): Set<CqlCompilerOptions.Options>? {
-        if (library.annotation.isNullOrEmpty()) {
+        if (library.annotation.isEmpty()) {
             return null
         }
         val compilerOptions = getCompilerOptions(library.annotation)
@@ -38,7 +38,7 @@ object CompilerOptions {
 
     /**
      * Parses a string representing CQL compiler Options into an EnumSet. The string is expected to
-     * be a comma delimited list of values from the CqlCompiler.Options enumeration. For example
+     * be a comma-delimited list of values from the CqlCompiler.Options enumeration. For example
      * "EnableListPromotion, EnableListDemotion".
      *
      * @param compilerOptions the string to parse
@@ -52,11 +52,7 @@ object CompilerOptions {
         val optionSet: EnumSet<CqlCompilerOptions.Options> =
             EnumSet.noneOf(CqlCompilerOptions.Options::class.java)
         val options =
-            compilerOptions
-                .trim { it <= ' ' }
-                .split(",".toRegex())
-                .dropLastWhile { it.isEmpty() }
-                .toTypedArray()
+            compilerOptions.trim { it <= ' ' }.split(",".toRegex()).dropLastWhile { it.isEmpty() }
         for (option in options) {
             optionSet.add(CqlCompilerOptions.Options.valueOf(option))
         }
@@ -74,7 +70,7 @@ object CompilerOptions {
      */
     @JvmStatic
     fun getCompilerVersion(library: Library): String? {
-        if (library.annotation.isNullOrEmpty()) {
+        if (library.annotation.isEmpty()) {
             return null
         }
         return getCompilerVersion(library.annotation)

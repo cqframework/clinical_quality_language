@@ -240,7 +240,7 @@ class ModelManager {
         if (model == null && globalCache.containsKey(modelIdentifier)) {
             model = globalCache[modelIdentifier]
             models[modelPath] = model!!
-            modelsByUri[model.modelInfo.url] = model
+            modelsByUri[model.modelInfo.url!!] = model
         }
 
         if (model == null) {
@@ -248,7 +248,7 @@ class ModelManager {
             globalCache[modelIdentifier] = model!!
             checkModelVersion(modelIdentifier, model)
             models[modelPath] = model
-            modelsByUri[model.modelInfo.url] = model
+            modelsByUri[model.modelInfo.url!!] = model
         }
         return model
     }

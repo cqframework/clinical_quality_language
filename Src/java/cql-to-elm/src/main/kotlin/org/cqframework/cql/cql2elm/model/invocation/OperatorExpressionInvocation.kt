@@ -9,6 +9,6 @@ abstract class OperatorExpressionInvocation<O : OperatorExpression>(expression: 
     override var signature: List<@JvmSuppressWildcards TypeSpecifier>
         get() = expression.signature
         set(signature) {
-            expression.signature = signature
+            expression.signature = signature.toMutableList()
         }
 }

@@ -4,7 +4,6 @@ package org.cqframework.cql.cql2elm
 
 import java.io.*
 import java.nio.file.Path
-import java.util.*
 import org.cqframework.cql.cql2elm.model.Version
 import org.hl7.cql.model.ModelIdentifier
 import org.hl7.cql.model.ModelInfoProvider
@@ -46,16 +45,16 @@ class DefaultModelInfoProvider() : ModelInfoProvider, PathAware {
                 currentPath.resolve(
                     "${modelName.lowercase()}-modelinfo${if (modelVersion != null) "-$modelVersion" else ""}.xml"
                 )
-            var modelFile: File? = modelPath.toFile()
-            if (modelFile?.exists() != true) {
-                val filter = FilenameFilter { path, name ->
+            var modelFile = modelPath.toFile()
+            if (!modelFile.exists()) {
+                val filter = FilenameFilter { _, name ->
                     name.startsWith(modelName.lowercase() + "-modelinfo") && name.endsWith(".xml")
                 }
                 var mostRecentFile: File? = null
                 var mostRecent: Version? = null
                 try {
                     val requestedVersion = if (modelVersion == null) null else Version(modelVersion)
-                    for (file in currentPath.toFile().listFiles(filter)) {
+                    for (file in currentPath.toFile().listFiles(filter)!!) {
                         var fileName = file.name
                         val indexOfExtension = fileName.lastIndexOf(".")
                         if (indexOfExtension >= 0) {
@@ -77,7 +76,7 @@ class DefaultModelInfoProvider() : ModelInfoProvider, PathAware {
                                     mostRecent == null ||
                                         version.isComparable &&
                                             mostRecent.isComparable &&
-                                            version.compareTo(mostRecent) > 0
+                                            version > mostRecent
                                 ) {
                                     mostRecent = version
                                     mostRecentFile = file
@@ -92,7 +91,7 @@ class DefaultModelInfoProvider() : ModelInfoProvider, PathAware {
                             }
                         }
                     }
-                    modelFile = mostRecentFile
+                    modelFile = mostRecentFile!!
                 } catch (@Suppress("SwallowedException") e: IllegalArgumentException) {
                     // do nothing, if the version can't be understood as a semantic version, don't
                     // allow unspecified

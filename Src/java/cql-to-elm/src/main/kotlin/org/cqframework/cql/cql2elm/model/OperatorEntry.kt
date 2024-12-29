@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm.model
 
-import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import org.hl7.cql.model.ChoiceType

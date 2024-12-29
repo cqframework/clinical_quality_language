@@ -24,13 +24,13 @@ open class Operator(
     constructor(
         functionDef: FunctionDef
     ) : this(
-        functionDef.name,
+        functionDef.name!!,
         Signature(functionDef.operand.map { it.resultType!! }),
         functionDef.resultType,
         functionDef,
-        functionDef.accessLevel,
-        functionDef.isFluent ?: false,
-        functionDef.isExternal ?: false
+        functionDef.accessLevel!!,
+        functionDef.isFluent() ?: false,
+        functionDef.isExternal() ?: false
     )
 
     init {

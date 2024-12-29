@@ -8,6 +8,6 @@ class TernaryExpressionInvocation<T : TernaryExpression>(expression: T) :
     override var operands: List<Expression>
         get() = expression.operand
         set(operands) {
-            expression.operand = operands
+            expression.operand = operands.toMutableList()
         }
 }

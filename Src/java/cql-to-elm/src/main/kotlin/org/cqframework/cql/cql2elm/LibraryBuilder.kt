@@ -266,7 +266,7 @@ class LibraryBuilder(
         if (library.usings == null) {
             library.usings = objectFactory.createLibraryUsings()
         }
-        library.usings.def.add(usingDef)
+        library.usings!!.def.add(usingDef)
         compiledLibrary.add(usingDef)
     }
 
@@ -442,13 +442,13 @@ class LibraryBuilder(
                 system = NamespaceManager.getUriPart(usingDef.uri),
                 version = usingDef.version
             ),
-            usingDef.localIdentifier
+            usingDef.localIdentifier!!
         )
     }
 
     private fun loadSystemLibrary() {
         val systemLibrary = load(systemModel, typeBuilder)
-        libraries[systemLibrary.identifier!!.id] = systemLibrary
+        libraries[systemLibrary.identifier!!.id!!] = systemLibrary
         loadConversionMap(systemLibrary)
     }
 
@@ -584,13 +584,13 @@ class LibraryBuilder(
     }
 
     fun addInclude(includeDef: IncludeDef) {
-        require(!(library.identifier == null || library.identifier.id == null)) {
+        require(!(library.identifier == null || library.identifier!!.id == null)) {
             "Unnamed libraries cannot reference other libraries."
         }
         if (library.includes == null) {
             library.includes = objectFactory.createLibraryIncludes()
         }
-        library.includes.def.add(includeDef)
+        library.includes!!.def.add(includeDef)
         compiledLibrary.add(includeDef)
         val libraryIdentifier =
             VersionedIdentifier()
@@ -616,9 +616,9 @@ class LibraryBuilder(
                 currentNamespaceUri != null && currentNamespaceUri != libraryIdentifier.system
         ) {
             includeDef.path =
-                NamespaceManager.getPath(libraryIdentifier.system, libraryIdentifier.id)
+                NamespaceManager.getPath(libraryIdentifier.system, libraryIdentifier.id!!)
         }
-        libraries[includeDef.localIdentifier] = referencedLibrary
+        libraries[includeDef.localIdentifier!!] = referencedLibrary
         loadConversionMap(referencedLibrary)
     }
 
@@ -626,7 +626,7 @@ class LibraryBuilder(
         if (library.parameters == null) {
             library.parameters = objectFactory.createLibraryParameters()
         }
-        library.parameters.def.add(paramDef)
+        library.parameters!!.def.add(paramDef)
         compiledLibrary.add(paramDef)
     }
 
@@ -634,7 +634,7 @@ class LibraryBuilder(
         if (library.codeSystems == null) {
             library.codeSystems = objectFactory.createLibraryCodeSystems()
         }
-        library.codeSystems.def.add(cs)
+        library.codeSystems!!.def.add(cs)
         compiledLibrary.add(cs)
     }
 
@@ -642,7 +642,7 @@ class LibraryBuilder(
         if (library.valueSets == null) {
             library.valueSets = objectFactory.createLibraryValueSets()
         }
-        library.valueSets.def.add(vs)
+        library.valueSets!!.def.add(vs)
         compiledLibrary.add(vs)
     }
 
@@ -650,7 +650,7 @@ class LibraryBuilder(
         if (library.codes == null) {
             library.codes = objectFactory.createLibraryCodes()
         }
-        library.codes.def.add(cd)
+        library.codes!!.def.add(cd)
         compiledLibrary.add(cd)
     }
 
@@ -658,7 +658,7 @@ class LibraryBuilder(
         if (library.concepts == null) {
             library.concepts = objectFactory.createLibraryConcepts()
         }
-        library.concepts.def.add(cd)
+        library.concepts!!.def.add(cd)
         compiledLibrary.add(cd)
     }
 
@@ -666,20 +666,20 @@ class LibraryBuilder(
         if (library.contexts == null) {
             library.contexts = objectFactory.createLibraryContexts()
         }
-        library.contexts.def.add(cd)
+        library.contexts!!.def.add(cd)
     }
 
     fun addExpression(expDef: ExpressionDef) {
         if (library.statements == null) {
             library.statements = objectFactory.createLibraryStatements()
         }
-        library.statements.def.add(expDef)
+        library.statements!!.def.add(expDef)
         compiledLibrary.add(expDef)
     }
 
     fun removeExpression(expDef: ExpressionDef) {
         if (library.statements != null) {
-            library.statements.def.remove(expDef)
+            library.statements!!.def.remove(expDef)
             compiledLibrary.remove(expDef)
         }
     }
@@ -1012,7 +1012,7 @@ class LibraryBuilder(
         return inExpression
     }
 
-    fun resolveContains(left: Expression?, right: Expression?): Expression {
+    fun resolveContains(left: Expression, right: Expression): Expression {
         // TODO: Add terminology overloads
         val contains = objectFactory.createContains().withOperand(left, right)
         resolveBinaryCall("System", "Contains", contains)
@@ -1020,8 +1020,8 @@ class LibraryBuilder(
     }
 
     fun resolveIn(
-        left: Expression?,
-        right: Expression?,
+        left: Expression,
+        right: Expression,
         dateTimePrecision: DateTimePrecision?
     ): Expression? {
         val result = resolveInInvocation(left, right, dateTimePrecision)
@@ -1029,8 +1029,8 @@ class LibraryBuilder(
     }
 
     private fun resolveInInvocation(
-        left: Expression?,
-        right: Expression?,
+        left: Expression,
+        right: Expression,
         dateTimePrecision: DateTimePrecision?
     ): Invocation? {
         val inExpression =
@@ -1039,8 +1039,8 @@ class LibraryBuilder(
     }
 
     fun resolveProperIn(
-        left: Expression?,
-        right: Expression?,
+        left: Expression,
+        right: Expression,
         dateTimePrecision: DateTimePrecision?
     ): Expression? {
         val result = resolveProperInInvocation(left, right, dateTimePrecision)
@@ -1048,8 +1048,8 @@ class LibraryBuilder(
     }
 
     private fun resolveProperInInvocation(
-        left: Expression?,
-        right: Expression?,
+        left: Expression,
+        right: Expression,
         dateTimePrecision: DateTimePrecision?
     ): Invocation? {
         val properIn =
@@ -1058,8 +1058,8 @@ class LibraryBuilder(
     }
 
     fun resolveContains(
-        left: Expression?,
-        right: Expression?,
+        left: Expression,
+        right: Expression,
         dateTimePrecision: DateTimePrecision?
     ): Expression? {
         val result = resolveContainsInvocation(left, right, dateTimePrecision)
@@ -1067,8 +1067,8 @@ class LibraryBuilder(
     }
 
     private fun resolveContainsInvocation(
-        left: Expression?,
-        right: Expression?,
+        left: Expression,
+        right: Expression,
         dateTimePrecision: DateTimePrecision?
     ): Invocation? {
         val contains =
@@ -1077,8 +1077,8 @@ class LibraryBuilder(
     }
 
     fun resolveProperContains(
-        left: Expression?,
-        right: Expression?,
+        left: Expression,
+        right: Expression,
         dateTimePrecision: DateTimePrecision?
     ): Expression? {
         val result = resolveProperContainsInvocation(left, right, dateTimePrecision)
@@ -1086,8 +1086,8 @@ class LibraryBuilder(
     }
 
     private fun resolveProperContainsInvocation(
-        left: Expression?,
-        right: Expression?,
+        left: Expression,
+        right: Expression,
         dateTimePrecision: DateTimePrecision?
     ): Invocation? {
         val properContains =
@@ -1146,8 +1146,8 @@ class LibraryBuilder(
     }
 
     fun resolveIncludes(
-        left: Expression?,
-        right: Expression?,
+        left: Expression,
+        right: Expression,
         dateTimePrecision: DateTimePrecision?
     ): Expression? {
         val includes =
@@ -1177,8 +1177,8 @@ class LibraryBuilder(
     }
 
     fun resolveProperIncludes(
-        left: Expression?,
-        right: Expression?,
+        left: Expression,
+        right: Expression,
         dateTimePrecision: DateTimePrecision?
     ): Expression? {
         val properIncludes =
@@ -1214,8 +1214,8 @@ class LibraryBuilder(
     }
 
     fun resolveIncludedIn(
-        left: Expression?,
-        right: Expression?,
+        left: Expression,
+        right: Expression,
         dateTimePrecision: DateTimePrecision?
     ): Expression? {
         val includedIn =
@@ -1248,8 +1248,8 @@ class LibraryBuilder(
     }
 
     fun resolveProperIncludedIn(
-        left: Expression?,
-        right: Expression?,
+        left: Expression,
+        right: Expression,
         dateTimePrecision: DateTimePrecision?
     ): Expression? {
         val properIncludedIn =
@@ -1473,7 +1473,7 @@ class LibraryBuilder(
         val operatorName = fd.name
         val dataTypes: MutableList<DataType> = ArrayList()
         for (operand in fd.operand) {
-            require(!(operand == null || operand.resultType == null)) {
+            requireNotNull(operand.resultType) {
                 "Could not determine signature for invocation of operator ${if (libraryName == null) "" else "$libraryName."}$operatorName."
             }
             dataTypes.add(operand.resultType!!)
@@ -1481,9 +1481,9 @@ class LibraryBuilder(
         val callContext =
             CallContext(
                 compiledLibrary.identifier!!.id,
-                fd.name,
+                fd.name!!,
                 false,
-                fd.isFluent != null && fd.isFluent,
+                fd.fluent != null && fd.fluent!!,
                 false,
                 dataTypes
             )
@@ -1568,7 +1568,7 @@ class LibraryBuilder(
     ) {
         if (
             accessModifier == AccessModifier.PRIVATE &&
-                isInterFunctionAccess(library.identifier.id, libraryName)
+                isInterFunctionAccess(library.identifier!!.id!!, libraryName)
         ) {
             // ERROR:
             throw CqlSemanticException(
@@ -1579,8 +1579,8 @@ class LibraryBuilder(
 
     fun resolveFunction(
         libraryName: String?,
-        functionName: String?,
-        paramList: Iterable<Expression?>
+        functionName: String,
+        paramList: List<Expression>
     ): Expression? {
         return resolveFunction(
                 libraryName,
@@ -1595,8 +1595,8 @@ class LibraryBuilder(
 
     private fun buildFunctionRef(
         libraryName: String?,
-        functionName: String?,
-        paramList: Iterable<Expression?>
+        functionName: String,
+        paramList: Iterable<Expression>
     ): FunctionRef {
         val functionRef =
             objectFactory.createFunctionRef().withLibraryName(libraryName).withName(functionName)
@@ -1609,8 +1609,8 @@ class LibraryBuilder(
     @Suppress("LongParameterList")
     fun resolveFunction(
         libraryName: String?,
-        functionName: String?,
-        paramList: Iterable<Expression?>,
+        functionName: String,
+        paramList: List<Expression>,
         mustResolve: Boolean,
         allowPromotionAndDemotion: Boolean,
         allowFluent: Boolean
@@ -1622,7 +1622,7 @@ class LibraryBuilder(
         functionRef =
             resolveCall(
                 functionRef.libraryName,
-                functionRef.name,
+                functionRef.name!!,
                 invocation,
                 false,
                 allowPromotionAndDemotion,
@@ -1671,7 +1671,7 @@ class LibraryBuilder(
             functionRef =
                 resolveCall(
                     functionRef.libraryName,
-                    functionRef.name,
+                    functionRef.name!!,
                     invocation,
                     mustResolve,
                     allowPromotionAndDemotion,
@@ -1822,7 +1822,7 @@ class LibraryBuilder(
                 .withLowClosed(true)
                 .withHighClosed(true)
         toInterval.resultType = IntervalType(expression.resultType!!)
-        condition.setElse(toInterval)
+        condition.`else` = (toInterval)
         condition.resultType = resolveTypeName("System", "Boolean")
         return condition
     }
@@ -1873,7 +1873,7 @@ class LibraryBuilder(
     }
 
     fun buildAs(expression: Expression?, asType: DataType?): As {
-        val result = objectFactory.createAs().withOperand(expression).withResultType(asType) as As
+        val result = objectFactory.createAs().withOperand(expression).withResultType(asType)
         if (result.resultType is NamedType) {
             result.asType = dataTypeToQName(result.resultType)
         } else {
@@ -1887,7 +1887,7 @@ class LibraryBuilder(
             objectFactory
                 .createIs()
                 .withOperand(expression)
-                .withResultType(resolveTypeName("System", "Boolean")) as Is
+                .withResultType(resolveTypeName("System", "Boolean"))
         if (isType is NamedType) {
             result.isType = dataTypeToQName(isType)
         } else {
@@ -1979,14 +1979,14 @@ class LibraryBuilder(
                     if (conversion.hasAlternativeConversions()) {
                         val caseResult = objectFactory.createCase()
                         caseResult.resultType = result.resultType
-                        caseResult.withCaseItem(
+                        caseResult.caseItem.add(
                             objectFactory
                                 .createCaseItem()
                                 .withWhen(buildIs(expression, conversion.conversion.fromType))
                                 .withThen(result)
                         )
                         for (alternative: Conversion in conversion.getAlternativeConversions()) {
-                            caseResult.withCaseItem(
+                            caseResult.caseItem.add(
                                 objectFactory
                                     .createCaseItem()
                                     .withWhen(buildIs(expression, alternative.fromType))
@@ -2027,7 +2027,7 @@ class LibraryBuilder(
                             .createFunctionRef()
                             .withLibraryName(conversion.operator.libraryName)
                             .withName(conversion.operator.name)
-                            .withOperand(expression) as FunctionRef
+                            .withOperand(expression)
                     val systemFunctionInvocation =
                         systemFunctionResolver.resolveSystemFunction(functionRef)
                     if (systemFunctionInvocation != null) {
@@ -2035,7 +2035,7 @@ class LibraryBuilder(
                     }
                     resolveCall(
                         functionRef.libraryName,
-                        functionRef.name,
+                        functionRef.name!!,
                         FunctionRefInvocation(functionRef),
                         allowPromotionAndDemotion = false,
                         allowFluent = false
@@ -2115,7 +2115,7 @@ class LibraryBuilder(
                                 objectFactory
                                     .createConvert()
                                     .withOperand(expression)
-                                    .withResultType(conversion.toType) as Convert
+                                    .withResultType(conversion.toType)
                             if (convertedOperand.resultType is NamedType) {
                                 convertedOperand.toType =
                                     dataTypeToQName(convertedOperand.resultType)
@@ -2145,8 +2145,8 @@ class LibraryBuilder(
             val c = asExpression.operand as Case
             if (isTypeCase(c)) {
                 for (ci in c.caseItem) {
-                    if (DataTypes.equal(asExpression.resultType, ci.then.resultType)) {
-                        return ci.then
+                    if (DataTypes.equal(asExpression.resultType, ci.then!!.resultType)) {
+                        return ci.then!!
                     }
                 }
             }
@@ -2159,14 +2159,14 @@ class LibraryBuilder(
             return false
         }
         for (ci in c.caseItem) {
-            if (ci.getWhen() !is Is) {
+            if (ci.`when` !is Is) {
                 return false
             }
-            if (ci.then.resultType == null) {
+            if (ci.then!!.resultType == null) {
                 return false
             }
         }
-        if (c.getElse() !is Null) {
+        if (c.`else` !is Null) {
             return false
         }
         return c.resultType is ChoiceType
@@ -2386,7 +2386,7 @@ class LibraryBuilder(
                 .withHigh(high)
                 .withHighClosed(highClosed)
         val pointType: DataType? =
-            ensureCompatibleTypes(result.low.resultType, result.high.resultType!!)
+            ensureCompatibleTypes(result.low!!.resultType, result.high!!.resultType!!)
         result.resultType = IntervalType(pointType!!)
         result.low = ensureCompatible(result.low, pointType)
         result.high = ensureCompatible(result.high, pointType)
@@ -2647,7 +2647,7 @@ class LibraryBuilder(
                     "Could not validate reference to valueset ${valuesetRef.name} because its definition contains errors."
                 }
                 if (isCompatibleWith("1.5")) {
-                    valuesetRef.isPreserve = true
+                    valuesetRef.preserve = true
                 }
                 return valuesetRef
             }
@@ -2789,8 +2789,8 @@ class LibraryBuilder(
     @Suppress("NestedBlockDepth")
     private fun getModelMapping(sourceContext: Expression?): VersionedIdentifier? {
         var result: VersionedIdentifier? = null
-        if (library.usings != null && library.usings.def != null) {
-            for (usingDef in library.usings.def) {
+        if (library.usings != null) {
+            for (usingDef in library.usings!!.def) {
                 val model = getModel(usingDef)
                 if (model.modelInfo.targetUrl != null) {
                     if (result != null) {
@@ -2833,8 +2833,8 @@ class LibraryBuilder(
     }
 
     private fun applyTargetModelMaps() {
-        if (library.usings != null && library.usings.def != null) {
-            for (usingDef in library.usings.def) {
+        if (library.usings != null) {
+            for (usingDef in library.usings!!.def) {
                 val model = getModel(usingDef)
                 if (model.modelInfo.targetUrl != null) {
                     usingDef.uri = model.modelInfo.targetUrl
@@ -2900,7 +2900,7 @@ class LibraryBuilder(
                                         .withIsType(dataTypeToQName(typeCaseType))
                                 )
                                 .withThen(applyTargetMap(source, typeCaseMap))
-                        ci.then.resultType = typeCaseType
+                        ci.then!!.resultType = typeCaseType
                         c.caseItem.add(ci)
                     }
                 }
@@ -2912,7 +2912,7 @@ class LibraryBuilder(
                         c.caseItem[0].then
                     }
                     else -> {
-                        c.setElse(buildNull(source!!.resultType))
+                        c.`else` = (buildNull(source!!.resultType))
                         c.resultType = source.resultType
                         c
                     }
@@ -2959,7 +2959,7 @@ class LibraryBuilder(
                     val version = qiCoreModel.modelInfo.version
                     if (version == "3.3.0") {
                         fhirVersion = "4.0.0"
-                    } else if (version.startsWith("3")) {
+                    } else if (version!!.startsWith("3")) {
                         fhirVersion = "3.0.1"
                     }
 
@@ -2991,7 +2991,7 @@ class LibraryBuilder(
                                 .withOperand(objectFactory.createAliasRef().withName(FP_THIS))
 
                         if (argumentSignature != null) {
-                            fr.getSignature().add(argumentSignature)
+                            fr.signature.add(argumentSignature)
                         }
 
                         // This doesn't quite work because the US.Core types aren't subtypes of FHIR
@@ -2999,12 +2999,11 @@ class LibraryBuilder(
                         // resolveCall(libraryName, functionName, new FunctionRefInvocation(fr),
                         // false,
                         // false);
-                        query.setReturn(
-                            objectFactory
+                        query.`return` =
+                            (objectFactory
                                 .createReturnClause()
                                 .withDistinct(false)
-                                .withExpression(fr)
-                        )
+                                .withExpression(fr))
                         query.resultType = source!!.resultType
                         return query
                     }
@@ -3018,7 +3017,7 @@ class LibraryBuilder(
                         fr.resultType = source!!.resultType
 
                         if (argumentSignature != null) {
-                            fr.getSignature().add(argumentSignature)
+                            fr.signature.add(argumentSignature)
                         }
 
                         return fr
@@ -3050,7 +3049,7 @@ class LibraryBuilder(
                         result =
                             sourceProperty.source
                                 ?: sourceProperty.scope?.let {
-                                    resolveIdentifier(sourceProperty.scope, true)
+                                    resolveIdentifier(sourceProperty.scope!!, true)
                                 }
                         requireNotNull(result) {
                             "Cannot resolve %%parent reference in targetMap $targetMap"
@@ -3108,7 +3107,7 @@ class LibraryBuilder(
                         }
                         if ((path == "url")) {
                             // HACK: This special cases FHIR model resolution
-                            left!!.resultType = this.getModel("FHIR").resolveTypeName("FHIR.uri")
+                            left.resultType = this.getModel("FHIR").resolveTypeName("FHIR.uri")
                             val ref: FunctionRef =
                                 objectFactory
                                     .createFunctionRef()
@@ -3118,7 +3117,7 @@ class LibraryBuilder(
                             left =
                                 resolveCall(
                                     ref.libraryName,
-                                    ref.name,
+                                    ref.name!!,
                                     FunctionRefInvocation(ref),
                                     allowPromotionAndDemotion = false,
                                     allowFluent = false
@@ -3141,7 +3140,7 @@ class LibraryBuilder(
                         left =
                             resolveCall(
                                 ref.libraryName,
-                                ref.name,
+                                ref.name!!,
                                 FunctionRefInvocation(ref),
                                 allowPromotionAndDemotion = false,
                                 allowFluent = false
@@ -3159,7 +3158,7 @@ class LibraryBuilder(
                         left =
                             resolveCall(
                                 ref.libraryName,
-                                ref.name,
+                                ref.name!!,
                                 FunctionRefInvocation(ref),
                                 allowPromotionAndDemotion = false,
                                 allowFluent = false
@@ -3170,7 +3169,7 @@ class LibraryBuilder(
                     val right: Expression =
                         this.createLiteral(StringEscapeUtils.unescapeCql(rightValue))
                     val criteriaItem: Expression =
-                        objectFactory.createEqual().withOperand(left, right)
+                        objectFactory.createEqual().withOperand(left!!, right)
                     criteria =
                         if (criteria == null) {
                             criteriaItem
@@ -3188,8 +3187,8 @@ class LibraryBuilder(
                         targetPath = targetPath.substring(1)
                     }
                     if (targetPath.isNotEmpty()) {
-                        query.setReturn(
-                            objectFactory
+                        query.`return` =
+                            (objectFactory
                                 .createReturnClause()
                                 .withDistinct(false)
                                 .withExpression(
@@ -3199,8 +3198,7 @@ class LibraryBuilder(
                                             objectFactory.createAliasRef().withName(FP_THIS)
                                         )
                                         .withPath(targetPath)
-                                )
-                        )
+                                ))
                     }
 
                     // The value reference should go inside the query, rather than being applied as
@@ -3214,7 +3212,7 @@ class LibraryBuilder(
                     // Use a singleton from since the source of the query is a list
                     result = objectFactory.createSingletonFrom().withOperand(result)
                 }
-                result!!.resultType = source.resultType
+                result.resultType = source.resultType
                 return result
             }
             targetMap.startsWith("%value.") -> {
@@ -3275,7 +3273,7 @@ class LibraryBuilder(
                 val element = resolvedIdentifierContext.exactMatchElement
                 if (element != null) {
                     if (element is ExpressionDef) {
-                        checkAccessLevel(libraryName, memberIdentifier, element.accessLevel)
+                        checkAccessLevel(libraryName, memberIdentifier, element.accessLevel!!)
                         val result: Expression =
                             objectFactory
                                 .createExpressionRef()
@@ -3285,7 +3283,7 @@ class LibraryBuilder(
                         return result
                     }
                     if (element is ParameterDef) {
-                        checkAccessLevel(libraryName, memberIdentifier, element.accessLevel)
+                        checkAccessLevel(libraryName, memberIdentifier, element.accessLevel!!)
                         val result: Expression =
                             objectFactory
                                 .createParameterRef()
@@ -3295,7 +3293,7 @@ class LibraryBuilder(
                         return result
                     }
                     if (element is ValueSetDef) {
-                        checkAccessLevel(libraryName, memberIdentifier, element.accessLevel)
+                        checkAccessLevel(libraryName, memberIdentifier, element.accessLevel!!)
                         val result: ValueSetRef =
                             objectFactory
                                 .createValueSetRef()
@@ -3303,12 +3301,12 @@ class LibraryBuilder(
                                 .withName(memberIdentifier)
                         result.resultType = element.resultType
                         if (isCompatibleWith("1.5")) {
-                            result.isPreserve = true
+                            result.preserve = true
                         }
                         return result
                     }
                     if (element is CodeSystemDef) {
-                        checkAccessLevel(libraryName, memberIdentifier, element.accessLevel)
+                        checkAccessLevel(libraryName, memberIdentifier, element.accessLevel!!)
                         val result: CodeSystemRef =
                             objectFactory
                                 .createCodeSystemRef()
@@ -3318,7 +3316,7 @@ class LibraryBuilder(
                         return result
                     }
                     if (element is CodeDef) {
-                        checkAccessLevel(libraryName, memberIdentifier, element.accessLevel)
+                        checkAccessLevel(libraryName, memberIdentifier, element.accessLevel!!)
                         val result: CodeRef =
                             objectFactory
                                 .createCodeRef()
@@ -3328,7 +3326,7 @@ class LibraryBuilder(
                         return result
                     }
                     if (element is ConceptDef) {
-                        checkAccessLevel(libraryName, memberIdentifier, element.accessLevel)
+                        checkAccessLevel(libraryName, memberIdentifier, element.accessLevel!!)
                         val result: ConceptRef =
                             objectFactory
                                 .createConceptRef()

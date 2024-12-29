@@ -10,13 +10,13 @@ class FunctionRefInvocation(expression: FunctionRef) :
     override var operands: List<Expression>
         get() = expression.operand
         set(operands) {
-            expression.operand = operands
+            expression.operand = operands.toMutableList()
         }
 
     override var signature: List<TypeSpecifier>
         get() = expression.signature
         set(signature) {
-            expression.signature = signature
+            expression.signature = signature.toMutableList()
         }
 
     override var resolution: OperatorResolution?

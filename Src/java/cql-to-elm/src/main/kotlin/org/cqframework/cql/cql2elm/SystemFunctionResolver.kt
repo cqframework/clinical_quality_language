@@ -91,7 +91,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
                 "AgeInWeeksAt",
                 "AgeInDaysAt" -> {
                     checkNumberOfOperands(functionRef, 1)
-                    val ops: MutableList<Expression?> = ArrayList()
+                    val ops: MutableList<Expression> = ArrayList()
                     var op = functionRef.operand[0]
                     // If the op is not a Date or DateTime, attempt to get it to convert it to a
                     // Date or DateTime
@@ -161,8 +161,8 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
                 "AgeInMinutesAt",
                 "AgeInSecondsAt",
                 "AgeInMillisecondsAt" -> {
-                    val ops: MutableList<Expression?> = ArrayList()
-                    ops.add(patientBirthDateProperty)
+                    val ops: MutableList<Expression> = ArrayList()
+                    ops.add(patientBirthDateProperty!!)
                     ops.addAll(functionRef.operand)
                     return resolveCalculateAgeAt(
                         ops,
@@ -366,7 +366,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
     }
 
     private fun resolveCalculateAgeAt(
-        e: List<Expression?>,
+        e: List<Expression>,
         p: DateTimePrecision
     ): BinaryExpressionInvocation<CalculateAgeAt> {
         val operator = of.createCalculateAgeAt().withPrecision(p).withOperand(e)
@@ -380,9 +380,9 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
             val source = builder.resolveIdentifier("Patient", true)!!
             val birthDateProperty = builder.defaultModel!!.modelInfo.patientBirthDatePropertyName
             // If the property has a qualifier, resolve it as a path (without model mapping)
-            return if (birthDateProperty.indexOf('.') >= 1) {
+            return if (birthDateProperty!!.indexOf('.') >= 1) {
                 val property = of.createProperty().withSource(source).withPath(birthDateProperty)
-                property.resultType = builder.resolvePath(source.resultType, property.path)
+                property.resultType = builder.resolvePath(source.resultType, property.path!!)
                 property
             } else {
                 val resolution = builder.resolveProperty(source.resultType, birthDateProperty)
@@ -646,7 +646,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
                 )
         }
         val invocation = ConvertInvocation(convert)
-        builder.resolveInvocation("System", functionRef.name, invocation)
+        builder.resolveInvocation("System", functionRef.name!!, invocation)
         return invocation
     }
 
@@ -668,7 +668,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
         checkNumberOfOperands(functionRef, 1)
         operator.operand = functionRef.operand[0]
         val invocation = UnaryExpressionInvocation(operator)
-        builder.resolveInvocation("System", functionRef.name, invocation)
+        builder.resolveInvocation("System", functionRef.name!!, invocation)
         return invocation
     }
 
@@ -677,7 +677,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
         checkNumberOfOperands(functionRef, 2)
         operator.operand.addAll(functionRef.operand)
         val invocation = BinaryExpressionInvocation(operator)
-        builder.resolveInvocation("System", functionRef.name, invocation)
+        builder.resolveInvocation("System", functionRef.name!!, invocation)
         return invocation
     }
 
@@ -686,7 +686,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
         @Suppress("MagicNumber") checkNumberOfOperands(functionRef, 3)
         operator.operand.addAll(functionRef.operand)
         val invocation = TernaryExpressionInvocation(operator)
-        builder.resolveInvocation("System", functionRef.name, invocation)
+        builder.resolveInvocation("System", functionRef.name!!, invocation)
         return invocation
     }
 
@@ -694,7 +694,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
         val operator = createExpression<NaryExpression>(functionRef)
         operator.operand.addAll(functionRef.operand)
         val invocation = NaryExpressionInvocation(operator)
-        builder.resolveInvocation("System", functionRef.name, invocation)
+        builder.resolveInvocation("System", functionRef.name!!, invocation)
         return invocation
     }
 
@@ -703,7 +703,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
         checkNumberOfOperands(functionRef, 1)
         operator.source = functionRef.operand[0]
         val invocation = AggregateExpressionInvocation(operator)
-        builder.resolveInvocation("System", functionRef.name, invocation)
+        builder.resolveInvocation("System", functionRef.name!!, invocation)
         return invocation
     }
 
@@ -719,7 +719,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
         ): DateTimePrecision {
             val name = functionRef.name
             return when {
-                name.contains("Years") -> DateTimePrecision.YEAR
+                name!!.contains("Years") -> DateTimePrecision.YEAR
                 name.contains("Months") -> DateTimePrecision.MONTH
                 name.contains("Weeks") -> DateTimePrecision.WEEK
                 name.contains("Days") -> DateTimePrecision.DAY

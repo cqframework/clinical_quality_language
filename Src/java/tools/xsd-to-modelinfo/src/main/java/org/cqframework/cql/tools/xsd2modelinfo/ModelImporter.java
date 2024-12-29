@@ -2,7 +2,6 @@ package org.cqframework.cql.tools.xsd2modelinfo;
 
 import static org.cqframework.cql.tools.xsd2modelinfo.ModelImporterOptions.ChoiceTypePolicy.USE_CHOICE;
 
-import jakarta.xml.bind.JAXB;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -11,14 +10,15 @@ import javax.xml.namespace.QName;
 import org.apache.ws.commons.schema.*;
 import org.hl7.cql.model.*;
 import org.hl7.elm_modelinfo.r1.*;
+import org.hl7.elm_modelinfo.r1.serializing.xmlutil.XmlModelInfoReader;
 
 public class ModelImporter {
     private static final Map<String, DataType> SYSTEM_CATALOG = getSystemCatalog();
 
     private static Map<String, DataType> getSystemCatalog() {
-        ModelInfo systemModelInfo = JAXB.unmarshal(
-                ModelImporter.class.getResourceAsStream("/org/hl7/elm/r1/system-modelinfo.xml"), ModelInfo.class);
-
+        var reader = new XmlModelInfoReader();
+        var systemModelInfo =
+                reader.read(ModelImporter.class.getResourceAsStream("/org/hl7/elm/r1/system-modelinfo.xml"));
         final Map<String, DataType> map = new HashMap<>();
         for (TypeInfo info : systemModelInfo.getTypeInfo()) {
             if (info instanceof SimpleTypeInfo) {

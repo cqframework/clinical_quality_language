@@ -12,7 +12,7 @@ class QueryContext {
     private val lets = HashMap<String, LetClause>()
 
     private fun internalAddQuerySource(source: AliasedQuerySource) {
-        sources[source.alias] = source
+        sources[source.alias!!] = source
     }
 
     // Adds a related (i.e. with or without) source, which does not change cardinality of the query
@@ -44,17 +44,11 @@ class QueryContext {
         }
     }
 
-    fun addLetClauses(lets: Collection<LetClause>) {
-        for (let in lets) {
-            addLetClause(let)
-        }
-    }
-
     fun addLetClause(let: LetClause) {
-        lets[let.identifier] = let
+        lets[let.identifier!!] = let
     }
 
-    fun removeLetClause(let: LetClause) {
+    private fun removeLetClause(let: LetClause) {
         lets.remove(let.identifier)
     }
 

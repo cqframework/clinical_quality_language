@@ -342,7 +342,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = defaultResult(elm, context)
 
         if (elm.pointType != null) {
-            val childResult = visitTypeSpecifier(elm.pointType, context)
+            val childResult = visitTypeSpecifier(elm.pointType!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -361,7 +361,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = defaultResult(elm, context)
 
         if (elm.elementType != null) {
-            val childResult = visitTypeSpecifier(elm.elementType, context)
+            val childResult = visitTypeSpecifier(elm.elementType!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -380,7 +380,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.elementType != null) {
-            val childResult = visitTypeSpecifier(elm.elementType, context)
+            val childResult = visitTypeSpecifier(elm.elementType!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -771,12 +771,12 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.parameterTypeSpecifier != null) {
-            val childResult = visitTypeSpecifier(elm.parameterTypeSpecifier, context)
+            val childResult = visitTypeSpecifier(elm.parameterTypeSpecifier!!, context)
             result = aggregateResult(result, childResult)
         }
 
         if (elm.default != null) {
-            val childResult = visitExpression(elm.default, context)
+            val childResult = visitExpression(elm.default!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -807,7 +807,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.operandTypeSpecifier != null) {
-            val childResult = visitTypeSpecifier(elm.operandTypeSpecifier, context)
+            val childResult = visitTypeSpecifier(elm.operandTypeSpecifier!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -861,7 +861,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
 
         for (element in elm.element) {
             if (element.value != null) {
-                val childResult = visitExpression(element.value, context)
+                val childResult = visitExpression(element.value!!, context)
                 result = aggregateResult(result, childResult)
             }
         }
@@ -882,7 +882,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @return the visitor result
      */
     override fun visitTupleElement(tupleElement: TupleElement, context: C): T {
-        return visitExpression(tupleElement.value, context)
+        return visitExpression(tupleElement.value!!, context)
     }
 
     /**
@@ -897,7 +897,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
 
         for (element in elm.element) {
             if (element.value != null) {
-                val childResult = visitExpression(element.value, context)
+                val childResult = visitExpression(element.value!!, context)
                 result = aggregateResult(result, childResult)
             }
         }
@@ -917,7 +917,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      * @return the visitor result
      */
     override fun visitInstanceElement(instanceElement: InstanceElement, context: C): T {
-        return visitExpression(instanceElement.value, context)
+        return visitExpression(instanceElement.value!!, context)
     }
 
     /**
@@ -931,19 +931,19 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.low != null) {
-            val childResult = visitExpression(elm.low, context)
+            val childResult = visitExpression(elm.low!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.lowClosedExpression != null) {
-            val childResult = visitExpression(elm.lowClosedExpression, context)
+            val childResult = visitExpression(elm.lowClosedExpression!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.high != null) {
-            val childResult = visitExpression(elm.high, context)
+            val childResult = visitExpression(elm.high!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.highClosedExpression != null) {
-            val childResult = visitExpression(elm.highClosedExpression, context)
+            val childResult = visitExpression(elm.highClosedExpression!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -961,7 +961,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.typeSpecifier != null) {
-            val childResult = visitTypeSpecifier(elm.typeSpecifier, context)
+            val childResult = visitTypeSpecifier(elm.typeSpecifier!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -1039,15 +1039,15 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.condition != null) {
-            val childResult = visitExpression(elm.condition, context)
+            val childResult = visitExpression(elm.condition!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.then != null) {
-            val childResult = visitExpression(elm.then, context)
+            val childResult = visitExpression(elm.then!!, context)
             result = aggregateResult(result, childResult)
         }
-        if (elm.getElse() != null) {
-            val childResult = visitExpression(elm.getElse(), context)
+        if (elm.`else` != null) {
+            val childResult = visitExpression(elm.`else`!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -1064,12 +1064,12 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
     override fun visitCaseItem(elm: CaseItem, context: C): T {
         var result = visitFields(elm, context)
 
-        if (elm.getWhen() != null) {
-            val childResult = visitExpression(elm.getWhen(), context)
+        if (elm.`when` != null) {
+            val childResult = visitExpression(elm.`when`!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.then != null) {
-            val childResult = visitExpression(elm.then, context)
+            val childResult = visitExpression(elm.then!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -1087,7 +1087,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.comparand != null) {
-            val childResult = visitExpression(elm.comparand, context)
+            val childResult = visitExpression(elm.comparand!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -1096,8 +1096,8 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
             result = aggregateResult(result, childResult)
         }
 
-        if (elm.getElse() != null) {
-            val childResult = visitExpression(elm.getElse(), context)
+        if (elm.`else` != null) {
+            val childResult = visitExpression(elm.`else`!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -1170,7 +1170,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.isTypeSpecifier != null) {
-            val childResult = visitTypeSpecifier(elm.isTypeSpecifier, context)
+            val childResult = visitTypeSpecifier(elm.isTypeSpecifier!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -1188,7 +1188,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.asTypeSpecifier != null) {
-            val childResult = visitTypeSpecifier(elm.asTypeSpecifier, context)
+            val childResult = visitTypeSpecifier(elm.asTypeSpecifier!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -1206,7 +1206,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.toTypeSpecifier != null) {
-            val childResult = visitTypeSpecifier(elm.toTypeSpecifier, context)
+            val childResult = visitTypeSpecifier(elm.toTypeSpecifier!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -1225,7 +1225,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.toTypeSpecifier != null) {
-            val childResult = visitTypeSpecifier(elm.toTypeSpecifier, context)
+            val childResult = visitTypeSpecifier(elm.toTypeSpecifier!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -1733,12 +1733,12 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
     override fun visitRound(elm: Round, context: C): T {
         var result = visitFields(elm, context)
         if (elm.operand != null) {
-            val childResult = visitExpression(elm.operand, context)
+            val childResult = visitExpression(elm.operand!!, context)
             result = aggregateResult(result, childResult)
         }
 
         if (elm.precision != null) {
-            val childResult = visitExpression(elm.precision, context)
+            val childResult = visitExpression(elm.precision!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -1892,11 +1892,11 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.source != null) {
-            val childResult = visitExpression(elm.source, context)
+            val childResult = visitExpression(elm.source!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.separator != null) {
-            val childResult = visitExpression(elm.separator, context)
+            val childResult = visitExpression(elm.separator!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -1914,11 +1914,11 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.stringToSplit != null) {
-            val childResult = visitExpression(elm.stringToSplit, context)
+            val childResult = visitExpression(elm.stringToSplit!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.separator != null) {
-            val childResult = visitExpression(elm.separator, context)
+            val childResult = visitExpression(elm.separator!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -1937,11 +1937,11 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.stringToSplit != null) {
-            val childResult = visitExpression(elm.stringToSplit, context)
+            val childResult = visitExpression(elm.stringToSplit!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.separatorPattern != null) {
-            val childResult = visitExpression(elm.separatorPattern, context)
+            val childResult = visitExpression(elm.separatorPattern!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -2004,11 +2004,11 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.pattern != null) {
-            val childResult = visitExpression(elm.pattern, context)
+            val childResult = visitExpression(elm.pattern!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.string != null) {
-            val childResult = visitExpression(elm.string, context)
+            val childResult = visitExpression(elm.string!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -2027,11 +2027,11 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.pattern != null) {
-            val childResult = visitExpression(elm.pattern, context)
+            val childResult = visitExpression(elm.pattern!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.string != null) {
-            val childResult = visitExpression(elm.string, context)
+            val childResult = visitExpression(elm.string!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -2049,15 +2049,15 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.stringToSub != null) {
-            val childResult = visitExpression(elm.stringToSub, context)
+            val childResult = visitExpression(elm.stringToSub!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.startIndex != null) {
-            val childResult = visitExpression(elm.startIndex, context)
+            val childResult = visitExpression(elm.startIndex!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.length != null) {
-            val childResult = visitExpression(elm.length, context)
+            val childResult = visitExpression(elm.length!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -2236,35 +2236,35 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.year != null) {
-            val childResult = visitExpression(elm.year, context)
+            val childResult = visitExpression(elm.year!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.month != null) {
-            val childResult = visitExpression(elm.month, context)
+            val childResult = visitExpression(elm.month!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.day != null) {
-            val childResult = visitExpression(elm.day, context)
+            val childResult = visitExpression(elm.day!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.hour != null) {
-            val childResult = visitExpression(elm.hour, context)
+            val childResult = visitExpression(elm.hour!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.minute != null) {
-            val childResult = visitExpression(elm.minute, context)
+            val childResult = visitExpression(elm.minute!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.second != null) {
-            val childResult = visitExpression(elm.second, context)
+            val childResult = visitExpression(elm.second!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.millisecond != null) {
-            val childResult = visitExpression(elm.millisecond, context)
+            val childResult = visitExpression(elm.millisecond!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.timezoneOffset != null) {
-            val childResult = visitExpression(elm.timezoneOffset, context)
+            val childResult = visitExpression(elm.timezoneOffset!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -2282,15 +2282,15 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.year != null) {
-            val childResult = visitExpression(elm.year, context)
+            val childResult = visitExpression(elm.year!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.month != null) {
-            val childResult = visitExpression(elm.month, context)
+            val childResult = visitExpression(elm.month!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.day != null) {
-            val childResult = visitExpression(elm.day, context)
+            val childResult = visitExpression(elm.day!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -2308,19 +2308,19 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.hour != null) {
-            val childResult = visitExpression(elm.hour, context)
+            val childResult = visitExpression(elm.hour!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.minute != null) {
-            val childResult = visitExpression(elm.minute, context)
+            val childResult = visitExpression(elm.minute!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.second != null) {
-            val childResult = visitExpression(elm.second, context)
+            val childResult = visitExpression(elm.second!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.millisecond != null) {
-            val childResult = visitExpression(elm.millisecond, context)
+            val childResult = visitExpression(elm.millisecond!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -2712,11 +2712,11 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.source != null) {
-            val childResult = visitExpression(elm.source, context)
+            val childResult = visitExpression(elm.source!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.condition != null) {
-            val childResult = visitExpression(elm.condition, context)
+            val childResult = visitExpression(elm.condition!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -2734,7 +2734,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.source != null) {
-            val childResult = visitExpression(elm.source, context)
+            val childResult = visitExpression(elm.source!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -2752,7 +2752,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.source != null) {
-            val childResult = visitExpression(elm.source, context)
+            val childResult = visitExpression(elm.source!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -2770,15 +2770,15 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.source != null) {
-            val childResult = visitExpression(elm.source, context)
+            val childResult = visitExpression(elm.source!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.startIndex != null) {
-            val childResult = visitExpression(elm.startIndex, context)
+            val childResult = visitExpression(elm.startIndex!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.endIndex != null) {
-            val childResult = visitExpression(elm.endIndex, context)
+            val childResult = visitExpression(elm.endIndex!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -2796,7 +2796,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.source != null) {
-            val childResult = visitExpression(elm.source, context)
+            val childResult = visitExpression(elm.source!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -2815,7 +2815,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.source != null) {
-            val childResult = visitExpression(elm.source, context)
+            val childResult = visitExpression(elm.source!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -2833,23 +2833,23 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.source != null) {
-            val childResult = visitExpression(elm.source, context)
+            val childResult = visitExpression(elm.source!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.condition != null) {
-            val childResult = visitExpression(elm.condition, context)
+            val childResult = visitExpression(elm.condition!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.code != null) {
-            val childResult = visitExpression(elm.code, context)
+            val childResult = visitExpression(elm.code!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.severity != null) {
-            val childResult = visitExpression(elm.severity, context)
+            val childResult = visitExpression(elm.severity!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.message != null) {
-            val childResult = visitExpression(elm.message, context)
+            val childResult = visitExpression(elm.message!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -2867,11 +2867,11 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.source != null) {
-            val childResult = visitExpression(elm.source, context)
+            val childResult = visitExpression(elm.source!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.element != null) {
-            val childResult = visitExpression(elm.element, context)
+            val childResult = visitExpression(elm.element!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -2900,7 +2900,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.source != null) {
-            val childResult = visitExpression(elm.source, context)
+            val childResult = visitExpression(elm.source!!, context)
             result = aggregateResult(result, childResult)
         }
         for (sbi in elm.by) {
@@ -2922,11 +2922,11 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.source != null) {
-            val childResult = visitExpression(elm.source, context)
+            val childResult = visitExpression(elm.source!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.element != null) {
-            val childResult = visitExpression(elm.element, context)
+            val childResult = visitExpression(elm.element!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -2944,11 +2944,11 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.source != null) {
-            val childResult = visitExpression(elm.source, context)
+            val childResult = visitExpression(elm.source!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.element != null) {
-            val childResult = visitExpression(elm.element, context)
+            val childResult = visitExpression(elm.element!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -3057,11 +3057,11 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm as AggregateExpression, context)
 
         if (elm.initialValue != null) {
-            val childResult = visitExpression(elm.initialValue, context)
+            val childResult = visitExpression(elm.initialValue!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.iteration != null) {
-            val childResult = visitExpression(elm.iteration, context)
+            val childResult = visitExpression(elm.iteration!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -3247,7 +3247,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.source != null) {
-            val childResult = visitExpression(elm.source, context)
+            val childResult = visitExpression(elm.source!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -3281,7 +3281,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.expression != null) {
-            val childResult = visitExpression(elm.expression, context)
+            val childResult = visitExpression(elm.expression!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -3392,7 +3392,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.expression != null) {
-            val childResult = visitExpression(elm.expression, context)
+            val childResult = visitExpression(elm.expression!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -3430,11 +3430,11 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.expression != null) {
-            val childResult = visitExpression(elm.expression, context)
+            val childResult = visitExpression(elm.expression!!, context)
             result = aggregateResult(result, childResult)
         }
         if (elm.starting != null) {
-            val childResult = visitExpression(elm.starting, context)
+            val childResult = visitExpression(elm.starting!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -3453,7 +3453,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm, context)
 
         if (elm.expression != null) {
-            val childResult = visitExpression(elm.expression, context)
+            val childResult = visitExpression(elm.expression!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -3485,21 +3485,21 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         }
 
         if (elm.where != null) {
-            val childResult = visitExpression(elm.where, context)
+            val childResult = visitExpression(elm.where!!, context)
             result = aggregateResult(result, childResult)
         }
-        if (elm.getReturn() != null) {
-            val childResult = visitReturnClause(elm.getReturn(), context)
+        if (elm.`return` != null) {
+            val childResult = visitReturnClause(elm.`return`!!, context)
             result = aggregateResult(result, childResult)
         }
 
         if (elm.aggregate != null) {
-            val childResult = visitAggregateClause(elm.aggregate, context)
+            val childResult = visitAggregateClause(elm.aggregate!!, context)
             result = aggregateResult(result, childResult)
         }
 
         if (elm.sort != null) {
-            val childResult = visitSortClause(elm.sort, context)
+            val childResult = visitSortClause(elm.sort!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -3533,7 +3533,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = defaultResult(elm, context)
 
         if (elm.resultTypeSpecifier != null) {
-            val childResult = visitTypeSpecifier(elm.resultTypeSpecifier, context)
+            val childResult = visitTypeSpecifier(elm.resultTypeSpecifier!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -3548,7 +3548,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm as AliasedQuerySource, context)
 
         if (elm.suchThat != null) {
-            val childResult = visitExpression(elm.suchThat, context)
+            val childResult = visitExpression(elm.suchThat!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -3566,7 +3566,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm as Expression, context)
 
         if (elm.source != null) {
-            val childResult = visitExpression(elm.source, context)
+            val childResult = visitExpression(elm.source!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -3589,7 +3589,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm as Element, context)
 
         if (elm.expression != null) {
-            val childResult = visitExpression(elm.expression, context)
+            val childResult = visitExpression(elm.expression!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -3607,7 +3607,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm as OperatorExpression, context)
 
         if (elm.operand != null) {
-            val childResult = visitExpression(elm.operand, context)
+            val childResult = visitExpression(elm.operand!!, context)
             result = aggregateResult(result, childResult)
         }
 
@@ -3690,7 +3690,7 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
         var result = visitFields(elm as Element, context)
 
         if (elm.expression != null) {
-            val childResult = visitExpression(elm.expression, context)
+            val childResult = visitExpression(elm.expression!!, context)
             result = aggregateResult(result, childResult)
         }
 

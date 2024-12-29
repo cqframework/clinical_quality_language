@@ -20,12 +20,12 @@ class SystemMethodResolver(
     private fun getParams(
         target: Expression,
         ctx: cqlParser.ParamListContext?
-    ): MutableList<Expression?> {
-        val params: MutableList<Expression?> = ArrayList()
+    ): MutableList<Expression> {
+        val params: MutableList<Expression> = ArrayList()
         params.add(target)
         if (ctx?.expression() != null) {
             for (param in ctx.expression()) {
-                params.add(visitor.visit(param) as Expression?)
+                params.add(visitor.visit(param) as Expression)
             }
         }
         return params
@@ -65,9 +65,8 @@ class SystemMethodResolver(
         ret: ReturnClause?
     ): Query {
         val queryContext = builder.peekQueryContext()
-        var lets: MutableCollection<LetClause?>? = null
+        val lets: MutableList<LetClause> = arrayListOf()
         if (let != null) {
-            lets = ArrayList()
             lets.add(let)
         }
         val query =
@@ -199,12 +198,12 @@ class SystemMethodResolver(
             isListResult = select.resultType is ListType
             var letRef = of.createQueryLetRef().withName("\$a")
             letRef.resultType = select.resultType
-            var params: MutableList<Expression?> = ArrayList()
+            var params: MutableList<Expression> = ArrayList()
             params.add(letRef)
-            var where = builder.resolveFunction(null, "IsNull", params)
+            var where = builder.resolveFunction(null, "IsNull", params)!!
             params = ArrayList()
             params.add(where)
-            where = builder.resolveFunction(null, "Not", params)
+            where = builder.resolveFunction(null, "Not", params)!!
             val returnClause = of.createReturnClause()
             letRef = of.createQueryLetRef().withName("\$a")
             letRef.resultType = select.resultType
@@ -282,13 +281,13 @@ class SystemMethodResolver(
                 val returnClause = of.createReturnClause()
                 returnClause.expression = builder.createLiteral(java.lang.Boolean.valueOf(true))
                 if (query.resultType is ListType) {
-                    returnClause.resultType = ListType(returnClause.expression.resultType!!)
+                    returnClause.resultType = ListType(returnClause.expression!!.resultType!!)
                 } else {
-                    returnClause.resultType = returnClause.expression.resultType
+                    returnClause.resultType = returnClause.expression!!.resultType
                 }
-                query.setReturn(returnClause)
+                query.`return` = (returnClause)
                 query.resultType = returnClause.resultType
-                val params: MutableList<Expression?> = ArrayList()
+                val params: MutableList<Expression> = ArrayList()
                 params.add(query)
                 builder.resolveFunction(null, "AllTrue", params)
             }
@@ -312,27 +311,27 @@ class SystemMethodResolver(
             }
             "combine" -> {
                 checkArgumentCount(ctx, functionName, 1)
-                val elements: MutableList<Expression?> = ArrayList()
-                val argument = visitor.visit(ctx!!.expression(0)!!) as Expression?
+                val elements: MutableList<Expression> = ArrayList()
+                val argument = visitor.visit(ctx!!.expression(0)!!) as Expression
                 elements.add(target)
                 elements.add(argument)
                 val elementType =
-                    builder.ensureCompatibleTypes(target.resultType, argument!!.resultType!!)!!
+                    builder.ensureCompatibleTypes(target.resultType, argument.resultType!!)!!
                 val list = of.createList()
                 list.resultType = ListType(elementType)
                 list.element.add(builder.ensureCompatible(target, elementType))
                 list.element.add(builder.ensureCompatible(argument, elementType))
-                val params = ArrayList<Expression?>()
+                val params = ArrayList<Expression>()
                 params.add(list)
                 builder.resolveFunction(null, "Flatten", params)
             }
             "contains" -> {
                 checkArgumentCount(ctx, functionName, 1)
-                var params: MutableList<Expression?> = ArrayList()
-                val argument = visitor.visit(ctx!!.expression(0)!!) as Expression?
+                var params: MutableList<Expression> = ArrayList()
+                val argument = visitor.visit(ctx!!.expression(0)!!) as Expression
                 params.add(argument)
                 params.add(target)
-                val result = builder.resolveFunction(null, "PositionOf", params)
+                val result = builder.resolveFunction(null, "PositionOf", params)!!
                 params = ArrayList()
                 params.add(result)
                 params.add(builder.createLiteral(0))
@@ -371,7 +370,7 @@ class SystemMethodResolver(
             "distinct" -> builder.resolveFunction(null, "Distinct", getParams(target, ctx))
             "empty" -> {
                 var params = getParams(target, ctx)
-                val exists = builder.resolveFunction(null, "Exists", params)
+                val exists = builder.resolveFunction(null, "Exists", params)!!
                 params = ArrayList()
                 params.add(exists)
                 builder.resolveFunction(null, "Not", params)
@@ -380,12 +379,12 @@ class SystemMethodResolver(
             "exclude" -> builder.resolveFunction(null, "Except", getParams(target, ctx))
             "exists" -> {
                 if (ctx?.expression() == null || ctx.expression().isEmpty()) {
-                    val params: List<Expression?> = getParams(target, ctx)
+                    val params: List<Expression> = getParams(target, ctx)
                     builder.resolveFunction(null, "Exists", params)
                 } else {
                     // .exists(criteria) resolves as a .where(criteria).exists()
                     val query = createWhere(target, functionName, ctx)
-                    val params: MutableList<Expression?> = ArrayList()
+                    val params: MutableList<Expression> = ArrayList()
                     params.add(query)
                     builder.resolveFunction(null, "Exists", params)
                 }
@@ -395,16 +394,15 @@ class SystemMethodResolver(
             "floor" -> builder.resolveFunction(null, "Floor", getParams(target, ctx))
             "hasValue" -> {
                 var params = getParams(target, ctx)
-                val isNull = builder.resolveFunction(null, "IsNull", params)
+                val isNull = builder.resolveFunction(null, "IsNull", params)!!
                 params = ArrayList()
                 params.add(isNull)
                 builder.resolveFunction(null, "Not", params)
             }
             "iif" -> {
                 var result: Expression? = target
-                val params: MutableList<Expression?>?
+                val params: MutableList<Expression> = ArrayList()
                 if (result!!.resultType is ListType) {
-                    params = ArrayList()
                     params.add(result)
                     result = builder.resolveFunction(null, "SingletonFrom", params)
                 }
@@ -422,8 +420,8 @@ class SystemMethodResolver(
             }
             "indexOf" -> {
                 checkArgumentCount(ctx, functionName, 1)
-                val params: MutableList<Expression?> = ArrayList()
-                val argument = visitor.visit(ctx!!.expression(0)!!) as Expression?
+                val params: MutableList<Expression> = ArrayList()
+                val argument = visitor.visit(ctx!!.expression(0)!!) as Expression
                 params.add(argument)
                 params.add(target)
                 builder.resolveFunction(null, "PositionOf", params)
@@ -456,8 +454,8 @@ class SystemMethodResolver(
             "last" -> builder.resolveFunction(null, "Last", getParams(target, ctx))
             "lastIndexOf" -> {
                 checkArgumentCount(ctx, functionName, 1)
-                val params: MutableList<Expression?> = ArrayList()
-                val argument = visitor.visit(ctx!!.expression(0)!!) as Expression?
+                val params: MutableList<Expression> = ArrayList()
+                val argument = visitor.visit(ctx!!.expression(0)!!) as Expression
                 params.add(argument)
                 params.add(target)
                 builder.resolveFunction(null, "LastPositionOf", params)
@@ -483,7 +481,7 @@ class SystemMethodResolver(
             "skip" -> builder.resolveFunction(null, "Skip", getParams(target, ctx))
             "sqrt" -> {
                 checkArgumentCount(ctx, functionName, 0)
-                val params: MutableList<Expression?> = ArrayList()
+                val params: MutableList<Expression> = ArrayList()
                 params.add(target)
                 params.add(builder.createLiteral(@Suppress("MagicNumber") 0.5))
                 builder.resolveFunction(null, "Power", params)
@@ -507,12 +505,12 @@ class SystemMethodResolver(
             "toTime" -> builder.resolveFunction(null, "ToTime", getParams(target, ctx))
             "trace" -> {
                 checkArgumentCount(ctx, functionName, 1)
-                val params: MutableList<Expression?> = ArrayList()
+                val params: MutableList<Expression> = ArrayList()
                 params.add(target)
                 params.add(builder.createLiteral(true))
                 params.add(builder.createLiteral("TRACE"))
                 params.add(builder.createLiteral("Trace"))
-                params.add(visitor.visit(ctx!!.expression(0)!!) as Expression?)
+                params.add(visitor.visit(ctx!!.expression(0)!!) as Expression)
                 builder.resolveFunction(null, "Message", params)
             }
             "truncate" -> builder.resolveFunction(null, "Truncate", getParams(target, ctx))

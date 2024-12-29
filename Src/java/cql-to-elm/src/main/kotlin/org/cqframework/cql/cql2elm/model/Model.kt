@@ -94,7 +94,7 @@ open class Model(val modelInfo: ModelInfo, modelManager: ModelManager?) {
     }
 
     private fun casify(typeName: String): String {
-        return if ((modelInfo.isCaseSensitive != null && modelInfo.isCaseSensitive))
+        return if ((modelInfo.isCaseSensitive() != null && modelInfo.isCaseSensitive()!!))
             typeName.lowercase(Locale.getDefault())
         else typeName
     }

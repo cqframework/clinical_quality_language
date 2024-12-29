@@ -9,6 +9,6 @@ class BinaryExpressionInvocation<B : BinaryExpression>(expression: B) :
         get() = expression.operand
         set(operands) {
             require(operands.size == 2) { "BinaryExpression requires two operands." }
-            expression.operand = operands
+            expression.operand = operands.toMutableList()
         }
 }

@@ -144,7 +144,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
         val typeSpecifier = of.createTupleTypeSpecifier()
         for (definitionContext in ctx.tupleElementDefinition()) {
             val element = visit(definitionContext) as TupleElementDefinition
-            elements.add(TupleTypeElement(element.name, element.elementType.resultType!!))
+            elements.add(TupleTypeElement(element.name!!, element.elementType!!.resultType!!))
             typeSpecifier.element.add(element)
         }
         typeSpecifier.resultType = TupleType(elements)
@@ -170,7 +170,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
     ): IntervalTypeSpecifier {
         val result =
             of.createIntervalTypeSpecifier().withPointType(parseTypeSpecifier(ctx.typeSpecifier()))
-        val intervalType = IntervalType(result.pointType.resultType!!)
+        val intervalType = IntervalType(result.pointType!!.resultType!!)
         result.resultType = intervalType
         return result
     }
@@ -178,7 +178,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
     override fun visitListTypeSpecifier(ctx: ListTypeSpecifierContext): ListTypeSpecifier {
         val result =
             of.createListTypeSpecifier().withElementType(parseTypeSpecifier(ctx.typeSpecifier()))
-        val listType = ListType(result.elementType.resultType!!)
+        val listType = ListType(result.elementType!!.resultType!!)
         result.resultType = listType
         return result
     }
@@ -191,7 +191,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
                 .withContext(currentContext)
         if (ctx.fluentModifier() != null) {
             libraryBuilder.checkCompatibilityLevel("Fluent functions", "1.5")
-            functionDef.isFluent = true
+            functionDef.fluent = true
         }
 
         for (opdef in ctx.operandDefinition()) {
@@ -200,7 +200,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
                 of.createOperandDef()
                     .withName(parseString(opdef.referentialIdentifier()))
                     .withOperandTypeSpecifier(typeSpecifier)
-                    .withResultType(typeSpecifier.resultType) as OperandDef
+                    .withResultType(typeSpecifier.resultType)
             )
         }
         val typeSpecifierContext = ctx.typeSpecifier()
@@ -277,7 +277,7 @@ abstract class CqlPreprocessorElmCommonVisitor(
                         o is ExpressionDef
                 ) {
                     val a = getAnnotation(o)
-                    if (a == null || a.s == null) {
+                    if (a?.s == null) {
                         // Add header information (comments prior to the definition)
                         val definitionInfo = libraryInfo.resolveDefinition(tree)
                         if (definitionInfo?.headerInterval != null) {
@@ -394,7 +394,6 @@ abstract class CqlPreprocessorElmCommonVisitor(
                 .trim { it <= ' ' }
                 .split("\n[ \t]*\\*[ \t\\*]*".toRegex())
                 .dropLastWhile { it.isEmpty() }
-                .toTypedArray()
                 .joinToString("\n")
         val tags = ArrayList<Tag>()
         var startFrom = 0

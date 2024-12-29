@@ -4,7 +4,6 @@ package org.cqframework.cql.cql2elm
 
 import java.io.*
 import java.nio.file.Path
-import java.util.*
 import org.cqframework.cql.cql2elm.model.Version
 import org.hl7.elm.r1.VersionedIdentifier
 
@@ -30,7 +29,7 @@ class DefaultLibrarySourceProvider(path: Path) : LibrarySourceProvider, PathAwar
     override fun getLibrarySource(libraryIdentifier: VersionedIdentifier): InputStream? {
         val currentPath = path
         if (currentPath != null) {
-            val libraryName: String = libraryIdentifier.id
+            val libraryName: String = libraryIdentifier.id!!
             val libraryPath: Path =
                 currentPath.resolve(
                     "$libraryName${
@@ -47,7 +46,7 @@ class DefaultLibrarySourceProvider(path: Path) : LibrarySourceProvider, PathAwar
                 var mostRecent: Version? = null
                 val requestedVersion: Version? =
                     if (libraryIdentifier.version == null) null
-                    else Version(libraryIdentifier.version)
+                    else Version(libraryIdentifier.version!!)
                 for (file: File in currentPath.toFile().listFiles(filter)!!) {
                     var fileName: String = file.name
                     val indexOfExtension: Int = fileName.lastIndexOf(".")

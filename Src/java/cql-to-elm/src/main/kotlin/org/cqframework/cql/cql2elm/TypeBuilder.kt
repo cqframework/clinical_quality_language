@@ -2,7 +2,6 @@
 
 package org.cqframework.cql.cql2elm
 
-import java.util.*
 import javax.xml.namespace.QName
 import kotlin.collections.ArrayList
 import org.cqframework.cql.cql2elm.model.Model

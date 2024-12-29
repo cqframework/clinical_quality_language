@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm.model
 
-import java.util.*
 import kotlin.collections.ArrayList
 import org.hl7.cql.model.DataType
 import org.hl7.cql.model.InstantiationContext
