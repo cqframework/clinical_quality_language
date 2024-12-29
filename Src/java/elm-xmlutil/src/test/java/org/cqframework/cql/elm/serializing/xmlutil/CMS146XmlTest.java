@@ -17,7 +17,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.xmlunit.assertj.XmlAssert;
 
-@Disabled("Fails due to differences in JSON for translator version. Need to strip translator version from the ELM.")
+@Disabled(
+        "Currently failing due to differences in the namespace prefixes. Possible fix: Decorate all POJOs with the namespace declaration.")
 class CMS146XmlTest {
 
     private static Object[][] sigFileAndSigLevel() {
@@ -40,7 +41,10 @@ class CMS146XmlTest {
                 cms146,
                 new LibraryManager(
                         modelManager, new CqlCompilerOptions(ErrorSeverity.Warning, expectedSignatureLevel)));
-        final String actualXml = translator.toXml().trim();
+        // The compiler version changes release-to-release
+        // so we strip it out of the XML before comparison
+        final String xmlWithVersion = translator.toXml().trim();
+        String actualXml = xmlWithVersion.replaceAll("translatorVersion=\"[^\"]*\"", "");
 
         XmlAssert.assertThat(actualXml).and(expectedXml).ignoreWhitespace().areIdentical();
     }

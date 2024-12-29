@@ -18,7 +18,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-@Disabled("Fails due to differences in JSON for translator version. Need to strip translator version from the ELM.")
+@Disabled("Currently failing due to differences in QName serialization. Possible fix: Custom serializer for QName.")
 class CMS146JsonTest {
 
     private static Object[][] sigFileAndSigLevel() {
@@ -42,7 +42,8 @@ class CMS146JsonTest {
                 cms146,
                 new LibraryManager(
                         modelManager, new CqlCompilerOptions(ErrorSeverity.Warning, expectedSignatureLevel)));
-        final String actualJson = translator.toJson();
+        final String jsonWithVersion = translator.toJson();
+        final String actualJson = jsonWithVersion.replaceAll("\"translatorVersion\":\"[^\"]*\",", "");
         JSONAssert.assertEquals(expectedJson, actualJson, true);
     }
 
