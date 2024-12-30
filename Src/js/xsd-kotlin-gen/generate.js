@@ -170,7 +170,7 @@ const configs = [
     xsd: __dirname + "/../../cql-lm/schema/model/modelinfo.xsd",
     outputDir:
       __dirname +
-      "/../../java/model/build/generated/sources/model/main/java/org/hl7/elm_modelinfo/r1",
+      "/../../java/model/build/generated/sources/model/commonMain/kotlin/org/hl7/elm_modelinfo/r1",
     packageName: "org.hl7.elm_modelinfo.r1",
     classes: {},
     scope: "",
@@ -184,7 +184,7 @@ const configs = [
     xsd: __dirname + "/../../cql-lm/schema/elm/library.xsd",
     outputDir:
       __dirname +
-      "/../../java/elm/build/generated/sources/elm/main/java/org/hl7/elm/r1",
+      "/../../java/elm/build/generated/sources/elm/main/kotlin/org/hl7/elm/r1",
     packageName: "org.hl7.elm.r1",
     // autoExtend: "org.cqframework.cql.elm.tracking.Trackable",
     classes: {},
@@ -205,7 +205,7 @@ const configs = [
     xsd: __dirname + "/../../cql-lm/schema/elm/cqlannotations.xsd",
     outputDir:
       __dirname +
-      "/../../java/elm/build/generated/sources/elm/main/java/org/hl7/cql_annotations/r1",
+      "/../../java/elm/build/generated/sources/elm/main/kotlin/org/hl7/cql_annotations/r1",
     packageName: "org.hl7.cql_annotations.r1",
     classes: {},
     scope: "narrative",

@@ -22,7 +22,7 @@ node {
 }
 
 val buildDir = project.layout.buildDirectory.get().toString()
-val destDir = "${buildDir}/generated/sources/$name/main/java"
+val destDir = "${buildDir}/generated/sources/$name/main/kotlin"
 
 val runXsdKotlinGenTask = tasks.register<NodeTask>("runXsdKotlinGen") {
     dependsOn(tasks.npmInstall)
@@ -43,7 +43,7 @@ tasks.withType<Delete>().configureEach {
 
 sourceSets {
     main {
-        java {
+        kotlin {
             srcDir(destDir)
         }
     }
