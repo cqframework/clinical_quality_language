@@ -235,7 +235,7 @@ import org.hl7.elm.r1.Without
 import org.hl7.elm.r1.Xor
 
 /*
- * Extends the ObjectFactory to allow for decorating the elements created by the factory. If no decorator is provided, nodes are
+ * Extends the ObjectFactory to allow for assigning ids to the elements created by the factory. Elements are
  * given monotonically increasing ids.
  *
  */

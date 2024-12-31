@@ -9,7 +9,7 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import org.cqframework.cql.cql2elm.CqlCompilerException.ErrorSeverity;
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
-import org.cqframework.cql.elm.utility.Visitors;
+import org.cqframework.cql.elm.visiting.FunctionalElmVisitor;
 import org.hl7.elm.r1.Element;
 import org.hl7.elm.r1.OperatorExpression;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -38,7 +38,7 @@ class CMS146SignatureTest {
                 cms146,
                 new LibraryManager(modelManager, new CqlCompilerOptions(ErrorSeverity.Warning, signatureLevel)));
 
-        var visitor = Visitors.from(
+        var visitor = FunctionalElmVisitor.Companion.from(
                 (Element elm, Void context) -> {
                     if (elm instanceof OperatorExpression fd) {
                         return fd.getSignature().isEmpty() ? 0 : 1;

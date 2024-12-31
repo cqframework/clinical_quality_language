@@ -10,7 +10,6 @@ import org.cqframework.cql.cql2elm.CqlCompilerOptions.Options;
 import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessor;
 import org.cqframework.cql.cql2elm.tracking.Trackable;
 import org.cqframework.cql.elm.IdObjectFactory;
-import org.cqframework.cql.elm.utility.Visitors;
 import org.cqframework.cql.elm.visiting.FunctionalElmVisitor;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
@@ -21,7 +20,7 @@ import org.junit.jupiter.api.Test;
 class TestLocalId {
 
     // This visitor checks that all nodes the graph have a localId
-    static FunctionalElmVisitor<Void, String> idChecker = Visitors.from((node, libraryName) -> {
+    static FunctionalElmVisitor<Void, String> idChecker = FunctionalElmVisitor.Companion.from((node, libraryName) -> {
         var trackbacks = Trackable.INSTANCE.getTrackbacks(node);
         var locator = trackbacks.isEmpty() ? "<unknown>" : trackbacks.get(0).toLocator();
         assertNotNull(

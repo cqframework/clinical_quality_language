@@ -471,7 +471,7 @@ interface ElmVisitor<T, C> {
      * TupleElement.
      *
      * NOTE: The TupleElement does not inherit from Element, so it is not visited by the
-     * visitElement method. Instead, the TupleElement.value is visited by the visitElement method.
+     * visitElement method. Instead, the [TupleElement.value] is visited by the visitElement method.
      *
      * @param tupleElement the TupleElement
      * @param context the context passed to the visitor
@@ -493,7 +493,7 @@ interface ElmVisitor<T, C> {
      * InstanceElement.
      *
      * NOTE: The InstanceElement does not inherit from Element, so it is not visited by the
-     * visitElement method. Instead, the InstanceElement.value is visited by the visitElement
+     * visitElement method. Instead, the [InstanceElement.value] is visited by the visitElement
      * method.
      *
      * @param instanceElement the InstanceElement to visit

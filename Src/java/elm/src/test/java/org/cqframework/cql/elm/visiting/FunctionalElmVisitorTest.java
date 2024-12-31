@@ -45,4 +45,32 @@ class FunctionalElmVisitorTest {
         assertThrows(NullPointerException.class, () -> new FunctionalElmVisitor<Integer, Void>(null, Integer::sum));
         assertThrows(NullPointerException.class, () -> new FunctionalElmVisitor<Integer, Void>((x, y) -> 1, null));
     }
+
+    @Test
+    void constructVisitorTest() {
+        // set up visitor that counts all visited elements
+        var trackableCounter = FunctionalElmVisitor.Companion.from((elm, context) -> 1, Integer::sum);
+
+        var library = new Library();
+        library.setStatements(new Statements());
+        library.getStatements().getDef().add(new ExpressionDef());
+        library.getStatements().getDef().add(new ExpressionDef());
+        library.getStatements().getDef().add(new ExpressionDef());
+
+        var result = trackableCounter.visitLibrary(library, null);
+        assertEquals(4, result.intValue()); // ELM elements
+
+        // This visitor returns the context object that's passed in
+        var contextReturner = FunctionalElmVisitor.Companion.from((t, c) -> c);
+        var context = new Object();
+        assertEquals(context, contextReturner.visitLibrary(library, context));
+    }
+
+    @Test
+    void nullFactoryTest() {
+        assertThrows(NullPointerException.class, () -> FunctionalElmVisitor.Companion.from(null));
+        assertThrows(NullPointerException.class, () -> FunctionalElmVisitor.Companion.from(null, null));
+        assertThrows(NullPointerException.class, () -> FunctionalElmVisitor.Companion.from(null, (a, b) -> b));
+        assertThrows(NullPointerException.class, () -> FunctionalElmVisitor.Companion.from((t, c) -> null, null));
+    }
 }

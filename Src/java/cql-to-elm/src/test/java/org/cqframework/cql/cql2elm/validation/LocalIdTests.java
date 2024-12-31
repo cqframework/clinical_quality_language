@@ -8,7 +8,7 @@ import java.util.function.BiFunction;
 import org.cqframework.cql.cql2elm.CqlCompilerOptions.Options;
 import org.cqframework.cql.cql2elm.TestUtils;
 import org.cqframework.cql.cql2elm.tracking.Trackable;
-import org.cqframework.cql.elm.utility.Visitors;
+import org.cqframework.cql.elm.visiting.FunctionalElmVisitor;
 import org.hl7.elm.r1.Element;
 import org.hl7.elm.r1.Library;
 
@@ -19,10 +19,6 @@ public class LocalIdTests {
 
         public MissingIdDescription(Element element) {
             this.element = element;
-        }
-
-        public Element element() {
-            return element;
         }
 
         public String description() {
@@ -62,7 +58,7 @@ public class LocalIdTests {
     // @Test
     public void simpleTest() {
         var lib = compile("library Test version '1.0.0'");
-        var missingIds = Visitors.from(missingIdChecker).visitElement(lib, new ArrayList<>());
+        var missingIds = FunctionalElmVisitor.Companion.from(missingIdChecker).visitElement(lib, new ArrayList<>());
 
         for (var missingId : missingIds) {
             System.out.println(missingId.description());
@@ -74,7 +70,7 @@ public class LocalIdTests {
     // @Test
     public void equalityTest() {
         var lib = compile("library Test version '1.0.0'\n define foo: 1 = 1\n define bar: 1 != 1");
-        var missingIds = Visitors.from(missingIdChecker).visitElement(lib, new ArrayList<>());
+        var missingIds = FunctionalElmVisitor.Companion.from(missingIdChecker).visitElement(lib, new ArrayList<>());
 
         for (var missingId : missingIds) {
             System.out.println(missingId.description());
