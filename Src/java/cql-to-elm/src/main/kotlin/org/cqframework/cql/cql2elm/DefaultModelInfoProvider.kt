@@ -4,6 +4,8 @@ package org.cqframework.cql.cql2elm
 
 import java.io.*
 import java.nio.file.Path
+import kotlinx.io.asSource
+import kotlinx.io.buffered
 import org.cqframework.cql.cql2elm.model.Version
 import org.hl7.cql.model.ModelIdentifier
 import org.hl7.cql.model.ModelInfoProvider
@@ -100,7 +102,8 @@ class DefaultModelInfoProvider() : ModelInfoProvider, PathAware {
             }
             try {
                 val inputStream: InputStream = FileInputStream(modelFile)
-                return ModelInfoReaderFactory.getReader("application/xml")?.read(inputStream)
+                return ModelInfoReaderFactory.getReader("application/xml")
+                    ?.read(inputStream.asSource().buffered())
             } catch (e: IOException) {
                 throw IllegalArgumentException(
                     "Could not load definition for model info ${modelIdentifier.id}.",

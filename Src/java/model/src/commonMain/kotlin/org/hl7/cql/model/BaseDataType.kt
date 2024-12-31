@@ -1,7 +1,8 @@
 package org.hl7.cql.model
 
-abstract class BaseDataType protected constructor(baseType: DataType? = DataType.ANY) : DataType {
-    override val baseType: DataType = baseType ?: DataType.ANY
+abstract class BaseDataType protected constructor(private val base: DataType? = null) : DataType {
+    override val baseType
+        get() = base ?: DataType.ANY
 
     override fun toLabel(): String = toString()
 

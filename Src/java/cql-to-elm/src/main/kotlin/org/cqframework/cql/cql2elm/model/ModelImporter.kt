@@ -600,7 +600,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
                 if (t is ProfileInfo) {
                     ProfileType(
                         qualifiedName,
-                        resolveTypeNameOrSpecifier(t.baseType, t.baseTypeSpecifier)
+                        resolveTypeNameOrSpecifier(t.baseType, t.baseTypeSpecifier) ?: DataType.ANY
                     )
                 } else {
                     // Added to support generic notation in ModelInfo file for class type names
@@ -615,6 +615,7 @@ class ModelImporter(val modelInfo: ModelInfo, val modelManager: ModelManager?) {
                             ClassType(
                                 qualifiedName,
                                 resolveTypeNameOrSpecifier(t.baseType, t.baseTypeSpecifier)
+                                    ?: DataType.ANY
                             )
                         }
                     }

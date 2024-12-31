@@ -1,20 +1,19 @@
 package org.hl7.cql.model
 
-import java.util.SortedSet
+class TupleType private constructor(val elements: Set<TupleTypeElement>) : BaseDataType() {
 
-class TupleType private constructor(val elements: SortedSet<TupleTypeElement>) : BaseDataType() {
+    constructor(elements: Iterable<TupleTypeElement>) : this(elements.toSet())
 
-    constructor(elements: Iterable<TupleTypeElement>) : this(elements.sortedByName())
+    val sortedElements = elements.sortedWith(compareBy { it.name })
 
     override fun isSubTypeOf(other: DataType): Boolean {
-        return if (other is TupleType) {
-            elements.zipAll(other.elements) { a, b -> a.isSubTypeOf(b) }
+        return if (other is TupleType) { sortedElements.zipAll(other.sortedElements) { a, b -> a.isSubTypeOf(b) }
         } else super.isSubTypeOf(other)
     }
 
     override fun isSuperTypeOf(other: DataType): Boolean {
         return if (other is TupleType) {
-            elements.zipAll(other.elements) { a, b -> a.isSuperTypeOf(b) }
+            sortedElements.zipAll(other.sortedElements) { a, b -> a.isSuperTypeOf(b) }
         } else super.isSuperTypeOf(other)
     }
 
@@ -35,7 +34,7 @@ class TupleType private constructor(val elements: SortedSet<TupleTypeElement>) :
         return when (callType) {
             DataType.ANY -> elements.all { it.type.isInstantiable(callType, context) }
             is TupleType -> {
-                elements.zipAll(callType.elements) { a, b ->
+                sortedElements.zipAll(callType.sortedElements) { a, b ->
                     a.type.isInstantiable(b.type, context)
                 }
             }
@@ -48,7 +47,6 @@ class TupleType private constructor(val elements: SortedSet<TupleTypeElement>) :
             TupleType(
                 elements
                     .map { TupleTypeElement(it.name, it.type.instantiate(context), false) }
-                    .sortedByName()
             )
         } else this
     }
@@ -68,9 +66,6 @@ class TupleType private constructor(val elements: SortedSet<TupleTypeElement>) :
     }
 
     companion object {
-        private fun Iterable<TupleTypeElement>.sortedByName(): SortedSet<TupleTypeElement> =
-            toSortedSet(compareBy { it.name })
-
         private fun Collection<TupleTypeElement>.zipAll(
             other: Collection<TupleTypeElement>,
             predicate: (a: TupleTypeElement, b: TupleTypeElement) -> Boolean

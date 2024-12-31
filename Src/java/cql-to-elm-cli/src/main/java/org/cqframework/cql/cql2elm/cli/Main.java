@@ -1,9 +1,12 @@
 package org.cqframework.cql.cql2elm.cli;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
+import static kotlinx.io.CoreKt.buffered;
+import static kotlinx.io.JvmCoreKt.asSource;
 import static org.cqframework.cql.cql2elm.CqlTranslator.fromFile;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.FileVisitResult;
@@ -27,8 +30,9 @@ import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReaderFactory;
 public class Main {
     public static ModelInfoProvider getModelInfoProvider(File modelInfoXML) {
         try {
+            var source = buffered(asSource(new FileInputStream(modelInfoXML)));
             final ModelInfo modelInfo =
-                    ModelInfoReaderFactory.getReader("application/xml").read(modelInfoXML);
+                    ModelInfoReaderFactory.INSTANCE.getReader("application/xml").read(source);
             return (ModelIdentifier modelIdentifier) -> modelInfo;
         } catch (IOException e) {
             System.err.printf("Could not load model-info XML: %s%n", modelInfoXML);

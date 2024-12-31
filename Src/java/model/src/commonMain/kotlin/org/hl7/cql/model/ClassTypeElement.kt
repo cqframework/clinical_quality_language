@@ -8,6 +8,9 @@ data class ClassTypeElement(
     val target: String? = null
 ) {
 
+    // For Java compatibility. Can be deleted once tests are updated.
+    constructor(name: String, type: DataType) : this(name, type, false, false, null)
+
     init {
         require(name.isNotEmpty()) { "name can not be empty" }
     }

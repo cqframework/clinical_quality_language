@@ -1,7 +1,5 @@
 package org.hl7.cql.model
 
-import org.hl7.cql.model.DataType.Companion.ANY
-
 data class ListType(val elementType: DataType) : BaseDataType() {
     override fun isSubTypeOf(other: DataType): Boolean {
         return if (other is ListType) {
@@ -23,7 +21,7 @@ data class ListType(val elementType: DataType) : BaseDataType() {
 
     override fun isInstantiable(callType: DataType, context: InstantiationContext): Boolean {
         return when (callType) {
-            ANY -> elementType.isInstantiable(callType, context)
+            DataType.ANY -> elementType.isInstantiable(callType, context)
             is ListType -> elementType.isInstantiable(callType.elementType, context)
             else -> {
                 val instantiableElements =

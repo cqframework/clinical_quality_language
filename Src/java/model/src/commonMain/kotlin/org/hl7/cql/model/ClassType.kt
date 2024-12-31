@@ -1,11 +1,7 @@
 package org.hl7.cql.model
 
-import java.util.*
-
 @Suppress("TooManyFunctions", "ComplexCondition")
-open class ClassType
-@JvmOverloads
-constructor(
+open class ClassType(
     final override val name: String,
     baseType: DataType? = null,
     val elements: MutableList<ClassTypeElement> = mutableListOf(),
@@ -18,6 +14,11 @@ constructor(
      */
     var genericParameters: MutableList<TypeParameter> = mutableListOf()
 ) : BaseDataType(baseType), NamedType {
+
+    // For Java compatibility. Can be deleted once tests are updated.
+    constructor(
+        name: String,
+    ) : this(name, null, mutableListOf(), mutableListOf())
     init {
         require(name.isNotEmpty()) { "name can not be empty" }
     }
@@ -144,10 +145,10 @@ constructor(
     val sortedElements: List<ClassTypeElement>
         get() = elements.sortedWith(compareBy { it.name })
 
-    private var baseElementMap: LinkedHashMap<String, ClassTypeElement>? = null
+    private var baseElementMap: HashMap<String, ClassTypeElement>? = null
         get() {
             if (field == null) {
-                field = LinkedHashMap()
+                field = HashMap()
                 if (baseType is ClassType) {
                     (baseType as ClassType).gatherElements(field!!)
                 }
@@ -156,7 +157,7 @@ constructor(
             return field
         }
 
-    private fun gatherElements(elementMap: LinkedHashMap<String, ClassTypeElement>) {
+    private fun gatherElements(elementMap: HashMap<String, ClassTypeElement>) {
         if (baseType is ClassType) {
             (baseType as ClassType).gatherElements(elementMap)
         }
@@ -169,7 +170,7 @@ constructor(
     val allElements: List<ClassTypeElement>
         get() {
             // Get the baseClass elements into a map by name
-            val elementMap = LinkedHashMap(baseElementMap)
+            val elementMap = baseElementMap?.toMutableMap() ?: mutableMapOf()
 
             // Add this class's elements, overwriting baseClass definitions where applicable
             for (el in elements) {

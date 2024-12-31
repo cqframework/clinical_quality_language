@@ -1,12 +1,14 @@
 package org.hl7.cql.model
 
-data class TypeParameter
-@JvmOverloads
-constructor(
+data class TypeParameter(
     val identifier: String,
     val constraint: TypeParameterConstraint = TypeParameterConstraint.NONE,
     val constraintType: DataType? = null
 ) : BaseDataType() {
+
+    // For Java compatibility. Can be deleted once tests are updated.
+    constructor(identifier: String) : this(identifier, TypeParameterConstraint.NONE, null)
+
     init {
         require(identifier.isNotEmpty()) { "identifier can not be empty" }
         if (constraint == TypeParameterConstraint.TYPE) {

@@ -87,7 +87,7 @@ class ConversionMap {
     private fun getAllConversions(fromType: DataType?): List<Conversion> {
         val conversions: MutableList<Conversion> = ArrayList()
         var currentType = fromType
-        while (currentType != null) {
+        while (currentType != null && currentType != DataType.ANY) {
             conversions.addAll(getConversions(currentType))
             currentType = currentType.baseType
         }
@@ -339,7 +339,7 @@ class ConversionMap {
 
         if (result == null) {
             // NOTE: FHIRPath Implicit conversion from list to singleton
-            // If the from type is a list and the target type is a singleton (potentially with a
+            // If the fromType is a list and the target type is a singleton (potentially with a
             // compatible conversion),
             // Convert by invoking a singleton
             result =
@@ -361,7 +361,7 @@ class ConversionMap {
                         (allowPromotionAndDemotion || isIntervalPromotionEnabled) ->
                         findIntervalPromotion(fromType, toType, operatorMap)
 
-                    // If the from type is a choice, attempt to find a conversion from one of the
+                    // If the fromType is a choice, attempt to find a conversion from one of the
                     // choice
                     // types
                     fromType is ChoiceType ->

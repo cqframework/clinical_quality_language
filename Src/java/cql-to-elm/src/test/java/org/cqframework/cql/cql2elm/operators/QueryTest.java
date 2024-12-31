@@ -76,7 +76,7 @@ class QueryTest {
                 def,
                 hasTypeAndResult(
                         Query.class,
-                        "list<tuple{P:tuple{id:System.Integer,name:System.String},S:tuple{id:System.Integer,name:System.String}}>"));
+                        "list<tuple{S:tuple{id:System.Integer,name:System.String},P:tuple{id:System.Integer,name:System.String}}>"));
     }
 
     @Test

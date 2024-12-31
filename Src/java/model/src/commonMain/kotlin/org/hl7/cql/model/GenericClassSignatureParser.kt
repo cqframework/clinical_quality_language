@@ -15,7 +15,6 @@ class GenericClassSignatureParser(
     var baseType: String?,
     private val resolvedTypes: MutableMap<String, DataType>
 ) {
-    @JvmOverloads
     constructor(
         genericSignature: String,
         resolvedTypes: MutableMap<String, DataType> = HashMap()
@@ -111,17 +110,17 @@ class GenericClassSignatureParser(
 
     /**
      * Identifies the data type for the named type. If the argument is null, the return type will be
-     * null.
+     * "Any".
      *
      * @param parameterType
      * @return The parameter's type
      */
-    private fun resolveTypeName(parameterType: String?): DataType? {
+    private fun resolveTypeName(parameterType: String?): DataType {
         return if (isValidGenericSignature(parameterType)) {
             handleBoundType(parameterType!!)
         } else {
             if (parameterType == null) {
-                null
+                DataType.ANY
             } else {
                 resolveType(parameterType)
             }
@@ -270,7 +269,7 @@ class GenericClassSignatureParser(
                 c == ',' && openBracketCount > 0 -> signatureCharArray[index] = '|'
             }
         }
-        return String(signatureCharArray)
+        return signatureCharArray.concatToString()
     }
 
     /**

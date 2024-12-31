@@ -1,24 +1,29 @@
 package org.hl7.cql.model;
 
+import static kotlinx.io.JvmCoreKt.asSource;
+import static kotlinx.io.CoreKt.buffered;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.hl7.elm_modelinfo.r1.*;
-import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReader;
-import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReaderFactory;
+import org.hl7.elm_modelinfo.r1.serializing.xmlutil.XmlModelInfoReader;
 import org.junit.jupiter.api.Test;
 
 public class ModelInfoComparerTest {
 
-    static ModelInfoReader reader = ModelInfoReaderFactory.getReader("application/xml");
+    private ModelInfo readModelInfo(String resourceName) {
+        var reader = new XmlModelInfoReader();
+        var stream = ModelInfoComparerTest.class.getResourceAsStream(resourceName);
+        return reader.read(buffered(asSource(stream)));
+    }
 
     @Test
-    void compareModelInfo() throws IOException {
-        ModelInfo a = reader.read(ModelInfoComparerTest.class.getResourceAsStream("a-modelinfo.xml"));
-        ModelInfo b = reader.read(ModelInfoComparerTest.class.getResourceAsStream("b-modelinfo.xml"));
+    void compareModelInfo() {
+        var a = readModelInfo("a-modelinfo.xml");
+        var b = readModelInfo("b-modelinfo.xml");
+
 
         ModelInfoCompareContext differences = new ModelInfoCompareContext();
         compareModelInfo(differences, a, b);
@@ -37,20 +42,18 @@ public class ModelInfoComparerTest {
 
     // @Test
     // Not an actual test, Used to determine differences between current and updated model info from the MAT team
-    public void compareMATModelInfo() throws IOException {
-        ModelInfo a = reader.read(ModelInfoComparerTest.class.getResourceAsStream("fhir-modelinfo-4.0.1.xml"));
-        ModelInfo b = reader.read(ModelInfoComparerTest.class.getResourceAsStream("mat-fhir-modelinfo-4.0.1.xml"));
-
+    public void compareMATModelInfo() {
+        var a = readModelInfo("fhir-modelinfo-4.0.1.xml");
+        var b = readModelInfo("mat-fhir-modelinfo-4.0.1.xml");
         ModelInfoCompareContext differences = new ModelInfoCompareContext();
         compareModelInfo(differences, a, b);
         assertThat(differences.length(), is(0));
     }
 
     @Test
-    void compareNewModelInfo() throws IOException {
-        ModelInfo a = reader.read(ModelInfoComparerTest.class.getResourceAsStream("fhir-modelinfo-4.0.1.xml"));
-        ModelInfo b = reader.read(ModelInfoComparerTest.class.getResourceAsStream("new-fhir-modelinfo-4.0.1.xml"));
-
+    void compareNewModelInfo() {
+        var a = readModelInfo("fhir-modelinfo-4.0.1.xml");
+        var b = readModelInfo("new-fhir-modelinfo-4.0.1.xml");
         ModelInfoCompareContext differences = new ModelInfoCompareContext();
         compareModelInfo(differences, a, b);
         assertThat(
@@ -66,11 +69,9 @@ public class ModelInfoComparerTest {
     }
 
     @Test
-    void compareMetadataModelInfo() throws IOException {
-        ModelInfo a = reader.read(ModelInfoComparerTest.class.getResourceAsStream("fhir-modelinfo-4.0.1-1.5.1.xml"));
-        ModelInfo b =
-                reader.read(ModelInfoComparerTest.class.getResourceAsStream("fhir-modelinfo-4.0.1-with-metadata.xml"));
-
+    void compareMetadataModelInfo() {
+        var a = readModelInfo("fhir-modelinfo-4.0.1-1.5.1.xml");
+        var b = readModelInfo("fhir-modelinfo-4.0.1-with-metadata.xml");
         ModelInfoCompareContext differences = new ModelInfoCompareContext();
         compareModelInfo(differences, a, b);
         /*
@@ -128,9 +129,9 @@ public class ModelInfoComparerTest {
                         "ModelInfo.positiveInt.Element value in right only%n"))); // redeclaration for metadata
     }
 
-    public class ModelInfoCompareContext {
+    public static class ModelInfoCompareContext {
         private StringBuilder differences = new StringBuilder();
-        private List<String> focusList = new ArrayList<String>();
+        private List<String> focusList = new ArrayList<>();
 
         public ModelInfoCompareContext() {
             pushFocus("ModelInfo");
@@ -145,7 +146,7 @@ public class ModelInfoComparerTest {
         }
 
         public void popFocus() {
-            if (focusList.size() > 0) {
+            if (!focusList.isEmpty()) {
                 focusList.remove(focusList.size() - 1);
             }
         }
@@ -185,9 +186,9 @@ public class ModelInfoComparerTest {
 
         // requiredModelInfo
         Map<String, ModelSpecifier> msa =
-                a.getRequiredModelInfo().stream().collect(Collectors.toMap(k -> k.getName(), v -> v));
+                a.getRequiredModelInfo().stream().collect(Collectors.toMap(ModelSpecifier::getName, v -> v));
         Map<String, ModelSpecifier> msb =
-                b.getRequiredModelInfo().stream().collect(Collectors.toMap(k -> k.getName(), v -> v));
+                b.getRequiredModelInfo().stream().collect(Collectors.toMap(ModelSpecifier::getName, v -> v));
 
         for (Map.Entry<String, ModelSpecifier> ms : msa.entrySet()) {
             ModelSpecifier msOther = msb.getOrDefault(ms.getKey(), null);
@@ -227,9 +228,9 @@ public class ModelInfoComparerTest {
 
         // conversionInfo
         Map<String, ConversionInfo> cia =
-                a.getConversionInfo().stream().collect(Collectors.toMap(k -> k.getFromType(), v -> v));
+                a.getConversionInfo().stream().collect(Collectors.toMap(ConversionInfo::getFromType, v -> v));
         Map<String, ConversionInfo> cib =
-                b.getConversionInfo().stream().collect(Collectors.toMap(k -> k.getFromType(), v -> v));
+                b.getConversionInfo().stream().collect(Collectors.toMap(ConversionInfo::getFromType, v -> v));
 
         for (Map.Entry<String, ConversionInfo> ci : cia.entrySet()) {
             ConversionInfo ciOther = cib.getOrDefault(ci.getKey(), null);
@@ -244,8 +245,8 @@ public class ModelInfoComparerTest {
         }
 
         // contextInfo
-        Map<String, ContextInfo> cxa = a.getContextInfo().stream().collect(Collectors.toMap(k -> k.getName(), v -> v));
-        Map<String, ContextInfo> cxb = b.getContextInfo().stream().collect(Collectors.toMap(k -> k.getName(), v -> v));
+        Map<String, ContextInfo> cxa = a.getContextInfo().stream().collect(Collectors.toMap(ContextInfo::getName, v -> v));
+        Map<String, ContextInfo> cxb = b.getContextInfo().stream().collect(Collectors.toMap(ContextInfo::getName, v -> v));
 
         for (Map.Entry<String, ContextInfo> ci : cxa.entrySet()) {
             ContextInfo ciOther = cxb.getOrDefault(ci.getKey(), null);
@@ -261,7 +262,7 @@ public class ModelInfoComparerTest {
     }
 
     public static void compareAttribute(ModelInfoCompareContext context, String attributeName, String a, String b) {
-        if (a == null || b == null || !a.equals(b)) {
+        if (a == null || !a.equals(b)) {
             if (a == null && b == null) {
                 return;
             }
@@ -270,7 +271,7 @@ public class ModelInfoComparerTest {
     }
 
     public static void compareAttribute(ModelInfoCompareContext context, String attributeName, Boolean a, Boolean b) {
-        if (a == null || b == null || !a.equals(b)) {
+        if (a == null || !a.equals(b)) {
             if (a == null && b == null) {
                 return;
             }
@@ -437,7 +438,7 @@ public class ModelInfoComparerTest {
     public static void compareTypeInfo(ModelInfoCompareContext context, SimpleTypeInfo a, SimpleTypeInfo b) {
         String descriptorA = descriptor(a);
         String descriptorB = descriptor(b);
-        if (descriptorA == null || descriptorB == null || !descriptorA.equals(descriptorB)) {
+        if (descriptorA == null || !descriptorA.equals(descriptorB)) {
             context.append(String.format("%s <> %s", descriptorA, descriptorB));
         }
     }
@@ -498,7 +499,7 @@ public class ModelInfoComparerTest {
     public static void compareTypeInfo(ModelInfoCompareContext context, IntervalTypeInfo a, IntervalTypeInfo b) {
         String descriptorA = descriptor(a);
         String descriptorB = descriptor(b);
-        if (descriptorA == null || descriptorB == null || !descriptorA.equals(descriptorB)) {
+        if (descriptorA == null || !descriptorA.equals(descriptorB)) {
             context.append(String.format("%s <> %s", descriptorA, descriptorB));
         }
     }
@@ -506,7 +507,7 @@ public class ModelInfoComparerTest {
     public static void compareTypeInfo(ModelInfoCompareContext context, ListTypeInfo a, ListTypeInfo b) {
         String descriptorA = descriptor(a);
         String descriptorB = descriptor(b);
-        if (descriptorA == null || descriptorB == null || !descriptorA.equals(descriptorB)) {
+        if (descriptorA == null || !descriptorA.equals(descriptorB)) {
             context.append(String.format("%s <> %s", descriptorA, descriptorB));
         }
     }
@@ -514,7 +515,7 @@ public class ModelInfoComparerTest {
     public static void compareTypeInfo(ModelInfoCompareContext context, TupleTypeInfo a, TupleTypeInfo b) {
         String descriptorA = descriptor(a);
         String descriptorB = descriptor(b);
-        if (descriptorA == null || descriptorB == null || !descriptorA.equals(descriptorB)) {
+        if (descriptorA == null || !descriptorA.equals(descriptorB)) {
             context.append(String.format("%s <> %s", descriptorA, descriptorB));
         }
     }
@@ -522,7 +523,7 @@ public class ModelInfoComparerTest {
     public static void compareTypeInfo(ModelInfoCompareContext context, ChoiceTypeInfo a, ChoiceTypeInfo b) {
         String descriptorA = descriptor(a);
         String descriptorB = descriptor(b);
-        if (descriptorA == null || descriptorB == null || !descriptorA.equals(descriptorB)) {
+        if (descriptorA == null || !descriptorA.equals(descriptorB)) {
             context.append(String.format("%s <> %s", descriptorA, descriptorB));
         }
     }

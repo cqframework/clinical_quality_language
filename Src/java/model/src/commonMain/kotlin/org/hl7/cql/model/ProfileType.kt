@@ -20,11 +20,9 @@ package org.hl7.cql.model
  * NOTE: This behavior was subsequently changed due to the inconsistency it introduces between
  * retrieves and general-purpose expressions. QDM still defines a base type with profiles for
  * positive and negative aspects, but the retrieve will now return the profile type, not the base
- * type. See github issue #131 for a detailed discussion of this change.
+ * type. See GitHub issue #131 for a detailed discussion of this change.
  */
-class ProfileType
-@JvmOverloads
-constructor(
+class ProfileType(
     name: String,
     baseType: DataType?,
     elements: MutableList<ClassTypeElement> = mutableListOf()

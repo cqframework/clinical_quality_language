@@ -1,6 +1,9 @@
 package org.cqframework.cql.cql2elm.quick;
 
-import java.io.IOException;
+import static kotlinx.io.CoreKt.buffered;
+import static kotlinx.io.JvmCoreKt.asSource;
+
+import java.io.InputStream;
 import org.hl7.cql.model.ModelIdentifier;
 import org.hl7.cql.model.ModelInfoProvider;
 import org.hl7.cql.model.NamespaceManager;
@@ -27,27 +30,21 @@ public class QuickModelInfoProvider implements ModelInfoProvider {
     public ModelInfo load(ModelIdentifier modelIdentifier) {
         if (isQuickModelIdentifier(modelIdentifier)) {
             String localVersion = modelIdentifier.getVersion() == null ? "" : modelIdentifier.getVersion();
-
-            try {
-                switch (localVersion) {
-                    case "3.3.0":
-                        return ModelInfoReaderFactory.getReader("application/xml")
-                                .read(QuickModelInfoProvider.class.getResourceAsStream(
-                                        "/org/hl7/fhir/quick-modelinfo-3.3.0.xml"));
-                    case "3.0.0":
-                        return ModelInfoReaderFactory.getReader("application/xml")
-                                .read(QuickModelInfoProvider.class.getResourceAsStream(
-                                        "/org/hl7/fhir/quick-modelinfo-3.0.0.xml"));
-                    default:
-                        return ModelInfoReaderFactory.getReader("application/xml")
-                                .read(QuickModelInfoProvider.class.getResourceAsStream(
-                                        "/org/hl7/fhir/quick-modelinfo.xml"));
-                }
-            } catch (IOException e) {
-                // Do not throw, allow other providers to resolve
-            }
+            var stream = getResource(localVersion);
+            return ModelInfoReaderFactory.INSTANCE.getReader("application/xml").read(buffered(asSource(stream)));
         }
 
         return null;
+    }
+
+    private InputStream getResource(String localVersion) {
+        switch (localVersion) {
+            case "3.3.0":
+                return QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/quick-modelinfo-3.3.0.xml");
+            case "3.0.0":
+                return QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/quick-modelinfo-3.0.0.xml");
+            default:
+                return QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/quick-modelinfo.xml");
+        }
     }
 }

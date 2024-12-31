@@ -1,5 +1,8 @@
 package org.cqframework.cql.tools.xsd2modelinfo;
 
+import static kotlinx.io.CoreKt.buffered;
+import static kotlinx.io.JvmCoreKt.asSource;
+
 import java.io.*;
 import javax.xml.transform.stream.StreamSource;
 import joptsimple.OptionParser;
@@ -77,7 +80,11 @@ public class Main {
         if (configOpt != null) {
             File configFile = configOpt.value(options);
             if (configFile != null) {
-                config = ModelInfoReaderFactory.getReader("application/xml").read(configFile);
+                var stream = new FileInputStream(configFile);
+                var source = buffered(asSource(stream));
+                config = ModelInfoReaderFactory.INSTANCE
+                        .getReader("application/xml")
+                        .read(source);
             }
         }
 

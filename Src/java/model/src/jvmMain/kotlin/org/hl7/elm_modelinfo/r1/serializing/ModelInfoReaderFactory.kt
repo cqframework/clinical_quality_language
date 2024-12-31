@@ -15,8 +15,7 @@ object ModelInfoReaderFactory {
     }
 
     @Suppress("TooGenericExceptionThrown")
-    @JvmStatic
-    fun getReader(contentType: String): ModelInfoReader? {
+    fun getReader(contentType: String): ModelInfoReader {
         val providers = providers(false)
         if (providers.hasNext()) {
             val p = providers.next()

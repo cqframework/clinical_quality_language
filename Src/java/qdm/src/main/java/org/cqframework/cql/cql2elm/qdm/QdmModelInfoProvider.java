@@ -1,6 +1,9 @@
 package org.cqframework.cql.cql2elm.qdm;
 
-import java.io.IOException;
+import static kotlinx.io.CoreKt.buffered;
+import static kotlinx.io.JvmCoreKt.asSource;
+
+import java.io.InputStream;
 import org.hl7.cql.model.ModelIdentifier;
 import org.hl7.cql.model.ModelInfoProvider;
 import org.hl7.cql.model.NamespaceAware;
@@ -31,55 +34,38 @@ public class QdmModelInfoProvider implements ModelInfoProvider, NamespaceAware {
     public ModelInfo load(ModelIdentifier modelIdentifier) {
         if (isQDMModelIdentifier(modelIdentifier)) {
             String localVersion = modelIdentifier.getVersion() == null ? "" : modelIdentifier.getVersion();
-            try {
-                switch (localVersion) {
-                    case "4.1.2":
-                        return ModelInfoReaderFactory.getReader("application/xml")
-                                .read(QdmModelInfoProvider.class.getResourceAsStream(
-                                        "/gov/healthit/qdm/qdm-modelinfo.xml"));
-                    case "4.2":
-                        return ModelInfoReaderFactory.getReader("application/xml")
-                                .read(QdmModelInfoProvider.class.getResourceAsStream(
-                                        "/gov/healthit/qdm/qdm-modelinfo-4.2.xml"));
-                    case "4.3":
-                        return ModelInfoReaderFactory.getReader("application/xml")
-                                .read(QdmModelInfoProvider.class.getResourceAsStream(
-                                        "/gov/healthit/qdm/qdm-modelinfo-4.3.xml"));
-                    case "5.0":
-                        return ModelInfoReaderFactory.getReader("application/xml")
-                                .read(QdmModelInfoProvider.class.getResourceAsStream(
-                                        "/gov/healthit/qdm/qdm-modelinfo-5.0.xml"));
-                    case "5.0.1":
-                        return ModelInfoReaderFactory.getReader("application/xml")
-                                .read(QdmModelInfoProvider.class.getResourceAsStream(
-                                        "/gov/healthit/qdm/qdm-modelinfo-5.0.1.xml"));
-                    case "5.0.2":
-                        return ModelInfoReaderFactory.getReader("application/xml")
-                                .read(QdmModelInfoProvider.class.getResourceAsStream(
-                                        "/gov/healthit/qdm/qdm-modelinfo-5.0.2.xml"));
-                    case "5.3":
-                        return ModelInfoReaderFactory.getReader("application/xml")
-                                .read(QdmModelInfoProvider.class.getResourceAsStream(
-                                        "/gov/healthit/qdm/qdm-modelinfo-5.3.xml"));
-                    case "5.4":
-                        return ModelInfoReaderFactory.getReader("application/xml")
-                                .read(QdmModelInfoProvider.class.getResourceAsStream(
-                                        "/gov/healthit/qdm/qdm-modelinfo-5.4.xml"));
-                    case "5.5":
-                        return ModelInfoReaderFactory.getReader("application/xml")
-                                .read(QdmModelInfoProvider.class.getResourceAsStream(
-                                        "/gov/healthit/qdm/qdm-modelinfo-5.5.xml"));
-                    case "5.6":
-                    case "":
-                        return ModelInfoReaderFactory.getReader("application/xml")
-                                .read(QdmModelInfoProvider.class.getResourceAsStream(
-                                        "/gov/healthit/qdm/qdm-modelinfo-5.6.xml"));
-                }
-            } catch (IOException e) {
-                // Do not throw, allow other providers to resolve
-            }
+            var stream = getQdmResource(localVersion);
+            return ModelInfoReaderFactory.INSTANCE.getReader("application/xml").read(buffered(asSource(stream)));
         }
 
         return null;
+    }
+
+    private InputStream getQdmResource(String localVersion) {
+        switch (localVersion) {
+            case "4.1.2":
+                return QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo.xml");
+            case "4.2":
+                return QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-4.2.xml");
+            case "4.3":
+                return QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-4.3.xml");
+            case "5.0":
+                return QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.0.xml");
+            case "5.0.1":
+                return QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.0.1.xml");
+            case "5.0.2":
+                return QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.0.2.xml");
+            case "5.3":
+                return QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.3.xml");
+            case "5.4":
+                return QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.4.xml");
+            case "5.5":
+                return QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.5.xml");
+            case "5.6":
+            case "":
+                return QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.6.xml");
+            default:
+                return null;
+        }
     }
 }

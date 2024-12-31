@@ -12,7 +12,7 @@ class GenericClassSignatureParserTest {
 
     @Test
     void parseTest1() {
-        GenericClassSignatureParser genericClassSignatureParser = new GenericClassSignatureParser("MyType<M,N>");
+        GenericClassSignatureParser genericClassSignatureParser = new GenericClassSignatureParser("MyType<M,N>", new HashMap<>());
         if (genericClassSignatureParser.isValidGenericSignature()) {
             ClassType signature = genericClassSignatureParser.parseGenericSignature();
             assertThat(signature.getName(), is("MyType"));
@@ -26,7 +26,7 @@ class GenericClassSignatureParserTest {
 
     @Test
     void parseTest2() {
-        ClassType collectionType = new ClassType("Collection", null);
+        ClassType collectionType = new ClassType("Collection");
         Map<String, DataType> resolvedTypes = new HashMap<>();
         resolvedTypes.put("Collection", collectionType);
         GenericClassSignatureParser genericClassSignatureParser =
@@ -50,8 +50,8 @@ class GenericClassSignatureParserTest {
 
     @Test
     void parseTest3() {
-        ClassType collectionType = new ClassType("Collection", null);
-        ClassType objectType = new ClassType("Object", null);
+        ClassType collectionType = new ClassType("Collection");
+        ClassType objectType = new ClassType("Object");
         Map<String, DataType> resolvedTypes = new HashMap<>();
         resolvedTypes.put("Collection", collectionType);
         resolvedTypes.put("Object", objectType);
@@ -82,7 +82,7 @@ class GenericClassSignatureParserTest {
     @Test
     void parseTest4() {
         try {
-            ClassType collectionType = new ClassType("Collection", null);
+            ClassType collectionType = new ClassType("Collection");
             Map<String, DataType> resolvedTypes = new HashMap<>();
             resolvedTypes.put("Collection", collectionType);
             GenericClassSignatureParser genericClassSignatureParser =
@@ -96,8 +96,8 @@ class GenericClassSignatureParserTest {
 
     @Test
     void parseTest5() {
-        ClassType objectType = new ClassType("Object", null);
-        ClassType listType = new ClassType("List", null);
+        ClassType objectType = new ClassType("Object");
+        ClassType listType = new ClassType("List");
         listType.addGenericParameter(new TypeParameter("T"));
         listType.getElements().add(new ClassTypeElement("elements", new TypeParameter("T"), false, false, null));
         Map<String, DataType> resolvedTypes = new HashMap<>();
@@ -125,12 +125,12 @@ class GenericClassSignatureParserTest {
 
     @Test
     void parseTest6() {
-        ClassType objectType = new ClassType("Object", null);
+        ClassType objectType = new ClassType("Object");
         SimpleType stringType = new SimpleType("String");
-        ClassType listType = new ClassType("List", null);
+        ClassType listType = new ClassType("List");
         listType.addGenericParameter(new TypeParameter("T"));
         listType.getElements().add(new ClassTypeElement("elements", new TypeParameter("T"), false, false, null));
-        ClassType mapType = new ClassType("Map", null);
+        ClassType mapType = new ClassType("Map");
         mapType.addGenericParameter(new TypeParameter("K"));
         mapType.addGenericParameter(new TypeParameter("V"));
         mapType.addElement(new ClassTypeElement("keys", new TypeParameter("K"), false, false, null));
@@ -164,14 +164,14 @@ class GenericClassSignatureParserTest {
     void parseTest7() {
         SimpleType integerType = new SimpleType("Integer");
         SimpleType stringType = new SimpleType("String");
-        ClassType listType = new ClassType("List", null);
+        ClassType listType = new ClassType("List");
         listType.addGenericParameter(new TypeParameter("T"));
         listType.getElements().add(new ClassTypeElement("elements", new TypeParameter("T"), false, false, null));
-        ClassType mapType = new ClassType("Map", null);
+        ClassType mapType = new ClassType("Map");
         mapType.addGenericParameter(new TypeParameter("K"));
         mapType.addGenericParameter(new TypeParameter("V"));
-        mapType.addElement(new ClassTypeElement("keys", new TypeParameter("K"), false, false, null));
-        mapType.addElement(new ClassTypeElement("values", new TypeParameter("V"), false, false, null));
+        mapType.addElement(new ClassTypeElement("keys", new TypeParameter("K", TypeParameter.TypeParameterConstraint.NONE, null), false, false, null));
+        mapType.addElement(new ClassTypeElement("values", new TypeParameter("V", TypeParameter.TypeParameterConstraint.NONE, null), false, false, null));
         Map<String, DataType> resolvedTypes = new HashMap<>();
         resolvedTypes.put("Integer", integerType);
         resolvedTypes.put("String", stringType);

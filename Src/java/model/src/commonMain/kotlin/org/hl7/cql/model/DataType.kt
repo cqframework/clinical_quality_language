@@ -23,6 +23,6 @@ interface DataType {
     fun instantiate(context: InstantiationContext): DataType
 
     companion object {
-        @JvmField val ANY: SimpleType = SimpleType("System.Any")
+      val ANY: SimpleType = SimpleType("System.Any")
     }
 }

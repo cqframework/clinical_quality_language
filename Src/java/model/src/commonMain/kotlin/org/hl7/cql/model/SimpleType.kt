@@ -1,12 +1,12 @@
 package org.hl7.cql.model
 
-data class SimpleType
-@JvmOverloads
-constructor(
+data class SimpleType(
     override val name: String,
-    private val base: DataType? = null,
+    val base: DataType? = null,
     override var target: String? = null
 ) : BaseDataType(base), NamedType {
+
+    constructor(name: String) : this(name, null, null)
 
     init {
         require(name.isNotEmpty()) { "name can not be empty" }

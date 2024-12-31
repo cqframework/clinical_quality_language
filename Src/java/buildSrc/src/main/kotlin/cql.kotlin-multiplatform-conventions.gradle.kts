@@ -83,7 +83,7 @@ kotlin {
 
         jvmTest {
             dependencies {
-                implementation(kotlin("test-junit"))
+                implementation(kotlin("test-junit5"))
             }
         }
 
@@ -93,6 +93,10 @@ kotlin {
             }
         }
     }
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
 
 tasks.register<Jar>("dokkaHtmlJar") {

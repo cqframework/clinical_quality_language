@@ -1,5 +1,8 @@
 package org.cqframework.fhir.npm;
 
+import static kotlinx.io.CoreKt.buffered;
+import static kotlinx.io.JvmCoreKt.asSource;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,7 +55,9 @@ public class NpmModelInfoProvider implements ModelInfoProvider {
                             }
                             InputStream is = new ByteArrayInputStream(a.getData());
                             var reader = new XmlModelInfoReader();
-                            return reader.read(is);
+
+                            var source = buffered(asSource(is));
+                            return reader.read(source);
                         }
                     }
                 }
@@ -60,8 +65,7 @@ public class NpmModelInfoProvider implements ModelInfoProvider {
                 logger.logDebugMessage(
                         ILoggingService.LogCategory.PROGRESS,
                         String.format(
-                                "Exceptions occurred attempting to load npm library for model %s",
-                                modelIdentifier.toString()));
+                                "Exceptions occurred attempting to load npm library for model %s", modelIdentifier));
             }
         }
 

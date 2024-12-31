@@ -1,6 +1,9 @@
 package org.cqframework.cql.cql2elm.quick;
 
-import java.io.IOException;
+import static kotlinx.io.CoreKt.buffered;
+import static kotlinx.io.JvmCoreKt.asSource;
+
+import java.io.InputStream;
 import org.hl7.cql.model.ModelIdentifier;
 import org.hl7.cql.model.ModelInfoProvider;
 import org.hl7.cql.model.NamespaceManager;
@@ -27,28 +30,22 @@ public class UsCoreModelInfoProvider implements ModelInfoProvider {
     public ModelInfo load(ModelIdentifier modelIdentifier) {
         if (isUSCoreModelIdentifier(modelIdentifier)) {
             String localVersion = modelIdentifier.getVersion() == null ? "" : modelIdentifier.getVersion();
-
-            try {
-                switch (localVersion) {
-                    case "3.1.0":
-                        return ModelInfoReaderFactory.getReader("application/xml")
-                                .read(QuickModelInfoProvider.class.getResourceAsStream(
-                                        "/org/hl7/fhir/uscore-modelinfo-3.1.0.xml"));
-                    case "3.1.1":
-                        return ModelInfoReaderFactory.getReader("application/xml")
-                                .read(QuickModelInfoProvider.class.getResourceAsStream(
-                                        "/org/hl7/fhir/uscore-modelinfo-3.1.1.xml"));
-                    case "6.1.0":
-                    default:
-                        return ModelInfoReaderFactory.getReader("application/xml")
-                                .read(QuickModelInfoProvider.class.getResourceAsStream(
-                                        "/org/hl7/fhir/uscore-modelinfo-6.1.0.xml"));
-                }
-            } catch (IOException e) {
-                // Do not throw, allow other providers to resolve
-            }
+            var stream = getResource(localVersion);
+            return ModelInfoReaderFactory.INSTANCE.getReader("application/xml").read(buffered(asSource(stream)));
         }
 
         return null;
+    }
+
+    private InputStream getResource(String localVersion) {
+        switch (localVersion) {
+            case "3.1.0":
+                return QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/uscore-modelinfo-3.1.0.xml");
+            case "3.1.1":
+                return QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/uscore-modelinfo-3.1.1.xml");
+            case "6.1.0":
+            default:
+                return QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/uscore-modelinfo-6.1.0.xml");
+        }
     }
 }

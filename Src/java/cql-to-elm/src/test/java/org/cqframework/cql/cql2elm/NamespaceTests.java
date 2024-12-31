@@ -71,17 +71,20 @@ class NamespaceTests {
     @Test
     void namespacePath() {
         assertThat(
-                NamespaceManager.getPath(defaultNamespaceInfo.getUri(), "Main"), is("http://cql.hl7.org/public/Main"));
+                NamespaceManager.Companion.getPath(defaultNamespaceInfo.getUri(), "Main"),
+                is("http://cql.hl7.org/public/Main"));
     }
 
     @Test
     void namespaceNamePart() {
-        assertThat(NamespaceManager.getNamePart("http://cql.hl7.org/public/Main"), is("Main"));
+        assertThat(NamespaceManager.Companion.getNamePart("http://cql.hl7.org/public/Main"), is("Main"));
     }
 
     @Test
     void namespaceUriPart() {
-        assertThat(NamespaceManager.getUriPart("http://cql.hl7.org/public/Main"), is("http://cql.hl7.org/public"));
+        assertThat(
+                NamespaceManager.Companion.getUriPart("http://cql.hl7.org/public/Main"),
+                is("http://cql.hl7.org/public"));
     }
 
     /* Ensure base functionality with a defaulted namespace uri */

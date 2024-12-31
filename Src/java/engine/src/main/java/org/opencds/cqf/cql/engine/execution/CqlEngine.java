@@ -303,8 +303,8 @@ public class CqlEngine {
         if (library.getIncludes() != null && library.getIncludes().getDef() != null) {
             for (IncludeDef include : library.getIncludes().getDef()) {
                 this.loadAndValidate(new VersionedIdentifier()
-                        .withSystem(NamespaceManager.getUriPart(include.getPath()))
-                        .withId(NamespaceManager.getNamePart(include.getPath()))
+                        .withSystem(NamespaceManager.Companion.getUriPart(include.getPath()))
+                        .withId(NamespaceManager.Companion.getNamePart(include.getPath()))
                         .withVersion(include.getVersion()));
             }
         }
