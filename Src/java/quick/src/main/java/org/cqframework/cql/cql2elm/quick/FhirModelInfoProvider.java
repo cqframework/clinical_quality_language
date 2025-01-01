@@ -1,6 +1,9 @@
 package org.cqframework.cql.cql2elm.quick;
 
-import java.io.IOException;
+import static kotlinx.io.CoreKt.buffered;
+import static kotlinx.io.JvmCoreKt.asSource;
+
+import java.io.InputStream;
 import org.hl7.cql.model.ModelIdentifier;
 import org.hl7.cql.model.ModelInfoProvider;
 import org.hl7.cql.model.NamespaceAware;
@@ -31,62 +34,42 @@ public class FhirModelInfoProvider implements ModelInfoProvider, NamespaceAware 
     public ModelInfo load(ModelIdentifier modelIdentifier) {
         if (isFHIRModelIdentifier(modelIdentifier)) {
             String localVersion = modelIdentifier.getVersion() == null ? "" : modelIdentifier.getVersion();
-            try {
-                switch (localVersion) {
-                    case "1.0.2":
-                        return ModelInfoReaderFactory.getReader("application/xml")
-                                .read(FhirModelInfoProvider.class.getResourceAsStream(
-                                        "/org/hl7/fhir/fhir-modelinfo-1.0.2.xml"));
+            var stream = getResource(localVersion);
+            return ModelInfoReaderFactory.INSTANCE.getReader("application/xml").read(buffered(asSource(stream)));
+        }
 
-                    case "1.4":
-                        return ModelInfoReaderFactory.getReader("application/xml")
-                                .read(FhirModelInfoProvider.class.getResourceAsStream(
-                                        "/org/hl7/fhir/fhir-modelinfo-1.4.xml"));
+        return null;
+    }
 
-                    case "1.6":
-                        return ModelInfoReaderFactory.getReader("application/xml")
-                                .read(FhirModelInfoProvider.class.getResourceAsStream(
-                                        "/org/hl7/fhir/fhir-modelinfo-1.6.xml"));
+    private InputStream getResource(String localVersion) {
+        switch (localVersion) {
+            case "1.0.2":
+                return FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-1.0.2.xml");
 
-                    case "1.8":
-                        return ModelInfoReaderFactory.getReader("application/xml")
-                                .read(FhirModelInfoProvider.class.getResourceAsStream(
-                                        "/org/hl7/fhir/fhir-modelinfo-1.8.xml"));
+            case "1.4":
+                return FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-1.4.xml");
 
-                    case "3.0.0":
-                    case "":
-                        return ModelInfoReaderFactory.getReader("application/xml")
-                                .read(FhirModelInfoProvider.class.getResourceAsStream(
-                                        "/org/hl7/fhir/fhir-modelinfo-3.0.0.xml"));
+            case "1.6":
+                return FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-1.6.xml");
 
-                    case "3.0.1":
-                        return ModelInfoReaderFactory.getReader("application/xml")
-                                .read(FhirModelInfoProvider.class.getResourceAsStream(
-                                        "/org/hl7/fhir/fhir-modelinfo-3.0.1.xml"));
+            case "1.8":
+                return FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-1.8.xml");
 
-                    case "3.2.0":
-                        return ModelInfoReaderFactory.getReader("application/xml")
-                                .read(FhirModelInfoProvider.class.getResourceAsStream(
-                                        "/org/hl7/fhir/fhir-modelinfo-3.2.0.xml"));
+            case "3.0.0":
+            case "":
+                return FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-3.0.0.xml");
 
-                    case "4.0.0":
-                        return ModelInfoReaderFactory.getReader("application/xml")
-                                .read(FhirModelInfoProvider.class.getResourceAsStream(
-                                        "/org/hl7/fhir/fhir-modelinfo-4.0.0.xml"));
+            case "3.0.1":
+                return FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-3.0.1.xml");
 
-                    case "4.0.1":
-                        return ModelInfoReaderFactory.getReader("application/xml")
-                                .read(FhirModelInfoProvider.class.getResourceAsStream(
-                                        "/org/hl7/fhir/fhir-modelinfo-4.0.1.xml"));
+            case "3.2.0":
+                return FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-3.2.0.xml");
 
-                        // Do not throw, allow other providers to return the model if known
-                        // default:
-                        //    throw new IllegalArgumentException(String.format("Unknown version %s of the FHIR model.",
-                        // localVersion));
-                }
-            } catch (IOException e) {
-                // Do not throw, allow other providers to resolve
-            }
+            case "4.0.0":
+                return FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-4.0.0.xml");
+
+            case "4.0.1":
+                return FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-4.0.1.xml");
         }
 
         return null;

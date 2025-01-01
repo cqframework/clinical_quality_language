@@ -10,7 +10,7 @@ class IdObjectFactoryTest {
     @Test
     void ensureAllElementsHaveLocalId() {
         var factory = new IdObjectFactory();
-        var methods = Arrays.asList(IdObjectFactory.class.getMethods()).stream()
+        var methods = Arrays.stream(IdObjectFactory.class.getMethods())
                 .filter(x -> Element.class.isAssignableFrom(x.getReturnType()));
         methods.forEach(x -> {
             try {

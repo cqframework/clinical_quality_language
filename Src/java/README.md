@@ -19,7 +19,7 @@ It contains the following sub-projects:
 # Building the Project
 
 This project uses the [Gradle](http://www.gradle.org/) build system.  A gradle wrapper, which automatically downloads
-and uses an instance of gradle, is provided for convenience.  To build the project, install the [JDK 11](https://adoptium.net/temurin/releases/?version=11), clone this
+and uses an instance of gradle, is provided for convenience.  To build the project, install the [JDK 17](https://adoptium.net/temurin/releases/?version=17), clone this
 repository, then execute this command from within this directory:
 
     ./gradlew build
@@ -30,15 +30,6 @@ It will also build and test the corresponding code libraries and applications.
 To clean up the build artifacts:
 
     ./gradlew clean
-
-# Generating IDE Projects
-
-You can generate an IDE project for IntelliJ IDEa:
-
-    ./gradlew idea
-
-In addition to creating project modules for cql, model, quick, elm, cql-to-elm, and the tools projects, this will also import project
-modules for the CQL grammar and examples.
 
 # Executing the Sample Code
 

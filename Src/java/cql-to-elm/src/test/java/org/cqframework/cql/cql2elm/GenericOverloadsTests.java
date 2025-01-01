@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
+import org.cqframework.cql.cql2elm.tracking.Trackable;
 import org.hl7.elm.r1.ExpressionDef;
 import org.hl7.elm.r1.FunctionDef;
 import org.hl7.elm.r1.Library;
@@ -64,7 +65,7 @@ class GenericOverloadsTests {
         assertThat(listSpecifier.getElementType(), instanceOf(NamedTypeSpecifier.class));
         var namedSpecifier = (NamedTypeSpecifier) listSpecifier.getElementType();
         assertNotNull(namedSpecifier.getName());
-        assertNotNull(namedSpecifier.getResultType());
+        assertNotNull(Trackable.INSTANCE.getResultType(namedSpecifier));
 
         var second = functionDef.getOperand().get(1);
         assertThat(second.getOperandTypeSpecifier(), instanceOf(ListTypeSpecifier.class));
@@ -72,7 +73,7 @@ class GenericOverloadsTests {
         assertThat(listSpecifier.getElementType(), instanceOf(NamedTypeSpecifier.class));
         namedSpecifier = (NamedTypeSpecifier) listSpecifier.getElementType();
         assertNotNull(namedSpecifier.getName());
-        assertNotNull(namedSpecifier.getResultType());
+        assertNotNull(Trackable.INSTANCE.getResultType(namedSpecifier));
     }
 
     @Test
