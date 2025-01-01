@@ -18,7 +18,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-@Disabled("Currently failing due to differences in QName serialization. Possible fix: Custom serializer for QName.")
+@Disabled(
+        """
+        Currently failing due to differences in QName serialization.
+        The default QName serializer expects a structured object, not a string
+        Possible fix: Custom serializer for QName.""")
 class CMS146JsonTest {
 
     private static Object[][] sigFileAndSigLevel() {

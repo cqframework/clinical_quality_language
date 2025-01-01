@@ -503,7 +503,7 @@ function processElements(elements, config, mode) {
               if (isList) {
                 return `
                             ${config.packageName === 'org.hl7.elm_modelinfo.r1' ? '' : `@kotlinx.serialization.SerialName(${JSON.stringify(name)})`}
-                            @nl.adaptivity.xmlutil.serialization.XmlSerialName(${JSON.stringify(name)}, ${JSON.stringify(config.namespaceUri)}, "")
+                            @nl.adaptivity.xmlutil.serialization.XmlSerialName(${JSON.stringify(name)}, ${JSON.stringify(config.namespaceUri)})
                             private var _${fieldName}: MutableList<${type}>? = null
 
                             var ${fieldName}: MutableList<${type}>
@@ -523,7 +523,7 @@ function processElements(elements, config, mode) {
 
               return `
                             ${config.packageName === 'org.hl7.elm_modelinfo.r1' ? '' : `@kotlinx.serialization.SerialName(${JSON.stringify(name)})`}
-                            @nl.adaptivity.xmlutil.serialization.XmlSerialName(${JSON.stringify(name)}, ${JSON.stringify(config.namespaceUri)}, "")
+                            @nl.adaptivity.xmlutil.serialization.XmlSerialName(${JSON.stringify(name)}, ${JSON.stringify(config.namespaceUri)})
                             ${
                   // type === 'nl.adaptivity.xmlutil.SerializableQName' ? '@kotlinx.serialization.Contextual' : '@kotlinx.serialization.Serializable'
                   ''
@@ -593,7 +593,7 @@ ${element.attributes.name === 'Library' || element.attributes.name === 'ModelInf
 @OptIn(kotlinx.serialization.ExperimentalSerializationApi::class, nl.adaptivity.xmlutil.ExperimentalXmlUtilApi::class)
 @kotlinx.serialization.Serializable
 ${config.packageName === 'org.hl7.elm_modelinfo.r1' ? '' : `@kotlinx.serialization.SerialName(${JSON.stringify(makeLocalName(element.attributes.name))})`}
-@nl.adaptivity.xmlutil.serialization.XmlSerialName(${JSON.stringify(makeLocalName(element.attributes.name))}, ${ JSON.stringify(config.namespaceUri)}, "")
+@nl.adaptivity.xmlutil.serialization.XmlSerialName(${JSON.stringify(makeLocalName(element.attributes.name))}, ${ JSON.stringify(config.namespaceUri)})
 ${element.attributes.abstract === "true" ? "abstract" : "open"} class ${element.attributes.name} ${extendsClass ? `: ${extendsClass}()` : ""} {
 
 ${fields

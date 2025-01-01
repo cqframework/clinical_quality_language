@@ -18,7 +18,11 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.xmlunit.assertj.XmlAssert;
 
 @Disabled(
-        "Currently failing due to differences in the namespace prefixes. Possible fix: Decorate all POJOs with the namespace declaration.")
+        """
+         Currently failing due to differences in the namespace prefixes.
+         turning `isCollectingNsAttributes` on in the XML serializer would probably fix this,
+         except that there's a bug in the serializer that causes an out-of-heap issue when it's on.
+         Probably need to fix that upstream.""")
 class CMS146XmlTest {
 
     private static Object[][] sigFileAndSigLevel() {
@@ -44,7 +48,16 @@ class CMS146XmlTest {
         // The compiler version changes release-to-release
         // so we strip it out of the XML before comparison
         final String xmlWithVersion = translator.toXml().trim();
-        String actualXml = xmlWithVersion.replaceAll("translatorVersion=\"[^\"]*\"", "");
+        String actualXml = xmlWithVersion
+                .replaceAll("translatorVersion=\"[^\"]*\"", "")
+                // temporary fix for namespace prefix differences
+                //                .replaceAll("xmlns:n1=\"urn:hl7-org:elm:r1\"", "")
+                //                .replaceAll("n1:", "")
+                // Possible bug in original XML, no access modifier on when name and context are both Patient?
+                // Maybe it's not emitting default access modifiers?
+                .replace(
+                        "name=\"Patient\" context=\"Patient\" accessLevel=\"Public\"",
+                        "name=\"Patient\" context=\"Patient\"");
 
         XmlAssert.assertThat(actualXml).and(expectedXml).ignoreWhitespace().areIdentical();
     }
