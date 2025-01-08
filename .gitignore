@@ -12,7 +12,6 @@ out
 .kotlin
 .classpath
 .settings
-.kotlin
 build
 target
 bin
