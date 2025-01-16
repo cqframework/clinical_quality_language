@@ -2,7 +2,6 @@ package org.cqframework.cql.elm.serializing.xmlutil;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class ElmXmlutilTest {
@@ -18,8 +17,6 @@ public class ElmXmlutilTest {
     }
 
     @Test
-    @Disabled(
-            "TODO: Polymorphic serializer for class org.hl7.elm.r1.ChoiceTypeSpecifier (Kotlin reflection is not available) has property 'type' that conflicts with JSON class discriminator. You can either change class discriminator in JsonConfiguration, rename property with @SerialName annotation or fall back to array polymorphism")
     void deserializeBigElmJson() {
         var lib = new ElmJsonLibraryReader()
                 .read(

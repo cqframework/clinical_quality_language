@@ -5,15 +5,29 @@ import kotlinx.serialization.*
 import kotlinx.serialization.descriptors.*
 import kotlinx.serialization.encoding.*
 
-object BigDecimalSerializer : KSerializer<BigDecimal?> {
+object BigDecimalXmlSerializer : KSerializer<BigDecimal> {
     override val descriptor: SerialDescriptor =
         PrimitiveSerialDescriptor("BigDecimal", PrimitiveKind.STRING)
 
-    override fun serialize(encoder: Encoder, value: BigDecimal?) {
-        encoder.encodeString(value?.toPlainString() ?: "")
+    override fun serialize(encoder: Encoder, value: BigDecimal) {
+        encoder.encodeString(value.toPlainString())
     }
 
     override fun deserialize(decoder: Decoder): BigDecimal {
-        return BigDecimal(decoder.decodeString())
+        return decoder.decodeString().toBigDecimal()
+    }
+}
+
+// We use JSON numbers, not strings to serialize BigDecimals in JSON.
+object BigDecimalJsonSerializer : KSerializer<BigDecimal> {
+    override val descriptor: SerialDescriptor =
+        PrimitiveSerialDescriptor("BigDecimal", PrimitiveKind.DOUBLE)
+
+    override fun serialize(encoder: Encoder, value: BigDecimal) {
+        encoder.encodeDouble(value.toDouble())
+    }
+
+    override fun deserialize(decoder: Decoder): BigDecimal {
+        return decoder.decodeDouble().toBigDecimal()
     }
 }

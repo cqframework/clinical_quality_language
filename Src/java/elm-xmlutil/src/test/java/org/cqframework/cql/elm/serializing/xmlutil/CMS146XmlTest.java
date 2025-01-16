@@ -53,8 +53,13 @@ class CMS146XmlTest {
                 // temporary fix for namespace prefix differences
                 //                .replaceAll("xmlns:n1=\"urn:hl7-org:elm:r1\"", "")
                 //                .replaceAll("n1:", "")
-                // Possible bug in original XML, no access modifier on when name and context are both Patient?
-                // Maybe it's not emitting default access modifiers?
+
+                // The original XML marshaller (JAXB) does not output
+                // accessLevel if it is null. (It always emits it otherwise,
+                // even when it's set to the default value.) The new XML
+                // serializer (XmlUtil) always emits accessLevel.
+                // We do not set accessLevel in the translator on the
+                // model/context def node, thus the difference in XML output.
                 .replace(
                         "name=\"Patient\" context=\"Patient\" accessLevel=\"Public\"",
                         "name=\"Patient\" context=\"Patient\"");

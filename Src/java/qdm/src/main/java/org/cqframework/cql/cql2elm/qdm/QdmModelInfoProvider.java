@@ -35,7 +35,11 @@ public class QdmModelInfoProvider implements ModelInfoProvider, NamespaceAware {
         if (isQDMModelIdentifier(modelIdentifier)) {
             String localVersion = modelIdentifier.getVersion() == null ? "" : modelIdentifier.getVersion();
             var stream = getQdmResource(localVersion);
-            return ModelInfoReaderFactory.INSTANCE.getReader("application/xml").read(buffered(asSource(stream)));
+            if (stream != null) {
+                return ModelInfoReaderFactory.INSTANCE
+                        .getReader("application/xml")
+                        .read(buffered(asSource(stream)));
+            }
         }
 
         return null;

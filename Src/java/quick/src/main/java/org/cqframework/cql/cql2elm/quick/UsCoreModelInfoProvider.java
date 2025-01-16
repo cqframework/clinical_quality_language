@@ -31,7 +31,11 @@ public class UsCoreModelInfoProvider implements ModelInfoProvider {
         if (isUSCoreModelIdentifier(modelIdentifier)) {
             String localVersion = modelIdentifier.getVersion() == null ? "" : modelIdentifier.getVersion();
             var stream = getResource(localVersion);
-            return ModelInfoReaderFactory.INSTANCE.getReader("application/xml").read(buffered(asSource(stream)));
+            if (stream != null) {
+                return ModelInfoReaderFactory.INSTANCE
+                        .getReader("application/xml")
+                        .read(buffered(asSource(stream)));
+            }
         }
 
         return null;

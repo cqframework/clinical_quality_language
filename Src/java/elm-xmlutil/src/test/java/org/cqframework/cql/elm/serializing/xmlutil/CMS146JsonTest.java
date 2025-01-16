@@ -13,16 +13,10 @@ import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.ModelManager;
 import org.json.JSONException;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-@Disabled(
-        """
-        Currently failing due to differences in QName serialization.
-        The default QName serializer expects a structured object, not a string
-        Possible fix: Custom serializer for QName.""")
 class CMS146JsonTest {
 
     private static Object[][] sigFileAndSigLevel() {
@@ -47,7 +41,17 @@ class CMS146JsonTest {
                 new LibraryManager(
                         modelManager, new CqlCompilerOptions(ErrorSeverity.Warning, expectedSignatureLevel)));
         final String jsonWithVersion = translator.toJson();
-        final String actualJson = jsonWithVersion.replaceAll("\"translatorVersion\":\"[^\"]*\",", "");
+        final String actualJson = jsonWithVersion
+                .replaceAll("\"translatorVersion\":\"[^\"]*\",", "")
+                // The original JSON marshaller (JAXB + MOXy) does not output
+                // accessLevel if it is null. (It always emits it otherwise,
+                // even when it's set to the default value.) The new JSON
+                // serializer always emits accessLevel.
+                // We do not set accessLevel in the translator on the
+                // model/context def node, thus the difference in JSON output.
+                .replace(
+                        "\"name\":\"Patient\",\"context\":\"Patient\",\"accessLevel\":\"Public\"",
+                        "\"name\":\"Patient\",\"context\":\"Patient\"");
         JSONAssert.assertEquals(expectedJson, actualJson, true);
     }
 
