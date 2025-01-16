@@ -30,7 +30,7 @@ class ElmDeserializeTests {
     }
 
     @Test
-    @Disabled("TODO: Re-enable once XmlUtil-based ELM JSON deserialization is implemented")
+    @Disabled("TODO: Re-enable once XmlUtil-based ELM JSON deserialization is implemented for annotations")
     void jsonANCFHIRDummyLibraryLoad() {
         try {
             final Library library = deserializeJsonLibrary("ElmDeserialize/ANCFHIRDummy.json");
@@ -65,7 +65,6 @@ class ElmDeserializeTests {
     }
 
     @Test
-    @Disabled("TODO: Re-enable once XmlUtil-based ELM JSON deserialization is implemented")
     void jsonAdultOutpatientEncountersFHIR4LibraryLoad() {
         try {
             final Library library =
@@ -145,7 +144,7 @@ class ElmDeserializeTests {
     }
 
     @Test
-    @Disabled("TODO: Re-enable once XmlUtil-based ELM JSON deserialization is implemented")
+    @Disabled("TODO: Re-enable once XmlUtil-based ELM JSON deserialization is implemented for annotations")
     void jsonTerminologyLibraryLoad() {
         try {
             final Library library = deserializeJsonLibrary("ElmDeserialize/ANCFHIRTerminologyDummy.json");
@@ -328,12 +327,10 @@ class ElmDeserializeTests {
                 new org.cqframework.cql.elm.serializing.xmlutil.ElmXmlLibraryReader().read(new StringReader(xml));
         validateEmptyStringsTest(xmlLibrary);
 
-        // TODO: Re-enable once XmlUtil-based ELM JSON deserialization is implemented
-        //        String json = toJson(translator.toELM());
-        //        Library jsonLibrary =
-        //                new org.cqframework.cql.elm.serializing.xmlutil.ElmJsonLibraryReader().read(new
-        // StringReader(json));
-        //        validateEmptyStringsTest(jsonLibrary);
+        String json = toJson(translator.toELM());
+        Library jsonLibrary =
+                new org.cqframework.cql.elm.serializing.xmlutil.ElmJsonLibraryReader().read(new StringReader(json));
+        validateEmptyStringsTest(jsonLibrary);
     }
 
     private static Library deserializeJsonLibrary(String filePath) throws IOException {

@@ -99,13 +99,13 @@ function getType(rawType) {
       "xs:anySimpleType": "String",
       "xs:boolean": "Boolean",
       "xs:integer": "Int",
-      "xs:decimal": "java.math.BigDecimal",
+      "xs:decimal": "@kotlinx.serialization.Contextual java.math.BigDecimal",
       "xs:dateTime": "String",
       "xs:time": "String",
       "xs:date": "String",
       "xs:base64Binary": "String",
       "xs:anyURI": "String",
-      "xs:QName": 'nl.adaptivity.xmlutil.SerializableQName', // "javax.xml.namespace.QName", // "String",
+      "xs:QName": "@kotlinx.serialization.Serializable(org.hl7.elm_modelinfo.r1.serializing.QNameJsonSerializer::class) nl.adaptivity.xmlutil.QName",
       "xs:token": "String",
       "xs:NCName": "String",
       "xs:ID": "String",
@@ -123,14 +123,6 @@ if ([
 }
 
     return name;
-}
-
-function addContextualAnnotationIfNecessary(type) {
-    if (type === 'java.math.BigDecimal') {
-        return `@kotlinx.serialization.Serializable(org.hl7.elm_modelinfo.r1.serializing.BigDecimalSerializer::class)`;
-    }
-
-    return ''
 }
 
 function parse(filePath) {
@@ -242,13 +234,8 @@ import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.subclass
 import kotlinx.serialization.modules.contextual
 
-object Serializer {
+val serializersModule = kotlinx.serialization.modules.SerializersModule {
 
-   fun createSerializer(): kotlinx.serialization.modules.SerializersModule {
-   
-    return kotlinx.serialization.modules.SerializersModule {
-        // contextual(org.cql.QNameSerializerForJson)
-    
       ${[...getAllParentClasses(config)].reverse().map((parentClass) => {
           
           
@@ -263,10 +250,6 @@ object Serializer {
           
       }).join('\n')}
    
-   }
-   
-   }
-
 }
       
       `
@@ -641,7 +624,7 @@ ${attributesFields
               // type === 'nl.adaptivity.xmlutil.SerializableQName' ? '@kotlinx.serialization.Contextual' : '@kotlinx.serialization.Serializable'
           ''
           }
-            var ${makeFieldName(field.attributes.name)}: ${addContextualAnnotationIfNecessary(type)} ${type}? = null
+            var ${makeFieldName(field.attributes.name)}: ${type}? = null
                 get() {
                    return field ?: ${defaultValue}
                 }
@@ -657,7 +640,7 @@ ${attributesFields
           // type === 'nl.adaptivity.xmlutil.SerializableQName' ? '@kotlinx.serialization.Contextual' : '@kotlinx.serialization.Serializable'
         ''
       }
-        var ${makeFieldName(field.attributes.name)}: ${addContextualAnnotationIfNecessary(type)} ${type}? = null
+        var ${makeFieldName(field.attributes.name)}: ${type}? = null
       
         ${extraForBoolean}
         ${extraForWith}

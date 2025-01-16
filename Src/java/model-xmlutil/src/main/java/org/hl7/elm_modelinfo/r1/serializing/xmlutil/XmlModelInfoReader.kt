@@ -12,10 +12,10 @@ import org.hl7.elm_modelinfo.r1.*
 import org.hl7.elm_modelinfo.r1.ModelInfo
 import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReader
 
+val xml = XML(org.hl7.elm_modelinfo.r1.serializersModule)
+
 class XmlModelInfoReader : ModelInfoReader {
     override fun read(source: Source): ModelInfo {
-        val serializersModule = Serializer.createSerializer()
-        val xml = XML(serializersModule)
         val modelInfo =
             xml.decodeFromReader(
                 ModelInfo.serializer(),

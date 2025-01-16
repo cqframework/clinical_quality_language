@@ -7,8 +7,6 @@ import java.io.InputStream
 import java.io.Reader
 import java.net.URI
 import java.net.URL
-import kotlinx.serialization.modules.plus
-import nl.adaptivity.xmlutil.serialization.XML
 import nl.adaptivity.xmlutil.xmlStreaming
 import org.cqframework.cql.elm.serializing.ElmLibraryReader
 import org.hl7.elm.r1.Library
@@ -45,11 +43,6 @@ class ElmXmlLibraryReader : ElmLibraryReader {
     }
 
     override fun read(reader: Reader): Library {
-        val serializersModule =
-            org.hl7.elm.r1.Serializer.createSerializer() +
-                org.hl7.cql_annotations.r1.Serializer.createSerializer()
-        val xml = XML(serializersModule)
-
         return xml.decodeFromReader(Library.serializer(), xmlStreaming.newReader(reader))
     }
 }

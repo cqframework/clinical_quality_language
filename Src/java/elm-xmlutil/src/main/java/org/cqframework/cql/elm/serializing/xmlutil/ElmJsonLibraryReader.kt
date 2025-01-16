@@ -8,22 +8,11 @@ import java.io.Reader
 import java.net.URI
 import java.net.URL
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
-import kotlinx.serialization.modules.plus
 import org.cqframework.cql.elm.serializing.ElmLibraryReader
 import org.hl7.elm.r1.Library
 
 class ElmJsonLibraryReader : ElmLibraryReader {
-    val module =
-        org.hl7.elm.r1.Serializer.createSerializer() +
-            org.hl7.cql_annotations.r1.Serializer.createSerializer()
-    val json = Json {
-        serializersModule = module
-        explicitNulls = false
-        ignoreUnknownKeys = true
-    }
-
     override fun read(file: File): Library {
         file.inputStream().use {
             return read(it)
