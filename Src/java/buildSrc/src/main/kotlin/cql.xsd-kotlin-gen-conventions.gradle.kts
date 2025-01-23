@@ -9,9 +9,9 @@ plugins {
 }
 
 dependencies {
-    implementation("io.github.pdvrieze.xmlutil:core:0.90.3")
-    implementation("io.github.pdvrieze.xmlutil:serialization:0.90.3")
-    implementation("io.github.pdvrieze.xmlutil:serialization-jvm:0.90.3")
+    implementation("io.github.pdvrieze.xmlutil:core:0.90.4-SNAPSHOT")
+    implementation("io.github.pdvrieze.xmlutil:serialization:0.90.4-SNAPSHOT")
+    implementation("io.github.pdvrieze.xmlutil:serialization-jvm:0.90.4-SNAPSHOT")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.0")
 }
