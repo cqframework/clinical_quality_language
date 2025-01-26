@@ -207,7 +207,8 @@ class BaseTest {
 
     @Test
     void testStatinsforthePreventionandTreatmentofCardiovascularDiseaseFHIR() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("qicore/v600/StatinsforthePreventionandTreatmentofCardiovascularDiseaseFHIR.cql", 0);
+        CqlTranslator translator = TestUtils.runSemanticTest(
+                "qicore/v600/StatinsforthePreventionandTreatmentofCardiovascularDiseaseFHIR.cql", 0);
 
         Library library = translator.toELM();
         Map<String, ExpressionDef> defs = new HashMap<>();
@@ -222,8 +223,8 @@ class BaseTest {
         assertThat(def, notNullValue());
     }
 
-    //TODO: This content isn't available from measure developers for QICOre 6 yet. Update when available
-    //@Test
+    // TODO: This content isn't available from measure developers for QICOre 6 yet. Update when available
+    // @Test
     void adultOutpatientEncounters() throws IOException {
         CqlTranslator translator =
                 TestUtils.runSemanticTest("qicore/v600/AdultOutpatientEncounters_QICore4-2.0.000.cql", 0);
@@ -264,7 +265,7 @@ class BaseTest {
     }
 
     // TODO: Update when this content is available from measure developers for QICore 6
-    //@Test
+    // @Test
     void papTestWithResults() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("qicore/v600/EXM124_QICore4-8.2.000.cql", 0);
         Library library = translator.toELM();
@@ -442,8 +443,7 @@ class BaseTest {
     // TODO: Apparently (enabled=false) doesn't work on the CI server?
     // @Test(enabled = false, description = "Signature overloads not yet working for derived models")
     public void testSignatureOnInterval() throws IOException {
-        CqlTranslator translator =
-                TestUtils.runSemanticTest("qicore/v600/SupplementalDataElements-4.0.0000.cql", 0);
+        CqlTranslator translator = TestUtils.runSemanticTest("qicore/v600/SupplementalDataElements-4.0.0000.cql", 0);
 
         Library library = translator.toELM();
         Map<String, ExpressionDef> defs = new HashMap<>();
@@ -468,8 +468,7 @@ class BaseTest {
 
     @Test
     public void testMedicationNotRequested() throws IOException {
-        CqlTranslator translator =
-                TestUtils.runSemanticTest("qicore/v600/FHIRHelpersToConceptError.cql", 0);
+        CqlTranslator translator = TestUtils.runSemanticTest("qicore/v600/FHIRHelpersToConceptError.cql", 0);
 
         Library library = translator.toELM();
         Map<String, ExpressionDef> defs = new HashMap<>();
@@ -483,19 +482,19 @@ class BaseTest {
         var minimalRepro = defs.get("Minimal Repro");
         assertNotNull(minimalRepro);
         assertThat(minimalRepro.getExpression(), instanceOf(Query.class));
-        var query = (Query)minimalRepro.getExpression();
+        var query = (Query) minimalRepro.getExpression();
         var returnClause = query.getReturn();
         assertThat(returnClause.getExpression(), instanceOf(Query.class));
-        query = (Query)returnClause.getExpression();
+        query = (Query) returnClause.getExpression();
         assertThat(query.getSource().size(), equalTo(1));
         var source = query.getSource().get(0);
         assertThat(source.getExpression(), instanceOf(Property.class));
-        var property = (Property)source.getExpression();
+        var property = (Property) source.getExpression();
         assertThat(property.getPath(), equalTo("reasonCode"));
         assertThat(property.getScope(), equalTo("NoStatinTherapyOrdered"));
         returnClause = query.getReturn();
         assertThat(returnClause.getExpression(), instanceOf(FunctionRef.class));
-        var functionRef = (FunctionRef)returnClause.getExpression();
+        var functionRef = (FunctionRef) returnClause.getExpression();
         assertThat(functionRef.getLibraryName(), equalTo("FHIRHelpers"));
         assertThat(functionRef.getName(), equalTo("ToConcept"));
     }
