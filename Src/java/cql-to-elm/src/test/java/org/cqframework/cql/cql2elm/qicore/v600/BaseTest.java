@@ -173,7 +173,7 @@ class BaseTest {
 
     @Test
     void testPCSBMIScreenAndFollowUpFHIR() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("qicore/v600/PCSBMIScreenAndFollowupFHIR.cql", 0);
+        CqlTranslator translator = TestUtils.runSemanticTest("qicore/v600/PCSBMIScreenAndFollowUpFHIR.cql", 0);
 
         Library library = translator.toELM();
         Map<String, ExpressionDef> defs = new HashMap<>();
@@ -190,7 +190,7 @@ class BaseTest {
 
     @Test
     void testPCSDepressionScreenAdnFollowUpFHIR() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("qicore/v600/PCSDepressionScreenAndFollowUPFHIR.cql", 0);
+        CqlTranslator translator = TestUtils.runSemanticTest("qicore/v600/PCSDepressionScreenAndFollowUpFHIR.cql", 0);
 
         Library library = translator.toELM();
         Map<String, ExpressionDef> defs = new HashMap<>();
