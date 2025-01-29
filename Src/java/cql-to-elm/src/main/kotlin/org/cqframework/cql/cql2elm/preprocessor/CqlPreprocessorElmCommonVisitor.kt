@@ -2,10 +2,7 @@
 
 package org.cqframework.cql.cql2elm.preprocessor
 
-import jakarta.xml.bind.JAXBElement
-import java.io.Serializable
 import java.util.*
-import javax.xml.namespace.QName
 import org.antlr.v4.kotlinruntime.ParserRuleContext
 import org.antlr.v4.kotlinruntime.TokenStream
 import org.antlr.v4.kotlinruntime.misc.Interval
@@ -763,32 +760,32 @@ abstract class CqlPreprocessorElmCommonVisitor(
             return Pair.of(header.substring(startFrom).trim { it <= ' ' }, header.length)
         }
 
-        fun wrapNarrative(narrative: Narrative): Serializable {
+        fun wrapNarrative(narrative: Narrative): Any {
             @Suppress("ForbiddenComment")
             /*
-            TODO: Should be able to collapse narrative if the span doesn't have an attribute
-            That's what this code is doing, but it doesn't work and I don't have time to debug it
-            if (narrative.getR() == null) {
-                StringBuilder content = new StringBuilder();
-                boolean onlyStrings = true;
-                for (Serializable s : narrative.getContent()) {
-                    if (s instanceof String) {
-                        content.append((String)s);
+            This code collapses the narrative if the span doesn't have an attribute.
+            It does work but creates a different (simplified) ELM.
+
+            if (narrative.r == null) {
+                val content = StringBuilder()
+                var onlyStrings = true
+                for (s in narrative.content) {
+                    if (s is String) {
+                        content.append(s)
                     }
                     else {
-                        onlyStrings = false;
+                        onlyStrings = false
                     }
                 }
                 if (onlyStrings) {
-                    return content.toString();
+                    return content.toString()
                 }
             }
+
+            return narrative
             */
-            return JAXBElement(
-                QName("urn:hl7-org:cql-annotations:r1", "s"),
-                Narrative::class.java,
-                narrative
-            )
+
+            return narrative
         }
 
         fun isValidIdentifier(tagName: String): Boolean {

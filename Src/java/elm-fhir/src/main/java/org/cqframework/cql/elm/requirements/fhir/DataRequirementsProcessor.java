@@ -1,8 +1,6 @@
 package org.cqframework.cql.elm.requirements.fhir;
 
 import ca.uhn.fhir.context.FhirVersionEnum;
-import jakarta.xml.bind.JAXBElement;
-import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.List;
@@ -450,18 +448,11 @@ public class DataRequirementsProcessor {
     }
 
     private void addNarrativeText(StringBuilder sb, org.hl7.cql_annotations.r1.Narrative n) {
-        for (Serializable s : n.getContent()) {
+        for (var s : n.getContent()) {
             if (s instanceof org.hl7.cql_annotations.r1.Narrative) {
                 addNarrativeText(sb, (org.hl7.cql_annotations.r1.Narrative) s);
             } else if (s instanceof String) {
                 sb.append((String) s);
-            }
-            // TODO: THIS IS WRONG... SHOULDN'T NEED TO KNOW ABOUT JAXB TO ACCOMPLISH THIS
-            else if (s instanceof JAXBElement<?>) {
-                JAXBElement<?> j = (JAXBElement<?>) s;
-                if (j.getValue() instanceof org.hl7.cql_annotations.r1.Narrative) {
-                    addNarrativeText(sb, (org.hl7.cql_annotations.r1.Narrative) j.getValue());
-                }
             }
         }
     }
