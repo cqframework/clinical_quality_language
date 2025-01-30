@@ -12,9 +12,10 @@ import org.cqframework.cql.cql2elm.CompilerOptions;
 import org.cqframework.cql.cql2elm.CqlCompilerOptions;
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.LibraryBuilder;
+import org.hl7.cql_annotations.r1.Annotation;
 import org.hl7.cql_annotations.r1.CqlToElmInfo;
+import org.hl7.cql_annotations.r1.Narrative;
 import org.hl7.elm.r1.*;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 class ElmDeserializeTests {
@@ -30,7 +31,6 @@ class ElmDeserializeTests {
     }
 
     @Test
-    @Disabled("TODO: Re-enable once XmlUtil-based ELM JSON deserialization is implemented for annotations")
     void jsonANCFHIRDummyLibraryLoad() {
         try {
             final Library library = deserializeJsonLibrary("ElmDeserialize/ANCFHIRDummy.json");
@@ -55,8 +55,19 @@ class ElmDeserializeTests {
             assertTrue(
                     ((SingletonFrom) library.getStatements().getDef().get(0).getExpression()).getOperand()
                             instanceof Retrieve);
-            assertNotNull(library.getStatements().getDef().get(1));
-            assertTrue(library.getStatements().getDef().get(1).getExpression() instanceof Retrieve);
+            var observationsStatement = library.getStatements().getDef().get(1);
+            assertNotNull(observationsStatement);
+            assertTrue(observationsStatement.getExpression() instanceof Retrieve);
+
+            assertTrue(observationsStatement.getAnnotation().get(0) instanceof Annotation);
+            var annotation = (Annotation) observationsStatement.getAnnotation().get(0);
+            assertNotNull(annotation.getS());
+            var narrative = annotation.getS();
+            assertTrue(narrative.getContent().get(1) instanceof Narrative);
+            var nestedNarrative = (Narrative) narrative.getContent().get(1);
+            assertTrue(nestedNarrative.getContent().get(0) instanceof Narrative);
+            nestedNarrative = (Narrative) nestedNarrative.getContent().get(0);
+            assertEquals("[", nestedNarrative.getContent().get(0));
 
             verifySigLevels(library, LibraryBuilder.SignatureLevel.All);
         } catch (IOException e) {
@@ -100,7 +111,6 @@ class ElmDeserializeTests {
     }
 
     @Test
-    @Disabled("Invalid XML value at position: 85:29: Index -1 out of bounds for length 2")
     void xmlLibraryLoad() {
         try {
             final Library library =
@@ -130,11 +140,20 @@ class ElmDeserializeTests {
             assertTrue(
                     ((SingletonFrom) library.getStatements().getDef().get(0).getExpression()).getOperand()
                             instanceof Retrieve);
-            assertEquals(
-                    "Qualifying Encounters",
-                    library.getStatements().getDef().get(1).getName());
-            assertNotNull(library.getStatements().getDef().get(1));
-            assertTrue(library.getStatements().getDef().get(1).getExpression() instanceof Query);
+            var qualifyingEncountersStatement = library.getStatements().getDef().get(1);
+            assertEquals("Qualifying Encounters", qualifyingEncountersStatement.getName());
+            assertNotNull(qualifyingEncountersStatement);
+            assertTrue(qualifyingEncountersStatement.getExpression() instanceof Query);
+            assertTrue(qualifyingEncountersStatement.getAnnotation().get(0) instanceof Annotation);
+            var annotation =
+                    (Annotation) qualifyingEncountersStatement.getAnnotation().get(0);
+            assertNotNull(annotation.getS());
+            var narrative = annotation.getS();
+            assertEquals("\n               ", narrative.getContent().get(0));
+            assertTrue(narrative.getContent().get(3) instanceof Narrative);
+            var nestedNarrative = (Narrative) narrative.getContent().get(3);
+            assertEquals("\n                  ", nestedNarrative.getContent().get(0));
+            assertTrue(nestedNarrative.getContent().get(1) instanceof Narrative);
 
             verifySigLevels(library, LibraryBuilder.SignatureLevel.Overloads);
         } catch (IOException e) {
@@ -144,7 +163,6 @@ class ElmDeserializeTests {
     }
 
     @Test
-    @Disabled("TODO: Re-enable once XmlUtil-based ELM JSON deserialization is implemented for annotations")
     void jsonTerminologyLibraryLoad() {
         try {
             final Library library = deserializeJsonLibrary("ElmDeserialize/ANCFHIRTerminologyDummy.json");
@@ -200,7 +218,6 @@ class ElmDeserializeTests {
     }
 
     @Test
-    @Disabled("Invalid XML value at position: 59:29: Index -1 out of bounds for length 2")
     void regressionTestJsonSerializer() throws URISyntaxException {
         // This test validates that the ELM library deserialized from the Json matches the ELM library deserialized from
         // Xml

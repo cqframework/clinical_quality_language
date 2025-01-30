@@ -83,12 +83,13 @@ function isExtendedByAny(someClass, config) {
     return false;
 }
 
-function addPolymorphicAnnotationIfNecessary(className, config) {
-    if (isExtendedByAny(className, config)) {
-        return `@kotlinx.serialization.Polymorphic`;
+function addContextualAnnotationIfNecessary(type) {
+    // A custom serializer is needed for Narrative in JSON
+    if (type === "Narrative") {
+        return "@kotlinx.serialization.Contextual Narrative";
     }
 
-    return '';
+    return type;
 }
 
 function getType(rawType) {
@@ -114,6 +115,10 @@ function getType(rawType) {
 }
 
 function makeLocalName(name) {
+    // Narrative tags are always serialized as urn:hl7-org:cql-annotations:r1:s
+    if (name === "Narrative") {
+        return "s";
+    }
 
 if ([
  "ModelInfo",
@@ -128,12 +133,6 @@ if ([
 function parse(filePath) {
   const xml = fs
     .readFileSync(filePath, "utf8")
-    .split(
-      '<xs:element name="s" type="Narrative" minOccurs="0" maxOccurs="unbounded"/>',
-    )
-    .join(
-      '<xs:element name="content" type="java.io.Serializable" minOccurs="0" maxOccurs="unbounded"/>',
-    )
     .split("a:CqlToElmBase")
     .join("org.hl7.cql_annotations.r1.CqlToElmBase");
   const result = xml2js(xml, { compact: false });
@@ -441,7 +440,7 @@ function processElements(elements, config, mode) {
               },
             ),
             ...(
-              (restrictionSequence && restrictionSequence.elements) ||
+              (element.attributes.mixed !== 'true' && restrictionSequence && restrictionSequence.elements) ||
               []
             ).filter((element) => {
               return (
@@ -487,9 +486,9 @@ function processElements(elements, config, mode) {
                 return `
                             ${config.packageName === 'org.hl7.elm_modelinfo.r1' ? '' : `@kotlinx.serialization.SerialName(${JSON.stringify(name)})`}
                             @nl.adaptivity.xmlutil.serialization.XmlSerialName(${JSON.stringify(name)}, ${JSON.stringify(config.namespaceUri)})
-                            private var _${fieldName}: MutableList<${type}>? = null
+                            private var _${fieldName}: MutableList<${addContextualAnnotationIfNecessary(type)}>? = null
 
-                            var ${fieldName}: MutableList<${type}>
+                            var ${fieldName}: MutableList<${addContextualAnnotationIfNecessary(type)}>
                                get() {
                                    if (_${fieldName} == null) {
                                         _${fieldName} = ArrayList();
@@ -511,7 +510,7 @@ function processElements(elements, config, mode) {
                   // type === 'nl.adaptivity.xmlutil.SerializableQName' ? '@kotlinx.serialization.Contextual' : '@kotlinx.serialization.Serializable'
                   ''
               }
-                            var ${makeFieldName(field.attributes.name)}: ${type}? = null
+                            var ${makeFieldName(field.attributes.name)}: ${addContextualAnnotationIfNecessary(type)}? = null
                         `;
             };
 
@@ -578,6 +577,28 @@ ${element.attributes.name === 'Library' || element.attributes.name === 'ModelInf
 ${config.packageName === 'org.hl7.elm_modelinfo.r1' ? '' : `@kotlinx.serialization.SerialName(${JSON.stringify(makeLocalName(element.attributes.name))})`}
 @nl.adaptivity.xmlutil.serialization.XmlSerialName(${JSON.stringify(makeLocalName(element.attributes.name))}, ${ JSON.stringify(config.namespaceUri)})
 ${element.attributes.abstract === "true" ? "abstract" : "open"} class ${element.attributes.name} ${extendsClass ? `: ${extendsClass}()` : ""} {
+
+${element.attributes.mixed === 'true' ? `
+
+    // Using the @XmlValue annotation to have the mixed content (text and tags) stored in a list.
+    // See also https://github.com/pdvrieze/xmlutil/blob/f9389da/serialization/src/commonTest/kotlin/nl/adaptivity/xml/serialization/MixedValueContainerTest.kt#L72
+
+    @nl.adaptivity.xmlutil.serialization.XmlValue(true)
+    var _content: MutableList<@kotlinx.serialization.Polymorphic Any>? = null
+    
+    var content: MutableList<Any>
+       get() {
+           if (_content == null) {
+                _content = ArrayList();
+            }
+            return _content!!
+       }
+
+      set(value) {
+          _content = value
+      }
+
+` : ''}
 
 ${fields
   .map((field) => {
@@ -677,6 +698,12 @@ ${getParentAttributes(
 `
           : ""
       }
+      
+      ${element.attributes.mixed === 'true' ? `
+          if (this.content != that_.content) {
+              return false;
+          }
+      ` : ''}
       
       ${fields
         .map((field) => {
