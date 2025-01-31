@@ -1,5 +1,7 @@
 package org.cqframework.cql.elm;
 
+import static kotlinx.io.CoreKt.buffered;
+import static kotlinx.io.JvmCoreKt.asSource;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.*;
@@ -178,7 +180,7 @@ class ElmDeserializeTests {
         Library xmlLibrary = null;
         try {
             xmlLibrary = new org.cqframework.cql.elm.serializing.xmlutil.ElmXmlLibraryReader()
-                    .read(new FileReader(path + "/" + xmlFileName));
+                    .read(buffered(asSource(new FileInputStream(path + "/" + xmlFileName))));
         } catch (Exception e) {
             throw new IllegalArgumentException(
                     String.format("Errors occurred reading ELM from xml %s: %s", xmlFileName, e.getMessage()));
@@ -187,7 +189,7 @@ class ElmDeserializeTests {
         Library jsonLibrary;
         try {
             jsonLibrary = new org.cqframework.cql.elm.serializing.xmlutil.ElmJsonLibraryReader()
-                    .read(new FileReader(path + "/" + jsonFileName));
+                    .read(buffered(asSource(new FileInputStream(path + "/" + jsonFileName))));
         } catch (Exception e) {
             throw new IllegalArgumentException(
                     String.format("Errors occurred reading ELM from json %s: %s", jsonFileName, e.getMessage()));
@@ -340,13 +342,11 @@ class ElmDeserializeTests {
 
         String xml = toXml(translator.toELM());
 
-        Library xmlLibrary =
-                new org.cqframework.cql.elm.serializing.xmlutil.ElmXmlLibraryReader().read(new StringReader(xml));
+        Library xmlLibrary = new org.cqframework.cql.elm.serializing.xmlutil.ElmXmlLibraryReader().read(xml);
         validateEmptyStringsTest(xmlLibrary);
 
         String json = toJson(translator.toELM());
-        Library jsonLibrary =
-                new org.cqframework.cql.elm.serializing.xmlutil.ElmJsonLibraryReader().read(new StringReader(json));
+        Library jsonLibrary = new org.cqframework.cql.elm.serializing.xmlutil.ElmJsonLibraryReader().read(json);
         validateEmptyStringsTest(jsonLibrary);
     }
 
@@ -354,13 +354,14 @@ class ElmDeserializeTests {
         final InputStream resourceAsStream = ElmDeserializeTests.class.getResourceAsStream(filePath);
         assertNotNull(resourceAsStream);
         return new org.cqframework.cql.elm.serializing.xmlutil.ElmJsonLibraryReader()
-                .read(new InputStreamReader(resourceAsStream));
+                .read(buffered(asSource(resourceAsStream)));
     }
 
     private static Library deserializeXmlLibrary(String filePath) throws IOException {
         final InputStream resourceAsStream = ElmDeserializeTests.class.getResourceAsStream(filePath);
         assertNotNull(resourceAsStream);
-        return new org.cqframework.cql.elm.serializing.xmlutil.ElmXmlLibraryReader().read(resourceAsStream);
+        return new org.cqframework.cql.elm.serializing.xmlutil.ElmXmlLibraryReader()
+                .read(buffered(asSource(resourceAsStream)));
     }
 
     private static void verifySigLevels(Library library, LibraryBuilder.SignatureLevel expectedSignatureLevel) {

@@ -218,21 +218,15 @@ class CqlTranslator(
             return VersionedIdentifier().withId(name).withSystem(system)
         }
 
-        @Throws(IOException::class)
         fun convertToXml(library: Library): String {
-            val writer = StringWriter()
-            ElmLibraryWriterFactory.getWriter(LibraryContentType.XML.mimeType())
-                .write(library, writer)
-            return writer.buffer.toString()
+            return ElmLibraryWriterFactory.getWriter(LibraryContentType.XML.mimeType())
+                .writeAsString(library)
         }
 
         @JvmStatic
-        @Throws(IOException::class)
         fun convertToJson(library: Library): String {
-            val writer = StringWriter()
-            ElmLibraryWriterFactory.getWriter(LibraryContentType.JSON.mimeType())
-                .write(library, writer)
-            return writer.buffer.toString()
+            return ElmLibraryWriterFactory.getWriter(LibraryContentType.JSON.mimeType())
+                .writeAsString(library)
         }
     }
 }

@@ -100,13 +100,13 @@ function getType(rawType) {
       "xs:anySimpleType": "String",
       "xs:boolean": "Boolean",
       "xs:integer": "Int",
-      "xs:decimal": "@kotlinx.serialization.Contextual java.math.BigDecimal",
+      "xs:decimal": "@kotlinx.serialization.Contextual org.cqframework.cql.elm.serializing.BigDecimal",
       "xs:dateTime": "String",
       "xs:time": "String",
       "xs:date": "String",
       "xs:base64Binary": "String",
       "xs:anyURI": "String",
-      "xs:QName": "@kotlinx.serialization.Serializable(org.hl7.elm_modelinfo.r1.serializing.QNameJsonSerializer::class) nl.adaptivity.xmlutil.QName",
+      "xs:QName": "@kotlinx.serialization.Serializable(org.cqframework.cql.elm.serializing.QNameJsonSerializer::class) nl.adaptivity.xmlutil.QName",
       "xs:token": "String",
       "xs:NCName": "String",
       "xs:ID": "String",
@@ -175,7 +175,7 @@ const configs = [
     xsd: __dirname + "/../../cql-lm/schema/elm/library.xsd",
     outputDir:
       __dirname +
-      "/../../java/elm/build/generated/sources/elm/main/kotlin/org/hl7/elm/r1",
+      "/../../java/elm/build/generated/sources/elm/commonMain/kotlin/org/hl7/elm/r1",
     packageName: "org.hl7.elm.r1",
     // autoExtend: "org.cqframework.cql.elm.tracking.Trackable",
     classes: {},
@@ -196,7 +196,7 @@ const configs = [
     xsd: __dirname + "/../../cql-lm/schema/elm/cqlannotations.xsd",
     outputDir:
       __dirname +
-      "/../../java/elm/build/generated/sources/elm/main/kotlin/org/hl7/cql_annotations/r1",
+      "/../../java/elm/build/generated/sources/elm/commonMain/kotlin/org/hl7/cql_annotations/r1",
     packageName: "org.hl7.cql_annotations.r1",
     classes: {},
     scope: "narrative",
