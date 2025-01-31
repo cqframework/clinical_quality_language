@@ -17,7 +17,12 @@ import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.LibraryBuilder;
 import org.cqframework.cql.cql2elm.TestUtils;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
-import org.hl7.cql.model.*;
+import org.cqframework.cql.cql2elm.tracking.Trackable;
+import org.hl7.cql.model.ChoiceType;
+import org.hl7.cql.model.ClassType;
+import org.hl7.cql.model.DataType;
+import org.hl7.cql.model.ListType;
+import org.hl7.cql.model.NamespaceInfo;
 import org.hl7.elm.r1.*;
 import org.junit.jupiter.api.Test;
 
@@ -206,7 +211,7 @@ class BaseTest {
     private void assertResultType(
             CompiledLibrary translatedLibrary, String expressionName, String namespace, String name) {
         ExpressionDef ed = translatedLibrary.resolveExpressionRef(expressionName);
-        DataType resultType = ed.getExpression().getResultType();
+        DataType resultType = Trackable.INSTANCE.getResultType(ed.getExpression());
         assertThat(resultType, instanceOf(ClassType.class));
         ClassType resultClassType = (ClassType) resultType;
         assertThat(resultClassType.getNamespace(), equalTo(namespace));
@@ -223,7 +228,7 @@ class BaseTest {
         assertResultType(translatedLibrary, "TestElementModifierExtensions", "FHIR", "Extension");
 
         ExpressionDef ed = translatedLibrary.resolveExpressionRef("TestChoiceConverts");
-        DataType resultType = ed.getExpression().getResultType();
+        DataType resultType = Trackable.INSTANCE.getResultType(ed.getExpression());
         assertThat(resultType, instanceOf(ChoiceType.class));
         assertThat(
                 resultType.toString(),
@@ -963,9 +968,10 @@ class BaseTest {
         assertThat(r.getTemplateId(), is("http://hl7.org/fhir/StructureDefinition/Medication"));
         assertThat(r.getCodeProperty() == null, is(true));
         assertThat(r.getCodes() == null, is(true));
-        assertThat(r.getResultType(), instanceOf(ListType.class));
-        assertThat(((ListType) r.getResultType()).getElementType(), instanceOf(ClassType.class));
-        assertThat(((ClassType) ((ListType) r.getResultType()).getElementType()).getName(), is("FHIR.Medication"));
+        var resultType = Trackable.INSTANCE.getResultType(r);
+        assertThat(resultType, instanceOf(ListType.class));
+        assertThat(((ListType) resultType).getElementType(), instanceOf(ClassType.class));
+        assertThat(((ClassType) ((ListType) resultType).getElementType()).getName(), is("FHIR.Medication"));
         assertThat(w.getSuchThat(), instanceOf(And.class));
         And a = (And) w.getSuchThat();
         assertThat(a.getOperand().get(0), instanceOf(Equal.class));

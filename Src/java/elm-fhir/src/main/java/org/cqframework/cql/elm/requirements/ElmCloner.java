@@ -1,5 +1,6 @@
 package org.cqframework.cql.elm.requirements;
 
+import org.cqframework.cql.cql2elm.tracking.Trackable;
 import org.hl7.elm.r1.*;
 
 // TODO: Consider a cloning visitor?
@@ -66,7 +67,7 @@ public class ElmCloner {
         clonedElm.setLocator(elm.getLocator());
         clonedElm.setResultTypeName(elm.getResultTypeName());
         clonedElm.setResultTypeSpecifier(elm.getResultTypeSpecifier());
-        clonedElm.setResultType(elm.getResultType());
+        Trackable.INSTANCE.setResultType(clonedElm, Trackable.INSTANCE.getResultType(elm));
     }
 
     public static CodeFilterElement clone(CodeFilterElement elm) {
@@ -106,7 +107,7 @@ public class ElmCloner {
         clonedElm.setRelatedDataType(elm.getRelatedDataType());
         clonedElm.setRelatedProperty(elm.getRelatedProperty());
         clonedElm.setRelatedSearch(elm.getRelatedSearch());
-        clonedElm.setIsReverse(elm.isIsReverse());
+        clonedElm.withIsReverse(elm.isIsReverse());
         return clonedElm;
     }
 

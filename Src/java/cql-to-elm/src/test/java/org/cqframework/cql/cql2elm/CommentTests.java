@@ -4,7 +4,6 @@ import static org.cqframework.cql.cql2elm.CqlCompilerOptions.Options.EnableAnnot
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-import jakarta.xml.bind.JAXBElement;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,11 +41,10 @@ class CommentTests {
         Annotation a = (Annotation) def.getAnnotation().get(0);
         assertThat(a.getS().getContent(), notNullValue());
         assertThat(a.getS().getContent().size(), is(2));
-        assertThat(a.getS().getContent().get(0), instanceOf(JAXBElement.class));
-        JAXBElement e = (JAXBElement) a.getS().getContent().get(0);
+        var e = a.getS().getContent().get(0);
         assertThat(e, notNullValue());
-        assertThat(e.getValue(), instanceOf(Narrative.class));
-        Narrative n = (Narrative) e.getValue();
+        assertThat(e, instanceOf(Narrative.class));
+        Narrative n = (Narrative) e;
         assertThat(n.getContent(), notNullValue());
         assertThat(n.getContent().size(), is(4));
         assertThat(n.getContent().get(0), instanceOf(String.class));
@@ -63,11 +61,10 @@ class CommentTests {
         a = (Annotation) def.getAnnotation().get(0);
         assertThat(a.getS().getContent(), notNullValue());
         assertThat(a.getS().getContent().size(), is(2));
-        assertThat(a.getS().getContent().get(0), instanceOf(JAXBElement.class));
-        e = (JAXBElement) a.getS().getContent().get(0);
+        e = a.getS().getContent().get(0);
         assertThat(e, notNullValue());
-        assertThat(e.getValue(), instanceOf(Narrative.class));
-        n = (Narrative) e.getValue();
+        assertThat(e, instanceOf(Narrative.class));
+        n = (Narrative) e;
         assertThat(n.getContent(), notNullValue());
         assertThat(n.getContent().size(), is(4));
         assertThat(n.getContent().get(0), instanceOf(String.class));
