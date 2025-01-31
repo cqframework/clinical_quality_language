@@ -6,6 +6,8 @@ import java.io.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
+import kotlinx.io.asSource
+import kotlinx.io.buffered
 import org.cqframework.cql.cql2elm.model.CompiledLibrary
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.cqframework.cql.cql2elm.ucum.UcumService
@@ -188,7 +190,7 @@ constructor(
         try {
             library =
                 ElmLibraryReaderFactory.getReader(type.mimeType())
-                    .read(InputStreamReader(librarySource))
+                    .read(librarySource.asSource().buffered())
         } catch (@Suppress("SwallowedException") e: IOException) {
             // intentionally ignored
         }
