@@ -1,7 +1,7 @@
 package org.cqframework.cql.cql2elm
 
 import org.cqframework.cql.cql2elm.model.CompiledLibrary
-import org.cqframework.cql.cql2elm.ucum.getUcumService
+import org.cqframework.cql.cql2elm.ucum.lazyUcumService
 import org.hl7.elm.r1.VersionedIdentifier
 import kotlin.jvm.JvmOverloads
 
@@ -15,7 +15,7 @@ constructor(
     modelManager,
     modelManager.namespaceManager,
     PriorityLibrarySourceLoader(),
-    getUcumService(),
+    lazyUcumService,
     cqlCompilerOptions,
     libraryCache
 ) {

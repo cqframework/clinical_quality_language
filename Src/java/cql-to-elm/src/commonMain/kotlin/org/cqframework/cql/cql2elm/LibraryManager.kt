@@ -22,7 +22,7 @@ open class CommonLibraryManager(
     val modelManager: CommonModelManager,
     val namespaceManager: NamespaceManager,
     open val librarySourceLoader: CommonLibrarySourceLoader,
-    val ucumService: UcumService,
+    lazyUcumService: Lazy<UcumService>,
     val cqlCompilerOptions: CqlCompilerOptions = CqlCompilerOptions.defaultOptions(),
     val compiledLibraries: MutableMap<VersionedIdentifier, CompiledLibrary> = HashMap()
 ) {
@@ -31,6 +31,8 @@ open class CommonLibraryManager(
         READ_ONLY,
         READ_WRITE
     }
+
+    val ucumService by lazyUcumService
 
     /*
      * A "well-known" library name is one that is allowed to resolve without a

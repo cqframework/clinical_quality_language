@@ -2,8 +2,8 @@ package org.cqframework.cql.cql2elm.ucum
 
 import java.util.*
 
-fun getUcumService(): UcumService {
-    return ServiceLoader.load(UcumService::class.java).firstOrNull()
+val lazyUcumService = lazy {
+    ServiceLoader.load(UcumService::class.java).firstOrNull()
         ?: error(
             """No UCUM service implementation found. 
                    Please ensure a UCUM service implementation is available on the classpath.

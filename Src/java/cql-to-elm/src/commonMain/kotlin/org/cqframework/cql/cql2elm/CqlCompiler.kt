@@ -139,7 +139,7 @@ open class CommonCqlCompiler(
         return run(CharStreams.fromString(cqlText))
     }
 
-    fun run(source: Source): Library? {
+    open fun run(source: Source): Library? {
         return run(CharStreams.fromString(source.readString()))
     }
 

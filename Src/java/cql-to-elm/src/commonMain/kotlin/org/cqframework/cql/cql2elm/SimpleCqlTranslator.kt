@@ -84,7 +84,7 @@ fun cqlToElm(
         }
     }
 
-    val libraryManager = CommonLibraryManager(modelManager, namespaceManager, librarySourceLoader, ucumService)
+    val libraryManager = CommonLibraryManager(modelManager, namespaceManager, librarySourceLoader, lazy { ucumService })
 
     val translator = CommonCqlTranslator.fromText(cqlText, libraryManager)
 

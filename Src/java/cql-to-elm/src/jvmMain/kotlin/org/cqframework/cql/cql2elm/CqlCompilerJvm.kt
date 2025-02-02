@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm
 
+import kotlinx.io.Source
+import kotlinx.io.asInputStream
 import org.antlr.v4.kotlinruntime.CharStreams
 import org.hl7.cql.model.NamespaceInfo
 import org.hl7.elm.r1.Library
@@ -19,6 +21,10 @@ class CqlCompiler(
         namespaceInfo: NamespaceInfo?,
         libraryManager: LibraryManager
     ) : this(namespaceInfo, null, libraryManager)
+
+    override fun run(source: Source): Library? {
+        return run(CharStreams.fromStream(source.asInputStream()))
+    }
 
     @Throws(IOException::class)
     fun run(cqlFile: File): Library? {
