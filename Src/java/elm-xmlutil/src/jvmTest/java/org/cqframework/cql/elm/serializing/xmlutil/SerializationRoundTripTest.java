@@ -17,7 +17,7 @@ public class SerializationRoundTripTest {
     }
 
     private static String pathForFile(String cqlFile) {
-        return "../cql-to-elm/src/test/resources/org/cqframework/cql/cql2elm/" + cqlFile;
+        return "../cql-to-elm/src/jvmTest/resources/org/cqframework/cql/cql2elm/" + cqlFile;
     }
 
     private static final ElmXmlLibraryReader reader = new ElmXmlLibraryReader();

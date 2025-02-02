@@ -1,0 +1,98 @@
+@file:Suppress("WildcardImport")
+
+package org.cqframework.cql.cql2elm
+
+import org.antlr.v4.kotlinruntime.CharStream
+import org.antlr.v4.kotlinruntime.CharStreams
+import org.cqframework.cql.cql2elm.model.CompiledLibrary
+import org.cqframework.cql.elm.serializing.xmlutil.getElmLibraryWriter
+import org.hl7.cql.model.*
+import org.hl7.elm.r1.*
+import kotlin.jvm.JvmStatic
+
+open class CommonCqlTranslator(
+    namespaceInfo: NamespaceInfo?,
+    sourceInfo: VersionedIdentifier?,
+    `is`: CharStream,
+    libraryManager: CommonLibraryManager
+) {
+    enum class Format {
+        XML,
+        JSON,
+        COFFEE
+    }
+
+    private val compiler = CommonCqlCompiler(namespaceInfo, sourceInfo, libraryManager)
+
+    init {
+        compiler.run(`is`)
+    }
+
+    private fun toXml(library: Library): String {
+        return convertToXml(library)
+    }
+
+    private fun toJson(library: Library): String {
+        return convertToJson(library)
+    }
+
+    fun toXml(): String {
+        return toXml(compiler.library!!)
+    }
+
+    fun toJson(): String {
+        return toJson(compiler.library!!)
+    }
+
+    fun toELM(): Library? {
+        return compiler.library
+    }
+
+    val translatedLibrary: CompiledLibrary?
+        get() = compiler.compiledLibrary
+
+    fun toObject(): Any? {
+        return compiler.toObject()
+    }
+
+    fun toRetrieves(): kotlin.collections.List<Retrieve?>? {
+        return compiler.toRetrieves()
+    }
+
+    val libraries: Map<VersionedIdentifier, Library?>
+        get() = compiler.libraries
+
+    val exceptions: kotlin.collections.List<CqlCompilerException?>?
+        // public Map<String, String> getLibrariesAsXML() {
+        get() = compiler.exceptions
+
+    val errors: kotlin.collections.List<CqlCompilerException?>?
+        get() = compiler.errors
+
+    val warnings: kotlin.collections.List<CqlCompilerException?>?
+        get() = compiler.warnings
+
+    val messages: kotlin.collections.List<CqlCompilerException?>?
+        get() = compiler.messages
+
+    @Suppress("TooManyFunctions")
+    companion object {
+
+        @JvmStatic
+        fun fromText(cqlText: String, libraryManager: CommonLibraryManager): CommonCqlTranslator {
+            return CommonCqlTranslator(null, null, CharStreams.fromString(cqlText), libraryManager)
+        }
+
+        @JvmStatic
+        fun convertToXml(library: Library): String {
+            return getElmLibraryWriter(LibraryContentType.XML.mimeType())
+                .writeAsString(library)
+        }
+
+        @JvmStatic
+        fun convertToJson(library: Library): String {
+            return getElmLibraryWriter(LibraryContentType.JSON.mimeType())
+                .writeAsString(library)
+        }
+    }
+}

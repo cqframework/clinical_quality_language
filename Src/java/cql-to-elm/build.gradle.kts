@@ -1,18 +1,25 @@
 plugins {
-    id("cql.library-conventions")
+    id("cql.kotlin-multiplatform-conventions")
 }
 
-dependencies {
-    api(project(":cql"))
-    api(project(":model"))
-    api(project(":elm"))
-
-    implementation("org.jetbrains.kotlinx:kotlinx-io-core-jvm:0.6.0")
-
-    testImplementation(project(":elm-xmlutil"))
-    testImplementation(project(":model-xmlutil"))
-    testImplementation(project(":quick"))
-    testImplementation(project(":qdm"))
-    testImplementation(project(":ucum"))
-    testImplementation("com.tngtech.archunit:archunit:1.2.1")
+kotlin {
+    sourceSets {
+        commonMain {
+            dependencies {
+                api(project(":cql"))
+                api(project(":model"))
+                api(project(":elm"))
+                implementation(project(":elm-xmlutil"))
+                implementation(project(":model-xmlutil"))
+            }
+        }
+        jvmTest {
+            dependencies {
+                implementation(project(":quick"))
+                implementation(project(":qdm"))
+                implementation(project(":ucum"))
+                implementation("com.tngtech.archunit:archunit:1.2.1")
+            }
+        }
+    }
 }

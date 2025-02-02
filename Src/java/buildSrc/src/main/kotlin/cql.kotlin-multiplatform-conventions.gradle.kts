@@ -1,10 +1,11 @@
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 plugins {
     kotlin("multiplatform")
     id("com.diffplug.spotless")
     id("io.gitlab.arturbosch.detekt")
     id("org.jetbrains.dokka")
+    kotlin("plugin.serialization")
 }
 
 repositories {
@@ -18,6 +19,10 @@ spotless {
 }
 
 kotlin {
+    compilerOptions {
+        apiVersion.set(KotlinVersion.KOTLIN_2_0)
+        languageVersion.set(KotlinVersion.KOTLIN_2_0)
+    }
     jvmToolchain(17)
     jvm {
         withJava()
@@ -65,16 +70,31 @@ kotlin {
         generateTypeScriptDefinitions()
     }
 
-    // Add Kotlin/WASM compilation target.
-    // The output is in the JS packages directory.
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
-        browser { }
-        binaries.executable()
-        generateTypeScriptDefinitions()
-    }
-
     sourceSets {
+        commonMain {
+            dependencies {
+                implementation("io.github.pdvrieze.xmlutil:core:0.90.3")
+                implementation("io.github.pdvrieze.xmlutil:serialization:0.90.3")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.6.0")
+                implementation("io.github.oshai:kotlin-logging:7.0.3")
+            }
+        }
+
+        jvmMain {
+            dependencies {
+                implementation("io.github.pdvrieze.xmlutil:serialization-jvm:0.90.3")
+                implementation("org.jetbrains.kotlinx:kotlinx-io-core-jvm:0.6.0")
+            }
+        }
+
+        jsMain {
+            dependencies {
+                implementation("io.github.pdvrieze.xmlutil:core-js:0.90.3")
+                implementation("io.github.pdvrieze.xmlutil:serialization-js:0.90.3")
+            }
+        }
+
         commonTest {
             dependencies {
                 implementation(kotlin("test"))
@@ -86,6 +106,7 @@ kotlin {
                 implementation(kotlin("test-junit5"))
                 implementation("org.junit.jupiter:junit-jupiter")
                 implementation("org.slf4j:slf4j-simple:2.0.13")
+                implementation("org.hamcrest:hamcrest-all:1.3")
             }
         }
 

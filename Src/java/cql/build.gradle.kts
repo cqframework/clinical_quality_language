@@ -1,4 +1,5 @@
 import com.strumenta.antlrkotlin.gradle.AntlrKotlinTask
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.tasks.AbstractKotlinCompile
 
 plugins {
@@ -7,6 +8,15 @@ plugins {
 }
 
 kotlin {
+    // Add Kotlin/WASM compilation target.
+    // The output is in the JS packages directory.
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        browser { }
+        binaries.executable()
+        generateTypeScriptDefinitions()
+    }
+
     sourceSets {
         commonMain {
             kotlin {
