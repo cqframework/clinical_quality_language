@@ -1,6 +1,7 @@
 package org.cqframework.cql.cql2elm.tracking
 
 import org.cqframework.cql.cql2elm.utils.WeakReference
+import org.cqframework.cql.cql2elm.utils.identityHashCode
 
 
 /**
@@ -55,7 +56,7 @@ internal class WeakIdentityHashMap<K : Any, V> {
 
     private class WeakKey<K : Any>(key: K) {
         private val ref = WeakReference(key)
-        private val hashCode = key.hashCode()
+        private val hashCode = identityHashCode(key)
 
         fun get(): K? = ref.get()
 
