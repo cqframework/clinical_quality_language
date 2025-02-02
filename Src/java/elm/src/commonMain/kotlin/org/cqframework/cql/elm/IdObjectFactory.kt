@@ -1178,7 +1178,7 @@ open class IdObjectFactory : ObjectFactory() {
     }
 }
 
-fun IdObjectFactory.createExpression(expressionType: String): Expression {
+fun IdObjectFactory.commonCreateExpression(expressionType: String): Expression {
     return when (expressionType) {
         "Abs" -> createAbs()
         "Add" -> createAdd()
@@ -1381,3 +1381,5 @@ fun IdObjectFactory.createExpression(expressionType: String): Expression {
         else -> throw IllegalArgumentException("Unknown expression type: $expressionType")
     }
 }
+
+expect fun IdObjectFactory.createExpression(expressionType: String): Expression

@@ -654,18 +654,6 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
     // General Function Support
     private inline fun <reified T : Expression?> createExpression(functionRef: FunctionRef): T {
         return of.createExpression(functionRef.name!!) as T
-
-// This old implementation could still be used on JVM because it could be more performant:
-//
-//        return try {
-//            T::class.cast(of.javaClass.getMethod("create" + functionRef.name).invoke(of))
-//        } catch (@Suppress("TooGenericExceptionCaught") e: Exception) {
-//            throw CqlInternalException(
-//                "Could not create instance of Element \"${functionRef.name}\"",
-//                if (functionRef.trackbacks.isNotEmpty()) functionRef.trackbacks[0] else null,
-//                e
-//            )
-//        }
     }
 
     private fun resolveUnary(functionRef: FunctionRef): UnaryExpressionInvocation<*> {
