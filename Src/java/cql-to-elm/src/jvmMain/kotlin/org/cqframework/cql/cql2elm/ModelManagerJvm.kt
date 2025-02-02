@@ -177,23 +177,6 @@ class ModelManager: CommonModelManager {
         }
     }
 
-    /*
-    A "well-known" model name is one that is allowed to resolve without a namespace in a namespace-aware context
-     */
-    fun isWellKnownModelName(unqualifiedIdentifier: String?): Boolean {
-        return if (unqualifiedIdentifier == null) {
-            false
-        } else
-            when (unqualifiedIdentifier) {
-                "FHIR",
-                "QDM",
-                "USCore",
-                "QICore",
-                "QUICK" -> true
-                else -> false
-            }
-    }
-
     private fun buildModel(identifier: ModelIdentifier): Model? {
         val model: Model?
         require(identifier.id.isNotEmpty()) { "Model identifier Id is required" }

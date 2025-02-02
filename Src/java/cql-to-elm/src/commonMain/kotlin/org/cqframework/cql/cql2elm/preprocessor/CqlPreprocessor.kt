@@ -11,7 +11,6 @@ import org.antlr.v4.kotlinruntime.tree.TerminalNode
 import org.cqframework.cql.cql2elm.CqlCompilerException
 import org.cqframework.cql.cql2elm.LibraryBuilder
 import org.cqframework.cql.cql2elm.ResultWithPossibleError
-import org.cqframework.cql.cql2elm.isWellKnownModelName
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.cqframework.cql.gen.cqlLexer
 import org.cqframework.cql.gen.cqlParser.*
@@ -122,7 +121,7 @@ class CqlPreprocessor(libraryBuilder: LibraryBuilder, tokenStream: TokenStream) 
         val namespaceName =
             when {
                 identifiers.isNotEmpty() -> identifiers.joinToString(".")
-                isWellKnownModelName(unqualifiedIdentifier) -> null
+                libraryBuilder.isWellKnownModelName(unqualifiedIdentifier) -> null
                 libraryBuilder.namespaceInfo != null -> libraryBuilder.namespaceInfo.name
                 else -> null
             }

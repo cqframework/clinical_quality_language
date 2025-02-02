@@ -120,7 +120,7 @@ class Cql2ElmVisitor(
         val namespaceName =
             when {
                 identifiers.isNotEmpty() -> identifiers.joinToString(".")
-                isWellKnownModelName(unqualifiedIdentifier) -> null
+                libraryBuilder.isWellKnownModelName(unqualifiedIdentifier) -> null
                 libraryBuilder.namespaceInfo != null -> libraryBuilder.namespaceInfo.name
                 else -> null
             }
