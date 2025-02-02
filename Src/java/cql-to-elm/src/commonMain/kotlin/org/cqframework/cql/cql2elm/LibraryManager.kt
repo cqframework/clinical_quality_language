@@ -142,7 +142,7 @@ open class CommonLibraryManager(
         )
     }
 
-    fun sortStatements(compiledLibrary: CompiledLibrary) {
+    private fun sortStatements(compiledLibrary: CompiledLibrary) {
         if (compiledLibrary.library!!.statements == null) {
             return
         }
