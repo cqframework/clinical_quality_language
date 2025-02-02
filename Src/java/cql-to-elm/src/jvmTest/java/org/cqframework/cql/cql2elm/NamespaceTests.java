@@ -12,7 +12,6 @@ import org.hl7.cql_annotations.r1.CqlToElmError;
 import org.hl7.elm.r1.IncludeDef;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 class NamespaceTests {
@@ -91,7 +90,6 @@ class NamespaceTests {
     /* Ensure base functionality with a defaulted namespace uri */
 
     @Test
-    @Disabled("This passes when run on its own from the IDE but fails when run as part of the local build")
     void libraryReferences() {
         CqlTranslator translator = null;
         try {

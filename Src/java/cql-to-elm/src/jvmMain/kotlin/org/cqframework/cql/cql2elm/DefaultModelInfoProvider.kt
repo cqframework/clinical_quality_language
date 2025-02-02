@@ -3,6 +3,7 @@
 package org.cqframework.cql.cql2elm
 
 import java.io.*
+import java.nio.file.Path
 import kotlinx.io.asSource
 import kotlinx.io.buffered
 import org.cqframework.cql.cql2elm.model.Version
@@ -10,7 +11,6 @@ import org.hl7.cql.model.ModelIdentifier
 import org.hl7.cql.model.ModelInfoProvider
 import org.hl7.elm_modelinfo.r1.ModelInfo
 import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReaderFactory
-import java.nio.file.Path
 
 // NOTE: This implementation assumes modelinfo file names will always take the form:
 // <modelname>-modelinfo[-<version>].cql

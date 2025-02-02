@@ -3,9 +3,9 @@
 package org.cqframework.cql.cql2elm
 
 import java.io.*
+import java.nio.file.Path
 import org.cqframework.cql.cql2elm.model.Version
 import org.hl7.elm.r1.VersionedIdentifier
-import java.nio.file.Path
 
 // NOTE: This implementation is naive and assumes library file names will always take the form:
 // <filename>[-<version>].cql

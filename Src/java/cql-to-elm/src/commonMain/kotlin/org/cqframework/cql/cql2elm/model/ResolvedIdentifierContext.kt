@@ -18,7 +18,7 @@ import kotlin.reflect.cast
  * well as the type of matching done to retrieve the element, whether case-sensitive or
  * case-insensitive.
  */
-// TODO @ExposedCopyVisibility
+@ExposedCopyVisibility
 data class ResolvedIdentifierContext
 private constructor(
     private val identifier: String,

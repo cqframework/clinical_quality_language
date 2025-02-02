@@ -1,9 +1,9 @@
 package org.cqframework.cql.cql2elm
 
-import kotlin.collections.ArrayList
-import org.hl7.elm.r1.VersionedIdentifier
 import java.io.ByteArrayInputStream
 import java.io.InputStream
+import kotlin.collections.ArrayList
+import org.hl7.elm.r1.VersionedIdentifier
 
 /**
  * This class implements the LibrarySourceProvider API, using a set of strings representing CQL

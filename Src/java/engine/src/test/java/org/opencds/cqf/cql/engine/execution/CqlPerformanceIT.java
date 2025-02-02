@@ -35,7 +35,7 @@ public class CqlPerformanceIT extends CqlTestBase {
         VersionedIdentifier libraryId = toElmIdentifier("CqlPerformanceTest", "1");
         ZonedDateTime date =
                 ZonedDateTime.of(2018, 1, 1, 7, 0, 0, 0, TimeZone.getDefault().toZoneId());
-        runPerformanceTest(libraryId, 1000.0, date);
+        runPerformanceTest(libraryId, 1500.0, date);
     }
 
     // This test is for the runtime errors

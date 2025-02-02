@@ -25,7 +25,7 @@ private const val FP_THIS = "\$this"
 
 /** Created by Bryn on 12/29/2016. */
 @Suppress("LargeClass", "TooManyFunctions", "ForbiddenComment", "ReturnCount", "MaxLineLength")
-open class LibraryBuilder(
+class LibraryBuilder(
     @JvmField
     val namespaceInfo: NamespaceInfo?, // Note: allowed to be null, implies global namespace
     val libraryManager: CommonLibraryManager,

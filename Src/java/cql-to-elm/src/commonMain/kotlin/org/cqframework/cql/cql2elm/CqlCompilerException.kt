@@ -10,8 +10,7 @@ open class CqlCompilerException
 constructor(
     message: String?,
     val severity: ErrorSeverity = ErrorSeverity.Error,
-    @field:Transient
-    val locator: TrackBack? = null,
+    @field:Transient val locator: TrackBack? = null,
     cause: Throwable? = null
 ) : RuntimeException(message, cause) {
     enum class ErrorSeverity {
