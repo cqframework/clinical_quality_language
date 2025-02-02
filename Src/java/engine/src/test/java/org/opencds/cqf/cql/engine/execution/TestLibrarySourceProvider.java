@@ -1,26 +1,19 @@
 package org.opencds.cqf.cql.engine.execution;
 
-import static kotlinx.io.CoreKt.buffered;
-import static kotlinx.io.JvmCoreKt.asSource;
-
-import kotlinx.io.Source;
+import java.io.InputStream;
 import org.cqframework.cql.cql2elm.LibraryContentType;
 import org.cqframework.cql.cql2elm.LibrarySourceProvider;
 import org.hl7.elm.r1.VersionedIdentifier;
 
 public class TestLibrarySourceProvider implements LibrarySourceProvider {
     @Override
-    public Source getLibrarySource(VersionedIdentifier libraryIdentifier) {
+    public InputStream getLibrarySource(VersionedIdentifier libraryIdentifier) {
         String libraryFileName = String.format("%s%s.cql", libraryIdentifier.getId(), "");
-        var inputStream = TestLibrarySourceProvider.class.getResourceAsStream(libraryFileName);
-        if (inputStream == null) {
-            return null;
-        }
-        return buffered(asSource(inputStream));
+        return TestLibrarySourceProvider.class.getResourceAsStream(libraryFileName);
     }
 
     @Override
-    public Source getLibraryContent(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
+    public InputStream getLibraryContent(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
         if (LibraryContentType.CQL == type) {
             return getLibrarySource(libraryIdentifier);
         }

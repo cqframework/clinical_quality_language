@@ -1,13 +1,11 @@
 package org.cqframework.cql.cql2elm;
 
-import static kotlinx.io.CoreKt.buffered;
-import static kotlinx.io.JvmCoreKt.asSource;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.notNullValue;
 
 import java.io.IOException;
-import kotlinx.io.Source;
+import java.io.InputStream;
 import org.hl7.cql.model.NamespaceInfo;
 import org.hl7.cql.model.NamespaceManager;
 import org.hl7.cql_annotations.r1.CqlToElmError;
@@ -26,7 +24,7 @@ class NamespaceTests {
 
     static class NamespaceTestsLibrarySourceProvider implements LibrarySourceProvider {
         @Override
-        public Source getLibrarySource(VersionedIdentifier libraryIdentifier) {
+        public InputStream getLibrarySource(VersionedIdentifier libraryIdentifier) {
             String namespacePath = "NamespaceTests/";
             if (libraryIdentifier.getSystem() != null) {
                 NamespaceInfo namespaceInfo =
@@ -40,15 +38,11 @@ class NamespaceTests {
                     namespacePath,
                     libraryIdentifier.getId(),
                     libraryIdentifier.getVersion() != null ? ("-" + libraryIdentifier.getVersion()) : "");
-            var inputStream = org.cqframework.cql.cql2elm.NamespaceTests.class.getResourceAsStream(libraryFileName);
-            if (inputStream == null) {
-                return null;
-            }
-            return buffered(asSource(inputStream));
+            return org.cqframework.cql.cql2elm.NamespaceTests.class.getResourceAsStream(libraryFileName);
         }
 
         @Override
-        public Source getLibraryContent(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
+        public InputStream getLibraryContent(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
             if (LibraryContentType.CQL == type) {
                 return getLibrarySource(libraryIdentifier);
             }
