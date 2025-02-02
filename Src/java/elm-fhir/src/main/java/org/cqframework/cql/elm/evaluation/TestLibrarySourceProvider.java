@@ -1,23 +1,30 @@
 package org.cqframework.cql.elm.evaluation;
 
-import java.io.InputStream;
+import static kotlinx.io.CoreKt.buffered;
+import static kotlinx.io.JvmCoreKt.asSource;
+
+import kotlinx.io.Source;
 import org.cqframework.cql.cql2elm.LibraryContentType;
 import org.cqframework.cql.cql2elm.LibrarySourceProvider;
 import org.hl7.elm.r1.VersionedIdentifier;
 
 public class TestLibrarySourceProvider implements LibrarySourceProvider {
     @Override
-    public InputStream getLibrarySource(VersionedIdentifier libraryIdentifier) {
+    public Source getLibrarySource(VersionedIdentifier libraryIdentifier) {
         String libraryFileName = String.format(
                 "%s.cql",
                 libraryIdentifier
                         .getId()); // , libraryIdentifier.getVersion() != null ? ("-" + libraryIdentifier.getVersion())
         // : "");
-        return TestLibrarySourceProvider.class.getResourceAsStream(libraryFileName);
+        var inputStream = TestLibrarySourceProvider.class.getResourceAsStream(libraryFileName);
+        if (inputStream == null) {
+            return null;
+        }
+        return buffered(asSource(inputStream));
     }
 
     @Override
-    public InputStream getLibraryContent(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
+    public Source getLibraryContent(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
         if (LibraryContentType.CQL == type) {
             return getLibrarySource(libraryIdentifier);
         }

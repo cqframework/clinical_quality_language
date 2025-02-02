@@ -1,10 +1,8 @@
 package org.cqframework.cql.cql2elm
 
-import java.io.InputStream
-import java.nio.file.Path
 import kotlinx.io.Source
-import kotlinx.io.asSource
-import kotlinx.io.buffered
+import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
 import kotlin.collections.ArrayList
 import org.hl7.cql.model.NamespaceAware
 import org.hl7.cql.model.NamespaceManager
@@ -33,7 +31,7 @@ class PriorityLibrarySourceLoader : LibrarySourceLoader, NamespaceAware, PathAwa
     private var path: Path? = null
 
     override fun setPath(path: Path) {
-        require(path.toFile().isDirectory) { "path '$path' is not a valid directory" }
+        require(SystemFileSystem.metadataOrNull(path)?.isDirectory == true) { "path '$path' is not a valid directory" }
         this.path = path
         for (provider in getProviders()) {
             if (provider is PathAware) {
@@ -67,11 +65,11 @@ class PriorityLibrarySourceLoader : LibrarySourceLoader, NamespaceAware, PathAwa
         libraryIdentifier: VersionedIdentifier,
         type: LibraryContentType
     ): Source? {
-        var content: InputStream?
+        var content: Source?
         for (provider in getProviders()) {
             content = provider.getLibraryContent(libraryIdentifier, type)
             if (content != null) {
-                return content.asSource().buffered()
+                return content
             }
         }
         return null

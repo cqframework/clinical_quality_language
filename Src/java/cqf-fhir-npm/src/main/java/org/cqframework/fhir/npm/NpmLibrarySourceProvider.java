@@ -1,9 +1,13 @@
 package org.cqframework.fhir.npm;
 
+import static kotlinx.io.CoreKt.buffered;
+import static kotlinx.io.JvmCoreKt.asSource;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import kotlinx.io.Source;
 import org.cqframework.cql.cql2elm.LibraryContentType;
 import org.cqframework.cql.cql2elm.LibrarySourceProvider;
 import org.hl7.elm.r1.VersionedIdentifier;
@@ -27,7 +31,7 @@ public class NpmLibrarySourceProvider implements LibrarySourceProvider {
     private ILoggingService logger;
 
     @Override
-    public InputStream getLibrarySource(VersionedIdentifier identifier) {
+    public Source getLibrarySource(VersionedIdentifier identifier) {
         // VersionedIdentifier.id: Name of the library
         // VersionedIdentifier.system: Namespace for the library, as a URL
         // VersionedIdentifier.version: Version of the library
@@ -53,7 +57,7 @@ public class NpmLibrarySourceProvider implements LibrarySourceProvider {
                             if (identifier.getSystem() == null) {
                                 identifier.setSystem(libraryIdentifier.getSystem());
                             }
-                            return new ByteArrayInputStream(a.getData());
+                            return buffered(asSource(new ByteArrayInputStream(a.getData())));
                         }
                     }
                 }
@@ -70,7 +74,7 @@ public class NpmLibrarySourceProvider implements LibrarySourceProvider {
     }
 
     @Override
-    public InputStream getLibraryContent(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
+    public Source getLibraryContent(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
         if (LibraryContentType.CQL == type) {
             return getLibrarySource(libraryIdentifier);
         }

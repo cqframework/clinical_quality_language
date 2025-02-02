@@ -2,7 +2,7 @@
 
 package org.cqframework.cql.cql2elm
 
-import java.nio.file.Path
+import kotlinx.io.files.Path
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import org.cqframework.cql.cql2elm.model.*

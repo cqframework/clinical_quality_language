@@ -2,10 +2,9 @@
 
 package org.cqframework.cql.cql2elm
 
-import java.io.*
-import java.nio.file.Path
-import kotlinx.io.asSource
 import kotlinx.io.buffered
+import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
 import org.cqframework.cql.cql2elm.model.Version
 import org.hl7.cql.model.ModelIdentifier
 import org.hl7.cql.model.ModelInfoProvider
@@ -23,10 +22,14 @@ class DefaultModelInfoProvider() : ModelInfoProvider, PathAware {
         this.setPath(path)
     }
 
+    constructor(path: java.nio.file.Path) : this() {
+        this.setPath(Path(path.toString()))
+    }
+
     private var path: Path? = null
 
     override fun setPath(path: Path) {
-        require(path.toFile().isDirectory) { "path '$path' is not a valid directory" }
+        require(SystemFileSystem.metadataOrNull(path)?.isDirectory == true) { "path '$path' is not a valid directory" }
         this.path = path
     }
 
@@ -43,20 +46,14 @@ class DefaultModelInfoProvider() : ModelInfoProvider, PathAware {
         if (currentPath != null) {
             val modelName = modelIdentifier.id
             val modelVersion = modelIdentifier.version
-            val modelPath =
-                currentPath.resolve(
-                    "${modelName.lowercase()}-modelinfo${if (modelVersion != null) "-$modelVersion" else ""}.xml"
-                )
-            var modelFile = modelPath.toFile()
-            if (!modelFile.exists()) {
-                val filter = FilenameFilter { _, name ->
-                    name.startsWith(modelName.lowercase() + "-modelinfo") && name.endsWith(".xml")
-                }
-                var mostRecentFile: File? = null
+            val modelPath = Path(currentPath, "${modelName.lowercase()}-modelinfo${if (modelVersion != null) "-$modelVersion" else ""}.xml")
+            var modelFile = modelPath
+            if (SystemFileSystem.exists(modelFile)) {
+                var mostRecentFile: Path? = null
                 var mostRecent: Version? = null
                 try {
                     val requestedVersion = if (modelVersion == null) null else Version(modelVersion)
-                    for (file in currentPath.toFile().listFiles(filter)!!) {
+                    for (file in SystemFileSystem.list(currentPath).filter { it.name.startsWith(modelName.lowercase() + "-modelinfo") && it.name.endsWith(".xml") }) {
                         var fileName = file.name
                         val indexOfExtension = fileName.lastIndexOf(".")
                         if (indexOfExtension >= 0) {
@@ -100,16 +97,13 @@ class DefaultModelInfoProvider() : ModelInfoProvider, PathAware {
                     // version resolution
                 }
             }
-            try {
-                val inputStream: InputStream = FileInputStream(modelFile)
-                return ModelInfoReaderFactory.getReader("application/xml")
-                    ?.read(inputStream.asSource().buffered())
-            } catch (e: IOException) {
+            if (!SystemFileSystem.exists(modelFile)) {
                 throw IllegalArgumentException(
-                    "Could not load definition for model info ${modelIdentifier.id}.",
-                    e
+                    "Could not load definition for model info ${modelIdentifier.id}."
                 )
             }
+            val source = SystemFileSystem.source(modelFile)
+            return ModelInfoReaderFactory.getReader("application/xml").read(source.buffered())
         }
         return null
     }

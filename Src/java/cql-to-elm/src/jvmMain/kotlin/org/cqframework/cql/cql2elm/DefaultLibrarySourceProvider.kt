@@ -2,8 +2,10 @@
 
 package org.cqframework.cql.cql2elm
 
-import java.io.*
-import java.nio.file.Path
+import kotlinx.io.Source
+import kotlinx.io.buffered
+import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
 import org.cqframework.cql.cql2elm.model.Version
 import org.hl7.elm.r1.VersionedIdentifier
 
@@ -14,6 +16,8 @@ import org.hl7.elm.r1.VersionedIdentifier
 // <major>[.<minor>[.<patch>]]
 // Usage outside these boundaries will result in errors or incorrect behavior.
 class DefaultLibrarySourceProvider(path: Path) : LibrarySourceProvider, PathAware {
+    constructor(path: java.nio.file.Path) : this(Path(path.toString()))
+
     private var path: Path? = null
 
     init {
@@ -21,33 +25,28 @@ class DefaultLibrarySourceProvider(path: Path) : LibrarySourceProvider, PathAwar
     }
 
     override fun setPath(path: Path) {
-        require(path.toFile().isDirectory) { "path '$path' is not a valid directory" }
+        require(SystemFileSystem.metadataOrNull(path)?.isDirectory == true) { "path '$path' is not a valid directory" }
         this.path = path
     }
 
     @Suppress("CyclomaticComplexMethod", "NestedBlockDepth", "LongMethod")
-    override fun getLibrarySource(libraryIdentifier: VersionedIdentifier): InputStream? {
+    override fun getLibrarySource(libraryIdentifier: VersionedIdentifier): Source? {
         val currentPath = path
         if (currentPath != null) {
             val libraryName: String = libraryIdentifier.id!!
             val libraryPath: Path =
-                currentPath.resolve(
-                    "$libraryName${
-                        if (libraryIdentifier.version != null) ("-" + libraryIdentifier.version)
-                        else ""
-                    }.cql"
-                )
-            var libraryFile: File? = libraryPath.toFile()
-            if (libraryFile?.exists() != true) {
-                val filter = FilenameFilter { _, name ->
-                    name.startsWith(libraryName) && name.endsWith(".cql")
-                }
-                var mostRecentFile: File? = null
+                Path(currentPath, "$libraryName${
+                    if (libraryIdentifier.version != null) ("-" + libraryIdentifier.version)
+                    else ""
+                }.cql")
+            var libraryFile: Path? = libraryPath
+            if (!SystemFileSystem.exists(libraryPath)) {
+                var mostRecentFile: Path? = null
                 var mostRecent: Version? = null
                 val requestedVersion: Version? =
                     if (libraryIdentifier.version == null) null
                     else Version(libraryIdentifier.version!!)
-                for (file: File in currentPath.toFile().listFiles(filter)!!) {
+                for (file: Path in SystemFileSystem.list(currentPath).filter { it.name.startsWith(libraryName) && it.name.endsWith(".cql") }) {
                     var fileName: String = file.name
                     val indexOfExtension: Int = fileName.lastIndexOf(".")
                     if (indexOfExtension >= 0) {
@@ -94,15 +93,13 @@ class DefaultLibrarySourceProvider(path: Path) : LibrarySourceProvider, PathAwar
                 // }
                 libraryFile = mostRecentFile
             }
-            try {
-                if (libraryFile != null) {
-                    return FileInputStream(libraryFile)
+            if (libraryFile != null) {
+                if (!SystemFileSystem.exists(libraryFile)) {
+                    throw IllegalArgumentException(
+                        "Could not load source for library ${libraryIdentifier.id}."
+                    )
                 }
-            } catch (e: FileNotFoundException) {
-                throw IllegalArgumentException(
-                    "Could not load source for library ${libraryIdentifier.id}.",
-                    e
-                )
+                return SystemFileSystem.source(libraryFile).buffered()
             }
         }
         return null
@@ -111,7 +108,7 @@ class DefaultLibrarySourceProvider(path: Path) : LibrarySourceProvider, PathAwar
     override fun getLibraryContent(
         libraryIdentifier: VersionedIdentifier,
         type: LibraryContentType
-    ): InputStream? {
+    ): Source? {
         if (LibraryContentType.CQL == type) {
             return getLibrarySource(libraryIdentifier)
         }

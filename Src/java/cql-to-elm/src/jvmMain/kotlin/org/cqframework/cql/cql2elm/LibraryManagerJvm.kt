@@ -21,4 +21,14 @@ constructor(
 ) {
     override val librarySourceLoader: LibrarySourceLoader
         get() = super.librarySourceLoader as LibrarySourceLoader
+
+    override fun getCompilerForLibrary(
+        libraryIdentifier: VersionedIdentifier
+    ): CommonCqlCompiler {
+        return CqlCompiler(
+            libraryIdentifier.system?.let { namespaceManager.getNamespaceInfoFromUri(it) },
+            libraryIdentifier,
+            this
+        )
+    }
 }

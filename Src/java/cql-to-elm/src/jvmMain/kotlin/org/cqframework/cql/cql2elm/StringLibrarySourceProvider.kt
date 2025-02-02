@@ -1,7 +1,7 @@
 package org.cqframework.cql.cql2elm
 
-import java.io.ByteArrayInputStream
-import java.io.InputStream
+import kotlinx.io.Source
+import org.cqframework.cql.cql2elm.utils.asSource
 import kotlin.collections.ArrayList
 import org.hl7.elm.r1.VersionedIdentifier
 
@@ -10,7 +10,7 @@ import org.hl7.elm.r1.VersionedIdentifier
  * library content as a source.
  */
 class StringLibrarySourceProvider(private val libraries: List<String>) : LibrarySourceProvider {
-    override fun getLibrarySource(libraryIdentifier: VersionedIdentifier): InputStream? {
+    override fun getLibrarySource(libraryIdentifier: VersionedIdentifier): Source? {
         val id: String = libraryIdentifier.id!!
         val version: String? = libraryIdentifier.version
         val maybeQuotedIdPattern = "(\"$id\"|$id)"
@@ -32,13 +32,13 @@ class StringLibrarySourceProvider(private val libraries: List<String>) : Library
                     Ensure that there are no duplicates in the input set."""
                 .trimMargin()
         }
-        return if (matches.size == 1) ByteArrayInputStream(matches[0].toByteArray()) else null
+        return if (matches.size == 1) matches[0].asSource() else null
     }
 
     override fun getLibraryContent(
         libraryIdentifier: VersionedIdentifier,
         type: LibraryContentType
-    ): InputStream? {
+    ): Source? {
         if (LibraryContentType.CQL == type) {
             return getLibrarySource(libraryIdentifier)
         }

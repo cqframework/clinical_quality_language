@@ -1,14 +1,12 @@
 package org.cqframework.cql.cql2elm
 
 import kotlinx.io.Source
-import kotlinx.io.asSource
-import kotlinx.io.buffered
-import java.nio.file.Path
+import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
 import kotlin.collections.ArrayList
 import org.hl7.cql.model.NamespaceAware
 import org.hl7.cql.model.NamespaceManager
 import org.hl7.elm.r1.VersionedIdentifier
-import java.io.InputStream
 
 /**
  * Used by LibraryManager to manage a set of library source providers that resolve library includes
@@ -32,7 +30,7 @@ internal class DefaultLibrarySourceLoader : LibrarySourceLoader, NamespaceAware,
     private var path: Path? = null
 
     override fun setPath(path: Path) {
-        require(path.toFile().isDirectory) { "path '$path' is not a valid directory" }
+        require(SystemFileSystem.metadataOrNull(path)?.isDirectory == true) { "path '$path' is not a valid directory" }
 
         this.path = path
         for (provider in getProviders()) {
@@ -60,7 +58,7 @@ internal class DefaultLibrarySourceLoader : LibrarySourceLoader, NamespaceAware,
     }
 
     override fun getLibrarySource(libraryIdentifier: VersionedIdentifier): Source {
-        var source: InputStream? = null
+        var source: Source? = null
         for (provider: LibrarySourceProvider in getProviders()) {
             val localSource = provider.getLibrarySource(libraryIdentifier)
             if (localSource != null) {
@@ -73,7 +71,7 @@ internal class DefaultLibrarySourceLoader : LibrarySourceLoader, NamespaceAware,
         requireNotNull(source) {
             "Could not load source for library ${libraryIdentifier.id}, version ${libraryIdentifier.version}."
         }
-        return source.asSource().buffered()
+        return source
     }
 
     private var namespaceManager: NamespaceManager? = null

@@ -1,6 +1,6 @@
 package org.cqframework.cql.cql2elm
 
-import java.nio.file.Path
+import kotlinx.io.files.Path
 
 interface PathAware {
     fun setPath(path: Path)

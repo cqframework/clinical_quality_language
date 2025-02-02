@@ -103,12 +103,7 @@ open class CommonLibraryManager(
                         libraryIdentifier.id!!,
                         libraryIdentifier.version
                     )
-            val compiler =
-                CommonCqlCompiler(
-                    libraryIdentifier.system?.let { namespaceManager.getNamespaceInfoFromUri(it) },
-                    libraryIdentifier,
-                    this
-                )
+            val compiler = getCompilerForLibrary(libraryIdentifier)
             compiler.run(cqlSource)
             errors?.addAll((compiler.exceptions)!!)
             result = compiler.compiledLibrary
@@ -137,7 +132,17 @@ open class CommonLibraryManager(
         }
     }
 
-    private fun sortStatements(compiledLibrary: CompiledLibrary) {
+    protected open fun getCompilerForLibrary(
+        libraryIdentifier: VersionedIdentifier
+    ): CommonCqlCompiler {
+        return CommonCqlCompiler(
+            libraryIdentifier.system?.let { namespaceManager.getNamespaceInfoFromUri(it) },
+            libraryIdentifier,
+            this
+        )
+    }
+
+    fun sortStatements(compiledLibrary: CompiledLibrary) {
         if (compiledLibrary.library!!.statements == null) {
             return
         }

@@ -5,7 +5,6 @@ package org.cqframework.cql.cql2elm
 import java.io.*
 import org.antlr.v4.kotlinruntime.CharStream
 import org.antlr.v4.kotlinruntime.CharStreams
-import org.cqframework.cql.elm.serializing.xmlutil.getElmLibraryWriter
 import org.hl7.cql.model.*
 import org.hl7.elm.r1.*
 

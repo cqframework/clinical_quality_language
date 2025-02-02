@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ca.uhn.fhir.context.FhirContext;
-import java.io.InputStream;
+import kotlinx.io.Source;
 import org.hl7.cql.model.ModelIdentifier;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
@@ -100,7 +100,7 @@ public class NpmPackageManagerTests implements ILoggingService {
 
         LibraryLoader reader = new LibraryLoader("4.0.1");
         NpmLibrarySourceProvider sp = new NpmLibrarySourceProvider(pm.getNpmList(), reader, this);
-        InputStream is = sp.getLibrarySource(new VersionedIdentifier()
+        Source is = sp.getLibrarySource(new VersionedIdentifier()
                 .withSystem("http://somewhere.org/fhir/uv/myig")
                 .withId("example"));
         // assertNotNull(is);
