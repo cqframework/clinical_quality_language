@@ -16,8 +16,24 @@ import org.hl7.fhir.utilities.IniFile;
 import org.hl7.fhir.utilities.TextFile;
 import org.hl7.fhir.utilities.Utilities;
 import org.hl7.fhir.utilities.VersionUtilities;
+import org.slf4j.LoggerFactory;
 
 public class IGContext {
+    private static class DefaultLogger implements ILoggingService {
+        private final org.slf4j.Logger log = LoggerFactory.getLogger(IGContext.class);
+
+        public void logMessage(String s) {
+            log.warn(s);
+        }
+
+        public void logDebugMessage(LogCategory logCategory, String s) {
+            log.debug("{}: {}", logCategory, s);
+        }
+
+        public boolean isDebugLogging() {
+            return log.isDebugEnabled();
+        }
+    }
 
     private ILoggingService logger;
 
@@ -67,6 +83,10 @@ public class IGContext {
 
     public IGContext(ILoggingService logger) {
         this.logger = logger;
+    }
+
+    public IGContext() {
+        this.logger = new DefaultLogger();
     }
 
     public void initializeFromIg(String rootDir, String igPath, String fhirVersion) {
