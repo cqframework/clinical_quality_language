@@ -98,7 +98,8 @@ public class Main {
             libraryManager.getLibrarySourceLoader().registerProvider(sp);
 
             String packageId = igContext.getPackageId();
-            String canonicalBase = igContext.getCanonicalBase();;
+            String canonicalBase = igContext.getCanonicalBase();
+
             if (packageId != null && !packageId.isEmpty() && canonicalBase != null && !canonicalBase.isEmpty()) {
                 namespaceInfo = new NamespaceInfo(packageId, canonicalBase);
             }
