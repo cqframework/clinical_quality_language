@@ -185,3 +185,6 @@ define TestQuantityWithComparator3: Quantity { value: decimal { value: 10.0 }, u
 define TestQuantityWithComparator3Converts: FHIRHelpers.ToInterval(TestQuantityWithComparator3) = Interval[10 'mg', null]
 define TestQuantityWithComparator4: Quantity { value: decimal { value: 10.0 }, unit: string { value: 'mg' }, comparator: FHIR.QuantityComparator { value: '>' } }
 define TestQuantityWithComparator4Converts: FHIRHelpers.ToInterval(TestQuantityWithComparator4) = Interval(10 'mg', null]
+
+// Quantity through ToValue
+define TestQuantityWithToValue: FHIRHelpers.ToValue(FHIR.Quantity { value: FHIR.decimal { value: 1001 }, unit: FHIR.string { value: 'mg/dL' } }) >= 200 'mg/dL'

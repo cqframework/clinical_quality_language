@@ -180,6 +180,7 @@ public class Dstu2FhirModelResolver
         }
 
         // TODO: These should really be using profile validation
+        // TODO: These should not return true unless the constraints that are used in the as logic below return true
         if (value instanceof UriType) {
             switch (type.getSimpleName()) {
                 case "UrlType":
@@ -194,6 +195,8 @@ public class Dstu2FhirModelResolver
             }
         }
 
+        // TODO: These should really be using profile validation
+        // TODO: These should not return true unless the constraints that are used in the as logic below return true
         if (value instanceof IntegerType) {
             switch (type.getSimpleName()) {
                 case "PositiveIntType":
@@ -203,6 +206,8 @@ public class Dstu2FhirModelResolver
             }
         }
 
+        // TODO: These should really be using profile validation
+        // TODO: These should not return true unless the constraints that are used in the as logic below return true
         if (value instanceof StringType) {
             switch (type.getSimpleName()) {
                 case "CodeType":
@@ -214,6 +219,8 @@ public class Dstu2FhirModelResolver
             }
         }
 
+        // TODO: These should really be using profile validation
+        // TODO: These should not return true unless the constraints that are used in the as logic below return true
         if (value instanceof Quantity) {
             switch (type.getSimpleName()) {
                 case "Age":
@@ -288,24 +295,39 @@ public class Dstu2FhirModelResolver
                     Age age = new Age();
                     age.setValue(quantity.getValue());
                     age.setCode(quantity.getCode());
-                    // TODO: Ensure age constraints are met, else return null
+                    age.setUnit(quantity.getUnit());
+                    age.setSystem(quantity.getSystem());
+                    age.setComparator(quantity.getComparator());
+                    // TODO: Ensure age constraints are met, else return null (Except that we can't do this
+                    // unless we can be assured that the same constraints have resulted in true when we called 'is'
+                    // As it's written now, any Quantity will return true if you ask if it's an Age
+                    // Same is true for all the subtypes, and so that's a type-system level issue waiting to bite
                     return age;
                 case "Distance":
                     Distance distance = new Distance();
                     distance.setValue(quantity.getValue());
                     distance.setCode(quantity.getCode());
+                    distance.setUnit(quantity.getUnit());
+                    distance.setSystem(quantity.getSystem());
+                    distance.setComparator(quantity.getComparator());
                     // TODO: Ensure distance constraints are met, else return null
                     return distance;
                 case "Duration":
                     Duration duration = new Duration();
                     duration.setValue(quantity.getValue());
                     duration.setCode(quantity.getCode());
+                    duration.setUnit(quantity.getUnit());
+                    duration.setSystem(quantity.getSystem());
+                    duration.setComparator(quantity.getComparator());
                     // TODO: Ensure duration constraints are met, else return null
                     return duration;
                 case "Count":
                     Count count = new Count();
                     count.setValue(quantity.getValue());
                     count.setCode(quantity.getCode());
+                    count.setUnit(quantity.getUnit());
+                    count.setSystem(quantity.getSystem());
+                    count.setComparator(quantity.getComparator());
                     // TODO: Ensure count constraints are met, else return null
                     return count;
                 case "SimpleQuantity":
