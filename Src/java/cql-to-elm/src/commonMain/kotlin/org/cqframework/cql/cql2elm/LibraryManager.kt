@@ -12,12 +12,17 @@ import org.cqframework.cql.cql2elm.ucum.UcumService
 import org.cqframework.cql.elm.serializing.xmlutil.getElmLibraryReader
 import org.hl7.cql.model.NamespaceManager
 import org.hl7.elm.r1.*
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
+import kotlin.js.JsName
 import kotlin.jvm.JvmOverloads
 
 /**
  * Manages a set of CQL libraries. As new library references are encountered during compilation, the
  * corresponding source is obtained via librarySourceLoader, compiled and cached for later use.
  */
+@OptIn(ExperimentalJsExport::class)
+@JsExport
 open class CommonLibraryManager(
     val modelManager: CommonModelManager,
     val namespaceManager: NamespaceManager,
@@ -45,6 +50,7 @@ open class CommonLibraryManager(
         }
     }
 
+    @JsName("resolveLibrary1")
     fun resolveLibrary(
         libraryIdentifier: VersionedIdentifier,
         cacheMode: CacheMode
@@ -59,6 +65,7 @@ open class CommonLibraryManager(
     }
 
     @JvmOverloads
+    @JsName("resolveLibrary2")
     fun resolveLibrary(
         libraryIdentifier: VersionedIdentifier,
         errors: MutableList<CqlCompilerException> = ArrayList(),

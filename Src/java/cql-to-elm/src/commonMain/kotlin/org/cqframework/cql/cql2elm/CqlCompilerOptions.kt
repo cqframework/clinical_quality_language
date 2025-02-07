@@ -1,9 +1,14 @@
 package org.cqframework.cql.cql2elm
 
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
+import kotlin.js.JsName
 import kotlin.jvm.JvmStatic
 
 /** translation options for Cql source files */
+@OptIn(ExperimentalJsExport::class)
+@JsExport
 class CqlCompilerOptions {
     enum class Options {
         EnableDateRangeOptimization,
@@ -111,6 +116,7 @@ class CqlCompilerOptions {
      */
     var collapseDataRequirements: Boolean = false
 
+    @JsName("constructor2")
     constructor()
 
     /**
@@ -120,11 +126,13 @@ class CqlCompilerOptions {
      * @param options
      */
     @Suppress("SpreadOperator")
+    @JsName("constructor3")
     constructor(
         vararg options: Options
     ) : this(CqlCompilerException.ErrorSeverity.Info, SignatureLevel.None, *options)
 
     @Suppress("SpreadOperator")
+    @JsName("constructor4")
     constructor(
         errorLevel: CqlCompilerException.ErrorSeverity?,
         vararg options: Options
@@ -138,6 +146,7 @@ class CqlCompilerOptions {
      * @param options
      */
     @Suppress("SpreadOperator")
+    @JsName("constructor5")
     constructor(
         errorLevel: CqlCompilerException.ErrorSeverity?,
         signatureLevel: SignatureLevel,
@@ -149,6 +158,7 @@ class CqlCompilerOptions {
     }
 
     @Suppress("LongParameterList")
+    @JsName("constructor6")
     /**
      * Constructor using defined SignatureLevel, and Compatibility Level, boolean set to true
      * denotes addition of predefined option
