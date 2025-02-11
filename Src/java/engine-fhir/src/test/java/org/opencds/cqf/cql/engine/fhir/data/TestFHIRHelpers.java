@@ -464,5 +464,11 @@ class TestFHIRHelpers extends FhirExecutionTestBase {
         value = results.forExpression("TestQuantityWithComparator4Converts").value();
         assertThat(value, instanceOf(Boolean.class));
         assertThat(value, is(true));
+
+        // define TestQuantityWithToValue: FHIRHelpers.ToValue(FHIR.Quantity { value: FHIR.decimal { value: 1001 },
+        // unit: FHIR.string { value: 'mg/dL' } }) >= 200 'mg/dL'
+        value = results.forExpression("TestQuantityWithToValue").value();
+        assertThat(value, instanceOf(Boolean.class));
+        assertThat(value, is(true));
     }
 }
