@@ -8,8 +8,12 @@ import org.cqframework.cql.cql2elm.model.CompiledLibrary
 import org.cqframework.cql.elm.serializing.xmlutil.getElmLibraryWriter
 import org.hl7.cql.model.*
 import org.hl7.elm.r1.*
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
 import kotlin.jvm.JvmStatic
 
+@OptIn(ExperimentalJsExport::class)
+@JsExport
 open class CommonCqlTranslator(
     namespaceInfo: NamespaceInfo?,
     sourceInfo: VersionedIdentifier?,

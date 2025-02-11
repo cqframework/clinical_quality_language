@@ -6,16 +6,16 @@ import org.cqframework.cql.cql2elm.model.SystemModel
 import org.cqframework.cql.cql2elm.ucum.UcumService
 import org.cqframework.cql.cql2elm.utils.asSource
 import org.cqframework.cql.elm.serializing.BigDecimal
-import org.cqframework.cql.elm.serializing.xmlutil.getElmLibraryWriter
 import org.hl7.cql.model.ModelIdentifier
 import org.hl7.cql.model.NamespaceManager
 import org.hl7.elm.r1.VersionedIdentifier
 import org.hl7.elm_modelinfo.r1.serializing.xmlutil.ModelInfoReaderProvider
+import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsExport
 
+@OptIn(ExperimentalJsExport::class)
 @JsExport
-fun cqlToElm(
-    cqlText: String,
+fun getSimpleLibraryManager(
     getModelXml: (
         id: String,
         system: String?,
@@ -27,14 +27,32 @@ fun cqlToElm(
         version: String?
     ) -> String? = { _, _, _ -> null },
     validateUnit: (unit: String) -> String? = { null },
-    outputContentType: String = LibraryContentType.JSON.mimeType()
-): String {
+    cqlCompilerOptions: CqlCompilerOptions = CqlCompilerOptions.defaultOptions()
+): CommonLibraryManager {
     val namespaceManager = NamespaceManager()
 
+    val librarySourceLoader = object : CommonLibrarySourceLoader {
+        override fun getLibrarySource(libraryIdentifier: VersionedIdentifier): Source? {
+            val cql = getLibraryCql(libraryIdentifier.id!!, libraryIdentifier.system, libraryIdentifier.version)
+            return cql?.asSource()
+        }
+
+        override fun getLibraryContent(
+            libraryIdentifier: VersionedIdentifier,
+            type: LibraryContentType
+        ): Source? {
+            return null
+        }
+    }
+
     val modelManager = object : CommonModelManager {
+        private val globalCache: MutableMap<ModelIdentifier, Model> = HashMap()
         private val modelsByUri: MutableMap<String, Model> = HashMap()
 
         override fun resolveModel(modelIdentifier: ModelIdentifier): Model {
+            if (globalCache.containsKey(modelIdentifier)) {
+                return globalCache[modelIdentifier]!!
+            }
             val modelXml = getModelXml(modelIdentifier.id, modelIdentifier.system, modelIdentifier.version)
             val modelInfo = ModelInfoReaderProvider().create("application/xml").read(modelXml)
             val model = if (modelIdentifier.id == "System") {
@@ -43,6 +61,7 @@ fun cqlToElm(
                 Model(modelInfo, this)
             }
             modelsByUri[model.modelInfo.url!!] = model
+            globalCache[modelIdentifier] = model
             return model
         }
 
@@ -59,24 +78,10 @@ fun cqlToElm(
         }
     }
 
-    val librarySourceLoader = object : CommonLibrarySourceLoader {
-        override fun getLibrarySource(libraryIdentifier: VersionedIdentifier): Source? {
-            val cql = getLibraryCql(libraryIdentifier.id!!, libraryIdentifier.system, libraryIdentifier.version)
-            return cql?.asSource()
-        }
-
-        override fun getLibraryContent(
-            libraryIdentifier: VersionedIdentifier,
-            type: LibraryContentType
-        ): Source? {
-            return getLibrarySource(libraryIdentifier)
-        }
-    }
-
     val ucumService = object : UcumService {
         override fun convert(value: BigDecimal, sourceUnit: String, destUnit: String): BigDecimal {
-            // We don't expect convert to be called during translation
-            throw IllegalStateException("Unexpected call to convert")
+            // We don't expect `convert` to be called during translation
+            error("Unexpected call to convert")
         }
 
         override fun validate(unit: String): String? {
@@ -84,9 +89,5 @@ fun cqlToElm(
         }
     }
 
-    val libraryManager = CommonLibraryManager(modelManager, namespaceManager, librarySourceLoader, lazy { ucumService })
-
-    val translator = CommonCqlTranslator.fromText(cqlText, libraryManager)
-
-    return getElmLibraryWriter(outputContentType).writeAsString(translator.toELM()!!)
+    return CommonLibraryManager(modelManager, namespaceManager, librarySourceLoader, lazy { ucumService }, cqlCompilerOptions)
 }
