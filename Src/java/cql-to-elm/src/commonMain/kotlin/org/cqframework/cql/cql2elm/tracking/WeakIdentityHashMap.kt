@@ -8,8 +8,12 @@ package org.cqframework.cql.cql2elm.tracking
  */
 expect class WeakIdentityHashMap<K : Any, V>() {
     val size: Int
+
     operator fun get(key: K): V?
+
     operator fun set(key: K, value: V)
+
     fun remove(key: K): V?
+
     fun getOrPut(key: K, defaultValue: () -> V): V
 }

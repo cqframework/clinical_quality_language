@@ -1,10 +1,10 @@
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
 import org.antlr.v4.kotlinruntime.CharStream
 import org.antlr.v4.kotlinruntime.CharStreams
 import org.antlr.v4.kotlinruntime.CommonTokenStream
 import org.cqframework.cql.gen.cqlLexer
 import org.cqframework.cql.gen.cqlParser
-import kotlin.js.ExperimentalJsExport
-import kotlin.js.JsExport
 
 @OptIn(ExperimentalJsExport::class)
 @JsExport

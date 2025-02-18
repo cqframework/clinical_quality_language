@@ -320,9 +320,6 @@ define x: [Observation]
                           outputContentType,
                         }));
                       }}
-                      disabled={
-                        outputContentType === "xml" // TODO: translator.toXml() hangs in JS in some cases
-                      }
                     />
                     {outputContentType.toUpperCase()}
                   </label>

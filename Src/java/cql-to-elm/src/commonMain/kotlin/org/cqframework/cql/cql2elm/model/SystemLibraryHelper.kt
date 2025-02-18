@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm.model
 
+import kotlin.jvm.JvmStatic
 import org.cqframework.cql.cql2elm.TypeBuilder
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.hl7.cql.model.IntervalType
@@ -9,7 +10,6 @@ import org.hl7.cql.model.TypeParameter
 import org.hl7.elm.r1.FunctionDef
 import org.hl7.elm.r1.OperandDef
 import org.hl7.elm.r1.VersionedIdentifier
-import kotlin.jvm.JvmStatic
 
 @Suppress("LargeClass", "LongMethod")
 object SystemLibraryHelper {

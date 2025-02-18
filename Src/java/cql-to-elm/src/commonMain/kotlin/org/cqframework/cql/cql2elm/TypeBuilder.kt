@@ -2,8 +2,8 @@
 
 package org.cqframework.cql.cql2elm
 
-import nl.adaptivity.xmlutil.QName
 import kotlin.collections.ArrayList
+import nl.adaptivity.xmlutil.QName
 import org.cqframework.cql.cql2elm.model.Model
 import org.cqframework.cql.cql2elm.tracking.Trackable.withResultType
 import org.cqframework.cql.elm.IdObjectFactory

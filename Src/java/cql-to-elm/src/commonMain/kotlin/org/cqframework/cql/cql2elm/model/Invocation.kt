@@ -1,9 +1,9 @@
 package org.cqframework.cql.cql2elm.model
 
+import kotlin.jvm.JvmSuppressWildcards
 import org.hl7.cql.model.DataType
 import org.hl7.elm.r1.Expression
 import org.hl7.elm.r1.TypeSpecifier
-import kotlin.jvm.JvmSuppressWildcards
 
 /**
  * The Invocation interface is used to represent an invocation of an operator or function in the ELM

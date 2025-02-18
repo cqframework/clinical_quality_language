@@ -2,6 +2,7 @@ package org.cqframework.cql.cql2elm.model
 
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import kotlin.reflect.KClass
 import org.hl7.cql.model.DataType
 import org.hl7.cql.model.NamespaceManager
 import org.hl7.cql_annotations.r1.Annotation
@@ -17,7 +18,6 @@ import org.hl7.elm.r1.ParameterDef
 import org.hl7.elm.r1.UsingDef
 import org.hl7.elm.r1.ValueSetDef
 import org.hl7.elm.r1.VersionedIdentifier
-import kotlin.reflect.KClass
 
 @Suppress("TooManyFunctions")
 class CompiledLibrary {

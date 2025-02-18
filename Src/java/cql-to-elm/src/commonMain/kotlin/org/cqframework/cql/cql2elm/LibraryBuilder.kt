@@ -2,6 +2,9 @@
 
 package org.cqframework.cql.cql2elm
 
+import kotlin.jvm.JvmField
+import kotlin.jvm.JvmOverloads
+import kotlin.reflect.KClass
 import nl.adaptivity.xmlutil.QName
 import org.cqframework.cql.cql2elm.model.*
 import org.cqframework.cql.cql2elm.model.SystemLibraryHelper.load
@@ -17,9 +20,6 @@ import org.hl7.cql.model.*
 import org.hl7.cql_annotations.r1.*
 import org.hl7.cql_annotations.r1.ObjectFactory
 import org.hl7.elm.r1.*
-import kotlin.jvm.JvmField
-import kotlin.jvm.JvmOverloads
-import kotlin.reflect.KClass
 
 private const val FP_THIS = "\$this"
 
@@ -2400,7 +2400,9 @@ class LibraryBuilder(
         return typeBuilder.dataTypeToQName(type)
     }
 
-    private fun dataTypesToTypeSpecifiers(types: kotlin.collections.List<DataType>): kotlin.collections.List<TypeSpecifier> {
+    private fun dataTypesToTypeSpecifiers(
+        types: kotlin.collections.List<DataType>
+    ): kotlin.collections.List<TypeSpecifier> {
         return typeBuilder.dataTypesToTypeSpecifiers(types)
     }
 
@@ -2737,8 +2739,7 @@ class LibraryBuilder(
         if (!inLiteralContext() && inSpecificContext()) {
             val resolvedIdentifierContext: ResolvedIdentifierContext =
                 resolve(currentExpressionContext())
-            val optParameterDef =
-                resolvedIdentifierContext.getElementOfType(ParameterDef::class)
+            val optParameterDef = resolvedIdentifierContext.getElementOfType(ParameterDef::class)
             if (optParameterDef != null) {
                 val contextParameter: ParameterDef = optParameterDef
                 checkLiteralContext()
@@ -3578,8 +3579,7 @@ class LibraryBuilder(
         if (globalMatch != null || localMatch != null) {
             val matchedContext = if (globalMatch != null) globalMatch else localMatch!!
             val matchedOnFunctionOverloads =
-                matchedContext.trackableSubclass == FunctionDef::class &&
-                    element is FunctionDef
+                matchedContext.trackableSubclass == FunctionDef::class && element is FunctionDef
             if (!matchedOnFunctionOverloads) {
                 reportWarning(
                     resolveWarningMessage(matchedContext.identifier, identifier, element),
@@ -3588,7 +3588,8 @@ class LibraryBuilder(
             }
         }
         if (shouldAddIdentifierContext(element)) {
-            val trackableOrNull: KClass<out Element>? = if (element == null) null else element::class
+            val trackableOrNull: KClass<out Element>? =
+                if (element == null) null else element::class
             // Sometimes the underlying Trackable doesn't resolve in the calling code
             if (scope == IdentifierScope.GLOBAL) {
                 globalIdentifiers.add(IdentifierContext(identifier, trackableOrNull))

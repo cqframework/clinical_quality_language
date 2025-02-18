@@ -10,10 +10,15 @@ plugins {
 
 repositories {
     mavenCentral()
+    maven {
+        url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+    }
 }
 
 spotless {
     kotlin {
+        target("**/*.kt")
+        targetExclude("**/generated/**/*.kt")
         ktfmt().kotlinlangStyle()
     }
 }
@@ -73,8 +78,8 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation("io.github.pdvrieze.xmlutil:core:0.90.3")
-                implementation("io.github.pdvrieze.xmlutil:serialization:0.90.3")
+                implementation("io.github.pdvrieze.xmlutil:core:0.90.4-20241203.194031-11")
+                implementation("io.github.pdvrieze.xmlutil:serialization:0.90.4-20241203.194031-11")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.0")
                 implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.6.0")
                 implementation("io.github.oshai:kotlin-logging:7.0.3")
@@ -83,15 +88,15 @@ kotlin {
 
         jvmMain {
             dependencies {
-                implementation("io.github.pdvrieze.xmlutil:serialization-jvm:0.90.3")
+                implementation("io.github.pdvrieze.xmlutil:serialization-jvm:0.90.4-20241203.194031-11")
                 implementation("org.jetbrains.kotlinx:kotlinx-io-core-jvm:0.6.0")
             }
         }
 
         jsMain {
             dependencies {
-                implementation("io.github.pdvrieze.xmlutil:core-js:0.90.3")
-                implementation("io.github.pdvrieze.xmlutil:serialization-js:0.90.3")
+                implementation("io.github.pdvrieze.xmlutil:core-js:0.90.4-20241203.194031-11")
+                implementation("io.github.pdvrieze.xmlutil:serialization-js:0.90.4-20241203.194031-11")
             }
         }
 

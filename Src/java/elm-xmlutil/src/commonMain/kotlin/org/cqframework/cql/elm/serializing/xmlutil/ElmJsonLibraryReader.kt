@@ -9,6 +9,7 @@ class ElmJsonLibraryReader : ElmLibraryReader {
     override fun read(string: String): Library {
         return json.decodeFromString(LibraryWrapper.serializer(), string).library
     }
+
     override fun read(source: Source): Library {
         return read(source.readString())
     }

@@ -15,6 +15,7 @@ actual class ElmXmlLibraryWriter actual constructor() : ElmLibraryWriter {
             library
         )
     }
+
     actual override fun writeAsString(library: Library): String {
         return xml.encodeToString(Library.serializer(), library)
     }

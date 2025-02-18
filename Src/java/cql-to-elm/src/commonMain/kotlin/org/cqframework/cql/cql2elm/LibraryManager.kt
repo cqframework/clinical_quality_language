@@ -2,20 +2,20 @@
 
 package org.cqframework.cql.cql2elm
 
-import kotlinx.io.Source
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
+import kotlin.js.JsName
+import kotlin.jvm.JvmOverloads
+import kotlinx.io.Source
 import org.cqframework.cql.cql2elm.model.CompiledLibrary
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.cqframework.cql.cql2elm.ucum.UcumService
 import org.cqframework.cql.elm.serializing.xmlutil.getElmLibraryReader
 import org.hl7.cql.model.NamespaceManager
 import org.hl7.elm.r1.*
-import kotlin.js.ExperimentalJsExport
-import kotlin.js.JsExport
-import kotlin.js.JsName
-import kotlin.jvm.JvmOverloads
 
 /**
  * Manages a set of CQL libraries. As new library references are encountered during compilation, the
@@ -101,31 +101,31 @@ open class CommonLibraryManager(
         }
         val libraryPath: String =
             NamespaceManager.getPath(libraryIdentifier.system, libraryIdentifier.id!!)
-            val cqlSource =
-                librarySourceLoader.getLibrarySource(libraryIdentifier)
-                    ?: throw CqlIncludeException(
-                        """Could not load source for library ${libraryIdentifier.id},
+        val cqlSource =
+            librarySourceLoader.getLibrarySource(libraryIdentifier)
+                ?: throw CqlIncludeException(
+                    """Could not load source for library ${libraryIdentifier.id},
                                  version ${libraryIdentifier.version}.""",
-                        libraryIdentifier.system,
-                        libraryIdentifier.id!!,
-                        libraryIdentifier.version
-                    )
-            val compiler = getCompilerForLibrary(libraryIdentifier)
-            compiler.run(cqlSource)
-            errors?.addAll((compiler.exceptions)!!)
-            result = compiler.compiledLibrary
-            if (
-                (libraryIdentifier.version != null &&
-                    libraryIdentifier.version != result!!.identifier!!.version)
-            ) {
-                throw CqlIncludeException(
-                    """Library $libraryPath was included as version ${libraryIdentifier.version}, 
-                        but version ${result.identifier!!.version} of the library was found.""",
                     libraryIdentifier.system,
                     libraryIdentifier.id!!,
                     libraryIdentifier.version
                 )
-            }
+        val compiler = getCompilerForLibrary(libraryIdentifier)
+        compiler.run(cqlSource)
+        errors?.addAll((compiler.exceptions)!!)
+        result = compiler.compiledLibrary
+        if (
+            (libraryIdentifier.version != null &&
+                libraryIdentifier.version != result!!.identifier!!.version)
+        ) {
+            throw CqlIncludeException(
+                """Library $libraryPath was included as version ${libraryIdentifier.version}, 
+                        but version ${result.identifier!!.version} of the library was found.""",
+                libraryIdentifier.system,
+                libraryIdentifier.id!!,
+                libraryIdentifier.version
+            )
+        }
         if (result == null) {
             throw CqlIncludeException(
                 "Could not load source for library $libraryPath.",
@@ -181,9 +181,7 @@ open class CommonLibraryManager(
         type: LibraryContentType,
         @Suppress("UnusedParameter") options: CqlCompilerOptions
     ): CompiledLibrary? {
-        val library =
-            getElmLibraryReader(type.mimeType())
-                .read(librarySource)
+        val library = getElmLibraryReader(type.mimeType()).read(librarySource)
         var compiledLibrary: CompiledLibrary? = null
         if (checkBinaryCompatibility(library)) {
             compiledLibrary = generateCompiledLibrary(library)

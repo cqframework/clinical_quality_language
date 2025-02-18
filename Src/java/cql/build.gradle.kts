@@ -8,15 +8,6 @@ plugins {
 }
 
 kotlin {
-    // Add Kotlin/WASM compilation target.
-    // The output is in the JS packages directory.
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
-        browser { }
-        binaries.executable()
-        generateTypeScriptDefinitions()
-    }
-
     sourceSets {
         commonMain {
             kotlin {

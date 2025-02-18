@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm.model
 
+import kotlin.reflect.KClass
+import kotlin.reflect.cast
 import org.hl7.elm.r1.CodeDef
 import org.hl7.elm.r1.CodeSystemDef
 import org.hl7.elm.r1.ConceptDef
@@ -10,8 +12,6 @@ import org.hl7.elm.r1.OperandDef
 import org.hl7.elm.r1.ParameterDef
 import org.hl7.elm.r1.TupleElementDefinition
 import org.hl7.elm.r1.ValueSetDef
-import kotlin.reflect.KClass
-import kotlin.reflect.cast
 
 /**
  * Context for resolved identifiers containing the identifier, the resolved element (if non-null) as

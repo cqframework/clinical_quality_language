@@ -2,10 +2,10 @@ package org.cqframework.cql.cql2elm
 
 import java.io.InputStream
 import java.nio.file.Path
+import kotlin.collections.ArrayList
 import kotlinx.io.Source
 import kotlinx.io.asSource
 import kotlinx.io.buffered
-import kotlin.collections.ArrayList
 import org.hl7.cql.model.NamespaceAware
 import org.hl7.cql.model.NamespaceManager
 import org.hl7.elm.r1.VersionedIdentifier

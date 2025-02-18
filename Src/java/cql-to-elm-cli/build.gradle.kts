@@ -9,8 +9,6 @@ application {
 
 dependencies {
     implementation(project(":cql-to-elm"))
-    // Is this needed once JAXB and Jackson are replaced with XmlUtil?
-    // implementation(project(":cql-to-elm-jackson"))
     implementation(project(":quick"))
     implementation(project(":qdm"))
     implementation(project(":model-xmlutil"))

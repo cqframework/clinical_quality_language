@@ -1,10 +1,10 @@
 package org.cqframework.cql.cql2elm.model
 
+import kotlin.jvm.JvmOverloads
 import org.hl7.cql.model.ClassTypeElement
 import org.hl7.cql.model.DataType
 import org.hl7.cql.model.SearchType
 import org.hl7.cql.model.TupleTypeElement
-import kotlin.jvm.JvmOverloads
 
 /** Created by Bryn on 4/19/2019. */
 data class PropertyResolution(

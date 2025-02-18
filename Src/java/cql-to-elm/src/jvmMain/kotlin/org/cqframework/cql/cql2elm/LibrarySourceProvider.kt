@@ -1,7 +1,7 @@
 package org.cqframework.cql.cql2elm
 
-import java.util.*
 import java.io.InputStream
+import java.util.*
 import org.hl7.elm.r1.VersionedIdentifier
 
 interface LibrarySourceProvider {

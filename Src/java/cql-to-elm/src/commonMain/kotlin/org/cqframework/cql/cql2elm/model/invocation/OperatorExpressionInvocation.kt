@@ -1,8 +1,8 @@
 package org.cqframework.cql.cql2elm.model.invocation
 
+import kotlin.jvm.JvmSuppressWildcards
 import org.hl7.elm.r1.OperatorExpression
 import org.hl7.elm.r1.TypeSpecifier
-import kotlin.jvm.JvmSuppressWildcards
 
 /** Created by Bryn on 4/12/2018. */
 abstract class OperatorExpressionInvocation<O : OperatorExpression>(expression: O) :
