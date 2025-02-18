@@ -1,10 +1,10 @@
 package org.cqframework.cql.cql2elm.tracking
 
-import org.hl7.cql.model.DataType
-import org.hl7.elm.r1.Element
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 import kotlin.uuid.Uuid.Companion.random
+import org.hl7.cql.model.DataType
+import org.hl7.elm.r1.Element
 
 /**
  * This class is used to track the resultType of an element. It implements a few extension
@@ -17,7 +17,8 @@ import kotlin.uuid.Uuid.Companion.random
 @OptIn(ExperimentalUuidApi::class)
 object Trackable {
 
-    private data class ExtensionProperties constructor(
+    private data class ExtensionProperties
+    constructor(
         val trackerId: Uuid = random(),
         val trackbacks: MutableList<TrackBack> = arrayListOf(),
         var resultType: DataType? = null

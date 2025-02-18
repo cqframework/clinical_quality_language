@@ -10,7 +10,7 @@ import org.hl7.cql.model.*
 
 /** Created by Bryn on 12/29/2016. */
 @Suppress("TooManyFunctions")
-class ModelManager: CommonModelManager {
+class ModelManager : CommonModelManager {
     val namespaceManager: NamespaceManager
     private var path: Path? = null
     var modelInfoLoader: ModelInfoLoader? = null

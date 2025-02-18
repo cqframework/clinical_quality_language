@@ -302,7 +302,9 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
             is ChoiceTypeSpecifier -> visitChoiceTypeSpecifier(elm, context)
             is ParameterTypeSpecifier -> visitParameterTypeSpecifier(elm, context)
             else ->
-                throw IllegalArgumentException("Unknown TypeSpecifier type: " + elm::class.simpleName)
+                throw IllegalArgumentException(
+                    "Unknown TypeSpecifier type: " + elm::class.simpleName
+                )
         }
     }
 
@@ -461,7 +463,8 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
             is Tuple -> visitTuple(elm, context)
             is AggregateExpression -> visitAggregateExpression(elm, context)
             is OperatorExpression -> visitOperatorExpression(elm, context)
-            else -> throw IllegalArgumentException("Unknown Expression type: " + elm::class.simpleName)
+            else ->
+                throw IllegalArgumentException("Unknown Expression type: " + elm::class.simpleName)
         }
     }
 
@@ -661,7 +664,10 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
      */
     override fun visitTernaryExpression(elm: TernaryExpression, context: C): T {
         if (elm is ReplaceMatches) return visitReplaceMatches(elm, context)
-        else throw IllegalArgumentException("Unknown TernaryExpression type: " + elm::class.simpleName)
+        else
+            throw IllegalArgumentException(
+                "Unknown TernaryExpression type: " + elm::class.simpleName
+            )
     }
 
     /**
@@ -680,7 +686,9 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
             is Intersect -> visitIntersect(elm, context)
             is Union -> visitUnion(elm, context)
             else ->
-                throw IllegalArgumentException("Unknown NaryExpression type: " + elm::class.simpleName)
+                throw IllegalArgumentException(
+                    "Unknown NaryExpression type: " + elm::class.simpleName
+                )
         }
     }
 
@@ -3353,7 +3361,8 @@ abstract class BaseElmVisitor<T, C> : ElmVisitor<T, C> {
             is ByExpression -> {
                 visitByExpression(elm, context)
             }
-            else -> throw IllegalArgumentException("Unknown SortByItem type: " + elm::class.simpleName)
+            else ->
+                throw IllegalArgumentException("Unknown SortByItem type: " + elm::class.simpleName)
         }
     }
 

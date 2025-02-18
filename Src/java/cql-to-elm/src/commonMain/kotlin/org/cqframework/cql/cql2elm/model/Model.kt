@@ -1,12 +1,12 @@
 package org.cqframework.cql.cql2elm.model
 
+import kotlin.jvm.JvmOverloads
 import org.cqframework.cql.cql2elm.CommonModelManager
 import org.hl7.cql.model.ClassType
 import org.hl7.cql.model.DataType
 import org.hl7.cql.model.ModelContext
 import org.hl7.cql.model.NamedType
 import org.hl7.elm_modelinfo.r1.ModelInfo
-import kotlin.jvm.JvmOverloads
 
 open class Model(val modelInfo: ModelInfo, modelManager: CommonModelManager?) {
     private var index: Map<String, DataType> = HashMap()

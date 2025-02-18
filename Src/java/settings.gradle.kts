@@ -25,8 +25,6 @@ include(
     "quick",
     "cql-to-elm",
     "cql-to-elm-cli",
-    // Is this needed once JAXB and Jackson are replaced with XmlUtil?
-    // "cql-to-elm-jackson",
     "elm-fhir",
     "ucum",
     "tools:cql-formatter",

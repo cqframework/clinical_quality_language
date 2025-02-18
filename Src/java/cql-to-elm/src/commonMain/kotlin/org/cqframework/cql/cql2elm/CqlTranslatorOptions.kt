@@ -2,7 +2,6 @@ package org.cqframework.cql.cql2elm
 
 import kotlin.jvm.JvmStatic
 
-
 class CqlTranslatorOptions {
     enum class Format {
         XML,

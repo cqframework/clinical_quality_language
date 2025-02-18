@@ -2,6 +2,7 @@
 
 package org.cqframework.cql.cql2elm.preprocessor
 
+import kotlin.jvm.JvmField
 import org.antlr.v4.kotlinruntime.ParserRuleContext
 import org.antlr.v4.kotlinruntime.TokenStream
 import org.antlr.v4.kotlinruntime.misc.Interval
@@ -28,7 +29,6 @@ import org.hl7.cql_annotations.r1.Narrative
 import org.hl7.cql_annotations.r1.ObjectFactory
 import org.hl7.cql_annotations.r1.Tag
 import org.hl7.elm.r1.*
-import kotlin.jvm.JvmField
 
 /** Common functionality used by [CqlPreprocessor] and [Cql2ElmVisitor] */
 @Suppress(
@@ -810,7 +810,10 @@ abstract class CqlPreprocessorElmCommonVisitor(
             return true
         }
 
-        fun getTypeIdentifier(qualifiers: kotlin.collections.List<String>, identifier: String): String {
+        fun getTypeIdentifier(
+            qualifiers: kotlin.collections.List<String>,
+            identifier: String
+        ): String {
             if (qualifiers.size > 1) {
                 var result: String? = null
                 for (i in 1 until qualifiers.size) {

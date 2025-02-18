@@ -1,19 +1,19 @@
 package org.cqframework.cql.grammar
 
-import org.cqframework.cql.gen.cqlParser.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
 import org.antlr.v4.kotlinruntime.CharStream
 import org.antlr.v4.kotlinruntime.CharStreams
 import org.antlr.v4.kotlinruntime.CommonTokenStream
 import org.antlr.v4.kotlinruntime.tree.ParseTree
 import org.cqframework.cql.gen.cqlLexer
 import org.cqframework.cql.gen.cqlParser
-import kotlin.test.Test
-import kotlin.test.assertEquals
+import org.cqframework.cql.gen.cqlParser.*
 
 /**
- * GrammarTest ensures that the grammar (and generated parsers) work as expected.  If non-compatible changes are made
- * to the grammar, these tests should fail.  If the change is intentional, modify the tests to pass-- otherwise, fix
- * the grammar.
+ * GrammarTest ensures that the grammar (and generated parsers) work as expected. If non-compatible
+ * changes are made to the grammar, these tests should fail. If the change is intentional, modify
+ * the tests to pass-- otherwise, fix the grammar.
  */
 internal class GrammarTest {
     @Test
@@ -28,12 +28,13 @@ internal class GrammarTest {
         assertEquals("<", cmpExpr.getChild(1)?.text)
 
         val termExpression: TermExpressionContext = cmpExpr.expression(0) as TermExpressionContext
-        val termExpressionTerm: TermExpressionTermContext = termExpression.expressionTerm() as TermExpressionTermContext
-        val invocationTerm: InvocationTermContext = termExpressionTerm.term() as InvocationTermContext
-        val functionInvocation: FunctionInvocationContext = invocationTerm.invocation() as FunctionInvocationContext
-        assertEquals(
-            "AgeAt", functionInvocation.function().referentialIdentifier().text
-        )
+        val termExpressionTerm: TermExpressionTermContext =
+            termExpression.expressionTerm() as TermExpressionTermContext
+        val invocationTerm: InvocationTermContext =
+            termExpressionTerm.term() as InvocationTermContext
+        val functionInvocation: FunctionInvocationContext =
+            invocationTerm.invocation() as FunctionInvocationContext
+        assertEquals("AgeAt", functionInvocation.function().referentialIdentifier().text)
 
         val argExpression: TermExpressionContext =
             functionInvocation.function().paramList()?.expression(0) as TermExpressionContext

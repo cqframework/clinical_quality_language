@@ -2,11 +2,11 @@ package org.cqframework.cql.cql2elm.model
 
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import kotlin.jvm.JvmStatic
 import org.hl7.cql.model.ChoiceType
 import org.hl7.cql.model.DataType
 import org.hl7.cql.model.IntervalType
 import org.hl7.cql.model.ListType
-import kotlin.jvm.JvmStatic
 
 @Suppress("TooManyFunctions")
 class ConversionMap {

@@ -1,9 +1,9 @@
 package org.cqframework.cql.cql2elm
 
+import kotlin.jvm.JvmStatic
 import org.hl7.cql_annotations.r1.CqlToElmBase
 import org.hl7.cql_annotations.r1.CqlToElmInfo
 import org.hl7.elm.r1.Library
-import kotlin.jvm.JvmStatic
 
 /** This class provides functions for extracting and parsing CQL Compiler Options from a Library */
 object CompilerOptions {
@@ -37,8 +37,8 @@ object CompilerOptions {
     }
 
     /**
-     * Parses a string representing CQL compiler Options into a Set. The string is expected to
-     * be a comma-delimited list of values from the CqlCompiler.Options enumeration. For example
+     * Parses a string representing CQL compiler Options into a Set. The string is expected to be a
+     * comma-delimited list of values from the CqlCompiler.Options enumeration. For example
      * "EnableListPromotion, EnableListDemotion".
      *
      * @param compilerOptions the string to parse
@@ -49,8 +49,7 @@ object CompilerOptions {
         if (compilerOptions.isNullOrEmpty()) {
             return null
         }
-        val optionSet =
-            mutableSetOf<CqlCompilerOptions.Options>()
+        val optionSet = mutableSetOf<CqlCompilerOptions.Options>()
         val options =
             compilerOptions.trim { it <= ' ' }.split(",".toRegex()).dropLastWhile { it.isEmpty() }
         for (option in options) {

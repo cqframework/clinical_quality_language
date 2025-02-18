@@ -1,9 +1,9 @@
 package org.cqframework.cql.elm.evaluating
 
+import kotlin.jvm.JvmStatic
 import nl.adaptivity.xmlutil.QName
 import org.hl7.elm.r1.Expression
 import org.hl7.elm.r1.TypeSpecifier
-import kotlin.jvm.JvmStatic
 
 @Suppress("TooManyFunctions")
 object SimpleElmEvaluator {

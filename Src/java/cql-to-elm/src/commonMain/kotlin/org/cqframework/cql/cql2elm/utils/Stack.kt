@@ -25,6 +25,7 @@ open class Stack<T> {
     }
 
     fun isEmpty(): Boolean = stack.isEmpty()
+
     fun empty(): Boolean = stack.isEmpty()
 
     fun isNotEmpty(): Boolean = stack.isNotEmpty()

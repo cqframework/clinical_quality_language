@@ -2,7 +2,6 @@ package org.cqframework.cql.cql2elm.ucum
 
 import org.cqframework.cql.elm.serializing.BigDecimal
 
-
 interface UcumService {
     /**
      * Converts a quantity from one unit to another

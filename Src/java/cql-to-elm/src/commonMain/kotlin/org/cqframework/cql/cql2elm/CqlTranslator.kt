@@ -2,15 +2,15 @@
 
 package org.cqframework.cql.cql2elm
 
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
+import kotlin.jvm.JvmStatic
 import org.antlr.v4.kotlinruntime.CharStream
 import org.antlr.v4.kotlinruntime.CharStreams
 import org.cqframework.cql.cql2elm.model.CompiledLibrary
 import org.cqframework.cql.elm.serializing.xmlutil.getElmLibraryWriter
 import org.hl7.cql.model.*
 import org.hl7.elm.r1.*
-import kotlin.js.ExperimentalJsExport
-import kotlin.js.JsExport
-import kotlin.jvm.JvmStatic
 
 @OptIn(ExperimentalJsExport::class)
 @JsExport
@@ -89,14 +89,12 @@ open class CommonCqlTranslator(
 
         @JvmStatic
         fun convertToXml(library: Library): String {
-            return getElmLibraryWriter(LibraryContentType.XML.mimeType())
-                .writeAsString(library)
+            return getElmLibraryWriter(LibraryContentType.XML.mimeType()).writeAsString(library)
         }
 
         @JvmStatic
         fun convertToJson(library: Library): String {
-            return getElmLibraryWriter(LibraryContentType.JSON.mimeType())
-                .writeAsString(library)
+            return getElmLibraryWriter(LibraryContentType.JSON.mimeType()).writeAsString(library)
         }
     }
 }

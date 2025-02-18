@@ -13,7 +13,7 @@ class CqlTranslator(
     sourceInfo: VersionedIdentifier?,
     `is`: CharStream,
     libraryManager: LibraryManager
-): CommonCqlTranslator(namespaceInfo, sourceInfo, `is`, libraryManager) {
+) : CommonCqlTranslator(namespaceInfo, sourceInfo, `is`, libraryManager) {
     @Suppress("TooManyFunctions")
     companion object {
         @JvmStatic

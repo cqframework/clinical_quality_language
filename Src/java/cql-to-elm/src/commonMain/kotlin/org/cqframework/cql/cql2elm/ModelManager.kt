@@ -5,8 +5,11 @@ import org.hl7.cql.model.ModelIdentifier
 
 interface CommonModelManager {
     fun resolveModel(modelIdentifier: ModelIdentifier): Model
+
     fun resolveModel(modelName: String): Model
+
     fun resolveModel(modelName: String, version: String? = null): Model
+
     fun resolveModelByUri(namespaceUri: String): Model
 
     /*

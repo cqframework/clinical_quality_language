@@ -1,7 +1,7 @@
 package org.cqframework.cql.cql2elm
 
-import org.hl7.elm.r1.Element
 import kotlin.reflect.KClass
+import org.hl7.elm.r1.Element
 
 /**
  * Simple POJO using for identifier hider that maintains the identifier and Trackable type of the
@@ -25,9 +25,7 @@ class IdentifierContext(val identifier: String, val trackableSubclass: KClass<ou
     }
 
     override fun toString(): String {
-        return listOf(
-            "identifier='$identifier'",
-            "elementSubclass=$trackableSubclass"
-        ).joinToString(", ", IdentifierContext::class.simpleName + "[", "]")
+        return listOf("identifier='$identifier'", "elementSubclass=$trackableSubclass")
+            .joinToString(", ", IdentifierContext::class.simpleName + "[", "]")
     }
 }

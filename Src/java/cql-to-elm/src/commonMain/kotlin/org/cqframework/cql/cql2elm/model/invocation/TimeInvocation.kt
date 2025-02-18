@@ -1,8 +1,8 @@
 package org.cqframework.cql.cql2elm.model.invocation
 
+import kotlin.jvm.JvmStatic
 import org.hl7.elm.r1.Expression
 import org.hl7.elm.r1.Time
-import kotlin.jvm.JvmStatic
 
 class TimeInvocation(expression: Time) : OperatorExpressionInvocation<Time>(expression) {
     override var operands: List<Expression>

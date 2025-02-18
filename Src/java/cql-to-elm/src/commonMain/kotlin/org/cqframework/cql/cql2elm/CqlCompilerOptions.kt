@@ -1,10 +1,10 @@
 package org.cqframework.cql.cql2elm
 
-import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel
 import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsExport
 import kotlin.js.JsName
 import kotlin.jvm.JvmStatic
+import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel
 
 /** translation options for Cql source files */
 @OptIn(ExperimentalJsExport::class)
@@ -116,8 +116,7 @@ class CqlCompilerOptions {
      */
     var collapseDataRequirements: Boolean = false
 
-    @JsName("constructor2")
-    constructor()
+    @JsName("constructor2") constructor()
 
     /**
      * Constructor with arbitrary number of options utilizing default ErrorSeverity (Info) and

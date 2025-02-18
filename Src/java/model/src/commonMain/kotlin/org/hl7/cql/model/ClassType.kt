@@ -19,6 +19,7 @@ open class ClassType(
     constructor(
         name: String,
     ) : this(name, null, mutableListOf(), mutableListOf())
+
     init {
         require(name.isNotEmpty()) { "name can not be empty" }
     }

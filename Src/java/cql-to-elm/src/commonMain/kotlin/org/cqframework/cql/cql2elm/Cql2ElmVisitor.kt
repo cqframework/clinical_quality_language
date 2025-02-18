@@ -257,9 +257,7 @@ class Cql2ElmVisitor(
             "public" -> AccessModifier.PUBLIC
             "private" -> AccessModifier.PRIVATE
             else ->
-                throw IllegalArgumentException(
-                    "Unknown access modifier ${ctx.text.lowercase()}."
-                )
+                throw IllegalArgumentException("Unknown access modifier ${ctx.text.lowercase()}.")
         }
     }
 
@@ -814,7 +812,8 @@ class Cql2ElmVisitor(
          * ('Z' | ('+' | '-') [0-9][0-9]':'[0-9][0-9])? // timezone offset
          * ;
          */
-        val dateTimePattern = Regex(
+        val dateTimePattern =
+            Regex(
                 "(\\d{4})(((-(\\d{2}))(((-(\\d{2}))((T)((\\d{2})(:(\\d{2})(:(\\d{2})(\\.(\\d+))?)?)?)?)?)|(T))?)|(T))?((Z)|(([+-])(\\d{2})(:(\\d{2}))))?"
             )
         // 1-------234-5--------678-9--------11--11-------1---1-------1---1-------1---1-----------------2------2----22---22-----2-------2---2-----------
@@ -1614,7 +1613,9 @@ class Cql2ElmVisitor(
         return exp
     }
 
-    override fun visitQualifiedIdentifier(ctx: QualifiedIdentifierContext): kotlin.collections.List<String?> {
+    override fun visitQualifiedIdentifier(
+        ctx: QualifiedIdentifierContext
+    ): kotlin.collections.List<String?> {
         // Return the list of qualified identifiers for resolution by the containing
         // element
         val identifiers: MutableList<String?> = ArrayList()
@@ -3070,7 +3071,8 @@ class Cql2ElmVisitor(
                 .withTemplateId(classType.identifier)
                 .withCodeProperty(codePath)
         if (ctx.contextIdentifier() != null) {
-            val identifiers: kotlin.collections.List<String> = visit(ctx.contextIdentifier()!!).cast()
+            val identifiers: kotlin.collections.List<String> =
+                visit(ctx.contextIdentifier()!!).cast()
             val contextExpression: Expression? = resolveQualifiedIdentifier(identifiers)
             retrieve.context = contextExpression
         }
@@ -3902,7 +3904,8 @@ class Cql2ElmVisitor(
         } else if (ctx.retrieve() != null) {
             visit(ctx.retrieve()!!)
         } else {
-            val identifiers: kotlin.collections.List<String> = visit(ctx.qualifiedIdentifierExpression()!!).cast()
+            val identifiers: kotlin.collections.List<String> =
+                visit(ctx.qualifiedIdentifierExpression()!!).cast()
             resolveQualifiedIdentifier(identifiers)
         }
     }
@@ -3950,7 +3953,9 @@ class Cql2ElmVisitor(
         return resolveMemberIdentifier(identifier)
     }
 
-    private fun resolveQualifiedIdentifier(identifiers: kotlin.collections.List<String>): Expression? {
+    private fun resolveQualifiedIdentifier(
+        identifiers: kotlin.collections.List<String>
+    ): Expression? {
         var current: Expression? = null
         for (identifier in identifiers) {
             current =
@@ -4362,9 +4367,7 @@ class Cql2ElmVisitor(
                 try {
                     libraryBuilder.popIdentifier()
                 } catch (e: Exception) {
-                    logger.warn(e) {
-                        "Error popping identifier"
-                    }
+                    logger.warn(e) { "Error popping identifier" }
                 }
             }
             // Intentionally do _not_ pop the function name, it needs to remain in global scope!

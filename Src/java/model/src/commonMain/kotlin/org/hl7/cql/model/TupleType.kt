@@ -7,7 +7,8 @@ class TupleType private constructor(val elements: Set<TupleTypeElement>) : BaseD
     val sortedElements = elements.sortedWith(compareBy { it.name })
 
     override fun isSubTypeOf(other: DataType): Boolean {
-        return if (other is TupleType) { sortedElements.zipAll(other.sortedElements) { a, b -> a.isSubTypeOf(b) }
+        return if (other is TupleType) {
+            sortedElements.zipAll(other.sortedElements) { a, b -> a.isSubTypeOf(b) }
         } else super.isSubTypeOf(other)
     }
 
@@ -45,8 +46,7 @@ class TupleType private constructor(val elements: Set<TupleTypeElement>) : BaseD
     override fun instantiate(context: InstantiationContext): DataType {
         return if (isGeneric) {
             TupleType(
-                elements
-                    .map { TupleTypeElement(it.name, it.type.instantiate(context), false) }
+                elements.map { TupleTypeElement(it.name, it.type.instantiate(context), false) }
             )
         } else this
     }

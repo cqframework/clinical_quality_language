@@ -2,7 +2,6 @@ package org.cqframework.cql.cql2elm.tracking
 
 import java.lang.ref.WeakReference
 
-
 /**
  * This is a map that uses weak references for keys. This means that if the key is no longer
  * strongly referenced anywhere in the program, it will be garbage collected and the entry will be

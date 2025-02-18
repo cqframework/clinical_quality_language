@@ -28,9 +28,7 @@ data class FunctionHeader(val functionDef: FunctionDef, val resultType: TypeSpec
     }
 
     override fun toString(): String {
-        return listOf(
-            "functionDef=$functionDef",
-            "resultType=$resultType"
-        ).joinToString(", ", FunctionHeader::class.simpleName + "[", "]")
+        return listOf("functionDef=$functionDef", "resultType=$resultType")
+            .joinToString(", ", FunctionHeader::class.simpleName + "[", "]")
     }
 }
