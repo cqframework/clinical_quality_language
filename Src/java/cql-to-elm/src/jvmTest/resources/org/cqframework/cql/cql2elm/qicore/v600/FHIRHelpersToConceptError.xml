@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:qdm43="urn:healthit-gov:qdm:v4_3" xmlns:qdm53="urn:healthit-gov:qdm:v5_3" xmlns:a="urn:hl7-org:cql-annotations:r1" localId="0">
+   <annotation translatorVersion="3.22.0-SNAPSHOT" translatorOptions="EnableAnnotations,EnableLocators,DisableListDemotion,DisableListPromotion" signatureLevel="All" xsi:type="a:CqlToElmInfo"/>
+   <annotation xsi:type="a:Annotation">
+      <a:s r="233">
+         <a:s>library FHIRHelpersToConceptError version '0.2.000'</a:s>
+      </a:s>
+   </annotation>
+   <identifier id="FHIRHelpersToConceptError" version="0.2.000"/>
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localId="1" localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
+      <def localId="206" locator="3:1-3:28" localIdentifier="QICore" uri="http://hl7.org/fhir">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="206">
+               <a:s>using </a:s>
+               <a:s>
+                  <a:s>QICore</a:s>
+               </a:s>
+               <a:s> version '6.0.0'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+   </usings>
+   <includes>
+      <def localId="207" locator="5:1-5:54" localIdentifier="FHIRHelpers" path="FHIRHelpers" version="4.0.1">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="207">
+               <a:s>include </a:s>
+               <a:s>
+                  <a:s>FHIRHelpers</a:s>
+               </a:s>
+               <a:s> version '4.0.1' called FHIRHelpers</a:s>
+            </a:s>
+         </annotation>
+      </def>
+   </includes>
+   <parameters>
+      <def localId="208" locator="7:1-7:112" name="Measurement Period" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="208">
+               <a:s>parameter &quot;Measurement Period&quot; </a:s>
+               <a:s r="226">
+                  <a:s>Interval&lt;</a:s>
+                  <a:s r="227">
+                     <a:s>DateTime</a:s>
+                  </a:s>
+                  <a:s>></a:s>
+               </a:s>
+               <a:s> default </a:s>
+               <a:s r="225">
+                  <a:s r="209">Interval[@2025-01-01T00:00:00Z, @2026-01-01T00:00:00Z)</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <default localId="225" locator="7:59-7:112" lowClosed="true" highClosed="false" xsi:type="Interval">
+            <low localId="209" locator="7:68-7:88" xsi:type="DateTime">
+               <year localId="210" valueType="t:Integer" value="2025" xsi:type="Literal"/>
+               <month localId="211" valueType="t:Integer" value="1" xsi:type="Literal"/>
+               <day localId="212" valueType="t:Integer" value="1" xsi:type="Literal"/>
+               <hour localId="213" valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <minute localId="214" valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <second localId="215" valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <timezoneOffset localId="216" valueType="t:Decimal" value="0.0" xsi:type="Literal"/>
+            </low>
+            <high localId="217" locator="7:91-7:111" xsi:type="DateTime">
+               <year localId="218" valueType="t:Integer" value="2026" xsi:type="Literal"/>
+               <month localId="219" valueType="t:Integer" value="1" xsi:type="Literal"/>
+               <day localId="220" valueType="t:Integer" value="1" xsi:type="Literal"/>
+               <hour localId="221" valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <minute localId="222" valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <second localId="223" valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <timezoneOffset localId="224" valueType="t:Decimal" value="0.0" xsi:type="Literal"/>
+            </high>
+         </default>
+         <parameterTypeSpecifier localId="226" locator="7:32-7:49" xsi:type="IntervalTypeSpecifier">
+            <pointType localId="227" locator="7:41-7:48" name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </parameterTypeSpecifier>
+      </def>
+   </parameters>
+   <contexts>
+      <def localId="231" locator="9:1-9:15" name="Patient"/>
+   </contexts>
+   <statements>
+      <def localId="229" locator="9:1-9:15" name="Patient" context="Patient">
+         <expression localId="230" xsi:type="SingletonFrom">
+            <operand localId="228" locator="9:1-9:15" dataType="fhir:Patient" templateId="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-patient" xsi:type="Retrieve"/>
+         </expression>
+      </def>
+      <def localId="233" locator="11:1-13:44" name="Minimal Repro" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="233">
+               <a:s>define &quot;Minimal Repro&quot;:
+  </a:s>
+               <a:s r="244">
+                  <a:s>
+                     <a:s r="234">
+                        <a:s r="235">
+                           <a:s r="235">
+                              <a:s>[MedicationNotRequested]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> NoStatinTherapyOrdered</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="236">
+                     <a:s>return </a:s>
+                     <a:s r="239">
+                        <a:s r="237">
+                           <a:s>NoStatinTherapyOrdered</a:s>
+                        </a:s>
+                        <a:s>.</a:s>
+                        <a:s r="239">
+                           <a:s>reasonCode</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="244" locator="12:3-13:44" xsi:type="Query">
+            <source localId="234" locator="12:3-12:49" alias="NoStatinTherapyOrdered">
+               <expression localId="235" locator="12:3-12:26" dataType="fhir:MedicationRequest" templateId="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationnotrequested" xsi:type="Retrieve"/>
+            </source>
+            <return localId="236" locator="13:5-13:44">
+               <expression localId="239" locator="13:12-13:44" xsi:type="Query">
+                  <source localId="240" alias="$this">
+                     <expression localId="238" path="reasonCode" scope="NoStatinTherapyOrdered" xsi:type="Property"/>
+                  </source>
+                  <return localId="243" distinct="false">
+                     <expression localId="241" name="ToConcept" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                        <operand localId="242" name="$this" xsi:type="AliasRef"/>
+                     </expression>
+                  </return>
+               </expression>
+            </return>
+         </expression>
+      </def>
+   </statements>
+</library>
+
+

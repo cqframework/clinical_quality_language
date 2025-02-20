@@ -3486,8 +3486,9 @@
             <binding name="MedicationRequestPerformerType" description="Identifies the type of individual that is desired to administer the medication." strength="Example"/>
         </element>
         <element name="recorder" elementType="QICore.Reference" description="Person who entered the request" definition="The person who entered the order on behalf of another individual for example in the case of a verbal or a telephone order."/>
-        <element name="reasonCode" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)" description="(QI-Core)(USCDI) Reason or indication for ordering or not ordering the medication" definition="The reason or the indication for ordering or not ordering the medication." comment="This could be a diagnosis code. If a full condition record exists or additional detail is needed, use reasonReference.">
-            <binding description="The reason the medication was not requested" strength="Extensible"/>
+        <element name="reasonCode" target="FHIRHelpers.ToConcept(%value)" description="Reason or indication for ordering or not ordering the medication" definition="The reason or the indication for ordering or not ordering the medication." comment="This could be a diagnosis code. If a full condition record exists or additional detail is needed, use reasonReference.">
+            <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
+            <binding name="MedicationRequestReason" description="A coded concept indicating why the medication was ordered." strength="Example"/>
         </element>
         <element name="reasonReference" description="(QI-Core)(USCDI) US Core Condition or Observation that supports the prescription" definition="Condition or observation that supports why the medication was ordered." comment="This is a reference to a condition or observation that is the reason for the medication order.  If only a code exists, use reasonCode.">
             <elementTypeSpecifier xsi:type="ListTypeSpecifier" elementType="QICore.Reference"/>

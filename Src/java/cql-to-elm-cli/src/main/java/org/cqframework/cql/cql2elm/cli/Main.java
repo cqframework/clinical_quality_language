@@ -22,8 +22,14 @@ import joptsimple.OptionSpec;
 import org.cqframework.cql.cql2elm.*;
 import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider;
 import org.cqframework.cql.cql2elm.tracking.TrackBack;
+import org.cqframework.fhir.npm.LibraryLoader;
+import org.cqframework.fhir.npm.NpmLibrarySourceProvider;
+import org.cqframework.fhir.npm.NpmPackageManager;
+import org.cqframework.fhir.utilities.IGContext;
 import org.hl7.cql.model.ModelIdentifier;
 import org.hl7.cql.model.ModelInfoProvider;
+import org.hl7.cql.model.NamespaceInfo;
+import org.hl7.cql.model.NamespaceManager;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReaderFactory;
 
@@ -58,6 +64,7 @@ public class Main {
             Path outPath,
             org.cqframework.cql.cql2elm.CqlTranslator.Format format,
             ModelInfoProvider modelProvider,
+            IGContext igContext,
             CqlCompilerOptions options)
             throws IOException {
 
@@ -81,7 +88,28 @@ public class Main {
                 .registerModelInfoProvider(new DefaultModelInfoProvider(inPath.getParent()), true);
         libraryManager.getLibrarySourceLoader().registerProvider(new DefaultLibrarySourceProvider(inPath.getParent()));
         libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
-        org.cqframework.cql.cql2elm.CqlTranslator translator = fromFile(inPath.toFile(), libraryManager);
+
+        NamespaceManager namespaceManager = libraryManager.getNamespaceManager();
+        NamespaceInfo namespaceInfo = null;
+        if (igContext != null) {
+            NpmPackageManager pm = new NpmPackageManager(igContext.getSourceIg());
+            pm.getNpmList().forEach(npm -> {
+                NamespaceInfo newNamespace = new NamespaceInfo(npm.id(), npm.canonical());
+                namespaceManager.ensureNamespaceRegistered(newNamespace);
+            });
+            LibraryLoader reader = new LibraryLoader(igContext.getFhirVersion());
+            NpmLibrarySourceProvider sp = new NpmLibrarySourceProvider(pm.getNpmList(), reader, pm);
+            libraryManager.getLibrarySourceLoader().registerProvider(sp);
+
+            String packageId = igContext.getPackageId();
+            String canonicalBase = igContext.getCanonicalBase();
+
+            if (packageId != null && !packageId.isEmpty() && canonicalBase != null && !canonicalBase.isEmpty()) {
+                namespaceInfo = new NamespaceInfo(packageId, canonicalBase);
+            }
+        }
+
+        CqlTranslator translator = fromFile(namespaceInfo, inPath.toFile(), libraryManager);
         libraryManager.getLibrarySourceLoader().clearProviders();
 
         if (!translator.getErrors().isEmpty()) {
@@ -139,6 +167,10 @@ public class Main {
                 .ofType(org.cqframework.cql.cql2elm.CqlTranslator.Format.class)
                 .defaultsTo(org.cqframework.cql.cql2elm.CqlTranslator.Format.XML)
                 .describedAs("The target format for the output");
+        OptionSpec<File> rootDir = parser.accepts("root-dir")
+                .withOptionalArg()
+                .ofType(File.class)
+                .describedAs("Root directory of a FHIR IG project, used to resolve CQL namespaces");
         OptionSpec disableDefaultModelInfoLoad = parser.accepts("disable-default-modelinfo-load");
         OptionSpec verify = parser.accepts("verify");
         OptionSpec optimization = parser.accepts("date-range-optimization");
@@ -235,6 +267,12 @@ public class Main {
                 throw new IllegalArgumentException("input and output file must be different!");
             }
 
+            IGContext igContext = null;
+            if (options.has(rootDir)) {
+                igContext = new IGContext();
+                igContext.initializeFromIni(options.valueOf("root-dir") + File.separator + "ig.ini");
+            }
+
             ModelInfoProvider modelProvider = null;
             if (options.has(model)) {
                 final File modelFile = options.valueOf(model);
@@ -249,6 +287,7 @@ public class Main {
                     out,
                     outputFormat,
                     modelProvider,
+                    igContext,
                     new CqlCompilerOptions(
                             options.has(optimization),
                             options.has(debug) || options.has(annotations),
