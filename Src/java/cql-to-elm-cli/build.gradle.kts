@@ -9,6 +9,8 @@ application {
 
 dependencies {
     implementation(project(":cql-to-elm"))
+    implementation(project(":cqf-fhir"))
+    implementation(project(":cqf-fhir-npm"))
     implementation(project(":quick"))
     implementation(project(":qdm"))
     implementation(project(":model-xmlutil"))
@@ -19,4 +21,5 @@ dependencies {
     implementation("org.slf4j:slf4j-simple:2.0.13")
     implementation("org.glassfish.jaxb:jaxb-runtime:4.0.5")
     implementation("org.eclipse.persistence:org.eclipse.persistence.moxy:4.0.2")
+    implementation("ca.uhn.hapi.fhir:hapi-fhir-structures-r5")
 }
