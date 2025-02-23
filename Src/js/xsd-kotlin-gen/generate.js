@@ -231,6 +231,7 @@ val serializersModule = kotlinx.serialization.modules.SerializersModule {
                    return `subclass(${config.packageName}.${childClass.className}::class)`;
                  })
                  .join("\n")}
+                 ${!parentClass.isAbstract ? `defaultDeserializer { ${config.packageName}.${parentClass.className}.serializer() }` : ""}
             }`;
         })
         .join("\n")}
