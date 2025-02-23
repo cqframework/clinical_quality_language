@@ -80,10 +80,16 @@ function isExtendedByAny(someClass, config) {
   return false;
 }
 
-function addContextualAnnotationIfNecessary(type) {
+function addContextualAnnotationIfNecessary(type, config) {
   // A custom serializer is needed for Narrative in JSON
   if (type === "Narrative") {
     return "@kotlinx.serialization.Contextual Narrative";
+  }
+
+  // @Polymorphic is applied automatically to serializable abstract classes
+  // but needs to be added manually to open classes
+  if (getAllChildClasses(type, config).length) {
+    return `@kotlinx.serialization.Polymorphic ${type}`;
   }
 
   return type;
@@ -218,7 +224,7 @@ val serializersModule = kotlinx.serialization.modules.SerializersModule {
       ${[...getAllParentClasses(config)]
         .reverse()
         .map((parentClass) => {
-          return `polymorphic(${config.packageName}.${parentClass.className}::class) {
+          return `polymorphic(${config.packageName}.${parentClass.className}::class ${!parentClass.isAbstract ? `, ${config.packageName}.${parentClass.className}.serializer()` : ""} ) {
                ${getAllChildClasses(parentClass.className, config)
                  .filter((childClass) => !childClass.isAbstract)
                  .map((childClass) => {
@@ -455,9 +461,9 @@ function processElements(elements, config, mode) {
                 return `
                             ${config.packageName === "org.hl7.elm_modelinfo.r1" ? "" : `@kotlinx.serialization.SerialName(${JSON.stringify(name)})`}
                             @nl.adaptivity.xmlutil.serialization.XmlSerialName(${JSON.stringify(name)}, ${JSON.stringify(config.namespaceUri)})
-                            private var _${fieldName}: MutableList<${addContextualAnnotationIfNecessary(type)}>? = null
+                            private var _${fieldName}: MutableList<${addContextualAnnotationIfNecessary(type, config)}>? = null
 
-                            var ${fieldName}: MutableList<${addContextualAnnotationIfNecessary(type)}>
+                            var ${fieldName}: MutableList<${addContextualAnnotationIfNecessary(type, config)}>
                                get() {
                                    if (_${fieldName} == null) {
                                         _${fieldName} = ArrayList();
@@ -474,7 +480,7 @@ function processElements(elements, config, mode) {
               return `
                             ${config.packageName === "org.hl7.elm_modelinfo.r1" ? "" : `@kotlinx.serialization.SerialName(${JSON.stringify(name)})`}
                             @nl.adaptivity.xmlutil.serialization.XmlSerialName(${JSON.stringify(name)}, ${JSON.stringify(config.namespaceUri)})
-                            var ${makeFieldName(field.attributes.name)}: ${addContextualAnnotationIfNecessary(type)}? = null
+                            var ${makeFieldName(field.attributes.name)}: ${addContextualAnnotationIfNecessary(type, config)}? = null
                         `;
             };
 
@@ -602,10 +608,17 @@ ${attributesFields
       }[field.attributes.type];
 
       return `
+            ${config.packageName === "org.hl7.elm_modelinfo.r1" ? "" : `@kotlinx.serialization.SerialName(${JSON.stringify(field.attributes.name)})`}
+            @nl.adaptivity.xmlutil.serialization.XmlSerialName(${JSON.stringify(field.attributes.name)}, ${JSON.stringify(config.namespaceUri)})
             ${type === field.attributes.type ? "@nl.adaptivity.xmlutil.serialization.XmlElement(false)" : ""}
-            var ${makeFieldName(field.attributes.name)}: ${type}? = null
+            private var _${makeFieldName(field.attributes.name)}: ${addContextualAnnotationIfNecessary(type, config)}? = null
+            
+            var ${makeFieldName(field.attributes.name)}: ${addContextualAnnotationIfNecessary(type, config)}?
                 get() {
-                   return field ?: ${defaultValue}
+                   return _${makeFieldName(field.attributes.name)} ?: ${defaultValue}
+                }
+                set(value) {
+                  _${makeFieldName(field.attributes.name)} = value
                 }
                 
                 ${extraForBoolean}
@@ -615,7 +628,7 @@ ${attributesFields
 
     return `
         ${type === field.attributes.type ? "@nl.adaptivity.xmlutil.serialization.XmlElement(false)" : ""}
-        var ${makeFieldName(field.attributes.name)}: ${type}? = null
+        var ${makeFieldName(field.attributes.name)}: ${addContextualAnnotationIfNecessary(type, config)}? = null
       
         ${extraForBoolean}
         ${extraForWith}
