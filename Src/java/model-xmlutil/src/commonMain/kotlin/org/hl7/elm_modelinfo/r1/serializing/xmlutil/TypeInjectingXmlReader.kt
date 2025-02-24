@@ -1,4 +1,4 @@
-package org.cqframework.cql.elm.serializing.xmlutil
+package org.hl7.elm_modelinfo.r1.serializing.xmlutil
 
 import nl.adaptivity.xmlutil.XMLConstants
 import nl.adaptivity.xmlutil.XmlDelegatingReader

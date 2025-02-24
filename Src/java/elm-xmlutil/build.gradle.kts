@@ -7,6 +7,7 @@ kotlin {
         commonMain {
             dependencies {
                 api(project(":model"))
+                api(project(":model-xmlutil"))
                 api(project(":elm"))
             }
         }
@@ -14,7 +15,6 @@ kotlin {
         jvmTest {
             dependencies {
                 implementation(project(":cql-to-elm"))
-                implementation(project(":model-xmlutil"))
                 implementation(project(":ucum"))
                 implementation(project(":quick"))
                 implementation("org.xmlunit:xmlunit-assertj:2.10.0")

@@ -537,7 +537,7 @@ function processElements(elements, config, mode) {
               `
 package ${config.packageName}
 
-${element.attributes.name === "Library" || element.attributes.name === "ModelInfo" ? `@nl.adaptivity.xmlutil.serialization.XmlNamespaceDeclSpec("${config.namespacePrefixes.join(";")}")` : ""}
+${element.attributes.name === "Library" || element.attributes.name === "ModelInfo" ? `@nl.adaptivity.xmlutil.serialization.XmlNamespaceDeclSpec("${config.namespaceUri};${config.namespacePrefixes.join(";")}")` : `@nl.adaptivity.xmlutil.serialization.XmlNamespaceDeclSpec("${config.namespaceUri}")`}
 @OptIn(kotlinx.serialization.ExperimentalSerializationApi::class, nl.adaptivity.xmlutil.ExperimentalXmlUtilApi::class)
 @kotlinx.serialization.Serializable
 ${config.packageName === "org.hl7.elm_modelinfo.r1" ? "" : `@kotlinx.serialization.SerialName(${JSON.stringify(makeLocalName(element.attributes.name))})`}
@@ -616,7 +616,7 @@ ${attributesFields
       }[field.attributes.type];
 
       return `
-            ${config.packageName === "org.hl7.elm_modelinfo.r1" ? "" : `@kotlinx.serialization.SerialName(${JSON.stringify(field.attributes.name)})`}
+            @kotlinx.serialization.SerialName(${JSON.stringify(field.attributes.name)})
             ${type === field.attributes.type ? "@nl.adaptivity.xmlutil.serialization.XmlElement(false)" : ""}
             private var _${makeFieldName(field.attributes.name)}: ${addContextualAnnotationIfNecessary(type, config)}? = null
             
