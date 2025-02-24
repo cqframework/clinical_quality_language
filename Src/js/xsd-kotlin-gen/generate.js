@@ -234,7 +234,7 @@ val serializersModule = kotlinx.serialization.modules.SerializersModule {
                ${
                  !parentClass.isAbstract
                    ? `
-                 subclass(${config.packageName}.${parentClass.className}Base::class, ${config.packageName}.${parentClass.className}BaseSerializer as kotlinx.serialization.KSerializer<${config.packageName}.${parentClass.className}Base>)
+                 subclass(${config.packageName}.${parentClass.className}Dummy::class, ${config.packageName}.${parentClass.className}BaseSerializer as kotlinx.serialization.KSerializer<${config.packageName}.${parentClass.className}Dummy>)
                  defaultDeserializer { ${config.packageName}.${parentClass.className}.serializer() }
                `
                    : ""
@@ -723,10 +723,10 @@ ${getParentAttributes(
 
 @kotlinx.serialization.Serializable
 @nl.adaptivity.xmlutil.serialization.XmlSerialName(${JSON.stringify("usebaseclass")}, ${JSON.stringify(config.namespaceUri)})
-${element.attributes.abstract === "true" ? "abstract" : "open"} class ${element.attributes.name}Base : ${element.attributes.name}()
+${element.attributes.abstract === "true" ? "abstract" : "open"} class ${element.attributes.name}Dummy : ${element.attributes.name}()
 
 val ${element.attributes.name}BaseSerializer = object : kotlinx.serialization.KSerializer<${element.attributes.name}> by ${element.attributes.name}.serializer() {
-    override val descriptor: kotlinx.serialization.descriptors.SerialDescriptor = ${element.attributes.name}Base.serializer().descriptor
+    override val descriptor: kotlinx.serialization.descriptors.SerialDescriptor = ${element.attributes.name}Dummy.serializer().descriptor
 }
 
 `,

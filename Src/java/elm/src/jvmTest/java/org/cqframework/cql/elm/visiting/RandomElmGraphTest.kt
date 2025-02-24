@@ -135,6 +135,10 @@ class RandomElmGraphTest {
                 return true
             }
 
+            if (type.simpleName.endsWith("Dummy")) {
+                return true
+            }
+
             return type == QName::class.java ||
                 type == Narrative::class.java ||
                 type == AccessModifier::class.java
