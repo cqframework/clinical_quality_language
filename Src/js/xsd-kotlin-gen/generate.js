@@ -617,7 +617,6 @@ ${attributesFields
 
       return `
             ${config.packageName === "org.hl7.elm_modelinfo.r1" ? "" : `@kotlinx.serialization.SerialName(${JSON.stringify(field.attributes.name)})`}
-            @nl.adaptivity.xmlutil.serialization.XmlSerialName(${JSON.stringify(field.attributes.name)}, ${JSON.stringify(config.namespaceUri)})
             ${type === field.attributes.type ? "@nl.adaptivity.xmlutil.serialization.XmlElement(false)" : ""}
             private var _${makeFieldName(field.attributes.name)}: ${addContextualAnnotationIfNecessary(type, config)}? = null
             
