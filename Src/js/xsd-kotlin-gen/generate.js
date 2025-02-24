@@ -231,7 +231,14 @@ val serializersModule = kotlinx.serialization.modules.SerializersModule {
                    return `subclass(${config.packageName}.${childClass.className}::class)`;
                  })
                  .join("\n")}
-                 ${!parentClass.isAbstract ? `defaultDeserializer { ${config.packageName}.${parentClass.className}.serializer() }` : ""}
+               ${
+                 !parentClass.isAbstract
+                   ? `
+                 subclass(${config.packageName}.${parentClass.className}Base::class, ${config.packageName}.${parentClass.className}BaseSerializer as kotlinx.serialization.KSerializer<${config.packageName}.${parentClass.className}Base>)
+                 defaultDeserializer { ${config.packageName}.${parentClass.className}.serializer() }
+               `
+                   : ""
+               }
             }`;
         })
         .join("\n")}
@@ -713,6 +720,15 @@ ${getParentAttributes(
 
 
 }
+
+@kotlinx.serialization.Serializable
+@nl.adaptivity.xmlutil.serialization.XmlSerialName(${JSON.stringify("usebaseclass")}, ${JSON.stringify(config.namespaceUri)})
+${element.attributes.abstract === "true" ? "abstract" : "open"} class ${element.attributes.name}Base : ${element.attributes.name}()
+
+val ${element.attributes.name}BaseSerializer = object : kotlinx.serialization.KSerializer<${element.attributes.name}> by ${element.attributes.name}.serializer() {
+    override val descriptor: kotlinx.serialization.descriptors.SerialDescriptor = ${element.attributes.name}Base.serializer().descriptor
+}
+
 `,
             );
           }
