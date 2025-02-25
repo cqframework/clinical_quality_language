@@ -44,14 +44,11 @@ class CMS146JsonTest {
         final String actualJson = jsonWithVersion
                 .replaceAll("\"translatorVersion\":\"[^\"]*\",", "")
                 // The original JSON marshaller (JAXB + MOXy) does not output
-                // accessLevel if it is null. (It always emits it otherwise,
-                // even when it's set to the default value.) The new JSON
-                // serializer always emits accessLevel.
-                // We do not set accessLevel in the translator on the
-                // model/context def node, thus the difference in JSON output.
+                // type for the base class in polymorphic hierarchies.
                 .replace(
-                        "\"name\":\"Patient\",\"context\":\"Patient\",\"accessLevel\":\"Public\"",
-                        "\"name\":\"Patient\",\"context\":\"Patient\"");
+                        "\"type\":\"ExpressionDef\",",
+                        "")
+                .replace("\"type\":\"AliasedQuerySource\",", "");
         JSONAssert.assertEquals(expectedJson, actualJson, true);
     }
 

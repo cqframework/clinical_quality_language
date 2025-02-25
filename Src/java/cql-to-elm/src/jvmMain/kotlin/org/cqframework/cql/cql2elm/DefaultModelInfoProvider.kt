@@ -47,8 +47,8 @@ class DefaultModelInfoProvider() : ModelInfoProvider, PathAware {
                 currentPath.resolve(
                     "${modelName.lowercase()}-modelinfo${if (modelVersion != null) "-$modelVersion" else ""}.xml"
                 )
-            var modelFile = modelPath.toFile()
-            if (!modelFile.exists()) {
+            var modelFile: File? = modelPath.toFile()
+            if (modelFile?.exists() != true) {
                 val filter = FilenameFilter { _, name ->
                     name.startsWith(modelName.lowercase() + "-modelinfo") && name.endsWith(".xml")
                 }
@@ -56,7 +56,7 @@ class DefaultModelInfoProvider() : ModelInfoProvider, PathAware {
                 var mostRecent: Version? = null
                 try {
                     val requestedVersion = if (modelVersion == null) null else Version(modelVersion)
-                    for (file in currentPath.toFile().listFiles(filter)!!) {
+                    for (file in currentPath.toFile().listFiles(filter)) {
                         var fileName = file.name
                         val indexOfExtension = fileName.lastIndexOf(".")
                         if (indexOfExtension >= 0) {
@@ -93,7 +93,7 @@ class DefaultModelInfoProvider() : ModelInfoProvider, PathAware {
                             }
                         }
                     }
-                    modelFile = mostRecentFile!!
+                    modelFile = mostRecentFile
                 } catch (@Suppress("SwallowedException") e: IllegalArgumentException) {
                     // do nothing, if the version can't be understood as a semantic version, don't
                     // allow unspecified
@@ -101,9 +101,11 @@ class DefaultModelInfoProvider() : ModelInfoProvider, PathAware {
                 }
             }
             try {
-                val inputStream: InputStream = FileInputStream(modelFile)
-                return ModelInfoReaderFactory.getReader("application/xml")
-                    ?.read(inputStream.asSource().buffered())
+                if (modelFile != null) {
+                    val inputStream: InputStream = FileInputStream(modelFile)
+                    return ModelInfoReaderFactory.getReader("application/xml")
+                        ?.read(inputStream.asSource().buffered())
+                }
             } catch (e: IOException) {
                 throw IllegalArgumentException(
                     "Could not load definition for model info ${modelIdentifier.id}.",

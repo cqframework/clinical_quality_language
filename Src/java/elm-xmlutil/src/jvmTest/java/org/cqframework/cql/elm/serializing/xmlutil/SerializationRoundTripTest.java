@@ -13,6 +13,8 @@ public class SerializationRoundTripTest {
             "OperatorTests/ArithmeticOperators.cql",
             "OperatorTests/ComparisonOperators.cql",
             "OperatorTests/ListOperators.cql",
+            "OperatorTests/Aggregate.cql",
+            "SignatureTests/GenericOverloadsTests.cql",
         };
     }
 
@@ -20,8 +22,10 @@ public class SerializationRoundTripTest {
         return "../cql-to-elm/src/jvmTest/resources/org/cqframework/cql/cql2elm/" + cqlFile;
     }
 
-    private static final ElmXmlLibraryReader reader = new ElmXmlLibraryReader();
-    private static final ElmXmlLibraryWriter writer = new ElmXmlLibraryWriter();
+    private static final ElmXmlLibraryReader xmlReader = new ElmXmlLibraryReader();
+    private static final ElmXmlLibraryWriter xmlWriter = new ElmXmlLibraryWriter();
+    private static final ElmJsonLibraryReader jsonReader = new ElmJsonLibraryReader();
+    private static final ElmJsonLibraryWriter jsonWriter = new ElmJsonLibraryWriter();
 
     @ParameterizedTest
     @MethodSource("dataMethod")
@@ -30,7 +34,11 @@ public class SerializationRoundTripTest {
         assertEquals(0, translator.getErrors().size());
 
         var xml = translator.toXml();
-        var library = reader.read(xml);
-        assertEquals(xml, writer.writeAsString(library));
+        var library = xmlReader.read(xml);
+        assertEquals(xml, xmlWriter.writeAsString(library));
+
+        var json = translator.toJson();
+        library = jsonReader.read(json);
+        assertEquals(json, jsonWriter.writeAsString(library));
     }
 }
