@@ -1,8 +1,12 @@
 package org.hl7.cql.model
 
-class TupleType private constructor(val elements: Set<TupleTypeElement>) : BaseDataType() {
+class TupleType
+private constructor(
+    // TODO: Change type to Set<TupleTypeElement> to deduplicate tuple elements.
+    val elements: List<TupleTypeElement>
+) : BaseDataType() {
 
-    constructor(elements: Iterable<TupleTypeElement>) : this(elements.toSet())
+    constructor(elements: Iterable<TupleTypeElement>) : this(elements.toList())
 
     val sortedElements = elements.sortedWith(compareBy { it.name })
 
@@ -60,7 +64,8 @@ class TupleType private constructor(val elements: Set<TupleTypeElement>) : BaseD
     override fun hashCode(): Int {
         var result = 13
         for (e in elements) {
-            result = 37 * result + e.hashCode()
+            result +=
+                37 * e.hashCode() // TODO: Change this to `result = 37 * result + e.hashCode()`
         }
         return result
     }

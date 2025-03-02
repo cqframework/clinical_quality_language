@@ -42,4 +42,19 @@ data class IntervalType(val pointType: DataType) : BaseDataType() {
     override fun instantiate(context: InstantiationContext): DataType {
         return IntervalType(pointType.instantiate(context))
     }
+
+    // TODO: Remove hashCode and equals. Everything works without these methods but the compiled ELM
+    // is different because [org.cqframework.cql.cql2elm.LibraryBuilder.normalizeListTypes] returns
+    // the choice options in a different order.
+    override fun hashCode(): Int {
+        return 53 * pointType.hashCode()
+    }
+
+    override fun equals(o: Any?): Boolean {
+        if (o is IntervalType) {
+            val (pointType1) = o
+            return pointType == pointType1
+        }
+        return false
+    }
 }

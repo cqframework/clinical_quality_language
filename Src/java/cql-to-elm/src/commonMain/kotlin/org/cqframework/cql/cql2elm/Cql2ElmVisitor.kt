@@ -2718,7 +2718,7 @@ class Cql2ElmVisitor(
         if (ctx.dateTimePrecision() != null) {
             per =
                 libraryBuilder.createQuantity(
-                    BigDecimal(1.0),
+                    BigDecimal("1.0"), // Always use BigDecimal(String) for exact precision
                     (parseString(ctx.dateTimePrecision()))!!
                 )
         } else if (ctx.expression().size > 1) {

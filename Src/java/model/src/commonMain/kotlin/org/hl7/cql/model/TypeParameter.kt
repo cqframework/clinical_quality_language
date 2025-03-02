@@ -69,4 +69,19 @@ data class TypeParameter(
         context.isInstantiable(this, callType)
 
     override fun instantiate(context: InstantiationContext): DataType = context.instantiate(this)
+
+    // TODO: Remove hashCode and equals. Everything works without these methods but the compiled ELM
+    // is different because [org.cqframework.cql.cql2elm.LibraryBuilder.normalizeListTypes] returns
+    // the choice options in a different order.
+    override fun hashCode(): Int {
+        return identifier.hashCode()
+    }
+
+    override fun equals(o: Any?): Boolean {
+        if (o is TypeParameter) {
+            val (identifier1) = o
+            return identifier == identifier1
+        }
+        return false
+    }
 }
