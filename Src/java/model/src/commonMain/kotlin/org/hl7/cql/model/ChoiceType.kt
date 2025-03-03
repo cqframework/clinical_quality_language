@@ -4,7 +4,14 @@ import org.hl7.cql.model.DataType.Companion.ANY
 
 @ConsistentCopyVisibility
 /** Created by Bryn on 11/8/2016. */
-data class ChoiceType private constructor(val types: Set<DataType>) : BaseDataType() {
+data class ChoiceType
+private constructor(
+    // TODO: Change type to Set<DataType> to deduplicate choice options. E.g. in QICore model info,
+    // Observation.effective has System.DateTime duplicated. This doesn't break anything but the
+    // compiled ELM is different because there are fewer alternative conversions in
+    // [org.cqframework.cql.cql2elm.LibraryBuilder.convertExpression].
+    val types: List<DataType>
+) : BaseDataType() {
     constructor(types: Iterable<DataType>) : this(types.flattenChoices())
 
     constructor(vararg types: DataType) : this(types.toList().flattenChoices())
@@ -51,8 +58,36 @@ data class ChoiceType private constructor(val types: Set<DataType>) : BaseDataTy
         return this
     }
 
+    // TODO: Remove hashCode and equals. Everything works without these methods but the compiled ELM
+    // is different because [org.cqframework.cql.cql2elm.LibraryBuilder.normalizeListTypes] returns
+    // the choice options in a different order.
+    override fun hashCode(): Int {
+        var result = 13
+        for (i in types.indices) {
+            result += 37 * types[i].hashCode()
+        }
+        return result
+    }
+
+    override fun equals(o: Any?): Boolean {
+        if (o is ChoiceType) {
+            val (thoseTypes) = o
+            if (types.size == thoseTypes.size) {
+                val theseTypes = types
+                for (i in theseTypes.indices) {
+                    if (theseTypes[i] != thoseTypes[i]) {
+                        return false
+                    }
+                }
+                return true
+            }
+        }
+        return false
+    }
+
     companion object {
-        private fun Iterable<DataType>.flattenChoices(): Set<DataType> =
-            flatMap { (it as? ChoiceType)?.types ?: setOf(it) }.toSet()
+        // The Iterable is flattened recursively
+        private fun Iterable<DataType>.flattenChoices(): List<DataType> =
+            flatMap { (it as? ChoiceType)?.types?.flattenChoices() ?: listOf(it) }.toList()
     }
 }

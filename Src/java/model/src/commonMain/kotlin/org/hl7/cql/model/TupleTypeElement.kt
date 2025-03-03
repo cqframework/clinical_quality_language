@@ -18,4 +18,19 @@ data class TupleTypeElement(
     override fun toString(): String = "$name:$type"
 
     fun toLabel(): String = "$name: $type"
+
+    // TODO: Remove hashCode and equals. Everything works without these methods but the compiled ELM
+    // is different because [org.cqframework.cql.cql2elm.LibraryBuilder.normalizeListTypes] returns
+    // the choice options in a different order.
+    override fun hashCode(): Int {
+        return 17 * name.hashCode() + 33 * type.hashCode() + 31 * if (oneBased) 1 else 0
+    }
+
+    override fun equals(o: Any?): Boolean {
+        if (o is TupleTypeElement) {
+            val (name1, type1, oneBased1) = o
+            return name == name1 && type == type1 && oneBased == oneBased1
+        }
+        return false
+    }
 }

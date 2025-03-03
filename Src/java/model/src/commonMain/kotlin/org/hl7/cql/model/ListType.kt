@@ -40,4 +40,19 @@ data class ListType(val elementType: DataType) : BaseDataType() {
     override fun instantiate(context: InstantiationContext): DataType {
         return ListType(elementType.instantiate(context))
     }
+
+    // TODO: Remove hashCode and equals. Everything works without these methods but the compiled ELM
+    // is different because [org.cqframework.cql.cql2elm.LibraryBuilder.normalizeListTypes] returns
+    // the choice options in a different order.
+    override fun hashCode(): Int {
+        return 67 * elementType.hashCode()
+    }
+
+    override fun equals(o: Any?): Boolean {
+        if (o is ListType) {
+            val (elementType1) = o
+            return elementType == elementType1
+        }
+        return false
+    }
 }

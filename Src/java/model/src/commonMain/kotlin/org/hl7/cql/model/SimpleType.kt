@@ -52,4 +52,19 @@ data class SimpleType(
     }
 
     override fun instantiate(context: InstantiationContext): DataType = this
+
+    // TODO: Remove hashCode and equals. Everything works without these methods but the compiled ELM
+    // is different because [org.cqframework.cql.cql2elm.LibraryBuilder.normalizeListTypes] returns
+    // the choice options in a different order.
+    override fun hashCode(): Int {
+        return name.hashCode()
+    }
+
+    override fun equals(o: Any?): Boolean {
+        if (o is SimpleType) {
+            val (name1) = o
+            return name == name1
+        }
+        return false
+    }
 }
