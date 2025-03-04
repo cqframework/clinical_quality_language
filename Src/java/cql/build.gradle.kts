@@ -29,6 +29,18 @@ val generateKotlinGrammarSource = tasks.register<AntlrKotlinTask>("generateKotli
     outputs.dirs(outputDirectory)
 }
 
+tasks.named("jvmSourcesJar") {
+    dependsOn(generateKotlinGrammarSource)
+}
+
+tasks.named("jsSourcesJar") {
+    dependsOn(generateKotlinGrammarSource)
+}
+
+tasks.named("sourcesJar") {
+    dependsOn(generateKotlinGrammarSource)
+}
+
 tasks.withType<AbstractKotlinCompile<*>> {
     dependsOn(generateKotlinGrammarSource)
 }

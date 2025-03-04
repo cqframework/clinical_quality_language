@@ -2,11 +2,14 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 plugins {
     kotlin("multiplatform")
+    id("maven-publish")
+    id("signing")
     id("com.diffplug.spotless")
     id("io.gitlab.arturbosch.detekt")
     id("org.jetbrains.dokka")
     kotlin("plugin.serialization")
 }
+
 
 repositories {
     mavenCentral()
