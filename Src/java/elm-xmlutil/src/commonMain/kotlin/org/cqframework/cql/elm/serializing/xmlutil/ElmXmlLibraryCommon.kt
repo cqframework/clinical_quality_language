@@ -8,19 +8,23 @@ import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.serializersModuleOf
 import nl.adaptivity.xmlutil.QName
 import nl.adaptivity.xmlutil.XMLConstants
+import nl.adaptivity.xmlutil.XmlDeclMode
 import nl.adaptivity.xmlutil.serialization.DefaultXmlSerializationPolicy
+import nl.adaptivity.xmlutil.serialization.FormatCache
 import nl.adaptivity.xmlutil.serialization.XML
 import nl.adaptivity.xmlutil.serialization.structure.SafeParentInfo
 import org.cqframework.cql.elm.serializing.BigDecimalXmlSerializer
 
-val builder =
+internal val builder =
     DefaultXmlSerializationPolicy.Builder().apply {
         // Use xsi:type for handling polymorphism
         typeDiscriminatorName = QName(XMLConstants.XSI_NS_URI, "type", XMLConstants.XSI_PREFIX)
+        // Use the dummy format cache from the XmlUtil library to disable caching
+        formatCache = FormatCache.Dummy
     }
 
 @OptIn(ExperimentalSerializationApi::class)
-val customPolicy =
+internal val customPolicy =
     object : DefaultXmlSerializationPolicy(builder) {
         override fun isTransparentPolymorphic(
             serializerParent: SafeParentInfo,
@@ -38,7 +42,7 @@ val customPolicy =
     }
 
 // Mixed content can include text and Narrative elements
-val mixedContentSerializersModule = SerializersModule {
+internal val mixedContentSerializersModule = SerializersModule {
     polymorphic(Any::class) {
         polymorphic(Any::class, String::class, String.serializer())
         polymorphic(
@@ -57,5 +61,5 @@ internal val xml =
             org.hl7.cql_annotations.r1.serializersModule
     ) {
         policy = customPolicy
-        xmlDeclMode = nl.adaptivity.xmlutil.XmlDeclMode.Charset
+        xmlDeclMode = XmlDeclMode.Charset
     }

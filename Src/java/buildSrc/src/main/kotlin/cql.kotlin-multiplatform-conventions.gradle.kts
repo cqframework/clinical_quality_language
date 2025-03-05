@@ -25,8 +25,8 @@ spotless {
 
 kotlin {
     compilerOptions {
-        apiVersion.set(KotlinVersion.KOTLIN_2_0)
-        languageVersion.set(KotlinVersion.KOTLIN_2_0)
+        apiVersion.set(KotlinVersion.KOTLIN_2_1)
+        languageVersion.set(KotlinVersion.KOTLIN_2_1)
     }
     jvmToolchain(17)
     jvm {
@@ -78,8 +78,8 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation("io.github.pdvrieze.xmlutil:core:0.90.4-20241203.194031-11")
-                implementation("io.github.pdvrieze.xmlutil:serialization:0.90.4-20241203.194031-11")
+                implementation("io.github.pdvrieze.xmlutil:core:0.91.0-RC1")
+                implementation("io.github.pdvrieze.xmlutil:serialization:0.91.0-RC1")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.0")
                 implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.6.0")
                 implementation("io.github.oshai:kotlin-logging:7.0.3")
@@ -88,15 +88,16 @@ kotlin {
 
         jvmMain {
             dependencies {
-                implementation("io.github.pdvrieze.xmlutil:serialization-jvm:0.90.4-20241203.194031-11")
+                implementation("io.github.pdvrieze.xmlutil:serialization-jvm:0.91.0-RC1")
+                implementation("io.github.pdvrieze.xmlutil:core-jdk:0.91.0-RC1")
                 implementation("org.jetbrains.kotlinx:kotlinx-io-core-jvm:0.6.0")
             }
         }
 
         jsMain {
             dependencies {
-                implementation("io.github.pdvrieze.xmlutil:core-js:0.90.4-20241203.194031-11")
-                implementation("io.github.pdvrieze.xmlutil:serialization-js:0.90.4-20241203.194031-11")
+                implementation("io.github.pdvrieze.xmlutil:core-js:0.91.0-RC1")
+                implementation("io.github.pdvrieze.xmlutil:serialization-js:0.91.0-RC1")
             }
         }
 
