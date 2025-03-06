@@ -1,31 +1,24 @@
 package org.cqframework.cql.elm.serializing.xmlutil
 
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.plus
 import kotlinx.serialization.modules.polymorphic
 import kotlinx.serialization.modules.serializersModuleOf
-import nl.adaptivity.xmlutil.QName
-import nl.adaptivity.xmlutil.XMLConstants
-import nl.adaptivity.xmlutil.XmlDeclMode
-import nl.adaptivity.xmlutil.serialization.DefaultXmlSerializationPolicy
-import nl.adaptivity.xmlutil.serialization.FormatCache
-import nl.adaptivity.xmlutil.serialization.XML
+import nl.adaptivity.xmlutil.*
+import nl.adaptivity.xmlutil.serialization.*
 import nl.adaptivity.xmlutil.serialization.structure.SafeParentInfo
 import org.cqframework.cql.elm.serializing.BigDecimalXmlSerializer
 
-internal val builder =
-    DefaultXmlSerializationPolicy.Builder().apply {
+private val defaultPolicy =
+    @Suppress("DEPRECATION")
+    DefaultXmlSerializationPolicy {
         // Use xsi:type for handling polymorphism
         typeDiscriminatorName = QName(XMLConstants.XSI_NS_URI, "type", XMLConstants.XSI_PREFIX)
-        // Use the dummy format cache from the XmlUtil library to disable caching
-        formatCache = FormatCache.Dummy
     }
 
-@OptIn(ExperimentalSerializationApi::class)
-internal val customPolicy =
-    object : DefaultXmlSerializationPolicy(builder) {
+private val customPolicy =
+    object : XmlSerializationPolicy by defaultPolicy {
         override fun isTransparentPolymorphic(
             serializerParent: SafeParentInfo,
             tagParent: SafeParentInfo
@@ -37,12 +30,12 @@ internal val customPolicy =
             ) {
                 return true
             }
-            return super.isTransparentPolymorphic(serializerParent, tagParent)
+            return defaultPolicy.isTransparentPolymorphic(serializerParent, tagParent)
         }
     }
 
 // Mixed content can include text and Narrative elements
-internal val mixedContentSerializersModule = SerializersModule {
+private val mixedContentSerializersModule = SerializersModule {
     polymorphic(Any::class) {
         polymorphic(Any::class, String::class, String.serializer())
         polymorphic(
@@ -53,13 +46,19 @@ internal val mixedContentSerializersModule = SerializersModule {
     }
 }
 
+@OptIn(ExperimentalXmlUtilApi::class)
 internal val xml =
     XML(
+        XmlConfig(
+            @Suppress("DEPRECATION")
+            XmlConfig.Builder().apply {
+                policy = customPolicy
+                xmlDeclMode = XmlDeclMode.Charset
+                isCachingEnabled = false
+            }
+        ),
         serializersModuleOf(BigDecimalXmlSerializer) +
             mixedContentSerializersModule +
             org.hl7.elm.r1.serializersModule +
             org.hl7.cql_annotations.r1.serializersModule
-    ) {
-        policy = customPolicy
-        xmlDeclMode = XmlDeclMode.Charset
-    }
+    )
