@@ -9,16 +9,6 @@ plugins {
     id("io.gitlab.arturbosch.detekt")
 }
 
-kotlin {
-    jvmToolchain(17)
-}
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
-}
-
 repositories {
     mavenLocal()
     mavenCentral()
@@ -30,6 +20,16 @@ repositories {
     }
     maven {
         url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+    }
+}
+
+kotlin {
+    jvmToolchain(17)
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
     }
 }
 
@@ -116,6 +116,7 @@ tasks.withType<JavaCompile> {
     options.isDeprecation = true
 }
 
+
 /*
 A few things:
    - You must have an OSSRH Jira account (https://issues.sonatype.org/secure/Signup!valault.jspa)
@@ -130,7 +131,7 @@ A few things:
    - If the library version ends with "-SNAPSHOT", it will be deployed to the snapshot repository, else it will be
      deployed to the staging repository (which you then must manually release http://central.sonatype.org/pages/releasing-the-deployment.html).
    - Repo for snapshots and releases for the translator modules: https://oss.sonatype.org/content/groups/public/info/cqframework/
-   - Repo for snpashots, releases, and staged releases for the translator modules: https://oss.sonatype.org/content/groups/staging/info/cqframework/
+   - Repo for snapshots, releases, and staged releases for the translator modules: https://oss.sonatype.org/content/groups/staging/info/cqframework/
    - Repo for snapshots and releases for the engine modules: https://oss.sonatype.org/content/groups/public/org/opencds/cqf/cql/
    - Repo for snapshots, releases, and staged releases for the engine modules: https://oss.sonatype.org/content/groups/staging/org/opencds/cqf/cql/
  */
