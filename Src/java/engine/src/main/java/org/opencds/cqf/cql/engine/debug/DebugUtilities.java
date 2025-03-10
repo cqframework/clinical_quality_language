@@ -1,12 +1,11 @@
 package org.opencds.cqf.cql.engine.debug;
 
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import org.hl7.elm.r1.Element;
 import org.hl7.elm.r1.Library;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 public class DebugUtilities {
 
@@ -38,8 +37,8 @@ public class DebugUtilities {
     public static String toDebugString(Object result) {
         if (result instanceof Iterable) {
             Iterable<?> iterable = (Iterable<?>) result;
-            return "{" +
-                    StreamSupport.stream(iterable.spliterator(), false)
+            return "{"
+                    + StreamSupport.stream(iterable.spliterator(), false)
                             .map(DebugUtilities::toDebugString)
                             .collect(Collectors.joining(","))
                     + "}";

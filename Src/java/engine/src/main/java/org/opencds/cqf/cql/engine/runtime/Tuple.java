@@ -109,8 +109,8 @@ public class Tuple implements CqlType {
      */
     private String toPrettyString(Map<String, Object> tupleElements, int indentLevel) {
         var sb = new StringBuilder();
-        var currentIndent = indent(indentLevel);       // indentation for "Tuple {" and closing brace
-        var childIndent = indent(indentLevel + 1);     // indentation for fields within the tuple
+        var currentIndent = indent(indentLevel); // indentation for "Tuple {" and closing brace
+        var childIndent = indent(indentLevel + 1); // indentation for fields within the tuple
 
         sb.append("Tuple {\n");
 
@@ -122,9 +122,7 @@ public class Tuple implements CqlType {
             var fieldValue = entry.getValue();
 
             // Print the field name, indented one level more than "Tuple {"
-            sb.append(childIndent)
-                    .append(fieldName)
-                    .append(": ");
+            sb.append(childIndent).append(fieldName).append(": ");
 
             // If the field value is itself a nested Tuple, recurse
             if (fieldValue instanceof Tuple) {
@@ -142,9 +140,7 @@ public class Tuple implements CqlType {
         }
 
         // Close the Tuple with matching indentation
-        sb.append("\n")
-                .append(currentIndent)
-                .append("}");
+        sb.append("\n").append(currentIndent).append("}");
 
         return sb.toString();
     }
