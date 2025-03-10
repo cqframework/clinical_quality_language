@@ -9,12 +9,12 @@ import org.hl7.elm.r1.Library;
 import org.opencds.cqf.cql.engine.exception.CqlException;
 
 public class DebugResult {
-    private Map<String, DebugLibraryResultEntry> libraryResults;
-    private ArrayList<CqlException> messages;
+    private final Map<String, DebugLibraryResultEntry> libraryResults;
+    private final ArrayList<CqlException> messages;
 
     public DebugResult() {
-        libraryResults = new HashMap<String, DebugLibraryResultEntry>();
-        messages = new ArrayList<CqlException>();
+        libraryResults = new HashMap<>();
+        messages = new ArrayList<>();
     }
 
     public void logDebugResult(Element node, Library currentLibrary, Object result, DebugAction action) {
@@ -23,16 +23,14 @@ public class DebugResult {
         }
 
         try {
-            DebugLibraryResultEntry libraryResultEntry =
+            var libraryResultEntry =
                     libraryResults.get(currentLibrary.getIdentifier().getId());
             if (libraryResultEntry == null) {
                 libraryResultEntry = new DebugLibraryResultEntry(
                         currentLibrary.getIdentifier().getId());
                 libraryResults.put(libraryResultEntry.getLibraryName(), libraryResultEntry);
             }
-            if (libraryResultEntry != null) {
-                libraryResultEntry.logDebugResultEntry(node, result);
-            }
+            libraryResultEntry.logDebugResultEntry(node, result);
 
             if (action == DebugAction.LOG) {
                 DebugUtilities.logDebugResult(node, currentLibrary, result);

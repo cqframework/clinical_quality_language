@@ -100,18 +100,59 @@ public class Tuple implements CqlType {
 
     @Override
     public String toString() {
-        if (elements.size() == 0) {
-            return "Tuple { : }";
+        // Kick off recursion at indent level 0
+        return toPrettyString(elements, 0);
+    }
+
+    /**
+     * Recursively builds a nicely-indented string representation of a Tuple's elements.
+     */
+    private String toPrettyString(Map<String, Object> tupleElements, int indentLevel) {
+        var sb = new StringBuilder();
+        var currentIndent = indent(indentLevel);       // indentation for "Tuple {" and closing brace
+        var childIndent = indent(indentLevel + 1);     // indentation for fields within the tuple
+
+        sb.append("Tuple {\n");
+
+        // We can iterate with an index to detect the last element or simply not add an extra newline
+        var i = 0;
+        var size = tupleElements.size();
+        for (Map.Entry<String, Object> entry : tupleElements.entrySet()) {
+            var fieldName = entry.getKey();
+            var fieldValue = entry.getValue();
+
+            // Print the field name, indented one level more than "Tuple {"
+            sb.append(childIndent)
+                    .append(fieldName)
+                    .append(": ");
+
+            // If the field value is itself a nested Tuple, recurse
+            if (fieldValue instanceof Tuple) {
+                // Recursively build nested representation
+                sb.append(((Tuple) fieldValue).toPrettyString(((Tuple) fieldValue).elements, indentLevel + 1));
+            } else {
+                // Otherwise, use a function that handles quoting, escaping, etc.
+                sb.append(ToStringEvaluator.toString(entry.getValue()));
+            }
+
+            // Add a newline for each field, except possibly the last
+            if (++i < size) {
+                sb.append("\n");
+            }
         }
 
-        StringBuilder builder = new StringBuilder("Tuple {\n");
-        for (Map.Entry<String, Object> entry : elements.entrySet()) {
-            builder.append("\t\"")
-                    .append(entry.getKey())
-                    .append("\": ")
-                    .append(ToStringEvaluator.toString(entry.getValue()))
-                    .append("\n");
-        }
-        return builder.append("}").toString();
+        // Close the Tuple with matching indentation
+        sb.append("\n")
+                .append(currentIndent)
+                .append("}");
+
+        return sb.toString();
+    }
+
+    /**
+     * Helper method to produce indentation spaces. For each indent level, we add two spaces.
+     */
+    private static String indent(int level) {
+        return "  ".repeat(Math.max(0, level));
     }
 }
