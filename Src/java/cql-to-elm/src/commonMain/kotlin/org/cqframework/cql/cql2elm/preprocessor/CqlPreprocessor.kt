@@ -1,5 +1,3 @@
-@file:Suppress("WildcardImport")
-
 package org.cqframework.cql.cql2elm.preprocessor
 
 import kotlin.collections.ArrayList

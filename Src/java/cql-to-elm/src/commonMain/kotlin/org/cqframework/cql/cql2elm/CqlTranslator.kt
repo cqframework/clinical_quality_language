@@ -1,4 +1,4 @@
-@file:Suppress("WildcardImport")
+@file:Suppress("MatchingDeclarationName")
 
 package org.cqframework.cql.cql2elm
 

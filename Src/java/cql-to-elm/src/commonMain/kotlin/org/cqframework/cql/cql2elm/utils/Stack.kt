@@ -1,7 +1,7 @@
 package org.cqframework.cql.cql2elm.utils
 
 open class Stack<T> {
-    private val stack = mutableListOf<T>()
+    @Suppress("MemberNameEqualsClassName") private val stack = mutableListOf<T>()
 
     val indices: IntRange
         get() = stack.indices
@@ -11,16 +11,12 @@ open class Stack<T> {
     }
 
     fun pop(): T {
-        if (stack.isEmpty()) {
-            throw IllegalStateException("Cannot pop from an empty stack")
-        }
+        check(stack.isNotEmpty()) { "Cannot pop from an empty stack" }
         return stack.removeAt(stack.size - 1)
     }
 
     fun peek(): T {
-        if (stack.isEmpty()) {
-            throw IllegalStateException("Cannot peek at an empty stack")
-        }
+        check(stack.isNotEmpty()) { "Cannot peek at an empty stack" }
         return stack[stack.size - 1]
     }
 

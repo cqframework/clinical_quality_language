@@ -43,6 +43,7 @@ data class IntervalType(val pointType: DataType) : BaseDataType() {
         return IntervalType(pointType.instantiate(context))
     }
 
+    @Suppress("ForbiddenComment")
     // TODO: Remove hashCode and equals. Everything works without these methods but the compiled ELM
     // is different because [org.cqframework.cql.cql2elm.LibraryBuilder.normalizeListTypes] returns
     // the choice options in a different order.

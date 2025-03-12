@@ -33,6 +33,7 @@ internal class EscapingOutputStream(private val outputStream: OutputStream) : Ou
     override fun write(b: Int) {
         // Escape characters like `\f` as `&#xc;`.
         // This is needed because StAX outputs these characters as is.
+        @Suppress("MagicNumber")
         if (b < 0x20) {
             outputStream.write("&#x${b.toString(16)};".toByteArray())
         } else {

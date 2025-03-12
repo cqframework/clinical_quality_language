@@ -1,9 +1,9 @@
 package org.cqframework.cql.elm.serializing
 
 expect class BigDecimal {
-    constructor(value: String)
+    constructor(@Suppress("UnusedPrivateProperty") value: String)
 
-    constructor(value: Double)
+    constructor(@Suppress("UnusedPrivateProperty") value: Double)
 
     fun toPlainString(): String
 
