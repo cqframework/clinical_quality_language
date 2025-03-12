@@ -62,10 +62,11 @@ private constructor(
         } else false
     }
 
+    @Suppress("ForbiddenComment")
     override fun hashCode(): Int {
         var result = 13
         for (e in elements) {
-            @Suppress("ForbiddenComment")
+
             result +=
                 37 * e.hashCode() // TODO: Change this to `result = 37 * result + e.hashCode()`
         }
