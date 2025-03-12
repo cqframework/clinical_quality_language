@@ -4336,11 +4336,7 @@ class Cql2ElmVisitor(
                 } finally {
                     libraryBuilder.endFunctionDef()
                 }
-                if (
-                    (resultType != null) &&
-                        (functionDef.expression != null) &&
-                        (functionDef.expression!!.resultType != null)
-                ) {
+                if (resultType != null && functionDef.expression?.resultType != null) {
                     require(subTypeOf(functionDef.expression!!.resultType, resultType.resultType)) {
                         // ERROR:
                         "Function ${functionDef.name} has declared return type ${resultType.resultType} but the function body returns incompatible type ${functionDef.expression!!.resultType}."
