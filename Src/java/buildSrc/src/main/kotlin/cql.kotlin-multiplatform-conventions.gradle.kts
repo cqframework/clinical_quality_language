@@ -26,6 +26,24 @@ spotless {
     }
 }
 
+detekt {
+    // Applies the config files on top of detekt's default config.
+    buildUponDefaultConfig = true
+
+    // The directories where detekt looks for source files.
+    source.setFrom(
+        "src/commonMain/kotlin",
+        "src/jvmMain/kotlin",
+        "src/jsMain/kotlin",
+        "src/commonTest/kotlin",
+        "src/jvmTest/kotlin",
+        "src/jsTest/kotlin"
+    )
+
+    // Custom config with overrides.
+    config.setFrom("$rootDir/config/detekt/detekt.yml")
+}
+
 kotlin {
     compilerOptions {
         apiVersion.set(KotlinVersion.KOTLIN_2_1)
@@ -116,12 +134,6 @@ kotlin {
                 implementation("org.junit.jupiter:junit-jupiter")
                 implementation("org.slf4j:slf4j-simple:2.0.13")
                 implementation("org.hamcrest:hamcrest-all:1.3")
-            }
-        }
-
-        jsTest {
-            dependencies {
-                implementation(kotlin("test-js"))
             }
         }
     }

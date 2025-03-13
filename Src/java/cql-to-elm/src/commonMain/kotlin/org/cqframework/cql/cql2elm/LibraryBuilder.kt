@@ -1,5 +1,3 @@
-@file:Suppress("WildcardImport")
-
 package org.cqframework.cql.cql2elm
 
 import kotlin.jvm.JvmField
@@ -106,7 +104,7 @@ class LibraryBuilder(
     private val af = ObjectFactory()
     private var listTraversal = true
     private val options: CqlCompilerOptions = libraryManager.cqlCompilerOptions
-    protected val cqlToElmInfo = af.createCqlToElmInfo()
+    private val cqlToElmInfo = af.createCqlToElmInfo()
     private val typeBuilder = TypeBuilder(objectFactory, modelManager)
 
     fun enableListTraversal() {
@@ -1968,143 +1966,146 @@ class LibraryBuilder(
             }
             val castedOperand = buildAs(expression, conversion.toType)
             return collapseTypeCase(castedOperand)
-        } else if (
-            conversion.isCast &&
-                conversion.conversion != null &&
-                (conversion.fromType.isSuperTypeOf(conversion.conversion.fromType) ||
-                    conversion.fromType.isCompatibleWith(conversion.conversion.fromType))
-        ) {
-            val castedOperand = buildAs(expression, conversion.conversion.fromType)
-            var result = convertExpression(castedOperand, conversion.conversion)
-            if (conversion.hasAlternativeConversions()) {
-                val caseResult = objectFactory.createCase()
-                caseResult.resultType = result.resultType
-                caseResult.caseItem.add(
-                    objectFactory
-                        .createCaseItem()
-                        .withWhen(buildIs(expression, conversion.conversion.fromType))
-                        .withThen(result)
-                )
-                for (alternative: Conversion in conversion.getAlternativeConversions()) {
+        } else
+            @Suppress("ComplexCondition")
+            if (
+                conversion.isCast &&
+                    conversion.conversion != null &&
+                    (conversion.fromType.isSuperTypeOf(conversion.conversion.fromType) ||
+                        conversion.fromType.isCompatibleWith(conversion.conversion.fromType))
+            ) {
+                val castedOperand = buildAs(expression, conversion.conversion.fromType)
+                var result = convertExpression(castedOperand, conversion.conversion)
+                if (conversion.hasAlternativeConversions()) {
+                    val caseResult = objectFactory.createCase()
+                    caseResult.resultType = result.resultType
                     caseResult.caseItem.add(
                         objectFactory
                             .createCaseItem()
-                            .withWhen(buildIs(expression, alternative.fromType))
-                            .withThen(
-                                convertExpression(
-                                    buildAs(expression, alternative.fromType),
-                                    alternative
-                                )
-                            )
+                            .withWhen(buildIs(expression, conversion.conversion.fromType))
+                            .withThen(result)
                     )
+                    for (alternative: Conversion in conversion.getAlternativeConversions()) {
+                        caseResult.caseItem.add(
+                            objectFactory
+                                .createCaseItem()
+                                .withWhen(buildIs(expression, alternative.fromType))
+                                .withThen(
+                                    convertExpression(
+                                        buildAs(expression, alternative.fromType),
+                                        alternative
+                                    )
+                                )
+                        )
+                    }
+                    caseResult.withElse(buildNull(result.resultType))
+                    result = caseResult
                 }
-                caseResult.withElse(buildNull(result.resultType))
-                result = caseResult
-            }
 
-            return result
-        } else if (conversion.isListConversion) {
-            return convertListExpression(expression, conversion)
-        } else if (conversion.isListDemotion) {
-            return demoteListExpression(expression, conversion)
-        } else if (conversion.isListPromotion) {
-            return promoteListExpression(expression, conversion)
-        } else if (conversion.isIntervalConversion) {
-            return convertIntervalExpression(expression, conversion)
-        } else if (conversion.isIntervalDemotion) {
-            return demoteIntervalExpression(expression, conversion)
-        } else if (conversion.isIntervalPromotion) {
-            return promoteIntervalExpression(expression, conversion)
-        } else if (conversion.operator != null) {
-            val functionRef =
-                objectFactory
-                    .createFunctionRef()
-                    .withLibraryName(conversion.operator.libraryName)
-                    .withName(conversion.operator.name)
-                    .withOperand(expression)
-            val systemFunctionInvocation = systemFunctionResolver.resolveSystemFunction(functionRef)
-            if (systemFunctionInvocation != null) {
-                return systemFunctionInvocation.expression
-            }
-            resolveCall(
-                functionRef.libraryName,
-                functionRef.name!!,
-                FunctionRefInvocation(functionRef),
-                allowPromotionAndDemotion = false,
-                allowFluent = false
-            )
-            return functionRef
-        } else {
-            if (conversion.toType == resolveTypeName("System", "Boolean")) {
-                return objectFactory
-                    .createToBoolean()
-                    .withOperand(expression)
-                    .withResultType(conversion.toType)
-            } else if (conversion.toType == resolveTypeName("System", "Integer")) {
-                return objectFactory
-                    .createToInteger()
-                    .withOperand(expression)
-                    .withResultType(conversion.toType)
-            } else if (conversion.toType == resolveTypeName("System", "Long")) {
-                return objectFactory
-                    .createToLong()
-                    .withOperand(expression)
-                    .withResultType(conversion.toType)
-            } else if (conversion.toType == resolveTypeName("System", "Decimal")) {
-                return objectFactory
-                    .createToDecimal()
-                    .withOperand(expression)
-                    .withResultType(conversion.toType)
-            } else if (conversion.toType == resolveTypeName("System", "String")) {
-                return objectFactory
-                    .createToString()
-                    .withOperand(expression)
-                    .withResultType(conversion.toType)
-            } else if (conversion.toType == resolveTypeName("System", "Date")) {
-                return objectFactory
-                    .createToDate()
-                    .withOperand(expression)
-                    .withResultType(conversion.toType)
-            } else if (conversion.toType == resolveTypeName("System", "DateTime")) {
-                return objectFactory
-                    .createToDateTime()
-                    .withOperand(expression)
-                    .withResultType(conversion.toType)
-            } else if (conversion.toType == resolveTypeName("System", "Time")) {
-                return objectFactory
-                    .createToTime()
-                    .withOperand(expression)
-                    .withResultType(conversion.toType)
-            } else if (conversion.toType == resolveTypeName("System", "Quantity")) {
-                return objectFactory
-                    .createToQuantity()
-                    .withOperand(expression)
-                    .withResultType(conversion.toType)
-            } else if (conversion.toType == resolveTypeName("System", "Ratio")) {
-                return objectFactory
-                    .createToRatio()
-                    .withOperand(expression)
-                    .withResultType(conversion.toType)
-            } else if (conversion.toType == resolveTypeName("System", "Concept")) {
-                return objectFactory
-                    .createToConcept()
-                    .withOperand(expression)
-                    .withResultType(conversion.toType)
-            } else {
-                val convertedOperand =
+                return result
+            } else if (conversion.isListConversion) {
+                return convertListExpression(expression, conversion)
+            } else if (conversion.isListDemotion) {
+                return demoteListExpression(expression, conversion)
+            } else if (conversion.isListPromotion) {
+                return promoteListExpression(expression, conversion)
+            } else if (conversion.isIntervalConversion) {
+                return convertIntervalExpression(expression, conversion)
+            } else if (conversion.isIntervalDemotion) {
+                return demoteIntervalExpression(expression, conversion)
+            } else if (conversion.isIntervalPromotion) {
+                return promoteIntervalExpression(expression, conversion)
+            } else if (conversion.operator != null) {
+                val functionRef =
                     objectFactory
-                        .createConvert()
+                        .createFunctionRef()
+                        .withLibraryName(conversion.operator.libraryName)
+                        .withName(conversion.operator.name)
+                        .withOperand(expression)
+                val systemFunctionInvocation =
+                    systemFunctionResolver.resolveSystemFunction(functionRef)
+                if (systemFunctionInvocation != null) {
+                    return systemFunctionInvocation.expression
+                }
+                resolveCall(
+                    functionRef.libraryName,
+                    functionRef.name!!,
+                    FunctionRefInvocation(functionRef),
+                    allowPromotionAndDemotion = false,
+                    allowFluent = false
+                )
+                return functionRef
+            } else {
+                if (conversion.toType == resolveTypeName("System", "Boolean")) {
+                    return objectFactory
+                        .createToBoolean()
                         .withOperand(expression)
                         .withResultType(conversion.toType)
-                if (convertedOperand.resultType is NamedType) {
-                    convertedOperand.toType = dataTypeToQName(convertedOperand.resultType)
+                } else if (conversion.toType == resolveTypeName("System", "Integer")) {
+                    return objectFactory
+                        .createToInteger()
+                        .withOperand(expression)
+                        .withResultType(conversion.toType)
+                } else if (conversion.toType == resolveTypeName("System", "Long")) {
+                    return objectFactory
+                        .createToLong()
+                        .withOperand(expression)
+                        .withResultType(conversion.toType)
+                } else if (conversion.toType == resolveTypeName("System", "Decimal")) {
+                    return objectFactory
+                        .createToDecimal()
+                        .withOperand(expression)
+                        .withResultType(conversion.toType)
+                } else if (conversion.toType == resolveTypeName("System", "String")) {
+                    return objectFactory
+                        .createToString()
+                        .withOperand(expression)
+                        .withResultType(conversion.toType)
+                } else if (conversion.toType == resolveTypeName("System", "Date")) {
+                    return objectFactory
+                        .createToDate()
+                        .withOperand(expression)
+                        .withResultType(conversion.toType)
+                } else if (conversion.toType == resolveTypeName("System", "DateTime")) {
+                    return objectFactory
+                        .createToDateTime()
+                        .withOperand(expression)
+                        .withResultType(conversion.toType)
+                } else if (conversion.toType == resolveTypeName("System", "Time")) {
+                    return objectFactory
+                        .createToTime()
+                        .withOperand(expression)
+                        .withResultType(conversion.toType)
+                } else if (conversion.toType == resolveTypeName("System", "Quantity")) {
+                    return objectFactory
+                        .createToQuantity()
+                        .withOperand(expression)
+                        .withResultType(conversion.toType)
+                } else if (conversion.toType == resolveTypeName("System", "Ratio")) {
+                    return objectFactory
+                        .createToRatio()
+                        .withOperand(expression)
+                        .withResultType(conversion.toType)
+                } else if (conversion.toType == resolveTypeName("System", "Concept")) {
+                    return objectFactory
+                        .createToConcept()
+                        .withOperand(expression)
+                        .withResultType(conversion.toType)
                 } else {
-                    convertedOperand.toTypeSpecifier =
-                        dataTypeToTypeSpecifier(convertedOperand.resultType)
+                    val convertedOperand =
+                        objectFactory
+                            .createConvert()
+                            .withOperand(expression)
+                            .withResultType(conversion.toType)
+                    if (convertedOperand.resultType is NamedType) {
+                        convertedOperand.toType = dataTypeToQName(convertedOperand.resultType)
+                    } else {
+                        convertedOperand.toTypeSpecifier =
+                            dataTypeToTypeSpecifier(convertedOperand.resultType)
+                    }
+                    return convertedOperand
                 }
-                return convertedOperand
             }
-        }
     }
 
     /**

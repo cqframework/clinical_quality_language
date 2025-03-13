@@ -1,3 +1,5 @@
+@file:Suppress("PackageNaming")
+
 package org.hl7.elm_modelinfo.r1.serializing.xmlutil
 
 import kotlinx.io.Source

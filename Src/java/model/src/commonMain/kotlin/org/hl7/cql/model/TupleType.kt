@@ -2,6 +2,7 @@ package org.hl7.cql.model
 
 class TupleType
 private constructor(
+    @Suppress("ForbiddenComment")
     // TODO: Change type to Set<TupleTypeElement> to deduplicate tuple elements.
     val elements: List<TupleTypeElement>
 ) : BaseDataType() {
@@ -61,9 +62,11 @@ private constructor(
         } else false
     }
 
+    @Suppress("ForbiddenComment")
     override fun hashCode(): Int {
         var result = 13
         for (e in elements) {
+
             result +=
                 37 * e.hashCode() // TODO: Change this to `result = 37 * result + e.hashCode()`
         }

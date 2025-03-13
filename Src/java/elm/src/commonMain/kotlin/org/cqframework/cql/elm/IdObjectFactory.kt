@@ -1178,6 +1178,7 @@ open class IdObjectFactory : ObjectFactory() {
     }
 }
 
+@Suppress("LongMethod", "CyclomaticComplexMethod")
 fun IdObjectFactory.commonCreateExpression(expressionType: String): Expression {
     return when (expressionType) {
         "Abs" -> createAbs()

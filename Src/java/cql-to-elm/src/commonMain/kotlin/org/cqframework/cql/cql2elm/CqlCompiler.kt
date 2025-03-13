@@ -1,4 +1,4 @@
-@file:Suppress("WildcardImport")
+@file:Suppress("MatchingDeclarationName")
 
 package org.cqframework.cql.cql2elm
 
@@ -67,6 +67,9 @@ open class CommonCqlCompiler(
     fun toRetrieves(): kotlin.collections.List<Retrieve>? {
         return retrieves
     }
+
+    val compiledLibraries: Map<VersionedIdentifier, CompiledLibrary>
+        get() = libraryManager.compiledLibraries
 
     val libraries: Map<VersionedIdentifier, Library>
         get() {

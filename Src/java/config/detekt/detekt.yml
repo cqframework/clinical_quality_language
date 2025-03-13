@@ -1,0 +1,3 @@
+style:
+  WildcardImport:
+    active: false # Enabled by default but conflicts with spotless

@@ -1,4 +1,4 @@
-@file:Suppress("WildcardImport")
+@file:Suppress("MatchingDeclarationName")
 
 package org.cqframework.cql.cql2elm
 
@@ -23,6 +23,7 @@ import org.hl7.elm.r1.*
  */
 @OptIn(ExperimentalJsExport::class)
 @JsExport
+@Suppress("TooManyFunctions")
 open class CommonLibraryManager(
     val modelManager: CommonModelManager,
     val namespaceManager: NamespaceManager,

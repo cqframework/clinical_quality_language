@@ -6,6 +6,7 @@ import org.hl7.cql.model.DataType.Companion.ANY
 /** Created by Bryn on 11/8/2016. */
 data class ChoiceType
 private constructor(
+    @Suppress("ForbiddenComment")
     // TODO: Change type to Set<DataType> to deduplicate choice options. E.g. in QICore model info,
     // Observation.effective has System.DateTime duplicated. This doesn't break anything but the
     // compiled ELM is different because there are fewer alternative conversions in
@@ -58,6 +59,7 @@ private constructor(
         return this
     }
 
+    @Suppress("ForbiddenComment")
     // TODO: Remove hashCode and equals. Everything works without these methods but the compiled ELM
     // is different because [org.cqframework.cql.cql2elm.LibraryBuilder.normalizeListTypes] returns
     // the choice options in a different order.
@@ -69,6 +71,7 @@ private constructor(
         return result
     }
 
+    @Suppress("NestedBlockDepth")
     override fun equals(o: Any?): Boolean {
         if (o is ChoiceType) {
             val (thoseTypes) = o

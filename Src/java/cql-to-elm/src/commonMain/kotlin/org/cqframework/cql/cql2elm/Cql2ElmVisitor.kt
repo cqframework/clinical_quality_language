@@ -1,5 +1,3 @@
-@file:Suppress("WildcardImport")
-
 package org.cqframework.cql.cql2elm
 
 import org.antlr.v4.kotlinruntime.ParserRuleContext
@@ -152,8 +150,15 @@ class Cql2ElmVisitor(
         version: String?,
         localIdentifier: String
     ): Model {
+        var modelName = modelName
+        var version = version
+        if (modelName == null) {
+            val defaultUsing = libraryInfo.defaultUsingDefinition!!
+            modelName = defaultUsing.name
+            version = defaultUsing.version
+        }
         val modelIdentifier =
-            ModelIdentifier(id = modelName!!, version = version, system = modelNamespace?.uri)
+            ModelIdentifier(id = modelName, version = version, system = modelNamespace?.uri)
         return libraryBuilder.getModel(modelIdentifier, localIdentifier)
     }
 
@@ -3307,12 +3312,10 @@ class Cql2ElmVisitor(
 
     override fun visitSourceClause(ctx: SourceClauseContext): Any {
         val hasFrom = "from" == ctx.getChild(0)!!.text
-        require(!(!hasFrom && isFromKeywordRequired)) {
-            "The from keyword is required for queries."
-        }
+        require(hasFrom || !isFromKeywordRequired) { "The from keyword is required for queries." }
         val sources: MutableList<AliasedQuerySource?> = ArrayList()
         for (source in ctx.aliasedQuerySource()) {
-            require(!(sources.isNotEmpty() && !hasFrom)) {
+            require(sources.isEmpty() || hasFrom) {
                 "The from keyword is required for multi-source queries."
             }
             sources.add(visit(source) as AliasedQuerySource?)
@@ -3990,8 +3993,8 @@ class Cql2ElmVisitor(
             if (expressionInfo != null) {
                 val saveContext = saveCurrentContext(expressionInfo.context)
                 try {
-                    val saveChunks = chunks
-                    chunks = Stack()
+                    val saveChunks = this.chunks
+                    this.chunks = Stack()
                     forwards.push(expressionInfo)
                     try {
                         requireNotNull(expressionInfo.definition) {
@@ -4002,7 +4005,7 @@ class Cql2ElmVisitor(
                         // Have to call the visit to get the outer processing to occur
                         visit(expressionInfo.definition)
                     } finally {
-                        chunks = saveChunks
+                        this.chunks = saveChunks
                         forwards.pop()
                     }
                 } finally {
@@ -4116,15 +4119,15 @@ class Cql2ElmVisitor(
             if (!fh.isCompiled) {
                 val ctx = getFunctionDefinitionContext(fh)
                 val saveContext = saveCurrentContext(fh.functionDef.context!!)
-                val saveChunks = chunks
-                chunks = Stack()
+                val saveChunks = this.chunks
+                this.chunks = Stack()
                 try {
                     val fd = compileFunctionDefinition(ctx)
                     op.resultType = fd.resultType
                     result.resultType = op.resultType
                 } finally {
                     currentContext = saveContext
-                    chunks = saveChunks
+                    this.chunks = saveChunks
                 }
             }
         }
@@ -4224,14 +4227,14 @@ class Cql2ElmVisitor(
     private fun getFunctionHeader(ctx: FunctionDefinitionContext): FunctionHeader {
         var fh = functionHeaders[ctx]
         if (fh == null) {
-            val saveChunks = chunks
-            chunks = Stack()
+            val saveChunks = this.chunks
+            this.chunks = Stack()
             fh =
                 try {
                     // Have to call the visit to allow the outer processing to occur
                     parseFunctionHeader(ctx)
                 } finally {
-                    chunks = saveChunks
+                    this.chunks = saveChunks
                 }
             functionHeaders[ctx] = fh
             functionDefinitions[fh] = ctx
@@ -4338,11 +4341,7 @@ class Cql2ElmVisitor(
                 } finally {
                     libraryBuilder.endFunctionDef()
                 }
-                if (
-                    (resultType != null) &&
-                        (functionDef.expression != null) &&
-                        (functionDef.expression!!.resultType != null)
-                ) {
+                if (resultType != null && functionDef.expression?.resultType != null) {
                     require(subTypeOf(functionDef.expression!!.resultType, resultType.resultType)) {
                         // ERROR:
                         "Function ${functionDef.name} has declared return type ${resultType.resultType} but the function body returns incompatible type ${functionDef.expression!!.resultType}."

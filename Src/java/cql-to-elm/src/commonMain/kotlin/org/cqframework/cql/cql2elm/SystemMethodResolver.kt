@@ -1,5 +1,3 @@
-@file:Suppress("WildcardImport")
-
 package org.cqframework.cql.cql2elm
 
 import org.cqframework.cql.cql2elm.model.QueryContext
