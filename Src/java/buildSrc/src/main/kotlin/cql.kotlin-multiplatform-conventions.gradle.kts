@@ -136,12 +136,6 @@ kotlin {
                 implementation("org.hamcrest:hamcrest-all:1.3")
             }
         }
-
-        jsTest {
-            dependencies {
-                implementation(kotlin("test-js"))
-            }
-        }
     }
 }
 
