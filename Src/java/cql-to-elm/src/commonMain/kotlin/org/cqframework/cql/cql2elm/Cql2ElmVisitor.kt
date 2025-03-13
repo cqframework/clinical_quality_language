@@ -3993,8 +3993,8 @@ class Cql2ElmVisitor(
             if (expressionInfo != null) {
                 val saveContext = saveCurrentContext(expressionInfo.context)
                 try {
-                    val saveChunks = chunks
-                    chunks = Stack()
+                    val saveChunks = this.chunks
+                    this.chunks = Stack()
                     forwards.push(expressionInfo)
                     try {
                         requireNotNull(expressionInfo.definition) {
@@ -4005,7 +4005,7 @@ class Cql2ElmVisitor(
                         // Have to call the visit to get the outer processing to occur
                         visit(expressionInfo.definition)
                     } finally {
-                        chunks = saveChunks
+                        this.chunks = saveChunks
                         forwards.pop()
                     }
                 } finally {
@@ -4119,15 +4119,15 @@ class Cql2ElmVisitor(
             if (!fh.isCompiled) {
                 val ctx = getFunctionDefinitionContext(fh)
                 val saveContext = saveCurrentContext(fh.functionDef.context!!)
-                val saveChunks = chunks
-                chunks = Stack()
+                val saveChunks = this.chunks
+                this.chunks = Stack()
                 try {
                     val fd = compileFunctionDefinition(ctx)
                     op.resultType = fd.resultType
                     result.resultType = op.resultType
                 } finally {
                     currentContext = saveContext
-                    chunks = saveChunks
+                    this.chunks = saveChunks
                 }
             }
         }
@@ -4227,14 +4227,14 @@ class Cql2ElmVisitor(
     private fun getFunctionHeader(ctx: FunctionDefinitionContext): FunctionHeader {
         var fh = functionHeaders[ctx]
         if (fh == null) {
-            val saveChunks = chunks
-            chunks = Stack()
+            val saveChunks = this.chunks
+            this.chunks = Stack()
             fh =
                 try {
                     // Have to call the visit to allow the outer processing to occur
                     parseFunctionHeader(ctx)
                 } finally {
-                    chunks = saveChunks
+                    this.chunks = saveChunks
                 }
             functionHeaders[ctx] = fh
             functionDefinitions[fh] = ctx
