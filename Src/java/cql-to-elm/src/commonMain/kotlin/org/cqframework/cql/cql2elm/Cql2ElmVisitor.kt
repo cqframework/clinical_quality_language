@@ -150,8 +150,15 @@ class Cql2ElmVisitor(
         version: String?,
         localIdentifier: String
     ): Model {
+        var modelName = modelName
+        var version = version
+        if (modelName == null) {
+            val defaultUsing = libraryInfo.defaultUsingDefinition!!
+            modelName = defaultUsing.name
+            version = defaultUsing.version
+        }
         val modelIdentifier =
-            ModelIdentifier(id = modelName!!, version = version, system = modelNamespace?.uri)
+            ModelIdentifier(id = modelName, version = version, system = modelNamespace?.uri)
         return libraryBuilder.getModel(modelIdentifier, localIdentifier)
     }
 
