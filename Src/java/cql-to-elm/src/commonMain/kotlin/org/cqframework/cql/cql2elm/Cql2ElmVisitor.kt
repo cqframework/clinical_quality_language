@@ -3312,12 +3312,10 @@ class Cql2ElmVisitor(
 
     override fun visitSourceClause(ctx: SourceClauseContext): Any {
         val hasFrom = "from" == ctx.getChild(0)!!.text
-        require(!(!hasFrom && isFromKeywordRequired)) {
-            "The from keyword is required for queries."
-        }
+        require(hasFrom || !isFromKeywordRequired) { "The from keyword is required for queries." }
         val sources: MutableList<AliasedQuerySource?> = ArrayList()
         for (source in ctx.aliasedQuerySource()) {
-            require(!(sources.isNotEmpty() && !hasFrom)) {
+            require(sources.isEmpty() || hasFrom) {
                 "The from keyword is required for multi-source queries."
             }
             sources.add(visit(source) as AliasedQuerySource?)
