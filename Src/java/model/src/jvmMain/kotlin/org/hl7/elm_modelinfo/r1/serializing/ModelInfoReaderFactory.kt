@@ -21,11 +21,7 @@ object ModelInfoReaderFactory {
             val p = providers.next()
             if (providers.hasNext()) {
                 throw RuntimeException(
-                    java.lang.String.join(
-                        " ",
-                        "Multiple ModelInfoReaderProviders found on the classpath.",
-                        "You need to remove a reference to either the 'model-jackson' or the 'model-jaxb' package"
-                    )
+                    java.lang.String.join("Multiple ModelInfoReaderProviders found on the classpath.")
                 )
             }
 
@@ -36,7 +32,7 @@ object ModelInfoReaderFactory {
             java.lang.String.join(
                 " ",
                 "No ModelInfoReaderProviders found on the classpath.",
-                "You need to add a reference to one of the 'model-jackson' or 'model-jaxb' packages,",
+                "You need to add a reference to the 'model-xmlutil' package,",
                 "or provide your own implementation."
             )
         )
