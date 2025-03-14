@@ -21,7 +21,9 @@ object ModelInfoReaderFactory {
             val p = providers.next()
             if (providers.hasNext()) {
                 throw RuntimeException(
-                    java.lang.String.join("Multiple ModelInfoReaderProviders found on the classpath.")
+                    java.lang.String.join(
+                        "Multiple ModelInfoReaderProviders found on the classpath."
+                    )
                 )
             }
 
