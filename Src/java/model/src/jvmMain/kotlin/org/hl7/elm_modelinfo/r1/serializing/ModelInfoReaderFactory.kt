@@ -3,6 +3,7 @@
 package org.hl7.elm_modelinfo.r1.serializing
 
 import java.util.*
+import kotlin.jvm.JvmStatic
 
 object ModelInfoReaderFactory {
     fun providers(refresh: Boolean): Iterator<ModelInfoReaderProvider> {
@@ -14,6 +15,7 @@ object ModelInfoReaderFactory {
         return loader.iterator()
     }
 
+    @JvmStatic
     @Suppress("TooGenericExceptionThrown")
     fun getReader(contentType: String): ModelInfoReader {
         val providers = providers(false)
