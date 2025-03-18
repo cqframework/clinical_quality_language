@@ -153,7 +153,7 @@ class Cql2ElmVisitor(
         var modelName = modelName
         var version = version
         if (modelName == null) {
-            val defaultUsing = libraryInfo.defaultUsingDefinition!!
+            val defaultUsing = this.libraryInfo.defaultUsingDefinition!!
             modelName = defaultUsing.name
             version = defaultUsing.version
         }
@@ -413,7 +413,7 @@ class Cql2ElmVisitor(
     override fun visitContextDefinition(ctx: ContextDefinitionContext): Any {
         val modelIdentifier: String? = parseString(ctx.modelIdentifier())
         val unqualifiedIdentifier = parseString(ctx.identifier())!!
-        currentContext =
+        this.currentContext =
             if (modelIdentifier != null) "$modelIdentifier.$unqualifiedIdentifier"
             else (unqualifiedIdentifier)
         if (!isUnfilteredContext(unqualifiedIdentifier)) {
@@ -423,12 +423,12 @@ class Cql2ElmVisitor(
             // If this is the first time a context definition is encountered, construct a
             // context definition:
             // define <Context> = element of [<Context model type>]
-            var modelContextDefinition: Element? = contextDefinitions[modelContext!!.name]
+            var modelContextDefinition: Element? = this.contextDefinitions[modelContext!!.name]
             if (modelContextDefinition == null) {
                 if (libraryBuilder.hasUsings()) {
                     val modelInfo: ModelInfo =
                         if (modelIdentifier == null)
-                            libraryBuilder.getModel(libraryInfo.defaultModelName).modelInfo
+                            libraryBuilder.getModel(this.libraryInfo.defaultModelName).modelInfo
                         else libraryBuilder.getModel(modelIdentifier).modelInfo
                     // String contextTypeName = modelContext.getName();
                     // DataType contextType = libraryBuilder.resolveTypeName(modelInfo.getName(),
@@ -436,7 +436,7 @@ class Cql2ElmVisitor(
                     val contextType: DataType = modelContext.type
                     modelContextDefinition = libraryBuilder.resolveParameterRef(modelContext.name)
                     if (modelContextDefinition != null) {
-                        contextDefinitions[modelContext.name] = modelContextDefinition
+                        this.contextDefinitions[modelContext.name] = modelContextDefinition
                     } else {
                         val contextRetrieve: Retrieve =
                             of.createRetrieve()
@@ -450,7 +450,7 @@ class Cql2ElmVisitor(
                         modelContextDefinition =
                             of.createExpressionDef()
                                 .withName(unqualifiedIdentifier)
-                                .withContext(currentContext)
+                                .withContext(this.currentContext)
                                 .withExpression(
                                     of.createSingletonFrom().withOperand(contextRetrieve)
                                 )
@@ -458,13 +458,13 @@ class Cql2ElmVisitor(
                         modelContextDefinition.expression!!.resultType = contextType
                         modelContextDefinition.resultType = contextType
                         libraryBuilder.addExpression(modelContextDefinition)
-                        contextDefinitions[modelContext.name] = modelContextDefinition
+                        this.contextDefinitions[modelContext.name] = modelContextDefinition
                     }
                 } else {
                     modelContextDefinition =
                         of.createExpressionDef()
                             .withName(unqualifiedIdentifier)
-                            .withContext(currentContext)
+                            .withContext(this.currentContext)
                             .withExpression(of.createNull())
                     track(modelContextDefinition, ctx)
                     modelContextDefinition.expression!!.resultType =
@@ -472,20 +472,20 @@ class Cql2ElmVisitor(
                     modelContextDefinition.resultType =
                         modelContextDefinition.expression!!.resultType
                     libraryBuilder.addExpression(modelContextDefinition)
-                    contextDefinitions[modelContext.name] = modelContextDefinition
+                    this.contextDefinitions[modelContext.name] = modelContextDefinition
                 }
             }
         }
-        val contextDef: ContextDef = of.createContextDef().withName(currentContext)
+        val contextDef: ContextDef = of.createContextDef().withName(this.currentContext)
         track(contextDef, ctx)
         if (libraryBuilder.isCompatibleWith("1.5")) {
             libraryBuilder.addContext(contextDef)
         }
-        return currentContext
+        return this.currentContext
     }
 
     private fun isImplicitContextExpressionDef(def: ExpressionDef): Boolean {
-        for (e in contextDefinitions.values) {
+        for (e in this.contextDefinitions.values) {
             if (def === e) {
                 return true
             }
@@ -494,9 +494,9 @@ class Cql2ElmVisitor(
     }
 
     private fun removeImplicitContextExpressionDef(def: ExpressionDef) {
-        for ((key, value) in contextDefinitions) {
+        for ((key, value) in this.contextDefinitions) {
             if (def === value) {
-                contextDefinitions.remove(key)
+                this.contextDefinitions.remove(key)
                 break
             }
         }
@@ -515,7 +515,7 @@ class Cql2ElmVisitor(
         // and we can assume it's already on the hiding stack.
         if (def == null) {
             val hollowExpressionDef =
-                of.createExpressionDef().withName(identifier).withContext(currentContext)
+                of.createExpressionDef().withName(identifier).withContext(this.currentContext)
             libraryBuilder.pushIdentifier(identifier, hollowExpressionDef, IdentifierScope.GLOBAL)
         }
         if (def == null || isImplicitContextExpressionDef(def)) {
@@ -523,7 +523,7 @@ class Cql2ElmVisitor(
                 libraryBuilder.removeExpression(def)
                 removeImplicitContextExpressionDef(def)
             }
-            libraryBuilder.pushExpressionContext(currentContext)
+            libraryBuilder.pushExpressionContext(this.currentContext)
             try {
                 libraryBuilder.pushExpressionDefinition(identifier)
                 try {
@@ -531,7 +531,7 @@ class Cql2ElmVisitor(
                         of.createExpressionDef()
                             .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
                             .withName(identifier)
-                            .withContext(currentContext)
+                            .withContext(this.currentContext)
                             .withExpression(visit(ctx.expression()) as Expression?)
                     if (def.expression != null) {
                         def.resultType = def.expression!!.resultType
@@ -551,8 +551,8 @@ class Cql2ElmVisitor(
         libraryBuilder.pushIdentifierScope()
         return try {
             val expressionDef = internalVisitExpressionDefinition(ctx)
-            if (forwards.isEmpty() || forwards.peek().name != expressionDef!!.name) {
-                require(!definedExpressionDefinitions.contains(expressionDef!!.name)) {
+            if (this.forwards.isEmpty() || this.forwards.peek().name != expressionDef!!.name) {
+                require(!this.definedExpressionDefinitions.contains(expressionDef!!.name)) {
                     // ERROR:
                     "Identifier ${expressionDef.name} is already in use in this library."
                 }
@@ -561,7 +561,7 @@ class Cql2ElmVisitor(
                 // definitions will be missed
                 // because they are
                 // overwritten by name when they are encountered by the preprocessor.
-                definedExpressionDefinitions.add(expressionDef.name!!)
+                this.definedExpressionDefinitions.add(expressionDef.name!!)
             }
             expressionDef
         } finally {
@@ -1802,11 +1802,11 @@ class Cql2ElmVisitor(
         requireNotNull(left) { "left expression of timing operator can not be null" }
         requireNotNull(right) { "right expression of timing operator can not be null" }
         val timingOperatorContext = TimingOperatorContext(left, right)
-        timingOperators.push(timingOperatorContext)
+        this.timingOperators.push(timingOperatorContext)
         return try {
             visit(ctx.intervalOperatorPhrase())
         } finally {
-            timingOperators.pop()
+            this.timingOperators.pop()
         }
     }
 
@@ -1815,7 +1815,7 @@ class Cql2ElmVisitor(
     ): BinaryExpression {
         // ('starts' | 'ends' | 'occurs')? 'same' dateTimePrecision? (relativeQualifier
         // | 'as') ('start' | 'end')?
-        val timingOperator: TimingOperatorContext = timingOperators.peek()
+        val timingOperator: TimingOperatorContext = this.timingOperators.peek()
         val firstChild: ParseTree = ctx.getChild(0)!!
         if (("starts" == firstChild.text)) {
             val start: Start = of.createStart().withOperand(timingOperator.left)
@@ -1907,7 +1907,7 @@ class Cql2ElmVisitor(
         // 'properly'? 'includes' dateTimePrecisionSpecifier? ('start' | 'end')?
         var isProper = false
         var isRightPoint = false
-        val timingOperator = timingOperators.peek()
+        val timingOperator = this.timingOperators.peek()
         for (pt in ctx.children!!) {
             if ("properly" == pt.text) {
                 isProper = true
@@ -1976,7 +1976,7 @@ class Cql2ElmVisitor(
         // dateTimePrecisionSpecifier?
         var isProper = false
         var isLeftPoint = false
-        val timingOperator = timingOperators.peek()
+        val timingOperator = this.timingOperators.peek()
         for (pt in ctx.children!!) {
             if ("starts" == pt.text) {
                 val start = of.createStart().withOperand(timingOperator.left)
@@ -2070,7 +2070,7 @@ class Cql2ElmVisitor(
         // * start of A in (start of B - 3 days, start of B)
         // A starts less than 3 days after start B
         // * start of A in (start of B, start of B + 3 days)
-        val timingOperator = timingOperators.peek()
+        val timingOperator = this.timingOperators.peek()
         var isBefore = false
         var isInclusive = false
         for (child in ctx.children!!) {
@@ -2416,7 +2416,7 @@ class Cql2ElmVisitor(
         // null
         // A starts within 3 days of B
         // * start of A in [start of B - 3 days, end of B + 3 days]
-        val timingOperator = timingOperators.peek()
+        val timingOperator = this.timingOperators.peek()
         var isProper = false
         for (child in ctx.children!!) {
             if ("starts" == child.text) {
@@ -2530,7 +2530,7 @@ class Cql2ElmVisitor(
                 operatorName = "MeetsAfter"
             }
         }
-        operator.withOperand(timingOperators.peek().left, timingOperators.peek().right)
+        operator.withOperand(this.timingOperators.peek().left, this.timingOperators.peek().right)
         libraryBuilder.resolveBinaryCall("System", operatorName, operator)
         return operator
     }
@@ -2568,7 +2568,7 @@ class Cql2ElmVisitor(
                 operatorName = "OverlapsAfter"
             }
         }
-        operator.withOperand(timingOperators.peek().left, timingOperators.peek().right)
+        operator.withOperand(this.timingOperators.peek().left, this.timingOperators.peek().right)
         libraryBuilder.resolveBinaryCall("System", operatorName, operator)
         return operator
     }
@@ -2585,7 +2585,7 @@ class Cql2ElmVisitor(
                     of.createStarts()
                         .withPrecision(parseComparableDateTimePrecision(dateTimePrecision))
                 else of.createStarts())
-                .withOperand(timingOperators.peek().left, timingOperators.peek().right)
+                .withOperand(this.timingOperators.peek().left, this.timingOperators.peek().right)
         libraryBuilder.resolveBinaryCall("System", "Starts", starts)
         return starts
     }
@@ -2600,7 +2600,7 @@ class Cql2ElmVisitor(
                     of.createEnds()
                         .withPrecision(parseComparableDateTimePrecision(dateTimePrecision))
                 else of.createEnds())
-                .withOperand(timingOperators.peek().left, timingOperators.peek().right)
+                .withOperand(this.timingOperators.peek().left, this.timingOperators.peek().right)
         libraryBuilder.resolveBinaryCall("System", "Ends", ends)
         return ends
     }
@@ -2863,7 +2863,7 @@ class Cql2ElmVisitor(
 
         // Only expand a choice-valued code path if no comparator is specified
         // Otherwise, a code comparator will always choose a specific representation
-        val hasFHIRHelpers: Boolean = libraryInfo.resolveLibraryName("FHIRHelpers") != null
+        val hasFHIRHelpers: Boolean = this.libraryInfo.resolveLibraryName("FHIRHelpers") != null
         if ((property != null) && property.resultType is ChoiceType && (codeComparator == null)) {
             for (propertyType: DataType? in (property.resultType as ChoiceType).types) {
                 if (
@@ -2897,7 +2897,7 @@ class Cql2ElmVisitor(
                             null,
                             null
                         )
-                    retrieves.add(mrRetrieve)
+                    this.retrieves.add(mrRetrieve)
                     mrRetrieve.resultType = ListType(namedType as DataType)
                     val mDataType: DataType? = libraryBuilder.resolveTypeName(model, "Medication")
                     val mClassType = mDataType as ClassType
@@ -2915,7 +2915,7 @@ class Cql2ElmVisitor(
                             null,
                             null
                         )
-                    retrieves.add(mRetrieve)
+                    this.retrieves.add(mRetrieve)
                     mRetrieve.resultType = ListType(mDataType)
                     val q: Query = of.createQuery()
                     val aqs: AliasedQuerySource =
@@ -3016,7 +3016,7 @@ class Cql2ElmVisitor(
                             propertyException,
                             terminology
                         )
-                    retrieves.add(retrieve)
+                    this.retrieves.add(retrieve)
                     retrieve.resultType = ListType(namedType as DataType)
                     result =
                         if (result == null) {
@@ -3049,7 +3049,7 @@ class Cql2ElmVisitor(
                     propertyException,
                     terminology
                 )
-            retrieves.add(retrieve)
+            this.retrieves.add(retrieve)
             retrieve.resultType = ListType(namedType as DataType)
             result = retrieve
         }
@@ -3312,7 +3312,9 @@ class Cql2ElmVisitor(
 
     override fun visitSourceClause(ctx: SourceClauseContext): Any {
         val hasFrom = "from" == ctx.getChild(0)!!.text
-        require(hasFrom || !isFromKeywordRequired) { "The from keyword is required for queries." }
+        require(hasFrom || !this.isFromKeywordRequired) {
+            "The from keyword is required for queries."
+        }
         val sources: MutableList<AliasedQuerySource?> = ArrayList()
         for (source in ctx.aliasedQuerySource()) {
             require(sources.isEmpty() || hasFrom) {
@@ -3367,7 +3369,7 @@ class Cql2ElmVisitor(
                 var where =
                     if (ctx.whereClause() != null) visit(ctx.whereClause()!!) as Expression?
                     else null
-                if (dateRangeOptimization && where != null) {
+                if (this.dateRangeOptimization && where != null) {
                     for (aqs: AliasedQuerySource in sources) {
                         where = optimizeDateRangeInQuery(where, aqs)
                     }
@@ -3989,13 +3991,13 @@ class Cql2ElmVisitor(
         // and parameters
         var result = libraryBuilder.resolveIdentifier(identifier, false)
         if (result == null) {
-            val expressionInfo = libraryInfo.resolveExpressionReference(identifier)
+            val expressionInfo = this.libraryInfo.resolveExpressionReference(identifier)
             if (expressionInfo != null) {
                 val saveContext = saveCurrentContext(expressionInfo.context)
                 try {
                     val saveChunks = this.chunks
                     this.chunks = Stack()
-                    forwards.push(expressionInfo)
+                    this.forwards.push(expressionInfo)
                     try {
                         requireNotNull(expressionInfo.definition) {
                             // ERROR:
@@ -4006,13 +4008,13 @@ class Cql2ElmVisitor(
                         visit(expressionInfo.definition)
                     } finally {
                         this.chunks = saveChunks
-                        forwards.pop()
+                        this.forwards.pop()
                     }
                 } finally {
-                    currentContext = saveContext
+                    this.currentContext = saveContext
                 }
             }
-            val parameterInfo = libraryInfo.resolveParameterReference(identifier)
+            val parameterInfo = this.libraryInfo.resolveParameterReference(identifier)
             if (parameterInfo != null) {
                 visitParameterDefinition(parameterInfo.definition)
             }
@@ -4085,15 +4087,17 @@ class Cql2ElmVisitor(
 
         // Find all functionDefinitionInfo instances with the given name
         // register each functionDefinitionInfo
-        if (libraryName == null || libraryName == "" || libraryName == libraryInfo.libraryName) {
-            val fdis = libraryInfo.resolveFunctionReference(name)
+        if (
+            libraryName == null || libraryName == "" || libraryName == this.libraryInfo.libraryName
+        ) {
+            val fdis = this.libraryInfo.resolveFunctionReference(name)
             if (fdis != null) {
                 for ((_, context, definition) in fdis) {
                     val saveContext = saveCurrentContext(context)
                     try {
                         registerFunctionDefinition(definition)
                     } finally {
-                        currentContext = saveContext
+                        this.currentContext = saveContext
                     }
                 }
             }
@@ -4126,7 +4130,7 @@ class Cql2ElmVisitor(
                     op.resultType = fd.resultType
                     result.resultType = op.resultType
                 } finally {
-                    currentContext = saveContext
+                    this.currentContext = saveContext
                     this.chunks = saveChunks
                 }
             }
@@ -4157,15 +4161,15 @@ class Cql2ElmVisitor(
 
                 // NOTE: FHIRPath method invocation
                 // If the target is an expression, resolve as a method invocation
-                if (isMethodInvocationEnabled) {
-                    return systemMethodResolver.resolveMethod(
+                if (this.isMethodInvocationEnabled) {
+                    return this.systemMethodResolver.resolveMethod(
                         target,
                         identifier,
                         paramListCtx,
                         true
                     )
                 }
-                if (!isMethodInvocationEnabled) {
+                if (!this.isMethodInvocationEnabled) {
                     throw CqlCompilerException(
                         "The identifier $identifier could not be resolved as an invocation because method-style invocation is disabled.",
                         CqlCompilerException.ErrorSeverity.Error
@@ -4184,7 +4188,7 @@ class Cql2ElmVisitor(
         val thisRef: Expression? = libraryBuilder.resolveIdentifier("\$this", false)
         if (thisRef != null) {
             val result: Expression? =
-                systemMethodResolver.resolveMethod(thisRef, identifier, paramListCtx, false)
+                this.systemMethodResolver.resolveMethod(thisRef, identifier, paramListCtx, false)
             if (result != null) {
                 return result
             }
@@ -4196,7 +4200,12 @@ class Cql2ElmVisitor(
         val parameterRef: ParameterRef? = libraryBuilder.resolveImplicitContext()
         if (parameterRef != null) {
             val result: Expression? =
-                systemMethodResolver.resolveMethod(parameterRef, identifier, paramListCtx, false)
+                this.systemMethodResolver.resolveMethod(
+                    parameterRef,
+                    identifier,
+                    paramListCtx,
+                    false
+                )
             if (result != null) {
                 return result
             }
@@ -4225,7 +4234,7 @@ class Cql2ElmVisitor(
     }
 
     private fun getFunctionHeader(ctx: FunctionDefinitionContext): FunctionHeader {
-        var fh = functionHeaders[ctx]
+        var fh = this.functionHeaders[ctx]
         if (fh == null) {
             val saveChunks = this.chunks
             this.chunks = Stack()
@@ -4236,9 +4245,9 @@ class Cql2ElmVisitor(
                 } finally {
                     this.chunks = saveChunks
                 }
-            functionHeaders[ctx] = fh
-            functionDefinitions[fh] = ctx
-            functionHeadersByDef[fh!!.functionDef] = fh
+            this.functionHeaders[ctx] = fh
+            this.functionDefinitions[fh] = ctx
+            this.functionHeadersByDef[fh!!.functionDef] = fh
         }
         return fh
     }
@@ -4275,7 +4284,7 @@ class Cql2ElmVisitor(
         // FunctionDef is throwing this off,
         // Don't have time to investigate right now, this should work fine, could
         // potentially be improved
-        for ((key, value) in functionHeadersByDef) {
+        for ((key, value) in this.functionHeadersByDef) {
             if (key === fd) {
                 return value
             }
@@ -4296,7 +4305,7 @@ class Cql2ElmVisitor(
     }
 
     private fun getFunctionDefinitionContext(fh: FunctionHeader): FunctionDefinitionContext {
-        return functionDefinitions[fh]
+        return this.functionDefinitions[fh]
             ?: throw IllegalArgumentException(
                 "Could not resolve function definition context for function header ${fh.functionDef.name}"
             )
@@ -4327,7 +4336,7 @@ class Cql2ElmVisitor(
             if (ctx.functionBody() != null) {
                 libraryBuilder.beginFunctionDef(functionDef)
                 try {
-                    libraryBuilder.pushExpressionContext(currentContext)
+                    libraryBuilder.pushExpressionContext(this.currentContext)
                     try {
                         libraryBuilder.pushExpressionDefinition(fh.mangledName)
                         try {
@@ -4358,7 +4367,7 @@ class Cql2ElmVisitor(
                 functionDef.resultType = resultType.resultType
                 op.resultType = functionDef.resultType
             }
-            functionDef.context = currentContext
+            functionDef.context = this.currentContext
             fh.isCompiled = true
             return functionDef
         } finally {
