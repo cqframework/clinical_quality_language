@@ -14,7 +14,6 @@ include(
     "cqf-fhir",
     "cqf-fhir-npm",
     "cql",
-    "model",
     "model-xmlutil",
     "elm",
     "elm-xmlutil",

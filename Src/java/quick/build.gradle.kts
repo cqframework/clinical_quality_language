@@ -4,9 +4,7 @@ plugins {
 }
 
 dependencies {
-    api(project(":cql-to-elm"))
-    api(project(":elm"))
-    api(project(":model"))
+    implementation(project(":cql-to-elm"))
 }
 
 tasks.register<XjcTask>("generateQuick") {

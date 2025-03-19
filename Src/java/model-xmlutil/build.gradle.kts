@@ -6,7 +6,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(project(":model"))
+                api(project(":cql"))
             }
         }
 
