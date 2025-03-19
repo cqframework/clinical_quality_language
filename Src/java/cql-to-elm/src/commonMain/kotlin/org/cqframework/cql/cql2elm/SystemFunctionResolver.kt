@@ -398,7 +398,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
 
     // Arithmetic Function Support
     private fun resolveRound(functionRef: FunctionRef): RoundInvocation {
-        require(!(functionRef.operand.isEmpty() || functionRef.operand.size > 2)) {
+        require(functionRef.operand.size in 1..2) {
             "Could not resolve call to system operator Round.  Expected 1 or 2 arguments."
         }
         val round = of.createRound().withOperand(functionRef.operand[0])
@@ -527,7 +527,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
 
     // String Function Support
     private fun resolveCombine(functionRef: FunctionRef): CombineInvocation {
-        require(!(functionRef.operand.isEmpty() || functionRef.operand.size > 2)) {
+        require(functionRef.operand.size in 1..2) {
             "Could not resolve call to system operator Combine.  Expected 1 or 2 arguments."
         }
         val combine = of.createCombine().withSource(functionRef.operand[0])
@@ -585,7 +585,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
 
     private fun resolveSubstring(functionRef: FunctionRef): SubstringInvocation {
         @Suppress("MagicNumber")
-        require(!(functionRef.operand.size < 2 || functionRef.operand.size > 3)) {
+        require(functionRef.operand.size in 2..3) {
             "Could not resolve call to system operator Substring.  Expected 2 or 3 arguments."
         }
         val substring =

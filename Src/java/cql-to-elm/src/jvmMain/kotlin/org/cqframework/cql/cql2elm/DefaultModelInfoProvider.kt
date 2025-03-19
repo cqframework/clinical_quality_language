@@ -30,7 +30,7 @@ class DefaultModelInfoProvider() : ModelInfoProvider, PathAware {
 
     @Suppress("UnusedPrivateMember")
     private fun checkPath() {
-        require(!(path == null || path!!.equals(""))) {
+        require(path != null && !path!!.equals("")) {
             "Path is required for DefaultModelInfoProvider implementation"
         }
     }

@@ -4098,8 +4098,8 @@ class Cql2ElmVisitor(
         if (mustResolve) {
             // Extra internal error handling, these should never be hit if the two-phase operator
             // compile is working as expected
-            require(result != null) { "Internal error: could not resolve function" }
-            require(result.expression.resultType != null) {
+            requireNotNull(result) { "Internal error: could not resolve function" }
+            requireNotNull(result.expression.resultType) {
                 "Internal error: could not determine result type"
             }
         }

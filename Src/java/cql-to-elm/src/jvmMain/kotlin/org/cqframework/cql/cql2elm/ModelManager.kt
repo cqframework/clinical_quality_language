@@ -239,8 +239,7 @@ class ModelManager : CommonModelManager {
 
     private fun checkModelVersion(modelIdentifier: ModelIdentifier, model: Model?) {
         require(
-            !(modelIdentifier.version != null &&
-                modelIdentifier.version != model!!.modelInfo.version)
+            modelIdentifier.version == null || modelIdentifier.version == model!!.modelInfo.version
         ) {
             "Could not load model information for model ${modelIdentifier.id}, version ${modelIdentifier.version}" +
                 " because version ${model!!.modelInfo.version} is already loaded."

@@ -210,7 +210,7 @@ class LibraryBuilder(
             buildUsingDef(modelIdentifier, model, localIdentifier)
         }
         require(
-            !(modelIdentifier.version != null && modelIdentifier.version != model.modelInfo.version)
+            modelIdentifier.version == null || modelIdentifier.version == model.modelInfo.version
         ) {
             "Could not load model information for model ${modelIdentifier.id}, version ${modelIdentifier.version} because version ${model.modelInfo.version} is already loaded."
         }
@@ -365,7 +365,7 @@ class LibraryBuilder(
                     // This really should be
                     // being done with preprocessor directives,
                     // but that's a whole other project in and of itself.
-                    require(!(!isCompatibleWith("1.5") && !isFHIRHelpers(compiledLibrary))) {
+                    require(isCompatibleWith("1.5") || isFHIRHelpers(compiledLibrary)) {
                         "The type ${(result as NamedType).name} was introduced in CQL 1.5 and cannot be referenced at compatibility level $compatibilityLevel"
                     }
             }
@@ -472,7 +472,7 @@ class LibraryBuilder(
 
     fun resolveNamespaceUri(namespaceName: String, mustResolve: Boolean): String? {
         val namespaceUri = libraryManager.namespaceManager.resolveNamespaceUri(namespaceName)
-        require(!(namespaceUri == null && mustResolve)) {
+        require(namespaceUri != null || !mustResolve) {
             "Could not resolve namespace name $namespaceName"
         }
         return namespaceUri
@@ -585,7 +585,7 @@ class LibraryBuilder(
     }
 
     fun addInclude(includeDef: IncludeDef) {
-        require(!(library.identifier == null || library.identifier!!.id == null)) {
+        require(library.identifier != null && library.identifier!!.id != null) {
             "Unnamed libraries cannot reference other libraries."
         }
         if (library.includes == null) {
@@ -1363,7 +1363,7 @@ class LibraryBuilder(
     ): CallContext {
         val dataTypes: MutableList<DataType> = ArrayList()
         for (operand in operands) {
-            require(!(operand == null || operand.resultType == null)) {
+            require(operand != null && operand.resultType != null) {
                 "Could not determine signature for invocation of operator ${if (libraryName == null) "" else "$libraryName."}$operatorName."
             }
             dataTypes.add(operand.resultType!!)
@@ -1552,12 +1552,10 @@ class LibraryBuilder(
             // ERROR:
             "Could not resolve call to operator ${callContext.operatorName} with signature ${callContext.signature}."
         }
-        require(!(resolution.operator.fluent && !callContext.allowFluent)) {
+        require(!resolution.operator.fluent || callContext.allowFluent) {
             "Operator ${callContext.operatorName} with signature ${callContext.signature} is a fluent function and can only be invoked with fluent syntax."
         }
-        require(
-            !(callContext.allowFluent && !resolution.operator.fluent && !resolution.allowFluent)
-        ) {
+        require(!callContext.allowFluent || resolution.operator.fluent || resolution.allowFluent) {
             "Invocation of operator ${callContext.operatorName} with signature ${callContext.signature} uses fluent syntax, but the operator is not defined as a fluent function."
         }
     }
@@ -3649,7 +3647,7 @@ class LibraryBuilder(
         get() = expressionDefinitions.peek()?.scope!!
 
     fun pushExpressionContext(context: String?) {
-        require(context != null) { "Expression context cannot be null" }
+        requireNotNull(context) { "Expression context cannot be null" }
         expressionContext.push(context)
     }
 
