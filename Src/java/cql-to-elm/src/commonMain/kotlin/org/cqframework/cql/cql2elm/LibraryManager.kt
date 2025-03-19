@@ -299,8 +299,7 @@ open class CommonLibraryManager(
     @Suppress("NestedBlockDepth")
     private fun hasSignature(library: Library): Boolean {
         if (library.statements != null) {
-            // Just a quick top-level scan for signatures. To fully verify we'd have to
-            // recurse all
+            // Just a quick top-level scan for signatures. To fully verify we'd have to recurse all
             // the way down. At that point, let's just translate.
             for (ed in library.statements!!.def) {
                 if (ed.expression is FunctionRef) {
