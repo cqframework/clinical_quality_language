@@ -8,7 +8,7 @@ kotlin {
             dependencies {
                 api(project(":elm"))
                 api(project(":cql"))
-                implementation(project(":cql-to-elm"))
+                api(project(":cql-to-elm"))
             }
         }
 
