@@ -4,6 +4,7 @@
     "prettier": "^3.4.2"
   },
   "dependencies": {
-    "xml-js": "^1.6.11"
+    "xml-js": "^1.6.11",
+    "yargs": "^17.7.2"
   }
 }
