@@ -519,15 +519,17 @@ function processElements(elements, config, mode) {
 
                                 ${renderGetSet(field, className, className + "." + firstLetterToUpperCase(field.attributes.name))}
 
-                                ${renderWith(field, className, className + "." + firstLetterToUpperCase(field.attributes.name))}
+                                ${renderWith(field, className, className + "." + firstLetterToUpperCase(field.attributes.name), "")}
 
                             `;
               }
 
+              // Silly, but currently the Library is the only class with nested classes, hence the check for whether were
+              // a Library child class to render open or not.
               return `
                             ${renderGetSet(field, className, field.attributes.type)}
 
-                            ${renderWith(field, className, field.attributes.type)}
+                            ${renderWith(field, className, field.attributes.type, className.startsWith("Library") ? "" : "open")}
 
                         `;
             };
