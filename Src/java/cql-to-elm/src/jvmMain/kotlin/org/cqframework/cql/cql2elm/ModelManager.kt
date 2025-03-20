@@ -177,7 +177,6 @@ class ModelManager : CommonModelManager {
 
     private fun buildModel(identifier: ModelIdentifier): Model? {
         val model: Model?
-        require(identifier.id.isNotEmpty()) { "Model identifier Id is required" }
         val modelPath = NamespaceManager.getPath(identifier.system, identifier.id)
         pushLoading(modelPath)
         model =
