@@ -7,7 +7,6 @@ kotlin {
         commonMain {
             dependencies {
                 api(project(":cql"))
-                api(project(":model"))
                 api(project(":elm"))
                 implementation(project(":elm-xmlutil"))
                 implementation(project(":model-xmlutil"))

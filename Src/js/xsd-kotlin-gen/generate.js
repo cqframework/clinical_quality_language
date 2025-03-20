@@ -152,7 +152,7 @@ const configs = [
     xsd: __dirname + "/../../cql-lm/schema/model/modelinfo.xsd",
     outputDir:
       __dirname +
-      "/../../java/model/build/generated/sources/model/commonMain/kotlin/org/hl7/elm_modelinfo/r1",
+      "/../../java/cql/build/generated/sources/cql/commonMain/kotlin/org/hl7/elm_modelinfo/r1",
     packageName: "org.hl7.elm_modelinfo.r1",
     classes: {},
     scope: "",

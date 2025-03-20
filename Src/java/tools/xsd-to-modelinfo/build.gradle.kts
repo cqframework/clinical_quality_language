@@ -9,7 +9,7 @@ application {
 }
 
 dependencies {
-    api(project(":model"))
+    api(project(":cql"))
     implementation(project(":model-xmlutil"))
     implementation("org.jetbrains.kotlinx:kotlinx-io-core-jvm:0.6.0")
     implementation("net.sf.jopt-simple:jopt-simple:4.7")

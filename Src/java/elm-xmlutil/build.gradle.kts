@@ -6,7 +6,6 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(project(":model"))
                 api(project(":model-xmlutil"))
                 api(project(":elm"))
             }

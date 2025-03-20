@@ -4,11 +4,6 @@ plugins {
 
 kotlin {
     sourceSets {
-        commonMain {
-            dependencies {
-                api(project(":model"))
-            }
-        }
         jsMain {
             dependencies {
                 implementation("io.github.gciatto:kt-math-js:0.10.0")
