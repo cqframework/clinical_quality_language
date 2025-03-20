@@ -4,11 +4,13 @@ import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsExport
 import kotlin.js.JsName
 import kotlin.jvm.JvmStatic
+import kotlinx.serialization.Serializable
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel
 
 /** translation options for Cql source files */
 @OptIn(ExperimentalJsExport::class)
 @JsExport
+@Serializable
 class CqlCompilerOptions {
     enum class Options {
         EnableDateRangeOptimization,

@@ -70,7 +70,7 @@ class XSDValidationTest {
         var t = TestUtils.createTranslator(path);
         assertTrue(t.getErrors().isEmpty());
 
-        var xml = CqlTranslator.Companion.convertToXml(t.toELM());
+        var xml = t.convertToXml(t.toELM());
         assertTrue(validateXMLAgainstXSD(cqlFile, xml));
     }
 }
