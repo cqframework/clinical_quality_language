@@ -98,14 +98,6 @@ class CompiledLibrary {
         }
     }
 
-    @Suppress("UnusedPrivateMember")
-    private fun ensureResultType(operator: Operator) {
-        requireNotNull(operator.resultType) {
-            """Operator ${operator.name} cannot be registered in library ${identifier?.id ?: "<anonymous>"}
-                    because it does not have a result type defined."""
-        }
-    }
-
     fun add(functionDef: FunctionDef, operator: Operator) {
         ensureLibrary(operator)
         operatorMap.addOperator(operator)
