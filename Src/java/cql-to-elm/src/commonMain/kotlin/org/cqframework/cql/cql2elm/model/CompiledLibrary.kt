@@ -2,6 +2,8 @@ package org.cqframework.cql.cql2elm.model
 
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
 import kotlin.reflect.KClass
 import org.hl7.cql.model.DataType
 import org.hl7.cql.model.NamespaceManager
@@ -19,7 +21,9 @@ import org.hl7.elm.r1.UsingDef
 import org.hl7.elm.r1.ValueSetDef
 import org.hl7.elm.r1.VersionedIdentifier
 
+@OptIn(ExperimentalJsExport::class)
 @Suppress("TooManyFunctions")
+@JsExport
 class CompiledLibrary {
     var identifier: VersionedIdentifier? = null
     var library: Library? = null

@@ -316,12 +316,7 @@ function renderWith(field, className, type, override = "open") {
 
   if (isList) {
     return `
-                            ${override} fun with${firstLetterToUpperCase(field.attributes.name)}(vararg values: ${type}): ${className} {
-                                this.${makeFieldName(field.attributes.name)} = values.toMutableList()
-                                return this
-                            }
-
-                            ${override} fun with${firstLetterToUpperCase(field.attributes.name)}(values: Collection<${type}>): ${className} {
+                            ${override} fun with${firstLetterToUpperCase(field.attributes.name)}(values: kotlin.collections.List<${type}>): ${className} {
                                 this.${makeFieldName(field.attributes.name)} = values.toMutableList()
                                 return this
                             }
@@ -539,8 +534,9 @@ function processElements(elements, config, mode) {
               `
 package ${config.packageName}
 
+@kotlin.js.JsExport
 ${element.attributes.name === "Library" || element.attributes.name === "ModelInfo" ? `@nl.adaptivity.xmlutil.serialization.XmlNamespaceDeclSpec("${config.namespaceUri};${config.namespacePrefixes.join(";")}")` : `@nl.adaptivity.xmlutil.serialization.XmlNamespaceDeclSpec("${config.namespaceUri}")`}
-@OptIn(kotlinx.serialization.ExperimentalSerializationApi::class, nl.adaptivity.xmlutil.ExperimentalXmlUtilApi::class)
+@OptIn(kotlinx.serialization.ExperimentalSerializationApi::class, nl.adaptivity.xmlutil.ExperimentalXmlUtilApi::class, kotlin.js.ExperimentalJsExport::class)
 @kotlinx.serialization.Serializable
 ${config.packageName === "org.hl7.elm_modelinfo.r1" ? "" : `@kotlinx.serialization.SerialName(${JSON.stringify(makeLocalName(element.attributes.name))})`}
 @nl.adaptivity.xmlutil.serialization.XmlSerialName(${JSON.stringify(makeLocalName(element.attributes.name))}, ${JSON.stringify(config.namespaceUri)})
@@ -747,7 +743,8 @@ val ${element.attributes.name}BaseSerializer = object : kotlinx.serialization.KS
               `
 package ${config.packageName}
 
-@OptIn(kotlinx.serialization.ExperimentalSerializationApi::class)
+@kotlin.js.JsExport
+@OptIn(kotlinx.serialization.ExperimentalSerializationApi::class, kotlin.js.ExperimentalJsExport::class)
 @kotlinx.serialization.Serializable
 enum class ${element.attributes.name}(private val value: String) {
 ${element.elements[element.elements.length - 1].elements

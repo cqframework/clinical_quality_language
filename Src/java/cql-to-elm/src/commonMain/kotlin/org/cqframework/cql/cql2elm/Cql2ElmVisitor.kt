@@ -1071,8 +1071,10 @@ class Cql2ElmVisitor(
                 throw IllegalArgumentException("Unsupported operator: ${ctx.getChild(1)!!.text}.")
         }
         exp.withOperand(
-            parseExpression(ctx.expressionTerm(0))!!,
-            parseExpression(ctx.expressionTerm(1))!!
+            listOf(
+                parseExpression(ctx.expressionTerm(0))!!,
+                parseExpression(ctx.expressionTerm(1))!!
+            )
         )
         libraryBuilder.resolveBinaryCall("System", operatorName, (exp))
         return exp
@@ -1082,8 +1084,10 @@ class Cql2ElmVisitor(
         val power =
             of.createPower()
                 .withOperand(
-                    parseExpression(ctx.expressionTerm(0))!!,
-                    parseExpression(ctx.expressionTerm(1))!!
+                    listOf(
+                        parseExpression(ctx.expressionTerm(0))!!,
+                        parseExpression(ctx.expressionTerm(1))!!
+                    )
                 )
         libraryBuilder.resolveBinaryCall("System", "Power", power)
         return power
@@ -1119,8 +1123,10 @@ class Cql2ElmVisitor(
         }
         if (exp is BinaryExpression) {
             exp.withOperand(
-                parseExpression(ctx.expressionTerm(0))!!,
-                parseExpression(ctx.expressionTerm(1))!!
+                listOf(
+                    parseExpression(ctx.expressionTerm(0))!!,
+                    parseExpression(ctx.expressionTerm(1))!!
+                )
             )
             libraryBuilder.resolveBinaryCall("System", operatorName, (exp as BinaryExpression?)!!)
             if (exp.resultType === libraryBuilder.resolveTypeName("System", "String")) {
@@ -1132,8 +1138,10 @@ class Cql2ElmVisitor(
         } else {
             val concatenate = exp as Concatenate?
             concatenate!!.withOperand(
-                parseExpression(ctx.expressionTerm(0))!!,
-                parseExpression(ctx.expressionTerm(1))!!
+                listOf(
+                    parseExpression(ctx.expressionTerm(0))!!,
+                    parseExpression(ctx.expressionTerm(1))!!
+                )
             )
             for (i in concatenate.operand.indices) {
                 val operand: Expression = concatenate.operand[i]
@@ -1313,7 +1321,7 @@ class Cql2ElmVisitor(
         val result =
             of.createDurationBetween()
                 .withPrecision(parseDateTimePrecision(ctx.pluralDateTimePrecision().text))
-                .withOperand(start, end)
+                .withOperand(listOf(start, end))
         libraryBuilder.resolveBinaryCall("System", "DurationBetween", result)
         return result
     }
@@ -1330,7 +1338,7 @@ class Cql2ElmVisitor(
         val result =
             of.createDifferenceBetween()
                 .withPrecision(parseDateTimePrecision(ctx.pluralDateTimePrecision().text))
-                .withOperand(start, end)
+                .withOperand(listOf(start, end))
         libraryBuilder.resolveBinaryCall("System", "DifferenceBetween", result)
         return result
     }
@@ -1347,8 +1355,7 @@ class Cql2ElmVisitor(
                 else
                     of.createIncludedIn()
                         .withOperand(
-                            first,
-                            libraryBuilder.createInterval(second, true, third, true)
+                            listOf(first, libraryBuilder.createInterval(second, true, third, true))
                         )
             libraryBuilder.resolveBinaryCall(
                 "System",
@@ -1360,11 +1367,12 @@ class Cql2ElmVisitor(
             val result: BinaryExpression =
                 of.createAnd()
                     .withOperand(
-                        (if (isProper) of.createGreater() else of.createGreaterOrEqual())
-                            .withOperand(first, second),
-                        (if (isProper) of.createLess() else of.createLessOrEqual()).withOperand(
-                            first,
-                            third!!
+                        listOf(
+                            (if (isProper) of.createGreater() else of.createGreaterOrEqual())
+                                .withOperand(listOf(first, second)),
+                            (if (isProper) of.createLess() else of.createLessOrEqual()).withOperand(
+                                listOf(first, third!!)
+                            )
                         )
                     )
             libraryBuilder.resolveBinaryCall(
@@ -1387,8 +1395,10 @@ class Cql2ElmVisitor(
             of.createDurationBetween()
                 .withPrecision(parseDateTimePrecision(ctx.pluralDateTimePrecision().text))
                 .withOperand(
-                    parseExpression(ctx.expressionTerm(0))!!,
-                    parseExpression(ctx.expressionTerm(1))!!
+                    listOf(
+                        parseExpression(ctx.expressionTerm(0))!!,
+                        parseExpression(ctx.expressionTerm(1))!!
+                    )
                 )
         libraryBuilder.resolveBinaryCall("System", "DurationBetween", result)
         return result
@@ -1399,8 +1409,10 @@ class Cql2ElmVisitor(
             of.createDifferenceBetween()
                 .withPrecision(parseDateTimePrecision(ctx.pluralDateTimePrecision().text))
                 .withOperand(
-                    parseExpression(ctx.expressionTerm(0))!!,
-                    parseExpression(ctx.expressionTerm(1))!!
+                    listOf(
+                        parseExpression(ctx.expressionTerm(0))!!,
+                        parseExpression(ctx.expressionTerm(1))!!
+                    )
                 )
         libraryBuilder.resolveBinaryCall("System", "DifferenceBetween", result)
         return result
@@ -1430,8 +1442,10 @@ class Cql2ElmVisitor(
                                 )
                             )
                             .withOperand(
-                                parseExpression(ctx.expression(0))!!,
-                                parseExpression(ctx.expression(1))!!
+                                listOf(
+                                    parseExpression(ctx.expression(0))!!,
+                                    parseExpression(ctx.expression(1))!!
+                                )
                             )
                     libraryBuilder.resolveBinaryCall("System", "In", inExpression)
                     return inExpression
@@ -1450,8 +1464,10 @@ class Cql2ElmVisitor(
                                 )
                             )
                             .withOperand(
-                                parseExpression(ctx.expression(0))!!,
-                                parseExpression(ctx.expression(1))!!
+                                listOf(
+                                    parseExpression(ctx.expression(0))!!,
+                                    parseExpression(ctx.expression(1))!!
+                                )
                             )
                     libraryBuilder.resolveBinaryCall("System", "Contains", contains)
                     return contains
@@ -1484,7 +1500,7 @@ class Cql2ElmVisitor(
                         )
                         return inCodeSystem
                     }
-                    val contains: Contains = of.createContains().withOperand(left, right)
+                    val contains: Contains = of.createContains().withOperand(listOf(left, right))
                     libraryBuilder.resolveBinaryCall("System", "Contains", contains)
                     return contains
                 }
@@ -1496,8 +1512,10 @@ class Cql2ElmVisitor(
         val and =
             of.createAnd()
                 .withOperand(
-                    parseExpression(ctx.expression(0))!!,
-                    parseExpression(ctx.expression(1))!!
+                    listOf(
+                        parseExpression(ctx.expression(0))!!,
+                        parseExpression(ctx.expression(1))!!
+                    )
                 )
         libraryBuilder.resolveBinaryCall("System", "And", and)
         return and
@@ -1508,8 +1526,10 @@ class Cql2ElmVisitor(
             val xor =
                 of.createXor()
                     .withOperand(
-                        parseExpression(ctx.expression(0))!!,
-                        parseExpression(ctx.expression(1))!!
+                        listOf(
+                            parseExpression(ctx.expression(0))!!,
+                            parseExpression(ctx.expression(1))!!
+                        )
                     )
             libraryBuilder.resolveBinaryCall("System", "Xor", xor)
             xor
@@ -1517,8 +1537,10 @@ class Cql2ElmVisitor(
             val or =
                 of.createOr()
                     .withOperand(
-                        parseExpression(ctx.expression(0))!!,
-                        parseExpression(ctx.expression(1))!!
+                        listOf(
+                            parseExpression(ctx.expression(0))!!,
+                            parseExpression(ctx.expression(1))!!
+                        )
                     )
             libraryBuilder.resolveBinaryCall("System", "Or", or)
             or
@@ -1529,8 +1551,10 @@ class Cql2ElmVisitor(
         val implies =
             of.createImplies()
                 .withOperand(
-                    parseExpression(ctx.expression(0))!!,
-                    parseExpression(ctx.expression(1))!!
+                    listOf(
+                        parseExpression(ctx.expression(0))!!,
+                        parseExpression(ctx.expression(1))!!
+                    )
                 )
         libraryBuilder.resolveBinaryCall("System", "Implies", implies)
         return implies
@@ -1555,8 +1579,10 @@ class Cql2ElmVisitor(
             val equivalent =
                 of.createEquivalent()
                     .withOperand(
-                        parseExpression(ctx.expression(0))!!,
-                        parseExpression(ctx.expression(1))!!
+                        listOf(
+                            parseExpression(ctx.expression(0))!!,
+                            parseExpression(ctx.expression(1))!!
+                        )
                     )
             libraryBuilder.resolveBinaryCall("System", "Equivalent", equivalent)
             if ("~" != parseString(ctx.getChild(1))) {
@@ -1570,8 +1596,10 @@ class Cql2ElmVisitor(
             val equal =
                 of.createEqual()
                     .withOperand(
-                        parseExpression(ctx.expression(0))!!,
-                        parseExpression(ctx.expression(1))!!
+                        listOf(
+                            parseExpression(ctx.expression(0))!!,
+                            parseExpression(ctx.expression(1))!!
+                        )
                     )
             libraryBuilder.resolveBinaryCall("System", "Equal", equal)
             if ("=" != parseString(ctx.getChild(1))) {
@@ -1606,7 +1634,9 @@ class Cql2ElmVisitor(
             }
             else -> throw IllegalArgumentException("Unknown operator: ${ctx.getChild(1)!!.text}")
         }
-        exp.withOperand(parseExpression(ctx.expression(0))!!, parseExpression(ctx.expression(1))!!)
+        exp.withOperand(
+            listOf(parseExpression(ctx.expression(0))!!, parseExpression(ctx.expression(1))!!)
+        )
         libraryBuilder.resolveBinaryCall("System", operatorName, exp)
         return exp
     }
@@ -1715,7 +1745,7 @@ class Cql2ElmVisitor(
             val unitOperand: Expression = libraryBuilder.createLiteral(targetUnit)
             track(unitOperand, ctx.unit()!!)
             val convertQuantity: ConvertQuantity =
-                of.createConvertQuantity().withOperand(operand, unitOperand)
+                of.createConvertQuantity().withOperand(listOf(operand, unitOperand))
             track(convertQuantity, ctx)
             return libraryBuilder.resolveBinaryCall("System", "ConvertQuantity", convertQuantity)
         }
@@ -1880,7 +1910,7 @@ class Cql2ElmVisitor(
                     )
             }
         }
-        operator = operator.withOperand(timingOperator.left, timingOperator.right)
+        operator = operator.withOperand(listOf(timingOperator.left, timingOperator.right))
         libraryBuilder.resolveBinaryCall(
             "System",
             operatorName,
@@ -2111,7 +2141,7 @@ class Cql2ElmVisitor(
                 if (isBefore) {
                     val sameOrBefore =
                         of.createSameOrBefore()
-                            .withOperand(timingOperator.left, timingOperator.right)
+                            .withOperand(listOf(timingOperator.left, timingOperator.right))
                     if (dateTimePrecision != null) {
                         sameOrBefore.precision = parseComparableDateTimePrecision(dateTimePrecision)
                     }
@@ -2126,7 +2156,7 @@ class Cql2ElmVisitor(
                 } else {
                     val sameOrAfter =
                         of.createSameOrAfter()
-                            .withOperand(timingOperator.left, timingOperator.right)
+                            .withOperand(listOf(timingOperator.left, timingOperator.right))
                     if (dateTimePrecision != null) {
                         sameOrAfter.precision = parseComparableDateTimePrecision(dateTimePrecision)
                     }
@@ -2142,7 +2172,8 @@ class Cql2ElmVisitor(
             } else {
                 if (isBefore) {
                     val before =
-                        of.createBefore().withOperand(timingOperator.left, timingOperator.right)
+                        of.createBefore()
+                            .withOperand(listOf(timingOperator.left, timingOperator.right))
                     if (dateTimePrecision != null) {
                         before.precision = parseComparableDateTimePrecision(dateTimePrecision)
                     }
@@ -2156,7 +2187,8 @@ class Cql2ElmVisitor(
                     before
                 } else {
                     val after =
-                        of.createAfter().withOperand(timingOperator.left, timingOperator.right)
+                        of.createAfter()
+                            .withOperand(listOf(timingOperator.left, timingOperator.right))
                     if (dateTimePrecision != null) {
                         after.precision = parseComparableDateTimePrecision(dateTimePrecision)
                     }
@@ -2206,18 +2238,19 @@ class Cql2ElmVisitor(
                 // For a Before, subtract the quantity from the right operand
                 // For an After, add the quantity to the right operand
                 if (isBefore) {
-                    val subtract = of.createSubtract().withOperand(timingOperator.right, quantity)
+                    val subtract =
+                        of.createSubtract().withOperand(listOf(timingOperator.right, quantity))
                     track(subtract, timingOperator.right)
                     libraryBuilder.resolveBinaryCall("System", "Subtract", subtract)
                     timingOperator.right = subtract
                 } else {
-                    val add = of.createAdd().withOperand(timingOperator.right, quantity)
+                    val add = of.createAdd().withOperand(listOf(timingOperator.right, quantity))
                     track(add, timingOperator.right)
                     libraryBuilder.resolveBinaryCall("System", "Add", add)
                     timingOperator.right = add
                 }
                 val sameAs =
-                    of.createSameAs().withOperand(timingOperator.left, timingOperator.right)
+                    of.createSameAs().withOperand(listOf(timingOperator.left, timingOperator.right))
                 if (dateTimePrecision != null) {
                     sameAs.precision = parseComparableDateTimePrecision(dateTimePrecision)
                 }
@@ -2237,14 +2270,17 @@ class Cql2ElmVisitor(
                         // For an After, add the quantity to the right operand
                         return if (isBefore) {
                             val subtract =
-                                of.createSubtract().withOperand(timingOperator.right, quantity)
+                                of.createSubtract()
+                                    .withOperand(listOf(timingOperator.right, quantity))
                             track(subtract, timingOperator.right)
                             libraryBuilder.resolveBinaryCall("System", "Subtract", subtract)
                             timingOperator.right = subtract
                             if (!isOffsetInclusive) {
                                 val before =
                                     of.createBefore()
-                                        .withOperand(timingOperator.left, timingOperator.right)
+                                        .withOperand(
+                                            listOf(timingOperator.left, timingOperator.right)
+                                        )
                                 if (dateTimePrecision != null) {
                                     before.precision =
                                         parseComparableDateTimePrecision(dateTimePrecision)
@@ -2260,7 +2296,9 @@ class Cql2ElmVisitor(
                             } else {
                                 val sameOrBefore =
                                     of.createSameOrBefore()
-                                        .withOperand(timingOperator.left, timingOperator.right)
+                                        .withOperand(
+                                            listOf(timingOperator.left, timingOperator.right)
+                                        )
                                 if (dateTimePrecision != null) {
                                     sameOrBefore.precision =
                                         parseComparableDateTimePrecision(dateTimePrecision)
@@ -2275,14 +2313,17 @@ class Cql2ElmVisitor(
                                 sameOrBefore
                             }
                         } else {
-                            val add = of.createAdd().withOperand(timingOperator.right, quantity)
+                            val add =
+                                of.createAdd().withOperand(listOf(timingOperator.right, quantity))
                             track(add, timingOperator.right)
                             libraryBuilder.resolveBinaryCall("System", "Add", add)
                             timingOperator.right = add
                             if (!isOffsetInclusive) {
                                 val after =
                                     of.createAfter()
-                                        .withOperand(timingOperator.left, timingOperator.right)
+                                        .withOperand(
+                                            listOf(timingOperator.left, timingOperator.right)
+                                        )
                                 if (dateTimePrecision != null) {
                                     after.precision =
                                         parseComparableDateTimePrecision(dateTimePrecision)
@@ -2298,7 +2339,9 @@ class Cql2ElmVisitor(
                             } else {
                                 val sameOrAfter =
                                     of.createSameOrAfter()
-                                        .withOperand(timingOperator.left, timingOperator.right)
+                                        .withOperand(
+                                            listOf(timingOperator.left, timingOperator.right)
+                                        )
                                 if (dateTimePrecision != null) {
                                     sameOrAfter.precision =
                                         parseComparableDateTimePrecision(dateTimePrecision)
@@ -2322,7 +2365,7 @@ class Cql2ElmVisitor(
                         val upperBound: Expression?
                         val right = timingOperator.right
                         if (isBefore) {
-                            lowerBound = of.createSubtract().withOperand(right, quantity)
+                            lowerBound = of.createSubtract().withOperand(listOf(right, quantity))
                             track(lowerBound, right)
                             libraryBuilder.resolveBinaryCall(
                                 "System",
@@ -2332,7 +2375,7 @@ class Cql2ElmVisitor(
                             upperBound = right
                         } else {
                             lowerBound = right
-                            upperBound = of.createAdd().withOperand(right, quantity)
+                            upperBound = of.createAdd().withOperand(listOf(right, quantity))
                             track(upperBound, right)
                             libraryBuilder.resolveBinaryCall(
                                 "System",
@@ -2361,7 +2404,8 @@ class Cql2ElmVisitor(
                                     isOffsetInclusive
                                 )
                         track(interval, ctx.quantityOffset()!!)
-                        val inExpression = of.createIn().withOperand(timingOperator.left, interval)
+                        val inExpression =
+                            of.createIn().withOperand(listOf(timingOperator.left, interval))
                         if (dateTimePrecision != null) {
                             inExpression.precision =
                                 parseComparableDateTimePrecision(dateTimePrecision)
@@ -2378,7 +2422,7 @@ class Cql2ElmVisitor(
                             val notNullTest = of.createNot().withOperand(nullTest)
                             track(notNullTest, ctx.quantityOffset()!!)
                             libraryBuilder.resolveUnaryCall("System", "Not", notNullTest)
-                            val and = of.createAnd().withOperand(inExpression, notNullTest)
+                            val and = of.createAnd().withOperand(listOf(inExpression, notNullTest))
                             track(and, ctx.quantityOffset()!!)
                             libraryBuilder.resolveBinaryCall("System", "And", and)
                             return and
@@ -2454,15 +2498,15 @@ class Cql2ElmVisitor(
             upperBound = timingOperator.right
             initialBound = lowerBound
         }
-        lowerBound = of.createSubtract().withOperand(lowerBound, quantity)
+        lowerBound = of.createSubtract().withOperand(listOf(lowerBound, quantity))
         track(lowerBound, ctx.quantity())
         libraryBuilder.resolveBinaryCall("System", "Subtract", (lowerBound as BinaryExpression?)!!)
-        upperBound = of.createAdd().withOperand(upperBound, quantity)
+        upperBound = of.createAdd().withOperand(listOf(upperBound, quantity))
         track(upperBound, ctx.quantity())
         libraryBuilder.resolveBinaryCall("System", "Add", (upperBound as BinaryExpression?)!!)
         val interval = libraryBuilder.createInterval(lowerBound, !isProper, upperBound, !isProper)
         track(interval, ctx.quantity())
-        val inExpression = of.createIn().withOperand(timingOperator.left, interval)
+        val inExpression = of.createIn().withOperand(listOf(timingOperator.left, interval))
         libraryBuilder.resolveBinaryCall("System", "In", inExpression)
 
         // if the within is not proper and the interval is being constructed from a single point,
@@ -2474,7 +2518,7 @@ class Cql2ElmVisitor(
             val notNullTest = of.createNot().withOperand(nullTest)
             track(notNullTest, ctx.quantity())
             libraryBuilder.resolveUnaryCall("System", "Not", notNullTest)
-            val and = of.createAnd().withOperand(inExpression, notNullTest)
+            val and = of.createAnd().withOperand(listOf(inExpression, notNullTest))
             track(and, ctx.quantity())
             libraryBuilder.resolveBinaryCall("System", "And", and)
             return and
@@ -2515,7 +2559,9 @@ class Cql2ElmVisitor(
                 operatorName = "MeetsAfter"
             }
         }
-        operator.withOperand(this.timingOperators.peek().left, this.timingOperators.peek().right)
+        operator.withOperand(
+            listOf(this.timingOperators.peek().left, this.timingOperators.peek().right)
+        )
         libraryBuilder.resolveBinaryCall("System", operatorName, operator)
         return operator
     }
@@ -2553,7 +2599,9 @@ class Cql2ElmVisitor(
                 operatorName = "OverlapsAfter"
             }
         }
-        operator.withOperand(this.timingOperators.peek().left, this.timingOperators.peek().right)
+        operator.withOperand(
+            listOf(this.timingOperators.peek().left, this.timingOperators.peek().right)
+        )
         libraryBuilder.resolveBinaryCall("System", operatorName, operator)
         return operator
     }
@@ -2570,7 +2618,9 @@ class Cql2ElmVisitor(
                     of.createStarts()
                         .withPrecision(parseComparableDateTimePrecision(dateTimePrecision))
                 else of.createStarts())
-                .withOperand(this.timingOperators.peek().left, this.timingOperators.peek().right)
+                .withOperand(
+                    listOf(this.timingOperators.peek().left, this.timingOperators.peek().right)
+                )
         libraryBuilder.resolveBinaryCall("System", "Starts", starts)
         return starts
     }
@@ -2585,7 +2635,9 @@ class Cql2ElmVisitor(
                     of.createEnds()
                         .withPrecision(parseComparableDateTimePrecision(dateTimePrecision))
                 else of.createEnds())
-                .withOperand(this.timingOperators.peek().left, this.timingOperators.peek().right)
+                .withOperand(
+                    listOf(this.timingOperators.peek().left, this.timingOperators.peek().right)
+                )
         libraryBuilder.resolveBinaryCall("System", "Ends", ends)
         return ends
     }
@@ -2740,12 +2792,12 @@ class Cql2ElmVisitor(
         }
         when (ctx.getChild(0)!!.text) {
             "expand" -> {
-                val expand: Expand = of.createExpand().withOperand(source, per!!)
+                val expand: Expand = of.createExpand().withOperand(listOf(source, per!!))
                 libraryBuilder.resolveBinaryCall("System", "Expand", expand)
                 return expand
             }
             "collapse" -> {
-                val collapse: Collapse = of.createCollapse().withOperand(source, per!!)
+                val collapse: Collapse = of.createCollapse().withOperand(listOf(source, per!!))
                 libraryBuilder.resolveBinaryCall("System", "Collapse", collapse)
                 return collapse
             }
@@ -2923,7 +2975,7 @@ class Cql2ElmVisitor(
                     libraryBuilder.resolveCall("System", "Split", SplitInvocation(split))
                     val last: Last = of.createLast().withSource(split)
                     libraryBuilder.resolveCall("System", "Last", LastInvocation(last))
-                    val e: Equal = of.createEqual().withOperand(idProperty, last)
+                    val e: Equal = of.createEqual().withOperand(listOf(idProperty, last))
                     libraryBuilder.resolveBinaryCall("System", "Equal", e)
 
                     // Apply target mapping if this is a profile-informed model info
@@ -2944,7 +2996,7 @@ class Cql2ElmVisitor(
                             of.createFunctionRef()
                                 .withLibraryName("FHIRHelpers")
                                 .withName("ToConcept")
-                                .withOperand(mCodeProperty)
+                                .withOperand(listOf(mCodeProperty))
                         toConcept.resultType = mCodeType
                         mCodeProperty = toConcept
                     }
@@ -2967,11 +3019,12 @@ class Cql2ElmVisitor(
                             libraryBuilder.resolveIn(mCodeProperty, (terminology))
                         } else {
                             val equivalent: BinaryExpression =
-                                of.createEquivalent().withOperand(mCodeProperty, terminology)
+                                of.createEquivalent()
+                                    .withOperand(listOf(mCodeProperty, terminology))
                             libraryBuilder.resolveBinaryCall("System", "Equivalent", equivalent)
                             equivalent
                         }
-                    val a: And = of.createAnd().withOperand(e, terminologyComparison)
+                    val a: And = of.createAnd().withOperand(listOf(e, terminologyComparison))
                     libraryBuilder.resolveBinaryCall("System", "And", a)
                     w.withSuchThat(a)
                     result =
@@ -3154,7 +3207,7 @@ class Cql2ElmVisitor(
 
                         // Resolve with equivalent to verify the type of the target
                         val equivalent: BinaryExpression =
-                            of.createEquivalent().withOperand(property, terminology)
+                            of.createEquivalent().withOperand(listOf(property, terminology))
                         libraryBuilder.resolveBinaryCall("System", "Equivalent", equivalent)
 
                         // Automatically promote to a list for use in the retrieve target
@@ -3176,7 +3229,7 @@ class Cql2ElmVisitor(
 
                         // Resolve with equality to verify the type of the source and target
                         val equal: BinaryExpression =
-                            of.createEqual().withOperand(property, terminology)
+                            of.createEqual().withOperand(listOf(property, terminology))
                         libraryBuilder.resolveBinaryCall("System", "Equal", equal)
 
                         // Automatically promote to a list for use in the retrieve target
@@ -3857,7 +3910,10 @@ class Cql2ElmVisitor(
         if (ctx.sortDirection() != null) {
             return of.createSortClause()
                 .withBy(
-                    of.createByDirection().withDirection(parseSortDirection(ctx.sortDirection()))
+                    listOf(
+                        of.createByDirection()
+                            .withDirection(parseSortDirection(ctx.sortDirection()))
+                    )
                 )
         }
         val sortItems: MutableList<SortByItem> = ArrayList()
@@ -3883,8 +3939,10 @@ class Cql2ElmVisitor(
         val indexer =
             of.createIndexer()
                 .withOperand(
-                    parseExpression(ctx.expressionTerm())!!,
-                    parseExpression(ctx.expression())!!
+                    listOf(
+                        parseExpression(ctx.expressionTerm())!!,
+                        parseExpression(ctx.expression())!!
+                    )
                 )
 
         // TODO: Support zero-based indexers as defined by the isZeroBased attribute

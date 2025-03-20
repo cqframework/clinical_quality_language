@@ -68,7 +68,7 @@ class SystemMethodResolver(
         }
         val query =
             of.createQuery()
-                .withSource(queryContext.querySources)
+                .withSource(queryContext.querySources.toList())
                 .withLet(lets)
                 .withWhere(where)
                 .withReturn(ret)

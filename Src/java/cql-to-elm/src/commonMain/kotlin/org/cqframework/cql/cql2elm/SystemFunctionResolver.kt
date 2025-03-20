@@ -505,7 +505,8 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
         slice.source = functionRef.operand[0]
         slice.startIndex = builder.createLiteral(0)
         val coalesce =
-            of.createCoalesce().withOperand(functionRef.operand[1], builder.createLiteral(0))
+            of.createCoalesce()
+                .withOperand(listOf(functionRef.operand[1], builder.createLiteral(0)))
         val naryInvocation = NaryExpressionInvocation(coalesce)
         builder.resolveInvocation("System", "Coalesce", naryInvocation)
         slice.endIndex = coalesce
