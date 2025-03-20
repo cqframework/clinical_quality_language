@@ -8,10 +8,11 @@ import org.cqframework.cql.cql2elm.model.SystemModel
 import org.cqframework.cql.cql2elm.ucum.UcumService
 import org.cqframework.cql.cql2elm.utils.asSource
 import org.cqframework.cql.elm.serializing.BigDecimal
+import org.cqframework.cql.elm.serializing.ElmLibraryReaderProvider
 import org.hl7.cql.model.ModelIdentifier
 import org.hl7.cql.model.NamespaceManager
 import org.hl7.elm.r1.VersionedIdentifier
-import org.hl7.elm_modelinfo.r1.serializing.DefaultModelInfoReaderProvider
+import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReaderProvider
 
 /**
  * A simple library manager factory suitable for JS environments. It accepts simple callbacks and
@@ -29,11 +30,14 @@ import org.hl7.elm_modelinfo.r1.serializing.DefaultModelInfoReaderProvider
  */
 @OptIn(ExperimentalJsExport::class)
 @JsExport
+@Suppress("LongParameterList")
 fun getSimpleLibraryManager(
     getModelXml: (id: String, system: String?, version: String?) -> String,
     getLibraryCql: (id: String, system: String?, version: String?) -> String? = { _, _, _ -> null },
     validateUnit: (unit: String) -> String? = { null },
-    cqlCompilerOptions: CqlCompilerOptions = CqlCompilerOptions.defaultOptions()
+    cqlCompilerOptions: CqlCompilerOptions = CqlCompilerOptions.defaultOptions(),
+    modelInfoReaderProvider: ModelInfoReaderProvider,
+    elmLibraryReaderProvider: ElmLibraryReaderProvider
 ): CommonLibraryManager {
     val namespaceManager = NamespaceManager()
 
@@ -71,8 +75,7 @@ fun getSimpleLibraryManager(
                 }
                 val modelXml =
                     getModelXml(modelIdentifier.id, modelIdentifier.system, modelIdentifier.version)
-                val modelInfo =
-                    DefaultModelInfoReaderProvider().create("application/xml").read(modelXml)
+                val modelInfo = modelInfoReaderProvider.create("application/xml").read(modelXml)
                 val model =
                     if (modelIdentifier.id == "System") {
                         SystemModel(modelInfo)
@@ -118,6 +121,8 @@ fun getSimpleLibraryManager(
         namespaceManager,
         librarySourceLoader,
         lazy { ucumService },
-        cqlCompilerOptions
+        cqlCompilerOptions,
+        HashMap(),
+        elmLibraryReaderProvider
     )
 }

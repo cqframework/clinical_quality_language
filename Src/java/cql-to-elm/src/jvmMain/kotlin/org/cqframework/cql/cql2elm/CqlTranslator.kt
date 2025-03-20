@@ -3,30 +3,45 @@ package org.cqframework.cql.cql2elm
 import java.io.*
 import org.antlr.v4.kotlinruntime.CharStream
 import org.antlr.v4.kotlinruntime.CharStreams
+import org.cqframework.cql.elm.serializing.ElmLibraryReaderProvider
+import org.cqframework.cql.elm.serializing.ElmLibraryReaderProviderFactory
+import org.cqframework.cql.elm.serializing.ElmLibraryWriterProvider
+import org.cqframework.cql.elm.serializing.ElmLibraryWriterProviderFactory
 import org.hl7.cql.model.*
 import org.hl7.elm.r1.*
+import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReaderFactory
+import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReaderProvider
+
+fun getElmLibraryReaderProvider(): ElmLibraryReaderProvider {
+    return ElmLibraryReaderProviderFactory.providers(false).next()
+}
+
+fun getElmLibraryWriterProvider(): ElmLibraryWriterProvider {
+    return ElmLibraryWriterProviderFactory.providers(false).next()
+}
+
+fun getModelInfoReaderProvider(): ModelInfoReaderProvider {
+    return ModelInfoReaderFactory.providers(false).next()
+}
 
 class CqlTranslator(
     namespaceInfo: NamespaceInfo?,
     sourceInfo: VersionedIdentifier?,
     `is`: CharStream,
     libraryManager: LibraryManager
-) : CommonCqlTranslator(namespaceInfo, sourceInfo, `is`, libraryManager) {
+) :
+    CommonCqlTranslator(
+        namespaceInfo,
+        sourceInfo,
+        `is`,
+        libraryManager,
+        getElmLibraryWriterProvider()
+    ) {
     @Suppress("TooManyFunctions")
     companion object {
         @JvmStatic
         fun fromText(cqlText: String, libraryManager: LibraryManager): CqlTranslator {
             return CqlTranslator(null, null, CharStreams.fromString(cqlText), libraryManager)
-        }
-
-        @JvmStatic
-        fun convertToXml(library: Library): String {
-            return CommonCqlTranslator.convertToXml(library)
-        }
-
-        @JvmStatic
-        fun convertToJson(library: Library): String {
-            return CommonCqlTranslator.convertToJson(library)
         }
 
         @JvmStatic

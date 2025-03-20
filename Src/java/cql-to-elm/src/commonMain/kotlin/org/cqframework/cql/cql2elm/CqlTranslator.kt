@@ -8,7 +8,7 @@ import kotlin.jvm.JvmStatic
 import org.antlr.v4.kotlinruntime.CharStream
 import org.antlr.v4.kotlinruntime.CharStreams
 import org.cqframework.cql.cql2elm.model.CompiledLibrary
-import org.cqframework.cql.elm.serializing.getElmLibraryWriter
+import org.cqframework.cql.elm.serializing.ElmLibraryWriterProvider
 import org.hl7.cql.model.*
 import org.hl7.elm.r1.*
 
@@ -18,7 +18,8 @@ open class CommonCqlTranslator(
     namespaceInfo: NamespaceInfo?,
     sourceInfo: VersionedIdentifier?,
     `is`: CharStream,
-    libraryManager: CommonLibraryManager
+    libraryManager: CommonLibraryManager,
+    val writerProvider: ElmLibraryWriterProvider
 ) {
     enum class Format {
         XML,
@@ -79,22 +80,30 @@ open class CommonCqlTranslator(
     val messages: kotlin.collections.List<CqlCompilerException?>?
         get() = compiler.messages
 
+    fun convertToXml(library: Library): String {
+        return this.writerProvider.create(LibraryContentType.XML.mimeType()).writeAsString(library)
+    }
+
+    fun convertToJson(library: Library): String {
+        return this.writerProvider.create(LibraryContentType.JSON.mimeType()).writeAsString(library)
+    }
+
     @Suppress("TooManyFunctions")
     companion object {
 
         @JvmStatic
-        fun fromText(cqlText: String, libraryManager: CommonLibraryManager): CommonCqlTranslator {
-            return CommonCqlTranslator(null, null, CharStreams.fromString(cqlText), libraryManager)
-        }
-
-        @JvmStatic
-        fun convertToXml(library: Library): String {
-            return getElmLibraryWriter(LibraryContentType.XML.mimeType()).writeAsString(library)
-        }
-
-        @JvmStatic
-        fun convertToJson(library: Library): String {
-            return getElmLibraryWriter(LibraryContentType.JSON.mimeType()).writeAsString(library)
+        fun fromText(
+            cqlText: String,
+            libraryManager: CommonLibraryManager,
+            writerProvider: ElmLibraryWriterProvider
+        ): CommonCqlTranslator {
+            return CommonCqlTranslator(
+                null,
+                null,
+                CharStreams.fromString(cqlText),
+                libraryManager,
+                writerProvider
+            )
         }
     }
 }

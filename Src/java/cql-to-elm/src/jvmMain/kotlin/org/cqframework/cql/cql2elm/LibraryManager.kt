@@ -18,7 +18,8 @@ constructor(
         PriorityLibrarySourceLoader(),
         lazyUcumService,
         cqlCompilerOptions,
-        libraryCache
+        libraryCache,
+        getElmLibraryReaderProvider()
     ) {
     override val librarySourceLoader: LibrarySourceLoader
         get() = super.librarySourceLoader as LibrarySourceLoader
