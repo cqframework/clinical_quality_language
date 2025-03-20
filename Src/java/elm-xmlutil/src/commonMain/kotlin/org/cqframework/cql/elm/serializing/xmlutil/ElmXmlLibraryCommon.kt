@@ -17,6 +17,7 @@ private val defaultPolicy =
         typeDiscriminatorName = QName(XMLConstants.XSI_NS_URI, "type", XMLConstants.XSI_PREFIX)
     }
 
+@OptIn(ExperimentalXmlUtilApi::class)
 private val customPolicy =
     object : XmlSerializationPolicy by defaultPolicy {
         override fun isTransparentPolymorphic(

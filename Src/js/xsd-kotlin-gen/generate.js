@@ -234,7 +234,7 @@ val serializersModule = kotlinx.serialization.modules.SerializersModule {
                ${
                  !parentClass.isAbstract
                    ? `
-                 subclass(${config.packageName}.${parentClass.className}Dummy::class, ${config.packageName}.${parentClass.className}BaseSerializer as kotlinx.serialization.KSerializer<${config.packageName}.${parentClass.className}Dummy>)
+                 subclass(${config.packageName}.${parentClass.className}Dummy::class, ${config.packageName}.${parentClass.className}Dummy.serializer())
                  defaultDeserializer { ${config.packageName}.${parentClass.className}.serializer() }
                `
                    : ""
