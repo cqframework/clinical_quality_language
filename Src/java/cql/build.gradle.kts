@@ -1,20 +1,35 @@
 import com.strumenta.antlrkotlin.gradle.AntlrKotlinTask
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.tasks.AbstractKotlinCompile
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompileCommon
 
 plugins {
     id("cql.kotlin-multiplatform-conventions")
     id("com.strumenta.antlr-kotlin") version "1.0.1"
 }
 
+// Temporary hack to force multiplatform compilation
+// to run after the codegen task that's in the elm project
+// Eventually, we'll break up that code gen to be module-specific
+tasks.withType<KotlinCompileCommon> {
+   mustRunAfter(":elm:runXsdKotlinGen")
+}
+
 kotlin {
     sourceSets {
         commonMain {
             kotlin {
-                srcDir("build/generated/sources/antlr/main/kotlin")
+                srcDir("build/generated/sources/antlr/commonMain/kotlin")
+                srcDir("build/generated/sources/cql/commonMain/kotlin")
             }
             dependencies {
                 api("com.strumenta:antlr-kotlin-runtime:1.0.1")
+                api("org.jetbrains.kotlinx:kotlinx-io-core:0.6.0")
+            }
+        }
+
+        jvmTest {
+            dependencies {
+                implementation(project(":model-xmlutil"))
             }
         }
     }
@@ -25,7 +40,7 @@ val generateKotlinGrammarSource = tasks.register<AntlrKotlinTask>("generateKotli
     source = fileTree("../../grammar")
     packageName = "org.cqframework.cql.gen"
     arguments = listOf("-visitor")
-    outputDirectory = file("build/generated/sources/antlr/main/kotlin/${packageName!!.replace(".", "/")}")
+    outputDirectory = file("build/generated/sources/antlr/commonMain/kotlin/${packageName!!.replace(".", "/")}")
     outputs.dirs(outputDirectory)
 }
 
