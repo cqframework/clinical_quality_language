@@ -4,7 +4,6 @@ plugins {
 
 dependencies {
     implementation(project(":cql-to-elm"))
-    implementation(project(":elm-xmlutil"))
-    implementation(project(":model-xmlutil"))
+    implementation(project(":serialization"))
     testImplementation(project(":ucum"))
 }

@@ -6,8 +6,8 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(project(":model-xmlutil"))
                 api(project(":elm"))
+                api(project(":cql"))
             }
         }
 
@@ -16,6 +16,7 @@ kotlin {
                 implementation(project(":cql-to-elm"))
                 implementation(project(":ucum"))
                 implementation(project(":quick"))
+                implementation(project(":qdm"))
                 implementation("org.xmlunit:xmlunit-assertj:2.10.0")
                 implementation("org.skyscreamer:jsonassert:1.5.1")
             }

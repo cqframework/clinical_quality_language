@@ -8,8 +8,7 @@ dependencies {
     api(project(":engine"))
     testImplementation("org.wiremock:wiremock:3.9.1")
     testImplementation(project(":cql-to-elm"))
-    testImplementation(project(":model-xmlutil"))
-    testImplementation(project(":elm-xmlutil"))
+    testImplementation(project(":serialization"))
     testImplementation(project(":quick"))
     testImplementation("ca.uhn.hapi.fhir:hapi-fhir-client")
 }

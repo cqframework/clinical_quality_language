@@ -10,5 +10,5 @@ dependencies {
 
     testImplementation(project(":quick"))
     testImplementation("org.reflections:reflections:0.10.2")
-    testRuntimeOnly(project(":model-xmlutil"))
+    testRuntimeOnly(project(":serialization"))
 }

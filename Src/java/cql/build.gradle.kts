@@ -29,7 +29,7 @@ kotlin {
 
         jvmTest {
             dependencies {
-                implementation(project(":model-xmlutil"))
+                implementation(project(":serialization"))
             }
         }
     }
