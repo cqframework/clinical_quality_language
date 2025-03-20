@@ -36,7 +36,7 @@ object ModelInfoReaderFactory {
             java.lang.String.join(
                 " ",
                 "No ModelInfoReaderProviders found on the classpath.",
-                "You need to add a reference to the 'model-xmlutil' package,",
+                "You need to add a dependency on the 'info.cqframework:serialization' package,",
                 "or provide your own implementation."
             )
         )

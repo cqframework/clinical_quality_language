@@ -11,7 +11,7 @@ import org.cqframework.cql.elm.serializing.BigDecimal
 import org.hl7.cql.model.ModelIdentifier
 import org.hl7.cql.model.NamespaceManager
 import org.hl7.elm.r1.VersionedIdentifier
-import org.hl7.elm_modelinfo.r1.serializing.xmlutil.ModelInfoReaderProvider
+import org.hl7.elm_modelinfo.r1.serializing.DefaultModelInfoReaderProvider
 
 /**
  * A simple library manager factory suitable for JS environments. It accepts simple callbacks and
@@ -71,7 +71,8 @@ fun getSimpleLibraryManager(
                 }
                 val modelXml =
                     getModelXml(modelIdentifier.id, modelIdentifier.system, modelIdentifier.version)
-                val modelInfo = ModelInfoReaderProvider().create("application/xml").read(modelXml)
+                val modelInfo =
+                    DefaultModelInfoReaderProvider().create("application/xml").read(modelXml)
                 val model =
                     if (modelIdentifier.id == "System") {
                         SystemModel(modelInfo)

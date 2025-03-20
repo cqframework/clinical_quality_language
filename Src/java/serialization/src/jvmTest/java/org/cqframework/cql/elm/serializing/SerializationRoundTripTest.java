@@ -1,4 +1,4 @@
-package org.cqframework.cql.elm.serializing.xmlutil;
+package org.cqframework.cql.elm.serializing;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

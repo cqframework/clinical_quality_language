@@ -8,7 +8,7 @@ import static org.hamcrest.Matchers.is;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.hl7.elm_modelinfo.r1.*;
-import org.hl7.elm_modelinfo.r1.serializing.xmlutil.XmlModelInfoReader;
+import org.hl7.elm_modelinfo.r1.serializing.XmlModelInfoReader;
 import org.junit.jupiter.api.Test;
 
 public class ModelInfoComparerTest {

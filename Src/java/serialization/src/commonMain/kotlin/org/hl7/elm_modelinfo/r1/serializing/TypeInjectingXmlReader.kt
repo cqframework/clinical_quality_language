@@ -1,6 +1,6 @@
 @file:Suppress("PackageNaming")
 
-package org.hl7.elm_modelinfo.r1.serializing.xmlutil
+package org.hl7.elm_modelinfo.r1.serializing
 
 import nl.adaptivity.xmlutil.XMLConstants
 import nl.adaptivity.xmlutil.XmlDelegatingReader

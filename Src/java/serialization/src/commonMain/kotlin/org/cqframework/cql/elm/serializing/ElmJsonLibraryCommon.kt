@@ -1,10 +1,8 @@
-package org.cqframework.cql.elm.serializing.xmlutil
+package org.cqframework.cql.elm.serializing
 
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.plus
 import kotlinx.serialization.modules.serializersModuleOf
-import org.cqframework.cql.elm.serializing.BigDecimalJsonSerializer
-import org.cqframework.cql.elm.serializing.NarrativeJsonSerializer
 
 internal val json = Json {
     serializersModule =

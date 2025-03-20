@@ -1,4 +1,4 @@
-package org.cqframework.cql.elm.serializing.xmlutil
+package org.cqframework.cql.elm.serializing
 
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.modules.SerializersModule
@@ -8,7 +8,6 @@ import kotlinx.serialization.modules.serializersModuleOf
 import nl.adaptivity.xmlutil.*
 import nl.adaptivity.xmlutil.serialization.*
 import nl.adaptivity.xmlutil.serialization.structure.SafeParentInfo
-import org.cqframework.cql.elm.serializing.BigDecimalXmlSerializer
 
 private val defaultPolicy =
     @Suppress("DEPRECATION")

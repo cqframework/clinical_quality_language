@@ -1,11 +1,8 @@
 @file:Suppress("PackageNaming")
 
-package org.hl7.elm_modelinfo.r1.serializing.xmlutil
+package org.hl7.elm_modelinfo.r1.serializing
 
-import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReader
-import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReaderProvider
-
-class ModelInfoReaderProvider : ModelInfoReaderProvider {
+class DefaultModelInfoReaderProvider : ModelInfoReaderProvider {
     override fun create(contentType: String): ModelInfoReader {
         return when (contentType) {
             "application/xml" -> XmlModelInfoReader()

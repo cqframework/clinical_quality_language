@@ -1,4 +1,4 @@
-package org.cqframework.cql.elm.serializing.xmlutil;
+package org.cqframework.cql.elm.serializing;
 
 import java.io.File;
 import java.io.IOException;

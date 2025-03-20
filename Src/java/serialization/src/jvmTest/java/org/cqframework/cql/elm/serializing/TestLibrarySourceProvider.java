@@ -1,4 +1,4 @@
-package org.cqframework.cql.elm.serializing.xmlutil;
+package org.cqframework.cql.elm.serializing;
 
 import java.io.InputStream;
 import org.cqframework.cql.cql2elm.LibraryContentType;

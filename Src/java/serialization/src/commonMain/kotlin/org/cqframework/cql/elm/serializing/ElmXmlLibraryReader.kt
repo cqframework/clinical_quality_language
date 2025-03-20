@@ -1,7 +1,6 @@
-package org.cqframework.cql.elm.serializing.xmlutil
+package org.cqframework.cql.elm.serializing
 
 import kotlinx.io.Source
-import org.cqframework.cql.elm.serializing.ElmLibraryReader
 import org.hl7.elm.r1.Library
 
 expect class ElmXmlLibraryReader() : ElmLibraryReader {

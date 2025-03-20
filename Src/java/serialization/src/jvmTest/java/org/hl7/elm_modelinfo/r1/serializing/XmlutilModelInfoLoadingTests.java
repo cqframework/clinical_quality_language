@@ -1,4 +1,4 @@
-package org.hl7.elm_modelinfo.r1.serializing.xmlutil;
+package org.hl7.elm_modelinfo.r1.serializing;
 
 import static kotlinx.io.CoreKt.buffered;
 import static kotlinx.io.JvmCoreKt.asSource;

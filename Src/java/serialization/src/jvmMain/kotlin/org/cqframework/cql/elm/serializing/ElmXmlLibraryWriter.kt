@@ -1,4 +1,4 @@
-package org.cqframework.cql.elm.serializing.xmlutil
+package org.cqframework.cql.elm.serializing
 
 import java.io.ByteArrayOutputStream
 import java.io.OutputStream
@@ -6,7 +6,6 @@ import kotlinx.io.Sink
 import kotlinx.io.asOutputStream
 import nl.adaptivity.xmlutil.core.impl.newWriter
 import nl.adaptivity.xmlutil.xmlStreaming
-import org.cqframework.cql.elm.serializing.ElmLibraryWriter
 import org.hl7.elm.r1.Library
 
 actual class ElmXmlLibraryWriter actual constructor() : ElmLibraryWriter {

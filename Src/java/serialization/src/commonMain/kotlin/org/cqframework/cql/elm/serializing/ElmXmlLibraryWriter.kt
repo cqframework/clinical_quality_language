@@ -1,7 +1,6 @@
-package org.cqframework.cql.elm.serializing.xmlutil
+package org.cqframework.cql.elm.serializing
 
 import kotlinx.io.Sink
-import org.cqframework.cql.elm.serializing.ElmLibraryWriter
 import org.hl7.elm.r1.Library
 
 expect class ElmXmlLibraryWriter() : ElmLibraryWriter {

@@ -13,7 +13,7 @@ import kotlinx.io.Source
 import org.cqframework.cql.cql2elm.model.CompiledLibrary
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.cqframework.cql.cql2elm.ucum.UcumService
-import org.cqframework.cql.elm.serializing.xmlutil.getElmLibraryReader
+import org.cqframework.cql.elm.serializing.getElmLibraryReader
 import org.hl7.cql.model.NamespaceManager
 import org.hl7.elm.r1.*
 

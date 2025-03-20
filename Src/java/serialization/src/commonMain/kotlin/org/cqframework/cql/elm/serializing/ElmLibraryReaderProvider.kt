@@ -1,6 +1,4 @@
-package org.cqframework.cql.elm.serializing.xmlutil
-
-import org.cqframework.cql.elm.serializing.ElmLibraryReader
+package org.cqframework.cql.elm.serializing
 
 fun getElmLibraryReader(contentType: String): ElmLibraryReader {
     return when (contentType) {

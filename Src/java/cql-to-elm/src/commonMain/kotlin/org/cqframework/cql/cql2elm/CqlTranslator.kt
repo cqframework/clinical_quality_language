@@ -8,7 +8,7 @@ import kotlin.jvm.JvmStatic
 import org.antlr.v4.kotlinruntime.CharStream
 import org.antlr.v4.kotlinruntime.CharStreams
 import org.cqframework.cql.cql2elm.model.CompiledLibrary
-import org.cqframework.cql.elm.serializing.xmlutil.getElmLibraryWriter
+import org.cqframework.cql.elm.serializing.getElmLibraryWriter
 import org.hl7.cql.model.*
 import org.hl7.elm.r1.*
 
