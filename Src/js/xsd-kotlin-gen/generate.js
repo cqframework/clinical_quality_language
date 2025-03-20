@@ -1,5 +1,9 @@
 const fs = require("fs");
 const { xml2js } = require("xml-js");
+const yargs = require("yargs/yargs");
+const { hideBin } = require("yargs/helpers");
+
+const argv = yargs(hideBin(process.argv)).argv;
 
 function firstLetterToUpperCase(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -149,30 +153,28 @@ const includes = {
 
 const configs = [
   {
+    project: "cql",
     xsd: __dirname + "/../../cql-lm/schema/model/modelinfo.xsd",
     outputDir:
       __dirname +
       "/../../java/cql/build/generated/sources/cql/commonMain/kotlin/org/hl7/elm_modelinfo/r1",
     packageName: "org.hl7.elm_modelinfo.r1",
     classes: {},
-    scope: "",
     namespaceUri: "urn:hl7-org:elm-modelinfo:r1",
-    localPart: "modelInfo",
     namespacePrefixes: [
       "xsi=http://www.w3.org/2001/XMLSchema-instance",
       "xsd=http://www.w3.org/2001/XMLSchema",
     ],
   },
   {
+    project: "elm",
     xsd: __dirname + "/../../cql-lm/schema/elm/library.xsd",
     outputDir:
       __dirname +
       "/../../java/elm/build/generated/sources/elm/commonMain/kotlin/org/hl7/elm/r1",
     packageName: "org.hl7.elm.r1",
     classes: {},
-    scope: "",
     namespaceUri: "urn:hl7-org:elm:r1",
-    localPart: "library",
     namespacePrefixes: [
       "t=urn:hl7-org:elm-types:r1",
       "xsi=http://www.w3.org/2001/XMLSchema-instance",
@@ -182,15 +184,14 @@ const configs = [
     ],
   },
   {
+    project: "elm",
     xsd: __dirname + "/../../cql-lm/schema/elm/cqlannotations.xsd",
     outputDir:
       __dirname +
       "/../../java/elm/build/generated/sources/elm/commonMain/kotlin/org/hl7/cql_annotations/r1",
     packageName: "org.hl7.cql_annotations.r1",
     classes: {},
-    scope: "narrative",
     namespaceUri: "urn:hl7-org:cql-annotations:r1",
-    localPart: "s",
     namespacePrefixes: [
       "xsi=http://www.w3.org/2001/XMLSchema-instance",
       "xsd=http://www.w3.org/2001/XMLSchema",
@@ -790,8 +791,10 @@ ${element.elements[element.elements.length - 1].elements
 }
 
 for (const config of configs) {
-  fs.rmSync(config.outputDir, { recursive: true, force: true });
-  fs.mkdirSync(config.outputDir, { recursive: true });
-  processXsd(config.xsd, config, "COLLECT_CLASSES");
-  processXsd(config.xsd, config, "WRITE_FILES");
+  if (config.project === argv.project) {
+    fs.rmSync(config.outputDir, { recursive: true, force: true });
+    fs.mkdirSync(config.outputDir, { recursive: true });
+    processXsd(config.xsd, config, "COLLECT_CLASSES");
+    processXsd(config.xsd, config, "WRITE_FILES");
+  }
 }
