@@ -620,34 +620,6 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
         return invocation
     }
 
-    // Type Functions
-    @Suppress("UnusedPrivateMember")
-    private fun resolveConvert(functionRef: FunctionRef): ConvertInvocation {
-        checkNumberOfOperands(functionRef, 1)
-        val convert = of.createConvert().withOperand(functionRef.operand[0])
-        val sm = builder.systemModel
-        when (functionRef.name) {
-            "ToString" -> convert.toType = builder.dataTypeToQName(sm.string)
-            "ToBoolean" -> convert.toType = builder.dataTypeToQName(sm.boolean)
-            "ToInteger" -> convert.toType = builder.dataTypeToQName(sm.integer)
-            "ToLong" -> convert.toType = builder.dataTypeToQName(sm.long)
-            "ToDecimal" -> convert.toType = builder.dataTypeToQName(sm.decimal)
-            "ToQuantity" -> convert.toType = builder.dataTypeToQName(sm.quantity)
-            "ToRatio" -> convert.toType = builder.dataTypeToQName(sm.ratio)
-            "ToDate" -> convert.toType = builder.dataTypeToQName(sm.date)
-            "ToDateTime" -> convert.toType = builder.dataTypeToQName(sm.dateTime)
-            "ToTime" -> convert.toType = builder.dataTypeToQName(sm.time)
-            "ToConcept" -> convert.toType = builder.dataTypeToQName(sm.concept)
-            else ->
-                throw IllegalArgumentException(
-                    "Could not resolve call to system operator ${functionRef.name}. Unknown conversion type."
-                )
-        }
-        val invocation = ConvertInvocation(convert)
-        builder.resolveInvocation("System", functionRef.name!!, invocation)
-        return invocation
-    }
-
     // General Function Support
     private inline fun <reified T : Expression?> createExpression(functionRef: FunctionRef): T {
         return of.createExpression(functionRef.name!!) as T
