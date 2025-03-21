@@ -1,17 +1,9 @@
 import com.strumenta.antlrkotlin.gradle.AntlrKotlinTask
 import org.jetbrains.kotlin.gradle.tasks.AbstractKotlinCompile
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompileCommon
 
 plugins {
-    id("cql.kotlin-multiplatform-conventions")
+    id("cql.xsd-kotlin-multiplatform-gen-conventions")
     id("com.strumenta.antlr-kotlin") version "1.0.1"
-}
-
-// Temporary hack to force multiplatform compilation
-// to run after the codegen task that's in the elm project
-// Eventually, we'll break up that code gen to be module-specific
-tasks.withType<KotlinCompileCommon> {
-   mustRunAfter(":elm:runXsdKotlinGen")
 }
 
 kotlin {
@@ -29,7 +21,7 @@ kotlin {
 
         jvmTest {
             dependencies {
-                implementation(project(":model-xmlutil"))
+                implementation(project(":serialization"))
             }
         }
     }

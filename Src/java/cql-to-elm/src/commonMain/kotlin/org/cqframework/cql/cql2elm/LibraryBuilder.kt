@@ -210,7 +210,7 @@ class LibraryBuilder(
             buildUsingDef(modelIdentifier, model, localIdentifier)
         }
         require(
-            !(modelIdentifier.version != null && modelIdentifier.version != model.modelInfo.version)
+            modelIdentifier.version == null || modelIdentifier.version == model.modelInfo.version
         ) {
             "Could not load model information for model ${modelIdentifier.id}, version ${modelIdentifier.version} because version ${model.modelInfo.version} is already loaded."
         }
@@ -365,7 +365,7 @@ class LibraryBuilder(
                     // This really should be
                     // being done with preprocessor directives,
                     // but that's a whole other project in and of itself.
-                    require(!(!isCompatibleWith("1.5") && !isFHIRHelpers(compiledLibrary))) {
+                    require(isCompatibleWith("1.5") || isFHIRHelpers(compiledLibrary)) {
                         "The type ${(result as NamedType).name} was introduced in CQL 1.5 and cannot be referenced at compatibility level $compatibilityLevel"
                     }
             }
@@ -472,7 +472,7 @@ class LibraryBuilder(
 
     fun resolveNamespaceUri(namespaceName: String, mustResolve: Boolean): String? {
         val namespaceUri = libraryManager.namespaceManager.resolveNamespaceUri(namespaceName)
-        require(!(namespaceUri == null && mustResolve)) {
+        require(namespaceUri != null || !mustResolve) {
             "Could not resolve namespace name $namespaceName"
         }
         return namespaceUri
@@ -585,7 +585,7 @@ class LibraryBuilder(
     }
 
     fun addInclude(includeDef: IncludeDef) {
-        require(!(library.identifier == null || library.identifier!!.id == null)) {
+        require(library.identifier != null && library.identifier!!.id != null) {
             "Unnamed libraries cannot reference other libraries."
         }
         if (library.includes == null) {
@@ -919,7 +919,7 @@ class LibraryBuilder(
 
         // TODO: Take advantage of nary unions
         val wrapper = normalizeListTypes(left, right)
-        val union = objectFactory.createUnion().withOperand(wrapper.left, wrapper.right)
+        val union = objectFactory.createUnion().withOperand(listOf(wrapper.left, wrapper.right))
         resolveNaryCall("System", "Union", union)
         return union
     }
@@ -940,14 +940,15 @@ class LibraryBuilder(
 
         // TODO: Take advantage of nary intersect
         val wrapper = normalizeListTypes(left, right)
-        val intersect = objectFactory.createIntersect().withOperand(wrapper.left, wrapper.right)
+        val intersect =
+            objectFactory.createIntersect().withOperand(listOf(wrapper.left, wrapper.right))
         resolveNaryCall("System", "Intersect", intersect)
         return intersect
     }
 
     fun resolveExcept(left: Expression, right: Expression): Expression {
         val wrapper = normalizeListTypes(left, right)
-        val except = objectFactory.createExcept().withOperand(wrapper.left, wrapper.right)
+        val except = objectFactory.createExcept().withOperand(listOf(wrapper.left, wrapper.right))
         resolveNaryCall("System", "Except", except)
         return except
     }
@@ -1008,14 +1009,14 @@ class LibraryBuilder(
             resolveCall("System", "InCodeSystem", InCodeSystemInvocation(inCodeSystem))
             return inCodeSystem
         }
-        val inExpression = objectFactory.createIn().withOperand(left, right)
+        val inExpression = objectFactory.createIn().withOperand(listOf(left, right))
         resolveBinaryCall("System", "In", inExpression)
         return inExpression
     }
 
     fun resolveContains(left: Expression, right: Expression): Expression {
         // TODO: Add terminology overloads
-        val contains = objectFactory.createContains().withOperand(left, right)
+        val contains = objectFactory.createContains().withOperand(listOf(left, right))
         resolveBinaryCall("System", "Contains", contains)
         return contains
     }
@@ -1035,7 +1036,10 @@ class LibraryBuilder(
         dateTimePrecision: DateTimePrecision?
     ): Invocation? {
         val inExpression =
-            objectFactory.createIn().withOperand(left, right).withPrecision(dateTimePrecision)
+            objectFactory
+                .createIn()
+                .withOperand(listOf(left, right))
+                .withPrecision(dateTimePrecision)
         return resolveBinaryInvocation("System", "In", inExpression)
     }
 
@@ -1054,7 +1058,10 @@ class LibraryBuilder(
         dateTimePrecision: DateTimePrecision?
     ): Invocation? {
         val properIn =
-            objectFactory.createProperIn().withOperand(left, right).withPrecision(dateTimePrecision)
+            objectFactory
+                .createProperIn()
+                .withOperand(listOf(left, right))
+                .withPrecision(dateTimePrecision)
         return resolveBinaryInvocation("System", "ProperIn", properIn)
     }
 
@@ -1073,7 +1080,10 @@ class LibraryBuilder(
         dateTimePrecision: DateTimePrecision?
     ): Invocation? {
         val contains =
-            objectFactory.createContains().withOperand(left, right).withPrecision(dateTimePrecision)
+            objectFactory
+                .createContains()
+                .withOperand(listOf(left, right))
+                .withPrecision(dateTimePrecision)
         return resolveBinaryInvocation("System", "Contains", contains)
     }
 
@@ -1094,7 +1104,7 @@ class LibraryBuilder(
         val properContains =
             objectFactory
                 .createProperContains()
-                .withOperand(left, right)
+                .withOperand(listOf(left, right))
                 .withPrecision(dateTimePrecision)
         return resolveBinaryInvocation("System", "ProperContains", properContains)
     }
@@ -1152,7 +1162,10 @@ class LibraryBuilder(
         dateTimePrecision: DateTimePrecision?
     ): Expression? {
         val includes =
-            objectFactory.createIncludes().withOperand(left, right).withPrecision(dateTimePrecision)
+            objectFactory
+                .createIncludes()
+                .withOperand(listOf(left, right))
+                .withPrecision(dateTimePrecision)
         val includesInvocation =
             resolveBinaryInvocation(
                 "System",
@@ -1162,7 +1175,10 @@ class LibraryBuilder(
                 allowPromotionAndDemotion = false
             )
         val contains =
-            objectFactory.createContains().withOperand(left, right).withPrecision(dateTimePrecision)
+            objectFactory
+                .createContains()
+                .withOperand(listOf(left, right))
+                .withPrecision(dateTimePrecision)
         val containsInvocation =
             resolveBinaryInvocation(
                 "System",
@@ -1185,7 +1201,7 @@ class LibraryBuilder(
         val properIncludes =
             objectFactory
                 .createProperIncludes()
-                .withOperand(left, right)
+                .withOperand(listOf(left, right))
                 .withPrecision(dateTimePrecision)
         val properIncludesInvocation =
             resolveBinaryInvocation(
@@ -1198,7 +1214,7 @@ class LibraryBuilder(
         val properContains =
             objectFactory
                 .createProperContains()
-                .withOperand(left, right)
+                .withOperand(listOf(left, right))
                 .withPrecision(dateTimePrecision)
         val properContainsInvocation =
             resolveBinaryInvocation(
@@ -1222,7 +1238,7 @@ class LibraryBuilder(
         val includedIn =
             objectFactory
                 .createIncludedIn()
-                .withOperand(left, right)
+                .withOperand(listOf(left, right))
                 .withPrecision(dateTimePrecision)
         val includedInInvocation =
             resolveBinaryInvocation(
@@ -1233,7 +1249,10 @@ class LibraryBuilder(
                 allowPromotionAndDemotion = false
             )
         val inExpression =
-            objectFactory.createIn().withOperand(left, right).withPrecision(dateTimePrecision)
+            objectFactory
+                .createIn()
+                .withOperand(listOf(left, right))
+                .withPrecision(dateTimePrecision)
         val inInvocation =
             resolveBinaryInvocation(
                 "System",
@@ -1256,7 +1275,7 @@ class LibraryBuilder(
         val properIncludedIn =
             objectFactory
                 .createProperIncludedIn()
-                .withOperand(left, right)
+                .withOperand(listOf(left, right))
                 .withPrecision(dateTimePrecision)
         val properIncludedInInvocation =
             resolveBinaryInvocation(
@@ -1267,7 +1286,10 @@ class LibraryBuilder(
                 allowPromotionAndDemotion = false
             )
         val properIn =
-            objectFactory.createProperIn().withOperand(left, right).withPrecision(dateTimePrecision)
+            objectFactory
+                .createProperIn()
+                .withOperand(listOf(left, right))
+                .withPrecision(dateTimePrecision)
         val properInInvocation =
             resolveBinaryInvocation(
                 "System",
@@ -1363,7 +1385,7 @@ class LibraryBuilder(
     ): CallContext {
         val dataTypes: MutableList<DataType> = ArrayList()
         for (operand in operands) {
-            require(!(operand == null || operand.resultType == null)) {
+            require(operand != null && operand.resultType != null) {
                 "Could not determine signature for invocation of operator ${if (libraryName == null) "" else "$libraryName."}$operatorName."
             }
             dataTypes.add(operand.resultType!!)
@@ -1552,12 +1574,10 @@ class LibraryBuilder(
             // ERROR:
             "Could not resolve call to operator ${callContext.operatorName} with signature ${callContext.signature}."
         }
-        require(!(resolution.operator.fluent && !callContext.allowFluent)) {
+        require(!resolution.operator.fluent || callContext.allowFluent) {
             "Operator ${callContext.operatorName} with signature ${callContext.signature} is a fluent function and can only be invoked with fluent syntax."
         }
-        require(
-            !(callContext.allowFluent && !resolution.operator.fluent && !resolution.allowFluent)
-        ) {
+        require(!callContext.allowFluent || resolution.operator.fluent || resolution.allowFluent) {
             "Invocation of operator ${callContext.operatorName} with signature ${callContext.signature} uses fluent syntax, but the operator is not defined as a fluent function."
         }
     }
@@ -1689,7 +1709,8 @@ class LibraryBuilder(
     fun verifyComparable(dataType: DataType) {
         val left = objectFactory.createLiteral().withResultType(dataType) as Expression
         val right = objectFactory.createLiteral().withResultType(dataType) as Expression
-        val comparison: BinaryExpression = objectFactory.createLess().withOperand(left, right)
+        val comparison: BinaryExpression =
+            objectFactory.createLess().withOperand(listOf(left, right))
         resolveBinaryCall("System", "Less", comparison)
     }
 
@@ -1713,11 +1734,13 @@ class LibraryBuilder(
         return objectFactory
             .createQuery()
             .withSource(
-                objectFactory
-                    .createAliasedQuerySource()
-                    .withAlias("X")
-                    .withExpression(expression)
-                    .withResultType(fromType)
+                listOf(
+                    objectFactory
+                        .createAliasedQuerySource()
+                        .withAlias("X")
+                        .withExpression(expression)
+                        .withResultType(fromType)
+                )
             )
             .withReturn(
                 objectFactory
@@ -2021,7 +2044,7 @@ class LibraryBuilder(
                         .createFunctionRef()
                         .withLibraryName(conversion.operator.libraryName)
                         .withName(conversion.operator.name)
-                        .withOperand(expression)
+                        .withOperand(listOf(expression))
                 val systemFunctionInvocation =
                     systemFunctionResolver.resolveSystemFunction(functionRef)
                 if (systemFunctionInvocation != null) {
@@ -2954,17 +2977,19 @@ class LibraryBuilder(
                     objectFactory
                         .createQuery()
                         .withSource(
-                            objectFactory
-                                .createAliasedQuerySource()
-                                .withExpression(argumentSource)
-                                .withAlias(FP_THIS)
+                            listOf(
+                                objectFactory
+                                    .createAliasedQuerySource()
+                                    .withExpression(argumentSource)
+                                    .withAlias(FP_THIS)
+                            )
                         )
                 val fr: FunctionRef =
                     objectFactory
                         .createFunctionRef()
                         .withLibraryName(libraryName)
                         .withName(functionName)
-                        .withOperand(objectFactory.createAliasRef().withName(FP_THIS))
+                        .withOperand(listOf(objectFactory.createAliasRef().withName(FP_THIS)))
                 if (argumentSignature != null) {
                     fr.signature.add(argumentSignature)
                 }
@@ -2982,7 +3007,7 @@ class LibraryBuilder(
                         .createFunctionRef()
                         .withLibraryName(libraryName)
                         .withName(functionName)
-                        .withOperand(argumentSource)
+                        .withOperand(listOf(argumentSource))
                 fr.resultType = source!!.resultType
                 if (argumentSignature != null) {
                     fr.signature.add(argumentSignature)
@@ -3068,7 +3093,7 @@ class LibraryBuilder(
                                 .createFunctionRef()
                                 .withLibraryName("FHIRHelpers")
                                 .withName("ToString")
-                                .withOperand(left)
+                                .withOperand(listOf(left))
                         left =
                             resolveCall(
                                 ref.libraryName,
@@ -3091,7 +3116,7 @@ class LibraryBuilder(
                             .createFunctionRef()
                             .withLibraryName("FHIRHelpers")
                             .withName("ToString")
-                            .withOperand(left)
+                            .withOperand(listOf(left))
                     left =
                         resolveCall(
                             ref.libraryName,
@@ -3109,7 +3134,7 @@ class LibraryBuilder(
                             .createFunctionRef()
                             .withLibraryName("FHIRHelpers")
                             .withName("ToString")
-                            .withOperand(left)
+                            .withOperand(listOf(left))
                     left =
                         resolveCall(
                             ref.libraryName,
@@ -3123,16 +3148,16 @@ class LibraryBuilder(
                 val right: Expression =
                     this.createLiteral(StringEscapeUtils.unescapeCql(rightValue))
                 val criteriaItem: Expression =
-                    objectFactory.createEqual().withOperand(left!!, right)
+                    objectFactory.createEqual().withOperand(listOf(left!!, right))
                 criteria =
                     if (criteria == null) {
                         criteriaItem
                     } else {
-                        objectFactory.createAnd().withOperand(criteria, criteriaItem)
+                        objectFactory.createAnd().withOperand(listOf(criteria, criteriaItem))
                     }
             }
             val query: Query =
-                objectFactory.createQuery().withSource(querySource).withWhere(criteria)
+                objectFactory.createQuery().withSource(listOf(querySource)).withWhere(criteria)
             result = query
             if (indexerEnd + 1 < targetMap.length) {
                 // There are additional paths following the indexer, apply them
@@ -3181,7 +3206,7 @@ class LibraryBuilder(
                 p.resultType = (source.resultType as ListType).elementType
                 val r: ReturnClause =
                     objectFactory.createReturnClause().withDistinct(false).withExpression(p)
-                val q: Query = objectFactory.createQuery().withSource(s).withReturn(r)
+                val q: Query = objectFactory.createQuery().withSource(listOf(s)).withReturn(r)
                 q.resultType = source.resultType
                 return q
             } else {
@@ -3336,7 +3361,7 @@ class LibraryBuilder(
                 val query: Query =
                     objectFactory
                         .createQuery()
-                        .withSource(source)
+                        .withSource(listOf(source))
                         .withWhere(not)
                         .withReturn(
                             objectFactory
@@ -3649,7 +3674,7 @@ class LibraryBuilder(
         get() = expressionDefinitions.peek()?.scope!!
 
     fun pushExpressionContext(context: String?) {
-        require(context != null) { "Expression context cannot be null" }
+        requireNotNull(context) { "Expression context cannot be null" }
         expressionContext.push(context)
     }
 

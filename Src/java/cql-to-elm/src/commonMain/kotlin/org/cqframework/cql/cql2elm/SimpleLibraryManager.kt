@@ -11,8 +11,22 @@ import org.cqframework.cql.elm.serializing.BigDecimal
 import org.hl7.cql.model.ModelIdentifier
 import org.hl7.cql.model.NamespaceManager
 import org.hl7.elm.r1.VersionedIdentifier
-import org.hl7.elm_modelinfo.r1.serializing.xmlutil.ModelInfoReaderProvider
+import org.hl7.elm_modelinfo.r1.serializing.DefaultModelInfoReaderProvider
 
+/**
+ * A simple library manager factory suitable for JS environments. It accepts simple callbacks and
+ * internally builds the library source loader, library manager, model manager, and UCUM service
+ * needed to create the library manager.
+ *
+ * @param getModelXml a callback that returns the model info XML given the model's id, system, and
+ *   version
+ * @param getLibraryCql a callback that returns the CQL content of a library given its id, system,
+ *   and version
+ * @param validateUnit a callback for validating a UCUM unit. If the unit is valid, it should return
+ *   null, otherwise it should return an error message.
+ * @param cqlCompilerOptions the options to use when compiling CQL
+ * @return an instance of CommonLibraryManager
+ */
 @OptIn(ExperimentalJsExport::class)
 @JsExport
 fun getSimpleLibraryManager(
@@ -39,6 +53,9 @@ fun getSimpleLibraryManager(
                 libraryIdentifier: VersionedIdentifier,
                 type: LibraryContentType
             ): Source? {
+                // The current simple implementation for JS only supports requesting the library CQL
+                // source through `getLibraryCql` and not compiled libraries which we would return
+                // here.
                 return null
             }
         }
@@ -54,7 +71,8 @@ fun getSimpleLibraryManager(
                 }
                 val modelXml =
                     getModelXml(modelIdentifier.id, modelIdentifier.system, modelIdentifier.version)
-                val modelInfo = ModelInfoReaderProvider().create("application/xml").read(modelXml)
+                val modelInfo =
+                    DefaultModelInfoReaderProvider().create("application/xml").read(modelXml)
                 val model =
                     if (modelIdentifier.id == "System") {
                         SystemModel(modelInfo)

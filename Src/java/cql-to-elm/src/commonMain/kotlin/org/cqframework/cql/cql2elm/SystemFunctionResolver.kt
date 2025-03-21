@@ -398,7 +398,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
 
     // Arithmetic Function Support
     private fun resolveRound(functionRef: FunctionRef): RoundInvocation {
-        require(!(functionRef.operand.isEmpty() || functionRef.operand.size > 2)) {
+        require(functionRef.operand.size in 1..2) {
             "Could not resolve call to system operator Round.  Expected 1 or 2 arguments."
         }
         val round = of.createRound().withOperand(functionRef.operand[0])
@@ -505,7 +505,8 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
         slice.source = functionRef.operand[0]
         slice.startIndex = builder.createLiteral(0)
         val coalesce =
-            of.createCoalesce().withOperand(functionRef.operand[1], builder.createLiteral(0))
+            of.createCoalesce()
+                .withOperand(listOf(functionRef.operand[1], builder.createLiteral(0)))
         val naryInvocation = NaryExpressionInvocation(coalesce)
         builder.resolveInvocation("System", "Coalesce", naryInvocation)
         slice.endIndex = coalesce
@@ -527,7 +528,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
 
     // String Function Support
     private fun resolveCombine(functionRef: FunctionRef): CombineInvocation {
-        require(!(functionRef.operand.isEmpty() || functionRef.operand.size > 2)) {
+        require(functionRef.operand.size in 1..2) {
             "Could not resolve call to system operator Combine.  Expected 1 or 2 arguments."
         }
         val combine = of.createCombine().withSource(functionRef.operand[0])
@@ -585,7 +586,7 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
 
     private fun resolveSubstring(functionRef: FunctionRef): SubstringInvocation {
         @Suppress("MagicNumber")
-        require(!(functionRef.operand.size < 2 || functionRef.operand.size > 3)) {
+        require(functionRef.operand.size in 2..3) {
             "Could not resolve call to system operator Substring.  Expected 2 or 3 arguments."
         }
         val substring =
@@ -617,34 +618,6 @@ class SystemFunctionResolver(private val builder: LibraryBuilder) {
                 .withMessage(functionRef.operand[4])
         val invocation = MessageInvocation(message)
         builder.resolveInvocation("System", "Message", invocation)
-        return invocation
-    }
-
-    // Type Functions
-    @Suppress("UnusedPrivateMember")
-    private fun resolveConvert(functionRef: FunctionRef): ConvertInvocation {
-        checkNumberOfOperands(functionRef, 1)
-        val convert = of.createConvert().withOperand(functionRef.operand[0])
-        val sm = builder.systemModel
-        when (functionRef.name) {
-            "ToString" -> convert.toType = builder.dataTypeToQName(sm.string)
-            "ToBoolean" -> convert.toType = builder.dataTypeToQName(sm.boolean)
-            "ToInteger" -> convert.toType = builder.dataTypeToQName(sm.integer)
-            "ToLong" -> convert.toType = builder.dataTypeToQName(sm.long)
-            "ToDecimal" -> convert.toType = builder.dataTypeToQName(sm.decimal)
-            "ToQuantity" -> convert.toType = builder.dataTypeToQName(sm.quantity)
-            "ToRatio" -> convert.toType = builder.dataTypeToQName(sm.ratio)
-            "ToDate" -> convert.toType = builder.dataTypeToQName(sm.date)
-            "ToDateTime" -> convert.toType = builder.dataTypeToQName(sm.dateTime)
-            "ToTime" -> convert.toType = builder.dataTypeToQName(sm.time)
-            "ToConcept" -> convert.toType = builder.dataTypeToQName(sm.concept)
-            else ->
-                throw IllegalArgumentException(
-                    "Could not resolve call to system operator ${functionRef.name}. Unknown conversion type."
-                )
-        }
-        val invocation = ConvertInvocation(convert)
-        builder.resolveInvocation("System", functionRef.name!!, invocation)
         return invocation
     }
 

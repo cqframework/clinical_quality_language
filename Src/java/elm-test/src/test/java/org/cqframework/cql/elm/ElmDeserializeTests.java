@@ -14,6 +14,10 @@ import org.cqframework.cql.cql2elm.CompilerOptions;
 import org.cqframework.cql.cql2elm.CqlCompilerOptions;
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.LibraryBuilder;
+import org.cqframework.cql.elm.serializing.ElmJsonLibraryReader;
+import org.cqframework.cql.elm.serializing.ElmJsonLibraryWriter;
+import org.cqframework.cql.elm.serializing.ElmXmlLibraryReader;
+import org.cqframework.cql.elm.serializing.ElmXmlLibraryWriter;
 import org.hl7.cql_annotations.r1.Annotation;
 import org.hl7.cql_annotations.r1.CqlToElmInfo;
 import org.hl7.cql_annotations.r1.Narrative;
@@ -179,8 +183,8 @@ class ElmDeserializeTests {
     private void testElmDeserialization(String path, String xmlFileName, String jsonFileName) {
         Library xmlLibrary = null;
         try {
-            xmlLibrary = new org.cqframework.cql.elm.serializing.xmlutil.ElmXmlLibraryReader()
-                    .read(buffered(asSource(new FileInputStream(path + "/" + xmlFileName))));
+            xmlLibrary =
+                    new ElmXmlLibraryReader().read(buffered(asSource(new FileInputStream(path + "/" + xmlFileName))));
         } catch (Exception e) {
             throw new IllegalArgumentException(
                     String.format("Errors occurred reading ELM from xml %s: %s", xmlFileName, e.getMessage()));
@@ -188,8 +192,8 @@ class ElmDeserializeTests {
 
         Library jsonLibrary;
         try {
-            jsonLibrary = new org.cqframework.cql.elm.serializing.xmlutil.ElmJsonLibraryReader()
-                    .read(buffered(asSource(new FileInputStream(path + "/" + jsonFileName))));
+            jsonLibrary =
+                    new ElmJsonLibraryReader().read(buffered(asSource(new FileInputStream(path + "/" + jsonFileName))));
         } catch (Exception e) {
             throw new IllegalArgumentException(
                     String.format("Errors occurred reading ELM from json %s: %s", jsonFileName, e.getMessage()));
@@ -327,11 +331,11 @@ class ElmDeserializeTests {
     }
 
     private String toXml(Library library) {
-        return new org.cqframework.cql.elm.serializing.xmlutil.ElmXmlLibraryWriter().writeAsString(library);
+        return new ElmXmlLibraryWriter().writeAsString(library);
     }
 
     private String toJson(Library library) {
-        return new org.cqframework.cql.elm.serializing.xmlutil.ElmJsonLibraryWriter().writeAsString(library);
+        return new ElmJsonLibraryWriter().writeAsString(library);
     }
 
     @Test
@@ -342,26 +346,24 @@ class ElmDeserializeTests {
 
         String xml = toXml(translator.toELM());
 
-        Library xmlLibrary = new org.cqframework.cql.elm.serializing.xmlutil.ElmXmlLibraryReader().read(xml);
+        Library xmlLibrary = new ElmXmlLibraryReader().read(xml);
         validateEmptyStringsTest(xmlLibrary);
 
         String json = toJson(translator.toELM());
-        Library jsonLibrary = new org.cqframework.cql.elm.serializing.xmlutil.ElmJsonLibraryReader().read(json);
+        Library jsonLibrary = new ElmJsonLibraryReader().read(json);
         validateEmptyStringsTest(jsonLibrary);
     }
 
     private static Library deserializeJsonLibrary(String filePath) throws IOException {
         final InputStream resourceAsStream = ElmDeserializeTests.class.getResourceAsStream(filePath);
         assertNotNull(resourceAsStream);
-        return new org.cqframework.cql.elm.serializing.xmlutil.ElmJsonLibraryReader()
-                .read(buffered(asSource(resourceAsStream)));
+        return new ElmJsonLibraryReader().read(buffered(asSource(resourceAsStream)));
     }
 
     private static Library deserializeXmlLibrary(String filePath) throws IOException {
         final InputStream resourceAsStream = ElmDeserializeTests.class.getResourceAsStream(filePath);
         assertNotNull(resourceAsStream);
-        return new org.cqframework.cql.elm.serializing.xmlutil.ElmXmlLibraryReader()
-                .read(buffered(asSource(resourceAsStream)));
+        return new ElmXmlLibraryReader().read(buffered(asSource(resourceAsStream)));
     }
 
     private static void verifySigLevels(Library library, LibraryBuilder.SignatureLevel expectedSignatureLevel) {

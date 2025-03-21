@@ -12,7 +12,7 @@ import javax.xml.namespace.QName;
 import org.apache.ws.commons.schema.*;
 import org.hl7.cql.model.*;
 import org.hl7.elm_modelinfo.r1.*;
-import org.hl7.elm_modelinfo.r1.serializing.xmlutil.XmlModelInfoReader;
+import org.hl7.elm_modelinfo.r1.serializing.XmlModelInfoReader;
 
 public class ModelImporter {
     private static final Map<String, DataType> SYSTEM_CATALOG = getSystemCatalog();

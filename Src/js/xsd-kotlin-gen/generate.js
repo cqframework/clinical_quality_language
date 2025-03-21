@@ -1,5 +1,9 @@
 const fs = require("fs");
 const { xml2js } = require("xml-js");
+const yargs = require("yargs/yargs");
+const { hideBin } = require("yargs/helpers");
+
+const argv = yargs(hideBin(process.argv)).argv;
 
 function firstLetterToUpperCase(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -149,30 +153,28 @@ const includes = {
 
 const configs = [
   {
+    project: "cql",
     xsd: __dirname + "/../../cql-lm/schema/model/modelinfo.xsd",
     outputDir:
       __dirname +
       "/../../java/cql/build/generated/sources/cql/commonMain/kotlin/org/hl7/elm_modelinfo/r1",
     packageName: "org.hl7.elm_modelinfo.r1",
     classes: {},
-    scope: "",
     namespaceUri: "urn:hl7-org:elm-modelinfo:r1",
-    localPart: "modelInfo",
     namespacePrefixes: [
       "xsi=http://www.w3.org/2001/XMLSchema-instance",
       "xsd=http://www.w3.org/2001/XMLSchema",
     ],
   },
   {
+    project: "elm",
     xsd: __dirname + "/../../cql-lm/schema/elm/library.xsd",
     outputDir:
       __dirname +
       "/../../java/elm/build/generated/sources/elm/commonMain/kotlin/org/hl7/elm/r1",
     packageName: "org.hl7.elm.r1",
     classes: {},
-    scope: "",
     namespaceUri: "urn:hl7-org:elm:r1",
-    localPart: "library",
     namespacePrefixes: [
       "t=urn:hl7-org:elm-types:r1",
       "xsi=http://www.w3.org/2001/XMLSchema-instance",
@@ -182,15 +184,14 @@ const configs = [
     ],
   },
   {
+    project: "elm",
     xsd: __dirname + "/../../cql-lm/schema/elm/cqlannotations.xsd",
     outputDir:
       __dirname +
       "/../../java/elm/build/generated/sources/elm/commonMain/kotlin/org/hl7/cql_annotations/r1",
     packageName: "org.hl7.cql_annotations.r1",
     classes: {},
-    scope: "narrative",
     namespaceUri: "urn:hl7-org:cql-annotations:r1",
-    localPart: "s",
     namespacePrefixes: [
       "xsi=http://www.w3.org/2001/XMLSchema-instance",
       "xsd=http://www.w3.org/2001/XMLSchema",
@@ -234,7 +235,7 @@ val serializersModule = kotlinx.serialization.modules.SerializersModule {
                ${
                  !parentClass.isAbstract
                    ? `
-                 subclass(${config.packageName}.${parentClass.className}Dummy::class, ${config.packageName}.${parentClass.className}BaseSerializer as kotlinx.serialization.KSerializer<${config.packageName}.${parentClass.className}Dummy>)
+                 subclass(${config.packageName}.${parentClass.className}Dummy::class, ${config.packageName}.${parentClass.className}Dummy.serializer())
                  defaultDeserializer { ${config.packageName}.${parentClass.className}.serializer() }
                `
                    : ""
@@ -316,12 +317,7 @@ function renderWith(field, className, type, override = "open") {
 
   if (isList) {
     return `
-                            ${override} fun with${firstLetterToUpperCase(field.attributes.name)}(vararg values: ${type}): ${className} {
-                                this.${makeFieldName(field.attributes.name)} = values.toMutableList()
-                                return this
-                            }
-
-                            ${override} fun with${firstLetterToUpperCase(field.attributes.name)}(values: Collection<${type}>): ${className} {
+                            ${override} fun with${firstLetterToUpperCase(field.attributes.name)}(values: kotlin.collections.List<${type}>): ${className} {
                                 this.${makeFieldName(field.attributes.name)} = values.toMutableList()
                                 return this
                             }
@@ -519,15 +515,17 @@ function processElements(elements, config, mode) {
 
                                 ${renderGetSet(field, className, className + "." + firstLetterToUpperCase(field.attributes.name))}
 
-                                ${renderWith(field, className, className + "." + firstLetterToUpperCase(field.attributes.name))}
+                                ${renderWith(field, className, className + "." + firstLetterToUpperCase(field.attributes.name), "")}
 
                             `;
               }
 
+              // Silly, but currently the Library is the only class with nested classes, hence the check for whether were
+              // a Library child class to render open or not.
               return `
                             ${renderGetSet(field, className, field.attributes.type)}
 
-                            ${renderWith(field, className, field.attributes.type)}
+                            ${renderWith(field, className, field.attributes.type, className.startsWith("Library") ? "" : "open")}
 
                         `;
             };
@@ -537,8 +535,9 @@ function processElements(elements, config, mode) {
               `
 package ${config.packageName}
 
+@kotlin.js.JsExport
 ${element.attributes.name === "Library" || element.attributes.name === "ModelInfo" ? `@nl.adaptivity.xmlutil.serialization.XmlNamespaceDeclSpec("${config.namespaceUri};${config.namespacePrefixes.join(";")}")` : `@nl.adaptivity.xmlutil.serialization.XmlNamespaceDeclSpec("${config.namespaceUri}")`}
-@OptIn(kotlinx.serialization.ExperimentalSerializationApi::class, nl.adaptivity.xmlutil.ExperimentalXmlUtilApi::class)
+@OptIn(kotlinx.serialization.ExperimentalSerializationApi::class, nl.adaptivity.xmlutil.ExperimentalXmlUtilApi::class, kotlin.js.ExperimentalJsExport::class)
 @kotlinx.serialization.Serializable
 ${config.packageName === "org.hl7.elm_modelinfo.r1" ? "" : `@kotlinx.serialization.SerialName(${JSON.stringify(makeLocalName(element.attributes.name))})`}
 @nl.adaptivity.xmlutil.serialization.XmlSerialName(${JSON.stringify(makeLocalName(element.attributes.name))}, ${JSON.stringify(config.namespaceUri)})
@@ -745,7 +744,8 @@ val ${element.attributes.name}BaseSerializer = object : kotlinx.serialization.KS
               `
 package ${config.packageName}
 
-@OptIn(kotlinx.serialization.ExperimentalSerializationApi::class)
+@kotlin.js.JsExport
+@OptIn(kotlinx.serialization.ExperimentalSerializationApi::class, kotlin.js.ExperimentalJsExport::class)
 @kotlinx.serialization.Serializable
 enum class ${element.attributes.name}(private val value: String) {
 ${element.elements[element.elements.length - 1].elements
@@ -791,8 +791,10 @@ ${element.elements[element.elements.length - 1].elements
 }
 
 for (const config of configs) {
-  fs.rmSync(config.outputDir, { recursive: true, force: true });
-  fs.mkdirSync(config.outputDir, { recursive: true });
-  processXsd(config.xsd, config, "COLLECT_CLASSES");
-  processXsd(config.xsd, config, "WRITE_FILES");
+  if (config.project === argv.project) {
+    fs.rmSync(config.outputDir, { recursive: true, force: true });
+    fs.mkdirSync(config.outputDir, { recursive: true });
+    processXsd(config.xsd, config, "COLLECT_CLASSES");
+    processXsd(config.xsd, config, "WRITE_FILES");
+  }
 }

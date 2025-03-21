@@ -1,10 +1,19 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompileTool
 import com.github.gradle.node.task.NodeTask
 
 plugins {
     id("cql.kotlin-multiplatform-conventions")
     id("com.github.node-gradle.node")
 }
+
+//open class XsdKotlinGenExtension {
+//    var xsdFiles: List<String> = listOf()
+//    var packageName: String = ""
+//    var namespaceUri: String = ""
+//    var namespacePrefixes: List<String> = listOf()
+//}
+
+//val xsdKotlinGenExtension = extensions.create("xsdKotlinGen", XsdKotlinGenExtension::class)
 
 val buildDir = project.layout.buildDirectory.get().toString()
 val destDir = "${buildDir}/generated/sources/$name/commonMain/kotlin"
@@ -27,9 +36,10 @@ node {
 val runXsdKotlinGenTask = tasks.register<NodeTask>("runXsdKotlinGen") {
     dependsOn(tasks.npmInstall)
     script.set(file("../../js/xsd-kotlin-gen/generate.js"))
+    args.set(listOf("--project=${project.name}"))
 }
 
-tasks.withType<KotlinCompile>().configureEach {
+tasks.withType<KotlinCompileTool>().configureEach {
     dependsOn(runXsdKotlinGenTask)
 }
 

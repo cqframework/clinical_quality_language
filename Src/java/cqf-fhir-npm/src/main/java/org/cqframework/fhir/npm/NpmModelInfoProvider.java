@@ -10,7 +10,7 @@ import java.util.List;
 import org.hl7.cql.model.ModelIdentifier;
 import org.hl7.cql.model.ModelInfoProvider;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
-import org.hl7.elm_modelinfo.r1.serializing.xmlutil.XmlModelInfoReader;
+import org.hl7.elm_modelinfo.r1.serializing.XmlModelInfoReader;
 import org.hl7.fhir.r5.context.ILoggingService;
 import org.hl7.fhir.r5.model.Library;
 import org.hl7.fhir.utilities.npm.NpmPackage;

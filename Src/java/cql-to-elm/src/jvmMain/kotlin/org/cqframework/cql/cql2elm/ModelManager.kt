@@ -177,7 +177,6 @@ class ModelManager : CommonModelManager {
 
     private fun buildModel(identifier: ModelIdentifier): Model? {
         val model: Model?
-        require(identifier.id.isNotEmpty()) { "Model identifier Id is required" }
         val modelPath = NamespaceManager.getPath(identifier.system, identifier.id)
         pushLoading(modelPath)
         model =
@@ -239,8 +238,7 @@ class ModelManager : CommonModelManager {
 
     private fun checkModelVersion(modelIdentifier: ModelIdentifier, model: Model?) {
         require(
-            !(modelIdentifier.version != null &&
-                modelIdentifier.version != model!!.modelInfo.version)
+            modelIdentifier.version == null || modelIdentifier.version == model!!.modelInfo.version
         ) {
             "Could not load model information for model ${modelIdentifier.id}, version ${modelIdentifier.version}" +
                 " because version ${model!!.modelInfo.version} is already loaded."

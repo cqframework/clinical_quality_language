@@ -28,13 +28,6 @@ class DefaultModelInfoProvider() : ModelInfoProvider, PathAware {
         this.path = path
     }
 
-    @Suppress("UnusedPrivateMember")
-    private fun checkPath() {
-        require(!(path == null || path!!.equals(""))) {
-            "Path is required for DefaultModelInfoProvider implementation"
-        }
-    }
-
     @Suppress("CyclomaticComplexMethod", "NestedBlockDepth", "LongMethod")
     override fun load(modelIdentifier: ModelIdentifier): ModelInfo? {
         val currentPath = path

@@ -3,6 +3,7 @@
 package org.hl7.elm_modelinfo.r1.serializing
 
 import java.util.*
+import kotlin.jvm.JvmStatic
 
 object ModelInfoReaderFactory {
     fun providers(refresh: Boolean): Iterator<ModelInfoReaderProvider> {
@@ -14,6 +15,7 @@ object ModelInfoReaderFactory {
         return loader.iterator()
     }
 
+    @JvmStatic
     @Suppress("TooGenericExceptionThrown")
     fun getReader(contentType: String): ModelInfoReader {
         val providers = providers(false)
@@ -22,9 +24,7 @@ object ModelInfoReaderFactory {
             if (providers.hasNext()) {
                 throw RuntimeException(
                     java.lang.String.join(
-                        " ",
-                        "Multiple ModelInfoReaderProviders found on the classpath.",
-                        "You need to remove a reference to either the 'model-jackson' or the 'model-jaxb' package"
+                        "Multiple ModelInfoReaderProviders found on the classpath."
                     )
                 )
             }
@@ -36,7 +36,7 @@ object ModelInfoReaderFactory {
             java.lang.String.join(
                 " ",
                 "No ModelInfoReaderProviders found on the classpath.",
-                "You need to add a reference to one of the 'model-jackson' or 'model-jaxb' packages,",
+                "You need to add a dependency on the 'info.cqframework:serialization' package,",
                 "or provide your own implementation."
             )
         )

@@ -48,6 +48,11 @@ kotlin {
     compilerOptions {
         apiVersion.set(KotlinVersion.KOTLIN_2_1)
         languageVersion.set(KotlinVersion.KOTLIN_2_1)
+        // Expect/Actual classes are currently in Beta
+        // This suppresses warning about that for now.
+        // Assuming expect/actual classes are removed,
+        // we'll need to refactor the code to use interfaces.
+        freeCompilerArgs.add("-Xexpect-actual-classes")
     }
     jvmToolchain(17)
     jvm {

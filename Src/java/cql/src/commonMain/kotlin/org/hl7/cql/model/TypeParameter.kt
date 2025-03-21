@@ -12,7 +12,7 @@ data class TypeParameter(
     init {
         require(identifier.isNotEmpty()) { "identifier can not be empty" }
         if (constraint == TypeParameterConstraint.TYPE) {
-            require(constraintType != null) {
+            requireNotNull(constraintType) {
                 "constraintType must be provided when constraint is TYPE"
             }
         }

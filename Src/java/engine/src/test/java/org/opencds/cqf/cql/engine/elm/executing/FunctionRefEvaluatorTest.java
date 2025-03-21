@@ -3,6 +3,7 @@ package org.opencds.cqf.cql.engine.elm.executing;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import javax.xml.namespace.QName;
 import org.hl7.elm.r1.*;
@@ -28,7 +29,7 @@ class FunctionRefEvaluatorTest {
 
     @Test
     void functionDefOperandsSignatureEqual() {
-        var functionDefWithOneOperand = new FunctionDef().withOperand(new OperandDef());
+        var functionDefWithOneOperand = new FunctionDef().withOperand(Collections.singletonList(new OperandDef()));
         List<TypeSpecifier> signatureWithTwoOperands = List.of(new NamedTypeSpecifier(), new NamedTypeSpecifier());
 
         assertFalse(FunctionRefEvaluator.functionDefOperandsSignatureEqual(
