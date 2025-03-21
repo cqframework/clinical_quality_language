@@ -8,7 +8,6 @@ kotlin {
             dependencies {
                 api(project(":cql"))
                 api(project(":elm"))
-//                implementation(project(":serialization"))
             }
         }
         jvmTest {
