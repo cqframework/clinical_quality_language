@@ -68,10 +68,10 @@ kotlin {
     // live reloading (automatic re-build on file changes). The local server serves
     // <module>/src/jsMain/resources/index.html from the root.
     js(IR) {
-
-        // Output ES2015 modules (.mjs files) to build/js/packages/<package>/kotlin
-        // instead of default UMD (.js) modules.
-        useEsModules()
+        // To output ES2015 modules (.mjs files) to build/js/packages/<package>/kotlin
+        // instead of the default UMD (.js) modules, add `useEsModules()` here. It would
+        // be nice to have it switched on however it causes an issue with the build
+        // ("Module parse failed: Identifier 'appendChild' has already been declared").
 
         // Set web browser environment as the target execution environment.
         // This also runs webpack which bundles everything into a single
