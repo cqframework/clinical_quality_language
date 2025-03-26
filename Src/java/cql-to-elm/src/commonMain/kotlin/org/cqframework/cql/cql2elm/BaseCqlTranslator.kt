@@ -2,6 +2,7 @@ package org.cqframework.cql.cql2elm
 
 import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsExport
+import kotlin.js.JsStatic
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
 import org.antlr.v4.kotlinruntime.CharStream
@@ -97,6 +98,7 @@ open class BaseCqlTranslator(
 
         @JvmStatic
         @JvmOverloads
+        @JsStatic
         fun fromText(
             cqlText: String,
             libraryManager: BaseLibraryManager,
