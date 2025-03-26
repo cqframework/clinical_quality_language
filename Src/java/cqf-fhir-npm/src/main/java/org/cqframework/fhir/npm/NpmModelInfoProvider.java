@@ -54,10 +54,9 @@ public class NpmModelInfoProvider implements ModelInfoProvider {
                                 modelIdentifier.setSystem(identifier.getSystem());
                             }
                             InputStream is = new ByteArrayInputStream(a.getData());
-                            var reader = new XmlModelInfoReader();
 
                             var source = buffered(asSource(is));
-                            return reader.read(source);
+                            return XmlModelInfoReader.read(source);
                         }
                     }
                 }

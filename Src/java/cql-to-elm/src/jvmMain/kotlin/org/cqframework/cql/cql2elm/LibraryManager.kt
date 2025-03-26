@@ -3,6 +3,8 @@ package org.cqframework.cql.cql2elm
 import kotlin.jvm.JvmOverloads
 import org.cqframework.cql.cql2elm.model.CompiledLibrary
 import org.cqframework.cql.cql2elm.ucum.lazyUcumService
+import org.cqframework.cql.elm.serializing.DefaultElmLibraryReaderProvider
+import org.cqframework.cql.elm.serializing.ElmLibraryReaderProvider
 import org.hl7.elm.r1.VersionedIdentifier
 
 class LibraryManager
@@ -10,21 +12,22 @@ class LibraryManager
 constructor(
     modelManager: ModelManager,
     cqlCompilerOptions: CqlCompilerOptions = CqlCompilerOptions.defaultOptions(),
-    libraryCache: MutableMap<VersionedIdentifier, CompiledLibrary> = HashMap()
+    libraryCache: MutableMap<VersionedIdentifier, CompiledLibrary> = HashMap(),
+    elmLibraryReaderProvider: ElmLibraryReaderProvider = DefaultElmLibraryReaderProvider(),
 ) :
-    CommonLibraryManager(
+    BaseLibraryManager(
         modelManager,
         modelManager.namespaceManager,
         PriorityLibrarySourceLoader(),
         lazyUcumService,
         cqlCompilerOptions,
         libraryCache,
-        getElmLibraryReaderProvider()
+        elmLibraryReaderProvider,
     ) {
     override val librarySourceLoader: LibrarySourceLoader
         get() = super.librarySourceLoader as LibrarySourceLoader
 
-    override fun getCompilerForLibrary(libraryIdentifier: VersionedIdentifier): CommonCqlCompiler {
+    override fun getCompilerForLibrary(libraryIdentifier: VersionedIdentifier): BaseCqlCompiler {
         return CqlCompiler(
             libraryIdentifier.system?.let { namespaceManager.getNamespaceInfoFromUri(it) },
             libraryIdentifier,

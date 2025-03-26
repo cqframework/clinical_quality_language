@@ -7,7 +7,7 @@ import java.io.InputStream;
 import org.hl7.cql.model.ModelIdentifier;
 import org.hl7.cql.model.ModelInfoProvider;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
-import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReaderFactory;
+import org.hl7.elm_modelinfo.r1.serializing.XmlModelInfoReader;
 
 public class GentestModelInfoProviderSad1 implements ModelInfoProvider {
     @Override
@@ -15,7 +15,7 @@ public class GentestModelInfoProviderSad1 implements ModelInfoProvider {
         if (modelIdentifier.equals("GENTEST")) {
             InputStream is = GentestModelInfoProviderSad1.class.getResourceAsStream(
                     "/org/cqframework/cql/cql2elm/ModelTests/test-modelinfowithgenerics-sad1.xml");
-            return ModelInfoReaderFactory.INSTANCE.getReader("application/xml").read(buffered(asSource(is)));
+            return XmlModelInfoReader.read(buffered(asSource(is)));
         }
 
         return null;

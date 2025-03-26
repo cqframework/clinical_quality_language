@@ -11,7 +11,7 @@ import joptsimple.OptionSpec;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
-import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReaderFactory;
+import org.hl7.elm_modelinfo.r1.serializing.XmlModelInfoReader;
 
 /**
  * Generates a ModelInfo.xml for the input xsd.
@@ -82,9 +82,7 @@ public class Main {
             if (configFile != null) {
                 var stream = new FileInputStream(configFile);
                 var source = buffered(asSource(stream));
-                config = ModelInfoReaderFactory.INSTANCE
-                        .getReader("application/xml")
-                        .read(source);
+                config = XmlModelInfoReader.read(source);
             }
         }
 

@@ -8,7 +8,7 @@ import org.cqframework.cql.cql2elm.model.Version
 import org.hl7.cql.model.ModelIdentifier
 import org.hl7.cql.model.ModelInfoProvider
 import org.hl7.elm_modelinfo.r1.ModelInfo
-import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReaderFactory
+import org.hl7.elm_modelinfo.r1.serializing.XmlModelInfoReader
 
 // NOTE: This implementation assumes modelinfo file names will always take the form:
 // <modelname>-modelinfo[-<version>].cql
@@ -94,8 +94,7 @@ class DefaultModelInfoProvider() : ModelInfoProvider, PathAware {
             try {
                 if (modelFile != null) {
                     val inputStream: InputStream = FileInputStream(modelFile)
-                    return ModelInfoReaderFactory.getReader("application/xml")
-                        ?.read(inputStream.asSource().buffered())
+                    return XmlModelInfoReader.read(inputStream.asSource().buffered())
                 }
             } catch (e: IOException) {
                 throw IllegalArgumentException(

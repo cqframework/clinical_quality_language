@@ -31,14 +31,13 @@ import org.hl7.cql.model.ModelInfoProvider;
 import org.hl7.cql.model.NamespaceInfo;
 import org.hl7.cql.model.NamespaceManager;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
-import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReaderFactory;
+import org.hl7.elm_modelinfo.r1.serializing.XmlModelInfoReader;
 
 public class Main {
     public static ModelInfoProvider getModelInfoProvider(File modelInfoXML) {
         try {
             var source = buffered(asSource(new FileInputStream(modelInfoXML)));
-            final ModelInfo modelInfo =
-                    ModelInfoReaderFactory.INSTANCE.getReader("application/xml").read(source);
+            final ModelInfo modelInfo = XmlModelInfoReader.read(source);
             return (ModelIdentifier modelIdentifier) -> modelInfo;
         } catch (IOException e) {
             System.err.printf("Could not load model-info XML: %s%n", modelInfoXML);

@@ -9,7 +9,7 @@ import org.hl7.cql.model.ModelInfoProvider;
 import org.hl7.cql.model.NamespaceAware;
 import org.hl7.cql.model.NamespaceManager;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
-import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReaderFactory;
+import org.hl7.elm_modelinfo.r1.serializing.XmlModelInfoReader;
 
 /**
  * Created by Bryn on 2/3/2016.
@@ -36,9 +36,7 @@ public class QdmModelInfoProvider implements ModelInfoProvider, NamespaceAware {
             String localVersion = modelIdentifier.getVersion() == null ? "" : modelIdentifier.getVersion();
             var stream = getQdmResource(localVersion);
             if (stream != null) {
-                return ModelInfoReaderFactory.INSTANCE
-                        .getReader("application/xml")
-                        .read(buffered(asSource(stream)));
+                return XmlModelInfoReader.read(buffered(asSource(stream)));
             }
         }
 

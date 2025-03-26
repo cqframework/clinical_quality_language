@@ -8,5 +8,5 @@ application {
 }
 
 dependencies {
-    implementation(project(":cql"))
+    implementation(project(":cql-to-elm"))
 }

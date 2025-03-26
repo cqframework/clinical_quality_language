@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-    api(project(":cql"))
+    api(project(":cql-to-elm"))
 }
 
 tasks.register<XjcTask>("generateQdm") {

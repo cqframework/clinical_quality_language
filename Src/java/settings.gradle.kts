@@ -13,9 +13,6 @@ rootProject.name = "cql-all"
 include(
     "cqf-fhir",
     "cqf-fhir-npm",
-    "cql",
-    "elm",
-    "serialization",
     "elm-test",
     "engine",
     "engine-fhir",

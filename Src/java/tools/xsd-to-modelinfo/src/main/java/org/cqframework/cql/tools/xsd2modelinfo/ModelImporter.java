@@ -18,10 +18,9 @@ public class ModelImporter {
     private static final Map<String, DataType> SYSTEM_CATALOG = getSystemCatalog();
 
     private static Map<String, DataType> getSystemCatalog() {
-        var reader = new XmlModelInfoReader();
         var source =
                 buffered(asSource(ModelImporter.class.getResourceAsStream("/org/hl7/elm/r1/system-modelinfo.xml")));
-        var systemModelInfo = reader.read(source);
+        var systemModelInfo = XmlModelInfoReader.read(source);
         final Map<String, DataType> map = new HashMap<>();
         for (TypeInfo info : systemModelInfo.getTypeInfo()) {
             if (info instanceof SimpleTypeInfo) {

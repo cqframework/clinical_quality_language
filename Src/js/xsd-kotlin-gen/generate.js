@@ -153,11 +153,11 @@ const includes = {
 
 const configs = [
   {
-    project: "cql",
+    project: "cql-to-elm",
     xsd: __dirname + "/../../cql-lm/schema/model/modelinfo.xsd",
     outputDir:
       __dirname +
-      "/../../java/cql/build/generated/sources/cql/commonMain/kotlin/org/hl7/elm_modelinfo/r1",
+      "/../../java/cql-to-elm/build/generated/sources/cql-to-elm/commonMain/kotlin/org/hl7/elm_modelinfo/r1",
     packageName: "org.hl7.elm_modelinfo.r1",
     classes: {},
     namespaceUri: "urn:hl7-org:elm-modelinfo:r1",
@@ -167,11 +167,11 @@ const configs = [
     ],
   },
   {
-    project: "elm",
+    project: "cql-to-elm",
     xsd: __dirname + "/../../cql-lm/schema/elm/library.xsd",
     outputDir:
       __dirname +
-      "/../../java/elm/build/generated/sources/elm/commonMain/kotlin/org/hl7/elm/r1",
+      "/../../java/cql-to-elm/build/generated/sources/cql-to-elm/commonMain/kotlin/org/hl7/elm/r1",
     packageName: "org.hl7.elm.r1",
     classes: {},
     namespaceUri: "urn:hl7-org:elm:r1",
@@ -184,11 +184,11 @@ const configs = [
     ],
   },
   {
-    project: "elm",
+    project: "cql-to-elm",
     xsd: __dirname + "/../../cql-lm/schema/elm/cqlannotations.xsd",
     outputDir:
       __dirname +
-      "/../../java/elm/build/generated/sources/elm/commonMain/kotlin/org/hl7/cql_annotations/r1",
+      "/../../java/cql-to-elm/build/generated/sources/cql-to-elm/commonMain/kotlin/org/hl7/cql_annotations/r1",
     packageName: "org.hl7.cql_annotations.r1",
     classes: {},
     namespaceUri: "urn:hl7-org:cql-annotations:r1",

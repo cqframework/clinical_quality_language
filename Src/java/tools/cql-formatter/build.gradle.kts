@@ -8,8 +8,7 @@ application {
 }
 
 dependencies {
-    testImplementation(project(":cql-to-elm"))
-    implementation(project(":cql"))
+    implementation(project(":cql-to-elm"))
 }
 
 sourceSets {
