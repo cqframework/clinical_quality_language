@@ -1,3 +1,5 @@
+@file:Suppress("ImplicitDefaultLocale", "SwallowedException")
+
 package org.cqframework.cql.cql2elm.serializing
 
 import org.cqframework.cql.cql2elm.CqlTranslatorOptions

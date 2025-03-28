@@ -1,9 +1,8 @@
-@file:Suppress("MatchingDeclarationName")
-
 package org.cqframework.cql.cql2elm
 
 import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsExport
+import kotlin.js.JsStatic
 import kotlin.jvm.JvmStatic
 import org.antlr.v4.kotlinruntime.CharStream
 import org.antlr.v4.kotlinruntime.CharStreams
@@ -14,12 +13,12 @@ import org.hl7.elm.r1.*
 
 @OptIn(ExperimentalJsExport::class)
 @JsExport
-open class CommonCqlTranslator(
+open class BaseCqlTranslator(
     namespaceInfo: NamespaceInfo?,
     sourceInfo: VersionedIdentifier?,
     `is`: CharStream,
-    libraryManager: CommonLibraryManager,
-    val writerProvider: ElmLibraryWriterProvider
+    libraryManager: BaseLibraryManager,
+    val elmLibraryWriterProvider: ElmLibraryWriterProvider,
 ) {
     enum class Format {
         XML,
@@ -27,7 +26,7 @@ open class CommonCqlTranslator(
         COFFEE
     }
 
-    private val compiler = CommonCqlCompiler(namespaceInfo, sourceInfo, libraryManager)
+    private val compiler = BaseCqlCompiler(namespaceInfo, sourceInfo, libraryManager)
 
     init {
         compiler.run(`is`)
@@ -81,28 +80,32 @@ open class CommonCqlTranslator(
         get() = compiler.messages
 
     fun convertToXml(library: Library): String {
-        return this.writerProvider.create(LibraryContentType.XML.mimeType()).writeAsString(library)
+        return this.elmLibraryWriterProvider
+            .create(LibraryContentType.XML.mimeType())
+            .writeAsString(library)
     }
 
     fun convertToJson(library: Library): String {
-        return this.writerProvider.create(LibraryContentType.JSON.mimeType()).writeAsString(library)
+        return this.elmLibraryWriterProvider
+            .create(LibraryContentType.JSON.mimeType())
+            .writeAsString(library)
     }
 
-    @Suppress("TooManyFunctions")
     companion object {
 
         @JvmStatic
+        @JsStatic
         fun fromText(
             cqlText: String,
-            libraryManager: CommonLibraryManager,
-            writerProvider: ElmLibraryWriterProvider
-        ): CommonCqlTranslator {
-            return CommonCqlTranslator(
+            libraryManager: BaseLibraryManager,
+            elmLibraryWriterProvider: ElmLibraryWriterProvider,
+        ): BaseCqlTranslator {
+            return BaseCqlTranslator(
                 null,
                 null,
                 CharStreams.fromString(cqlText),
                 libraryManager,
-                writerProvider
+                elmLibraryWriterProvider
             )
         }
     }

@@ -6,15 +6,6 @@ plugins {
     id("com.github.node-gradle.node")
 }
 
-//open class XsdKotlinGenExtension {
-//    var xsdFiles: List<String> = listOf()
-//    var packageName: String = ""
-//    var namespaceUri: String = ""
-//    var namespacePrefixes: List<String> = listOf()
-//}
-
-//val xsdKotlinGenExtension = extensions.create("xsdKotlinGen", XsdKotlinGenExtension::class)
-
 val buildDir = project.layout.buildDirectory.get().toString()
 val destDir = "${buildDir}/generated/sources/$name/commonMain/kotlin"
 
