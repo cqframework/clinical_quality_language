@@ -14,7 +14,7 @@ constructor(
     cqlCompilerOptions: CqlCompilerOptions = CqlCompilerOptions.defaultOptions(),
     libraryCache: MutableMap<VersionedIdentifier, CompiledLibrary> = HashMap(),
     elmLibraryReaderProvider: ElmLibraryReaderProvider =
-        ElmLibraryReaderProviderFactory.providers(false).next(),
+        ElmLibraryReaderProviderFactory.getProvider(),
 ) :
     BaseLibraryManager(
         modelManager,

@@ -16,7 +16,7 @@ constructor(
     `is`: CharStream,
     libraryManager: LibraryManager,
     elmLibraryWriterProvider: ElmLibraryWriterProvider =
-        ElmLibraryWriterProviderFactory.providers(false).next()
+        ElmLibraryWriterProviderFactory.getProvider()
 ) :
     BaseCqlTranslator(
         namespaceInfo,
