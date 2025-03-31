@@ -108,7 +108,9 @@ public abstract class TestFhirPath {
             actualValues = (Iterable<Object>) value;
         } else {
             List<Object> values = new ArrayList<Object>();
-            values.add(value);
+            if (value != null) {
+                values.add(value);
+            }
             actualValues = values;
         }
         return actualValues;
@@ -225,19 +227,27 @@ public abstract class TestFhirPath {
             Iterable<Object> actualResults = ensureIterable(value);
             Iterable<Object> expectedResults = loadExpectedResults(test, isExpressionOutputTest);
             Iterator<Object> actualResultsIterator = actualResults.iterator();
-            for (Object expectedResult : expectedResults) {
-                if (actualResultsIterator.hasNext()) {
-                    Object actualResult = actualResultsIterator.next();
-                    Boolean comparison = compareResults(expectedResult, actualResult, engine.getState(), resolver);
-                    if (comparison == null || !comparison) {
-                        System.out.println("Failing Test: " + test.getName());
-                        System.out.println(
-                                "- Expected Result: " + expectedResult + " (" + expectedResult.getClass() + ")");
-                        System.out.println("- Actual Result: " + actualResult + " (" + expectedResult.getClass() + ")");
+            Iterator<Object> expectedResultsIterator = expectedResults.iterator();
+            if (expectedResultsIterator.hasNext()) {
+                for (Object expectedResult : expectedResults) {
+                    if (actualResultsIterator.hasNext()) {
+                        Object actualResult = actualResultsIterator.next();
+                        Boolean comparison = compareResults(expectedResult, actualResult, engine.getState(), resolver);
+                        if (comparison == null || !comparison) {
+                            System.out.println("Failing Test: " + test.getName());
+                            System.out.println("- Expected Result: " + expectedResult
+                                    + (expectedResult != null ? " (" + expectedResult.getClass() + ")" : ""));
+                            System.out.println("- Actual Result: " + actualResult
+                                    + (actualResult != null ? " (" + actualResult.getClass() + ")" : ""));
+                            throw new RuntimeException("Actual value is not equal to expected value.");
+                        }
+                    } else {
                         throw new RuntimeException("Actual value is not equal to expected value.");
                     }
-                } else {
-                    throw new RuntimeException("Actual value is not equal to expected value.");
+                }
+            } else {
+                if (actualResultsIterator.hasNext()) {
+                    throw new RuntimeException("Actual value is not equal to expected value ({})");
                 }
             }
         }

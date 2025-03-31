@@ -90,8 +90,8 @@
 	</group>
 	<group name="Distinct">
 		<test name="DistinctEmptyList">
-			<expression>distinct {}</expression>
-			<output>{}</output>
+			<expression>not exists (distinct {})</expression>
+			<output>true</output>
 		</test>
 		<test name="DistinctNullNullNull">
 			<expression>distinct { null, null, null}</expression>
@@ -126,6 +126,16 @@
 			<output>{ @T15:59:59.999, @T20:59:59.999 }</output>
 		</test>
 	</group>
+	<group name="Nullological">
+		<test name="EmptyListNull">
+			<expression>{ } is null</expression>
+			<output>false</output>
+		</test>
+		<test name="ListNotNull">
+			<expression>{ 1, 2, 3 } is not null</expression>
+			<output>true</output>
+		</test>
+	</group>
 	<group name="Equal">
 		<test name="EqualNullNull">
 			<expression>{null} = {null}</expression>
@@ -144,7 +154,7 @@
 			<output>null</output>
 		</test>
 		<test name="EqualEmptyListAndEmptyList">
-			<expression>{} = {}</expression>
+			<expression>({} = {}) is null</expression>
 			<output>true</output>
 		</test>
 		<test name="EqualABCAndABC">
@@ -209,16 +219,16 @@
 	</group>
 	<group name="Except">
 		<test name="ExceptEmptyListAndEmptyList">
-			<expression>{} except {}</expression>
-			<output>{}</output>
+			<expression>not exists ({} except {})</expression>
+			<output>true</output>
 		</test>
 		<test name="Except1234And23">
 			<expression>{ 1, 2, 3, 4 } except { 2, 3 }</expression>
 			<output>{ 1, 4 }</output>
 		</test>
 		<test name="Except23And1234">
-			<expression>{ 2, 3 } except { 1, 2, 3, 4 }</expression>
-			<output>{}</output>
+			<expression>not exists ({ 2, 3 } except { 1, 2, 3, 4 })</expression>
+			<output>true</output>
 		</test>
 		<test name="ExceptDateTimeList">
 			<expression>{ DateTime(2012, 5, 10), DateTime(2014, 12, 10), DateTime(2010, 1, 1)} except {DateTime(2014, 12, 10), DateTime(2010, 1, 1) }</expression>
@@ -265,8 +275,8 @@
 	</group>
 	<group name="Flatten">
 		<test name="FlattenEmpty">
-			<expression>Flatten({{},{}})</expression>
-			<output>{}</output>
+			<expression>not exists (Flatten({{},{}}))</expression>
+			<output>true</output>
 		</test>
 		<test name="FlattenListNullAndNull">
 			<expression>Flatten({{null}, {null}})</expression>
@@ -510,8 +520,8 @@
 	</group>
 	<group name="Intersect">
 		<test name="IntersectEmptyListAndEmptyList">
-			<expression>{} intersect {}</expression>
-			<output>{}</output>
+			<expression>not exists ({} intersect {})</expression>
+			<output>true</output>
 		</test>
 		<test name="Intersect1234And23">
 			<expression>{ 1, 2, 3, 4 } intersect { 2, 3 }</expression>
@@ -591,6 +601,10 @@
 			<expression>{} ~ {}</expression>
 			<output>true</output>
 		</test>
+		<test name="EquivalentEmptyAndNull">
+			<expression>{} ~ null</expression>
+			<output>false</output>
+		</test>
 		<test name="EquivalentABCAndABC">
 			<expression>{ 'a', 'b', 'c' } ~ { 'a', 'b', 'c' }</expression>
 			<output>true</output>
@@ -641,8 +655,8 @@
 	</group>
 	<group name="NotEqual">
 		<test name="NotEqualEmptyAndEmpty">
-			<expression>{} != {}</expression>
-			<output>false</output>
+			<expression>({} != {}) is null</expression>
+			<output>true</output>
 		</test>
 		<test name="NotEqualABCAndABC">
 			<expression>{ 'a', 'b', 'c' } != { 'a', 'b', 'c' }</expression>
@@ -888,8 +902,8 @@
 			<output>{1,2,3,4,5}</output>
 		</test>
 		<test name="SkipAll">
-			<expression>Skip({1,2,3,4,5}, 5)</expression>
-			<output>{}</output>
+			<expression>not exists (Skip({1,2,3,4,5}, 5))</expression>
+			<output>true</output>
 		</test>
 	</group>
 	<group name="Tail">
@@ -906,12 +920,12 @@
 			<output>{2,3,4,5}</output>
 		</test>
 		<test name="TailEmpty">
-			<expression>Tail({})</expression>
-			<output>{}</output>
+			<expression>not exists (Tail({}))</expression>
+			<output>true</output>
 		</test>
 		<test name="TailOneElement">
-			<expression>Tail({1})</expression>
-			<output>{}</output>
+			<expression>not exists (Tail({1}))</expression>
+			<output>true</output>
 		</test>
 	</group>
 	<group name="Take">
@@ -920,12 +934,12 @@
 			<output>null</output>
 		</test>
 		<test name="TakeNullEmpty">
-			<expression>Take({1,2,3}, null as Integer)</expression>
-			<output>{}</output>
+			<expression>not exists (Take({1,2,3}, null as Integer))</expression>
+			<output>true</output>
 		</test>
 		<test name="TakeEmpty">
-			<expression>Take({1,2,3}, 0)</expression>
-			<output>{}</output>
+			<expression>not exists (Take({1,2,3}, 0))</expression>
+			<output>true</output>
 		</test>
 		<test name="TakeEven">
 			<expression>Take({1,2,3,4}, 2)</expression>
@@ -942,8 +956,8 @@
 	</group>
 	<group name="Union">
 		<test name="UnionEmptyAndEmpty">
-			<expression>{} union {}</expression>
-			<output>{}</output>
+			<expression>not exists ({} union {})</expression>
+			<output>true</output>
 		</test>
 		<test name="UnionListNullAndListNull">
 			<expression>{ null } union { null }</expression>

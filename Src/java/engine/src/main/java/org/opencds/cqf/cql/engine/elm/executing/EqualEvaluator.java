@@ -38,16 +38,16 @@ public class EqualEvaluator {
             return null;
         }
 
+        if (left instanceof Iterable && right instanceof Iterable) {
+            return CqlList.equal((Iterable<?>) left, (Iterable<?>) right, state);
+        }
+
         if (left instanceof Interval && right instanceof Integer) {
             return ((Interval) left).equal(right);
         }
 
         if (right instanceof Interval && left instanceof Integer) {
             return ((Interval) right).equal(left);
-        }
-
-        if (left instanceof Iterable && right instanceof Iterable) {
-            return CqlList.equal((Iterable<?>) left, (Iterable<?>) right, state);
         }
 
         if (!left.getClass().equals(right.getClass())) {
