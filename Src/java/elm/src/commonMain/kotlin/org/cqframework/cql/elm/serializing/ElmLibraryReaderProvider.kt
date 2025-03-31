@@ -1,5 +1,3 @@
-@file:Suppress("PackageNaming")
-
 package org.cqframework.cql.elm.serializing
 
 interface ElmLibraryReaderProvider {

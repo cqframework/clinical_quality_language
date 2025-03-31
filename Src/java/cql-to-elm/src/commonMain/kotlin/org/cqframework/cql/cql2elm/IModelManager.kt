@@ -1,11 +1,9 @@
-@file:Suppress("MatchingDeclarationName")
-
 package org.cqframework.cql.cql2elm
 
 import org.cqframework.cql.cql2elm.model.Model
 import org.hl7.cql.model.ModelIdentifier
 
-interface CommonModelManager {
+interface IModelManager {
     fun resolveModel(modelIdentifier: ModelIdentifier): Model
 
     fun resolveModel(modelName: String): Model

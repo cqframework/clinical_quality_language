@@ -15,7 +15,7 @@ class CqlCompiler(
     namespaceInfo: NamespaceInfo?,
     sourceInfo: VersionedIdentifier?,
     libraryManager: LibraryManager
-) : CommonCqlCompiler(namespaceInfo, sourceInfo, libraryManager) {
+) : BaseCqlCompiler(namespaceInfo, sourceInfo, libraryManager) {
     constructor(libraryManager: LibraryManager) : this(null, null, libraryManager)
 
     constructor(

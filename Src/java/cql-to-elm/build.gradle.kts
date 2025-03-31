@@ -16,6 +16,7 @@ kotlin {
                 implementation(project(":qdm"))
                 implementation(project(":ucum"))
                 implementation("com.tngtech.archunit:archunit:1.2.1")
+                runtimeOnly(project(":serialization"))
             }
         }
     }

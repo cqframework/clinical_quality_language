@@ -1,11 +1,9 @@
-@file:Suppress("MatchingDeclarationName")
-
 package org.cqframework.cql.cql2elm
 
 import kotlinx.io.Source
 import org.hl7.elm.r1.VersionedIdentifier
 
-interface CommonLibrarySourceLoader {
+interface ILibrarySourceLoader {
     fun getLibrarySource(libraryIdentifier: VersionedIdentifier): Source?
 
     fun getLibraryContent(

@@ -26,7 +26,7 @@ private const val FP_THIS = "\$this"
 class LibraryBuilder(
     @JvmField
     val namespaceInfo: NamespaceInfo?, // Note: allowed to be null, implies global namespace
-    val libraryManager: CommonLibraryManager,
+    val libraryManager: BaseLibraryManager,
     val objectFactory: IdObjectFactory
 ) {
     enum class SignatureLevel {
@@ -52,7 +52,7 @@ class LibraryBuilder(
     }
 
     constructor(
-        libraryManager: CommonLibraryManager,
+        libraryManager: BaseLibraryManager,
         objectFactory: IdObjectFactory
     ) : this(null, libraryManager, objectFactory)
 
@@ -81,7 +81,7 @@ class LibraryBuilder(
     private val localIdentifierStack = Stack<ArrayDeque<IdentifierContext>>()
     private var literalContext = 0
     private var typeSpecifierContext = 0
-    private val modelManager: CommonModelManager = libraryManager.modelManager
+    private val modelManager: IModelManager = libraryManager.modelManager
     var defaultModel: Model? = null
         private set(model) {
             // The default model is the first model that is not System
