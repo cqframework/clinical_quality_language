@@ -1,5 +1,3 @@
-@file:Suppress("MatchingDeclarationName")
-
 package org.cqframework.cql.cql2elm
 
 import kotlin.collections.ArrayList
@@ -13,7 +11,7 @@ import kotlinx.io.Source
 import org.cqframework.cql.cql2elm.model.CompiledLibrary
 import org.cqframework.cql.cql2elm.tracking.Trackable.resultType
 import org.cqframework.cql.cql2elm.ucum.UcumService
-import org.cqframework.cql.elm.serializing.getElmLibraryReader
+import org.cqframework.cql.elm.serializing.ElmLibraryReaderProvider
 import org.hl7.cql.model.NamespaceManager
 import org.hl7.elm.r1.*
 
@@ -23,14 +21,15 @@ import org.hl7.elm.r1.*
  */
 @OptIn(ExperimentalJsExport::class)
 @JsExport
-@Suppress("TooManyFunctions")
-open class CommonLibraryManager(
-    val modelManager: CommonModelManager,
+@Suppress("TooManyFunctions", "LongParameterList")
+open class BaseLibraryManager(
+    val modelManager: IModelManager,
     val namespaceManager: NamespaceManager,
-    open val librarySourceLoader: CommonLibrarySourceLoader,
+    open val librarySourceLoader: ILibrarySourceLoader,
     lazyUcumService: Lazy<UcumService>,
     val cqlCompilerOptions: CqlCompilerOptions = CqlCompilerOptions.defaultOptions(),
-    val compiledLibraries: MutableMap<VersionedIdentifier, CompiledLibrary> = HashMap()
+    val compiledLibraries: MutableMap<VersionedIdentifier, CompiledLibrary> = HashMap(),
+    val elmLibraryReaderProvider: ElmLibraryReaderProvider,
 ) {
     enum class CacheMode {
         NONE,
@@ -142,8 +141,8 @@ open class CommonLibraryManager(
 
     protected open fun getCompilerForLibrary(
         libraryIdentifier: VersionedIdentifier
-    ): CommonCqlCompiler {
-        return CommonCqlCompiler(
+    ): BaseCqlCompiler {
+        return BaseCqlCompiler(
             libraryIdentifier.system?.let { namespaceManager.getNamespaceInfoFromUri(it) },
             libraryIdentifier,
             this
@@ -182,7 +181,7 @@ open class CommonLibraryManager(
         type: LibraryContentType,
         @Suppress("UnusedParameter") options: CqlCompilerOptions
     ): CompiledLibrary? {
-        val library = getElmLibraryReader(type.mimeType()).read(librarySource)
+        val library = this.elmLibraryReaderProvider.create(type.mimeType()).read(librarySource)
         var compiledLibrary: CompiledLibrary? = null
         if (checkBinaryCompatibility(library)) {
             compiledLibrary = generateCompiledLibrary(library)

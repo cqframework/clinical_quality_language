@@ -1,5 +1,3 @@
-@file:Suppress("MatchingDeclarationName")
-
 package org.cqframework.cql.cql2elm
 
 import kotlinx.io.Source
@@ -19,10 +17,10 @@ import org.cqframework.cql.gen.cqlParser.LibraryContext
 import org.hl7.cql.model.*
 import org.hl7.elm.r1.*
 
-open class CommonCqlCompiler(
+open class BaseCqlCompiler(
     private val namespaceInfo: NamespaceInfo?,
     sourceInfo: VersionedIdentifier?,
-    private val libraryManager: CommonLibraryManager
+    private val libraryManager: BaseLibraryManager
 ) {
     var library: Library? = null
         private set
@@ -39,11 +37,11 @@ open class CommonCqlCompiler(
     private var sourceInfo =
         sourceInfo ?: VersionedIdentifier().withId("Anonymous").withSystem("text/cql")
 
-    constructor(libraryManager: CommonLibraryManager) : this(null, null, libraryManager)
+    constructor(libraryManager: BaseLibraryManager) : this(null, null, libraryManager)
 
     constructor(
         namespaceInfo: NamespaceInfo?,
-        libraryManager: CommonLibraryManager
+        libraryManager: BaseLibraryManager
     ) : this(namespaceInfo, null, libraryManager)
 
     init {
