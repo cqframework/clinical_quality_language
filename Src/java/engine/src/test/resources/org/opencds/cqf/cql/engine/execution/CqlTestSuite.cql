@@ -3696,7 +3696,7 @@ define IntIvlCollapse_IntCollapseOverlapContainedEdge: collapse { Int1_10Interva
 define IntIvlCollapse_IntCollapseOverlapContainedEdge2: collapse { Int1_15Interval, Int1_10Interval }
 define IntIvlCollapse_IntCollapseOverlapMultipleCombine: collapse { Int1_6Interval, Int5_12Interval, Int10_15Interval }
 
-define test_IntIvlCollapse_IntCollapseEmpty: TestMessage(IntIvlCollapse_IntCollapseEmpty = IntEmptyIntervalList, 'IntIvlCollapse_IntCollapseEmpty', toString(IntEmptyIntervalList), toString(IntIvlCollapse_IntCollapseEmpty))
+define test_IntIvlCollapse_IntCollapseEmpty: TestMessage(not exists IntIvlCollapse_IntCollapseEmpty, 'IntIvlCollapse_IntCollapseEmpty', toString(IntEmptyIntervalList), toString(IntIvlCollapse_IntCollapseEmpty))
 define test_IntIvlCollapse_IntCollapseSingleInterval: TestMessage(IntIvlCollapse_IntCollapseSingleInterval = Int1_10IntervalList, 'IntIvlCollapse_IntCollapseSingleInterval', toString(Int1_10IntervalList), toString(IntIvlCollapse_IntCollapseSingleInterval))
 define test_IntIvlCollapse_IntCollapseDisjoint: TestMessage(IntIvlCollapse_IntCollapseDisjoint = IntTwoItemDisjointList, 'IntIvlCollapse_IntCollapseDisjoint', toString(IntTwoItemDisjointList), toString(IntIvlCollapse_IntCollapseDisjoint))
 define test_IntIvlCollapse_IntCollapseDisjointReversed: TestMessage(IntIvlCollapse_IntCollapseDisjointReversed = IntTwoItemDisjointList, 'IntIvlCollapse_IntCollapseDisjointReversed', toString(IntTwoItemDisjointList), toString(IntIvlCollapse_IntCollapseDisjointReversed))
@@ -3734,7 +3734,7 @@ define DtIvlCollapse_DateTimeCollapseOverlapContainedEdge2: collapse { DateTime1
 define DtIvlCollapse_DateTimeCollapseOverlapMultipleCombine: collapse { DateTime1_6Interval, DateTime5_12Interval, DateTime10_15Interval }
 define DtIvlCollapse_DateTimeCollapseImpreciseBoundary: collapse { DateTime1_3ImpreciseInterval, DateTime1_10Interval }
 
-define test_DtIvlCollapse_DateTimeCollapseEmpty: TestMessage(DtIvlCollapse_DateTimeCollapseEmpty = DateTimeEmptyIntervalList, 'DtIvlCollapse_DateTimeCollapseEmpty', toString(DateTimeEmptyIntervalList), toString(DtIvlCollapse_DateTimeCollapseEmpty))
+define test_DtIvlCollapse_DateTimeCollapseEmpty: TestMessage(not exists DtIvlCollapse_DateTimeCollapseEmpty, 'DtIvlCollapse_DateTimeCollapseEmpty', toString(DateTimeEmptyIntervalList), toString(DtIvlCollapse_DateTimeCollapseEmpty))
 define test_DtIvlCollapse_DateTimeCollapseSingleInterval: TestMessage(DtIvlCollapse_DateTimeCollapseSingleInterval = DateTime1_10IntervalList, 'DtIvlCollapse_DateTimeCollapseSingleInterval', toString(DateTime1_10IntervalList), toString(DtIvlCollapse_DateTimeCollapseSingleInterval))
 define test_DtIvlCollapse_DateTimeCollapseDisjoint: TestMessage(DtIvlCollapse_DateTimeCollapseDisjoint = DateTimeTwoItemDisjointList, 'DtIvlCollapse_DateTimeCollapseDisjoint', toString(DateTimeTwoItemDisjointList), toString(DtIvlCollapse_DateTimeCollapseDisjoint))
 define test_DtIvlCollapse_DateTimeCollapseDisjointReversed: TestMessage(DtIvlCollapse_DateTimeCollapseDisjointReversed = DateTimeTwoItemDisjointList, 'DtIvlCollapse_DateTimeCollapseDisjointReversed', toString(DateTimeTwoItemDisjointList), toString(DtIvlCollapse_DateTimeCollapseDisjointReversed))
@@ -4152,7 +4152,7 @@ define DateTimeIvlExpand_MismatchPrecision: expand { Interval[@2012-01-01T12:00+
 define DateTimeIvlExpand_MismatchPrecisionEmpty: expand { Interval[@2012-01-01T13:00:00+00:00, @2012-01-02T12:59+00:00] } per day
 
 define test_DateTimeIvlExpand_MismatchPrecision: TestMessage(DateTimeIvlExpand_MismatchPrecision = DateTimeMismatchPrecisionExpected, 'DateTimeIvlExpand_MismatchPrecision', toString(DateTimeMismatchPrecisionExpected), toString(DateTimeIvlExpand_MismatchPrecision))
-define test_DateTimeIvlExpand_MismatchPrecisionEmpty: TestMessage(DateTimeIvlExpand_MismatchPrecisionEmpty = List<Interval<Date>>{}, 'DateTimeIvlExpand_MismatchPrecisionEmpty', toString(List<Interval<Date>>{}), toString(DateTimeIvlExpand_MismatchPrecisionEmpty))
+define test_DateTimeIvlExpand_MismatchPrecisionEmpty: TestMessage(not exists DateTimeIvlExpand_MismatchPrecisionEmpty, 'DateTimeIvlExpand_MismatchPrecisionEmpty', toString(List<Interval<Date>>{}), toString(DateTimeIvlExpand_MismatchPrecisionEmpty))
 
 define DateTimeIvlExpand_NullOpen: expand { Interval[null, @2018-01-03T01+00:00] } per day
 define DateTimeIvlExpand_NullClose: expand { Interval[@2018-01-01T01+00:00, null] } per day
@@ -4280,7 +4280,7 @@ define QtyIvlExpand_NullClose: expand { Interval[2 'g', null] } per 1 'g'
 //define QtyIvlExpand_BadPerMinute: expand { Interval(2 'g', 4 'g'] } per 1 minute
 //define QtyIvlExpand_BadPerGram: expand { Interval(2 'km', 4 'km'] }  per 1 'g'
 
-define test_QtyIvlExpand_PerTooBig: TestMessage(QtyIvlExpand_PerTooBig = List<Interval<Quantity>>{}, 'QtyIvlExpand_PerTooBig', toString(List<Interval<Quantity>>{}), toString(QtyIvlExpand_PerTooBig))
+define test_QtyIvlExpand_PerTooBig: TestMessage(not exists QtyIvlExpand_PerTooBig, 'QtyIvlExpand_PerTooBig', toString(List<Interval<Quantity>>{}), toString(QtyIvlExpand_PerTooBig))
 define test_QtyIvlExpand_NullOpen: TestMessage(QtyIvlExpand_NullOpen is null, 'QtyIvlExpand_NullOpen', 'null', toString(QtyIvlExpand_NullOpen))
 define test_QtyIvlExpand_NullClose: TestMessage(QtyIvlExpand_NullClose is null, 'QtyIvlExpand_NullClose', 'null', toString(QtyIvlExpand_NullClose))
 //define test_QtyIvlExpand_NullBoth: TestMessage(QtyIvlExpand_NullBoth is null, 'QtyIvlExpand_NullBoth', 'null', toString(QtyIvlExpand_NullBoth))
@@ -4329,7 +4329,7 @@ define IntIvlExpand_NullClose: expand { Interval[2, null] } per 1 '1'
 //define IntIvlExpand_NullBoth: expand { Interval[null, null] } per 1 '1'
 define IntIvlExpand_BadPerMinute: expand { Interval(2, 4] } per 1 minute
 
-define test_IntIvlExpand_PerTooBig: TestMessage(IntIvlExpand_PerTooBig = List<Interval<Integer>>{}, 'IntIvlExpand_PerTooBig', toString(List<Interval<Integer>>{}), toString(IntIvlExpand_PerTooBig))
+define test_IntIvlExpand_PerTooBig: TestMessage(not exists IntIvlExpand_PerTooBig, 'IntIvlExpand_PerTooBig', toString(List<Interval<Integer>>{}), toString(IntIvlExpand_PerTooBig))
 define test_IntIvlExpand_NullOpen: TestMessage(IntIvlExpand_NullOpen is null, 'IntIvlExpand_NullOpen', 'null', toString(IntIvlExpand_NullOpen))
 define test_IntIvlExpand_NullClose: TestMessage(IntIvlExpand_NullClose is null, 'IntIvlExpand_NullClose', 'null', toString(IntIvlExpand_NullClose))
 define test_IntIvlExpand_BadPerMinute: TestMessage(IntIvlExpand_BadPerMinute is null, 'IntIvlExpand_BadPerMinute', 'null', toString(IntIvlExpand_BadPerMinute))
@@ -4381,7 +4381,7 @@ define DecIvlExpand_NullClose: expand { Interval[2, null] } per 1.5 '1'
 //define DecIvlExpand_NullBoth: expand { Interval[null, null] } per 1.5 '1'
 define DecIvlExpand_BadPerMinute: expand { Interval(2.1, 4.1] } per 0.5 minute
 
-define test_DecIvlExpand_PerTooBig: TestMessage(DecIvlExpand_PerTooBig = List<Interval<Decimal>>{}, 'DecIvlExpand_PerTooBig', toString(List<Interval<Decimal>>{}), toString(DecIvlExpand_PerTooBig))
+define test_DecIvlExpand_PerTooBig: TestMessage(not exists DecIvlExpand_PerTooBig, 'DecIvlExpand_PerTooBig', toString(List<Interval<Decimal>>{}), toString(DecIvlExpand_PerTooBig))
 define test_DecIvlExpand_NullOpen: TestMessage(DecIvlExpand_NullOpen is null, 'DecIvlExpand_NullOpen', 'null', toString(DecIvlExpand_NullOpen))
 define test_DecIvlExpand_NullClose: TestMessage(DecIvlExpand_NullClose is null, 'DecIvlExpand_NullClose', 'null', toString(DecIvlExpand_NullClose))
 define test_DecIvlExpand_BadPerMinute: TestMessage(DecIvlExpand_BadPerMinute is null, 'DecIvlExpand_BadPerMinute', 'null', toString(DecIvlExpand_BadPerMinute))
@@ -4598,17 +4598,17 @@ define Except_NullExcept: null except {1, 2, 3, 4, 5}
 
 // TODO - This fails due to list-distinguised overloads
 // define test_Except_ExceptThreeFour: TestMessage(Except_ExceptThreeFour = {1,2,5}, 'Except_ExceptThreeFour', toString({1,2,5}), toString(Except_ExceptThreeFour))
-define test_Except_ThreeFourExcept: TestMessage(Except_ThreeFourExcept = List<Integer>{}, 'Except_ThreeFourExcept', toString(List<Integer>{}), toString(Except_ThreeFourExcept))
+define test_Except_ThreeFourExcept: TestMessage(not exists Except_ThreeFourExcept, 'Except_ThreeFourExcept', toString(List<Integer>{}), toString(Except_ThreeFourExcept))
 
 // TODO - This fails due to list-distinguised overloads
 // define test_Except_ExceptFiveThree: TestMessage(Except_ExceptFiveThree = {1,2,4}, 'Except_ExceptFiveThree', toString({1,2,4}), toString(Except_ExceptFiveThree))
 // define test_Except_ExceptNoOp: TestMessage(Except_ExceptNoOp = {1,2,3,4,5}, 'Except_ExceptNoOp', toString({1,2,3,4,5}), toString(Except_ExceptNoOp))
-define test_Except_ExceptEverything: TestMessage(Except_ExceptEverything = List<Integer>{}, 'Except_ExceptEverything', toString(List<Integer>{}), toString(Except_ExceptEverything))
+define test_Except_ExceptEverything: TestMessage(not exists Except_ExceptEverything, 'Except_ExceptEverything', toString(List<Integer>{}), toString(Except_ExceptEverything))
 
 // TODO - This fails due to list-distinguised overloads
 // define test_Except_MultipleNullExcept: TestMessage(Except_MultipleNullExcept = {1,5,7}, 'Except_MultipleNullExcept', toString({1,5,7}), toString(Except_MultipleNullExcept))
 // define test_Except_SomethingExceptNothing: TestMessage(Except_SomethingExceptNothing = {1,2,3,4,5}, 'Except_SomethingExceptNothing', toString({1,2,3,4,5}), toString(Except_SomethingExceptNothing))
-define test_Except_NothingExceptSomething: TestMessage(Except_NothingExceptSomething = List<Integer>{}, 'Except_NothingExceptSomething', toString(List<Integer>{}), toString(Except_NothingExceptSomething))
+define test_Except_NothingExceptSomething: TestMessage(not exists Except_NothingExceptSomething, 'Except_NothingExceptSomething', toString(List<Integer>{}), toString(Except_NothingExceptSomething))
 define test_Except_ExceptTuples: TestMessage(Except_ExceptTuples = {Tuple{a: 1}, Tuple{a: 3}}, 'Except_ExceptTuples', toString({Tuple{a: 1}, Tuple{a: 3}}), toString(Except_ExceptTuples))
 // TODO - This fails due to list-distinguised overloads
 //define test_Except_ExceptNull: TestMessage(Except_ExceptNull = {1, 2, 3, 4, 5}, 'Except_ExceptNull', toString({1, 2, 3, 4, 5}), toString(Except_ExceptNull))
@@ -4626,7 +4626,7 @@ define Intersect_NullIntersect: null intersect {1, 2, 3}
 define Intersect_IntersectNull: {1, 2, 3} intersect null
 define Intersect_MultipleNullInListIntersect: {1, 2, 3, null} intersect {null, 3}
 
-define test_Intersect_NoIntersection: TestMessage(Intersect_NoIntersection = List<Integer>{}, 'Intersect_NoIntersection', toString(List<Integer>{}), toString(Intersect_NoIntersection))
+define test_Intersect_NoIntersection: TestMessage(not exists Intersect_NoIntersection, 'Intersect_NoIntersection', toString(List<Integer>{}), toString(Intersect_NoIntersection))
 
 // TODO: This fails due to list-distinguised overloads
 //define test_Intersect_IntersectOnFive: TestMessage(Intersect_IntersectOnFive = {5}, 'Intersect_IntersectOnFive', toString({5}), toString(Intersect_IntersectOnFive))
