@@ -149,6 +149,14 @@ public class Tuple implements CqlType {
      * Helper method to produce indentation spaces. For each indent level, we add two spaces.
      */
     private static String indent(int level) {
-        return "  ".repeat(Math.max(0, level));
+        // With Android API level 28 (Java 8), we cannot use Java 11's String::repeat.
+        // After upgrading, this can be replaced with:
+        // return "  ".repeat(Math.max(0, level));
+
+        var sb = new StringBuilder();
+        for (int i = 0; i < level; i++) {
+            sb.append("  ");
+        }
+        return sb.toString();
     }
 }
