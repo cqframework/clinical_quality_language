@@ -1,61 +1,47 @@
 package org.opencds.cqf.cql.engine.debug;
 
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import org.hl7.elm.r1.Element;
 import org.hl7.elm.r1.Library;
-import org.opencds.cqf.cql.engine.runtime.CqlType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DebugUtilities {
 
-    private static Logger logger = LoggerFactory.getLogger(DebugUtilities.class);
+    private static final Logger logger = LoggerFactory.getLogger(DebugUtilities.class);
 
     private DebugUtilities() {}
 
     public static void logDebugResult(Element node, Library currentLibrary, Object result) {
+        var debugLocation = toDebugLocation(node);
+        var debugString = toDebugString(result);
         logger.debug(
                 "{}.{}: {}",
                 currentLibrary != null ? currentLibrary.getIdentifier().getId() : "unknown",
-                toDebugLocation(node),
-                toDebugString(result));
+                debugLocation,
+                debugString);
     }
 
     public static String toDebugLocation(Element node) {
         String result = "";
-        if (node instanceof Element) {
-            Element element = (Element) node;
-            if (element.getLocator() != null) {
-                result = element.getLocator();
-            }
-            if (element.getLocalId() != null) {
-                result += "(" + element.getLocalId() + ")";
-            }
-        } else {
-            result = node.getClass().toString();
+        if (node.getLocator() != null) {
+            result = node.getLocator();
+        }
+        if (node.getLocalId() != null) {
+            result += "(" + node.getLocalId() + ")";
         }
         return result;
     }
 
     public static String toDebugString(Object result) {
-        if (result instanceof CqlType) {
-            return ((CqlType) result).toString();
-        }
-
         if (result instanceof Iterable) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("{");
-            boolean first = true;
-            for (Object element : (Iterable<?>) result) {
-                sb.append(toDebugString(element));
-                if (first) {
-                    first = false;
-                } else {
-                    sb.append(",");
-                }
-            }
-            sb.append("}");
-
-            return sb.toString();
+            Iterable<?> iterable = (Iterable<?>) result;
+            return "{"
+                    + StreamSupport.stream(iterable.spliterator(), false)
+                            .map(DebugUtilities::toDebugString)
+                            .collect(Collectors.joining(","))
+                    + "}";
         }
 
         if (result != null) {
