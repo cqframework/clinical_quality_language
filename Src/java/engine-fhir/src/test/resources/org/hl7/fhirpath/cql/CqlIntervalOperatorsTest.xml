@@ -191,8 +191,8 @@
 	</group>
 	<group name="Collapse">
 		<test name="TestCollapseNull">
-			<expression>collapse {Interval(null, null)}</expression>
-			<output>{ }</output>
+			<expression>not exists (collapse {Interval(null, null)})</expression>
+			<output>true</output>
 		</test>
 		<test name="IntegerIntervalCollapse">
 			<expression>collapse { Interval[1,5], Interval[3,7], Interval[12,19], Interval[7,10] }</expression>

@@ -226,7 +226,7 @@
 			<output type="boolean">true</output>
 		</test>
 		<test name="testLiteralEmptyCollection" inputfile="patient-example.xml">
-			<expression>Patient.name.given != {}</expression>
+			<expression>Patient.name.given.exists()</expression>
 			<output type="boolean">true</output>
 		</test>
 		<test name="testExpressions" inputfile="patient-example.xml">
@@ -726,7 +726,6 @@
 		</test>
 		<test inputfile="patient-example.xml">
 			<expression>{} = {}</expression>
-			<output type="boolean">true</output>
 		</test>
 		<test inputfile="patient-example.xml">
 			<expression>1 = 2</expression>
@@ -796,7 +795,6 @@
 		</test>
 		<test inputfile="patient-example.xml">
 			<expression>{} != {}</expression>
-			<output type="boolean">false</output>
 		</test>
 		<test inputfile="patient-example.xml">
 			<expression>1 != 2</expression>

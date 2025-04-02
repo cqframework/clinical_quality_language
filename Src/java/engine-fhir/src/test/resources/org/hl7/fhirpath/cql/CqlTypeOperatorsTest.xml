@@ -63,8 +63,8 @@
 			<output>{ 'a', 'b', 'c', '1', '2', '3' }</output>
 		</test>
 		<test name="EmptyStringToChars">
-			<expression>ToChars('')</expression>
-			<output>{}</output>
+			<expression>not exists (ToChars(''))</expression>
+			<output>true</output>
 		</test>
 		<test name="NullToChars">
 			<expression>ToChars(null)</expression>
