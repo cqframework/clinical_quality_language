@@ -334,6 +334,6 @@ class CqlInternalTypeRepresentationSuiteTest extends CqlTestBase {
         value = results.expressionResults.get("List_EmptyList").value();
         assertTrue(value instanceof Iterable);
         listComp = CqlList.equal((Iterable<?>) value, Collections.EMPTY_LIST, engine.getState());
-        assertTrue(listComp != null && listComp);
+        assertNull(listComp);
     }
 }

@@ -102,6 +102,10 @@ public class CqlList {
         Iterator<?> leftIterator = left.iterator();
         Iterator<?> rightIterator = right.iterator();
 
+        if (!leftIterator.hasNext() || !rightIterator.hasNext()) {
+            return null;
+        }
+
         while (leftIterator.hasNext()) {
             Object leftObject = leftIterator.next();
             if (rightIterator.hasNext()) {
