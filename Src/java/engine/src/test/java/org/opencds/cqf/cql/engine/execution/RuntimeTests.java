@@ -42,7 +42,7 @@ class RuntimeTests {
     @Test
     void tupleToString() {
         Tuple t = new Tuple();
-        assertThat(t.toString(), is("Tuple {\n\n}"));
+        assertThat(t.toString(), is("Tuple {}"));
 
         t = new Tuple();
         t.getElements().put("id", 1);

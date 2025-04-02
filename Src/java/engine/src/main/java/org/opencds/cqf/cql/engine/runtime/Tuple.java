@@ -108,6 +108,9 @@ public class Tuple implements CqlType {
      * Recursively builds a nicely-indented string representation of a Tuple's elements.
      */
     private String toPrettyString(Map<String, Object> tupleElements, int indentLevel) {
+        if (tupleElements.isEmpty()) {
+            return "Tuple {}";
+        }
         var sb = new StringBuilder();
         var currentIndent = indent(indentLevel); // indentation for "Tuple {" and closing brace
         var childIndent = indent(indentLevel + 1); // indentation for fields within the tuple
