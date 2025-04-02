@@ -42,13 +42,13 @@ class RuntimeTests {
     @Test
     void tupleToString() {
         Tuple t = new Tuple();
-        assertThat(t.toString(), is("Tuple { : }"));
+        assertThat(t.toString(), is("Tuple {\n\n}"));
 
         t = new Tuple();
         t.getElements().put("id", 1);
         t.getElements()
                 .put("value", new Quantity().withValue(new BigDecimal("1.0")).withUnit("g"));
-        assertThat(t.toString(), is("Tuple {\n\t\"id\": 1\n\t\"value\": 1.0 'g'\n}"));
+        assertThat(t.toString(), is("Tuple {\n  id: 1\n  value: 1.0 'g'\n}"));
     }
 
     @Test
