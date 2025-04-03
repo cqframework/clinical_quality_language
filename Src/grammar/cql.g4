@@ -325,6 +325,7 @@ expression
     | expression intervalOperatorPhrase expression                                                  #timingExpression
     | expression ('=' | '!=' | '~' | '!~') expression                                               #equalityExpression
     | expression ('in' | 'contains') dateTimePrecisionSpecifier? expression                         #membershipExpression
+    | expression 'not' ('in' | 'contains') dateTimePrecisionSpecifier? expression                   #negateMembershipExpression
     | expression 'and' expression                                                                   #andExpression
     | expression ('or' | 'xor') expression                                                          #orExpression
     | expression 'implies' expression                                                               #impliesExpression
