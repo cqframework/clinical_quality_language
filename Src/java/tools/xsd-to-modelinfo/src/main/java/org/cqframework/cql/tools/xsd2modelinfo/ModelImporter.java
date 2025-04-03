@@ -1,8 +1,9 @@
 package org.cqframework.cql.tools.xsd2modelinfo;
 
+import static kotlinx.io.CoreKt.buffered;
+import static kotlinx.io.JvmCoreKt.asSource;
 import static org.cqframework.cql.tools.xsd2modelinfo.ModelImporterOptions.ChoiceTypePolicy.USE_CHOICE;
 
-import jakarta.xml.bind.JAXB;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -11,14 +12,16 @@ import javax.xml.namespace.QName;
 import org.apache.ws.commons.schema.*;
 import org.hl7.cql.model.*;
 import org.hl7.elm_modelinfo.r1.*;
+import org.hl7.elm_modelinfo.r1.serializing.XmlModelInfoReader;
 
 public class ModelImporter {
     private static final Map<String, DataType> SYSTEM_CATALOG = getSystemCatalog();
 
     private static Map<String, DataType> getSystemCatalog() {
-        ModelInfo systemModelInfo = JAXB.unmarshal(
-                ModelImporter.class.getResourceAsStream("/org/hl7/elm/r1/system-modelinfo.xml"), ModelInfo.class);
-
+        var reader = new XmlModelInfoReader();
+        var source =
+                buffered(asSource(ModelImporter.class.getResourceAsStream("/org/hl7/elm/r1/system-modelinfo.xml")));
+        var systemModelInfo = reader.read(source);
         final Map<String, DataType> map = new HashMap<>();
         for (TypeInfo info : systemModelInfo.getTypeInfo()) {
             if (info instanceof SimpleTypeInfo) {
@@ -182,7 +185,7 @@ public class ModelImporter {
                     cie.setTypeSpecifier(elementTypeSpecifier);
                 }
             }
-            if (element.isProhibited()) {
+            if (element.getProhibited()) {
                 cie.setProhibited(true);
             }
             result.getElement().add(cie);
@@ -338,7 +341,7 @@ public class ModelImporter {
             DataType resultType = dataTypes.get(typeName);
             if (resultType == null) {
                 if (mapping != null && mapping.getRelationship() == ModelImporterMapperValue.Relationship.EXTEND) {
-                    resultType = new SimpleType(typeName, SYSTEM_CATALOG.get(mapping.getTargetSystemClass()));
+                    resultType = new SimpleType(typeName, SYSTEM_CATALOG.get(mapping.getTargetSystemClass()), null);
                 } else {
                     resultType = new SimpleType(typeName);
                 }
@@ -397,7 +400,7 @@ public class ModelImporter {
             if (retypeToBase) {
                 resultType = baseType;
             } else {
-                resultType = new SimpleType(typeName, baseType);
+                resultType = new SimpleType(typeName);
                 dataTypes.put(typeName, resultType);
             }
         }
@@ -445,7 +448,7 @@ public class ModelImporter {
             }
 
             // Create and register the type
-            ClassType classType = new ClassType(typeName, baseType);
+            ClassType classType = new ClassType(typeName);
             dataTypes.put(typeName, classType);
 
             applyConfig(classType);
@@ -535,8 +538,8 @@ public class ModelImporter {
                             classType.addElement(new ClassTypeElement(
                                     name.toString(),
                                     element.getType(),
-                                    element.isProhibited(),
-                                    element.isOneBased(),
+                                    element.getProhibited(),
+                                    element.getOneBased(),
                                     null));
                     }
                 }

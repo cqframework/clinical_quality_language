@@ -1,8 +1,11 @@
 package org.cqframework.cql.elm.requirements;
 
+import org.cqframework.cql.cql2elm.tracking.Trackable;
 import org.cqframework.cql.elm.visiting.BaseElmLibraryVisitor;
+import org.hl7.cql.model.DataType;
 import org.hl7.cql.model.ListType;
 import org.hl7.elm.r1.*;
+import org.jetbrains.annotations.NotNull;
 
 /*
 This class implements an ELM Visitor to perform static analysis of data and dependency requirements
@@ -50,6 +53,11 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor<ElmRequirement
 
     public ElmRequirementsVisitor() {
         super();
+    }
+
+    @Override
+    protected ElmRequirement defaultResult(@NotNull Element elm, ElmRequirementsContext context) {
+        return null;
     }
 
     @Override
@@ -131,10 +139,17 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor<ElmRequirement
 
         // If the result is a data requirement and the function is cardinality-reducing,
         // Return as an operator requirement, rather than returning the result
+
+        var elmResultType = Trackable.INSTANCE.getResultType(elm);
+        DataType operandResultType = null;
+        if (!elm.getOperand().isEmpty()) {
+            operandResultType =
+                    Trackable.INSTANCE.getResultType(elm.getOperand().get(0));
+        }
+
         if (result instanceof ElmDataRequirement) {
             if (elm.getOperand().size() != 1
-                    || (elm.getOperand().get(0).getResultType() instanceof ListType
-                            && !(elm.getResultType() instanceof ListType))) {
+                    || (operandResultType instanceof ListType && !(elmResultType instanceof ListType))) {
                 // Note that the assumption here is that the data requirement has already been
                 // reported to the context
                 return new ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm)
@@ -640,11 +655,11 @@ public class ElmRequirementsVisitor extends BaseElmLibraryVisitor<ElmRequirement
             Property sourceProperty = visitPropertyRequirement.getProperty();
             qualifiedProperty.setSource(sourceProperty.getSource());
             qualifiedProperty.setScope(sourceProperty.getScope());
-            qualifiedProperty.setResultType(elm.getResultType());
             qualifiedProperty.setResultTypeName(elm.getResultTypeName());
             qualifiedProperty.setResultTypeSpecifier(elm.getResultTypeSpecifier());
             qualifiedProperty.setLocalId(sourceProperty.getLocalId());
             qualifiedProperty.setPath(sourceProperty.getPath() + "." + elm.getPath());
+            Trackable.INSTANCE.setResultType(qualifiedProperty, Trackable.INSTANCE.getResultType(elm));
             return context.reportProperty(qualifiedProperty);
         }
 
