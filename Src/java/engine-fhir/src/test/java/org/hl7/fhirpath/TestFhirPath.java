@@ -129,8 +129,8 @@ public abstract class TestFhirPath {
             String resourceFilePath = basePathInput + test.getInputfile();
             resource = loadResourceFile(resourceFilePath, fhirContext);
             cql = String.format(
-                    "library TestFHIRPath using FHIR version '4.0.1' include FHIRHelpers version '4.0.1' called FHIRHelpers parameter %s %s context %s define Test:",
-                    resource.fhirType(), resource.fhirType(), resource.fhirType());
+                    "library TestFHIRPath using FHIR version '4.0.1' include FHIRHelpers version '4.0.1' called FHIRHelpers parameter %s %s parameter \"%context\" %s context %s define Test:",
+                    resource.fhirType(), resource.fhirType(), resource.fhirType(), resource.fhirType());
         } else {
             cql =
                     "library TestFHIRPath using FHIR version '4.0.1' include FHIRHelpers version '4.0.1' called FHIRHelpers define Test:";
