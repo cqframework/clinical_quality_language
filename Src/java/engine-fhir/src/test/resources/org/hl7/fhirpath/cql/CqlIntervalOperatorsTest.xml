@@ -1020,6 +1020,42 @@
 			<expression>Interval[1, 10] overlaps Interval[11, 20]</expression>
 			<output>false</output>
 		</test>
+		<test name="IntegerIntervalExclusiveOverlapsTrue">
+			<expression>Interval[4, 10) overlaps Interval[4, 10)</expression>
+			<output>true</output>
+			<!-- `overlaps` is true for equal intervals -->
+		</test>
+		<test name="IntegerIntervalExclusiveOverlapsTrue2">
+			<expression>Interval[4, 11) overlaps Interval[10, 20]</expression>
+			<output>true</output>
+			<!-- both intervals include 10 -->
+		</test>
+		<test name="IntegerIntervalExclusiveOverlapsTrue3">
+			<expression>Interval[4, 10] overlaps Interval(9, 20]</expression>
+			<output>true</output>
+			<!-- both intervals include 10 -->
+		</test>
+		<test name="IntegerIntervalExclusiveOverlapsTrue4">
+			<expression>Interval[4, 11) overlaps Interval(9, 20]</expression>
+			<output>true</output>
+			<!-- both intervals include 10 -->
+		</test>
+		<test name="IntegerIntervalExclusiveOverlapsFalse">
+			<expression>Interval[4, 10] overlaps Interval(10, 20]</expression>
+			<output>false</output>
+		</test>
+		<test name="IntegerIntervalExclusiveOverlapsFalse2">
+			<expression>Interval[4, 10) overlaps Interval[10, 20]</expression>
+			<output>false</output>
+		</test>
+		<test name="IntegerIntervalExclusiveOverlapsFalse3">
+			<expression>Interval[4, 10) overlaps Interval(10, 20]</expression>
+			<output>false</output>
+		</test>
+		<test name="IntegerIntervalExclusiveOverlapsFalse4">
+			<expression>Interval[4, 10) overlaps Interval(9, 20]</expression>
+			<output>false</output>
+		</test>
 		<test name="DecimalIntervalOverlapsTrue">
 			<expression>Interval[1.0, 10.0] overlaps Interval[4.0, 10.0]</expression>
 			<output>true</output>
@@ -1066,6 +1102,36 @@
 			<expression>Interval[4, 10] overlaps before Interval[1, 10]</expression>
 			<output>false</output>
 		</test>
+		<test name="IntegerIntervalExclusiveOverlapsBeforeTrue">
+			<expression>Interval[4, 10] overlaps before Interval(4, 10]</expression>
+			<output>true</output>
+			<!-- 4 is before 5 -->
+		</test>
+		<test name="IntegerIntervalExclusiveOverlapsBeforeTrue2">
+			<expression>Interval(3, 10] overlaps before Interval(4, 10]</expression>
+			<output>true</output>
+			<!-- 4 is before 5 -->
+		</test>
+		<test name="IntegerIntervalExclusiveOverlapsBeforeTrue3">
+			<expression>Interval(3, 10] overlaps before Interval[5, 10]</expression>
+			<output>true</output>
+			<!-- 4 is before 5 -->
+		</test>
+		<test name="IntegerIntervalExclusiveOverlapsBeforeFalse">
+			<expression>Interval(3, 10] overlaps before Interval(3, 10]</expression>
+			<output>false</output>
+			<!-- `overlaps before` is false for equal intervals (4 is not before 4) -->
+		</test>
+		<test name="IntegerIntervalExclusiveOverlapsBeforeFalse2">
+			<expression>Interval(3, 10] overlaps before Interval[4, 10]</expression>
+			<output>false</output>
+			<!-- 4 is not before 4 -->
+		</test>
+		<test name="IntegerIntervalExclusiveOverlapsBeforeFalse3">
+			<expression>Interval[4, 10] overlaps before Interval(3, 10]</expression>
+			<output>false</output>
+			<!-- 4 is not before 4 -->
+		</test>
 		<test name="DecimalIntervalOverlapsBeforeTrue">
 			<expression>Interval[1.0, 10.0] overlaps before Interval[4.0, 10.0]</expression>
 			<output>true</output>
@@ -1111,6 +1177,36 @@
 		<test name="IntegerIntervalOverlapsAfterFalse">
 			<expression>Interval[4, 10] overlaps after Interval[1, 10]</expression>
 			<output>false</output>
+		</test>
+		<test name="IntegerIntervalExclusiveOverlapsAfterTrue">
+			<expression>Interval[4, 11) overlaps after Interval[4, 9]</expression>
+			<output>true</output>
+			<!-- 10 is after 9 -->
+		</test>
+		<test name="IntegerIntervalExclusiveOverlapsAfterTrue2">
+			<expression>Interval[4, 11) overlaps after Interval[4, 10)</expression>
+			<output>true</output>
+			<!-- 10 is after 9 -->
+		</test>
+		<test name="IntegerIntervalExclusiveOverlapsAfterTrue3">
+			<expression>Interval[4, 10] overlaps after Interval[4, 10)</expression>
+			<output>true</output>
+			<!-- 10 is after 9 -->
+		</test>
+		<test name="IntegerIntervalExclusiveOverlapsAfterFalse">
+			<expression>Interval[4, 11) overlaps after Interval[4, 11)</expression>
+			<output>false</output>
+			<!-- `overlaps after` is false for equal intervals (10 is not after 10) -->
+		</test>
+		<test name="IntegerIntervalExclusiveOverlapsAfterFalse2">
+			<expression>Interval[4, 11) overlaps after Interval[4, 10]</expression>
+			<output>false</output>
+			<!-- 10 is not after 10 -->
+		</test>
+		<test name="IntegerIntervalExclusiveOverlapsAfterFalse3">
+			<expression>Interval[4, 10] overlaps after Interval[4, 11)</expression>
+			<output>false</output>
+			<!-- 10 is not after 10 -->
 		</test>
 		<test name="DecimalIntervalOverlapsAfterTrue">
 			<expression>Interval[4.0, 15.0] overlaps after Interval[1.0, 10.0]</expression>
