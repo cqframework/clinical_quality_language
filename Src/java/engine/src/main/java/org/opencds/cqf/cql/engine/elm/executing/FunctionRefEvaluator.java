@@ -59,15 +59,15 @@ public class FunctionRefEvaluator {
         boolean eligibleForCaching = false;
         if (!functionRef.getSignature().isEmpty() || arguments.isEmpty()) {
             eligibleForCaching = true;
-            if (state.getCache().getFunctionCache().containsKey(functionRef)) {
-                return state.getCache().getFunctionCache().get(functionRef);
+            if (state.getCache().containsFunctionRef(functionRef)) {
+                return state.getCache().getCachedFunctionDef(functionRef);
             }
         }
 
         FunctionDef functionDef = resolveFunctionRef(state, functionRef, arguments);
 
         if (eligibleForCaching) {
-            state.getCache().getFunctionCache().put(functionRef, functionDef);
+            state.getCache().cacheFunctionDef(functionRef, functionDef);
         }
 
         return functionDef;
