@@ -57,7 +57,6 @@ public class SystemDataProvider extends BaseModelResolver implements DataProvide
         }
     }
 
-
     static class AccessorKey {
         private final String path;
         private final Class<?> type;
