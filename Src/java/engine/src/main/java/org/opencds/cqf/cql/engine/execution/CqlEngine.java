@@ -1,5 +1,8 @@
 package org.opencds.cqf.cql.engine.execution;
 
+import static java.util.Objects.requireNonNull;
+import static java.util.Objects.requireNonNullElseGet;
+
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -21,7 +24,8 @@ import org.opencds.cqf.cql.engine.exception.CqlException;
 public class CqlEngine {
     public enum Options {
         EnableExpressionCaching,
-        EnableValidation
+        EnableValidation,
+        DisableEquivalentIn
     }
 
     private final Environment environment;
@@ -30,22 +34,14 @@ public class CqlEngine {
     private final EvaluationVisitor evaluationVisitor = new EvaluationVisitor();
 
     public CqlEngine(Environment environment) {
-        this(environment, null);
+        this(environment, new HashSet<>());
     }
 
     public CqlEngine(Environment environment, Set<Options> engineOptions) {
-        if (environment.getLibraryManager() == null) {
-            throw new IllegalArgumentException("Environment LibraryManager can not be null.");
-        }
-
+        requireNonNull(environment.getLibraryManager(), "Environment LibraryManager can not be null.");
         this.environment = environment;
-        this.state = new State(environment);
-
-        if (engineOptions == null) {
-            this.engineOptions = EnumSet.of(CqlEngine.Options.EnableExpressionCaching);
-        } else {
-            this.engineOptions = engineOptions;
-        }
+        this.engineOptions = requireNonNullElseGet(engineOptions, () -> EnumSet.of(Options.EnableExpressionCaching));
+        this.state = new State(environment, engineOptions);
 
         if (this.engineOptions.contains(CqlEngine.Options.EnableExpressionCaching)) {
             this.getCache().setExpressionCaching(true);
