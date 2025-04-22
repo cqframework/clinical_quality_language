@@ -16,24 +16,22 @@ public class Cache {
 
     private boolean enableExpressionCache = false;
 
-    private Map<FunctionRef, FunctionDef> functionCache = new HashMap<>();
+    private final Map<FunctionRef, FunctionDef> functionCache = new HashMap<>();
 
-    @SuppressWarnings("serial")
-    private Map<VersionedIdentifier, Map<String, ExpressionResult>> expressions =
+    private final Map<VersionedIdentifier, Map<String, ExpressionResult>> expressions =
             new LinkedHashMap<VersionedIdentifier, Map<String, ExpressionResult>>(10, 0.9f, true) {
                 @Override
                 protected boolean removeEldestEntry(
                         Map.Entry<VersionedIdentifier, Map<String, ExpressionResult>> eldestEntry) {
-                    return size() > 10;
+                    return size() > 50;
                 }
             };
 
-    @SuppressWarnings("serial")
     protected Map<String, ExpressionResult> constructLibraryExpressionHashMap() {
         return new LinkedHashMap<String, ExpressionResult>(15, 0.9f, true) {
             @Override
             protected boolean removeEldestEntry(Map.Entry<String, ExpressionResult> eldestEntry) {
-                return size() > 15;
+                return size() > 300;
             }
         };
     }
