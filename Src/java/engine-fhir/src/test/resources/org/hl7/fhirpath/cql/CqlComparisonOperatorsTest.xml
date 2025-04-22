@@ -692,11 +692,11 @@
 		</test>
 		<test name="EquivFloat1Float1WithPrecision">
 			<expression>1.5 ~ 1.55</expression>
-			<output>true</output>
+			<output>false</output>
 		</test>
 		<test name="EquivFloat1Float1WithPrecisionAndZ">
 			<expression>1.50 ~ 1.55</expression>
-			<output>true</output>
+			<output>false</output>
 		</test>
 		<test name="EquivFloatTrailingZero">
 			<expression>1.001 ~ 1.000</expression>

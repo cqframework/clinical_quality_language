@@ -72,8 +72,8 @@ public class EquivalentEvaluator {
             int minScale = Math.min(leftDecimal.scale(), rightDecimal.scale());
             if (minScale >= 0) {
                 return leftDecimal
-                                .setScale(minScale, RoundingMode.FLOOR)
-                                .compareTo(rightDecimal.setScale(minScale, RoundingMode.FLOOR))
+                                .setScale(minScale, RoundingMode.HALF_UP)
+                                .compareTo(rightDecimal.setScale(minScale, RoundingMode.HALF_UP))
                         == 0;
             }
             return leftDecimal.compareTo(rightDecimal) == 0;
@@ -83,7 +83,7 @@ public class EquivalentEvaluator {
             return CqlList.equivalent((Iterable<?>) left, (Iterable<?>) right, state);
         } else if (left instanceof CqlType) {
             return ((CqlType) left).equivalent(right);
-        } else if (left instanceof String && right instanceof String) {
+        } else if (left instanceof String) {
             return ((String) left).equalsIgnoreCase((String) right);
         }
 

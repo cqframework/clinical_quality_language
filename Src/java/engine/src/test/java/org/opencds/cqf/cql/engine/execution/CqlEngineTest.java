@@ -1,6 +1,7 @@
 package org.opencds.cqf.cql.engine.execution;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -34,5 +35,19 @@ class CqlEngineTest extends CqlTestBase {
 
         var debugResult = libraryDebug.get(result.get());
         assertEquals(1, debugResult.size());
+    }
+
+    @Test
+    public void equivalentInOption() {
+        var libraryResult = engine.evaluate(toElmIdentifier("CqlEquivalentInOptionTest"));
+        var expressionResult =
+                libraryResult.expressionResults.get("QuantityListIncludes").value();
+        assertTrue((Boolean) expressionResult);
+
+        engine.getState().getEngineOptions().add(CqlEngine.Options.DisableEquivalentIn);
+        libraryResult = engine.evaluate(toElmIdentifier("CqlEquivalentInOptionTest"));
+        expressionResult =
+                libraryResult.expressionResults.get("QuantityListIncludes").value();
+        assertFalse((Boolean) expressionResult);
     }
 }

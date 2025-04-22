@@ -7,16 +7,3 @@ dependencies {
     api project(':elm')
     api project(':model')
 }
-
-generateSources{
-    inputs.dir "${projectDir}/schema"
-
-    doLast {
-        ant.xjc(destdir: xjc.destDir, schema: "${projectDir}/schema/qdm.xsd") {
-            arg(line: xjc.args)
-        }
-        ant.xjc(destdir: xjc.destDir, schema: "${projectDir}/schema/qdm.4.2.xsd") {
-            arg(line: xjc.args)
-        }
-    }
-}
