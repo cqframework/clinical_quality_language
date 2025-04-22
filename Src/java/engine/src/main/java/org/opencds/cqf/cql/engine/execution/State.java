@@ -25,14 +25,14 @@ public class State {
 
     private final Environment environment;
 
-    private Deque<String> currentContext = new ArrayDeque<>();
+    private final Deque<String> currentContext = new ArrayDeque<>();
 
     private Deque<Deque<Variable>> windows = new ArrayDeque<>();
-    private Deque<Library> currentLibrary = new ArrayDeque<>();
+    private final Deque<Library> currentLibrary = new ArrayDeque<>();
 
-    private Deque<HashSet<Object>> evaluatedResourceStack = new ArrayDeque<>();
+    private final Deque<HashSet<Object>> evaluatedResourceStack = new ArrayDeque<>();
 
-    private Map<String, Object> parameters = new HashMap<>();
+    private final Map<String, Object> parameters = new HashMap<>();
     private Map<String, Object> contextValues = new HashMap<>();
 
     private ZonedDateTime evaluationZonedDateTime;
