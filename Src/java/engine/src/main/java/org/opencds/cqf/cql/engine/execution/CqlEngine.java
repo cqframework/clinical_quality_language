@@ -1,7 +1,6 @@
 package org.opencds.cqf.cql.engine.execution;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.Objects.requireNonNullElseGet;
 
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -40,7 +39,8 @@ public class CqlEngine {
     public CqlEngine(Environment environment, Set<Options> engineOptions) {
         requireNonNull(environment.getLibraryManager(), "Environment LibraryManager can not be null.");
         this.environment = environment;
-        this.engineOptions = requireNonNullElseGet(engineOptions, () -> EnumSet.of(Options.EnableExpressionCaching));
+
+        this.engineOptions = engineOptions != null ? engineOptions : EnumSet.of(Options.EnableExpressionCaching);
         this.state = new State(environment, engineOptions);
 
         if (this.engineOptions.contains(CqlEngine.Options.EnableExpressionCaching)) {
@@ -284,7 +284,7 @@ public class CqlEngine {
                     "library %s loaded, but had errors: %s",
                     libraryIdentifier.getId()
                             + (libraryIdentifier.getVersion() != null ? "-" + libraryIdentifier.getVersion() : ""),
-                    String.join(", ", errors.stream().map(e -> e.getMessage()).collect(Collectors.toList()))));
+                    errors.stream().map(Throwable::getMessage).collect(Collectors.joining(", "))));
         }
 
         if (this.engineOptions.contains(Options.EnableValidation)) {
