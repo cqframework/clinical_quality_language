@@ -1,6 +1,5 @@
 {
   "resourceType": "Library",
-  "name": "EffectiveDataRequirements",
   "extension": [ {
     "url": "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-directReferenceCode",
     "valueCoding": {
@@ -29,7 +28,26 @@
       "code": "AMB",
       "display": "Ambulatory"
     }
+  }, {
+    "url": "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-directReferenceCode",
+    "valueCoding": {
+      "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+      "code": "active"
+    }
+  }, {
+    "url": "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-directReferenceCode",
+    "valueCoding": {
+      "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+      "code": "recurrence"
+    }
+  }, {
+    "url": "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-directReferenceCode",
+    "valueCoding": {
+      "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+      "code": "relapse"
+    }
   } ],
+  "name": "EffectiveDataRequirements",
   "status": "active",
   "type": {
     "coding": [ {
@@ -57,6 +75,10 @@
     "type": "depends-on",
     "display": "Code system ActCode",
     "resource": "http://terminology.hl7.org/CodeSystem/v3-ActCode"
+  }, {
+    "type": "depends-on",
+    "display": "Code system ConditionClinicalStatusCodes",
+    "resource": "http://terminology.hl7.org/CodeSystem/condition-clinical"
   }, {
     "type": "depends-on",
     "display": "Value set Cup to Disc Ratio",
@@ -187,6 +209,10 @@
       "path": "type",
       "valueSet": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1014"
     } ]
+  }, {
+    "type": "Condition",
+    "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-condition" ],
+    "mustSupport": [ "abatement", "clinicalStatus", "onset" ]
   }, {
     "type": "Condition",
     "profile": [ "http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-condition" ],

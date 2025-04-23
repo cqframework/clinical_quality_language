@@ -18,6 +18,10 @@ import org.cqframework.cql.elm.requirements.ElmRequirement;
 import org.cqframework.cql.elm.requirements.ElmRequirements;
 import org.cqframework.cql.elm.requirements.ElmRequirementsContext;
 import org.cqframework.cql.elm.requirements.ElmRequirementsVisitor;
+import org.cqframework.cql.elm.requirements.fhir.utilities.SpecificationLevel;
+import org.cqframework.cql.elm.requirements.fhir.utilities.SpecificationSupport;
+import org.cqframework.cql.elm.requirements.fhir.utilities.constants.CqfConstants;
+import org.cqframework.cql.elm.requirements.fhir.utilities.constants.CqfmConstants;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.cqframework.cql.elm.tracking.Trackable;
 import org.hl7.cql.model.IntervalType;
@@ -42,6 +46,11 @@ public class DataRequirementsProcessor {
 
     public java.util.List<ValidationMessage> getValidationMessages() {
         return this.validationMessages;
+    }
+
+    private SpecificationSupport specificationSupport = new SpecificationSupport();
+    public void setSpecificationLevel(SpecificationLevel specificationLevel) {
+        specificationSupport = new SpecificationSupport(specificationLevel);
     }
 
     public Library gatherDataRequirements(
@@ -347,8 +356,7 @@ public class DataRequirementsProcessor {
     private Extension toDirectReferenceCode(
             ElmRequirementsContext context, VersionedIdentifier libraryIdentifier, CodeDef def) {
         Extension e = new Extension();
-        // TODO: Promote this extension to the base specification
-        e.setUrl("http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-directReferenceCode");
+        e.setUrl(specificationSupport.getDirectReferenceCodeExtensionUrl());
         e.setValue(toCoding(context, libraryIdentifier, context.toCode(def)));
         return e;
     }
@@ -503,7 +511,7 @@ public class DataRequirementsProcessor {
 
     private Extension toLogicDefinition(ElmRequirement req, ExpressionDef def, String text, int sequence) {
         Extension e = new Extension();
-        e.setUrl("http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition");
+        e.setUrl(specificationSupport.getLogicDefinitionExtensionUrl());
         // TODO: Include the libraryUrl
         e.addExtension(new Extension()
                 .setUrl("libraryName")
@@ -990,7 +998,7 @@ public class DataRequirementsProcessor {
             }
             if (relatedRetrieve != null && includeElement != null) {
                 Extension relatedRequirement = new Extension()
-                        .setUrl("http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-relatedRequirement");
+                        .setUrl(specificationSupport.getRelatedRequirementExtensionUrl());
                 relatedRequirement.addExtension("targetId", new StringType(retrieve.getIncludedIn()));
                 relatedRequirement.addExtension(
                         "targetProperty", new StringType(stripReference(includeElement.getRelatedProperty())));
@@ -1014,7 +1022,7 @@ public class DataRequirementsProcessor {
                 && pertinenceContext.getPertinenceValue() != null
                 && !(pertinenceContext.getPertinenceValue().trim().isEmpty())) {
             Extension extension = new Extension();
-            extension.setUrl("http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinence");
+            extension.setUrl(specificationSupport.getPertinenceExtensionUrl());
 
             Coding coding = new Coding();
             coding.setSystem("http://hl7.org/fhir/uv/cpg/CodeSystem/cpg-casefeature-pertinence");
