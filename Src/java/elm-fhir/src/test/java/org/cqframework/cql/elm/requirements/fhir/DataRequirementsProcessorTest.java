@@ -769,7 +769,9 @@ public class DataRequirementsProcessorTest {
     }
 
     private org.hl7.fhir.r5.model.Library getModuleDefinitionLibrary(
-            Setup setup, CqlCompilerOptions cqlTranslatorOptions, Set<String> expressions,
+            Setup setup,
+            CqlCompilerOptions cqlTranslatorOptions,
+            Set<String> expressions,
             boolean includeLogicDefinitions) {
         DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(
@@ -782,7 +784,9 @@ public class DataRequirementsProcessorTest {
     }
 
     private org.hl7.fhir.r5.model.Library getModuleDefinitionLibrary(
-            Setup setup, CqlCompilerOptions cqlTranslatorOptions, Set<String> expressions,
+            Setup setup,
+            CqlCompilerOptions cqlTranslatorOptions,
+            Set<String> expressions,
             SpecificationLevel specificationLevel) {
         DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
         dqReqTrans.setSpecificationLevel(specificationLevel);
@@ -796,8 +800,11 @@ public class DataRequirementsProcessorTest {
     }
 
     private org.hl7.fhir.r5.model.Library getModuleDefinitionLibrary(
-            Setup setup, CqlCompilerOptions cqlTranslatorOptions, Set<String> expressions,
-            boolean includeLogicDefinitions, SpecificationLevel specificationLevel) {
+            Setup setup,
+            CqlCompilerOptions cqlTranslatorOptions,
+            Set<String> expressions,
+            boolean includeLogicDefinitions,
+            SpecificationLevel specificationLevel) {
         DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
         dqReqTrans.setSpecificationLevel(specificationLevel);
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(
@@ -2066,7 +2073,7 @@ public class DataRequirementsProcessorTest {
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary =
                 getModuleDefinitionLibrary(manager, compilerOptions, expressions);
         assertNotNull(moduleDefinitionLibrary);
-        //assertEqualToExpectedModuleDefinitionLibrary(
+        // assertEqualToExpectedModuleDefinitionLibrary(
         //        moduleDefinitionLibrary, "CMS143/resources/Library-EffectiveDataRequirements.json");
 
         outputModuleDefinitionLibrary(moduleDefinitionLibrary);
@@ -2217,28 +2224,23 @@ public class DataRequirementsProcessorTest {
     void cms986() throws IOException {
         CqlCompilerOptions compilerOptions = getCompilerOptions();
         compilerOptions.setAnalyzeDataRequirements(false);
-        var manager = setupDataRequirementsAnalysis(
-                "CMS986/cql/CMS986FHIRMalnutritionScore-0.3.000.cql", compilerOptions
-        );
+        var manager =
+                setupDataRequirementsAnalysis("CMS986/cql/CMS986FHIRMalnutritionScore-0.3.000.cql", compilerOptions);
         Set<String> expressions = new HashSet<>();
-        //expressions.add("Initial Population");
-        //expressions.add("Measure Population");
-        //expressions.add("Measure Population Exclusion");
+        // expressions.add("Initial Population");
+        // expressions.add("Measure Population");
+        // expressions.add("Measure Population Exclusion");
         expressions.add("Measure Observation 1");
-        //expressions.add("SDE CMS Sex");
-        //expressions.add("SDE Payer Type");
-        //expressions.add("SDE Ethnicity");
-        //expressions.add("SDE Race");
-        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(
-                manager,
-                compilerOptions,
-                expressions,
-                true,
-                SpecificationLevel.CRMI);
+        // expressions.add("SDE CMS Sex");
+        // expressions.add("SDE Payer Type");
+        // expressions.add("SDE Ethnicity");
+        // expressions.add("SDE Race");
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary =
+                getModuleDefinitionLibrary(manager, compilerOptions, expressions, true, SpecificationLevel.CRMI);
         assertNotNull(moduleDefinitionLibrary);
-       // assertEqualToExpectedModuleDefinitionLibrary(
-       //         moduleDefinitionLibrary, "CMS986/resources/library-Measure-Observation-1-requirements.json"
-       // );
+        // assertEqualToExpectedModuleDefinitionLibrary(
+        //         moduleDefinitionLibrary, "CMS986/resources/library-Measure-Observation-1-requirements.json"
+        // );
 
         outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }

@@ -20,8 +20,6 @@ import org.cqframework.cql.elm.requirements.ElmRequirementsContext;
 import org.cqframework.cql.elm.requirements.ElmRequirementsVisitor;
 import org.cqframework.cql.elm.requirements.fhir.utilities.SpecificationLevel;
 import org.cqframework.cql.elm.requirements.fhir.utilities.SpecificationSupport;
-import org.cqframework.cql.elm.requirements.fhir.utilities.constants.CqfConstants;
-import org.cqframework.cql.elm.requirements.fhir.utilities.constants.CqfmConstants;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.cqframework.cql.elm.tracking.Trackable;
 import org.hl7.cql.model.IntervalType;
@@ -49,6 +47,7 @@ public class DataRequirementsProcessor {
     }
 
     private SpecificationSupport specificationSupport = new SpecificationSupport();
+
     public void setSpecificationLevel(SpecificationLevel specificationLevel) {
         specificationSupport = new SpecificationSupport(specificationLevel);
     }
@@ -997,8 +996,8 @@ public class DataRequirementsProcessor {
                 }
             }
             if (relatedRetrieve != null && includeElement != null) {
-                Extension relatedRequirement = new Extension()
-                        .setUrl(specificationSupport.getRelatedRequirementExtensionUrl());
+                Extension relatedRequirement =
+                        new Extension().setUrl(specificationSupport.getRelatedRequirementExtensionUrl());
                 relatedRequirement.addExtension("targetId", new StringType(retrieve.getIncludedIn()));
                 relatedRequirement.addExtension(
                         "targetProperty", new StringType(stripReference(includeElement.getRelatedProperty())));
