@@ -13,5 +13,5 @@ public class CrmiConstants {
     public static final String SOFTWARE_SYSTEM_DEVICE_PROFILE_URL =
             "http://hl7.org/fhir/uv/crmi/StructureDefinition/crmi-softwaresystemdevice";
     public static final String SOFTWARE_SYSTEM_DEVICE_TYPE_SYSTEM_URL =
-            "http://terminology.hl7.org/ValueSet/software-system-type";
+            "http://terminology.hl7.org/CodeSystem/software-system-type";
 }
